@@ -749,7 +749,10 @@ def create_managed_environment(cmd,
                                logs_dynamic_json_columns=False,
                                system_assigned=False,
                                user_assigned=None,
-                               public_network_access=None):
+                               public_network_access=None,
+                               workload_profile_type=None,
+                               workload_profile_name=None,
+                               is_env_for_azml_app=None):
     raw_parameters = locals()
     containerapp_env_create_decorator = ContainerappEnvPreviewCreateDecorator(
         cmd=cmd,
@@ -1244,16 +1247,27 @@ def containerapp_up(cmd,
                     user_assigned=None,
                     system_assigned=None,
                     custom_location_id=None,
-                    connected_cluster_id=None):
+                    connected_cluster_id=None,
+                    model_registry=None,
+                    model_name=None,
+                    model_version=None):
     from ._up_utils import (_validate_up_args, _validate_custom_location_connected_cluster_args, _reformat_image, _get_dockerfile_content, _get_ingress_and_target_port,
                             ResourceGroup, Extension, CustomLocation, ContainerAppEnvironment, ContainerApp, _get_registry_from_app,
                             _get_registry_details, _get_registry_details_without_get_creds, _create_github_action, _set_up_defaults, up_output,
-                            check_env_name_on_rg, get_token, _has_dockerfile)
+                            check_env_name_on_rg, get_token, _has_dockerfile, _validate_azml_args, _is_azml_app, _validate_azml_env, _set_azml_env_vars)
     from azure.cli.command_modules.containerapp._github_oauth import cache_github_token
     HELLOWORLD = "mcr.microsoft.com/k8se/quickstart"
     dockerfile = "Dockerfile"  # for now the dockerfile name must be "Dockerfile" (until GH actions API is updated)
+    ACA_AZML_MCR = "harrlistreamingcr.azurecr.io/azml:aca-general-img"
 
     register_provider_if_needed(cmd, CONTAINER_APPS_RP)
+    is_azureml_app = _is_azml_app(model_registry, model_name, model_version, local_path, show_azml_image_build_log)
+    model_asset_id = None
+    model_reference_endpoint = None
+    if is_azureml_app:
+        model_asset_id, model_reference_endpoint, model_type, model_load_class, image = _validate_azml_args(cmd, ACA_AZML_MCR, image, model_registry, model_name, model_version)
+        env_vars = _set_azml_env_vars(cmd, env_vars, model_asset_id, model_reference_endpoint, model_type, model_load_class, is_azml_mcr_app= True if image.lower() == ACA_AZML_MCR.lower() else False)
+
     _validate_up_args(cmd, source, artifact, build_env_vars, image, repo, registry_server)
     validate_create(registry_identity=registry_identity,
                     registry_pass=registry_pass,
@@ -1280,6 +1294,10 @@ def containerapp_up(cmd,
         ingress = "external" if not ingress else ingress
         target_port = 80 if not target_port else target_port
 
+    if image and ACA_AZML_MCR in image.lower():
+        ingress = "external" if not ingress else ingress
+        target_port = 8000 if not target_port else target_port
+
     if image:
         if ingress and not target_port and target_port != 0:
             target_port = 0
@@ -1294,7 +1312,7 @@ def containerapp_up(cmd,
     resource_group = ResourceGroup(cmd, name=resource_group_name, location=location)
     custom_location = CustomLocation(cmd, name=custom_location_id, resource_group_name=resource_group_name, connected_cluster_id=connected_cluster_id)
     extension = Extension(cmd, logs_rg=resource_group_name, logs_location=location, logs_share_key=logs_key, logs_customer_id=logs_customer_id, connected_cluster_id=connected_cluster_id)
-    env = ContainerAppEnvironment(cmd, environment, resource_group, location=location, logs_key=logs_key, logs_customer_id=logs_customer_id, custom_location_id=custom_location_id, connected_cluster_id=connected_cluster_id)
+    env = ContainerAppEnvironment(cmd, environment, resource_group, location=location, logs_key=logs_key, logs_customer_id=logs_customer_id, custom_location_id=custom_location_id, connected_cluster_id=connected_cluster_id, is_env_for_azml_app=is_azureml_app)
     app = ContainerApp(cmd, name, resource_group, None, image, env, target_port, registry_server, registry_user, registry_pass, env_vars, workload_profile_name, ingress, registry_identity=registry_identity, user_assigned=user_assigned, system_assigned=system_assigned, revisions_mode=revisions_mode, target_label=target_label)
 
     # Check and see if registry (username and passwords) or registry-identity are specified. If so, set is_registry_server_params_set to True to use those creds.
@@ -1304,6 +1322,12 @@ def containerapp_up(cmd,
     if app.check_exists():
         if app.get()["properties"]["provisioningState"] == "InProgress":
             raise ValidationError("Containerapp has an existing provisioning in progress. Please wait until provisioning has completed and rerun the command.")
+
+    if is_azureml_app:
+        env, workload_profile_name, app_cpu_limit, app_memory_limit = _validate_azml_env(cmd, app, env, environment, resource_group, resource_group_name, workload_profile_name)
+        app.workload_profile_name = workload_profile_name
+        app.cpu = app_cpu_limit
+        app.memory = app_memory_limit
 
     resource_group.create_if_needed()
     extension.create_if_needed()
@@ -1337,7 +1361,7 @@ def containerapp_up(cmd,
     up_output(app, no_dockerfile=(source and not _has_dockerfile(source, dockerfile)))
 
 
-def containerapp_up_logic(cmd, resource_group_name, name, managed_env, image, env_vars, ingress, target_port, registry_server, registry_user, workload_profile_name, registry_pass, environment_type=None, force_single_container_updates=False, registry_identity=None, system_assigned=None, user_assigned=None, revisions_mode=None, target_label=None):
+def containerapp_up_logic(cmd, resource_group_name, name, managed_env, image, env_vars, ingress, target_port, registry_server, registry_user, workload_profile_name, registry_pass, environment_type=None, force_single_container_updates=False, registry_identity=None, system_assigned=None, user_assigned=None, revisions_mode=None, target_label=None, cpu=None, memory=None):
     containerapp_def = None
     try:
         containerapp_def = ContainerAppPreviewClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
@@ -1349,7 +1373,7 @@ def containerapp_up_logic(cmd, resource_group_name, name, managed_env, image, en
                                          registry_server=registry_server, registry_user=registry_user, registry_pass=registry_pass, workload_profile_name=workload_profile_name, container_name=name, force_single_container_updates=force_single_container_updates,
                                          registry_identity=registry_identity, system_assigned=system_assigned, user_assigned=user_assigned, revisions_mode=revisions_mode, target_label=target_label)
     return create_containerapp(cmd=cmd, name=name, resource_group_name=resource_group_name, managed_env=managed_env, image=image, env_vars=env_vars, ingress=ingress, target_port=target_port, registry_server=registry_server, registry_user=registry_user, registry_pass=registry_pass, workload_profile_name=workload_profile_name, environment_type=environment_type,
-                               registry_identity=registry_identity, system_assigned=system_assigned, user_assigned=user_assigned, revisions_mode=revisions_mode, target_label=target_label)
+                               registry_identity=registry_identity, system_assigned=system_assigned, user_assigned=user_assigned, revisions_mode=revisions_mode, target_label=target_label, cpu=cpu, memory=memory)
 
 
 def list_certificates(cmd, name, resource_group_name, location=None, certificate=None, thumbprint=None, managed_certificates_only=False, private_key_certificates_only=False):

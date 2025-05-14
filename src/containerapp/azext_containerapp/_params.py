@@ -276,6 +276,11 @@ def load_arguments(self, _):
         c.argument('user_assigned', nargs='+', help="Space-separated user identities to be assigned.")
         c.argument('system_assigned', help="Boolean indicating whether to assign system-assigned identity.", action='store_true')
 
+    with self.argument_context('containerapp up', arg_group='Azure ML Model Catelog', is_preview=True) as c:
+        c.argument('model_registry', options_list=['--model-registry'], help="The name of the Azure ML model registry.")
+        c.argument('model_name', options_list=['--model-name'], help="The name of the Azure ML model.")
+        c.argument('model_version', options_list=['--model-version'], help="The version of the Azure ML model.")
+
     with self.argument_context('containerapp auth') as c:
         c.argument('blob_container_uri', help='The URI of the blob storage containing the tokens. Should not be used along with sas_url_secret and sas_url_secret_name.', is_preview=True)
         c.argument('blob_container_identity', options_list=['--blob-container-identity', '--bci'],
