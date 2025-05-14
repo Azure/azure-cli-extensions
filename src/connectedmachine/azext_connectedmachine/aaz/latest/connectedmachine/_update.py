@@ -113,7 +113,7 @@ class Update(AAZCommand):
             help="The resource id of the parent cluster (Azure HCI) this machine is assigned to, if any.",
         )
         _args_schema.private_link_scope_resource_id = AAZStrArg(
-            options=["--private-link-scope-resource-id"],
+            options=["--private-link-scope-id", "--private-link-scope-resource-id"],
             arg_group="Properties",
             help="The resource id of the private link scope this machine is assigned to, if any.",
         )
