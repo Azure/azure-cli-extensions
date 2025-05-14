@@ -87,25 +87,6 @@ class Create(AAZCommand):
             required=True,
         )
 
-        # define Arg Group "Parameters"
-
-        _args_schema = cls._args_schema
-        _args_schema.location = AAZResourceLocationArg(
-            arg_group="Parameters",
-            help="Resource location.",
-            fmt=AAZResourceLocationArgFormat(
-                resource_group_arg="resource_group",
-            ),
-        )
-        _args_schema.tags = AAZDictArg(
-            options=["--tags"],
-            arg_group="Parameters",
-            help="Resource tags.",
-        )
-
-        tags = cls._args_schema.tags
-        tags.Element = AAZStrArg()
-
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
@@ -123,22 +104,22 @@ class Create(AAZCommand):
         _args_schema.email_addresses = AAZListArg(
             options=["--email-addresses"],
             arg_group="Properties",
-            help="Outbound rules email address format.",
+            help="Outbound rules in email address format. This access rule type is currently unavailable for use",
         )
         _args_schema.fqdn = AAZListArg(
             options=["--fqdn"],
             arg_group="Properties",
-            help="Outbound rules fully qualified domain name format.",
+            help="Outbound rules in fully qualified domain name format.",
         )
         _args_schema.phone_numbers = AAZListArg(
             options=["--phone-numbers"],
             arg_group="Properties",
-            help="Outbound rules phone number format.",
+            help="Outbound rules in phone number format. This access rule type is currently unavailable for use",
         )
         _args_schema.service_tags = AAZListArg(
             options=["--service-tags"],
             arg_group="Properties",
-            help="Inbound rules service tag names.",
+            help="Inbound rules of type service tag. This access rule type is currently unavailable for use.",
         )
         _args_schema.subscriptions = AAZListArg(
             options=["--subscriptions"],
@@ -165,7 +146,7 @@ class Create(AAZCommand):
         subscriptions.Element = AAZObjectArg()
 
         _element = cls._args_schema.subscriptions.Element
-        _element.id = AAZStrArg(
+        _element.id = AAZResourceIdArg(
             options=["id"],
             help="Subscription ID in the ARM ID fromat.",
         )
@@ -269,9 +250,7 @@ class Create(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("location", AAZStrType, ".location")
             _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
-            _builder.set_prop("tags", AAZDictType, ".tags")
 
             properties = _builder.get(".properties")
             if properties is not None:
@@ -311,10 +290,6 @@ class Create(AAZCommand):
             if _elements is not None:
                 _elements.set_prop("id", AAZStrType, ".id")
 
-            tags = _builder.get(".tags")
-            if tags is not None:
-                tags.set_elements(AAZStrType, ".")
-
             return self.serialize_content(_content_value)
 
         def on_200_201(self, session):
@@ -338,14 +313,16 @@ class Create(AAZCommand):
             _schema_on_200_201.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200_201.location = AAZStrType()
             _schema_on_200_201.name = AAZStrType(
                 flags={"read_only": True},
             )
             _schema_on_200_201.properties = AAZObjectType(
                 flags={"client_flatten": True},
             )
-            _schema_on_200_201.tags = AAZDictType()
+            _schema_on_200_201.system_data = AAZObjectType(
+                serialized_name="systemData",
+                flags={"read_only": True},
+            )
             _schema_on_200_201.type = AAZStrType(
                 flags={"read_only": True},
             )
@@ -413,8 +390,25 @@ class Create(AAZCommand):
             _element = cls._schema_on_200_201.properties.subscriptions.Element
             _element.id = AAZStrType()
 
-            tags = cls._schema_on_200_201.tags
-            tags.Element = AAZStrType()
+            system_data = cls._schema_on_200_201.system_data
+            system_data.created_at = AAZStrType(
+                serialized_name="createdAt",
+            )
+            system_data.created_by = AAZStrType(
+                serialized_name="createdBy",
+            )
+            system_data.created_by_type = AAZStrType(
+                serialized_name="createdByType",
+            )
+            system_data.last_modified_at = AAZStrType(
+                serialized_name="lastModifiedAt",
+            )
+            system_data.last_modified_by = AAZStrType(
+                serialized_name="lastModifiedBy",
+            )
+            system_data.last_modified_by_type = AAZStrType(
+                serialized_name="lastModifiedByType",
+            )
 
             return cls._schema_on_200_201
 

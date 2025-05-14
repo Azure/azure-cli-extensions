@@ -210,9 +210,6 @@ class Create(AAZCommand):
             cls._schema_on_200_201 = AAZObjectType()
 
             _schema_on_200_201 = cls._schema_on_200_201
-            _schema_on_200_201.etag = AAZStrType(
-                flags={"read_only": True},
-            )
             _schema_on_200_201.id = AAZStrType(
                 flags={"read_only": True},
             )
@@ -221,6 +218,10 @@ class Create(AAZCommand):
             )
             _schema_on_200_201.properties = AAZObjectType(
                 flags={"client_flatten": True},
+            )
+            _schema_on_200_201.system_data = AAZObjectType(
+                serialized_name="systemData",
+                flags={"read_only": True},
             )
             _schema_on_200_201.type = AAZStrType(
                 flags={"read_only": True},
@@ -234,6 +235,26 @@ class Create(AAZCommand):
 
             enabled_log_categories = cls._schema_on_200_201.properties.enabled_log_categories
             enabled_log_categories.Element = AAZStrType()
+
+            system_data = cls._schema_on_200_201.system_data
+            system_data.created_at = AAZStrType(
+                serialized_name="createdAt",
+            )
+            system_data.created_by = AAZStrType(
+                serialized_name="createdBy",
+            )
+            system_data.created_by_type = AAZStrType(
+                serialized_name="createdByType",
+            )
+            system_data.last_modified_at = AAZStrType(
+                serialized_name="lastModifiedAt",
+            )
+            system_data.last_modified_by = AAZStrType(
+                serialized_name="lastModifiedBy",
+            )
+            system_data.last_modified_by_type = AAZStrType(
+                serialized_name="lastModifiedByType",
+            )
 
             return cls._schema_on_200_201
 

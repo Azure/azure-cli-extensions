@@ -63,6 +63,7 @@ class Create(AAZCommand):
         _args_schema.location = AAZResourceLocationArg(
             arg_group="Parameters",
             help="The location in which NSP is created.",
+            required=True,
             fmt=AAZResourceLocationArgFormat(
                 resource_group_arg="resource_group",
             ),
@@ -167,7 +168,7 @@ class Create(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("location", AAZStrType, ".location")
+            _builder.set_prop("location", AAZStrType, ".location", typ_kwargs={"flags": {"required": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
 
             tags = _builder.get(".tags")
@@ -197,12 +198,18 @@ class Create(AAZCommand):
             _schema_on_200_201.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200_201.location = AAZStrType()
+            _schema_on_200_201.location = AAZStrType(
+                flags={"required": True},
+            )
             _schema_on_200_201.name = AAZStrType(
                 flags={"read_only": True},
             )
             _schema_on_200_201.properties = AAZObjectType(
                 flags={"client_flatten": True},
+            )
+            _schema_on_200_201.system_data = AAZObjectType(
+                serialized_name="systemData",
+                flags={"read_only": True},
             )
             _schema_on_200_201.tags = AAZDictType()
             _schema_on_200_201.type = AAZStrType(
@@ -217,6 +224,26 @@ class Create(AAZCommand):
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
+            )
+
+            system_data = cls._schema_on_200_201.system_data
+            system_data.created_at = AAZStrType(
+                serialized_name="createdAt",
+            )
+            system_data.created_by = AAZStrType(
+                serialized_name="createdBy",
+            )
+            system_data.created_by_type = AAZStrType(
+                serialized_name="createdByType",
+            )
+            system_data.last_modified_at = AAZStrType(
+                serialized_name="lastModifiedAt",
+            )
+            system_data.last_modified_by = AAZStrType(
+                serialized_name="lastModifiedBy",
+            )
+            system_data.last_modified_by_type = AAZStrType(
+                serialized_name="lastModifiedByType",
             )
 
             tags = cls._schema_on_200_201.tags

@@ -157,12 +157,10 @@ class List(AAZCommand):
             _element.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.location = AAZStrType()
             _element.name = AAZStrType()
             _element.properties = AAZObjectType(
                 flags={"client_flatten": True},
             )
-            _element.tags = AAZDictType()
             _element.type = AAZStrType(
                 flags={"read_only": True},
             )
@@ -183,9 +181,6 @@ class List(AAZCommand):
 
             public_dns_zones = cls._schema_on_200.value.Element.properties.public_dns_zones
             public_dns_zones.Element = AAZStrType()
-
-            tags = cls._schema_on_200.value.Element.tags
-            tags.Element = AAZStrType()
 
             return cls._schema_on_200
 

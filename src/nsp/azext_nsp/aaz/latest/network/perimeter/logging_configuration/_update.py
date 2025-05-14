@@ -349,19 +349,16 @@ class _UpdateHelper:
     @classmethod
     def _build_schema_nsp_logging_configuration_read(cls, _schema):
         if cls._schema_nsp_logging_configuration_read is not None:
-            _schema.etag = cls._schema_nsp_logging_configuration_read.etag
             _schema.id = cls._schema_nsp_logging_configuration_read.id
             _schema.name = cls._schema_nsp_logging_configuration_read.name
             _schema.properties = cls._schema_nsp_logging_configuration_read.properties
+            _schema.system_data = cls._schema_nsp_logging_configuration_read.system_data
             _schema.type = cls._schema_nsp_logging_configuration_read.type
             return
 
         cls._schema_nsp_logging_configuration_read = _schema_nsp_logging_configuration_read = AAZObjectType()
 
         nsp_logging_configuration_read = _schema_nsp_logging_configuration_read
-        nsp_logging_configuration_read.etag = AAZStrType(
-            flags={"read_only": True},
-        )
         nsp_logging_configuration_read.id = AAZStrType(
             flags={"read_only": True},
         )
@@ -370,6 +367,10 @@ class _UpdateHelper:
         )
         nsp_logging_configuration_read.properties = AAZObjectType(
             flags={"client_flatten": True},
+        )
+        nsp_logging_configuration_read.system_data = AAZObjectType(
+            serialized_name="systemData",
+            flags={"read_only": True},
         )
         nsp_logging_configuration_read.type = AAZStrType(
             flags={"read_only": True},
@@ -384,10 +385,30 @@ class _UpdateHelper:
         enabled_log_categories = _schema_nsp_logging_configuration_read.properties.enabled_log_categories
         enabled_log_categories.Element = AAZStrType()
 
-        _schema.etag = cls._schema_nsp_logging_configuration_read.etag
+        system_data = _schema_nsp_logging_configuration_read.system_data
+        system_data.created_at = AAZStrType(
+            serialized_name="createdAt",
+        )
+        system_data.created_by = AAZStrType(
+            serialized_name="createdBy",
+        )
+        system_data.created_by_type = AAZStrType(
+            serialized_name="createdByType",
+        )
+        system_data.last_modified_at = AAZStrType(
+            serialized_name="lastModifiedAt",
+        )
+        system_data.last_modified_by = AAZStrType(
+            serialized_name="lastModifiedBy",
+        )
+        system_data.last_modified_by_type = AAZStrType(
+            serialized_name="lastModifiedByType",
+        )
+
         _schema.id = cls._schema_nsp_logging_configuration_read.id
         _schema.name = cls._schema_nsp_logging_configuration_read.name
         _schema.properties = cls._schema_nsp_logging_configuration_read.properties
+        _schema.system_data = cls._schema_nsp_logging_configuration_read.system_data
         _schema.type = cls._schema_nsp_logging_configuration_read.type
 
 

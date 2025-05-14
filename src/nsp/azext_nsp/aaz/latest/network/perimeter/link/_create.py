@@ -69,7 +69,7 @@ class Create(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.auto_remote_nsp_id = AAZStrArg(
+        _args_schema.auto_remote_nsp_id = AAZResourceIdArg(
             options=["--auto-remote-nsp-id"],
             arg_group="Properties",
             help="Perimeter ARM Id for the remote NSP with which the link gets created in Auto-approval mode. It should be used when the NSP admin have Microsoft.Network/networkSecurityPerimeters/linkPerimeter/action permission on the remote NSP resource.",
@@ -234,9 +234,6 @@ class Create(AAZCommand):
             cls._schema_on_200_201 = AAZObjectType()
 
             _schema_on_200_201 = cls._schema_on_200_201
-            _schema_on_200_201.etag = AAZStrType(
-                flags={"read_only": True},
-            )
             _schema_on_200_201.id = AAZStrType(
                 flags={"read_only": True},
             )
@@ -245,6 +242,10 @@ class Create(AAZCommand):
             )
             _schema_on_200_201.properties = AAZObjectType(
                 flags={"client_flatten": True},
+            )
+            _schema_on_200_201.system_data = AAZObjectType(
+                serialized_name="systemData",
+                flags={"read_only": True},
             )
             _schema_on_200_201.type = AAZStrType(
                 flags={"read_only": True},
@@ -296,6 +297,26 @@ class Create(AAZCommand):
 
             remote_outbound_profiles = cls._schema_on_200_201.properties.remote_outbound_profiles
             remote_outbound_profiles.Element = AAZStrType()
+
+            system_data = cls._schema_on_200_201.system_data
+            system_data.created_at = AAZStrType(
+                serialized_name="createdAt",
+            )
+            system_data.created_by = AAZStrType(
+                serialized_name="createdBy",
+            )
+            system_data.created_by_type = AAZStrType(
+                serialized_name="createdByType",
+            )
+            system_data.last_modified_at = AAZStrType(
+                serialized_name="lastModifiedAt",
+            )
+            system_data.last_modified_by = AAZStrType(
+                serialized_name="lastModifiedBy",
+            )
+            system_data.last_modified_by_type = AAZStrType(
+                serialized_name="lastModifiedByType",
+            )
 
             return cls._schema_on_200_201
 

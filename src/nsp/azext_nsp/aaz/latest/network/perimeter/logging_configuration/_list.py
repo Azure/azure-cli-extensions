@@ -164,9 +164,6 @@ class List(AAZCommand):
             value.Element = AAZObjectType()
 
             _element = cls._schema_on_200.value.Element
-            _element.etag = AAZStrType(
-                flags={"read_only": True},
-            )
             _element.id = AAZStrType(
                 flags={"read_only": True},
             )
@@ -175,6 +172,10 @@ class List(AAZCommand):
             )
             _element.properties = AAZObjectType(
                 flags={"client_flatten": True},
+            )
+            _element.system_data = AAZObjectType(
+                serialized_name="systemData",
+                flags={"read_only": True},
             )
             _element.type = AAZStrType(
                 flags={"read_only": True},
@@ -188,6 +189,26 @@ class List(AAZCommand):
 
             enabled_log_categories = cls._schema_on_200.value.Element.properties.enabled_log_categories
             enabled_log_categories.Element = AAZStrType()
+
+            system_data = cls._schema_on_200.value.Element.system_data
+            system_data.created_at = AAZStrType(
+                serialized_name="createdAt",
+            )
+            system_data.created_by = AAZStrType(
+                serialized_name="createdBy",
+            )
+            system_data.created_by_type = AAZStrType(
+                serialized_name="createdByType",
+            )
+            system_data.last_modified_at = AAZStrType(
+                serialized_name="lastModifiedAt",
+            )
+            system_data.last_modified_by = AAZStrType(
+                serialized_name="lastModifiedBy",
+            )
+            system_data.last_modified_by_type = AAZStrType(
+                serialized_name="lastModifiedByType",
+            )
 
             return cls._schema_on_200
 

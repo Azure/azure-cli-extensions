@@ -188,14 +188,16 @@ class List(AAZCommand):
             _element.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.location = AAZStrType()
             _element.name = AAZStrType(
                 flags={"read_only": True},
             )
             _element.properties = AAZObjectType(
                 flags={"client_flatten": True},
             )
-            _element.tags = AAZDictType()
+            _element.system_data = AAZObjectType(
+                serialized_name="systemData",
+                flags={"read_only": True},
+            )
             _element.type = AAZStrType(
                 flags={"read_only": True},
             )
@@ -210,8 +212,25 @@ class List(AAZCommand):
                 flags={"read_only": True},
             )
 
-            tags = cls._schema_on_200.value.Element.tags
-            tags.Element = AAZStrType()
+            system_data = cls._schema_on_200.value.Element.system_data
+            system_data.created_at = AAZStrType(
+                serialized_name="createdAt",
+            )
+            system_data.created_by = AAZStrType(
+                serialized_name="createdBy",
+            )
+            system_data.created_by_type = AAZStrType(
+                serialized_name="createdByType",
+            )
+            system_data.last_modified_at = AAZStrType(
+                serialized_name="lastModifiedAt",
+            )
+            system_data.last_modified_by = AAZStrType(
+                serialized_name="lastModifiedBy",
+            )
+            system_data.last_modified_by_type = AAZStrType(
+                serialized_name="lastModifiedByType",
+            )
 
             return cls._schema_on_200
 

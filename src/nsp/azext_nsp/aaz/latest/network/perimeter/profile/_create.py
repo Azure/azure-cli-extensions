@@ -65,25 +65,6 @@ class Create(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
-
-        # define Arg Group "Parameters"
-
-        _args_schema = cls._args_schema
-        _args_schema.location = AAZResourceLocationArg(
-            arg_group="Parameters",
-            help="Resource location.",
-            fmt=AAZResourceLocationArgFormat(
-                resource_group_arg="resource_group",
-            ),
-        )
-        _args_schema.tags = AAZDictArg(
-            options=["--tags"],
-            arg_group="Parameters",
-            help="Resource tags.",
-        )
-
-        tags = cls._args_schema.tags
-        tags.Element = AAZStrArg()
         return cls._args_schema
 
     def _execute_operations(self):
@@ -180,12 +161,6 @@ class Create(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("location", AAZStrType, ".location")
-            _builder.set_prop("tags", AAZDictType, ".tags")
-
-            tags = _builder.get(".tags")
-            if tags is not None:
-                tags.set_elements(AAZStrType, ".")
 
             return self.serialize_content(_content_value)
 
@@ -210,14 +185,16 @@ class Create(AAZCommand):
             _schema_on_200_201.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200_201.location = AAZStrType()
             _schema_on_200_201.name = AAZStrType(
                 flags={"read_only": True},
             )
             _schema_on_200_201.properties = AAZObjectType(
                 flags={"client_flatten": True},
             )
-            _schema_on_200_201.tags = AAZDictType()
+            _schema_on_200_201.system_data = AAZObjectType(
+                serialized_name="systemData",
+                flags={"read_only": True},
+            )
             _schema_on_200_201.type = AAZStrType(
                 flags={"read_only": True},
             )
@@ -232,8 +209,25 @@ class Create(AAZCommand):
                 flags={"read_only": True},
             )
 
-            tags = cls._schema_on_200_201.tags
-            tags.Element = AAZStrType()
+            system_data = cls._schema_on_200_201.system_data
+            system_data.created_at = AAZStrType(
+                serialized_name="createdAt",
+            )
+            system_data.created_by = AAZStrType(
+                serialized_name="createdBy",
+            )
+            system_data.created_by_type = AAZStrType(
+                serialized_name="createdByType",
+            )
+            system_data.last_modified_at = AAZStrType(
+                serialized_name="lastModifiedAt",
+            )
+            system_data.last_modified_by = AAZStrType(
+                serialized_name="lastModifiedBy",
+            )
+            system_data.last_modified_by_type = AAZStrType(
+                serialized_name="lastModifiedByType",
+            )
 
             return cls._schema_on_200_201
 

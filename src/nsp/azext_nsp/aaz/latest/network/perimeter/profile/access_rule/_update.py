@@ -80,29 +80,6 @@ class Update(AAZCommand):
             required=True,
         )
 
-        # define Arg Group "Parameters"
-
-        _args_schema = cls._args_schema
-        _args_schema.location = AAZResourceLocationArg(
-            arg_group="Parameters",
-            help="Resource location.",
-            nullable=True,
-            fmt=AAZResourceLocationArgFormat(
-                resource_group_arg="resource_group",
-            ),
-        )
-        _args_schema.tags = AAZDictArg(
-            options=["--tags"],
-            arg_group="Parameters",
-            help="Resource tags.",
-            nullable=True,
-        )
-
-        tags = cls._args_schema.tags
-        tags.Element = AAZStrArg(
-            nullable=True,
-        )
-
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
@@ -122,25 +99,25 @@ class Update(AAZCommand):
         _args_schema.email_addresses = AAZListArg(
             options=["--email-addresses"],
             arg_group="Properties",
-            help="Outbound rules email address format.",
+            help="Outbound rules in email address format. This access rule type is currently unavailable for use",
             nullable=True,
         )
         _args_schema.fqdn = AAZListArg(
             options=["--fqdn"],
             arg_group="Properties",
-            help="Outbound rules fully qualified domain name format.",
+            help="Outbound rules in fully qualified domain name format.",
             nullable=True,
         )
         _args_schema.phone_numbers = AAZListArg(
             options=["--phone-numbers"],
             arg_group="Properties",
-            help="Outbound rules phone number format.",
+            help="Outbound rules in phone number format. This access rule type is currently unavailable for use",
             nullable=True,
         )
         _args_schema.service_tags = AAZListArg(
             options=["--service-tags"],
             arg_group="Properties",
-            help="Inbound rules service tag names.",
+            help="Inbound rules of type service tag. This access rule type is currently unavailable for use.",
             nullable=True,
         )
         _args_schema.subscriptions = AAZListArg(
@@ -181,7 +158,7 @@ class Update(AAZCommand):
         )
 
         _element = cls._args_schema.subscriptions.Element
-        _element.id = AAZStrArg(
+        _element.id = AAZResourceIdArg(
             options=["id"],
             help="Subscription ID in the ARM ID fromat.",
             nullable=True,
@@ -423,9 +400,7 @@ class Update(AAZCommand):
                 value=instance,
                 typ=AAZObjectType
             )
-            _builder.set_prop("location", AAZStrType, ".location")
             _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
-            _builder.set_prop("tags", AAZDictType, ".tags")
 
             properties = _builder.get(".properties")
             if properties is not None:
@@ -465,10 +440,6 @@ class Update(AAZCommand):
             if _elements is not None:
                 _elements.set_prop("id", AAZStrType, ".id")
 
-            tags = _builder.get(".tags")
-            if tags is not None:
-                tags.set_elements(AAZStrType, ".")
-
             return _instance_value
 
     class InstanceUpdateByGeneric(AAZGenericInstanceUpdateOperation):
@@ -489,10 +460,9 @@ class _UpdateHelper:
     def _build_schema_nsp_access_rule_read(cls, _schema):
         if cls._schema_nsp_access_rule_read is not None:
             _schema.id = cls._schema_nsp_access_rule_read.id
-            _schema.location = cls._schema_nsp_access_rule_read.location
             _schema.name = cls._schema_nsp_access_rule_read.name
             _schema.properties = cls._schema_nsp_access_rule_read.properties
-            _schema.tags = cls._schema_nsp_access_rule_read.tags
+            _schema.system_data = cls._schema_nsp_access_rule_read.system_data
             _schema.type = cls._schema_nsp_access_rule_read.type
             return
 
@@ -502,14 +472,16 @@ class _UpdateHelper:
         nsp_access_rule_read.id = AAZStrType(
             flags={"read_only": True},
         )
-        nsp_access_rule_read.location = AAZStrType()
         nsp_access_rule_read.name = AAZStrType(
             flags={"read_only": True},
         )
         nsp_access_rule_read.properties = AAZObjectType(
             flags={"client_flatten": True},
         )
-        nsp_access_rule_read.tags = AAZDictType()
+        nsp_access_rule_read.system_data = AAZObjectType(
+            serialized_name="systemData",
+            flags={"read_only": True},
+        )
         nsp_access_rule_read.type = AAZStrType(
             flags={"read_only": True},
         )
@@ -577,14 +549,30 @@ class _UpdateHelper:
         _element = _schema_nsp_access_rule_read.properties.subscriptions.Element
         _element.id = AAZStrType()
 
-        tags = _schema_nsp_access_rule_read.tags
-        tags.Element = AAZStrType()
+        system_data = _schema_nsp_access_rule_read.system_data
+        system_data.created_at = AAZStrType(
+            serialized_name="createdAt",
+        )
+        system_data.created_by = AAZStrType(
+            serialized_name="createdBy",
+        )
+        system_data.created_by_type = AAZStrType(
+            serialized_name="createdByType",
+        )
+        system_data.last_modified_at = AAZStrType(
+            serialized_name="lastModifiedAt",
+        )
+        system_data.last_modified_by = AAZStrType(
+            serialized_name="lastModifiedBy",
+        )
+        system_data.last_modified_by_type = AAZStrType(
+            serialized_name="lastModifiedByType",
+        )
 
         _schema.id = cls._schema_nsp_access_rule_read.id
-        _schema.location = cls._schema_nsp_access_rule_read.location
         _schema.name = cls._schema_nsp_access_rule_read.name
         _schema.properties = cls._schema_nsp_access_rule_read.properties
-        _schema.tags = cls._schema_nsp_access_rule_read.tags
+        _schema.system_data = cls._schema_nsp_access_rule_read.system_data
         _schema.type = cls._schema_nsp_access_rule_read.type
 
 

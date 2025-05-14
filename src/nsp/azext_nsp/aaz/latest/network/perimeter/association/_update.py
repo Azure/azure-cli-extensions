@@ -71,29 +71,6 @@ class Update(AAZCommand):
             required=True,
         )
 
-        # define Arg Group "Parameters"
-
-        _args_schema = cls._args_schema
-        _args_schema.location = AAZResourceLocationArg(
-            arg_group="Parameters",
-            help="Resource location.",
-            nullable=True,
-            fmt=AAZResourceLocationArgFormat(
-                resource_group_arg="resource_group",
-            ),
-        )
-        _args_schema.tags = AAZDictArg(
-            options=["--tags"],
-            arg_group="Parameters",
-            help="Resource tags.",
-            nullable=True,
-        )
-
-        tags = cls._args_schema.tags
-        tags.Element = AAZStrArg(
-            nullable=True,
-        )
-
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
@@ -384,19 +361,13 @@ class Update(AAZCommand):
                 value=instance,
                 typ=AAZObjectType
             )
-            _builder.set_prop("location", AAZStrType, ".location")
             _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
-            _builder.set_prop("tags", AAZDictType, ".tags")
 
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("accessMode", AAZStrType, ".access_mode")
                 _UpdateHelper._build_schema_sub_resource_update(properties.set_prop("privateLinkResource", AAZObjectType, ".private_link_resource"))
                 _UpdateHelper._build_schema_sub_resource_update(properties.set_prop("profile", AAZObjectType, ".profile"))
-
-            tags = _builder.get(".tags")
-            if tags is not None:
-                tags.set_elements(AAZStrType, ".")
 
             return _instance_value
 
@@ -424,10 +395,9 @@ class _UpdateHelper:
     def _build_schema_nsp_association_read(cls, _schema):
         if cls._schema_nsp_association_read is not None:
             _schema.id = cls._schema_nsp_association_read.id
-            _schema.location = cls._schema_nsp_association_read.location
             _schema.name = cls._schema_nsp_association_read.name
             _schema.properties = cls._schema_nsp_association_read.properties
-            _schema.tags = cls._schema_nsp_association_read.tags
+            _schema.system_data = cls._schema_nsp_association_read.system_data
             _schema.type = cls._schema_nsp_association_read.type
             return
 
@@ -437,14 +407,16 @@ class _UpdateHelper:
         nsp_association_read.id = AAZStrType(
             flags={"read_only": True},
         )
-        nsp_association_read.location = AAZStrType()
         nsp_association_read.name = AAZStrType(
             flags={"read_only": True},
         )
         nsp_association_read.properties = AAZObjectType(
             flags={"client_flatten": True},
         )
-        nsp_association_read.tags = AAZDictType()
+        nsp_association_read.system_data = AAZObjectType(
+            serialized_name="systemData",
+            flags={"read_only": True},
+        )
         nsp_association_read.type = AAZStrType(
             flags={"read_only": True},
         )
@@ -468,14 +440,30 @@ class _UpdateHelper:
             flags={"read_only": True},
         )
 
-        tags = _schema_nsp_association_read.tags
-        tags.Element = AAZStrType()
+        system_data = _schema_nsp_association_read.system_data
+        system_data.created_at = AAZStrType(
+            serialized_name="createdAt",
+        )
+        system_data.created_by = AAZStrType(
+            serialized_name="createdBy",
+        )
+        system_data.created_by_type = AAZStrType(
+            serialized_name="createdByType",
+        )
+        system_data.last_modified_at = AAZStrType(
+            serialized_name="lastModifiedAt",
+        )
+        system_data.last_modified_by = AAZStrType(
+            serialized_name="lastModifiedBy",
+        )
+        system_data.last_modified_by_type = AAZStrType(
+            serialized_name="lastModifiedByType",
+        )
 
         _schema.id = cls._schema_nsp_association_read.id
-        _schema.location = cls._schema_nsp_association_read.location
         _schema.name = cls._schema_nsp_association_read.name
         _schema.properties = cls._schema_nsp_association_read.properties
-        _schema.tags = cls._schema_nsp_association_read.tags
+        _schema.system_data = cls._schema_nsp_association_read.system_data
         _schema.type = cls._schema_nsp_association_read.type
 
     _schema_sub_resource_read = None

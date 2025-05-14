@@ -174,14 +174,16 @@ class Show(AAZCommand):
             _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.location = AAZStrType()
             _schema_on_200.name = AAZStrType(
                 flags={"read_only": True},
             )
             _schema_on_200.properties = AAZObjectType(
                 flags={"client_flatten": True},
             )
-            _schema_on_200.tags = AAZDictType()
+            _schema_on_200.system_data = AAZObjectType(
+                serialized_name="systemData",
+                flags={"read_only": True},
+            )
             _schema_on_200.type = AAZStrType(
                 flags={"read_only": True},
             )
@@ -196,8 +198,25 @@ class Show(AAZCommand):
                 flags={"read_only": True},
             )
 
-            tags = cls._schema_on_200.tags
-            tags.Element = AAZStrType()
+            system_data = cls._schema_on_200.system_data
+            system_data.created_at = AAZStrType(
+                serialized_name="createdAt",
+            )
+            system_data.created_by = AAZStrType(
+                serialized_name="createdBy",
+            )
+            system_data.created_by_type = AAZStrType(
+                serialized_name="createdByType",
+            )
+            system_data.last_modified_at = AAZStrType(
+                serialized_name="lastModifiedAt",
+            )
+            system_data.last_modified_by = AAZStrType(
+                serialized_name="lastModifiedBy",
+            )
+            system_data.last_modified_by_type = AAZStrType(
+                serialized_name="lastModifiedByType",
+            )
 
             return cls._schema_on_200
 
