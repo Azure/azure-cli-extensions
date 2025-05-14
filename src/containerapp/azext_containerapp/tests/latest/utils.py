@@ -28,7 +28,7 @@ def prepare_containerapp_env_for_app_e2e_tests(test_cls, location=TEST_LOCATION)
             if format_location(rg_location) == format_location(STAGE_LOCATION):
                 rg_location = "eastus"
             test_cls.cmd(f'group create -n {rg_name} -l {rg_location}')
-            test_cls.cmd(f'containerapp env create -g {rg_name} -n {env_name} --logs-destination none')
+            test_cls.cmd(f'containerapp env create -g {rg_name} -n {env_name} --logs-destination none', expect_failure=False)
             managed_env = test_cls.cmd('containerapp env show -g {} -n {}'.format(rg_name, env_name)).get_output_in_json()
 
             while managed_env["properties"]["provisioningState"].lower() == "waiting":

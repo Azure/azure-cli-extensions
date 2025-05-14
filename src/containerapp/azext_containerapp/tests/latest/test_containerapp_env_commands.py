@@ -746,7 +746,8 @@ class ContainerappEnvScenarioTest(ScenarioTest):
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="northeurope")
-    def test_containerapp_env_usages(self, resource_group):
+    @SubnetPreparer(location="centralus", delegations='Microsoft.App/environments', service_endpoints="Microsoft.Storage.Global")
+    def test_containerapp_env_usages(self, resource_group, subnet_id, vnet_name, subnet_name):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
         result = self.cmd('containerapp list-usages').get_output_in_json()
@@ -762,7 +763,7 @@ class ContainerappEnvScenarioTest(ScenarioTest):
         logs_workspace_id = self.cmd('monitor log-analytics workspace create -g {} -n {} -l eastus'.format(resource_group, logs_workspace_name)).get_output_in_json()["customerId"]
         logs_workspace_key = self.cmd('monitor log-analytics workspace get-shared-keys -g {} -n {}'.format(resource_group, logs_workspace_name)).get_output_in_json()["primarySharedKey"]
 
-        self.cmd('containerapp env create -g {} -n {} --logs-workspace-id {} --logs-workspace-key {} --enable-mtls'.format(resource_group, env_name, logs_workspace_id, logs_workspace_key))
+        self.cmd('containerapp env create -g {} -n {} --logs-workspace-id {} --logs-workspace-key {} --enable-mtls -s {}'.format(resource_group, env_name, logs_workspace_id, logs_workspace_key, subnet_id))
 
         containerapp_env = self.cmd(
             'containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
