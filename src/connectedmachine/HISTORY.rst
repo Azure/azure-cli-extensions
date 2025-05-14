@@ -2,7 +2,7 @@
 
 Release History
 ===============
-1.1.1b2
+2.0.0b1
 +++++	
 * 2024/11/10-preview is used for aaz generation. Migrated to aaz.
 
