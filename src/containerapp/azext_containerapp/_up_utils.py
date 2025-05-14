@@ -1187,10 +1187,10 @@ def _validate_azml_args(cmd, default_mcr_img, image_name, model_registry, model_
         if model_info not in ACA_AZML_BLESSED_MODEL:
             raise ValidationError(
                 f"""Model {model_name} from registry {model_registry} is currently not fully supported by our MCR image.
-Please visit https://github.com/microsoft/azure-container-apps/tree/main/templates to download and modify the container template to get best experience.
+Please visit https://github.com/microsoft/azure-container-apps/tree/main/templates/azml-app to download and modify the container template to get best experience.
 You can then deploy your personalized template image by running the following:
 az containerapp up --name <app_name> --image <your_image> --model-name <model_name> --model-version <model_version> --model-registry <model_registry>
-Currently supported model list: https://aka.ms/something"""
+Currently supported model list: https://learn.microsoft.com/en-us/azure/container-apps/gpu-serverless-overview#supported-regions"""
             )
     model_asset_id, model_reference_endpoint, model_type, model_load_class = _validate_azml_model_existence(cmd, model_registry, model_name, model_version)
     return model_asset_id, model_reference_endpoint, model_type, model_load_class, image_name

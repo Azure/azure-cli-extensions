@@ -1316,8 +1316,8 @@ def containerapp_up(cmd,
                             check_env_name_on_rg, get_token, _has_dockerfile, _validate_azml_args, _is_azml_app, _validate_azml_env_and_create_if_needed, _set_azml_env_vars)
     from azure.cli.command_modules.containerapp._github_oauth import cache_github_token
     HELLOWORLD = "mcr.microsoft.com/k8se/quickstart"
+    ACA_AZML_MCR = "mcr.microsoft.com/k8se/aca-foundry-model-host"
     dockerfile = "Dockerfile"  # for now the dockerfile name must be "Dockerfile" (until GH actions API is updated)
-    ACA_AZML_MCR = "harrlistreamingcr.azurecr.io/azml:aca-general-img"
 
     register_provider_if_needed(cmd, CONTAINER_APPS_RP)
     is_azureml_app = _is_azml_app(model_registry, model_name, model_version)
