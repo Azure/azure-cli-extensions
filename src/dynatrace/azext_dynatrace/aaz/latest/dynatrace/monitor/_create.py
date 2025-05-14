@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "dynatrace monitor create",
 )
 class Create(AAZCommand):
-    """Create a monitor resource
+    """Create a Dynatrace resource on Azure for monitoring and observability needs.
 
     :example: Create a monitor
         az dynatrace monitor create -g rg -n monitor --user-info "{first-name:Alice,last-name:Bobab,email-address:Alice@microsoft.com,phone-number:1234567890,country:US}" --plan-data "{usage-type:committed,billing-cycle:Monthly,plan-details:azureportalintegration_privatepreview@TIDhjdtn7tfnxcy,effective-date:2022-08-20}" --environment "{single-sign-on:{aad-domains:['abc']}}"
@@ -358,7 +358,7 @@ class Create(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("identity", AAZObjectType, ".identity")
+            _builder.set_prop("identity", AAZIdentityObjectType, ".identity")
             _builder.set_prop("location", AAZStrType, ".location", typ_kwargs={"flags": {"required": True}})
             _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True, "client_flatten": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
@@ -457,7 +457,7 @@ class Create(AAZCommand):
             _schema_on_200_201.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200_201.identity = AAZObjectType()
+            _schema_on_200_201.identity = AAZIdentityObjectType()
             _schema_on_200_201.location = AAZStrType(
                 flags={"required": True},
             )
