@@ -37,6 +37,8 @@ from azext_aks_preview._consts import (
     CONST_VIRTUAL_MACHINES,
     CONST_DEFAULT_NODE_VM_SIZE,
     CONST_DEFAULT_WINDOWS_NODE_VM_SIZE,
+    CONST_DEFAULT_VMS_VM_SIZE,
+    CONST_DEFAULT_WINDOWS_VMS_VM_SIZE,
     CONST_SSH_ACCESS_LOCALUSER,
 )
 from azext_aks_preview._helpers import (
@@ -714,8 +716,14 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
             vm_sizes = [x.strip() for x in raw_value.split(",")]
         else:
             vm_sizes = [self.get_node_vm_size()]
+            # Populate default values if vm_sizes still empty
+            if vm_sizes == [""]:
+                if self.get_os_type().lower() == "windows":
+                    vm_sizes = [CONST_DEFAULT_WINDOWS_VMS_VM_SIZE]
+                else:
+                    vm_sizes = [CONST_DEFAULT_VMS_VM_SIZE]
         return vm_sizes
-
+        
     # Overrides azure-cli command to allow changes after create
     def get_enable_fips_image(self) -> bool:
         """Obtain the value of enable_fips_image, default value is False.
