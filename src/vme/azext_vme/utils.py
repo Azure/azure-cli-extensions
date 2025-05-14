@@ -111,7 +111,7 @@ def check_and_enable_bundle_feature_flag(
 
     # Check whether the cluster's bundle feature flag is enabled
     featureflag = extract_feature_flag_value(cluster)
-    if not featureflag or featureflag != "Enabled":
+    if not featureflag or featureflag.lower() != "enabled":
         print("Enabling the bundle feature flag first before installing the extensions...")
         command = [
             str(shutil.which("az")),

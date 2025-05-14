@@ -8,7 +8,7 @@ from azure.cli.core import AzCommandsLoader
 from ._help import helps  # pylint: disable=unused-import
 
 
-class vmeCommandsLoader(AzCommandsLoader):
+class VmeCommandsLoader(AzCommandsLoader):
 
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
@@ -31,4 +31,4 @@ class vmeCommandsLoader(AzCommandsLoader):
         load_arguments(self, command)
 
 
-COMMAND_LOADER_CLS = vmeCommandsLoader
+COMMAND_LOADER_CLS = VmeCommandsLoader
