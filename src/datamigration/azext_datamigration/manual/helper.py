@@ -31,7 +31,7 @@ from azure.cli.core.azclierror import (CLIInternalError, FileOperationError,
 from knack.util import CLIError
 
 # Conditionally import winreg for Windows platforms
-if sys.platform == "win32":
+if sys.platform.startswith("win"):
     import winreg
 else:
     winreg = None
