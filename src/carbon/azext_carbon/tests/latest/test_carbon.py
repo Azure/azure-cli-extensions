@@ -11,7 +11,7 @@ class CarbonScenario(ScenarioTest):
 
     def test_get_emission_report_overall_summary_report(self):
         self.kwargs.update({
-            'subscription_id': '1fcfa925-ad8b-443e-afc9-73038125cc86',
+            'subscription_id': self.get_subscription_id(),
             'date_range': '{start:2024-03-01,end:2025-03-01}',
             'scope': '[Scope1,Scope2,Scope3]'
         })
@@ -28,7 +28,7 @@ class CarbonScenario(ScenarioTest):
 
     def test_get_emission_report_monthly_summary_report(self):
         self.kwargs.update({
-            'subscription_id': '1fcfa925-ad8b-443e-afc9-73038125cc86',
+            'subscription_id': self.get_subscription_id(),
             'date_range': '{start:2024-03-01,end:2025-03-01}',
             'scope': '[Scope1,Scope2,Scope3]'
         })
@@ -47,7 +47,7 @@ class CarbonScenario(ScenarioTest):
 
     def test_get_emission_report_item_details_report(self):
         self.kwargs.update({
-            'subscription_id': '1fcfa925-ad8b-443e-afc9-73038125cc86',
+            'subscription_id': self.get_subscription_id(),
             'date_range': '{start:2025-03-01,end:2025-03-01}',
             'scope': '[Scope1,Scope2,Scope3]',
             'category_type': 'ResourceType',
@@ -70,7 +70,7 @@ class CarbonScenario(ScenarioTest):
 
     def test_get_emission_report_top_items_summary_report(self):
         self.kwargs.update({
-            'subscription_id': '1fcfa925-ad8b-443e-afc9-73038125cc86',
+            'subscription_id': self.get_subscription_id(),
             'date_range': '{start:2025-03-01,end:2025-03-01}',
             'scope': '[Scope1,Scope2,Scope3]',
             'category_type': 'ResourceType',
@@ -91,7 +91,7 @@ class CarbonScenario(ScenarioTest):
 
     def test_get_emission_report_top_items_monthly_summary_report(self):
         self.kwargs.update({
-            'subscription_id': '1fcfa925-ad8b-443e-afc9-73038125cc86',
+            'subscription_id': self.get_subscription_id(),
             'date_range': '{start:2024-03-01,end:2025-03-01}',
             'scope': '[Scope1,Scope2,Scope3]',
             'category_type': 'ResourceType',
