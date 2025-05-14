@@ -11,6 +11,7 @@ New commands added:
 * perimeter logging-configuration: list
 
 Existing commands updated:
+* perimeter delete: added --force-deletion parameter.
 * Flattened output reponse for all commands.
 
 Removed commands:
