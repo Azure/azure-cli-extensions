@@ -723,7 +723,7 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
                 else:
                     vm_sizes = [CONST_DEFAULT_VMS_VM_SIZE]
         return vm_sizes
-        
+
     # Overrides azure-cli command to allow changes after create
     def get_enable_fips_image(self) -> bool:
         """Obtain the value of enable_fips_image, default value is False.
