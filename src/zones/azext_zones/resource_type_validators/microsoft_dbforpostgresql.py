@@ -32,4 +32,10 @@ class microsoft_dbforpostgresql:
             else:
                 return ZoneRedundancyValidationResult.No
 
+        # PostgreSQL Single Servers
+        if resourceSubType == "servers":
+            # Zone redundancy is not supported for PostgreSQL Single Servers
+            # https://learn.microsoft.com/azure/reliability/reliability-postgresql-flexible-server
+            return ZoneRedundancyValidationResult.No
+
         return ZoneRedundancyValidationResult.Unknown

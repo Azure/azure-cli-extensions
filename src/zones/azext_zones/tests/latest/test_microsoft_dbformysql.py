@@ -10,11 +10,11 @@ from azure.cli.testsdk import (ScenarioTest)
 from ..._resourceTypeValidation import getResourceTypeValidator, ZoneRedundancyValidationResult
 
 
-class test_microsoft_mysql(ScenarioTest):
+class test_microsoft_dbformysql(ScenarioTest):
 
     resource_zr = \
         {
-            "type": "microsoft.mysql/flexibleservers",
+            "type": "microsoft.dbformysql/flexibleservers",
             "properties": {
                 "highAvailability": {
                     "mode": "ZoneRedundant"
@@ -24,7 +24,7 @@ class test_microsoft_mysql(ScenarioTest):
 
     resource_nonzr = \
             {
-            "type": "microsoft.mysql/flexibleservers",
+            "type": "microsoft.dbformysql/flexibleservers",
             "properties": {
                 "highAvailability": {
                     "mode": "Disabled"
@@ -36,7 +36,7 @@ class test_microsoft_mysql(ScenarioTest):
 
     @classmethod
     def setUpClass(cls):
-        super(test_microsoft_mysql, cls).setUpClass()
+        super(test_microsoft_dbformysql, cls).setUpClass()
         resourceProvider = cls.resource_zr['type'].split('/')[0]
         cls.validator = getResourceTypeValidator(resourceProvider)
 

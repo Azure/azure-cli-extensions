@@ -33,6 +33,9 @@ class microsoft_containerregistry:
 
         # Registry Regional Replications
         if resourceSubType == "registries/replications":
-            return ZoneRedundancyValidationResult.Dependent
+            if resource["properties"]["zoneRedundancy"] == "Enabled":
+                return ZoneRedundancyValidationResult.Yes
+            else:
+                return ZoneRedundancyValidationResult.No
 
         return ZoneRedundancyValidationResult.Unknown

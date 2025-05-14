@@ -10,14 +10,14 @@ from .._resourceTypeValidation import (
 from knack.log import get_logger
 
 
-@register_resource_type("microsoft.mysql")
+@register_resource_type("microsoft.dbformysql")
 class microsoft_mysql:
     @staticmethod
     def validate(resource):
         resourceType = resource["type"]
         resourceSubType = resourceType[resourceType.index("/") + 1:]
 
-        _logger = get_logger("microsoft_mysql")
+        _logger = get_logger("microsoft_dbformysql")
         _logger.debug("Validating Microsoft.mysql resource type: %s", resourceSubType)
 
         # Azure Database for MySQL
