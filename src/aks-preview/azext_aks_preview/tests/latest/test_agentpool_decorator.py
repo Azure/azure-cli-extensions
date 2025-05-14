@@ -30,6 +30,8 @@ from azure.cli.command_modules.acs._consts import (
 )
 from azext_aks_preview._consts import (
     CONST_DEFAULT_WINDOWS_NODE_VM_SIZE,
+    CONST_DEFAULT_VMS_VM_SIZE,
+    CONST_DEFAULT_WINDOWS_VMS_VM_SIZE,
 )
 from azure.cli.command_modules.acs.agentpool_decorator import AKSAgentPoolParamDict
 from azure.cli.command_modules.acs.tests.latest.mocks import (
@@ -804,7 +806,7 @@ class AKSPreviewAgentPoolContextCommonTestCase(unittest.TestCase):
         )
         agentpool_1 = self.create_initialized_agentpool_instance(os_type="windows")
         ctx_1.attach_agentpool(agentpool_1)
-        self.assertEqual(ctx_1.get_vm_sizes(), [CONST_DEFAULT_WINDOWS_NODE_VM_SIZE])
+        self.assertEqual(ctx_1.get_vm_sizes(), [CONST_DEFAULT_WINDOWS_VMS_VM_SIZE])
 
         # default
         ctx_2 = AKSPreviewAgentPoolContext(
@@ -816,7 +818,7 @@ class AKSPreviewAgentPoolContextCommonTestCase(unittest.TestCase):
         )
         agentpool_2 = self.create_initialized_agentpool_instance(os_type="linux")
         ctx_2.attach_agentpool(agentpool_2)
-        self.assertEqual(ctx_2.get_vm_sizes(), [CONST_DEFAULT_NODE_VM_SIZE], DeepDiff(ctx_2.get_vm_sizes(), [CONST_DEFAULT_NODE_VM_SIZE]))
+        self.assertEqual(ctx_2.get_vm_sizes(), [CONST_DEFAULT_VMS_VM_SIZE], DeepDiff(ctx_2.get_vm_sizes(), [CONST_DEFAULT_VMS_VM_SIZE]))
 
         # custom
         ctx_3 = AKSPreviewAgentPoolContext(
