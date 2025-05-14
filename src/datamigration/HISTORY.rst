@@ -4,9 +4,9 @@ Release History
 ===============
 
 =======
-1.0.1b1
+1.0.0b5
 ++++++
-* [PARAMETER UPDATE] `az datamigration sql-managed-instance create`: `--source-location` now supports Managed Identity for Azure Blob.
+* [PARAMETER UPDATE] `az datamigration sql-managed-instance create`: `--source-location` now supports Managed Identity for accessing Azure Blob.
 
 =======
 1.0.0b4
