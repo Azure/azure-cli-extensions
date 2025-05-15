@@ -83,30 +83,31 @@ class ContainerappEnvPreviewCreateDecorator(ContainerAppEnvCreateDecorator):
             self.managed_env_def["properties"]["infrastructureResourceGroup"] = self.get_argument_infrastructure_resource_group()
 
     def set_up_managed_identity(self):
-        identity_def = ManagedServiceIdentity
-        identity_def["type"] = "None"
+        if self.get_argument_system_assigned() or self.get_argument_user_assigned():
+            identity_def = ManagedServiceIdentity
+            identity_def["type"] = "None"
 
-        assign_system_identity = self.get_argument_system_assigned()
-        if self.get_argument_user_assigned():
-            assign_user_identities = [x.lower() for x in self.get_argument_user_assigned()]
-        else:
-            assign_user_identities = []
+            assign_system_identity = self.get_argument_system_assigned()
+            if self.get_argument_user_assigned():
+                assign_user_identities = [x.lower() for x in self.get_argument_user_assigned()]
+            else:
+                assign_user_identities = []
 
-        if assign_system_identity and assign_user_identities:
-            identity_def["type"] = "SystemAssigned, UserAssigned"
-        elif assign_system_identity:
-            identity_def["type"] = "SystemAssigned"
-        elif assign_user_identities:
-            identity_def["type"] = "UserAssigned"
+            if assign_system_identity and assign_user_identities:
+                identity_def["type"] = "SystemAssigned, UserAssigned"
+            elif assign_system_identity:
+                identity_def["type"] = "SystemAssigned"
+            elif assign_user_identities:
+                identity_def["type"] = "UserAssigned"
 
-        if assign_user_identities:
-            identity_def["userAssignedIdentities"] = {}
-            subscription_id = get_subscription_id(self.cmd.cli_ctx)
+            if assign_user_identities:
+                identity_def["userAssignedIdentities"] = {}
+                subscription_id = get_subscription_id(self.cmd.cli_ctx)
 
-            for r in assign_user_identities:
-                r = _ensure_identity_resource_id(subscription_id, self.get_argument_resource_group_name(), r)
-                identity_def["userAssignedIdentities"][r] = {}  # pylint: disable=unsupported-assignment-operation
-        self.managed_env_def["identity"] = identity_def
+                for r in assign_user_identities:
+                    r = _ensure_identity_resource_id(subscription_id, self.get_argument_resource_group_name(), r)
+                    identity_def["userAssignedIdentities"][r] = {}  # pylint: disable=unsupported-assignment-operation
+            self.managed_env_def["identity"] = identity_def
 
     def set_up_workload_profiles(self):
         if self.get_argument_enable_workload_profiles():
