@@ -15,6 +15,7 @@ from azext_aks_preview._client_factory import (
     cf_operations,
     cf_load_balancers,
 )
+
 from azext_aks_preview._format import (
     aks_addon_list_available_table_format,
     aks_addon_list_table_format,
@@ -36,7 +37,14 @@ from azext_aks_preview._format import (
     aks_versions_table_format,
     aks_mesh_revisions_table_format,
     aks_mesh_upgrades_table_format,
+    aks_extension_list_table_format,
+    aks_extension_show_table_format,
+    aks_extension_types_list_table_format,
+    aks_extension_type_show_table_format,
+    aks_extension_type_versions_list_table_format,
+    aks_extension_type_version_show_table_format,
 )
+
 from knack.log import get_logger
 
 logger = get_logger(__name__)
@@ -430,3 +438,48 @@ def load_command_table(self, _):
         "aks check-network", managed_clusters_sdk, client_factory=cf_managed_clusters
     ) as g:
         g.custom_command("outbound", "aks_check_network_outbound")
+
+    with self.command_group(
+        "aks extension", managed_clusters_sdk, client_factory=cf_managed_clusters
+    ) as g:
+        g.custom_command('create', 'create_k8s_extension', supports_no_wait=True)
+        g.custom_command('delete', 'delete_k8s_extension', supports_no_wait=True)
+        g.custom_command(
+            'list',
+            'list_k8s_extension',
+            table_transformer=aks_extension_list_table_format
+        )
+        g.custom_show_command(
+            'show',
+            'show_k8s_extension',
+            table_transformer=aks_extension_show_table_format
+        )
+        g.custom_command('update', 'update_k8s_extension', supports_no_wait=True)
+
+    with self.command_group(
+        "aks extension type", managed_clusters_sdk, client_factory=cf_managed_clusters
+    ) as g:
+        g.custom_show_command(
+            'show',
+            'show_k8s_extension_type',
+            table_transformer=aks_extension_type_show_table_format
+        )
+        g.custom_command(
+            'list',
+            'list_k8s_extension_types',
+            table_transformer=aks_extension_types_list_table_format
+        )
+
+    with self.command_group(
+        "aks extension type version", managed_clusters_sdk, client_factory=cf_managed_clusters
+    ) as g:
+        g.custom_show_command(
+            'show',
+            'show_k8s_extension_type_version',
+            table_transformer=aks_extension_type_version_show_table_format
+        )
+        g.custom_command(
+            'list',
+            'list_k8s_extension_type_versions',
+            table_transformer=aks_extension_type_versions_list_table_format
+        )

@@ -22,9 +22,9 @@ class DelayAction(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-10-01-preview",
+        "version": "2025-04-01-preview",
         "resources": [
-            ["data-plane:microsoft.devcenter", "/projects/{}/users/{}/devboxes/{}/actions/{}:delay", "2024-10-01-preview"],
+            ["data-plane:microsoft.devcenter", "/projects/{}/users/{}/devboxes/{}/actions/{}:delay", "2025-04-01-preview"],
         ]
     }
 
@@ -185,7 +185,7 @@ class DelayAction(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_query_param(
-                    "api-version", "2024-10-01-preview",
+                    "api-version", "2025-04-01-preview",
                     required=True,
                 ),
             }

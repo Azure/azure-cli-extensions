@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/pools/{}/schedules/{}", "2024-10-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/pools/{}/schedules/{}", "2025-04-01-preview"],
         ]
     }
 
@@ -72,7 +72,7 @@ class Wait(AAZWaitCommand):
             id_part="child_name_2",
             default="default",
             fmt=AAZStrArgFormat(
-                pattern=r"^[-\w]+$",
+                pattern="^[-\\w]+$",
                 max_length=100,
                 min_length=1,
             ),
@@ -152,7 +152,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-10-01-preview",
+                    "api-version", "2025-04-01-preview",
                     required=True,
                 ),
             }

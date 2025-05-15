@@ -1725,26 +1725,92 @@ class DevcenterScenarioTest(ScenarioTest):
             ],
         )
 
-    def test_image_definition_scenario(self):
+    def test_project_image_definition_scenario(self):
         self.kwargs.update(
             {
-                "rg" : "cli-test",
-                "projectName": "cli-test-project",
-                "catalogName": "image",
-                "imageDefName": "project-sample-2"
+                "rg" : "cli-test-rg",
+                "projectName": "cli-project",
+                "catalogName": "image-catalog",
+                "imageDefName": "project-sample-3",
+                "imageDefName2": "project-sample-1",
+                "failedImageDefName": "ImageDefinitionB"
             }
         )
 
         self.cmd(
-            "az devcenter admin image-definition list "
+            "az devcenter admin project-image-definition list "
             '--resource-group "{rg}" '
             '--project "{projectName}" '
             '--catalog-name "{catalogName}" ',
             checks=[
-                self.check("length(@)", 1),
+                self.check("length(@)", 7),
                 self.check("[0].name", "{imageDefName}"),
             ],
         )
+
+        self.cmd(
+            "az devcenter admin project-image-definition show "
+            '--resource-group "{rg}" '
+            '--project "{projectName}" '
+            '--catalog-name "{catalogName}" '
+            '--name "{imageDefName}" ',
+            checks=[
+                self.check("name", "{imageDefName}"),
+                self.check("imageReference.id", "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test-rg/providers/Microsoft.DevCenter/devcenters/cli-dev-center/galleries/Default/images/microsoftvisualstudio_windowsplustools_base-win11-gen2")
+            ],
+        )
+
+        self.cmd(
+            "az devcenter admin project-image-definition get-error-detail "
+            '--resource-group "{rg}" '
+            '--project "{projectName}" '
+            '--catalog-name "{catalogName}" '
+            '--name "{failedImageDefName}" ',
+            checks=[
+                self.check("errors[0].code", "CatalogItemNotExist"),
+            ],
+        )
+
+
+        self.cmd(
+            "az devcenter admin project-image-definition-build list "
+            '--resource-group "{rg}" '
+            '--project "{projectName}" '
+            '--catalog-name "{catalogName}" '
+            '--image-definition-name "{imageDefName2}" ',
+            checks=[
+                self.check("length(@)", 4),
+                self.check("[0].imageReference.id", "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test-rg/providers/Microsoft.DevCenter/devcenters/cli-dev-center/galleries/Default/images/MicrosoftWindowsDesktop_windows-ent-cpc_win11-21h2-ent-cpc-m365")
+            ],
+        )
+
+        imageDefBuildName = self.cmd(
+            "az devcenter admin project-image-definition-build list "
+            '--resource-group "{rg}" '
+            '--project "{projectName}" '
+            '--catalog-name "{catalogName}" '
+            '--image-definition-name "{imageDefName2}" ',
+        ).get_output_in_json()[0]["name"]
+
+        self.kwargs.update(
+            {
+                "imageDefBuildName": imageDefBuildName,
+            }
+        )
+
+        self.cmd(
+            "az devcenter admin project-image-definition-build show "
+            '--resource-group "{rg}" '
+            '--project "{projectName}" '
+            '--catalog-name "{catalogName}" '
+            '--image-definition-name "{imageDefName2}" '
+            '--build-name "{imageDefBuildName}" ',
+            checks=[
+                self.check("name", "{imageDefBuildName}"),
+                self.check("imageReference.id", "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test-rg/providers/Microsoft.DevCenter/devcenters/cli-dev-center/galleries/Default/images/MicrosoftWindowsDesktop_windows-ent-cpc_win11-21h2-ent-cpc-m365")
+            ],
+        )
+
 
     def test_project_image_scenario(self):
         self.kwargs.update(

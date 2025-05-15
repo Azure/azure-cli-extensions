@@ -22,9 +22,9 @@ class ListHealthCheck(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-10-01-preview",
+        "version": "2025-04-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/networkconnections/{}/healthchecks", "2024-10-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/networkconnections/{}/healthchecks", "2025-04-01-preview"],
         ]
     }
 
@@ -126,7 +126,7 @@ class ListHealthCheck(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-10-01-preview",
+                    "api-version", "2025-04-01-preview",
                     required=True,
                 ),
             }
@@ -230,7 +230,9 @@ class ListHealthCheck(AAZCommand):
                 serialized_name="startDateTime",
                 flags={"read_only": True},
             )
-            _element.status = AAZStrType()
+            _element.status = AAZStrType(
+                flags={"read_only": True},
+            )
 
             system_data = cls._schema_on_200.value.Element.system_data
             system_data.created_at = AAZStrType(
