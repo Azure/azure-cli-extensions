@@ -5,6 +5,8 @@ Release History
 upcoming
 ++++++
 * 'az containerapp auth update': Support authenticating blob storage token store using managed identity with `--blob-container-uri` and `--blob-container-identity`.
+* 'az containerapp env create': Set identity only when `--mi-system-assigned` or `--mi-user-assigned` is specified.
+* 'az containerapp env create': Set identity only when `--system-assigned` or `--user-assigned` is specified.
 * 'az containerapp up --model-registry --model-name --model-version: Support deploying Azure AI Foundry model to Container App.'
 
 1.1.0b4
