@@ -197,7 +197,7 @@ class ContainerappEnvPreviewCreateDecorator(ContainerAppEnvCreateDecorator):
 
     def is_env_for_azml_app(self):
         return self.get_param("is_env_for_azml_app")
-    
+
     def get_argument_workload_profile_type(self):
         return self.get_param("workload_profile_type")
 
