@@ -51,7 +51,7 @@ class Update(AAZCommand):
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9][a-zA-Z0-9_\-.: ]*$",
+                pattern="^[a-zA-Z0-9][a-zA-Z0-9_\\-.: ]*$",
                 max_length=50,
                 min_length=1,
             ),
@@ -67,6 +67,11 @@ class Update(AAZCommand):
             options=["--identity"],
             arg_group="Properties",
             help="The managed service identities assigned to this resource.",
+        )
+        _args_schema.marketplace = AAZObjectArg(
+            options=["--marketplace"],
+            arg_group="Properties",
+            help="Marketplace details of the resource.",
         )
         _args_schema.partner_organization = AAZObjectArg(
             options=["--partner-organization"],
@@ -85,20 +90,78 @@ class Update(AAZCommand):
         )
 
         identity = cls._args_schema.identity
+        identity.mi_system_assigned = AAZStrArg(
+            options=["system-assigned", "mi-system-assigned"],
+            help="Set the system managed identity.",
+            blank="True",
+        )
         identity.type = AAZStrArg(
             options=["type"],
             help="Type of managed service identity (where both SystemAssigned and UserAssigned types are allowed).",
             required=True,
             enum={"None": "None", "SystemAssigned": "SystemAssigned", "SystemAssigned, UserAssigned": "SystemAssigned, UserAssigned", "UserAssigned": "UserAssigned"},
         )
+        identity.mi_user_assigned = AAZListArg(
+            options=["user-assigned", "mi-user-assigned"],
+            help="Set the user managed identities.",
+            blank=[],
+        )
         identity.user_assigned_identities = AAZDictArg(
             options=["user-assigned-identities"],
             help="The set of user assigned identities associated with the resource. The userAssignedIdentities dictionary keys will be ARM resource ids in the form: '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}. The dictionary values can be empty objects ({}) in requests.",
         )
 
+        mi_user_assigned = cls._args_schema.identity.mi_user_assigned
+        mi_user_assigned.Element = AAZStrArg()
+
         user_assigned_identities = cls._args_schema.identity.user_assigned_identities
         user_assigned_identities.Element = AAZObjectArg(
             blank={},
+        )
+
+        marketplace = cls._args_schema.marketplace
+        marketplace.offer_details = AAZObjectArg(
+            options=["offer-details"],
+            help="Offer details for the marketplace that is selected by the user",
+            required=True,
+        )
+        marketplace.subscription_id = AAZStrArg(
+            options=["subscription-id"],
+            help="Azure subscription id for the the marketplace offer is purchased from",
+        )
+        marketplace.subscription_status = AAZStrArg(
+            options=["subscription-status"],
+            help="Marketplace subscription status",
+            enum={"PendingFulfillmentStart": "PendingFulfillmentStart", "Subscribed": "Subscribed", "Suspended": "Suspended", "Unsubscribed": "Unsubscribed"},
+        )
+
+        offer_details = cls._args_schema.marketplace.offer_details
+        offer_details.offer_id = AAZStrArg(
+            options=["offer-id"],
+            help="Offer Id for the marketplace offer",
+            required=True,
+        )
+        offer_details.plan_id = AAZStrArg(
+            options=["plan-id"],
+            help="Plan Id for the marketplace offer",
+            required=True,
+        )
+        offer_details.plan_name = AAZStrArg(
+            options=["plan-name"],
+            help="Plan Name for the marketplace offer",
+        )
+        offer_details.publisher_id = AAZStrArg(
+            options=["publisher-id"],
+            help="Publisher Id for the marketplace offer",
+            required=True,
+        )
+        offer_details.term_id = AAZStrArg(
+            options=["term-id"],
+            help="Plan Display Name for the marketplace offer",
+        )
+        offer_details.term_unit = AAZStrArg(
+            options=["term-unit"],
+            help="Plan Display Name for the marketplace offer",
         )
 
         partner_organization = cls._args_schema.partner_organization
@@ -109,8 +172,9 @@ class Update(AAZCommand):
         partner_organization.organization_name = AAZStrArg(
             options=["organization-name"],
             help="Organization name in partner's system",
+            required=True,
             fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9][a-zA-Z0-9_\-.: ]*$",
+                pattern="^[a-zA-Z0-9][a-zA-Z0-9_\\-.: ]*$",
                 max_length=50,
                 min_length=1,
             ),
@@ -127,7 +191,7 @@ class Update(AAZCommand):
             options=["workspace-name"],
             help="Workspace name in partner's system",
             fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9][a-zA-Z0-9_\-.: ]*$",
+                pattern="^[a-zA-Z0-9][a-zA-Z0-9_\\-.: ]*$",
                 max_length=50,
                 min_length=1,
             ),
@@ -159,17 +223,20 @@ class Update(AAZCommand):
         user.email_address = AAZStrArg(
             options=["email-address"],
             help="Email address of the user",
+            required=True,
             fmt=AAZStrArgFormat(
-                pattern="^[A-Za-z0-9._%+-]+@(?:[A-Za-z0-9-]+\.)+[A-Za-z]{2,}$",
+                pattern="^[A-Za-z0-9._%+-]+@(?:[A-Za-z0-9-]+\\.)+[A-Za-z]{2,}$",
             ),
         )
         user.first_name = AAZStrArg(
             options=["first-name"],
             help="First name of the user",
+            required=True,
         )
         user.last_name = AAZStrArg(
             options=["last-name"],
             help="Last name of the user",
+            required=True,
         )
         user.phone_number = AAZStrArg(
             options=["phone-number"],
@@ -290,28 +357,50 @@ class Update(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("identity", AAZObjectType, ".identity")
-            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
+            _builder.set_prop("identity", AAZIdentityObjectType, ".identity")
+            _builder.set_prop("properties", AAZObjectType)
             _builder.set_prop("tags", AAZDictType, ".tags")
 
             identity = _builder.get(".identity")
             if identity is not None:
                 identity.set_prop("type", AAZStrType, ".type", typ_kwargs={"flags": {"required": True}})
                 identity.set_prop("userAssignedIdentities", AAZDictType, ".user_assigned_identities")
+                identity.set_prop("userAssigned", AAZListType, ".mi_user_assigned", typ_kwargs={"flags": {"action": "create"}})
+                identity.set_prop("systemAssigned", AAZStrType, ".mi_system_assigned", typ_kwargs={"flags": {"action": "create"}})
 
             user_assigned_identities = _builder.get(".identity.userAssignedIdentities")
             if user_assigned_identities is not None:
                 user_assigned_identities.set_elements(AAZObjectType, ".")
 
+            user_assigned = _builder.get(".identity.userAssigned")
+            if user_assigned is not None:
+                user_assigned.set_elements(AAZStrType, ".")
+
             properties = _builder.get(".properties")
             if properties is not None:
+                properties.set_prop("marketplace", AAZObjectType, ".marketplace")
                 properties.set_prop("partnerOrganizationProperties", AAZObjectType, ".partner_organization")
                 properties.set_prop("user", AAZObjectType, ".user")
+
+            marketplace = _builder.get(".properties.marketplace")
+            if marketplace is not None:
+                marketplace.set_prop("offerDetails", AAZObjectType, ".offer_details", typ_kwargs={"flags": {"required": True}})
+                marketplace.set_prop("subscriptionId", AAZStrType, ".subscription_id")
+                marketplace.set_prop("subscriptionStatus", AAZStrType, ".subscription_status")
+
+            offer_details = _builder.get(".properties.marketplace.offerDetails")
+            if offer_details is not None:
+                offer_details.set_prop("offerId", AAZStrType, ".offer_id", typ_kwargs={"flags": {"required": True}})
+                offer_details.set_prop("planId", AAZStrType, ".plan_id", typ_kwargs={"flags": {"required": True}})
+                offer_details.set_prop("planName", AAZStrType, ".plan_name")
+                offer_details.set_prop("publisherId", AAZStrType, ".publisher_id", typ_kwargs={"flags": {"required": True}})
+                offer_details.set_prop("termId", AAZStrType, ".term_id")
+                offer_details.set_prop("termUnit", AAZStrType, ".term_unit")
 
             partner_organization_properties = _builder.get(".properties.partnerOrganizationProperties")
             if partner_organization_properties is not None:
                 partner_organization_properties.set_prop("organizationId", AAZStrType, ".organization_id")
-                partner_organization_properties.set_prop("organizationName", AAZStrType, ".organization_name")
+                partner_organization_properties.set_prop("organizationName", AAZStrType, ".organization_name", typ_kwargs={"flags": {"required": True}})
                 partner_organization_properties.set_prop("singleSignOnProperties", AAZObjectType, ".single_sign_on_properties")
                 partner_organization_properties.set_prop("workspaceId", AAZStrType, ".workspace_id")
                 partner_organization_properties.set_prop("workspaceName", AAZStrType, ".workspace_name")
@@ -329,9 +418,9 @@ class Update(AAZCommand):
 
             user = _builder.get(".properties.user")
             if user is not None:
-                user.set_prop("emailAddress", AAZStrType, ".email_address")
-                user.set_prop("firstName", AAZStrType, ".first_name")
-                user.set_prop("lastName", AAZStrType, ".last_name")
+                user.set_prop("emailAddress", AAZStrType, ".email_address", typ_kwargs={"flags": {"required": True}})
+                user.set_prop("firstName", AAZStrType, ".first_name", typ_kwargs={"flags": {"required": True}})
+                user.set_prop("lastName", AAZStrType, ".last_name", typ_kwargs={"flags": {"required": True}})
                 user.set_prop("phoneNumber", AAZStrType, ".phone_number")
                 user.set_prop("upn", AAZStrType, ".upn")
 
@@ -362,16 +451,14 @@ class Update(AAZCommand):
             _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.identity = AAZObjectType()
+            _schema_on_200.identity = AAZIdentityObjectType()
             _schema_on_200.location = AAZStrType(
                 flags={"required": True},
             )
             _schema_on_200.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.properties = AAZObjectType(
-                flags={"client_flatten": True},
-            )
+            _schema_on_200.properties = AAZObjectType()
             _schema_on_200.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
@@ -419,6 +506,7 @@ class Update(AAZCommand):
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
+                flags={"read_only": True},
             )
             properties.user = AAZObjectType(
                 flags={"required": True},
@@ -431,7 +519,6 @@ class Update(AAZCommand):
             )
             marketplace.subscription_id = AAZStrType(
                 serialized_name="subscriptionId",
-                flags={"required": True},
             )
             marketplace.subscription_status = AAZStrType(
                 serialized_name="subscriptionStatus",
@@ -487,6 +574,7 @@ class Update(AAZCommand):
             )
             single_sign_on_properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
+                flags={"read_only": True},
             )
             single_sign_on_properties.single_sign_on_state = AAZStrType(
                 serialized_name="singleSignOnState",
