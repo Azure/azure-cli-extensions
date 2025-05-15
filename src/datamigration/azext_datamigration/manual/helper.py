@@ -12,29 +12,21 @@
 # pylint: disable=line-too-long
 
 import base64
-import binascii
 import ctypes
 import json
 import os
 import platform
-import shutil
 import subprocess
-import sys
 import time
 import urllib.request
 import uuid
 from zipfile import ZipFile
-
+import shutil
 import requests
-from azure.cli.core.azclierror import (CLIInternalError, FileOperationError,
-                                       InvalidArgumentValueError)
 from knack.util import CLIError
-
-# Conditionally import winreg for Windows platforms
-if sys.platform.startswith("win"):
-    import winreg
-else:
-    winreg = None
+from azure.cli.core.azclierror import CLIInternalError
+from azure.cli.core.azclierror import FileOperationError
+from azure.cli.core.azclierror import InvalidArgumentValueError
 
 
 # -----------------------------------------------------------------------------------------------------------------
@@ -78,7 +70,7 @@ def is_valid_guid(guid):
 def is_base64(s):
     try:
         return base64.b64encode(base64.b64decode(s)).decode() == s
-    except (binascii.Error, UnicodeDecodeError):
+    except Exception:  # pylint: disable=broad-except
         return False
 
 
@@ -380,8 +372,7 @@ def get_latest_nuget_org_version(package_id):
     service_index_response = None
     try:
         service_index_response = requests.get("https://api.nuget.org/v3/index.json")
-        service_index_response.raise_for_status()
-    except requests.exceptions.RequestException:
+    except Exception:  # pylint: disable=broad-except
         print("Unable to connect to NuGet.org to check for updates.")
 
     if (service_index_response is None or
@@ -520,26 +511,27 @@ def validate_input(key):
 # IR key format: IR@{KeyId : Guid}@{PartitionId: Factory Name}@{Factory Region or Factory ServiceEndpoint}@{Base64String}
 # -----------------------------------------------------------------------------------------------------------------
 def is_valid_ir_key_format(key):
-    if not isinstance(key, str):
-        return False
 
-    keyPrefix = "IR"
-    separator = '@'
-    keyParts = 5
+    try:
+        keyPrefix = "IR"
+        separator = '@'
+        keyParts = 5
 
-    key_parts = key.split(separator)
+        key_parts = key.split(separator)
 
-    # Length of the split auth key should be 5 and should start with "IR"
-    if len(key_parts) != keyParts or key.startswith(keyPrefix) is False:
-        return False
-    # Check if all parts are not null or empty
-    for part in key_parts:
-        if is_string_null_or_empty(part):
+        # Length of the split auth key should be 5 and should start with "IR"
+        if len(key_parts) != keyParts or key.startswith(keyPrefix) is False:
             return False
-    # Check pattern of second part as Guid and last part is a base64 string
-    if not is_valid_guid(key_parts[1]) or not is_base64(key_parts[-1]):
+        # Check if all parts are not null or empty
+        for part in key_parts:
+            if is_string_null_or_empty(part):
+                return False
+        # Check pattern of second part as Guid and last part is a base64 string
+        if not is_valid_guid(key_parts[1]) or not is_base64(key_parts[-1]):
+            return False
+        return True
+    except Exception:  # pylint: disable=broad-except
         return False
-    return True
 
 
 # -----------------------------------------------------------------------------------------------------------------
@@ -547,9 +539,7 @@ def is_valid_ir_key_format(key):
 # -----------------------------------------------------------------------------------------------------------------
 def check_whether_gateway_installed(name):
 
-    if winreg is None:
-        return False
-
+    import winreg  # pylint: disable=import-error
     # Connecting to key in registry
     accessRegistry = winreg.ConnectRegistry(None, winreg.HKEY_LOCAL_MACHINE)
 
@@ -636,8 +626,7 @@ def register_ir(key, installed_ir_path=None):
 # -----------------------------------------------------------------------------------------------------------------
 def get_cmd_file_path():
 
-    if winreg is None:
-        raise ModuleNotFoundError("Failed: winreg module not found. Please run this command in Windows environment")
+    import winreg  # pylint: disable=import-error
     try:
         # Connecting to key in registry
         accessRegistry = winreg.ConnectRegistry(None, winreg.HKEY_LOCAL_MACHINE)
