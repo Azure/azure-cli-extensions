@@ -22,9 +22,9 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-10-01-preview",
+        "version": "2025-04-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/images", "2024-10-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/images", "2025-04-01-preview"],
         ]
     }
 
@@ -126,7 +126,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-10-01-preview",
+                    "api-version", "2025-04-01-preview",
                     required=True,
                 ),
             }
@@ -194,6 +194,7 @@ class List(AAZCommand):
             )
             properties.hibernate_support = AAZStrType(
                 serialized_name="hibernateSupport",
+                flags={"read_only": True},
             )
             properties.offer = AAZStrType(
                 flags={"read_only": True},
@@ -207,16 +208,20 @@ class List(AAZCommand):
             )
             properties.recommended_machine_configuration = AAZObjectType(
                 serialized_name="recommendedMachineConfiguration",
+                flags={"read_only": True},
             )
             properties.sku = AAZStrType(
                 flags={"read_only": True},
             )
 
             recommended_machine_configuration = cls._schema_on_200.value.Element.properties.recommended_machine_configuration
-            recommended_machine_configuration.memory = AAZObjectType()
+            recommended_machine_configuration.memory = AAZObjectType(
+                flags={"read_only": True},
+            )
             _ListHelper._build_schema_resource_range_read(recommended_machine_configuration.memory)
             recommended_machine_configuration.v_cp_us = AAZObjectType(
                 serialized_name="vCPUs",
+                flags={"read_only": True},
             )
             _ListHelper._build_schema_resource_range_read(recommended_machine_configuration.v_cp_us)
 
@@ -255,7 +260,9 @@ class _ListHelper:
             _schema.min = cls._schema_resource_range_read.min
             return
 
-        cls._schema_resource_range_read = _schema_resource_range_read = AAZObjectType()
+        cls._schema_resource_range_read = _schema_resource_range_read = AAZObjectType(
+            flags={"read_only": True}
+        )
 
         resource_range_read = _schema_resource_range_read
         resource_range_read.max = AAZIntType(

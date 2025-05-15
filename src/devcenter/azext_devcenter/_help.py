@@ -168,6 +168,132 @@ helps[
 """
 
 helps[
+    "devcenter dev approval"
+] = """
+    type: group
+    short-summary: Manage approvals.
+"""
+
+helps[
+    "devcenter dev approval list"
+] = """
+    type: command
+    short-summary: "List Dev Box creations that are pending approval."
+    examples:
+      - name: List using dev center
+        text: |-
+               az devcenter dev approval list --dev-center-name "ContosoDevCenter" \
+--project-name "DevProject"
+      - name: List using endpoint
+        text: |-
+               az devcenter dev approval list --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
+--project-name "DevProject"
+"""
+
+helps[
+    "devcenter dev add-on"
+] = """
+    type: group
+    short-summary: Manage dev box add ons.
+"""
+
+helps[
+    "devcenter dev add-on create"
+] = """
+    type: command
+    short-summary: "Create a dev box add on."
+    examples:
+      - name: Create using dev center
+        text: |-
+               az devcenter dev add-on create --dev-box-name "myDevBox" --dev-center-name "ContosoDevCenter" \
+--project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000" --add-on-name "devboxtunnel-sys-default"
+      - name: Create using endpoint
+        text: |-
+               az devcenter dev add-on create --dev-box-name "myDevBox" --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
+--project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000" --add-on-name "devboxtunnel-sys-default"
+"""
+
+helps[
+    "devcenter dev add-on delete"
+] = """
+    type: command
+    short-summary: "Delete a dev box add on."
+    examples:
+      - name: Delete using dev center
+        text: |-
+               az devcenter dev add-on delete --dev-box-name "myDevBox" --dev-center-name "ContosoDevCenter" \
+--project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000" --add-on-name "devboxtunnel-sys-default"
+      - name: Delete using endpoint
+        text: |-
+               az devcenter dev add-on delete --dev-box-name "myDevBox" --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
+--project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000" --add-on-name "devboxtunnel-sys-default"
+"""
+
+helps[
+    "devcenter dev add-on disable"
+] = """
+    type: command
+    short-summary: "Disable a dev box add on."
+    examples:
+      - name: Disable using dev center
+        text: |-
+               az devcenter dev add-on disable --dev-box-name "myDevBox" --dev-center-name "ContosoDevCenter" \
+--project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000" --add-on-name "devboxtunnel-sys-default"
+      - name: Disable using endpoint
+        text: |-
+               az devcenter dev add-on disable --dev-box-name "myDevBox" --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
+--project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000" --add-on-name "devboxtunnel-sys-default"
+"""
+
+helps[
+    "devcenter dev add-on enable"
+] = """
+    type: command
+    short-summary: "Enable a dev box add on."
+    examples:
+      - name: Enable using dev center
+        text: |-
+               az devcenter dev add-on enable --dev-box-name "myDevBox" --dev-center-name "ContosoDevCenter" \
+--project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000" --add-on-name "devboxtunnel-sys-default"
+      - name: Enable using endpoint
+        text: |-
+               az devcenter dev add-on enable --dev-box-name "myDevBox" --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
+--project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000" --add-on-name "devboxtunnel-sys-default"
+"""
+
+helps[
+    "devcenter dev add-on list"
+] = """
+    type: command
+    short-summary: "List add ons for a dev box"
+    examples:
+      - name: List using dev center
+        text: |-
+               az devcenter dev add-on list --dev-box-name "myDevBox" --dev-center-name "ContosoDevCenter" \
+--project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
+      - name: List using endpoint
+        text: |-
+               az devcenter dev add-on list --dev-box-name "myDevBox" --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
+--project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
+"""
+
+helps[
+    "devcenter dev add-on show"
+] = """
+    type: command
+    short-summary: "Get a dev box add on."
+    examples:
+      - name: Get using dev center
+        text: |-
+               az devcenter dev add-on show --dev-box-name "myDevBox" --dev-center-name "ContosoDevCenter" \
+--project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000" --add-on-name "devboxtunnel-sys-default"
+      - name: Get using endpoint
+        text: |-
+               az devcenter dev add-on show --dev-box-name "myDevBox" --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
+--project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000" --add-on-name "devboxtunnel-sys-default"
+"""
+
+helps[
     "devcenter dev dev-box"
 ] = """
     type: group
@@ -284,6 +410,54 @@ helps[
         text: |-
                az devcenter dev dev-box start --name "MyDevBox" --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
 --project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
+"""
+
+helps[
+    "devcenter dev dev-box align"
+] = """
+    type: command
+    short-summary: "Align a dev box to the pools current pool configuration."
+    examples:
+      - name: Align using dev center
+        text: |-
+               az devcenter dev dev-box align --name "MyDevBox" --dev-center-name "ContosoDevCenter" \
+--project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
+      - name: Align using endpoint
+        text: |-
+               az devcenter dev dev-box align --name "MyDevBox" --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
+--project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
+"""
+
+helps[
+    "devcenter dev dev-box approve"
+] = """
+    type: command
+    short-summary: "Approve the creation of a dev box."
+    examples:
+      - name: Approve using dev center
+        text: |-
+               az devcenter dev dev-box approve --name "MyDevBox" --dev-center-name "ContosoDevCenter" \
+--project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
+      - name: Approve using endpoint
+        text: |-
+               az devcenter dev dev-box approve --name "MyDevBox" --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
+--project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
+"""
+
+helps[
+    "devcenter dev dev-box set-active-hours"
+] = """
+    type: command
+    short-summary: "Lets a user set their own active hours for their Dev Box, overriding the defaults set at the pool level."
+    examples:
+      - name: Set active hours using dev center
+        text: |-
+               az devcenter dev dev-box set-active-hours --name "MyDevBox" --dev-center-name "ContosoDevCenter" \
+--project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000" --time-zone "America/Los_Angeles" --start-time-hour "9" --end-time-hour "17"
+      - name: Set active hours using endpoint
+        text: |-
+               az devcenter dev dev-box set-active-hours --name "MyDevBox" --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
+--project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000" --time-zone "America/Los_Angeles" --start-time-hour "9" --end-time-hour "17"
 """
 
 helps[
