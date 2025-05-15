@@ -739,7 +739,7 @@ class ContainerappEnvScenarioTest(ScenarioTest):
         env_name = self.create_random_name(prefix='containerapp-e2e-env', length=24)
         ai_conn_str = f'InstrumentationKey={self.create_random_name(prefix="ik", length=8)}'
 
-        self.cmd('containerapp env create -g {} -n {} --logs-destination none -d "Endpoint=https://foo.azconfig.io;Id=osOX-l9-s0:sig;{}"'.format(resource_group, env_name, ai_conn_str), expect_failure=False)
+        self.cmd('containerapp env create -g {} -n {} --logs-destination none -d "Endpoint=https://abc.com;Id=abc;{}"'.format(resource_group, env_name, ai_conn_str), expect_failure=False)
 
         self.cmd('containerapp env delete -g {} -n {} --yes --no-wait'.format(resource_group, env_name), expect_failure=False)
 
