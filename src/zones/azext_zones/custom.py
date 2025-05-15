@@ -28,7 +28,7 @@ def validate_zones(client, cmd, omit_dependent, resource_group_names, tags):
 def validate_resources(cmd, resources, omit_dependent=False):
     resource_results = []
     if resources['count'] == 0:
-        errMsg = ("No resources found, validation could not be run.")
+        errMsg = ("No resources found with the supplied resource group and tag filters, validation could not be run.")
         __logger.error(errMsg)
 
     # Get the location data we'll use to validate the resources

@@ -25,13 +25,9 @@ def build_arg_query(resource_groups, tags):
 
     query = "Resources"
     if resource_groups is not None and len(resource_groups) > 0:
-        # Replace spaces with commas in resource groups, in case someone passed a space-separated list
-        resource_groups = resource_groups.replace(' ', ',')
         query += " | where resourceGroup in ({0})".format(','.join(f"'{item}'" for item in resource_groups.split(',')))
 
     if tags is not None:
-        # Replace spaces with commas in tags, in case someone passed a space-separated list
-        tags = tags.replace(' ', ',')
         tagquery = []
         for tag in tags.split(','):
             tag = tag.strip()
