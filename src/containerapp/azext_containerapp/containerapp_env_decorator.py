@@ -133,7 +133,8 @@ class ContainerappEnvPreviewCreateDecorator(ContainerAppEnvCreateDecorator):
                 }
                 workload_profiles.append(gpu_profile)
             if self.is_env_for_azml_app() and not self.get_argument_enable_dedicated_gpu():
-                if self.get_argument_workload_profile_type() is None or self.get_argument_workload_profile_type().lower() == "consumption-gpu-nc24-a100":
+                wp_type = self.get_argument_workload_profile_type()
+                if wp_type is None or wp_type.lower() == "consumption-gpu-nc24-a100":
                     serverless_a100_profile = {
                         "workloadProfileType": "Consumption-GPU-NC24-A100",
                         "name": self.get_argument_workload_profile_name() if self.get_argument_workload_profile_name() else "serverless-A100",
@@ -141,7 +142,7 @@ class ContainerappEnvPreviewCreateDecorator(ContainerAppEnvCreateDecorator):
                     workload_profiles.append(serverless_a100_profile)
                 else:
                     serverless_gpu_profile = {
-                        "workloadProfileType": self.get_argument_workload_profile_type(),
+                        "workloadProfileType": wp_type,
                         "name": self.get_argument_workload_profile_name() if self.get_argument_workload_profile_name() else "serverless-gpu",
                     }
                     workload_profiles.append(serverless_gpu_profile)

@@ -1093,19 +1093,18 @@ def _is_azml_app(model_registry, model_name, model_version):
 def _validate_azml_model_existence(cmd, model_registry, model_name, model_version):
     model_load_class = None
     # For now, we need to check model existence by performing GET request directly for azureml.
-    url = f"https://api.catalog.azureml.ms/asset-gallery/v1.0/{model_registry}/models/{model_name}/version/{model_version}"
-    res = requests.get(url)
+    res = requests.get(f"https://api.catalog.azureml.ms/asset-gallery/v1.0/{model_registry}/models/{model_name}/version/{model_version}")
     data = res.json()
     error_message = safe_get(data, 'error', 'message')
     if error_message is not None or res.status_code != 200:
         # In case for changes in the API, we need to check if a model is truly not found or if it is a different error.
-        logger.debug(f"Model {model_name} version {model_version} is not found in Azure ML registry {model_registry}. Status Code: {res.status_code}. Error message: {error_message}. Target: {url}")
+        logger.debug(f"Model {model_name} version {model_version} is not found in Azure ML registry {model_registry}. Status Code: {res.status_code}. Error message: {error_message}.")
         raise ValidationError(
             f"Model {model_name} version {model_version} is not found in Azure ML registry {model_registry} in registry {model_registry}."
         )
     model_asset_id = safe_get(data, "assetId")
     if model_asset_id is None or model_asset_id == "":
-        ValidationError("Failed to get model asset id for {model_name} version {model_version} in ")
+        raise ValidationError(f"Failed to get model asset id for {model_name} version {model_version} in registry {model_registry}.")
     # Get the data reference endpoint
     import urllib.parse
     encoded_asset_id = urllib.parse.quote_plus(model_asset_id)
@@ -1164,7 +1163,7 @@ def _validate_azml_args(cmd, default_mcr_img, image_name, model_registry, model_
                               "azureml:phi-3.5-mini-instruct",
                               "azureml:gpt2-medium",
                               "azureml:phi-4-mini-reasoning",
-                              "azureml:phi-4-reasoning"] + ["azureml:deepseek-r1-distill-llama-8b-generic-gpu"]
+                              "azureml:phi-4-reasoning"]
     if model_registry is None and model_name is None and model_version is None:
         return
     if model_registry is None:
@@ -1178,7 +1177,7 @@ def _validate_azml_args(cmd, default_mcr_img, image_name, model_registry, model_
     if model_version is None:
         raise RequiredArgumentMissingError(
             "You must specify --model-version when deploying Foundry Models through Azure Container Apps CLI."
-        )        
+        )
     elif image_name is None or image_name.lower() == default_mcr_img:
         logger.warning("Image name is set to default ACA Foundry Integration image or --image is not speficied. Will use default image.")
         image_name = default_mcr_img
@@ -1227,7 +1226,7 @@ def _validate_azml_env_and_create_if_needed(cmd, app, env, cli_input_environment
             wps = safe_get(env_detail, "properties", "workloadProfiles")
             for wp in wps:
                 if wp["name"].lower() == wp_name.lower() and "gpu" not in wp["workloadProfileType"].lower():
-                    raise ValidationError("Azure Machine Learning model requires a GPU workload profile. Your current app is not running with a GPU workload profile. Create a new app with correct workload profile or switch your current one to a GPU workload profile. Servleress GPU supported regions: https://learn.microsoft.com/en-us/azure/container-apps/gpu-serverless-overview#supported-regions")
+                    raise ValidationError("Azure AI Foundry model requires a GPU workload profile. Your current app is not running with a GPU workload profile. Create a new app with correct workload profile or switch your current one to a GPU workload profile. Servleress GPU supported regions: https://learn.microsoft.com/en-us/azure/container-apps/gpu-serverless-overview#supported-regions")
         env = ContainerAppEnvironment(cmd, env_name, resource_group, location=safe_get(env_detail, "location"))
         return env, None, None, None
     else:
@@ -1246,7 +1245,7 @@ def _validate_azml_env_and_create_if_needed(cmd, app, env, cli_input_environment
             dedicated_nc48_a100_wp_name = None
             dedicated_nc24_a100_wp_name = None
             if "gpu" not in wps or "GPU" not in wps:
-                ValidationError("Azure Machine Learning model requires a GPU workload profile. Your current environment does not have a GPU workload profile. SupServleress GPU supported regions: https://learn.microsoft.com/en-us/azure/container-apps/gpu-serverless-overview#supported-regions")
+                raise ValidationError("Azure AI Foundry model requires a GPU workload profile. Your current environment does not have a GPU workload profile. Servleress GPU supported regions: https://learn.microsoft.com/en-us/azure/container-apps/gpu-serverless-overview#supported-regions")
             for wp in wps:
                 if wp["workloadProfileType"].lower() == "consumption-gpu-nc24-a100":
                     serverless_a100_wp_name = wp["name"]
@@ -1270,12 +1269,12 @@ def _validate_azml_env_and_create_if_needed(cmd, app, env, cli_input_environment
                     memory = "220Gi"
             workload_profile_name = serverless_a100_wp_name or serverless_t4_wp_name or dedicated_nc96_a100_wp_name or dedicated_nc48_a100_wp_name or dedicated_nc24_a100_wp_name
             if workload_profile_name is None or workload_profile_name == "":
-                raise ValidationError("Azure Machine Learning model requires a GPU workload profile. Your current environment does not have a GPU workload profile. Servleress GPU supported regions: https://learn.microsoft.com/en-us/azure/container-apps/gpu-serverless-overview#supported-regions")
+                raise ValidationError("Azure AI Foundry model requires a GPU workload profile. Your current environment does not have a GPU workload profile. Servleress GPU supported regions: https://learn.microsoft.com/en-us/azure/container-apps/gpu-serverless-overview#supported-regions")
             logger.warning(f"No workload profile name specified. Attempting to use {workload_profile_name}, which is the most powerful one created in the environment.")
         else:
             for wp in wps:
                 if wp["name"].lower() == workload_profile_name.lower() and "gpu" not in wp["workloadProfileType"].lower():
-                    raise ValidationError(f"{workload_profile_name} is a {wp['workloadProfileType']} type workload profile. Azure Machine Learning model requires a GPU workload profile. Servleress GPU supported regions: https://learn.microsoft.com/en-us/azure/container-apps/gpu-serverless-overview#supported-regions")
+                    raise ValidationError(f"{workload_profile_name} is a {wp['workloadProfileType']} type workload profile. Azure AI Foundry model requires a GPU workload profile. Servleress GPU supported regions: https://learn.microsoft.com/en-us/azure/container-apps/gpu-serverless-overview#supported-regions")
         return env, workload_profile_name, cpu, memory
 
 

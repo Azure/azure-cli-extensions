@@ -809,7 +809,7 @@ def create_managed_environment_logic(cmd,
                                           infrastructure_resource_group=None, docker_bridge_cidr=None, platform_reserved_cidr=None, platform_reserved_dns_ip=None,
                                           internal_only=False, tags=None, disable_warnings=False, zone_redundant=False, hostname=None, certificate_file=None,
                                           certificate_password=None, certificate_identity=None, certificate_key_vault_url=None, enable_workload_profiles=True,
-                                          mtls_enabled=None, p2p_encryption_enabled=None, enable_dedicated_gpu=False, no_wait=False, logs_dynamic_json_columns=False, 
+                                          mtls_enabled=None, p2p_encryption_enabled=None, enable_dedicated_gpu=False, no_wait=False, logs_dynamic_json_columns=False,
                                           system_assigned=False, user_assigned=None, public_network_access=None)
     raw_parameters = locals()
     containerapp_env_create_decorator = ContainerappEnvPreviewCreateDecorator(
@@ -826,7 +826,6 @@ def create_managed_environment_logic(cmd,
     r = containerapp_env_create_decorator.post_process(r)
 
     return r
-    
 
 
 def update_managed_environment(cmd,
@@ -1325,7 +1324,7 @@ def containerapp_up(cmd,
     model_reference_endpoint = None
     if is_azureml_app:
         model_asset_id, model_reference_endpoint, model_type, model_load_class, image = _validate_azml_args(cmd, ACA_AZML_MCR, image, model_registry, model_name, model_version)
-        env_vars = _set_azml_env_vars(cmd, env_vars, model_asset_id, model_reference_endpoint, model_type, model_load_class, is_azml_mcr_app= True if image.lower() == ACA_AZML_MCR.lower() else False)
+        env_vars = _set_azml_env_vars(cmd, env_vars, model_asset_id, model_reference_endpoint, model_type, model_load_class, is_azml_mcr_app=True if image.lower() == ACA_AZML_MCR.lower() else False)
 
     _validate_up_args(cmd, source, artifact, build_env_vars, image, repo, registry_server)
     validate_create(registry_identity=registry_identity,
