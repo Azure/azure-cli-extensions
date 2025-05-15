@@ -58,6 +58,12 @@ Omit 'dependent' resources from the output. These are resources that by themselv
 az zones validate --omit-dependent-resources
 ```
 
+Validate all resources with specific tags. Resources that have ALL specified tags will be returned
+
+```bash
+az zones validate --tags env=prod,criticality=high
+```
+
 ## Important Notes
 
 - The extension still has missing resource types. These are shown as _Unknown_ in the results. It is essential that you validate zone redundancy of these resources yourself, since your whole application is only zone redundant is all resources are zone redundant. 

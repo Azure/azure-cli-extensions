@@ -11,9 +11,9 @@ from ._locationDataHelper import LocationDataHelper
 __logger = get_logger(__name__)
 
 
-def validate_zones(client, cmd, omit_dependent, resource_group_names):
+def validate_zones(client, cmd, omit_dependent, resource_group_names, tags):
     # Build the ARG query to retrieve resources
-    query = build_arg_query(resource_group_names, None)
+    query = build_arg_query(resource_group_names, tags)
     __logger.debug("Built ARG Query: %s", query)
 
     # Retrieve the list of resources to validate

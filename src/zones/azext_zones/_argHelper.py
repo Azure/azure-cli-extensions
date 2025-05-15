@@ -20,15 +20,36 @@ __MANAGEMENT_GROUP_LIMIT = 10
 __logger = get_logger(__name__)
 
 
-def build_arg_query(resource_groups, attributes):
+def build_arg_query(resource_groups, tags):
     # type: (list[str], list[str]) -> str
 
     query = "Resources"
     if resource_groups is not None and len(resource_groups) > 0:
+        # Replace spaces with commas in resource groups, in case someone passed a space-separated list
+        resource_groups = resource_groups.replace(' ', ',')
         query += " | where resourceGroup in ({0})".format(','.join(f"'{item}'" for item in resource_groups.split(',')))
 
-    if attributes is not None and len(attributes) > 0:
-        query += " | project {0}".format(', '.join(attributes))
+    if tags is not None:
+        # Replace spaces with commas in tags, in case someone passed a space-separated list
+        tags = tags.replace(' ', ',')
+        tagquery = []
+        for tag in tags.split(','):
+            tag = tag.strip()
+            if not tag:  # Skip empty tags
+                continue
+
+            if '=' in tag:
+                # Tag with a value (TagA=ValueA)
+                tag_name, tag_value = tag.split('=', 1)
+                # Escape single quotes in the value
+                tag_value = tag_value.replace("'", "''")
+                tagquery.append(f"tags['{tag_name}'] == '{tag_value}'")
+            else:
+                # Tag without a value. We don't support those.
+                pass
+
+        if tagquery:  # Only proceed if tagquery has items
+            query += " | where " + " and ".join(tagquery)
 
     return query
 
