@@ -868,7 +868,6 @@ class AzureFirewallPoliciesCreate(_AzureFirewallPoliciesCreate):
                      "/firewallPolicies/{}",
         )
         
-        args_schema.identity_type._registered = False
         args_schema.user_assigned_identities._registered = False
 
         return args_schema
@@ -888,7 +887,7 @@ class AzureFirewallPoliciesCreate(_AzureFirewallPoliciesCreate):
 class AzureFirewallPoliciesUpdate(_AzureFirewallPoliciesUpdate):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
-        from azure.cli.core.aaz import AAZListArg, AAZResourceIdArg, AAZResourceIdArgFormat
+        from azure.cli.core.aaz import AAZListArg, AAZResourceIdArg, AAZResourceIdArgFormat, AAZStrArg
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         args_schema.identity = AAZListArg(
             options=['--identity'],
@@ -899,7 +898,10 @@ class AzureFirewallPoliciesUpdate(_AzureFirewallPoliciesUpdate):
                 template="/subscriptions/{subscription}/resourceGroups/{resource_group}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{}",
             )
         )
-        args_schema.identity_type._registered = False
+        args_schema.identity_type = AAZStrArg(
+            options=['--identity-type'],
+            help="The type of identity used for the firewall policy.Set None to remove the identity."
+        )
         args_schema.user_assigned_identities._registered = False
         args_schema.configuration._registered = False
 
@@ -911,7 +913,10 @@ class AzureFirewallPoliciesUpdate(_AzureFirewallPoliciesUpdate):
             identities = [id.to_serialized_data() for id in args.identity]
             args.identity_type = "UserAssigned"
             args.user_assigned_identities = {id: {} for id in identities}
-        elif args.sku == 'Premium':
+        elif(has_value(args.identity_type == 'None')):
+            args.identity_type = "None"
+            args.user_assigned_identities = None
+        elif args.sku == 'Basic':
             args.identity_type = "None"
             args.user_assigned_identities = None
 

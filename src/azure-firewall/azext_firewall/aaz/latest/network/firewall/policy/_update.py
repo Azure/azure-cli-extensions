@@ -153,13 +153,6 @@ class Update(AAZCommand):
         # define Arg Group "Identity Instance"
 
         _args_schema = cls._args_schema
-        _args_schema.identity_type = AAZStrArg(
-            options=["--identity-type"],
-            arg_group="Identity Instance",
-            help="The type of identity used for the resource. The type 'SystemAssigned, UserAssigned' includes both an implicitly created identity and a set of user assigned identities. The type 'None' will remove any identities from the virtual machine.",
-            nullable=True,
-            enum={"None": "None", "SystemAssigned": "SystemAssigned", "SystemAssigned, UserAssigned": "SystemAssigned, UserAssigned", "UserAssigned": "UserAssigned"},
-        )
         _args_schema.user_assigned_identities = AAZDictArg(
             options=["--user-assigned-identities"],
             arg_group="Identity Instance",
@@ -648,12 +641,16 @@ class Update(AAZCommand):
 
             identity = _builder.get(".identity")
             if identity is not None:
-                identity.set_prop("type", AAZStrType, ".identity_type")
-                identity.set_prop("userAssignedIdentities", AAZDictType, ".user_assigned_identities")
+                identity_type = _builder.get(".identity.type")
+                if identity_type == "None":
+                    identity.set_prop("type", AAZStrType, ".identity_type")
+                else:    
+                    identity.set_prop("type", AAZStrType, ".identity_type")
+                    identity.set_prop("userAssignedIdentities", AAZDictType, ".user_assigned_identities")
 
-            user_assigned_identities = _builder.get(".identity.userAssignedIdentities")
-            if user_assigned_identities is not None:
-                user_assigned_identities.set_elements(AAZObjectType, ".")
+                    user_assigned_identities = _builder.get(".identity.userAssignedIdentities")
+                    if user_assigned_identities is not None:
+                        user_assigned_identities.set_elements(AAZObjectType, ".")
 
             properties = _builder.get(".properties")
             if properties is not None:
