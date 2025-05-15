@@ -750,21 +750,41 @@ def create_managed_environment(cmd,
                                system_assigned=False,
                                user_assigned=None,
                                public_network_access=None):
-    raw_parameters = locals()
-    containerapp_env_create_decorator = ContainerappEnvPreviewCreateDecorator(
+    return create_managed_environment_logic(
         cmd=cmd,
-        client=ManagedEnvironmentPreviewClient,
-        raw_parameters=raw_parameters,
-        models=CONTAINER_APPS_SDK_MODELS
+        name=name,
+        resource_group_name=resource_group_name,
+        logs_destination=logs_destination,
+        storage_account=storage_account,
+        logs_customer_id=logs_customer_id,
+        logs_key=logs_key,
+        location=location,
+        instrumentation_key=instrumentation_key,
+        dapr_connection_string=dapr_connection_string,
+        infrastructure_subnet_resource_id=infrastructure_subnet_resource_id,
+        infrastructure_resource_group=infrastructure_resource_group,
+        docker_bridge_cidr=docker_bridge_cidr,
+        platform_reserved_cidr=platform_reserved_cidr,
+        platform_reserved_dns_ip=platform_reserved_dns_ip,
+        internal_only=internal_only,
+        tags=tags,
+        disable_warnings=disable_warnings,
+        zone_redundant=zone_redundant,
+        hostname=hostname,
+        certificate_file=certificate_file,
+        certificate_password=certificate_password,
+        certificate_identity=certificate_identity,
+        certificate_key_vault_url=certificate_key_vault_url,
+        enable_workload_profiles=enable_workload_profiles,
+        mtls_enabled=mtls_enabled,
+        p2p_encryption_enabled=p2p_encryption_enabled,
+        enable_dedicated_gpu=enable_dedicated_gpu,
+        no_wait=no_wait,
+        logs_dynamic_json_columns=logs_dynamic_json_columns,
+        system_assigned=system_assigned,
+        user_assigned=user_assigned,
+        public_network_access=public_network_access
     )
-    containerapp_env_create_decorator.validate_arguments()
-    containerapp_env_create_decorator.register_provider(CONTAINER_APPS_RP)
-
-    containerapp_env_create_decorator.construct_payload()
-    r = containerapp_env_create_decorator.create()
-    r = containerapp_env_create_decorator.post_process(r)
-
-    return r
 
 
 def create_managed_environment_logic(cmd,
@@ -803,14 +823,6 @@ def create_managed_environment_logic(cmd,
                                      workload_profile_type=None,
                                      workload_profile_name=None,
                                      is_env_for_azml_app=False):
-    if not is_env_for_azml_app:
-        return create_managed_environment(cmd, name, resource_group_name, logs_destination="log-analytics", storage_account=None, logs_customer_id=None, logs_key=None,
-                                          location=None, instrumentation_key=None, dapr_connection_string=None, infrastructure_subnet_resource_id=None,
-                                          infrastructure_resource_group=None, docker_bridge_cidr=None, platform_reserved_cidr=None, platform_reserved_dns_ip=None,
-                                          internal_only=False, tags=None, disable_warnings=False, zone_redundant=False, hostname=None, certificate_file=None,
-                                          certificate_password=None, certificate_identity=None, certificate_key_vault_url=None, enable_workload_profiles=True,
-                                          mtls_enabled=None, p2p_encryption_enabled=None, enable_dedicated_gpu=False, no_wait=False, logs_dynamic_json_columns=False,
-                                          system_assigned=False, user_assigned=None, public_network_access=None)
     raw_parameters = locals()
     containerapp_env_create_decorator = ContainerappEnvPreviewCreateDecorator(
         cmd=cmd,
