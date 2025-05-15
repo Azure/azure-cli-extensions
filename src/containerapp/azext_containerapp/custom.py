@@ -1336,7 +1336,7 @@ def containerapp_up(cmd,
     model_reference_endpoint = None
     if is_azureml_app:
         model_asset_id, model_reference_endpoint, model_type, model_load_class, image = _validate_azml_args(cmd, ACA_AZML_MCR, image, model_registry, model_name, model_version)
-        env_vars = _set_azml_env_vars(cmd, env_vars, model_asset_id, model_reference_endpoint, model_type, model_load_class, is_azml_mcr_app=True if image.lower() == ACA_AZML_MCR.lower() else False)
+        env_vars = _set_azml_env_vars(cmd, env_vars, model_asset_id, model_reference_endpoint, model_type, model_load_class, is_azml_mcr_app=image.lower() == ACA_AZML_MCR.lower())
 
     _validate_up_args(cmd, source, artifact, build_env_vars, image, repo, registry_server)
     validate_create(registry_identity=registry_identity,

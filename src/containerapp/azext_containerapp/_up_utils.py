@@ -1178,7 +1178,7 @@ def _validate_azml_args(cmd, default_mcr_img, image_name, model_registry, model_
         raise RequiredArgumentMissingError(
             "You must specify --model-version when deploying Foundry Models through Azure Container Apps CLI."
         )
-    elif image_name is None or image_name.lower() == default_mcr_img:
+    if image_name is None or image_name.lower() == default_mcr_img:
         logger.warning("Image name is set to default ACA Foundry Integration image or --image is not speficied. Will use default image.")
         image_name = default_mcr_img
         # Check if model is a blessed one.
@@ -1221,13 +1221,15 @@ def _validate_azml_env_and_create_if_needed(cmd, app, env, cli_input_environment
         wp_name = app.get()["properties"]["workloadProfileName"]
         env_name = app.get()["properties"]["environmentId"].split("/")[-1]
         env_rg_name = parse_resource_id(app.get()["properties"]["environmentId"])["resource_group"]
+        if cli_input_environment_name and cli_input_environment_name.lower() != env_name.lower():
+            raise ValidationError(f"{app.name} in resource group {app.resource_group.name} found under {env_name}, which is different from the one specified in --environment-name {cli_input_environment_name}. Please specify the correct environment.")
         if wp_name is not None:
             env_detail = show_managed_environment(cmd, env_name, env_rg_name)
             wps = safe_get(env_detail, "properties", "workloadProfiles")
             for wp in wps:
                 if wp["name"].lower() == wp_name.lower() and "gpu" not in wp["workloadProfileType"].lower():
                     raise ValidationError("Azure AI Foundry model requires a GPU workload profile. Your current app is not running with a GPU workload profile. Create a new app with correct workload profile or switch your current one to a GPU workload profile. Servleress GPU supported regions: https://learn.microsoft.com/en-us/azure/container-apps/gpu-serverless-overview#supported-regions")
-        env = ContainerAppEnvironment(cmd, env_name, resource_group, location=safe_get(env_detail, "location"))
+                env = ContainerAppEnvironment(cmd, env_name, resource_group, location=safe_get(env_detail, "location"))
         return env, None, None, None
     else:
         if not env.check_exists():
