@@ -15,10 +15,7 @@ from azure.cli.core.aaz import *
     "informatica data-management organization list",
 )
 class List(AAZCommand):
-    """List InformaticaOrganizationResource resources by subscription ID
-
-    :example: List organizations by subscription
-        az informatica data-management organization list --subscription ae37d5a8-dff3-49a3-bfcd-139a4f7db98x
+    """List all Informatica organization resources under the current subscription.
     """
 
     _aaz_info = {
@@ -46,19 +43,17 @@ class List(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="Resource group name",
-        )
+        _args_schema.resource_group = AAZResourceGroupNameArg()
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        condition_0 = has_value(self.ctx.args.resource_group) and has_value(self.ctx.subscription_id)
-        condition_1 = has_value(self.ctx.subscription_id) and has_value(self.ctx.args.resource_group) is not True
+        condition_0 = has_value(self.ctx.subscription_id) and has_value(self.ctx.args.resource_group) is not True
+        condition_1 = has_value(self.ctx.args.resource_group) and has_value(self.ctx.subscription_id)
         if condition_0:
-            self.OrganizationsListByResourceGroup(ctx=self.ctx)()
-        if condition_1:
             self.OrganizationsListBySubscription(ctx=self.ctx)()
+        if condition_1:
+            self.OrganizationsListByResourceGroup(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -74,7 +69,7 @@ class List(AAZCommand):
         next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
         return result, next_link
 
-    class OrganizationsListByResourceGroup(AAZHttpOperation):
+    class OrganizationsListBySubscription(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -88,7 +83,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Informatica.DataManagement/organizations",
+                "/subscriptions/{subscriptionId}/providers/Informatica.DataManagement/organizations",
                 **self.url_parameters
             )
 
@@ -103,10 +98,6 @@ class List(AAZCommand):
         @property
         def url_parameters(self):
             parameters = {
-                **self.serialize_url_param(
-                    "resourceGroupName", self.ctx.args.resource_group,
-                    required=True,
-                ),
                 **self.serialize_url_param(
                     "subscriptionId", self.ctx.subscription_id,
                     required=True,
@@ -309,7 +300,7 @@ class List(AAZCommand):
 
             return cls._schema_on_200
 
-    class OrganizationsListBySubscription(AAZHttpOperation):
+    class OrganizationsListByResourceGroup(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -323,7 +314,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/providers/Informatica.DataManagement/organizations",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Informatica.DataManagement/organizations",
                 **self.url_parameters
             )
 
@@ -338,6 +329,10 @@ class List(AAZCommand):
         @property
         def url_parameters(self):
             parameters = {
+                **self.serialize_url_param(
+                    "resourceGroupName", self.ctx.args.resource_group,
+                    required=True,
+                ),
                 **self.serialize_url_param(
                     "subscriptionId", self.ctx.subscription_id,
                     required=True,
