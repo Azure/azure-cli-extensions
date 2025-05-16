@@ -18,19 +18,19 @@ class GetEmissionReport(AAZCommand):
     """API for Carbon Emissions Reports
 
     :example: QueryCarbonEmission Overall Summary Report
-        az carbon get-emission-report --subscription-list "[00000000-0000-0000-0000-000000000000]" --carbon-scope-list "[Scope1,Scope2,Scope3]" --date-range "{start:2024-03-01,end:2025-03-01}" --overall-summary-report
+        az carbon get-emission-report --subscription-list "[00000000-0000-0000-0000-000000000000]" --carbon-scope-list "[Scope1,Scope2,Scope3]" --date-range "{start:2024-03-01,end:2025-03-01}" --overall-summary
 
     :example: QueryCarbonEmission Monthly Summary Report
-        az carbon get-emission-report --subscription-list "[00000000-0000-0000-0000-000000000000]" --carbon-scope-list "[Scope1,Scope2,Scope3]" --date-range "{start:2024-03-01,end:2025-03-01}" --monthly-summary-report
+        az carbon get-emission-report --subscription-list "[00000000-0000-0000-0000-000000000000]" --carbon-scope-list "[Scope1,Scope2,Scope3]" --date-range "{start:2024-03-01,end:2025-03-01}" --monthly-summary
 
     :example: QueryCarbonEmission Item Details Report
-        az carbon get-emission-report --subscription-list "[00000000-0000-0000-0000-000000000000,00000000-0000-0000-0000-000000000001]" --carbon-scope-list "[Scope1,Scope2,Scope3]" --date-range "{start:2025-03-01,end:2025-03-01}" --item-details-report "{category-type:ResourceType,order-by:itemName,page-size:10,sort-direction:asc}"
+        az carbon get-emission-report --subscription-list "[00000000-0000-0000-0000-000000000000,00000000-0000-0000-0000-000000000001]" --carbon-scope-list "[Scope1,Scope2,Scope3]" --date-range "{start:2025-03-01,end:2025-03-01}" --item-details "{category-type:ResourceType,order-by:itemName,page-size:10,sort-direction:asc}"
 
     :example: QueryCarbonEmission Top Items Summary Report
-        az carbon get-emission-report --subscription-list "[00000000-0000-0000-0000-000000000000,00000000-0000-0000-0000-000000000001]" --carbon-scope-list "[Scope1,Scope2,Scope3]" --date-range "{start:2025-03-01,end:2025-03-01}" --top-items-summary-report "{category-type:ResourceType,top-items:5}"
+        az carbon get-emission-report --subscription-list "[00000000-0000-0000-0000-000000000000,00000000-0000-0000-0000-000000000001]" --carbon-scope-list "[Scope1,Scope2,Scope3]" --date-range "{start:2025-03-01,end:2025-03-01}" --top-items-summary "{category-type:ResourceType,top-items:5}"
 
     :example: QueryCarbonEmission Top Items Monthly Summary Report
-        az carbon get-emission-report --subscription-list "[00000000-0000-0000-0000-000000000000]" --carbon-scope-list "[Scope1,Scope2,Scope3]" --date-range "{start:2024-03-01,end:2025-03-01}" --top-items-monthly-summary-report "{category-type:ResourceType,top-items:5}
+        az carbon get-emission-report --subscription-list "[00000000-0000-0000-0000-000000000000]" --carbon-scope-list "[Scope1,Scope2,Scope3]" --date-range "{start:2024-03-01,end:2025-03-01}" --top-items-monthly "{category-type:ResourceType,top-items:5}
     """
 
     _aaz_info = {
@@ -56,27 +56,32 @@ class GetEmissionReport(AAZCommand):
         # define Arg Group "QueryParameters"
 
         _args_schema = cls._args_schema
-        _args_schema.item_details_report = AAZObjectArg(
-            options=["--item-details-report"],
+        _args_schema.item_details = AAZObjectArg(
+            options=["--item-details"],
             arg_group="QueryParameters",
+            help="Use this option to get the Item Details Report",
         )
-        _args_schema.monthly_summary_report = AAZObjectArg(
-            options=["--monthly-summary-report"],
+        _args_schema.monthly_summary = AAZObjectArg(
+            options=["--monthly-summary"],
             arg_group="QueryParameters",
+            help="Use this option to get Monthly summary report",
             blank={},
         )
-        _args_schema.overall_summary_report = AAZObjectArg(
-            options=["--overall-summary-report"],
+        _args_schema.overall_summary = AAZObjectArg(
+            options=["--overall-summary"],
             arg_group="QueryParameters",
+            help="Use this option to get overall summary report",
             blank={},
         )
-        _args_schema.top_items_monthly_summary_report = AAZObjectArg(
-            options=["--top-items-monthly-summary-report"],
+        _args_schema.top_items_monthly = AAZObjectArg(
+            options=["--top-items-monthly"],
             arg_group="QueryParameters",
+            help="Use this option to get the Top Items Monthly Summary Report",
         )
-        _args_schema.top_items_summary_report = AAZObjectArg(
-            options=["--top-items-summary-report"],
+        _args_schema.top_items_summary = AAZObjectArg(
+            options=["--top-items-summary"],
             arg_group="QueryParameters",
+            help="Use this option to get Top Items Summary Report",
         )
         _args_schema.carbon_scope_list = AAZListArg(
             options=["--carbon-scope-list"],
@@ -95,8 +100,8 @@ class GetEmissionReport(AAZCommand):
             arg_group="QueryParameters",
             help="List of locations(Azure Region Display Name) for carbon emissions data, with each location specified in lowercase (e.g., 'east us'). Optional. You can use the command 'az account list-locations -o table' to find Azure Region Display Names.",
         )
-        _args_schema.resource_group_url_list = AAZListArg(
-            options=["--resource-group-url-list"],
+        _args_schema.resource_group_urls = AAZListArg(
+            options=["--resource-group-urls"],
             arg_group="QueryParameters",
             help="List of resource group URLs for carbon emissions data. Optional. Each URL must follow the format '/subscriptions/{subscriptionId}/resourcegroups/{resourceGroup}', and should be in all lowercase.",
         )
@@ -112,20 +117,20 @@ class GetEmissionReport(AAZCommand):
             required=True,
         )
 
-        item_details_report = cls._args_schema.item_details_report
-        item_details_report.category_type = AAZStrArg(
+        item_details = cls._args_schema.item_details
+        item_details.category_type = AAZStrArg(
             options=["category-type"],
-            help="Specifies the category type for detailed emissions data, such as Resource, ResourceGroup, ResourceType, Location, or Subscription. See supported types in CategoryTypeEnum.",
+            help="Specifies the category type for detailed emissions data, such as Resource, ResourceGroup, ResourceType, Location, or Subscription.",
             required=True,
             enum={"Location": "Location", "Resource": "Resource", "ResourceGroup": "ResourceGroup", "ResourceType": "ResourceType", "Subscription": "Subscription"},
         )
-        item_details_report.order_by = AAZStrArg(
+        item_details.order_by = AAZStrArg(
             options=["order-by"],
-            help="The column name to order the results by. See supported values in OrderByColumnEnum.",
+            help="The column name to order the results by. Supported values: ItemName, LatestMonthEmissions, MonthOverMonthEmissionsChangeRatio, MonthlyEmissionsChangeValue, PreviousMonthEmissions, ResourceGroup.",
             required=True,
             enum={"ItemName": "ItemName", "LatestMonthEmissions": "LatestMonthEmissions", "MonthOverMonthEmissionsChangeRatio": "MonthOverMonthEmissionsChangeRatio", "MonthlyEmissionsChangeValue": "MonthlyEmissionsChangeValue", "PreviousMonthEmissions": "PreviousMonthEmissions", "ResourceGroup": "ResourceGroup"},
         )
-        item_details_report.page_size = AAZIntArg(
+        item_details.page_size = AAZIntArg(
             options=["page-size"],
             help="Number of items to return in one request, max value is 5000.",
             required=True,
@@ -134,25 +139,25 @@ class GetEmissionReport(AAZCommand):
                 minimum=1,
             ),
         )
-        item_details_report.skip_token = AAZStrArg(
+        item_details.skip_token = AAZStrArg(
             options=["skip-token"],
             help="Pagination token for fetching the next page of data. This token is nullable and will be returned in the previous response if additional data pages are available.",
         )
-        item_details_report.sort_direction = AAZStrArg(
+        item_details.sort_direction = AAZStrArg(
             options=["sort-direction"],
-            help="Direction for sorting results. See supported values in SortDirectionEnum.",
+            help="Direction for sorting results. Supported Values: Asc, Desc.",
             required=True,
             enum={"Asc": "Asc", "Desc": "Desc"},
         )
 
-        top_items_monthly_summary_report = cls._args_schema.top_items_monthly_summary_report
-        top_items_monthly_summary_report.category_type = AAZStrArg(
+        top_items_monthly = cls._args_schema.top_items_monthly
+        top_items_monthly.category_type = AAZStrArg(
             options=["category-type"],
-            help="Specifies the category type to retrieve top-emitting items, aggregated by month. See supported types in CategoryTypeEnum.",
+            help="Specifies the category type to retrieve top-emitting items, aggregated by month. Supported types: Location, Resource, ResourceGroup, ResourceType, Subscription.",
             required=True,
             enum={"Location": "Location", "Resource": "Resource", "ResourceGroup": "ResourceGroup", "ResourceType": "ResourceType", "Subscription": "Subscription"},
         )
-        top_items_monthly_summary_report.top_items = AAZIntArg(
+        top_items_monthly.top_items = AAZIntArg(
             options=["top-items"],
             help="The number of top items to return, based on emissions. Must be between 1 and 10.",
             required=True,
@@ -162,14 +167,14 @@ class GetEmissionReport(AAZCommand):
             ),
         )
 
-        top_items_summary_report = cls._args_schema.top_items_summary_report
-        top_items_summary_report.category_type = AAZStrArg(
+        top_items_summary = cls._args_schema.top_items_summary
+        top_items_summary.category_type = AAZStrArg(
             options=["category-type"],
-            help="Specifies the category type for which to retrieve top-emitting items. See supported values defined in CategoryTypeEnum.",
+            help="Specifies the category type for which to retrieve top-emitting items. Supported types: Location, Resource, ResourceGroup, ResourceType, Subscription.",
             required=True,
             enum={"Location": "Location", "Resource": "Resource", "ResourceGroup": "ResourceGroup", "ResourceType": "ResourceType", "Subscription": "Subscription"},
         )
-        top_items_summary_report.top_items = AAZIntArg(
+        top_items_summary.top_items = AAZIntArg(
             options=["top-items"],
             help="The number of top items to return, based on emissions. This value must be between 1 and 10.",
             required=True,
@@ -199,8 +204,8 @@ class GetEmissionReport(AAZCommand):
         location_list = cls._args_schema.location_list
         location_list.Element = AAZStrArg()
 
-        resource_group_url_list = cls._args_schema.resource_group_url_list
-        resource_group_url_list.Element = AAZStrArg()
+        resource_group_urls = cls._args_schema.resource_group_urls
+        resource_group_urls.Element = AAZStrArg()
 
         resource_type_list = cls._args_schema.resource_type_list
         resource_type_list.Element = AAZStrArg()
@@ -284,12 +289,12 @@ class GetEmissionReport(AAZCommand):
             _builder.set_prop("carbonScopeList", AAZListType, ".carbon_scope_list", typ_kwargs={"flags": {"required": True}})
             _builder.set_prop("dateRange", AAZObjectType, ".date_range", typ_kwargs={"flags": {"required": True}})
             _builder.set_prop("locationList", AAZListType, ".location_list")
-            _builder.set_const("reportType", "ItemDetailsReport", AAZStrType, ".item_details_report", typ_kwargs={"flags": {"required": True}})
-            _builder.set_const("reportType", "MonthlySummaryReport", AAZStrType, ".monthly_summary_report", typ_kwargs={"flags": {"required": True}})
-            _builder.set_const("reportType", "OverallSummaryReport", AAZStrType, ".overall_summary_report", typ_kwargs={"flags": {"required": True}})
-            _builder.set_const("reportType", "TopItemsMonthlySummaryReport", AAZStrType, ".top_items_monthly_summary_report", typ_kwargs={"flags": {"required": True}})
-            _builder.set_const("reportType", "TopItemsSummaryReport", AAZStrType, ".top_items_summary_report", typ_kwargs={"flags": {"required": True}})
-            _builder.set_prop("resourceGroupUrlList", AAZListType, ".resource_group_url_list")
+            _builder.set_const("reportType", "ItemDetailsReport", AAZStrType, ".item_details", typ_kwargs={"flags": {"required": True}})
+            _builder.set_const("reportType", "MonthlySummaryReport", AAZStrType, ".monthly_summary", typ_kwargs={"flags": {"required": True}})
+            _builder.set_const("reportType", "OverallSummaryReport", AAZStrType, ".overall_summary", typ_kwargs={"flags": {"required": True}})
+            _builder.set_const("reportType", "TopItemsMonthlySummaryReport", AAZStrType, ".top_items_monthly", typ_kwargs={"flags": {"required": True}})
+            _builder.set_const("reportType", "TopItemsSummaryReport", AAZStrType, ".top_items_summary", typ_kwargs={"flags": {"required": True}})
+            _builder.set_prop("resourceGroupUrlList", AAZListType, ".resource_group_urls")
             _builder.set_prop("resourceTypeList", AAZListType, ".resource_type_list")
             _builder.set_prop("subscriptionList", AAZListType, ".subscription_list", typ_kwargs={"flags": {"required": True}})
             _builder.discriminate_by("reportType", "ItemDetailsReport")
@@ -325,21 +330,21 @@ class GetEmissionReport(AAZCommand):
 
             disc_item_details_report = _builder.get("{reportType:ItemDetailsReport}")
             if disc_item_details_report is not None:
-                disc_item_details_report.set_prop("categoryType", AAZStrType, ".item_details_report.category_type", typ_kwargs={"flags": {"required": True}})
-                disc_item_details_report.set_prop("orderBy", AAZStrType, ".item_details_report.order_by", typ_kwargs={"flags": {"required": True}})
-                disc_item_details_report.set_prop("pageSize", AAZIntType, ".item_details_report.page_size", typ_kwargs={"flags": {"required": True}})
-                disc_item_details_report.set_prop("skipToken", AAZStrType, ".item_details_report.skip_token")
-                disc_item_details_report.set_prop("sortDirection", AAZStrType, ".item_details_report.sort_direction", typ_kwargs={"flags": {"required": True}})
+                disc_item_details_report.set_prop("categoryType", AAZStrType, ".item_details.category_type", typ_kwargs={"flags": {"required": True}})
+                disc_item_details_report.set_prop("orderBy", AAZStrType, ".item_details.order_by", typ_kwargs={"flags": {"required": True}})
+                disc_item_details_report.set_prop("pageSize", AAZIntType, ".item_details.page_size", typ_kwargs={"flags": {"required": True}})
+                disc_item_details_report.set_prop("skipToken", AAZStrType, ".item_details.skip_token")
+                disc_item_details_report.set_prop("sortDirection", AAZStrType, ".item_details.sort_direction", typ_kwargs={"flags": {"required": True}})
 
             disc_top_items_monthly_summary_report = _builder.get("{reportType:TopItemsMonthlySummaryReport}")
             if disc_top_items_monthly_summary_report is not None:
-                disc_top_items_monthly_summary_report.set_prop("categoryType", AAZStrType, ".top_items_monthly_summary_report.category_type", typ_kwargs={"flags": {"required": True}})
-                disc_top_items_monthly_summary_report.set_prop("topItems", AAZIntType, ".top_items_monthly_summary_report.top_items", typ_kwargs={"flags": {"required": True}})
+                disc_top_items_monthly_summary_report.set_prop("categoryType", AAZStrType, ".top_items_monthly.category_type", typ_kwargs={"flags": {"required": True}})
+                disc_top_items_monthly_summary_report.set_prop("topItems", AAZIntType, ".top_items_monthly.top_items", typ_kwargs={"flags": {"required": True}})
 
             disc_top_items_summary_report = _builder.get("{reportType:TopItemsSummaryReport}")
             if disc_top_items_summary_report is not None:
-                disc_top_items_summary_report.set_prop("categoryType", AAZStrType, ".top_items_summary_report.category_type", typ_kwargs={"flags": {"required": True}})
-                disc_top_items_summary_report.set_prop("topItems", AAZIntType, ".top_items_summary_report.top_items", typ_kwargs={"flags": {"required": True}})
+                disc_top_items_summary_report.set_prop("categoryType", AAZStrType, ".top_items_summary.category_type", typ_kwargs={"flags": {"required": True}})
+                disc_top_items_summary_report.set_prop("topItems", AAZIntType, ".top_items_summary.top_items", typ_kwargs={"flags": {"required": True}})
 
             return self.serialize_content(_content_value)
 
