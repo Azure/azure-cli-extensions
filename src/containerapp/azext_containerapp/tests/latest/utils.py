@@ -97,7 +97,7 @@ def create_and_verify_containerapp_up(
            test_cls.cmd(env_create_cmd)
 
         if is_azml_app:
-            create_t4_wps_cmd = f'containerapp env workload-profile add -g {resource_group} -n {env_name} --workload-profile-name serverless-t4'
+            create_t4_wps_cmd = f'containerapp env workload-profile add -g {resource_group} -n {env_name} --workload-profile-name serverless-t4 --workload-profile-type Consumption-GPU-NC8as-T4'
             test_cls.cmd(create_t4_wps_cmd)
         if app_name is None:
             # Generate a name for the Container App
