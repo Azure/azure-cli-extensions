@@ -1,0 +1,70 @@
+interactions:
+- request:
+    body: '{"carbonScopeList": ["Scope1", "Scope2", "Scope3"], "dateRange": {"end":
+      "2025-03-01", "start": "2025-03-01"}, "reportType": "ItemDetailsReport", "subscriptionList":
+      ["1fcfa925-ad8b-443e-afc9-73038125cc86"], "categoryType": "ResourceType", "orderBy":
+      "ItemName", "pageSize": 10, "sortDirection": "Asc"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - carbon get-emission-report
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '302'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --subscription-list --date-range --carbon-scope-list --item-details
+      User-Agent:
+      - AZURECLI/2.72.0 azsdk-python-core/1.31.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
+    method: POST
+    uri: https://management.azure.com/providers/Microsoft.Carbon/carbonEmissionReports?api-version=2025-04-01
+  response:
+    body:
+      string: '{"value":[{"dataType":"ItemDetailsData","itemName":"microsoft.containerregistry/registries","categoryType":"ResourceType","latestMonthEmissions":1.50206143294108,"previousMonthEmissions":1.52462765378198,"monthOverMonthEmissionsChangeRatio":-0.014801135729708,"monthlyEmissionsChangeValue":-0.0225662208408932},{"dataType":"ItemDetailsData","itemName":"microsoft.datafactory/factories","categoryType":"ResourceType","latestMonthEmissions":0.433054330507948,"previousMonthEmissions":0.395825830265059,"monthOverMonthEmissionsChangeRatio":0.094052730762818,"monthlyEmissionsChangeValue":0.0372285002428885},{"dataType":"ItemDetailsData","itemName":"microsoft.documentdb/databaseaccounts","categoryType":"ResourceType","latestMonthEmissions":0.617627790980332,"previousMonthEmissions":0.312656400085628,"monthOverMonthEmissionsChangeRatio":0.975420272257918,"monthlyEmissionsChangeValue":0.304971390894704},{"dataType":"ItemDetailsData","itemName":"microsoft.fabric/capacities","categoryType":"ResourceType","latestMonthEmissions":170.364957551656,"previousMonthEmissions":199.860710018915,"monthOverMonthEmissionsChangeRatio":-0.147581545489696,"monthlyEmissionsChangeValue":-29.4957524672594},{"dataType":"ItemDetailsData","itemName":"microsoft.insights/metricalerts","categoryType":"ResourceType","latestMonthEmissions":0.00735755843400025,"previousMonthEmissions":0.00799046378279079,"monthOverMonthEmissionsChangeRatio":-0.0792075861921354,"monthlyEmissionsChangeValue":-0.000632905348790538},{"dataType":"ItemDetailsData","itemName":"microsoft.keyvault/vaults","categoryType":"ResourceType","latestMonthEmissions":1.18764225807615E-05,"previousMonthEmissions":1.176433430563E-05,"monthOverMonthEmissionsChangeRatio":0.00952780431255802,"monthlyEmissionsChangeValue":1.12088275131555E-07},{"dataType":"ItemDetailsData","itemName":"microsoft.kusto/clusters","categoryType":"ResourceType","latestMonthEmissions":11.0909111385652,"previousMonthEmissions":9.4563412289584,"monthOverMonthEmissionsChangeRatio":0.172854370419842,"monthlyEmissionsChangeValue":1.6345699096068},{"dataType":"ItemDetailsData","itemName":"microsoft.machinelearningservices/workspaces","categoryType":"ResourceType","latestMonthEmissions":0.410518430986091,"previousMonthEmissions":0.417345396860212,"monthOverMonthEmissionsChangeRatio":-0.0163580715768793,"monthlyEmissionsChangeValue":-0.00682696587412046},{"dataType":"ItemDetailsData","itemName":"microsoft.security/pricings","categoryType":"ResourceType","latestMonthEmissions":0.039136391334007,"previousMonthEmissions":0.0253798754796085,"monthOverMonthEmissionsChangeRatio":0.542024560579551,"monthlyEmissionsChangeValue":0.0137565158543985},{"dataType":"ItemDetailsData","itemName":"microsoft.sql/servers","categoryType":"ResourceType","latestMonthEmissions":0.305319480269275,"previousMonthEmissions":0.310639576976187,"monthOverMonthEmissionsChangeRatio":-0.01712626819383,"monthlyEmissionsChangeValue":-0.00532009670691208}],"skipToken":"XDhRAFfI84/NMgjjzrqR/XWTt35vREMtrsHqDkPBTLktjoDPcyBZlpcjK3HYmB27gtLOsg+3rLb+zzgWblf0zmkdFyHigaegLtGH/s+LHvKO6JX5nmLPqIK4aIqQUNIvfPBwJyOeXfmFp2uS8a+AMRQsUh7l4GZYhDFsOerUDyRzjYNt5UzEvE08KnA+spttigcVF1j/zJ/JxgQGkaiREm9W6KixCINI2DJjrxNH01Utos2kgJDMh8xx0bFwAPkWsOCMPc54ckSxI5/kn3H65pjYrwub9jIrWFpNxyOBmIslxO9QzJDQcalr2KQD5omfTGXOxvCZiba2xyOQGuh/Bw==|h0SVChyWSnED6uyUfDmx0B+SFwbEPiBxXxPqwM0fDzpmvzANz8PZ/V71nsD88QzqMGPcO5ubxia0fcf67JyXq40ViF/5xHGnQJiQPOIJv/Kf3irpz6gZhjGQ82Rw29t9qRj4QvbvYM04A2n4sM4pZ35nQDrlPShjAszOQAEujUCfCtVLBlI3oQeFE0j4ZKizT2Ary+bSJDwmURLDH5p8EVH12349Iux9ca5f34X4d4sbUOl9G+yIqzxiCSN4j5bzbc1yMmgkSJogWjWhyFnpIPQMsf3Q3vRzG++h/XZKsbEpNVWiXuWx1muqQ87s1wsqTeWLXcyZsELd6P1pFlD/Vw=="}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '3665'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 16 May 2025 18:29:52 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 21cdce68-0e24-4543-982b-9a961deee0dd
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:1b30ee95-d108-4b28-8df6-b780a66c5364
+      set-cookie:
+      - ARRAffinity=92cff1672181f3de1ff12b696639b5c8fe7f87b1484ca72975ce446af3251683;Path=/;HttpOnly;Secure;Domain=sustcarbon-webapp-prod-wus.azurewebsites.net
+      - ARRAffinitySameSite=92cff1672181f3de1ff12b696639b5c8fe7f87b1484ca72975ce446af3251683;Path=/;HttpOnly;SameSite=None;Secure;Domain=sustcarbon-webapp-prod-wus.azurewebsites.net
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-azure-ref:
+      - 20250516T182953Z-17bc9bb9bf7pnwzvhC1CYSy1nc00000009q00000000019fy
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - ''
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-msedge-ref:
+      - 'Ref A: 2FAC711E640346E4A2071D82E6C1D057 Ref B: MWH011020806034 Ref C: 2025-05-16T18:29:52Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+version: 1
