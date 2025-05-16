@@ -18,6 +18,7 @@ from azure.mgmt.core.tools import parse_resource_id
 
 from azext_containerapp.tests.latest.common import (write_test_file, clean_up_test_file)
 from .common import TEST_LOCATION, STAGE_LOCATION
+from .custom_preparers import SubnetPreparer
 from .utils import create_containerapp_env, prepare_containerapp_env_for_app_e2e_tests
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
@@ -319,7 +320,7 @@ class ContainerappIngressTests(ScenarioTest):
         # TODO: The revision list call isn't handled by extensions, this will only work once the core CLI updates to at least 2024-10-02-preview
         # self.assertEqual(revisions_list[0]["properties"]["labels"], "label1")
         # self.assertEqual(revisions_list[2]["properties"]["labels"], "label2")
-
+        time.sleep(5)
         self.cmd('containerapp ingress traffic show -g {} -n {}'.format(resource_group, ca_name), checks=[
             JMESPathCheck('[0].weight', 100),
             JMESPathCheck('[0].label', "label1"),
@@ -1333,6 +1334,7 @@ class ContainerappServiceBindingTests(ScenarioTest):
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus2")
+    @live_only()
     def test_containerapp_managed_service_binding_e2e(self, resource_group):
         # `mysql flexible-server create`: type 'locations/checkNameAvailability' is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
         location = TEST_LOCATION
@@ -2314,7 +2316,8 @@ class ContainerappUpRegistryIdentityTests(ScenarioTest):
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="westeurope")
-    def test_containerapp_up_identity_registry(self, resource_group):
+    @SubnetPreparer(location="eastus", delegations='Microsoft.App/environments', service_endpoints="Microsoft.Storage.Global")
+    def test_containerapp_up_identity_registry(self, resource_group, subnet_id, vnet_name, subnet_name):
         # MSI is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
         location = TEST_LOCATION
         if format_location(location) == format_location(STAGE_LOCATION):
@@ -2335,8 +2338,8 @@ class ContainerappUpRegistryIdentityTests(ScenarioTest):
         user_identity_id = identity_json["id"]
 
         self.cmd(
-            'containerapp env create -g {} -n {} --mi-system-assigned --mi-user-assigned {} --logs-destination none'.format(
-                resource_group, env_name, user_identity_id))
+            'containerapp env create -g {} -n {} --mi-system-assigned --mi-user-assigned {} --logs-destination none -s {}'.format(
+                resource_group, env_name, user_identity_id, subnet_id))
         containerapp_env = self.cmd(
             'containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
         while containerapp_env["properties"]["provisioningState"].lower() == "waiting":
@@ -3274,7 +3277,8 @@ class ContainerappOtherPropertyTests(ScenarioTest):
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="westus")
-    def test_containerapp_get_customdomainverificationid_e2e(self, resource_group):
+    @SubnetPreparer(location="eastus", delegations='Microsoft.App/environments', service_endpoints="Microsoft.Storage.Global")
+    def test_containerapp_get_customdomainverificationid_e2e(self, resource_group, subnet_id, vnet_name, subnet_name):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
         env_name = self.create_random_name(prefix='containerapp-env', length=24)
@@ -3314,9 +3318,9 @@ class ContainerappOtherPropertyTests(ScenarioTest):
 
         self.cmd(
             'containerapp env create -g {} -n {} --logs-workspace-id {} --logs-workspace-key {} '
-            '--dns-suffix {} --certificate-file "{}" --certificate-password {}'
+            '--dns-suffix {} --certificate-file "{}" --certificate-password {} -s {}'
             .format(resource_group, env_name, logs_workspace_id, logs_workspace_key,
-                    hostname_1, pfx_file, pfx_password))
+                    hostname_1, pfx_file, pfx_password, subnet_id))
 
         self.cmd(f'containerapp env show -n {env_name} -g {resource_group}', checks=[
             JMESPathCheck('name', env_name),

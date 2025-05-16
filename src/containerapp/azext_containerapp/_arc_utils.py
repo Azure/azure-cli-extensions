@@ -81,7 +81,7 @@ def create_folder(folder_name, time_stamp):
     # For handling storage or OS exception that may occur during the execution
     except OSError as e:
         if "[Errno 28]" in str(e):
-            shutil.rmtree(filepath_with_timestamp, ignore_errors=False, onexc=None)
+            shutil.rmtree(filepath_with_timestamp, ignore_errors=False)
             error = "No space left on device"
         else:
             error = f"Error while trying to create diagnostic logs folder. Exception: {str(e)}"
@@ -110,7 +110,7 @@ def create_sub_folder(parent_path, subfolder_name):
     # For handling storage or OS exception that may occur during the execution
     except OSError as e:
         if "[Errno 28]" in str(e):
-            shutil.rmtree(filepath, ignore_errors=False, onexc=None)
+            shutil.rmtree(filepath, ignore_errors=False)
             error = "No space left on device"
         else:
             error = f"Error while trying to create diagnostic logs folder. Exception: {str(e)}"

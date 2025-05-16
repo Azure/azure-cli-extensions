@@ -24,6 +24,7 @@ class LoadTestConfigKeys:
     AUTOSTOP = "autoStop"
     AUTOSTOP_ERROR_RATE = "errorPercentage"
     AUTOSTOP_ERROR_RATE_TIME_WINDOW = "timeWindow"
+    AUTOSTOP_MAX_VU_PER_ENGINE = "maximumVirtualUsersPerEngine"
     FAILURE_CRITERIA = "failureCriteria"
     CLIENT_METRICS_PF = "clientMetrics"
     SERVER_METRICS_PF = "serverMetrics"

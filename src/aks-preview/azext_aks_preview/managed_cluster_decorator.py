@@ -20,6 +20,7 @@ from azext_aks_preview._consts import (
     CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_START,
     CONST_AZURE_SERVICE_MESH_DEFAULT_EGRESS_NAMESPACE,
     CONST_LOAD_BALANCER_SKU_BASIC,
+    CONST_LOAD_BALANCER_SKU_STANDARD,
     CONST_MANAGED_CLUSTER_SKU_NAME_BASE,
     CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC,
     CONST_MANAGED_CLUSTER_SKU_TIER_FREE,
@@ -40,6 +41,8 @@ from azext_aks_preview._consts import (
     CONST_OUTBOUND_TYPE_BLOCK,
     CONST_IMDS_RESTRICTION_ENABLED,
     CONST_IMDS_RESTRICTION_DISABLED,
+    CONST_AVAILABILITY_SET,
+    CONST_VIRTUAL_MACHINES,
 )
 from azext_aks_preview._helpers import (
     check_is_apiserver_vnet_integration_cluster,
@@ -47,6 +50,7 @@ from azext_aks_preview._helpers import (
     check_is_private_cluster,
     get_cluster_snapshot_by_snapshot_id,
     setup_common_safeguards_profile,
+    filter_hard_taints,
 )
 from azext_aks_preview._loadbalancer import create_load_balancer_profile
 from azext_aks_preview._loadbalancer import (
@@ -761,6 +765,50 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         if disable_acns_security is not None:
             return not disable_acns_security
         return None
+
+    def get_acns_advanced_networkpolicies(self) -> Union[str, None]:
+        """Get the value of acns_advanced_networkpolicies
+
+        :return: str or None
+        """
+        disable_acns_security = self.raw_param.get("disable_acns_security")
+        disable_acns = self.raw_param.get("disable_acns")
+        acns_advanced_networkpolicies = self.raw_param.get("acns_advanced_networkpolicies")
+        if acns_advanced_networkpolicies is not None:
+            if disable_acns_security or disable_acns:
+                raise MutuallyExclusiveArgumentError(
+                    "--disable-acns-security and --disable-acns cannot be used with acns_advanced_networkpolicies."
+                )
+        return self.raw_param.get("acns_advanced_networkpolicies")
+
+    def get_retina_flow_logs(self, mc: ManagedCluster) -> Union[bool, None]:
+        """Get the enablement of retina flow logs
+
+        :return: bool or None"""
+        enable_retina_flow_logs = self.raw_param.get("enable_retina_flow_logs")
+        disable_retina_flow_logs = self.raw_param.get("disable_retina_flow_logs")
+        if enable_retina_flow_logs is None and disable_retina_flow_logs is None:
+            return None
+        if enable_retina_flow_logs and disable_retina_flow_logs:
+            raise MutuallyExclusiveArgumentError(
+                "Cannot specify --enable-retina-flow-logs and "
+                "--disable-retina-flow-logs at the same time."
+            )
+        if (
+            enable_retina_flow_logs and
+            (not self.raw_param.get("enable_acns", False) and
+                not (mc.network_profile and mc.network_profile.advanced_networking and
+                     mc.network_profile.advanced_networking.enabled)) or
+            not (mc.addon_profiles and mc.addon_profiles.get("omsagent") and mc.addon_profiles["omsagent"].enabled)
+        ):
+            raise InvalidArgumentValueError(
+                "Flow logs requires '--enable-acns', advanced networking "
+                "to be enabled, and the monitoring addon to be enabled."
+            )
+        enable_retina_flow_logs = bool(enable_retina_flow_logs) if enable_retina_flow_logs is not None else False
+        disable_retina_flow_logs = bool(disable_retina_flow_logs) if disable_retina_flow_logs is not None else False
+        retina_flow_logs = enable_retina_flow_logs or not disable_retina_flow_logs
+        return retina_flow_logs
 
     def get_load_balancer_managed_outbound_ip_count(self) -> Union[int, None]:
         """Obtain the value of load_balancer_managed_outbound_ip_count.
@@ -2130,62 +2178,64 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         """
         return self._get_disable_vpa(enable_validation=True)
 
-    def _get_enable_addon_autoscaling(self, enable_validation: bool = False) -> bool:
-        """Internal function to obtain the value of enable_addon_autoscaling.
-        This function supports the option of enable_addon_autoscaling.
-        When enabled, if both enable_addon_autoscaling and disable_addon_autoscaling are
+    def _get_enable_optimized_addon_scaling(self, enable_validation: bool = False) -> bool:
+        """Internal function to obtain the value of enable_optimized_addon_scaling.
+        This function supports the option of enable_optimized_addon_scaling.
+        When enabled, if both enable_optimized_addon_scaling and disable_optimized_addon_scaling are
         specified, raise a MutuallyExclusiveArgumentError.
         :return: bool
         """
         # Read the original value passed by the command.
-        enable_addon_autoscaling = self.raw_param.get("enable_addon_autoscaling")
+        enable_optimized_addon_scaling = self.raw_param.get("enable_optimized_addon_scaling")
 
         # This parameter does not need dynamic completion.
         if enable_validation:
-            if enable_addon_autoscaling and self._get_disable_addon_autoscaling(enable_validation=False):
+            if enable_optimized_addon_scaling and self._get_disable_optimized_addon_scaling(enable_validation=False):
                 raise MutuallyExclusiveArgumentError(
-                    "Cannot specify --enable-addon-autoscaling and --disable-addon-autoscaling at the same time."
+                    "Cannot specify --enable-optimized-addon-scaling and \
+                    --disable-optimized-addon-scaling at the same time."
                 )
 
-        return enable_addon_autoscaling
+        return enable_optimized_addon_scaling
 
-    def get_enable_addon_autoscaling(self) -> bool:
-        """Obtain the value of enable_addon_autoscaling.
+    def get_enable_optimized_addon_scaling(self) -> bool:
+        """Obtain the value of enable_optimized_addon_scaling.
         This function will verify the parameter by default.
-        If both enable_addon_autoscaling and disable_addon_autoscaling are specified,
+        If both enable_optimized_addon_scaling and disable_optimized_addon_scaling are specified,
         raise a MutuallyExclusiveArgumentError.
         :return: bool
         """
-        return self._get_enable_addon_autoscaling(enable_validation=True)
+        return self._get_enable_optimized_addon_scaling(enable_validation=True)
 
-    def _get_disable_addon_autoscaling(self, enable_validation: bool = False) -> bool:
-        """Internal function to obtain the value of disable_addon_autoscaling.
-        This function supports the option of enable_addon_autoscaling.
-        When enabled, if both enable_addon_autoscaling and disable_addon_autoscaling are specified,
+    def _get_disable_optimized_addon_scaling(self, enable_validation: bool = False) -> bool:
+        """Internal function to obtain the value of disable_optimized_addon_scaling.
+        This function supports the option of enable_optimized_addon_scaling.
+        When enabled, if both enable_optimized_addon_scaling and disable_optimized_addon_scaling are specified,
         raise a MutuallyExclusiveArgumentError.
         :return: bool
         """
         # Read the original value passed by the command.
-        disable_addon_autoscaling = self.raw_param.get("disable_addon_autoscaling")
+        disable_optimized_addon_scaling = self.raw_param.get("disable_optimized_addon_scaling")
 
         # This option is not supported in create mode, hence we do not read the property value from the `mc` object.
         # This parameter does not need dynamic completion.
         if enable_validation:
-            if disable_addon_autoscaling and self._get_enable_addon_autoscaling(enable_validation=False):
+            if disable_optimized_addon_scaling and self._get_enable_optimized_addon_scaling(enable_validation=False):
                 raise MutuallyExclusiveArgumentError(
-                    "Cannot specify --enable-addon-autoscaling and --disable-addon-autoscaling at the same time."
+                    "Cannot specify --enable-optimized-addon-scaling and \
+                    --disable-optimized-addon-scaling at the same time."
                 )
 
-        return disable_addon_autoscaling
+        return disable_optimized_addon_scaling
 
-    def get_disable_addon_autoscaling(self) -> bool:
-        """Obtain the value of disable_addon_autoscaling.
+    def get_disable_optimized_addon_scaling(self) -> bool:
+        """Obtain the value of disable_optimized_addon_scaling.
         This function will verify the parameter by default.
-        If both enable_addon_autoscaling and disable_addon_autoscaling are specified,
+        If both enable_optimized_addon_scaling and disable_optimized_addon_scaling are specified,
         raise a MutuallyExclusiveArgumentError.
         :return: bool
         """
-        return self._get_disable_addon_autoscaling(enable_validation=True)
+        return self._get_disable_optimized_addon_scaling(enable_validation=True)
 
     def get_ssh_key_value_for_update(self) -> Tuple[str, bool]:
         """Obtain the value of ssh_key_value for "az aks update".
@@ -2399,6 +2449,13 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                             f'Egress gateway {istio_egressgateway_name} '
                             f'in namespace {istio_egressgateway_namespace} is already disabled.'
                         )
+                    if egress.enabled and enable_egress_gateway:
+                        if egress.gateway_configuration_name == gateway_configuration_name:
+                            raise ArgumentUsageError(
+                                f'Egress gateway {istio_egressgateway_name} '
+                                f'in namespace {istio_egressgateway_namespace} is already enabled '
+                                f'with gateway configuration name {gateway_configuration_name}.'
+                            )
                     egress.enabled = enable_egress_gateway
                     # only update gateway configuration name for enabled egress gateways
                     if enable_egress_gateway:
@@ -2803,6 +2860,13 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         """
         return self.raw_param.get("disable_imds_restriction")
 
+    def get_migrate_vmas_to_vms(self) -> bool:
+        """Obtain the value of migrate_vmas_to_vms.
+
+        :return: bool
+        """
+        return self.raw_param.get("migrate_vmas_to_vms")
+
 
 # pylint: disable=too-many-public-methods
 class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
@@ -2929,6 +2993,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
 
         acns = None
         (acns_enabled, acns_observability_enabled, acns_security_enabled) = self.context.get_acns_enablement()
+        acns_advanced_networkpolicies = self.context.get_acns_advanced_networkpolicies()
         if acns_enabled is not None:
             acns = self.models.AdvancedNetworking(
                 enabled=acns_enabled,
@@ -2941,8 +3006,14 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                 acns.security = self.models.AdvancedNetworkingSecurity(
                     enabled=acns_security_enabled,
                 )
+            if acns_advanced_networkpolicies is not None:
+                if acns.security is None:
+                    acns.security = self.models.AdvancedNetworkingSecurity(
+                        advanced_network_policies=acns_advanced_networkpolicies
+                    )
+                else:
+                    acns.security.advanced_network_policies = acns_advanced_networkpolicies
             network_profile.advanced_networking = acns
-
         return mc
 
     def set_up_api_server_access_profile(self, mc: ManagedCluster) -> ManagedCluster:
@@ -2964,6 +3035,12 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                 mc.api_server_access_profile = self.models.ManagedClusterAPIServerAccessProfile()
             mc.api_server_access_profile.subnet_id = self.context.get_apiserver_subnet_id()
 
+        if (
+            mc.api_server_access_profile is not None and
+            mc.api_server_access_profile.additional_properties is not None
+        ):
+            # remove the additional properties that are set in official azure-cli/acs
+            mc.api_server_access_profile.additional_properties = {}
         return mc
 
     def build_gitops_addon_profile(self) -> ManagedClusterAddonProfile:
@@ -2993,6 +3070,15 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             addon_profiles[
                 CONST_GITOPS_ADDON_NAME
             ] = self.build_gitops_addon_profile()
+
+        retina_flow_logs_enabled = self.context.get_retina_flow_logs(mc)
+        if retina_flow_logs_enabled is not None:
+            monitoring_addon_profile = addon_profiles.get(addon_consts.get("CONST_MONITORING_ADDON_NAME"))
+            if monitoring_addon_profile:
+                config = monitoring_addon_profile.config or {}
+                config["enableRetinaNetworkFlags"] = str(retina_flow_logs_enabled)
+                monitoring_addon_profile.config = config
+
         mc.addon_profiles = addon_profiles
         return mc
 
@@ -3161,14 +3247,14 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                 mc.workload_auto_scaler_profile.vertical_pod_autoscaler.enabled = True
         return mc
 
-    def set_up_addon_autoscaling(self, mc: ManagedCluster) -> ManagedCluster:
+    def set_up_optimized_addon_scaling(self, mc: ManagedCluster) -> ManagedCluster:
         """Set up workload auto-scaler vertical pod autsocaler profile
         for the ManagedCluster object.
         :return: the ManagedCluster object
         """
         self._ensure_mc(mc)
 
-        if self.context.get_enable_addon_autoscaling():
+        if self.context.get_enable_optimized_addon_scaling():
             if mc.workload_auto_scaler_profile is None:
                 mc.workload_auto_scaler_profile = self.models.ManagedClusterWorkloadAutoScalerProfile()  # pylint: disable=no-member
             if mc.workload_auto_scaler_profile.vertical_pod_autoscaler is None:
@@ -3563,8 +3649,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc = self.set_up_workload_auto_scaler_profile(mc)
         # set up vpa
         mc = self.set_up_vpa(mc)
-        # set up addon autoscaling
-        mc = self.set_up_addon_autoscaling(mc)
+        # set up optimized addon scaling
+        mc = self.set_up_optimized_addon_scaling(mc)
         # set up kube-proxy config
         mc = self.set_up_kube_proxy_config(mc)
         # set up custom ca trust certificates
@@ -4015,6 +4101,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         acns = None
         (acns_enabled, acns_observability_enabled, acns_security_enabled) = self.context.get_acns_enablement()
+        acns_advanced_networkpolicies = self.context.get_acns_advanced_networkpolicies()
         if acns_enabled is not None:
             acns = self.models.AdvancedNetworking(
                 enabled=acns_enabled,
@@ -4027,7 +4114,33 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 acns.security = self.models.AdvancedNetworkingSecurity(
                     enabled=acns_security_enabled,
                 )
+            if acns_advanced_networkpolicies is not None:
+                if acns.security is None:
+                    acns.security = self.models.AdvancedNetworkingSecurity(
+                        advanced_network_policies=acns_advanced_networkpolicies
+                    )
+                else:
+                    acns.security.advanced_network_policies = acns_advanced_networkpolicies
             mc.network_profile.advanced_networking = acns
+        return mc
+
+    def update_monitoring_profile_flow_logs(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update monitor profile for the ManagedCluster object for flow logs.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        retina_flow_logs_enabled = self.context.get_retina_flow_logs(mc)
+        if retina_flow_logs_enabled is not None:
+            if mc.addon_profiles:
+                addon_consts = self.context.get_addon_consts()
+                CONST_MONITORING_ADDON_NAME = addon_consts.get("CONST_MONITORING_ADDON_NAME")
+                monitoring_addon_profile = mc.addon_profiles.get(CONST_MONITORING_ADDON_NAME)
+                if monitoring_addon_profile:
+                    config = monitoring_addon_profile.config or {}
+                    config["enableRetinaNetworkFlags"] = str(retina_flow_logs_enabled)
+                    mc.addon_profiles[CONST_MONITORING_ADDON_NAME].config = config
         return mc
 
     # pylint: disable=too-many-statements,too-many-locals,too-many-branches
@@ -4710,14 +4823,14 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         return mc
 
-    def update_addon_autoscaling(self, mc: ManagedCluster) -> ManagedCluster:
+    def update_optimized_addon_scaling(self, mc: ManagedCluster) -> ManagedCluster:
         """Update workload auto-scaler vertical pod auto-scaler profile
         for the ManagedCluster object.
         :return: the ManagedCluster object
         """
         self._ensure_mc(mc)
 
-        if self.context.get_enable_addon_autoscaling():
+        if self.context.get_enable_optimized_addon_scaling():
             if mc.workload_auto_scaler_profile is None:
                 mc.workload_auto_scaler_profile = self.models.ManagedClusterWorkloadAutoScalerProfile()  # pylint: disable=no-member
             if mc.workload_auto_scaler_profile.vertical_pod_autoscaler is None:
@@ -4728,7 +4841,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             mc.workload_auto_scaler_profile.vertical_pod_autoscaler.enabled = True
             mc.workload_auto_scaler_profile.vertical_pod_autoscaler.addon_autoscaling = "Enabled"
 
-        if self.context.get_disable_addon_autoscaling():
+        if self.context.get_disable_optimized_addon_scaling():
             if mc.workload_auto_scaler_profile is None:
                 mc.workload_auto_scaler_profile = self.models.ManagedClusterWorkloadAutoScalerProfile()  # pylint: disable=no-member
             if mc.workload_auto_scaler_profile.vertical_pod_autoscaler is None:
@@ -4952,7 +5065,11 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         nodepool_initialization_taints = self.context.get_nodepool_initialization_taints()
         if nodepool_initialization_taints is not None:
             for agent_profile in mc.agent_pool_profiles:
-                agent_profile.node_initialization_taints = nodepool_initialization_taints
+                if agent_profile.mode is not None and agent_profile.mode.lower() == "user":
+                    agent_profile.node_initialization_taints = nodepool_initialization_taints
+                    continue
+                # Filter out taints with hard effects (NoSchedule and NoExecute) for system pools
+                agent_profile.node_initialization_taints = filter_hard_taints(nodepool_initialization_taints)
         return mc
 
     def update_node_provisioning_mode(self, mc: ManagedCluster) -> ManagedCluster:
@@ -5228,6 +5345,31 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 raise DecoratorEarlyExitException()
         return mc
 
+    def update_vmas_to_vms(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update the agent pool profile type from VMAS to VMS and LB sku to standard
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        if self.context.get_migrate_vmas_to_vms():
+            msg = (
+                "\nWARNING: This operation will be disruptive to your workload while underway. "
+                "Do you wish to continue?"
+            )
+            if not self.context.get_yes() and not prompt_y_n(msg, default="n"):
+                raise DecoratorEarlyExitException()
+            # Ensure we have valid vmas AP
+            if len(mc.agent_pool_profiles) == 1 and mc.agent_pool_profiles[0].type == CONST_AVAILABILITY_SET:
+                mc.agent_pool_profiles[0].type = CONST_VIRTUAL_MACHINES
+            else:
+                raise CLIError('This is not a valid VMAS cluster, we cannot proceed with the migration.')
+
+            if mc.network_profile.load_balancer_sku == CONST_LOAD_BALANCER_SKU_BASIC:
+                mc.network_profile.load_balancer_sku = CONST_LOAD_BALANCER_SKU_STANDARD
+
+        return mc
+
     def update_mc_profile_preview(self) -> ManagedCluster:
         """The overall controller used to update the preview ManagedCluster profile.
 
@@ -5255,8 +5397,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_azure_monitor_profile(mc)
         # update vpa
         mc = self.update_vpa(mc)
-        # update addon autoscaling
-        mc = self.update_addon_autoscaling(mc)
+        # update optimized addon scaling
+        mc = self.update_optimized_addon_scaling(mc)
         # update creation data
         mc = self.update_creation_data(mc)
         # update linux profile
@@ -5287,6 +5429,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_nodepool_initialization_taints_mc(mc)
         # update acns in network_profile
         mc = self.update_acns_in_network_profile(mc)
+        # update update_monitoring_profile_flow_logs
+        mc = self.update_monitoring_profile_flow_logs(mc)
         # update kubernetes support plan
         mc = self.update_k8s_support_plan(mc)
         # update AI toolchain operator
@@ -5301,6 +5445,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_static_egress_gateway(mc)
         # update imds restriction
         mc = self.update_imds_restriction(mc)
+        # update VMAS to VMS
+        mc = self.update_vmas_to_vms(mc)
 
         return mc
 
