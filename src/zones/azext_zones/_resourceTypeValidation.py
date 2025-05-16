@@ -13,7 +13,7 @@ __logger = get_logger(__name__)
 
 # This is the decorator to register resource type validators:
 def register_resource_type(resourceType):
-    __logger.warning("Registering resource type validator for %s", resourceType)
+    __logger.debug("Registering resource type validator for %s", resourceType)
 
     def decorator(cls):
         resource_type_validators[resourceType] = cls
