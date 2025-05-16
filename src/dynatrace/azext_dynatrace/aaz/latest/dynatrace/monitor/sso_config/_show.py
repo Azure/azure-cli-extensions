@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "dynatrace monitor sso-config show",
 )
 class Show(AAZCommand):
-    """Show a dynatrace sso-config
+    """Get information about a specific Dynatrace SSO configuration including SSO state and URL.
 
     :example: Show sso-config
         az dynatrace monitor sso-config show -g rg --monitor-name monitor -n default

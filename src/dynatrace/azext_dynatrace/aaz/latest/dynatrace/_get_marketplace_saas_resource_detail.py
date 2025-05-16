@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "dynatrace get-marketplace-saas-resource-detail",
 )
 class GetMarketplaceSaasResourceDetail(AAZCommand):
-    """Get Marketplace SaaS resource details of a tenant under a specific subscription
+    """Get Marketplace SaaS resource details for a given tenant under a subscription.
 
     :example: Monitors_GetMarketplaceSaaSResourceDetails_MaximumSet_Gen
         az dynatrace get-marketplace-saas-resource-detail --tenant-id urnmattojzhktcfw

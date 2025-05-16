@@ -16,7 +16,7 @@ from azure.cli.core.aaz import *
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
-    """Delete a tag rule
+    """Remove or delete a tag rule from Dynatrace resource.
 
     :example: Delete tag-rule
         az dynatrace monitor tag-rule delete -g rg --monitor-name monitor -n default -y
