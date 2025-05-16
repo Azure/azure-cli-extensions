@@ -37,6 +37,7 @@ Pending
 +++++++
 * Add aks extension and aks extension-type command groups
 * Remove TrustedAccess commands from aks-preview extension as it is GA and exists in azure-cli for long time.
+* Add basic lb sku migration support `az aks update --load-balancer-sku standard`
 
 15.0.0b1
 ++++++++
