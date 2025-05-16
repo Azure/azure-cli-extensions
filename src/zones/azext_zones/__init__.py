@@ -7,12 +7,9 @@
 from azure.cli.core import AzCommandsLoader
 from azext_zones._help import helps  # pylint: disable=unused-import
 from ._resourceTypeValidation import load_validators
-from knack.log import get_logger
 
 
 class ZonesCommandsLoader(AzCommandsLoader):
-    _logger = get_logger(__name__)
-
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
         from azext_zones._client_factory import cf_zones
