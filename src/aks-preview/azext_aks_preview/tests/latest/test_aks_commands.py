@@ -12185,7 +12185,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             checks=[
                 self.check("provisioningState", "Succeeded"),
                 self.check("agentPoolProfiles[0].type", "VirtualMachines"),
-                self.check("agentPoolProfiles[0].vmSize", None),
+                self.check("agentPoolProfiles[0].vm_size", None),
                 self.check("agentPoolProfiles[0].count", None),
                 self.check("agentPoolProfiles[0].virtualMachinesProfile.scale.manual[0].size", "Standard_D4s_v3"),
                 self.check("agentPoolProfiles[0].virtualMachinesProfile.scale.manual[0].count", "2"),
@@ -16123,6 +16123,7 @@ spec:
     #     update_cmd = (
     #         "aks update --resource-group {resource_group} --name {name} "
     #         "--migrate-vmas-to-vms --yes "
+    #         "--aks-custom-headers=AKSHTTPCustomFeatures=Microsoft.ContainerService/BasicLBMigrationToStandardLBPreview"
     #     )
     #     self.cmd(update_cmd, checks=[
     #         self.check('provisioningState', 'Succeeded'),
