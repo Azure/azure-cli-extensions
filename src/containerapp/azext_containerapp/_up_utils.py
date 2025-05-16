@@ -1129,10 +1129,10 @@ def _validate_azml_model_existence(cmd, model_registry, model_name, model_versio
             pretrained_class_name = safe_get(model_detail_data, "flavors", "hftransformersv2", "hf_pretrained_class")
             if tokenizer_class_name is None or tokenizer_class_name == "":
                 tokenizer_class_name = "AutoTokenizer"
-                logger.warning(f"Failed to get tokenizer class name for {model_name}. Will attempt to use AutoTokenizer.")
+                logger.warning(f"Failed to get tokenizer class name for {model_name}. Attempting to use AutoTokenizer.")
             if pretrained_class_name is None or pretrained_class_name == "":
                 pretrained_class_name = "AutoModelForCausalLM"
-                logger.warning(f"Failed to get pretrained class name for {model_name}. Will attempt to use AutoModelForCausalLM.")
+                logger.warning(f"Failed to get pretrained class name for {model_name}. Attempting to use AutoModelForCausalLM.")
             model_load_class = [f"AZURE_ML_TOKENIZER_CLASS_NAME={tokenizer_class_name}", f"AZURE_ML_PRETRAINED_MODEL_CLASS_NAME={pretrained_class_name}"]
             config_class_name = safe_get(model_detail_data, "flavors", "hftransformersv2", "hf_config_class")
             if config_class_name is not None and config_class_name != "":
@@ -1242,7 +1242,7 @@ def _validate_azml_env_and_create_if_needed(cmd, app, env, cli_input_environment
             memory = "220Gi"
             if cli_input_environment_name:
                 logger.warning(f"Environment {cli_input_environment_name} not found in {cli_input_resource_group_name}.")
-            logger.warning(f"Will attempt to create an environment named {env.name} with serverless A100 GPU workload profile using workload profile name {workload_profile_name}.")
+            logger.warning(f"We will create an environment named {env.name} with serverless A100 GPU workload profile using workload profile name {workload_profile_name}.")
             env.workload_profile_name = workload_profile_name
             env.workload_profile_type = "Consumption-GPU-NC24-A100"
             env.create_if_needed(app.name)
