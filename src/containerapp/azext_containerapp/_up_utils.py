@@ -1222,7 +1222,7 @@ def _validate_azml_env_and_create_if_needed(cmd, app, env, cli_input_environment
         env_name = app.get()["properties"]["environmentId"].split("/")[-1]
         env_rg_name = parse_resource_id(app.get()["properties"]["environmentId"])["resource_group"]
         if cli_input_environment_name and cli_input_environment_name.lower() != env_name.lower():
-            raise ValidationError(f"{app.name} in resource group {app.resource_group.name} found under {env_name}, which is different from the one specified in --environment-name {cli_input_environment_name}. Please specify the correct environment.")
+            raise ValidationError(f"{app.name} in resource group {app.resource_group.name} found under {env_name}, which is different from the one specified in --environment {cli_input_environment_name}. Please specify the correct environment.")
         if wp_name is not None:
             env_detail = show_managed_environment(cmd, env_name, env_rg_name)
             wps = safe_get(env_detail, "properties", "workloadProfiles")
