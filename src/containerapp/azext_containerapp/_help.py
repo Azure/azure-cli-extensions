@@ -160,7 +160,7 @@ helps['containerapp up'] = """
           az containerapp up -n my-containerapp --image myregistry.azurecr.io/myImage:myTag --environment MyConnectedEnvironmentId
     - name: Create a container app and deploy a model from Azure AI Foundry
       text: |
-            az containerapp up -n my-containerapp --environment MyContainerappEnv --model-registry azureml --model-name Phi-4 --model-version 7
+            az containerapp up -n my-containerapp -l westus3 --model-registry azureml --model-name Phi-4 --model-version 7
 """
 
 
