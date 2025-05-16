@@ -52,7 +52,6 @@ class Update(AAZCommand):
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9-]{3,24}$",
                 max_length=64,
                 min_length=3,
             ),
@@ -113,7 +112,7 @@ class Update(AAZCommand):
         )
 
         _element = cls._args_schema.lenses.Element.parts.Element
-        _element.metadata = AAZObjectArg(
+        _element.metadata = AAZFreeFormDictArg(
             options=["metadata"],
             help="The dashboard part's metadata.",
             nullable=True,
@@ -121,69 +120,6 @@ class Update(AAZCommand):
         _element.position = AAZObjectArg(
             options=["position"],
             help="The dashboard's part position.",
-        )
-
-        metadata = cls._args_schema.lenses.Element.parts.Element.metadata
-        metadata.extension_hubs_extension_part_type_markdown_part = AAZObjectArg(
-            options=["extension-hubs-extension-part-type-markdown-part"],
-        )
-
-        extension_hubs_extension_part_type_markdown_part = cls._args_schema.lenses.Element.parts.Element.metadata.extension_hubs_extension_part_type_markdown_part
-        extension_hubs_extension_part_type_markdown_part.inputs = AAZListArg(
-            options=["inputs"],
-            help="Input to dashboard part.",
-            nullable=True,
-        )
-        extension_hubs_extension_part_type_markdown_part.settings = AAZObjectArg(
-            options=["settings"],
-            help="Markdown part settings.",
-            nullable=True,
-        )
-
-        inputs = cls._args_schema.lenses.Element.parts.Element.metadata.extension_hubs_extension_part_type_markdown_part.inputs
-        inputs.Element = AAZFreeFormDictArg(
-            nullable=True,
-        )
-
-        settings = cls._args_schema.lenses.Element.parts.Element.metadata.extension_hubs_extension_part_type_markdown_part.settings
-        settings.content = AAZObjectArg(
-            options=["content"],
-            help="The content of markdown part.",
-            nullable=True,
-        )
-
-        content = cls._args_schema.lenses.Element.parts.Element.metadata.extension_hubs_extension_part_type_markdown_part.settings.content
-        content.settings = AAZObjectArg(
-            options=["settings"],
-            help="The setting of the content of markdown part.",
-            nullable=True,
-        )
-
-        settings = cls._args_schema.lenses.Element.parts.Element.metadata.extension_hubs_extension_part_type_markdown_part.settings.content.settings
-        settings.content = AAZStrArg(
-            options=["content"],
-            help="The content of the markdown part.",
-            nullable=True,
-        )
-        settings.markdown_source = AAZIntArg(
-            options=["markdown-source"],
-            help="The source of the content of the markdown part.",
-            nullable=True,
-        )
-        settings.markdown_uri = AAZStrArg(
-            options=["markdown-uri"],
-            help="The uri of markdown content.",
-            nullable=True,
-        )
-        settings.subtitle = AAZStrArg(
-            options=["subtitle"],
-            help="The subtitle of the markdown part.",
-            nullable=True,
-        )
-        settings.title = AAZStrArg(
-            options=["title"],
-            help="The title of the markdown part.",
-            nullable=True,
         )
 
         position = cls._args_schema.lenses.Element.parts.Element.position
@@ -457,42 +393,12 @@ class Update(AAZCommand):
 
             _elements = _builder.get(".properties.lenses[].parts[]")
             if _elements is not None:
-                _elements.set_prop("metadata", AAZObjectType, ".metadata")
+                _elements.set_prop("metadata", AAZFreeFormDictType, ".metadata")
                 _elements.set_prop("position", AAZObjectType, ".position", typ_kwargs={"flags": {"required": True}})
 
             metadata = _builder.get(".properties.lenses[].parts[].metadata")
             if metadata is not None:
-                metadata.set_const("type", "Extension/HubsExtension/PartType/MarkdownPart", AAZStrType, ".extension_hubs_extension_part_type_markdown_part", typ_kwargs={"flags": {"required": True}})
-                metadata.discriminate_by("type", "Extension/HubsExtension/PartType/MarkdownPart")
-
-            disc_extension__hubs_extension__part_type__markdown_part = _builder.get(".properties.lenses[].parts[].metadata{type:Extension/HubsExtension/PartType/MarkdownPart}")
-            if disc_extension__hubs_extension__part_type__markdown_part is not None:
-                disc_extension__hubs_extension__part_type__markdown_part.set_prop("inputs", AAZListType, ".extension_hubs_extension_part_type_markdown_part.inputs")
-                disc_extension__hubs_extension__part_type__markdown_part.set_prop("settings", AAZObjectType, ".extension_hubs_extension_part_type_markdown_part.settings")
-
-            inputs = _builder.get(".properties.lenses[].parts[].metadata{type:Extension/HubsExtension/PartType/MarkdownPart}.inputs")
-            if inputs is not None:
-                inputs.set_elements(AAZFreeFormDictType, ".")
-
-            _elements = _builder.get(".properties.lenses[].parts[].metadata{type:Extension/HubsExtension/PartType/MarkdownPart}.inputs[]")
-            if _elements is not None:
-                _elements.set_anytype_elements(".")
-
-            settings = _builder.get(".properties.lenses[].parts[].metadata{type:Extension/HubsExtension/PartType/MarkdownPart}.settings")
-            if settings is not None:
-                settings.set_prop("content", AAZObjectType, ".content")
-
-            content = _builder.get(".properties.lenses[].parts[].metadata{type:Extension/HubsExtension/PartType/MarkdownPart}.settings.content")
-            if content is not None:
-                content.set_prop("settings", AAZObjectType, ".settings")
-
-            settings = _builder.get(".properties.lenses[].parts[].metadata{type:Extension/HubsExtension/PartType/MarkdownPart}.settings.content.settings")
-            if settings is not None:
-                settings.set_prop("content", AAZStrType, ".content")
-                settings.set_prop("markdownSource", AAZIntType, ".markdown_source")
-                settings.set_prop("markdownUri", AAZStrType, ".markdown_uri")
-                settings.set_prop("subtitle", AAZStrType, ".subtitle")
-                settings.set_prop("title", AAZStrType, ".title")
+                metadata.set_anytype_elements(".")
 
             position = _builder.get(".properties.lenses[].parts[].position")
             if position is not None:
@@ -588,39 +494,10 @@ class _UpdateHelper:
         parts.Element = AAZObjectType()
 
         _element = _schema_dashboard_read.properties.lenses.Element.parts.Element
-        _element.metadata = AAZObjectType()
+        _element.metadata = AAZFreeFormDictType()
         _element.position = AAZObjectType(
             flags={"required": True},
         )
-
-        metadata = _schema_dashboard_read.properties.lenses.Element.parts.Element.metadata
-        metadata.type = AAZStrType(
-            flags={"required": True},
-        )
-
-        disc_extension__hubs_extension__part_type__markdown_part = _schema_dashboard_read.properties.lenses.Element.parts.Element.metadata.discriminate_by("type", "Extension/HubsExtension/PartType/MarkdownPart")
-        disc_extension__hubs_extension__part_type__markdown_part.inputs = AAZListType()
-        disc_extension__hubs_extension__part_type__markdown_part.settings = AAZObjectType()
-
-        inputs = _schema_dashboard_read.properties.lenses.Element.parts.Element.metadata.discriminate_by("type", "Extension/HubsExtension/PartType/MarkdownPart").inputs
-        inputs.Element = AAZFreeFormDictType()
-
-        settings = _schema_dashboard_read.properties.lenses.Element.parts.Element.metadata.discriminate_by("type", "Extension/HubsExtension/PartType/MarkdownPart").settings
-        settings.content = AAZObjectType()
-
-        content = _schema_dashboard_read.properties.lenses.Element.parts.Element.metadata.discriminate_by("type", "Extension/HubsExtension/PartType/MarkdownPart").settings.content
-        content.settings = AAZObjectType()
-
-        settings = _schema_dashboard_read.properties.lenses.Element.parts.Element.metadata.discriminate_by("type", "Extension/HubsExtension/PartType/MarkdownPart").settings.content.settings
-        settings.content = AAZStrType()
-        settings.markdown_source = AAZIntType(
-            serialized_name="markdownSource",
-        )
-        settings.markdown_uri = AAZStrType(
-            serialized_name="markdownUri",
-        )
-        settings.subtitle = AAZStrType()
-        settings.title = AAZStrType()
 
         position = _schema_dashboard_read.properties.lenses.Element.parts.Element.position
         position.col_span = AAZIntType(

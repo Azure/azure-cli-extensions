@@ -18,13 +18,13 @@ class Update(AAZCommand):
     """Update a project environment type.
 
     :example: Update
-        az devcenter admin project-environment-type update --identity-type "UserAssigned" --user-assigned-identities "{\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/identityGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/testidentity1\":{}}" --deployment-target-id "/subscriptions/00000000-0000-0000-0000-000000000000" --status "Enabled" --user-role-assignments "{\"e45e3m7c-176e-416a-b466-0c5ec8298f8a\":{\"roles\":{\"4cbf0b6c-e750-441c-98a7-10da8387e4d6\":{}}}}" --tags CostCenter="RnD" --environment-type-name "DevTest" --project-name "ContosoProj" --resource-group "rg1"
+        az devcenter admin project-environment-type update --identity-type "UserAssigned" --user-assigned-identities "{\\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/identityGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/testidentity1\\":{}}" --deployment-target-id "/subscriptions/00000000-0000-0000-0000-000000000000" --status "Enabled" --user-role-assignments "{\\"e45e3m7c-176e-416a-b466-0c5ec8298f8a\\":{\\"roles\\":{\\"4cbf0b6c-e750-441c-98a7-10da8387e4d6\\":{}}}}" --tags CostCenter="RnD" --environment-type-name "DevTest" --project-name "ContosoProj" --resource-group "rg1"
     """
 
     _aaz_info = {
-        "version": "2024-10-01-preview",
+        "version": "2025-04-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/environmenttypes/{}", "2024-10-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/environmenttypes/{}", "2025-04-01-preview"],
         ]
     }
 
@@ -270,7 +270,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-10-01-preview",
+                    "api-version", "2025-04-01-preview",
                     required=True,
                 ),
             }
@@ -357,7 +357,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-10-01-preview",
+                    "api-version", "2025-04-01-preview",
                     required=True,
                 ),
             }
@@ -415,7 +415,7 @@ class Update(AAZCommand):
                 value=instance,
                 typ=AAZObjectType
             )
-            _builder.set_prop("identity", AAZObjectType)
+            _builder.set_prop("identity", AAZIdentityObjectType)
             _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
 
@@ -523,7 +523,7 @@ class _UpdateHelper:
         project_environment_type_read.id = AAZStrType(
             flags={"read_only": True},
         )
-        project_environment_type_read.identity = AAZObjectType()
+        project_environment_type_read.identity = AAZIdentityObjectType()
         project_environment_type_read.location = AAZStrType()
         project_environment_type_read.name = AAZStrType(
             flags={"read_only": True},

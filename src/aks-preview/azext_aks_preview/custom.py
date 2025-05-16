@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-# pylint: disable=too-many-lines
+# pylint: disable=too-many-lines, disable=broad-except
 import datetime
 import json
 import os
@@ -57,14 +57,20 @@ from azext_aks_preview._consts import (
     CONST_AVAILABILITY_SET,
     CONST_MIN_NODE_IMAGE_VERSION,
     CONST_ARTIFACT_SOURCE_DIRECT,
+    CONST_K8S_EXTENSION_CUSTOM_MOD_NAME,
+    CONST_K8S_EXTENSION_CLIENT_FACTORY_MOD_NAME,
 )
 from azext_aks_preview._helpers import (
     check_is_private_link_cluster,
     get_cluster_snapshot_by_snapshot_id,
+    get_k8s_extension_module,
     get_nodepool_snapshot_by_snapshot_id,
     print_or_merge_credentials,
     process_message_for_run_command,
     check_is_monitoring_addon_enabled,
+    get_all_extension_types_in_allow_list,
+    get_all_extensions_in_allow_list,
+    raise_validation_error_if_extension_type_not_in_allow_list,
 )
 from azext_aks_preview._podidentity import (
     _ensure_managed_identity_operator_permission,
@@ -755,6 +761,7 @@ def aks_update(
     # IMDS restriction
     enable_imds_restriction=False,
     disable_imds_restriction=False,
+    migrate_vmas_to_vms=False,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -1685,7 +1692,9 @@ def aks_agentpool_manual_scale_add(cmd,
         operation_group="managed_clusters",
     )
     sizes = [x.strip() for x in vm_sizes.split(",")]
-    new_manual_scale_profile = ManualScaleProfile(sizes=sizes, count=int(node_count))
+    if len(sizes) != 1:
+        raise ClientRequestError("We only accept single sku size for manual profile.")
+    new_manual_scale_profile = ManualScaleProfile(size=sizes[0], count=int(node_count))
     instance.virtual_machines_profile.scale.manual.append(new_manual_scale_profile)
 
     return sdk_no_wait(
@@ -1715,19 +1724,25 @@ def aks_agentpool_manual_scale_update(cmd,    # pylint: disable=unused-argument
         raise ClientRequestError("Cannot update manual in a non-virtualmachines node pool.")
 
     _current_vm_sizes = [x.strip() for x in current_vm_sizes.split(",")]
+    if len(_current_vm_sizes) != 1:
+        raise InvalidArgumentValueError(
+            f"We only accept single sku size for manual profile. {current_vm_sizes} is invalid."
+        )
     _vm_sizes = [x.strip() for x in vm_sizes.split(",")] if vm_sizes else []
+    if len(_vm_sizes) != 1:
+        raise InvalidArgumentValueError(f"We only accept single sku size for manual profile. {vm_sizes} is invalid.")
     manual_exists = False
     for m in instance.virtual_machines_profile.scale.manual:
-        if m.sizes == _current_vm_sizes:
+        if m.size == _current_vm_sizes[0]:
             manual_exists = True
             if vm_sizes:
-                m.sizes = _vm_sizes
+                m.size = _vm_sizes[0]
             if node_count:
                 m.count = int(node_count)
             break
     if not manual_exists:
         raise InvalidArgumentValueError(
-            f"Manual with sizes {current_vm_sizes} doesn't exist in node pool {nodepool_name}"
+            f"Manual with size {current_vm_sizes[0]} doesn't exist in node pool {nodepool_name}"
         )
 
     return sdk_no_wait(
@@ -1751,15 +1766,19 @@ def aks_agentpool_manual_scale_delete(cmd,    # pylint: disable=unused-argument
     if instance.type_properties_type != CONST_VIRTUAL_MACHINES:
         raise CLIError("Cannot delete manual in a non-virtualmachines node pool.")
     _current_vm_sizes = [x.strip() for x in current_vm_sizes.split(",")]
+    if len(_current_vm_sizes) != 1:
+        raise InvalidArgumentValueError(
+            f"We only accept single sku size for manual profile. {current_vm_sizes} is invalid."
+        )
     manual_exists = False
     for m in instance.virtual_machines_profile.scale.manual:
-        if m.sizes == _current_vm_sizes:
+        if m.size == _current_vm_sizes[0]:
             manual_exists = True
             instance.virtual_machines_profile.scale.manual.remove(m)
             break
     if not manual_exists:
         raise InvalidArgumentValueError(
-            f"Manual with sizes {current_vm_sizes} doesn't exist in node pool {nodepool_name}"
+            f"Manual with size {current_vm_sizes[0]} doesn't exist in node pool {nodepool_name}"
         )
 
     return sdk_no_wait(
@@ -3657,6 +3676,305 @@ def aks_check_network_outbound(
                             custom_endpoints)
 
 
+def create_k8s_extension(
+    cmd,
+    client,
+    resource_group_name,
+    cluster_name,
+    name,
+    extension_type,
+    scope=None,
+    target_namespace=None,
+    release_namespace=None,
+    configuration_settings=None,
+    configuration_protected_settings=None,
+    configuration_settings_file=None,
+    configuration_protected_settings_file=None,
+    no_wait=False,
+):
+    raise_validation_error_if_extension_type_not_in_allow_list(extension_type.lower())
+    k8s_extension_custom_mod = get_k8s_extension_module(CONST_K8S_EXTENSION_CUSTOM_MOD_NAME)
+    client_factory = get_k8s_extension_module(CONST_K8S_EXTENSION_CLIENT_FACTORY_MOD_NAME)
+    client = client_factory.cf_k8s_extension_operation(cmd.cli_ctx)
+
+    try:
+        result = k8s_extension_custom_mod.create_k8s_extension(
+            cmd,
+            client,
+            resource_group_name,
+            cluster_name,
+            name=name,
+            cluster_type="managedClusters",
+            extension_type=extension_type,
+            scope=scope,
+            target_namespace=target_namespace,
+            release_namespace=release_namespace,
+            configuration_settings=configuration_settings,
+            configuration_protected_settings=configuration_protected_settings,
+            configuration_settings_file=configuration_settings_file,
+            configuration_protected_settings_file=configuration_protected_settings_file,
+            no_wait=no_wait,
+        )
+        return result
+    except Exception as ex:
+        logger.error("K8s extension failed to install.\nError: %s", ex)
+
+
+def list_k8s_extension(
+    cmd,
+    client,
+    resource_group_name,
+    cluster_name
+):
+    k8s_extension_custom_mod = get_k8s_extension_module(CONST_K8S_EXTENSION_CUSTOM_MOD_NAME)
+    client_factory = get_k8s_extension_module(CONST_K8S_EXTENSION_CLIENT_FACTORY_MOD_NAME)
+    client = client_factory.cf_k8s_extension_operation(cmd.cli_ctx)
+
+    try:
+        result = k8s_extension_custom_mod.list_k8s_extension(
+            client,
+            resource_group_name,
+            cluster_name,
+            cluster_type="managedClusters",
+        )
+        return get_all_extensions_in_allow_list(result)
+    except Exception as ex:
+        logger.error("Failed to list the K8s extension.\nError: %s", ex)
+
+
+def update_k8s_extension(
+    cmd,
+    client,
+    resource_group_name,
+    cluster_name,
+    name,
+    configuration_settings=None,
+    configuration_protected_settings=None,
+    configuration_settings_file=None,
+    configuration_protected_settings_file=None,
+    no_wait=False,
+    yes=False,
+):
+    k8s_extension_custom_mod = get_k8s_extension_module(CONST_K8S_EXTENSION_CUSTOM_MOD_NAME)
+    client_factory = get_k8s_extension_module(CONST_K8S_EXTENSION_CLIENT_FACTORY_MOD_NAME)
+    client = client_factory.cf_k8s_extension_operation(cmd.cli_ctx)
+
+    try:
+        result = k8s_extension_custom_mod.update_k8s_extension(
+            cmd,
+            client,
+            resource_group_name,
+            cluster_name,
+            name,
+            "managedClusters",
+            configuration_settings=configuration_settings,
+            configuration_protected_settings=configuration_protected_settings,
+            configuration_settings_file=configuration_settings_file,
+            configuration_protected_settings_file=configuration_protected_settings_file,
+            no_wait=no_wait,
+            yes=yes,
+        )
+        return result
+    except Exception as ex:
+        logger.error("K8s extension failed to patch.\nError: %s", ex)
+
+
+def delete_k8s_extension(
+    cmd,
+    client,
+    resource_group_name,
+    cluster_name,
+    name,
+    no_wait=False,
+    yes=False,
+    force=False,
+):
+    k8s_extension_custom_mod = get_k8s_extension_module(CONST_K8S_EXTENSION_CUSTOM_MOD_NAME)
+    client_factory = get_k8s_extension_module(CONST_K8S_EXTENSION_CLIENT_FACTORY_MOD_NAME)
+    client = client_factory.cf_k8s_extension_operation(cmd.cli_ctx)
+
+    try:
+        result = k8s_extension_custom_mod.delete_k8s_extension(
+            cmd,
+            client,
+            resource_group_name,
+            cluster_name,
+            name,
+            "managedClusters",
+            no_wait=no_wait,
+            yes=yes,
+            force=force,
+        )
+        return result
+    except Exception as ex:
+        logger.error("Failed to delete K8s extension.\nError: %s", ex)
+
+
+def show_k8s_extension(cmd, client, resource_group_name, cluster_name, name):
+    k8s_extension_custom_mod = get_k8s_extension_module(CONST_K8S_EXTENSION_CUSTOM_MOD_NAME)
+    client_factory = get_k8s_extension_module(CONST_K8S_EXTENSION_CLIENT_FACTORY_MOD_NAME)
+    client = client_factory.cf_k8s_extension_operation(cmd.cli_ctx)
+
+    try:
+        result = k8s_extension_custom_mod.show_k8s_extension(
+            client,
+            resource_group_name,
+            cluster_name,
+            name,
+            "managedClusters",
+        )
+        return result
+    except Exception as ex:
+        logger.error("Failed to get K8s extension.\nError: %s", ex)
+
+
+def list_k8s_extension_types(
+    cmd,
+    client,
+    location=None,
+    resource_group_name=None,
+    cluster_name=None,
+    release_train=None
+):
+    k8s_extension_custom_mod = get_k8s_extension_module(CONST_K8S_EXTENSION_CUSTOM_MOD_NAME)
+    client_factory = get_k8s_extension_module(CONST_K8S_EXTENSION_CLIENT_FACTORY_MOD_NAME)
+    client = client_factory.cf_k8s_extension_types(cmd.cli_ctx)
+    try:
+        if location:
+            result = k8s_extension_custom_mod.list_extension_types_by_location(
+                client,
+                location,
+                cluster_type="managedClusters",
+            )
+            return get_all_extension_types_in_allow_list(result)
+        if cluster_name and resource_group_name:
+            result = k8s_extension_custom_mod.list_extension_types_by_cluster(
+                client,
+                resource_group_name,
+                cluster_name,
+                "managedClusters",
+                release_train=release_train,
+            )
+            return get_all_extension_types_in_allow_list(result)
+    except Exception as ex:
+        logger.error("Failed to list K8s extension types by location.\nError: %s", ex)
+
+
+# get K8s extension type
+def show_k8s_extension_type(
+    cmd,
+    client,
+    extension_type,
+    location=None,
+    resource_group_name=None,
+    cluster_name=None
+):
+    raise_validation_error_if_extension_type_not_in_allow_list(extension_type.lower())
+    k8s_extension_custom_mod = get_k8s_extension_module(CONST_K8S_EXTENSION_CUSTOM_MOD_NAME)
+    client_factory = get_k8s_extension_module(CONST_K8S_EXTENSION_CLIENT_FACTORY_MOD_NAME)
+    client = client_factory.cf_k8s_extension_types(cmd.cli_ctx)
+    try:
+        if location:
+            result = k8s_extension_custom_mod.show_extension_type_by_location(
+                client,
+                location,
+                extension_type=extension_type,
+            )
+            return result
+        if cluster_name and resource_group_name:
+            result = k8s_extension_custom_mod.show_extension_type_by_cluster(
+                client,
+                resource_group_name,
+                cluster_name,
+                "managedClusters",
+                extension_type,
+            )
+            return result
+    except Exception as ex:
+        logger.error("Failed to get K8s extension types by location.\nError: %s", ex)
+
+
+# list version by location
+def list_k8s_extension_type_versions(
+    cmd,
+    client,
+    extension_type,
+    location=None,
+    resource_group_name=None,
+    cluster_name=None,
+    release_train=None,
+    major_version=None,
+    show_latest=False
+):
+    raise_validation_error_if_extension_type_not_in_allow_list(extension_type.lower())
+    k8s_extension_custom_mod = get_k8s_extension_module(CONST_K8S_EXTENSION_CUSTOM_MOD_NAME)
+    client_factory = get_k8s_extension_module(CONST_K8S_EXTENSION_CLIENT_FACTORY_MOD_NAME)
+    client = client_factory.cf_k8s_extension_types(cmd.cli_ctx)
+    try:
+        if location:
+            result = k8s_extension_custom_mod.list_extension_type_versions_by_location(
+                client,
+                location,
+                extension_type,
+                release_train=release_train,
+                cluster_type="managedClusters",
+                major_version=major_version,
+                show_latest=show_latest,
+            )
+            return result
+        if cluster_name and resource_group_name:
+            result = k8s_extension_custom_mod.list_extension_type_versions_by_cluster(
+                client,
+                resource_group_name,
+                "managedClusters",
+                cluster_name,
+                extension_type,
+                release_train=release_train,
+                major_version=major_version,
+                show_latest=show_latest,
+            )
+            return result
+    except Exception as ex:
+        logger.error("Failed to list K8s extension type versions by location.\nError: %s", ex)
+
+
+# show extension type version
+def show_k8s_extension_type_version(
+    cmd,
+    client,
+    extension_type,
+    version,
+    location=None,
+    resource_group_name=None,
+    cluster_name=None
+):
+    raise_validation_error_if_extension_type_not_in_allow_list(extension_type.lower())
+    k8s_extension_custom_mod = get_k8s_extension_module(CONST_K8S_EXTENSION_CUSTOM_MOD_NAME)
+    client_factory = get_k8s_extension_module(CONST_K8S_EXTENSION_CLIENT_FACTORY_MOD_NAME)
+    client = client_factory.cf_k8s_extension_types(cmd.cli_ctx)
+    try:
+        if location:
+            result = k8s_extension_custom_mod.show_extension_type_version_by_location(
+                client,
+                location,
+                extension_type,
+                version,
+            )
+            return result
+        if cluster_name and resource_group_name:
+            result = k8s_extension_custom_mod.show_extension_type_version_by_cluster(
+                client,
+                resource_group_name,
+                "managedClusters",
+                cluster_name,
+                extension_type,
+                version
+            )
+            return result
+    except Exception as ex:
+        logger.error("Failed to get K8s extension type versions by cluster.\nError: %s", ex)
+
+
 # pylint: disable=unused-argument
 def aks_loadbalancer_add(
     cmd,
@@ -3672,7 +3990,6 @@ def aks_loadbalancer_add(
     aks_custom_headers=None,
 ):
     """Add a load balancer configuration to a managed cluster.
-
     :param resource_group_name: Name of resource group.
     :type resource_group_name: str
     :param cluster_name: Name of the managed cluster.
@@ -3714,7 +4031,6 @@ def aks_loadbalancer_update(
     aks_custom_headers=None,
 ):
     """Update a load balancer configuration in a managed cluster.
-
     :param resource_group_name: Name of resource group.
     :type resource_group_name: str
     :param cluster_name: Name of the managed cluster.
@@ -3747,7 +4063,6 @@ def aks_loadbalancer_update(
 
 def aks_loadbalancer_delete(cmd, client, resource_group_name, cluster_name, name):
     """Delete a load balancer configuration in a managed cluster.
-
     :param resource_group_name: Name of resource group.
     :type resource_group_name: str
     :param cluster_name: Name of the managed cluster.
@@ -3760,7 +4075,6 @@ def aks_loadbalancer_delete(cmd, client, resource_group_name, cluster_name, name
 
 def aks_loadbalancer_list(cmd, client, resource_group_name, cluster_name):
     """List load balancer configurations in a managed cluster.
-
     :param resource_group_name: Name of resource group.
     :type resource_group_name: str
     :param cluster_name: Name of the managed cluster.
@@ -3771,7 +4085,6 @@ def aks_loadbalancer_list(cmd, client, resource_group_name, cluster_name):
 
 def aks_loadbalancer_show(cmd, client, resource_group_name, cluster_name, name):
     """Show the details for a load balancer configuration.
-
     :param resource_group_name: Name of resource group.
     :type resource_group_name: str
     :param cluster_name: Name of the managed cluster.
@@ -3791,7 +4104,6 @@ def aks_loadbalancer_rebalance_nodes(
     load_balancer_names=None,
 ):
     """Rebalance nodes across specific load balancers.
-
     :param cmd: Command context
     :param client: AKS client
     :param resource_group_name: Name of resource group.
