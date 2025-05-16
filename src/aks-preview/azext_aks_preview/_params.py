@@ -767,13 +767,6 @@ def load_arguments(self, _):
         c.argument("pod_cidrs")
         c.argument("service_cidrs")
         c.argument("load_balancer_managed_outbound_ipv6_count", type=int)
-        c.argument(
-            "enable_pod_security_policy",
-            action="store_true",
-            deprecate_info=c.deprecate(
-                target="--enable-pod-security-policy", hide=True
-            ),
-        )
         c.argument("enable_pod_identity", action="store_true")
         c.argument("enable_pod_identity_with_kubenet", action="store_true")
         c.argument("enable_workload_identity", action="store_true")
@@ -1196,14 +1189,6 @@ def load_arguments(self, _):
         )
         c.argument("load_balancer_managed_outbound_ipv6_count", type=int)
         c.argument("outbound_type", arg_type=get_enum_type(outbound_types))
-        c.argument(
-            "enable_pod_security_policy",
-            action="store_true",
-            deprecate_info=c.deprecate(
-                target="--enable-pod-security-policy", hide=True
-            ),
-        )
-        c.argument("disable_pod_security_policy", action="store_true", is_preview=True)
         c.argument("enable_pod_identity", action="store_true")
         c.argument("enable_pod_identity_with_kubenet", action="store_true")
         c.argument("disable_pod_identity", action="store_true")
