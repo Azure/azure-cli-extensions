@@ -1238,6 +1238,8 @@ def _validate_azml_env_and_create_if_needed(cmd, app, env, cli_input_environment
                                       "Please specify the location of the app."
                                       "Serverless GPU supported regions: https://aka.ms/aca/serverless-gpu-regions")
             workload_profile_name = workload_profile_name if workload_profile_name is not None else "serverless-A100"
+            cpu = 24
+            memory = "220Gi"
             if cli_input_environment_name:
                 logger.warning(f"Environment {cli_input_environment_name} not found in {cli_input_resource_group_name}.")
             logger.warning(f"Will attempt to create an environment named {env.name} with serverless A100 GPU workload profile using workload profile name {workload_profile_name}.")
