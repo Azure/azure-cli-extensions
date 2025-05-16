@@ -34,7 +34,7 @@ def getResourceTypeValidator(resourceType):
 def load_validators():
     # Import all the resource type validator modules dynamically:
     validators_dir = Path(__file__).parent / "resource_type_validators"
-    __logger.warning("Starting resource type validator module import from %s", validators_dir)
+    __logger.debug("Starting resource type validator module import from %s", validators_dir)
 
     if len(resource_type_validators) > 0:
         __logger.debug("Resource type validators already loaded, skipping import.")
