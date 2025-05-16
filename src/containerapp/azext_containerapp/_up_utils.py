@@ -1179,7 +1179,7 @@ def _validate_azml_args(cmd, default_mcr_img, image_name, model_registry, model_
             "You must specify --model-version when deploying Foundry Models through Azure Container Apps CLI."
         )
     if image_name is None or image_name.lower() == default_mcr_img:
-        logger.warning("Image name is set to default ACA Foundry Integration image or --image is not speficied. Will use default image.")
+        logger.warning("A default image for the model you selected will be deployed to your container app. If you would like to customize your image, you can provide your own with --image.")
         image_name = default_mcr_img
         # Check if model is a blessed one.
         model_info = f"{model_registry.lower()}:{model_name.lower()}"
@@ -1189,7 +1189,7 @@ def _validate_azml_args(cmd, default_mcr_img, image_name, model_registry, model_
 Please visit https://github.com/microsoft/azure-container-apps/tree/main/templates/azml-app to download and modify the container template to get best experience.
 You can then deploy your personalized template image by running the following:
 az containerapp up --name <app_name> --image <your_image> --model-name <model_name> --model-version <model_version> --model-registry <model_registry>
-Currently supported model list: https://learn.microsoft.com/en-us/azure/container-apps/gpu-serverless-overview#supported-regions"""
+Currently supported model list: https://aka.ms/aca/serverless-gpu-regions"""
             )
     model_asset_id, model_reference_endpoint, model_type, model_load_class = _validate_azml_model_existence(cmd, model_registry, model_name, model_version)
     return model_asset_id, model_reference_endpoint, model_type, model_load_class, image_name
@@ -1228,13 +1228,19 @@ def _validate_azml_env_and_create_if_needed(cmd, app, env, cli_input_environment
             wps = safe_get(env_detail, "properties", "workloadProfiles")
             for wp in wps:
                 if wp["name"].lower() == wp_name.lower() and "gpu" not in wp["workloadProfileType"].lower():
-                    raise ValidationError("Azure AI Foundry model requires a GPU workload profile. Your current app is not running with a GPU workload profile. Create a new app with correct workload profile or switch your current one to a GPU workload profile. Servleress GPU supported regions: https://learn.microsoft.com/en-us/azure/container-apps/gpu-serverless-overview#supported-regions")
+                    raise ValidationError("Azure AI Foundry model requires a GPU workload profile. Your current app is not running with a GPU workload profile. Create a new app with correct workload profile or switch your current one to a GPU workload profile. Serverless GPU supported regions: https://aka.ms/aca/serverless-gpu-regions")
                 env = ContainerAppEnvironment(cmd, env_name, resource_group, location=safe_get(env_detail, "location"))
         return env, None, None, None
     else:
         if not env.check_exists():
+            if env.location is None or env.location == "":
+                raise ValidationError("When using 'az containerapp up' to deploy a Foundry model, you must specify the location for your app.\n"
+                                      "Please specify the location of the app."
+                                      "Serverless GPU supported regions: https://aka.ms/aca/serverless-gpu-regions")
             workload_profile_name = workload_profile_name if workload_profile_name is not None else "serverless-A100"
-            logger.warning(f"Environment {cli_input_environment_name} not found in {cli_input_resource_group_name}. Will attempt to create one with serverless A100 GPU workload profile using workload profile name {workload_profile_name}.")
+            if cli_input_environment_name:
+                logger.warning(f"Environment {cli_input_environment_name} not found in {cli_input_resource_group_name}.")
+            logger.warning(f"Will attempt to create an environment named {env.name} with serverless A100 GPU workload profile using workload profile name {workload_profile_name}.")
             env.workload_profile_name = workload_profile_name
             env.workload_profile_type = "Consumption-GPU-NC24-A100"
             env.create_if_needed(app.name)
@@ -1246,8 +1252,6 @@ def _validate_azml_env_and_create_if_needed(cmd, app, env, cli_input_environment
             dedicated_nc96_a100_wp_name = None
             dedicated_nc48_a100_wp_name = None
             dedicated_nc24_a100_wp_name = None
-            if "gpu" not in wps or "GPU" not in wps:
-                raise ValidationError("Azure AI Foundry model requires a GPU workload profile. Your current environment does not have a GPU workload profile. Servleress GPU supported regions: https://learn.microsoft.com/en-us/azure/container-apps/gpu-serverless-overview#supported-regions")
             for wp in wps:
                 if wp["workloadProfileType"].lower() == "consumption-gpu-nc24-a100":
                     serverless_a100_wp_name = wp["name"]
@@ -1271,12 +1275,12 @@ def _validate_azml_env_and_create_if_needed(cmd, app, env, cli_input_environment
                     memory = "220Gi"
             workload_profile_name = serverless_a100_wp_name or serverless_t4_wp_name or dedicated_nc96_a100_wp_name or dedicated_nc48_a100_wp_name or dedicated_nc24_a100_wp_name
             if workload_profile_name is None or workload_profile_name == "":
-                raise ValidationError("Azure AI Foundry model requires a GPU workload profile. Your current environment does not have a GPU workload profile. Servleress GPU supported regions: https://learn.microsoft.com/en-us/azure/container-apps/gpu-serverless-overview#supported-regions")
+                raise ValidationError("Azure AI Foundry model requires a GPU workload profile. Your current environment does not have a GPU workload profile. Serverless GPU supported regions: https://aka.ms/aca/serverless-gpu-regions")
             logger.warning(f"No workload profile name specified. Attempting to use {workload_profile_name}, which is the most powerful one created in the environment.")
         else:
             for wp in wps:
                 if wp["name"].lower() == workload_profile_name.lower() and "gpu" not in wp["workloadProfileType"].lower():
-                    raise ValidationError(f"{workload_profile_name} is a {wp['workloadProfileType']} type workload profile. Azure AI Foundry model requires a GPU workload profile. Servleress GPU supported regions: https://learn.microsoft.com/en-us/azure/container-apps/gpu-serverless-overview#supported-regions")
+                    raise ValidationError(f"{workload_profile_name} is a {wp['workloadProfileType']} type workload profile. Azure AI Foundry model requires a GPU workload profile. Serverless GPU supported regions: https://aka.ms/aca/serverless-gpu-regions")
         return env, workload_profile_name, cpu, memory
 
 
