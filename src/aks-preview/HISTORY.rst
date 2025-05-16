@@ -12,6 +12,10 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+17.0.0b4
+++++++++
+* Reset vm_size and count to None for `az aks update --migrate-vmas-to-vms`
+
 17.0.0b3
 ++++++++
 * Add default value of option `--vm-sizes` for `az aks create` and `az aks nodepool add`.
