@@ -3,14 +3,20 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import importlib
+from pathlib import Path
 from abc import ABC, abstractmethod
 from enum import Enum
+from knack.log import get_logger
 
 resource_type_validators = {}
+__logger = get_logger(__name__)
 
 
 # This is the decorator to register resource type validators:
 def register_resource_type(resourceType):
+    __logger.debug("Registering resource type validator for %s", resourceType)
+
     def decorator(cls):
         resource_type_validators[resourceType] = cls
         return cls
@@ -23,6 +29,32 @@ def getResourceTypeValidator(resourceType):
     if validator_class:
         return validator_class()
     return None
+
+
+def load_validators():
+    # Import all the resource type validator modules dynamically:
+    validators_dir = Path(__file__).parent / "resource_type_validators"
+    __logger.debug("Starting resource type validator module import from %s", validators_dir)
+
+    if len(resource_type_validators) > 0:
+        __logger.debug("Resource type validators already loaded, skipping import.")
+        return
+
+    try:
+        if validators_dir.exists():
+            for file in validators_dir.glob("*.py"):
+                if file.name != "__init__.py":
+                    try:
+                        __logger.debug("Importing resource type validator module: %s", file.name)
+                        module_name = f".resource_type_validators.{file.stem}"
+                        importlib.import_module(module_name, package=__package__)
+                    except ImportError as e:
+                        __logger.warning("Failed to import module %s: %s", module_name, str(e))
+        else:
+            __logger.error("Resource type validators directory not found: %s", validators_dir)
+
+    except Exception as e:  # pylint: disable=broad-except
+        __logger.warning("Error scanning for resource type validator modules: %s", str(e))
 
 
 # This is the base class for all resource type validators:

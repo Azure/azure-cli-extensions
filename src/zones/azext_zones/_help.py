@@ -18,7 +18,7 @@ helps['zones validate'] = """
     examples:
       - name: Validate zone redundancy status of all resources in the specified resource group
         text: |-
-          az zones validate --resource-groups myProductionRG --omit-dependent
+          az zones validate --resource-groups myProductionRG
       - name: Validate zone redundancy status of all resources in the specified resource group, but omit the dependent/child resources
         text: |-
           az zones validate --resource-groups myProductionRG --omit-dependent

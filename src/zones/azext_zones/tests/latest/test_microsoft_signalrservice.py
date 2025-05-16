@@ -6,38 +6,37 @@
 import os
 import unittest
 
-from azure.cli.testsdk import (ScenarioTest)
-from ..._resourceTypeValidation import getResourceTypeValidator, ZoneRedundancyValidationResult
+from azure.cli.testsdk import ScenarioTest
+from ..._resourceTypeValidation import (
+    getResourceTypeValidator,
+    load_validators,
+    ZoneRedundancyValidationResult,
+)
 
 
 class test_microsoft_signalrservice(ScenarioTest):
-
-    resource_zr = \
-    {
+    resource_zr = {
         "type": "microsoft.signalrservice/signalr",
-        "sku": {
-            "name": "Premium"
-        },
-        "zones": None
+        "sku": {"name": "Premium"},
+        "zones": None,
     }
 
-    resource_nonzr = \
-    {
+    resource_nonzr = {
         "type": "microsoft.signalrservice/signalr",
-        "sku": {
-            "name": "Standard"
-        },
-        "zones": None
+        "sku": {"name": "Standard"},
+        "zones": None,
     }
-    
+
     validator = None
 
     @classmethod
     def setUpClass(cls):
         super(test_microsoft_signalrservice, cls).setUpClass()
-        resourceProvider = cls.resource_zr['type'].split('/')[0]
-        cls.validator = getResourceTypeValidator(resourceProvider)
+        # Load the resource type validators
+        load_validators()
 
+        resourceProvider = cls.resource_zr["type"].split("/")[0]
+        cls.validator = getResourceTypeValidator(resourceProvider)
 
     def test_zr(self):
         # Test for zone redundancy scenario
