@@ -78,16 +78,27 @@ def create_and_verify_containerapp_up(
             no_log_destination=False,
             registry_server=None,
             registry_identity=None,
-            check_registry_identity=None
+            check_registry_identity=None,
+            model_name=None,
+            model_version=None,
+            model_registry=None
             ):
+        # Check if the app being tested is a azure ai foundry app
+        is_azml_app = True if model_name and model_version and model_registry else False
         # Ensure that the Container App environment is created
         if env_name is None:
            env_name = test_cls.create_random_name(prefix='env', length=24)
            env_create_cmd = f'containerapp env create -g {resource_group} -n {env_name}'
+           if is_azml_app:
+               # will attempt to run in westus3 and add t4 wps
+               env_create_cmd += f' --location=westus3'
            if no_log_destination:
                env_create_cmd += f" --logs-destination none"
            test_cls.cmd(env_create_cmd)
 
+        if is_azml_app:
+            create_t4_wps_cmd = f'containerapp env workload-profile add -g {resource_group} -n {env_name} --workload-profile-name serverless-t4 --workload-profile-type Consumption-GPU-NC8as-T4'
+            test_cls.cmd(create_t4_wps_cmd)
         if app_name is None:
             # Generate a name for the Container App
             app_name = test_cls.create_random_name(prefix='containerapp', length=24)
@@ -110,6 +121,14 @@ def create_and_verify_containerapp_up(
             up_cmd += f" --registry-server {registry_server}"
         if registry_identity:
             up_cmd += f" --registry-identity {registry_identity}"
+        if location:
+            up_cmd += f" -l {location.upper()}"
+        if model_name:
+            up_cmd += f" --model-name {model_name}"
+        if model_version:
+            up_cmd += f" --model-version {model_version}"
+        if model_registry:
+            up_cmd += f" --model-registry {model_registry}"
 
         if requires_acr_prerequisite:
             # Create ACR
@@ -125,17 +144,17 @@ def create_and_verify_containerapp_up(
         test_cls.cmd(up_cmd)
 
         # Verify that the Container App is running
+        # For foundry model app, the app cold start time is relatively long, so url request should have high timeout setting
         app = test_cls.cmd(f"containerapp show -g {resource_group} -n {app_name}").get_output_in_json()
         url = app["properties"]["configuration"]["ingress"]["fqdn"]
         url = url if url.startswith("http") else f"http://{url}"
-        resp = requests.get(url)
+        if model_name and model_version and model_registry:
+            resp = requests.get(url, timeout=400)
+        else:
+            resp = requests.get(url)
         test_cls.assertTrue(resp.ok)
         if check_registry_identity:
             test_cls.assertTrue(app["properties"]["configuration"]["registries"][0]["identity"] == check_registry_identity)
-        # Re-run the 'az containerapp up' command with the location parameter if provided
-        if location:
-            up_cmd += f" -l {location.upper()}"
-            test_cls.cmd(up_cmd)
 
 
 def create_and_verify_containerapp_up_with_multiple_environments(

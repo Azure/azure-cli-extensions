@@ -133,6 +133,20 @@ class ContainerappEnvPreviewCreateDecorator(ContainerAppEnvCreateDecorator):
                     "maximumCount": 1
                 }
                 workload_profiles.append(gpu_profile)
+            if self.is_env_for_azml_app() and not self.get_argument_enable_dedicated_gpu():
+                wp_type = self.get_argument_workload_profile_type()
+                if wp_type is None or wp_type.lower() == "consumption-gpu-nc24-a100":
+                    serverless_a100_profile = {
+                        "workloadProfileType": "Consumption-GPU-NC24-A100",
+                        "name": self.get_argument_workload_profile_name() if self.get_argument_workload_profile_name() else "serverless-A100",
+                    }
+                    workload_profiles.append(serverless_a100_profile)
+                else:
+                    serverless_gpu_profile = {
+                        "workloadProfileType": wp_type,
+                        "name": self.get_argument_workload_profile_name() if self.get_argument_workload_profile_name() else "serverless-gpu",
+                    }
+                    workload_profiles.append(serverless_gpu_profile)
             self.managed_env_def["properties"]["workloadProfiles"] = workload_profiles
 
     def set_up_custom_domain_configuration(self):
@@ -181,6 +195,15 @@ class ContainerappEnvPreviewCreateDecorator(ContainerAppEnvCreateDecorator):
 
     def get_argument_public_network_access(self):
         return self.get_param("public_network_access")
+
+    def is_env_for_azml_app(self):
+        return self.get_param("is_env_for_azml_app")
+
+    def get_argument_workload_profile_type(self):
+        return self.get_param("workload_profile_type")
+
+    def get_argument_workload_profile_name(self):
+        return self.get_param("workload_profile_name")
 
 
 class ContainerappEnvPreviewUpdateDecorator(ContainerAppEnvUpdateDecorator):
