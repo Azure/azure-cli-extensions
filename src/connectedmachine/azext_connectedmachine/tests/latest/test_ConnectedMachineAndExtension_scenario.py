@@ -36,7 +36,7 @@ class ConnectedMachineAndExtensionScenarioTest(ScenarioTest):
         self.kwargs.update({
             'machine': 'testmachine',
             'rg': 'ytongtest',
-            'location': 'centraluseuap',
+            'location': 'westus2',
             'customScriptName': 'custom-test',
         })
 
