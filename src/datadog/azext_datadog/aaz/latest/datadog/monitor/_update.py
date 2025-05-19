@@ -503,12 +503,8 @@ class _UpdateHelper:
         )
 
         datadog_organization_properties = _schema_datadog_monitor_resource_read.properties.datadog_organization_properties
-        datadog_organization_properties.id = AAZStrType(
-            flags={"read_only": True},
-        )
-        datadog_organization_properties.name = AAZStrType(
-            flags={"read_only": True},
-        )
+        datadog_organization_properties.id = AAZStrType()
+        datadog_organization_properties.name = AAZStrType()
 
         user_info = _schema_datadog_monitor_resource_read.properties.user_info
         user_info.email_address = AAZStrType(

@@ -210,12 +210,8 @@ class Wait(AAZWaitCommand):
             )
 
             datadog_organization_properties = cls._schema_on_200.properties.datadog_organization_properties
-            datadog_organization_properties.id = AAZStrType(
-                flags={"read_only": True},
-            )
-            datadog_organization_properties.name = AAZStrType(
-                flags={"read_only": True},
-            )
+            datadog_organization_properties.id = AAZStrType()
+            datadog_organization_properties.name = AAZStrType()
 
             user_info = cls._schema_on_200.properties.user_info
             user_info.email_address = AAZStrType(
