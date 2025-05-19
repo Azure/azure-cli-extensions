@@ -4,27 +4,19 @@
 # --------------------------------------------------------------------------------------------
 
 
-import importlib
-from pathlib import Path
 from azure.cli.core import AzCommandsLoader
 from azext_zones._help import helps  # pylint: disable=unused-import
-
-# Import all the resource type validator modules dynamically:
-validators_dir = Path(__file__).parent / "resource_type_validators"
-for file in validators_dir.glob("*.py"):
-    if file.name != "__init__.py":
-        module_name = f".resource_type_validators.{file.stem}"
-        importlib.import_module(module_name, package=__package__)
+from ._resourceTypeValidation import load_validators
 
 
 class ZonesCommandsLoader(AzCommandsLoader):
-
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
         from azext_zones._client_factory import cf_zones
         zones_custom = CliCommandType(
             operations_tmpl='azext_zones.custom#{}',
             client_factory=cf_zones)
+        load_validators()
         super(ZonesCommandsLoader, self).__init__(cli_ctx=cli_ctx,
                                                   custom_command_type=zones_custom)
 

@@ -6,68 +6,46 @@
 import os
 import unittest
 
-from azure.cli.testsdk import (ScenarioTest)
-from ..._resourceTypeValidation import getResourceTypeValidator, ZoneRedundancyValidationResult
+from azure.cli.testsdk import ScenarioTest
+from ..._resourceTypeValidation import (
+    getResourceTypeValidator,
+    load_validators,
+    ZoneRedundancyValidationResult,
+)
 
 
 class test_microsoft_app(ScenarioTest):
+    resource_disk_zr = {"type": "microsoft.compute/disks", "zones": ["1", "2", "3"]}
 
-    resource_disk_zr = \
-        {
-            "type": "microsoft.compute/disks",
-            "zones": [
-                "1",
-                "2",
-                "3"
-            ]
-        }
+    resource_disk_nonzr = {"type": "microsoft.compute/disks", "zones": None}
 
-    resource_disk_nonzr = \
-        {
-            "type": "microsoft.compute/disks",
-            "zones": None
-        }
+    resource_vmss_zr = {
+        "type": "microsoft.compute/virtualmachinescalesets",
+        "zones": ["1", "2", "3"],
+    }
 
-    resource_vmss_zr = \
-        {
-            "type": "microsoft.compute/virtualmachinescalesets",
-            "zones": [
-                "1",
-                "2",
-                "3"
-            ]
-        }
+    resource_vmss_nonzr = {
+        "type": "microsoft.compute/virtualmachinescalesets",
+        "zones": None,
+    }
 
-    resource_vmss_nonzr = \
-        {
-            "type": "microsoft.compute/virtualmachinescalesets",
-            "zones": None
-        }
+    resource_vm_zr = {
+        "type": "microsoft.compute/virtualmachines",
+        "zones": ["1", "2", "3"],
+    }
 
-    resource_vm_zr = \
-        {
-            "type": "microsoft.compute/virtualmachines",
-            "zones": [
-                "1",
-                "2",
-                "3"
-            ]
-        }
-
-    resource_vm_nonzr = \
-        {
-            "type": "microsoft.compute/virtualmachines",
-            "zones": None
-        }
+    resource_vm_nonzr = {"type": "microsoft.compute/virtualmachines", "zones": None}
 
     validator = None
 
     @classmethod
     def setUpClass(cls):
         super(test_microsoft_app, cls).setUpClass()
-        resourceProvider = cls.resource_disk_zr['type'].split('/')[0]
-        cls.validator = getResourceTypeValidator(resourceProvider)
+        # Load the resource type validators
+        load_validators()
 
+        resourceProvider = cls.resource_disk_zr["type"].split("/")[0]
+        cls.validator = getResourceTypeValidator(resourceProvider)
 
     def test_disk_zr(self):
         # Test for zone redundancy scenario
