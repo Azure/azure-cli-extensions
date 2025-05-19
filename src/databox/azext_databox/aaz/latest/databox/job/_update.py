@@ -22,9 +22,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-12-01",
+        "version": "2025-02-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.databox/jobs/{}", "2022-12-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.databox/jobs/{}", "2025-02-01"],
         ]
     }
 
@@ -103,6 +103,7 @@ class Update(AAZCommand):
             options=["--kek-type"],
             arg_group="KeyEncryptionKey",
             help="Type of encryption key used for key encryption.",
+            default="MicrosoftManaged",
             enum={"CustomerManaged": "CustomerManaged", "MicrosoftManaged": "MicrosoftManaged"},
         )
         _args_schema.kek_url = AAZStrArg(
@@ -366,7 +367,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-12-01",
+                    "api-version", "2025-02-01",
                     required=True,
                 ),
             }
@@ -479,6 +480,7 @@ class Update(AAZCommand):
             )
             _schema_on_200.system_data = AAZObjectType(
                 serialized_name="systemData",
+                flags={"read_only": True},
             )
             _schema_on_200.tags = AAZDictType()
             _schema_on_200.type = AAZStrType(
@@ -513,8 +515,16 @@ class Update(AAZCommand):
             )
 
             properties = cls._schema_on_200.properties
+            properties.all_devices_lost = AAZBoolType(
+                serialized_name="allDevicesLost",
+                flags={"read_only": True},
+            )
             properties.cancellation_reason = AAZStrType(
                 serialized_name="cancellationReason",
+                flags={"read_only": True},
+            )
+            properties.delayed_stage = AAZStrType(
+                serialized_name="delayedStage",
                 flags={"read_only": True},
             )
             properties.delivery_info = AAZObjectType(
@@ -524,7 +534,9 @@ class Update(AAZCommand):
                 serialized_name="deliveryType",
             )
             properties.details = AAZObjectType()
-            properties.error = AAZObjectType()
+            properties.error = AAZObjectType(
+                flags={"read_only": True},
+            )
             _UpdateHelper._build_schema_cloud_error_read(properties.error)
             properties.is_cancellable = AAZBoolType(
                 serialized_name="isCancellable",
@@ -599,13 +611,16 @@ class Update(AAZCommand):
             )
             details.datacenter_address = AAZObjectType(
                 serialized_name="datacenterAddress",
+                flags={"read_only": True},
             )
             details.delivery_package = AAZObjectType(
                 serialized_name="deliveryPackage",
+                flags={"read_only": True},
             )
             _UpdateHelper._build_schema_package_shipping_details_read(details.delivery_package)
             details.device_erasure_details = AAZObjectType(
                 serialized_name="deviceErasureDetails",
+                flags={"read_only": True},
             )
             details.expected_data_size_in_tera_bytes = AAZIntType(
                 serialized_name="expectedDataSizeInTeraBytes",
@@ -623,6 +638,7 @@ class Update(AAZCommand):
             )
             details.last_mitigation_action_on_job = AAZObjectType(
                 serialized_name="lastMitigationActionOnJob",
+                flags={"read_only": True},
             )
             details.preferences = AAZObjectType()
             details.return_package = AAZObjectType(
@@ -962,8 +978,16 @@ class Update(AAZCommand):
             job_stages.Element = AAZObjectType()
 
             _element = cls._schema_on_200.properties.details.job_stages.Element
+            _element.delay_information = AAZListType(
+                serialized_name="delayInformation",
+                flags={"read_only": True},
+            )
             _element.display_name = AAZStrType(
                 serialized_name="displayName",
+                flags={"read_only": True},
+            )
+            _element.job_stage_details = AAZDictType(
+                serialized_name="jobStageDetails",
                 flags={"read_only": True},
             )
             _element.stage_name = AAZStrType(
@@ -978,6 +1002,32 @@ class Update(AAZCommand):
                 serialized_name="stageTime",
                 flags={"read_only": True},
             )
+
+            delay_information = cls._schema_on_200.properties.details.job_stages.Element.delay_information
+            delay_information.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.details.job_stages.Element.delay_information.Element
+            _element.description = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.error_code = AAZStrType(
+                serialized_name="errorCode",
+                flags={"read_only": True},
+            )
+            _element.resolution_time = AAZStrType(
+                serialized_name="resolutionTime",
+                flags={"read_only": True},
+            )
+            _element.start_time = AAZStrType(
+                serialized_name="startTime",
+                flags={"read_only": True},
+            )
+            _element.status = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            job_stage_details = cls._schema_on_200.properties.details.job_stages.Element.job_stage_details
+            job_stage_details.Element = AAZAnyType()
 
             key_encryption_key = cls._schema_on_200.properties.details.key_encryption_key
             key_encryption_key.identity_properties = AAZObjectType(
@@ -1095,6 +1145,7 @@ class Update(AAZCommand):
             )
             disc_data_box_customer_disk.deliver_to_dc_package_details = AAZObjectType(
                 serialized_name="deliverToDcPackageDetails",
+                flags={"read_only": True},
             )
             disc_data_box_customer_disk.enable_manifest_backup = AAZBoolType(
                 serialized_name="enableManifestBackup",
@@ -1436,6 +1487,7 @@ class Update(AAZCommand):
                 serialized_name="displayName",
             )
             sku.family = AAZStrType()
+            sku.model = AAZStrType()
             sku.name = AAZStrType(
                 flags={"required": True},
             )
@@ -1510,7 +1562,9 @@ class _UpdateHelper:
             _schema.target = cls._schema_cloud_error_read.target
             return
 
-        cls._schema_cloud_error_read = _schema_cloud_error_read = AAZObjectType()
+        cls._schema_cloud_error_read = _schema_cloud_error_read = AAZObjectType(
+            flags={"read_only": True}
+        )
 
         cloud_error_read = _schema_cloud_error_read
         cloud_error_read.additional_info = AAZListType(
@@ -1528,7 +1582,11 @@ class _UpdateHelper:
         additional_info.Element = AAZObjectType()
 
         _element = _schema_cloud_error_read.additional_info.Element
+        _element.info = AAZDictType()
         _element.type = AAZStrType()
+
+        info = _schema_cloud_error_read.additional_info.Element.info
+        info.Element = AAZAnyType()
 
         details = _schema_cloud_error_read.details
         details.Element = AAZObjectType()
@@ -1732,7 +1790,9 @@ class _UpdateHelper:
             _schema.tracking_url = cls._schema_package_shipping_details_read.tracking_url
             return
 
-        cls._schema_package_shipping_details_read = _schema_package_shipping_details_read = AAZObjectType()
+        cls._schema_package_shipping_details_read = _schema_package_shipping_details_read = AAZObjectType(
+            flags={"read_only": True}
+        )
 
         package_shipping_details_read = _schema_package_shipping_details_read
         package_shipping_details_read.carrier_name = AAZStrType(
