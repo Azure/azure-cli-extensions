@@ -103,7 +103,6 @@ class Update(AAZCommand):
             options=["--kek-type"],
             arg_group="KeyEncryptionKey",
             help="Type of encryption key used for key encryption.",
-            default="MicrosoftManaged",
             enum={"CustomerManaged": "CustomerManaged", "MicrosoftManaged": "MicrosoftManaged"},
         )
         _args_schema.kek_url = AAZStrArg(

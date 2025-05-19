@@ -18,7 +18,7 @@ class Mitigate(AAZCommand):
     """Request to mitigate for a given job
 
     :example: Mitigate
-        az databox job mitigate --job-name TestJobName1 --resource-group YourResourceGroupName --serial-number-customer-resolution-map "{testDISK-1:MoveToCleanUpDevice,testDISK-2:Resume}"
+        az databox job mitigate --job-name TestJobName1 --resource-group YourResourceGroupName --srn-resolution-map "{testDISK-1:MoveToCleanUpDevice,testDISK-2:Resume}"
     """
 
     _aaz_info = {
@@ -62,20 +62,20 @@ class Mitigate(AAZCommand):
         # define Arg Group "MitigateJobRequest"
 
         _args_schema = cls._args_schema
-        _args_schema.customer_resolution_code = AAZStrArg(
-            options=["--customer-resolution-code"],
+        _args_schema.resolution_code = AAZStrArg(
+            options=["--resolution-code"],
             arg_group="MitigateJobRequest",
             help="Resolution code for the job",
             enum={"MoveToCleanUpDevice": "MoveToCleanUpDevice", "None": "None", "ReachOutToOperation": "ReachOutToOperation", "Restart": "Restart", "Resume": "Resume"},
         )
-        _args_schema.serial_number_customer_resolution_map = AAZDictArg(
-            options=["--serial-number-customer-resolution-map"],
+        _args_schema.srn_resolution_map = AAZDictArg(
+            options=["--srn-resolution-map"],
             arg_group="MitigateJobRequest",
             help="Serial number and the customer resolution code corresponding to each serial number",
         )
 
-        serial_number_customer_resolution_map = cls._args_schema.serial_number_customer_resolution_map
-        serial_number_customer_resolution_map.Element = AAZStrArg(
+        srn_resolution_map = cls._args_schema.srn_resolution_map
+        srn_resolution_map.Element = AAZStrArg(
             enum={"MoveToCleanUpDevice": "MoveToCleanUpDevice", "None": "None", "ReachOutToOperation": "ReachOutToOperation", "Restart": "Restart", "Resume": "Resume"},
         )
         return cls._args_schema
@@ -163,8 +163,8 @@ class Mitigate(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("customerResolutionCode", AAZStrType, ".customer_resolution_code")
-            _builder.set_prop("serialNumberCustomerResolutionMap", AAZDictType, ".serial_number_customer_resolution_map")
+            _builder.set_prop("customerResolutionCode", AAZStrType, ".resolution_code")
+            _builder.set_prop("serialNumberCustomerResolutionMap", AAZDictType, ".srn_resolution_map")
 
             serial_number_customer_resolution_map = _builder.get(".serialNumberCustomerResolutionMap")
             if serial_number_customer_resolution_map is not None:
