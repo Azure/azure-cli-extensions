@@ -159,8 +159,9 @@ def handle_failure(resources, deployment, timestamp):
                 resource = resources.get_by_id(reserr.target, "2022-11-01")
             except ResourceNotFoundError:
                 logger.warning("The '%s' doesn't exist.", reserr.target)
-                return
-            errmsg = f"{resource.as_dict()['properties']['statuses'][0]['message']}"
+                raise CLIError(f"[{timestamp}] {consts.UPGRADE_FAILED_MSG + deployment.properties.error.message}")
+            statuses = resource.as_dict().get("properties", {}).get("statuses", [])
+            errmsg = statuses[0]["message"] if statuses else "Unknown error occurred."
             raise CLIError(
                 f"[{timestamp}] {consts.UPGRADE_FAILED_MSG + deployment.properties.error.message} "
                 f"'{reserr.target}' failed: {errmsg}"

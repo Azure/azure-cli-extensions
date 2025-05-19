@@ -9,7 +9,7 @@ from knack.help_files import helps
 # pylint: disable=line-too-long
 helps['vme'] = """
     type: group
-    short-summary: Commands to manage version managed extensions.
+    short-summary: Commands to manage version managed extensions on connected kubernetes clusters.
 """
 
 helps['vme install'] = """

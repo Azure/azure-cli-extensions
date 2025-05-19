@@ -25,12 +25,12 @@ def load_arguments(self, _):
         c.argument(
             "kube_config",
             options_list=["--kube-config"],
-            help="Path to the kube config file.",
+            help="Path to the kube config file. Optional if the cluster has the feature flag enabled or the current Kubernetes config/context is set to this cluster.",
         )
         c.argument(
             "kube_context",
             options_list=["--kube-context"],
-            help="Kube context from current machine.",
+            help="Kube context from current machine. Optional if the cluster has the feature flag enabled or the current Kubernetes config/context is set to this cluster.",
         )
         c.argument(
             "wait",
@@ -65,12 +65,12 @@ def load_arguments(self, _):
         c.argument(
             "kube_config",
             options_list=["--kube-config"],
-            help="Path to the kube config file. If the cluster has the feature flag enabled or the current Kubernetes config or context is set to this cluster, this parameter is unnecessary.",
+            help="Path to the kube config file. Optional if the cluster has the feature flag enabled or the current Kubernetes config/context is set to this cluster.",
         )
         c.argument(
             "kube_context",
             options_list=["--kube-context"],
-            help="Kube context from current machine. If the cluster has the feature flag enabled or the current Kubernetes config or context is set to this cluster, this parameter is unnecessary.",
+            help="Kube context from current machine. Optional if the cluster has the feature flag enabled or the current Kubernetes config/context is set to this cluster.",
         )
 
     with self.argument_context('vme uninstall') as c:
