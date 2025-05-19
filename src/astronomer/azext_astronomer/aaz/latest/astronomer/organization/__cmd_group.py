@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "astronomer organization",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage Organization resources.
+    """Manage Azure resources that represent organizations in the Astronomer platform
     """
     pass
 

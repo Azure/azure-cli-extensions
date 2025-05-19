@@ -16,7 +16,7 @@ from azure.cli.core.aaz import *
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
-    """Delete a OrganizationResource
+    """Delete the Azure resource linked to an organization entity in Astronomer
 
     :example: Delete a OrganizationResource
         az astronomer organization delete -g MyResourceGroup -n MyAstronomerOrganization
@@ -52,7 +52,7 @@ class Delete(AAZCommand):
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9][a-zA-Z0-9_\-.: ]*$",
+                pattern="^[a-zA-Z0-9][a-zA-Z0-9_\\-.: ]*$",
                 max_length=50,
                 min_length=1,
             ),
