@@ -3,7 +3,7 @@
 Release History
 ===============
 
-1.0.1b1
+1.0.0b2
 ++++++
 * Minor bugfixes to improve command loading
 
