@@ -29,6 +29,8 @@ class List(AAZCommand):
         ]
     }
 
+    AZ_SUPPORT_PAGINATION = True
+
     def _handler(self, command_args):
         super()._handler(command_args)
         return self.build_paging(self._execute_operations, self._output)
@@ -159,7 +161,7 @@ class List(AAZCommand):
             _element.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.identity = AAZObjectType()
+            _element.identity = AAZIdentityObjectType()
             _element.location = AAZStrType(
                 flags={"required": True},
             )
@@ -322,6 +324,7 @@ class List(AAZCommand):
             details.preferences = AAZObjectType()
             details.return_package = AAZObjectType(
                 serialized_name="returnPackage",
+                flags={"read_only": True},
             )
             _ListHelper._build_schema_package_shipping_details_read(details.return_package)
             details.reverse_shipment_label_sas_key = AAZStrType(
@@ -832,7 +835,9 @@ class List(AAZCommand):
                 serialized_name="directoriesErroredOut",
                 flags={"read_only": True},
             )
-            _element.error = AAZObjectType()
+            _element.error = AAZObjectType(
+                flags={"read_only": True},
+            )
             _ListHelper._build_schema_cloud_error_read(_element.error)
             _element.files_errored_out = AAZIntType(
                 serialized_name="filesErroredOut",
@@ -921,7 +926,7 @@ class List(AAZCommand):
             )
             _element.bit_locker_key = AAZStrType(
                 serialized_name="bitLockerKey",
-                flags={"required": True, "secret": True},
+                flags={"secret": True},
             )
             _element.manifest_file = AAZStrType(
                 serialized_name="manifestFile",
@@ -977,7 +982,9 @@ class List(AAZCommand):
                 serialized_name="bytesCopied",
                 flags={"read_only": True},
             )
-            _element.error = AAZObjectType()
+            _element.error = AAZObjectType(
+                flags={"read_only": True},
+            )
             _ListHelper._build_schema_cloud_error_read(_element.error)
             _element.percent_complete = AAZIntType(
                 serialized_name="percentComplete",
@@ -1049,7 +1056,9 @@ class List(AAZCommand):
                 serialized_name="directoriesErroredOut",
                 flags={"read_only": True},
             )
-            _element.error = AAZObjectType()
+            _element.error = AAZObjectType(
+                flags={"read_only": True},
+            )
             _ListHelper._build_schema_cloud_error_read(_element.error)
             _element.files_errored_out = AAZIntType(
                 serialized_name="filesErroredOut",
@@ -1244,7 +1253,7 @@ class List(AAZCommand):
             _element.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.identity = AAZObjectType()
+            _element.identity = AAZIdentityObjectType()
             _element.location = AAZStrType(
                 flags={"required": True},
             )
@@ -1407,6 +1416,7 @@ class List(AAZCommand):
             details.preferences = AAZObjectType()
             details.return_package = AAZObjectType(
                 serialized_name="returnPackage",
+                flags={"read_only": True},
             )
             _ListHelper._build_schema_package_shipping_details_read(details.return_package)
             details.reverse_shipment_label_sas_key = AAZStrType(
@@ -1917,7 +1927,9 @@ class List(AAZCommand):
                 serialized_name="directoriesErroredOut",
                 flags={"read_only": True},
             )
-            _element.error = AAZObjectType()
+            _element.error = AAZObjectType(
+                flags={"read_only": True},
+            )
             _ListHelper._build_schema_cloud_error_read(_element.error)
             _element.files_errored_out = AAZIntType(
                 serialized_name="filesErroredOut",
@@ -2006,7 +2018,7 @@ class List(AAZCommand):
             )
             _element.bit_locker_key = AAZStrType(
                 serialized_name="bitLockerKey",
-                flags={"required": True, "secret": True},
+                flags={"secret": True},
             )
             _element.manifest_file = AAZStrType(
                 serialized_name="manifestFile",
@@ -2062,7 +2074,9 @@ class List(AAZCommand):
                 serialized_name="bytesCopied",
                 flags={"read_only": True},
             )
-            _element.error = AAZObjectType()
+            _element.error = AAZObjectType(
+                flags={"read_only": True},
+            )
             _ListHelper._build_schema_cloud_error_read(_element.error)
             _element.percent_complete = AAZIntType(
                 serialized_name="percentComplete",
@@ -2134,7 +2148,9 @@ class List(AAZCommand):
                 serialized_name="directoriesErroredOut",
                 flags={"read_only": True},
             )
-            _element.error = AAZObjectType()
+            _element.error = AAZObjectType(
+                flags={"read_only": True},
+            )
             _ListHelper._build_schema_cloud_error_read(_element.error)
             _element.files_errored_out = AAZIntType(
                 serialized_name="filesErroredOut",
@@ -2336,7 +2352,9 @@ class _ListHelper:
             serialized_name="directoriesErroredOut",
             flags={"read_only": True},
         )
-        copy_progress_read.error = AAZObjectType()
+        copy_progress_read.error = AAZObjectType(
+            flags={"read_only": True},
+        )
         cls._build_schema_cloud_error_read(copy_progress_read.error)
         copy_progress_read.files_errored_out = AAZIntType(
             serialized_name="filesErroredOut",

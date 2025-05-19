@@ -51,7 +51,7 @@ class Update(AAZCommand):
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
-                pattern="^[-\w\.]+$",
+                pattern="^[-\\w\\.]+$",
                 max_length=24,
                 min_length=3,
             ),
@@ -464,7 +464,7 @@ class Update(AAZCommand):
             _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.identity = AAZObjectType()
+            _schema_on_200.identity = AAZIdentityObjectType()
             _schema_on_200.location = AAZStrType(
                 flags={"required": True},
             )
@@ -627,6 +627,7 @@ class Update(AAZCommand):
             details.preferences = AAZObjectType()
             details.return_package = AAZObjectType(
                 serialized_name="returnPackage",
+                flags={"read_only": True},
             )
             _UpdateHelper._build_schema_package_shipping_details_read(details.return_package)
             details.reverse_shipment_label_sas_key = AAZStrType(
@@ -1137,7 +1138,9 @@ class Update(AAZCommand):
                 serialized_name="directoriesErroredOut",
                 flags={"read_only": True},
             )
-            _element.error = AAZObjectType()
+            _element.error = AAZObjectType(
+                flags={"read_only": True},
+            )
             _UpdateHelper._build_schema_cloud_error_read(_element.error)
             _element.files_errored_out = AAZIntType(
                 serialized_name="filesErroredOut",
@@ -1226,7 +1229,7 @@ class Update(AAZCommand):
             )
             _element.bit_locker_key = AAZStrType(
                 serialized_name="bitLockerKey",
-                flags={"required": True, "secret": True},
+                flags={"secret": True},
             )
             _element.manifest_file = AAZStrType(
                 serialized_name="manifestFile",
@@ -1282,7 +1285,9 @@ class Update(AAZCommand):
                 serialized_name="bytesCopied",
                 flags={"read_only": True},
             )
-            _element.error = AAZObjectType()
+            _element.error = AAZObjectType(
+                flags={"read_only": True},
+            )
             _UpdateHelper._build_schema_cloud_error_read(_element.error)
             _element.percent_complete = AAZIntType(
                 serialized_name="percentComplete",
@@ -1354,7 +1359,9 @@ class Update(AAZCommand):
                 serialized_name="directoriesErroredOut",
                 flags={"read_only": True},
             )
-            _element.error = AAZObjectType()
+            _element.error = AAZObjectType(
+                flags={"read_only": True},
+            )
             _UpdateHelper._build_schema_cloud_error_read(_element.error)
             _element.files_errored_out = AAZIntType(
                 serialized_name="filesErroredOut",
@@ -1579,7 +1586,9 @@ class _UpdateHelper:
             serialized_name="directoriesErroredOut",
             flags={"read_only": True},
         )
-        copy_progress_read.error = AAZObjectType()
+        copy_progress_read.error = AAZObjectType(
+            flags={"read_only": True},
+        )
         cls._build_schema_cloud_error_read(copy_progress_read.error)
         copy_progress_read.files_errored_out = AAZIntType(
             serialized_name="filesErroredOut",

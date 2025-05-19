@@ -50,7 +50,7 @@ class Create(AAZCommand):
             help="The name of the job Resource within the specified resource group. job names must be between 3 and 24 characters in length and use any alphanumeric and underscore only",
             required=True,
             fmt=AAZStrArgFormat(
-                pattern="^[-\w\.]+$",
+                pattern="^[-\\w\\.]+$",
                 max_length=24,
                 min_length=3,
             ),
@@ -128,7 +128,7 @@ class Create(AAZCommand):
         data_box = cls._args_schema.data_box
         data_box.device_password = AAZStrArg(
             options=["device-password"],
-            help="Set Device password for unlocking Databox. Should not be passed for TransferType:ExportFromAzure jobs. If this is not passed, the service will generate password itself. This will not be returned in Get Call. Password Requirements :  Password must be minimum of 12 and maximum of 64 characters. Password must have at least one uppercase alphabet, one number and one special character. Password cannot have the following characters : IilLoO0 Password can have only alphabets, numbers and these characters : @#\-$%^!+=;:_()]+",
+            help="Set Device password for unlocking Databox. Should not be passed for TransferType:ExportFromAzure jobs. If this is not passed, the service will generate password itself. This will not be returned in Get Call. Password Requirements :  Password must be minimum of 12 and maximum of 64 characters. Password must have at least one uppercase alphabet, one number and one special character. Password cannot have the following characters : IilLoO0 Password can have only alphabets, numbers and these characters : @#\\-$%^!+=;:_()]+",
         )
 
         data_box_customer_disk = cls._args_schema.data_box_customer_disk
@@ -197,7 +197,7 @@ class Create(AAZCommand):
         data_box_heavy = cls._args_schema.data_box_heavy
         data_box_heavy.device_password = AAZStrArg(
             options=["device-password"],
-            help="Set Device password for unlocking Databox Heavy. Should not be passed for TransferType:ExportFromAzure jobs. If this is not passed, the service will generate password itself. This will not be returned in Get Call. Password Requirements :  Password must be minimum of 12 and maximum of 64 characters. Password must have at least one uppercase alphabet, one number and one special character. Password cannot have the following characters : IilLoO0 Password can have only alphabets, numbers and these characters : @#\-$%^!+=;:_()]+",
+            help="Set Device password for unlocking Databox Heavy. Should not be passed for TransferType:ExportFromAzure jobs. If this is not passed, the service will generate password itself. This will not be returned in Get Call. Password Requirements :  Password must be minimum of 12 and maximum of 64 characters. Password must have at least one uppercase alphabet, one number and one special character. Password cannot have the following characters : IilLoO0 Password can have only alphabets, numbers and these characters : @#\\-$%^!+=;:_()]+",
         )
 
         data_export_details = cls._args_schema.data_export_details
@@ -230,7 +230,7 @@ class Create(AAZCommand):
         )
         account_details.share_password = AAZStrArg(
             options=["share-password"],
-            help="Password for all the shares to be created on the device. Should not be passed for TransferType:ExportFromAzure jobs. If this is not passed, the service will generate password itself. This will not be returned in Get Call. Password Requirements :  Password must be minimum of 12 and maximum of 64 characters. Password must have at least one uppercase alphabet, one number and one special character. Password cannot have the following characters : IilLoO0 Password can have only alphabets, numbers and these characters : @#\-$%^!+=;:_()]+",
+            help="Password for all the shares to be created on the device. Should not be passed for TransferType:ExportFromAzure jobs. If this is not passed, the service will generate password itself. This will not be returned in Get Call. Password Requirements :  Password must be minimum of 12 and maximum of 64 characters. Password must have at least one uppercase alphabet, one number and one special character. Password cannot have the following characters : IilLoO0 Password can have only alphabets, numbers and these characters : @#\\-$%^!+=;:_()]+",
         )
 
         managed_disk = cls._args_schema.data_export_details.Element.account_details.managed_disk
@@ -398,7 +398,7 @@ class Create(AAZCommand):
         )
         account_details.share_password = AAZStrArg(
             options=["share-password"],
-            help="Password for all the shares to be created on the device. Should not be passed for TransferType:ExportFromAzure jobs. If this is not passed, the service will generate password itself. This will not be returned in Get Call. Password Requirements :  Password must be minimum of 12 and maximum of 64 characters. Password must have at least one uppercase alphabet, one number and one special character. Password cannot have the following characters : IilLoO0 Password can have only alphabets, numbers and these characters : @#\-$%^!+=;:_()]+",
+            help="Password for all the shares to be created on the device. Should not be passed for TransferType:ExportFromAzure jobs. If this is not passed, the service will generate password itself. This will not be returned in Get Call. Password Requirements :  Password must be minimum of 12 and maximum of 64 characters. Password must have at least one uppercase alphabet, one number and one special character. Password cannot have the following characters : IilLoO0 Password can have only alphabets, numbers and these characters : @#\\-$%^!+=;:_()]+",
         )
 
         managed_disk = cls._args_schema.data_import_details.Element.account_details.managed_disk
@@ -784,7 +784,7 @@ class Create(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("identity", AAZObjectType, ".identity")
+            _builder.set_prop("identity", AAZIdentityObjectType, ".identity")
             _builder.set_prop("location", AAZStrType, ".location", typ_kwargs={"flags": {"required": True}})
             _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True, "client_flatten": True}})
             _builder.set_prop("sku", AAZObjectType, ".", typ_kwargs={"flags": {"required": True}})
@@ -1000,7 +1000,7 @@ class Create(AAZCommand):
 
             _elements = _builder.get(".properties.details{jobDetailsType:DataBoxCustomerDisk}.importDiskDetailsCollection{}")
             if _elements is not None:
-                _elements.set_prop("bitLockerKey", AAZStrType, ".bit_locker_key", typ_kwargs={"flags": {"required": True, "secret": True}})
+                _elements.set_prop("bitLockerKey", AAZStrType, ".bit_locker_key", typ_kwargs={"flags": {"secret": True}})
                 _elements.set_prop("manifestFile", AAZStrType, ".manifest_file", typ_kwargs={"flags": {"required": True}})
                 _elements.set_prop("manifestHash", AAZStrType, ".manifest_hash", typ_kwargs={"flags": {"required": True}})
 
@@ -1054,7 +1054,7 @@ class Create(AAZCommand):
             _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.identity = AAZObjectType()
+            _schema_on_200.identity = AAZIdentityObjectType()
             _schema_on_200.location = AAZStrType(
                 flags={"required": True},
             )
@@ -1217,6 +1217,7 @@ class Create(AAZCommand):
             details.preferences = AAZObjectType()
             details.return_package = AAZObjectType(
                 serialized_name="returnPackage",
+                flags={"read_only": True},
             )
             _CreateHelper._build_schema_package_shipping_details_read(details.return_package)
             details.reverse_shipment_label_sas_key = AAZStrType(
@@ -1727,7 +1728,9 @@ class Create(AAZCommand):
                 serialized_name="directoriesErroredOut",
                 flags={"read_only": True},
             )
-            _element.error = AAZObjectType()
+            _element.error = AAZObjectType(
+                flags={"read_only": True},
+            )
             _CreateHelper._build_schema_cloud_error_read(_element.error)
             _element.files_errored_out = AAZIntType(
                 serialized_name="filesErroredOut",
@@ -1816,7 +1819,7 @@ class Create(AAZCommand):
             )
             _element.bit_locker_key = AAZStrType(
                 serialized_name="bitLockerKey",
-                flags={"required": True, "secret": True},
+                flags={"secret": True},
             )
             _element.manifest_file = AAZStrType(
                 serialized_name="manifestFile",
@@ -1872,7 +1875,9 @@ class Create(AAZCommand):
                 serialized_name="bytesCopied",
                 flags={"read_only": True},
             )
-            _element.error = AAZObjectType()
+            _element.error = AAZObjectType(
+                flags={"read_only": True},
+            )
             _CreateHelper._build_schema_cloud_error_read(_element.error)
             _element.percent_complete = AAZIntType(
                 serialized_name="percentComplete",
@@ -1944,7 +1949,9 @@ class Create(AAZCommand):
                 serialized_name="directoriesErroredOut",
                 flags={"read_only": True},
             )
-            _element.error = AAZObjectType()
+            _element.error = AAZObjectType(
+                flags={"read_only": True},
+            )
             _CreateHelper._build_schema_cloud_error_read(_element.error)
             _element.files_errored_out = AAZIntType(
                 serialized_name="filesErroredOut",
@@ -2169,7 +2176,9 @@ class _CreateHelper:
             serialized_name="directoriesErroredOut",
             flags={"read_only": True},
         )
-        copy_progress_read.error = AAZObjectType()
+        copy_progress_read.error = AAZObjectType(
+            flags={"read_only": True},
+        )
         cls._build_schema_cloud_error_read(copy_progress_read.error)
         copy_progress_read.files_errored_out = AAZIntType(
             serialized_name="filesErroredOut",
