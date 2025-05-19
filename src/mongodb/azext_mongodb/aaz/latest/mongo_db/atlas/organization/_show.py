@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get a OrganizationResource
+
+    :example: Organizations_Get
+        az mongo-db atlas organization show --subscription "abcd1234-5678-90ab-cdef-12345678abcd" --resource-group "MyResourceGroup" -name "MyOrganizationResourceName"
     """
 
     _aaz_info = {

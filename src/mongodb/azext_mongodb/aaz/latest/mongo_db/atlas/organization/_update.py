@@ -63,45 +63,6 @@ class Update(AAZCommand):
 
         # define Arg Group "Properties"
 
-        _args_schema = cls._args_schema
-        _args_schema.user = AAZObjectArg(
-            options=["--user"],
-            arg_group="Properties",
-            help="Details of the user.",
-        )
-
-        user = cls._args_schema.user
-        user.company_name = AAZStrArg(
-            options=["company-name"],
-            help="Company Name",
-            nullable=True,
-        )
-        user.email_address = AAZStrArg(
-            options=["email-address"],
-            help="Email address of the user",
-            fmt=AAZStrArgFormat(
-                pattern="^[A-Za-z0-9._%+-]+@(?:[A-Za-z0-9-]+\\.)+[A-Za-z]{2,}$",
-            ),
-        )
-        user.first_name = AAZStrArg(
-            options=["first-name"],
-            help="First name of the user",
-        )
-        user.last_name = AAZStrArg(
-            options=["last-name"],
-            help="Last name of the user",
-        )
-        user.phone_number = AAZStrArg(
-            options=["phone-number"],
-            help="User's phone number",
-            nullable=True,
-        )
-        user.upn = AAZStrArg(
-            options=["upn"],
-            help="User's principal name",
-            nullable=True,
-        )
-
         # define Arg Group "Resource"
 
         _args_schema = cls._args_schema
@@ -356,19 +317,6 @@ class Update(AAZCommand):
             _builder.set_prop("identity", AAZIdentityObjectType)
             _builder.set_prop("properties", AAZObjectType)
             _builder.set_prop("tags", AAZDictType, ".tags")
-
-            properties = _builder.get(".properties")
-            if properties is not None:
-                properties.set_prop("user", AAZObjectType, ".user", typ_kwargs={"flags": {"required": True}})
-
-            user = _builder.get(".properties.user")
-            if user is not None:
-                user.set_prop("companyName", AAZStrType, ".company_name")
-                user.set_prop("emailAddress", AAZStrType, ".email_address", typ_kwargs={"flags": {"required": True}})
-                user.set_prop("firstName", AAZStrType, ".first_name", typ_kwargs={"flags": {"required": True}})
-                user.set_prop("lastName", AAZStrType, ".last_name", typ_kwargs={"flags": {"required": True}})
-                user.set_prop("phoneNumber", AAZStrType, ".phone_number")
-                user.set_prop("upn", AAZStrType, ".upn")
 
             tags = _builder.get(".tags")
             if tags is not None:

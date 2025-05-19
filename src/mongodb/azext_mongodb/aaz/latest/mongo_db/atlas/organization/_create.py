@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create a OrganizationResource
+
+    :example: Organizations_CreateOrUpdate
+        az mongo-db atlas organization create -name "MyOrganizationResourceName" --resource-group "MyResourceGroup" --location "eastus" --subscription "abcd1234-5678-90ab-cdef-12345678abcd"--user {"first-name":"John","last-name":"Doe","email-address":"test@email.com"}" --marketplace "{"subscription-id":"abcd1234-5678-90ab-cdef-12345678abcd","offer-details":{"publisher-id":"mongodb","offer-id":"mongodb_atlas_azure_native_prod","plan-id":"private_plan","plan-name":"Pay as You Go (Free) (Private)","term-unit":"P1M","term-id":"gmz7xq9ge3py"}}" --partner-properties "{"organization-name":"partner-org-name"}"
     """
 
     _aaz_info = {

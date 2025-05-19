@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List OrganizationResource resources by subscription ID
+
+    :example: Organizations_ListBySubscription
+        az mongo-db atlas organization list --subscription "abcd1234-5678-90ab-cdef-12345678abcd" --resource-group "MyResourceGroup"
     """
 
     _aaz_info = {

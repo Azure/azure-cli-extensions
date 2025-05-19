@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete a OrganizationResource
+
+    :example: Organizations_Delete
+        az mongo-db atlas organization delete --subscription "abcd1234-5678-90ab-cdef-12345678abcd" --resource-group "MyResourceGroup" -name "MyOrganizationResourceName"
     """
 
     _aaz_info = {
