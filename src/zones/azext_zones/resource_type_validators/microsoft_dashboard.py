@@ -27,7 +27,6 @@ class microsoft_dashboard:
             zr = resource.get("properties", {}).get("zoneRedundancy", "")
             if zr == "Enabled":
                 return ZoneRedundancyValidationResult.Yes
-            else:
-                return ZoneRedundancyValidationResult.No
+            return ZoneRedundancyValidationResult.No
 
         return ZoneRedundancyValidationResult.Unknown

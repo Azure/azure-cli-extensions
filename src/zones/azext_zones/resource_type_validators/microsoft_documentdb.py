@@ -29,8 +29,7 @@ class microsoft_documentdb:
             # setting enabled on the region
             if resource["properties"]["locations"][0]["isZoneRedundant"]:
                 return ZoneRedundancyValidationResult.Yes
-            else:
-                return ZoneRedundancyValidationResult.No
+            return ZoneRedundancyValidationResult.No
 
         # CosmosDB MongoDB API Accounts
         if resourceSubType == "mongoClusters":
@@ -38,7 +37,6 @@ class microsoft_documentdb:
             highAvailability = resource["properties"].get("highAvailability", "")
             if highAvailability.get("targetMode", "") == "ZoneRedundantPreferred":
                 return ZoneRedundancyValidationResult.Yes
-            else:
-                ZoneRedundancyValidationResult.No
+            return ZoneRedundancyValidationResult.No
 
         return ZoneRedundancyValidationResult.Unknown

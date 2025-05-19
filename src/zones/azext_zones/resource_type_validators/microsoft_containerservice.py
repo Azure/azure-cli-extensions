@@ -32,10 +32,8 @@ class microsoft_containerservice:
                 or []
             )
             poolZoneCount = len(poolZones)
-            return (
-                ZoneRedundancyValidationResult.Yes
-                if poolZoneCount > 1
-                else ZoneRedundancyValidationResult.No
-            )
-
+            if poolZoneCount > 1:
+                return ZoneRedundancyValidationResult.Yes
+            return ZoneRedundancyValidationResult.No
+            
         return ZoneRedundancyValidationResult.Unknown

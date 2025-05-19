@@ -28,7 +28,6 @@ class microsoft_search:
             replicaCount = resource["properties"].get("replicaCount", 0)
             if sku not in ["Free", "Basic"] and replicaCount > 1:
                 return ZoneRedundancyValidationResult.Yes
-            else:
-                return ZoneRedundancyValidationResult.No
+            return ZoneRedundancyValidationResult.No
 
         return ZoneRedundancyValidationResult.Unknown

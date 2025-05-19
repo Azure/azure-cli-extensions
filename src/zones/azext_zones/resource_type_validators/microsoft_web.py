@@ -42,8 +42,7 @@ class microsoft_web:
             zrStatus = resource["properties"].get("zoneRedundant", False)
             if zrStatus:
                 return ZoneRedundancyValidationResult.Yes
-            else:
-                return ZoneRedundancyValidationResult.No
+            return ZoneRedundancyValidationResult.No
 
         # Static Web Apps
         if resourceSubType == "staticsites":

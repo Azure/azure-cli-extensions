@@ -27,8 +27,7 @@ class microsoft_mysql:
             )
             if haConfig == "ZoneRedundant":
                 return ZoneRedundancyValidationResult.Yes
-            else:
-                return ZoneRedundancyValidationResult.No
+            return ZoneRedundancyValidationResult.No
 
         # Azure Database for MySQL Single Servers
         if resourceSubType == "servers":

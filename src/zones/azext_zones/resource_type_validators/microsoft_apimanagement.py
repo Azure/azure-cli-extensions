@@ -33,7 +33,6 @@ class microsoft_apimanagement:
             zones = resource.get("zones") or []
             if len(zones) > 1 and resource["sku"]["name"] == "Premium":
                 return ZoneRedundancyValidationResult.Yes
-            else:
-                return ZoneRedundancyValidationResult.No
+            return ZoneRedundancyValidationResult.No
 
         return ZoneRedundancyValidationResult.Unknown

@@ -25,8 +25,7 @@ class microsoft_sql:
             # https://learn.microsoft.com/azure/azure-sql/database/high-availability-sla-local-zone-redundancy#high-availability-through-zone-redundancy
             if resource["properties"]["zoneRedundant"]:
                 return ZoneRedundancyValidationResult.Yes
-            else:
-                return ZoneRedundancyValidationResult.No
+            return ZoneRedundancyValidationResult.No
 
         # SQL Servers
         if resourceSubType == "servers":
@@ -40,8 +39,7 @@ class microsoft_sql:
             # https://learn.microsoft.com/azure/azure-sql/managed-instance/high-availability-sla-local-zone-redundancy?view=azuresql#zone-redundant-availability
             if resource["properties"].get("zoneRedundant", {}) is True:
                 return ZoneRedundancyValidationResult.Yes
-            else:
-                return ZoneRedundancyValidationResult.No
+            return ZoneRedundancyValidationResult.No
 
         # SQL Managed Instance Pools
         if resourceSubType == "instancepools":

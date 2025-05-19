@@ -27,15 +27,13 @@ class microsoft_cache:
             zones = resource.get("zones") or []
             if len(zones) > 1:
                 return ZoneRedundancyValidationResult.Yes
-            else:
-                return ZoneRedundancyValidationResult.No
+            return ZoneRedundancyValidationResult.No
 
         # Redis Enterprise
         if resourceSubType == "redisenterprise":
             zones = resource.get("zones") or []
             if len(zones) > 1:
                 return ZoneRedundancyValidationResult.Yes
-            else:
-                return ZoneRedundancyValidationResult.No
+            return ZoneRedundancyValidationResult.No
 
         return ZoneRedundancyValidationResult.Unknown

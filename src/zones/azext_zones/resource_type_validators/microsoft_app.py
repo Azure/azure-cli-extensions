@@ -32,7 +32,6 @@ class microsoft_app:
             # https://learn.microsoft.com/azure/reliability/reliability-azure-container-apps#availability-zone-support
             if resource["properties"].get("zoneRedundant", {}) is True:
                 return ZoneRedundancyValidationResult.Yes
-            else:
-                return ZoneRedundancyValidationResult.No
+            return ZoneRedundancyValidationResult.No
 
         return ZoneRedundancyValidationResult.Unknown

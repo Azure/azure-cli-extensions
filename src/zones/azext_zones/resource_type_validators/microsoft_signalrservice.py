@@ -28,7 +28,6 @@ class microsoft_signalrservice:
             # https://learn.microsoft.com/azure/azure-signalr/availability-zones
             if resource["sku"]["name"] == "Premium":
                 return ZoneRedundancyValidationResult.Yes
-            else:
-                return ZoneRedundancyValidationResult.No
+            return ZoneRedundancyValidationResult.No
 
         return ZoneRedundancyValidationResult.Unknown

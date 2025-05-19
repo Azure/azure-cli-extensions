@@ -25,8 +25,7 @@ class microsoft_compute:
             zones = resource.get("zones") or []
             if len(zones) > 1:
                 return ZoneRedundancyValidationResult.Yes
-            else:
-                return ZoneRedundancyValidationResult.No
+            return ZoneRedundancyValidationResult.No
 
         # VM ScaleSets
         if resourceSubType == "virtualmachinescalesets":
@@ -34,8 +33,7 @@ class microsoft_compute:
             zones = resource.get("zones") or []
             if len(zones) > 1:
                 return ZoneRedundancyValidationResult.Yes
-            else:
-                return ZoneRedundancyValidationResult.No
+            return ZoneRedundancyValidationResult.No
 
         # Virtual Machines
         if resourceSubType == "virtualmachines":
@@ -43,8 +41,7 @@ class microsoft_compute:
             zones = resource.get("zones") or []
             if len(zones) > 1:
                 return ZoneRedundancyValidationResult.Yes
-            else:
-                return ZoneRedundancyValidationResult.No
+            return ZoneRedundancyValidationResult.No
 
         # VM Extensions
         if resourceSubType == "virtualmachines/extensions":

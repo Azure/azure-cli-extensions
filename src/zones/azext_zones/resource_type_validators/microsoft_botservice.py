@@ -32,8 +32,8 @@ class microsoft_botservice:
                     "Your bot service resource in westeurope may be zone redundant, \
                     but only if it's configured as a regional (not global) bot. Please check manually."
                 )
-            else:
-                # Bot services cannot be ZR in any other region
-                return ZoneRedundancyValidationResult.No
+                return ZoneRedundancyValidationResult.Unknown
+            # Bot services cannot be ZR in any other region
+            return ZoneRedundancyValidationResult.No
 
         return ZoneRedundancyValidationResult.Unknown

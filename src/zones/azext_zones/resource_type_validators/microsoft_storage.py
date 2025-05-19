@@ -26,7 +26,6 @@ class microsoft_storage:
             # SKU
             if resource["sku"]["name"] == "Standard_ZRS":
                 return ZoneRedundancyValidationResult.Yes
-            else:
-                return ZoneRedundancyValidationResult.No
+            return ZoneRedundancyValidationResult.No
 
         return ZoneRedundancyValidationResult.Unknown

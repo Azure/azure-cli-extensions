@@ -29,8 +29,7 @@ class microsoft_dbforpostgresql:
                 == "ZoneRedundant"
             ):
                 return ZoneRedundancyValidationResult.Yes
-            else:
-                return ZoneRedundancyValidationResult.No
+            return ZoneRedundancyValidationResult.No
 
         # PostgreSQL Single Servers
         if resourceSubType == "servers":

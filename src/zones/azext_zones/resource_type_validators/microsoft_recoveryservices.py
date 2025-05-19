@@ -27,13 +27,13 @@ class microsoft_recoveryservices:
             # https://learn.microsoft.com/azure/reliability/reliability-backup#availability-zone-support
             # Recovery Services vaults are zone redundant if the storage
             # redundancy was set to ZoneRedundant
-            return (
-                ZoneRedundancyValidationResult.Yes
-                if resource["properties"]["redundancySettings"][
+            if (
+                resource["properties"]["redundancySettings"][
                     "standardTierStorageRedundancy"
                 ]
                 == "ZoneRedundant"
-                else ZoneRedundancyValidationResult.No
-            )
+            ):
+                return ZoneRedundancyValidationResult.Yes
+            return ZoneRedundancyValidationResult.No
 
         return ZoneRedundancyValidationResult.Unknown

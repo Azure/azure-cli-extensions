@@ -28,7 +28,6 @@ class microsoft_kusto:
             zones = resource.get("zones") or []
             if len(zones) > 1:
                 return ZoneRedundancyValidationResult.Yes
-            else:
-                return ZoneRedundancyValidationResult.No
+            return ZoneRedundancyValidationResult.No
 
         return ZoneRedundancyValidationResult.Unknown
