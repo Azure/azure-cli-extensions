@@ -10,6 +10,7 @@ from .._resourceTypeValidation import (
 from knack.log import get_logger
 
 
+# pylint: disable=too-few-public-methods
 @register_resource_type("microsoft.containerservice")
 class microsoft_containerservice:
     @staticmethod
@@ -35,5 +36,5 @@ class microsoft_containerservice:
             if poolZoneCount > 1:
                 return ZoneRedundancyValidationResult.Yes
             return ZoneRedundancyValidationResult.No
-            
+
         return ZoneRedundancyValidationResult.Unknown

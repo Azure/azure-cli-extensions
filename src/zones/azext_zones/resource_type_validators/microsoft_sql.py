@@ -10,10 +10,11 @@ from .._resourceTypeValidation import (
 from knack.log import get_logger
 
 
+# pylint: disable=too-few-public-methods
 @register_resource_type("microsoft.sql")
 class microsoft_sql:
     @staticmethod
-    def validate(resource):
+    def validate(resource):  # pylint: disable=too-many-return-statements
         resourceType = resource["type"]
         resourceSubType = resourceType[resourceType.index("/") + 1:]
 
