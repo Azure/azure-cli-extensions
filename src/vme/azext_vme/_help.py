@@ -41,9 +41,9 @@ helps['vme uninstall'] = """
 
 helps['vme upgrade'] = """
     type: command
-    short-summary: Check version manged extensions' upgrade status.
+    short-summary: Check version managed extensions' upgrade status.
     examples:
-      - name: Check version manged extensions' upgrade status
+      - name: Check version managed extensions' upgrade status
         text: |-
           az vme upgrade --resource-group my-resource-group --cluster-name my-cluster --wait
 """

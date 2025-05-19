@@ -21,7 +21,7 @@ az vme install --resource-group my-rg --name my-cluster --include all
 az vme uninstall --resource-group my-rg --name my-cluster --include all
 ```
 
-#### Check version manged extensions' upgrade status
+#### Check version managed extensions' upgrade status
 ```
 az vme upgrade --resource-group my-rg --name my-cluster --wait
 ```
