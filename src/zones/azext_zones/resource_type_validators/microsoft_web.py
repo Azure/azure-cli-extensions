@@ -10,10 +10,11 @@ from .._resourceTypeValidation import (
 from knack.log import get_logger
 
 
+# pylint: disable=too-few-public-methods
 @register_resource_type("microsoft.web")
 class microsoft_web:
     @staticmethod
-    def validate(resource):
+    def validate(resource):  # pylint: disable=too-many-return-statements
         resourceType = resource["type"]
         resourceSubType = resourceType[resourceType.index("/") + 1:]
 
@@ -28,8 +29,7 @@ class microsoft_web:
             instanceCount = resource["sku"].get("capacity", 0)
             if zrEnabled and instanceCount > 1:
                 return ZoneRedundancyValidationResult.Yes
-            else:
-                return ZoneRedundancyValidationResult.No
+            return ZoneRedundancyValidationResult.No
 
         # App Services
         if resourceSubType == "sites":
@@ -42,8 +42,7 @@ class microsoft_web:
             zrStatus = resource["properties"].get("zoneRedundant", False)
             if zrStatus:
                 return ZoneRedundancyValidationResult.Yes
-            else:
-                return ZoneRedundancyValidationResult.No
+            return ZoneRedundancyValidationResult.No
 
         # Static Web Apps
         if resourceSubType == "staticsites":
