@@ -10,6 +10,7 @@ from .._resourceTypeValidation import (
 from knack.log import get_logger
 
 
+# pylint: disable=too-few-public-methods
 @register_resource_type("microsoft.search")
 class microsoft_search:
     @staticmethod
@@ -28,7 +29,6 @@ class microsoft_search:
             replicaCount = resource["properties"].get("replicaCount", 0)
             if sku not in ["Free", "Basic"] and replicaCount > 1:
                 return ZoneRedundancyValidationResult.Yes
-            else:
-                return ZoneRedundancyValidationResult.No
+            return ZoneRedundancyValidationResult.No
 
         return ZoneRedundancyValidationResult.Unknown

@@ -10,6 +10,7 @@ from .._resourceTypeValidation import (
 from knack.log import get_logger
 
 
+# pylint: disable=too-few-public-methods
 @register_resource_type("microsoft.storage")
 class microsoft_storage:
     @staticmethod
@@ -26,7 +27,6 @@ class microsoft_storage:
             # SKU
             if resource["sku"]["name"] == "Standard_ZRS":
                 return ZoneRedundancyValidationResult.Yes
-            else:
-                return ZoneRedundancyValidationResult.No
+            return ZoneRedundancyValidationResult.No
 
         return ZoneRedundancyValidationResult.Unknown

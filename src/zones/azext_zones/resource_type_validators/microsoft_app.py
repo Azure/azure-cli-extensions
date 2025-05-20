@@ -10,6 +10,7 @@ from .._resourceTypeValidation import (
 from knack.log import get_logger
 
 
+# pylint: disable=too-few-public-methods
 @register_resource_type("microsoft.app")
 class microsoft_app:
     @staticmethod
@@ -32,7 +33,6 @@ class microsoft_app:
             # https://learn.microsoft.com/azure/reliability/reliability-azure-container-apps#availability-zone-support
             if resource["properties"].get("zoneRedundant", {}) is True:
                 return ZoneRedundancyValidationResult.Yes
-            else:
-                return ZoneRedundancyValidationResult.No
+            return ZoneRedundancyValidationResult.No
 
         return ZoneRedundancyValidationResult.Unknown

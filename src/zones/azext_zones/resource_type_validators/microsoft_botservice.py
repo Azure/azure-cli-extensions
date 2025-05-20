@@ -10,6 +10,7 @@ from .._resourceTypeValidation import (
 from knack.log import get_logger
 
 
+# pylint: disable=too-few-public-methods
 @register_resource_type("microsoft.botservice")
 class microsoft_botservice:
     @staticmethod
@@ -32,8 +33,8 @@ class microsoft_botservice:
                     "Your bot service resource in westeurope may be zone redundant, \
                     but only if it's configured as a regional (not global) bot. Please check manually."
                 )
-            else:
-                # Bot services cannot be ZR in any other region
-                return ZoneRedundancyValidationResult.No
+                return ZoneRedundancyValidationResult.Unknown
+            # Bot services cannot be ZR in any other region
+            return ZoneRedundancyValidationResult.No
 
         return ZoneRedundancyValidationResult.Unknown

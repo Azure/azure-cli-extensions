@@ -10,6 +10,7 @@ from .._resourceTypeValidation import (
 from knack.log import get_logger
 
 
+# pylint: disable=too-few-public-methods
 @register_resource_type("microsoft.dbformysql")
 class microsoft_mysql:
     @staticmethod
@@ -27,8 +28,7 @@ class microsoft_mysql:
             )
             if haConfig == "ZoneRedundant":
                 return ZoneRedundancyValidationResult.Yes
-            else:
-                return ZoneRedundancyValidationResult.No
+            return ZoneRedundancyValidationResult.No
 
         # Azure Database for MySQL Single Servers
         if resourceSubType == "servers":

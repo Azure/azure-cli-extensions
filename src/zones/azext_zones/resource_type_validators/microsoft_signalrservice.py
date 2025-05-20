@@ -10,6 +10,7 @@ from .._resourceTypeValidation import (
 from knack.log import get_logger
 
 
+# pylint: disable=too-few-public-methods
 @register_resource_type("microsoft.signalrservice")
 class microsoft_signalrservice:
     @staticmethod
@@ -28,7 +29,6 @@ class microsoft_signalrservice:
             # https://learn.microsoft.com/azure/azure-signalr/availability-zones
             if resource["sku"]["name"] == "Premium":
                 return ZoneRedundancyValidationResult.Yes
-            else:
-                return ZoneRedundancyValidationResult.No
+            return ZoneRedundancyValidationResult.No
 
         return ZoneRedundancyValidationResult.Unknown

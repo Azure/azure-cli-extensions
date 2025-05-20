@@ -10,6 +10,7 @@ from .._resourceTypeValidation import (
 from knack.log import get_logger
 
 
+# pylint: disable=too-few-public-methods
 @register_resource_type("microsoft.apimanagement")
 class microsoft_apimanagement:
     @staticmethod
@@ -33,7 +34,6 @@ class microsoft_apimanagement:
             zones = resource.get("zones") or []
             if len(zones) > 1 and resource["sku"]["name"] == "Premium":
                 return ZoneRedundancyValidationResult.Yes
-            else:
-                return ZoneRedundancyValidationResult.No
+            return ZoneRedundancyValidationResult.No
 
         return ZoneRedundancyValidationResult.Unknown

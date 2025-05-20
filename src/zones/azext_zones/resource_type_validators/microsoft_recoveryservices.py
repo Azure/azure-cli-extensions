@@ -10,6 +10,7 @@ from .._resourceTypeValidation import (
 from knack.log import get_logger
 
 
+# pylint: disable=too-few-public-methods
 @register_resource_type("microsoft.recoveryservices")
 class microsoft_recoveryservices:
     @staticmethod
@@ -27,13 +28,13 @@ class microsoft_recoveryservices:
             # https://learn.microsoft.com/azure/reliability/reliability-backup#availability-zone-support
             # Recovery Services vaults are zone redundant if the storage
             # redundancy was set to ZoneRedundant
-            return (
-                ZoneRedundancyValidationResult.Yes
-                if resource["properties"]["redundancySettings"][
+            if (
+                resource["properties"]["redundancySettings"][
                     "standardTierStorageRedundancy"
                 ]
                 == "ZoneRedundant"
-                else ZoneRedundancyValidationResult.No
-            )
+            ):
+                return ZoneRedundancyValidationResult.Yes
+            return ZoneRedundancyValidationResult.No
 
         return ZoneRedundancyValidationResult.Unknown

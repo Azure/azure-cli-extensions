@@ -10,6 +10,7 @@ from .._resourceTypeValidation import (
 from knack.log import get_logger
 
 
+# pylint: disable=too-few-public-methods
 @register_resource_type("microsoft.eventhub")
 class microsoft_eventhub:
     @staticmethod
@@ -22,6 +23,7 @@ class microsoft_eventhub:
             "Validating Microsoft.eventhub resource type: %s", resourceSubType
         )
 
-        # If you create an Event Hubs namespace in a region that supports availability zones, zone redundancy is automatically enabled.
+        # If you create an Event Hubs namespace in a region that supports availability zones,
+        # zone redundancy is automatically enabled.
         # https://learn.microsoft.com/azure/reliability/reliability-event-hubs#availability-zone-support
         return ZoneRedundancyValidationResult.Always
