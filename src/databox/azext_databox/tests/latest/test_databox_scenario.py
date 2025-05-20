@@ -22,6 +22,17 @@ class DataboxScenario(ScenarioTest):
             'managed-rg': self.create_random_name('rg-', 10)
         })
 
+        # Check all available SKUs.By the next update, the V1 pod, and heavy SKU will be deprecated.
+        # This response will have only 4 SKUs instead of 6.
+        self.cmd('databox available-skus '
+                 '--resource-group {rg} '
+                 '--country US '
+                 '--location westus '
+                 '--transfer-type ImportToAzure',
+                 checks=[
+                     self.check('length(@)', 6)
+                 ])
+
         # Create a databox job with sku 'DataBox' and transfer-type 'ImportToAzure'.
         self.cmd('databox job create '
                  '--resource-group {rg} '
@@ -41,11 +52,13 @@ class DataboxScenario(ScenarioTest):
                  '--staging-storage-account {storage_account_1} '
                  '--resource-group-for-managed-disk {managed-rg} '
                  '--transfer-type ImportToAzure '
-                 '--kek-type MicrosoftManaged',
+                 '--kek-type MicrosoftManaged '
+                 '--model AzureDataBox120',
                  checks=[
                      self.check('status', 'DeviceOrdered'),
                      self.check('transferType', 'ImportToAzure'),
-                     self.check('details.keyEncryptionKey.kekType', 'MicrosoftManaged')
+                     self.check('details.keyEncryptionKey.kekType', 'MicrosoftManaged'),
+                     self.check('sku.model', 'AzureDataBox120')
                  ])
 
         self.cmd('databox job update '
@@ -158,7 +171,8 @@ class DataboxScenario(ScenarioTest):
                  '--company-name Microsoft '
                  '--storage-account {storage_account_1} '
                  '--transfer-type ExportFromAzure '
-                 '--transfer-configuration-type TransferAll',
+                 '--transfer-configuration-type TransferAll '
+                 '--transfer-all-blobs true',
                  checks=[
                      self.check('status', 'DeviceOrdered'),
                      self.check('transferType', 'ExportFromAzure'),
@@ -180,7 +194,7 @@ class DataboxScenario(ScenarioTest):
                  '--name DATABOX_SERVICE '
                  '-g {rg} '
                  '--resource-name {storage_account_2} '
-                 '--resource-type Microsoft.Storage/storageAccounts')
+                 '--resource-type Microsoft.Storage/storageAccounts')              
 
     @ResourceGroupPreparer(name_prefix='cli_test_databox')
     @StorageAccountPreparer(parameter_name='storage_account_1')
