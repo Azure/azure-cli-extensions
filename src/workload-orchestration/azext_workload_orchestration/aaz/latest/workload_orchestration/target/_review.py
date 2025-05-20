@@ -68,7 +68,7 @@ class Review(AAZCommand):
             required=True,
         )
         _args_schema.solution_template_version = AAZStrArg(
-            options=["--solution-template-version"],
+            options=["--solution-version"],
             arg_group="Body",
             help="Solution Template Version Name",
             required=True,

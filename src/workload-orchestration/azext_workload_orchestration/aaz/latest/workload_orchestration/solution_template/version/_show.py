@@ -54,7 +54,7 @@ class Show(AAZCommand):
             ),
         )
         _args_schema.solution_template_version_name = AAZStrArg(
-            options=["-n", "--name", "--solution-template-version-name"],
+            options=["-n", "--name", "--version"],
             help="The name of the SolutionTemplateVersion",
             required=True,
             id_part="child_name_1",
