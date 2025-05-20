@@ -1,108 +1,92 @@
 
-# Project Setup
+# Extensions for Azure CLI 2.0
 
-## Prerequisites
+This repository serves two purposes and they are independent:
 
-- **Python 3.12**
+1. A source code directory, `src`, to host your extension source code.
+2. An index.json where you can add your extension and make it available through Azure CLI.
 
-## Setup Instructions
+For documentation on authoring an extension, see [Extension Documentation](https://github.com/Azure/azure-cli/tree/master/doc/extensions)
 
-### 1. Create a Virtual Environment
+## About index.json
 
-1. Open your terminal.
-2. Navigate to your project directory.
-3. Run the following command to create a new virtual environment:
-    ```bash
-    python3.12 -m venv myenv
-    ```
-4. Activate the virtual environment:
-    - On Windows:
-        ```bash
-        myenv\Scripts\activate
-        ```
-    - On macOS/Linux:
-        ```bash
-        source myenv/bin/activate
-        ```
+- The index is at `src/index.json`.
+- Modify the index by creating a PR.
+- All extensions added to the index *are public* and will be available to *all* CLI users.
+- The index is synced to `https://aka.ms/azure-cli-extension-index-v1` every few minutes.
+- Your extension source code does not have to be in this repository to be available in the index.
+- If you don't want your extension to be part of the index, you can still host it externally and request users to install with `az extension add --source https://contoso.com/mywheel.whl`.
+  * Users will not be able to add your extension by name, it will not be listed in the `az extension list-available` command and to update to a new version of your extension, the user has to first remove the currently installed extension and then add the new version.
 
-### 2. Install Tools for Azure CLI Development
+Add your extension to the index to make it available in these CLI commands:
+- `az extension add --name NAME` - Allows users to add an extension by name
+- `az extension list-available` - Allows users to list the available extensions in the index
+- `az extension update --name NAME` - Allows users to update an extension
 
-Follow the instructions *An external link was removed to protect your privacy.*.
+## About source code in this repository
 
-1. Install `aaz-dev-tools`:
-    ```bash
-    pip install aaz-dev
-    ```
+- Extension source code goes into the `src` directory.
+- You can place your source code in this repository by creating a PR.
+- Once CI is green and it has been approved, the PR can be merged.
+- SDKs generated from [AutoRest](https://github.com/Azure/autorest) often do not pass CI static-checking. If they are vendored inside the extension, exclude them from static checking by placing them in the folder: `src/<extension root>/azext_*/vendored_sdks`.
+- Ensure that you include an appropriate owner for your extension in `.github/CODEOWNERS`.
+- Your extension artifact (i.e. `.whl`) will not live in this repository. You can publish your extension to PyPI or somewhere else such as Azure Storage.
+- If you want your extension to appear in the index.json, modify the index.
 
-### 3. Clone Repositories
+## About extension publishing
 
-Create a new folder named `CLI` and clone the following repositories into it:
+There is a pipeline to automatically build, upload and publish extension wheels.
 
-1. *An external link was removed to protect your privacy.*
-    ```bash
-    git clone https://github.com/atharvau/azure-cli-extensions
-    ```
-2. *An external link was removed to protect your privacy.*
-    ```bash
-    git clone https://github.com/atharvau/azure-rest-api-specs-pr
-    ```
-3. *An external link was removed to protect your privacy.*
-    ```bash
-    git clone https://github.com/atharvau/azure-rest-api-specs
-    ```
-4. *An external link was removed to protect your privacy.*
-    ```bash
-    git clone https://github.com/atharvau/azure-cli
-    ```
-5. *An external link was removed to protect your privacy.*
-    ```bash
-    git clone https://github.com/atharvau/aaz
-    ```
+Once your PR is merged into master branch, a new PR will be created to update `src/index.json` automatically.
 
-### 4. Pull Latest Builds
+The precondition is to put your code inside this repo and upgrade the version in the PR but not to modify `src/index.json`.
 
-Ensure you checkout the correct branch for `azure-rest-api-specs-pr`:
-```bash
-cd azure-rest-api-specs-pr
-git checkout <branch-name>
+If you want to host the source code in your dedicated repo, you have to upload the WHL file and update the `src/index.json` manually.
+
+For detail, please visit [Publish section in Azure CLI Extension Authoring](https://github.com/Azure/azure-cli/blob/dev/doc/extensions/authoring.md#publish).
+
+## FAQ
+
+### How to generate sha256digest for an index.json entry?
+
+If you use `azdev extension update-index` the command will calculate the SHA256 digest for you. For more information visit https://github.com/Azure/azure-cli-dev-tools.
+
+As a fallback:
+
+MacOS
+```
+shasum -a 256 path_to_whl.whl
 ```
 
-### 5. Setup Azure CLI Development Environment
-
-Run the following command to download all dependencies:
-```bash
-azdev setup --cli {path to azure-cli} --repo {path to azure-cli-extensions}
+Windows / PowerShell
+```
+Get-FileHash path_to_whl.whl -Algorithm SHA256
 ```
 
-## Azure CLI Extension
+Note: Hash should be in lowercase in index.json otherwise CI will fail.
 
-This repository contains workload operations. The main-workload-orchestration branch is the primary branch. 
+### How to fill in the metadata for an index.json entry?
 
-### Source Code
+The `azdev extension update-index` command can be used to simplify the process of updating the index file. Run `azdev extension update-index <URL>` where URL is the fully-qualified URL to your published extension WHL. This will gather the appropriate metadata and add an entry for your extension to the index. For more information visit https://github.com/Azure/azure-cli-dev-tools.
 
-The source code is located in `src/workload-orchestration`.
+As a fallback:
 
+The metadata needed to be filled is a combination of the contents present in:
+- `metadata.json` located in your unzipped extension artifact (`.whl` file) in the `<package>-<version>.dist-info` directory. This metadata is garnered from the `setup.py` folder.
+- `azext_metadata.json` (if it exists) under your extension.
 
-## Making Changes as per Swagger Change
+Note that CI will fail if this metadata does not match the contents of your published extension.
 
-1. Navigate to the required folder `src/workload-orchestration/<module>`.
-2. Make the necessary changes in the respective files.
-3. Raise a new PR to the main branch.
+# Contributing
 
-### Testing
+This project welcomes contributions and suggestions.  Most contributions require you to agree to a
+Contributor License Agreement (CLA) declaring that you have the right to, and actually do, grant us
+the rights to use your contribution. For details, visit https://cla.microsoft.com.
 
-1. Create a wheel file:
-    ```bash
-    cd src/workload-orchestration
-    python setup.py bdist_wheel
-    ```
-2. In the `dist` folder, you will find the `.whl` file. Remove any unnecessary spaces and filenames.
-3. Install the wheel file using:
-    ```bash
-    az extension add --source <File Path>
-    ```
-4. Test your changes.
+When you submit a pull request, a CLA-bot will automatically determine whether you need to provide
+a CLA and decorate the PR appropriately (e.g., label, comment). Simply follow the instructions
+provided by the bot. You will only need to do this once across all repos using our CLA.
 
----
-
-Feel free to let me know if you need any further assistance!
+This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
+For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or
+contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
