@@ -41,9 +41,9 @@ class ESULicenseScenarioTest(ScenarioTest):
             'machinePaygo': 'WIN-U57JFKURUK8',
             'rg': 'ytongtest',
             'location': 'westus2',
-            'subscription': 'b24cc8ee-df4f-48ac-94cf-46edf36b0fae',
+            'subscription': '00000000-0000-0000-0000-000000000000',
             'licenseName': 'myESULicense',
-            'licenseResourceIdProfile': '/subscriptions/b24cc8ee-df4f-48ac-94cf-46edf36b0fae/resourceGroups/PayGo_Test_CLI/providers/Microsoft.HybridCompute/machines/WIN-U57JFKURUK8/licenseProfiles/default', 
+            'licenseResourceIdProfile': '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PayGo_Test_CLI/providers/Microsoft.HybridCompute/machines/WIN-U57JFKURUK8/licenseProfiles/default', 
             'rgProfile': 'PayGo_Test_CLI',
             'productFfeatures': '[{ \'name\':\'Hotpatch\', \'subscriptionStatus\':\'Enabled\'}]',
             'productFfeaturesUpdate': '[{ \'name\':\'Hotpatch\', \'subscriptionStatus\':\'Enable\'}]'
