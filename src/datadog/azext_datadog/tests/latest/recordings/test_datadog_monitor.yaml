@@ -1,0 +1,110 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datadog monitor create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group --sku --identity --user-info --datadog-organization-properties
+      User-Agent:
+      - AZURECLI/2.73.0 azsdk-python-core/1.31.0 Python/3.12.10 (Windows-11-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_datadog_monitor000001?api-version=2022-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_datadog_monitor000001","name":"cli_test_datadog_monitor000001","type":"Microsoft.Resources/resourceGroups","location":"westus2","tags":{"product":"azurecli","cause":"automation","test":"test_datadog_monitor","date":"2025-05-20T10:46:28Z","module":"datadog"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '388'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 20 May 2025 10:46:37 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: B91298EB10F540FB952038C0E9F51CC5 Ref B: SIN221080712025 Ref C: 2025-05-20T10:46:37Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"identity": {"type": "SystemAssigned"}, "location": "westus2", "properties":
+      {"datadogOrganizationProperties": {"name": "monitor000002"}, "monitoringStatus":
+      "Enabled", "userInfo": {"emailAddress": "test@example.com", "name": "Alice"}},
+      "sku": {"name": "payg_v3_Monthly@TIDgmz7xq9ge3py"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datadog monitor create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '289'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --resource-group --sku --identity --user-info --datadog-organization-properties
+      User-Agent:
+      - AZURECLI/2.73.0 azsdk-python-core/1.31.0 Python/3.12.10 (Windows-11-10.0.26100-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_datadog_monitor000001/providers/Microsoft.Datadog/monitors/monitor000002?api-version=2021-03-01
+  response:
+    body:
+      string: '{"error":{"code":"ResourceCreationValidateFailed","message":"The resource
+        validation failed."}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '95'
+      content-type:
+      - application/json
+      date:
+      - Tue, 20 May 2025 10:46:44 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-failure-cause:
+      - service
+      x-ms-operation-identifier:
+      - tenantId=888d76fa-54b2-4ced-8ee5-aac1585adee7,objectId=eecc404a-5cdc-49fe-a883-1119cc8d2ff6/westindia/d1590dcb-6dfb-4d2f-bc23-a9407bd7ce14
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: 31490C27DF3F4FF3A628796451922B0D Ref B: MAA201060515029 Ref C: 2025-05-20T10:46:38Z'
+    status:
+      code: 400
+      message: Bad Request
+version: 1

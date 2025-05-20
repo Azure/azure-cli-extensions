@@ -1,5 +1,5 @@
-Microsoft Azure CLI 'datadog' Extension
-==========================================
+# Azure CLI Datadog Extension #
+This is an extension to Azure CLI to manage Datadog resources.
 
-This package is for the 'datadog' extension.
-i.e. 'az datadog'
+## How to use ##
+Please add commands usage here.
