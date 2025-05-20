@@ -16,6 +16,8 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update a Target Resource
+    :example: Update a target
+        az workload-orchestration target update -g {rg} -n {target_name} --description {description} --display-name {display_name} --hierarchy-level {hierarchy_level} --solution-scope {solution_scope} --state {state} --target-specification {target_specification}
     """
 
     _aaz_info = {

@@ -22,7 +22,8 @@ from azure.cli.core.azclierror import CLIInternalError
 )
 class ShowConfig2(AAZCommand):
     """To set the values to configurations available at specified hierarchical entity
-    :example: az workload-orchestration configuration set -g rg1 --target-name target1 --solution-template-name solutionTemplate1
+    :example: Set a Configuration
+              az workload-orchestration configuration set -g rg1 --target-name target1 --solution-template-name solutionTemplate1
     """
 
     _aaz_info = {
