@@ -12,31 +12,22 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "workloads sap-database-instance update",
-    is_preview=True,
+    "workloads sap-application-server-instance wait",
 )
-class Update(AAZCommand):
-    """Update the Database resource.
-
-    :example: Add tags for an existing Database instance resource
-        az workloads sap-database-instance update --sap-virtual-instance-name <VIS name> -g <Resource-group-name> -n <ResourceName> --tags tag=test tag2=test2
-
-    :example: Add tags for an existing Database instance resource using the Azure resource ID of the instance
-        az workloads sap-database-instance update --id <ResourceID> --tags tag=test1
+class Wait(AAZWaitCommand):
+    """Place the CLI in a waiting state until a condition is met.
     """
 
     _aaz_info = {
-        "version": "2023-04-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.workloads/sapvirtualinstances/{}/databaseinstances/{}", "2023-04-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.workloads/sapvirtualinstances/{}/applicationinstances/{}", "2023-10-01-preview"],
         ]
     }
 
-    AZ_SUPPORT_NO_WAIT = True
-
     def _handler(self, command_args):
         super()._handler(command_args)
-        return self.build_lro_poller(self._execute_operations, self._output)
+        self._execute_operations()
+        return self._output()
 
     _args_schema = None
 
@@ -49,11 +40,14 @@ class Update(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.database_instance_name = AAZStrArg(
-            options=["-n", "--name", "--database-instance-name"],
-            help="Database resource name string modeled as parameter for auto generation to work correctly.",
+        _args_schema.application_instance_name = AAZStrArg(
+            options=["-n", "--name", "--application-instance-name"],
+            help="The name of SAP Application Server instance resource.",
             required=True,
             id_part="child_name_1",
+            fmt=AAZStrArgFormat(
+                pattern="^.*",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -63,24 +57,15 @@ class Update(AAZCommand):
             help="The name of the Virtual Instances for SAP solutions resource",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z][a-zA-Z0-9]{2}$",
+            ),
         )
-
-        # define Arg Group "Body"
-
-        _args_schema = cls._args_schema
-        _args_schema.tags = AAZDictArg(
-            options=["--tags"],
-            arg_group="Body",
-            help="Gets or sets the Resource tags.",
-        )
-
-        tags = cls._args_schema.tags
-        tags.Element = AAZStrArg()
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.SAPDatabaseInstancesUpdate(ctx=self.ctx)()
+        self.SAPApplicationServerInstancesGet(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -92,46 +77,30 @@ class Update(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=False)
         return result
 
-    class SAPDatabaseInstancesUpdate(AAZHttpOperation):
+    class SAPApplicationServerInstancesGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [202]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200_201,
-                    self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
-                    path_format_arguments=self.url_parameters,
-                )
-            if session.http_response.status_code in [200, 201]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200_201,
-                    self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
-                    path_format_arguments=self.url_parameters,
-                )
+            if session.http_response.status_code in [200]:
+                return self.on_200(session)
 
             return self.on_error(session.http_response)
 
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Workloads/sapVirtualInstances/{sapVirtualInstanceName}/databaseInstances/{databaseInstanceName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Workloads/sapVirtualInstances/{sapVirtualInstanceName}/applicationInstances/{applicationInstanceName}",
                 **self.url_parameters
             )
 
         @property
         def method(self):
-            return "PATCH"
+            return "GET"
 
         @property
         def error_format(self):
@@ -141,7 +110,7 @@ class Update(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "databaseInstanceName", self.ctx.args.database_instance_name,
+                    "applicationInstanceName", self.ctx.args.application_instance_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -163,7 +132,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-04-01",
+                    "api-version", "2023-10-01-preview",
                     required=True,
                 ),
             }
@@ -173,90 +142,106 @@ class Update(AAZCommand):
         def header_parameters(self):
             parameters = {
                 **self.serialize_header_param(
-                    "Content-Type", "application/json",
-                ),
-                **self.serialize_header_param(
                     "Accept", "application/json",
                 ),
             }
             return parameters
 
-        @property
-        def content(self):
-            _content_value, _builder = self.new_content_builder(
-                self.ctx.args,
-                typ=AAZObjectType,
-                typ_kwargs={"flags": {"client_flatten": True}}
-            )
-            _builder.set_prop("tags", AAZDictType, ".tags")
-
-            tags = _builder.get(".tags")
-            if tags is not None:
-                tags.set_elements(AAZStrType, ".")
-
-            return self.serialize_content(_content_value)
-
-        def on_200_201(self, session):
+        def on_200(self, session):
             data = self.deserialize_http_content(session)
             self.ctx.set_var(
                 "instance",
                 data,
-                schema_builder=self._build_schema_on_200_201
+                schema_builder=self._build_schema_on_200
             )
 
-        _schema_on_200_201 = None
+        _schema_on_200 = None
 
         @classmethod
-        def _build_schema_on_200_201(cls):
-            if cls._schema_on_200_201 is not None:
-                return cls._schema_on_200_201
+        def _build_schema_on_200(cls):
+            if cls._schema_on_200 is not None:
+                return cls._schema_on_200
 
-            cls._schema_on_200_201 = AAZObjectType()
+            cls._schema_on_200 = AAZObjectType()
 
-            _schema_on_200_201 = cls._schema_on_200_201
-            _schema_on_200_201.id = AAZStrType(
+            _schema_on_200 = cls._schema_on_200
+            _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200_201.location = AAZStrType(
+            _schema_on_200.location = AAZStrType(
                 flags={"required": True},
             )
-            _schema_on_200_201.name = AAZStrType(
+            _schema_on_200.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200_201.properties = AAZObjectType(
+            _schema_on_200.properties = AAZObjectType(
                 flags={"client_flatten": True},
             )
-            _schema_on_200_201.system_data = AAZObjectType(
+            _schema_on_200.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _schema_on_200_201.tags = AAZDictType()
-            _schema_on_200_201.type = AAZStrType(
+            _schema_on_200.tags = AAZDictType()
+            _schema_on_200.type = AAZStrType(
                 flags={"read_only": True},
             )
 
-            properties = cls._schema_on_200_201.properties
-            properties.database_sid = AAZStrType(
-                serialized_name="databaseSid",
+            properties = cls._schema_on_200.properties
+            properties.dispatcher_status = AAZStrType(
+                serialized_name="dispatcherStatus",
                 flags={"read_only": True},
             )
-            properties.database_type = AAZStrType(
-                serialized_name="databaseType",
+            properties.errors = AAZObjectType(
                 flags={"read_only": True},
             )
-            properties.errors = AAZObjectType()
+            properties.gateway_port = AAZIntType(
+                serialized_name="gatewayPort",
+                nullable=True,
+                flags={"read_only": True},
+            )
+            properties.health = AAZStrType(
+                flags={"read_only": True},
+            )
+            properties.hostname = AAZStrType(
+                flags={"read_only": True},
+            )
+            properties.icm_http_port = AAZIntType(
+                serialized_name="icmHttpPort",
+                nullable=True,
+                flags={"read_only": True},
+            )
+            properties.icm_https_port = AAZIntType(
+                serialized_name="icmHttpsPort",
+                nullable=True,
+                flags={"read_only": True},
+            )
+            properties.instance_no = AAZStrType(
+                serialized_name="instanceNo",
+                flags={"read_only": True},
+            )
             properties.ip_address = AAZStrType(
                 serialized_name="ipAddress",
                 flags={"read_only": True},
             )
+            properties.kernel_patch = AAZStrType(
+                serialized_name="kernelPatch",
+                flags={"read_only": True},
+            )
+            properties.kernel_version = AAZStrType(
+                serialized_name="kernelVersion",
+                flags={"read_only": True},
+            )
             properties.load_balancer_details = AAZObjectType(
                 serialized_name="loadBalancerDetails",
+                flags={"read_only": True},
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
-            properties.status = AAZStrType()
+            properties.status = AAZStrType(
+                flags={"read_only": True},
+            )
             properties.subnet = AAZStrType(
                 flags={"read_only": True},
             )
@@ -265,22 +250,24 @@ class Update(AAZCommand):
                 flags={"read_only": True},
             )
 
-            errors = cls._schema_on_200_201.properties.errors
+            errors = cls._schema_on_200.properties.errors
             errors.properties = AAZObjectType()
-            _UpdateHelper._build_schema_error_definition_read(errors.properties)
+            _WaitHelper._build_schema_error_definition_read(errors.properties)
 
-            load_balancer_details = cls._schema_on_200_201.properties.load_balancer_details
+            load_balancer_details = cls._schema_on_200.properties.load_balancer_details
             load_balancer_details.id = AAZStrType(
                 flags={"read_only": True},
             )
 
-            vm_details = cls._schema_on_200_201.properties.vm_details
+            vm_details = cls._schema_on_200.properties.vm_details
             vm_details.Element = AAZObjectType()
 
-            _element = cls._schema_on_200_201.properties.vm_details.Element
-            _element.status = AAZStrType()
+            _element = cls._schema_on_200.properties.vm_details.Element
             _element.storage_details = AAZListType(
                 serialized_name="storageDetails",
+                flags={"read_only": True},
+            )
+            _element.type = AAZStrType(
                 flags={"read_only": True},
             )
             _element.virtual_machine_id = AAZStrType(
@@ -288,15 +275,15 @@ class Update(AAZCommand):
                 flags={"read_only": True},
             )
 
-            storage_details = cls._schema_on_200_201.properties.vm_details.Element.storage_details
+            storage_details = cls._schema_on_200.properties.vm_details.Element.storage_details
             storage_details.Element = AAZObjectType()
 
-            _element = cls._schema_on_200_201.properties.vm_details.Element.storage_details.Element
+            _element = cls._schema_on_200.properties.vm_details.Element.storage_details.Element
             _element.id = AAZStrType(
                 flags={"read_only": True},
             )
 
-            system_data = cls._schema_on_200_201.system_data
+            system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(
                 serialized_name="createdAt",
             )
@@ -316,14 +303,14 @@ class Update(AAZCommand):
                 serialized_name="lastModifiedByType",
             )
 
-            tags = cls._schema_on_200_201.tags
+            tags = cls._schema_on_200.tags
             tags.Element = AAZStrType()
 
-            return cls._schema_on_200_201
+            return cls._schema_on_200
 
 
-class _UpdateHelper:
-    """Helper class for Update"""
+class _WaitHelper:
+    """Helper class for Wait"""
 
     _schema_error_definition_read = None
 
@@ -357,4 +344,4 @@ class _UpdateHelper:
         _schema.message = cls._schema_error_definition_read.message
 
 
-__all__ = ["Update"]
+__all__ = ["Wait"]

@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "workloads sap-virtual-instance stop",
+    is_preview=True,
 )
 class Stop(AAZCommand):
     """Stops the SAP Application, that is the Application server instances and Central Services instance.
@@ -31,9 +32,9 @@ class Stop(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-09-01",
+        "version": "2023-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.workloads/sapvirtualinstances/{}/stop", "2024-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.workloads/sapvirtualinstances/{}/stop", "2023-10-01-preview"],
         ]
     }
 
@@ -58,7 +59,7 @@ class Stop(AAZCommand):
             required=True,
         )
         _args_schema.sap_virtual_instance_name = AAZStrArg(
-            options=["-n", "--vis-name", "--sap-virtual-instance-name"],
+            options=["--vis-name", "--sap-virtual-instance-name"],
             help="The name of the Virtual Instances for SAP solutions resource",
             required=True,
             id_part="name",
@@ -86,7 +87,7 @@ class Stop(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.SapVirtualInstancesStop(ctx=self.ctx)()
+        yield self.SAPVirtualInstancesStop(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -101,7 +102,7 @@ class Stop(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class SapVirtualInstancesStop(AAZHttpOperation):
+    class SAPVirtualInstancesStop(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -165,7 +166,7 @@ class Stop(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-09-01",
+                    "api-version", "2023-10-01-preview",
                     required=True,
                 ),
             }
@@ -255,7 +256,7 @@ class _StopHelper:
         additional_info.Element = AAZObjectType()
 
         _element = _schema_error_detail_read.additional_info.Element
-        _element.info = AAZFreeFormDictType(
+        _element.info = AAZObjectType(
             flags={"read_only": True},
         )
         _element.type = AAZStrType(
@@ -283,7 +284,6 @@ class _StopHelper:
             _schema.name = cls._schema_operation_status_result_read.name
             _schema.operations = cls._schema_operation_status_result_read.operations
             _schema.percent_complete = cls._schema_operation_status_result_read.percent_complete
-            _schema.resource_id = cls._schema_operation_status_result_read.resource_id
             _schema.start_time = cls._schema_operation_status_result_read.start_time
             _schema.status = cls._schema_operation_status_result_read.status
             return
@@ -302,10 +302,6 @@ class _StopHelper:
         operation_status_result_read.percent_complete = AAZFloatType(
             serialized_name="percentComplete",
         )
-        operation_status_result_read.resource_id = AAZStrType(
-            serialized_name="resourceId",
-            flags={"read_only": True},
-        )
         operation_status_result_read.start_time = AAZStrType(
             serialized_name="startTime",
         )
@@ -323,7 +319,6 @@ class _StopHelper:
         _schema.name = cls._schema_operation_status_result_read.name
         _schema.operations = cls._schema_operation_status_result_read.operations
         _schema.percent_complete = cls._schema_operation_status_result_read.percent_complete
-        _schema.resource_id = cls._schema_operation_status_result_read.resource_id
         _schema.start_time = cls._schema_operation_status_result_read.start_time
         _schema.status = cls._schema_operation_status_result_read.status
 

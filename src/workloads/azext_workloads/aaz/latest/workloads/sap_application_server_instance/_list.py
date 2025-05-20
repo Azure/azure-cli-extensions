@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "workloads sap-application-server-instance list",
+    is_preview=True,
 )
 class List(AAZCommand):
     """List the SAP Application Server Instance resources for a given Virtual Instance for SAP solutions resource.
@@ -22,9 +23,9 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-09-01",
+        "version": "2023-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.workloads/sapvirtualinstances/{}/applicationinstances", "2024-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.workloads/sapvirtualinstances/{}/applicationinstances", "2023-10-01-preview"],
         ]
     }
 
@@ -60,7 +61,7 @@ class List(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.SapApplicationServerInstancesList(ctx=self.ctx)()
+        self.SAPApplicationServerInstancesList(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -76,7 +77,7 @@ class List(AAZCommand):
         next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
         return result, next_link
 
-    class SapApplicationServerInstancesList(AAZHttpOperation):
+    class SAPApplicationServerInstancesList(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -124,7 +125,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-09-01",
+                    "api-version", "2023-10-01-preview",
                     required=True,
                 ),
             }
@@ -160,9 +161,7 @@ class List(AAZCommand):
             _schema_on_200.next_link = AAZStrType(
                 serialized_name="nextLink",
             )
-            _schema_on_200.value = AAZListType(
-                flags={"required": True},
-            )
+            _schema_on_200.value = AAZListType()
 
             value = cls._schema_on_200.value
             value.Element = AAZObjectType()
@@ -199,6 +198,7 @@ class List(AAZCommand):
             )
             properties.gateway_port = AAZIntType(
                 serialized_name="gatewayPort",
+                nullable=True,
                 flags={"read_only": True},
             )
             properties.health = AAZStrType(
@@ -209,10 +209,12 @@ class List(AAZCommand):
             )
             properties.icm_http_port = AAZIntType(
                 serialized_name="icmHttpPort",
+                nullable=True,
                 flags={"read_only": True},
             )
             properties.icm_https_port = AAZIntType(
                 serialized_name="icmHttpsPort",
+                nullable=True,
                 flags={"read_only": True},
             )
             properties.instance_no = AAZStrType(

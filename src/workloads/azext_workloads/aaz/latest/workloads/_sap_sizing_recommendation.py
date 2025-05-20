@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "workloads sap-sizing-recommendation",
+    is_preview=True,
 )
 class SapSizingRecommendation(AAZCommand):
     """Show SAP sizing recommendations by providing input SAPS for application tier and memory required for database tier
@@ -25,9 +26,9 @@ class SapSizingRecommendation(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-09-01",
+        "version": "2023-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.workloads/locations/{}/sapvirtualinstancemetadata/default/getsizingrecommendations", "2024-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.workloads/locations/{}/sapvirtualinstancemetadata/default/getsizingrecommendations", "2023-10-01-preview"],
         ]
     }
 
@@ -59,20 +60,17 @@ class SapSizingRecommendation(AAZCommand):
             options=["--app-location"],
             arg_group="SAPSizingRecommendation",
             help="The geo-location where the resource is to be created.",
-            required=True,
         )
         _args_schema.database_type = AAZStrArg(
             options=["--database-type"],
             arg_group="SAPSizingRecommendation",
             help="The database type.",
-            required=True,
             enum={"DB2": "DB2", "HANA": "HANA"},
         )
         _args_schema.db_memory = AAZIntArg(
             options=["--db-memory"],
             arg_group="SAPSizingRecommendation",
             help="The database memory configuration.",
-            required=True,
         )
         _args_schema.db_scale_method = AAZStrArg(
             options=["--db-scale-method"],
@@ -84,14 +82,12 @@ class SapSizingRecommendation(AAZCommand):
             options=["--deployment-type"],
             arg_group="SAPSizingRecommendation",
             help="The deployment type. Eg: SingleServer/ThreeTier",
-            required=True,
             enum={"SingleServer": "SingleServer", "ThreeTier": "ThreeTier"},
         )
         _args_schema.environment = AAZStrArg(
             options=["--environment"],
             arg_group="SAPSizingRecommendation",
             help="Defines the environment type - Production/Non Production.",
-            required=True,
             enum={"NonProd": "NonProd", "Prod": "Prod"},
         )
         _args_schema.high_availability_type = AAZStrArg(
@@ -104,20 +100,18 @@ class SapSizingRecommendation(AAZCommand):
             options=["--sap-product"],
             arg_group="SAPSizingRecommendation",
             help="Defines the SAP Product type.",
-            required=True,
             enum={"ECC": "ECC", "Other": "Other", "S4HANA": "S4HANA"},
         )
         _args_schema.saps = AAZIntArg(
             options=["--saps"],
             arg_group="SAPSizingRecommendation",
             help="The SAP Application Performance Standard measurement.",
-            required=True,
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.SapVirtualInstancesInvokeSizingRecommendations(ctx=self.ctx)()
+        self.SAPSizingRecommendations(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -132,7 +126,7 @@ class SapSizingRecommendation(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class SapVirtualInstancesInvokeSizingRecommendations(AAZHttpOperation):
+    class SAPSizingRecommendations(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -176,7 +170,7 @@ class SapSizingRecommendation(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-09-01",
+                    "api-version", "2023-10-01-preview",
                     required=True,
                 ),
             }
@@ -199,7 +193,7 @@ class SapSizingRecommendation(AAZCommand):
             _content_value, _builder = self.new_content_builder(
                 self.ctx.args,
                 typ=AAZObjectType,
-                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
+                typ_kwargs={"flags": {"client_flatten": True}}
             )
             _builder.set_prop("appLocation", AAZStrType, ".app_location", typ_kwargs={"flags": {"required": True}})
             _builder.set_prop("databaseType", AAZStrType, ".database_type", typ_kwargs={"flags": {"required": True}})

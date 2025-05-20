@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "workloads sap-application-server-instance show",
+    is_preview=True,
 )
 class Show(AAZCommand):
     """Show the SAP Application Server Instance corresponding to the Virtual Instance for SAP solutions resource.
@@ -25,9 +26,9 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-09-01",
+        "version": "2023-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.workloads/sapvirtualinstances/{}/applicationinstances/{}", "2024-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.workloads/sapvirtualinstances/{}/applicationinstances/{}", "2023-10-01-preview"],
         ]
     }
 
@@ -72,7 +73,7 @@ class Show(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.SapApplicationServerInstancesGet(ctx=self.ctx)()
+        self.SAPApplicationServerInstancesGet(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -87,7 +88,7 @@ class Show(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class SapApplicationServerInstancesGet(AAZHttpOperation):
+    class SAPApplicationServerInstancesGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -139,7 +140,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-09-01",
+                    "api-version", "2023-10-01-preview",
                     required=True,
                 ),
             }
@@ -203,6 +204,7 @@ class Show(AAZCommand):
             )
             properties.gateway_port = AAZIntType(
                 serialized_name="gatewayPort",
+                nullable=True,
                 flags={"read_only": True},
             )
             properties.health = AAZStrType(
@@ -213,10 +215,12 @@ class Show(AAZCommand):
             )
             properties.icm_http_port = AAZIntType(
                 serialized_name="icmHttpPort",
+                nullable=True,
                 flags={"read_only": True},
             )
             properties.icm_https_port = AAZIntType(
                 serialized_name="icmHttpsPort",
+                nullable=True,
                 flags={"read_only": True},
             )
             properties.instance_no = AAZStrType(
