@@ -2,6 +2,10 @@
 
 Release History
 ===============
+1.0.0b2
+++++++
+* Bug fix: Updated to allow for az login when the account dosent have any active subscriptions
+
 
 1.0.0b1
 ++++++
