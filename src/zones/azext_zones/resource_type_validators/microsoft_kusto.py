@@ -10,6 +10,7 @@ from .._resourceTypeValidation import (
 from knack.log import get_logger
 
 
+# pylint: disable=too-few-public-methods
 @register_resource_type("microsoft.kusto")
 class microsoft_kusto:
     @staticmethod
@@ -28,7 +29,6 @@ class microsoft_kusto:
             zones = resource.get("zones") or []
             if len(zones) > 1:
                 return ZoneRedundancyValidationResult.Yes
-            else:
-                return ZoneRedundancyValidationResult.No
+            return ZoneRedundancyValidationResult.No
 
         return ZoneRedundancyValidationResult.Unknown
