@@ -22,8 +22,8 @@ logger = get_logger(__name__)
 )
 class Create(AAZCommand):
     """Create a Solution Template Resource
-    example: Create Solution Template
-    az workload-orchestration solution-template create -g rg1 --solution-template-name solutionTemplate1 --location eastus --description "Solution Template Description" --capabilities capability1 capability2 --tags tag1=value1 tag2=value2 --config-template-file config.yaml
+    :example: Create Solution Template
+            az workload-orchestration solution-template create -g rg1 --solution-template-name solutionTemplate1 --location eastus --description "Solution Template Description" --capabilities capability1 capability2 --tags tag1=value1 tag2=value2 --config-template-file config.yaml
     """
 
     _aaz_info = {
