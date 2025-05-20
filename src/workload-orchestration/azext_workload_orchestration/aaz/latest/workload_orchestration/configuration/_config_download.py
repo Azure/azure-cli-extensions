@@ -18,6 +18,7 @@ from azure.cli.core.aaz import *
 )
 class Download(AAZCommand):
     """Download configurations available at specified hierarchical entity
+    :example: az workload-orchestration configuration download -g rg1 --target-name target1 --solution-template-name solutionTemplate1
     """
 
     _aaz_info = {

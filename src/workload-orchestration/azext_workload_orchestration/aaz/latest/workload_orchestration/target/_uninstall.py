@@ -16,6 +16,7 @@ from azure.cli.core.aaz import *
 )
 class Uninstall(AAZCommand):
     """Post request to uninstall
+    :example: az workload-orchestration target uninstall -g rg1 -n target1 --solution-instance-name solutionInstanceName --solution-name solutionName
     """
 
     _aaz_info = {

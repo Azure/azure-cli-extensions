@@ -16,6 +16,8 @@ from azure.cli.core.aaz import *
 )
 class Install(AAZCommand):
     """Post request to deploy
+    :example: 
+            az workload-orchestration target install -g rg1 -n target1 --solution-name solution1 --solution-version 1.0
     """
 
     _aaz_info = {

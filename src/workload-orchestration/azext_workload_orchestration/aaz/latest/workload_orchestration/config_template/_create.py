@@ -17,6 +17,7 @@ import yaml
 )
 class Create(AAZCommand):
     """Create a Config Template Resource
+    :example: az workload-orchestration config-template create -g rg1 -n ct1 --description "test" --location eastus --version 1.0.0 --config-template-file config.yaml
     """
 
     _aaz_info = {

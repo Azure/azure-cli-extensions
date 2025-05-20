@@ -16,6 +16,8 @@ from azure.cli.core.aaz import *
 )
 class ReviewSolutionVersion(AAZCommand):
     """Post request to review configuration
+    :example:
+        az workload-orchestration target review --target-name MyTarget --resource-group MyResourceGroup --solution-name MySolutionTemplate --solution-version 1.0.0
     """
 
     _aaz_info = {

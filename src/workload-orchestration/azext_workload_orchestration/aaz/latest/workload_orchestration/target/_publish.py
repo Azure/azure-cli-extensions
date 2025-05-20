@@ -16,6 +16,8 @@ from azure.cli.core.aaz import *
 )
 class Publish(AAZCommand):
     """Post request to publish
+    :example:
+        az workload-orchestration target publish -g {rg} -n {target_name} --review-id {review_id} --solution-name {solution_name} --solution-version {solution_version}
     """
 
     _aaz_info = {

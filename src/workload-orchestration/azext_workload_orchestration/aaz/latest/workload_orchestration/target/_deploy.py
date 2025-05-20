@@ -17,6 +17,8 @@ from azure.cli.core.aaz import *
 )
 class Deploy(AAZCommand):
     """Post request to deploy
+    :example:
+        az workload-orchestration target deploy -g rg1 -n target1 --review-id review1 --solution solution1 --version version1
     """
 
     _aaz_info = {

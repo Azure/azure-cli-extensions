@@ -17,6 +17,7 @@ from azure.cli.core.aaz import *
 )
 class ShowConfig(AAZCommand):
     """To get a configurations available at specified hierarchical entity
+    :example: az workload-orchestration configuration show -g rg1 --target-name target1 --solution-template-name solutionTemplate1
     """
 
     _aaz_info = {

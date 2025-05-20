@@ -16,6 +16,8 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create a Target Resource
+    :example: Create a Target Resource
+        az workload-orchestration target create -g {rg} -n {target_name} --location {location} --capabilities {capabilities} --description {description} --display-name {display_name} --hierarchy-level {hierarchy_level} --solution-scope {solution_scope} --state {state} --target-specification {target_specification}
     """
 
     _aaz_info = {

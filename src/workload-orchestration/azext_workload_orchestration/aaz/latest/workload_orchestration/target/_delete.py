@@ -17,6 +17,8 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete a Target Resource
+    :example: Delete a target
+        az workload-orchestration target delete -g rg1 -n target1   
     """
 
     _aaz_info = {

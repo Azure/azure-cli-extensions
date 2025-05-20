@@ -16,6 +16,8 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create Site Reference Resource
+    :example: Create a Site Reference
+        az workload-orchestration context site-reference create -g {rg} -n {site_reference_name} --context-name {context_name} --site-id {site_id}
     """
 
     _aaz_info = {

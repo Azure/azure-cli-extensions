@@ -17,6 +17,8 @@ import yaml
 )
 class Create(AAZCommand):
     """Create a Schema Resource
+    :example: Create a Schema
+        az workload-orchestration schema create -g rg1 -n schema1 --location eastus  --schema-file schema.yaml
     """
 
     _aaz_info = {

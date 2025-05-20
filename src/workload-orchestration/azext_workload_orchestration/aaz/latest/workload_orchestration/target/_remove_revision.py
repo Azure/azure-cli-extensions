@@ -16,6 +16,8 @@ from azure.cli.core.aaz import *
 )
 class RemoveRevision(AAZCommand):
     """Post request to remove solution version revision
+    :example:
+        az workload-orchestration target remove-revision -g MyResourceGroup -n MyTarget --solution-name MySolutionTemplate --solution-version 1.0
     """
 
     _aaz_info = {
