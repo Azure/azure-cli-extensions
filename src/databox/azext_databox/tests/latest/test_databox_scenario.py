@@ -22,7 +22,7 @@ class DataboxScenario(ScenarioTest):
             'managed-rg': self.create_random_name('rg-', 10)
         })
 
-        # Check all available SKUs.By the next update, the V1 pod, and heavy SKU will be deprecated.
+        # Check all available SKUs. By the next update, the V1 pod, and heavy SKU will be deprecated.
         # This response will have only 4 SKUs instead of 6.
         self.cmd('databox available-skus '
                  '--resource-group {rg} '
