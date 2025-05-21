@@ -5368,6 +5368,9 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             if mc.network_profile.load_balancer_sku == CONST_LOAD_BALANCER_SKU_BASIC:
                 mc.network_profile.load_balancer_sku = CONST_LOAD_BALANCER_SKU_STANDARD
 
+            mc.agent_pool_profiles[0].count = None
+            mc.agent_pool_profiles[0].vm_size = None
+
         return mc
 
     def update_mc_profile_preview(self) -> ManagedCluster:
