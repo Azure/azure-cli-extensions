@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "dynatrace monitor sso-config list",
 )
 class List(AAZCommand):
-    """List all dynatrace sso-config by monitor name
+    """List all SSO configurations associated with a specific Dynatrace resource.
 
     :example: List sso-config
         az dynatrace monitor sso-config list -g rg --monitor-name monitor
