@@ -790,7 +790,7 @@ class TestValidateMaintenanceWindow(unittest.TestCase):
         validators.validate_start_time(namespace)
 
 class ManagedNamespace:
-    def __init__(self, name=str, cpu_request=str, cpu_limit=str, memory_request=str, memory_limit=str):
+    def __init__(self, name=None, cpu_request=None, cpu_limit=None, memory_request=None, memory_limit=None):
         self.name = name
         self.cpu_request = cpu_request
         self.cpu_limit = cpu_limit
