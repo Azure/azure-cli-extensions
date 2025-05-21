@@ -611,7 +611,6 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
 
         return skip_gpu_driver_install
 
-
     def _get_gpu_driver(self) -> Union[str, None]:
         """Obtain the value of gpu_driver.
 
