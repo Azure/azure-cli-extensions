@@ -46,7 +46,7 @@ class GetConnectionUri(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.organization_name = AAZStrArg(
             options=["--organization-name"],
-            help="Name of the Neon Organizations resource",
+            help="Name of the Neon organization.",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
@@ -54,10 +54,13 @@ class GetConnectionUri(AAZCommand):
                 max_length=50,
                 min_length=1,
             ),
+            blank=AAZPromptInput(
+                msg="Please provide Neon Organization name:",
+            ),
         )
         _args_schema.project_name = AAZStrArg(
             options=["--project-name"],
-            help="The name of the Project",
+            help="Name of the Neon project.",
             required=True,
             id_part="child_name_1",
             fmt=AAZStrArgFormat(
@@ -65,7 +68,7 @@ class GetConnectionUri(AAZCommand):
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="The name of the Azure resource group",
+            help="Name of the Azure resource group.",
             required=True,
         )
 
