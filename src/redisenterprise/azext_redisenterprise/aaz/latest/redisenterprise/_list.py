@@ -19,10 +19,10 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-03-01-preview",
+        "version": "2025-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.cache/redisenterprise", "2023-03-01-preview"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cache/redisenterprise", "2023-03-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.cache/redisenterprise", "2025-05-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cache/redisenterprise", "2025-05-01-preview"],
         ]
     }
 
@@ -48,12 +48,12 @@ class List(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        condition_0 = has_value(self.ctx.args.resource_group) and has_value(self.ctx.subscription_id)
-        condition_1 = has_value(self.ctx.subscription_id) and has_value(self.ctx.args.resource_group) is not True
+        condition_0 = has_value(self.ctx.subscription_id) and has_value(self.ctx.args.resource_group) is not True
+        condition_1 = has_value(self.ctx.args.resource_group) and has_value(self.ctx.subscription_id)
         if condition_0:
-            self.RedisEnterpriseListByResourceGroup(ctx=self.ctx)()
-        if condition_1:
             self.RedisEnterpriseList(ctx=self.ctx)()
+        if condition_1:
+            self.RedisEnterpriseListByResourceGroup(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -68,6 +68,253 @@ class List(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
         next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
         return result, next_link
+
+    class RedisEnterpriseList(AAZHttpOperation):
+        CLIENT_TYPE = "MgmtClient"
+
+        def __call__(self, *args, **kwargs):
+            request = self.make_request()
+            session = self.client.send_request(request=request, stream=False, **kwargs)
+            if session.http_response.status_code in [200]:
+                return self.on_200(session)
+
+            return self.on_error(session.http_response)
+
+        @property
+        def url(self):
+            return self.client.format_url(
+                "/subscriptions/{subscriptionId}/providers/Microsoft.Cache/redisEnterprise",
+                **self.url_parameters
+            )
+
+        @property
+        def method(self):
+            return "GET"
+
+        @property
+        def error_format(self):
+            return "MgmtErrorFormat"
+
+        @property
+        def url_parameters(self):
+            parameters = {
+                **self.serialize_url_param(
+                    "subscriptionId", self.ctx.subscription_id,
+                    required=True,
+                ),
+            }
+            return parameters
+
+        @property
+        def query_parameters(self):
+            parameters = {
+                **self.serialize_query_param(
+                    "api-version", "2025-05-01-preview",
+                    required=True,
+                ),
+            }
+            return parameters
+
+        @property
+        def header_parameters(self):
+            parameters = {
+                **self.serialize_header_param(
+                    "Accept", "application/json",
+                ),
+            }
+            return parameters
+
+        def on_200(self, session):
+            data = self.deserialize_http_content(session)
+            self.ctx.set_var(
+                "instance",
+                data,
+                schema_builder=self._build_schema_on_200
+            )
+
+        _schema_on_200 = None
+
+        @classmethod
+        def _build_schema_on_200(cls):
+            if cls._schema_on_200 is not None:
+                return cls._schema_on_200
+
+            cls._schema_on_200 = AAZObjectType()
+
+            _schema_on_200 = cls._schema_on_200
+            _schema_on_200.next_link = AAZStrType(
+                serialized_name="nextLink",
+                flags={"read_only": True},
+            )
+            _schema_on_200.value = AAZListType()
+
+            value = cls._schema_on_200.value
+            value.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element
+            _element.id = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.identity = AAZIdentityObjectType()
+            _element.kind = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.location = AAZStrType(
+                flags={"required": True},
+            )
+            _element.name = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
+            _element.sku = AAZObjectType(
+                flags={"required": True},
+            )
+            _element.tags = AAZDictType()
+            _element.type = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.zones = AAZListType()
+
+            identity = cls._schema_on_200.value.Element.identity
+            identity.principal_id = AAZStrType(
+                serialized_name="principalId",
+                flags={"read_only": True},
+            )
+            identity.tenant_id = AAZStrType(
+                serialized_name="tenantId",
+                flags={"read_only": True},
+            )
+            identity.type = AAZStrType(
+                flags={"required": True},
+            )
+            identity.user_assigned_identities = AAZDictType(
+                serialized_name="userAssignedIdentities",
+            )
+
+            user_assigned_identities = cls._schema_on_200.value.Element.identity.user_assigned_identities
+            user_assigned_identities.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.identity.user_assigned_identities.Element
+            _element.client_id = AAZStrType(
+                serialized_name="clientId",
+                flags={"read_only": True},
+            )
+            _element.principal_id = AAZStrType(
+                serialized_name="principalId",
+                flags={"read_only": True},
+            )
+
+            properties = cls._schema_on_200.value.Element.properties
+            properties.encryption = AAZObjectType()
+            properties.high_availability = AAZStrType(
+                serialized_name="highAvailability",
+            )
+            properties.host_name = AAZStrType(
+                serialized_name="hostName",
+                flags={"read_only": True},
+            )
+            properties.minimum_tls_version = AAZStrType(
+                serialized_name="minimumTlsVersion",
+            )
+            properties.private_endpoint_connections = AAZListType(
+                serialized_name="privateEndpointConnections",
+                flags={"read_only": True},
+            )
+            properties.provisioning_state = AAZStrType(
+                serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+            properties.redis_version = AAZStrType(
+                serialized_name="redisVersion",
+                flags={"read_only": True},
+            )
+            properties.redundancy_mode = AAZStrType(
+                serialized_name="redundancyMode",
+                flags={"read_only": True},
+            )
+            properties.resource_state = AAZStrType(
+                serialized_name="resourceState",
+                flags={"read_only": True},
+            )
+
+            encryption = cls._schema_on_200.value.Element.properties.encryption
+            encryption.customer_managed_key_encryption = AAZObjectType(
+                serialized_name="customerManagedKeyEncryption",
+            )
+
+            customer_managed_key_encryption = cls._schema_on_200.value.Element.properties.encryption.customer_managed_key_encryption
+            customer_managed_key_encryption.key_encryption_key_identity = AAZObjectType(
+                serialized_name="keyEncryptionKeyIdentity",
+            )
+            customer_managed_key_encryption.key_encryption_key_url = AAZStrType(
+                serialized_name="keyEncryptionKeyUrl",
+            )
+
+            key_encryption_key_identity = cls._schema_on_200.value.Element.properties.encryption.customer_managed_key_encryption.key_encryption_key_identity
+            key_encryption_key_identity.identity_type = AAZStrType(
+                serialized_name="identityType",
+            )
+            key_encryption_key_identity.user_assigned_identity_resource_id = AAZStrType(
+                serialized_name="userAssignedIdentityResourceId",
+            )
+
+            private_endpoint_connections = cls._schema_on_200.value.Element.properties.private_endpoint_connections
+            private_endpoint_connections.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.properties.private_endpoint_connections.Element
+            _element.id = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.name = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
+            _element.type = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            properties = cls._schema_on_200.value.Element.properties.private_endpoint_connections.Element.properties
+            properties.private_endpoint = AAZObjectType(
+                serialized_name="privateEndpoint",
+            )
+            properties.private_link_service_connection_state = AAZObjectType(
+                serialized_name="privateLinkServiceConnectionState",
+                flags={"required": True},
+            )
+            properties.provisioning_state = AAZStrType(
+                serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+
+            private_endpoint = cls._schema_on_200.value.Element.properties.private_endpoint_connections.Element.properties.private_endpoint
+            private_endpoint.id = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            private_link_service_connection_state = cls._schema_on_200.value.Element.properties.private_endpoint_connections.Element.properties.private_link_service_connection_state
+            private_link_service_connection_state.actions_required = AAZStrType(
+                serialized_name="actionsRequired",
+            )
+            private_link_service_connection_state.description = AAZStrType()
+            private_link_service_connection_state.status = AAZStrType()
+
+            sku = cls._schema_on_200.value.Element.sku
+            sku.capacity = AAZIntType()
+            sku.name = AAZStrType(
+                flags={"required": True},
+            )
+
+            tags = cls._schema_on_200.value.Element.tags
+            tags.Element = AAZStrType()
+
+            zones = cls._schema_on_200.value.Element.zones
+            zones.Element = AAZStrType()
+
+            return cls._schema_on_200
 
     class RedisEnterpriseListByResourceGroup(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
@@ -113,7 +360,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-03-01-preview",
+                    "api-version", "2025-05-01-preview",
                     required=True,
                 ),
             }
@@ -159,7 +406,10 @@ class List(AAZCommand):
             _element.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.identity = AAZObjectType()
+            _element.identity = AAZIdentityObjectType()
+            _element.kind = AAZStrType(
+                flags={"read_only": True},
+            )
             _element.location = AAZStrType(
                 flags={"required": True},
             )
@@ -172,11 +422,6 @@ class List(AAZCommand):
             _element.sku = AAZObjectType(
                 flags={"required": True},
             )
-            _element.system_data = AAZObjectType(
-                serialized_name="systemData",
-                flags={"read_only": True},
-            )
-            _ListHelper._build_schema_system_data_read(_element.system_data)
             _element.tags = AAZDictType()
             _element.type = AAZStrType(
                 flags={"read_only": True},
@@ -214,6 +459,9 @@ class List(AAZCommand):
 
             properties = cls._schema_on_200.value.Element.properties
             properties.encryption = AAZObjectType()
+            properties.high_availability = AAZStrType(
+                serialized_name="highAvailability",
+            )
             properties.host_name = AAZStrType(
                 serialized_name="hostName",
                 flags={"read_only": True},
@@ -231,6 +479,10 @@ class List(AAZCommand):
             )
             properties.redis_version = AAZStrType(
                 serialized_name="redisVersion",
+                flags={"read_only": True},
+            )
+            properties.redundancy_mode = AAZStrType(
+                serialized_name="redundancyMode",
                 flags={"read_only": True},
             )
             properties.resource_state = AAZStrType(
@@ -272,258 +524,6 @@ class List(AAZCommand):
             _element.properties = AAZObjectType(
                 flags={"client_flatten": True},
             )
-            _element.system_data = AAZObjectType(
-                serialized_name="systemData",
-                flags={"read_only": True},
-            )
-            _ListHelper._build_schema_system_data_read(_element.system_data)
-            _element.type = AAZStrType(
-                flags={"read_only": True},
-            )
-
-            properties = cls._schema_on_200.value.Element.properties.private_endpoint_connections.Element.properties
-            properties.private_endpoint = AAZObjectType(
-                serialized_name="privateEndpoint",
-            )
-            properties.private_link_service_connection_state = AAZObjectType(
-                serialized_name="privateLinkServiceConnectionState",
-                flags={"required": True},
-            )
-            properties.provisioning_state = AAZStrType(
-                serialized_name="provisioningState",
-                flags={"read_only": True},
-            )
-
-            private_endpoint = cls._schema_on_200.value.Element.properties.private_endpoint_connections.Element.properties.private_endpoint
-            private_endpoint.id = AAZStrType(
-                flags={"read_only": True},
-            )
-
-            private_link_service_connection_state = cls._schema_on_200.value.Element.properties.private_endpoint_connections.Element.properties.private_link_service_connection_state
-            private_link_service_connection_state.actions_required = AAZStrType(
-                serialized_name="actionsRequired",
-            )
-            private_link_service_connection_state.description = AAZStrType()
-            private_link_service_connection_state.status = AAZStrType()
-
-            sku = cls._schema_on_200.value.Element.sku
-            sku.capacity = AAZIntType()
-            sku.name = AAZStrType(
-                flags={"required": True},
-            )
-
-            tags = cls._schema_on_200.value.Element.tags
-            tags.Element = AAZStrType()
-
-            zones = cls._schema_on_200.value.Element.zones
-            zones.Element = AAZStrType()
-
-            return cls._schema_on_200
-
-    class RedisEnterpriseList(AAZHttpOperation):
-        CLIENT_TYPE = "MgmtClient"
-
-        def __call__(self, *args, **kwargs):
-            request = self.make_request()
-            session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [200]:
-                return self.on_200(session)
-
-            return self.on_error(session.http_response)
-
-        @property
-        def url(self):
-            return self.client.format_url(
-                "/subscriptions/{subscriptionId}/providers/Microsoft.Cache/redisEnterprise",
-                **self.url_parameters
-            )
-
-        @property
-        def method(self):
-            return "GET"
-
-        @property
-        def error_format(self):
-            return "MgmtErrorFormat"
-
-        @property
-        def url_parameters(self):
-            parameters = {
-                **self.serialize_url_param(
-                    "subscriptionId", self.ctx.subscription_id,
-                    required=True,
-                ),
-            }
-            return parameters
-
-        @property
-        def query_parameters(self):
-            parameters = {
-                **self.serialize_query_param(
-                    "api-version", "2023-03-01-preview",
-                    required=True,
-                ),
-            }
-            return parameters
-
-        @property
-        def header_parameters(self):
-            parameters = {
-                **self.serialize_header_param(
-                    "Accept", "application/json",
-                ),
-            }
-            return parameters
-
-        def on_200(self, session):
-            data = self.deserialize_http_content(session)
-            self.ctx.set_var(
-                "instance",
-                data,
-                schema_builder=self._build_schema_on_200
-            )
-
-        _schema_on_200 = None
-
-        @classmethod
-        def _build_schema_on_200(cls):
-            if cls._schema_on_200 is not None:
-                return cls._schema_on_200
-
-            cls._schema_on_200 = AAZObjectType()
-
-            _schema_on_200 = cls._schema_on_200
-            _schema_on_200.next_link = AAZStrType(
-                serialized_name="nextLink",
-                flags={"read_only": True},
-            )
-            _schema_on_200.value = AAZListType()
-
-            value = cls._schema_on_200.value
-            value.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.value.Element
-            _element.id = AAZStrType(
-                flags={"read_only": True},
-            )
-            _element.identity = AAZObjectType()
-            _element.location = AAZStrType(
-                flags={"required": True},
-            )
-            _element.name = AAZStrType(
-                flags={"read_only": True},
-            )
-            _element.properties = AAZObjectType(
-                flags={"client_flatten": True},
-            )
-            _element.sku = AAZObjectType(
-                flags={"required": True},
-            )
-            _element.system_data = AAZObjectType(
-                serialized_name="systemData",
-                flags={"read_only": True},
-            )
-            _ListHelper._build_schema_system_data_read(_element.system_data)
-            _element.tags = AAZDictType()
-            _element.type = AAZStrType(
-                flags={"read_only": True},
-            )
-            _element.zones = AAZListType()
-
-            identity = cls._schema_on_200.value.Element.identity
-            identity.principal_id = AAZStrType(
-                serialized_name="principalId",
-                flags={"read_only": True},
-            )
-            identity.tenant_id = AAZStrType(
-                serialized_name="tenantId",
-                flags={"read_only": True},
-            )
-            identity.type = AAZStrType(
-                flags={"required": True},
-            )
-            identity.user_assigned_identities = AAZDictType(
-                serialized_name="userAssignedIdentities",
-            )
-
-            user_assigned_identities = cls._schema_on_200.value.Element.identity.user_assigned_identities
-            user_assigned_identities.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.value.Element.identity.user_assigned_identities.Element
-            _element.client_id = AAZStrType(
-                serialized_name="clientId",
-                flags={"read_only": True},
-            )
-            _element.principal_id = AAZStrType(
-                serialized_name="principalId",
-                flags={"read_only": True},
-            )
-
-            properties = cls._schema_on_200.value.Element.properties
-            properties.encryption = AAZObjectType()
-            properties.host_name = AAZStrType(
-                serialized_name="hostName",
-                flags={"read_only": True},
-            )
-            properties.minimum_tls_version = AAZStrType(
-                serialized_name="minimumTlsVersion",
-            )
-            properties.private_endpoint_connections = AAZListType(
-                serialized_name="privateEndpointConnections",
-                flags={"read_only": True},
-            )
-            properties.provisioning_state = AAZStrType(
-                serialized_name="provisioningState",
-                flags={"read_only": True},
-            )
-            properties.redis_version = AAZStrType(
-                serialized_name="redisVersion",
-                flags={"read_only": True},
-            )
-            properties.resource_state = AAZStrType(
-                serialized_name="resourceState",
-                flags={"read_only": True},
-            )
-
-            encryption = cls._schema_on_200.value.Element.properties.encryption
-            encryption.customer_managed_key_encryption = AAZObjectType(
-                serialized_name="customerManagedKeyEncryption",
-            )
-
-            customer_managed_key_encryption = cls._schema_on_200.value.Element.properties.encryption.customer_managed_key_encryption
-            customer_managed_key_encryption.key_encryption_key_identity = AAZObjectType(
-                serialized_name="keyEncryptionKeyIdentity",
-            )
-            customer_managed_key_encryption.key_encryption_key_url = AAZStrType(
-                serialized_name="keyEncryptionKeyUrl",
-            )
-
-            key_encryption_key_identity = cls._schema_on_200.value.Element.properties.encryption.customer_managed_key_encryption.key_encryption_key_identity
-            key_encryption_key_identity.identity_type = AAZStrType(
-                serialized_name="identityType",
-            )
-            key_encryption_key_identity.user_assigned_identity_resource_id = AAZStrType(
-                serialized_name="userAssignedIdentityResourceId",
-            )
-
-            private_endpoint_connections = cls._schema_on_200.value.Element.properties.private_endpoint_connections
-            private_endpoint_connections.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.value.Element.properties.private_endpoint_connections.Element
-            _element.id = AAZStrType(
-                flags={"read_only": True},
-            )
-            _element.name = AAZStrType(
-                flags={"read_only": True},
-            )
-            _element.properties = AAZObjectType(
-                flags={"client_flatten": True},
-            )
-            _element.system_data = AAZObjectType(
-                serialized_name="systemData",
-                flags={"read_only": True},
-            )
-            _ListHelper._build_schema_system_data_read(_element.system_data)
             _element.type = AAZStrType(
                 flags={"read_only": True},
             )
@@ -570,50 +570,6 @@ class List(AAZCommand):
 
 class _ListHelper:
     """Helper class for List"""
-
-    _schema_system_data_read = None
-
-    @classmethod
-    def _build_schema_system_data_read(cls, _schema):
-        if cls._schema_system_data_read is not None:
-            _schema.created_at = cls._schema_system_data_read.created_at
-            _schema.created_by = cls._schema_system_data_read.created_by
-            _schema.created_by_type = cls._schema_system_data_read.created_by_type
-            _schema.last_modified_at = cls._schema_system_data_read.last_modified_at
-            _schema.last_modified_by = cls._schema_system_data_read.last_modified_by
-            _schema.last_modified_by_type = cls._schema_system_data_read.last_modified_by_type
-            return
-
-        cls._schema_system_data_read = _schema_system_data_read = AAZObjectType(
-            flags={"read_only": True}
-        )
-
-        system_data_read = _schema_system_data_read
-        system_data_read.created_at = AAZStrType(
-            serialized_name="createdAt",
-        )
-        system_data_read.created_by = AAZStrType(
-            serialized_name="createdBy",
-        )
-        system_data_read.created_by_type = AAZStrType(
-            serialized_name="createdByType",
-        )
-        system_data_read.last_modified_at = AAZStrType(
-            serialized_name="lastModifiedAt",
-        )
-        system_data_read.last_modified_by = AAZStrType(
-            serialized_name="lastModifiedBy",
-        )
-        system_data_read.last_modified_by_type = AAZStrType(
-            serialized_name="lastModifiedByType",
-        )
-
-        _schema.created_at = cls._schema_system_data_read.created_at
-        _schema.created_by = cls._schema_system_data_read.created_by
-        _schema.created_by_type = cls._schema_system_data_read.created_by_type
-        _schema.last_modified_at = cls._schema_system_data_read.last_modified_at
-        _schema.last_modified_by = cls._schema_system_data_read.last_modified_by
-        _schema.last_modified_by_type = cls._schema_system_data_read.last_modified_by_type
 
 
 __all__ = ["List"]

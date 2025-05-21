@@ -6,7 +6,6 @@
 import os
 import unittest
 import json
-import time
 import subprocess
 from knack.util import CLIError
 
@@ -22,6 +21,7 @@ import azext_confcom.config as config
 from azext_confcom.template_util import (
     case_insensitive_dict_get,
     extract_containers_and_fragments_from_text,
+    decompose_confidential_properties,
 )
 from azext_confcom.os_util import (
     write_str_to_file,
@@ -29,6 +29,9 @@ from azext_confcom.os_util import (
     load_str_from_file,
     load_json_from_str,
     delete_silently,
+    write_str_to_file,
+    force_delete_silently,
+    str_to_base64,
 )
 from azext_confcom.custom import acifragmentgen_confcom
 from azure.cli.testsdk import ScenarioTest
@@ -68,6 +71,48 @@ class FragmentMountEnforcement(unittest.TestCase):
             }
         ]
     }
+    """
+    custom_json2 = """
+{
+  "version": "1.0",
+  "fragments": [],
+  "scenario": "vn2",
+  "containers": [
+    {
+      "name": "simple-container",
+      "properties": {
+        "image": "mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot",
+        "environmentVariables": [
+          {
+            "name": "PATH",
+            "value": "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+          }
+        ],
+        "command": [
+          "python3"
+        ],
+        "securityContext": {
+            "allowPrivilegeEscalation": true,
+            "privileged": true
+        },
+        "volumeMounts": [
+          {
+            "name": "logs",
+            "mountType": "emptyDir",
+            "mountPath": "/aci/logs",
+            "readonly": false
+          },
+          {
+            "name": "secret",
+            "mountType": "emptyDir",
+            "mountPath": "/aci/secret",
+            "readonly": true
+          }
+        ]
+      }
+    }
+  ]
+}
     """
     aci_policy = None
 
@@ -158,6 +203,36 @@ class FragmentMountEnforcement(unittest.TestCase):
         self.assertEqual(
             mount[config.POLICY_FIELD_CONTAINERS_ELEMENTS_MOUNTS_OPTIONS][2], "rw"
         )
+
+    def test_virtual_node_policy_fragment_generation(self):
+        try:
+            fragment_filename = "policy_fragment_file.json"
+            write_str_to_file(fragment_filename, self.custom_json2)
+            rego_filename = "example_fragment_file"
+            acifragmentgen_confcom(None, fragment_filename, None, rego_filename, "1", "test_feed_file", None, None, None)
+
+            containers, _ = decompose_confidential_properties(str_to_base64(load_str_from_file(f"{rego_filename}.rego")))
+
+            custom_container = containers[0]
+            vn2_privileged_mounts = [x.get(config.ACI_FIELD_CONTAINERS_MOUNTS_PATH) for x in config.DEFAULT_MOUNTS_PRIVILEGED_VIRTUAL_NODE]
+            vn2_mounts = [x.get(config.ACI_FIELD_CONTAINERS_MOUNTS_PATH) for x in config.DEFAULT_MOUNTS_VIRTUAL_NODE]
+
+            vn2_mount_count = 0
+            priv_mount_count = 0
+            for mount in custom_container.get(config.POLICY_FIELD_CONTAINERS_ELEMENTS_MOUNTS):
+                mount_name = mount.get(config.POLICY_FIELD_CONTAINERS_ELEMENTS_MOUNTS_DESTINATION)
+
+                if mount_name in vn2_privileged_mounts:
+                    priv_mount_count += 1
+                if mount_name in vn2_mounts:
+                    vn2_mount_count += 1
+            if priv_mount_count != len(vn2_privileged_mounts):
+                self.fail("policy does not contain privileged vn2 mounts")
+            if vn2_mount_count != len(vn2_mounts):
+                self.fail("policy does not contain default vn2 mounts")
+        finally:
+            force_delete_silently(fragment_filename)
+            force_delete_silently(f"{rego_filename}.rego")
 
 
 class FragmentGenerating(unittest.TestCase):

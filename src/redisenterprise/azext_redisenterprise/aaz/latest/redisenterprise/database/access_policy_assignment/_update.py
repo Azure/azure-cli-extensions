@@ -20,9 +20,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-09-01-preview",
+        "version": "2025-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cache/redisenterprise/{}/databases/{}/accesspolicyassignments/{}", "2024-09-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cache/redisenterprise/{}/databases/{}/accesspolicyassignments/{}", "2025-05-01-preview"],
         ]
     }
 
@@ -60,7 +60,7 @@ class Update(AAZCommand):
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
-                pattern="^[A-Za-z0-9]+(-[A-Za-z0-9]+)*$",
+                pattern="^(?=.{1,60}$)[A-Za-z0-9]+(-[A-Za-z0-9]+)*$",
             ),
         )
         _args_schema.database_name = AAZStrArg(
@@ -69,7 +69,7 @@ class Update(AAZCommand):
             required=True,
             id_part="child_name_1",
             fmt=AAZStrArgFormat(
-                pattern="^[A-Za-z0-9]{1,60}$",
+                pattern="^(?=.{1,60}$)[A-Za-z0-9]+(-[A-Za-z0-9]+)*$",
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
@@ -95,6 +95,7 @@ class Update(AAZCommand):
             options=["--object-id"],
             arg_group="User",
             help="The object ID of the user.",
+            nullable=True,
         )
         return cls._args_schema
 
@@ -184,7 +185,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-09-01-preview",
+                    "api-version", "2025-05-01-preview",
                     required=True,
                 ),
             }
@@ -291,7 +292,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-09-01-preview",
+                    "api-version", "2025-05-01-preview",
                     required=True,
                 ),
             }
@@ -349,7 +350,7 @@ class Update(AAZCommand):
                 value=instance,
                 typ=AAZObjectType
             )
-            _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True, "client_flatten": True}})
+            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
 
             properties = _builder.get(".properties")
             if properties is not None:
@@ -358,7 +359,7 @@ class Update(AAZCommand):
 
             user = _builder.get(".properties.user")
             if user is not None:
-                user.set_prop("objectId", AAZStrType, ".object_id", typ_kwargs={"flags": {"required": True}})
+                user.set_prop("objectId", AAZStrType, ".object_id")
 
             return _instance_value
 
@@ -395,7 +396,7 @@ class _UpdateHelper:
             flags={"read_only": True},
         )
         access_policy_assignment_read.properties = AAZObjectType(
-            flags={"required": True, "client_flatten": True},
+            flags={"client_flatten": True},
         )
         access_policy_assignment_read.type = AAZStrType(
             flags={"read_only": True},
@@ -417,7 +418,6 @@ class _UpdateHelper:
         user = _schema_access_policy_assignment_read.properties.user
         user.object_id = AAZStrType(
             serialized_name="objectId",
-            flags={"required": True},
         )
 
         _schema.id = cls._schema_access_policy_assignment_read.id

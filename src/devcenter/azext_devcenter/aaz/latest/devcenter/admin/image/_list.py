@@ -25,10 +25,10 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-10-01-preview",
+        "version": "2025-04-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}/galleries/{}/images", "2024-10-01-preview"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}/images", "2024-10-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}/galleries/{}/images", "2025-04-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}/images", "2025-04-01-preview"],
         ]
     }
 
@@ -75,12 +75,12 @@ class List(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        condition_0 = has_value(self.ctx.args.dev_center_name) and has_value(self.ctx.args.resource_group) and has_value(self.ctx.subscription_id) and has_value(self.ctx.args.gallery_name) is not True
-        condition_1 = has_value(self.ctx.args.dev_center_name) and has_value(self.ctx.args.gallery_name) and has_value(self.ctx.args.resource_group) and has_value(self.ctx.subscription_id)
+        condition_0 = has_value(self.ctx.args.dev_center_name) and has_value(self.ctx.args.gallery_name) and has_value(self.ctx.args.resource_group) and has_value(self.ctx.subscription_id)
+        condition_1 = has_value(self.ctx.args.dev_center_name) and has_value(self.ctx.args.resource_group) and has_value(self.ctx.subscription_id) and has_value(self.ctx.args.gallery_name) is not True
         if condition_0:
-            self.ImagesListByDevCenter(ctx=self.ctx)()
-        if condition_1:
             self.ImagesListByGallery(ctx=self.ctx)()
+        if condition_1:
+            self.ImagesListByDevCenter(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -95,170 +95,6 @@ class List(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
         next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
         return result, next_link
-
-    class ImagesListByDevCenter(AAZHttpOperation):
-        CLIENT_TYPE = "MgmtClient"
-
-        def __call__(self, *args, **kwargs):
-            request = self.make_request()
-            session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [200]:
-                return self.on_200(session)
-
-            return self.on_error(session.http_response)
-
-        @property
-        def url(self):
-            return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DevCenter/devcenters/{devCenterName}/images",
-                **self.url_parameters
-            )
-
-        @property
-        def method(self):
-            return "GET"
-
-        @property
-        def error_format(self):
-            return "MgmtErrorFormat"
-
-        @property
-        def url_parameters(self):
-            parameters = {
-                **self.serialize_url_param(
-                    "devCenterName", self.ctx.args.dev_center_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "resourceGroupName", self.ctx.args.resource_group,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "subscriptionId", self.ctx.subscription_id,
-                    required=True,
-                ),
-            }
-            return parameters
-
-        @property
-        def query_parameters(self):
-            parameters = {
-                **self.serialize_query_param(
-                    "api-version", "2024-10-01-preview",
-                    required=True,
-                ),
-            }
-            return parameters
-
-        @property
-        def header_parameters(self):
-            parameters = {
-                **self.serialize_header_param(
-                    "Accept", "application/json",
-                ),
-            }
-            return parameters
-
-        def on_200(self, session):
-            data = self.deserialize_http_content(session)
-            self.ctx.set_var(
-                "instance",
-                data,
-                schema_builder=self._build_schema_on_200
-            )
-
-        _schema_on_200 = None
-
-        @classmethod
-        def _build_schema_on_200(cls):
-            if cls._schema_on_200 is not None:
-                return cls._schema_on_200
-
-            cls._schema_on_200 = AAZObjectType()
-
-            _schema_on_200 = cls._schema_on_200
-            _schema_on_200.next_link = AAZStrType(
-                serialized_name="nextLink",
-                flags={"read_only": True},
-            )
-            _schema_on_200.value = AAZListType(
-                flags={"read_only": True},
-            )
-
-            value = cls._schema_on_200.value
-            value.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.value.Element
-            _element.id = AAZStrType(
-                flags={"read_only": True},
-            )
-            _element.name = AAZStrType(
-                flags={"read_only": True},
-            )
-            _element.properties = AAZObjectType(
-                flags={"client_flatten": True},
-            )
-            _element.system_data = AAZObjectType(
-                serialized_name="systemData",
-                flags={"read_only": True},
-            )
-            _element.type = AAZStrType(
-                flags={"read_only": True},
-            )
-
-            properties = cls._schema_on_200.value.Element.properties
-            properties.description = AAZStrType(
-                flags={"read_only": True},
-            )
-            properties.hibernate_support = AAZStrType(
-                serialized_name="hibernateSupport",
-            )
-            properties.offer = AAZStrType(
-                flags={"read_only": True},
-            )
-            properties.provisioning_state = AAZStrType(
-                serialized_name="provisioningState",
-                flags={"read_only": True},
-            )
-            properties.publisher = AAZStrType(
-                flags={"read_only": True},
-            )
-            properties.recommended_machine_configuration = AAZObjectType(
-                serialized_name="recommendedMachineConfiguration",
-            )
-            properties.sku = AAZStrType(
-                flags={"read_only": True},
-            )
-
-            recommended_machine_configuration = cls._schema_on_200.value.Element.properties.recommended_machine_configuration
-            recommended_machine_configuration.memory = AAZObjectType()
-            _ListHelper._build_schema_resource_range_read(recommended_machine_configuration.memory)
-            recommended_machine_configuration.v_cp_us = AAZObjectType(
-                serialized_name="vCPUs",
-            )
-            _ListHelper._build_schema_resource_range_read(recommended_machine_configuration.v_cp_us)
-
-            system_data = cls._schema_on_200.value.Element.system_data
-            system_data.created_at = AAZStrType(
-                serialized_name="createdAt",
-            )
-            system_data.created_by = AAZStrType(
-                serialized_name="createdBy",
-            )
-            system_data.created_by_type = AAZStrType(
-                serialized_name="createdByType",
-            )
-            system_data.last_modified_at = AAZStrType(
-                serialized_name="lastModifiedAt",
-            )
-            system_data.last_modified_by = AAZStrType(
-                serialized_name="lastModifiedBy",
-            )
-            system_data.last_modified_by_type = AAZStrType(
-                serialized_name="lastModifiedByType",
-            )
-
-            return cls._schema_on_200
 
     class ImagesListByGallery(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
@@ -312,7 +148,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-10-01-preview",
+                    "api-version", "2025-04-01-preview",
                     required=True,
                 ),
             }
@@ -380,6 +216,7 @@ class List(AAZCommand):
             )
             properties.hibernate_support = AAZStrType(
                 serialized_name="hibernateSupport",
+                flags={"read_only": True},
             )
             properties.offer = AAZStrType(
                 flags={"read_only": True},
@@ -393,16 +230,189 @@ class List(AAZCommand):
             )
             properties.recommended_machine_configuration = AAZObjectType(
                 serialized_name="recommendedMachineConfiguration",
+                flags={"read_only": True},
             )
             properties.sku = AAZStrType(
                 flags={"read_only": True},
             )
 
             recommended_machine_configuration = cls._schema_on_200.value.Element.properties.recommended_machine_configuration
-            recommended_machine_configuration.memory = AAZObjectType()
+            recommended_machine_configuration.memory = AAZObjectType(
+                flags={"read_only": True},
+            )
             _ListHelper._build_schema_resource_range_read(recommended_machine_configuration.memory)
             recommended_machine_configuration.v_cp_us = AAZObjectType(
                 serialized_name="vCPUs",
+                flags={"read_only": True},
+            )
+            _ListHelper._build_schema_resource_range_read(recommended_machine_configuration.v_cp_us)
+
+            system_data = cls._schema_on_200.value.Element.system_data
+            system_data.created_at = AAZStrType(
+                serialized_name="createdAt",
+            )
+            system_data.created_by = AAZStrType(
+                serialized_name="createdBy",
+            )
+            system_data.created_by_type = AAZStrType(
+                serialized_name="createdByType",
+            )
+            system_data.last_modified_at = AAZStrType(
+                serialized_name="lastModifiedAt",
+            )
+            system_data.last_modified_by = AAZStrType(
+                serialized_name="lastModifiedBy",
+            )
+            system_data.last_modified_by_type = AAZStrType(
+                serialized_name="lastModifiedByType",
+            )
+
+            return cls._schema_on_200
+
+    class ImagesListByDevCenter(AAZHttpOperation):
+        CLIENT_TYPE = "MgmtClient"
+
+        def __call__(self, *args, **kwargs):
+            request = self.make_request()
+            session = self.client.send_request(request=request, stream=False, **kwargs)
+            if session.http_response.status_code in [200]:
+                return self.on_200(session)
+
+            return self.on_error(session.http_response)
+
+        @property
+        def url(self):
+            return self.client.format_url(
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DevCenter/devcenters/{devCenterName}/images",
+                **self.url_parameters
+            )
+
+        @property
+        def method(self):
+            return "GET"
+
+        @property
+        def error_format(self):
+            return "MgmtErrorFormat"
+
+        @property
+        def url_parameters(self):
+            parameters = {
+                **self.serialize_url_param(
+                    "devCenterName", self.ctx.args.dev_center_name,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "resourceGroupName", self.ctx.args.resource_group,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "subscriptionId", self.ctx.subscription_id,
+                    required=True,
+                ),
+            }
+            return parameters
+
+        @property
+        def query_parameters(self):
+            parameters = {
+                **self.serialize_query_param(
+                    "api-version", "2025-04-01-preview",
+                    required=True,
+                ),
+            }
+            return parameters
+
+        @property
+        def header_parameters(self):
+            parameters = {
+                **self.serialize_header_param(
+                    "Accept", "application/json",
+                ),
+            }
+            return parameters
+
+        def on_200(self, session):
+            data = self.deserialize_http_content(session)
+            self.ctx.set_var(
+                "instance",
+                data,
+                schema_builder=self._build_schema_on_200
+            )
+
+        _schema_on_200 = None
+
+        @classmethod
+        def _build_schema_on_200(cls):
+            if cls._schema_on_200 is not None:
+                return cls._schema_on_200
+
+            cls._schema_on_200 = AAZObjectType()
+
+            _schema_on_200 = cls._schema_on_200
+            _schema_on_200.next_link = AAZStrType(
+                serialized_name="nextLink",
+                flags={"read_only": True},
+            )
+            _schema_on_200.value = AAZListType(
+                flags={"read_only": True},
+            )
+
+            value = cls._schema_on_200.value
+            value.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element
+            _element.id = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.name = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
+            _element.system_data = AAZObjectType(
+                serialized_name="systemData",
+                flags={"read_only": True},
+            )
+            _element.type = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            properties = cls._schema_on_200.value.Element.properties
+            properties.description = AAZStrType(
+                flags={"read_only": True},
+            )
+            properties.hibernate_support = AAZStrType(
+                serialized_name="hibernateSupport",
+                flags={"read_only": True},
+            )
+            properties.offer = AAZStrType(
+                flags={"read_only": True},
+            )
+            properties.provisioning_state = AAZStrType(
+                serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+            properties.publisher = AAZStrType(
+                flags={"read_only": True},
+            )
+            properties.recommended_machine_configuration = AAZObjectType(
+                serialized_name="recommendedMachineConfiguration",
+                flags={"read_only": True},
+            )
+            properties.sku = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            recommended_machine_configuration = cls._schema_on_200.value.Element.properties.recommended_machine_configuration
+            recommended_machine_configuration.memory = AAZObjectType(
+                flags={"read_only": True},
+            )
+            _ListHelper._build_schema_resource_range_read(recommended_machine_configuration.memory)
+            recommended_machine_configuration.v_cp_us = AAZObjectType(
+                serialized_name="vCPUs",
+                flags={"read_only": True},
             )
             _ListHelper._build_schema_resource_range_read(recommended_machine_configuration.v_cp_us)
 
@@ -441,7 +451,9 @@ class _ListHelper:
             _schema.min = cls._schema_resource_range_read.min
             return
 
-        cls._schema_resource_range_read = _schema_resource_range_read = AAZObjectType()
+        cls._schema_resource_range_read = _schema_resource_range_read = AAZObjectType(
+            flags={"read_only": True}
+        )
 
         resource_range_read = _schema_resource_range_read
         resource_range_read.max = AAZIntType(

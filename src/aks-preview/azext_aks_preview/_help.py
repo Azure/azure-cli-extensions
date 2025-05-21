@@ -40,7 +40,7 @@ helps['aks create'] = f"""
                          `--service-principal` is specified.
         - name: --node-vm-size -s
           type: string
-          short-summary: Size of Virtual Machines to create as Kubernetes nodes.
+          short-summary: Size of Virtual Machines to create as Kubernetes nodes. If the user does not specify one, server will select a default VM size for her/him.
         - name: --dns-name-prefix -p
           type: string
           short-summary: Prefix for hostnames that are created. If not specified, generate a hostname using the
@@ -228,6 +228,12 @@ helps['aks create'] = f"""
         - name: --disable-acns-security
           type: bool
           short-summary: Used to disable advanced networking security features on a clusters when enabling advanced networking features with "--enable-acns".
+        - name: --acns-advanced-networkpolicies
+          type: string
+          short-summary: Used to enable advanced network policies (None, FQDN or L7) on a cluster when enabling advanced networking features with "--enable-acns".
+        - name: --enable-retina-flow-logs
+          type: bool
+          short-summary: Enable advanced network flow log collection functionalities on a cluster.
         - name: --no-ssh-key -x
           type: string
           short-summary: Do not use or create a local SSH key.
@@ -298,10 +304,6 @@ helps['aks create'] = f"""
         - name: --vm-set-type
           type: string
           short-summary: Agent pool vm set type. VirtualMachineScaleSets, AvailabilitySet or VirtualMachines(Preview).
-        - name: --enable-pod-security-policy
-          type: bool
-          short-summary: Enable pod security policy.
-          long-summary: --enable-pod-security-policy is deprecated. See https://aka.ms/aks/psp for details.
         - name: --node-resource-group
           type: string
           short-summary: The node resource group is the resource group where all customer's resources will be created in, such as virtual machines.
@@ -858,14 +860,6 @@ helps['aks update'] = """
           type: string
           short-summary: How outbound traffic will be configured for a cluster.
           long-summary: This option will change the way how the outbound connections are managed in the AKS cluster. Available options are loadbalancer, managedNATGateway, userAssignedNATGateway, userDefinedRouting, none and block. For custom vnet, loadbalancer, userAssignedNATGateway and userDefinedRouting are supported. For aks managed vnet, loadbalancer, managedNATGateway and userDefinedRouting are supported.
-        - name: --enable-pod-security-policy
-          type: bool
-          short-summary: Enable pod security policy.
-          long-summary: --enable-pod-security-policy is deprecated. See https://aka.ms/aks/psp for details.
-        - name: --disable-pod-security-policy
-          type: bool
-          short-summary: Disable pod security policy
-          long-summary: PodSecurityPolicy is deprecated. See https://aka.ms/aks/psp for details.
         - name: --nrg-lockdown-restriction-level
           type: string
           short-summary: Restriction level on the managed node resource.
@@ -1214,6 +1208,15 @@ helps['aks update'] = """
         - name: --disable-acns-security
           type: bool
           short-summary: Used to disable advanced networking security features on a clusters when enabling advanced networking features with "--enable-acns".
+        - name: --acns-advanced-networkpolicies
+          type: string
+          short-summary: Used to enable advanced network policies (None, FQDN or L7) on a cluster when enabling advanced networking features with "--enable-acns".
+        - name: --enable-retina-flow-logs
+          type: bool
+          short-summary: Enable advanced network flow log collection functionalities on a cluster.
+        - name: --disable-retina-flow-logs
+          type: bool
+          short-summary: Disable advanced network flow log collection functionalities on a cluster.
         - name: --enable-cost-analysis
           type: bool
           short-summary: Enable exporting Kubernetes Namespace and Deployment details to the Cost Analysis views in the Azure portal. For more information see aka.ms/aks/docs/cost-analysis.
@@ -1252,6 +1255,9 @@ helps['aks update'] = """
         - name: --disable-imds-restriction
           type: bool
           short-summary: Disable IMDS restriction in the cluster. All Pods in the cluster will be able to access IMDS.
+        - name: --migrate-vmas-to-vms
+          type: bool
+          short-summary: Migrate cluster with VMAS node pool to VMS node pool.
     examples:
       - name: Reconcile the cluster back to its current state.
         text: az aks update -g MyResourceGroup -n MyManagedCluster
@@ -1261,8 +1267,6 @@ helps['aks update'] = """
         text: az aks update --disable-cluster-autoscaler -g MyResourceGroup -n MyManagedCluster
       - name: Update min-count or max-count for cluster autoscaler.
         text: az aks update --update-cluster-autoscaler --min-count 1 --max-count 10 -g MyResourceGroup -n MyManagedCluster
-      - name: Disable pod security policy.
-        text: az aks update --disable-pod-security-policy -g MyResourceGroup -n MyManagedCluster
       - name: Update a kubernetes cluster with standard SKU load balancer to use two AKS created IPs for the load balancer outbound connection usage.
         text: az aks update -g MyResourceGroup -n MyManagedCluster --load-balancer-managed-outbound-ip-count 2
       - name: Update a kubernetes cluster with standard SKU load balancer to use the provided public IPs for the load balancer outbound connection usage.
@@ -1832,7 +1836,7 @@ helps['aks nodepool add'] = """
     parameters:
         - name: --node-vm-size -s
           type: string
-          short-summary: Size of Virtual Machines to create as Kubernetes nodes.
+          short-summary: Size of Virtual Machines to create as Kubernetes nodes. If the user does not specify one, server will select a default VM size for her/him.
         - name: --node-count -c
           type: int
           short-summary: Number of nodes in the Kubernetes agent pool. After creating a cluster, you can change the
@@ -1978,6 +1982,9 @@ helps['aks nodepool add'] = """
         - name: --skip-gpu-driver-install
           type: bool
           short-summary: To skip GPU driver auto installation by AKS on a nodepool using GPU vm size if customers want to manage GPU driver installation by their own. If not specified, the default is false.
+        - name: --gpu-driver
+          type: string
+          short-summary: Whether to install driver for GPU node pool. Possible values are "Install" or "None". Default is "Install".
         - name: --driver-type
           type: string
           short-summary: Specify the type of GPU driver to install when creating Windows agent pools. Valid values are "GRID" and "CUDA". If not provided, AKS selects the driver based on system compatibility. This option cannot be changed once the AgentPool has been created. The default is system selected.
@@ -2897,80 +2904,6 @@ helps['aks nodepool snapshot delete'] = """
     short-summary: Delete a nodepool snapshot.
 """
 
-helps['aks trustedaccess'] = """
-    type: group
-    short-summary: Commands to manage trusted access security features.
-"""
-
-helps['aks trustedaccess role'] = """
-    type: group
-    short-summary: Commands to manage trusted access roles.
-"""
-
-helps['aks trustedaccess role list'] = """
-    type: command
-    short-summary: List trusted access roles.
-"""
-
-helps['aks trustedaccess rolebinding'] = """
-    type: group
-    short-summary: Commands to manage trusted access role bindings.
-"""
-
-helps['aks trustedaccess rolebinding list'] = """
-    type: command
-    short-summary: List all the trusted access role bindings.
-"""
-
-helps['aks trustedaccess rolebinding show'] = """
-    type: command
-    short-summary: Get the specific trusted access role binding according to binding name.
-    parameters:
-        - name: --name -n
-          type: string
-          short-summary: Specify the role binding name.
-"""
-
-helps['aks trustedaccess rolebinding create'] = """
-    type: command
-    short-summary: Create a new trusted access role binding.
-    parameters:
-        - name: --name -n
-          type: string
-          short-summary: Specify the role binding name.
-        - name: --roles
-          type: string
-          short-summary: Specify the space-separated roles.
-        - name: --source-resource-id
-          type: string
-          short-summary: Specify the source resource id of the binding.
-
-    examples:
-        - name: Create a new trusted access role binding
-          text: az aks trustedaccess rolebinding create -g myResourceGroup --cluster-name myCluster -n bindingName --source-resource-id /subscriptions/0000/resourceGroups/myResourceGroup/providers/Microsoft.Demo/samples --roles Microsoft.Demo/samples/reader,Microsoft.Demo/samples/writer
-"""
-
-helps['aks trustedaccess rolebinding update'] = """
-    type: command
-    short-summary: Update a trusted access role binding.
-    parameters:
-        - name: --name -n
-          type: string
-          short-summary: Specify the role binding name.
-        - name: --roles
-          type: string
-          short-summary: Specify the space-separated roles.
-"""
-
-helps['aks trustedaccess rolebinding delete'] = """
-    type: command
-    short-summary: Delete a trusted access role binding according to name.
-    parameters:
-        - name: --name -n
-          type: string
-          short-summary: Specify the role binding name.
-"""
-
 helps['aks draft'] = """
     type: group
     short-summary: Commands to build deployment files in a project directory and deploy to an AKS cluster.
@@ -3448,6 +3381,313 @@ helps['aks check-network outbound'] = """
       - name: --custom-endpoints
         type: string
         short-summary: Additional endpoint(s) to perform the connectivity check, separated by comma.
+"""
+
+helps['aks extension'] = """
+  type: group
+  short-summary: Commands to manage extensions in the Kubernetes cluster
+"""
+
+helps['aks extension create'] = """
+  type: command
+  short-summary: Creates the Cluster extension instance on the managed cluster. Please refer to the example at the end to see how to create a cluster extension
+  long-summary: Create a Cluster Extension. \
+The output includes secrets that you must protect. Be sure that you do not include these secrets in your \
+  source control. Also verify that no secrets are present in the logs of your command or script. \
+  For additional information, see http://aka.ms/clisecrets.
+  parameters:
+    - name: --resource-group -g
+      type: string
+      short-summary: Name of the resource group.
+    - name: --extension-type -t
+      type: string
+      short-summary: Name of the extension type
+    - name: --cluster-name -c
+      type: string
+      short-summary: Name of the AKS cluster
+    - name: --name -n
+      type: string
+      short-summary: Name of the extension instance
+    - name: --scope
+      type: string
+      short-summary: Specify scope of the extension type, takes in namespace or cluster as the scope
+      long-summary: Specify scope of the extension type, takes in namespace or cluster as the scope \
+If not specified, default scope set in the extension type registration will be used
+    - name: --config --configuration-settings
+      type: string
+      short-summary: Configuration Settings as key=value pair
+      long-summary: Configuration Settings as key=value pair. Repeat parameter for each setting. \
+Do not use this for secrets, as this value is returned in response. If not specified, default value is None
+    - name: --config-protected --config-protected-settings
+      type: string
+      short-summary: Configuration Protected Settings as key=value pair
+      long-summary: Configuration Settings as key=value pair. Repeat parameter for each setting. \
+Only the key is returned in response, the value is not. If not specified, default value is None
+    - name: --config-file --config-settings-file
+      type: string
+      short-summary: JSON file path for configuration-settings
+      long-summary: JSON file path for configuration-settings. If not specified, default value is None
+    - name: --config-protected-file --config-protected-settings-file
+      type: string
+      short-summary: JSON file path for configuration-protected-settings
+      long-summary: JSON file path for configuration-protected-settings. If not specified, default value is None
+  examples:
+    - name: Install K8s extension on AKS cluster with required parameters
+      text: az aks extension create --resource-group my-resource-group \
+--cluster-name mycluster --name myextension --extension-type microsoft.flux
+    - name: Install K8s extension with optional parameter configuration settings
+      text: az aks extension create --resource-group abc --cluster-name test --name flux \
+--extension-type microsoft.flux --config useKubeletIdentity=true
+"""
+
+helps['aks extension delete'] = """
+  type: command
+  short-summary: Delete a Kubernetes Extension.
+  parameters:
+    - name: --resource-group -g
+      type: string
+      short-summary: Name of the resource group.
+    - name: --cluster-name -c
+      type: string
+      short-summary: Name of the AKS cluster
+    - name: --name -n
+      type: string
+      short-summary: Name of the extension instance
+    - name: --yes -y
+      type: bool
+      short-summary: Ignores confirmation prompt.
+      long-summary: Ignores confirmation prompt. If not specified, default value is false
+    - name: --force
+      type: bool
+      short-summary: Specify whether to force delete the extension from the cluster
+      long-summary: Specify whether to force delete the extension from the cluster \
+If not specified, default value is false
+  examples:
+    - name: Delete an existing Kubernetes extension on AKS cluster
+      text: az aks extension delete --resource-group resource-group --cluster-name cluster --name ext
+    - name: Delete an existing Kubernetes extension on AKS cluster with optional parameters
+      text: az aks extension delete --resource-group resource-group --cluster-name cluster --name ext \
+--yes --force
+"""
+
+helps['aks extension update'] = """
+  type: command
+  short-summary: Update mutable properties of a Kubernetes Extension.
+  long-summary: For update to ConfigSettings and ConfigProtectedSettings, please \
+refer to documentation of the cluster extension service to check update to these \
+properties is supported before updating these properties. \
+The output includes secrets that you must protect. Be sure that you do not include these secrets in your \
+ source control. Also verify that no secrets are present in the logs of your command or script. \
+ For additional information, see http://aka.ms/clisecrets.
+  parameters:
+    - name: --resource-group -g
+      type: string
+      short-summary: Name of the resource group.
+    - name: --cluster-name -c
+      type: string
+      short-summary: Name of the AKS cluster
+    - name: --name -n
+      type: string
+      short-summary: Name of the extension instance
+    - name: --config --configuration-settings
+      type: string
+      short-summary: Configuration Settings as key=value pair
+      long-summary: Configuration Settings as key=value pair. Repeat parameter for each setting. \
+Do not use this for secrets, as this value is returned in response. If not specified, default value is None
+    - name: --config-protected --config-protected-settings
+      type: string
+      short-summary: Configuration Protected Settings as key=value pair
+      long-summary: Configuration Settings as key=value pair. Repeat parameter for each setting. \
+Only the key is returned in response, the value is not. If not specified, default value is Non
+    - name: --config-file --config-settings-file
+      type: string
+      short-summary: JSON file path for configuration-settings
+      long-summary: JSON file path for configuration-settings. If not specified, default value is None
+    - name: --config-protected-file --config-protected-settings-file
+      type: string
+      short-summary: JSON file path for configuration-protected-settings
+      long-summary: JSON file path for configuration-protected-settings. If not specified, default value is None
+    - name: --yes -y
+      type: bool
+      short-summary: Ignores confirmation prompt.
+      long-summary: Ignores confirmation prompt. If not specified, default value is false
+  examples:
+    - name: Update K8s extension on AKS cluster
+      text: az aks extension update --resource-group my-resource-group \
+--cluster-name mycluster --name myextension
+    - name: Update K8s extension on AKS cluster with optional parameters included
+      text: az aks extension update --resource-group my-resource-group \
+--cluster-name mycluster --name myextension \
+--configuration-settings settings-key=settings-value \
+--config-protected-settings protected-settings-key=protected-value \
+--config-settings-file=config-settings-file \
+--config-protected-file=protected-settings-file
+"""
+
+helps['aks extension list'] = """
+  type: command
+  short-summary: List Kubernetes Extensions
+  long-summary: List all Kubernetes Extensions in a cluster, including their properties. \
+The output includes secrets that you must protect. Be sure that you do not include these secrets in your \
+  source control. Also verify that no secrets are present in the logs of your command or script. \
+  For additional information, see http://aka.ms/clisecrets.
+  parameters:
+    - name: --resource-group -g
+      type: string
+      short-summary: Name of the resource group.
+    - name: --cluster-name -c
+      type: string
+      short-summary: Name of the AKS cluster
+  examples:
+    - name: List all Kubernetes Extensions on a cluster
+      text: az aks extension list --resource-group <group> --cluster-name <name>
+"""
+
+helps['aks extension show'] = """
+  type: command
+  short-summary: Show a Kubernetes Extension
+  long-summary: Show a Kubernetes Extension including its properties. \
+The output includes secrets that you must protect. Be sure that you do not include these secrets in your \
+  source control. Also verify that no secrets are present in the logs of your command or script. \
+  For additional information, see http://aka.ms/clisecrets.
+  parameters:
+    - name: --resource-group -g
+      type: string
+      short-summary: Name of the resource group.
+    - name: --cluster-name -c
+      type: string
+      short-summary: Name of the AKS cluster
+    - name: --name -n
+      type: string
+      short-summary: Name of the extension instance
+  examples:
+      - name: Show details of a Kubernetes Extension
+        text: az aks extension show --resource-group my-resource-group \
+--cluster-name mycluster --name myextension
+"""
+
+helps['aks extension type'] = """
+  type: group
+  short-summary: Manage extension types in Azure Kubernetes Service.
+  long-summary: This command group allows you to list, update, and manage extension types for AKS clusters.
+"""
+
+helps['aks extension type show'] = """
+  type: command
+  short-summary: Show properties for a K8s Extension Type. The properties used for filtering include kubernetes version, location of the cluster.
+  parameters:
+    - name: --extension-type -t
+      type: string
+      short-summary: Name of the extension type
+    - name: --resource-group -g
+      type: string
+      short-summary: Name of the resource group.
+      long-summary: Name of the resource group. If not specified, default value is None
+    - name: --cluster-name -c
+      type: string
+      short-summary: Name of the AKS cluster
+      long-summary: Name of the AKS cluster. If not specified, default value is None
+    - name: --location -l
+      type: string
+      short-summary: Location of where we want to retrieve the extension type
+      long-summary: Location of where we want to retrieve the extension type. If not specified, default value is None
+
+  examples:
+    - name: Show properties for a K8s Extension Type for an existing cluster by cluster
+      text: az aks extension type show --resource-group my-resource-group\
+ --cluster-name mycluster --extension-type <type>
+    - name: Show properties for a K8s Extension Type in a location
+      text: az aks extension type show --location eastus --extension-type type
+"""
+
+helps['aks extension type list'] = """
+  type: command
+  short-summary: List available K8s Extension Types. The properties used for filtering include kubernetes version, location of the cluster.
+  parameters:
+    - name: --resource-group -g
+      type: string
+      short-summary: Name of the resource group.
+      long-summary: Name of the resource group. If not specified, default value is None
+    - name: --cluster-name -c
+      type: string
+      short-summary: Name of the AKS cluster
+      long-summary: Name of the AKS cluster. If not specified, default value is None
+    - name: --location -l
+      type: string
+      short-summary: Location of where we want to retrieve the extension type
+      long-summary: Location of where we want to retrieve the extension type. If not specified, default value is None
+    - name: --release-train
+      type: string
+      short-summary: Specify the release train for the K8s extension type
+  examples:
+    - name: List available K8s Extension Types for an existing cluster
+      text: az aks extension type list --resource-group my-resource-group \
+--cluster-name mycluster
+    - name: List available K8s Extension Types in a region
+      text: az aks extension type list --location eastus
+"""
+
+helps['aks extension type version'] = """
+  type: group
+  short-summary: Manage extension types version in Azure Kubernetes Service.
+  long-summary: This command group allows you to list and query extension type versions for AKS clusters.
+"""
+
+helps['aks extension type version show'] = """
+  type: command
+  short-summary: Show properties associated with a K8s Extension Type version. The properties used for filtering include kubernetes version, location of the cluster.
+  parameters:
+    - name: --resource-group -g
+      type: string
+      short-summary: Name of the resource group.
+      long-summary: Name of the resource group. If not specified, default value is None
+    - name: --extension-type -t
+      type: string
+      short-summary: Name of the extension type
+    - name: --cluster-name -c
+      type: string
+      short-summary: Name of the AKS cluster
+      long-summary: Name of the AKS cluster. If not specified, default value is None
+    - name: --version
+      type: string
+      short-summary: Specify the extension version to show to the user
+    - name: --location -l
+      type: string
+      short-summary: Location of where we want to retrieve the extension type
+      long-summary: Location of where we want to retrieve the extension type. If not specified, default value is None
+  examples:
+    - name: Show properties for a K8s Extension Type version for an existing cluster
+      text: az aks extension type version show --resource-group my-resource-group \
+--cluster-name mycluster --extension-type type --version 1.0.0
+    - name: Show properties for a K8s Extension Type version for a location
+      text: az aks extension type version show --location eastus --extension-type <type> --version 1.0.0
+"""
+
+helps['aks extension type version list'] = """
+  type: command
+  short-summary: List available K8s Extension Type versions. The properties used for filtering include kubernetes version, location of the cluster.
+  parameters:
+    - name: --resource-group -g
+      type: string
+      short-summary: Name of the resource group.
+      long-summary: Name of the resource group. If not specified, default value is None
+    - name: --cluster-name -c
+      type: string
+      short-summary: Name of the AKS cluster
+      long-summary: Name of the AKS cluster. If not specified, default value is None
+    - name: --extension-type -t
+      type: string
+      short-summary: Name of the extension type
+    - name: --location -l
+      type: string
+      short-summary: Location of where we want to retrieve the extension type
+      long-summary: Location of where we want to retrieve the extension type. If not specified, default value is None
+  examples:
+    - name: List available K8s Extension Types for an existing cluster
+      text: az aks extension type version list --resource-group my-resource-group \
+--cluster-name mycluster --extension-type <type>
+    - name: List available K8s Extension Types in a region
+      text: az aks extension type version list --location eastus --extension-type <type>
 """
 
 helps['aks loadbalancer'] = """

@@ -13583,7 +13583,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp000002/getAuthToken?api-version=2024-02-02-preview
   response:
     body:
-      string: '{"location":"East US 2","properties":{"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjYXBwX3N1YiI6IjIzZjk1ZjBlLWU3ODItNDdiZS05Zjk3LTU2MDM1ZWMxMGU0MiIsImNhcHBfcmciOiJjbGl0ZXN0LnJnemJweTR4cGlzdHJ5NjRsZG9zcnF4bHZ4c3F1eGNwdmNqZGNwZnlscXh0ZTVoZDJ0NTVjempoYm5tZm5veWNmanoiLCJjYXBwX25hbWUiOiJjb250YWluZXJhcHBndmY3b2xyeGJ5a2kiLCJjYXBwX2ppdF9leHBpcnkiOiIyMDI0LTA5LTI0VDA5OjU0OjM2LjY1MDc3MzVaIiwibmJmIjoxNzI3MTY4MDc2LCJleHAiOjE3MjcxNzE2NzYsImlhdCI6MTcyNzE2ODA3NiwiaXNzIjoiQXp1cmVDb250YWluZXJBcHBzIiwiYXVkIjoiaHR0cHM6Ly9lYXN0dXMyLmF6dXJlY29udGFpbmVyYXBwcy5kZXYifQ.-YXakKt9sQbHlNieGhi0BjglSiYuLMVWaRCFQ-DGS20","expires":"2024-09-24T09:54:36.6507735Z"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerapps/containerapp000002","name":"containerapp000002","type":"Microsoft.App/containerApps/accesstoken"}'
+      string: '{"location":"East US 2","properties":{"token":"***","expires":"2024-09-24T09:54:36.6507735Z"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerapps/containerapp000002","name":"containerapp000002","type":"Microsoft.App/containerApps/accesstoken"}'
     headers:
       api-supported-versions:
       - 2022-03-01, 2022-06-01-preview, 2022-10-01, 2022-11-01-preview, 2023-04-01-preview,
@@ -13762,8 +13762,7 @@ interactions:
       User-Agent:
       - python-requests/2.32.3
     method: POST
-    uri: https://eastus2.azurecontainerapps.dev/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/containerApps/containerapp000002/upload?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjYXBwX3N1YiI6IjIzZjk1ZjBlLWU3ODItNDdiZS05Zjk3LTU2MDM1ZWMxMGU0MiIsImNhcHBfcmciOiJjbGl0ZXN0LnJnemJweTR4cGlzdHJ5NjRsZG9zcnF4bHZ4c3F1eGNwdmNqZGNwZnlscXh0ZTVoZDJ0NTVjempoYm5tZm5veWNmanoiLCJjYXBwX25hbWUiOiJjb250YWluZXJhcHBndmY3b2xyeGJ5a2kiLCJjYXBwX2ppdF9leHBpcnkiOiIyMDI0LTA5LTI0VDA5OjU0OjM2LjY1MDc3MzVaIiwibmJmIjoxNzI3MTY4MDc2LCJleHAiOjE3MjcxNzE2NzYsImlhdCI6MTcyNzE2ODA3NiwiaXNzIjoiQXp1cmVDb250YWluZXJBcHBzIiwiYXVkIjoiaHR0cHM6Ly9lYXN0dXMyLmF6dXJlY29udGFpbmVyYXBwcy5kZXYifQ.-YXakKt9sQbHlNieGhi0BjglSiYuLMVWaRCFQ-DGS20
-  response:
+    uri: https://eastus2.azurecontainerapps.dev/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/containerApps/containerapp000002/upload?token***  response:
     body:
       string: '{"$id":"1","location":"East US 2","systemData":{"$id":"2"},"properties":{"$id":"3","provisioningState":"Creating","status":"NotStarted","uploadEndpoint":"https://eastus2.azurecontainerapps.dev/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/containerApps/containerapp000002/upload","logStreamEndpoint":"https://eastus2.azurecontainerapps.dev/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/containerApps/containerapp000002/builds/containerapp000002-build36267/logstream","tokenEndpoint":"https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerapps/containerapp000002/getAuthToken"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp000002/builds/containerapp000002-build36267","name":"containerapp000002-build36267","type":"Microsoft.App/containerapps/builds"}'
     headers:
