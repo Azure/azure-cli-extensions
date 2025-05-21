@@ -592,25 +592,6 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
         # this parameter does not need validation
         return os_sku
 
-    def get_skip_gpu_driver_install(self) -> bool:
-        """Obtain the value of skip_gpu_driver_install.
-        :return: bool
-        """
-
-        # read the original value passed by the command
-        skip_gpu_driver_install = self.raw_param.get("skip_gpu_driver_install")
-        # In create mode, try to read the property value corresponding to the parameter from the `agentpool` object
-        if self.decorator_mode == DecoratorMode.CREATE:
-            if (
-                self.agentpool and
-                self.agentpool.gpu_profile is not None and
-                self.agentpool.gpu_profile.driver is not None and
-                self.agentpool.gpu_profile.driver.lower() == CONST_GPU_DRIVER_NONE.lower()
-            ):
-                skip_gpu_driver_install = True
-
-        return skip_gpu_driver_install
-
     def _get_gpu_driver(self) -> Union[str, None]:
         """Obtain the value of gpu_driver.
 
@@ -942,16 +923,6 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
             if ssh_access == CONST_SSH_ACCESS_LOCALUSER:
                 logger.warning("The new node pool will enable SSH access, recommended to use '--ssh-access disabled' "
                                "option to disable SSH access for the node pool to make it more secure.")
-        return agentpool
-
-    def set_up_skip_gpu_driver_install(self, agentpool: AgentPool) -> AgentPool:
-        """Set up install gpu driver property for the AgentPool object."""
-        self._ensure_agentpool(agentpool)
-
-        if self.context.get_skip_gpu_driver_install():
-            if agentpool.gpu_profile is None:
-                agentpool.gpu_profile = self.models.GPUProfile()  # pylint: disable=no-member
-            agentpool.gpu_profile.driver = CONST_GPU_DRIVER_NONE
         return agentpool
 
     def set_up_gpu_profile(self, agentpool: AgentPool) -> AgentPool:

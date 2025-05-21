@@ -357,41 +357,6 @@ class AKSPreviewAgentPoolContextCommonTestCase(unittest.TestCase):
         ctx_2.attach_agentpool(agentpool_2)
         self.assertEqual(ctx_2.get_pod_ip_allocation_mode(), "StaticBlock")
 
-    def common_get_skip_gpu_driver_install(self):
-        # default
-        ctx_1 = AKSPreviewAgentPoolContext(
-            self.cmd,
-            AKSAgentPoolParamDict({"skip_gpu_driver_install": None}),
-            self.models,
-            DecoratorMode.CREATE,
-            self.agentpool_decorator_mode,
-        )
-        self.assertEqual(ctx_1.get_skip_gpu_driver_install(), None)
-        agentpool_1 = self.create_initialized_agentpool_instance(
-            gpu_profile=self.models.GPUProfile(
-                driver=CONST_GPU_DRIVER_NONE
-            )
-        )
-        ctx_1.attach_agentpool(agentpool_1)
-        self.assertEqual(ctx_1.get_skip_gpu_driver_install(), True)
-
-        # default
-        ctx_2 = AKSPreviewAgentPoolContext(
-            self.cmd,
-            AKSAgentPoolParamDict({"skip_gpu_driver_install": None}),
-            self.models,
-            DecoratorMode.UPDATE,
-            self.agentpool_decorator_mode,
-        )
-        self.assertEqual(ctx_2.get_skip_gpu_driver_install(), None)
-        agentpool_2 = self.create_initialized_agentpool_instance(
-            artifact_streaming_profile=self.models.GPUProfile(
-                driver=CONST_GPU_DRIVER_INSTALL
-            )
-        )
-        ctx_2.attach_agentpool(agentpool_2)
-        self.assertEqual(ctx_2.get_skip_gpu_driver_install(), None)
-
     def common_get_gpu_driver(self):
         ctx_1 = AKSPreviewAgentPoolContext(
             self.cmd,
@@ -907,9 +872,6 @@ class AKSPreviewAgentPoolContextStandaloneModeTestCase(
 
     def test_get_os_sku(self):
         self.common_get_os_sku()
-
-    def test_get_skip_gpu_driver_install(self):
-        self.common_get_skip_gpu_driver_install()
 
     def test_get_gpu_driver(self):
         self.common_get_gpu_driver()
