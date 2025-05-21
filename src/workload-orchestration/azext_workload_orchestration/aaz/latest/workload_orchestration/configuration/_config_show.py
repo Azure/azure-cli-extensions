@@ -67,15 +67,7 @@ class ShowConfig(AAZCommand):
             ),
         )
 
-        # define Arg Group "Resource"
-
-        _args_schema = cls._args_schema
-        _args_schema.tags = AAZDictArg(
-            options=["--tags"],
-            arg_group="Resource",
-            help="Resource tags.",
-            nullable=True,
-        )
+        # define Arg Group "Resource
 
         #
         # _args_schema.properties = AAZFreeFormDictArg(
