@@ -10,6 +10,7 @@ from .._resourceTypeValidation import (
 from knack.log import get_logger
 
 
+# pylint: disable=too-few-public-methods
 @register_resource_type("microsoft.containerregistry")
 class microsoft_containerregistry:
     @staticmethod
@@ -28,14 +29,12 @@ class microsoft_containerregistry:
             # https://learn.microsoft.com/azure/container-registry/zone-redundancy
             if resource["properties"]["zoneRedundancy"] == "Enabled":
                 return ZoneRedundancyValidationResult.Yes
-            else:
-                return ZoneRedundancyValidationResult.No
+            return ZoneRedundancyValidationResult.No
 
         # Registry Regional Replications
         if resourceSubType == "registries/replications":
             if resource["properties"]["zoneRedundancy"] == "Enabled":
                 return ZoneRedundancyValidationResult.Yes
-            else:
-                return ZoneRedundancyValidationResult.No
+            return ZoneRedundancyValidationResult.No
 
         return ZoneRedundancyValidationResult.Unknown

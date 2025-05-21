@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "dynatrace monitor tag-rule list",
 )
 class List(AAZCommand):
-    """List all tag rule by monitor name
+    """List all tag rules associated with a Dynatrace resource. This helps understand the current monitoring inclusion/exclusion logic across your environment.
 
     :example: List tag-rule
         az dynatrace monitor tag-rule list -g rg --monitor-name monitor
