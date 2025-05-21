@@ -1048,8 +1048,6 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         agentpool = self.set_up_init_taints(agentpool)
         # set up artifact streaming
         agentpool = self.set_up_artifact_streaming(agentpool)
-        # set up skip_gpu_driver_install
-        agentpool = self.set_up_skip_gpu_driver_install(agentpool)
         # set up gpu profile
         agentpool = self.set_up_gpu_profile(agentpool)
         # set up driver_type

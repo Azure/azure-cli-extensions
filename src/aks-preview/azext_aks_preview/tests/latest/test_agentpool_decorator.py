@@ -1131,28 +1131,6 @@ class AKSPreviewAgentPoolAddDecoratorCommonTestCase(unittest.TestCase):
         )
         self.assertEqual(dec_agentpool_1, ground_truth_agentpool_1)
 
-    def common_set_up_skip_gpu_driver_install(self):
-        dec_1 = AKSPreviewAgentPoolAddDecorator(
-            self.cmd,
-            self.client,
-            {"skip_gpu_driver_install": True},
-            self.resource_type,
-            self.agentpool_decorator_mode,
-        )
-        # fail on passing the wrong agentpool object
-        with self.assertRaises(CLIInternalError):
-            dec_1.set_up_skip_gpu_driver_install(None)
-        agentpool_1 = self.create_initialized_agentpool_instance(restore_defaults=False)
-        dec_1.context.attach_agentpool(agentpool_1)
-        dec_agentpool_1 = dec_1.set_up_skip_gpu_driver_install(agentpool_1)
-        dec_agentpool_1 = self._restore_defaults_in_agentpool(dec_agentpool_1)
-        ground_truth_agentpool_1 = self.create_initialized_agentpool_instance(
-            gpu_profile=self.models.GPUProfile(
-                driver=CONST_GPU_DRIVER_NONE,
-            )
-        )
-        self.assertEqual(dec_agentpool_1, ground_truth_agentpool_1)
-
     def common_set_up_gpu_profile(self):
         dec_1 = AKSPreviewAgentPoolAddDecorator(
             self.cmd,
@@ -1340,9 +1318,6 @@ class AKSPreviewAgentPoolAddDecoratorStandaloneModeTestCase(
     def test_set_up_artifact_streaming(self):
         self.common_set_up_artifact_streaming()
 
-    def test_set_up_skip_gpu_driver_install(self):
-        self.common_set_up_skip_gpu_driver_install()
-
     def test_set_up_gpu_profile(self):
         self.common_set_up_gpu_profile()
 
@@ -1465,9 +1440,6 @@ class AKSPreviewAgentPoolAddDecoratorManagedClusterModeTestCase(
 
     def test_set_up_artifact_streaming(self):
         self.common_set_up_artifact_streaming()
-
-    def test_set_up_skip_gpu_driver_install(self):
-        self.common_set_up_skip_gpu_driver_install()
 
     def test_set_up_secure_boot(self):
         self.common_set_up_secure_boot()
