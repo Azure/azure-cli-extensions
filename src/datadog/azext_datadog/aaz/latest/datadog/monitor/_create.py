@@ -130,10 +130,6 @@ class Create(AAZCommand):
             options=["enterprise-app-id"],
             help="The Id of the Enterprise App used for Single sign on.",
         )
-        datadog_organization_properties.id = AAZStrArg(
-            options=["id"],
-            help="Id of the Datadog organization.",
-        )
         datadog_organization_properties.linking_auth_code = AAZStrArg(
             options=["linking-auth-code"],
             help="The auth code used to linking to an existing datadog organization.",
@@ -141,10 +137,6 @@ class Create(AAZCommand):
         datadog_organization_properties.linking_client_id = AAZStrArg(
             options=["linking-client-id"],
             help="The client_id from an existing in exchange for an auth token to link organization.",
-        )
-        datadog_organization_properties.name = AAZStrArg(
-            options=["name"],
-            help="Name of the Datadog organization.",
         )
         datadog_organization_properties.redirect_uri = AAZStrArg(
             options=["redirect-uri"],
@@ -302,10 +294,8 @@ class Create(AAZCommand):
                 datadog_organization_properties.set_prop("apiKey", AAZStrType, ".api_key", typ_kwargs={"flags": {"secret": True}})
                 datadog_organization_properties.set_prop("applicationKey", AAZStrType, ".application_key", typ_kwargs={"flags": {"secret": True}})
                 datadog_organization_properties.set_prop("enterpriseAppId", AAZStrType, ".enterprise_app_id")
-                datadog_organization_properties.set_prop("id", AAZStrType, ".id")
                 datadog_organization_properties.set_prop("linkingAuthCode", AAZStrType, ".linking_auth_code", typ_kwargs={"flags": {"secret": True}})
                 datadog_organization_properties.set_prop("linkingClientId", AAZStrType, ".linking_client_id", typ_kwargs={"flags": {"secret": True}})
-                datadog_organization_properties.set_prop("name", AAZStrType, ".name")
                 datadog_organization_properties.set_prop("redirectUri", AAZStrType, ".redirect_uri")
 
             user_info = _builder.get(".properties.userInfo")
@@ -403,8 +393,12 @@ class Create(AAZCommand):
             )
 
             datadog_organization_properties = cls._schema_on_200_201.properties.datadog_organization_properties
-            datadog_organization_properties.id = AAZStrType()
-            datadog_organization_properties.name = AAZStrType()
+            datadog_organization_properties.id = AAZStrType(
+                flags={"read_only": True},
+            )
+            datadog_organization_properties.name = AAZStrType(
+                flags={"read_only": True},
+            )
 
             user_info = cls._schema_on_200_201.properties.user_info
             user_info.email_address = AAZStrType(

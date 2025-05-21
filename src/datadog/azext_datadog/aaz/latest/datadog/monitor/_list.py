@@ -215,8 +215,12 @@ class List(AAZCommand):
             )
 
             datadog_organization_properties = cls._schema_on_200.value.Element.properties.datadog_organization_properties
-            datadog_organization_properties.id = AAZStrType()
-            datadog_organization_properties.name = AAZStrType()
+            datadog_organization_properties.id = AAZStrType(
+                flags={"read_only": True},
+            )
+            datadog_organization_properties.name = AAZStrType(
+                flags={"read_only": True},
+            )
 
             user_info = cls._schema_on_200.value.Element.properties.user_info
             user_info.email_address = AAZStrType(
@@ -404,8 +408,12 @@ class List(AAZCommand):
             )
 
             datadog_organization_properties = cls._schema_on_200.value.Element.properties.datadog_organization_properties
-            datadog_organization_properties.id = AAZStrType()
-            datadog_organization_properties.name = AAZStrType()
+            datadog_organization_properties.id = AAZStrType(
+                flags={"read_only": True},
+            )
+            datadog_organization_properties.name = AAZStrType(
+                flags={"read_only": True},
+            )
 
             user_info = cls._schema_on_200.value.Element.properties.user_info
             user_info.email_address = AAZStrType(

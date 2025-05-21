@@ -14,14 +14,7 @@ class DatadogScenario(ScenarioTest):
         self.kwargs.update({
             'monitor': self.create_random_name('monitor', 15),
         })
-        self.cmd('datadog monitor create --name {monitor} --resource-group {rg} --sku {{name:payg_v3_Monthly@TIDgmz7xq9ge3py}} --identity {{type:SystemAssigned}} --user-info {{name:Alice,email-address:alice@microsoft.com}} --datadog-organization-properties {{name:{monitor}}}')
-        # self.cmd('az datadog monitor create -n abcd ' 
-        #         '--resource-group agshi-rg '
-        #         # '--sku "{name:payg_v3_Monthly@TIDgmz7xq9ge3py}" ' 
-        #         # '--identity "{type:SystemAssigned}" ' 
-        #         '--user-info "{email-address:alice@microsoft.com}" '
-        #         # '--datadog-organization-properties "{name:abcd}"'
-        #         )
+        self.cmd('datadog monitor create --name {monitor} --resource-group {rg} --sku {{name:payg_v3_Monthly@TIDgmz7xq9ge3py}} --identity {{type:SystemAssigned}} --user-info {{name:Alice,email-address:alice@microsoft.com}}')
         self.cmd('datadog monitor wait --created --name {monitor} --resource-group {rg}')
         self.cmd('datadog monitor show --name {monitor} --resource-group {rg}')
         self.cmd('datadog monitor list --resource-group {rg}')
@@ -41,7 +34,7 @@ class DatadogScenario(ScenarioTest):
         self.kwargs.update({
             'monitor': self.create_random_name('monitor', 15),
         })
-        self.cmd('datadog monitor create --name {monitor} --resource-group {rg} --sku {{name:payg_v3_Monthly@TIDgmz7xq9ge3py}} --identity {{type:SystemAssigned}} --user-info {{name:Alice,email-address:alice@microsoft.com}} --datadog-organization-properties {{name:{monitor}}}')
+        self.cmd('datadog monitor create --name {monitor} --resource-group {rg} --sku {{name:payg_v3_Monthly@TIDgmz7xq9ge3py}} --identity {{type:SystemAssigned}} --user-info {{name:Alice,email-address:alice@microsoft.com}}')
         self.cmd('datadog sso-config create '
              '--configuration-name "default" '
              '--monitor-name "{myMonitor}" '
@@ -60,7 +53,7 @@ class DatadogScenario(ScenarioTest):
         self.kwargs.update({
             'monitor': self.create_random_name('monitor', 15),
         })
-        self.cmd('datadog monitor create --name {monitor} --resource-group {rg} --sku {{name:payg_v3_Monthly@TIDgmz7xq9ge3py}} --identity {{type:SystemAssigned}} --user-info {{name:Alice,email-address:alice@microsoft.com}} --datadog-organization-properties {{name:{monitor}}}')
+        self.cmd('datadog monitor create --name {monitor} --resource-group {rg} --sku {{name:payg_v3_Monthly@TIDgmz7xq9ge3py}} --identity {{type:SystemAssigned}} --user-info {{name:Alice,email-address:alice@microsoft.com}}')
         self.cmd('datadog tag-rule create '
              '--monitor-name "{myMonitor}" '
              '--log-rules-filtering-tags name="Environment" action="Include" value="Prod" '
