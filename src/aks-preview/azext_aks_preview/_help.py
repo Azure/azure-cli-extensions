@@ -1833,6 +1833,9 @@ helps['aks nodepool add'] = """
         - name: --skip-gpu-driver-install
           type: bool
           short-summary: To skip GPU driver auto installation by AKS on a nodepool using GPU vm size if customers want to manage GPU driver installation by their own. If not specified, the default is false.
+        - name: --gpu-driver
+          type: string
+          short-summary: Whether to install driver for GPU node pool. Possible values are "Install" or "None". Default is "Install".
         - name: --driver-type
           type: string
           short-summary: Specify the type of GPU driver to install when creating Windows agent pools. Valid values are "GRID" and "CUDA". If not provided, AKS selects the driver based on system compatibility. This option cannot be changed once the AgentPool has been created. The default is system selected.

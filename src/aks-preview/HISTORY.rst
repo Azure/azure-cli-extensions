@@ -12,6 +12,10 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+18.0.0b2
++++++++
+* Vendor new SDK and bump API version to 2025-03-02-preview.
+
 18.0.0b1
 +++++++
 * [BREAKING CHANGE] Remove `--enable-pod-security-policy` and `--disable-pod-security-policy` as it's deprecated.
