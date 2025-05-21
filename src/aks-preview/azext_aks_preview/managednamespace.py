@@ -54,7 +54,7 @@ def constructNamespace(cmd, raw_parameters, namespace_name):
     NamespaceProperties = cmd.get_models(
         "NamespaceProperties",
         resource_type=CUSTOM_MGMT_AKS_PREVIEW,
-        operation_group="namespaces"
+        operation_group="managed_namespaces"
     )
 
     namespace_properties = NamespaceProperties(
@@ -67,9 +67,9 @@ def constructNamespace(cmd, raw_parameters, namespace_name):
     )
 
     Namespace = cmd.get_models(
-        "Namespace",
+        "ManagedNamespace",
         resource_type=CUSTOM_MGMT_AKS_PREVIEW,
-        operation_group="namespaces"
+        operation_group="managed_namespaces"
     )
 
     namespace_config = Namespace()
@@ -93,7 +93,7 @@ def setResourceQuota(cmd, raw_parameters):
     ResourceQuota = cmd.get_models(
         "ResourceQuota",
         resource_type=CUSTOM_MGMT_AKS_PREVIEW,
-        operation_group="namespaces"
+        operation_group="managed_namespaces"
     )
 
     rq = ResourceQuota(
@@ -131,7 +131,7 @@ def setNetworkPolicyRule(cmd, raw_parameters):
     NetworkPolicies = cmd.get_models(
         "NetworkPolicies",
         resource_type=CUSTOM_MGMT_AKS_PREVIEW,
-        operation_group="namespaces"
+        operation_group="managed_namespaces"
     )
 
     np = NetworkPolicies(
@@ -216,7 +216,7 @@ def updateNamespace(cmd, raw_parameters, existedNamespace):
     NamespaceProperties = cmd.get_models(
         "NamespaceProperties",
         resource_type=CUSTOM_MGMT_AKS_PREVIEW,
-        operation_group="namespaces"
+        operation_group="managed_namespaces"
     )
 
     namespace_properties = NamespaceProperties(
@@ -229,9 +229,9 @@ def updateNamespace(cmd, raw_parameters, existedNamespace):
     )
 
     Namespace = cmd.get_models(
-        "Namespace",
+        "ManagedNamespace",
         resource_type=CUSTOM_MGMT_AKS_PREVIEW,
-        operation_group="namespaces"
+        operation_group="managed_namespaces"
     )
 
     namespace_config = Namespace()
@@ -262,7 +262,7 @@ def updateResourceQuota(cmd, raw_parameters, existedNamespace):
     ResourceQuota = cmd.get_models(
         "ResourceQuota",
         resource_type=CUSTOM_MGMT_AKS_PREVIEW,
-        operation_group="namespaces"
+        operation_group="managed_namespaces"
     )
 
     rq = ResourceQuota(
@@ -306,7 +306,7 @@ def updateNetworkPolicyRule(cmd, raw_parameters, existedNamespace):
     NetworkPolicies = cmd.get_models(
         "NetworkPolicies",
         resource_type=CUSTOM_MGMT_AKS_PREVIEW,
-        operation_group="namespaces"
+        operation_group="managed_namespaces"
     )
 
     np = NetworkPolicies(

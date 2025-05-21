@@ -21,7 +21,7 @@ class TestAddManagedNamespace(unittest.TestCase):
         raw_parameters = {
             "resource_group_name": "test_rg",
             "cluster_name": "test_cluster",
-            "name": "aksManagedAutoUpgradeSchedule",
+            "name": "test_managed_namespace",
             "labels": "x",
         }
         err = "Invalid format 'x'. Expected format key=value."
@@ -36,7 +36,7 @@ class TestAddManagedNamespace(unittest.TestCase):
         raw_parameters = {
             "resource_group_name": "test_rg",
             "cluster_name": "test_cluster",
-            "name": "aksManagedAutoUpgradeSchedule",
+            "name": "test_managed_namespace",
             "labels": "x=y a=b",
             "annotations": "x",
         }
@@ -52,7 +52,7 @@ class TestAddManagedNamespace(unittest.TestCase):
         raw_parameters = {
             "resource_group_name": "test_rg",
             "cluster_name": "test_cluster",
-            "name": "aksManagedAutoUpgradeSchedule",
+            "name": "test_managed_namespace",
             "cpu_limit": "300m",
         }
         err = "Please specify --cpu-request, --cpu-limit, --memory-request, and --memory-limit."
@@ -67,7 +67,7 @@ class TestAddManagedNamespace(unittest.TestCase):
         raw_parameters = {
             "resource_group_name": "test_rg",
             "cluster_name": "test_cluster",
-            "name": "aksManagedAutoUpgradeSchedule",
+            "name": "test_managed_namespace",
             "cpu_request": "300m",
             "cpu_limit": "500m",
             "memory_request": "1Gi",
@@ -86,7 +86,7 @@ class TestAddManagedNamespace(unittest.TestCase):
         raw_parameters = {
             "resource_group_name": "test_rg",
             "cluster_name": "test_cluster",
-            "name": "aksManagedAutoUpgradeSchedule",
+            "name": "test_managed_namespace",
             "cpu_request": "300m",
             "cpu_limit": "500m",
             "memory_request": "1Gi",
@@ -106,7 +106,7 @@ class TestAddManagedNamespace(unittest.TestCase):
         raw_parameters = {
             "resource_group_name": "test_rg",
             "cluster_name": "test_cluster",
-            "name": "aksManagedAutoUpgradeSchedule",
+            "name": "test_managed_namespace",
             "cpu_request": "300m",
             "cpu_limit": "500m",
             "memory_request": "1Gi",
@@ -127,7 +127,7 @@ class TestAddManagedNamespace(unittest.TestCase):
         raw_parameters = {
             "resource_group_name": "test_rg",
             "cluster_name": "test_cluster",
-            "name": "aksManagedAutoUpgradeSchedule",
+            "name": "test_managed_namespace",
             "cpu_request": "300m",
             "cpu_limit": "500m",
             "memory_request": "1Gi",
@@ -153,7 +153,7 @@ class TestUpdateManagedNamespace(unittest.TestCase):
         raw_parameters = {
             "resource_group_name": "test_rg",
             "cluster_name": "test_cluster",
-            "name": "aksManagedAutoUpgradeSchedule",
+            "name": "test_managed_namespace",
             "cpu_request": "300m",
             "cpu_limit": "500m",
             "memory_request": "1Gi",
@@ -172,7 +172,7 @@ class TestUpdateManagedNamespace(unittest.TestCase):
         raw_parameters = {
             "resource_group_name": "test_rg",
             "cluster_name": "test_cluster",
-            "name": "aksManagedAutoUpgradeSchedule",
+            "name": "test_managed_namespace",
             "cpu_request": "300m",
             "cpu_limit": "500m",
             "memory_request": "1Gi",
@@ -192,7 +192,7 @@ class TestUpdateManagedNamespace(unittest.TestCase):
         raw_parameters = {
             "resource_group_name": "test_rg",
             "cluster_name": "test_cluster",
-            "name": "aksManagedAutoUpgradeSchedule",
+            "name": "test_managed_namespace",
             "cpu_request": "300m",
             "cpu_limit": "500m",
             "memory_request": "1Gi",
@@ -213,7 +213,7 @@ class TestUpdateManagedNamespace(unittest.TestCase):
         raw_parameters = {
             "resource_group_name": "test_rg",
             "cluster_name": "test_cluster",
-            "name": "aksManagedAutoUpgradeSchedule",
+            "name": "test_managed_namespace",
             "cpu_request": "300m",
             "cpu_limit": "500m",
             "memory_request": "1Gi",

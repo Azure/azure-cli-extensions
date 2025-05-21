@@ -7,7 +7,7 @@ from azure.cli.core.commands import CliCommandType
 
 from azext_aks_preview._client_factory import (
     cf_agent_pools,
-    cf_namespaces,
+    cf_managed_namespaces,
     cf_maintenance_configurations,
     cf_managed_clusters,
     cf_mc_snapshots,
@@ -104,10 +104,10 @@ def load_command_table(self, _):
         client_factory=cf_managed_clusters,
     )
 
-    namespaces_sdk = CliCommandType(
+    managed_namespaces_sdk = CliCommandType(
         operations_tmpl="azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks."
-        "operations._namespaces_operations#NamespacesOperations.{}",
-        client_factory=cf_namespaces,
+        "operations._managed_namespaces_operations#ManagedNamespacesOperations.{}",
+        client_factory=cf_managed_namespaces,
     )
 
     machines_sdk = CliCommandType(
@@ -233,8 +233,8 @@ def load_command_table(self, _):
     # AKS managed namespace commands
     with self.command_group(
         "aks namespace",
-        namespaces_sdk,
-        client_factory=cf_namespaces,
+        managed_namespaces_sdk,
+        client_factory=cf_managed_namespaces,
     ) as g:
         g.custom_command("add", "aks_namespace_add", supports_no_wait=True)
         g.custom_command("update", "aks_namespace_update", supports_no_wait=True)
