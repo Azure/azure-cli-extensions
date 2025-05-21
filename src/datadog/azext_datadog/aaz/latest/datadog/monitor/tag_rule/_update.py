@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Updates the tag rules for a specific Datadog monitor resource, allowing you to modify the rules that control which Azure resources are monitored.
+
+    :example: TagRule_update
+        az datadog monitor tag-rule update --resource-group myResourceGroup --monitor-name myMonitor --rule-set-name default --log-rules "{send-aad-logs:False,send-subscription-logs:True,send-resource-logs:True,filtering-tags:[{name:Environment,value:Prod,action:Include},{name:Environment,value:Dev,action:Exclude}]}" --metric-rules "{filtering-tags:[]}"
     """
 
     _aaz_info = {
