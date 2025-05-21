@@ -40,7 +40,6 @@ from azext_aks_preview._consts import (
     CONST_DEFAULT_VMS_VM_SIZE,
     CONST_DEFAULT_WINDOWS_VMS_VM_SIZE,
     CONST_SSH_ACCESS_LOCALUSER,
-    CONST_GPU_DRIVER_NONE,
 )
 from azext_aks_preview._helpers import (
     get_nodepool_snapshot_by_snapshot_id,

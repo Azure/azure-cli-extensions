@@ -4159,10 +4159,9 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 "name": aks_name,
                 "location": resource_group_location,
                 "nodepool_name": nodepool_name,
+                "nodepool_name_second": nodepool_name_second,
                 "k8s_version": upgrade_version,
                 "ssh_key_value": self.generate_ssh_keys(),
-                "windows_admin_username": "azureuser1",
-                "windows_admin_password": "replace-Password1234$",
             }
         )
 
@@ -4170,7 +4169,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         create_cmd = (
             "aks create --resource-group {resource_group} --name {name} --location {location} "
             "--node-count 2 "
-            "--windows-admin-username={windows_admin_username} --windows-admin-password={windows_admin_password} "
             "--load-balancer-sku=standard --vm-set-type=virtualmachinescalesets --network-plugin=azure "
             "-k {k8s_version} "
             "--ssh-key-value={ssh_key_value} -o json"
@@ -4181,9 +4179,9 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         # create nodepool from the cluster without gpu install
         create_nodepool_cmd = (
-            "aks nodepool add --resource-group={resource_group} --cluster-name={name} --name={nodepool_name} --os-type windows --node-count 1 "
+            "aks nodepool add --resource-group={resource_group} --cluster-name={name} --name={nodepool_name} --node-count 1 "
+            "--node-vm-size={node_vm_size} "
             "--gpu-driver None "
-            "-k {k8s_version} -o json"
         )
         self.cmd(
             create_nodepool_cmd,
@@ -4202,7 +4200,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "aks nodepool add "
             "--resource-group={resource_group} "
             "--cluster-name={name} "
-            "--name={nodepool_name_second} "
+            "--name={nodepoolname_second} "
             "--node-vm-size={node_vm_size} "
             "-c 1 "
             "--os-type Linux "
