@@ -478,7 +478,6 @@ def aks_create(
     pod_cidrs=None,
     service_cidrs=None,
     load_balancer_managed_outbound_ipv6_count=None,
-    enable_pod_security_policy=False,
     enable_pod_identity=False,
     enable_pod_identity_with_kubenet=False,
     enable_workload_identity=False,
@@ -686,8 +685,6 @@ def aks_update(
     network_dataplane=None,
     ip_families=None,
     pod_cidr=None,
-    enable_pod_security_policy=False,
-    disable_pod_security_policy=False,
     enable_pod_identity=False,
     enable_pod_identity_with_kubenet=False,
     disable_pod_identity=False,
@@ -761,6 +758,7 @@ def aks_update(
     # IMDS restriction
     enable_imds_restriction=False,
     disable_imds_restriction=False,
+    migrate_vmas_to_vms=False,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -1220,6 +1218,7 @@ def aks_agentpool_add(
     node_public_ip_tags=None,
     enable_artifact_streaming=False,
     skip_gpu_driver_install=False,
+    gpu_driver=None,
     driver_type=None,
     ssh_access=CONST_SSH_ACCESS_LOCALUSER,
     # trusted launch

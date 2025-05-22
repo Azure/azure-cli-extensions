@@ -20,6 +20,7 @@ from azext_aks_preview._consts import (
     CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_START,
     CONST_AZURE_SERVICE_MESH_DEFAULT_EGRESS_NAMESPACE,
     CONST_LOAD_BALANCER_SKU_BASIC,
+    CONST_LOAD_BALANCER_SKU_STANDARD,
     CONST_MANAGED_CLUSTER_SKU_NAME_BASE,
     CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC,
     CONST_MANAGED_CLUSTER_SKU_TIER_FREE,
@@ -40,6 +41,8 @@ from azext_aks_preview._consts import (
     CONST_OUTBOUND_TYPE_BLOCK,
     CONST_IMDS_RESTRICTION_ENABLED,
     CONST_IMDS_RESTRICTION_DISABLED,
+    CONST_AVAILABILITY_SET,
+    CONST_VIRTUAL_MACHINES,
 )
 from azext_aks_preview._helpers import (
     check_is_apiserver_vnet_integration_cluster,
@@ -982,76 +985,6 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         if disable_force_upgrade is not None:
             return not disable_force_upgrade
         return None
-
-    def _get_enable_pod_security_policy(self, enable_validation: bool = False) -> bool:
-        """Internal function to obtain the value of enable_pod_security_policy.
-
-        This function supports the option of enable_validation. When enabled, if both enable_pod_security_policy and
-        disable_pod_security_policy are specified, raise a MutuallyExclusiveArgumentError.
-
-        :return: bool
-        """
-        # read the original value passed by the command
-        enable_pod_security_policy = self.raw_param.get("enable_pod_security_policy")
-        # In create mode, try to read the property value corresponding to the parameter from the `mc` object.
-        if self.decorator_mode == DecoratorMode.CREATE:
-            if (
-                self.mc and
-                self.mc.enable_pod_security_policy is not None
-            ):
-                enable_pod_security_policy = self.mc.enable_pod_security_policy
-
-        # this parameter does not need dynamic completion
-        # validation
-        if enable_validation:
-            if enable_pod_security_policy and self._get_disable_pod_security_policy(enable_validation=False):
-                raise MutuallyExclusiveArgumentError(
-                    "Cannot specify --enable-pod-security-policy and "
-                    "--disable-pod-security-policy at the same time."
-                )
-        return enable_pod_security_policy
-
-    def get_enable_pod_security_policy(self) -> bool:
-        """Obtain the value of enable_pod_security_policy.
-
-        This function will verify the parameter by default. If both enable_pod_security_policy and
-        disable_pod_security_policy are specified, raise a MutuallyExclusiveArgumentError.
-
-        :return: bool
-        """
-        return self._get_enable_pod_security_policy(enable_validation=True)
-
-    def _get_disable_pod_security_policy(self, enable_validation: bool = False) -> bool:
-        """Internal function to obtain the value of disable_pod_security_policy.
-
-        This function supports the option of enable_validation. When enabled, if both enable_pod_security_policy and
-        disable_pod_security_policy are specified, raise a MutuallyExclusiveArgumentError.
-
-        :return: bool
-        """
-        # read the original value passed by the command
-        disable_pod_security_policy = self.raw_param.get("disable_pod_security_policy")
-        # We do not support this option in create mode, therefore we do not read the value from `mc`.
-
-        # this parameter does not need dynamic completion
-        # validation
-        if enable_validation:
-            if disable_pod_security_policy and self._get_enable_pod_security_policy(enable_validation=False):
-                raise MutuallyExclusiveArgumentError(
-                    "Cannot specify --enable-pod-security-policy and "
-                    "--disable-pod-security-policy at the same time."
-                )
-        return disable_pod_security_policy
-
-    def get_disable_pod_security_policy(self) -> bool:
-        """Obtain the value of disable_pod_security_policy.
-
-        This function will verify the parameter by default. If both enable_pod_security_policy and
-        disable_pod_security_policy are specified, raise a MutuallyExclusiveArgumentError.
-
-        :return: bool
-        """
-        return self._get_disable_pod_security_policy(enable_validation=True)
 
     # pylint: disable=unused-argument
     def _get_enable_managed_identity(
@@ -2857,6 +2790,13 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         """
         return self.raw_param.get("disable_imds_restriction")
 
+    def get_migrate_vmas_to_vms(self) -> bool:
+        """Obtain the value of migrate_vmas_to_vms.
+
+        :return: bool
+        """
+        return self.raw_param.get("migrate_vmas_to_vms")
+
 
 # pylint: disable=too-many-public-methods
 class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
@@ -3070,16 +3010,6 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                 monitoring_addon_profile.config = config
 
         mc.addon_profiles = addon_profiles
-        return mc
-
-    def set_up_pod_security_policy(self, mc: ManagedCluster) -> ManagedCluster:
-        """Set up pod security policy for the ManagedCluster object.
-
-        :return: the ManagedCluster object
-        """
-        self._ensure_mc(mc)
-
-        mc.enable_pod_security_policy = self.context.get_enable_pod_security_policy()
         return mc
 
     def set_up_pod_identity_profile(self, mc: ManagedCluster) -> ManagedCluster:
@@ -3621,8 +3551,6 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         # DO NOT MOVE: keep this on top, construct the default ManagedCluster profile
         mc = self.construct_mc_profile_default(bypass_restore_defaults=True)
 
-        # set up pod security policy
-        mc = self.set_up_pod_security_policy(mc)
         # set up pod identity profile
         mc = self.set_up_pod_identity_profile(mc)
         # set up workload identity profile
@@ -4550,20 +4478,6 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         return mc
 
-    def update_pod_security_policy(self, mc: ManagedCluster) -> ManagedCluster:
-        """Update pod security policy for the ManagedCluster object.
-
-        :return: the ManagedCluster object
-        """
-        self._ensure_mc(mc)
-
-        if self.context.get_enable_pod_security_policy():
-            mc.enable_pod_security_policy = True
-
-        if self.context.get_disable_pod_security_policy():
-            mc.enable_pod_security_policy = False
-        return mc
-
     def update_pod_identity_profile(self, mc: ManagedCluster) -> ManagedCluster:
         """Update pod identity profile for the ManagedCluster object.
 
@@ -5335,6 +5249,34 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 raise DecoratorEarlyExitException()
         return mc
 
+    def update_vmas_to_vms(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update the agent pool profile type from VMAS to VMS and LB sku to standard
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        if self.context.get_migrate_vmas_to_vms():
+            msg = (
+                "\nWARNING: This operation will be disruptive to your workload while underway. "
+                "Do you wish to continue?"
+            )
+            if not self.context.get_yes() and not prompt_y_n(msg, default="n"):
+                raise DecoratorEarlyExitException()
+            # Ensure we have valid vmas AP
+            if len(mc.agent_pool_profiles) == 1 and mc.agent_pool_profiles[0].type == CONST_AVAILABILITY_SET:
+                mc.agent_pool_profiles[0].type = CONST_VIRTUAL_MACHINES
+            else:
+                raise CLIError('This is not a valid VMAS cluster, we cannot proceed with the migration.')
+
+            if mc.network_profile.load_balancer_sku == CONST_LOAD_BALANCER_SKU_BASIC:
+                mc.network_profile.load_balancer_sku = CONST_LOAD_BALANCER_SKU_STANDARD
+
+            mc.agent_pool_profiles[0].count = None
+            mc.agent_pool_profiles[0].vm_size = None
+
+        return mc
+
     def update_mc_profile_preview(self) -> ManagedCluster:
         """The overall controller used to update the preview ManagedCluster profile.
 
@@ -5346,8 +5288,6 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         # DO NOT MOVE: keep this on top, fetch and update the default ManagedCluster profile
         mc = self.update_mc_profile_default()
 
-        # update pod security policy
-        mc = self.update_pod_security_policy(mc)
         # update pod identity profile
         mc = self.update_pod_identity_profile(mc)
         # update workload identity profile
@@ -5410,6 +5350,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_static_egress_gateway(mc)
         # update imds restriction
         mc = self.update_imds_restriction(mc)
+        # update VMAS to VMS
+        mc = self.update_vmas_to_vms(mc)
 
         return mc
 

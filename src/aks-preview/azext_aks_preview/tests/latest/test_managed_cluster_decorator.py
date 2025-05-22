@@ -37,6 +37,7 @@ from azext_aks_preview._consts import (
     CONST_KUBE_DASHBOARD_ADDON_NAME,
     CONST_LOAD_BALANCER_BACKEND_POOL_TYPE_NODE_IP,
     CONST_LOAD_BALANCER_SKU_STANDARD,
+    CONST_LOAD_BALANCER_SKU_BASIC,
     CONST_MONITORING_ADDON_NAME,
     CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID,
     CONST_MONITORING_USING_AAD_MSI_AUTH,
@@ -47,6 +48,8 @@ from azext_aks_preview._consts import (
     CONST_ROTATION_POLL_INTERVAL,
     CONST_SECRET_ROTATION_ENABLED,
     CONST_VIRTUAL_MACHINE_SCALE_SETS,
+    CONST_AVAILABILITY_SET,
+    CONST_VIRTUAL_MACHINES,
     CONST_VIRTUAL_NODE_ADDON_NAME,
     CONST_VIRTUAL_NODE_SUBNET_NAME,
     CONST_WORKLOAD_RUNTIME_OCI_CONTAINER,
@@ -85,6 +88,7 @@ from azure.cli.core.azclierror import (
     MutuallyExclusiveArgumentError,
     RequiredArgumentMissingError,
     UnknownError,
+    CLIError,
 )
 from azure.cli.command_modules.acs._consts import (
     CONST_OUTBOUND_TYPE_LOAD_BALANCER,
@@ -699,70 +703,6 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             decorator_mode=DecoratorMode.CREATE,
         )
         self.assertEqual(ctx.get_load_balancer_backend_pool_type(), "nodeIP")
-
-    def test_get_enable_pod_security_policy(self):
-        # default
-        ctx_1 = AKSPreviewManagedClusterContext(
-            self.cmd,
-            AKSManagedClusterParamDict({"enable_pod_security_policy": False}),
-            self.models,
-            decorator_mode=DecoratorMode.CREATE,
-        )
-        self.assertEqual(ctx_1.get_enable_pod_security_policy(), False)
-        mc = self.models.ManagedCluster(
-            location="test_location",
-            enable_pod_security_policy=True,
-        )
-        ctx_1.attach_mc(mc)
-        self.assertEqual(ctx_1.get_enable_pod_security_policy(), True)
-
-        # custom value
-        ctx_2 = AKSPreviewManagedClusterContext(
-            self.cmd,
-            AKSManagedClusterParamDict(
-                {
-                    "enable_pod_security_policy": True,
-                    "disable_pod_security_policy": True,
-                }
-            ),
-            self.models,
-            decorator_mode=DecoratorMode.UPDATE,
-        )
-        # fail on mutually exclusive enable_pod_security_policy and disable_pod_security_policy
-        with self.assertRaises(MutuallyExclusiveArgumentError):
-            ctx_2.get_enable_pod_security_policy()
-
-    def test_get_disable_pod_security_policy(self):
-        # default
-        ctx_1 = AKSPreviewManagedClusterContext(
-            self.cmd,
-            AKSManagedClusterParamDict({"disable_pod_security_policy": False}),
-            self.models,
-            decorator_mode=DecoratorMode.UPDATE,
-        )
-        self.assertEqual(ctx_1.get_disable_pod_security_policy(), False)
-        mc = self.models.ManagedCluster(
-            location="test_location",
-            enable_pod_security_policy=False,
-        )
-        ctx_1.attach_mc(mc)
-        self.assertEqual(ctx_1.get_disable_pod_security_policy(), False)
-
-        # custom value
-        ctx_2 = AKSPreviewManagedClusterContext(
-            self.cmd,
-            AKSManagedClusterParamDict(
-                {
-                    "enable_pod_security_policy": True,
-                    "disable_pod_security_policy": True,
-                }
-            ),
-            self.models,
-            decorator_mode=DecoratorMode.UPDATE,
-        )
-        # fail on mutually exclusive enable_pod_security_policy and disable_pod_security_policy
-        with self.assertRaises(MutuallyExclusiveArgumentError):
-            ctx_2.get_disable_pod_security_policy()
 
     def test_get_network_plugin(self):
         # default
@@ -4639,43 +4579,6 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         )
         self.assertEqual(dec_mc_1, ground_truth_mc_1)
 
-    def test_set_up_pod_security_policy(self):
-        # default value in `aks_create`
-        dec_1 = AKSPreviewManagedClusterCreateDecorator(
-            self.cmd,
-            self.client,
-            {
-                "enable_pod_security_policy": False,
-            },
-            CUSTOM_MGMT_AKS_PREVIEW,
-        )
-        mc_1 = self.models.ManagedCluster(location="test_location")
-        dec_1.context.attach_mc(mc_1)
-        # fail on passing the wrong mc object
-        with self.assertRaises(CLIInternalError):
-            dec_1.set_up_pod_security_policy(None)
-        dec_mc_1 = dec_1.set_up_pod_security_policy(mc_1)
-        ground_truth_mc_1 = self.models.ManagedCluster(
-            location="test_location", enable_pod_security_policy=False
-        )
-        self.assertEqual(dec_mc_1, ground_truth_mc_1)
-
-        # custom value
-        dec_2 = AKSPreviewManagedClusterCreateDecorator(
-            self.cmd,
-            self.client,
-            {"enable_pod_security_policy": True},
-            CUSTOM_MGMT_AKS_PREVIEW,
-        )
-        mc_2 = self.models.ManagedCluster(location="test_location")
-        dec_2.context.attach_mc(mc_2)
-        dec_mc_2 = dec_2.set_up_pod_security_policy(mc_2)
-        ground_truth_mc_2 = self.models.ManagedCluster(
-            location="test_location",
-            enable_pod_security_policy=True,
-        )
-        self.assertEqual(dec_mc_2, ground_truth_mc_2)
-
     def test_set_up_pod_identity_profile(self):
         # default value in `aks_create`
         dec_1 = AKSPreviewManagedClusterCreateDecorator(
@@ -5576,7 +5479,6 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             network_profile=network_profile_1,
             identity=identity_1,
             disable_local_accounts=False,
-            enable_pod_security_policy=False,
             storage_profile=storage_profile_1,
             sku=baseSKU,
             kind="Base",
@@ -6583,78 +6485,6 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             },
         )
         self.assertEqual(dec_mc_1, ground_truth_mc_1)
-
-    def test_update_pod_security_policy(self):
-        # default value in `aks_update`
-        dec_1 = AKSPreviewManagedClusterUpdateDecorator(
-            self.cmd,
-            self.client,
-            {
-                "enable_pod_security_policy": False,
-                "disable_pod_security_policy": False,
-            },
-            CUSTOM_MGMT_AKS_PREVIEW,
-        )
-        mc_1 = self.models.ManagedCluster(
-            location="test_location",
-            enable_pod_security_policy=True,
-        )
-        dec_1.context.attach_mc(mc_1)
-        # fail on passing the wrong mc object
-        with self.assertRaises(CLIInternalError):
-            dec_1.update_pod_security_policy(None)
-
-        dec_mc_1 = dec_1.update_pod_security_policy(mc_1)
-        ground_truth_mc_1 = self.models.ManagedCluster(
-            location="test_location",
-            enable_pod_security_policy=True,
-        )
-        self.assertEqual(dec_mc_1, ground_truth_mc_1)
-
-        # custom value
-        dec_2 = AKSPreviewManagedClusterUpdateDecorator(
-            self.cmd,
-            self.client,
-            {
-                "enable_pod_security_policy": True,
-                "disable_pod_security_policy": False,
-            },
-            CUSTOM_MGMT_AKS_PREVIEW,
-        )
-        mc_2 = self.models.ManagedCluster(
-            location="test_location",
-            enable_pod_security_policy=False,
-        )
-        dec_2.context.attach_mc(mc_2)
-        dec_mc_2 = dec_2.update_pod_security_policy(mc_2)
-        ground_truth_mc_2 = self.models.ManagedCluster(
-            location="test_location",
-            enable_pod_security_policy=True,
-        )
-        self.assertEqual(dec_mc_2, ground_truth_mc_2)
-
-        # custom value
-        dec_3 = AKSPreviewManagedClusterUpdateDecorator(
-            self.cmd,
-            self.client,
-            {
-                "enable_pod_security_policy": False,
-                "disable_pod_security_policy": True,
-            },
-            CUSTOM_MGMT_AKS_PREVIEW,
-        )
-
-        mc_3 = self.models.ManagedCluster(
-            location="test_location",
-            enable_pod_security_policy=True,
-        )
-        dec_3.context.attach_mc(mc_3)
-        dec_mc_3 = dec_3.update_pod_security_policy(mc_3)
-        ground_truth_mc_3 = self.models.ManagedCluster(
-            location="test_location",
-            enable_pod_security_policy=False,
-        )
-        self.assertEqual(dec_mc_3, ground_truth_mc_3)
 
     def test_update_pod_identity_profile(self):
         # default value in `aks_update`
@@ -9078,6 +8908,113 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             ),
         )
         self.assertEqual(dec_mc_1, ground_truth_mc_1)
+    
+    def test_update_vmas_to_vms(self):
+        # Should not update mc if unset
+        dec_0 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_0 = self.models.ManagedCluster(
+            location="test_location",
+        )
+        dec_0.context.attach_mc(mc_0)
+        dec_mc_0 = dec_0.update_vmas_to_vms(mc_0)
+        ground_truth_mc_0 = self.models.ManagedCluster(
+            location="test_location",
+        )
+        self.assertEqual(dec_mc_0, ground_truth_mc_0)
+
+        # Should raise error if trying to migrate non-vmas cluster to vms
+        dec_1 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "migrate_vmas_to_vms": True,
+                 "yes": True,
+           },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_1 = self.models.ManagedCluster(
+            location="test_location",
+        )
+        ap_1 = self.models.ManagedClusterAgentPoolProfile(
+            name="test_np_name",
+            type=CONST_VIRTUAL_MACHINE_SCALE_SETS,
+        )
+        mc_1.agent_pool_profiles = [ap_1]
+        dec_1.context.attach_mc(mc_1)
+        with self.assertRaises(CLIError):
+            dec_1.update_vmas_to_vms(mc_1)
+        
+        # Should raise error if cluster has more than 1 AP
+        dec_2 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "migrate_vmas_to_vms": True,
+                "yes": True,                
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_2 = self.models.ManagedCluster(
+            location="test_location",
+        )
+        ap_2_1 = self.models.ManagedClusterAgentPoolProfile(
+            name="test_np_name_1",
+            type=CONST_AVAILABILITY_SET,
+        )
+        ap_2_2 = self.models.ManagedClusterAgentPoolProfile(
+            name="test_np_name_2",
+            type=CONST_AVAILABILITY_SET,
+        )
+        mc_2.agent_pool_profiles = [ap_2_1, ap_2_2]
+        dec_2.context.attach_mc(mc_2)
+        with self.assertRaises(CLIError):
+            dec_2.update_vmas_to_vms(mc_2)
+        
+        # Should migrate vmas-blb to vms-slb
+        dec_3 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "migrate_vmas_to_vms": True,
+                "yes": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_3 = self.models.ManagedCluster(
+            location="test_location",
+        )
+        ap_3 = self.models.ManagedClusterAgentPoolProfile(
+            name="test_np_name",
+            type=CONST_AVAILABILITY_SET,
+        )
+        network_profile_3 = self.models.ContainerServiceNetworkProfile(
+            load_balancer_sku=CONST_LOAD_BALANCER_SKU_BASIC,
+        )
+        mc_3.agent_pool_profiles = [ap_3]
+        mc_3.network_profile = network_profile_3
+        dec_3.context.attach_mc(mc_3)
+        dec_mc_3 = dec_3.update_vmas_to_vms(mc_3)
+        
+        ground_truth_mc_3 = self.models.ManagedCluster(
+            location="test_location",
+        )
+        ground_truth_ap_3 = self.models.ManagedClusterAgentPoolProfile(
+            name="test_np_name",
+            type=CONST_VIRTUAL_MACHINES,
+        )
+        ground_truth_network_profile_3 = self.models.ContainerServiceNetworkProfile(
+            load_balancer_sku=CONST_LOAD_BALANCER_SKU_STANDARD,
+        )
+        ground_truth_mc_3.agent_pool_profiles = [ground_truth_ap_3]
+        ground_truth_mc_3.network_profile = ground_truth_network_profile_3
+        self.assertEqual(dec_mc_3, ground_truth_mc_3)
+
+
 
     def test_enable_retina_network_flow_logs(self):
         # Case 1: enable_acns, enable monitoring addons_profile, enable retina_network_flow_logs

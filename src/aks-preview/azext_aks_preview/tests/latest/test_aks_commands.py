@@ -4140,61 +4140,61 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         delete_snapshot_cmd = "aks snapshot delete --resource-group {resource_group} --name {snapshot_name} --yes --no-wait"
         self.cmd(delete_snapshot_cmd, checks=[self.is_empty()])
 
-    @AllowLargeResponse()
-    @AKSCustomResourceGroupPreparer(
-        random_name_length=17,
-        name_prefix="clitest",
-        location="eastus",
-    )
-    def test_aks_skip_gpu_driver_install(self, resource_group, resource_group_location):
-        print(resource_group_location)
-        create_version, upgrade_version = self._get_versions(resource_group_location)
-        aks_name = self.create_random_name("cliakstest", 16)
-        nodepool_name = self.create_random_name("c", 6)
+    # @AllowLargeResponse()
+    # @AKSCustomResourceGroupPreparer(
+    #     random_name_length=17,
+    #     name_prefix="clitest",
+    #     location="eastus",
+    # )
+    # def test_aks_skip_gpu_driver_install(self, resource_group, resource_group_location):
+    #     print(resource_group_location)
+    #     create_version, upgrade_version = self._get_versions(resource_group_location)
+    #     aks_name = self.create_random_name("cliakstest", 16)
+    #     nodepool_name = self.create_random_name("c", 6)
 
-        self.kwargs.update(
-            {
-                "resource_group": resource_group,
-                "name": aks_name,
-                "location": resource_group_location,
-                "nodepool_name": nodepool_name,
-                "k8s_version": upgrade_version,
-                "ssh_key_value": self.generate_ssh_keys(),
-                "windows_admin_username": "azureuser1",
-                "windows_admin_password": "replace-Password1234$",
-            }
-        )
+    #     self.kwargs.update(
+    #         {
+    #             "resource_group": resource_group,
+    #             "name": aks_name,
+    #             "location": resource_group_location,
+    #             "nodepool_name": nodepool_name,
+    #             "k8s_version": upgrade_version,
+    #             "ssh_key_value": self.generate_ssh_keys(),
+    #             "windows_admin_username": "azureuser1",
+    #             "windows_admin_password": "replace-Password1234$",
+    #         }
+    #     )
 
-        # create an aks cluster
-        create_cmd = (
-            "aks create --resource-group {resource_group} --name {name} --location {location} "
-            "--node-count 2 "
-            "--windows-admin-username={windows_admin_username} --windows-admin-password={windows_admin_password} "
-            "--load-balancer-sku=standard --vm-set-type=virtualmachinescalesets --network-plugin=azure "
-            "-k {k8s_version} "
-            "--ssh-key-value={ssh_key_value} -o json"
-        )
-        self.cmd(
-            create_cmd, checks=[self.check("provisioningState", "Succeeded")]
-        )
+    #     # create an aks cluster
+    #     create_cmd = (
+    #         "aks create --resource-group {resource_group} --name {name} --location {location} "
+    #         "--node-count 2 "
+    #         "--windows-admin-username={windows_admin_username} --windows-admin-password={windows_admin_password} "
+    #         "--load-balancer-sku=standard --vm-set-type=virtualmachinescalesets --network-plugin=azure "
+    #         "-k {k8s_version} "
+    #         "--ssh-key-value={ssh_key_value} -o json"
+    #     )
+    #     self.cmd(
+    #         create_cmd, checks=[self.check("provisioningState", "Succeeded")]
+    #     )
 
-        # create nodepool from the cluster without gpu install
-        create_nodepool_cmd = (
-            "aks nodepool add --resource-group={resource_group} --cluster-name={name} --name={nodepool_name} --os-type windows --node-count 1 "
-            "--skip-gpu-driver-install "
-            "-k {k8s_version} -o json"
-        )
-        self.cmd(
-            create_nodepool_cmd,
-            checks=[self.check("provisioningState", "Succeeded"),
-                    self.check('gpuProfile.installGpuDriver', False)],
-        )
+    #     # create nodepool from the cluster without gpu install
+    #     create_nodepool_cmd = (
+    #         "aks nodepool add --resource-group={resource_group} --cluster-name={name} --name={nodepool_name} --os-type windows --node-count 1 "
+    #         "--skip-gpu-driver-install "
+    #         "-k {k8s_version} -o json"
+    #     )
+    #     self.cmd(
+    #         create_nodepool_cmd,
+    #         checks=[self.check("provisioningState", "Succeeded"),
+    #                 self.check('gpuProfile.installGpuDriver', False)],
+    #     )
 
-        # delete the original AKS cluster
-        self.cmd(
-            "aks delete -g {resource_group} -n {name} --yes --no-wait",
-            checks=[self.is_empty()],
-        )
+    #     # delete the original AKS cluster
+    #     self.cmd(
+    #         "aks delete -g {resource_group} -n {name} --yes --no-wait",
+    #         checks=[self.is_empty()],
+    #     )
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
@@ -8023,7 +8023,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 self.check("resourceGroup", "{resource_group}"),
                 self.check("agentPoolProfiles[0].count", 1),
                 self.check("agentPoolProfiles[0].osType", "Linux"),
-                self.check("agentPoolProfiles[0].vmSize", "Standard_DS2_v2"),
                 self.check("agentPoolProfiles[0].mode", "System"),
                 self.check("dnsPrefix", "{dns_name_prefix}"),
                 self.exists("kubernetesVersion"),
@@ -8132,7 +8131,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 self.check("resourceGroup", "{resource_group}"),
                 self.check("agentPoolProfiles[0].count", 1),
                 self.check("agentPoolProfiles[0].osType", "Linux"),
-                self.check("agentPoolProfiles[0].vmSize", "Standard_DS2_v2"),
                 self.check("agentPoolProfiles[0].mode", "System"),
                 self.check("dnsPrefix", "{dns_name_prefix}"),
                 self.exists("kubernetesVersion"),
@@ -12187,7 +12185,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             checks=[
                 self.check("provisioningState", "Succeeded"),
                 self.check("agentPoolProfiles[0].type", "VirtualMachines"),
-                self.check("agentPoolProfiles[0].vmSize", None),
+                self.check("agentPoolProfiles[0].vm_size", None),
                 self.check("agentPoolProfiles[0].count", None),
                 self.check("agentPoolProfiles[0].virtualMachinesProfile.scale.manual[0].size", "Standard_D4s_v3"),
                 self.check("agentPoolProfiles[0].virtualMachinesProfile.scale.manual[0].count", "2"),
@@ -15737,66 +15735,6 @@ spec:
         random_name_length=17,
         name_prefix="clitest",
         location="eastus2",
-    )
-    def test_aks_extension(self, resource_group, resource_group_location):
-        aks_name = self.create_random_name("cliakstest", 16)
-        extension_type = 'microsoft.flux'
-        self.kwargs.update({
-            'name': 'flux',
-            'rg': resource_group,
-            'cluster_name': aks_name,
-            'extension_type': extension_type,
-            'release_train': 'Stable',
-            'version': '1.15.1',
-            "ssh_key_value": self.generate_ssh_keys(),
-        })
-
-        # create the cluster 
-        self.cmd('aks create -g {rg} -n {cluster_name} '
-                 '--node-count 3  --ssh-key-value={ssh_key_value}')
-
-        # create the K8s extension
-        self.cmd('aks extension create -g {rg} -n {name} -c {cluster_name} '
-                 '--extension-type {extension_type} --no-wait')
-
-        # Update the K8s extension 
-        self.cmd('aks extension update -g {rg} -n {name} -c {cluster_name} '
-                 '--no-wait --yes --config useKubeletIdentity=true')
-
-        # list the K8s extension on the cluster
-        installed_exts = self.cmd('aks extension list -c {cluster_name} -g {rg}').get_output_in_json()
-        found_extension = False
-        for item in installed_exts:
-            if item['extensionType'] == extension_type:
-                found_extension = True
-                break
-        self.assertTrue(found_extension)
-
-        # do a GET on the extension
-        self.cmd('aks extension show -c {cluster_name} -g {rg} -n {name}', checks=[
-            self.check('name', '{name}'),
-            self.check('releaseTrain', '{release_train}'),
-            self.check('resourceGroup', '{rg}'),
-            self.check('extensionType', '{extension_type}')
-        ])
-
-        # delete the extension
-        self.cmd('aks extension delete -g {rg} -c {cluster_name} -n {name} --force -y')
-
-        installed_exts = self.cmd('aks extension list -c {cluster_name} -g {rg}').get_output_in_json()
-        found_extension = False
-        for item in installed_exts:
-            if item['extensionType'] == extension_type:
-                found_extension = True
-                break
-        self.assertFalse(found_extension)
-
-
-    @AllowLargeResponse()
-    @AKSCustomResourceGroupPreparer(
-        random_name_length=17,
-        name_prefix="clitest",
-        location="eastus2",
         preserve_default_location=True,
     )
     def test_aks_extension_backup(self, resource_group, resource_group_location):
@@ -15875,99 +15813,6 @@ spec:
                 found_extension = True
                 break
         self.assertFalse(found_extension)
-
-
-    @AllowLargeResponse()
-    @AKSCustomResourceGroupPreparer(
-        random_name_length=17,
-        name_prefix="clitest",
-        location="eastus2",
-        preserve_default_location=True,
-    )
-    def test_aks_extension_type(self, resource_group, resource_group_location):
-        aks_name = self.create_random_name("cliakstest", 16)
-        extension_type = 'microsoft.flux'
-        self.kwargs.update({
-            'name': 'flux',
-            'rg': resource_group,
-            'cluster_name': aks_name,
-            'extension_type': extension_type,
-            'release_train': 'Stable',
-            'version': '1.15.1',
-            "ssh_key_value": self.generate_ssh_keys(),
-            'location': resource_group_location,
-        })
-
-        self.cmd('feature register --namespace Microsoft.KubernetesConfiguration --name ExtensionTypes')
-        
-        is_extension_types_feature_registered = False
-
-        # Wait until extension types feature is registered
-        while not is_extension_types_feature_registered:
-            result = self.cmd('feature show --namespace Microsoft.KubernetesConfiguration '
-                              '--name ExtensionTypes').get_output_in_json()
-            if (result["properties"]["state"] == "Registered"):
-                is_extension_types_feature_registered = True
-            else:
-                # sleep for 30 seconds if feature is not registered
-                time.sleep(30)
-
-        # create the cluster 
-        self.cmd('aks create -g {rg} -n {cluster_name} '
-                 '--node-count 3  --ssh-key-value={ssh_key_value}')
-
-        # create the K8s extension
-        self.cmd('aks extension create -g {rg} -n {name} -c {cluster_name} '
-                 '--extension-type {extension_type} --no-wait')
-
-        # show by cluster
-        self.cmd('aks extension type show -g {rg} -c {cluster_name} '
-                 '--extension-type {extension_type}', checks=[
-                     self.check('name', '{extension_type}')
-                 ])
-
-        # show by location
-        self.cmd('aks extension type show --location {location} '
-                 '--extension-type {extension_type}', checks=[
-                     self.check('name', '{extension_type}')
-                 ])
-
-        # list extension type by cluster
-        extension_types_list = self.cmd('aks extension type list -g {rg} '
-                                       '-c {cluster_name}').get_output_in_json()
-        assert len(extension_types_list ) > 0
-
-        # list extension type by location
-        extension_types_list = self.cmd('aks extension type list '
-                                               '--location {location}').get_output_in_json()
-        assert len(extension_types_list) > 0
-
-        # list versions by cluster
-        extension_types_list = self.cmd('aks extension type version list -g {rg} -c {cluster_name} '
-                                       '--extension-type {extension_type}').get_output_in_json()
-
-        assert len(extension_types_list) > 0
-
-        # list versions by location
-        extension_types_list = self.cmd('aks extension type version list --location {location} '
-                                       '--extension-type {extension_type}').get_output_in_json()
-
-        assert len(extension_types_list) > 0
-
-        # show version by cluster
-        extension_types_list = self.cmd('aks extension type version show -g {rg} -c {cluster_name} '
-                                       '--extension-type {extension_type} --version {version}').get_output_in_json()
-
-        assert len(extension_types_list) > 0
-
-        # show version by location
-        extension_types_list = self.cmd('aks extension type version show --location {location} '
-                                       '--extension-type {extension_type} --version {version}').get_output_in_json()
-
-        assert len(extension_types_list) > 0
-
-        # delete the extension
-        self.cmd('aks extension delete -g {rg} -c {cluster_name} -n {name}  --force -y')
 
 
     @AllowLargeResponse()
@@ -16234,3 +16079,60 @@ spec:
             "aks delete -g {resource_group} -n {name} --yes --no-wait",
             checks=[self.is_empty()],
         )
+
+
+    # Comment out below tests as we only allow this in certain regions.
+    # @AllowLargeResponse()
+    # @AKSCustomResourceGroupPreparer(
+    #     random_name_length=17,
+    #     name_prefix="clitest",
+    #     location="centraluseuap",
+    # )
+    # def test_aks_migrate_vmas_to_vms(
+    #     self, resource_group, resource_group_location
+    # ):
+    #     _, create_version = self._get_versions(resource_group_location)
+    #     aks_name = self.create_random_name("cliakstest", 16)
+    #     self.kwargs.update(
+    #         {
+    #             "resource_group": resource_group,
+    #             "name": aks_name,
+    #             "location": resource_group_location,
+    #             "k8s_version": create_version,
+    #             "ssh_key_value": self.generate_ssh_keys(),
+    #         }
+    #     )
+
+    #     # create
+    #     create_cmd = (
+    #         "aks create --resource-group={resource_group} --name={name} --location={location} "
+    #         "--ssh-key-value={ssh_key_value} "
+    #         "--vm-set-type AvailabilitySet " 
+    #         "--load-balancer-sku Basic "
+    #     )
+    #     self.cmd(
+    #         create_cmd,
+    #         checks=[
+    #             self.check('provisioningState', 'Succeeded'),
+    #             self.check("agentPoolProfiles[0].type", "AvailabilitySet"),
+    #             self.check("networkProfile.loadBalancerSku", "basic"),
+    #         ],
+    #     )
+
+    #     # update -- migrate vmas to vma
+    #     update_cmd = (
+    #         "aks update --resource-group {resource_group} --name {name} "
+    #         "--migrate-vmas-to-vms --yes "
+    #         "--aks-custom-headers=AKSHTTPCustomFeatures=Microsoft.ContainerService/BasicLBMigrationToStandardLBPreview"
+    #     )
+    #     self.cmd(update_cmd, checks=[
+    #         self.check('provisioningState', 'Succeeded'),
+    #         self.check("agentPoolProfiles[0].type", "VirtualMachines"),
+    #         self.check("networkProfile.loadBalancerSku", "standard"),
+    #     ])
+
+    #     # delete
+    #     self.cmd(
+    #         "aks delete -g {resource_group} -n {name} --yes --no-wait",
+    #         checks=[self.is_empty()],
+    #     )

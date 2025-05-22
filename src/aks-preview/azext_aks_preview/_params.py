@@ -48,6 +48,8 @@ from azext_aks_preview._consts import (
     CONST_DAILY_MAINTENANCE_SCHEDULE,
     CONST_DISK_DRIVER_V1,
     CONST_DISK_DRIVER_V2,
+    CONST_GPU_DRIVER_INSTALL,
+    CONST_GPU_DRIVER_NONE,
     CONST_GPU_INSTANCE_PROFILE_MIG1_G,
     CONST_GPU_INSTANCE_PROFILE_MIG2_G,
     CONST_GPU_INSTANCE_PROFILE_MIG3_G,
@@ -266,6 +268,10 @@ gpu_instance_profiles = [
     CONST_GPU_INSTANCE_PROFILE_MIG3_G,
     CONST_GPU_INSTANCE_PROFILE_MIG4_G,
     CONST_GPU_INSTANCE_PROFILE_MIG7_G,
+]
+gpu_driver_install_modes = [
+    CONST_GPU_DRIVER_INSTALL,
+    CONST_GPU_DRIVER_NONE
 ]
 pod_ip_allocation_modes = [
     CONST_NETWORK_POD_IP_ALLOCATION_MODE_DYNAMIC_INDIVIDUAL,
@@ -767,13 +773,6 @@ def load_arguments(self, _):
         c.argument("pod_cidrs")
         c.argument("service_cidrs")
         c.argument("load_balancer_managed_outbound_ipv6_count", type=int)
-        c.argument(
-            "enable_pod_security_policy",
-            action="store_true",
-            deprecate_info=c.deprecate(
-                target="--enable-pod-security-policy", hide=True
-            ),
-        )
         c.argument("enable_pod_identity", action="store_true")
         c.argument("enable_pod_identity_with_kubenet", action="store_true")
         c.argument("enable_workload_identity", action="store_true")
@@ -1196,14 +1195,6 @@ def load_arguments(self, _):
         )
         c.argument("load_balancer_managed_outbound_ipv6_count", type=int)
         c.argument("outbound_type", arg_type=get_enum_type(outbound_types))
-        c.argument(
-            "enable_pod_security_policy",
-            action="store_true",
-            deprecate_info=c.deprecate(
-                target="--enable-pod-security-policy", hide=True
-            ),
-        )
-        c.argument("disable_pod_security_policy", action="store_true", is_preview=True)
         c.argument("enable_pod_identity", action="store_true")
         c.argument("enable_pod_identity_with_kubenet", action="store_true")
         c.argument("disable_pod_identity", action="store_true")
@@ -1409,6 +1400,8 @@ def load_arguments(self, _):
             arg_type=get_enum_type(health_probe_modes),
         )
 
+        c.argument('migrate_vmas_to_vms', is_preview=True, action='store_true')
+
     with self.argument_context("aks upgrade") as c:
         c.argument("kubernetes_version", completer=get_k8s_upgrades_completion_list)
         c.argument(
@@ -1570,7 +1563,20 @@ def load_arguments(self, _):
             validator=validate_node_public_ip_tags,
             help="space-separated tags: key[=value] [key[=value] ...].",
         )
-        c.argument('skip_gpu_driver_install', action='store_true', is_preview=True)
+        c.argument(
+            "skip_gpu_driver_install",
+            action="store_true",
+            is_preview=True,
+            deprecate_info=c.deprecate(
+                target="--skip-gpu-driver-install",
+                redirect="--gpu-driver",
+                hide=True
+            )
+        )
+        c.argument(
+            "gpu_driver",
+            arg_type=get_enum_type(gpu_driver_install_modes)
+        )
         c.argument(
             "driver_type",
             arg_type=get_enum_type(gpu_driver_types),
