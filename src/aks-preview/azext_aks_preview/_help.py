@@ -1676,9 +1676,6 @@ helps['aks namespace add'] = """
     type: command
     short-summary: Add namespace to the managed Kubernetes cluster.
     parameters:
-        - name: --name
-          type: string
-          short-summary: The name of the managed namespace.
         - name: --cluster-name
           type: string
           short-summary: Name of the managed cluster.
@@ -1732,9 +1729,6 @@ helps['aks namespace update'] = """
     type: command
     short-summary: Update namespace on the managed Kubernetes cluster.
     parameters:
-        - name: --name
-          type: string
-          short-summary: The name of the managed namespace.
         - name: --cluster-name
           type: string
           short-summary: Name of the managed cluster.
