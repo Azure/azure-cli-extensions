@@ -16,6 +16,8 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create new or updates existing Diagnostic resource.
+      :example: Create a new Diagnostic resource.
+        az workload-orchestration diagnostic create -n MyDiagnostic -g MyResourceGroup --location eastus --extended-location name=MyCustomLocation type=CustomLocation
     """
 
     _aaz_info = {

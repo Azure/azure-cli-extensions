@@ -16,6 +16,8 @@ from azure.cli.core.aaz import *
 )
 class BulkDeploySolution(AAZCommand):
     """Post request for bulk deploy
+    :example: Create a BulkDeploySolution
+        az workload-orchestration solution-template bulk-deploy-solution --resource-group rg1 --solution-name st1 --solution-version 1.0.0 --targets ''
     """
 
     _aaz_info = {

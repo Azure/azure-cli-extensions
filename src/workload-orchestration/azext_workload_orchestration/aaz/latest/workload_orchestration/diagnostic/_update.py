@@ -16,6 +16,8 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update new or updates existing Diagnostic resource.
+       :example: Update a Diagnostic resource.
+             az workload-orchestration diagnostic update -n MyDiagnostic -g MyResourceGroup
     """
 
     _aaz_info = {
