@@ -456,7 +456,7 @@ class SessionPoolUpdateDecorator(SessionPoolPreviewDecorator):
                     r = _ensure_identity_resource_id(subscription_id, self.get_argument_resource_group_name(), r)
                     identity_def["userAssignedIdentities"][r] = {}  # pylint: disable=unsupported-assignment-operation
 
-            safe_set(self.session_pool_def, "identity", identity_def)
+            safe_set(self.session_pool_def, "identity", value=identity_def)
 
     def set_up_managed_identity_settings(self):
         managed_identity_settings = []
