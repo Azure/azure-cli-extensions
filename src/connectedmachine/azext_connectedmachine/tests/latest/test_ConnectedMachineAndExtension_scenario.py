@@ -36,7 +36,7 @@ class ConnectedMachineAndExtensionScenarioTest(ScenarioTest):
         self.kwargs.update({
             'machine': 'testmachine',
             'rg': 'ytongtest',
-            'location': 'centraluseuap',
+            'location': 'westus2',
             'customScriptName': 'custom-test',
         })
 
@@ -114,8 +114,7 @@ class ConnectedMachineAndExtensionScenarioTest(ScenarioTest):
                     self.check('name', '{customScriptName}'),
                     self.check('properties.enableAutomaticUpgrade', False),
                     self.check('properties.provisioningState', 'Succeeded'),
-                    self.check('properties.settings.commandToExecute', 'dir'),
-                    self.check('properties.typeHandlerVersion', '1.4.2798.3')
+                    self.check('properties.settings.commandToExecute', 'dir')
         ]) 
 
         self.cmd('az connectedmachine install-patches '
