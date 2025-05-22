@@ -15,7 +15,6 @@ from ._list import *
 from ._list_untitled1 import *
 from ._remove_version import *
 from ._show import *
-from _bulk_deploy_solution import *
+from ._bulk_deploy_solution import *
 # from ._update import *
 from ._wait import *
-from _bulk_deploy_solution import *
