@@ -264,7 +264,7 @@ def aks_namespace_add(
         pass
 
     if existedNamespace:
-        raise CLIError(
+        raise ClientRequestError(
             f"Namespace '{name}' already exists. Please use 'az aks namespace update' to update it."
         )
 
@@ -298,7 +298,7 @@ def aks_namespace_update(
     try:
         existedNamespace = client.get(resource_group_name, cluster_name, name)
     except ResourceNotFoundError:
-        raise CLIError(
+        raise ClientRequestError(
             f"Namespace '{name}' doesn't exist."
             "Please use 'aks namespace list' to get current list of managed namespaces"
         )
@@ -347,7 +347,7 @@ def aks_namespace_delete(
             break
 
     if not namespace_exists:
-        raise CLIError(
+        raise ClientRequestError(
             f"Managed namespace {name} doesn't exist, "
             "use 'aks namespace list' to get current managed namespace list"
         )
