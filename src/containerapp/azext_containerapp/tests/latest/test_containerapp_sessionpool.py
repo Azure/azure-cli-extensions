@@ -350,6 +350,18 @@ class ContainerappSessionPoolTests(ScenarioTest):
                 JMESPathCheck("properties.managedIdentitySettings[0].lifecycle", "None"),
             ])
         
+        # Update session pool image
+        self.cmd(
+            f'containerapp sessionpool update -g {resource_group} -n {sessionpool_name_custom} -l {location} --image {image_name} --registry-server {acr}.azurecr.io --registry-identity {user_identity_id}',
+            checks=[
+                JMESPathCheck('name', sessionpool_name_custom),
+                JMESPathCheck("properties.provisioningState", "Succeeded"),
+                JMESPathCheck("identity.type", "UserAssigned"),
+                JMESPathCheck("properties.managedIdentitySettings[0].identity", user_identity_id),
+                JMESPathCheck("properties.managedIdentitySettings[0].lifecycle", "None"),
+            ])
+        
+
         self.cmd('containerapp sessionpool delete -g {} -n {} --yes'.format(resource_group, sessionpool_name_custom))
 
         # List Session Pools

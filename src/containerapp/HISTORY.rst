@@ -11,6 +11,7 @@ upcoming
 * 'az containerapp env create': Set identity only when `--mi-system-assigned` or `--mi-user-assigned` is specified.
 * 'az containerapp env create': Set identity only when `--system-assigned` or `--user-assigned` is specified.
 * 'az containerapp up': Support deploying Azure AI Foundry model to Container App with `--model-registry`, `--model-name`, `--model-version`.
+* 'az containerapp sessionpool update': Support `--mi-system-assigned`, `--mi-user-assigned` and `--registry-identity`
 
 1.1.0b4
 ++++++
