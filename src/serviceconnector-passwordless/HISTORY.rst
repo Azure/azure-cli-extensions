@@ -2,6 +2,10 @@
 
 Release History
 ===============
+3.3.3
+++++++
+* Fix PostgreSQL flexible server connection not working due to deprecation of `ad-admin` command.
+
 3.3.2
 ++++++
 * Add documentation explaining manual steps required for connecting to SQL database in Fabric.
