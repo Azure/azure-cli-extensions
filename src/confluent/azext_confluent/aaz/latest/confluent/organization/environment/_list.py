@@ -15,13 +15,13 @@ from azure.cli.core.aaz import *
     "confluent organization environment list",
 )
 class List(AAZCommand):
-    """List of all the environments in a organization
+    """List of all the environments in an organization.
     """
 
     _aaz_info = {
-        "version": "2024-02-13",
+        "version": "2024-07-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.confluent/organizations/{}/environments", "2024-02-13"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.confluent/organizations/{}/environments", "2024-07-01"],
         ]
     }
 
@@ -48,8 +48,7 @@ class List(AAZCommand):
             required=True,
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            options=["--resource-group"],
-            help="Resource Group Name",
+            help="Resource group.",
             required=True,
         )
         _args_schema.page_size = AAZIntArg(
@@ -134,7 +133,7 @@ class List(AAZCommand):
                     "pageToken", self.ctx.args.page_token,
                 ),
                 **self.serialize_query_param(
-                    "api-version", "2024-02-13",
+                    "api-version", "2024-07-01",
                     required=True,
                 ),
             }
@@ -182,9 +181,13 @@ class List(AAZCommand):
             _element.properties = AAZObjectType(
                 flags={"client_flatten": True},
             )
+            _element.type = AAZStrType()
 
             properties = cls._schema_on_200.value.Element.properties
             properties.metadata = AAZObjectType()
+            properties.stream_governance_config = AAZObjectType(
+                serialized_name="streamGovernanceConfig",
+            )
 
             metadata = cls._schema_on_200.value.Element.properties.metadata
             metadata.created_timestamp = AAZStrType(
@@ -200,6 +203,9 @@ class List(AAZCommand):
             metadata.updated_timestamp = AAZStrType(
                 serialized_name="updatedTimestamp",
             )
+
+            stream_governance_config = cls._schema_on_200.value.Element.properties.stream_governance_config
+            stream_governance_config.package = AAZStrType()
 
             return cls._schema_on_200
 

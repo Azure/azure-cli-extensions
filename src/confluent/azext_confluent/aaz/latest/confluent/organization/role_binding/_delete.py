@@ -16,13 +16,13 @@ from azure.cli.core.aaz import *
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
-    """Delete role bindings
+    """Delete role bindings.
     """
 
     _aaz_info = {
-        "version": "2024-02-13",
+        "version": "2024-07-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.confluent/organizations/{}/access/default/deleterolebinding/{}", "2024-02-13"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.confluent/organizations/{}/access/default/deleterolebinding/{}", "2024-07-01"],
         ]
     }
 
@@ -49,8 +49,7 @@ class Delete(AAZCommand):
             id_part="name",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            options=["--resource-group"],
-            help="Resource group name",
+            help="Resource group.",
             required=True,
         )
         _args_schema.role_binding_id = AAZStrArg(
@@ -128,7 +127,7 @@ class Delete(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-02-13",
+                    "api-version", "2024-07-01",
                     required=True,
                 ),
             }
