@@ -12,6 +12,10 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+18.0.0b3
++++++++
+* Create managed namespace commands `az aks namespace add/update/show/list/delete/get-credentials`
+
 18.0.0b2
 +++++++
 * Vendor new SDK and bump API version to 2025-03-02-preview.
