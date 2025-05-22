@@ -1564,16 +1564,6 @@ def load_arguments(self, _):
             help="space-separated tags: key[=value] [key[=value] ...].",
         )
         c.argument(
-            "skip_gpu_driver_install",
-            action="store_true",
-            is_preview=True,
-            deprecate_info=c.deprecate(
-                target="--skip-gpu-driver-install",
-                redirect="--gpu-driver",
-                hide=True
-            )
-        )
-        c.argument(
             "gpu_driver",
             arg_type=get_enum_type(gpu_driver_install_modes)
         )
