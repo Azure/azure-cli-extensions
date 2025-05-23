@@ -73,7 +73,9 @@ from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import (
     CassandraRoleDefinitionResource,
     CassandraRoleAssignmentResource,
     MongoMIRoleDefinitionResource,
-    MongoMIRoleAssignmentResource
+    MongoMIRoleAssignmentResource,
+    FleetResource,
+    FleetspaceResource
 )
 
 from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_mongocluster.models import (
@@ -3228,3 +3230,125 @@ def cli_cosmosdb_mongomi_role_assignment_update(client,
         principal_id=principal_id)
 
     return client.begin_create_update_mongo_mi_role_assignment(resource_group_name, account_name, role_assignment_id, mongoMI_role_assignment_create_update_parameters)
+
+
+def cli_cosmosdb_fleet_create(client,
+                              resource_group_name,
+                              fleet_name,
+                              location,
+                              tags=None):
+    """Creates an Azure Cosmos DB Fleet."""
+    from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import FleetResource
+
+    if isinstance(tags, str):
+        tags = dict(tag.split('=') for tag in tags.split())
+
+    fleet_parameters = FleetResource(location=location)
+
+    if tags:
+        fleet_parameters.tags = tags
+
+    return client.create(
+        resource_group_name=resource_group_name,
+        fleet_name=fleet_name,
+        body=fleet_parameters)
+
+
+def cli_list_cosmosdb_fleets(client, resource_group_name=None):
+    """Lists Azure Cosmos DB Fleets."""
+    if resource_group_name:
+        return client.list_by_resource_group(resource_group_name=resource_group_name)
+    return client.list()
+
+
+def cli_cosmosdb_fleetspace_create(client,
+                                   resource_group_name,
+                                   fleet_name,
+                                   fleetspace_name,
+                                   location,
+                                   data_regions,
+                                   min_throughput,
+                                   max_throughput,
+                                   service_tier):
+    
+    """Creates an Azure Cosmos DB Fleetspace."""
+    from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import (
+            FleetspaceResource,
+            FleetspacePropertiesThroughputPoolConfiguration
+        )
+
+    if data_regions:
+        if isinstance(data_regions, str):
+            data_regions = [r.strip() for r in data_regions.split(',') if r.strip()]
+        elif not isinstance(data_regions, list):
+            raise CLIError("--data-regions must be a comma-separated string or a list of region names.")
+
+    throughput_pool_config = FleetspacePropertiesThroughputPoolConfiguration(
+        min_throughput=min_throughput,
+        max_throughput=max_throughput,
+        service_tier=service_tier,
+        data_regions=data_regions
+    )
+
+    fleetspace_body = FleetspaceResource(
+        location=location,
+        fleetspace_api_kind="NoSQL",
+        throughput_pool_configuration=throughput_pool_config
+    )
+
+    return client.begin_create(
+        resource_group_name=resource_group_name,
+        fleet_name=fleet_name,
+        fleetspace_name=fleetspace_name,
+        body=fleetspace_body
+    )
+
+
+def cli_cosmosdb_fleetspace_update(client,
+                                    resource_group_name,
+                                    fleet_name,
+                                    fleetspace_name,
+                                    data_regions=None,
+                                    min_throughput=None,
+                                    max_throughput=None,
+                                    service_tier=None,
+                                    location=None,
+                                    provisioning_state=None,
+                                    fleetspace_api_kind=None,):
+
+    """Updates an existing Azure Cosmos DB Fleetspace."""
+    from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import (
+        FleetspaceUpdate,
+        FleetspacePropertiesThroughputPoolConfiguration
+    )
+
+    if location:
+        print("Warning: 'location' is not updatable and will be ignored.")
+    if provisioning_state:
+        print("Warning: 'provisioning-state' is not updatable and will be ignored.")
+    if fleetspace_api_kind:
+        print("Warning: 'fleetspace-api-kind' is not updatable and will be ignored.")
+    if data_regions:
+        print("Warning: 'data_regions' cannot be changed after Fleetspace creation.")
+        
+    throughput_config = None
+    if any([min_throughput, max_throughput, service_tier, data_regions]):
+        throughput_config = FleetspacePropertiesThroughputPoolConfiguration(
+            min_throughput=min_throughput,
+            max_throughput=max_throughput,
+            service_tier=service_tier
+        )
+
+    update_body = FleetspaceUpdate(
+        throughput_pool_configuration=throughput_config
+    )
+
+    return client.begin_update(
+        resource_group_name=resource_group_name,
+        fleet_name=fleet_name,
+        fleetspace_name=fleetspace_name,
+        body=update_body
+    )
+
+
+ 
