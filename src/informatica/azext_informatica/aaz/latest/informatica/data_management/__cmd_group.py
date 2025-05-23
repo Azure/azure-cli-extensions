@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "informatica data-management",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage Informatica
+    """Manage all resources related to Informatica within the Azure CLI.
     """
     pass
 

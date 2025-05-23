@@ -20,7 +20,6 @@ from azext_aks_preview._consts import (
     CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_START,
     CONST_AZURE_SERVICE_MESH_DEFAULT_EGRESS_NAMESPACE,
     CONST_LOAD_BALANCER_SKU_BASIC,
-    CONST_LOAD_BALANCER_SKU_STANDARD,
     CONST_MANAGED_CLUSTER_SKU_NAME_BASE,
     CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC,
     CONST_MANAGED_CLUSTER_SKU_TIER_FREE,
@@ -86,6 +85,7 @@ from azure.cli.command_modules.acs._consts import (
     CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY,
     CONST_OUTBOUND_TYPE_USER_ASSIGNED_NAT_GATEWAY,
     CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING,
+    CONST_LOAD_BALANCER_SKU_STANDARD,
     DecoratorEarlyExitException,
     DecoratorMode,
 )
@@ -346,6 +346,48 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         if sku_name == CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC:
             return True
         return enable_msi_auth_for_monitoring
+
+    def _get_load_balancer_sku(self, enable_validation: bool = False) -> Union[str, None]:
+        """Internal function to obtain the value of load_balancer_sku, default value is
+        CONST_LOAD_BALANCER_SKU_STANDARD.
+
+        Note: When returning a string, it will always be lowercase.
+
+        This function supports the option of enable_validation. When enabled, it will check if load_balancer_sku equals
+        to CONST_LOAD_BALANCER_SKU_BASIC, if so, when api_server_authorized_ip_ranges is assigned or
+        enable_private_cluster is specified, raise an InvalidArgumentValueError.
+
+        :return: string or None
+        """
+        # read the original value passed by the command
+        load_balancer_sku = safe_lower(self.raw_param.get("load_balancer_sku"))
+        # try to read the property value corresponding to the parameter from the `mc` object
+        if (
+            load_balancer_sku is None and
+            self.mc and
+            self.mc.network_profile and
+            self.mc.network_profile.load_balancer_sku is not None
+        ):
+            load_balancer_sku = safe_lower(
+                self.mc.network_profile.load_balancer_sku
+            )
+        if self.decorator_mode == DecoratorMode.CREATE and load_balancer_sku is None:
+            # default value
+            load_balancer_sku = CONST_LOAD_BALANCER_SKU_STANDARD
+
+        # validation
+        if enable_validation:
+            if load_balancer_sku == CONST_LOAD_BALANCER_SKU_BASIC:
+                if self._get_api_server_authorized_ip_ranges(enable_validation=False):
+                    raise InvalidArgumentValueError(
+                        "--api-server-authorized-ip-ranges can only be used with standard load balancer"
+                    )
+                if self._get_enable_private_cluster(enable_validation=False):
+                    raise InvalidArgumentValueError(
+                        "Please use standard load balancer for private cluster"
+                    )
+
+        return load_balancer_sku
 
     def _get_disable_local_accounts(self, enable_validation: bool = False) -> bool:
         """Internal function to obtain the value of disable_local_accounts.
@@ -985,76 +1027,6 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         if disable_force_upgrade is not None:
             return not disable_force_upgrade
         return None
-
-    def _get_enable_pod_security_policy(self, enable_validation: bool = False) -> bool:
-        """Internal function to obtain the value of enable_pod_security_policy.
-
-        This function supports the option of enable_validation. When enabled, if both enable_pod_security_policy and
-        disable_pod_security_policy are specified, raise a MutuallyExclusiveArgumentError.
-
-        :return: bool
-        """
-        # read the original value passed by the command
-        enable_pod_security_policy = self.raw_param.get("enable_pod_security_policy")
-        # In create mode, try to read the property value corresponding to the parameter from the `mc` object.
-        if self.decorator_mode == DecoratorMode.CREATE:
-            if (
-                self.mc and
-                self.mc.enable_pod_security_policy is not None
-            ):
-                enable_pod_security_policy = self.mc.enable_pod_security_policy
-
-        # this parameter does not need dynamic completion
-        # validation
-        if enable_validation:
-            if enable_pod_security_policy and self._get_disable_pod_security_policy(enable_validation=False):
-                raise MutuallyExclusiveArgumentError(
-                    "Cannot specify --enable-pod-security-policy and "
-                    "--disable-pod-security-policy at the same time."
-                )
-        return enable_pod_security_policy
-
-    def get_enable_pod_security_policy(self) -> bool:
-        """Obtain the value of enable_pod_security_policy.
-
-        This function will verify the parameter by default. If both enable_pod_security_policy and
-        disable_pod_security_policy are specified, raise a MutuallyExclusiveArgumentError.
-
-        :return: bool
-        """
-        return self._get_enable_pod_security_policy(enable_validation=True)
-
-    def _get_disable_pod_security_policy(self, enable_validation: bool = False) -> bool:
-        """Internal function to obtain the value of disable_pod_security_policy.
-
-        This function supports the option of enable_validation. When enabled, if both enable_pod_security_policy and
-        disable_pod_security_policy are specified, raise a MutuallyExclusiveArgumentError.
-
-        :return: bool
-        """
-        # read the original value passed by the command
-        disable_pod_security_policy = self.raw_param.get("disable_pod_security_policy")
-        # We do not support this option in create mode, therefore we do not read the value from `mc`.
-
-        # this parameter does not need dynamic completion
-        # validation
-        if enable_validation:
-            if disable_pod_security_policy and self._get_enable_pod_security_policy(enable_validation=False):
-                raise MutuallyExclusiveArgumentError(
-                    "Cannot specify --enable-pod-security-policy and "
-                    "--disable-pod-security-policy at the same time."
-                )
-        return disable_pod_security_policy
-
-    def get_disable_pod_security_policy(self) -> bool:
-        """Obtain the value of disable_pod_security_policy.
-
-        This function will verify the parameter by default. If both enable_pod_security_policy and
-        disable_pod_security_policy are specified, raise a MutuallyExclusiveArgumentError.
-
-        :return: bool
-        """
-        return self._get_disable_pod_security_policy(enable_validation=True)
 
     # pylint: disable=unused-argument
     def _get_enable_managed_identity(
@@ -3082,16 +3054,6 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc.addon_profiles = addon_profiles
         return mc
 
-    def set_up_pod_security_policy(self, mc: ManagedCluster) -> ManagedCluster:
-        """Set up pod security policy for the ManagedCluster object.
-
-        :return: the ManagedCluster object
-        """
-        self._ensure_mc(mc)
-
-        mc.enable_pod_security_policy = self.context.get_enable_pod_security_policy()
-        return mc
-
     def set_up_pod_identity_profile(self, mc: ManagedCluster) -> ManagedCluster:
         """Set up pod identity profile for the ManagedCluster object.
 
@@ -3631,8 +3593,6 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         # DO NOT MOVE: keep this on top, construct the default ManagedCluster profile
         mc = self.construct_mc_profile_default(bypass_restore_defaults=True)
 
-        # set up pod security policy
-        mc = self.set_up_pod_security_policy(mc)
         # set up pod identity profile
         mc = self.set_up_pod_identity_profile(mc)
         # set up workload identity profile
@@ -4054,6 +4014,9 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         self.update_network_plugin_settings(mc)
 
+        loadbalancer_sku = self.context.get_load_balancer_sku()
+        if loadbalancer_sku:
+            mc.network_profile.load_balancer_sku = loadbalancer_sku
         return mc
 
     def update_network_plugin_settings(self, mc: ManagedCluster) -> ManagedCluster:
@@ -4558,20 +4521,6 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         if kube_proxy_config:
             mc.network_profile.kube_proxy_config = kube_proxy_config
 
-        return mc
-
-    def update_pod_security_policy(self, mc: ManagedCluster) -> ManagedCluster:
-        """Update pod security policy for the ManagedCluster object.
-
-        :return: the ManagedCluster object
-        """
-        self._ensure_mc(mc)
-
-        if self.context.get_enable_pod_security_policy():
-            mc.enable_pod_security_policy = True
-
-        if self.context.get_disable_pod_security_policy():
-            mc.enable_pod_security_policy = False
         return mc
 
     def update_pod_identity_profile(self, mc: ManagedCluster) -> ManagedCluster:
@@ -5368,6 +5317,9 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             if mc.network_profile.load_balancer_sku == CONST_LOAD_BALANCER_SKU_BASIC:
                 mc.network_profile.load_balancer_sku = CONST_LOAD_BALANCER_SKU_STANDARD
 
+            mc.agent_pool_profiles[0].count = None
+            mc.agent_pool_profiles[0].vm_size = None
+
         return mc
 
     def update_mc_profile_preview(self) -> ManagedCluster:
@@ -5381,8 +5333,6 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         # DO NOT MOVE: keep this on top, fetch and update the default ManagedCluster profile
         mc = self.update_mc_profile_default()
 
-        # update pod security policy
-        mc = self.update_pod_security_policy(mc)
         # update pod identity profile
         mc = self.update_pod_identity_profile(mc)
         # update workload identity profile
