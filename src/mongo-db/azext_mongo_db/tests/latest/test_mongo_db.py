@@ -11,7 +11,7 @@ from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 class MongoDBScenario(ScenarioTest):
     @AllowLargeResponse(size_kb=10240)
     @ResourceGroupPreparer(name_prefix='cli_test_mongodb', location="centraluseuap")
-    def test_mongodb(self, resource_group):
+    def test_mongo_db(self, resource_group):
         self.kwargs.update({
             'name': 'MongoDBCLITestOrg1',
             'location': 'eastus2euap',
