@@ -997,6 +997,11 @@ def load_arguments(self, _):
         # managed cluster paramerters
         c.argument("disable_local_accounts", action="store_true")
         c.argument("enable_local_accounts", action="store_true")
+        c.argument(
+            "load_balancer_sku",
+            arg_type=get_enum_type([CONST_LOAD_BALANCER_SKU_STANDARD]),
+            validator=validate_load_balancer_sku,
+        )
         c.argument("load_balancer_managed_outbound_ip_count", type=int)
         c.argument(
             "load_balancer_outbound_ips", validator=validate_load_balancer_outbound_ips
