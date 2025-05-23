@@ -5,7 +5,7 @@ parameters:
 jobs:
 - job: ${{ parameters.jobName}}
   pool:
-    vmImage: 'ubuntu-20.04'
+    vmImage: 'ubuntu-latest'
   steps:
   - bash: |
       echo "Installing helm3"
@@ -20,9 +20,9 @@ jobs:
     displayName: "Setup the VM with helm3 and kubectl"
 
   - task: UsePythonVersion@0
-    displayName: 'Use Python 3.6'
+    displayName: 'Use Python 3.10'
     inputs:
-      versionSpec: 3.6
+      versionSpec: 3.10
 
   - bash: |
       set -ev

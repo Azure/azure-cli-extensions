@@ -58,16 +58,16 @@ stages:
       path: ./test/configurations/ForcedDelete.Tests.ps1
   - job: BuildPublishExtension
     pool:
-      vmImage: 'ubuntu-20.04'
+      vmImage: 'ubuntu-latest'
     displayName: "Build and Publish the Extension Artifact"
     variables:
       CLI_REPO_PATH: $(Agent.BuildDirectory)/s
       EXTENSION_NAME: "connectedk8s"
     steps:
     - task: UsePythonVersion@0
-      displayName: 'Use Python 3.6'
+      displayName: 'Use Python 3.10'
       inputs:
-        versionSpec: 3.6
+        versionSpec: 3.10
     - bash: |
         set -ev
         echo "Building extension ${EXTENSION_NAME}..."
