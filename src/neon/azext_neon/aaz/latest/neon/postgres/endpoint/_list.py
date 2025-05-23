@@ -12,16 +12,16 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "neon postgres compute list",
+    "neon postgres endpoint list",
 )
 class List(AAZCommand):
-    """List Compute resources by Branch
+    """List all endpoints in a Neon branch.
     """
 
     _aaz_info = {
         "version": "2025-03-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/neon.postgres/organizations/{}/projects/{}/branches/{}/computes", "2025-03-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/neon.postgres/organizations/{}/projects/{}/branches/{}/endpoints", "2025-03-01"],
         ]
     }
 
@@ -42,41 +42,44 @@ class List(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.branch_name = AAZStrArg(
-            options=["--branch-name"],
-            help="The name of the Branch",
+        _args_schema.branch_id = AAZStrArg(
+            options=["--branch-id"],
+            help="Id of the Neon branch",
             required=True,
             fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9-]{3,24}$",
+                pattern="^\\S.{0,62}\\S$|^\\S$",
             ),
         )
         _args_schema.organization_name = AAZStrArg(
             options=["--organization-name"],
-            help="Name of the Neon Organizations resource",
+            help="Name of the Neon organization.",
             required=True,
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9][a-zA-Z0-9_\\-.: ]*$",
                 max_length=50,
                 min_length=1,
             ),
+            blank=AAZPromptInput(
+                msg="Please provide Neon Organization name:",
+            ),
         )
-        _args_schema.project_id = AAZStrArg(
-            options=["--project-id"],
-            help="The name of the Neon Project resource.",
+        _args_schema.project_name = AAZStrArg(
+            options=["--project-name"],
+            help="Name of the Neon project.",
             required=True,
             fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9-]{3,24}$",
+                pattern="^\\S.{0,62}\\S$|^\\S$",
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="Name of the Resource Group",
+            help="Name of the Azure resource group.",
             required=True,
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.ComputesList(ctx=self.ctx)()
+        self.EndpointsList(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -92,7 +95,7 @@ class List(AAZCommand):
         next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
         return result, next_link
 
-    class ComputesList(AAZHttpOperation):
+    class EndpointsList(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -106,7 +109,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Neon.Postgres/organizations/{organizationName}/projects/{projectName}/branches/{branchName}/computes",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Neon.Postgres/organizations/{organizationName}/projects/{projectName}/branches/{branchName}/endpoints",
                 **self.url_parameters
             )
 
@@ -122,7 +125,7 @@ class List(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "branchName", self.ctx.args.branch_name,
+                    "branchName", self.ctx.args.branch_id,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -130,7 +133,7 @@ class List(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "projectName", self.ctx.args.project_id,
+                    "projectName", self.ctx.args.project_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -209,12 +212,15 @@ class List(AAZCommand):
 
             properties = cls._schema_on_200.value.Element.properties
             properties.attributes = AAZListType()
-            properties.cpu_cores = AAZIntType(
-                serialized_name="cpuCores",
+            properties.branch_id = AAZStrType(
+                serialized_name="branchId",
             )
             properties.created_at = AAZStrType(
                 serialized_name="createdAt",
                 flags={"read_only": True},
+            )
+            properties.endpoint_type = AAZStrType(
+                serialized_name="endpointType",
             )
             properties.entity_id = AAZStrType(
                 serialized_name="entityId",
@@ -223,13 +229,13 @@ class List(AAZCommand):
             properties.entity_name = AAZStrType(
                 serialized_name="entityName",
             )
-            properties.memory = AAZIntType()
+            properties.project_id = AAZStrType(
+                serialized_name="projectId",
+            )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
-            properties.region = AAZStrType()
-            properties.status = AAZStrType()
 
             attributes = cls._schema_on_200.value.Element.properties.attributes
             attributes.Element = AAZObjectType()
