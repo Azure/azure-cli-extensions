@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.6.5
+++++++++++++++++++
+* microsoft.dataprotection.kubernetes: Add support for 'DisableInformerCache' configuration.
+
 1.6.4
 ++++++++++++++++++
 * microsoft.azuremonitor.containers.metrics: Update default region for azure monitor metrics extension in mooncake.
