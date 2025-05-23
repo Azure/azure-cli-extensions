@@ -479,7 +479,21 @@ def validate_max_unavailable(namespace):
     except ValueError:
         # pylint: disable=raise-missing-from
         raise CLIError("--max-unavailable should be an int or percentage")
+    
+def validate_max_blocked_nodes(namespace):
+    """validates parameters max blocked nodes is positive integers or percents."""
+    if namespace.max_blocked_nodes is None:
+        return
+    int_or_percent = namespace.max_blocked_nodes
+    if int_or_percent.endswith('%'):
+        int_or_percent = int_or_percent.rstrip('%s')
 
+    try:
+        if int(int_or_percent) < 0:
+            raise CLIError("--max-blocked-nodes must be positive")
+    except ValueError:
+        # pylint: disable=raise-missing-from
+        raise CLIError("--max-blocked-nodes should be an int or percentage")
 
 def validate_assign_identity(namespace):
     if namespace.assign_identity is not None:
