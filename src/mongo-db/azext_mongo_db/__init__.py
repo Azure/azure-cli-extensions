@@ -6,20 +6,20 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.core import AzCommandsLoader
-from azext_mongodb._help import helps  # pylint: disable=unused-import
+from azext_mongo_db._help import helps  # pylint: disable=unused-import
 
 
-class MongodbCommandsLoader(AzCommandsLoader):
+class MongoDbCommandsLoader(AzCommandsLoader):
 
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
         custom_command_type = CliCommandType(
-            operations_tmpl='azext_mongodb.custom#{}')
+            operations_tmpl='azext_mongo_db.custom#{}')
         super().__init__(cli_ctx=cli_ctx,
                          custom_command_type=custom_command_type)
 
     def load_command_table(self, args):
-        from azext_mongodb.commands import load_command_table
+        from azext_mongo_db.commands import load_command_table
         from azure.cli.core.aaz import load_aaz_command_table
         try:
             from . import aaz
@@ -35,8 +35,8 @@ class MongodbCommandsLoader(AzCommandsLoader):
         return self.command_table
 
     def load_arguments(self, command):
-        from azext_mongodb._params import load_arguments
+        from azext_mongo_db._params import load_arguments
         load_arguments(self, command)
 
 
-COMMAND_LOADER_CLS = MongodbCommandsLoader
+COMMAND_LOADER_CLS = MongoDbCommandsLoader
