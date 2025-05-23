@@ -12,16 +12,16 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "confluent organization create-user",
+    "confluent organization environment show",
 )
-class CreateUser(AAZCommand):
-    """Invite a new user to join the Confluent organization.
+class Show(AAZCommand):
+    """Display details of a specific Confluent environment within an organization.
     """
 
     _aaz_info = {
         "version": "2024-02-13",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.confluent/organizations/{}/access/default/createinvitation", "2024-02-13"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.confluent/organizations/{}/environments/{}", "2024-02-13"],
         ]
     }
 
@@ -41,6 +41,12 @@ class CreateUser(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
+        _args_schema.environment_id = AAZStrArg(
+            options=["-n", "--name", "--environment-id"],
+            help="Confluent environment id",
+            required=True,
+            id_part="child_name_1",
+        )
         _args_schema.organization_name = AAZStrArg(
             options=["--organization-name"],
             help="Organization resource name",
@@ -50,44 +56,11 @@ class CreateUser(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
-
-        # define Arg Group "Body"
-
-        _args_schema = cls._args_schema
-        _args_schema.email = AAZStrArg(
-            options=["--email"],
-            arg_group="Body",
-            help="Email of the logged in user",
-        )
-        _args_schema.organization_id = AAZStrArg(
-            options=["--organization-id"],
-            arg_group="Body",
-            help="Id of the organization",
-        )
-        _args_schema.upn = AAZStrArg(
-            options=["--upn"],
-            arg_group="Body",
-            help="Upn of the logged in user",
-        )
-
-        # define Arg Group "InvitedUserDetails"
-
-        _args_schema = cls._args_schema
-        _args_schema.auth_type = AAZStrArg(
-            options=["--auth-type"],
-            arg_group="InvitedUserDetails",
-            help="Auth type of the user",
-        )
-        _args_schema.invited_email = AAZStrArg(
-            options=["--invited-email"],
-            arg_group="InvitedUserDetails",
-            help="UPN/Email of the user who is being invited",
-        )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.AccessInviteUser(ctx=self.ctx)()
+        self.OrganizationGetEnvironmentById(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -102,7 +75,7 @@ class CreateUser(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class AccessInviteUser(AAZHttpOperation):
+    class OrganizationGetEnvironmentById(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -116,13 +89,13 @@ class CreateUser(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Confluent/organizations/{organizationName}/access/default/createInvitation",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Confluent/organizations/{organizationName}/environments/{environmentId}",
                 **self.url_parameters
             )
 
         @property
         def method(self):
-            return "POST"
+            return "GET"
 
         @property
         def error_format(self):
@@ -131,6 +104,10 @@ class CreateUser(AAZCommand):
         @property
         def url_parameters(self):
             parameters = {
+                **self.serialize_url_param(
+                    "environmentId", self.ctx.args.environment_id,
+                    required=True,
+                ),
                 **self.serialize_url_param(
                     "organizationName", self.ctx.args.organization_name,
                     required=True,
@@ -160,32 +137,10 @@ class CreateUser(AAZCommand):
         def header_parameters(self):
             parameters = {
                 **self.serialize_header_param(
-                    "Content-Type", "application/json",
-                ),
-                **self.serialize_header_param(
                     "Accept", "application/json",
                 ),
             }
             return parameters
-
-        @property
-        def content(self):
-            _content_value, _builder = self.new_content_builder(
-                self.ctx.args,
-                typ=AAZObjectType,
-                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
-            )
-            _builder.set_prop("email", AAZStrType, ".email")
-            _builder.set_prop("invitedUserDetails", AAZObjectType)
-            _builder.set_prop("organizationId", AAZStrType, ".organization_id")
-            _builder.set_prop("upn", AAZStrType, ".upn")
-
-            invited_user_details = _builder.get(".invitedUserDetails")
-            if invited_user_details is not None:
-                invited_user_details.set_prop("auth_type", AAZStrType, ".auth_type")
-                invited_user_details.set_prop("invitedEmail", AAZStrType, ".invited_email")
-
-            return self.serialize_content(_content_value)
 
         def on_200(self, session):
             data = self.deserialize_http_content(session)
@@ -205,27 +160,36 @@ class CreateUser(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.accepted_at = AAZStrType()
-            _schema_on_200.auth_type = AAZStrType()
-            _schema_on_200.email = AAZStrType()
-            _schema_on_200.expires_at = AAZStrType()
             _schema_on_200.id = AAZStrType()
             _schema_on_200.kind = AAZStrType()
-            _schema_on_200.metadata = AAZObjectType()
-            _schema_on_200.status = AAZStrType()
+            _schema_on_200.name = AAZStrType()
+            _schema_on_200.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
 
-            metadata = cls._schema_on_200.metadata
-            metadata.created_at = AAZStrType()
-            metadata.deleted_at = AAZStrType()
-            metadata.resource_name = AAZStrType()
+            properties = cls._schema_on_200.properties
+            properties.metadata = AAZObjectType()
+
+            metadata = cls._schema_on_200.properties.metadata
+            metadata.created_timestamp = AAZStrType(
+                serialized_name="createdTimestamp",
+            )
+            metadata.deleted_timestamp = AAZStrType(
+                serialized_name="deletedTimestamp",
+            )
+            metadata.resource_name = AAZStrType(
+                serialized_name="resourceName",
+            )
             metadata.self = AAZStrType()
-            metadata.updated_at = AAZStrType()
+            metadata.updated_timestamp = AAZStrType(
+                serialized_name="updatedTimestamp",
+            )
 
             return cls._schema_on_200
 
 
-class _CreateUserHelper:
-    """Helper class for CreateUser"""
+class _ShowHelper:
+    """Helper class for Show"""
 
 
-__all__ = ["CreateUser"]
+__all__ = ["Show"]

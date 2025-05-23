@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.7.0
++++++
+* Updated CLI command descriptions to be more user and ai friendly.
+
 0.6.0
 +++++
 * Added more commands for user access management
