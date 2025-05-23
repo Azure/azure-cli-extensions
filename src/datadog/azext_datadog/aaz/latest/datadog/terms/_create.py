@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "datadog terms create",
+    is_experimental=True,
 )
 class Create(AAZCommand):
     """Creates a new marketplace agreement for Datadog services in your Azure subscription, enabling you to subscribe to Datadog services through Azure Marketplace.

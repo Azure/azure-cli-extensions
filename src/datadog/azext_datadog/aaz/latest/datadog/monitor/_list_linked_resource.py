@@ -46,7 +46,7 @@ class ListLinkedResource(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.monitor_name = AAZStrArg(
-            options=["--monitor-name"],
+            options=["-n", "--name", "--monitor-name"],
             help="Monitor resource name",
             required=True,
         )

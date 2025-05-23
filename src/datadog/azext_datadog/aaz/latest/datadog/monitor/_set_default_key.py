@@ -45,7 +45,7 @@ class SetDefaultKey(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.monitor_name = AAZStrArg(
-            options=["--monitor-name"],
+            options=["-n", "--name", "--monitor-name"],
             help="Monitor resource name",
             required=True,
             id_part="name",
@@ -72,8 +72,8 @@ class SetDefaultKey(AAZCommand):
             arg_group="Body",
             help="The value of the API key.",
         )
-        _args_schema.name = AAZStrArg(
-            options=["--name"],
+        _args_schema.key_name = AAZStrArg(
+            options=["--key-name"],
             arg_group="Body",
             help="The name of the API key.",
         )
@@ -165,7 +165,7 @@ class SetDefaultKey(AAZCommand):
             _builder.set_prop("created", AAZStrType, ".created")
             _builder.set_prop("createdBy", AAZStrType, ".created_by")
             _builder.set_prop("key", AAZStrType, ".key", typ_kwargs={"flags": {"required": True}})
-            _builder.set_prop("name", AAZStrType, ".name")
+            _builder.set_prop("name", AAZStrType, ".key_name")
 
             return self.serialize_content(_content_value)
 

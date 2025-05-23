@@ -12,26 +12,27 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "datadog monitor single-sign-on-configuration show",
+    "datadog sso-config list",
 )
-class Show(AAZCommand):
-    """Retrieves the details of the Single Sign-On (SSO) configuration for a specific Datadog monitor resource, providing insight into its setup and status.
+class List(AAZCommand):
+    """Lists all Single Sign-On (SSO) configurations associated with a specific Datadog monitor resource, helping you manage and audit access settings.
 
-    :example: SingleSignOnConfigurations_Get
-        az datadog monitor single-sign-on-configuration show --resource-group myResourceGroup --monitor-name myMonitor --configuration-name default
+    :example: SingleSignOnConfigurations_List
+        az datadog sso-config list --resource-group myResourceGroup --monitor-name myMonitor
     """
 
     _aaz_info = {
         "version": "2021-03-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.datadog/monitors/{}/singlesignonconfigurations/{}", "2021-03-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.datadog/monitors/{}/singlesignonconfigurations", "2021-03-01"],
         ]
     }
 
+    AZ_SUPPORT_PAGINATION = True
+
     def _handler(self, command_args):
         super()._handler(command_args)
-        self._execute_operations()
-        return self._output()
+        return self.build_paging(self._execute_operations, self._output)
 
     _args_schema = None
 
@@ -44,17 +45,10 @@ class Show(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.configuration_name = AAZStrArg(
-            options=["-n", "--name", "--configuration-name"],
-            help="Configuration name",
-            required=True,
-            id_part="child_name_1",
-        )
         _args_schema.monitor_name = AAZStrArg(
-            options=["--monitor-name"],
+            options=["-n", "--name", "--monitor-name"],
             help="Monitor resource name",
             required=True,
-            id_part="name",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -63,7 +57,7 @@ class Show(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.SingleSignOnConfigurationsGet(ctx=self.ctx)()
+        self.SingleSignOnConfigurationsList(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -75,10 +69,11 @@ class Show(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
-        return result
+        result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
+        next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
+        return result, next_link
 
-    class SingleSignOnConfigurationsGet(AAZHttpOperation):
+    class SingleSignOnConfigurationsList(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -92,7 +87,7 @@ class Show(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Datadog/monitors/{monitorName}/singleSignOnConfigurations/{configurationName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Datadog/monitors/{monitorName}/singleSignOnConfigurations",
                 **self.url_parameters
             )
 
@@ -107,10 +102,6 @@ class Show(AAZCommand):
         @property
         def url_parameters(self):
             parameters = {
-                **self.serialize_url_param(
-                    "configurationName", self.ctx.args.configuration_name,
-                    required=True,
-                ),
                 **self.serialize_url_param(
                     "monitorName", self.ctx.args.monitor_name,
                     required=True,
@@ -163,22 +154,31 @@ class Show(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.id = AAZStrType(
+            _schema_on_200.next_link = AAZStrType(
+                serialized_name="nextLink",
+            )
+            _schema_on_200.value = AAZListType()
+
+            value = cls._schema_on_200.value
+            value.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element
+            _element.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.name = AAZStrType(
+            _element.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.properties = AAZObjectType()
-            _schema_on_200.system_data = AAZObjectType(
+            _element.properties = AAZObjectType()
+            _element.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _schema_on_200.type = AAZStrType(
+            _element.type = AAZStrType(
                 flags={"read_only": True},
             )
 
-            properties = cls._schema_on_200.properties
+            properties = cls._schema_on_200.value.Element.properties
             properties.enterprise_app_id = AAZStrType(
                 serialized_name="enterpriseAppId",
             )
@@ -194,7 +194,7 @@ class Show(AAZCommand):
                 flags={"read_only": True},
             )
 
-            system_data = cls._schema_on_200.system_data
+            system_data = cls._schema_on_200.value.Element.system_data
             system_data.created_at = AAZStrType(
                 serialized_name="createdAt",
             )
@@ -217,8 +217,8 @@ class Show(AAZCommand):
             return cls._schema_on_200
 
 
-class _ShowHelper:
-    """Helper class for Show"""
+class _ListHelper:
+    """Helper class for List"""
 
 
-__all__ = ["Show"]
+__all__ = ["List"]

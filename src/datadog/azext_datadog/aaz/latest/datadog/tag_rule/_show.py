@@ -12,15 +12,19 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "datadog monitor single-sign-on-configuration wait",
+    "datadog tag-rule show",
 )
-class Wait(AAZWaitCommand):
-    """Place the CLI in a waiting state until a condition is met.
+class Show(AAZCommand):
+    """Retrieves the details of the tag rules for a specific Datadog monitor resource, providing insight into its setup and status.
+
+    :example: TagRules_Get
+        az datadog tag-rule show --resource-group myResourceGroup --monitor-name myMonitor --rule-set-name default
     """
 
     _aaz_info = {
+        "version": "2021-03-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.datadog/monitors/{}/singlesignonconfigurations/{}", "2021-03-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.datadog/monitors/{}/tagrules/{}", "2021-03-01"],
         ]
     }
 
@@ -40,14 +44,8 @@ class Wait(AAZWaitCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.configuration_name = AAZStrArg(
-            options=["-n", "--name", "--configuration-name"],
-            help="Configuration name",
-            required=True,
-            id_part="child_name_1",
-        )
         _args_schema.monitor_name = AAZStrArg(
-            options=["--monitor-name"],
+            options=["-n", "--name", "--monitor-name"],
             help="Monitor resource name",
             required=True,
             id_part="name",
@@ -55,11 +53,17 @@ class Wait(AAZWaitCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
+        _args_schema.rule_set_name = AAZStrArg(
+            options=["--rule-set-name"],
+            help="Rule set name",
+            required=True,
+            id_part="child_name_1",
+        )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.SingleSignOnConfigurationsGet(ctx=self.ctx)()
+        self.TagRulesGet(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -71,10 +75,10 @@ class Wait(AAZWaitCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=False)
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class SingleSignOnConfigurationsGet(AAZHttpOperation):
+    class TagRulesGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -88,7 +92,7 @@ class Wait(AAZWaitCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Datadog/monitors/{monitorName}/singleSignOnConfigurations/{configurationName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Datadog/monitors/{monitorName}/tagRules/{ruleSetName}",
                 **self.url_parameters
             )
 
@@ -104,15 +108,15 @@ class Wait(AAZWaitCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "configurationName", self.ctx.args.configuration_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
                     "monitorName", self.ctx.args.monitor_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
                     "resourceGroupName", self.ctx.args.resource_group,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "ruleSetName", self.ctx.args.rule_set_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -175,20 +179,43 @@ class Wait(AAZWaitCommand):
             )
 
             properties = cls._schema_on_200.properties
-            properties.enterprise_app_id = AAZStrType(
-                serialized_name="enterpriseAppId",
+            properties.log_rules = AAZObjectType(
+                serialized_name="logRules",
+            )
+            properties.metric_rules = AAZObjectType(
+                serialized_name="metricRules",
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
-            properties.single_sign_on_state = AAZStrType(
-                serialized_name="singleSignOnState",
+
+            log_rules = cls._schema_on_200.properties.log_rules
+            log_rules.filtering_tags = AAZListType(
+                serialized_name="filteringTags",
             )
-            properties.single_sign_on_url = AAZStrType(
-                serialized_name="singleSignOnUrl",
-                flags={"read_only": True},
+            log_rules.send_aad_logs = AAZBoolType(
+                serialized_name="sendAadLogs",
             )
+            log_rules.send_resource_logs = AAZBoolType(
+                serialized_name="sendResourceLogs",
+            )
+            log_rules.send_subscription_logs = AAZBoolType(
+                serialized_name="sendSubscriptionLogs",
+            )
+
+            filtering_tags = cls._schema_on_200.properties.log_rules.filtering_tags
+            filtering_tags.Element = AAZObjectType()
+            _ShowHelper._build_schema_filtering_tag_read(filtering_tags.Element)
+
+            metric_rules = cls._schema_on_200.properties.metric_rules
+            metric_rules.filtering_tags = AAZListType(
+                serialized_name="filteringTags",
+            )
+
+            filtering_tags = cls._schema_on_200.properties.metric_rules.filtering_tags
+            filtering_tags.Element = AAZObjectType()
+            _ShowHelper._build_schema_filtering_tag_read(filtering_tags.Element)
 
             system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(
@@ -213,8 +240,29 @@ class Wait(AAZWaitCommand):
             return cls._schema_on_200
 
 
-class _WaitHelper:
-    """Helper class for Wait"""
+class _ShowHelper:
+    """Helper class for Show"""
+
+    _schema_filtering_tag_read = None
+
+    @classmethod
+    def _build_schema_filtering_tag_read(cls, _schema):
+        if cls._schema_filtering_tag_read is not None:
+            _schema.action = cls._schema_filtering_tag_read.action
+            _schema.name = cls._schema_filtering_tag_read.name
+            _schema.value = cls._schema_filtering_tag_read.value
+            return
+
+        cls._schema_filtering_tag_read = _schema_filtering_tag_read = AAZObjectType()
+
+        filtering_tag_read = _schema_filtering_tag_read
+        filtering_tag_read.action = AAZStrType()
+        filtering_tag_read.name = AAZStrType()
+        filtering_tag_read.value = AAZStrType()
+
+        _schema.action = cls._schema_filtering_tag_read.action
+        _schema.name = cls._schema_filtering_tag_read.name
+        _schema.value = cls._schema_filtering_tag_read.value
 
 
-__all__ = ["Wait"]
+__all__ = ["Show"]

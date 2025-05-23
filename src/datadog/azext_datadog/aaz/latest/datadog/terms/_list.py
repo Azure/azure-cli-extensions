@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "datadog terms list",
+    is_experimental=True,
 )
 class List(AAZCommand):
     """Lists all marketplace agreements for Datadog services in your Azure subscription, helping you manage and audit your subscription and billing agreements.

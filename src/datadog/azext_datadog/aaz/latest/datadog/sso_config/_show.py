@@ -12,27 +12,26 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "datadog monitor tag-rule list",
+    "datadog sso-config show",
 )
-class List(AAZCommand):
-    """Lists all tag rules associated with a specific Datadog monitor resource, helping you manage and audit the rules that control resource monitoring.
+class Show(AAZCommand):
+    """Retrieves the details of the Single Sign-On (SSO) configuration for a specific Datadog monitor resource, providing insight into its setup and status.
 
-    :example: TagRules_List
-        az datadog monitor tag-rule list --resource-group myResourceGroup --monitor-name myMonitor
+    :example: SingleSignOnConfigurations_Get
+        az datadog sso-config show --resource-group myResourceGroup --monitor-name myMonitor --configuration-name default
     """
 
     _aaz_info = {
         "version": "2021-03-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.datadog/monitors/{}/tagrules", "2021-03-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.datadog/monitors/{}/singlesignonconfigurations/{}", "2021-03-01"],
         ]
     }
 
-    AZ_SUPPORT_PAGINATION = True
-
     def _handler(self, command_args):
         super()._handler(command_args)
-        return self.build_paging(self._execute_operations, self._output)
+        self._execute_operations()
+        return self._output()
 
     _args_schema = None
 
@@ -45,10 +44,17 @@ class List(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
+        _args_schema.configuration_name = AAZStrArg(
+            options=["--configuration-name"],
+            help="Configuration name",
+            required=True,
+            id_part="child_name_1",
+        )
         _args_schema.monitor_name = AAZStrArg(
-            options=["--monitor-name"],
+            options=["-n", "--name", "--monitor-name"],
             help="Monitor resource name",
             required=True,
+            id_part="name",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -57,7 +63,7 @@ class List(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.TagRulesList(ctx=self.ctx)()
+        self.SingleSignOnConfigurationsGet(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -69,11 +75,10 @@ class List(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
-        next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
-        return result, next_link
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+        return result
 
-    class TagRulesList(AAZHttpOperation):
+    class SingleSignOnConfigurationsGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -87,7 +92,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Datadog/monitors/{monitorName}/tagRules",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Datadog/monitors/{monitorName}/singleSignOnConfigurations/{configurationName}",
                 **self.url_parameters
             )
 
@@ -102,6 +107,10 @@ class List(AAZCommand):
         @property
         def url_parameters(self):
             parameters = {
+                **self.serialize_url_param(
+                    "configurationName", self.ctx.args.configuration_name,
+                    required=True,
+                ),
                 **self.serialize_url_param(
                     "monitorName", self.ctx.args.monitor_name,
                     required=True,
@@ -154,70 +163,38 @@ class List(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.next_link = AAZStrType(
-                serialized_name="nextLink",
-            )
-            _schema_on_200.value = AAZListType()
-
-            value = cls._schema_on_200.value
-            value.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.value.Element
-            _element.id = AAZStrType(
+            _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.name = AAZStrType(
+            _schema_on_200.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.properties = AAZObjectType()
-            _element.system_data = AAZObjectType(
+            _schema_on_200.properties = AAZObjectType()
+            _schema_on_200.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _element.type = AAZStrType(
+            _schema_on_200.type = AAZStrType(
                 flags={"read_only": True},
             )
 
-            properties = cls._schema_on_200.value.Element.properties
-            properties.log_rules = AAZObjectType(
-                serialized_name="logRules",
-            )
-            properties.metric_rules = AAZObjectType(
-                serialized_name="metricRules",
+            properties = cls._schema_on_200.properties
+            properties.enterprise_app_id = AAZStrType(
+                serialized_name="enterpriseAppId",
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
-
-            log_rules = cls._schema_on_200.value.Element.properties.log_rules
-            log_rules.filtering_tags = AAZListType(
-                serialized_name="filteringTags",
+            properties.single_sign_on_state = AAZStrType(
+                serialized_name="singleSignOnState",
             )
-            log_rules.send_aad_logs = AAZBoolType(
-                serialized_name="sendAadLogs",
-            )
-            log_rules.send_resource_logs = AAZBoolType(
-                serialized_name="sendResourceLogs",
-            )
-            log_rules.send_subscription_logs = AAZBoolType(
-                serialized_name="sendSubscriptionLogs",
+            properties.single_sign_on_url = AAZStrType(
+                serialized_name="singleSignOnUrl",
+                flags={"read_only": True},
             )
 
-            filtering_tags = cls._schema_on_200.value.Element.properties.log_rules.filtering_tags
-            filtering_tags.Element = AAZObjectType()
-            _ListHelper._build_schema_filtering_tag_read(filtering_tags.Element)
-
-            metric_rules = cls._schema_on_200.value.Element.properties.metric_rules
-            metric_rules.filtering_tags = AAZListType(
-                serialized_name="filteringTags",
-            )
-
-            filtering_tags = cls._schema_on_200.value.Element.properties.metric_rules.filtering_tags
-            filtering_tags.Element = AAZObjectType()
-            _ListHelper._build_schema_filtering_tag_read(filtering_tags.Element)
-
-            system_data = cls._schema_on_200.value.Element.system_data
+            system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(
                 serialized_name="createdAt",
             )
@@ -240,29 +217,8 @@ class List(AAZCommand):
             return cls._schema_on_200
 
 
-class _ListHelper:
-    """Helper class for List"""
-
-    _schema_filtering_tag_read = None
-
-    @classmethod
-    def _build_schema_filtering_tag_read(cls, _schema):
-        if cls._schema_filtering_tag_read is not None:
-            _schema.action = cls._schema_filtering_tag_read.action
-            _schema.name = cls._schema_filtering_tag_read.name
-            _schema.value = cls._schema_filtering_tag_read.value
-            return
-
-        cls._schema_filtering_tag_read = _schema_filtering_tag_read = AAZObjectType()
-
-        filtering_tag_read = _schema_filtering_tag_read
-        filtering_tag_read.action = AAZStrType()
-        filtering_tag_read.name = AAZStrType()
-        filtering_tag_read.value = AAZStrType()
-
-        _schema.action = cls._schema_filtering_tag_read.action
-        _schema.name = cls._schema_filtering_tag_read.name
-        _schema.value = cls._schema_filtering_tag_read.value
+class _ShowHelper:
+    """Helper class for Show"""
 
 
-__all__ = ["List"]
+__all__ = ["Show"]

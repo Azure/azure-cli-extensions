@@ -12,10 +12,10 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "datadog monitor tag-rule",
+    "datadog sso-config",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Provides a set of commands to manage tag rules for Datadog monitor resources, allowing you to control which Azure resources are monitored based on their tags.
+    """Provides a set of commands to manage Single Sign-On (SSO) configurations for Datadog monitor resources, enabling secure and streamlined access for users.
     """
     pass
 

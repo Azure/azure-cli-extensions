@@ -12,13 +12,13 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "datadog monitor single-sign-on-configuration update",
+    "datadog sso-config update",
 )
 class Update(AAZCommand):
     """Updates the Single Sign-On (SSO) configuration for a specific Datadog monitor resource, allowing you to modify its settings and integration parameters.
 
     :example: SSO_update
-        az datadog monitor single-sign-on-configuration update --resource-group myResourceGroup --monitor-name myMonitor --configuration-name default --single-sign-on-state Enable --enterprise-app-id 00000000-0000-0000-0000-000000000000
+        az datadog sso-config update --resource-group myResourceGroup --monitor-name myMonitor --configuration-name default --single-sign-on-state Enable --enterprise-app-id 00000000-0000-0000-0000-000000000000
     """
 
     _aaz_info = {
@@ -48,13 +48,13 @@ class Update(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.configuration_name = AAZStrArg(
-            options=["-n", "--name", "--configuration-name"],
+            options=["--configuration-name"],
             help="Configuration name",
             required=True,
             id_part="child_name_1",
         )
         _args_schema.monitor_name = AAZStrArg(
-            options=["--monitor-name"],
+            options=["-n", "--name", "--monitor-name"],
             help="Monitor resource name",
             required=True,
             id_part="name",

@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command_group(
     "datadog terms",
+    is_experimental=True,
 )
 class __CMDGroup(AAZCommandGroup):
     """Provides a set of commands to manage marketplace agreements for Datadog services, enabling you to handle subscription and billing agreements through Azure Marketplace.
