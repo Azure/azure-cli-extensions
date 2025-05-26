@@ -62,7 +62,7 @@ class ConnectedClusterPreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
 
 
 class SubnetPreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
-    def __init__(self, name_prefix='vnet', location='eastus2euap', resource_group_parameter_name='resource_group', vnet_name=None, vnet_address_prefixes='14.0.0.0/23', subnet_address_prefixes='14.0.0.0/23',
+    def __init__(self, name_prefix='vnet', location="centralus", resource_group_parameter_name='resource_group', vnet_name=None, vnet_address_prefixes='14.0.0.0/23', subnet_address_prefixes='14.0.0.0/23',
                  delegations=None, subnet_name="default", service_endpoints=None, skip_delete=False):
         super(SubnetPreparer, self).__init__(name_prefix, 15)
         self.cli_ctx = get_dummy_cli()

@@ -183,7 +183,7 @@ class ContainerappJavaComponentTests(ScenarioTest):
         ca_name = self.create_random_name(prefix='javaapp1', length=24)
         gateway_name = "mygateway"
 
-        create_containerapp_env(self, env_name, resource_group)
+        create_containerapp_env(self, env_name, resource_group, location="francecentral")
         env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
 
         # List Java Components
@@ -287,7 +287,7 @@ class ContainerappJavaComponentTests(ScenarioTest):
         ca_name = self.create_random_name(prefix='javaapp1', length=24)
         eureka_name = "myeureka"
 
-        create_containerapp_env(self, env_name, resource_group)
+        create_containerapp_env(self, env_name, resource_group, location=location)
         env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
 
         # List Java Components

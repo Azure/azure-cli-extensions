@@ -12,7 +12,7 @@ from .utils import prepare_containerapp_env_for_app_e2e_tests
 
 class ContainerappAuthIdentityTests(ScenarioTest):
     def __init__(self, *arg, **kwargs):
-        super().__init__(*arg, random_config_dir=True, **kwargs)
+        super().__init__(*arg, random_config_dir=False, **kwargs)
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus2")
@@ -62,7 +62,7 @@ class ContainerappAuthIdentityTests(ScenarioTest):
 
 class ContainerAppAuthTest(ScenarioTest):
     def __init__(self, *arg, **kwargs):
-        super().__init__(*arg, random_config_dir=True, **kwargs)
+        super().__init__(*arg, random_config_dir=False, **kwargs)
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus")

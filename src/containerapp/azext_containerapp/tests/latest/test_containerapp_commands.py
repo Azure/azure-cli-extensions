@@ -26,7 +26,7 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 class ContainerappIdentityTests(ScenarioTest):
     def __init__(self, *arg, **kwargs):
-        super().__init__(*arg, random_config_dir=True, **kwargs)
+        super().__init__(*arg, random_config_dir=False, **kwargs)
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus2")
@@ -208,7 +208,7 @@ class ContainerappIdentityTests(ScenarioTest):
 
 class ContainerappIngressTests(ScenarioTest):
     def __init__(self, *arg, **kwargs):
-        super().__init__(*arg, random_config_dir=True, **kwargs)
+        super().__init__(*arg, random_config_dir=False, **kwargs)
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus2")
@@ -642,7 +642,7 @@ class ContainerappIngressTests(ScenarioTest):
 
 class ContainerappCustomDomainTests(ScenarioTest):
     def __init__(self, *arg, **kwargs):
-        super().__init__(*arg, random_config_dir=True, **kwargs)
+        super().__init__(*arg, random_config_dir=False, **kwargs)
 
     @AllowLargeResponse(8192)
     @live_only()  # encounters 'CannotOverwriteExistingCassetteException' only when run from recording (passes when run live)
@@ -770,7 +770,7 @@ class ContainerappCustomDomainTests(ScenarioTest):
 
 class ContainerappDaprTests(ScenarioTest):
     def __init__(self, *arg, **kwargs):
-        super().__init__(*arg, random_config_dir=True, **kwargs)
+        super().__init__(*arg, random_config_dir=False, **kwargs)
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus2")
@@ -862,7 +862,7 @@ class ContainerappDaprTests(ScenarioTest):
 
 class ContainerappServiceBindingTests(ScenarioTest):
     def __init__(self, *arg, **kwargs):
-        super().__init__(*arg, random_config_dir=True, **kwargs)
+        super().__init__(*arg, random_config_dir=False, **kwargs)
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus2")
@@ -1153,7 +1153,8 @@ class ContainerappServiceBindingTests(ScenarioTest):
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus2")
-    def test_containerapp_dev_add_on_binding_e2e(self, resource_group):
+    @SubnetPreparer(location="eastus", delegations='Microsoft.App/environments', service_endpoints="Microsoft.Storage.Global")
+    def test_containerapp_dev_add_on_binding_e2e(self, resource_group, subnet_id):
         # type "linkers" is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
         location = TEST_LOCATION
         if format_location(location) == format_location(STAGE_LOCATION):
@@ -1169,7 +1170,7 @@ class ContainerappServiceBindingTests(ScenarioTest):
         mariadb_ca_name = 'mariadb'
         qdrant_ca_name = "qdrant"
 
-        create_containerapp_env(self, env_name, resource_group)
+        create_containerapp_env(self, env_name, resource_group, subnetId=subnet_id)
 
         self.cmd('containerapp add-on redis create -g {} -n {} --environment {}'.format(
             resource_group, redis_ca_name, env_name))
@@ -1394,7 +1395,7 @@ class ContainerappServiceBindingTests(ScenarioTest):
 
 class ContainerappEnvStorageTests(ScenarioTest):
     def __init__(self, *arg, **kwargs):
-        super().__init__(*arg, random_config_dir=True, **kwargs)
+        super().__init__(*arg, random_config_dir=False, **kwargs)
 
     @AllowLargeResponse(8192)
     @live_only()  # Passes locally but fails in CI
@@ -1436,7 +1437,7 @@ class ContainerappEnvStorageTests(ScenarioTest):
 
 class ContainerappRevisionTests(ScenarioTest):
     def __init__(self, *arg, **kwargs):
-        super().__init__(*arg, random_config_dir=True, **kwargs)
+        super().__init__(*arg, random_config_dir=False, **kwargs)
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="northeurope")
@@ -1604,7 +1605,7 @@ class ContainerappRevisionTests(ScenarioTest):
 
 class ContainerappAnonymousRegistryTests(ScenarioTest):
     def __init__(self, *arg, **kwargs):
-        super().__init__(*arg, random_config_dir=True, **kwargs)
+        super().__init__(*arg, random_config_dir=False, **kwargs)
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="northeurope")
@@ -1623,7 +1624,7 @@ class ContainerappAnonymousRegistryTests(ScenarioTest):
 
 class ContainerappRegistryIdentityTests(ScenarioTest):
     def __init__(self, *arg, **kwargs):
-        super().__init__(*arg, random_config_dir=True, **kwargs)
+        super().__init__(*arg, random_config_dir=False, **kwargs)
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="westeurope")
@@ -2001,7 +2002,7 @@ class ContainerappRegistryIdentityTests(ScenarioTest):
 
 class ContainerappUpRegistryIdentityTests(ScenarioTest):
     def __init__(self, *arg, **kwargs):
-        super().__init__(*arg, random_config_dir=True, **kwargs)
+        super().__init__(*arg, random_config_dir=False, **kwargs)
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="westeurope")
@@ -2424,7 +2425,7 @@ class ContainerappUpRegistryIdentityTests(ScenarioTest):
 
 class ContainerappScaleTests(ScenarioTest):
     def __init__(self, *arg, **kwargs):
-        super().__init__(*arg, random_config_dir=True, **kwargs)
+        super().__init__(*arg, random_config_dir=False, **kwargs)
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="westeurope")
@@ -3257,7 +3258,7 @@ properties:
 
 class ContainerappOtherPropertyTests(ScenarioTest):
     def __init__(self, *arg, **kwargs):
-        super().__init__(*arg, random_config_dir=True, **kwargs)
+        super().__init__(*arg, random_config_dir=False, **kwargs)
 
     @live_only() # Pass lively, failed in playback mode because in the playback mode the cloud is AzureCloud, not AzureChinaCloud
     @AllowLargeResponse(8192)
@@ -3277,7 +3278,7 @@ class ContainerappOtherPropertyTests(ScenarioTest):
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="westus")
-    @SubnetPreparer(location="eastus", delegations='Microsoft.App/environments', service_endpoints="Microsoft.Storage.Global")
+    @SubnetPreparer(location="centralus", delegations='Microsoft.App/environments', service_endpoints="Microsoft.Storage.Global")
     def test_containerapp_get_customdomainverificationid_e2e(self, resource_group, subnet_id, vnet_name, subnet_name):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
@@ -3392,7 +3393,7 @@ class ContainerappOtherPropertyTests(ScenarioTest):
 
 class ContainerappRuntimeTests(ScenarioTest):
     def __init__(self, *arg, **kwargs):
-        super().__init__(*arg, random_config_dir=True, **kwargs)
+        super().__init__(*arg, random_config_dir=False, **kwargs)
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="northcentralus")

@@ -114,6 +114,7 @@ class CertificateProvisioningState(str, Enum, metaclass=CaseInsensitiveEnumMeta)
     CANCELED = "Canceled"
     DELETE_FAILED = "DeleteFailed"
     PENDING = "Pending"
+    DELETING = "Deleting"
 
 
 class CertificateType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
@@ -139,6 +140,7 @@ class ConnectedEnvironmentDaprComponentProvisioningState(str, Enum, metaclass=Ca
     FAILED = "Failed"
     CANCELED = "Canceled"
     IN_PROGRESS = "InProgress"
+    DELETING = "Deleting"
 
 
 class ConnectedEnvironmentProvisioningState(str, Enum, metaclass=CaseInsensitiveEnumMeta):
@@ -161,6 +163,7 @@ class ConnectedEnvironmentStorageProvisioningState(str, Enum, metaclass=CaseInse
     FAILED = "Failed"
     CANCELED = "Canceled"
     IN_PROGRESS = "InProgress"
+    DELETING = "Deleting"
 
 
 class ContainerAppContainerRunningState(str, Enum, metaclass=CaseInsensitiveEnumMeta):
@@ -272,12 +275,6 @@ class EnvironmentProvisioningState(str, Enum, metaclass=CaseInsensitiveEnumMeta)
     SCHEDULED_FOR_DELETE = "ScheduledForDelete"
     UPGRADE_REQUESTED = "UpgradeRequested"
     UPGRADE_FAILED = "UpgradeFailed"
-
-
-class ExecutionType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
-    """The execution type of the session pool."""
-
-    TIMED = "Timed"
 
 
 class ExtendedLocationTypes(str, Enum, metaclass=CaseInsensitiveEnumMeta):
@@ -423,6 +420,13 @@ class Level(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     WARN = "warn"
 
 
+class LifecycleType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """The lifecycle type of the session pool."""
+
+    TIMED = "Timed"
+    ON_CONTAINER_EXIT = "OnContainerExit"
+
+
 class LogicAppsProxyMethod(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """LogicAppsProxyMethod."""
 
@@ -458,6 +462,41 @@ class ManagedServiceIdentityType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     SYSTEM_ASSIGNED = "SystemAssigned"
     USER_ASSIGNED = "UserAssigned"
     SYSTEM_ASSIGNED_USER_ASSIGNED = "SystemAssigned,UserAssigned"
+
+
+class PatchApplyStatus(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """The status of the patch once it has been provisioned."""
+
+    NOT_STARTED = "NotStarted"
+    REBASE_IN_PROGRESS = "RebaseInProgress"
+    CREATING_REVISION = "CreatingRevision"
+    SUCCEEDED = "Succeeded"
+    CANCELED = "Canceled"
+    REBASE_FAILED = "RebaseFailed"
+    REVISION_CREATION_FAILED = "RevisionCreationFailed"
+    IMAGE_PUSH_PULL_FAILED = "ImagePushPullFailed"
+    MANUALLY_SKIPPED = "ManuallySkipped"
+
+
+class PatchingMode(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """Patching mode for the container app. Null or default in this field will be interpreted as
+    Automatic by RP. Automatic mode will automatically apply available patches. Manual mode will
+    require the user to manually apply patches. Disabled mode will stop patch detection and auto
+    patching.
+    """
+
+    AUTOMATIC = "Automatic"
+    MANUAL = "Manual"
+    DISABLED = "Disabled"
+
+
+class PatchType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """The type for the patch."""
+
+    FRAMEWORK_SECURITY = "FrameworkSecurity"
+    OS_SECURITY = "OSSecurity"
+    FRAMEWORK_AND_OS_SECURITY = "FrameworkAndOSSecurity"
+    OTHER = "Other"
 
 
 class PoolManagementType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
@@ -548,6 +587,16 @@ class SessionPoolProvisioningState(str, Enum, metaclass=CaseInsensitiveEnumMeta)
     DELETING = "Deleting"
 
 
+class SessionProbeType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """Denotes the type of probe. Can be Liveness or Startup, Readiness probe is not supported in
+    sessions. Type must be unique for each probe within the context of a list of probes
+    (SessionProbes).
+    """
+
+    LIVENESS = "Liveness"
+    STARTUP = "Startup"
+
+
 class SourceControlOperationState(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """Current provisioning State of the operation."""
 
@@ -555,6 +604,14 @@ class SourceControlOperationState(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     SUCCEEDED = "Succeeded"
     FAILED = "Failed"
     CANCELED = "Canceled"
+
+
+class Status(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """Status of the label history record."""
+
+    SUCCEEDED = "Succeeded"
+    FAILED = "Failed"
+    STARTING = "Starting"
 
 
 class StorageType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
@@ -602,8 +659,6 @@ class WeekDay(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     FRIDAY = "Friday"
     SATURDAY = "Saturday"
     SUNDAY = "Sunday"
-    EVERYDAY = "Everyday"
-    WEEKEND = "Weekend"
 
 
 class WorkflowHealthState(str, Enum, metaclass=CaseInsensitiveEnumMeta):
