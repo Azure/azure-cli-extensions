@@ -444,6 +444,6 @@ def get_all_extensions_in_allow_list(result):
     return output
 
 def get_extension_in_allow_list(result):
-    if _check_if_extension_type_is_in_allow_list(obj.extension_type.lower()):
+    if _check_if_extension_type_is_in_allow_list(result.extension_type.lower()):
         return result
     return None

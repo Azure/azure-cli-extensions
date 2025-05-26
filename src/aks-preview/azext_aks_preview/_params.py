@@ -2403,7 +2403,7 @@ def load_arguments(self, _):
                    help='Name of resource group.')
         c.argument('cluster_name',
                    options_list=['--cluster-name', '-c'],
-                   validator=validate_location_cluster_name_resource_group_mutually_exclusive,
+                   validator=validate_location_cluster_parameters_present,
                    help='Name of the Kubernetes cluster')
         c.argument('extension_type',
                    options_list=['--extension-type', '-t'],
@@ -2421,7 +2421,7 @@ def load_arguments(self, _):
                    help='Name of resource group.')
         c.argument('cluster_name',
                    options_list=['--cluster-name', '-c'],
-                   validator=validate_location_cluster_name_resource_group_mutually_exclusive,
+                   validator=validate_location_cluster_parameters_present,
                    help='Name of the Kubernetes cluster')
         c.argument('extension_type',
                    options_list=['--extension-type', '-t'],

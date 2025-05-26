@@ -909,7 +909,16 @@ def validate_location_cluster_name_resource_group_mutually_exclusive(namespace):
 
 
 def validate_resource_group_parameter(namespace):
+    """Validates that if the user specified the cluster name, resource group name is also specified and vice versa"""
     if namespace.resource_group_name and not namespace.cluster_name:
         raise RequiredArgumentMissingError("Please specify --cluster")
     if not namespace.resource_group_name and namespace.cluster_name:
         raise RequiredArgumentMissingError("Please specify --resource-group")
+
+
+def validate_location_cluster_parameters_present(namespace):
+    """Validates that either location or cluster details (i.e. resource group and cluster name) are specified"""
+    if not namespace.location and not namespace.cluster_name and not namespace.resource_group_name:
+        raise RequiredArgumentMissingError(
+            "You must specify the location or cluster details (i.e. resource group name and cluster name)."
+        )
