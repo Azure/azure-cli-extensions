@@ -48,6 +48,8 @@ from azext_aks_preview._consts import (
     CONST_DAILY_MAINTENANCE_SCHEDULE,
     CONST_DISK_DRIVER_V1,
     CONST_DISK_DRIVER_V2,
+    CONST_GPU_DRIVER_INSTALL,
+    CONST_GPU_DRIVER_NONE,
     CONST_GPU_INSTANCE_PROFILE_MIG1_G,
     CONST_GPU_INSTANCE_PROFILE_MIG2_G,
     CONST_GPU_INSTANCE_PROFILE_MIG3_G,
@@ -266,6 +268,10 @@ gpu_instance_profiles = [
     CONST_GPU_INSTANCE_PROFILE_MIG3_G,
     CONST_GPU_INSTANCE_PROFILE_MIG4_G,
     CONST_GPU_INSTANCE_PROFILE_MIG7_G,
+]
+gpu_driver_install_modes = [
+    CONST_GPU_DRIVER_INSTALL,
+    CONST_GPU_DRIVER_NONE
 ]
 pod_ip_allocation_modes = [
     CONST_NETWORK_POD_IP_ALLOCATION_MODE_DYNAMIC_INDIVIDUAL,
@@ -991,6 +997,11 @@ def load_arguments(self, _):
         # managed cluster paramerters
         c.argument("disable_local_accounts", action="store_true")
         c.argument("enable_local_accounts", action="store_true")
+        c.argument(
+            "load_balancer_sku",
+            arg_type=get_enum_type([CONST_LOAD_BALANCER_SKU_STANDARD]),
+            validator=validate_load_balancer_sku,
+        )
         c.argument("load_balancer_managed_outbound_ip_count", type=int)
         c.argument(
             "load_balancer_outbound_ips", validator=validate_load_balancer_outbound_ips
@@ -1557,7 +1568,20 @@ def load_arguments(self, _):
             validator=validate_node_public_ip_tags,
             help="space-separated tags: key[=value] [key[=value] ...].",
         )
-        c.argument('skip_gpu_driver_install', action='store_true', is_preview=True)
+        c.argument(
+            "skip_gpu_driver_install",
+            action="store_true",
+            is_preview=True,
+            deprecate_info=c.deprecate(
+                target="--skip-gpu-driver-install",
+                redirect="--gpu-driver",
+                hide=True
+            )
+        )
+        c.argument(
+            "gpu_driver",
+            arg_type=get_enum_type(gpu_driver_install_modes)
+        )
         c.argument(
             "driver_type",
             arg_type=get_enum_type(gpu_driver_types),

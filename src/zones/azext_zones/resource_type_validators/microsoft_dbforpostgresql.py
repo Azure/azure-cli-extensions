@@ -10,6 +10,7 @@ from .._resourceTypeValidation import (
 from knack.log import get_logger
 
 
+# pylint: disable=too-few-public-methods
 @register_resource_type("microsoft.dbforpostgresql")
 class microsoft_dbforpostgresql:
     @staticmethod
@@ -29,8 +30,7 @@ class microsoft_dbforpostgresql:
                 == "ZoneRedundant"
             ):
                 return ZoneRedundancyValidationResult.Yes
-            else:
-                return ZoneRedundancyValidationResult.No
+            return ZoneRedundancyValidationResult.No
 
         # PostgreSQL Single Servers
         if resourceSubType == "servers":
