@@ -18,7 +18,7 @@ class AvailableSkus(AAZCommand):
     """This method provides the list of available skus for the given subscription, resource group and location.
 
     :example: AvailableSkusPost
-        az databox available-skus --resource-group YourResourceGroupName --country US --location westus --transfer-type ImportToAzure
+        az databox available-skus --g YourResourceGroupName --country US --l westus --transfer-type ImportToAzure
     """
 
     _aaz_info = {
