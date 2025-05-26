@@ -10,11 +10,11 @@ from azure.cli.testsdk import *
 
 # resource creation is failing due to which tests whave been skipped. Will be fixed in the next release.
 class DatadogScenario(ScenarioTest):
-    @ResourceGroupPreparer(name_prefix='cli_test_datadog_monitor', location='westus2')
-    def test_datadog_monitor(self, resource_group):
-        self.kwargs.update({
-            'monitor': self.create_random_name('monitor', 15),
-        })
+    # @ResourceGroupPreparer(name_prefix='cli_test_datadog_monitor', location='westus2')
+    # def test_datadog_monitor(self, resource_group):
+    #     self.kwargs.update({
+    #         'monitor': self.create_random_name('monitor', 15),
+    #     })
         # self.cmd('datadog monitor create --name {monitor} --resource-group {rg} --sku {{name:payg_v3_Monthly@TIDgmz7xq9ge3py}} --identity {{type:SystemAssigned}} --user-info {{name:Alice,email-address:alice@microsoft.com}}')
         # self.cmd('datadog monitor wait --created --name {monitor} --resource-group {rg}')
         # self.cmd('datadog monitor show --name {monitor} --resource-group {rg}')
@@ -30,11 +30,11 @@ class DatadogScenario(ScenarioTest):
         # self.cmd('datadog monitor delete --name {monitor} --resource-group {rg}')
         # self.cmd('datadog monitor wait --deleted --name {monitor} --resource-group {rg}')
 
-    @ResourceGroupPreparer(name_prefix='cli_test_datadog_monitor', location='eastus')
-    def test_datadog_monitor_single_sign_on_configurations(self, resource_group):    
-        self.kwargs.update({
-            'monitor': self.create_random_name('monitor', 15),
-        })
+    # @ResourceGroupPreparer(name_prefix='cli_test_datadog_monitor', location='eastus')
+    # def test_datadog_monitor_single_sign_on_configurations(self, resource_group):    
+    #     self.kwargs.update({
+    #         'monitor': self.create_random_name('monitor', 15),
+    #     })
         # self.cmd('datadog monitor create --name {monitor} --resource-group {rg} --sku {{name:payg_v3_Monthly@TIDgmz7xq9ge3py}} --identity {{type:SystemAssigned}} --user-info {{name:Alice,email-address:alice@microsoft.com}}')
         # self.cmd('datadog sso-config create '
         #      '--configuration-name "default" '
@@ -49,11 +49,11 @@ class DatadogScenario(ScenarioTest):
         #      '--monitor-name "{myMonitor}" '
         #      '--resource-group "{rg}"')
     
-    @ResourceGroupPreparer(name_prefix='cli_test_datadog_monitor', location='eastus')
-    def test_datadog_monitor_tag_rule(self, resource_group):
-        self.kwargs.update({
-            'monitor': self.create_random_name('monitor', 15),
-        })
+    # @ResourceGroupPreparer(name_prefix='cli_test_datadog_monitor', location='eastus')
+    # def test_datadog_monitor_tag_rule(self, resource_group):
+    #     self.kwargs.update({
+    #         'monitor': self.create_random_name('monitor', 15),
+    #     })
         # self.cmd('datadog monitor create --name {monitor} --resource-group {rg} --sku {{name:payg_v3_Monthly@TIDgmz7xq9ge3py}} --identity {{type:SystemAssigned}} --user-info {{name:Alice,email-address:alice@microsoft.com}}')
         # self.cmd('datadog tag-rule create '
         #      '--monitor-name "{myMonitor}" '
