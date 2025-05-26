@@ -120,11 +120,14 @@ class Import(AAZCommand):
             options=["msi-resource-id"],
             help="(Optional) The resource ID of the managed identity that has access to the API Management instance.",
         )
-        azure_api_management_source.resource_id = AAZResourceIdArg(
-            options=["resource-id"],
-            help="API Management service resource ID.",
+        azure_api_management_source.source_resource_ids = AAZListArg(
+            options=["source-resource-ids"],
+            help="An entity the metadata schema is requested for.",
             required=True,
         )
+
+        source_resource_ids = cls._args_schema.azure_api_management_source.source_resource_ids
+        source_resource_ids.Element = AAZStrArg()
         return cls._args_schema
 
     def _execute_operations(self):
@@ -254,7 +257,11 @@ class Import(AAZCommand):
             azure_api_management_source = _builder.get(".azureApiManagementSource")
             if azure_api_management_source is not None:
                 azure_api_management_source.set_prop("msiResourceId", AAZStrType, ".msi_resource_id")
-                azure_api_management_source.set_prop("resourceId", AAZStrType, ".resource_id", typ_kwargs={"flags": {"required": True}})
+                azure_api_management_source.set_prop("sourceResourceIds", AAZListType, ".source_resource_ids", typ_kwargs={"flags": {"required": True}})
+
+            source_resource_ids = _builder.get(".azureApiManagementSource.sourceResourceIds")
+            if source_resource_ids is not None:
+                source_resource_ids.set_elements(AAZStrType, ".")
 
             return self.serialize_content(_content_value)
 

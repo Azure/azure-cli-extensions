@@ -1,63 +1,5 @@
 interactions:
 - request:
-    body: '{"properties": {"analyzerType": "spectral"}}'
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - apic api-analysis create
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '44'
-      Content-Type:
-      - application/json
-      ParameterSetName:
-      - -g -n -c
-      User-Agent:
-      - AZURECLI/2.67.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
-    method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/analyzerConfigs/clianalysisconfig000003?api-version=2024-06-01-preview
-  response:
-    body:
-      string: '{"type":"Microsoft.ApiCenter/services/workspaces/analyzerConfigs","properties":{"title":"clianalysisconfig000003","analyzerType":"Spectral","state":"inactive"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/analyzerConfigs/clianalysisconfig000003","name":"clianalysisconfig000003"}'
-    headers:
-      api-supported-versions:
-      - 2023-07-01-preview, 2024-03-01, 2024-03-15-preview, 2024-06-01-preview
-      cache-control:
-      - no-cache
-      content-length:
-      - '391'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Thu, 23 Jan 2025 08:33:18 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      vary:
-      - Accept-Encoding
-      x-cache:
-      - CONFIG_NOCACHE
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-global-writes:
-      - '11999'
-      x-ms-ratelimit-remaining-subscription-writes:
-      - '799'
-      x-msedge-ref:
-      - 'Ref A: 2939877F78D24D4FBAB5E938C037721C Ref B: MAA201060516051 Ref C: 2025-01-23T08:33:17Z'
-      x-powered-by:
-      - ASP.NET
-    status:
-      code: 200
-      message: OK
-- request:
     body: null
     headers:
       Accept:
@@ -71,23 +13,23 @@ interactions:
       ParameterSetName:
       - -g -n
       User-Agent:
-      - AZURECLI/2.67.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.63.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/analyzerConfigs?api-version=2024-06-01-preview
   response:
     body:
-      string: '{"value":[{"type":"Microsoft.ApiCenter/services/workspaces/analyzerConfigs","properties":{"title":"clianalysisconfig000003","analyzerType":"Spectral","state":"inactive"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/analyzerConfigs/clianalysisconfig000003","name":"clianalysisconfig000003"}]}'
+      string: '{"value":[{"type":"Microsoft.ApiCenter/services/workspaces/analyzerConfigs","properties":{"title":"spectral-openapi","analyzerType":"Spectral","state":"active","filter":{"apis":[],"apiVersions":[],"apiDefinitions":[{"property":"specification/name","value":["openapi","asyncapi"],"operator":"contains"}]}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/analyzerConfigs/spectral-openapi","name":"spectral-openapi"}]}'
     headers:
       api-supported-versions:
       - 2023-07-01-preview, 2024-03-01, 2024-03-15-preview, 2024-06-01-preview
       cache-control:
       - no-cache
       content-length:
-      - '403'
+      - '524'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 23 Jan 2025 08:33:19 GMT
+      - Mon, 26 May 2025 07:35:13 GMT
       expires:
       - '-1'
       pragma:
@@ -100,10 +42,12 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=33608faa-33a6-4705-beb1-c8904392c4a4/southeastasia/6d891d21-c6eb-4c0e-a1dc-fcaffc1f5955
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: 384B6E4BB2794BECAEDE5E5725C6CEC8 Ref B: MAA201060515035 Ref C: 2025-01-23T08:33:19Z'
+      - 'Ref A: 60FBF2BDBDC64540B68BBC19F5CC957A Ref B: MAA201060515025 Ref C: 2025-05-26T07:35:13Z'
       x-powered-by:
       - ASP.NET
     status:
