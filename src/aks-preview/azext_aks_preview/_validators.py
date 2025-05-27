@@ -490,10 +490,10 @@ def validate_max_blocked_nodes(namespace):
 
     try:
         if int(int_or_percent) < 0:
-            raise CLIError("--max-blocked-nodes must be positive")
+            raise InvalidArgumentValueError('--max-blocked-nodes must be be positive')
     except ValueError:
         # pylint: disable=raise-missing-from
-        raise CLIError("--max-blocked-nodes should be an int or percentage")
+        raise InvalidArgumentValueError('--max-blocked-nodes should be an int or percentage')
 
 def validate_assign_identity(namespace):
     if namespace.assign_identity is not None:

@@ -3311,7 +3311,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             checks=[
                 self.check("provisioningState", "Succeeded"),
                 self.check("upgradeSettings.undrainableNodeBehavior", "Cordon"),
-                self.check("upgradeSettings.maxBlockedNodes", "1"),
+                self.check("upgradeSettings.maxBlockedNodes", "2"),
             ],
         )
 
