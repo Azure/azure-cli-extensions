@@ -6,6 +6,7 @@
 # pylint: disable=line-too-long, too-many-statements, consider-using-f-string, broad-except, no-member, raise-missing-from
 import datetime
 from knack.util import CLIError
+from azure.cli.core.util import shell_safe_json_parse
 from knack.log import get_logger
 from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import (
     AutoscaleSettings,
@@ -75,7 +76,8 @@ from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import (
     MongoMIRoleDefinitionResource,
     MongoMIRoleAssignmentResource,
     FleetResource,
-    FleetspaceResource
+    FleetspaceResource,
+    FleetspacePropertiesThroughputPoolConfiguration
 )
 
 from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_mongocluster.models import (
@@ -3238,11 +3240,13 @@ def cli_cosmosdb_fleet_create(client,
                               location,
                               tags=None):
     """Creates an Azure Cosmos DB Fleet."""
-    from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import FleetResource
 
     if isinstance(tags, str):
-        tags = dict(tag.split('=') for tag in tags.split())
-
+        try:
+            tags = dict(tag.split('=') for tag in tags.split())
+        except ValueError:
+            raise InvalidArgumentValueError('Tags must be in key=value format.')
+    
     fleet_parameters = FleetResource(location=location)
 
     if tags:
@@ -3265,33 +3269,18 @@ def cli_cosmosdb_fleetspace_create(client,
                                    resource_group_name,
                                    fleet_name,
                                    fleetspace_name,
-                                   location,
-                                   data_regions,
-                                   min_throughput,
-                                   max_throughput,
-                                   service_tier):
+                                   fleetspace_body):
     
     """Creates an Azure Cosmos DB Fleetspace."""
-    from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import (
-            FleetspaceResource,
-            FleetspacePropertiesThroughputPoolConfiguration
-        )
-
-    if data_regions:
-        if isinstance(data_regions, str):
-            data_regions = [r.strip() for r in data_regions.split(',') if r.strip()]
-        elif not isinstance(data_regions, list):
-            raise CLIError("--data-regions must be a comma-separated string or a list of region names.")
-
+    
     throughput_pool_config = FleetspacePropertiesThroughputPoolConfiguration(
-        min_throughput=min_throughput,
-        max_throughput=max_throughput,
-        service_tier=service_tier,
-        data_regions=data_regions
+        min_throughput=fleetspace_body['properties']['throughputPoolConfiguration']['minThroughput'],
+        max_throughput=fleetspace_body['properties']['throughputPoolConfiguration']['maxThroughput'],
+        service_tier=fleetspace_body['properties']['throughputPoolConfiguration']['serviceTier'],
+        data_regions=fleetspace_body['properties']['throughputPoolConfiguration']['dataRegions']
     )
 
     fleetspace_body = FleetspaceResource(
-        location=location,
         fleetspace_api_kind="NoSQL",
         throughput_pool_configuration=throughput_pool_config
     )
@@ -3305,49 +3294,31 @@ def cli_cosmosdb_fleetspace_create(client,
 
 
 def cli_cosmosdb_fleetspace_update(client,
-                                    resource_group_name,
-                                    fleet_name,
-                                    fleetspace_name,
-                                    data_regions=None,
-                                    min_throughput=None,
-                                    max_throughput=None,
-                                    service_tier=None,
-                                    location=None,
-                                    provisioning_state=None,
-                                    fleetspace_api_kind=None,):
+                                   resource_group_name,
+                                   fleet_name,
+                                   fleetspace_name,
+                                   fleetspace_body):
 
     """Updates an existing Azure Cosmos DB Fleetspace."""
-    from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import (
-        FleetspaceUpdate,
-        FleetspacePropertiesThroughputPoolConfiguration
+    
+    fleetspace_body = shell_safe_json_parse(fleetspace_body)
+
+    throughput_pool_config = FleetspacePropertiesThroughputPoolConfiguration(
+        min_throughput=fleetspace_body['properties']['throughputPoolConfiguration']['minThroughput'],
+        max_throughput=fleetspace_body['properties']['throughputPoolConfiguration']['maxThroughput'],
+        service_tier=fleetspace_body['properties']['throughputPoolConfiguration']['serviceTier']
     )
 
-    if location:
-        print("Warning: 'location' is not updatable and will be ignored.")
-    if provisioning_state:
-        print("Warning: 'provisioning-state' is not updatable and will be ignored.")
-    if fleetspace_api_kind:
-        print("Warning: 'fleetspace-api-kind' is not updatable and will be ignored.")
-    if data_regions:
-        print("Warning: 'data_regions' cannot be changed after Fleetspace creation.")
-        
-    throughput_config = None
-    if any([min_throughput, max_throughput, service_tier, data_regions]):
-        throughput_config = FleetspacePropertiesThroughputPoolConfiguration(
-            min_throughput=min_throughput,
-            max_throughput=max_throughput,
-            service_tier=service_tier
-        )
-
-    update_body = FleetspaceUpdate(
-        throughput_pool_configuration=throughput_config
+    fleetspace_body = FleetspaceResource(
+        fleetspace_api_kind="NoSQL",
+        throughput_pool_configuration=throughput_pool_config
     )
 
     return client.begin_update(
         resource_group_name=resource_group_name,
         fleet_name=fleet_name,
         fleetspace_name=fleetspace_name,
-        body=update_body
+        body=fleetspace_body
     )
 
 
