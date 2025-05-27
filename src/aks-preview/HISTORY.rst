@@ -12,9 +12,13 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
-18.0.0b3
+18.0.0b4
 +++++++
 * Create managed namespace commands `az aks namespace add/update/show/list/delete/get-credentials`
+
+18.0.0b3
++++++++
+* Add basic lb sku migration support `az aks update --load-balancer-sku standard`
 
 18.0.0b2
 +++++++
