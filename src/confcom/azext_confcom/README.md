@@ -252,6 +252,69 @@ Because the ARM Template does not have a value defined for the "placeholderValue
 az deployment group create --template-file "template.json" --parameters "parameters.json"
 ```
 
+Example 13: Another way to add additional flexibility to a security policy is by using a "pure json" approach to the config file.
+This gives the flexibility of using regular expressions for environment variables and including fragments without the need for the `--fragments-json` flag.
+It uses the same format as `acifragmentgen` such that if there needs to be different deployments with similar configs, very few changes are needed.
+Note that a name for each container is required.
+
+```json
+{
+    "fragments": [
+        {
+            "feed": "contoso.azurecr.io/example",
+            "includes": [
+                "containers",
+                "fragments"
+            ],
+            "issuer": "did:x509:0:sha256:mLzv0uyBNQvC6hi4y9qy8hr6NSZuYFv6gfCwAEWBNqc::subject:CN:Contoso",
+            "minimum_svn": "1"
+        }
+    ],
+    "containers": [
+        {
+            "name": "my-image",
+            "properties": {
+                "image": "mcr.microsoft.com/acc/samples/aci/helloworld:2.9",
+                "environmentVariables": [
+                    {
+                        "name": "PATH",
+                        "value": "/customized/path/value"
+                    },
+                    {
+                        "name": "TEST_REGEXP_ENV",
+                        "value": "test_regexp_env(.*)",
+                        "regex": true
+                    }
+                ],
+                "execProcesses": [
+                    {
+                        "command": [
+                            "ls"
+                        ]
+                    }
+                ],
+                "volumeMounts": [
+                    {
+                        "name": "mymount",
+                        "mountPath": "/mount/mymount",
+                        "mountType": "emptyDir",
+                        "readOnly": false
+                    }
+                ],
+                "command": [
+                    "python3",
+                    "main.py"
+                ]
+            }
+        }
+    ]
+}
+```
+
+```bash
+az confcom acipolicygen -i config.json
+```
+
 ## dmverity Layer Hashing
 
 To ensure the container that is being deployed is the intended container, the `confcom` tooling uses [dmverity hashing](https://www.kernel.org/doc/html/latest/admin-guide/device-mapper/verity.html). This is done by downloading the container locally with the Docker Daemon (or using a pre-downloaded tar file of the OCI image) and performing the dmverity hashing using the [dmverity-vhd tool](https://github.com/microsoft/hcsshim/tree/main/cmd/dmverity-vhd). These layer hashes are placed into the Rego security policy in the "layers" field of their respective container. Note that these dmverity layer hashes are different than the layer hashes reported by `docker image inspect`.
@@ -287,18 +350,32 @@ To generate a security policy using a policy config file for Virtual Node, the `
         {
             "name": "my-image",
             "properties": {
-                "image": "mcr.microsoft.com/acc/samples/aci/helloworld:2.8"
+                "image": "mcr.microsoft.com/acc/samples/aci/helloworld:2.9"
             }
         }
     ]
 }
 ```
 
-This `scenario` field adds the necessary environment variables and mount values to containers in the config file.
+This `scenario` field adds the necessary environment variables and mount values to containers in the config file. Currently `vn2` and `aci` are the only supported values for `scenario`, but others may be added in the future as more products onboard to the `confcom` extension. `aci` is the default value.
 
 ### Workload Identity
 
 To use workload identities with VN2, the associated label [described here](https://learn.microsoft.com/en-us/azure/aks/workload-identity-overview?tabs=dotnet#pod-labels) must be present. Having this will add the requisite environment variables and mounts to each container's policy.
+To generate a policy with workload identity capabilities for VN2 using the JSON format, the following `labels` key and nested values must be present:
+
+```json
+{
+    "version": "1.0",
+    "scenario": "vn2",
+    "labels": {
+        "azure.workload.identity/use": true
+    },
+    "containers": [
+        ...
+    ]
+}
+```
 
 > [!NOTE]
 > The `acipolicygen` command is specific to generating policies for ACI-based containers. For generating security policies for the [Confidential Containers on AKS](https://learn.microsoft.com/en-us/azure/aks/confidential-containers-overview) feature, use the `katapolicygen` command.
@@ -698,29 +775,29 @@ The config file is a JSON file that contains the following information:
 
 ```json
 {
- "containers": [
-  {
-   "name": "my-image",
-   "properties": {
-    "image": "mcr.microsoft.com/acc/samples/aci/helloworld:2.8",
-    "environmentVariables": [
-     {
-      "name": "PATH",
-      "value": "/customized/path/value"
-     },
-     {
-      "name": "TEST_REGEXP_ENV",
-      "value": "test_regexp_env(.*)",
-      "regex": true
-     }
-    ],
-    "command": [
-     "python3",
-     "main.py"
+    "containers": [
+        {
+            "name": "my-image",
+            "properties": {
+                "image": "mcr.microsoft.com/acc/samples/aci/helloworld:2.9",
+                "environmentVariables": [
+                    {
+                        "name": "PATH",
+                        "value": "/customized/path/value"
+                    },
+                    {
+                        "name": "TEST_REGEXP_ENV",
+                        "value": "test_regexp_env(.*)",
+                        "regex": true
+                    }
+                ],
+                "command": [
+                    "python3",
+                    "main.py"
+                ]
+            }
+        }
     ]
-   }
-  }
- ]
 }
 ```
 
@@ -766,6 +843,29 @@ az confcom acifragmentgen --chain ./samples/certs/intermediateCA/certs/www.conto
 
 This could be useful in scenarios where an image-attached fragment is required but the fragment's feed is different from the image's location.
 
+Example 5: This format can also be used to generate fragments used for VN2. Adding the `scenario` key with the value `vn2` tells confcom which default values need to be added. Save this file as `fragment_config.json`:
+
+```json
+{
+    "version": "1.0",
+    "scenario": "vn2",
+    "containers": [
+        {
+            "name": "my-image",
+            "properties": {
+                "image": "mcr.microsoft.com/acc/samples/aci/helloworld:2.9"
+            }
+        }
+    ]
+}
+```
+
+Using the same command, the default mounts and environment variables used by VN2 will be added to the policy fragment.
+
+```bash
+az confcom acifragmentgen --input ./fragment_config.json --svn 1 --namespace contoso
+```
+
 ## Microsoft Azure CLI 'confcom katapolicygen' Extension Examples
 
 Run `az confcom katapolicygen --help` to see a list of supported arguments along with explanations. The following commands demonstrate the usage of different arguments to generate confidential computing security policies.
@@ -809,11 +909,11 @@ The `--print-policy` argument is included to display the policy on the command l
 Example 2: This command injects a security policy into the pod spec based on input from a config map so that there is no need to change the pod spec to pass variables into the security policy:
 
 ```bash
-az confcom katapolicygen -y .\\pod.yaml -c .\\config-map.yaml
+az confcom katapolicygen -y ./pod.yaml -c ./config-map.yaml
 ```
 
 Example 3: This command caches the layer hashes and stores them locally on your computer to make future computations faster if the same images are used:
 
 ```bash
-az confcom katapolicygen -y .\\pod.yaml -u
+az confcom katapolicygen -y ./pod.yaml -u
 ```

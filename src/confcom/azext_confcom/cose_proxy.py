@@ -143,8 +143,7 @@ class CoseSignToolProxy:  # pylint: disable=too-few-public-methods
         return item.stdout.decode("utf-8")
 
     # generate an import statement from a signed policy fragment
-    def generate_import_from_path(self, fragment_path: str, minimum_svn: int) -> str:
-        # TODO: make sure the fragment is signed correctly
+    def generate_import_from_path(self, fragment_path: str, minimum_svn: str) -> str:
         if not os.path.exists(fragment_path):
             eprint(f"The fragment file at {fragment_path} does not exist")
 
