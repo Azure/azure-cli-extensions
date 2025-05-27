@@ -76,12 +76,12 @@ from ._constants import (MAXIMUM_SECRET_LENGTH,
                          DEFAULT_CONNECTED_CLUSTER_EXTENSION_NAMESPACE)
 
 from .custom import (
-    create_managed_environment,
+    create_managed_environment_logic,
     create_containerappsjob,
     containerapp_up_logic,
     list_containerapp,
     list_managed_environments,
-    create_or_update_github_action, create_connected_environment, list_connected_environments,
+    create_or_update_github_action, create_connected_environment, list_connected_environments, show_managed_environment
 )
 
 from ._cloud_build_utils import (
@@ -180,6 +180,9 @@ class ContainerAppEnvironment(Resource):
         logs_customer_id=None,
         custom_location_id=None,
         connected_cluster_id=None,
+        workload_profile_type=None,
+        workload_profile_name=None,
+        is_env_for_azml_app=None,
     ):
         self.resource_type = None
         super().__init__(cmd, name, resource_group, exists)
@@ -204,6 +207,10 @@ class ContainerAppEnvironment(Resource):
         self.logs_key = logs_key
         self.logs_customer_id = logs_customer_id
         self.custom_location_id = custom_location_id
+
+        self.workload_profile_type = workload_profile_type
+        self.workload_profile_name = workload_profile_name
+        self.is_env_for_azml_app = is_env_for_azml_app
 
     def set_name(self, name_or_rid):
         if is_valid_resource_id(name_or_rid):
@@ -264,8 +271,7 @@ class ContainerAppEnvironment(Resource):
 
         if self.location:
             self.location = validate_environment_location(self.cmd, self.location)
-
-            env = create_managed_environment(
+            env = create_managed_environment_logic(
                 self.cmd,
                 self.name,
                 location=self.location,
@@ -273,6 +279,10 @@ class ContainerAppEnvironment(Resource):
                 logs_key=self.logs_key,
                 logs_customer_id=self.logs_customer_id,
                 disable_warnings=True,
+                enable_workload_profiles=self.workload_profile_type is not None,
+                workload_profile_type=self.workload_profile_type,
+                workload_profile_name=self.workload_profile_name,
+                is_env_for_azml_app=self.is_env_for_azml_app,
             )
             self.exists = True
 
@@ -281,13 +291,16 @@ class ContainerAppEnvironment(Resource):
             res_locations = list_environment_locations(self.cmd)
             for loc in res_locations:
                 try:
-                    env = create_managed_environment(
+                    env = create_managed_environment_logic(
                         self.cmd,
                         self.name,
                         location=loc,
                         resource_group_name=self.resource_group.name,
                         logs_key=self.logs_key,
                         logs_customer_id=self.logs_customer_id,
+                        workload_profile_type=self.workload_profile_type,
+                        workload_profile_name=self.workload_profile_name,
+                        is_env_for_azml_app=self.is_env_for_azml_app,
                         disable_warnings=True,
                     )
 
@@ -415,6 +428,8 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
         system_assigned=None,
         revisions_mode=None,
         target_label=None,
+        cpu=None,
+        memory=None,
     ):
 
         super().__init__(cmd, name, resource_group, exists)
@@ -433,6 +448,9 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
         self.force_single_container_updates = force_single_container_updates
         self.revisions_mode = revisions_mode
         self.target_label = target_label
+
+        self.cpu = cpu
+        self.memory = memory
 
         self.should_create_acr = False
         self.acr: "AzureContainerRegistry" = None
@@ -472,6 +490,8 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
             user_assigned=self.user_assigned,
             revisions_mode=self.revisions_mode,
             target_label=self.target_label,
+            cpu=self.cpu,
+            memory=self.memory,
         )
 
     def set_force_single_container_updates(self, force_single_container_updates):
@@ -1063,6 +1083,207 @@ def _validate_up_args(cmd, source, artifact, build_env_vars, image, repo, regist
         if registry_name and len(registry_name) > MAXIMUM_SECRET_LENGTH:
             raise ValidationError(f"--registry-server ACR name must be less than {MAXIMUM_SECRET_LENGTH} "
                                   "characters when using --repo")
+
+
+def _is_azml_app(model_registry, model_name, model_version):
+    # if any of the input is not None, then it is an azml app and return true
+    return model_registry is not None or model_name is not None or model_version is not None
+
+
+def _validate_azml_model_existence(cmd, model_registry, model_name, model_version):
+    model_load_class = None
+    # For now, we need to check model existence by performing GET request directly for azureml.
+    res = requests.get(f"https://api.catalog.azureml.ms/asset-gallery/v1.0/{model_registry}/models/{model_name}/version/{model_version}")
+    data = res.json()
+    error_message = safe_get(data, 'error', 'message')
+    if error_message is not None or res.status_code != 200:
+        # In case for changes in the API, we need to check if a model is truly not found or if it is a different error.
+        logger.debug(f"Model {model_name} version {model_version} is not found in Azure ML registry {model_registry}. Status Code: {res.status_code}. Error message: {error_message}.")
+        raise ValidationError(
+            f"Model {model_name} version {model_version} is not found in Azure ML registry {model_registry} in registry {model_registry}."
+        )
+    model_asset_id = safe_get(data, "assetId")
+    if model_asset_id is None or model_asset_id == "":
+        raise ValidationError(f"Failed to get model asset id for {model_name} version {model_version} in registry {model_registry}.")
+    # Get the data reference endpoint
+    import urllib.parse
+    encoded_asset_id = urllib.parse.quote_plus(model_asset_id)
+    model_detail_url = f"https://ml.azure.com/api/eastus/modelregistry/v1.0/registry/models?assetIdOrReference={encoded_asset_id}"
+    model_detail_res = requests.get(model_detail_url)
+    model_detail_data = model_detail_res.json()
+    model_detail_error_message = safe_get(model_detail_data, 'error', 'message')
+    if model_detail_error_message is not None or model_detail_res.status_code != 200:
+        raise ValidationError(
+            f"Failed to get model details for {model_name} version {model_version} in registry {model_registry} with asset ID {model_asset_id}."
+        )
+    model_reference_endpoint = safe_get(model_detail_data, "url")
+    if model_reference_endpoint is None or model_reference_endpoint == "":
+        raise ValidationError(
+            f"Failed to get model data reference uri for {model_name} version {model_version} in registry {model_registry} with asset ID {model_asset_id}."
+        )
+    model_format = safe_get(model_detail_data, "modelFormat")
+    if model_format.lower() == "mlflow":
+        if safe_get(model_detail_data, "flavors", "hftransformersv2") is not None:
+            # Prioritize using hftransformersv2 flavor if available
+            tokenizer_class_name = safe_get(model_detail_data, "flavors", "hftransformersv2", "hf_tokenizer_class")
+            pretrained_class_name = safe_get(model_detail_data, "flavors", "hftransformersv2", "hf_pretrained_class")
+            if tokenizer_class_name is None or tokenizer_class_name == "":
+                tokenizer_class_name = "AutoTokenizer"
+                logger.warning(f"Failed to get tokenizer class name for {model_name}. Attempting to use AutoTokenizer.")
+            if pretrained_class_name is None or pretrained_class_name == "":
+                pretrained_class_name = "AutoModelForCausalLM"
+                logger.warning(f"Failed to get pretrained class name for {model_name}. Attempting to use AutoModelForCausalLM.")
+            model_load_class = [f"AZURE_ML_TOKENIZER_CLASS_NAME={tokenizer_class_name}", f"AZURE_ML_PRETRAINED_MODEL_CLASS_NAME={pretrained_class_name}"]
+            config_class_name = safe_get(model_detail_data, "flavors", "hftransformersv2", "hf_config_class")
+            if config_class_name is not None and config_class_name != "":
+                model_load_class.append(f"AZURE_ML_CONFIG_CLASS_NAME={config_class_name}")
+            task_name = safe_get(model_detail_data, "flavors", "hftransformersv2", "task_type")
+            if task_name is not None and task_name != "":
+                model_load_class.append(f"AZURE_ML_PIPELINE_TASK_NAME={task_name}")
+        elif safe_get(model_detail_data, "flavors", "transformers"):
+            pipeline_tokenizer_type = safe_get(model_detail_data, "flavors", "transformers", "tokenizer_type")
+            pipeline_instance_type = safe_get(model_detail_data, "flavors", "transformers", "instance_type")
+            pipeline_model_type = safe_get(model_detail_data, "flavors", "transformers", "pipeline_model_type")
+            pipeline_task_name = safe_get(model_detail_data, "flavors", "transformers", "task")
+            model_load_class = [f"AZURE_ML_PIPELINE_INSTANCE_TYPE={pipeline_instance_type}",
+                                f"AZURE_ML_PRETRAINED_MODEL_CLASS_NAME={pipeline_model_type}",
+                                f"AZURE_ML_PIPELINE_TASK_NAME={pipeline_task_name}",
+                                f"AZURE_ML_TOKENIZER_CLASS_NAME={pipeline_tokenizer_type}"]
+            if pipeline_tokenizer_type is None or pipeline_instance_type is None or pipeline_model_type is None or pipeline_task_name is None:
+                logger.warning("Model loading class names cannot be automatically detected.")
+                model_load_class = []
+    elif model_format.lower() == "custom":
+        raise ValidationError("Custom model format is not supported yet.")
+    return model_asset_id, model_reference_endpoint, model_format, model_load_class
+
+
+def _validate_azml_args(cmd, default_mcr_img, image_name, model_registry, model_name, model_version):
+    ACA_AZML_BLESSED_MODEL = ["azureml:phi-4",
+                              "azureml:mistralai-mistral-7b-v01",
+                              "azureml:phi-3.5-mini-instruct",
+                              "azureml:gpt2-medium",
+                              "azureml:phi-4-mini-reasoning",
+                              "azureml:phi-4-reasoning"]
+    if model_registry is None and model_name is None and model_version is None:
+        return
+    if model_registry is None:
+        raise RequiredArgumentMissingError(
+            "You must specify --model-registry when deploying Foundry Models through Azure Container Apps CLI."
+        )
+    if model_name is None:
+        raise RequiredArgumentMissingError(
+            "You must specify --model-name when deploying Foundry Models through Azure Container Apps CLI."
+        )
+    if model_version is None:
+        raise RequiredArgumentMissingError(
+            "You must specify --model-version when deploying Foundry Models through Azure Container Apps CLI."
+        )
+    if image_name is None or image_name.lower() == default_mcr_img:
+        logger.warning("A default image for the model you selected will be deployed to your container app. If you would like to customize your image, you can provide your own with --image.")
+        image_name = default_mcr_img
+        # Check if model is a blessed one.
+        model_info = f"{model_registry.lower()}:{model_name.lower()}"
+        if model_info not in ACA_AZML_BLESSED_MODEL:
+            raise ValidationError(
+                f"""Model {model_name} from registry {model_registry} is currently not fully supported by our MCR image.
+Please visit https://github.com/microsoft/azure-container-apps/tree/main/templates/azml-app to download and modify the container template to get best experience.
+You can then deploy your personalized template image by running the following:
+az containerapp up --name <app_name> --image <your_image> --model-name <model_name> --model-version <model_version> --model-registry <model_registry>
+Currently supported model list: https://aka.ms/aca/serverless-gpu-regions"""
+            )
+    model_asset_id, model_reference_endpoint, model_type, model_load_class = _validate_azml_model_existence(cmd, model_registry, model_name, model_version)
+    return model_asset_id, model_reference_endpoint, model_type, model_load_class, image_name
+
+
+def _set_azml_env_vars(cmd, cli_passed_env_vars, model_asset_id, model_reference_endpoint, model_format, model_load_classes, is_azml_mcr_app):
+    # We will automatically manage the required env vars for cx if the azml app is using mcr image.
+    # If the user is using a custom image, we will only manage the essential ones.
+    essential_env_vars = [f"AZURE_ML_MODEL_TYPE={model_format.lower()}", f"AZURE_ML_MODEL_ID={model_asset_id}", f"AZURE_ML_MODEL_PATH={model_reference_endpoint}"]
+    if is_azml_mcr_app and model_format.lower() != "custom" and (model_load_classes is None or model_load_classes == []):
+        raise ValidationError("""Model is currently not fully supported by our MCR image.
+Please visit https://github.com/microsoft/azure-container-apps/tree/main/templates to download and modify the container template to get best experience.
+You can then build and deploy the modified template from local path using --local-path option or use your own docker image.
+Currently supported model list: https://aka.ms/something""")
+    required_env_vars = essential_env_vars + model_load_classes if is_azml_mcr_app else essential_env_vars
+    new_env_vars = required_env_vars
+    if cli_passed_env_vars is not None:
+        for cli_env_var in cli_passed_env_vars:
+            key, _ = cli_env_var.split("=")
+            if key not in required_env_vars:
+                new_env_vars.append(cli_env_var)
+    return new_env_vars
+
+
+def _validate_azml_env_and_create_if_needed(cmd, app, env, cli_input_environment_name, resource_group, cli_input_resource_group_name, workload_profile_name):
+    cpu = None
+    memory = None
+    if app.check_exists():
+        wp_name = app.get()["properties"]["workloadProfileName"]
+        env_name = app.get()["properties"]["environmentId"].split("/")[-1]
+        env_rg_name = parse_resource_id(app.get()["properties"]["environmentId"])["resource_group"]
+        if cli_input_environment_name and cli_input_environment_name.lower() != env_name.lower():
+            raise ValidationError(f"{app.name} in resource group {app.resource_group.name} found under {env_name}, which is different from the one specified in --environment {cli_input_environment_name}. Please specify the correct environment.")
+        if wp_name is not None:
+            env_detail = show_managed_environment(cmd, env_name, env_rg_name)
+            wps = safe_get(env_detail, "properties", "workloadProfiles")
+            for wp in wps:
+                if wp["name"].lower() == wp_name.lower() and "gpu" not in wp["workloadProfileType"].lower():
+                    raise ValidationError("Azure AI Foundry model requires a GPU workload profile. Your current app is not running with a GPU workload profile. Create a new app with correct workload profile or switch your current one to a GPU workload profile. Serverless GPU supported regions: https://aka.ms/aca/serverless-gpu-regions")
+                env = ContainerAppEnvironment(cmd, env_name, resource_group, location=safe_get(env_detail, "location"))
+        return env, None, None, None
+    else:
+        if not env.check_exists():
+            if env.location is None or env.location == "":
+                raise ValidationError("When using 'az containerapp up' to deploy a Foundry model, you must specify the location for your app.\n"
+                                      "Please specify the location of the app."
+                                      "Serverless GPU supported regions: https://aka.ms/aca/serverless-gpu-regions")
+            workload_profile_name = workload_profile_name if workload_profile_name is not None else "serverless-A100"
+            cpu = 24
+            memory = "220Gi"
+            if cli_input_environment_name:
+                logger.warning(f"Environment {cli_input_environment_name} not found in {cli_input_resource_group_name}.")
+            logger.warning(f"We will create an environment named {env.name} with serverless A100 GPU workload profile using workload profile name {workload_profile_name}.")
+            env.workload_profile_name = workload_profile_name
+            env.workload_profile_type = "Consumption-GPU-NC24-A100"
+            env.create_if_needed(app.name)
+        env_detail = show_managed_environment(cmd, env.name, env.resource_group.name)
+        wps = safe_get(env_detail, "properties", "workloadProfiles")
+        if workload_profile_name is None:
+            serverless_a100_wp_name = None
+            serverless_t4_wp_name = None
+            dedicated_nc96_a100_wp_name = None
+            dedicated_nc48_a100_wp_name = None
+            dedicated_nc24_a100_wp_name = None
+            for wp in wps:
+                if wp["workloadProfileType"].lower() == "consumption-gpu-nc24-a100":
+                    serverless_a100_wp_name = wp["name"]
+                    cpu = 24
+                    memory = "220Gi"
+                if wp["workloadProfileType"].lower() == "consumption-gpu-nc8as-t4":
+                    serverless_t4_wp_name = wp["name"]
+                    cpu = 8
+                    memory = "56Gi"
+                if wp["workloadProfileType"].lower() == "nc96-a100":
+                    dedicated_nc96_a100_wp_name = wp["name"]
+                    cpu = 96
+                    memory = "880Gi"
+                if wp["workloadProfileType"].lower() == "nc48-a100":
+                    dedicated_nc48_a100_wp_name = wp["name"]
+                    cpu = 48
+                    memory = "440Gi"
+                if wp["workloadProfileType"].lower() == "nc24-a100":
+                    dedicated_nc24_a100_wp_name = wp["name"]
+                    cpu = 24
+                    memory = "220Gi"
+            workload_profile_name = serverless_a100_wp_name or serverless_t4_wp_name or dedicated_nc96_a100_wp_name or dedicated_nc48_a100_wp_name or dedicated_nc24_a100_wp_name
+            if workload_profile_name is None or workload_profile_name == "":
+                raise ValidationError("Azure AI Foundry model requires a GPU workload profile. Your current environment does not have a GPU workload profile. Serverless GPU supported regions: https://aka.ms/aca/serverless-gpu-regions")
+            logger.warning(f"No workload profile name specified. Attempting to use {workload_profile_name}, which is the most powerful one created in the environment.")
+        else:
+            for wp in wps:
+                if wp["name"].lower() == workload_profile_name.lower() and "gpu" not in wp["workloadProfileType"].lower():
+                    raise ValidationError(f"{workload_profile_name} is a {wp['workloadProfileType']} type workload profile. Azure AI Foundry model requires a GPU workload profile. Serverless GPU supported regions: https://aka.ms/aca/serverless-gpu-regions")
+        return env, workload_profile_name, cpu, memory
 
 
 def _validate_custom_location_connected_cluster_args(cmd, env, resource_group_name, location, custom_location_id, connected_cluster_id):

@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "dynatrace monitor",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage dynatrace monitor
+    """Manage Dynatrace resource on Azure. This command lists properties including Dynatrace environment properties, SSO properties, and plan information.
     """
     pass
 

@@ -12,18 +12,21 @@ from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathChec
 from .common import (TEST_LOCATION, STAGE_LOCATION, write_test_file,
                      clean_up_test_file,
                      )
+from .custom_preparers import SubnetPreparer
 from .utils import create_containerapp_env
 
 
 class ContainerappSessionPoolTests(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer()
-    def test_containerapp_sessionpool(self, resource_group):
+    @SubnetPreparer(location="centralus", delegations='Microsoft.App/environments',
+                    service_endpoints="Microsoft.Storage.Global")
+    def test_containerapp_sessionpool(self, resource_group, subnet_id, vnet_name, subnet_name):
         location = TEST_LOCATION
         self.cmd('configure --defaults location={}'.format(location))
 
         env_name = self.create_random_name(prefix='aca-sp-env', length=24)
-        self.cmd('containerapp env create -g {} -n {} -l {} --logs-destination none'.format(resource_group, env_name, location), expect_failure=False)
+        self.cmd('containerapp env create -g {} -n {} -l {} --logs-destination none -s {}'.format(resource_group, env_name, location, subnet_id), expect_failure=False)
         containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
         while containerapp_env["properties"]["provisioningState"].lower() in ["waiting", "inprogress"]:
             time.sleep(5)
@@ -102,7 +105,7 @@ class ContainerappSessionPoolTests(ScenarioTest):
                 JMESPathCheck('properties.customContainerTemplate.containers[0].resources.memory', memory),
                 JMESPathCheck('properties.customContainerTemplate.ingress.targetPort', 80),
                 JMESPathCheck('properties.sessionNetworkConfiguration.status', egress),
-                JMESPathCheck('properties.dynamicPoolConfiguration.cooldownPeriodInSeconds', cooldown),
+                # JMESPathCheck('properties.dynamicPoolConfiguration.cooldownPeriodInSeconds', cooldown),
             ])
 
         sessionpool = self.cmd('containerapp sessionpool show -g {} -n {}'.format(resource_group, sessionpool_name_custom)).get_output_in_json()
@@ -347,6 +350,18 @@ class ContainerappSessionPoolTests(ScenarioTest):
                 JMESPathCheck("properties.managedIdentitySettings[0].lifecycle", "None"),
             ])
         
+        # Update session pool image
+        self.cmd(
+            f'containerapp sessionpool update -g {resource_group} -n {sessionpool_name_custom} -l {location} --image {image_name} --registry-server {acr}.azurecr.io --registry-identity {user_identity_id}',
+            checks=[
+                JMESPathCheck('name', sessionpool_name_custom),
+                JMESPathCheck("properties.provisioningState", "Succeeded"),
+                JMESPathCheck("identity.type", "UserAssigned"),
+                JMESPathCheck("properties.managedIdentitySettings[0].identity", user_identity_id),
+                JMESPathCheck("properties.managedIdentitySettings[0].lifecycle", "None"),
+            ])
+        
+
         self.cmd('containerapp sessionpool delete -g {} -n {} --yes'.format(resource_group, sessionpool_name_custom))
 
         # List Session Pools

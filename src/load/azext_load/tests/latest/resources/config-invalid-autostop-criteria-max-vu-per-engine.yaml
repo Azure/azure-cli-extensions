@@ -1,0 +1,21 @@
+# Invalid autoStop criteria: timeWindow is negative
+displayName: CLI-Test
+testPlan: sample-JMX-file.jmx
+description: 'Test created from az load test command'
+engineInstances: 1
+configurationFiles:
+  - additional-data.csv
+zipArtifacts:
+   - sample-ZIP-artifact.zip
+failureCriteria:
+  - avg(requests_per_sec) > 78
+  - percentage(error) > 50
+  - GetCustomerDetails: avg(latency) > 200
+env:
+  - name: 'rps'
+    value: 1
+splitAllCSVs: True
+autoStop:
+  errorPercentage: 87.5
+  timeWindow: 5
+  maximumVirtualUsersPerEngine: 0

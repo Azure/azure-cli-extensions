@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "dynatrace monitor list-linkable-environment",
 )
 class ListLinkableEnvironment(AAZCommand):
-    """Get all the dynatrace environments that a user can link a azure resource to
+    """List all available Dynatrace environments that can be integrated with your Azure Dynatrace resources.
 
     :example: List-linkable-environment
         az dynatrace monitor list-linkable-environment -g rg --monitor-name monitor --user-principal Alice@microsoft.com --region eastus2euap

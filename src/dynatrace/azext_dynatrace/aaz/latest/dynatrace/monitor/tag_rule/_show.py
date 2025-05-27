@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "dynatrace monitor tag-rule show",
 )
 class Show(AAZCommand):
-    """Show a tag rule
+    """Get detailed information about include/exclude tag rules enabled for logs and metrics.
 
     :example: Show tag-rule
         az dynatrace monitor tag-rule show -g rg --monitor-name monitor -n default

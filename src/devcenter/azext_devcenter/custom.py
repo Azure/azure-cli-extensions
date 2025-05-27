@@ -76,7 +76,6 @@ from .aaz.latest.devcenter.admin.image_version import (
 from .aaz.latest.devcenter.admin.network_connection import (
     Create as _NetworkConnectionCreate,
 )
-from .aaz.latest.devcenter.admin.plan_member import Create as _PlanMemberCreate
 from .aaz.latest.devcenter.admin.pool import (
     Create as _PoolCreate,
     Delete as _PoolDelete,
@@ -121,16 +120,17 @@ from .aaz.latest.devcenter.admin.schedule import (
     Update as _ScheduleUpdate,
     Wait as _ScheduleWait,
 )
-from .aaz.latest.devcenter.admin.image_definition import (
-    List as _ImageDefinitionList,
-    Show as _ImageDefinitionShow,
-    BuildImage as _ImageDefinitionBuildImage,
+from .aaz.latest.devcenter.admin.project_image_definition import (
+    List as _ProjectImageDefinitionList,
+    Show as _ProjectImageDefinitionShow,
+    BuildImage as _ProjectImageDefinitionBuildImage,
+    GetErrorDetail as _ProjectImageDefinitionGetErrorDetail,
 )
-from .aaz.latest.devcenter.admin.image_definition_build import (
-    List as _ImageDefinitionBuildList,
-    Show as _ImageDefinitionBuildShow,
-    Cancel as _ImageDefinitionBuildCancel,
-    GetBuildDetail as _ImageDefinitionBuildGetDetail,
+from .aaz.latest.devcenter.admin.project_image_definition_build import (
+    List as _ProjectImageDefinitionBuildList,
+    Show as _ProjectImageDefinitionBuildShow,
+    Cancel as _ProjectImageDefinitionBuildCancel,
+    GetBuildDetail as _ProjectImageDefinitionBuildGetDetail,
 )
 from .aaz.latest.devcenter.admin.project_image import (
     List as _ProjectImageList,
@@ -187,6 +187,9 @@ from .aaz.latest.devcenter.dev.dev_box import (
     SkipAction as DevBoxSkipAction,
     Start as DevBoxStart,
     Stop as DevBoxStop,
+    Align as DevBoxAlign,
+    Approve as DevBoxApprove,
+    SetActiveHours as DevBoxSetActiveHours,
 )
 from .aaz.latest.devcenter.dev.environment import (
     Create as EnvironmentCreate,
@@ -229,6 +232,17 @@ from .aaz.latest.devcenter.dev.customization_task import (
     ShowLogs as CustomizationTaskShowLogs,
     Show as CustomizationTaskShow,
     Validate as CustomizationTaskValidate,
+)
+from .aaz.latest.devcenter.dev.approval import (
+    List as ApprovalList
+)
+from .aaz.latest.devcenter.dev.add_on import (
+    Create as AddOnCreate,
+    Delete as AddOnDelete,
+    Disable as AddOnDisable,
+    Enable as AddOnEnable,
+    List as AddOnList,
+    Show as AddOnShow,
 )
 from ._validators import (
     validate_attached_network_or_dev_box_def,
@@ -321,43 +335,49 @@ class ProjectImageVersionShow(_ProjectImageVersionShow):
         return set_configured_defaults(args)
 
 
-class ImageDefinitionBuildList(_ImageDefinitionBuildList):
+class ProjectImageDefinitionBuildList(_ProjectImageDefinitionBuildList):
     def _cli_arguments_loader(self):
         args = super()._cli_arguments_loader()
         return set_configured_defaults(args)
 
 
-class ImageDefinitionBuildShow(_ImageDefinitionBuildShow):
+class ProjectImageDefinitionBuildShow(_ProjectImageDefinitionBuildShow):
     def _cli_arguments_loader(self):
         args = super()._cli_arguments_loader()
         return set_configured_defaults(args)
 
 
-class ImageDefinitionBuildCancel(_ImageDefinitionBuildCancel):
+class ProjectImageDefinitionBuildCancel(_ProjectImageDefinitionBuildCancel):
     def _cli_arguments_loader(self):
         args = super()._cli_arguments_loader()
         return set_configured_defaults(args)
 
 
-class ImageDefinitionBuildGetDetail(_ImageDefinitionBuildGetDetail):
+class ProjectImageDefinitionBuildGetDetail(_ProjectImageDefinitionBuildGetDetail):
     def _cli_arguments_loader(self):
         args = super()._cli_arguments_loader()
         return set_configured_defaults(args)
 
 
-class ImageDefinitionList(_ImageDefinitionList):
+class ProjectImageDefinitionList(_ProjectImageDefinitionList):
     def _cli_arguments_loader(self):
         args = super()._cli_arguments_loader()
         return set_configured_defaults(args)
 
 
-class ImageDefinitionShow(_ImageDefinitionShow):
+class ProjectImageDefinitionShow(_ProjectImageDefinitionShow):
     def _cli_arguments_loader(self):
         args = super()._cli_arguments_loader()
         return set_configured_defaults(args)
 
 
-class ImageDefinitionBuildImage(_ImageDefinitionBuildImage):
+class ProjectImageDefinitionBuildImage(_ProjectImageDefinitionBuildImage):
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
+
+
+class ProjectImageDefinitionGetErrorDetail(_ProjectImageDefinitionGetErrorDetail):
     def _cli_arguments_loader(self):
         args = super()._cli_arguments_loader()
         return set_configured_defaults(args)
@@ -676,15 +696,6 @@ class NetworkConnectionCreate(_NetworkConnectionCreate):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         args_schema.subnet_id._required = True
         args_schema.domain_join_type._required = True
-        return args_schema
-
-
-class PlanMemberCreate(_PlanMemberCreate):
-    @classmethod
-    def _build_arguments_schema(cls, *args, **kwargs):
-        args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.member_id._required = True
-        args_schema.member_type._required = True
         return args_schema
 
 
@@ -1176,6 +1187,68 @@ def devcenter_dev_box_stop(
         "dev_box_name": dev_box_name,
         "hibernate": hibernate,
         "no_wait": no_wait
+    })
+
+
+def devcenter_dev_box_align(
+    cmd,
+    project_name,
+    dev_box_name,
+    user_id="me",
+    no_wait=False,
+    dev_center=None,
+    endpoint=None,
+):
+    updated_endpoint = get_dataplane_endpoint(cmd.cli_ctx, endpoint, dev_center)
+    return DevBoxAlign(cli_ctx=cmd.cli_ctx)(command_args={
+        "endpoint": updated_endpoint,
+        "project_name": project_name,
+        "user_id": user_id,
+        "dev_box_name": dev_box_name,
+        "no_wait": no_wait,
+        "targets": ["NetworkProperties"]
+    })
+
+
+def devcenter_dev_box_approve(
+    cmd,
+    project_name,
+    dev_box_name,
+    user_id,
+    no_wait=False,
+    dev_center=None,
+    endpoint=None,
+):
+    updated_endpoint = get_dataplane_endpoint(cmd.cli_ctx, endpoint, dev_center)
+    return DevBoxApprove(cli_ctx=cmd.cli_ctx)(command_args={
+        "endpoint": updated_endpoint,
+        "project_name": project_name,
+        "user_id": user_id,
+        "dev_box_name": dev_box_name,
+        "no_wait": no_wait
+    })
+
+
+def devcenter_dev_box_set_active_hours(
+    cmd,
+    project_name,
+    dev_box_name,
+    end_time_hour,
+    start_time_hour,
+    time_zone,
+    user_id="me",
+    dev_center=None,
+    endpoint=None,
+):
+    updated_endpoint = get_dataplane_endpoint(cmd.cli_ctx, endpoint, dev_center)
+    return DevBoxSetActiveHours(cli_ctx=cmd.cli_ctx)(command_args={
+        "endpoint": updated_endpoint,
+        "project_name": project_name,
+        "user_id": user_id,
+        "dev_box_name": dev_box_name,
+        "end_time_hour": end_time_hour,
+        "start_time_hour": start_time_hour,
+        "time_zone": time_zone
     })
 
 
@@ -1955,4 +2028,141 @@ def devcenter_customization_task_log_show(
         "customization_group_name": customization_group_name,
         "customization_task_id": customization_task_id,
         "user_id": user_id
+    })
+
+
+def devcenter_approval_list(
+    cmd,
+    project_name,
+    dev_center=None,
+    endpoint=None,
+):
+    updated_endpoint = get_dataplane_endpoint(cmd.cli_ctx, endpoint, dev_center)
+    return ApprovalList(cli_ctx=cmd.cli_ctx)(command_args={
+        "endpoint": updated_endpoint,
+        "project_name": project_name,
+    })
+
+
+def devcenter_add_on_create(
+    cmd,
+    dev_box_name,
+    project_name,
+    add_on_name,
+    hosting_resource_name="Default",
+    user_id="me",
+    no_wait=False,
+    dev_center=None,
+    endpoint=None,
+):
+    updated_endpoint = get_dataplane_endpoint(cmd.cli_ctx, endpoint, dev_center)
+    return AddOnCreate(cli_ctx=cmd.cli_ctx)(command_args={
+        "endpoint": updated_endpoint,
+        "project_name": project_name,
+        "user_id": user_id,
+        "dev_box_name": dev_box_name,
+        "no_wait": no_wait,
+        "add_on_name": add_on_name,
+        "dev_box_tunnel": {
+            "hosting_resource_name": hosting_resource_name,
+        }
+    })
+
+
+def devcenter_add_on_delete(
+    cmd,
+    dev_box_name,
+    project_name,
+    add_on_name,
+    user_id="me",
+    no_wait=False,
+    dev_center=None,
+    endpoint=None,
+):
+    updated_endpoint = get_dataplane_endpoint(cmd.cli_ctx, endpoint, dev_center)
+    return AddOnDelete(cli_ctx=cmd.cli_ctx)(command_args={
+        "endpoint": updated_endpoint,
+        "project_name": project_name,
+        "user_id": user_id,
+        "dev_box_name": dev_box_name,
+        "no_wait": no_wait,
+        "add_on_name": add_on_name
+    })
+
+
+def devcenter_add_on_disable(
+    cmd,
+    dev_box_name,
+    project_name,
+    add_on_name,
+    user_id="me",
+    no_wait=False,
+    dev_center=None,
+    endpoint=None,
+):
+    updated_endpoint = get_dataplane_endpoint(cmd.cli_ctx, endpoint, dev_center)
+    return AddOnDisable(cli_ctx=cmd.cli_ctx)(command_args={
+        "endpoint": updated_endpoint,
+        "project_name": project_name,
+        "user_id": user_id,
+        "dev_box_name": dev_box_name,
+        "no_wait": no_wait,
+        "add_on_name": add_on_name
+    })
+
+
+def devcenter_add_on_enable(
+    cmd,
+    dev_box_name,
+    project_name,
+    add_on_name,
+    user_id="me",
+    no_wait=False,
+    dev_center=None,
+    endpoint=None,
+):
+    updated_endpoint = get_dataplane_endpoint(cmd.cli_ctx, endpoint, dev_center)
+    return AddOnEnable(cli_ctx=cmd.cli_ctx)(command_args={
+        "endpoint": updated_endpoint,
+        "project_name": project_name,
+        "user_id": user_id,
+        "dev_box_name": dev_box_name,
+        "no_wait": no_wait,
+        "add_on_name": add_on_name
+    })
+
+
+def devcenter_add_on_show(
+    cmd,
+    dev_box_name,
+    project_name,
+    add_on_name,
+    user_id="me",
+    dev_center=None,
+    endpoint=None,
+):
+    updated_endpoint = get_dataplane_endpoint(cmd.cli_ctx, endpoint, dev_center)
+    return AddOnShow(cli_ctx=cmd.cli_ctx)(command_args={
+        "endpoint": updated_endpoint,
+        "project_name": project_name,
+        "user_id": user_id,
+        "dev_box_name": dev_box_name,
+        "add_on_name": add_on_name
+    })
+
+
+def devcenter_add_on_list(
+    cmd,
+    dev_box_name,
+    project_name,
+    user_id="me",
+    dev_center=None,
+    endpoint=None,
+):
+    updated_endpoint = get_dataplane_endpoint(cmd.cli_ctx, endpoint, dev_center)
+    return AddOnList(cli_ctx=cmd.cli_ctx)(command_args={
+        "endpoint": updated_endpoint,
+        "project_name": project_name,
+        "user_id": user_id,
+        "dev_box_name": dev_box_name,
     })

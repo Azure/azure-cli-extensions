@@ -2,6 +2,10 @@
 
 Release History
 ===============
+1.3.0
+++++++
+* `az elastic-san create`: Make `--base-size-tib` and `--extended-capacity-size-tib` optional with default value of 20 and 0
+
 1.2.0b3
 ++++++
 * `az elastic-san volume restore`: Support restoring soft-deleted volume

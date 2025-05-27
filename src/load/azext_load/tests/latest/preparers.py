@@ -29,9 +29,7 @@ class LoadTestResourcePreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
         key=KEY_LOAD_TEST_RESOURCE,
     ):
         if " " in name_prefix:
-            raise CliTestError(
-                "Error: Space character in name prefix '%s'" % name_prefix
-            )
+            raise CliTestError("Error: Space character in name prefix '%s'" % name_prefix)
         super(LoadTestResourcePreparer, self).__init__(name_prefix, random_name_length)
         self.cli_ctx = get_dummy_cli()
         self.parameter_name = parameter_name
@@ -48,9 +46,7 @@ class LoadTestResourcePreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
             }
 
         if not self.resource_group[1]:
-            self.resource_group[1] = self.test_class_instance.kwargs.get(
-                self.resource_group[0]
-            )
+            self.resource_group[1] = self.test_class_instance.kwargs.get(self.resource_group[0])
             if not self.resource_group[1]:
                 raise CliTestError("Error: No resource group configured!")
         retries = 3
@@ -83,6 +79,7 @@ class LoadTestResourcePreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
 
 # Key for storing Action Group name in test kwargs
 KEY_ACTION_GROUP = "action_group"
+
 
 class ActionGroupPreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
     def __init__(
@@ -142,7 +139,7 @@ class ActionGroupPreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
 
                 self.test_class_instance.kwargs[self.key] = action_group_id
                 return {self.parameter_name: action_group_id}
-            
+
             except Exception:
                 retries -= 1
                 time.sleep(30)  # Wait before retrying

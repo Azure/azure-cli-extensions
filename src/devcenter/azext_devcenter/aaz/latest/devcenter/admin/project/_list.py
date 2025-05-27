@@ -25,10 +25,10 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-10-01-preview",
+        "version": "2025-04-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.devcenter/projects", "2024-10-01-preview"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects", "2024-10-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.devcenter/projects", "2025-04-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects", "2025-04-01-preview"],
         ]
     }
 
@@ -54,12 +54,12 @@ class List(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        condition_0 = has_value(self.ctx.args.resource_group) and has_value(self.ctx.subscription_id)
-        condition_1 = has_value(self.ctx.subscription_id) and has_value(self.ctx.args.resource_group) is not True
+        condition_0 = has_value(self.ctx.subscription_id) and has_value(self.ctx.args.resource_group) is not True
+        condition_1 = has_value(self.ctx.args.resource_group) and has_value(self.ctx.subscription_id)
         if condition_0:
-            self.ProjectsListByResourceGroup(ctx=self.ctx)()
-        if condition_1:
             self.ProjectsListBySubscription(ctx=self.ctx)()
+        if condition_1:
+            self.ProjectsListByResourceGroup(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -74,6 +74,259 @@ class List(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
         next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
         return result, next_link
+
+    class ProjectsListBySubscription(AAZHttpOperation):
+        CLIENT_TYPE = "MgmtClient"
+
+        def __call__(self, *args, **kwargs):
+            request = self.make_request()
+            session = self.client.send_request(request=request, stream=False, **kwargs)
+            if session.http_response.status_code in [200]:
+                return self.on_200(session)
+
+            return self.on_error(session.http_response)
+
+        @property
+        def url(self):
+            return self.client.format_url(
+                "/subscriptions/{subscriptionId}/providers/Microsoft.DevCenter/projects",
+                **self.url_parameters
+            )
+
+        @property
+        def method(self):
+            return "GET"
+
+        @property
+        def error_format(self):
+            return "MgmtErrorFormat"
+
+        @property
+        def url_parameters(self):
+            parameters = {
+                **self.serialize_url_param(
+                    "subscriptionId", self.ctx.subscription_id,
+                    required=True,
+                ),
+            }
+            return parameters
+
+        @property
+        def query_parameters(self):
+            parameters = {
+                **self.serialize_query_param(
+                    "api-version", "2025-04-01-preview",
+                    required=True,
+                ),
+            }
+            return parameters
+
+        @property
+        def header_parameters(self):
+            parameters = {
+                **self.serialize_header_param(
+                    "Accept", "application/json",
+                ),
+            }
+            return parameters
+
+        def on_200(self, session):
+            data = self.deserialize_http_content(session)
+            self.ctx.set_var(
+                "instance",
+                data,
+                schema_builder=self._build_schema_on_200
+            )
+
+        _schema_on_200 = None
+
+        @classmethod
+        def _build_schema_on_200(cls):
+            if cls._schema_on_200 is not None:
+                return cls._schema_on_200
+
+            cls._schema_on_200 = AAZObjectType()
+
+            _schema_on_200 = cls._schema_on_200
+            _schema_on_200.next_link = AAZStrType(
+                serialized_name="nextLink",
+                flags={"read_only": True},
+            )
+            _schema_on_200.value = AAZListType(
+                flags={"read_only": True},
+            )
+
+            value = cls._schema_on_200.value
+            value.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element
+            _element.id = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.identity = AAZIdentityObjectType()
+            _element.location = AAZStrType(
+                flags={"required": True},
+            )
+            _element.name = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
+            _element.system_data = AAZObjectType(
+                serialized_name="systemData",
+                flags={"read_only": True},
+            )
+            _element.tags = AAZDictType()
+            _element.type = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            identity = cls._schema_on_200.value.Element.identity
+            identity.principal_id = AAZStrType(
+                serialized_name="principalId",
+                flags={"read_only": True},
+            )
+            identity.tenant_id = AAZStrType(
+                serialized_name="tenantId",
+                flags={"read_only": True},
+            )
+            identity.type = AAZStrType(
+                flags={"required": True},
+            )
+            identity.user_assigned_identities = AAZDictType(
+                serialized_name="userAssignedIdentities",
+            )
+
+            user_assigned_identities = cls._schema_on_200.value.Element.identity.user_assigned_identities
+            user_assigned_identities.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.identity.user_assigned_identities.Element
+            _element.client_id = AAZStrType(
+                serialized_name="clientId",
+                flags={"read_only": True},
+            )
+            _element.principal_id = AAZStrType(
+                serialized_name="principalId",
+                flags={"read_only": True},
+            )
+
+            properties = cls._schema_on_200.value.Element.properties
+            properties.azure_ai_services_settings = AAZObjectType(
+                serialized_name="azureAiServicesSettings",
+            )
+            properties.catalog_settings = AAZObjectType(
+                serialized_name="catalogSettings",
+            )
+            properties.customization_settings = AAZObjectType(
+                serialized_name="customizationSettings",
+            )
+            properties.description = AAZStrType()
+            properties.dev_box_auto_delete_settings = AAZObjectType(
+                serialized_name="devBoxAutoDeleteSettings",
+            )
+            properties.dev_center_id = AAZStrType(
+                serialized_name="devCenterId",
+            )
+            properties.dev_center_uri = AAZStrType(
+                serialized_name="devCenterUri",
+                flags={"read_only": True},
+            )
+            properties.display_name = AAZStrType(
+                serialized_name="displayName",
+            )
+            properties.max_dev_boxes_per_user = AAZIntType(
+                serialized_name="maxDevBoxesPerUser",
+            )
+            properties.provisioning_state = AAZStrType(
+                serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+            properties.serverless_gpu_sessions_settings = AAZObjectType(
+                serialized_name="serverlessGpuSessionsSettings",
+            )
+            properties.workspace_storage_settings = AAZObjectType(
+                serialized_name="workspaceStorageSettings",
+            )
+
+            azure_ai_services_settings = cls._schema_on_200.value.Element.properties.azure_ai_services_settings
+            azure_ai_services_settings.azure_ai_services_mode = AAZStrType(
+                serialized_name="azureAiServicesMode",
+            )
+
+            catalog_settings = cls._schema_on_200.value.Element.properties.catalog_settings
+            catalog_settings.catalog_item_sync_types = AAZListType(
+                serialized_name="catalogItemSyncTypes",
+            )
+
+            catalog_item_sync_types = cls._schema_on_200.value.Element.properties.catalog_settings.catalog_item_sync_types
+            catalog_item_sync_types.Element = AAZStrType()
+
+            customization_settings = cls._schema_on_200.value.Element.properties.customization_settings
+            customization_settings.identities = AAZListType()
+            customization_settings.user_customizations_enable_status = AAZStrType(
+                serialized_name="userCustomizationsEnableStatus",
+            )
+
+            identities = cls._schema_on_200.value.Element.properties.customization_settings.identities
+            identities.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.properties.customization_settings.identities.Element
+            _element.identity_resource_id = AAZStrType(
+                serialized_name="identityResourceId",
+            )
+            _element.identity_type = AAZStrType(
+                serialized_name="identityType",
+            )
+
+            dev_box_auto_delete_settings = cls._schema_on_200.value.Element.properties.dev_box_auto_delete_settings
+            dev_box_auto_delete_settings.delete_mode = AAZStrType(
+                serialized_name="deleteMode",
+            )
+            dev_box_auto_delete_settings.grace_period = AAZStrType(
+                serialized_name="gracePeriod",
+            )
+            dev_box_auto_delete_settings.inactive_threshold = AAZStrType(
+                serialized_name="inactiveThreshold",
+            )
+
+            serverless_gpu_sessions_settings = cls._schema_on_200.value.Element.properties.serverless_gpu_sessions_settings
+            serverless_gpu_sessions_settings.max_concurrent_sessions_per_project = AAZIntType(
+                serialized_name="maxConcurrentSessionsPerProject",
+            )
+            serverless_gpu_sessions_settings.serverless_gpu_sessions_mode = AAZStrType(
+                serialized_name="serverlessGpuSessionsMode",
+            )
+
+            workspace_storage_settings = cls._schema_on_200.value.Element.properties.workspace_storage_settings
+            workspace_storage_settings.workspace_storage_mode = AAZStrType(
+                serialized_name="workspaceStorageMode",
+            )
+
+            system_data = cls._schema_on_200.value.Element.system_data
+            system_data.created_at = AAZStrType(
+                serialized_name="createdAt",
+            )
+            system_data.created_by = AAZStrType(
+                serialized_name="createdBy",
+            )
+            system_data.created_by_type = AAZStrType(
+                serialized_name="createdByType",
+            )
+            system_data.last_modified_at = AAZStrType(
+                serialized_name="lastModifiedAt",
+            )
+            system_data.last_modified_by = AAZStrType(
+                serialized_name="lastModifiedBy",
+            )
+            system_data.last_modified_by_type = AAZStrType(
+                serialized_name="lastModifiedByType",
+            )
+
+            tags = cls._schema_on_200.value.Element.tags
+            tags.Element = AAZStrType()
+
+            return cls._schema_on_200
 
     class ProjectsListByResourceGroup(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
@@ -119,7 +372,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-10-01-preview",
+                    "api-version", "2025-04-01-preview",
                     required=True,
                 ),
             }
@@ -167,7 +420,7 @@ class List(AAZCommand):
             _element.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.identity = AAZObjectType()
+            _element.identity = AAZIdentityObjectType()
             _element.location = AAZStrType(
                 flags={"required": True},
             )
@@ -216,10 +469,19 @@ class List(AAZCommand):
             )
 
             properties = cls._schema_on_200.value.Element.properties
+            properties.azure_ai_services_settings = AAZObjectType(
+                serialized_name="azureAiServicesSettings",
+            )
             properties.catalog_settings = AAZObjectType(
                 serialized_name="catalogSettings",
             )
+            properties.customization_settings = AAZObjectType(
+                serialized_name="customizationSettings",
+            )
             properties.description = AAZStrType()
+            properties.dev_box_auto_delete_settings = AAZObjectType(
+                serialized_name="devBoxAutoDeleteSettings",
+            )
             properties.dev_center_id = AAZStrType(
                 serialized_name="devCenterId",
             )
@@ -237,6 +499,17 @@ class List(AAZCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+            properties.serverless_gpu_sessions_settings = AAZObjectType(
+                serialized_name="serverlessGpuSessionsSettings",
+            )
+            properties.workspace_storage_settings = AAZObjectType(
+                serialized_name="workspaceStorageSettings",
+            )
+
+            azure_ai_services_settings = cls._schema_on_200.value.Element.properties.azure_ai_services_settings
+            azure_ai_services_settings.azure_ai_services_mode = AAZStrType(
+                serialized_name="azureAiServicesMode",
+            )
 
             catalog_settings = cls._schema_on_200.value.Element.properties.catalog_settings
             catalog_settings.catalog_item_sync_types = AAZListType(
@@ -246,197 +519,46 @@ class List(AAZCommand):
             catalog_item_sync_types = cls._schema_on_200.value.Element.properties.catalog_settings.catalog_item_sync_types
             catalog_item_sync_types.Element = AAZStrType()
 
-            system_data = cls._schema_on_200.value.Element.system_data
-            system_data.created_at = AAZStrType(
-                serialized_name="createdAt",
-            )
-            system_data.created_by = AAZStrType(
-                serialized_name="createdBy",
-            )
-            system_data.created_by_type = AAZStrType(
-                serialized_name="createdByType",
-            )
-            system_data.last_modified_at = AAZStrType(
-                serialized_name="lastModifiedAt",
-            )
-            system_data.last_modified_by = AAZStrType(
-                serialized_name="lastModifiedBy",
-            )
-            system_data.last_modified_by_type = AAZStrType(
-                serialized_name="lastModifiedByType",
+            customization_settings = cls._schema_on_200.value.Element.properties.customization_settings
+            customization_settings.identities = AAZListType()
+            customization_settings.user_customizations_enable_status = AAZStrType(
+                serialized_name="userCustomizationsEnableStatus",
             )
 
-            tags = cls._schema_on_200.value.Element.tags
-            tags.Element = AAZStrType()
+            identities = cls._schema_on_200.value.Element.properties.customization_settings.identities
+            identities.Element = AAZObjectType()
 
-            return cls._schema_on_200
-
-    class ProjectsListBySubscription(AAZHttpOperation):
-        CLIENT_TYPE = "MgmtClient"
-
-        def __call__(self, *args, **kwargs):
-            request = self.make_request()
-            session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [200]:
-                return self.on_200(session)
-
-            return self.on_error(session.http_response)
-
-        @property
-        def url(self):
-            return self.client.format_url(
-                "/subscriptions/{subscriptionId}/providers/Microsoft.DevCenter/projects",
-                **self.url_parameters
+            _element = cls._schema_on_200.value.Element.properties.customization_settings.identities.Element
+            _element.identity_resource_id = AAZStrType(
+                serialized_name="identityResourceId",
+            )
+            _element.identity_type = AAZStrType(
+                serialized_name="identityType",
             )
 
-        @property
-        def method(self):
-            return "GET"
-
-        @property
-        def error_format(self):
-            return "MgmtErrorFormat"
-
-        @property
-        def url_parameters(self):
-            parameters = {
-                **self.serialize_url_param(
-                    "subscriptionId", self.ctx.subscription_id,
-                    required=True,
-                ),
-            }
-            return parameters
-
-        @property
-        def query_parameters(self):
-            parameters = {
-                **self.serialize_query_param(
-                    "api-version", "2024-10-01-preview",
-                    required=True,
-                ),
-            }
-            return parameters
-
-        @property
-        def header_parameters(self):
-            parameters = {
-                **self.serialize_header_param(
-                    "Accept", "application/json",
-                ),
-            }
-            return parameters
-
-        def on_200(self, session):
-            data = self.deserialize_http_content(session)
-            self.ctx.set_var(
-                "instance",
-                data,
-                schema_builder=self._build_schema_on_200
+            dev_box_auto_delete_settings = cls._schema_on_200.value.Element.properties.dev_box_auto_delete_settings
+            dev_box_auto_delete_settings.delete_mode = AAZStrType(
+                serialized_name="deleteMode",
+            )
+            dev_box_auto_delete_settings.grace_period = AAZStrType(
+                serialized_name="gracePeriod",
+            )
+            dev_box_auto_delete_settings.inactive_threshold = AAZStrType(
+                serialized_name="inactiveThreshold",
             )
 
-        _schema_on_200 = None
-
-        @classmethod
-        def _build_schema_on_200(cls):
-            if cls._schema_on_200 is not None:
-                return cls._schema_on_200
-
-            cls._schema_on_200 = AAZObjectType()
-
-            _schema_on_200 = cls._schema_on_200
-            _schema_on_200.next_link = AAZStrType(
-                serialized_name="nextLink",
-                flags={"read_only": True},
+            serverless_gpu_sessions_settings = cls._schema_on_200.value.Element.properties.serverless_gpu_sessions_settings
+            serverless_gpu_sessions_settings.max_concurrent_sessions_per_project = AAZIntType(
+                serialized_name="maxConcurrentSessionsPerProject",
             )
-            _schema_on_200.value = AAZListType(
-                flags={"read_only": True},
+            serverless_gpu_sessions_settings.serverless_gpu_sessions_mode = AAZStrType(
+                serialized_name="serverlessGpuSessionsMode",
             )
 
-            value = cls._schema_on_200.value
-            value.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.value.Element
-            _element.id = AAZStrType(
-                flags={"read_only": True},
+            workspace_storage_settings = cls._schema_on_200.value.Element.properties.workspace_storage_settings
+            workspace_storage_settings.workspace_storage_mode = AAZStrType(
+                serialized_name="workspaceStorageMode",
             )
-            _element.identity = AAZObjectType()
-            _element.location = AAZStrType(
-                flags={"required": True},
-            )
-            _element.name = AAZStrType(
-                flags={"read_only": True},
-            )
-            _element.properties = AAZObjectType(
-                flags={"client_flatten": True},
-            )
-            _element.system_data = AAZObjectType(
-                serialized_name="systemData",
-                flags={"read_only": True},
-            )
-            _element.tags = AAZDictType()
-            _element.type = AAZStrType(
-                flags={"read_only": True},
-            )
-
-            identity = cls._schema_on_200.value.Element.identity
-            identity.principal_id = AAZStrType(
-                serialized_name="principalId",
-                flags={"read_only": True},
-            )
-            identity.tenant_id = AAZStrType(
-                serialized_name="tenantId",
-                flags={"read_only": True},
-            )
-            identity.type = AAZStrType(
-                flags={"required": True},
-            )
-            identity.user_assigned_identities = AAZDictType(
-                serialized_name="userAssignedIdentities",
-            )
-
-            user_assigned_identities = cls._schema_on_200.value.Element.identity.user_assigned_identities
-            user_assigned_identities.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.value.Element.identity.user_assigned_identities.Element
-            _element.client_id = AAZStrType(
-                serialized_name="clientId",
-                flags={"read_only": True},
-            )
-            _element.principal_id = AAZStrType(
-                serialized_name="principalId",
-                flags={"read_only": True},
-            )
-
-            properties = cls._schema_on_200.value.Element.properties
-            properties.catalog_settings = AAZObjectType(
-                serialized_name="catalogSettings",
-            )
-            properties.description = AAZStrType()
-            properties.dev_center_id = AAZStrType(
-                serialized_name="devCenterId",
-            )
-            properties.dev_center_uri = AAZStrType(
-                serialized_name="devCenterUri",
-                flags={"read_only": True},
-            )
-            properties.display_name = AAZStrType(
-                serialized_name="displayName",
-            )
-            properties.max_dev_boxes_per_user = AAZIntType(
-                serialized_name="maxDevBoxesPerUser",
-            )
-            properties.provisioning_state = AAZStrType(
-                serialized_name="provisioningState",
-                flags={"read_only": True},
-            )
-
-            catalog_settings = cls._schema_on_200.value.Element.properties.catalog_settings
-            catalog_settings.catalog_item_sync_types = AAZListType(
-                serialized_name="catalogItemSyncTypes",
-            )
-
-            catalog_item_sync_types = cls._schema_on_200.value.Element.properties.catalog_settings.catalog_item_sync_types
-            catalog_item_sync_types.Element = AAZStrType()
 
             system_data = cls._schema_on_200.value.Element.system_data
             system_data.created_at = AAZStrType(

@@ -15,10 +15,7 @@ from azure.cli.core.aaz import *
     "informatica data-management organization show",
 )
 class Show(AAZCommand):
-    """Get an InformaticaOrganizationResource
-
-    :example: Get an Informatica Organization
-        az informatica data-management organization show -g demoResourceGroup -n demoOrg
+    """Retrieve details of a specific Informatica organization resource.
     """
 
     _aaz_info = {
@@ -44,8 +41,8 @@ class Show(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.org_name = AAZStrArg(
-            options=["-n", "--name", "--org-name"],
+        _args_schema.organization_name = AAZStrArg(
+            options=["-n", "--name", "--organization-name"],
             help="Name of the Organizations resource",
             required=True,
             id_part="name",
@@ -54,7 +51,6 @@ class Show(AAZCommand):
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="Resource group name",
             required=True,
         )
         return cls._args_schema
@@ -106,7 +102,7 @@ class Show(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "organizationName", self.ctx.args.org_name,
+                    "organizationName", self.ctx.args.organization_name,
                     required=True,
                 ),
                 **self.serialize_url_param(

@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}", "2024-10-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}", "2025-04-01-preview"],
         ]
     }
 
@@ -121,7 +121,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-10-01-preview",
+                    "api-version", "2025-04-01-preview",
                     required=True,
                 ),
             }
@@ -157,7 +157,7 @@ class Wait(AAZWaitCommand):
             _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.identity = AAZObjectType()
+            _schema_on_200.identity = AAZIdentityObjectType()
             _schema_on_200.location = AAZStrType(
                 flags={"required": True},
             )
@@ -206,10 +206,19 @@ class Wait(AAZWaitCommand):
             )
 
             properties = cls._schema_on_200.properties
+            properties.azure_ai_services_settings = AAZObjectType(
+                serialized_name="azureAiServicesSettings",
+            )
             properties.catalog_settings = AAZObjectType(
                 serialized_name="catalogSettings",
             )
+            properties.customization_settings = AAZObjectType(
+                serialized_name="customizationSettings",
+            )
             properties.description = AAZStrType()
+            properties.dev_box_auto_delete_settings = AAZObjectType(
+                serialized_name="devBoxAutoDeleteSettings",
+            )
             properties.dev_center_id = AAZStrType(
                 serialized_name="devCenterId",
             )
@@ -227,6 +236,17 @@ class Wait(AAZWaitCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+            properties.serverless_gpu_sessions_settings = AAZObjectType(
+                serialized_name="serverlessGpuSessionsSettings",
+            )
+            properties.workspace_storage_settings = AAZObjectType(
+                serialized_name="workspaceStorageSettings",
+            )
+
+            azure_ai_services_settings = cls._schema_on_200.properties.azure_ai_services_settings
+            azure_ai_services_settings.azure_ai_services_mode = AAZStrType(
+                serialized_name="azureAiServicesMode",
+            )
 
             catalog_settings = cls._schema_on_200.properties.catalog_settings
             catalog_settings.catalog_item_sync_types = AAZListType(
@@ -235,6 +255,47 @@ class Wait(AAZWaitCommand):
 
             catalog_item_sync_types = cls._schema_on_200.properties.catalog_settings.catalog_item_sync_types
             catalog_item_sync_types.Element = AAZStrType()
+
+            customization_settings = cls._schema_on_200.properties.customization_settings
+            customization_settings.identities = AAZListType()
+            customization_settings.user_customizations_enable_status = AAZStrType(
+                serialized_name="userCustomizationsEnableStatus",
+            )
+
+            identities = cls._schema_on_200.properties.customization_settings.identities
+            identities.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.customization_settings.identities.Element
+            _element.identity_resource_id = AAZStrType(
+                serialized_name="identityResourceId",
+            )
+            _element.identity_type = AAZStrType(
+                serialized_name="identityType",
+            )
+
+            dev_box_auto_delete_settings = cls._schema_on_200.properties.dev_box_auto_delete_settings
+            dev_box_auto_delete_settings.delete_mode = AAZStrType(
+                serialized_name="deleteMode",
+            )
+            dev_box_auto_delete_settings.grace_period = AAZStrType(
+                serialized_name="gracePeriod",
+            )
+            dev_box_auto_delete_settings.inactive_threshold = AAZStrType(
+                serialized_name="inactiveThreshold",
+            )
+
+            serverless_gpu_sessions_settings = cls._schema_on_200.properties.serverless_gpu_sessions_settings
+            serverless_gpu_sessions_settings.max_concurrent_sessions_per_project = AAZIntType(
+                serialized_name="maxConcurrentSessionsPerProject",
+            )
+            serverless_gpu_sessions_settings.serverless_gpu_sessions_mode = AAZStrType(
+                serialized_name="serverlessGpuSessionsMode",
+            )
+
+            workspace_storage_settings = cls._schema_on_200.properties.workspace_storage_settings
+            workspace_storage_settings.workspace_storage_mode = AAZStrType(
+                serialized_name="workspaceStorageMode",
+            )
 
             system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(

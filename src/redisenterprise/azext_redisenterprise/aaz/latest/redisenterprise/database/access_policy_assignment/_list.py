@@ -23,9 +23,9 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-09-01-preview",
+        "version": "2025-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cache/redisenterprise/{}/databases/{}/accesspolicyassignments", "2024-09-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cache/redisenterprise/{}/databases/{}/accesspolicyassignments", "2025-05-01-preview"],
         ]
     }
 
@@ -51,7 +51,7 @@ class List(AAZCommand):
             help="The name of the Redis Enterprise cluster.",
             required=True,
             fmt=AAZStrArgFormat(
-                pattern="^[A-Za-z0-9]+(-[A-Za-z0-9]+)*$",
+                pattern="^(?=.{1,60}$)[A-Za-z0-9]+(-[A-Za-z0-9]+)*$",
             ),
         )
         _args_schema.database_name = AAZStrArg(
@@ -59,7 +59,7 @@ class List(AAZCommand):
             help="The name of the Redis Enterprise database.",
             required=True,
             fmt=AAZStrArgFormat(
-                pattern="^[A-Za-z0-9]{1,60}$",
+                pattern="^(?=.{1,60}$)[A-Za-z0-9]+(-[A-Za-z0-9]+)*$",
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
@@ -137,7 +137,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-09-01-preview",
+                    "api-version", "2025-05-01-preview",
                     required=True,
                 ),
             }
@@ -187,7 +187,7 @@ class List(AAZCommand):
                 flags={"read_only": True},
             )
             _element.properties = AAZObjectType(
-                flags={"required": True, "client_flatten": True},
+                flags={"client_flatten": True},
             )
             _element.type = AAZStrType(
                 flags={"read_only": True},
@@ -209,7 +209,6 @@ class List(AAZCommand):
             user = cls._schema_on_200.value.Element.properties.user
             user.object_id = AAZStrType(
                 serialized_name="objectId",
-                flags={"required": True},
             )
 
             return cls._schema_on_200

@@ -22,9 +22,9 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-10-01-preview",
+        "version": "2025-04-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}/projectpolicies", "2024-10-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}/projectpolicies", "2025-04-01-preview"],
         ]
     }
 
@@ -126,7 +126,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-10-01-preview",
+                    "api-version", "2025-04-01-preview",
                     required=True,
                 ),
             }
@@ -202,7 +202,11 @@ class List(AAZCommand):
             resource_policies.Element = AAZObjectType()
 
             _element = cls._schema_on_200.value.Element.properties.resource_policies.Element
+            _element.action = AAZStrType()
             _element.filter = AAZStrType()
+            _element.resource_type = AAZStrType(
+                serialized_name="resourceType",
+            )
             _element.resources = AAZStrType()
 
             scopes = cls._schema_on_200.value.Element.properties.scopes

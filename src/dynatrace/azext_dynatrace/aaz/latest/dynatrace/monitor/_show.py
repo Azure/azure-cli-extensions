@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "dynatrace monitor show",
 )
 class Show(AAZCommand):
-    """Show a monitor resource
+    """Get Dynatrace resource properties including Dynatrace Environment information, SSO properties, resource location, marketplace subscription status and associated user information.
 
     :example: Show a monitor
         az dynatrace monitor show -g rg -n monitor
@@ -156,7 +156,7 @@ class Show(AAZCommand):
             _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.identity = AAZObjectType()
+            _schema_on_200.identity = AAZIdentityObjectType()
             _schema_on_200.location = AAZStrType(
                 flags={"required": True},
             )

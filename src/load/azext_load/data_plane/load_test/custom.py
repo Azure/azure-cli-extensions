@@ -60,6 +60,7 @@ def create_test(
     autostop=None,
     autostop_error_rate=None,
     autostop_error_rate_time_window=None,
+    autostop_maximum_virtual_users_per_engine=None,
     regionwise_engines=None,
     engine_ref_id_type=None,
     engine_ref_ids=None,
@@ -80,7 +81,10 @@ def create_test(
     yaml, yaml_test_body = None, None
     app_components, add_defaults_to_app_components, server_metrics = None, None, None
     autostop_criteria = create_autostop_criteria_from_args(
-        autostop=autostop, error_rate=autostop_error_rate, time_window=autostop_error_rate_time_window)
+        autostop=autostop,
+        error_rate=autostop_error_rate,
+        time_window=autostop_error_rate_time_window,
+        max_vu_per_engine=autostop_maximum_virtual_users_per_engine)
     if load_test_config_file is None:
         test_type = test_type or infer_test_type_from_test_plan(test_plan)
         logger.debug("Inferred test type: %s", test_type)
@@ -198,6 +202,7 @@ def update_test(
     autostop=None,
     autostop_error_rate=None,
     autostop_error_rate_time_window=None,
+    autostop_maximum_virtual_users_per_engine=None,
     regionwise_engines=None,
     engine_ref_id_type=None,
     engine_ref_ids=None,
@@ -215,7 +220,10 @@ def update_test(
     yaml, yaml_test_body = None, None
     app_components, server_metrics, add_defaults_to_app_components = None, None, None
     autostop_criteria = create_autostop_criteria_from_args(
-        autostop=autostop, error_rate=autostop_error_rate, time_window=autostop_error_rate_time_window)
+        autostop=autostop,
+        error_rate=autostop_error_rate,
+        time_window=autostop_error_rate_time_window,
+        max_vu_per_engine=autostop_maximum_virtual_users_per_engine)
     if load_test_config_file is not None:
         yaml = load_yaml(load_test_config_file)
         yaml_test_body = convert_yaml_to_test(cmd, yaml)

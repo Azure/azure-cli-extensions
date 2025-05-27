@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "dynatrace monitor sso-config create",
 )
 class Create(AAZCommand):
-    """Create a dynatrace sso-config resource
+    """Create a new SSO configuration for seamless authentication between Azure and the Dynatrace platform.
 
     :example: Create a sso-config
         az dynatrace monitor sso-config create -g rg --monitor-name monitor -n default --aad-domains "['mpliftrdt20210811outlook.onmicrosoft.com']" --single-sign-on-url "https://www.dynatrace.io"

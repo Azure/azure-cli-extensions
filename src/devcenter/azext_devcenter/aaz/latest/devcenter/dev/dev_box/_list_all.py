@@ -19,9 +19,9 @@ class ListAll(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-10-01-preview",
+        "version": "2025-04-01-preview",
         "resources": [
-            ["data-plane:microsoft.devcenter", "/devboxes", "2024-10-01-preview"],
+            ["data-plane:microsoft.devcenter", "/devboxes", "2025-04-01-preview"],
         ]
     }
 
@@ -109,7 +109,7 @@ class ListAll(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-10-01-preview",
+                    "api-version", "2025-04-01-preview",
                     required=True,
                 ),
             }
@@ -157,6 +157,10 @@ class ListAll(AAZCommand):
                 serialized_name="actionState",
                 flags={"read_only": True},
             )
+            _element.active_hours_configuration = AAZObjectType(
+                serialized_name="activeHoursConfiguration",
+                flags={"read_only": True},
+            )
             _element.created_time = AAZStrType(
                 serialized_name="createdTime",
                 flags={"read_only": True},
@@ -183,6 +187,7 @@ class ListAll(AAZCommand):
             )
             _element.local_administrator = AAZStrType(
                 serialized_name="localAdministrator",
+                flags={"read_only": True},
             )
             _element.location = AAZStrType(
                 flags={"read_only": True},
@@ -223,6 +228,25 @@ class ListAll(AAZCommand):
             )
             _element.user = AAZStrType(
                 flags={"read_only": True},
+            )
+
+            active_hours_configuration = cls._schema_on_200.value.Element.active_hours_configuration
+            active_hours_configuration.auto_start_enable_status = AAZStrType(
+                serialized_name="autoStartEnableStatus",
+                flags={"required": True},
+            )
+            active_hours_configuration.end_time_hour = AAZIntType(
+                serialized_name="endTimeHour",
+            )
+            active_hours_configuration.keep_awake_enable_status = AAZStrType(
+                serialized_name="keepAwakeEnableStatus",
+                flags={"required": True},
+            )
+            active_hours_configuration.start_time_hour = AAZIntType(
+                serialized_name="startTimeHour",
+            )
+            active_hours_configuration.time_zone = AAZStrType(
+                serialized_name="timeZone",
             )
 
             hardware_profile = cls._schema_on_200.value.Element.hardware_profile

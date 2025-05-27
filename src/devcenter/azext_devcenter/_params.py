@@ -314,6 +314,102 @@ def load_arguments(self, _):
             help="The name of a dev " "box.",
         )
 
+    with self.argument_context("devcenter dev dev-box align") as c:
+        c.argument(
+            "dev_center",
+            arg_type=dev_center_type,
+        )
+        c.argument(
+            "project_name",
+            arg_type=project_type,
+        )
+        c.argument(
+            "endpoint",
+            arg_type=endpoint,
+        )
+        c.argument(
+            "user_id",
+            type=str,
+            help="The AAD object id of the user. If value is 'me', the identity is taken from the "
+            "authentication context",
+        )
+        c.argument(
+            "dev_box_name",
+            options_list=["--name", "-n", "--dev-box-name"],
+            type=str,
+            help="The name of a dev " "box.",
+        )
+
+    with self.argument_context("devcenter dev dev-box approve") as c:
+        c.argument(
+            "dev_center",
+            arg_type=dev_center_type,
+        )
+        c.argument(
+            "project_name",
+            arg_type=project_type,
+        )
+        c.argument(
+            "endpoint",
+            arg_type=endpoint,
+        )
+        c.argument(
+            "user_id",
+            type=str,
+            help="The AAD object id of the user. If value is 'me', the identity is taken from the "
+            "authentication context",
+        )
+        c.argument(
+            "dev_box_name",
+            options_list=["--name", "-n", "--dev-box-name"],
+            type=str,
+            help="The name of a dev " "box.",
+        )
+
+    with self.argument_context("devcenter dev dev-box set-active-hours") as c:
+        c.argument(
+            "dev_center",
+            arg_type=dev_center_type,
+        )
+        c.argument(
+            "project_name",
+            arg_type=project_type,
+        )
+        c.argument(
+            "endpoint",
+            arg_type=endpoint,
+        )
+        c.argument(
+            "user_id",
+            type=str,
+            help="The AAD object id of the user. If value is 'me', the identity is taken from the "
+            "authentication context",
+        )
+        c.argument(
+            "dev_box_name",
+            options_list=["--name", "-n", "--dev-box-name"],
+            type=str,
+            help="The name of a dev " "box.",
+        )
+        c.argument(
+            "end_time_hour",
+            options_list=["--end-time-hour"],
+            type=int,
+            help="The end time of the active hours.",
+        )
+        c.argument(
+            "start_time_hour",
+            options_list=["--start-time-hour"],
+            type=int,
+            help="The start time of the active hours.",
+        )
+        c.argument(
+            "time_zone",
+            options_list=["--time-zone"],
+            type=str,
+            help="The timezone of the active hours.",
+        )
+
     with self.argument_context("devcenter dev dev-box stop") as c:
         c.argument(
             "dev_center",
@@ -343,7 +439,6 @@ def load_arguments(self, _):
             "hibernate",
             arg_type=get_three_state_flag(),
             help="Optional parameter to hibernate the dev box.",
-            is_preview=True,
         )
 
     with self.argument_context("devcenter dev dev-box restart") as c:
@@ -1479,7 +1574,6 @@ def load_arguments(self, _):
             "include_tasks",
             arg_type=get_three_state_flag(),
             help="Optional parameter to include task information in the response.",
-            is_preview=True,
         )
 
     with self.argument_context("devcenter dev customization-task show") as c:
@@ -1569,4 +1663,242 @@ def load_arguments(self, _):
             options_list=["--name", "-n", "--customization-group-name"],
             type=str,
             help="The name of customization group",
+        )
+
+    with self.argument_context("devcenter dev approval list") as c:
+        c.argument(
+            "dev_center",
+            arg_type=dev_center_type,
+        )
+        c.argument(
+            "project_name",
+            arg_type=project_type,
+        )
+        c.argument(
+            "endpoint",
+            arg_type=endpoint,
+        )
+
+    with self.argument_context("devcenter dev add-on disable") as c:
+        c.argument(
+            "dev_center",
+            arg_type=dev_center_type,
+        )
+        c.argument(
+            "project_name",
+            arg_type=project_type,
+        )
+        c.argument(
+            "endpoint",
+            arg_type=endpoint,
+        )
+        c.argument(
+            "user_id",
+            type=str,
+            help="The AAD object id of the user. If value is 'me', the identity is taken "
+            "from the authentication context.",
+        )
+        c.argument(
+            "dev_box_name",
+            options_list=["--dev-box-name", "--dev-box"],
+            type=str,
+            help="The name " "of the dev box.",
+        )
+        c.argument(
+            "add_on_name",
+            options_list=["-n", "--name", "--add-on-name"],
+            type=str,
+            help="The name of dev box add on",
+        )
+
+    with self.argument_context("devcenter dev add-on create") as c:
+        c.argument(
+            "dev_center",
+            arg_type=dev_center_type,
+        )
+        c.argument(
+            "project_name",
+            arg_type=project_type,
+        )
+        c.argument(
+            "endpoint",
+            arg_type=endpoint,
+        )
+        c.argument(
+            "user_id",
+            type=str,
+            help="The AAD object id of the user. If value is 'me', the identity is taken "
+            "from the authentication context.",
+        )
+        c.argument(
+            "dev_box_name",
+            options_list=["--dev-box-name", "--dev-box"],
+            type=str,
+            help="The name " "of the dev box.",
+        )
+        c.argument(
+            "add_on_name",
+            options_list=["-n", "--name", "--add-on-name"],
+            type=str,
+            help="The name of dev box add on",
+        )
+        c.argument(
+            "hosting_resource_name",
+            options_list=["--hosting-resource-name"],
+            type=str,
+            help="The hosting resource name, either a DevBox or HyperV.  Leaving it empty or `Default` if it's for DevBox.",
+        )
+
+    with self.argument_context("devcenter dev add-on delete") as c:
+        c.argument(
+            "dev_center",
+            arg_type=dev_center_type,
+        )
+        c.argument(
+            "project_name",
+            arg_type=project_type,
+        )
+        c.argument(
+            "endpoint",
+            arg_type=endpoint,
+        )
+        c.argument(
+            "user_id",
+            type=str,
+            help="The AAD object id of the user. If value is 'me', the identity is taken "
+            "from the authentication context.",
+        )
+        c.argument(
+            "dev_box_name",
+            options_list=["--dev-box-name", "--dev-box"],
+            type=str,
+            help="The name " "of the dev box.",
+        )
+        c.argument(
+            "add_on_name",
+            options_list=["-n", "--name", "--add-on-name"],
+            type=str,
+            help="The name of dev box add on",
+        )
+
+    with self.argument_context("devcenter dev add-on disable") as c:
+        c.argument(
+            "dev_center",
+            arg_type=dev_center_type,
+        )
+        c.argument(
+            "project_name",
+            arg_type=project_type,
+        )
+        c.argument(
+            "endpoint",
+            arg_type=endpoint,
+        )
+        c.argument(
+            "user_id",
+            type=str,
+            help="The AAD object id of the user. If value is 'me', the identity is taken "
+            "from the authentication context.",
+        )
+        c.argument(
+            "dev_box_name",
+            options_list=["--dev-box-name", "--dev-box"],
+            type=str,
+            help="The name " "of the dev box.",
+        )
+        c.argument(
+            "add_on_name",
+            options_list=["-n", "--name", "--add-on-name"],
+            type=str,
+            help="The name of dev box add on",
+        )
+
+    with self.argument_context("devcenter dev add-on enable") as c:
+        c.argument(
+            "dev_center",
+            arg_type=dev_center_type,
+        )
+        c.argument(
+            "project_name",
+            arg_type=project_type,
+        )
+        c.argument(
+            "endpoint",
+            arg_type=endpoint,
+        )
+        c.argument(
+            "user_id",
+            type=str,
+            help="The AAD object id of the user. If value is 'me', the identity is taken "
+            "from the authentication context.",
+        )
+        c.argument(
+            "dev_box_name",
+            options_list=["--dev-box-name", "--dev-box"],
+            type=str,
+            help="The name " "of the dev box.",
+        )
+        c.argument(
+            "add_on_name",
+            options_list=["-n", "--name", "--add-on-name"],
+            type=str,
+            help="The name of dev box add on",
+        )
+
+    with self.argument_context("devcenter dev add-on show") as c:
+        c.argument(
+            "dev_center",
+            arg_type=dev_center_type,
+        )
+        c.argument(
+            "project_name",
+            arg_type=project_type,
+        )
+        c.argument(
+            "endpoint",
+            arg_type=endpoint,
+        )
+        c.argument(
+            "user_id",
+            type=str,
+            help="The AAD object id of the user. If value is 'me', the identity is taken "
+            "from the authentication context.",
+        )
+        c.argument(
+            "dev_box_name",
+            options_list=["--dev-box-name", "--dev-box"],
+            type=str,
+            help="The name " "of the dev box.",
+        )
+        c.argument(
+            "add_on_name",
+            options_list=["-n", "--name", "--add-on-name"],
+            type=str,
+            help="The name of dev box add on",
+        )
+
+    with self.argument_context("devcenter dev add-on list") as c:
+        c.argument(
+            "dev_center",
+            arg_type=dev_center_type,
+        )
+        c.argument(
+            "project_name",
+            arg_type=project_type,
+        )
+        c.argument(
+            "endpoint",
+            arg_type=endpoint,
+        )
+        c.argument(
+            "user_id",
+            type=str,
+            help="The AAD object id of the user. If value is 'me', the identity is taken "
+            "from the authentication context.",
+        )
+        c.argument(
+            "dev_box_name",
+            options_list=["--dev-box-name", "--dev-box"],
+            type=str,
+            help="The name " "of the dev box.",
         )

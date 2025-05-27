@@ -15,10 +15,7 @@ from azure.cli.core.aaz import *
     "informatica data-management organization create",
 )
 class Create(AAZCommand):
-    """Create a InformaticaOrganizationResource
-
-    :example: Create or Update an Organization
-        az informatica data-management organization create -n demoOrg -g demoResourceGroup --subscription ae37d5a8-dff3-49a3-bfcd-139a4f7db98x -l westUS2
+    """Create a new organization resource in Informatica via Azure.
     """
 
     _aaz_info = {
@@ -45,8 +42,8 @@ class Create(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.org_name = AAZStrArg(
-            options=["-n", "--name", "--org-name"],
+        _args_schema.organization_name = AAZStrArg(
+            options=["-n", "--name", "--organization-name"],
             help="Name of the Organizations resource",
             required=True,
             fmt=AAZStrArgFormat(
@@ -54,7 +51,6 @@ class Create(AAZCommand):
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="Resource group name",
             required=True,
         )
 
@@ -315,7 +311,7 @@ class Create(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "organizationName", self.ctx.args.org_name,
+                    "organizationName", self.ctx.args.organization_name,
                     required=True,
                 ),
                 **self.serialize_url_param(

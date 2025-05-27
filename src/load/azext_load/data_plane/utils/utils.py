@@ -274,8 +274,8 @@ def parse_env(envs):
     return env_dict
 
 
-def create_autostop_criteria_from_args(autostop, error_rate, time_window):
-    if (autostop is None and error_rate is None and time_window is None):
+def create_autostop_criteria_from_args(autostop, error_rate, time_window, max_vu_per_engine):
+    if (autostop is None and error_rate is None and time_window is None and max_vu_per_engine is None):
         return None
     autostop_criteria = {}
     autostop_criteria["autoStopDisabled"] = not autostop if autostop is not None else False
@@ -283,6 +283,8 @@ def create_autostop_criteria_from_args(autostop, error_rate, time_window):
         autostop_criteria["errorRate"] = error_rate
     if time_window is not None:
         autostop_criteria["errorRateTimeWindowInSeconds"] = time_window
+    if max_vu_per_engine is not None:
+        autostop_criteria["maximumVirtualUsersPerEngine"] = max_vu_per_engine
     return autostop_criteria
 
 
@@ -591,10 +593,16 @@ def create_or_update_test_with_config(
     ):
         new_body["autoStopCriteria"]["errorRateTimeWindowInSeconds"] = \
             body["autoStopCriteria"]["errorRateTimeWindowInSeconds"]
+    if (
+        new_body["autoStopCriteria"].get("maximumVirtualUsersPerEngine") is None
+        and body.get("autoStopCriteria", {}).get("maximumVirtualUsersPerEngine") is not None
+    ):
+        new_body["autoStopCriteria"]["maximumVirtualUsersPerEngine"] = \
+            body["autoStopCriteria"]["maximumVirtualUsersPerEngine"]
 
     if (new_body["autoStopCriteria"].get("autoStopDisabled") is True):
         logger.warning(
-            "Auto stop is disabled. Error rate and time window will be ignored. "
+            "Auto stop is disabled. Error rate, time window and engine users will be ignored. "
             "This can lead to incoming charges for an incorrectly configured test."
         )
 
@@ -749,9 +757,15 @@ def create_or_update_test_without_config(
     ):
         new_body["autoStopCriteria"]["errorRateTimeWindowInSeconds"] = \
             body["autoStopCriteria"]["errorRateTimeWindowInSeconds"]
+    if (
+        new_body["autoStopCriteria"].get("maximumVirtualUsersPerEngine") is None
+        and body.get("autoStopCriteria", {}).get("maximumVirtualUsersPerEngine") is not None
+    ):
+        new_body["autoStopCriteria"]["maximumVirtualUsersPerEngine"] = \
+            body["autoStopCriteria"]["maximumVirtualUsersPerEngine"]
     if (new_body["autoStopCriteria"].get("autoStopDisabled") is True):
         logger.warning(
-            "Auto stop is disabled. Error rate and time window will be ignored. "
+            "Auto stop is disabled. Error rate, time window and engine users will be ignored. "
             "This can lead to incoming charges for an incorrectly configured test."
         )
     new_body["baselineTestRunId"] = baseline_test_run_id if baseline_test_run_id else body.get("baselineTestRunId")

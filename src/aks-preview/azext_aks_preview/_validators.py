@@ -895,3 +895,21 @@ def validate_gateway_prefix_size(namespace):
             raise ArgumentUsageError("--gateway-prefix-size can only be set for Gateway-mode nodepools")
         if namespace.gateway_prefix_size < 28 or namespace.gateway_prefix_size > 31:
             raise CLIError("--gateway-prefix-size must be in the range [28, 31]")
+
+
+def validate_location_cluster_name_resource_group_mutually_exclusive(namespace):
+    """Validates that location, cluster name, and resource group name are not specified at the same time"""
+    location = namespace.location
+    resource_group_name = namespace.resource_group_name
+    cluster_name = namespace.cluster_name
+    if location and resource_group_name and cluster_name:
+        raise MutuallyExclusiveArgumentError(
+            "Cannot specify --location and --resource-group and --cluster at the same time."
+        )
+
+
+def validate_resource_group_parameter(namespace):
+    if namespace.resource_group_name and not namespace.cluster_name:
+        raise RequiredArgumentMissingError("Please specify --cluster")
+    if not namespace.resource_group_name and namespace.cluster_name:
+        raise RequiredArgumentMissingError("Please specify --resource-group")

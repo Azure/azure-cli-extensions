@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}/attachednetworks/{}", "2023-10-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}/attachednetworks/{}", "2025-04-01-preview"],
         ]
     }
 
@@ -45,6 +45,11 @@ class Wait(AAZWaitCommand):
             help="The name of the attached network connection.",
             required=True,
             id_part="child_name_1",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$",
+                max_length=63,
+                min_length=3,
+            ),
         )
         _args_schema.dev_center_name = AAZStrArg(
             options=["-d", "--dev-center", "--dev-center-name"],
@@ -132,7 +137,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-04-01",
+                    "api-version", "2025-04-01-preview",
                     required=True,
                 ),
             }
@@ -185,9 +190,11 @@ class Wait(AAZWaitCommand):
             properties = cls._schema_on_200.properties
             properties.domain_join_type = AAZStrType(
                 serialized_name="domainJoinType",
+                flags={"read_only": True},
             )
             properties.health_check_status = AAZStrType(
                 serialized_name="healthCheckStatus",
+                flags={"read_only": True},
             )
             properties.network_connection_id = AAZStrType(
                 serialized_name="networkConnectionId",

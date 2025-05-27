@@ -3,6 +3,11 @@
 Release History
 ===============
 
+1.0.0b2
+++++++
+* Revert maximum name length to 64 characters.
+* Refine deserializing for input json properties.
+
 1.0.0b1
 ++++++
 * Migrate to AAZ

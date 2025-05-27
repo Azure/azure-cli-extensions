@@ -50,7 +50,6 @@ class Show(AAZCommand):
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9-]{3,24}$",
                 max_length=64,
                 min_length=3,
             ),
@@ -201,39 +200,10 @@ class Show(AAZCommand):
             parts.Element = AAZObjectType()
 
             _element = cls._schema_on_200.properties.lenses.Element.parts.Element
-            _element.metadata = AAZObjectType()
+            _element.metadata = AAZFreeFormDictType()
             _element.position = AAZObjectType(
                 flags={"required": True},
             )
-
-            metadata = cls._schema_on_200.properties.lenses.Element.parts.Element.metadata
-            metadata.type = AAZStrType(
-                flags={"required": True},
-            )
-
-            disc_extension__hubs_extension__part_type__markdown_part = cls._schema_on_200.properties.lenses.Element.parts.Element.metadata.discriminate_by("type", "Extension/HubsExtension/PartType/MarkdownPart")
-            disc_extension__hubs_extension__part_type__markdown_part.inputs = AAZListType()
-            disc_extension__hubs_extension__part_type__markdown_part.settings = AAZObjectType()
-
-            inputs = cls._schema_on_200.properties.lenses.Element.parts.Element.metadata.discriminate_by("type", "Extension/HubsExtension/PartType/MarkdownPart").inputs
-            inputs.Element = AAZFreeFormDictType()
-
-            settings = cls._schema_on_200.properties.lenses.Element.parts.Element.metadata.discriminate_by("type", "Extension/HubsExtension/PartType/MarkdownPart").settings
-            settings.content = AAZObjectType()
-
-            content = cls._schema_on_200.properties.lenses.Element.parts.Element.metadata.discriminate_by("type", "Extension/HubsExtension/PartType/MarkdownPart").settings.content
-            content.settings = AAZObjectType()
-
-            settings = cls._schema_on_200.properties.lenses.Element.parts.Element.metadata.discriminate_by("type", "Extension/HubsExtension/PartType/MarkdownPart").settings.content.settings
-            settings.content = AAZStrType()
-            settings.markdown_source = AAZIntType(
-                serialized_name="markdownSource",
-            )
-            settings.markdown_uri = AAZStrType(
-                serialized_name="markdownUri",
-            )
-            settings.subtitle = AAZStrType()
-            settings.title = AAZStrType()
 
             position = cls._schema_on_200.properties.lenses.Element.parts.Element.position
             position.col_span = AAZIntType(

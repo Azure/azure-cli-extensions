@@ -22,9 +22,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-10-01-preview",
+        "version": "2025-04-01-preview",
         "resources": [
-            ["data-plane:microsoft.devcenter", "/projects/{}/users/{}/devboxes/{}", "2024-10-01-preview"],
+            ["data-plane:microsoft.devcenter", "/projects/{}/users/{}/devboxes/{}", "2025-04-01-preview"],
         ]
     }
 
@@ -90,12 +90,6 @@ class Create(AAZCommand):
         # define Arg Group "Body"
 
         _args_schema = cls._args_schema
-        _args_schema.local_administrator = AAZStrArg(
-            options=["--local-administrator"],
-            arg_group="Body",
-            help="Indicates whether the owner of the Dev Box is a local administrator.",
-            enum={"Disabled": "Disabled", "Enabled": "Enabled"},
-        )
         _args_schema.pool_name = AAZStrArg(
             options=["--pool-name"],
             arg_group="Body",
@@ -195,7 +189,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-10-01-preview",
+                    "api-version", "2025-04-01-preview",
                     required=True,
                 ),
             }
@@ -220,7 +214,6 @@ class Create(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("localAdministrator", AAZStrType, ".local_administrator")
             _builder.set_prop("poolName", AAZStrType, ".pool_name", typ_kwargs={"flags": {"required": True}})
 
             return self.serialize_content(_content_value)
@@ -245,6 +238,10 @@ class Create(AAZCommand):
             _schema_on_200_201 = cls._schema_on_200_201
             _schema_on_200_201.action_state = AAZStrType(
                 serialized_name="actionState",
+                flags={"read_only": True},
+            )
+            _schema_on_200_201.active_hours_configuration = AAZObjectType(
+                serialized_name="activeHoursConfiguration",
                 flags={"read_only": True},
             )
             _schema_on_200_201.created_time = AAZStrType(
@@ -273,6 +270,7 @@ class Create(AAZCommand):
             )
             _schema_on_200_201.local_administrator = AAZStrType(
                 serialized_name="localAdministrator",
+                flags={"read_only": True},
             )
             _schema_on_200_201.location = AAZStrType(
                 flags={"read_only": True},
@@ -313,6 +311,25 @@ class Create(AAZCommand):
             )
             _schema_on_200_201.user = AAZStrType(
                 flags={"read_only": True},
+            )
+
+            active_hours_configuration = cls._schema_on_200_201.active_hours_configuration
+            active_hours_configuration.auto_start_enable_status = AAZStrType(
+                serialized_name="autoStartEnableStatus",
+                flags={"required": True},
+            )
+            active_hours_configuration.end_time_hour = AAZIntType(
+                serialized_name="endTimeHour",
+            )
+            active_hours_configuration.keep_awake_enable_status = AAZStrType(
+                serialized_name="keepAwakeEnableStatus",
+                flags={"required": True},
+            )
+            active_hours_configuration.start_time_hour = AAZIntType(
+                serialized_name="startTimeHour",
+            )
+            active_hours_configuration.time_zone = AAZStrType(
+                serialized_name="timeZone",
             )
 
             hardware_profile = cls._schema_on_200_201.hardware_profile

@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}", "2024-10-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}", "2025-04-01-preview"],
         ]
     }
 
@@ -121,7 +121,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-10-01-preview",
+                    "api-version", "2025-04-01-preview",
                     required=True,
                 ),
             }
@@ -157,7 +157,7 @@ class Wait(AAZWaitCommand):
             _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.identity = AAZObjectType()
+            _schema_on_200.identity = AAZIdentityObjectType()
             _schema_on_200.location = AAZStrType(
                 flags={"required": True},
             )
@@ -220,18 +220,12 @@ class Wait(AAZWaitCommand):
             properties.network_settings = AAZObjectType(
                 serialized_name="networkSettings",
             )
-            properties.plan_id = AAZStrType(
-                serialized_name="planId",
-            )
             properties.project_catalog_settings = AAZObjectType(
                 serialized_name="projectCatalogSettings",
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
-            )
-            properties.restricted_resource_types = AAZListType(
-                serialized_name="restrictedResourceTypes",
             )
 
             dev_box_provisioning_settings = cls._schema_on_200.properties.dev_box_provisioning_settings
@@ -272,9 +266,6 @@ class Wait(AAZWaitCommand):
             project_catalog_settings.catalog_item_sync_enable_status = AAZStrType(
                 serialized_name="catalogItemSyncEnableStatus",
             )
-
-            restricted_resource_types = cls._schema_on_200.properties.restricted_resource_types
-            restricted_resource_types.Element = AAZStrType()
 
             system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(

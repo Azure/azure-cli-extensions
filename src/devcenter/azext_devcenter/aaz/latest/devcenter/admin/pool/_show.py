@@ -22,9 +22,9 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-10-01-preview",
+        "version": "2025-04-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/pools/{}", "2024-10-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/pools/{}", "2025-04-01-preview"],
         ]
     }
 
@@ -140,7 +140,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-10-01-preview",
+                    "api-version", "2025-04-01-preview",
                     required=True,
                 ),
             }
@@ -195,6 +195,9 @@ class Show(AAZCommand):
             )
 
             properties = cls._schema_on_200.properties
+            properties.active_hours_configuration = AAZObjectType(
+                serialized_name="activeHoursConfiguration",
+            )
             properties.dev_box_count = AAZIntType(
                 serialized_name="devBoxCount",
                 flags={"read_only": True},
@@ -209,11 +212,15 @@ class Show(AAZCommand):
             properties.dev_box_definition_type = AAZStrType(
                 serialized_name="devBoxDefinitionType",
             )
+            properties.dev_box_tunnel_enable_status = AAZStrType(
+                serialized_name="devBoxTunnelEnableStatus",
+            )
             properties.display_name = AAZStrType(
                 serialized_name="displayName",
             )
             properties.health_status = AAZStrType(
                 serialized_name="healthStatus",
+                flags={"read_only": True},
             )
             properties.health_status_details = AAZListType(
                 serialized_name="healthStatusDetails",
@@ -251,9 +258,27 @@ class Show(AAZCommand):
                 serialized_name="virtualNetworkType",
             )
 
+            active_hours_configuration = cls._schema_on_200.properties.active_hours_configuration
+            active_hours_configuration.auto_start_enable_status = AAZStrType(
+                serialized_name="autoStartEnableStatus",
+            )
+            active_hours_configuration.default_end_time_hour = AAZIntType(
+                serialized_name="defaultEndTimeHour",
+            )
+            active_hours_configuration.default_start_time_hour = AAZIntType(
+                serialized_name="defaultStartTimeHour",
+            )
+            active_hours_configuration.default_time_zone = AAZStrType(
+                serialized_name="defaultTimeZone",
+            )
+            active_hours_configuration.keep_awake_enable_status = AAZStrType(
+                serialized_name="keepAwakeEnableStatus",
+            )
+
             dev_box_definition = cls._schema_on_200.properties.dev_box_definition
             dev_box_definition.active_image_reference = AAZObjectType(
                 serialized_name="activeImageReference",
+                flags={"read_only": True},
             )
             _ShowHelper._build_schema_image_reference_read(dev_box_definition.active_image_reference)
             dev_box_definition.image_reference = AAZObjectType(

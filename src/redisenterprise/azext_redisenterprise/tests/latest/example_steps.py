@@ -16,8 +16,8 @@ def step_create(test, checks=None, cache_num=1):
     if test.kwargs.get('no_database'):
         test.cmd('az redisenterprise create '
                  '--cluster-name "{cluster}" '
-                 '--location "WEST US 3" '
-                 '--sku "EnterpriseFlash_F300" '
+                 '--location "centraluseuap" '
+                 '--sku "Balanced_B10" '
                  '--tags tag1="value1" '
                  '--no-database '
                  '--resource-group "{rg}"',
@@ -26,17 +26,17 @@ def step_create(test, checks=None, cache_num=1):
         if cache_num == 1:
             test.cmd('az redisenterprise create '
                         '--cluster-name "{cluster31}" '
-                        '--sku "EnterpriseFlash_F300" '
-                        '--location "WEST US 3" '
+                        '--sku "Balanced_B10" '
+                        '--location "centraluseuap" '
                         '--tags tag1="value1" '
                         '--no-database '
                         '--resource-group "{rg31}"',
                         checks=checks)
         elif cache_num == 2:
                 test.cmd('az redisenterprise create '
-                     '--location "WEST US 3" '
+                     '--location "centraluseuap" '
                      '--cluster-name "{cluster32}" '
-                     '--sku "EnterpriseFlash_F300" '
+                     '--sku "Balanced_B10" '
                      '--client-protocol "Encrypted" '
                      '--clustering-policy "EnterpriseCluster" '
                      '--eviction-policy "NoEviction" '
@@ -49,8 +49,8 @@ def step_create(test, checks=None, cache_num=1):
     elif test.kwargs.get('access-policy-assignment'):
         test.cmd('az redisenterprise create '
                  '--cluster-name "{cluster}" '
-                 '--sku "Balanced_B1" '
-                 '--location "WEST US 3" '
+                 '--sku "Balanced_B10" '
+                 '--location "centraluseuap" '
                  '--tags tag1="value1" '
                  '--resource-group "{rg}" '
                  '--high-availability "Disabled" '
@@ -62,8 +62,8 @@ def step_create(test, checks=None, cache_num=1):
     elif test.kwargs.get('access-key-authentication'):
         test.cmd('az redisenterprise create '
                  '--cluster-name "{cluster}" '
-                 '--sku "Balanced_B1" '
-                 '--location "WEST US 3" '
+                 '--sku "Balanced_B10" '
+                 '--location "centraluseuap" '
                  '--tags tag1="value1" '
                  '--access-keys-auth Disabled '
                  '--resource-group "{rg}" '
@@ -72,12 +72,27 @@ def step_create(test, checks=None, cache_num=1):
                  '--clustering-policy "EnterpriseCluster" '
                  '--eviction-policy "NoEviction"',
                  checks=checks)
+    elif test.kwargs.get('no-cluster-policy'):
+        test.cmd('az redisenterprise create '
+                 '--cluster-name "{cluster}" '
+                 '--sku "Balanced_B10" '
+                 '--location "centraluseuap" '
+                 '--tags tag1="value1" '
+                 '--minimum-tls-version "1.2" '
+                 '--client-protocol "Encrypted" '
+                 '--clustering-policy "NoCluster" '
+                 '--eviction-policy "NoEviction" '
+                 '--modules name="RedisBloom" '
+                 '--modules name="RedisTimeSeries" '
+                 '--modules name="RediSearch" '
+                 '--port 10000 '
+                 '--resource-group "{rg}"',
+                 checks=checks)
     else:
         test.cmd('az redisenterprise create '
                  '--cluster-name "{cluster}" '
-                 '--sku "Enterprise_E20" '
-                 '--capacity 4 '
-                 '--location "WEST US 3" '
+                 '--sku "Balanced_B10" '
+                 '--location "centraluseuap" '
                  '--tags tag1="value1" '
                  #'--zones "1" "2" "3" '
                  '--minimum-tls-version "1.2" '
@@ -285,3 +300,11 @@ def step_database_delete(test, checks=None):
                  '--cluster-name "{cluster}" '
                  '--resource-group "{rg}"',
                  checks=checks)
+
+def step_list_skus_for_scaling(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az redisenterprise list-skus-for-scaling '
+             '--cluster-name "{cluster}" '
+             '--resource-group "{rg}"',
+             checks=checks)

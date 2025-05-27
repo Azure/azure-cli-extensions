@@ -37,7 +37,7 @@ class NetworkConfigurationPerimeterScenarioTest(ScenarioTest):
             'machine': 'testmachine',
             'rg': 'ytongtest',
             'scope': 'myScope3',
-            'location': 'eastus',
+            'location': 'westus2',
             'subscription': '00000000-0000-0000-0000-000000000000',
             'perimeterName': '00000000-0000-0000-0000-000000000000.testAssociation',
         })
@@ -50,7 +50,8 @@ class NetworkConfigurationPerimeterScenarioTest(ScenarioTest):
         # --private-link-resource "{id:/subscriptions/b24cc8ee-df4f-48ac-94cf-46edf36b0fae/resourceGroups/ytongtest/providers/Microsoft.HybridCompute/privateLinkScopes/myScope3}" 
         # --profile "{id:/subscriptions/b24cc8ee-df4f-48ac-94cf-46edf36b0fae/resourceGroups/ytongtest/providers/Microsoft.Network/networkSecurityPerimeters/testPerimeter/profiles/testProfile}"
 
-        # perimeter name can be found by running the list command, under 'name'
+        # Find perimeter name by running the list command, under 'name'
+        # az connectedmachine private-link-scope network-security-perimeter-configuration list --resource-group ytongtest --scope-name myScope3 --subscription b24cc8ee-df4f-48ac-94cf-46edf36b0fae
 
         # network security perimeter configuration
         self.cmd('az connectedmachine private-link-scope network-security-perimeter-configuration list '

@@ -81,7 +81,7 @@ def load_arguments(self, _):
         c.argument('port', type=int, help='TCP port of the database endpoint. Specified at create time. Defaults to an '
                    'available port.')
         c.argument('access_keys_authentication', options_list=['--access-keys-auth', '--access-keys-authentication'], arg_type=get_enum_type(['Enabled', 'Disabled']), help='Access database using keys - default is enabled. This property can be Enabled/Disabled to allow or deny access with the current access keys. Can be updated even after database is created.')
-        c.argument('clustering_policy', arg_type=get_enum_type(['EnterpriseCluster', 'OSSCluster']), help='Clustering policy - default '
+        c.argument('clustering_policy', arg_type=get_enum_type(['EnterpriseCluster', 'OSSCluster', 'NoCluster']), help='Clustering policy - default '
                    'is OSSCluster. Specified at create time.')
         c.argument('eviction_policy', arg_type=get_enum_type(['AllKeysLFU', 'AllKeysLRU', 'AllKeysRandom',
                                                               'VolatileLRU', 'VolatileLFU', 'VolatileTTL',
@@ -162,7 +162,7 @@ def load_arguments(self, _):
         c.argument('access_keys_authentication', options_list=['--access-keys-auth', '--access-keys-authentication'], arg_type=get_enum_type(['Enabled', 'Disabled']), help='Access database using keys - default is enabled. This property can be Enabled/Disabled to allow or deny access with the current access keys. Can be updated even after database is created.')
         c.argument('port', type=int, help='TCP port of the database endpoint. Specified at create time. Defaults to an '
                    'available port.')
-        c.argument('clustering_policy', arg_type=get_enum_type(['EnterpriseCluster', 'OSSCluster']), help='Clustering '
+        c.argument('clustering_policy', arg_type=get_enum_type(['EnterpriseCluster', 'OSSCluster', 'NoCluster']), help='Clustering '
                    'policy - default is OSSCluster. Specified at create time.')
         c.argument('eviction_policy', arg_type=get_enum_type(['AllKeysLFU', 'AllKeysLRU', 'AllKeysRandom',
                                                               'VolatileLRU', 'VolatileLFU', 'VolatileTTL',

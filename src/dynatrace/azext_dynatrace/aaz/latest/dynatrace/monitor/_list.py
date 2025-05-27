@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "dynatrace monitor list",
 )
 class List(AAZCommand):
-    """List all monitor resource by monitor name in a resource group
+    """List all MonitorResource by subscriptionId.
 
     :example: List monitor
         az dynatrace monitor list -g rg --monitor-name monitor
@@ -159,7 +159,7 @@ class List(AAZCommand):
             _element.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.identity = AAZObjectType()
+            _element.identity = AAZIdentityObjectType()
             _element.location = AAZStrType(
                 flags={"required": True},
             )

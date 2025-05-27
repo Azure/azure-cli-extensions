@@ -12,4 +12,9 @@
 
 
 def load_command_table(self, _):  # pylint: disable=unused-argument
-    pass
+    # device
+    with self.command_group("networkfabric device"):
+
+        from .operations.device._run_ro import RunReadCommand
+
+        self.command_table["networkfabric device run-ro"] = RunReadCommand(loader=self)

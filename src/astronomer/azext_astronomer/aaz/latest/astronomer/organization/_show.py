@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "astronomer organization show",
 )
 class Show(AAZCommand):
-    """Get a OrganizationResource
+    """Retrieve details of the Azure resource associated with an Astronomer organization
 
     :example: Get a OrganizationResource
         az astronomer organization show -g MyResourceGroup -n MyAstronomerOrganization
@@ -50,7 +50,7 @@ class Show(AAZCommand):
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9][a-zA-Z0-9_\-.: ]*$",
+                pattern="^[a-zA-Z0-9][a-zA-Z0-9_\\-.: ]*$",
                 max_length=50,
                 min_length=1,
             ),
@@ -161,7 +161,7 @@ class Show(AAZCommand):
             _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.identity = AAZObjectType()
+            _schema_on_200.identity = AAZIdentityObjectType()
             _schema_on_200.location = AAZStrType(
                 flags={"required": True},
             )
