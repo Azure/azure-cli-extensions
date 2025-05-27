@@ -12,6 +12,10 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+18.0.0b4
++++++++
+* Add option `Ubuntu2204` and `Ubuntu2404` to `--os-sku` for `az aks nodepool add` and `az aks nodepool update`.
+
 18.0.0b3
 +++++++
 * Add basic lb sku migration support `az aks update --load-balancer-sku standard`
@@ -84,8 +88,6 @@ Pending
 * Vendor new SDK and bump API version to 2025-01-02-preview.
 * [BREAKING CHANGE] Rename `--enable-addon-autoscaling` to `--enable-optimized-addon-scaling` to `az aks create` commands.
 * [BREAKING CHANGE] Rename `--enable-addon-autoscaling` to `--enable-optimized-addon-scaling` and `--disable-addon-autoscaling` to `--disable-optimized-addon-scaling` to `az aks update` commands.
-
-* Add option `Ubuntu2204` to `--os-sku` for `az aks nodepool add` and `az aks nodepool update`.
  
 13.0.0b9
 +++++++
