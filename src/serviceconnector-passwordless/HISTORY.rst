@@ -2,6 +2,11 @@
 
 Release History
 ===============
+3.3.3
+++++++
+* Add documentation explaining manual steps required for connecting to SQL database in Fabric.
+* Fix PostgreSQL flexible server connection not working due to deprecation of `ad-admin` command.
+
 3.3.1
 ++++++
 * Change Fabric SQL token endpoint for Cloud Shell compatibility.

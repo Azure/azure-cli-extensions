@@ -244,6 +244,16 @@ def process_env_vars_from_template(params: dict,
                             config.ACI_FIELD_CONTAINERS_ENVS_VALUE: ".*",
                             config.ACI_FIELD_CONTAINERS_ENVS_STRATEGY: "re2",
                         })
+                elif (
+                    re.match(config.ACI_FIELD_TEMPLATE_SPECIAL_ENV_VAR_REGEX_VALUE, value) and
+                    name == config.ACI_FIELD_TEMPLATE_SPECIAL_ENV_VAR_REGEX_NAME
+                ):
+                    # special case for adding THIM endpoint to container
+                    env_vars.append({
+                        config.ACI_FIELD_CONTAINERS_ENVS_NAME: config.ACI_FIELD_TEMPLATE_SPECIAL_ENV_VAR_REGEX_NAME,
+                        config.ACI_FIELD_CONTAINERS_ENVS_VALUE: ".*",
+                        config.ACI_FIELD_CONTAINERS_ENVS_STRATEGY: "re2",
+                    })
                 else:
                     env_vars.append({
                         config.ACI_FIELD_CONTAINERS_ENVS_NAME: name,

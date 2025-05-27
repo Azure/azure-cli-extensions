@@ -127,4 +127,5 @@ def load_arguments(self, _):
     with self.argument_context("grafana integrations monitor") as c:
         c.argument("monitor_name", help="name of the Azure Monitor workspace")
         c.argument("monitor_resource_group_name", options_list=["--monitor-resource-group-name", "--monitor-rg-name"], help="name of the resource group of the Azure Monitor workspace")
+        c.argument("monitor_subscription_id", options_list=["--monitor-subscription-id", "--monitor-sub-id"], help="subscription id of the Azure Monitor workspace. Uses the current subscription id if not specified")
         c.argument("skip_role_assignments", options_list=["-s", "--skip-role-assignments"], arg_type=get_three_state_flag(), help="skip assigning the appropriate role on the Azure Monitor workspace to let Grafana read data from it. Default: false")

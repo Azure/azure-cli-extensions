@@ -1,5 +1,12 @@
 param containerAppName string = '{{data.containerAppName}}'
+{%- if data.isByoc %}
+{%- if data.isPrivateImage %}
+@secure()
+param {{data.paramContainerAppImagePassword}} string
+{%- endif %}
+{%- else %}
 param {{data.paramContainerAppImageName}} string
+{%- endif %}
 param {{data.paramTargetPort}} int
 
 @description('Minimum number of replicas that will be deployed')
@@ -33,6 +40,25 @@ resource {{data.moduleName}} 'Microsoft.App/containerApps@2024-03-01' = {
     managedEnvironmentId: containerAppEnvId
     workloadProfileName: workloadProfileName
     configuration: {
+      {%- if data.isByoc %}
+      {%- if data.isPrivateImage %}
+      registries: [
+        {
+          server: '{{data.containerRegistry.server}}'
+          username: '{{data.containerRegistry.username}}'
+          passwordSecretRef: '{{data.containerRegistry.passwordSecretRef}}'
+        }
+      ]
+      {%- endif %}
+      {%- if data.isPrivateImage %}
+      secrets: [
+        {
+          name: '{{data.containerRegistry.passwordSecretRef}}'
+          value: {{data.paramContainerAppImagePassword}}
+        }
+      ]
+      {%- endif %}
+      {%- endif %}
       ingress: {
         {%- if data.ingress %}
         external: {% if data.isPublic %}true{% else %}false{% endif %}
@@ -60,11 +86,34 @@ resource {{data.moduleName}} 'Microsoft.App/containerApps@2024-03-01' = {
       containers: [
         {
           name: containerAppName
+          {%- if data.isByoc %}
+          image: '{{data.containerRegistry.image}}'
+          {%- else %}
           image: {{data.paramContainerAppImageName}}
+          {%- endif %}
+          {%- if data.blue %}
           resources: {
             cpu: json('{{data.blue.cpuCore}}')
             memory: '{{data.blue.memorySize}}'
           }
+          {%- endif %}
+          {%- if data.args %}
+          args: [
+            {%- for arg in data.args %}
+              '{{arg}}'
+            {%- if not loop.last %}{%- endif %}
+            {%- endfor %}
+          ]
+          {%- endif %}
+          {%- if data.commands %}
+          command: [
+            {%- for command in data.commands %}
+              '{{command}}'
+            {%- if not loop.last %}{%- endif %}
+            {%- endfor %}
+          ]
+          {%- endif %}
+          {%- if data.blue %}
           env: [
             {%- for env in data.blue.env %}
             {
@@ -73,6 +122,8 @@ resource {{data.moduleName}} 'Microsoft.App/containerApps@2024-03-01' = {
             }{%- if not loop.last %}{%- endif %}
             {%- endfor %}
           ]
+          {%- endif %}
+          {%- if data.blue %}
           probes: [
             {%- if data.blue.livenessProbe %}
             {
@@ -171,6 +222,7 @@ resource {{data.moduleName}} 'Microsoft.App/containerApps@2024-03-01' = {
             }
             {%- endif %}
           ]
+          {%- endif %}
           {%- if data.volumeMounts %}
           volumeMounts: [
             {%- for volume in data.volumeMounts %}

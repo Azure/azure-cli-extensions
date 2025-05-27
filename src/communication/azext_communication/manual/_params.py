@@ -212,12 +212,14 @@ def _load_rooms_arguments(self):
                    help='Set this flag to true if, at the time of the call, '
                    'dial out to a PSTN number is enabled in a particular room. '
                    'By default, this flag is set to false. Optional.')
-        c.argument('presenters', options_list=['--presenter-participants'],
+        c.argument('presenters', options_list=['--presenter-participants', '--presenters'],
                    nargs='+', help='Collection of identities to be invited to the room as presenter. Optional.')
-        c.argument('attendees', options_list=['--attendee-participants'],
+        c.argument('attendees', options_list=['--attendee-participants', '--attendees'],
                    nargs='+', help='Collection of identities to be invited to the room as attendee. Optional.')
-        c.argument('consumers', options_list=['--consumer-participants'],
+        c.argument('consumers', options_list=['--consumer-participants', '--consumers'],
                    nargs='+', help='Collection of identities to be invited to the room as consumer. Optional.')
+        c.argument('collaborators', options_list=['--collaborator-participants', '--collaborators'],
+                   nargs='+', help='Collection of identities to be invited to the room as collaborator. Optional.')
 
     with self.argument_context('communication rooms delete') as c:
         c.argument('room_id', options_list=['--room'],
@@ -243,12 +245,14 @@ def _load_rooms_arguments(self):
     with self.argument_context('communication rooms participant add-or-update') as c:
         c.argument('room_id', options_list=['--room'],
                    type=str, help='Room Id')
-        c.argument('presenters', options_list=['--presenter-participants'],
+        c.argument('presenters', options_list=['--presenter-participants', '--presenters'],
                    nargs='+', help='Collection of identities to be added to the room as presenter.')
-        c.argument('attendees', options_list=['--attendee-participants'],
+        c.argument('attendees', options_list=['--attendee-participants', '--attendees'],
                    nargs='+', help='Collection of identities to be added to the room as attendee.')
-        c.argument('consumers', options_list=['--consumer-participants'],
+        c.argument('consumers', options_list=['--consumer-participants', '--consumers'],
                    nargs='+', help='Collection of identities to be added to the room as consumer.')
+        c.argument('collaborators', options_list=['--collaborator-participants', '--collaborators'],
+                   nargs='+', help='Collection of identities to be added to the room as collaborator.')
 
     with self.argument_context('communication rooms participant remove') as c:
         c.argument('room_id', options_list=['--room'],

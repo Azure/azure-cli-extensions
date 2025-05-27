@@ -8,25 +8,31 @@
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
+# Tags: Neon PostgreSQL, Organization, Database, Serverless, Managed Service
+
 class NeonScenario(ScenarioTest):
     @AllowLargeResponse(size_kb=10240)
-    @ResourceGroupPreparer(name_prefix='cli_test_neon', location="eastus2euap")
+    @ResourceGroupPreparer(name_prefix='cli_test_neon', location="centraluseuap")
     def test_neon(self, resource_group):
+        # Test Tags: Organization CRUD, Marketplace Integration, SSO Configuration
+        tags_key = 'key'
+        tags_val = 'value'
+        updated_tags_val = 'value2'
         self.kwargs.update({
-            'name': 'NeonCLITestOrg1',
-            'location': 'eastus2euap',
+            'name': 'Neon-Cli-Scenario-Tests',
+            'location': 'centraluseuap',
             'subscription': '00000000-0000-0000-0000-000000000000',
-            'marketplace_subscription_id': 'yxmkfivp',
+            'marketplace_subscription_id': 'b6ca5a0a-c4be-454f-cc46-a400799b9d49',
             'publisher_id': 'neon1722366567200',
-            'offer_id': 'neon_test',
-            'plan_id': 'neon_test_1',
-            'plan_name': 'Neon Serverless Postgres - Free (Test_Liftr)',
+            'offer_id': 'neon_serverless_postgres_azure_prod',
+            'plan_id': 'neon_serverless_postgres_azure_prod_free',
+            'plan_name': 'Free Plan',
             'term_unit': 'P1M',
             'term_id': 'gmz7xq9ge3py',
-            'user_first_name': 'Almas',
-            'user_last_name': 'Khan',
-            'user_email': 'khanalmas@example.com',
-            'user_upn': 'khanalmas_microsoft.com#EXT#@qumulotesttenant2.onmicrosoft.com',
+            'user_first_name': 'Srinivas',
+            'user_last_name': 'Alluri',
+            'user_email': 'sralluri211@outlook.com',
+            'user_upn': 'sralluri211@outlook.com',
             'user_phone': '+1234567890',
             'company_name': 'SampleCompany',
             'country': 'USA',
@@ -35,31 +41,121 @@ class NeonScenario(ScenarioTest):
             'domain': 'samplecompany.com',
             'number_of_employees': 500,
             'organization_id': 'org67890',
-            'org-name': 'PartnerOrgForCLITest1',
+            'org_name': 'PartnerOrgForCLITest1',
             'enterprise_app_id': 'app67890',
             'sso_url': 'https://sso.partnerorgtest.com',
             'aad_domain': 'partnerorgtest.com',
-            'resource_group': 'NeonDemoRG'
+            'resource_group': 'neonrg',
+            'project_name': 'TestProject1',
+            'new_project_name': 'TestProject2',
+            'pg_version': '17',
+            'branch_name': 'main',
+            'new_branch_name': 'dev-cli-branch',
+            'role_name': 'onwer_role',
+            'new_role_name': 'dev_role',
+            'database_name': 'neondb',
+            'new_database_name': 'clidb',
+            'region_id': 'eastus2',
+            'storage': 0,
+            'history_retention': 0,
+            'entity_name': 'Neon-Partner-Demo-project',
+            'tags': '{}={}'.format(tags_key, tags_val),
+            'updated_tags': '{}={}'.format(tags_key, updated_tags_val),
+            'project_id': 'withered-sea-55021972',
+            'project_id_to_delete': 'purple-dew-38706216',
+            'branch_id': 'br-frosty-bird-a85qx3j8',
+            'branch_id_to_delete': 'br-muddy-cherry-a8wbc7ux',
+            'org_name': 'Test-Neon-Org-Cli-IT',
+            'org_resource_group': 'neonrg',
         })
 
         # Create Neon Organization
-        self.cmd('az neon postgres create --resource-group {resource_group} --name {name} --location {location} --subscription {subscription} '
+        # Tags: Create, Organization, Marketplace, Complex-Properties
+        self.cmd('az neon postgres organization create --resource-group {resource_group} --name {name} --location {location} --tags {tags} --subscription {subscription} '
                  '--marketplace-details \'{{"subscription-id": "{marketplace_subscription_id}", "subscription-status": "PendingFulfillmentStart", '
                  '"offer-details": {{"publisher-id": "{publisher_id}", "offer-id": "{offer_id}", "plan-id": "{plan_id}", "plan-name": "{plan_name}", "term-unit": "{term_unit}", "term-id": "{term_id}"}}}}\' '
                  '--user-details \'{{"first-name": "{user_first_name}", "last-name": "{user_last_name}", "email-address": "{user_email}", "upn": "{user_upn}", "phone-number": "{user_phone}"}}\' '
                  '--company-details \'{{"company-name": "{company_name}", "country": "{country}", "business-phone": "{business_phone}", "office-address": "{office_address}", "domain": "{domain}", "number-of-employees": {number_of_employees}}}\' '
-                 '--partner-organization-properties \'{{"organization-id": "{organization_id}", "org-name": "{org-name}", '
-                 '"single-sign-on-properties": {{"single-sign-on-state": "Enable", "enterprise-app-id": "{enterprise_app_id}", "single-sign-on-url": "{sso_url}", "aad-domains": ["{aad_domain}"]}}}}\'',
+                 '--partner-organization-properties \'{{"organization-name": "{name}", "organization-id": "", '
+                 '"single-sign-on-properties": {{"single-sign-on-state": "Enable", "enterprise-app-id": "", "single-sign-on-url": "", "aad-domains": []}}}}\' '
+                 '--project-properties \'{{"project-name": "{project_name}", "pg-version": "{pg_version}", '
+                 '"region": "{region_id}", '
+                 '"branch": {{"branch-name": "{branch_name}", "role-name": "{role_name}", "database-name": "{database_name}"}}}}\'',
                  checks=[
                      self.check('name', '{name}'),
+                     self.check('tags.{}'.format(tags_key), tags_val),
                  ])
 
         # List Neon Organizations
+        # Tags: List, Organization, Subscription-Scoped
         self.cmd('az neon postgres organization list --subscription {subscription} --resource-group {resource_group}',
                  checks=[])
 
         # Show Neon Organization
+        # Tags: Show, Organization, Resource-Specific
         self.cmd('az neon postgres organization show --subscription {subscription} --resource-group {resource_group} --name {name}',
                  checks=[
                      self.check('name', '{name}'),
                  ])
+
+
+         # Create Neon Project with a default branch and database
+        self.cmd('az neon postgres project create --resource-group {resource_group} --organization-name {name} '
+                 '--project-name {new_project_name} --pg-version {pg_version} --region {region_id} '
+                 '--branch "{{\\"branch-name\\":\\"{new_branch_name}\\", \\"role-name\\":\\"{new_role_name}\\", \\"database-name\\":\\"{new_database_name}\\"}}\"')
+        
+
+         # List Neon Projects in organization
+        self.cmd('az neon postgres project list --resource-group {resource_group} --organization-name {name}',
+                 checks=[
+                     self.greater_than('length(@)', 0),
+                 ])
+       
+       # Show Neon Project
+        self.cmd('az neon postgres project show --resource-group {org_resource_group} --organization-name {org_name} --project-id {project_id}',
+                 checks=[
+                     self.check('properties.regionId', '{region_id}'),
+                 ])
+        
+         # List branches in the project
+        self.cmd('az neon postgres branch list --resource-group {org_resource_group} --organization-name {org_name} --project-id {project_id}',
+                 checks=[
+                     self.greater_than('length(@)', 0),  # Should have at least 1 branches now
+                 ])
+
+        # Create a new branch (dev-branch) off the main branch
+        self.cmd('az neon postgres branch create --resource-group {resource_group} --organization-name {org_name} '
+                 '--project-name {project_id} --name {new_branch_name} --parent-id {branch_id} '
+                 '--role-name {role_name} --database-name {database_name}',
+                 checks=[
+                     self.check('name', '{new_branch_name}'),
+                     self.check('properties.parentId', '{branch_id}'),
+                 ])
+        
+        # List databases in a branch
+        self.cmd('az neon postgres neon-database list --resource-group {org_resource_group} --organization-name {org_name} '
+                 '--project-id {project_id} --branch-id {branch_id}',
+                 checks=[
+                     self.greater_than('length(@)', 0)
+                 ])
+        
+         # List roles in a branch
+        self.cmd('az neon postgres neon-role list --resource-group {org_resource_group} --organization-name {org_name} '
+                 '--project-id {project_id} --branch-id {branch_id}',
+                 checks=[
+                     self.greater_than('length(@)', 0)
+                 ])
+
+
+        # Delete the branch
+        self.cmd('az neon postgres branch delete --resource-group {resource_group} --organization-name {org_name} '
+                 '--project-id {project_id_to_delete} --branch-id {branch_id_to_delete} --yes', checks=[])
+
+        # Delete Neon Project
+        self.cmd('az neon postgres project delete --resource-group {resource_group} --organization-name {org_name}'
+                ' --project-id {project_id_to_delete} --yes', checks=[])
+
+        # Delete Neon Organization
+        self.cmd('az neon postgres organization delete --resource-group {resource_group} --name {name} '
+                 '--subscription {subscription} --yes',
+                 checks=[])

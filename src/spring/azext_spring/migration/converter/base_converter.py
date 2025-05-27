@@ -116,8 +116,8 @@ class BaseConverter(ConverterTemplate):
         mount_path = self._get_storage_mount_path(disk_props)
         access_mode = self._get_storage_access_mode(disk_props)
         storage_unique_name = f"{storage_name}|{account_name}|{share_name}|{mount_path}|{access_mode}"
-        hash_value = hashlib.md5(storage_unique_name.encode()).hexdigest()[:16]  # Take first 16 chars of hash
-        result = f"{storage_name}{hash_value}"
+        hash_value = hashlib.sha256(storage_unique_name.encode()).hexdigest()[:16]  # Take first 16 chars of hash
+        result = f"{storage_name}{hash_value}".replace("-", "").replace("_", "")
         return result[:32]  # Ensure total length is no more than 32
 
     def _get_mount_options(self, disk_props):
@@ -133,6 +133,39 @@ class BaseConverter(ConverterTemplate):
     def _get_storage_enable_subpath(self, disk_props):
         enableSubPath = disk_props.get('customPersistentDiskProperties', False).get('enableSubPath', False)
         return enableSubPath
+
+    def _get_app_storage_configs(self):
+        storage_configs = []
+        apps = self.wrapper_data.get_apps()
+        for app in apps:
+            # Check if app has properties and customPersistentDiskProperties
+            if 'properties' in app and 'customPersistentDisks' in app['properties']:
+                disks = app['properties'].get('customPersistentDisks', [])
+                for disk_props in disks:
+                    if self._get_storage_enable_subpath(disk_props) is True:
+                        logger.warning("Mismatch: enableSubPath of custom persistent disks is not supported in Azure Container Apps.")
+                    # print("storage_name + account_name + share_name + mount_path + access_mode:", storage_name + account_name + share_name + mountPath + access_mode)
+                    storage_config = {
+                        'paramContainerAppEnvStorageAccountKey': self._get_param_name_of_storage_account_key(disk_props),
+                        'storageName': self._get_storage_unique_name(disk_props),
+                        'shareName': self._get_storage_share_name(disk_props),
+                        'accessMode': self._get_storage_access_mode(disk_props),
+                        'accountName': self._get_storage_account_name(disk_props),
+                    }
+                    if storage_config not in storage_configs:
+                        storage_configs.append(storage_config)
+        return storage_configs
+
+# app
+    def _get_container_image(self, app):
+        blueDeployment = self.wrapper_data.get_blue_deployment_by_app(app)
+        if blueDeployment is not None:
+            if self.wrapper_data.is_support_custom_container_image_for_app(app):
+                server = blueDeployment['properties']['source'].get('customContainer').get('server', '')
+                containerImage = blueDeployment['properties']['source'].get('customContainer').get('containerImage', '')
+                return f"{server}/{containerImage}"
+            else:
+                return None
 
 # module name
     def _get_app_module_name(self, app):
@@ -158,6 +191,11 @@ class BaseConverter(ConverterTemplate):
     def _get_param_name_of_storage_account_key(self, disk_props):
         storage_unique_name = self._get_storage_unique_name(disk_props)
         return "containerAppEnvStorageAccountKeyOf_" + storage_unique_name
+
+    # get param name of paramContainerAppImagePassword
+    def _get_param_name_of_container_image_password(self, app):
+        appName = self._get_resource_name(app)
+        return "containerImagePasswordOf_" + appName.replace("-", "_")
 
 
 class SourceDataWrapper:
@@ -210,7 +248,7 @@ class SourceDataWrapper:
         return self.is_support_feature('Microsoft.AppPlatform/Spring/applicationLiveViews')
 
     def is_support_gateway(self):
-        return self.is_support_feature('Microsoft.AppPlatform/Spring/gateways/routeConfigs')
+        return self.is_support_feature('Microsoft.AppPlatform/Spring/gateways')
 
     def get_asa_service(self):
         return self.get_resources_by_type('Microsoft.AppPlatform/Spring')[0]
@@ -228,12 +266,12 @@ class SourceDataWrapper:
     def get_blue_deployment_by_app(self, app):
         deployments = self.get_deployments_by_app(app)
         deployments = [deployment for deployment in deployments if deployment['properties']['active'] is True]
-        return deployments[0] if deployments else {}
+        return deployments[0] if deployments else None
 
     def get_green_deployment_by_app(self, app):
         deployments = self.get_deployments_by_app(app)
         deployments = [deployment for deployment in deployments if deployment['properties']['active'] is False]
-        return deployments[0] if deployments else {}
+        return deployments[0] if deployments else None
 
     def get_green_deployments(self):
         deployments = self.get_deployments()
@@ -295,3 +333,24 @@ class SourceDataWrapper:
         if identity is None:
             return False
         return identity.get('type') == 'SystemAssigned'
+
+    def is_support_custom_container_image_for_deployment(self, deployment):
+        if deployment is None:
+            return False
+        return deployment['properties'].get('source') is not None and \
+            deployment['properties']['source'].get('customContainer') is not None and \
+            deployment['properties']['source'].get('type') == 'Container' and \
+            deployment['properties']['source']['customContainer'].get('containerImage') is not None
+
+    def is_support_custom_container_image_for_app(self, app):
+        blueDeployment = self.get_blue_deployment_by_app(app)
+        if blueDeployment is None:
+            return False
+        return self.is_support_custom_container_image_for_deployment(blueDeployment)
+
+    def is_private_custom_container_image(self, app):
+        blueDeployment = self.get_blue_deployment_by_app(app)
+        if blueDeployment is None:
+            return False
+        if self.is_support_custom_container_image_for_app(app):
+            return blueDeployment['properties']['source'].get('customContainer').get('imageRegistryCredential', {}).get('username', None) is not None

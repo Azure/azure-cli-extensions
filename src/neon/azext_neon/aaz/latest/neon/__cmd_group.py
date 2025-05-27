@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command_group(
     "neon",
-    is_preview=True,
 )
 class __CMDGroup(AAZCommandGroup):
     """Manage Neon Postgres

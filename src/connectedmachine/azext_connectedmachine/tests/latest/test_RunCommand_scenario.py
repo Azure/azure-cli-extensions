@@ -43,9 +43,9 @@ class RunCommandScenarioTest(ScenarioTest):
         self.kwargs.update({
             'machine': 'testmachine',
             'rg': 'ytongtest',
-            'location': 'eastus',
+            'location': 'westus2',
             'subscription': '00000000-0000-0000-0000-000000000000',
-            'runcommand': 'myRunCommand',
+            'runcommand': 'myRunCommand2',
         })
 
         parameters_string = '''[{"name":"param1","value":"value1"}]'''
@@ -68,7 +68,7 @@ class RunCommandScenarioTest(ScenarioTest):
                 '--resource-group "{rg}" '
                 '--machine-name "{machine}"',
                 checks=[
-                    self.check('length(@)', 1)
+                    self.check('length(@)', 2)
                 ])
 
         self.cmd('az connectedmachine run-command show '
@@ -85,7 +85,7 @@ class RunCommandScenarioTest(ScenarioTest):
                 '--name "{runcommand}" '
                 '--machine-name "{machine}" '
                 '--subscription "{subscription}" '
-                '--tags Tag1="Value1"',
+                '--tags Tag1=Value1',
                 checks=[
                     self.check('type','Microsoft.HybridCompute/machines/runcommands'),
                     self.check('instanceView.executionState','Succeeded')

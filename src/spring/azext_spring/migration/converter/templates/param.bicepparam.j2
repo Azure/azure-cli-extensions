@@ -8,14 +8,23 @@ param maxNodes = 10
 {%- if data.isVnet == true %}
 // Provide the full resource ID of the existing subnet, the subnet must be delegated to Microsoft.App/environments
 // Example: /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/virtualNetworks/{vnetName}/subnets/{subnetName}
-param vnetSubnetId
+param vnetSubnetId = 
 {%- endif %}
 
 {%- for app in data.apps %}
+{%- if app.isByoc %}
+param {{app.paramTargetPort}} = 8080
+{%- if app.isPrivateImage %}
+@secure()
+param {{app.paramContainerAppImagePassword}} = 'fill in password for container retistry "{{app.image}}"'
+{%- endif %}
+{%- else %}
 param {{app.paramContainerAppImageName}} = 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
 param {{app.paramTargetPort}} = 80
+{%- endif %}
 {%- endfor %}
 
 {%- for storage in data.storages %}
+@secure()
 param {{storage.paramContainerAppEnvStorageAccountKey}} = 'fill in account key for storage "{{storage.accountName}}"'
 {%- endfor %}
