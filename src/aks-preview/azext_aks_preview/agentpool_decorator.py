@@ -502,13 +502,13 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
         # this parameter does not need dynamic completion
         # this parameter does not need validation
         return max_unavailable
-    
+
     def get_max_blocked_nodes(self) -> str:
         """Obtain the value of max_blocked_nodes.
 
         :return: string
         """
-         # read the original value passed by the command
+        # read the original value passed by the command
         max_blocked_nodes = self.raw_param.get("max_blocked_nodes")
         # In create mode, try to read the property value corresponding to the parameter from the `agentpool` object
         if self.decorator_mode == DecoratorMode.CREATE:
@@ -1146,7 +1146,7 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         max_unavailable = self.context.get_max_unavailable()
         if max_unavailable:
             upgrade_settings.max_unavailable = max_unavailable
-        
+
         max_blocked_nodes = self.context.get_max_blocked_nodes()
         if max_blocked_nodes:
             upgrade_settings.max_blocked_nodes = max_blocked_nodes
