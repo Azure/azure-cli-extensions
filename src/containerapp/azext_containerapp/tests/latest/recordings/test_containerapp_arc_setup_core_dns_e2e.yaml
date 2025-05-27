@@ -9,7 +9,7 @@ interactions:
       User-Agent:
       - OpenAPI-Generator/24.2.0/python
     method: GET
-    uri: https://my-aks-clu-clitestrg2joav-23f95f-ubxjnrch.hcp.southcentralus.azmk8s.io/version/
+    uri: https://my-aks-clu-clitestrgbfjhm-23f95f-589kk8ou.hcp.southcentralus.azmk8s.io/version/
   response:
     body:
       string: "{\n  \"major\": \"1\",\n  \"minor\": \"31\",\n  \"gitVersion\": \"v1.31.8\",\n
@@ -18,7 +18,7 @@ interactions:
         \ \"compiler\": \"gc\",\n  \"platform\": \"linux/amd64\"\n}"
     headers:
       audit-id:
-      - 04779252-90d0-4324-967e-1c14e703c7db
+      - 5c49c431-d353-4394-83cf-993810034296
       cache-control:
       - no-cache, private
       content-length:
@@ -26,11 +26,11 @@ interactions:
       content-type:
       - application/json
       date:
-      - Sat, 24 May 2025 16:40:27 GMT
+      - Mon, 26 May 2025 13:34:57 GMT
       x-kubernetes-pf-flowschema-uid:
-      - 5781e547-d020-4594-8438-0c5c4769dec4
+      - 921b7fc3-6a2f-4489-a7c7-eb27134a6330
       x-kubernetes-pf-prioritylevel-uid:
-      - 1bb1b831-f26f-471a-8430-cad2fbadeb84
+      - f5d60d27-ab30-4321-88c8-2e0961154d85
     status:
       code: 200
       message: OK
@@ -44,13 +44,13 @@ interactions:
       User-Agent:
       - OpenAPI-Generator/24.2.0/python
     method: GET
-    uri: https://my-aks-clu-clitestrg2joav-23f95f-ubxjnrch.hcp.southcentralus.azmk8s.io/apis/apps/v1/namespaces/kube-system/deployments/mock-deployment?pretty=True
+    uri: https://my-aks-clu-clitestrgbfjhm-23f95f-589kk8ou.hcp.southcentralus.azmk8s.io/apis/apps/v1/namespaces/kube-system/deployments/mock-deployment?pretty=True
   response:
     body:
       string: "{\n  \"kind\": \"Deployment\",\n  \"apiVersion\": \"apps/v1\",\n  \"metadata\":
         {\n    \"name\": \"coredns\",\n    \"namespace\": \"kube-system\",\n    \"uid\":
-        \"b6fc2cfd-2d1b-43f6-8972-f3af135c9853\",\n    \"resourceVersion\": \"1593\",\n
-        \   \"generation\": 2,\n    \"creationTimestamp\": \"2025-05-24T16:37:10Z\",\n
+        \"af8bfded-8de3-4b9b-acd8-136f032ddb4a\",\n    \"resourceVersion\": \"1704\",\n
+        \   \"generation\": 2,\n    \"creationTimestamp\": \"2025-05-26T13:32:08Z\",\n
         \   \"labels\": {\n      \"addonmanager.kubernetes.io/mode\": \"Reconcile\",\n
         \     \"k8s-app\": \"kube-dns\",\n      \"kubernetes.azure.com/managedby\":
         \"aks\",\n      \"kubernetes.io/cluster-service\": \"true\",\n      \"kubernetes.io/name\":
@@ -63,7 +63,7 @@ interactions:
         {\n            \"f:replicas\": {}\n          }\n        },\n        \"subresource\":
         \"scale\"\n      },\n      {\n        \"manager\": \"kubectl-client-side-apply\",\n
         \       \"operation\": \"Update\",\n        \"apiVersion\": \"apps/v1\",\n
-        \       \"time\": \"2025-05-24T16:37:10Z\",\n        \"fieldsType\": \"FieldsV1\",\n
+        \       \"time\": \"2025-05-26T13:32:08Z\",\n        \"fieldsType\": \"FieldsV1\",\n
         \       \"fieldsV1\": {\n          \"f:metadata\": {\n            \"f:annotations\":
         {\n              \".\": {},\n              \"f:kubectl.kubernetes.io/last-applied-configuration\":
         {}\n            },\n            \"f:labels\": {\n              \".\": {},\n
@@ -161,7 +161,7 @@ interactions:
         \                   \"f:name\": {}\n                  }\n                }\n
         \             }\n            }\n          }\n        }\n      },\n      {\n
         \       \"manager\": \"kube-controller-manager\",\n        \"operation\":
-        \"Update\",\n        \"apiVersion\": \"apps/v1\",\n        \"time\": \"2025-05-24T16:38:11Z\",\n
+        \"Update\",\n        \"apiVersion\": \"apps/v1\",\n        \"time\": \"2025-05-26T13:33:29Z\",\n
         \       \"fieldsType\": \"FieldsV1\",\n        \"fieldsV1\": {\n          \"f:metadata\":
         {\n            \"f:annotations\": {\n              \"f:deployment.kubernetes.io/revision\":
         {}\n            }\n          },\n          \"f:status\": {\n            \"f:availableReplicas\":
@@ -281,28 +281,28 @@ interactions:
         2,\n    \"replicas\": 2,\n    \"updatedReplicas\": 2,\n    \"readyReplicas\":
         2,\n    \"availableReplicas\": 2,\n    \"conditions\": [\n      {\n        \"type\":
         \"Available\",\n        \"status\": \"True\",\n        \"lastUpdateTime\":
-        \"2025-05-24T16:38:08Z\",\n        \"lastTransitionTime\": \"2025-05-24T16:38:08Z\",\n
+        \"2025-05-26T13:33:25Z\",\n        \"lastTransitionTime\": \"2025-05-26T13:33:25Z\",\n
         \       \"reason\": \"MinimumReplicasAvailable\",\n        \"message\": \"Deployment
         has minimum availability.\"\n      },\n      {\n        \"type\": \"Progressing\",\n
-        \       \"status\": \"True\",\n        \"lastUpdateTime\": \"2025-05-24T16:38:11Z\",\n
-        \       \"lastTransitionTime\": \"2025-05-24T16:37:10Z\",\n        \"reason\":
+        \       \"status\": \"True\",\n        \"lastUpdateTime\": \"2025-05-26T13:33:29Z\",\n
+        \       \"lastTransitionTime\": \"2025-05-26T13:32:08Z\",\n        \"reason\":
         \"NewReplicaSetAvailable\",\n        \"message\": \"ReplicaSet \\\"coredns-57d886c994\\\"
         has successfully progressed.\"\n      }\n    ]\n  }\n}"
     headers:
       audit-id:
-      - b34eb004-7541-4b13-87a3-28db96b7a6a2
+      - 930775a0-c08c-41a4-9609-d85c4cf188dc
       cache-control:
       - no-cache, private
       content-type:
       - application/json
       date:
-      - Sat, 24 May 2025 16:40:29 GMT
+      - Mon, 26 May 2025 13:34:58 GMT
       transfer-encoding:
       - chunked
       x-kubernetes-pf-flowschema-uid:
-      - 5781e547-d020-4594-8438-0c5c4769dec4
+      - 921b7fc3-6a2f-4489-a7c7-eb27134a6330
       x-kubernetes-pf-prioritylevel-uid:
-      - 1bb1b831-f26f-471a-8430-cad2fbadeb84
+      - f5d60d27-ab30-4321-88c8-2e0961154d85
     status:
       code: 200
       message: OK
@@ -316,13 +316,13 @@ interactions:
       User-Agent:
       - OpenAPI-Generator/24.2.0/python
     method: GET
-    uri: https://my-aks-clu-clitestrg2joav-23f95f-ubxjnrch.hcp.southcentralus.azmk8s.io/api/v1/namespaces/kube-system/configmaps/coredns?pretty=True
+    uri: https://my-aks-clu-clitestrgbfjhm-23f95f-589kk8ou.hcp.southcentralus.azmk8s.io/api/v1/namespaces/kube-system/configmaps/coredns?pretty=True
   response:
     body:
       string: "{\n  \"kind\": \"ConfigMap\",\n  \"apiVersion\": \"v1\",\n  \"metadata\":
         {\n    \"name\": \"coredns\",\n    \"namespace\": \"kube-system\",\n    \"uid\":
-        \"4c0107e6-ffd3-4e74-b630-dd2c6dd33a1d\",\n    \"resourceVersion\": \"497\",\n
-        \   \"creationTimestamp\": \"2025-05-24T16:37:10Z\",\n    \"labels\": {\n
+        \"85db43e6-429e-4c02-a941-052aac51ed82\",\n    \"resourceVersion\": \"506\",\n
+        \   \"creationTimestamp\": \"2025-05-26T13:32:08Z\",\n    \"labels\": {\n
         \     \"addonmanager.kubernetes.io/mode\": \"Reconcile\",\n      \"k8s-app\":
         \"kube-dns\",\n      \"kubernetes.io/cluster-service\": \"true\"\n    },\n
         \   \"annotations\": {\n      \"kubectl.kubernetes.io/last-applied-configuration\":
@@ -338,7 +338,7 @@ interactions:
         custom/*.server\\\\n\\\"},\\\"kind\\\":\\\"ConfigMap\\\",\\\"metadata\\\":{\\\"annotations\\\":{},\\\"labels\\\":{\\\"addonmanager.kubernetes.io/mode\\\":\\\"Reconcile\\\",\\\"k8s-app\\\":\\\"kube-dns\\\",\\\"kubernetes.io/cluster-service\\\":\\\"true\\\"},\\\"name\\\":\\\"coredns\\\",\\\"namespace\\\":\\\"kube-system\\\"}}\\n\"\n
         \   },\n    \"managedFields\": [\n      {\n        \"manager\": \"kubectl-client-side-apply\",\n
         \       \"operation\": \"Update\",\n        \"apiVersion\": \"v1\",\n        \"time\":
-        \"2025-05-24T16:37:10Z\",\n        \"fieldsType\": \"FieldsV1\",\n        \"fieldsV1\":
+        \"2025-05-26T13:32:08Z\",\n        \"fieldsType\": \"FieldsV1\",\n        \"fieldsV1\":
         {\n          \"f:data\": {\n            \".\": {},\n            \"f:Corefile\":
         {}\n          },\n          \"f:metadata\": {\n            \"f:annotations\":
         {\n              \".\": {},\n              \"f:kubectl.kubernetes.io/last-applied-configuration\":
@@ -356,19 +356,19 @@ interactions:
         {\\n      rcode NXDOMAIN\\n    }\\n}\\nimport custom/*.server\\n\"\n  }\n}"
     headers:
       audit-id:
-      - b4767d37-ad06-44c6-a373-117779a4e744
+      - 641307d7-ccba-4488-a5b8-82ad0ef62ba2
       cache-control:
       - no-cache, private
       content-type:
       - application/json
       date:
-      - Sat, 24 May 2025 16:40:30 GMT
+      - Mon, 26 May 2025 13:34:59 GMT
       transfer-encoding:
       - chunked
       x-kubernetes-pf-flowschema-uid:
-      - 5781e547-d020-4594-8438-0c5c4769dec4
+      - 921b7fc3-6a2f-4489-a7c7-eb27134a6330
       x-kubernetes-pf-prioritylevel-uid:
-      - 1bb1b831-f26f-471a-8430-cad2fbadeb84
+      - f5d60d27-ab30-4321-88c8-2e0961154d85
     status:
       code: 200
       message: OK
@@ -382,25 +382,25 @@ interactions:
       User-Agent:
       - OpenAPI-Generator/24.2.0/python
     method: GET
-    uri: https://my-aks-clu-clitestrg2joav-23f95f-ubxjnrch.hcp.southcentralus.azmk8s.io/api/v1/namespaces/kube-system/configmaps/coredns-custom?pretty=True
+    uri: https://my-aks-clu-clitestrgbfjhm-23f95f-589kk8ou.hcp.southcentralus.azmk8s.io/api/v1/namespaces/kube-system/configmaps/coredns-custom?pretty=True
   response:
     body:
       string: "{\n  \"kind\": \"ConfigMap\",\n  \"apiVersion\": \"v1\",\n  \"metadata\":
         {\n    \"name\": \"coredns-custom\",\n    \"namespace\": \"kube-system\",\n
-        \   \"uid\": \"f78a421f-4b4f-4817-8250-1d5a40e6cd0e\",\n    \"resourceVersion\":
-        \"401\",\n    \"creationTimestamp\": \"2025-05-24T16:37:04Z\",\n    \"labels\":
+        \   \"uid\": \"a110fcc7-4bdf-4338-9f7c-aeefd1261b63\",\n    \"resourceVersion\":
+        \"408\",\n    \"creationTimestamp\": \"2025-05-26T13:32:01Z\",\n    \"labels\":
         {\n      \"addonmanager.kubernetes.io/mode\": \"EnsureExists\",\n      \"k8s-app\":
         \"kube-dns\",\n      \"kubernetes.io/cluster-service\": \"true\"\n    },\n
         \   \"managedFields\": [\n      {\n        \"manager\": \"kubectl-create\",\n
         \       \"operation\": \"Update\",\n        \"apiVersion\": \"v1\",\n        \"time\":
-        \"2025-05-24T16:37:04Z\",\n        \"fieldsType\": \"FieldsV1\",\n        \"fieldsV1\":
+        \"2025-05-26T13:32:01Z\",\n        \"fieldsType\": \"FieldsV1\",\n        \"fieldsV1\":
         {\n          \"f:metadata\": {\n            \"f:labels\": {\n              \".\":
         {},\n              \"f:addonmanager.kubernetes.io/mode\": {},\n              \"f:k8s-app\":
         {},\n              \"f:kubernetes.io/cluster-service\": {}\n            }\n
         \         }\n        }\n      }\n    ]\n  }\n}"
     headers:
       audit-id:
-      - b704afc3-e2c8-452a-9bfd-f3681aa1013e
+      - 40ce79c6-9c68-49a4-a289-bde494f0a581
       cache-control:
       - no-cache, private
       content-length:
@@ -408,11 +408,11 @@ interactions:
       content-type:
       - application/json
       date:
-      - Sat, 24 May 2025 16:40:31 GMT
+      - Mon, 26 May 2025 13:35:00 GMT
       x-kubernetes-pf-flowschema-uid:
-      - 5781e547-d020-4594-8438-0c5c4769dec4
+      - 921b7fc3-6a2f-4489-a7c7-eb27134a6330
       x-kubernetes-pf-prioritylevel-uid:
-      - 1bb1b831-f26f-471a-8430-cad2fbadeb84
+      - f5d60d27-ab30-4321-88c8-2e0961154d85
     status:
       code: 200
       message: OK
