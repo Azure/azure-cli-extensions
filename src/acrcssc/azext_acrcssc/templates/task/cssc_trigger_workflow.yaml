@@ -23,7 +23,7 @@ steps:
       - ACR_EXPERIMENTAL_CSSC=true
   - cmd: bash -c 'sed -n "/^Listing/,/^Matches/ {/^Listing/b;/^Matches/b;/^Repo/b;p}" filterReposWithPatchTags.txt' > filteredReposAndTags.txt
   - cmd: bash -c 'sed -n "/^Configured Tag Convention:/p" filterReposWithPatchTags.txt' > tagConvention.txt
-  - cmd: az login --identity 
+  - cmd: az login --identity --allow-no-subscriptions
   - id: scan-and-schedule-patch
     timeout: 1800
     cmd: |
