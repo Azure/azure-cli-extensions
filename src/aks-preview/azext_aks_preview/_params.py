@@ -205,6 +205,7 @@ from azext_aks_preview._validators import (
     validate_max_unavailable,
     validate_location_cluster_name_resource_group_mutually_exclusive,
     validate_resource_group_parameter,
+    validate_location_cluster_parameters_present,
 )
 from azext_aks_preview.azurecontainerstorage._consts import (
     CONST_ACSTOR_ALL,
