@@ -259,7 +259,7 @@ node_os_skus = node_os_skus_create + [
     CONST_OS_SKU_WINDOWSANNUAL,
 ]
 node_os_skus_update = [
-    CONST_OS_SKU_AZURELINUX, 
+    CONST_OS_SKU_AZURELINUX,
     CONST_OS_SKU_UBUNTU,
     CONST_OS_SKU_UBUNTU2204,
     CONST_OS_SKU_UBUNTU2404,
