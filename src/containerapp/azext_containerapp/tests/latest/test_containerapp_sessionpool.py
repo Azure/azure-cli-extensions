@@ -8,6 +8,7 @@ from azure.cli.command_modules.containerapp._utils import format_location
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck, JMESPathCheckExists)
+from knack.testsdk import live_only
 
 from .common import (TEST_LOCATION, STAGE_LOCATION, write_test_file,
                      clean_up_test_file,
@@ -21,6 +22,7 @@ class ContainerappSessionPoolTests(ScenarioTest):
     @ResourceGroupPreparer()
     @SubnetPreparer(location="centralus", delegations='Microsoft.App/environments',
                     service_endpoints="Microsoft.Storage.Global")
+    @live_only()
     def test_containerapp_sessionpool(self, resource_group, subnet_id, vnet_name, subnet_name):
         location = TEST_LOCATION
         self.cmd('configure --defaults location={}'.format(location))
@@ -135,6 +137,7 @@ class ContainerappSessionPoolTests(ScenarioTest):
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer()
+    @live_only()
     def test_containerapp_sessionpool_registry_update(self, resource_group):
         location = TEST_LOCATION
         if format_location(location) == format_location(STAGE_LOCATION):

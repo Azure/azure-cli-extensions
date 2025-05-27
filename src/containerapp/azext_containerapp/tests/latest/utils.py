@@ -37,11 +37,12 @@ def prepare_containerapp_env_for_app_e2e_tests(test_cls, location=TEST_LOCATION)
     return managed_env["id"]
 
 
-def create_vent_subnet(self, resource_group, vnet, location="centralus"):
+def create_vent_subnet(self, resource_group, vnet, delegations='Microsoft.App/environments', location="centralus"):
     self.cmd(f"az network vnet create --address-prefixes '14.0.0.0/23' -g {resource_group} -n {vnet} --location {location}")
-    sub_id = self.cmd(
-        f"az network vnet subnet create --address-prefixes '14.0.0.0/23' --delegations Microsoft.App/environments -n sub -g {resource_group} --vnet-name {vnet}").get_output_in_json()[
-        "id"]
+    subnet_command = f"az network vnet subnet create --address-prefixes '14.0.0.0/23' -n sub -g {resource_group} --vnet-name {vnet}"
+    if delegations is not None:
+        subnet_command += f' --delegations {delegations}'
+    sub_id = self.cmd(subnet_command).get_output_in_json()["id"]
     return sub_id
 
 

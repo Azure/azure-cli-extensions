@@ -148,7 +148,7 @@ class ContainerAppWorkloadProfilesTest(ScenarioTest):
     def test_containerapp_create_enable_workload_profiles_three_state_flag(self, resource_group):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
         env = self.create_random_name(prefix='env', length=24)
-        subnet_id = create_vent_subnet(self, resource_group, self.create_random_name(prefix='name', length=24))
+        subnet_id = create_vent_subnet(self, resource_group, self.create_random_name(prefix='name', length=24), delegations=None)
 
         self.cmd('containerapp env create -g {} -n {} --logs-destination none --enable-workload-profiles false -s {}'.format(resource_group, env, subnet_id), expect_failure=False, checks=[
             JMESPathCheck("name", env),
