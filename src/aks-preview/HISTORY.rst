@@ -14,7 +14,7 @@ Pending
 
 18.0.0b4
 +++++++
-* Create managed namespace commands `az aks namespace add/update/show/list/delete/get-credentials`
+* Add managed namespace commands `az aks namespace add/update/show/list/delete/get-credentials`
 
 18.0.0b3
 +++++++
