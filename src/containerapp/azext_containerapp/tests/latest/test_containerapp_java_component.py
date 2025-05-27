@@ -26,7 +26,7 @@ class ContainerappJavaComponentTests(ScenarioTest):
         eureka_name = "myeureka"
         sba_name = "mysba"
 
-        create_containerapp_env(self, env_name, resource_group)
+        create_containerapp_env(self, env_name, resource_group, location=location)
         env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
         default_domain=env['properties']['defaultDomain']
 

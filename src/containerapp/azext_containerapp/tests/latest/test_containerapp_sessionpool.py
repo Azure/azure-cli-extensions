@@ -208,6 +208,7 @@ class ContainerappSessionPoolTests(ScenarioTest):
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer()
+    @live_only()
     def test_containerapp_sessionpool_registry(self, resource_group):
         location = TEST_LOCATION
         if format_location(location) == format_location(STAGE_LOCATION):
@@ -285,6 +286,7 @@ class ContainerappSessionPoolTests(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer()
     @SubnetPreparer(location="eastasia", service_endpoints="Microsoft.Storage.Global")
+    @live_only()
     def test_containerapp_sessionpool_registry_identity(self, resource_group, subnet_id):
         location = TEST_LOCATION
         if format_location(location) == format_location(STAGE_LOCATION):

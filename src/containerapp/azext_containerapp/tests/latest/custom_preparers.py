@@ -80,7 +80,7 @@ class SubnetPreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
 
     def create_resource(self, name, **kwargs):
         resource_group = self._get_resource_group(**kwargs)
-        subnet_id = None
+        subnet_id = "FAKESUBNETID"
         try:
             self.live_only_execute(self.cli_ctx, f"az network vnet create --address-prefixes {self.vnet_address_prefixes} -g {resource_group} -n {self.vnet_name} --subnet-name {self.subnet_name} --location {self.location}")
             subnet_command = f"az network vnet subnet update --address-prefixes {self.subnet_address_prefixes} " \

@@ -421,7 +421,7 @@ class ContainerappEnvScenarioTest(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="northeurope")
     @LogAnalyticsWorkspacePreparer(location="eastus", get_shared_key=True)
-    @SubnetPreparer(location="eastus", vnet_address_prefixes='14.0.0.0/23',  delegations='Microsoft.App/environments', subnet_address_prefixes='14.0.0.0/23')
+    @SubnetPreparer(location="centralus", vnet_address_prefixes='14.0.0.0/23',  delegations='Microsoft.App/environments', subnet_address_prefixes='14.0.0.0/23')
     def test_containerapp_env_e2e(self, resource_group, laworkspace_customer_id, laworkspace_shared_key, subnet_id):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 

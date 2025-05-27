@@ -40,7 +40,7 @@ class ContainerappYamlTests(ScenarioTest):
         containerapp_env1 = self.cmd(
             'containerapp env show -g {} -n {}'.format(resource_group, env1)).get_output_in_json()
 
-        create_containerapp_env(self, env2, resource_group)
+        create_containerapp_env(self, env2, resource_group, location='eastus')
         containerapp_env2 = self.cmd(
             'containerapp env show -g {} -n {}'.format(resource_group, env2)).get_output_in_json()
 
