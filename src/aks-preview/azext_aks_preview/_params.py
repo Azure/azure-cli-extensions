@@ -260,8 +260,8 @@ node_os_skus = node_os_skus_create + [
 ]
 node_os_skus_update = [
     CONST_OS_SKU_AZURELINUX, 
-    CONST_OS_SKU_UBUNTU, 
-    CONST_OS_SKU_UBUNTU2204, 
+    CONST_OS_SKU_UBUNTU,
+    CONST_OS_SKU_UBUNTU2204,
     CONST_OS_SKU_UBUNTU2404,
 ]
 scale_down_modes = [CONST_SCALE_DOWN_MODE_DELETE, CONST_SCALE_DOWN_MODE_DEALLOCATE]
