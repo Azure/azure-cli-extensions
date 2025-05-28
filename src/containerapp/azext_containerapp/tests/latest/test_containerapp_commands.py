@@ -1506,6 +1506,7 @@ class ContainerappRevisionTests(ScenarioTest):
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="northeurope")
+    @live_only()
     def test_containerapp_revision_labels_mode_e2e(self, resource_group):
         self.cmd(f"configure --defaults location={TEST_LOCATION}")
 
