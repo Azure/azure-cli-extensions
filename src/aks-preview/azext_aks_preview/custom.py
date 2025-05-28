@@ -499,6 +499,7 @@ def aks_create(
     disable_acns_observability=None,
     disable_acns_security=None,
     acns_advanced_networkpolicies=None,
+    acns_transit_encryption_type=None,
     enable_retina_flow_logs=None,
     # nodepool
     crg_id=None,
@@ -731,6 +732,7 @@ def aks_update(
     disable_acns_observability=None,
     disable_acns_security=None,
     acns_advanced_networkpolicies=None,
+    acns_transit_encryption_type=None,
     enable_retina_flow_logs=None,
     disable_retina_flow_logs=None,
     # metrics profile
