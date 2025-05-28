@@ -2032,6 +2032,7 @@ def aks_addon_list(cmd, client, resource_group_name, name):
                 mc.ingress_profile.web_app_routing.enabled
             )
         else:
+<<<<<<< HEAD
             if addon_name == "virtual-node":
                 addon_key += os_type
             enabled = False
@@ -2039,6 +2040,22 @@ def aks_addon_list(cmd, client, resource_group_name, name):
                 matching_key = next((key for key in mc.addon_profiles if key.lower() == addon_key.lower()), None)
                 if matching_key:
                     enabled = bool(mc.addon_profiles[matching_key].enabled)
+=======
+            enabled = (
+                True
+                if mc.addon_profiles and
+                addon_key in mc.addon_profiles and
+                mc.addon_profiles[addon_key].enabled
+                else False
+            )
+        if name == "virtual_node":
+            addon_key += os_type
+            enabled = (
+                True
+                if addon_key in mc.addon_profiles and mc.addon_profiles[addon_key].enabled
+                else False
+            )
+>>>>>>> b585fdbd6 ({AKS} Fix enabled virtual node addon showing wrong status in `aks addon list` (#5099))
         current_addons.append({
             "name": addon_name,
             "api_key": addon_key,
