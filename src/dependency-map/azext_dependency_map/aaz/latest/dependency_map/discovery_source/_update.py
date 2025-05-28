@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update a DiscoverySourceResource
+
+    :example: Update a DiscoverySourceResource
+        az dependency-map discovery-source update --map-name mapName -g rgName -n sourceName --tags owner=abc
     """
 
     _aaz_info = {

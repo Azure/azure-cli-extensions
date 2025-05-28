@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create a DiscoverySourceResource
+
+    :example: Create a DiscoverySourceResource
+        az dependency-map discovery-source create --resource-group rgdependencyMap --map-name mapsTest1 --source-name sourceTest1 --source-type OffAzure --source-id test
     """
 
     _aaz_info = {

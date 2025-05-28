@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create a MapsResource
+
+    :example: create a dependency map
+        az dependency-map create --resource-group rgdependencyMap --map-name mapsTest1 --location westus2
     """
 
     _aaz_info = {

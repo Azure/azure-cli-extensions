@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update a MapsResource
+
+    :example: Update a MapsResource
+        az dependency-map update --name mapName -g rgName -tags owner=abc
     """
 
     _aaz_info = {

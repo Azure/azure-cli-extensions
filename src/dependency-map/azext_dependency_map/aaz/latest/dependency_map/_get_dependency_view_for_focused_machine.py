@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class GetDependencyViewForFocusedMachine(AAZCommand):
     """Get dependency map of single machine
+
+    :example: Get dependency map of single machine
+        az dependency-map get-dependency-view-for-focused-machine --resource-group rgdependencyMap --map-name mapsTest1 --focused-machine-id imzykeisagngrnfinbqtu --start-date-time-utc 2024-03-29T07:35:15.336Z --end-date-time-utc 2024-03-29T07:35:15.336Z
     """
 
     _aaz_info = {
@@ -58,11 +61,6 @@ class GetDependencyViewForFocusedMachine(AAZCommand):
         # define Arg Group "Body"
 
         _args_schema = cls._args_schema
-        _args_schema.filters = AAZObjectArg(
-            options=["--filters"],
-            arg_group="Body",
-            help="Filters for GetSingleMachineDependencyView",
-        )
         _args_schema.focused_machine_id = AAZStrArg(
             options=["--focused-machine-id"],
             arg_group="Body",
@@ -70,40 +68,36 @@ class GetDependencyViewForFocusedMachine(AAZCommand):
             required=True,
         )
 
-        filters = cls._args_schema.filters
-        filters.date_time = AAZObjectArg(
-            options=["date-time"],
-            help="DateTime filter",
-        )
-        filters.process_name_filter = AAZObjectArg(
-            options=["process-name-filter"],
-            help="Process name filter",
-        )
+        # define Arg Group "DateTime"
 
-        date_time = cls._args_schema.filters.date_time
-        date_time.end_date_time_utc = AAZDateTimeArg(
-            options=["end-date-time-utc"],
+        _args_schema = cls._args_schema
+        _args_schema.end_date_time_utc = AAZDateTimeArg(
+            options=["--end-date-time-utc"],
+            arg_group="DateTime",
             help="End date time for dependency map visualization query",
         )
-        date_time.start_date_time_utc = AAZDateTimeArg(
-            options=["start-date-time-utc"],
+        _args_schema.start_date_time_utc = AAZDateTimeArg(
+            options=["--start-date-time-utc"],
+            arg_group="DateTime",
             help="Start date time for dependency map visualization query",
         )
 
-        process_name_filter = cls._args_schema.filters.process_name_filter
-        process_name_filter.operator = AAZStrArg(
-            options=["operator"],
+        # define Arg Group "Filters"
+
+        _args_schema = cls._args_schema
+        _args_schema.operator = AAZStrArg(
+            options=["--operator"],
+            arg_group="Filters",
             help="Operator for process name filter",
-            required=True,
             enum={"contains": "contains", "notContains": "notContains"},
         )
-        process_name_filter.process_names = AAZListArg(
-            options=["process-names"],
+        _args_schema.process_names = AAZListArg(
+            options=["--process-names"],
+            arg_group="Filters",
             help="List of process names on which the operator should be applied",
-            required=True,
         )
 
-        process_names = cls._args_schema.filters.process_name_filter.process_names
+        process_names = cls._args_schema.process_names
         process_names.Element = AAZStrArg()
         return cls._args_schema
 
@@ -197,13 +191,13 @@ class GetDependencyViewForFocusedMachine(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("filters", AAZObjectType, ".filters")
+            _builder.set_prop("filters", AAZObjectType)
             _builder.set_prop("focusedMachineId", AAZStrType, ".focused_machine_id", typ_kwargs={"flags": {"required": True}})
 
             filters = _builder.get(".filters")
             if filters is not None:
-                filters.set_prop("dateTime", AAZObjectType, ".date_time")
-                filters.set_prop("processNameFilter", AAZObjectType, ".process_name_filter")
+                filters.set_prop("dateTime", AAZObjectType)
+                filters.set_prop("processNameFilter", AAZObjectType)
 
             date_time = _builder.get(".filters.dateTime")
             if date_time is not None:
