@@ -87,6 +87,31 @@ def aks_operation_show_table_format(result):
     return parser(result)
 
 
+def aks_namespace_list_table_format(results):
+    """Format an managed namespace list for display with "-o table"."""
+    return [_aks_namespace_list_table_format(r) for r in results]
+
+
+def _aks_namespace_list_table_format(result):
+    parsed = compile_jmes("""{
+        name: name,
+        tags: to_string(tags),
+        provisioningState: to_string(properties.provisioningState),
+        labels: to_string(properties.labels),
+        annotations: to_string(properties.annotations),
+        cpuRequest: to_string(properties.defaultResourceQuota.cpuRequest),
+        cpuLimit: to_string(properties.defaultResourceQuota.cpuLimit),
+        memoryRequest: to_string(properties.defaultResourceQuota.memoryRequest),
+        memoryLimit: to_string(properties.defaultResourceQuota.memoryLimit),
+        ingress: to_string(properties.defaultNetworkPolicy.ingress),
+        egress: to_string(properties.defaultNetworkPolicy.egress),
+        adoptionPolicy: to_string(properties.adoptionPolicy),
+        deletePolicy: to_string(properties.deletePolicy)
+    }""")
+    # use ordered dicts so headers are predictable
+    return parsed.search(result, Options(dict_cls=OrderedDict))
+
+
 def aks_agentpool_show_table_format(result):
     """Format an agent pool as summary results for display with "-o table"."""
     return [_aks_agentpool_table_format(result)]
