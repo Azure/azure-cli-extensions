@@ -38,18 +38,18 @@ def run_cli_command(cmd, return_as_json=False):
                 return json_output
 
             raise CLIError("Command returned an unexpected empty string.")
-        else:
-            return cmd_output
+        return cmd_output
     except CalledProcessError as ex:
         logger.error('command failed: %s', cmd)
         logger.error('output: %s', ex.output)
         raise ex
-    except:
+    except Exception as ex:
         logger.error('command ended with an error: %s', cmd)
-        raise
+        logger.error('args: %s', ex.args)
+        raise ex
 
 
-def prepare_cli_command(cmd, output_as_json=True, tags=None, subscription=None):
+def prepare_cli_command(cmd, output_as_json=True, tags=None, subscription=None, only_show_errors=None):
     full_cmd = [sys.executable, '-m', 'azure.cli'] + cmd
 
     if output_as_json:
@@ -66,6 +66,27 @@ def prepare_cli_command(cmd, output_as_json=True, tags=None, subscription=None):
         full_cmd += ['--tags', EXTENSION_TAG_STRING]
 
         if tags is not None:
-            full_cmd += tags.split()
+            for k, v in tags.items():
+                if v == '':
+                    full_cmd.append(k)
+                else:
+                    full_cmd.append(k + '=' + v)
+
+    # use --only-show-errors to run CLI commands if user specified
+    if only_show_errors:
+        full_cmd += ['--only-show-errors']
 
     return full_cmd
+
+
+def get_storage_account_id_from_blob_path(blob_path, resource_group, subscription_id):
+    from azure.mgmt.core.tools import resource_id
+
+    logger.debug('Getting storage account id for blob: %s', blob_path)
+
+    storage_account_name = blob_path.split('.')[0].split('/')[-1]
+    storage_account_id = resource_id(
+        subscription=subscription_id, resource_group=resource_group,
+        namespace='Microsoft.Storage', type='storageAccounts', name=storage_account_name)
+
+    return storage_account_id

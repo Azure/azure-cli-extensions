@@ -29,3 +29,10 @@ Release History
 ++++++
 * Updated code to work with App Service updates
 * Removed maxcli version
+
+0.4.3
+++++++
+* Use new Serverless mode for CosmosDB
+* Fixed CosmosDB MondoDB database creation
+* Fix runtime names for App Service Web App creation
+* Use latest available App Service runtimes

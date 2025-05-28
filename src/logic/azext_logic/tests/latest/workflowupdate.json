@@ -1,0 +1,35 @@
+{ "definition": {
+        "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+        "actions": {},
+        "contentVersion": "1.0.0.0",
+        "outputs": {},
+        "parameters": {
+            "$connections": {
+                "defaultValue": {},
+                "type": "Object"
+            }
+        },
+        "triggers": {
+            "When_a_feed_item_is_published": {
+                "inputs": {
+                    "host": {
+                        "connection": {
+                            "name": "@parameters('$connections')['rss']['connectionId']"
+                        }
+                    },
+                    "method": "get",
+                    "path": "/OnNewFeed",
+                    "queries": {
+                        "feedUrl": "http://feeds.reuters.com/reuters/topNews"
+                    }
+                },
+                "recurrence": {
+                    "frequency": "Minute",
+                    "interval": 2
+                },
+                "splitOn": "@triggerBody()?['value']",
+                "type": "ApiConnection"
+            }
+        }
+    }
+	}

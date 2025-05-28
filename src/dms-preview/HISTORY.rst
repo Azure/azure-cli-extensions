@@ -1,3 +1,27 @@
+0.15.0
+++++++++++++++++++
+
+* Adding tests for extension.
+* Removing online MySql migration.
+* Removing PgSQL and using core instead. 
+* Migrating vendored SDKs to track2.
+
+0.14.0
+++++++++++++++++++
+
+* Resolving issue from rest response exception.
+
+0.13.0
+++++++++++++++++++
+
+* Removing Oracle scenario due to it being deprecated.
+
+0.12.0
+++++++++++++++++++
+
+* Allowing for table selection in PG migrations.
+* Added default settings for MySQL migrations when options aren't selected.
+
 0.11.0
 ++++++++++++++++++
 

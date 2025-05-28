@@ -14,12 +14,20 @@ def cf_frontdoor(cli_ctx, _):
     return frontdoor_client_factory(cli_ctx).front_doors
 
 
+def cf_front_door_name_availability(cli_ctx, _):
+    return frontdoor_client_factory(cli_ctx).front_door_name_availability
+
+
 def cf_fd_endpoints(cli_ctx, _):
     return frontdoor_client_factory(cli_ctx).endpoints
 
 
 def cf_fd_frontend_endpoints(cli_ctx, _):
     return frontdoor_client_factory(cli_ctx).frontend_endpoints
+
+
+def cf_fd_rules_engines(cli_ctx, _):
+    return frontdoor_client_factory(cli_ctx).rules_engines
 
 
 def cf_fd_policies(cli_ctx, _):

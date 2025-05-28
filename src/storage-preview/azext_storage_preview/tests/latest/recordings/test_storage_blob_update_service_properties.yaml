@@ -11,17 +11,17 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - -n -g --kind
+      - -n -g --kind --https-only
       User-Agent:
-      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
-        azure-mgmt-resource/4.0.0 Azure-SDK-For-Python AZURECLI/2.0.75
+      - python/3.7.7 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.3
+        azure-mgmt-resource/12.1.0 Azure-SDK-For-Python AZURECLI/2.22.1
       accept-language:
       - en-US
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001?api-version=2019-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001?api-version=2020-10-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001","name":"clitest.rg000001","type":"Microsoft.Resources/resourceGroups","location":"westcentralus","tags":{"product":"azurecli","cause":"automation","date":"2019-11-01T16:31:37Z"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001","name":"clitest.rg000001","type":"Microsoft.Resources/resourceGroups","location":"westcentralus","tags":{"product":"azurecli","cause":"automation","date":"2021-04-28T08:38:51Z"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
@@ -30,7 +30,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 01 Nov 2019 16:31:44 GMT
+      - Wed, 28 Apr 2021 08:38:57 GMT
       expires:
       - '-1'
       pragma:
@@ -45,7 +45,9 @@ interactions:
       code: 200
       message: OK
 - request:
-    body: '{"sku": {"name": "Standard_RAGRS"}, "kind": "StorageV2", "location": "westcentralus"}'
+    body: '{"sku": {"name": "Standard_RAGRS"}, "kind": "StorageV2", "location": "westcentralus",
+      "properties": {"encryption": {"services": {"blob": {}}, "keySource": "Microsoft.Storage"},
+      "supportsHttpsTrafficOnly": true}}'
     headers:
       Accept:
       - application/json
@@ -56,18 +58,15 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '85'
+      - '211'
       Content-Type:
-      - application/json; charset=utf-8
+      - application/json
       ParameterSetName:
-      - -n -g --kind
+      - -n -g --kind --https-only
       User-Agent:
-      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
-        azure-mgmt-storage/3.1.0 Azure-SDK-For-Python AZURECLI/2.0.75
-      accept-language:
-      - en-US
+      - AZURECLI/2.22.1 azsdk-python-azure-mgmt-storage/17.1.0 Python/3.7.7 (Windows-10-10.0.19041-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/account000002?api-version=2018-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/account000002?api-version=2021-02-01
   response:
     body:
       string: ''
@@ -79,11 +78,11 @@ interactions:
       content-type:
       - text/plain; charset=utf-8
       date:
-      - Fri, 01 Nov 2019 16:31:48 GMT
+      - Wed, 28 Apr 2021 08:39:05 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Storage/locations/westcentralus/asyncoperations/82007acc-9e65-422c-914a-895efcda0cab?monitor=true&api-version=2018-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Storage/locations/westcentralus/asyncoperations/4cce0400-9148-447a-9858-483ae3f3cf72?monitor=true&api-version=2021-02-01
       pragma:
       - no-cache
       server:
@@ -101,7 +100,7 @@ interactions:
     body: null
     headers:
       Accept:
-      - application/json
+      - '*/*'
       Accept-Encoding:
       - gzip, deflate
       CommandName:
@@ -109,24 +108,23 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - -n -g --kind
+      - -n -g --kind --https-only
       User-Agent:
-      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
-        azure-mgmt-storage/3.1.0 Azure-SDK-For-Python AZURECLI/2.0.75
+      - AZURECLI/2.22.1 azsdk-python-azure-mgmt-storage/17.1.0 Python/3.7.7 (Windows-10-10.0.19041-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Storage/locations/westcentralus/asyncoperations/82007acc-9e65-422c-914a-895efcda0cab?monitor=true&api-version=2018-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Storage/locations/westcentralus/asyncoperations/4cce0400-9148-447a-9858-483ae3f3cf72?monitor=true&api-version=2021-02-01
   response:
     body:
-      string: '{"sku":{"name":"Standard_RAGRS","tier":"Standard"},"kind":"StorageV2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/account000002","name":"account000002","type":"Microsoft.Storage/storageAccounts","location":"westcentralus","tags":{},"properties":{"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":false,"encryption":{"services":{"file":{"enabled":true,"lastEnabledTime":"2019-11-01T16:31:48.6505881Z"},"blob":{"enabled":true,"lastEnabledTime":"2019-11-01T16:31:48.6505881Z"}},"keySource":"Microsoft.Storage"},"accessTier":"Hot","provisioningState":"Succeeded","creationTime":"2019-11-01T16:31:48.6036799Z","primaryEndpoints":{"dfs":"https://account000002.dfs.core.windows.net/","web":"https://account000002.z4.web.core.windows.net/","blob":"https://account000002.blob.core.windows.net/","queue":"https://account000002.queue.core.windows.net/","table":"https://account000002.table.core.windows.net/","file":"https://account000002.file.core.windows.net/"},"primaryLocation":"westcentralus","statusOfPrimary":"available","secondaryLocation":"westus2","statusOfSecondary":"available","secondaryEndpoints":{"dfs":"https://account000002-secondary.dfs.core.windows.net/","web":"https://account000002-secondary.z4.web.core.windows.net/","blob":"https://account000002-secondary.blob.core.windows.net/","queue":"https://account000002-secondary.queue.core.windows.net/","table":"https://account000002-secondary.table.core.windows.net/"}}}'
+      string: '{"sku":{"name":"Standard_RAGRS","tier":"Standard"},"kind":"StorageV2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/account000002","name":"account000002","type":"Microsoft.Storage/storageAccounts","location":"westcentralus","tags":{},"properties":{"keyCreationTime":{"key1":"2021-04-28T08:39:04.0270873Z","key2":"2021-04-28T08:39:04.0270873Z"},"privateEndpointConnections":[],"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":true,"encryption":{"services":{"file":{"keyType":"Account","enabled":true,"lastEnabledTime":"2021-04-28T08:39:04.0270873Z"},"blob":{"keyType":"Account","enabled":true,"lastEnabledTime":"2021-04-28T08:39:04.0270873Z"}},"keySource":"Microsoft.Storage"},"accessTier":"Hot","provisioningState":"Succeeded","creationTime":"2021-04-28T08:39:03.9646091Z","primaryEndpoints":{"dfs":"https://account000002.dfs.core.windows.net/","web":"https://account000002.z4.web.core.windows.net/","blob":"https://account000002.blob.core.windows.net/","queue":"https://account000002.queue.core.windows.net/","table":"https://account000002.table.core.windows.net/","file":"https://account000002.file.core.windows.net/"},"primaryLocation":"westcentralus","statusOfPrimary":"available","secondaryLocation":"westus2","statusOfSecondary":"available","secondaryEndpoints":{"dfs":"https://account000002-secondary.dfs.core.windows.net/","web":"https://account000002-secondary.z4.web.core.windows.net/","blob":"https://account000002-secondary.blob.core.windows.net/","queue":"https://account000002-secondary.queue.core.windows.net/","table":"https://account000002-secondary.table.core.windows.net/"}}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1798'
+      - '1965'
       content-type:
       - application/json
       date:
-      - Fri, 01 Nov 2019 16:32:06 GMT
+      - Wed, 28 Apr 2021 08:39:23 GMT
       expires:
       - '-1'
       pragma:
@@ -160,24 +158,21 @@ interactions:
       ParameterSetName:
       - -n -g --query -o
       User-Agent:
-      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
-        azure-mgmt-storage/3.1.0 Azure-SDK-For-Python AZURECLI/2.0.75
-      accept-language:
-      - en-US
+      - AZURECLI/2.22.1 azsdk-python-azure-mgmt-storage/17.1.0 Python/3.7.7 (Windows-10-10.0.19041-SP0)
     method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/account000002/listKeys?api-version=2018-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/account000002/listKeys?api-version=2021-02-01&$expand=kerb
   response:
     body:
-      string: '{"keys":[{"keyName":"key1","value":"veryFakedStorageAccountKey==","permissions":"FULL"},{"keyName":"key2","value":"veryFakedStorageAccountKey==","permissions":"FULL"}]}'
+      string: '{"keys":[{"creationTime":"2021-04-28T08:39:04.0270873Z","keyName":"key1","value":"veryFakedStorageAccountKey==","permissions":"FULL"},{"creationTime":"2021-04-28T08:39:04.0270873Z","keyName":"key2","value":"veryFakedStorageAccountKey==","permissions":"FULL"}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '288'
+      - '380'
       content-type:
       - application/json
       date:
-      - Fri, 01 Nov 2019 16:32:09 GMT
+      - Wed, 28 Apr 2021 08:39:24 GMT
       expires:
       - '-1'
       pragma:
@@ -192,8 +187,8 @@ interactions:
       - Accept-Encoding
       x-content-type-options:
       - nosniff
-      x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '11999'
     status:
       code: 200
       message: OK
@@ -203,11 +198,11 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - Azure-Storage/1.2.0rc1-1.2.0rc1 (Python CPython 3.7.4; Windows 10) AZURECLI/2.0.75
+      - Azure-Storage/2.0.0-2.0.1 (Python CPython 3.7.7; Windows 10) AZURECLI/2.22.1
       x-ms-date:
-      - Fri, 01 Nov 2019 16:32:10 GMT
+      - Wed, 28 Apr 2021 08:39:25 GMT
       x-ms-version:
-      - '2018-03-28'
+      - '2018-11-09'
     method: GET
     uri: https://account000002.blob.core.windows.net/?restype=service&comp=properties
   response:
@@ -218,13 +213,13 @@ interactions:
       content-type:
       - application/xml
       date:
-      - Fri, 01 Nov 2019 16:32:11 GMT
+      - Wed, 28 Apr 2021 08:39:26 GMT
       server:
       - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
       transfer-encoding:
       - chunked
       x-ms-version:
-      - '2018-03-28'
+      - '2018-11-09'
     status:
       code: 200
       message: OK
@@ -234,11 +229,11 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - Azure-Storage/1.2.0rc1-1.2.0rc1 (Python CPython 3.7.4; Windows 10) AZURECLI/2.0.75
+      - Azure-Storage/2.0.0-2.0.1 (Python CPython 3.7.7; Windows 10) AZURECLI/2.22.1
       x-ms-date:
-      - Fri, 01 Nov 2019 16:32:13 GMT
+      - Wed, 28 Apr 2021 08:39:27 GMT
       x-ms-version:
-      - '2018-03-28'
+      - '2018-11-09'
     method: GET
     uri: https://account000002.blob.core.windows.net/?restype=service&comp=properties
   response:
@@ -249,31 +244,32 @@ interactions:
       content-type:
       - application/xml
       date:
-      - Fri, 01 Nov 2019 16:32:14 GMT
+      - Wed, 28 Apr 2021 08:39:28 GMT
       server:
       - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
       transfer-encoding:
       - chunked
       x-ms-version:
-      - '2018-03-28'
+      - '2018-11-09'
     status:
       code: 200
       message: OK
 - request:
     body: '<?xml version=''1.0'' encoding=''utf-8''?>
 
-      <StorageServiceProperties><StaticWebsite><Enabled>True</Enabled><IndexDocument>index.html</IndexDocument><ErrorDocument404Path>error.html</ErrorDocument404Path></StaticWebsite></StorageServiceProperties>'
+      <StorageServiceProperties><Logging><Version>1.0</Version><Delete>False</Delete><Read>False</Read><Write>False</Write><RetentionPolicy><Enabled>False</Enabled></RetentionPolicy></Logging><HourMetrics><Version>1.0</Version><Enabled>True</Enabled><IncludeAPIs>True</IncludeAPIs><RetentionPolicy><Enabled>True</Enabled><Days>7</Days></RetentionPolicy></HourMetrics><MinuteMetrics><Version>1.0</Version><Enabled>False</Enabled><RetentionPolicy><Enabled>False</Enabled></RetentionPolicy></MinuteMetrics><Cors
+      /><DeleteRetentionPolicy><Enabled>False</Enabled></DeleteRetentionPolicy><StaticWebsite><Enabled>True</Enabled><IndexDocument>index.html</IndexDocument><ErrorDocument404Path>error.html</ErrorDocument404Path></StaticWebsite></StorageServiceProperties>'
     headers:
       Connection:
       - keep-alive
       Content-Length:
-      - '242'
+      - '792'
       User-Agent:
-      - Azure-Storage/1.2.0rc1-1.2.0rc1 (Python CPython 3.7.4; Windows 10) AZURECLI/2.0.75
+      - Azure-Storage/2.0.0-2.0.1 (Python CPython 3.7.7; Windows 10) AZURECLI/2.22.1
       x-ms-date:
-      - Fri, 01 Nov 2019 16:32:14 GMT
+      - Wed, 28 Apr 2021 08:39:28 GMT
       x-ms-version:
-      - '2018-03-28'
+      - '2018-11-09'
     method: PUT
     uri: https://account000002.blob.core.windows.net/?restype=service&comp=properties
   response:
@@ -283,11 +279,11 @@ interactions:
       content-length:
       - '0'
       date:
-      - Fri, 01 Nov 2019 16:32:14 GMT
+      - Wed, 28 Apr 2021 08:39:30 GMT
       server:
       - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
       x-ms-version:
-      - '2018-03-28'
+      - '2018-11-09'
     status:
       code: 202
       message: Accepted
@@ -297,11 +293,11 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - Azure-Storage/1.2.0rc1-1.2.0rc1 (Python CPython 3.7.4; Windows 10) AZURECLI/2.0.75
+      - Azure-Storage/2.0.0-2.0.1 (Python CPython 3.7.7; Windows 10) AZURECLI/2.22.1
       x-ms-date:
-      - Fri, 01 Nov 2019 16:32:15 GMT
+      - Wed, 28 Apr 2021 08:39:30 GMT
       x-ms-version:
-      - '2018-03-28'
+      - '2018-11-09'
     method: GET
     uri: https://account000002.blob.core.windows.net/?restype=service&comp=properties
   response:
@@ -312,13 +308,13 @@ interactions:
       content-type:
       - application/xml
       date:
-      - Fri, 01 Nov 2019 16:32:15 GMT
+      - Wed, 28 Apr 2021 08:39:30 GMT
       server:
       - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
       transfer-encoding:
       - chunked
       x-ms-version:
-      - '2018-03-28'
+      - '2018-11-09'
     status:
       code: 200
       message: OK
@@ -328,11 +324,11 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - Azure-Storage/1.2.0rc1-1.2.0rc1 (Python CPython 3.7.4; Windows 10) AZURECLI/2.0.75
+      - Azure-Storage/2.0.0-2.0.1 (Python CPython 3.7.7; Windows 10) AZURECLI/2.22.1
       x-ms-date:
-      - Fri, 01 Nov 2019 16:32:16 GMT
+      - Wed, 28 Apr 2021 08:39:30 GMT
       x-ms-version:
-      - '2018-03-28'
+      - '2018-11-09'
     method: GET
     uri: https://account000002.blob.core.windows.net/?restype=service&comp=properties
   response:
@@ -343,13 +339,13 @@ interactions:
       content-type:
       - application/xml
       date:
-      - Fri, 01 Nov 2019 16:32:17 GMT
+      - Wed, 28 Apr 2021 08:39:31 GMT
       server:
       - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
       transfer-encoding:
       - chunked
       x-ms-version:
-      - '2018-03-28'
+      - '2018-11-09'
     status:
       code: 200
       message: OK

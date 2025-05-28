@@ -12,7 +12,7 @@ def get_name_or_id_validator(dest, child_type=None, resource_type='Frontdoors', 
     def _validate_name_or_id(cmd, namespace):
 
         from azure.cli.core.commands.client_factory import get_subscription_id
-        from msrestazure.tools import is_valid_resource_id, resource_id
+        from azure.mgmt.core.tools import is_valid_resource_id, resource_id
 
         subscription_id = get_subscription_id(cmd.cli_ctx)
         resource_group = namespace.resource_group_name
@@ -75,6 +75,10 @@ def validate_frontend_endpoints(cmd, namespace):
 
 def validate_backend_pool(cmd, namespace):
     get_name_or_id_validator('backend_pool', 'backendPools')(cmd, namespace)
+
+
+def validate_rules_engine(cmd, namespace):
+    get_name_or_id_validator('rules_engine', 'rulesEngines')(cmd, namespace)
 
 
 # pylint: disable=protected-access

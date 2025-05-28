@@ -3,10 +3,18 @@
 Release History
 ===============
 
-0.1.0rc2
-++++++++
-* Remove the limitation of max compatible cli core version
+1.0.0
++++++
+* Replace msrestazure with azure.core
 
-0.1.0rc1
-++++++++
-* Initial release candidate 1.
+0.2.1
+++++++
+* GA.
+
+0.2.0
+++++++
+* Refine.
+
+0.1.0
+++++++
+* Initial release.

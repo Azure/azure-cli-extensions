@@ -1,0 +1,14 @@
+version= 1.0;
+authorizationrules {
+[ type=="$is-debuggable", value==false ]
+&& [ type=="$product-id", value==4639 ]
+&& [ type=="$min-svn", value>= 0 ]
+&& [ type=="$sgx-mrsigner", value=="E31C9E505F37A58DE09335075FC8591254313EB20BB1A27E5443CC450B6E33E5"]
+=> permit();
+};
+ issuancerules {
+c:[ type=="$sgx-mrsigner" ] => issue(type="sgx-mrsigner",
+value=c.value);
+ c1:[type=="maa-ehd"] => issue(type="aas-ehd", value=c1.value);
+ };
+

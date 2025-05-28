@@ -21,11 +21,59 @@ az databricks create \
     --sku premium
 ```
 
+#### Create a workspace with double encryption
+Double Encryption is only enabled on Premium Databricks workspace.
+You need to register the feature first:  
+```
+az feature register --namespace Microsoft.Storage --name AllowRequireInfrastructureEncryption
+```  
+Then get the change propagated:  
+```
+az provider register -n Microsoft.Storage
+```  
+Now you can create a workspace with double encryption enabled:
+```
+az databricks workspace create \
+    -resource-group my-rg \
+    --name my-workspace \
+    --location eastus2euap \
+    --sku premium \
+    --prepare-encryption \
+    --require-infrastructure-encryption
+```
+
 ##### Update workspace tags
 ```
 az databricks update \
     --name my-workspace \
     --tags key=value
+```
+
+##### Assign identity for managed storage account to prepare for CMK encryption
+```
+az databricks update \
+    --name my-workspace \
+    --resource-group my-rg \
+    --prepare-encryption
+```
+
+##### Configure CMK encryption
+```
+az databricks update \
+    --name my-workspace \
+    --resource-group my-rg \
+    --key-source Microsoft.Keyvault \
+    --key-name my-key \
+    --key-version 00000000000000000000000000000000 \
+    --key-vault https://myKeyVault.vault.azure.net/
+```
+
+##### Revert encryption to Microsoft Managed Keys
+```
+az databricks update \
+    --name my-workspace \
+    --resource-group my-rg \
+    --key-source Default
 ```
 
 ##### Show workspace

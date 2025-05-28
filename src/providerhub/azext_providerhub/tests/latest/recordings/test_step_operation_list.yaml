@@ -1,0 +1,49 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - providerhub operation list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --provider-namespace
+      User-Agent:
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.11.0 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Private.VPTest/operations/default?api-version=2024-04-01-preview
+  response:
+    body:
+      string: '{"properties":{"contents":[{"name":"Private.VPTest/Employees/Read","isDataAction":false,"display":{"default":{"provider":"Private.VPTest","resource":"Employees","operation":"Gets/List
+        employee resources","description":"Read employees"}},"properties":null}]},"systemData":{"createdBy":"gaurimadhok@microsoft.com","createdByType":"User","createdAt":"2024-06-06T18:27:56.6841995Z","lastModifiedBy":"gaurimadhok@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-06-06T18:27:56.6841995Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '500'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 18 Jun 2024 22:49:15 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=9506e7c0-c569-479f-9940-1f63cb8ce817/centraluseuap/5f1e2e36-ed98-43ec-b2c3-fe5cf71e833d
+      x-msedge-ref:
+      - 'Ref A: A01F2E36045A43C2BD0DF698D76C43E1 Ref B: CO6AA3150219035 Ref C: 2024-06-18T22:49:15Z'
+    status:
+      code: 200
+      message: OK
+version: 1

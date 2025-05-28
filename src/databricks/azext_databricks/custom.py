@@ -7,92 +7,84 @@
 # pylint: disable=too-many-lines
 # pylint: disable=too-many-locals
 # pylint: disable=unused-argument
+from .aaz.latest.databricks.workspace.vnet_peering._create import Create as _WorkspaceVnetPeeringCreate
+from .aaz.latest.databricks.workspace import Create as _DatabricksWorkspaceCreate, Update as _DatabricksWorkspaceUpdate
+
+import random
+import string
+
+from azure.cli.core.aaz import has_value
 
 
-from azure.cli.core.util import sdk_no_wait
+def id_generator(size=13, chars=string.ascii_lowercase + string.digits):
+    return ''.join(random.choice(chars) for _ in range(size))
 
 
-def create_databricks_workspace(cmd, client,
-                                resource_group_name,
-                                workspace_name,
-                                location,
-                                sku_name,
-                                managed_resource_group=None,
-                                aml_workspace_id=None,
-                                custom_virtual_network_id=None,
-                                custom_public_subnet_name=None,
-                                custom_private_subnet_name=None,
-                                enable_no_public_ip=False,
-                                load_balancer_backend_pool_name=None,
-                                load_balancer_id=None,
-                                relay_namespace_name=None,
-                                storage_account_name=None,
-                                storage_account_sku_name=None,
-                                vnet_address_prefix=None,
-                                tags=None,
-                                no_wait=False):
-    body = {}
-    body['tags'] = tags  # dictionary
-    body['location'] = location  # str
-    body['managed_resource_group_id'] = managed_resource_group  # str
-    body.setdefault('sku', {})['name'] = sku_name  # str
+class DatabricksWorkspaceCreate(_DatabricksWorkspaceCreate):
 
-    parameters = {}
-    _set_parameter_value(parameters, 'enable_no_public_ip', enable_no_public_ip)  # boolean
-    if aml_workspace_id is not None:
-        _set_parameter_value(parameters, 'aml_workspace_id', aml_workspace_id)  # str
-    if custom_virtual_network_id is not None:
-        _set_parameter_value(parameters, 'custom_virtual_network_id', custom_virtual_network_id)  # str
-    if custom_public_subnet_name is not None:
-        _set_parameter_value(parameters, 'custom_public_subnet_name', custom_public_subnet_name)  # str
-    if custom_private_subnet_name is not None:
-        _set_parameter_value(parameters, 'custom_private_subnet_name', custom_private_subnet_name)  # str
-    if load_balancer_backend_pool_name is not None:
-        _set_parameter_value(parameters, 'load_balancer_backend_pool_name', load_balancer_backend_pool_name)  # str
-    if load_balancer_id is not None:
-        _set_parameter_value(parameters, 'load_balancer_id', load_balancer_id)  # str
+    @classmethod
+    # pylint: disable=protected-access
+    def _build_arguments_schema(cls, *args, **kwargs):
+        from azure.cli.core.aaz import AAZResourceIdArgFormat
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.managed_resource_group._required = False
+        args_schema.vnet._fmt = AAZResourceIdArgFormat(
+            template="/subscriptions/{subscription}/resourceGroups/{resource_group}/providers/Microsoft.Network/virtualNetworks/{}"
+        )
+        args_schema.disk_key_source._registered = False
+        args_schema.managed_services_key_source._registered = False
+        return args_schema
 
-    _set_parameter_value(parameters, 'relay_namespace_name', relay_namespace_name)  # str
-    _set_parameter_value(parameters, 'storage_account_name', storage_account_name)  # str
-    _set_parameter_value(parameters, 'storage_account_sku_name', storage_account_sku_name)  # str
-    _set_parameter_value(parameters, 'vnet_address_prefix', vnet_address_prefix)  # str
-    body['parameters'] = parameters
+    def pre_operations(self):
+        from azure.mgmt.core.tools import is_valid_resource_id, resource_id
+        # """Parse managed resource_group which can be either resource group name or id, generate a randomized name if not provided"""
+        args = self.ctx.args
+        subscription_id = self.ctx.subscription_id
+        workspace_name = args.name.to_serialized_data()
+        if has_value(args.managed_resource_group):
+            managed_resource_group = args.managed_resource_group.to_serialized_data()
+            if not is_valid_resource_id(managed_resource_group):
+                args.managed_resource_group = resource_id(
+                    subscription=subscription_id,
+                    resource_group=managed_resource_group)
 
-    return sdk_no_wait(no_wait, client.create_or_update,
-                       resource_group_name=resource_group_name,
-                       workspace_name=workspace_name,
-                       parameters=body)
+        if not has_value(args.managed_resource_group):
+            args.managed_resource_group = resource_id(
+                subscription=subscription_id,
+                resource_group='databricks-rg-' + workspace_name + '-' + id_generator())
+
+        if has_value(args.disk_key_name):
+            args.disk_key_source = 'Microsoft.Keyvault'
+        if has_value(args.managed_services_key_name):
+            args.managed_services_key_source = 'Microsoft.Keyvault'
 
 
-def _set_parameter_value(parameters, field, value):
-    parameters.setdefault(field, {})['value'] = value
+class DatabricksWorkspaceUpdate(_DatabricksWorkspaceUpdate):
+
+    @classmethod
+    # pylint: disable=protected-access
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.disk_key_source._registered = False
+        args_schema.managed_services_key_source._registered = False
+        return args_schema
+
+    def pre_operations(self):
+        args = self.ctx.args
+        if has_value(args.disk_key_name):
+            args.disk_key_source = 'Microsoft.Keyvault'
+        if has_value(args.managed_services_key_name):
+            args.managed_services_key_source = 'Microsoft.Keyvault'
 
 
-def update_databricks_workspace(cmd, client,  # pylint: disable=too-many-branches
-                                resource_group_name,
-                                workspace_name,
-                                tags=None,
-                                no_wait=False):
-    return sdk_no_wait(no_wait, client.update,
-                       resource_group_name=resource_group_name,
-                       workspace_name=workspace_name,
-                       tags=tags)
+class WorkspaceVnetPeeringCreate(_WorkspaceVnetPeeringCreate):
 
-
-def delete_databricks_workspace(cmd, client, resource_group_name,
-                                workspace_name,
-                                no_wait=False):
-    return sdk_no_wait(no_wait, client.delete,
-                       resource_group_name=resource_group_name,
-                       workspace_name=workspace_name)
-
-
-def get_databricks_workspace(cmd, client, resource_group_name, workspace_name):
-    return client.get(resource_group_name=resource_group_name,
-                      workspace_name=workspace_name)
-
-
-def list_databricks_workspace(cmd, client, resource_group_name=None):
-    if not resource_group_name:
-        return client.list_by_subscription()  # todo service 502
-    return client.list_by_resource_group(resource_group_name=resource_group_name)
+    @classmethod
+    # pylint: disable=protected-access
+    def _build_arguments_schema(cls, *args, **kwargs):
+        from azure.cli.core.aaz import AAZResourceIdArgFormat
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.remote_vnet._fmt = AAZResourceIdArgFormat(
+            template="/subscriptions/{subscription}/resourceGroups/{resource_group}/providers/Microsoft.Network/virtualNetworks/{}"
+        )
+        return args_schema

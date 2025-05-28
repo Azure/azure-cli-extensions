@@ -1,0 +1,16 @@
+{
+    "cpuManagerPolicy": "static",
+    "cpuCfsQuota": true,
+    "cpuCfsQuotaPeriod": "200ms",
+    "imageGcHighThreshold": 90,
+    "imageGcLowThreshold": 70,
+    "topologyManagerPolicy": "best-effort",
+    "allowedUnsafeSysctls": [
+        "kernel.msg*",
+        "net.*"
+    ],
+    "failSwapOn": false,
+    "containerLogMaxFiles": 10,
+    "podMaxPids": 120,
+    "containerLogMaxSizeMB": 20
+}

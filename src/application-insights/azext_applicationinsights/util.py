@@ -3,20 +3,37 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+from enum import Enum
 from datetime import datetime
 import dateutil.parser  # pylint: disable=import-error
-from msrestazure.tools import is_valid_resource_id, parse_resource_id
-from azext_applicationinsights._client_factory import cf_components, applicationinsights_mgmt_plane_client
+from azure.mgmt.core.tools import is_valid_resource_id, parse_resource_id
+from azext_applicationinsights._client_factory import applicationinsights_mgmt_plane_client
+
+
+class EventType(str, Enum):
+    all = "$all"
+    traces = "traces"
+    custom_events = "customEvents"
+    page_views = "pageViews"
+    browser_timings = "browserTimings"
+    requests = "requests"
+    dependencies = "dependencies"
+    exceptions = "exceptions"
+    availability_results = "availabilityResults"
+    performance_counters = "performanceCounters"
+    custom_metrics = "customMetrics"
 
 
 def get_id_from_azure_resource(cli_ctx, app, resource_group=None):
     if is_valid_resource_id(app):
         parsed = parse_resource_id(app)
         resource_group, name, subscription = parsed["resource_group"], parsed["name"], parsed["subscription"]
-        client = applicationinsights_mgmt_plane_client(cli_ctx, subscription_id=subscription).components
+        client = applicationinsights_mgmt_plane_client(cli_ctx, subscription_id=subscription,
+                                                       api_version='2015-05-01').components
         return client.get(resource_group, name).app_id
     if resource_group:
-        return cf_components(cli_ctx, None).get(resource_group, app).app_id
+        client = applicationinsights_mgmt_plane_client(cli_ctx, api_version='2015-05-01').components
+        return client.get(resource_group, app).app_id
     return app
 
 
@@ -41,7 +58,7 @@ def get_timespan(_, start_time=None, end_time=None, offset=None):
     elif not end_time:
         # if no end_time, apply offset fowards from start_time
         end_time = (dateutil.parser.parse(start_time) + offset).isoformat()
-    timespan = '{}/{}'.format(start_time, end_time)
+    timespan = f'{start_time}/{end_time}'
     return timespan
 
 
@@ -53,28 +70,18 @@ def get_linked_properties(cli_ctx, app, resource_group, read_properties=None, wr
         "AuthenticateSDKControlChannel": "agentconfig"
     }
 
-    sub_id = get_subscription_id(cli_ctx)
-    tmpl = '/subscriptions/{}/resourceGroups/{}/providers/microsoft.insights/components/{}'.format(
-        sub_id,
-        resource_group,
-        app
-    )
+    sub_id = cli_ctx.subscription_id
+    tmpl = f'/subscriptions/{sub_id}/resourceGroups/{resource_group}/providers/microsoft.insights/components/{app}'
     linked_read_properties, linked_write_properties = [], []
 
     if isinstance(read_properties, list):
         propLen = len(read_properties)
-        linked_read_properties = ['{}/{}'.format(tmpl, roles[read_properties[i]]) for i in range(propLen)]
+        linked_read_properties = [f'{tmpl}/{roles[read_properties[i]]}' for i in range(propLen) if read_properties[i]]  # pylint: disable=line-too-long
     else:
-        linked_read_properties = ['{}/{}'.format(tmpl, roles[read_properties])]
+        linked_read_properties = [f'{tmpl}/{roles[read_properties]}']
     if isinstance(write_properties, list):
         propLen = len(write_properties)
-        linked_write_properties = ['{}/{}'.format(tmpl, roles[write_properties[i]]) for i in range(propLen)]
+        linked_write_properties = [f'{tmpl}/{roles[write_properties[i]]}' for i in range(propLen) if write_properties[i]]  # pylint: disable=line-too-long
     else:
-        linked_write_properties = ['{}/{}'.format(tmpl, roles[write_properties])]
+        linked_write_properties = [f'{tmpl}/{roles[write_properties]}']
     return linked_read_properties, linked_write_properties
-
-
-def get_subscription_id(cli_ctx):
-    from azure.cli.core._profile import Profile
-    _, sub_id, _ = Profile(cli_ctx=cli_ctx).get_login_credentials(subscription_id=None)
-    return sub_id

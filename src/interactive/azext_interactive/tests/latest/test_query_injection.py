@@ -7,7 +7,7 @@ import unittest
 import six
 import os
 import json
-import mock
+from unittest import mock
 from azext_interactive.azclishell.util import parse_quotes
 from azext_interactive.azclishell.gather_commands import GatherCommands
 

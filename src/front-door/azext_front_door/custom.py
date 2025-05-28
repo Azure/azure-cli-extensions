@@ -4,17 +4,19 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-# pylint: disable=too-many-lines
+# pylint: disable=too-many-lines line-too-long useless-object-inheritance condition-evals-to-constant too-many-positional-arguments
 
 import sys
-
 from azure.cli.core.commands import cached_get, cached_put
 from azure.cli.core.util import sdk_no_wait
 
 from knack.log import get_logger
 
-from ._client_factory import cf_frontdoor, cf_waf_policies, cf_waf_managed_rules, cf_fd_frontend_endpoints
+from azext_front_door.vendored_sdks.models import (RulesEngine, CheckNameAvailabilityInput, PurgeParameters,
+                                                   ValidateCustomDomainInput)
 
+from ._client_factory import (cf_frontdoor, cf_waf_policies, cf_waf_managed_rules,
+                              cf_fd_frontend_endpoints, cf_fd_rules_engines)
 
 logger = get_logger(__name__)
 
@@ -46,18 +48,30 @@ def _upsert_frontdoor_subresource(cmd, resource_group_name, front_door_name, col
 
     item_name = getattr(obj_to_add, key_name)
     if item_name is None:
-        from knack.util import CLIError
-        raise CLIError(
+        from azure.cli.core.azclierror import ClientRequestError
+        raise ClientRequestError(
             "Unable to resolve a value for key '{}' with which to match.".format(key_name))
     match = next((x for x in collection if getattr(x, key_name, None) == item_name), None)
     if match:
         logger.warning("Item '%s' already exists. Replacing with new values.", item_name)
         collection.remove(match)
     collection.append(obj_to_add)
-    result = client.create_or_update(resource_group_name, front_door_name, frontdoor).result()
+    result = client.begin_create_or_update(resource_group_name, front_door_name, frontdoor).result()
     collection = getattr(result, collection_name)
     item = next(x for x in collection if getattr(x, key_name) == item_name)
     return item
+
+
+def _update_cache_configuration(cache_configuration,
+                                dynamic_compression,
+                                query_parameter_strip_directive,
+                                query_parameters,
+                                cache_duration):
+    with UpdateContext(cache_configuration) as c:
+        c.update_param('dynamic_compression', dynamic_compression, False)
+        c.update_param('query_parameter_strip_directive', query_parameter_strip_directive, False)
+        c.update_param('query_parameters', query_parameters, True)
+        c.update_param('cache_duration', cache_duration, False)
 
 
 def list_frontdoor_resource_property(resource, prop):
@@ -81,8 +95,8 @@ def get_frontdoor_resource_property_entry(resource, prop):
 
         result = next((x for x in items if x.name.lower() == item_name.lower()), None)
         if not result:
-            from knack.util import CLIError
-            raise CLIError("Item '{}' does not exist on {} '{}'".format(
+            from azure.cli.core.azclierror import ResourceNotFoundError
+            raise ResourceNotFoundError("Item '{}' does not exist on {} '{}'".format(
                 item_name, resource, resource_name))
 
         return result
@@ -104,12 +118,14 @@ def delete_frontdoor_resource_property_entry(resource, prop):
         with UpdateContext(item) as c:
             c.update_param(prop, keep_items, False)
         if no_wait:
-            sdk_no_wait(no_wait, client.create_or_update, resource_group_name, resource_name, item)
+            sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, resource_name, item)
         else:
-            result = sdk_no_wait(no_wait, client.create_or_update, resource_group_name, resource_name, item).result()
+            result = sdk_no_wait(no_wait,
+                                 client.begin_create_or_update,
+                                 resource_group_name, resource_name, item).result()
             if next((x for x in getattr(result, prop) if x.name.lower() == item_name.lower()), None):
-                from knack.util import CLIError
-                raise CLIError("Failed to delete '{}' on '{}'".format(item_name, resource_name))
+                from azure.cli.core.azclierror import AzureResponseError
+                raise AzureResponseError("Failed to delete '{}' on '{}'".format(item_name, resource_name))
 
     func_name = 'delete_fd_{}_{}'.format(resource, prop)
     setattr(sys.modules[__name__], func_name, delete_func)
@@ -119,7 +135,7 @@ def delete_frontdoor_resource_property_entry(resource, prop):
 # region Frontdoor
 def _front_door_subresource_id(cmd, resource_group, front_door_name, child_type, child_name):
     from azure.cli.core.commands.client_factory import get_subscription_id
-    from msrestazure.tools import resource_id
+    from azure.mgmt.core.tools import resource_id
 
     subscription_id = get_subscription_id(cmd.cli_ctx)
 
@@ -150,6 +166,27 @@ def create_front_door(cmd, resource_group_name, front_door_name, backend_address
     probe_setting_name = 'DefaultProbeSettings'
     load_balancing_settings_name = 'DefaultLoadBalancingSettings'
     routing_rule_name = 'DefaultRoutingRule'
+
+    cloud = cmd.cli_ctx.cloud.name
+    endpoint = cmd.cli_ctx.cloud.endpoints.management
+
+    cloud_url = 'azurefd.net'
+
+    if cloud == 'AzureCloud':
+        cloud_url = 'azurefd.net'
+    elif cloud == 'AzureChinaCloud':
+        cloud_url = 'azurefd.net'
+    elif cloud == 'AzureUSGovernment':
+        cloud_url = 'azurefd.us'
+    elif cloud == 'AzureGermanCloud':
+        cloud_url = 'azurefd.net'
+    else:
+        cloud_url = 'azurefd.net'
+
+    if 'eaglex.ic.gov' in endpoint.lower():
+        cloud_url = 'azurefd.eaglex.ic.gov'
+    if 'microsoft.scloud' in endpoint.lower():
+        cloud_url = 'azurefd.microsoft.scloud'
 
     # get the IDs to fill the references
     backend_pool_id = _front_door_subresource_id(
@@ -197,7 +234,7 @@ def create_front_door(cmd, resource_group_name, front_door_name, backend_address
         frontend_endpoints=[
             FrontendEndpoint(
                 name=frontend_endpoint_name,
-                host_name=frontend_host_name if frontend_host_name else '{}.azurefd.net'.format(front_door_name),
+                host_name=frontend_host_name if frontend_host_name else '{}.{}'.format(front_door_name, cloud_url),
                 session_affinity_enabled_state='Disabled',
                 resource_state='Enabled'
             )
@@ -226,7 +263,7 @@ def create_front_door(cmd, resource_group_name, front_door_name, backend_address
         backend_pools_settings=BackendPoolsSettings(enforce_certificate_name_check=enforce_certificate_name_check,
                                                     send_recv_timeout_seconds=send_recv_timeout)
     )
-    return sdk_no_wait(no_wait, cf_frontdoor(cmd.cli_ctx, None).create_or_update,
+    return sdk_no_wait(no_wait, cf_frontdoor(cmd.cli_ctx, None).begin_create_or_update,
                        resource_group_name, front_door_name, front_door)
 
 
@@ -245,6 +282,36 @@ def list_front_doors(cmd, resource_group_name=None):
     if resource_group_name:
         return client.list_by_resource_group(resource_group_name)
     return client.list()
+
+
+def purge_endpoint(client,
+                   resource_group_name,
+                   front_door_name,
+                   content_paths):
+    """Removes a content from Front Door.
+    """
+
+    purge_paramter = PurgeParameters(content_paths=content_paths)
+    return client.begin_purge_content(resource_group_name, front_door_name, purge_paramter)
+
+
+def check_front_door_name_availability(client, name, resource_type):
+    availability_input = CheckNameAvailabilityInput(name=name, type=resource_type)
+    return client.check(availability_input)
+
+
+def validate_custom_domain(client,
+                           resource_group_name,
+                           front_door_name,
+                           host_name):
+    """Validates the custom domain mapping to ensure it maps to the correct Front Door endpoint in DNS.
+
+    :param host_name: Required. The host name of the custom domain. Must be a domain name.
+    :type host_name: str
+    """
+
+    validate_input = ValidateCustomDomainInput(host_name=host_name)
+    return client.validate_custom_domain(resource_group_name, front_door_name, validate_input)
 
 
 def list_fd_frontend_endpoints(cmd, resource_group_name, resource_name):
@@ -272,34 +339,35 @@ def create_fd_frontend_endpoints(cmd, resource_group_name, front_door_name, item
                                          endpoint, 'name')
 
 
-def update_fd_frontend_endpoints(instance, host_name=None, session_affinity_enabled=None,
-                                 session_affinity_ttl=None, waf_policy=None):
-    from azext_front_door.vendored_sdks.models import SubResource
-    with UpdateContext(instance) as c:
-        c.update_param('hostName', host_name, False)
-        c.update_param('sessionAffinityEnabledState', session_affinity_enabled, False)
-        c.update_param('sessionAffinityTtlSeconds', session_affinity_ttl, False)
-        c.update_param('webApplicationFirewallPolicyLink', SubResource(id=waf_policy) if waf_policy else None, False)
-    return instance
+# def update_fd_frontend_endpoints(instance, host_name=None, session_affinity_enabled=None,
+#                                  session_affinity_ttl=None, waf_policy=None):
+#     from azext_front_door.vendored_sdks.models import SubResource
+#     with UpdateContext(instance) as c:
+#         c.update_param('hostName', host_name, False)
+#         c.update_param('sessionAffinityEnabledState', session_affinity_enabled, False)
+#         c.update_param('sessionAffinityTtlSeconds', session_affinity_ttl, False)
+#         c.update_param('webApplicationFirewallPolicyLink', SubResource(id=waf_policy) if waf_policy else None, False)
+#     return instance
 
 
 def configure_fd_frontend_endpoint_disable_https(cmd, resource_group_name, front_door_name, item_name):
-    return cf_fd_frontend_endpoints(cmd.cli_ctx, None).disable_https(resource_group_name, front_door_name,
-                                                                     item_name)
+    return sdk_no_wait(True, cf_fd_frontend_endpoints(cmd.cli_ctx, None).begin_disable_https,
+                       resource_group_name, front_door_name,
+                       item_name)
 
 
 def configure_fd_frontend_endpoint_enable_https(cmd, resource_group_name, front_door_name, item_name,
                                                 secret_name=None, secret_version=None,
                                                 certificate_source='FrontDoor', vault_id=None,
                                                 minimum_tls_version='1.2'):
-    keyvault_usage = ('usage error: --certificate-source AzureKeyVault --vault-id ID '
-                      '--secret-name NAME --secret-version VERSION')
+    from azure.cli.core.azclierror import ArgumentUsageError
     if certificate_source != 'AzureKeyVault' and any([vault_id, secret_name, secret_version]):
-        from knack.util import CLIError
-        raise CLIError(keyvault_usage)
-    if certificate_source == 'AzureKeyVault' and not all([vault_id, secret_name, secret_version]):
-        from knack.util import CLIError
-        raise CLIError(keyvault_usage)
+        raise ArgumentUsageError("usage error: no need to specify --vault-id, --secret-name and --secret-version "
+                                 "for Front Door managed certificate source.")
+
+    if certificate_source == 'AzureKeyVault' and not all([vault_id, secret_name]):
+        raise ArgumentUsageError("usage error: at least --vault-id and --secret-name are rquired for "
+                                 "Azure Key Vault certificate source.")
 
     # if not being disabled, then must be enabled
     if certificate_source == 'FrontDoor':
@@ -324,8 +392,12 @@ def configure_fd_frontend_endpoint_https_frontdoor(cmd, resource_group_name, fro
         certificate_type="Dedicated",
         minimum_tls_version=minimum_tls_version
     )
-    cf_fd_frontend_endpoints(cmd.cli_ctx, None).enable_https(resource_group_name, front_door_name,
-                                                             item_name, config)
+
+    sdk_no_wait(True,
+                cf_fd_frontend_endpoints(cmd.cli_ctx, None).begin_enable_https,
+                resource_group_name, front_door_name,
+                item_name, config)
+
     return get_fd_frontend_endpoints(cmd, resource_group_name, front_door_name, item_name)
 
 
@@ -341,8 +413,12 @@ def configure_fd_frontend_endpoint_https_keyvault(cmd, resource_group_name, fron
         certificate_type=None,
         minimum_tls_version=minimum_tls_version
     )
-    cf_fd_frontend_endpoints(cmd.cli_ctx, None).enable_https(resource_group_name, front_door_name,
-                                                             item_name, config)
+
+    sdk_no_wait(True,
+                cf_fd_frontend_endpoints(cmd.cli_ctx, None).begin_enable_https,
+                resource_group_name, front_door_name,
+                item_name, config)
+
     return get_fd_frontend_endpoints(cmd, resource_group_name, front_door_name, item_name)
 
 
@@ -371,18 +447,19 @@ def create_fd_backend_pools(cmd, resource_group_name, front_door_name, item_name
     return _upsert_frontdoor_subresource(cmd, resource_group_name, front_door_name, 'backend_pools', pool, 'name')
 
 
-def update_fd_backend_pools(instance, load_balancing_settings=None, probe_settings=None):
-    from azext_front_door.vendored_sdks.models import SubResource
-    with UpdateContext(instance) as c:
-        c.update_param('loadBalancingSettings', SubResource(id=load_balancing_settings)
-                       if load_balancing_settings else None, False)
-        c.update_param('healthProbeSettings', SubResource(id=probe_settings) if probe_settings else None, False)
-    return instance
+# def update_fd_backend_pools(instance, load_balancing_settings=None, probe_settings=None):
+#     from azext_front_door.vendored_sdks.models import SubResource
+#     with UpdateContext(instance) as c:
+#         c.update_param('loadBalancingSettings', SubResource(id=load_balancing_settings)
+#                        if load_balancing_settings else None, False)
+#         c.update_param('healthProbeSettings', SubResource(id=probe_settings) if probe_settings else None, False)
+#     return instance
 
 
 def add_fd_backend(cmd, resource_group_name, front_door_name, backend_pool_name, address,
                    http_port=80, https_port=443, disabled=None, priority=1, weight=50,
-                   backend_host_header=None):
+                   backend_host_header=None, private_link_alias=None, private_link_resource_id=None,
+                   private_link_location=None, private_link_approval_message=None):
     from azext_front_door.vendored_sdks.models import Backend
     backend = Backend(
         address=address,
@@ -391,17 +468,57 @@ def add_fd_backend(cmd, resource_group_name, front_door_name, backend_pool_name,
         enabled_state='Disabled' if disabled else 'Enabled',
         priority=priority,
         weight=weight,
-        backend_host_header=backend_host_header or address
+        backend_host_header=address if backend_host_header is None else backend_host_header,
+        private_link_alias=private_link_alias,
+        private_link_resource_id=private_link_resource_id,
+        private_link_location=private_link_location,
+        private_link_approval_message=private_link_approval_message
     )
     client = cf_frontdoor(cmd.cli_ctx, None)
     frontdoor = client.get(resource_group_name, front_door_name)
     backend_pool = next((x for x in frontdoor.backend_pools if x.name == backend_pool_name), None)
     if not backend_pool:
-        from knack.util import CLIError
-        raise CLIError("Backend pool '{}' could not be found on frontdoor '{}'".format(
+        from azure.cli.core.azclierror import ResourceNotFoundError
+        raise ResourceNotFoundError("Backend pool '{}' could not be found on frontdoor '{}'".format(
             backend_pool_name, front_door_name))
     backend_pool.backends.append(backend)
-    client.create_or_update(resource_group_name, front_door_name, frontdoor).result()
+    client.begin_create_or_update(resource_group_name, front_door_name, frontdoor).result()
+    return backend
+
+
+def update_fd_backend(cmd, resource_group_name, front_door_name, backend_pool_name, index, address=None,
+                      http_port=None, https_port=None, disabled=None, priority=None, weight=None,
+                      backend_host_header=None, private_link_alias=None, private_link_resource_id=None,
+                      private_link_location=None, private_link_approval_message=None):
+
+    client = cf_frontdoor(cmd.cli_ctx, None)
+    frontdoor = client.get(resource_group_name, front_door_name)
+    backend_pool = next((x for x in frontdoor.backend_pools if x.name == backend_pool_name), None)
+    if not backend_pool:
+        from azure.cli.core.azclierror import ResourceNotFoundError
+        raise ResourceNotFoundError("Backend pool '{}' could not be found on frontdoor '{}'".format(
+            backend_pool_name, front_door_name))
+    if index > len(backend_pool.backends) or index <= 0:
+        from azure.cli.core.azclierror import InvalidArgumentValueError
+        raise InvalidArgumentValueError("Backend range is from 1 to {}, index '{}' could not be found on frontdoor '{}'".format(
+            len(backend_pool.backends), index, front_door_name))
+    backend = backend_pool.backends[index - 1]
+    with UpdateContext(backend) as c:
+        c.update_param('address', address, None)
+        c.update_param('http_port', http_port, None)
+        c.update_param('https_port', https_port, None)
+        c.update_param('enabled_state', 'Disabled' if disabled else 'Enabled', None)
+        c.update_param('priority', priority, None)
+        c.update_param('weight', weight, None)
+        c.update_param('backend_host_header', backend_host_header, None)
+        c.update_param('private_link_alias', private_link_alias, None)
+        c.update_param('private_link_resource_id', private_link_resource_id, None)
+        c.update_param('private_link_location', private_link_location, None)
+        c.update_param('private_link_approval_message', private_link_approval_message, None)
+    frontdoor = client.begin_create_or_update(resource_group_name, front_door_name, frontdoor).result()
+
+    backend_pool = next((x for x in frontdoor.backend_pools if x.name == backend_pool_name), None)
+    backend = backend_pool.backends[index - 1]
     return backend
 
 
@@ -410,26 +527,30 @@ def list_fd_backends(cmd, resource_group_name, front_door_name, backend_pool_nam
     frontdoor = client.get(resource_group_name, front_door_name)
     backend_pool = next((x for x in frontdoor.backend_pools if x.name == backend_pool_name), None)
     if not backend_pool:
-        from knack.util import CLIError
-        raise CLIError("Backend pool '{}' could not be found on frontdoor '{}'".format(
+        from azure.cli.core.azclierror import ResourceNotFoundError
+        raise ResourceNotFoundError("Backend pool '{}' could not be found on frontdoor '{}'".format(
             backend_pool_name, front_door_name))
     return backend_pool.backends
 
 
 def remove_fd_backend(cmd, resource_group_name, front_door_name, backend_pool_name, index):
+    from azure.cli.core.azclierror import ResourceNotFoundError, InvalidArgumentValueError
     client = cf_frontdoor(cmd.cli_ctx, None)
     frontdoor = client.get(resource_group_name, front_door_name)
     backend_pool = next((x for x in frontdoor.backend_pools if x.name == backend_pool_name), None)
     if not backend_pool:
-        from knack.util import CLIError
-        raise CLIError("Backend pool '{}' could not be found on frontdoor '{}'".format(
+        raise ResourceNotFoundError("Backend pool '{}' could not be found on frontdoor '{}'".format(
             backend_pool_name, front_door_name))
     try:
-        backend_pool.backends.pop(index - 1)
+        if index > 0:
+            backend_pool.backends.pop(index - 1)
+        elif index < 0:
+            backend_pool.backends.pop(index)
+        else:
+            raise InvalidArgumentValueError('invalid index. Index can range from 1 to {}'.format(len(backend_pool.backends)))
     except IndexError:
-        from knack.util import CLIError
-        raise CLIError('invalid index. Index can range from 1 to {}'.format(len(backend_pool.backends)))
-    client.create_or_update(resource_group_name, front_door_name, frontdoor).result()
+        raise InvalidArgumentValueError('invalid index. Index can range from 1 to {}'.format(len(backend_pool.backends)))
+    client.begin_create_or_update(resource_group_name, front_door_name, frontdoor).result()
 
 
 def create_fd_health_probe_settings(cmd, resource_group_name, front_door_name, item_name, probe_path, probe_interval,
@@ -454,8 +575,8 @@ def update_fd_health_probe_settings(cmd, resource_group_name, front_door_name, i
     frontdoor = client.get(resource_group_name, front_door_name)
     probe_setting = next((x for x in frontdoor.health_probe_settings if x.name == item_name), None)
     if not probe_setting:
-        from knack.util import CLIError
-        raise CLIError("Health probe setting '{}' could not be found on frontdoor '{}'".format(
+        from azure.cli.core.azclierror import ResourceNotFoundError
+        raise ResourceNotFoundError("Health probe setting '{}' could not be found on frontdoor '{}'".format(
             item_name, front_door_name))
     if probe_method:
         probe_setting.health_probe_method = probe_method
@@ -468,7 +589,7 @@ def update_fd_health_probe_settings(cmd, resource_group_name, front_door_name, i
     if enabled:
         probe_setting.enabled_state = enabled
 
-    client.create_or_update(resource_group_name, front_door_name, frontdoor).result()
+    client.begin_create_or_update(resource_group_name, front_door_name, frontdoor).result()
     return probe_setting
 
 
@@ -485,29 +606,28 @@ def create_fd_load_balancing_settings(cmd, resource_group_name, front_door_name,
                                          settings, 'name')
 
 
-def update_fd_load_balancing_settings(instance, sample_size=None, successful_samples_required=None,
+def update_fd_load_balancing_settings(parent, instance, item_name, sample_size=None, successful_samples_required=None,  # pylint: disable=unused-argument
                                       additional_latency=None):
     with UpdateContext(instance) as c:
         c.update_param('sample_size', sample_size, False)
         c.update_param('successful_samples_required', successful_samples_required, False)
         c.update_param('additional_latency_milliseconds', additional_latency, False)
-    return instance
+    return parent
 
 
-def create_fd_routing_rules(cmd, resource_group_name, front_door_name, item_name, frontend_endpoints, route_type,
-                            backend_pool=None, accepted_protocols=None, patterns_to_match=None,
-                            custom_forwarding_path=None, forwarding_protocol=None, disabled=None,
-                            caching=None, dynamic_compression=None, query_parameter_strip_directive=None,
-                            redirect_type='Moved', redirect_protocol='MatchRequest', custom_host=None, custom_path=None,
-                            custom_fragment=None, custom_query_string=None):
-    from azext_front_door.vendored_sdks.models import (CacheConfiguration, RoutingRule, SubResource,
-                                                       ForwardingConfiguration, RedirectConfiguration)
-
+def routing_rule_usage_helper(route_type, backend_pool=None, custom_forwarding_path=None,
+                              forwarding_protocol=None, dynamic_compression=None,
+                              query_parameter_strip_directive=None, query_parameters=None,
+                              cache_duration=None, redirect_type=None,
+                              redirect_protocol=None, custom_host=None, custom_path=None,
+                              custom_fragment=None, custom_query_string=None):
     forwarding_usage = ('usage error: [--backend-pool BACKEND_POOL] '
                         '[--custom-forwarding-path CUSTOM_FORWARDING_PATH] '
                         '[--forwarding-protocol FORWARDING_PROTOCOL] '
-                        '[--caching {Enabled,Disbaled}]'
-                        '[--query-parameter-strip-directive {StripNone,StripAll}] '
+                        '[--caching {Enabled,Disbaled}] '
+                        '[--query-parameter-strip-directive {StripNone,StripAll,StripOnly,StripAllExcept}] '
+                        '[--query-parameters QUERY_PARAMETERS] '
+                        '[--cache-duration CACHE_DURATION] '
                         '[--dynamic-compression [{Enabled,Disabled}]]')
     redirect_usage = ('usage error: [--redirect-type {Moved,Found,TemporaryRedirect,PermanentRedirect}]'
                       '[--redirect-protocol {HttpOnly,HttpsOnly,MatchRequest}] '
@@ -515,14 +635,33 @@ def create_fd_routing_rules(cmd, resource_group_name, front_door_name, item_name
                       '[--custom-fragment CUSTOM_FRAGMENT] [--custom-query-string CUSTOM_QUERY_STRING]')
 
     # pylint: disable=line-too-long
-    if (route_type == 'Forward' and any([custom_host, custom_path, custom_fragment, custom_query_string]) and getattr(redirect_type, 'is_default', None) and getattr(redirect_protocol, 'is_default', None)):
-        from knack.util import CLIError
-        raise CLIError(forwarding_usage)
-    if route_type == 'Redirect' and any([custom_forwarding_path, forwarding_protocol, backend_pool,
-                                         query_parameter_strip_directive, dynamic_compression]):
-        from knack.util import CLIError
-        raise CLIError(redirect_usage)
+    if 'Forward' in route_type and any([custom_host, custom_path, custom_fragment, custom_query_string]) and getattr(redirect_type, 'is_default', None) and getattr(redirect_protocol, 'is_default', None):
+        from azure.cli.core.azclierror import ArgumentUsageError
+        raise ArgumentUsageError(forwarding_usage)
+    if 'Redirect' in route_type and any([custom_forwarding_path, forwarding_protocol, backend_pool, query_parameters,
+                                         cache_duration, query_parameter_strip_directive, dynamic_compression]):
+        from azure.cli.core.azclierror import ArgumentUsageError
+        raise ArgumentUsageError(redirect_usage)
 
+
+def create_fd_routing_rules(cmd, resource_group_name, front_door_name, item_name, frontend_endpoints, route_type,
+                            backend_pool=None, accepted_protocols=None, patterns_to_match=None,
+                            rules_engine=None, custom_forwarding_path=None, forwarding_protocol=None, disabled=None,
+                            caching=None, dynamic_compression=None, query_parameter_strip_directive=None,
+                            query_parameters=None, cache_duration=None, redirect_type='Moved',
+                            redirect_protocol='MatchRequest', custom_host=None, custom_path=None,
+                            custom_fragment=None, custom_query_string=None):
+    from azext_front_door.vendored_sdks.models import (CacheConfiguration, RoutingRule, SubResource,
+                                                       ForwardingConfiguration, RedirectConfiguration)
+
+    routing_rule_usage_helper(route_type, backend_pool, custom_forwarding_path,
+                              forwarding_protocol, dynamic_compression,
+                              query_parameter_strip_directive, query_parameters,
+                              cache_duration, redirect_type,
+                              redirect_protocol, custom_host, custom_path,
+                              custom_fragment, custom_query_string)
+
+    rule = None
     if route_type == 'Forward':
         rule = RoutingRule(
             name=item_name,
@@ -530,13 +669,16 @@ def create_fd_routing_rules(cmd, resource_group_name, front_door_name, item_name
             frontend_endpoints=[SubResource(id=x) for x in frontend_endpoints] if frontend_endpoints else None,
             accepted_protocols=accepted_protocols or ['Http'],
             patterns_to_match=patterns_to_match or ['/*'],
+            rules_engine=SubResource(id=rules_engine) if rules_engine else None,
             route_configuration=ForwardingConfiguration(
                 custom_forwarding_path=custom_forwarding_path,
                 forwarding_protocol=forwarding_protocol,
                 backend_pool=SubResource(id=backend_pool) if backend_pool else None,
                 cache_configuration=CacheConfiguration(
                     query_parameter_strip_directive=query_parameter_strip_directive,
-                    dynamic_compression=dynamic_compression
+                    query_parameters=query_parameters,
+                    dynamic_compression=dynamic_compression,
+                    cache_duration=cache_duration
                 ) if caching else None
             )
         )
@@ -547,6 +689,7 @@ def create_fd_routing_rules(cmd, resource_group_name, front_door_name, item_name
             frontend_endpoints=[SubResource(id=x) for x in frontend_endpoints] if frontend_endpoints else None,
             accepted_protocols=accepted_protocols or ['Http'],
             patterns_to_match=patterns_to_match or ['/*'],
+            rules_engine=SubResource(id=rules_engine) if rules_engine else None,
             route_configuration=RedirectConfiguration(
                 redirect_type=redirect_type,
                 redirect_protocol=redirect_protocol,
@@ -561,10 +704,11 @@ def create_fd_routing_rules(cmd, resource_group_name, front_door_name, item_name
 
 def update_fd_routing_rule(parent, instance, item_name, frontend_endpoints=None, accepted_protocols=None,  # pylint: disable=unused-argument
                            patterns_to_match=None, custom_forwarding_path=None, forwarding_protocol=None,
-                           backend_pool=None, enabled=None, dynamic_compression=None,
-                           caching=None, query_parameter_strip_directive=None, redirect_type=None,
-                           redirect_protocol=None, custom_host=None, custom_path=None,
-                           custom_fragment=None, custom_query_string=None):
+                           backend_pool=None, rules_engine=None, enabled=None, dynamic_compression=None,
+                           caching=None, query_parameter_strip_directive=None, query_parameters=None,
+                           cache_duration=None, redirect_type=None, redirect_protocol=None,
+                           custom_host=None, custom_path=None, custom_fragment=None, custom_query_string=None):
+
     from azext_front_door.vendored_sdks.models import SubResource
     if instance:
         if hasattr(instance.route_configuration, 'forwarding_protocol'):
@@ -573,15 +717,34 @@ def update_fd_routing_rule(parent, instance, item_name, frontend_endpoints=None,
                                if frontend_endpoints else None, False)
                 c.update_param('accepted_protocols', accepted_protocols, False)
                 c.update_param('patterns_to_match', patterns_to_match, False)
+                c.update_param('rules_engine', SubResource(id=rules_engine) if rules_engine else None, False)
                 c.update_param('enabled_state', enabled, False)
             with UpdateContext(instance.route_configuration) as c:
                 c.update_param('custom_forwarding_path', custom_forwarding_path, False)
                 c.update_param('forwarding_protocol', forwarding_protocol, False)
                 c.update_param('backend_pool', SubResource(id=backend_pool) if backend_pool else None, False)
-            if caching:
-                with UpdateContext(instance.route_configuration.cache_configuration) as c:
-                    c.update_param('dynamic_compression', dynamic_compression, False)
-                    c.update_param('query_parameter_strip_directive', query_parameter_strip_directive, False)
+
+            if caching is None:
+                # Allow caching configuration field be able to be updated individually
+                if hasattr(instance.route_configuration, 'cache_configuration'):
+                    _update_cache_configuration(
+                        instance.route_configuration.cache_configuration,
+                        dynamic_compression,
+                        query_parameter_strip_directive,
+                        query_parameters,
+                        cache_duration)
+            elif caching:
+                if instance.route_configuration.cache_configuration is None:
+                    from azext_front_door.vendored_sdks.models import CacheConfiguration
+                    instance.route_configuration.cache_configuration = CacheConfiguration(
+                        query_parameter_strip_directive='StripNone', dynamic_compression='Enabled')
+
+                _update_cache_configuration(
+                    instance.route_configuration.cache_configuration,
+                    dynamic_compression,
+                    query_parameter_strip_directive,
+                    query_parameters,
+                    cache_duration)
             else:
                 if hasattr(instance.route_configuration, 'cache_configuration'):
                     instance.route_configuration.cache_configuration = None
@@ -591,6 +754,7 @@ def update_fd_routing_rule(parent, instance, item_name, frontend_endpoints=None,
                                if frontend_endpoints else None, False)
                 c.update_param('accepted_protocols', accepted_protocols, False)
                 c.update_param('patterns_to_match', patterns_to_match, False)
+                c.update_param('rules_engine', SubResource(id=rules_engine) if rules_engine else None, False)
                 c.update_param('enabled_state', enabled, False)
             with UpdateContext(instance.route_configuration) as c:
                 c.update_param('redirect_type', redirect_type, False)
@@ -604,51 +768,61 @@ def update_fd_routing_rule(parent, instance, item_name, frontend_endpoints=None,
 
 
 # region WafPolicy
-def create_waf_policy(cmd, resource_group_name, policy_name,
-                      disabled=False, mode=None, redirect_url=None,
-                      custom_block_response_status_code=None,
-                      custom_block_response_body=None, tags=None):
-    client = cf_waf_policies(cmd.cli_ctx, None)
-    from azext_front_door.vendored_sdks.models import (
-        WebApplicationFirewallPolicy, ManagedRuleSetList, PolicySettings, CustomRuleList)
-    policy = WebApplicationFirewallPolicy(
-        location='global',
-        tags=tags,
-        policy_settings=PolicySettings(
-            enabled_state='Enabled' if not disabled else 'Disabled',
-            mode=mode,
-            redirect_url=redirect_url,
-            custom_block_response_status_code=custom_block_response_status_code,
-            custom_block_response_body=custom_block_response_body
-        ),
-        custom_rules=CustomRuleList(rules=[]),
-        managed_rules=ManagedRuleSetList(rule_sets=[])
-    )
-    return client.create_or_update(resource_group_name, policy_name, policy)
+# def create_waf_policy(cmd, resource_group_name, policy_name,
+#                       disabled=False, mode=None, redirect_url=None,
+#                       custom_block_response_status_code=None,
+#                       custom_block_response_body=None, tags=None,
+#                       request_body_check=None, sku=None):
+#     client = cf_waf_policies(cmd.cli_ctx, None)
+#     from azext_front_door.vendored_sdks.models import (
+#         WebApplicationFirewallPolicy, ManagedRuleSetList, PolicySettings, CustomRuleList, Sku, SkuName)
+
+#     policy = WebApplicationFirewallPolicy(
+#         location='global',
+#         tags=tags,
+#         sku=Sku(name=sku if sku is not None else SkuName.classic_azure_front_door),
+#         policy_settings=PolicySettings(
+#             enabled_state='Enabled' if not disabled else 'Disabled',
+#             mode=mode,
+#             redirect_url=redirect_url,
+#             custom_block_response_status_code=custom_block_response_status_code,
+#             custom_block_response_body=custom_block_response_body,
+#             request_body_check=request_body_check,
+#         ),
+#         custom_rules=CustomRuleList(rules=[]),
+#         managed_rules=ManagedRuleSetList(rule_sets=[])
+#     )
+#     return client.begin_create_or_update(resource_group_name, policy_name, policy)
 
 
-def update_waf_policy(instance, tags=None, mode=None, redirect_url=None,
-                      custom_block_response_status_code=None, custom_block_response_body=None,
-                      disabled=False):
-    with UpdateContext(instance) as c:
-        c.update_param('tags', tags, True)
+# def update_waf_policy(instance, tags=None, mode=None, redirect_url=None,
+#                       custom_block_response_status_code=None, custom_block_response_body=None,
+#                       disabled=False, request_body_check=None, sku=None):
 
-    with UpdateContext(instance.policy_settings) as c:
-        c.update_param('enabled_state', 'Enabled' if not disabled else 'Disabled', 'Disabled')
-        c.update_param('mode', mode, False)
-        c.update_param('redirect_url', redirect_url, None)
-        c.update_param('custom_block_response_status_code', custom_block_response_status_code, None)
-        c.update_param('custom_block_response_body', custom_block_response_body, None)
-    return instance
+#     with UpdateContext(instance) as c:
+#         c.update_param('tags', tags, True)
+
+#     with UpdateContext(instance.sku) as c:
+#         c.update_param('name', sku, None)
+
+#     with UpdateContext(instance.policy_settings) as c:
+#         c.update_param('enabled_state', 'Enabled' if not disabled else 'Disabled', None)
+#         c.update_param('mode', mode, None)
+#         c.update_param('redirect_url', redirect_url, None)
+#         c.update_param('custom_block_response_status_code', custom_block_response_status_code, None)
+#         c.update_param('custom_block_response_body', custom_block_response_body, None)
+#         c.update_param('request_body_check', request_body_check, None)
+#     return instance
 
 
-def add_azure_managed_rule_set(cmd, resource_group_name, policy_name, rule_set_type, version):
+def add_azure_managed_rule_set(cmd, resource_group_name, policy_name, rule_set_type, version, rule_set_action=None):
     from azext_front_door.vendored_sdks.models import ManagedRuleSet
     client = cf_waf_policies(cmd.cli_ctx, None)
     policy = client.get(resource_group_name, policy_name)
     rule_set = ManagedRuleSet(
         rule_set_type=rule_set_type,
-        rule_set_version=version
+        rule_set_version=version,
+        rule_set_action=rule_set_action,
     )
 
     policy_rule_sets = policy.managed_rules.managed_rule_sets
@@ -664,7 +838,7 @@ def add_azure_managed_rule_set(cmd, resource_group_name, policy_name, rule_set_t
         if not found:
             policy_rule_sets.append(rule_set)
 
-    return client.create_or_update(resource_group_name, policy_name, policy)
+    return client.begin_create_or_update(resource_group_name, policy_name, policy)
 
 
 def list_azure_managed_rule_set(cmd, resource_group_name, policy_name):
@@ -680,7 +854,7 @@ def remove_azure_managed_rule_set(cmd, resource_group_name, policy_name, rule_se
     policy.managed_rules.managed_rule_sets = [x for x in policy.managed_rules.managed_rule_sets
                                               if x.rule_set_type.upper() != rule_set_type.upper()]
 
-    return client.create_or_update(resource_group_name, policy_name, policy)
+    return client.begin_create_or_update(resource_group_name, policy_name, policy)
 
 
 def add_override_azure_managed_rule_set(cmd, resource_group_name, policy_name, rule_set_type,
@@ -721,9 +895,9 @@ def add_override_azure_managed_rule_set(cmd, resource_group_name, policy_name, r
                 setRule = True
 
     if not setRule:
-        from knack.util import CLIError
-        raise CLIError("type '{}' not found".format(rule_set_type))
-    return client.create_or_update(resource_group_name, policy_name, policy)
+        from azure.cli.core.azclierror import ResourceNotFoundError
+        raise ResourceNotFoundError("type '{}' not found".format(rule_set_type))
+    return client.begin_create_or_update(resource_group_name, policy_name, policy)
 
 
 def remove_override_azure_managed_rule_set(cmd, resource_group_name, policy_name, rule_set_type,
@@ -751,9 +925,9 @@ def remove_override_azure_managed_rule_set(cmd, resource_group_name, policy_name
                             removedRule = True
 
     if not removedRule:
-        from knack.util import CLIError
-        raise CLIError("rule '{}' not found".format(rule_id))
-    return client.create_or_update(resource_group_name, policy_name, policy)
+        from azure.cli.core.azclierror import ResourceNotFoundError
+        raise ResourceNotFoundError("rule '{}' not found".format(rule_id))
+    return client.begin_create_or_update(resource_group_name, policy_name, policy)
 
 
 def list_override_azure_managed_rule_set(cmd, resource_group_name, policy_name, rule_set_type):
@@ -767,8 +941,8 @@ def list_override_azure_managed_rule_set(cmd, resource_group_name, policy_name, 
         if rule_set.rule_set_type.upper() == rule_set_type.upper():
             return rule_set.rule_group_overrides
 
-    from knack.util import CLIError
-    raise CLIError("rule set '{}' not found".format(rule_set_type))
+    from azure.cli.core.azclierror import ResourceNotFoundError
+    raise ResourceNotFoundError("rule set '{}' not found".format(rule_set_type))
 
 
 def add_exclusion_azure_managed_rule_set(cmd, resource_group_name, policy_name, rule_set_type,
@@ -776,10 +950,10 @@ def add_exclusion_azure_managed_rule_set(cmd, resource_group_name, policy_name, 
                                          rule_group_id=None, rule_id=None):
     from azext_front_door.vendored_sdks.models import ManagedRuleOverride, ManagedRuleGroupOverride
     from azext_front_door.vendored_sdks.models import ManagedRuleExclusion
-    from knack.util import CLIError
+    from azure.cli.core.azclierror import RequiredArgumentMissingError, ResourceNotFoundError
 
     if rule_id and not rule_group_id:
-        raise CLIError("Must specify rule-group-id of the rule when you specify rule-id")
+        raise RequiredArgumentMissingError("Must specify rule-group-id of the rule when you specify rule-id")
 
     client = cf_waf_policies(cmd.cli_ctx, None)
     policy = client.get(resource_group_name, policy_name)
@@ -801,7 +975,7 @@ def add_exclusion_azure_managed_rule_set(cmd, resource_group_name, policy_name, 
             break
 
     if rule_set_obj is None:
-        raise CLIError("type '{}' not found".format(rule_set_type))
+        raise ResourceNotFoundError("type '{}' not found".format(rule_set_type))
 
     rule_group_override = None
     if rule_group_id is None:
@@ -837,20 +1011,20 @@ def add_exclusion_azure_managed_rule_set(cmd, resource_group_name, policy_name, 
         exclusion_holder.exclusions.append(exclusion)
     else:
         if rule_id:
-            raise CLIError("rule {} within group {} within type '{}' not found"
-                           .format(rule_id, rule_group_id, rule_set_type))
-        raise CLIError("group {} within type '{}' not found".format(rule_group_id, rule_set_type))
+            raise ResourceNotFoundError("rule {} within group {} within type '{}' not found"
+                                        .format(rule_id, rule_group_id, rule_set_type))
+        raise ResourceNotFoundError("group {} within type '{}' not found".format(rule_group_id, rule_set_type))
 
-    return client.create_or_update(resource_group_name, policy_name, policy)
+    return client.begin_create_or_update(resource_group_name, policy_name, policy)
 
 
 def remove_exclusion_azure_managed_rule_set(cmd, resource_group_name, policy_name, rule_set_type,
                                             match_variable, operator, value,
                                             rule_group_id=None, rule_id=None):
-    from knack.util import CLIError
+    from azure.cli.core.azclierror import RequiredArgumentMissingError, ResourceNotFoundError
 
     if rule_id and not rule_group_id:
-        raise CLIError("Must specify rule-group-id of the rule when you specify rule-id")
+        raise RequiredArgumentMissingError("Must specify rule-group-id of the rule when you specify rule-id")
 
     client = cf_waf_policies(cmd.cli_ctx, None)
     policy = client.get(resource_group_name, policy_name)
@@ -858,7 +1032,7 @@ def remove_exclusion_azure_managed_rule_set(cmd, resource_group_name, policy_nam
     exclusions = None
 
     if not policy.managed_rules.managed_rule_sets:
-        raise CLIError("Exclusion not found")
+        raise ResourceNotFoundError("Exclusion not found")
 
     rule_set_obj = None
     for rule_set in policy.managed_rules.managed_rule_sets:
@@ -872,7 +1046,7 @@ def remove_exclusion_azure_managed_rule_set(cmd, resource_group_name, policy_nam
             exclusions = rule_set_obj.exclusions
         else:
             if not rule_set_obj.rule_group_overrides:
-                raise CLIError("Exclusion not found")
+                raise ResourceNotFoundError("Exclusion not found")
             for rg in rule_set_obj.rule_group_overrides:
                 if rg.rule_group_name.upper() == rule_group_id.upper():
                     rule_group_override = rg
@@ -883,38 +1057,38 @@ def remove_exclusion_azure_managed_rule_set(cmd, resource_group_name, policy_nam
             exclusions = rule_group_override.exclusions
         else:
             if rule_group_override.rules is None:
-                raise CLIError("Exclusion not found")
+                raise ResourceNotFoundError("Exclusion not found")
             for rule in rule_group_override.rules:
                 if rule.rule_id.upper() == rule_id.upper():
                     exclusions = rule.exclusions
                     break
 
     if exclusions is None:
-        raise CLIError("Exclusion not found")
+        raise ResourceNotFoundError("Exclusion not found")
 
     for i, exclusion in enumerate(exclusions):
         if (exclusion.match_variable == match_variable and
                 exclusion.selector_match_operator == operator and exclusion.selector == value):
             del exclusions[i]
 
-    return client.create_or_update(resource_group_name, policy_name, policy)
+    return client.begin_create_or_update(resource_group_name, policy_name, policy)
 
 
 def list_exclusion_azure_managed_rule_set(cmd, resource_group_name, policy_name, rule_set_type,
                                           rule_group_id=None, rule_id=None):
-    from knack.util import CLIError
+    from azure.cli.core.azclierror import RequiredArgumentMissingError, ResourceNotFoundError
 
     client = cf_waf_policies(cmd.cli_ctx, None)
     policy = client.get(resource_group_name, policy_name)
 
     if rule_id and not rule_group_id:
-        raise CLIError("Must specify rule-group-id of the rule when you specify rule-id")
+        raise RequiredArgumentMissingError("Must specify rule-group-id of the rule when you specify rule-id")
 
     client = cf_waf_policies(cmd.cli_ctx, None)
     policy = client.get(resource_group_name, policy_name)
 
     if policy.managed_rules.managed_rule_sets is None:
-        raise CLIError("rule set '{}' not found".format(rule_set_type))
+        raise ResourceNotFoundError("rule set '{}' not found".format(rule_set_type))
 
     rule_set_obj = None
     for rule_set in policy.managed_rules.managed_rule_sets:
@@ -925,10 +1099,10 @@ def list_exclusion_azure_managed_rule_set(cmd, resource_group_name, policy_name,
             break
 
     if rule_set_obj is None:
-        raise CLIError("rule set '{}' not found".format(rule_set_type))
+        raise ResourceNotFoundError("rule set '{}' not found".format(rule_set_type))
 
     if rule_set_obj.rule_group_overrides is None:
-        raise CLIError("rule set '{}' has no overrides".format(rule_set_type))
+        raise RequiredArgumentMissingError("rule set '{}' has no overrides".format(rule_set_type))
 
     rule_group_override = None
     for rg in rule_set_obj.rule_group_overrides:
@@ -940,16 +1114,16 @@ def list_exclusion_azure_managed_rule_set(cmd, resource_group_name, policy_name,
             break
 
     if rule_group_override is None:
-        raise CLIError("rule group '{}' not found".format(rule_group_id))
+        raise ResourceNotFoundError("rule group '{}' not found".format(rule_group_id))
 
     if rule_group_override.rules is None:
-        raise CLIError("rule '{}' not found".format(rule_id))
+        raise ResourceNotFoundError("rule '{}' not found".format(rule_id))
 
     for rule in rule_group_override.rules:
         if rule.rule_id.upper() == rule_id.upper():
             return rule.exclusions or []
 
-    raise CLIError("rule '{}' not found".format(rule_id))
+    raise ResourceNotFoundError("rule '{}' not found".format(rule_id))
 
 
 def list_managed_rules_definitions(cmd):
@@ -961,8 +1135,8 @@ def list_managed_rules_definitions(cmd):
 def create_wp_custom_rule(cmd, resource_group_name, policy_name, rule_name, priority, rule_type, action,
                           rate_limit_duration=None, rate_limit_threshold=None, disabled=None):
     if rule_type.lower() == "ratelimitrule" and (rate_limit_duration is None or rate_limit_threshold is None):
-        from knack.util import CLIError
-        raise CLIError("rate_limit_duration and rate_limit_threshold are required for a RateLimitRule")
+        from azure.cli.core.azclierror import RequiredArgumentMissingError
+        raise RequiredArgumentMissingError("rate_limit_duration and rate_limit_threshold are required for a RateLimitRule")
 
     from azext_front_door.vendored_sdks.models import CustomRule
     client = cf_waf_policies(cmd.cli_ctx, None)
@@ -978,7 +1152,7 @@ def create_wp_custom_rule(cmd, resource_group_name, policy_name, rule_name, prio
         enabled_state='Enabled' if not disabled else 'Disabled'
     )
     policy.custom_rules.rules.append(rule)
-    return cached_put(cmd, client.create_or_update, policy, resource_group_name, policy_name).result()
+    return cached_put(cmd, client.begin_create_or_update, policy, resource_group_name, policy_name).result()
 
 
 def update_wp_custom_rule(cmd, resource_group_name, policy_name, rule_name, priority=None, action=None,
@@ -998,17 +1172,17 @@ def update_wp_custom_rule(cmd, resource_group_name, policy_name, rule_name, prio
                 c.update_param('enabled_state', 'Enabled' if not disabled else 'Disabled', 'Disabled')
 
     if not foundRule:
-        from knack.util import CLIError
-        raise CLIError("rule '{}' not found".format(rule_name))
+        from azure.cli.core.azclierror import ResourceNotFoundError
+        raise ResourceNotFoundError("rule '{}' not found".format(rule_name))
 
-    return cached_put(cmd, client.create_or_update, policy, resource_group_name, policy_name).result()
+    return cached_put(cmd, client.begin_create_or_update, policy, resource_group_name, policy_name).result()
 
 
 def delete_wp_custom_rule(cmd, resource_group_name, policy_name, rule_name):
     client = cf_waf_policies(cmd.cli_ctx, None)
     policy = client.get(resource_group_name, policy_name)
     policy.custom_rules.rules = [x for x in policy.custom_rules.rules if x.name.lower() != rule_name.lower()]
-    return client.create_or_update(resource_group_name, policy_name, policy)
+    return client.begin_create_or_update(resource_group_name, policy_name, policy)
 
 
 def list_wp_custom_rules(cmd, resource_group_name, policy_name):
@@ -1023,8 +1197,8 @@ def show_wp_custom_rule(cmd, resource_group_name, policy_name, rule_name):
     try:
         return next(x for x in policy.custom_rules.rules if x.name.lower() == rule_name.lower())
     except StopIteration:
-        from knack.util import CLIError
-        raise CLIError("rule '{}' not found".format(rule_name))
+        from azure.cli.core.azclierror import ResourceNotFoundError
+        raise ResourceNotFoundError("rule '{}' not found".format(rule_name))
 
 
 def remove_custom_rule_match_condition(cmd, resource_group_name, policy_name, rule_name,
@@ -1038,16 +1212,16 @@ def remove_custom_rule_match_condition(cmd, resource_group_name, policy_name, ru
             foundRule = True
 
             if index >= len(rule.match_conditions):
-                from knack.util import CLIError
-                raise CLIError("Index out of bounds")
+                from azure.cli.core.azclierror import InvalidArgumentValueError
+                raise InvalidArgumentValueError("Index out of bounds")
 
             rule.match_conditions = [v for (i, v) in enumerate(rule.match_conditions) if i != index]
 
     if not foundRule:
-        from knack.util import CLIError
-        raise CLIError("rule '{}' not found".format(rule_name))
+        from azure.cli.core.azclierror import ResourceNotFoundError
+        raise ResourceNotFoundError("rule '{}' not found".format(rule_name))
 
-    return cached_put(cmd, client.create_or_update, policy, resource_group_name, policy_name).result()
+    return cached_put(cmd, client.begin_create_or_update, policy, resource_group_name, policy_name).result()
 
 
 def add_custom_rule_match_condition(cmd, resource_group_name, policy_name, rule_name,
@@ -1077,10 +1251,10 @@ def add_custom_rule_match_condition(cmd, resource_group_name, policy_name, rule_
             ))
 
     if not foundRule:
-        from knack.util import CLIError
-        raise CLIError("rule '{}' not found".format(rule_name))
+        from azure.cli.core.azclierror import ResourceNotFoundError
+        raise ResourceNotFoundError("rule '{}' not found".format(rule_name))
 
-    return cached_put(cmd, client.create_or_update, policy, resource_group_name, policy_name).result()
+    return cached_put(cmd, client.begin_create_or_update, policy, resource_group_name, policy_name).result()
 
 
 def list_custom_rule_match_conditions(cmd, resource_group_name, policy_name, rule_name):
@@ -1091,6 +1265,336 @@ def list_custom_rule_match_conditions(cmd, resource_group_name, policy_name, rul
         if rule.name.upper() == rule_name.upper():
             return rule.match_conditions
 
-    from knack.util import CLIError
-    raise CLIError("rule '{}' not found".format(rule_name))
+    from azure.cli.core.azclierror import ResourceNotFoundError
+    raise ResourceNotFoundError("rule '{}' not found".format(rule_name))
+# endregion
+
+
+# region Front Door Rules Engine
+
+
+# pylint: disable=too-many-locals
+def create_rules_engine_rule(cmd, resource_group_name, front_door_name, rules_engine_name,
+                             priority, rule_name, action_type, header_action=None, header_name=None,
+                             header_value=None, match_variable=None, operator=None, match_values=None,
+                             selector=None, negate_condition=None, transforms=None,
+                             match_processing_behavior=None):
+    from azext_front_door.vendored_sdks.models import (RulesEngineRule,
+                                                       RulesEngineAction, HeaderAction,
+                                                       RulesEngineMatchCondition)
+    from azure.core.exceptions import (ResourceNotFoundError)
+
+    client = cf_fd_rules_engines(cmd.cli_ctx, None)
+
+    match_conditions = []
+    if match_values is None:
+        match_values = []
+    condition = RulesEngineMatchCondition(rules_engine_match_variable=match_variable,
+                                          rules_engine_operator=operator,
+                                          rules_engine_match_value=match_values,
+                                          selector=selector,
+                                          negate_condition=negate_condition, transforms=transforms)
+    if condition is not None and match_variable is not None:
+        match_conditions.append(condition)
+
+    request_header_actions = []
+    if action_type.lower() == 'requestheader':
+        request_header_actions.append(HeaderAction(
+            header_action_type=header_action,
+            header_name=header_name,
+            value=header_value))
+
+    response_header_actions = []
+    if action_type.lower() == 'responseheader':
+        response_header_actions.append(HeaderAction(
+            header_action_type=header_action,
+            header_name=header_name,
+            value=header_value))
+
+    action = RulesEngineAction(request_header_actions=request_header_actions,
+                               response_header_actions=response_header_actions)
+
+    rule = RulesEngineRule(name=rule_name, priority=priority,
+                           action=action, match_conditions=match_conditions,
+                           match_processing_behavior=match_processing_behavior)
+
+    rules_list = []
+    try:
+        rules_engine = client.get(resource_group_name, front_door_name, rules_engine_name)
+        rules_engine.rules.append(rule)
+        rules_list = rules_engine.rules
+    except ResourceNotFoundError:
+        rules_list = [rule]
+
+    rules_engine_parameters = RulesEngine(rules=rules_list)
+    return client.begin_create_or_update(resource_group_name,
+                                         front_door_name,
+                                         rules_engine_name,
+                                         rules_engine_parameters)
+
+
+def delete_rules_engine_rule(cmd, resource_group_name, front_door_name, rules_engine_name, rule_name):
+    client = cf_fd_rules_engines(cmd.cli_ctx, None)
+    rules_engine = client.get(resource_group_name, front_door_name, rules_engine_name)
+    rules_engine.rules = [x for x in rules_engine.rules if x.name.lower() != rule_name.lower()]
+    if not rules_engine.rules:
+        from azure.cli.core.azclierror import BadRequestError
+        raise BadRequestError("Rules Engine must at least contain one rule")
+
+    rules_engine_parameters = RulesEngine(rules=rules_engine.rules)
+    return client.begin_create_or_update(resource_group_name,
+                                         front_door_name,
+                                         rules_engine_name,
+                                         rules_engine_parameters)
+
+
+def show_rules_engine_rule(cmd, resource_group_name, front_door_name, rules_engine_name, rule_name):
+    client = cf_fd_rules_engines(cmd.cli_ctx, None)
+    rules_engine = client.get(resource_group_name, front_door_name, rules_engine_name)
+    try:
+        return next(x for x in rules_engine.rules if x.name.lower() == rule_name.lower())
+    except StopIteration:
+        from azure.cli.core.azclierror import ResourceNotFoundError
+        raise ResourceNotFoundError("rule '{}' not found".format(rule_name))
+
+
+def list_rules_engine_rule(cmd, resource_group_name, front_door_name, rules_engine_name):
+    client = cf_fd_rules_engines(cmd.cli_ctx, None)
+    rules_engine = client.get(resource_group_name, front_door_name, rules_engine_name)
+    return rules_engine.rules
+
+
+def update_rules_engine_rule(cmd, resource_group_name, front_door_name,
+                             rules_engine_name, rule_name, priority=None,
+                             match_processing_behavior=None):
+    client = cf_fd_rules_engines(cmd.cli_ctx, None)
+    rules_engine = client.get(resource_group_name, front_door_name, rules_engine_name)
+
+    found_rule = False
+    for rule in rules_engine.rules:
+        if rule.name.lower() == rule_name.lower():
+            found_rule = True
+            with UpdateContext(rule) as c:
+                c.update_param('priority', priority, None)
+                c.update_param('match_processing_behavior', match_processing_behavior, None)
+            break
+
+    if not found_rule:
+        from azure.cli.core.azclierror import ResourceNotFoundError
+        raise ResourceNotFoundError("rule '{}' not found".format(rule_name))
+
+    rules_engine_parameters = RulesEngine(rules=rules_engine.rules)
+    return client.begin_create_or_update(resource_group_name,
+                                         front_door_name,
+                                         rules_engine_name,
+                                         rules_engine_parameters)
+
+
+def add_rules_engine_condition(cmd, resource_group_name, front_door_name, rules_engine_name,
+                               rule_name, match_variable=None, operator=None, match_values=None,
+                               selector=None, negate_condition=None, transforms=None):
+    from azext_front_door.vendored_sdks.models import RulesEngineMatchCondition
+    client = cf_fd_rules_engines(cmd.cli_ctx, None)
+    rules_engine = client.get(resource_group_name, front_door_name, rules_engine_name)
+
+    found_rule = False
+    for rule in rules_engine.rules:
+        if rule.name.upper() == rule_name.upper():
+            found_rule = True
+            if match_values is None:
+                match_values = []
+            condition = RulesEngineMatchCondition(rules_engine_match_variable=match_variable,
+                                                  rules_engine_operator=operator,
+                                                  rules_engine_match_value=match_values,
+                                                  selector=selector, negate_condition=negate_condition,
+                                                  transforms=transforms)
+            if condition is not None:
+                rule.match_conditions.append(condition)
+
+    if not found_rule:
+        from azure.cli.core.azclierror import ResourceNotFoundError
+        raise ResourceNotFoundError("rule '{}' not found".format(rule_name))
+
+    rules_engine_parameters = RulesEngine(rules=rules_engine.rules)
+    return client.begin_create_or_update(resource_group_name,
+                                         front_door_name,
+                                         rules_engine_name,
+                                         rules_engine_parameters)
+
+
+def remove_rules_engine_condition(cmd, resource_group_name,
+                                  front_door_name, rules_engine_name,
+                                  rule_name, index):
+    client = cf_fd_rules_engines(cmd.cli_ctx, None)
+    rules_engine = client.get(resource_group_name, front_door_name, rules_engine_name)
+
+    found_rule = False
+    for rule in rules_engine.rules:
+        if rule.name.upper() == rule_name.upper():
+            found_rule = True
+
+            if index >= len(rule.match_conditions):
+                from azure.cli.core.azclierror import InvalidArgumentValueError
+                raise InvalidArgumentValueError("Index out of bounds")
+
+            rule.match_conditions = [v for (i, v) in enumerate(rule.match_conditions) if i != index]
+
+    if not found_rule:
+        from azure.cli.core.azclierror import ResourceNotFoundError
+        raise ResourceNotFoundError("rule '{}' not found".format(rule_name))
+
+    rules_engine_parameters = RulesEngine(rules=rules_engine.rules)
+    return client.begin_create_or_update(resource_group_name,
+                                         front_door_name,
+                                         rules_engine_name,
+                                         rules_engine_parameters)
+
+
+def list_rules_engine_condition(cmd, resource_group_name,
+                                front_door_name, rules_engine_name,
+                                rule_name):
+    client = cf_fd_rules_engines(cmd.cli_ctx, None)
+    rules_engine = client.get(resource_group_name, front_door_name, rules_engine_name)
+
+    for rule in rules_engine.rules:
+        if rule.name.upper() == rule_name.upper():
+            return rule.match_conditions
+
+    from azure.cli.core.azclierror import ResourceNotFoundError
+    raise ResourceNotFoundError("rule '{}' not found".format(rule_name))
+
+
+def add_rules_engine_action(cmd, resource_group_name, front_door_name, rules_engine_name, rule_name,
+                            action_type, header_action=None, header_name=None, header_value=None,
+                            custom_forwarding_path=None, forwarding_protocol=None, backend_pool=None,
+                            caching=None, dynamic_compression=None, cache_duration=None,
+                            query_parameter_strip_directive=None, query_parameters=None, redirect_type='Moved',
+                            redirect_protocol='MatchRequest', custom_host=None, custom_path=None,
+                            custom_fragment=None, custom_query_string=None):
+
+    def add_action_helper(rule):
+        from azext_front_door.vendored_sdks.models import (HeaderAction, CacheConfiguration, SubResource,
+                                                           ForwardingConfiguration, RedirectConfiguration)
+        if action_type.lower() == 'requestheader':
+            rule.action.request_header_actions.append(HeaderAction(
+                header_action_type=header_action,
+                header_name=header_name,
+                value=header_value))
+
+        if action_type.lower() == 'responseheader':
+            rule.action.response_header_actions.append(HeaderAction(
+                header_action_type=header_action,
+                header_name=header_name,
+                value=header_value))
+
+        if action_type.lower() == 'forwardrouteoverride' or 'redirectrouteoverride':
+            routing_rule_usage_helper(action_type, backend_pool, custom_forwarding_path,
+                                      forwarding_protocol, dynamic_compression,
+                                      query_parameter_strip_directive, query_parameters,
+                                      cache_duration, redirect_type,
+                                      redirect_protocol, custom_host, custom_path,
+                                      custom_fragment, custom_query_string)
+            if 'forward' in action_type.lower():
+                rule.action.route_configuration_override = ForwardingConfiguration(
+                    custom_forwarding_path=custom_forwarding_path,
+                    forwarding_protocol=forwarding_protocol,
+                    backend_pool=SubResource(
+                        id=backend_pool) if backend_pool else None,
+                    cache_configuration=CacheConfiguration(
+                        query_parameter_strip_directive=query_parameter_strip_directive,
+                        query_parameters=query_parameters,
+                        dynamic_compression=dynamic_compression,
+                        cache_duration=cache_duration
+                    ) if caching else None
+                )
+            elif 'redirect' in action_type.lower():
+                rule.action.route_configuration_override = RedirectConfiguration(
+                    redirect_type=redirect_type,
+                    redirect_protocol=redirect_protocol,
+                    custom_host=custom_host,
+                    custom_path=custom_path,
+                    custom_fragment=custom_fragment,
+                    custom_query_string=custom_query_string
+                )
+
+    client = cf_fd_rules_engines(cmd.cli_ctx, None)
+    rules_engine = client.get(resource_group_name, front_door_name, rules_engine_name)
+
+    found_rule = False
+    for rule in rules_engine.rules:
+        if rule.name.upper() == rule_name.upper():
+            found_rule = True
+            add_action_helper(rule)
+
+    if not found_rule:
+        from azure.cli.core.azclierror import ResourceNotFoundError
+        raise ResourceNotFoundError("rule '{}' not found".format(rule_name))
+
+    rules_engine_parameters = RulesEngine(rules=rules_engine.rules)
+    return client.begin_create_or_update(resource_group_name,
+                                         front_door_name,
+                                         rules_engine_name,
+                                         rules_engine_parameters)
+
+
+def remove_rules_engine_action(cmd, resource_group_name, front_door_name, rules_engine_name,
+                               rule_name, action_type, index=None):
+    def check_index(arr):
+        if index is None or index >= len(arr):
+            from azure.cli.core.azclierror import InvalidArgumentValueError
+            raise InvalidArgumentValueError("Index out of bounds")
+
+    def remove_action_helper(rule):
+        if action_type.lower() == 'requestheader':
+            check_index(rule.action.request_header_actions)
+            rule.action.request_header_actions = [v for (i, v) in
+                                                  enumerate(rule.action.request_header_actions) if i != index]
+
+        if action_type.lower() == 'responseheader':
+            check_index(rule.action.response_header_actions)
+            rule.action.response_header_actions = [v for (i, v) in
+                                                   enumerate(rule.action.response_header_actions) if i != index]
+
+        if 'routeoverride' in action_type.lower():
+            rule.action.route_configuration_override = None
+
+    client = cf_fd_rules_engines(cmd.cli_ctx, None)
+    rules_engine = client.get(resource_group_name, front_door_name, rules_engine_name)
+
+    found_rule = False
+    for rule in rules_engine.rules:
+        if rule.name.upper() == rule_name.upper():
+            found_rule = True
+            remove_action_helper(rule)
+            # pylint: disable=len-as-condition
+            if len(rule.action.request_header_actions) <= 0 and \
+               len(rule.action.response_header_actions) <= 0 and \
+               rule.action.route_configuration_override is None:
+                from azure.cli.core.azclierror import BadRequestError
+                raise BadRequestError("Cannot remove all actions from rule '{}'".format(rule_name))
+
+    if not found_rule:
+        from azure.cli.core.azclierror import ResourceNotFoundError
+        raise ResourceNotFoundError("rule '{}' not found".format(rule_name))
+
+    rules_engine_parameters = RulesEngine(rules=rules_engine.rules)
+    return client.begin_create_or_update(resource_group_name,
+                                         front_door_name,
+                                         rules_engine_name,
+                                         rules_engine_parameters)
+
+
+def list_rules_engine_action(cmd, resource_group_name,
+                             front_door_name, rules_engine_name,
+                             rule_name):
+    client = cf_fd_rules_engines(cmd.cli_ctx, None)
+    rules_engine = client.get(resource_group_name, front_door_name, rules_engine_name)
+
+    for rule in rules_engine.rules:
+        if rule.name.upper() == rule_name.upper():
+            return rule.action
+
+    from azure.cli.core.azclierror import ResourceNotFoundError
+    raise ResourceNotFoundError("rule '{}' not found".format(rule_name))
+
 # endregion

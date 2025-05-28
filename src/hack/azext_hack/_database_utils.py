@@ -108,6 +108,7 @@ class Database():
 
     def __get_cosmosdb_steps(self, cmd, name, location):
         from azure.mgmt.cosmosdb import CosmosDBManagementClient
+        from azure.mgmt.cosmosdb.models import Capability
         from azure.cli.core.commands.client_factory import get_mgmt_service_client
 
         steps = []
@@ -118,24 +119,25 @@ class Database():
             DatabaseAccountCreateUpdateParameters,
             DatabaseAccountKind,
             Location,
-            ConsistencyPolicy
+            MongoDBDatabaseCreateUpdateParameters
         )
 
         server_params = {
             'resource_group_name': name,
             'account_name': name,
-            'params': DatabaseAccountCreateUpdateParameters(
+            'create_update_parameters': DatabaseAccountCreateUpdateParameters(
                 location=location,
                 locations=[Location(
                     location_name=location,
                     failover_priority=0,
                     is_zone_redundant=False)],
                 kind=DatabaseAccountKind.mongo_db.value,
-                consistency_policy=ConsistencyPolicy(
-                    default_consistency_level=1,
-                    max_staleness_prefix=100,
-                    max_interval_in_seconds=5
-                )
+                capabilities=[
+                    Capability(name='EnableMongo'),
+                    Capability(name='EnableServerless'),
+                    Capability(name='DisableRateLimitingResponses')
+                ],
+                tags={'CosmosAccountType': 'Non-Production'}
             )
         }
         steps.append(DatabaseCreationStep(
@@ -145,8 +147,10 @@ class Database():
             'resource_group_name': name,
             'account_name': name,
             'database_name': name,
-            'resource': {'id': name},
-            'options': {}
+            'create_update_mongo_db_database_parameters': MongoDBDatabaseCreateUpdateParameters(
+                resource={'id': name},
+                options={}
+            )
         }
         steps.append(DatabaseCreationStep(
             'database', cosmosdb_client.mongo_db_resources.create_update_mongo_db_database, database_params))

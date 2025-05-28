@@ -5,7 +5,14 @@
 
 # pylint: disable=len-as-condition
 from knack.util import CLIError
-from msrestazure.tools import is_valid_resource_id
+from azure.mgmt.core.tools import parse_resource_id, is_valid_resource_id
+
+
+def validate_dest_account(namespace):
+    if is_valid_resource_id(namespace.dest_account):
+        parsed_storage = parse_resource_id(namespace.dest_account)
+        storage_name = parsed_storage['resource_name']
+        namespace.dest_account = storage_name
 
 
 def validate_applications(namespace):
@@ -16,3 +23,31 @@ def validate_applications(namespace):
                     raise CLIError("Specify either a full resource id or an application name and resource group.")
             else:
                 raise CLIError("Resource group only allowed with a single application name.")
+
+
+def validate_storage_account_name_or_id(cmd, namespace):
+    if namespace.storage_account_id:
+        from azure.mgmt.core.tools import resource_id
+        from azure.cli.core.commands.client_factory import get_subscription_id
+        if not is_valid_resource_id(namespace.storage_account_id):
+            namespace.storage_account_id = resource_id(
+                subscription=get_subscription_id(cmd.cli_ctx),
+                resource_group=namespace.resource_group_name,
+                namespace='Microsoft.Storage',
+                type='storageAccounts',
+                name=namespace.storage_account_id
+            )
+
+
+def validate_log_analytic_workspace_name_or_id(cmd, namespace):
+    if namespace.workspace_resource_id:
+        from azure.mgmt.core.tools import resource_id
+        from azure.cli.core.commands.client_factory import get_subscription_id
+        if not is_valid_resource_id(namespace.workspace_resource_id):
+            namespace.workspace_resource_id = resource_id(
+                subscription=get_subscription_id(cmd.cli_ctx),
+                resource_group=namespace.resource_group_name,
+                namespace='microsoft.OperationalInsights',
+                type='workspaces',
+                name=namespace.workspace_resource_id
+            )

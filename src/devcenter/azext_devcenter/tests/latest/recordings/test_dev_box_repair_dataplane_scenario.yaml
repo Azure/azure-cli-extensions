@@ -1,0 +1,456 @@
+interactions:
+- request:
+    body: '{"query": " Resources |where type =~''Microsoft.devcenter/projects''\n    \n    |
+      extend devCenterArr = split(properties.devCenterId, ''/'')\n    | extend devCenterName
+      = devCenterArr[array_length(devCenterArr) -1]\n    | where devCenterName =~
+      ''amlim-dev-center-euap''\n    | take 1\n    | extend devCenterUri = properties.devCenterUri\n    |
+      project name,devCenterUri ", "options": {"allowPartialScopes": true}}'
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - devcenter dev dev-box repair
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '408'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --project --dev-center
+      User-Agent:
+      - python/3.10.7 (Windows-10-10.0.22631-SP0) AZURECLI/2.67.0
+    method: POST
+    uri: https://management.azure.com/providers/Microsoft.ResourceGraph/resources?api-version=2021-03-01
+  response:
+    body:
+      string: '{"totalRecords":1,"count":1,"data":[{"name":"amlim-project","devCenterUri":"https://00000000-0000-0000-0000-000000000000-amlim-dev-center-euap.centraluseuap.devcenter.azure.com/"}],"facets":[],"resultTruncated":"false"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '219'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 17 Dec 2024 21:41:44 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - ''
+      x-ms-ratelimit-remaining-tenant-resource-requests:
+      - '14'
+      x-ms-resource-graph-request-duration:
+      - '0:00:00:00.0578791'
+      x-ms-user-quota-remaining:
+      - '14'
+      x-ms-user-quota-resets-after:
+      - 00:00:05
+      x-msedge-ref:
+      - 'Ref A: AB5D1E96FD1E44E28D77702325A77642 Ref B: SJC211051201047 Ref C: 2024-12-17T21:41:44Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - devcenter dev dev-box repair
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --name --project --dev-center
+      User-Agent:
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.10.7 (Windows-10-10.0.22631-SP0)
+    method: POST
+    uri: https://00000000-0000-0000-0000-000000000000-amlim-dev-center-euap.centraluseuap.devcenter.azure.com/projects/amlim/users/me/devboxes/createDevBox:repair?api-version=2025-04-01-preview
+  response:
+    body:
+      string: "{\n  \"id\": \"/projects/amlim/operationStatuses/d816f421-e7df-493c-9b54-c5b623924641\",\n
+        \ \"name\": \"d816f421-e7df-493c-9b54-c5b623924641\",\n  \"status\": \"NotStarted\",\n
+        \ \"resourceId\": \"/projects/amlim/users/00000000-0000-0000-0000-000000000000/devboxes/createdevbox\"\n}"
+    headers:
+      access-control-allow-origin:
+      - '*'
+      access-control-expose-headers:
+      - Location,Operation-Location,x-ms-correlation-request-id,x-ms-client-request-id
+      access-control-max-age:
+      - '86400'
+      connection:
+      - keep-alive
+      content-length:
+      - '260'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 17 Dec 2024 21:41:46 GMT
+      location:
+      - https://00000000-0000-0000-0000-000000000000-amlim-dev-center-euap.centraluseuap.devcenter.azure.com/projects/amlim/operationstatuses/d816f421-e7df-493c-9b54-c5b623924641?api-version=2025-04-01-preview&monitor=true
+      operation-location:
+      - https://00000000-0000-0000-0000-000000000000-amlim-dev-center-euap.centraluseuap.devcenter.azure.com/projects/amlim/operationstatuses/d816f421-e7df-493c-9b54-c5b623924641?api-version=2025-04-01-preview
+      strict-transport-security:
+      - max-age=15724800; includeSubDomains
+      x-rate-limit-limit:
+      - 1m
+      x-rate-limit-remaining:
+      - '299'
+      x-rate-limit-reset:
+      - '2024-12-17T21:42:45.4178456Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - devcenter dev dev-box repair
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --project --dev-center
+      User-Agent:
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.10.7 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://00000000-0000-0000-0000-000000000000-amlim-dev-center-euap.centraluseuap.devcenter.azure.com/projects/amlim/operationstatuses/d816f421-e7df-493c-9b54-c5b623924641?api-version=2025-04-01-preview
+  response:
+    body:
+      string: "{\n  \"id\": \"/projects/amlim/operationStatuses/d816f421-e7df-493c-9b54-c5b623924641\",\n
+        \ \"name\": \"d816f421-e7df-493c-9b54-c5b623924641\",\n  \"status\": \"NotStarted\",\n
+        \ \"startTime\": \"2024-12-17T21:41:45.5508263+00:00\"\n}"
+    headers:
+      access-control-allow-origin:
+      - '*'
+      access-control-expose-headers:
+      - Location,Operation-Location,x-ms-correlation-request-id,x-ms-client-request-id
+      access-control-max-age:
+      - '86400'
+      connection:
+      - keep-alive
+      content-length:
+      - '212'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 17 Dec 2024 21:41:46 GMT
+      location:
+      - https://00000000-0000-0000-0000-000000000000-amlim-dev-center-euap.centraluseuap.devcenter.azure.com/projects/amlim/operationstatuses/d816f421-e7df-493c-9b54-c5b623924641?api-version=2025-04-01-preview&monitor=true
+      operation-location:
+      - https://00000000-0000-0000-0000-000000000000-amlim-dev-center-euap.centraluseuap.devcenter.azure.com/projects/amlim/operationstatuses/d816f421-e7df-493c-9b54-c5b623924641?api-version=2025-04-01-preview
+      strict-transport-security:
+      - max-age=15724800; includeSubDomains
+      x-rate-limit-limit:
+      - 1m
+      x-rate-limit-remaining:
+      - '299'
+      x-rate-limit-reset:
+      - '2024-12-17T21:42:46.7389177Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - devcenter dev dev-box repair
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --project --dev-center
+      User-Agent:
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.10.7 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://00000000-0000-0000-0000-000000000000-amlim-dev-center-euap.centraluseuap.devcenter.azure.com/projects/amlim/operationstatuses/d816f421-e7df-493c-9b54-c5b623924641?api-version=2025-04-01-preview
+  response:
+    body:
+      string: "{\n  \"id\": \"/projects/amlim/operationStatuses/d816f421-e7df-493c-9b54-c5b623924641\",\n
+        \ \"name\": \"d816f421-e7df-493c-9b54-c5b623924641\",\n  \"status\": \"Running\",\n
+        \ \"startTime\": \"2024-12-17T21:41:45.5508263+00:00\"\n}"
+    headers:
+      access-control-allow-origin:
+      - '*'
+      access-control-expose-headers:
+      - Location,Operation-Location,x-ms-correlation-request-id,x-ms-client-request-id
+      access-control-max-age:
+      - '86400'
+      connection:
+      - keep-alive
+      content-length:
+      - '209'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 17 Dec 2024 21:42:17 GMT
+      location:
+      - https://00000000-0000-0000-0000-000000000000-amlim-dev-center-euap.centraluseuap.devcenter.azure.com/projects/amlim/operationstatuses/d816f421-e7df-493c-9b54-c5b623924641?api-version=2025-04-01-preview&monitor=true
+      operation-location:
+      - https://00000000-0000-0000-0000-000000000000-amlim-dev-center-euap.centraluseuap.devcenter.azure.com/projects/amlim/operationstatuses/d816f421-e7df-493c-9b54-c5b623924641?api-version=2025-04-01-preview
+      strict-transport-security:
+      - max-age=15724800; includeSubDomains
+      x-rate-limit-limit:
+      - 1m
+      x-rate-limit-remaining:
+      - '299'
+      x-rate-limit-reset:
+      - '2024-12-17T21:43:17.0466402Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - devcenter dev dev-box repair
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --project --dev-center
+      User-Agent:
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.10.7 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://00000000-0000-0000-0000-000000000000-amlim-dev-center-euap.centraluseuap.devcenter.azure.com/projects/amlim/operationstatuses/d816f421-e7df-493c-9b54-c5b623924641?api-version=2025-04-01-preview
+  response:
+    body:
+      string: "{\n  \"id\": \"/projects/amlim/operationStatuses/d816f421-e7df-493c-9b54-c5b623924641\",\n
+        \ \"name\": \"d816f421-e7df-493c-9b54-c5b623924641\",\n  \"status\": \"Running\",\n
+        \ \"startTime\": \"2024-12-17T21:41:45.5508263+00:00\"\n}"
+    headers:
+      access-control-allow-origin:
+      - '*'
+      access-control-expose-headers:
+      - Location,Operation-Location,x-ms-correlation-request-id,x-ms-client-request-id
+      access-control-max-age:
+      - '86400'
+      connection:
+      - keep-alive
+      content-length:
+      - '209'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 17 Dec 2024 21:42:47 GMT
+      location:
+      - https://00000000-0000-0000-0000-000000000000-amlim-dev-center-euap.centraluseuap.devcenter.azure.com/projects/amlim/operationstatuses/d816f421-e7df-493c-9b54-c5b623924641?api-version=2025-04-01-preview&monitor=true
+      operation-location:
+      - https://00000000-0000-0000-0000-000000000000-amlim-dev-center-euap.centraluseuap.devcenter.azure.com/projects/amlim/operationstatuses/d816f421-e7df-493c-9b54-c5b623924641?api-version=2025-04-01-preview
+      strict-transport-security:
+      - max-age=15724800; includeSubDomains
+      x-rate-limit-limit:
+      - 1m
+      x-rate-limit-remaining:
+      - '299'
+      x-rate-limit-reset:
+      - '2024-12-17T21:43:47.1988377Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - devcenter dev dev-box repair
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --project --dev-center
+      User-Agent:
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.10.7 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://00000000-0000-0000-0000-000000000000-amlim-dev-center-euap.centraluseuap.devcenter.azure.com/projects/amlim/operationstatuses/d816f421-e7df-493c-9b54-c5b623924641?api-version=2025-04-01-preview
+  response:
+    body:
+      string: "{\n  \"id\": \"/projects/amlim/operationStatuses/d816f421-e7df-493c-9b54-c5b623924641\",\n
+        \ \"name\": \"d816f421-e7df-493c-9b54-c5b623924641\",\n  \"status\": \"Succeeded\",\n
+        \ \"startTime\": \"2024-12-17T21:41:45.5508263+00:00\",\n  \"endTime\": \"2024-12-17T21:42:54.9632853+00:00\"\n}"
+    headers:
+      access-control-allow-origin:
+      - '*'
+      access-control-expose-headers:
+      - Location,Operation-Location,x-ms-correlation-request-id,x-ms-client-request-id
+      access-control-max-age:
+      - '86400'
+      connection:
+      - keep-alive
+      content-length:
+      - '261'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 17 Dec 2024 21:43:17 GMT
+      location:
+      - https://00000000-0000-0000-0000-000000000000-amlim-dev-center-euap.centraluseuap.devcenter.azure.com/projects/amlim/operationstatuses/d816f421-e7df-493c-9b54-c5b623924641?api-version=2025-04-01-preview&monitor=true
+      operation-location:
+      - https://00000000-0000-0000-0000-000000000000-amlim-dev-center-euap.centraluseuap.devcenter.azure.com/projects/amlim/operationstatuses/d816f421-e7df-493c-9b54-c5b623924641?api-version=2025-04-01-preview
+      strict-transport-security:
+      - max-age=15724800; includeSubDomains
+      transfer-encoding:
+      - chunked
+      x-rate-limit-limit:
+      - 1m
+      x-rate-limit-remaining:
+      - '299'
+      x-rate-limit-reset:
+      - '2024-12-17T21:44:17.3298121Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"query": " Resources |where type =~''Microsoft.devcenter/projects''\n    \n    |
+      extend devCenterArr = split(properties.devCenterId, ''/'')\n    | extend devCenterName
+      = devCenterArr[array_length(devCenterArr) -1]\n    | where devCenterName =~
+      ''amlim-dev-center-euap''\n    | take 1\n    | extend devCenterUri = properties.devCenterUri\n    |
+      project name,devCenterUri ", "options": {"allowPartialScopes": true}}'
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - devcenter dev dev-box list-operation
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '408'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --project --dev-center
+      User-Agent:
+      - python/3.10.7 (Windows-10-10.0.22631-SP0) AZURECLI/2.67.0
+    method: POST
+    uri: https://management.azure.com/providers/Microsoft.ResourceGraph/resources?api-version=2021-03-01
+  response:
+    body:
+      string: '{"totalRecords":1,"count":1,"data":[{"name":"amlim","devCenterUri":"https://00000000-0000-0000-0000-000000000000-amlim-dev-center-euap.centraluseuap.devcenter.azure.com/"}],"facets":[],"resultTruncated":"false"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '211'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 17 Dec 2024 21:43:17 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - ''
+      x-ms-ratelimit-remaining-tenant-resource-requests:
+      - '14'
+      x-ms-resource-graph-request-duration:
+      - '0:00:00:00.0719732'
+      x-ms-user-quota-remaining:
+      - '14'
+      x-ms-user-quota-resets-after:
+      - 00:00:05
+      x-msedge-ref:
+      - 'Ref A: D4D5DE0A558E40E4BBF940C9CE464686 Ref B: SJC211051205045 Ref C: 2024-12-17T21:43:17Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - devcenter dev dev-box list-operation
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --project --dev-center
+      User-Agent:
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.10.7 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://00000000-0000-0000-0000-000000000000-amlim-dev-center-euap.centraluseuap.devcenter.azure.com/projects/amlim/users/me/devboxes/createDevBox/operations?api-version=2025-04-01-preview
+  response:
+    body:
+      string: "{\n  \"value\": [\n    {\n      \"result\": {\n        \"repairOutcome\":
+        \"NoIssuesDetected\"\n      },\n      \"kind\": \"Repair\",\n      \"uri\":
+        \"https://00000000-0000-0000-0000-000000000000-amlim-dev-center-euap.centraluseuap.devcenter.azure.com/projects/amlim/users/00000000-0000-0000-0000-000000000000/devboxes/createdevbox/operations/30a77967-7925-4189-b475-477fd0bc9594\",\n
+        \     \"operationId\": \"30a77967-7925-4189-b475-477fd0bc9594\",\n      \"status\":
+        \"Succeeded\",\n      \"createdByObjectId\": \"00000000-0000-0000-0000-000000000000\",\n
+        \     \"startTime\": \"2024-12-17T20:07:21.225026+00:00\",\n      \"endTime\":
+        \"2024-12-17T20:08:02.2470776+00:00\"\n    },\n    {\n      \"result\": {\n
+        \       \"repairOutcome\": \"NoIssuesDetected\"\n      },\n      \"kind\":
+        \"Repair\",\n      \"uri\": \"https://00000000-0000-0000-0000-000000000000-amlim-dev-center-euap.centraluseuap.devcenter.azure.com/projects/amlim/users/00000000-0000-0000-0000-000000000000/devboxes/createdevbox/operations/c1e152e7-2f77-4699-a901-40176e94d9b2\",\n
+        \     \"operationId\": \"c1e152e7-2f77-4699-a901-40176e94d9b2\",\n      \"status\":
+        \"Succeeded\",\n      \"createdByObjectId\": \"00000000-0000-0000-0000-000000000000\",\n
+        \     \"startTime\": \"2024-12-17T21:32:28.906068+00:00\",\n      \"endTime\":
+        \"2024-12-17T21:32:57.7449579+00:00\"\n    },\n    {\n      \"result\": {\n
+        \       \"repairOutcome\": \"NoIssuesDetected\"\n      },\n      \"kind\":
+        \"Repair\",\n      \"uri\": \"https://00000000-0000-0000-0000-000000000000-amlim-dev-center-euap.centraluseuap.devcenter.azure.com/projects/amlim/users/00000000-0000-0000-0000-000000000000/devboxes/createdevbox/operations/d816f421-e7df-493c-9b54-c5b623924641\",\n
+        \     \"operationId\": \"d816f421-e7df-493c-9b54-c5b623924641\",\n      \"status\":
+        \"Succeeded\",\n      \"createdByObjectId\": \"00000000-0000-0000-0000-000000000000\",\n
+        \     \"startTime\": \"2024-12-17T21:42:11.9778678+00:00\",\n      \"endTime\":
+        \"2024-12-17T21:42:54.0416062+00:00\"\n    }\n  ]\n}"
+    headers:
+      access-control-allow-origin:
+      - '*'
+      access-control-expose-headers:
+      - Location,Operation-Location,x-ms-correlation-request-id,x-ms-client-request-id
+      access-control-max-age:
+      - '86400'
+      connection:
+      - keep-alive
+      content-length:
+      - '1874'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 17 Dec 2024 21:43:18 GMT
+      strict-transport-security:
+      - max-age=15724800; includeSubDomains
+      transfer-encoding:
+      - chunked
+      x-rate-limit-limit:
+      - 1m
+      x-rate-limit-remaining:
+      - '298'
+      x-rate-limit-reset:
+      - '2024-12-17T21:43:47.1988377Z'
+    status:
+      code: 200
+      message: OK
+version: 1

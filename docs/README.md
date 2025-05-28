@@ -12,7 +12,7 @@ Doc Sections
 
 - [Command Guidelines](https://github.com/Azure/azure-cli/blob/dev/doc/command_guidelines.md) - Command Guidelines
 
-- [Publishing](https://github.com/Azure/azure-cli/blob/dev/doc/extensions/publishing.md) - How to publish an extension
+- [Publishing](https://github.com/Azure/azure-cli/blob/dev/doc/extensions/authoring.md#publish) - How to publish an extension
 
 - [Summary Guidelines](https://github.com/Azure/azure-cli/blob/dev/doc/extensions/extension_summary_guidelines.md) - Summary guidelines for extensions to be published
 

@@ -1,0 +1,471 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - logic integration-account create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --sku --name -g
+      User-Agent:
+      - AZURECLI/2.56.0 azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_integration_batch_configuration_000001?api-version=2022-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_integration_batch_configuration_000001","name":"cli_test_integration_batch_configuration_000001","type":"Microsoft.Resources/resourceGroups","location":"eastus","tags":{"product":"azurecli","cause":"automation","test":"test_integration_account_batch_configuration","date":"2024-01-12T02:01:15Z","module":"logic"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '443'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 12 Jan 2024 02:01:19 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus", "properties": {"state": "Enabled"}, "sku": {"name":
+      "Standard"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - logic integration-account create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '87'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --sku --name -g
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_integration_batch_configuration_000001/providers/Microsoft.Logic/integrationAccounts/inte000002?api-version=2019-05-01
+  response:
+    body:
+      string: '{"properties":{"state":"Enabled"},"sku":{"name":"Standard"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_integration_batch_configuration_000001/providers/Microsoft.Logic/integrationAccounts/inte000002","name":"inte000002","type":"Microsoft.Logic/integrationAccounts","location":"eastus"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '324'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 12 Jan 2024 02:01:20 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - ARRAffinity=4506fed21ae7329212e22736c2f80898a13d9fb6173622080112cc34ac5998d2;Path=/;HttpOnly;Secure;Domain=management.eastus.logic.azure.com
+      - ARRAffinitySameSite=4506fed21ae7329212e22736c2f80898a13d9fb6173622080112cc34ac5998d2;Path=/;HttpOnly;SameSite=None;Secure;Domain=management.eastus.logic.azure.com
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - logic integration-account batch-configuration create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --integration-account-name --batch-group-name --release-criteria
+      User-Agent:
+      - AZURECLI/2.56.0 azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_integration_batch_configuration_000001?api-version=2022-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_integration_batch_configuration_000001","name":"cli_test_integration_batch_configuration_000001","type":"Microsoft.Resources/resourceGroups","location":"eastus","tags":{"product":"azurecli","cause":"automation","test":"test_integration_account_batch_configuration","date":"2024-01-12T02:01:15Z","module":"logic"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '443'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 12 Jan 2024 02:01:21 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus", "properties": {"batchGroupName": "batchtestgroup",
+      "releaseCriteria": {"batchSize": 10000, "messageCount": 10, "recurrence": {"frequency":
+      "Minute", "interval": 1}}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - logic integration-account batch-configuration create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '189'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --integration-account-name --batch-group-name --release-criteria
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_integration_batch_configuration_000001/providers/Microsoft.Logic/integrationAccounts/inte000002/batchConfigurations/batch000003?api-version=2019-05-01
+  response:
+    body:
+      string: '{"properties":{"batchGroupName":"batchtestgroup","releaseCriteria":{"messageCount":10,"batchSize":10000,"recurrence":{"frequency":"Minute","interval":1}},"createdTime":"2024-01-12T02:01:23.6859778Z","changedTime":"2024-01-12T02:01:23.718545Z"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_integration_batch_configuration_000001/providers/Microsoft.Logic/integrationAccounts/inte000002/batchConfigurations/batch000003","name":"batch000003","type":"Microsoft.Logic/integrationAccounts/batchConfigurations"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '541'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 12 Jan 2024 02:01:23 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - ARRAffinity=0aa69915266871205a67096b40953eafb333722c9d662666b4ee1cbd3af96c28;Path=/;HttpOnly;Secure;Domain=management.eastus.logic.azure.com
+      - ARRAffinitySameSite=0aa69915266871205a67096b40953eafb333722c9d662666b4ee1cbd3af96c28;Path=/;HttpOnly;SameSite=None;Secure;Domain=management.eastus.logic.azure.com
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - logic integration-account batch-configuration update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --integration-account-name --release-criteria
+      User-Agent:
+      - AZURECLI/2.56.0 azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_integration_batch_configuration_000001?api-version=2022-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_integration_batch_configuration_000001","name":"cli_test_integration_batch_configuration_000001","type":"Microsoft.Resources/resourceGroups","location":"eastus","tags":{"product":"azurecli","cause":"automation","test":"test_integration_account_batch_configuration","date":"2024-01-12T02:01:15Z","module":"logic"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '443'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 12 Jan 2024 02:01:24 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - logic integration-account batch-configuration update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --integration-account-name --release-criteria
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_integration_batch_configuration_000001/providers/Microsoft.Logic/integrationAccounts/inte000002/batchConfigurations/batch000003?api-version=2019-05-01
+  response:
+    body:
+      string: '{"properties":{"batchGroupName":"batchtestgroup","releaseCriteria":{"messageCount":10,"batchSize":10000,"recurrence":{"frequency":"Minute","interval":1}},"createdTime":"2024-01-12T02:01:23.6859778Z","changedTime":"2024-01-12T02:01:23.718545Z"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_integration_batch_configuration_000001/providers/Microsoft.Logic/integrationAccounts/inte000002/batchConfigurations/batch000003","name":"batch000003","type":"Microsoft.Logic/integrationAccounts/batchConfigurations"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '541'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 12 Jan 2024 02:01:24 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - ARRAffinity=4506fed21ae7329212e22736c2f80898a13d9fb6173622080112cc34ac5998d2;Path=/;HttpOnly;Secure;Domain=management.eastus.logic.azure.com
+      - ARRAffinitySameSite=4506fed21ae7329212e22736c2f80898a13d9fb6173622080112cc34ac5998d2;Path=/;HttpOnly;SameSite=None;Secure;Domain=management.eastus.logic.azure.com
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus", "properties": {"batchGroupName": "batchtestgroup",
+      "changedTime": "2024-01-12T02:01:23.718545Z", "createdTime": "2024-01-12T02:01:23.6859778Z",
+      "releaseCriteria": {"batchSize": 20000, "messageCount": 20, "recurrence": {"frequency":
+      "Minute", "interval": 2}}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - logic integration-account batch-configuration update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '282'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --integration-account-name --release-criteria
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_integration_batch_configuration_000001/providers/Microsoft.Logic/integrationAccounts/inte000002/batchConfigurations/batch000003?api-version=2019-05-01
+  response:
+    body:
+      string: '{"properties":{"batchGroupName":"batchtestgroup","releaseCriteria":{"messageCount":20,"batchSize":20000,"recurrence":{"frequency":"Minute","interval":2}},"createdTime":"2024-01-12T02:01:23.6859778Z","changedTime":"2024-01-12T02:01:27.3416965Z"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_integration_batch_configuration_000001/providers/Microsoft.Logic/integrationAccounts/inte000002/batchConfigurations/batch000003","name":"batch000003","type":"Microsoft.Logic/integrationAccounts/batchConfigurations"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '542'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 12 Jan 2024 02:01:26 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - ARRAffinity=746146f9b8a568138e0f8e8d19178ca6868557dc4149a92ed430f901c8a2c233;Path=/;HttpOnly;Secure;Domain=management.eastus.logic.azure.com
+      - ARRAffinitySameSite=746146f9b8a568138e0f8e8d19178ca6868557dc4149a92ed430f901c8a2c233;Path=/;HttpOnly;SameSite=None;Secure;Domain=management.eastus.logic.azure.com
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - logic integration-account batch-configuration show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --integration-account-name
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_integration_batch_configuration_000001/providers/Microsoft.Logic/integrationAccounts/inte000002/batchConfigurations/batch000003?api-version=2019-05-01
+  response:
+    body:
+      string: '{"properties":{"batchGroupName":"batchtestgroup","releaseCriteria":{"messageCount":20,"batchSize":20000,"recurrence":{"frequency":"Minute","interval":2}},"createdTime":"2024-01-12T02:01:23.6859778Z","changedTime":"2024-01-12T02:01:27.3416965Z"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_integration_batch_configuration_000001/providers/Microsoft.Logic/integrationAccounts/inte000002/batchConfigurations/batch000003","name":"batch000003","type":"Microsoft.Logic/integrationAccounts/batchConfigurations"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '542'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 12 Jan 2024 02:01:27 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - ARRAffinity=1bf1fa7ef58a2ee2d7a44c3046cbe5c763c69a7c47c896aacbb04ba8a00ffc3b;Path=/;HttpOnly;Secure;Domain=management.eastus.logic.azure.com
+      - ARRAffinitySameSite=1bf1fa7ef58a2ee2d7a44c3046cbe5c763c69a7c47c896aacbb04ba8a00ffc3b;Path=/;HttpOnly;SameSite=None;Secure;Domain=management.eastus.logic.azure.com
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - logic integration-account batch-configuration list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --integration-account-name
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_integration_batch_configuration_000001/providers/Microsoft.Logic/integrationAccounts/inte000002/batchConfigurations?api-version=2019-05-01
+  response:
+    body:
+      string: '{"value":[{"properties":{"batchGroupName":"batchtestgroup","releaseCriteria":{"messageCount":20,"batchSize":20000,"recurrence":{"frequency":"Minute","interval":2}},"createdTime":"2024-01-12T02:01:23.6859778Z","changedTime":"2024-01-12T02:01:27.3416965Z"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_integration_batch_configuration_000001/providers/Microsoft.Logic/integrationAccounts/inte000002/batchConfigurations/batch000003","name":"batch000003","type":"Microsoft.Logic/integrationAccounts/batchConfigurations"}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '554'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 12 Jan 2024 02:01:30 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - ARRAffinity=eac69d9633b62a80172d43feba694263b4d9fccb8b9d953b364b8fc058f6e946;Path=/;HttpOnly;Secure;Domain=management.eastus.logic.azure.com
+      - ARRAffinitySameSite=eac69d9633b62a80172d43feba694263b4d9fccb8b9d953b364b8fc058f6e946;Path=/;HttpOnly;SameSite=None;Secure;Domain=management.eastus.logic.azure.com
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - logic integration-account batch-configuration delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g -n --integration-account-name -y
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_integration_batch_configuration_000001/providers/Microsoft.Logic/integrationAccounts/inte000002/batchConfigurations/batch000003?api-version=2019-05-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Fri, 12 Jan 2024 02:01:31 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - ARRAffinity=bd8696554b8b9641052025659e1a9ef9f5c582b5bb5a1e21f02a3b362099a7e7;Path=/;HttpOnly;Secure;Domain=management.eastus.logic.azure.com
+      - ARRAffinitySameSite=bd8696554b8b9641052025659e1a9ef9f5c582b5bb5a1e21f02a3b362099a7e7;Path=/;HttpOnly;SameSite=None;Secure;Domain=management.eastus.logic.azure.com
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+    status:
+      code: 200
+      message: OK
+version: 1

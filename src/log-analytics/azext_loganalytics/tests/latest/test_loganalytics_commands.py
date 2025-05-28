@@ -4,16 +4,31 @@
 # --------------------------------------------------------------------------------------------
 
 # pylint: disable=line-too-long
-from azure.cli.testsdk import ScenarioTest
+from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
 
 
 class LogAnalyticsDataClientTests(ScenarioTest):
     """Test class for Log Analytics data client."""
-    def test_query(self):
+
+    @ResourceGroupPreparer(name_prefix='cli_test_log_analytics')
+    def test_query(self, resource_group):
         """Tests data plane query capabilities for Log Analytics."""
-        self.cmd('az monitor log-analytics query --workspace cab864ad-d0c1-496b-bc5e-4418315621bf --analytics-query "Heartbeat | getschema"', checks=[
-            self.check('tables[0].rows[0][0]', 'TenantId')
-        ])
-        query_result = self.cmd('az monitor log-analytics query -w cab864ad-d0c1-496b-bc5e-4418315621bf --analytics-query "Heartbeat | getschema"').get_output_in_json()
-        assert len(query_result['tables'][0]['rows']) == 29
-        assert isinstance(query_result['tables'][0]['rows'][0][1], (int, float, complex))
+        self.kwargs.update({
+            'workspace_name': self.create_random_name('clitest', 20),
+            'location': "eastus",
+        })
+
+        workspace_json = self.cmd(
+            "monitor log-analytics workspace create -g {rg} -n {workspace_name} --location {location} --quota 1 "
+            "--level 100 --sku CapacityReservation").get_output_in_json()
+        self.kwargs['workspace_customerId'] = workspace_json['customerId']
+
+        self.cmd(
+            'az monitor log-analytics query -w {workspace_customerId} '
+            '--analytics-query "Heartbeat | getschema"',
+            checks=[
+                self.check("length(@)", 31),
+                self.check("@[0]", {'ColumnName': 'TenantId', 'ColumnOrdinal': '0', 'ColumnType': 'string',
+                                    'DataType': 'System.String', 'TableName': 'getschema'})
+            ]
+        )

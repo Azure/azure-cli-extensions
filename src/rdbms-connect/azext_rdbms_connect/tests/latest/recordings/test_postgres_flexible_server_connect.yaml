@@ -1,0 +1,1183 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - postgres flexible-server create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --admin-user --storage-size --version --public-access
+      User-Agent:
+      - AZURECLI/2.41.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: HEAD
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001?api-version=2021-04-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Fri, 21 Oct 2022 09:21:54 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 204
+      message: No Content
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - postgres flexible-server create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --admin-user --storage-size --version --public-access
+      User-Agent:
+      - AZURECLI/2.41.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001?api-version=2021-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001","name":"clitest.rg000001","type":"Microsoft.Resources/resourceGroups","location":"eastus","tags":{"product":"azurecli","cause":"automation","date":"2022-10-21T09:21:52Z"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '310'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 21 Oct 2022 09:21:55 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"name": "azuredbclitest-000002", "type": "Microsoft.DBforPostgreSQL/flexibleServers"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - postgres flexible-server create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '86'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n -l --admin-user --storage-size --version --public-access
+      User-Agent:
+      - AZURECLI/2.41.0 azsdk-python-mgmt-rdbms/10.2.0b3 Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DBforPostgreSQL/checkNameAvailability?api-version=2022-01-20-preview
+  response:
+    body:
+      string: '{"name":"azuredbclitest-000002","type":"Microsoft.DBforPostgreSQL/flexibleServers","nameAvailable":true,"message":""}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '117'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 21 Oct 2022 09:21:56 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - postgres flexible-server create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --admin-user --storage-size --version --public-access
+      User-Agent:
+      - AZURECLI/2.41.0 azsdk-python-mgmt-rdbms/10.2.0b3 Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DBforPostgreSQL/locations/eastus/capabilities?api-version=2022-01-20-preview
+  response:
+    body:
+      string: '{"value":[{"zone":"none","geoBackupSupported":true,"zoneRedundantHaSupported":true,"zoneRedundantHaAndGeoBackupSupported":true,"supportedFlexibleServerEditions":[{"name":"Burstable","supportedStorageEditions":[{"name":"ManagedDisk","supportedStorageMB":[{"name":"32768","supportedIOPS":120,"storageSizeMB":32768,"status":"Available"},{"name":"65536","supportedIOPS":240,"storageSizeMB":65536,"status":"Available"},{"name":"131072","supportedIOPS":500,"storageSizeMB":131072,"status":"Available"},{"name":"262144","supportedIOPS":1100,"storageSizeMB":262144,"status":"Available"},{"name":"524288","supportedIOPS":2300,"storageSizeMB":524288,"status":"Available"},{"name":"1048576","supportedIOPS":5000,"storageSizeMB":1048576,"status":"Available"},{"name":"2097152","supportedIOPS":7500,"storageSizeMB":2097152,"status":"Available"},{"name":"4194304","supportedIOPS":7500,"storageSizeMB":4194304,"status":"Available"},{"name":"8388608","supportedIOPS":16000,"storageSizeMB":8388608,"status":"Available"},{"name":"16777216","supportedIOPS":18000,"storageSizeMB":16777216,"status":"Available"},{"name":"33553408","supportedIOPS":20000,"storageSizeMB":33553408,"status":"Available"}],"status":"Default"}],"supportedServerVersions":[{"name":"11","supportedVcores":[{"name":"Standard_B1ms","vCores":1,"supportedIOPS":640,"supportedMemoryPerVcoreMB":2048,"status":"Available"},{"name":"Standard_B2s","vCores":2,"supportedIOPS":1280,"supportedMemoryPerVcoreMB":2048,"status":"Available"}],"status":"Available"},{"name":"12","supportedVcores":[{"name":"Standard_B1ms","vCores":1,"supportedIOPS":640,"supportedMemoryPerVcoreMB":2048,"status":"Available"},{"name":"Standard_B2s","vCores":2,"supportedIOPS":1280,"supportedMemoryPerVcoreMB":2048,"status":"Available"}],"status":"Available"},{"name":"13","supportedVcores":[{"name":"Standard_B1ms","vCores":1,"supportedIOPS":640,"supportedMemoryPerVcoreMB":2048,"status":"Available"},{"name":"Standard_B2s","vCores":2,"supportedIOPS":1280,"supportedMemoryPerVcoreMB":2048,"status":"Available"}],"status":"Available"},{"name":"14","supportedVcores":[{"name":"Standard_B1ms","vCores":1,"supportedIOPS":640,"supportedMemoryPerVcoreMB":2048,"status":"Available"},{"name":"Standard_B2s","vCores":2,"supportedIOPS":1280,"supportedMemoryPerVcoreMB":2048,"status":"Available"}],"status":"Available"}],"status":"Available"},{"name":"GeneralPurpose","supportedStorageEditions":[{"name":"ManagedDisk","supportedStorageMB":[{"name":"32768","supportedIOPS":120,"storageSizeMB":32768,"status":"Available"},{"name":"65536","supportedIOPS":240,"storageSizeMB":65536,"status":"Available"},{"name":"131072","supportedIOPS":500,"storageSizeMB":131072,"status":"Available"},{"name":"262144","supportedIOPS":1100,"storageSizeMB":262144,"status":"Available"},{"name":"524288","supportedIOPS":2300,"storageSizeMB":524288,"status":"Available"},{"name":"1048576","supportedIOPS":5000,"storageSizeMB":1048576,"status":"Available"},{"name":"2097152","supportedIOPS":7500,"storageSizeMB":2097152,"status":"Available"},{"name":"4194304","supportedIOPS":7500,"storageSizeMB":4194304,"status":"Available"},{"name":"8388608","supportedIOPS":16000,"storageSizeMB":8388608,"status":"Available"},{"name":"16777216","supportedIOPS":18000,"storageSizeMB":16777216,"status":"Available"},{"name":"33553408","supportedIOPS":20000,"storageSizeMB":33553408,"status":"Available"}],"status":"Default"}],"supportedServerVersions":[{"name":"11","supportedVcores":[{"name":"Standard_D2s_v3","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D4s_v3","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D8s_v3","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D16s_v3","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D32s_v3","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D48s_v3","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D64s_v3","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D2ds_v4","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D4ds_v4","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D8ds_v4","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D16ds_v4","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D32ds_v4","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D48ds_v4","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D64ds_v4","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"}],"status":"Available"},{"name":"12","supportedVcores":[{"name":"Standard_D2s_v3","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D4s_v3","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D8s_v3","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D16s_v3","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D32s_v3","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D48s_v3","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D64s_v3","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D2ds_v4","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D4ds_v4","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D8ds_v4","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D16ds_v4","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D32ds_v4","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D48ds_v4","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D64ds_v4","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"}],"status":"Available"},{"name":"13","supportedVcores":[{"name":"Standard_D2s_v3","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D4s_v3","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D8s_v3","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D16s_v3","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D32s_v3","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D48s_v3","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D64s_v3","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D2ds_v4","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D4ds_v4","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D8ds_v4","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D16ds_v4","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D32ds_v4","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D48ds_v4","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D64ds_v4","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"}],"status":"Available"},{"name":"14","supportedVcores":[{"name":"Standard_D2s_v3","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D4s_v3","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D8s_v3","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D16s_v3","vCores":16,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D32s_v3","vCores":32,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D48s_v3","vCores":48,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D64s_v3","vCores":64,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D2ds_v4","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D4ds_v4","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D8ds_v4","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D16ds_v4","vCores":16,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D32ds_v4","vCores":32,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D48ds_v4","vCores":48,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D64ds_v4","vCores":64,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":4096,"status":"Available"}],"status":"Available"}],"status":"Available"},{"name":"MemoryOptimized","supportedStorageEditions":[{"name":"ManagedDisk","supportedStorageMB":[{"name":"32768","supportedIOPS":120,"storageSizeMB":32768,"status":"Available"},{"name":"65536","supportedIOPS":240,"storageSizeMB":65536,"status":"Available"},{"name":"131072","supportedIOPS":500,"storageSizeMB":131072,"status":"Available"},{"name":"262144","supportedIOPS":1100,"storageSizeMB":262144,"status":"Available"},{"name":"524288","supportedIOPS":2300,"storageSizeMB":524288,"status":"Available"},{"name":"1048576","supportedIOPS":5000,"storageSizeMB":1048576,"status":"Available"},{"name":"2097152","supportedIOPS":7500,"storageSizeMB":2097152,"status":"Available"},{"name":"4194304","supportedIOPS":7500,"storageSizeMB":4194304,"status":"Available"},{"name":"8388608","supportedIOPS":16000,"storageSizeMB":8388608,"status":"Available"},{"name":"16777216","supportedIOPS":18000,"storageSizeMB":16777216,"status":"Available"},{"name":"33553408","supportedIOPS":20000,"storageSizeMB":33553408,"status":"Available"}],"status":"Default"}],"supportedServerVersions":[{"name":"11","supportedVcores":[{"name":"Standard_E2s_v3","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E4s_v3","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E8s_v3","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E16s_v3","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E32s_v3","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E48s_v3","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E64s_v3","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":6912,"status":"Available"},{"name":"Standard_E2ds_v4","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E4ds_v4","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E8ds_v4","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E16ds_v4","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E20ds_v4","vCores":20,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E32ds_v4","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E48ds_v4","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E64ds_v4","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":6912,"status":"Available"}],"status":"Available"},{"name":"12","supportedVcores":[{"name":"Standard_E2s_v3","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E4s_v3","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E8s_v3","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E16s_v3","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E32s_v3","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E48s_v3","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E64s_v3","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":6912,"status":"Available"},{"name":"Standard_E2ds_v4","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E4ds_v4","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E8ds_v4","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E16ds_v4","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E20ds_v4","vCores":20,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E32ds_v4","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E48ds_v4","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E64ds_v4","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":6912,"status":"Available"}],"status":"Available"},{"name":"13","supportedVcores":[{"name":"Standard_E2s_v3","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E4s_v3","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E8s_v3","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E16s_v3","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E32s_v3","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E48s_v3","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E64s_v3","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":6912,"status":"Available"},{"name":"Standard_E2ds_v4","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E4ds_v4","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E8ds_v4","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E16ds_v4","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E20ds_v4","vCores":20,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E32ds_v4","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E48ds_v4","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E64ds_v4","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":6912,"status":"Available"}],"status":"Available"},{"name":"14","supportedVcores":[{"name":"Standard_E2s_v3","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E4s_v3","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E8s_v3","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E16s_v3","vCores":16,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E32s_v3","vCores":32,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E48s_v3","vCores":48,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E64s_v3","vCores":64,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":6912,"status":"Available"},{"name":"Standard_E2ds_v4","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E4ds_v4","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E8ds_v4","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E16ds_v4","vCores":16,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E20ds_v4","vCores":20,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E32ds_v4","vCores":32,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E48ds_v4","vCores":48,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E64ds_v4","vCores":64,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":6912,"status":"Available"}],"status":"Available"}],"status":"Available"}],"supportedHAMode":["SameZone","ZoneRedundant"],"status":"Default"},{"zone":"1","geoBackupSupported":true,"zoneRedundantHaSupported":true,"zoneRedundantHaAndGeoBackupSupported":true,"supportedFlexibleServerEditions":[{"name":"Burstable","supportedStorageEditions":[{"name":"ManagedDisk","supportedStorageMB":[{"name":"32768","supportedIOPS":120,"storageSizeMB":32768,"status":"Available"},{"name":"65536","supportedIOPS":240,"storageSizeMB":65536,"status":"Available"},{"name":"131072","supportedIOPS":500,"storageSizeMB":131072,"status":"Available"},{"name":"262144","supportedIOPS":1100,"storageSizeMB":262144,"status":"Available"},{"name":"524288","supportedIOPS":2300,"storageSizeMB":524288,"status":"Available"},{"name":"1048576","supportedIOPS":5000,"storageSizeMB":1048576,"status":"Available"},{"name":"2097152","supportedIOPS":7500,"storageSizeMB":2097152,"status":"Available"},{"name":"4194304","supportedIOPS":7500,"storageSizeMB":4194304,"status":"Available"},{"name":"8388608","supportedIOPS":16000,"storageSizeMB":8388608,"status":"Available"},{"name":"16777216","supportedIOPS":18000,"storageSizeMB":16777216,"status":"Available"},{"name":"33553408","supportedIOPS":20000,"storageSizeMB":33553408,"status":"Available"}],"status":"Default"}],"supportedServerVersions":[{"name":"11","supportedVcores":[{"name":"Standard_B1ms","vCores":1,"supportedIOPS":640,"supportedMemoryPerVcoreMB":2048,"status":"Available"},{"name":"Standard_B2s","vCores":2,"supportedIOPS":1280,"supportedMemoryPerVcoreMB":2048,"status":"Available"}],"status":"Available"},{"name":"12","supportedVcores":[{"name":"Standard_B1ms","vCores":1,"supportedIOPS":640,"supportedMemoryPerVcoreMB":2048,"status":"Available"},{"name":"Standard_B2s","vCores":2,"supportedIOPS":1280,"supportedMemoryPerVcoreMB":2048,"status":"Available"}],"status":"Available"},{"name":"13","supportedVcores":[{"name":"Standard_B1ms","vCores":1,"supportedIOPS":640,"supportedMemoryPerVcoreMB":2048,"status":"Available"},{"name":"Standard_B2s","vCores":2,"supportedIOPS":1280,"supportedMemoryPerVcoreMB":2048,"status":"Available"}],"status":"Available"},{"name":"14","supportedVcores":[{"name":"Standard_B1ms","vCores":1,"supportedIOPS":640,"supportedMemoryPerVcoreMB":2048,"status":"Available"},{"name":"Standard_B2s","vCores":2,"supportedIOPS":1280,"supportedMemoryPerVcoreMB":2048,"status":"Available"}],"status":"Available"}],"status":"Available"},{"name":"GeneralPurpose","supportedStorageEditions":[{"name":"ManagedDisk","supportedStorageMB":[{"name":"32768","supportedIOPS":120,"storageSizeMB":32768,"status":"Available"},{"name":"65536","supportedIOPS":240,"storageSizeMB":65536,"status":"Available"},{"name":"131072","supportedIOPS":500,"storageSizeMB":131072,"status":"Available"},{"name":"262144","supportedIOPS":1100,"storageSizeMB":262144,"status":"Available"},{"name":"524288","supportedIOPS":2300,"storageSizeMB":524288,"status":"Available"},{"name":"1048576","supportedIOPS":5000,"storageSizeMB":1048576,"status":"Available"},{"name":"2097152","supportedIOPS":7500,"storageSizeMB":2097152,"status":"Available"},{"name":"4194304","supportedIOPS":7500,"storageSizeMB":4194304,"status":"Available"},{"name":"8388608","supportedIOPS":16000,"storageSizeMB":8388608,"status":"Available"},{"name":"16777216","supportedIOPS":18000,"storageSizeMB":16777216,"status":"Available"},{"name":"33553408","supportedIOPS":20000,"storageSizeMB":33553408,"status":"Available"}],"status":"Default"}],"supportedServerVersions":[{"name":"11","supportedVcores":[{"name":"Standard_D2s_v3","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D4s_v3","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D8s_v3","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D16s_v3","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D32s_v3","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D48s_v3","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D64s_v3","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D2ds_v4","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D4ds_v4","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D8ds_v4","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D16ds_v4","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D32ds_v4","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D48ds_v4","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D64ds_v4","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"}],"status":"Available"},{"name":"12","supportedVcores":[{"name":"Standard_D2s_v3","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D4s_v3","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D8s_v3","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D16s_v3","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D32s_v3","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D48s_v3","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D64s_v3","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D2ds_v4","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D4ds_v4","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D8ds_v4","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D16ds_v4","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D32ds_v4","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D48ds_v4","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D64ds_v4","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"}],"status":"Available"},{"name":"13","supportedVcores":[{"name":"Standard_D2s_v3","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D4s_v3","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D8s_v3","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D16s_v3","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D32s_v3","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D48s_v3","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D64s_v3","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D2ds_v4","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D4ds_v4","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D8ds_v4","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D16ds_v4","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D32ds_v4","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D48ds_v4","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D64ds_v4","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"}],"status":"Available"},{"name":"14","supportedVcores":[{"name":"Standard_D2s_v3","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D4s_v3","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D8s_v3","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D16s_v3","vCores":16,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D32s_v3","vCores":32,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D48s_v3","vCores":48,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D64s_v3","vCores":64,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D2ds_v4","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D4ds_v4","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D8ds_v4","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D16ds_v4","vCores":16,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D32ds_v4","vCores":32,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D48ds_v4","vCores":48,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D64ds_v4","vCores":64,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":4096,"status":"Available"}],"status":"Available"}],"status":"Available"},{"name":"MemoryOptimized","supportedStorageEditions":[{"name":"ManagedDisk","supportedStorageMB":[{"name":"32768","supportedIOPS":120,"storageSizeMB":32768,"status":"Available"},{"name":"65536","supportedIOPS":240,"storageSizeMB":65536,"status":"Available"},{"name":"131072","supportedIOPS":500,"storageSizeMB":131072,"status":"Available"},{"name":"262144","supportedIOPS":1100,"storageSizeMB":262144,"status":"Available"},{"name":"524288","supportedIOPS":2300,"storageSizeMB":524288,"status":"Available"},{"name":"1048576","supportedIOPS":5000,"storageSizeMB":1048576,"status":"Available"},{"name":"2097152","supportedIOPS":7500,"storageSizeMB":2097152,"status":"Available"},{"name":"4194304","supportedIOPS":7500,"storageSizeMB":4194304,"status":"Available"},{"name":"8388608","supportedIOPS":16000,"storageSizeMB":8388608,"status":"Available"},{"name":"16777216","supportedIOPS":18000,"storageSizeMB":16777216,"status":"Available"},{"name":"33553408","supportedIOPS":20000,"storageSizeMB":33553408,"status":"Available"}],"status":"Default"}],"supportedServerVersions":[{"name":"11","supportedVcores":[{"name":"Standard_E2s_v3","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E4s_v3","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E8s_v3","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E16s_v3","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E32s_v3","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E48s_v3","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E64s_v3","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":6912,"status":"Available"},{"name":"Standard_E2ds_v4","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E4ds_v4","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E8ds_v4","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E16ds_v4","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E20ds_v4","vCores":20,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E32ds_v4","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E48ds_v4","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E64ds_v4","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":6912,"status":"Available"}],"status":"Available"},{"name":"12","supportedVcores":[{"name":"Standard_E2s_v3","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E4s_v3","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E8s_v3","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E16s_v3","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E32s_v3","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E48s_v3","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E64s_v3","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":6912,"status":"Available"},{"name":"Standard_E2ds_v4","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E4ds_v4","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E8ds_v4","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E16ds_v4","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E20ds_v4","vCores":20,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E32ds_v4","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E48ds_v4","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E64ds_v4","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":6912,"status":"Available"}],"status":"Available"},{"name":"13","supportedVcores":[{"name":"Standard_E2s_v3","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E4s_v3","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E8s_v3","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E16s_v3","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E32s_v3","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E48s_v3","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E64s_v3","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":6912,"status":"Available"},{"name":"Standard_E2ds_v4","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E4ds_v4","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E8ds_v4","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E16ds_v4","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E20ds_v4","vCores":20,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E32ds_v4","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E48ds_v4","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E64ds_v4","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":6912,"status":"Available"}],"status":"Available"},{"name":"14","supportedVcores":[{"name":"Standard_E2s_v3","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E4s_v3","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E8s_v3","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E16s_v3","vCores":16,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E32s_v3","vCores":32,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E48s_v3","vCores":48,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E64s_v3","vCores":64,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":6912,"status":"Available"},{"name":"Standard_E2ds_v4","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E4ds_v4","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E8ds_v4","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E16ds_v4","vCores":16,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E20ds_v4","vCores":20,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E32ds_v4","vCores":32,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E48ds_v4","vCores":48,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E64ds_v4","vCores":64,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":6912,"status":"Available"}],"status":"Available"}],"status":"Available"}],"supportedHAMode":["SameZone","ZoneRedundant"],"status":"Available"},{"zone":"2","geoBackupSupported":true,"zoneRedundantHaSupported":true,"zoneRedundantHaAndGeoBackupSupported":true,"supportedFlexibleServerEditions":[{"name":"Burstable","supportedStorageEditions":[{"name":"ManagedDisk","supportedStorageMB":[{"name":"32768","supportedIOPS":120,"storageSizeMB":32768,"status":"Available"},{"name":"65536","supportedIOPS":240,"storageSizeMB":65536,"status":"Available"},{"name":"131072","supportedIOPS":500,"storageSizeMB":131072,"status":"Available"},{"name":"262144","supportedIOPS":1100,"storageSizeMB":262144,"status":"Available"},{"name":"524288","supportedIOPS":2300,"storageSizeMB":524288,"status":"Available"},{"name":"1048576","supportedIOPS":5000,"storageSizeMB":1048576,"status":"Available"},{"name":"2097152","supportedIOPS":7500,"storageSizeMB":2097152,"status":"Available"},{"name":"4194304","supportedIOPS":7500,"storageSizeMB":4194304,"status":"Available"},{"name":"8388608","supportedIOPS":16000,"storageSizeMB":8388608,"status":"Available"},{"name":"16777216","supportedIOPS":18000,"storageSizeMB":16777216,"status":"Available"},{"name":"33553408","supportedIOPS":20000,"storageSizeMB":33553408,"status":"Available"}],"status":"Default"}],"supportedServerVersions":[{"name":"11","supportedVcores":[{"name":"Standard_B1ms","vCores":1,"supportedIOPS":640,"supportedMemoryPerVcoreMB":2048,"status":"Available"},{"name":"Standard_B2s","vCores":2,"supportedIOPS":1280,"supportedMemoryPerVcoreMB":2048,"status":"Available"}],"status":"Available"},{"name":"12","supportedVcores":[{"name":"Standard_B1ms","vCores":1,"supportedIOPS":640,"supportedMemoryPerVcoreMB":2048,"status":"Available"},{"name":"Standard_B2s","vCores":2,"supportedIOPS":1280,"supportedMemoryPerVcoreMB":2048,"status":"Available"}],"status":"Available"},{"name":"13","supportedVcores":[{"name":"Standard_B1ms","vCores":1,"supportedIOPS":640,"supportedMemoryPerVcoreMB":2048,"status":"Available"},{"name":"Standard_B2s","vCores":2,"supportedIOPS":1280,"supportedMemoryPerVcoreMB":2048,"status":"Available"}],"status":"Available"},{"name":"14","supportedVcores":[{"name":"Standard_B1ms","vCores":1,"supportedIOPS":640,"supportedMemoryPerVcoreMB":2048,"status":"Available"},{"name":"Standard_B2s","vCores":2,"supportedIOPS":1280,"supportedMemoryPerVcoreMB":2048,"status":"Available"}],"status":"Available"}],"status":"Available"},{"name":"GeneralPurpose","supportedStorageEditions":[{"name":"ManagedDisk","supportedStorageMB":[{"name":"32768","supportedIOPS":120,"storageSizeMB":32768,"status":"Available"},{"name":"65536","supportedIOPS":240,"storageSizeMB":65536,"status":"Available"},{"name":"131072","supportedIOPS":500,"storageSizeMB":131072,"status":"Available"},{"name":"262144","supportedIOPS":1100,"storageSizeMB":262144,"status":"Available"},{"name":"524288","supportedIOPS":2300,"storageSizeMB":524288,"status":"Available"},{"name":"1048576","supportedIOPS":5000,"storageSizeMB":1048576,"status":"Available"},{"name":"2097152","supportedIOPS":7500,"storageSizeMB":2097152,"status":"Available"},{"name":"4194304","supportedIOPS":7500,"storageSizeMB":4194304,"status":"Available"},{"name":"8388608","supportedIOPS":16000,"storageSizeMB":8388608,"status":"Available"},{"name":"16777216","supportedIOPS":18000,"storageSizeMB":16777216,"status":"Available"},{"name":"33553408","supportedIOPS":20000,"storageSizeMB":33553408,"status":"Available"}],"status":"Default"}],"supportedServerVersions":[{"name":"11","supportedVcores":[{"name":"Standard_D2s_v3","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D4s_v3","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D8s_v3","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D16s_v3","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D32s_v3","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D48s_v3","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D64s_v3","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D2ds_v4","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D4ds_v4","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D8ds_v4","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D16ds_v4","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D32ds_v4","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D48ds_v4","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D64ds_v4","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"}],"status":"Available"},{"name":"12","supportedVcores":[{"name":"Standard_D2s_v3","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D4s_v3","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D8s_v3","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D16s_v3","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D32s_v3","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D48s_v3","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D64s_v3","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D2ds_v4","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D4ds_v4","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D8ds_v4","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D16ds_v4","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D32ds_v4","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D48ds_v4","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D64ds_v4","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"}],"status":"Available"},{"name":"13","supportedVcores":[{"name":"Standard_D2s_v3","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D4s_v3","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D8s_v3","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D16s_v3","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D32s_v3","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D48s_v3","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D64s_v3","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D2ds_v4","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D4ds_v4","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D8ds_v4","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D16ds_v4","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D32ds_v4","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D48ds_v4","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D64ds_v4","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"}],"status":"Available"},{"name":"14","supportedVcores":[{"name":"Standard_D2s_v3","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D4s_v3","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D8s_v3","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D16s_v3","vCores":16,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D32s_v3","vCores":32,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D48s_v3","vCores":48,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D64s_v3","vCores":64,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D2ds_v4","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D4ds_v4","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D8ds_v4","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D16ds_v4","vCores":16,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D32ds_v4","vCores":32,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D48ds_v4","vCores":48,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D64ds_v4","vCores":64,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":4096,"status":"Available"}],"status":"Available"}],"status":"Available"},{"name":"MemoryOptimized","supportedStorageEditions":[{"name":"ManagedDisk","supportedStorageMB":[{"name":"32768","supportedIOPS":120,"storageSizeMB":32768,"status":"Available"},{"name":"65536","supportedIOPS":240,"storageSizeMB":65536,"status":"Available"},{"name":"131072","supportedIOPS":500,"storageSizeMB":131072,"status":"Available"},{"name":"262144","supportedIOPS":1100,"storageSizeMB":262144,"status":"Available"},{"name":"524288","supportedIOPS":2300,"storageSizeMB":524288,"status":"Available"},{"name":"1048576","supportedIOPS":5000,"storageSizeMB":1048576,"status":"Available"},{"name":"2097152","supportedIOPS":7500,"storageSizeMB":2097152,"status":"Available"},{"name":"4194304","supportedIOPS":7500,"storageSizeMB":4194304,"status":"Available"},{"name":"8388608","supportedIOPS":16000,"storageSizeMB":8388608,"status":"Available"},{"name":"16777216","supportedIOPS":18000,"storageSizeMB":16777216,"status":"Available"},{"name":"33553408","supportedIOPS":20000,"storageSizeMB":33553408,"status":"Available"}],"status":"Default"}],"supportedServerVersions":[{"name":"11","supportedVcores":[{"name":"Standard_E2s_v3","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E4s_v3","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E8s_v3","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E16s_v3","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E32s_v3","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E48s_v3","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E64s_v3","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":6912,"status":"Available"},{"name":"Standard_E2ds_v4","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E4ds_v4","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E8ds_v4","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E16ds_v4","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E20ds_v4","vCores":20,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E32ds_v4","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E48ds_v4","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E64ds_v4","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":6912,"status":"Available"}],"status":"Available"},{"name":"12","supportedVcores":[{"name":"Standard_E2s_v3","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E4s_v3","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E8s_v3","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E16s_v3","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E32s_v3","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E48s_v3","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E64s_v3","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":6912,"status":"Available"},{"name":"Standard_E2ds_v4","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E4ds_v4","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E8ds_v4","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E16ds_v4","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E20ds_v4","vCores":20,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E32ds_v4","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E48ds_v4","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E64ds_v4","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":6912,"status":"Available"}],"status":"Available"},{"name":"13","supportedVcores":[{"name":"Standard_E2s_v3","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E4s_v3","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E8s_v3","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E16s_v3","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E32s_v3","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E48s_v3","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E64s_v3","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":6912,"status":"Available"},{"name":"Standard_E2ds_v4","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E4ds_v4","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E8ds_v4","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E16ds_v4","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E20ds_v4","vCores":20,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E32ds_v4","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E48ds_v4","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E64ds_v4","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":6912,"status":"Available"}],"status":"Available"},{"name":"14","supportedVcores":[{"name":"Standard_E2s_v3","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E4s_v3","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E8s_v3","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E16s_v3","vCores":16,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E32s_v3","vCores":32,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E48s_v3","vCores":48,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E64s_v3","vCores":64,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":6912,"status":"Available"},{"name":"Standard_E2ds_v4","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E4ds_v4","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E8ds_v4","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E16ds_v4","vCores":16,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E20ds_v4","vCores":20,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E32ds_v4","vCores":32,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E48ds_v4","vCores":48,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E64ds_v4","vCores":64,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":6912,"status":"Available"}],"status":"Available"}],"status":"Available"}],"supportedHAMode":["SameZone","ZoneRedundant"],"status":"Available"},{"zone":"3","geoBackupSupported":true,"zoneRedundantHaSupported":true,"zoneRedundantHaAndGeoBackupSupported":true,"supportedFlexibleServerEditions":[{"name":"Burstable","supportedStorageEditions":[{"name":"ManagedDisk","supportedStorageMB":[{"name":"32768","supportedIOPS":120,"storageSizeMB":32768,"status":"Available"},{"name":"65536","supportedIOPS":240,"storageSizeMB":65536,"status":"Available"},{"name":"131072","supportedIOPS":500,"storageSizeMB":131072,"status":"Available"},{"name":"262144","supportedIOPS":1100,"storageSizeMB":262144,"status":"Available"},{"name":"524288","supportedIOPS":2300,"storageSizeMB":524288,"status":"Available"},{"name":"1048576","supportedIOPS":5000,"storageSizeMB":1048576,"status":"Available"},{"name":"2097152","supportedIOPS":7500,"storageSizeMB":2097152,"status":"Available"},{"name":"4194304","supportedIOPS":7500,"storageSizeMB":4194304,"status":"Available"},{"name":"8388608","supportedIOPS":16000,"storageSizeMB":8388608,"status":"Available"},{"name":"16777216","supportedIOPS":18000,"storageSizeMB":16777216,"status":"Available"},{"name":"33553408","supportedIOPS":20000,"storageSizeMB":33553408,"status":"Available"}],"status":"Default"}],"supportedServerVersions":[{"name":"11","supportedVcores":[{"name":"Standard_B1ms","vCores":1,"supportedIOPS":640,"supportedMemoryPerVcoreMB":2048,"status":"Available"},{"name":"Standard_B2s","vCores":2,"supportedIOPS":1280,"supportedMemoryPerVcoreMB":2048,"status":"Available"}],"status":"Available"},{"name":"12","supportedVcores":[{"name":"Standard_B1ms","vCores":1,"supportedIOPS":640,"supportedMemoryPerVcoreMB":2048,"status":"Available"},{"name":"Standard_B2s","vCores":2,"supportedIOPS":1280,"supportedMemoryPerVcoreMB":2048,"status":"Available"}],"status":"Available"},{"name":"13","supportedVcores":[{"name":"Standard_B1ms","vCores":1,"supportedIOPS":640,"supportedMemoryPerVcoreMB":2048,"status":"Available"},{"name":"Standard_B2s","vCores":2,"supportedIOPS":1280,"supportedMemoryPerVcoreMB":2048,"status":"Available"}],"status":"Available"},{"name":"14","supportedVcores":[{"name":"Standard_B1ms","vCores":1,"supportedIOPS":640,"supportedMemoryPerVcoreMB":2048,"status":"Available"},{"name":"Standard_B2s","vCores":2,"supportedIOPS":1280,"supportedMemoryPerVcoreMB":2048,"status":"Available"}],"status":"Available"}],"status":"Available"},{"name":"GeneralPurpose","supportedStorageEditions":[{"name":"ManagedDisk","supportedStorageMB":[{"name":"32768","supportedIOPS":120,"storageSizeMB":32768,"status":"Available"},{"name":"65536","supportedIOPS":240,"storageSizeMB":65536,"status":"Available"},{"name":"131072","supportedIOPS":500,"storageSizeMB":131072,"status":"Available"},{"name":"262144","supportedIOPS":1100,"storageSizeMB":262144,"status":"Available"},{"name":"524288","supportedIOPS":2300,"storageSizeMB":524288,"status":"Available"},{"name":"1048576","supportedIOPS":5000,"storageSizeMB":1048576,"status":"Available"},{"name":"2097152","supportedIOPS":7500,"storageSizeMB":2097152,"status":"Available"},{"name":"4194304","supportedIOPS":7500,"storageSizeMB":4194304,"status":"Available"},{"name":"8388608","supportedIOPS":16000,"storageSizeMB":8388608,"status":"Available"},{"name":"16777216","supportedIOPS":18000,"storageSizeMB":16777216,"status":"Available"},{"name":"33553408","supportedIOPS":20000,"storageSizeMB":33553408,"status":"Available"}],"status":"Default"}],"supportedServerVersions":[{"name":"11","supportedVcores":[{"name":"Standard_D2s_v3","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D4s_v3","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D8s_v3","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D16s_v3","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D32s_v3","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D48s_v3","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D64s_v3","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D2ds_v4","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D4ds_v4","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D8ds_v4","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D16ds_v4","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D32ds_v4","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D48ds_v4","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D64ds_v4","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"}],"status":"Available"},{"name":"12","supportedVcores":[{"name":"Standard_D2s_v3","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D4s_v3","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D8s_v3","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D16s_v3","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D32s_v3","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D48s_v3","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D64s_v3","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D2ds_v4","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D4ds_v4","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D8ds_v4","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D16ds_v4","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D32ds_v4","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D48ds_v4","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D64ds_v4","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"}],"status":"Available"},{"name":"13","supportedVcores":[{"name":"Standard_D2s_v3","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D4s_v3","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D8s_v3","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D16s_v3","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D32s_v3","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D48s_v3","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D64s_v3","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D2ds_v4","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D4ds_v4","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D8ds_v4","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D16ds_v4","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D32ds_v4","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D48ds_v4","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D64ds_v4","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"}],"status":"Available"},{"name":"14","supportedVcores":[{"name":"Standard_D2s_v3","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D4s_v3","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D8s_v3","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D16s_v3","vCores":16,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D32s_v3","vCores":32,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D48s_v3","vCores":48,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D64s_v3","vCores":64,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D2ds_v4","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D4ds_v4","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D8ds_v4","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D16ds_v4","vCores":16,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D32ds_v4","vCores":32,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D48ds_v4","vCores":48,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D64ds_v4","vCores":64,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":4096,"status":"Available"}],"status":"Available"}],"status":"Available"},{"name":"MemoryOptimized","supportedStorageEditions":[{"name":"ManagedDisk","supportedStorageMB":[{"name":"32768","supportedIOPS":120,"storageSizeMB":32768,"status":"Available"},{"name":"65536","supportedIOPS":240,"storageSizeMB":65536,"status":"Available"},{"name":"131072","supportedIOPS":500,"storageSizeMB":131072,"status":"Available"},{"name":"262144","supportedIOPS":1100,"storageSizeMB":262144,"status":"Available"},{"name":"524288","supportedIOPS":2300,"storageSizeMB":524288,"status":"Available"},{"name":"1048576","supportedIOPS":5000,"storageSizeMB":1048576,"status":"Available"},{"name":"2097152","supportedIOPS":7500,"storageSizeMB":2097152,"status":"Available"},{"name":"4194304","supportedIOPS":7500,"storageSizeMB":4194304,"status":"Available"},{"name":"8388608","supportedIOPS":16000,"storageSizeMB":8388608,"status":"Available"},{"name":"16777216","supportedIOPS":18000,"storageSizeMB":16777216,"status":"Available"},{"name":"33553408","supportedIOPS":20000,"storageSizeMB":33553408,"status":"Available"}],"status":"Default"}],"supportedServerVersions":[{"name":"11","supportedVcores":[{"name":"Standard_E2s_v3","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E4s_v3","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E8s_v3","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E16s_v3","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E32s_v3","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E48s_v3","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E64s_v3","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":6912,"status":"Available"},{"name":"Standard_E2ds_v4","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E4ds_v4","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E8ds_v4","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E16ds_v4","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E20ds_v4","vCores":20,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E32ds_v4","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E48ds_v4","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E64ds_v4","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":6912,"status":"Available"}],"status":"Available"},{"name":"12","supportedVcores":[{"name":"Standard_E2s_v3","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E4s_v3","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E8s_v3","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E16s_v3","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E32s_v3","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E48s_v3","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E64s_v3","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":6912,"status":"Available"},{"name":"Standard_E2ds_v4","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E4ds_v4","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E8ds_v4","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E16ds_v4","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E20ds_v4","vCores":20,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E32ds_v4","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E48ds_v4","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E64ds_v4","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":6912,"status":"Available"}],"status":"Available"},{"name":"13","supportedVcores":[{"name":"Standard_E2s_v3","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E4s_v3","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E8s_v3","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E16s_v3","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E32s_v3","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E48s_v3","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E64s_v3","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":6912,"status":"Available"},{"name":"Standard_E2ds_v4","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E4ds_v4","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E8ds_v4","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E16ds_v4","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E20ds_v4","vCores":20,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E32ds_v4","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E48ds_v4","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E64ds_v4","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":6912,"status":"Available"}],"status":"Available"},{"name":"14","supportedVcores":[{"name":"Standard_E2s_v3","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E4s_v3","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E8s_v3","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E16s_v3","vCores":16,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E32s_v3","vCores":32,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E48s_v3","vCores":48,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E64s_v3","vCores":64,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":6912,"status":"Available"},{"name":"Standard_E2ds_v4","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E4ds_v4","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E8ds_v4","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E16ds_v4","vCores":16,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E20ds_v4","vCores":20,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E32ds_v4","vCores":32,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E48ds_v4","vCores":48,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E64ds_v4","vCores":64,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":6912,"status":"Available"}],"status":"Available"}],"status":"Available"}],"supportedHAMode":["SameZone","ZoneRedundant"],"status":"Available"}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '73712'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 21 Oct 2022 09:21:56 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus", "sku": {"name": "Standard_D2s_v3", "tier": "GeneralPurpose"},
+      "properties": {"administratorLogin": "cliuser", "administratorLoginPassword":
+      "jkVMOvf8pv8tWuzHMXkxew", "version": "12", "storage": {"storageSizeGB": 32},
+      "backup": {"backupRetentionDays": 7, "geoRedundantBackup": "Disabled"}, "network":
+      {"delegatedSubnetResourceId": "", "privateDnsZoneArmResourceId": ""}, "highAvailability":
+      {"mode": "Disabled"}, "createMode": "Create"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - postgres flexible-server create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '459'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n -l --admin-user --storage-size --version --public-access
+      User-Agent:
+      - AZURECLI/2.41.0 azsdk-python-mgmt-rdbms/10.2.0b3 Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.DBforPostgreSQL/flexibleServers/azuredbclitest-000002?api-version=2022-01-20-preview
+  response:
+    body:
+      string: '{"operation":"UpsertServerManagementOperationV2","startTime":"2022-10-21T09:22:00.253Z"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DBforPostgreSQL/locations/eastus/azureAsyncOperation/df440483-87a8-4a3a-88aa-3322219202a6?api-version=2022-01-20-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '88'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 21 Oct 2022 09:21:59 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DBforPostgreSQL/locations/eastus/operationResults/df440483-87a8-4a3a-88aa-3322219202a6?api-version=2022-01-20-preview
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - postgres flexible-server create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --admin-user --storage-size --version --public-access
+      User-Agent:
+      - AZURECLI/2.41.0 azsdk-python-mgmt-rdbms/10.2.0b3 Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DBforPostgreSQL/locations/eastus/azureAsyncOperation/df440483-87a8-4a3a-88aa-3322219202a6?api-version=2022-01-20-preview
+  response:
+    body:
+      string: '{"name":"df440483-87a8-4a3a-88aa-3322219202a6","status":"InProgress","startTime":"2022-10-21T09:22:00.253Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '108'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 21 Oct 2022 09:23:00 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - postgres flexible-server create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --admin-user --storage-size --version --public-access
+      User-Agent:
+      - AZURECLI/2.41.0 azsdk-python-mgmt-rdbms/10.2.0b3 Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DBforPostgreSQL/locations/eastus/azureAsyncOperation/df440483-87a8-4a3a-88aa-3322219202a6?api-version=2022-01-20-preview
+  response:
+    body:
+      string: '{"name":"df440483-87a8-4a3a-88aa-3322219202a6","status":"InProgress","startTime":"2022-10-21T09:22:00.253Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '108'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 21 Oct 2022 09:24:00 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - postgres flexible-server create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --admin-user --storage-size --version --public-access
+      User-Agent:
+      - AZURECLI/2.41.0 azsdk-python-mgmt-rdbms/10.2.0b3 Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DBforPostgreSQL/locations/eastus/azureAsyncOperation/df440483-87a8-4a3a-88aa-3322219202a6?api-version=2022-01-20-preview
+  response:
+    body:
+      string: '{"name":"df440483-87a8-4a3a-88aa-3322219202a6","status":"InProgress","startTime":"2022-10-21T09:22:00.253Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '108'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 21 Oct 2022 09:25:01 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - postgres flexible-server create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --admin-user --storage-size --version --public-access
+      User-Agent:
+      - AZURECLI/2.41.0 azsdk-python-mgmt-rdbms/10.2.0b3 Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DBforPostgreSQL/locations/eastus/azureAsyncOperation/df440483-87a8-4a3a-88aa-3322219202a6?api-version=2022-01-20-preview
+  response:
+    body:
+      string: '{"name":"df440483-87a8-4a3a-88aa-3322219202a6","status":"InProgress","startTime":"2022-10-21T09:22:00.253Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '108'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 21 Oct 2022 09:26:01 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - postgres flexible-server create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --admin-user --storage-size --version --public-access
+      User-Agent:
+      - AZURECLI/2.41.0 azsdk-python-mgmt-rdbms/10.2.0b3 Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DBforPostgreSQL/locations/eastus/azureAsyncOperation/df440483-87a8-4a3a-88aa-3322219202a6?api-version=2022-01-20-preview
+  response:
+    body:
+      string: '{"name":"df440483-87a8-4a3a-88aa-3322219202a6","status":"InProgress","startTime":"2022-10-21T09:22:00.253Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '108'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 21 Oct 2022 09:27:01 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - postgres flexible-server create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --admin-user --storage-size --version --public-access
+      User-Agent:
+      - AZURECLI/2.41.0 azsdk-python-mgmt-rdbms/10.2.0b3 Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DBforPostgreSQL/locations/eastus/azureAsyncOperation/df440483-87a8-4a3a-88aa-3322219202a6?api-version=2022-01-20-preview
+  response:
+    body:
+      string: '{"name":"df440483-87a8-4a3a-88aa-3322219202a6","status":"InProgress","startTime":"2022-10-21T09:22:00.253Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '108'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 21 Oct 2022 09:28:02 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - postgres flexible-server create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --admin-user --storage-size --version --public-access
+      User-Agent:
+      - AZURECLI/2.41.0 azsdk-python-mgmt-rdbms/10.2.0b3 Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DBforPostgreSQL/locations/eastus/azureAsyncOperation/df440483-87a8-4a3a-88aa-3322219202a6?api-version=2022-01-20-preview
+  response:
+    body:
+      string: '{"name":"df440483-87a8-4a3a-88aa-3322219202a6","status":"Succeeded","startTime":"2022-10-21T09:22:00.253Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '107'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 21 Oct 2022 09:29:03 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - postgres flexible-server create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --admin-user --storage-size --version --public-access
+      User-Agent:
+      - AZURECLI/2.41.0 azsdk-python-mgmt-rdbms/10.2.0b3 Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.DBforPostgreSQL/flexibleServers/azuredbclitest-000002?api-version=2022-01-20-preview
+  response:
+    body:
+      string: '{"sku":{"name":"Standard_D2s_v3","tier":"GeneralPurpose"},"properties":{"fullyQualifiedDomainName":"azuredbclitest-000002.postgres.database.azure.com","version":"12","minorVersion":"11","administratorLogin":"cliuser","state":"Ready","availabilityZone":"1","storage":{"storageSizeGB":32},"backup":{"backupRetentionDays":7,"geoRedundantBackup":"Disabled","earliestRestoreDate":"2022-10-21T09:22:04.9732994+00:00"},"network":{"publicNetworkAccess":"Enabled"},"highAvailability":{"mode":"Disabled","state":"NotEnabled"},"maintenanceWindow":{"customWindow":"Disabled","dayOfWeek":0,"startHour":0,"startMinute":0},"storageAutoGrowth":false},"location":"East
+        US","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.DBforPostgreSQL/flexibleServers/azuredbclitest-000002","name":"azuredbclitest-000002","type":"Microsoft.DBforPostgreSQL/flexibleServers"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '903'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 21 Oct 2022 09:29:03 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"charset": "utf8", "collation": "en_US.utf8"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - postgres flexible-server create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '62'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n -l --admin-user --storage-size --version --public-access
+      User-Agent:
+      - AZURECLI/2.41.0 azsdk-python-mgmt-rdbms/10.2.0b3 Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.DBforPostgreSQL/flexibleServers/azuredbclitest-000002/databases/flexibleserverdb?api-version=2022-01-20-preview
+  response:
+    body:
+      string: '{"operation":"UpsertServerDatabaseManagementOperation","startTime":"2022-10-21T09:29:05.167Z"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DBforPostgreSQL/locations/eastus/azureAsyncOperation/34cc7a15-6e9d-4f2c-8926-2a6f1804d4bd?api-version=2022-01-20-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '94'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 21 Oct 2022 09:29:04 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DBforPostgreSQL/locations/eastus/operationResults/34cc7a15-6e9d-4f2c-8926-2a6f1804d4bd?api-version=2022-01-20-preview
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - postgres flexible-server create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --admin-user --storage-size --version --public-access
+      User-Agent:
+      - AZURECLI/2.41.0 azsdk-python-mgmt-rdbms/10.2.0b3 Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DBforPostgreSQL/locations/eastus/azureAsyncOperation/34cc7a15-6e9d-4f2c-8926-2a6f1804d4bd?api-version=2022-01-20-preview
+  response:
+    body:
+      string: '{"name":"34cc7a15-6e9d-4f2c-8926-2a6f1804d4bd","status":"Succeeded","startTime":"2022-10-21T09:29:05.167Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '107'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 21 Oct 2022 09:29:14 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - postgres flexible-server create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --admin-user --storage-size --version --public-access
+      User-Agent:
+      - AZURECLI/2.41.0 azsdk-python-mgmt-rdbms/10.2.0b3 Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.DBforPostgreSQL/flexibleServers/azuredbclitest-000002/databases/flexibleserverdb?api-version=2022-01-20-preview
+  response:
+    body:
+      string: '{"properties":{"charset":"UTF8","collation":"en_US.utf8"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.DBforPostgreSQL/flexibleServers/azuredbclitest-000002/databases/flexibleserverdb","name":"flexibleserverdb","type":"Microsoft.DBforPostgreSQL/flexibleServers/databases"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '337'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 21 Oct 2022 09:29:15 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - postgres flexible-server update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -p
+      User-Agent:
+      - AZURECLI/2.41.0 azsdk-python-mgmt-rdbms/10.2.0b3 Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.DBforPostgreSQL/flexibleServers/azuredbclitest-000002?api-version=2022-01-20-preview
+  response:
+    body:
+      string: '{"sku":{"name":"Standard_D2s_v3","tier":"GeneralPurpose"},"properties":{"fullyQualifiedDomainName":"azuredbclitest-000002.postgres.database.azure.com","version":"12","minorVersion":"11","administratorLogin":"cliuser","state":"Ready","availabilityZone":"1","storage":{"storageSizeGB":32},"backup":{"backupRetentionDays":7,"geoRedundantBackup":"Disabled","earliestRestoreDate":"2022-10-21T09:22:04.9732994+00:00"},"network":{"publicNetworkAccess":"Enabled"},"highAvailability":{"mode":"Disabled","state":"NotEnabled"},"maintenanceWindow":{"customWindow":"Disabled","dayOfWeek":0,"startHour":0,"startMinute":0},"storageAutoGrowth":false},"location":"East
+        US","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.DBforPostgreSQL/flexibleServers/azuredbclitest-000002","name":"azuredbclitest-000002","type":"Microsoft.DBforPostgreSQL/flexibleServers"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '903'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 21 Oct 2022 09:29:15 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - postgres flexible-server update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -p
+      User-Agent:
+      - AZURECLI/2.41.0 azsdk-python-mgmt-rdbms/10.2.0b3 Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DBforPostgreSQL/locations/eastus/capabilities?api-version=2022-01-20-preview
+  response:
+    body:
+      string: '{"value":[{"zone":"none","geoBackupSupported":true,"zoneRedundantHaSupported":true,"zoneRedundantHaAndGeoBackupSupported":true,"supportedFlexibleServerEditions":[{"name":"Burstable","supportedStorageEditions":[{"name":"ManagedDisk","supportedStorageMB":[{"name":"32768","supportedIOPS":120,"storageSizeMB":32768,"status":"Available"},{"name":"65536","supportedIOPS":240,"storageSizeMB":65536,"status":"Available"},{"name":"131072","supportedIOPS":500,"storageSizeMB":131072,"status":"Available"},{"name":"262144","supportedIOPS":1100,"storageSizeMB":262144,"status":"Available"},{"name":"524288","supportedIOPS":2300,"storageSizeMB":524288,"status":"Available"},{"name":"1048576","supportedIOPS":5000,"storageSizeMB":1048576,"status":"Available"},{"name":"2097152","supportedIOPS":7500,"storageSizeMB":2097152,"status":"Available"},{"name":"4194304","supportedIOPS":7500,"storageSizeMB":4194304,"status":"Available"},{"name":"8388608","supportedIOPS":16000,"storageSizeMB":8388608,"status":"Available"},{"name":"16777216","supportedIOPS":18000,"storageSizeMB":16777216,"status":"Available"},{"name":"33553408","supportedIOPS":20000,"storageSizeMB":33553408,"status":"Available"}],"status":"Default"}],"supportedServerVersions":[{"name":"11","supportedVcores":[{"name":"Standard_B1ms","vCores":1,"supportedIOPS":640,"supportedMemoryPerVcoreMB":2048,"status":"Available"},{"name":"Standard_B2s","vCores":2,"supportedIOPS":1280,"supportedMemoryPerVcoreMB":2048,"status":"Available"}],"status":"Available"},{"name":"12","supportedVcores":[{"name":"Standard_B1ms","vCores":1,"supportedIOPS":640,"supportedMemoryPerVcoreMB":2048,"status":"Available"},{"name":"Standard_B2s","vCores":2,"supportedIOPS":1280,"supportedMemoryPerVcoreMB":2048,"status":"Available"}],"status":"Available"},{"name":"13","supportedVcores":[{"name":"Standard_B1ms","vCores":1,"supportedIOPS":640,"supportedMemoryPerVcoreMB":2048,"status":"Available"},{"name":"Standard_B2s","vCores":2,"supportedIOPS":1280,"supportedMemoryPerVcoreMB":2048,"status":"Available"}],"status":"Available"},{"name":"14","supportedVcores":[{"name":"Standard_B1ms","vCores":1,"supportedIOPS":640,"supportedMemoryPerVcoreMB":2048,"status":"Available"},{"name":"Standard_B2s","vCores":2,"supportedIOPS":1280,"supportedMemoryPerVcoreMB":2048,"status":"Available"}],"status":"Available"}],"status":"Available"},{"name":"GeneralPurpose","supportedStorageEditions":[{"name":"ManagedDisk","supportedStorageMB":[{"name":"32768","supportedIOPS":120,"storageSizeMB":32768,"status":"Available"},{"name":"65536","supportedIOPS":240,"storageSizeMB":65536,"status":"Available"},{"name":"131072","supportedIOPS":500,"storageSizeMB":131072,"status":"Available"},{"name":"262144","supportedIOPS":1100,"storageSizeMB":262144,"status":"Available"},{"name":"524288","supportedIOPS":2300,"storageSizeMB":524288,"status":"Available"},{"name":"1048576","supportedIOPS":5000,"storageSizeMB":1048576,"status":"Available"},{"name":"2097152","supportedIOPS":7500,"storageSizeMB":2097152,"status":"Available"},{"name":"4194304","supportedIOPS":7500,"storageSizeMB":4194304,"status":"Available"},{"name":"8388608","supportedIOPS":16000,"storageSizeMB":8388608,"status":"Available"},{"name":"16777216","supportedIOPS":18000,"storageSizeMB":16777216,"status":"Available"},{"name":"33553408","supportedIOPS":20000,"storageSizeMB":33553408,"status":"Available"}],"status":"Default"}],"supportedServerVersions":[{"name":"11","supportedVcores":[{"name":"Standard_D2s_v3","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D4s_v3","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D8s_v3","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D16s_v3","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D32s_v3","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D48s_v3","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D64s_v3","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D2ds_v4","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D4ds_v4","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D8ds_v4","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D16ds_v4","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D32ds_v4","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D48ds_v4","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D64ds_v4","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"}],"status":"Available"},{"name":"12","supportedVcores":[{"name":"Standard_D2s_v3","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D4s_v3","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D8s_v3","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D16s_v3","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D32s_v3","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D48s_v3","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D64s_v3","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D2ds_v4","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D4ds_v4","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D8ds_v4","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D16ds_v4","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D32ds_v4","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D48ds_v4","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D64ds_v4","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"}],"status":"Available"},{"name":"13","supportedVcores":[{"name":"Standard_D2s_v3","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D4s_v3","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D8s_v3","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D16s_v3","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D32s_v3","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D48s_v3","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D64s_v3","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D2ds_v4","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D4ds_v4","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D8ds_v4","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D16ds_v4","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D32ds_v4","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D48ds_v4","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D64ds_v4","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"}],"status":"Available"},{"name":"14","supportedVcores":[{"name":"Standard_D2s_v3","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D4s_v3","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D8s_v3","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D16s_v3","vCores":16,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D32s_v3","vCores":32,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D48s_v3","vCores":48,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D64s_v3","vCores":64,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D2ds_v4","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D4ds_v4","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D8ds_v4","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D16ds_v4","vCores":16,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D32ds_v4","vCores":32,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D48ds_v4","vCores":48,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D64ds_v4","vCores":64,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":4096,"status":"Available"}],"status":"Available"}],"status":"Available"},{"name":"MemoryOptimized","supportedStorageEditions":[{"name":"ManagedDisk","supportedStorageMB":[{"name":"32768","supportedIOPS":120,"storageSizeMB":32768,"status":"Available"},{"name":"65536","supportedIOPS":240,"storageSizeMB":65536,"status":"Available"},{"name":"131072","supportedIOPS":500,"storageSizeMB":131072,"status":"Available"},{"name":"262144","supportedIOPS":1100,"storageSizeMB":262144,"status":"Available"},{"name":"524288","supportedIOPS":2300,"storageSizeMB":524288,"status":"Available"},{"name":"1048576","supportedIOPS":5000,"storageSizeMB":1048576,"status":"Available"},{"name":"2097152","supportedIOPS":7500,"storageSizeMB":2097152,"status":"Available"},{"name":"4194304","supportedIOPS":7500,"storageSizeMB":4194304,"status":"Available"},{"name":"8388608","supportedIOPS":16000,"storageSizeMB":8388608,"status":"Available"},{"name":"16777216","supportedIOPS":18000,"storageSizeMB":16777216,"status":"Available"},{"name":"33553408","supportedIOPS":20000,"storageSizeMB":33553408,"status":"Available"}],"status":"Default"}],"supportedServerVersions":[{"name":"11","supportedVcores":[{"name":"Standard_E2s_v3","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E4s_v3","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E8s_v3","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E16s_v3","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E32s_v3","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E48s_v3","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E64s_v3","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":6912,"status":"Available"},{"name":"Standard_E2ds_v4","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E4ds_v4","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E8ds_v4","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E16ds_v4","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E20ds_v4","vCores":20,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E32ds_v4","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E48ds_v4","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E64ds_v4","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":6912,"status":"Available"}],"status":"Available"},{"name":"12","supportedVcores":[{"name":"Standard_E2s_v3","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E4s_v3","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E8s_v3","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E16s_v3","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E32s_v3","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E48s_v3","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E64s_v3","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":6912,"status":"Available"},{"name":"Standard_E2ds_v4","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E4ds_v4","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E8ds_v4","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E16ds_v4","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E20ds_v4","vCores":20,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E32ds_v4","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E48ds_v4","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E64ds_v4","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":6912,"status":"Available"}],"status":"Available"},{"name":"13","supportedVcores":[{"name":"Standard_E2s_v3","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E4s_v3","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E8s_v3","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E16s_v3","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E32s_v3","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E48s_v3","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E64s_v3","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":6912,"status":"Available"},{"name":"Standard_E2ds_v4","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E4ds_v4","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E8ds_v4","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E16ds_v4","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E20ds_v4","vCores":20,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E32ds_v4","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E48ds_v4","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E64ds_v4","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":6912,"status":"Available"}],"status":"Available"},{"name":"14","supportedVcores":[{"name":"Standard_E2s_v3","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E4s_v3","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E8s_v3","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E16s_v3","vCores":16,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E32s_v3","vCores":32,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E48s_v3","vCores":48,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E64s_v3","vCores":64,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":6912,"status":"Available"},{"name":"Standard_E2ds_v4","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E4ds_v4","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E8ds_v4","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E16ds_v4","vCores":16,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E20ds_v4","vCores":20,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E32ds_v4","vCores":32,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E48ds_v4","vCores":48,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E64ds_v4","vCores":64,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":6912,"status":"Available"}],"status":"Available"}],"status":"Available"}],"supportedHAMode":["SameZone","ZoneRedundant"],"status":"Default"},{"zone":"1","geoBackupSupported":true,"zoneRedundantHaSupported":true,"zoneRedundantHaAndGeoBackupSupported":true,"supportedFlexibleServerEditions":[{"name":"Burstable","supportedStorageEditions":[{"name":"ManagedDisk","supportedStorageMB":[{"name":"32768","supportedIOPS":120,"storageSizeMB":32768,"status":"Available"},{"name":"65536","supportedIOPS":240,"storageSizeMB":65536,"status":"Available"},{"name":"131072","supportedIOPS":500,"storageSizeMB":131072,"status":"Available"},{"name":"262144","supportedIOPS":1100,"storageSizeMB":262144,"status":"Available"},{"name":"524288","supportedIOPS":2300,"storageSizeMB":524288,"status":"Available"},{"name":"1048576","supportedIOPS":5000,"storageSizeMB":1048576,"status":"Available"},{"name":"2097152","supportedIOPS":7500,"storageSizeMB":2097152,"status":"Available"},{"name":"4194304","supportedIOPS":7500,"storageSizeMB":4194304,"status":"Available"},{"name":"8388608","supportedIOPS":16000,"storageSizeMB":8388608,"status":"Available"},{"name":"16777216","supportedIOPS":18000,"storageSizeMB":16777216,"status":"Available"},{"name":"33553408","supportedIOPS":20000,"storageSizeMB":33553408,"status":"Available"}],"status":"Default"}],"supportedServerVersions":[{"name":"11","supportedVcores":[{"name":"Standard_B1ms","vCores":1,"supportedIOPS":640,"supportedMemoryPerVcoreMB":2048,"status":"Available"},{"name":"Standard_B2s","vCores":2,"supportedIOPS":1280,"supportedMemoryPerVcoreMB":2048,"status":"Available"}],"status":"Available"},{"name":"12","supportedVcores":[{"name":"Standard_B1ms","vCores":1,"supportedIOPS":640,"supportedMemoryPerVcoreMB":2048,"status":"Available"},{"name":"Standard_B2s","vCores":2,"supportedIOPS":1280,"supportedMemoryPerVcoreMB":2048,"status":"Available"}],"status":"Available"},{"name":"13","supportedVcores":[{"name":"Standard_B1ms","vCores":1,"supportedIOPS":640,"supportedMemoryPerVcoreMB":2048,"status":"Available"},{"name":"Standard_B2s","vCores":2,"supportedIOPS":1280,"supportedMemoryPerVcoreMB":2048,"status":"Available"}],"status":"Available"},{"name":"14","supportedVcores":[{"name":"Standard_B1ms","vCores":1,"supportedIOPS":640,"supportedMemoryPerVcoreMB":2048,"status":"Available"},{"name":"Standard_B2s","vCores":2,"supportedIOPS":1280,"supportedMemoryPerVcoreMB":2048,"status":"Available"}],"status":"Available"}],"status":"Available"},{"name":"GeneralPurpose","supportedStorageEditions":[{"name":"ManagedDisk","supportedStorageMB":[{"name":"32768","supportedIOPS":120,"storageSizeMB":32768,"status":"Available"},{"name":"65536","supportedIOPS":240,"storageSizeMB":65536,"status":"Available"},{"name":"131072","supportedIOPS":500,"storageSizeMB":131072,"status":"Available"},{"name":"262144","supportedIOPS":1100,"storageSizeMB":262144,"status":"Available"},{"name":"524288","supportedIOPS":2300,"storageSizeMB":524288,"status":"Available"},{"name":"1048576","supportedIOPS":5000,"storageSizeMB":1048576,"status":"Available"},{"name":"2097152","supportedIOPS":7500,"storageSizeMB":2097152,"status":"Available"},{"name":"4194304","supportedIOPS":7500,"storageSizeMB":4194304,"status":"Available"},{"name":"8388608","supportedIOPS":16000,"storageSizeMB":8388608,"status":"Available"},{"name":"16777216","supportedIOPS":18000,"storageSizeMB":16777216,"status":"Available"},{"name":"33553408","supportedIOPS":20000,"storageSizeMB":33553408,"status":"Available"}],"status":"Default"}],"supportedServerVersions":[{"name":"11","supportedVcores":[{"name":"Standard_D2s_v3","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D4s_v3","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D8s_v3","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D16s_v3","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D32s_v3","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D48s_v3","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D64s_v3","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D2ds_v4","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D4ds_v4","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D8ds_v4","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D16ds_v4","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D32ds_v4","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D48ds_v4","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D64ds_v4","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"}],"status":"Available"},{"name":"12","supportedVcores":[{"name":"Standard_D2s_v3","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D4s_v3","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D8s_v3","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D16s_v3","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D32s_v3","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D48s_v3","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D64s_v3","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D2ds_v4","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D4ds_v4","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D8ds_v4","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D16ds_v4","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D32ds_v4","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D48ds_v4","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D64ds_v4","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"}],"status":"Available"},{"name":"13","supportedVcores":[{"name":"Standard_D2s_v3","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D4s_v3","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D8s_v3","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D16s_v3","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D32s_v3","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D48s_v3","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D64s_v3","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D2ds_v4","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D4ds_v4","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D8ds_v4","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D16ds_v4","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D32ds_v4","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D48ds_v4","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D64ds_v4","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"}],"status":"Available"},{"name":"14","supportedVcores":[{"name":"Standard_D2s_v3","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D4s_v3","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D8s_v3","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D16s_v3","vCores":16,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D32s_v3","vCores":32,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D48s_v3","vCores":48,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D64s_v3","vCores":64,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D2ds_v4","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D4ds_v4","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D8ds_v4","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D16ds_v4","vCores":16,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D32ds_v4","vCores":32,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D48ds_v4","vCores":48,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D64ds_v4","vCores":64,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":4096,"status":"Available"}],"status":"Available"}],"status":"Available"},{"name":"MemoryOptimized","supportedStorageEditions":[{"name":"ManagedDisk","supportedStorageMB":[{"name":"32768","supportedIOPS":120,"storageSizeMB":32768,"status":"Available"},{"name":"65536","supportedIOPS":240,"storageSizeMB":65536,"status":"Available"},{"name":"131072","supportedIOPS":500,"storageSizeMB":131072,"status":"Available"},{"name":"262144","supportedIOPS":1100,"storageSizeMB":262144,"status":"Available"},{"name":"524288","supportedIOPS":2300,"storageSizeMB":524288,"status":"Available"},{"name":"1048576","supportedIOPS":5000,"storageSizeMB":1048576,"status":"Available"},{"name":"2097152","supportedIOPS":7500,"storageSizeMB":2097152,"status":"Available"},{"name":"4194304","supportedIOPS":7500,"storageSizeMB":4194304,"status":"Available"},{"name":"8388608","supportedIOPS":16000,"storageSizeMB":8388608,"status":"Available"},{"name":"16777216","supportedIOPS":18000,"storageSizeMB":16777216,"status":"Available"},{"name":"33553408","supportedIOPS":20000,"storageSizeMB":33553408,"status":"Available"}],"status":"Default"}],"supportedServerVersions":[{"name":"11","supportedVcores":[{"name":"Standard_E2s_v3","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E4s_v3","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E8s_v3","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E16s_v3","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E32s_v3","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E48s_v3","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E64s_v3","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":6912,"status":"Available"},{"name":"Standard_E2ds_v4","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E4ds_v4","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E8ds_v4","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E16ds_v4","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E20ds_v4","vCores":20,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E32ds_v4","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E48ds_v4","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E64ds_v4","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":6912,"status":"Available"}],"status":"Available"},{"name":"12","supportedVcores":[{"name":"Standard_E2s_v3","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E4s_v3","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E8s_v3","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E16s_v3","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E32s_v3","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E48s_v3","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E64s_v3","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":6912,"status":"Available"},{"name":"Standard_E2ds_v4","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E4ds_v4","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E8ds_v4","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E16ds_v4","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E20ds_v4","vCores":20,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E32ds_v4","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E48ds_v4","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E64ds_v4","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":6912,"status":"Available"}],"status":"Available"},{"name":"13","supportedVcores":[{"name":"Standard_E2s_v3","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E4s_v3","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E8s_v3","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E16s_v3","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E32s_v3","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E48s_v3","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E64s_v3","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":6912,"status":"Available"},{"name":"Standard_E2ds_v4","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E4ds_v4","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E8ds_v4","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E16ds_v4","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E20ds_v4","vCores":20,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E32ds_v4","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E48ds_v4","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E64ds_v4","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":6912,"status":"Available"}],"status":"Available"},{"name":"14","supportedVcores":[{"name":"Standard_E2s_v3","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E4s_v3","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E8s_v3","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E16s_v3","vCores":16,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E32s_v3","vCores":32,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E48s_v3","vCores":48,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E64s_v3","vCores":64,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":6912,"status":"Available"},{"name":"Standard_E2ds_v4","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E4ds_v4","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E8ds_v4","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E16ds_v4","vCores":16,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E20ds_v4","vCores":20,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E32ds_v4","vCores":32,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E48ds_v4","vCores":48,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E64ds_v4","vCores":64,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":6912,"status":"Available"}],"status":"Available"}],"status":"Available"}],"supportedHAMode":["SameZone","ZoneRedundant"],"status":"Available"},{"zone":"2","geoBackupSupported":true,"zoneRedundantHaSupported":true,"zoneRedundantHaAndGeoBackupSupported":true,"supportedFlexibleServerEditions":[{"name":"Burstable","supportedStorageEditions":[{"name":"ManagedDisk","supportedStorageMB":[{"name":"32768","supportedIOPS":120,"storageSizeMB":32768,"status":"Available"},{"name":"65536","supportedIOPS":240,"storageSizeMB":65536,"status":"Available"},{"name":"131072","supportedIOPS":500,"storageSizeMB":131072,"status":"Available"},{"name":"262144","supportedIOPS":1100,"storageSizeMB":262144,"status":"Available"},{"name":"524288","supportedIOPS":2300,"storageSizeMB":524288,"status":"Available"},{"name":"1048576","supportedIOPS":5000,"storageSizeMB":1048576,"status":"Available"},{"name":"2097152","supportedIOPS":7500,"storageSizeMB":2097152,"status":"Available"},{"name":"4194304","supportedIOPS":7500,"storageSizeMB":4194304,"status":"Available"},{"name":"8388608","supportedIOPS":16000,"storageSizeMB":8388608,"status":"Available"},{"name":"16777216","supportedIOPS":18000,"storageSizeMB":16777216,"status":"Available"},{"name":"33553408","supportedIOPS":20000,"storageSizeMB":33553408,"status":"Available"}],"status":"Default"}],"supportedServerVersions":[{"name":"11","supportedVcores":[{"name":"Standard_B1ms","vCores":1,"supportedIOPS":640,"supportedMemoryPerVcoreMB":2048,"status":"Available"},{"name":"Standard_B2s","vCores":2,"supportedIOPS":1280,"supportedMemoryPerVcoreMB":2048,"status":"Available"}],"status":"Available"},{"name":"12","supportedVcores":[{"name":"Standard_B1ms","vCores":1,"supportedIOPS":640,"supportedMemoryPerVcoreMB":2048,"status":"Available"},{"name":"Standard_B2s","vCores":2,"supportedIOPS":1280,"supportedMemoryPerVcoreMB":2048,"status":"Available"}],"status":"Available"},{"name":"13","supportedVcores":[{"name":"Standard_B1ms","vCores":1,"supportedIOPS":640,"supportedMemoryPerVcoreMB":2048,"status":"Available"},{"name":"Standard_B2s","vCores":2,"supportedIOPS":1280,"supportedMemoryPerVcoreMB":2048,"status":"Available"}],"status":"Available"},{"name":"14","supportedVcores":[{"name":"Standard_B1ms","vCores":1,"supportedIOPS":640,"supportedMemoryPerVcoreMB":2048,"status":"Available"},{"name":"Standard_B2s","vCores":2,"supportedIOPS":1280,"supportedMemoryPerVcoreMB":2048,"status":"Available"}],"status":"Available"}],"status":"Available"},{"name":"GeneralPurpose","supportedStorageEditions":[{"name":"ManagedDisk","supportedStorageMB":[{"name":"32768","supportedIOPS":120,"storageSizeMB":32768,"status":"Available"},{"name":"65536","supportedIOPS":240,"storageSizeMB":65536,"status":"Available"},{"name":"131072","supportedIOPS":500,"storageSizeMB":131072,"status":"Available"},{"name":"262144","supportedIOPS":1100,"storageSizeMB":262144,"status":"Available"},{"name":"524288","supportedIOPS":2300,"storageSizeMB":524288,"status":"Available"},{"name":"1048576","supportedIOPS":5000,"storageSizeMB":1048576,"status":"Available"},{"name":"2097152","supportedIOPS":7500,"storageSizeMB":2097152,"status":"Available"},{"name":"4194304","supportedIOPS":7500,"storageSizeMB":4194304,"status":"Available"},{"name":"8388608","supportedIOPS":16000,"storageSizeMB":8388608,"status":"Available"},{"name":"16777216","supportedIOPS":18000,"storageSizeMB":16777216,"status":"Available"},{"name":"33553408","supportedIOPS":20000,"storageSizeMB":33553408,"status":"Available"}],"status":"Default"}],"supportedServerVersions":[{"name":"11","supportedVcores":[{"name":"Standard_D2s_v3","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D4s_v3","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D8s_v3","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D16s_v3","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D32s_v3","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D48s_v3","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D64s_v3","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D2ds_v4","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D4ds_v4","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D8ds_v4","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D16ds_v4","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D32ds_v4","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D48ds_v4","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D64ds_v4","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"}],"status":"Available"},{"name":"12","supportedVcores":[{"name":"Standard_D2s_v3","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D4s_v3","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D8s_v3","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D16s_v3","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D32s_v3","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D48s_v3","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D64s_v3","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D2ds_v4","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D4ds_v4","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D8ds_v4","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D16ds_v4","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D32ds_v4","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D48ds_v4","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D64ds_v4","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"}],"status":"Available"},{"name":"13","supportedVcores":[{"name":"Standard_D2s_v3","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D4s_v3","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D8s_v3","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D16s_v3","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D32s_v3","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D48s_v3","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D64s_v3","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D2ds_v4","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D4ds_v4","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D8ds_v4","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D16ds_v4","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D32ds_v4","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D48ds_v4","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D64ds_v4","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"}],"status":"Available"},{"name":"14","supportedVcores":[{"name":"Standard_D2s_v3","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D4s_v3","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D8s_v3","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D16s_v3","vCores":16,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D32s_v3","vCores":32,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D48s_v3","vCores":48,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D64s_v3","vCores":64,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D2ds_v4","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D4ds_v4","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D8ds_v4","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D16ds_v4","vCores":16,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D32ds_v4","vCores":32,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D48ds_v4","vCores":48,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D64ds_v4","vCores":64,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":4096,"status":"Available"}],"status":"Available"}],"status":"Available"},{"name":"MemoryOptimized","supportedStorageEditions":[{"name":"ManagedDisk","supportedStorageMB":[{"name":"32768","supportedIOPS":120,"storageSizeMB":32768,"status":"Available"},{"name":"65536","supportedIOPS":240,"storageSizeMB":65536,"status":"Available"},{"name":"131072","supportedIOPS":500,"storageSizeMB":131072,"status":"Available"},{"name":"262144","supportedIOPS":1100,"storageSizeMB":262144,"status":"Available"},{"name":"524288","supportedIOPS":2300,"storageSizeMB":524288,"status":"Available"},{"name":"1048576","supportedIOPS":5000,"storageSizeMB":1048576,"status":"Available"},{"name":"2097152","supportedIOPS":7500,"storageSizeMB":2097152,"status":"Available"},{"name":"4194304","supportedIOPS":7500,"storageSizeMB":4194304,"status":"Available"},{"name":"8388608","supportedIOPS":16000,"storageSizeMB":8388608,"status":"Available"},{"name":"16777216","supportedIOPS":18000,"storageSizeMB":16777216,"status":"Available"},{"name":"33553408","supportedIOPS":20000,"storageSizeMB":33553408,"status":"Available"}],"status":"Default"}],"supportedServerVersions":[{"name":"11","supportedVcores":[{"name":"Standard_E2s_v3","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E4s_v3","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E8s_v3","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E16s_v3","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E32s_v3","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E48s_v3","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E64s_v3","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":6912,"status":"Available"},{"name":"Standard_E2ds_v4","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E4ds_v4","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E8ds_v4","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E16ds_v4","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E20ds_v4","vCores":20,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E32ds_v4","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E48ds_v4","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E64ds_v4","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":6912,"status":"Available"}],"status":"Available"},{"name":"12","supportedVcores":[{"name":"Standard_E2s_v3","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E4s_v3","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E8s_v3","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E16s_v3","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E32s_v3","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E48s_v3","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E64s_v3","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":6912,"status":"Available"},{"name":"Standard_E2ds_v4","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E4ds_v4","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E8ds_v4","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E16ds_v4","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E20ds_v4","vCores":20,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E32ds_v4","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E48ds_v4","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E64ds_v4","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":6912,"status":"Available"}],"status":"Available"},{"name":"13","supportedVcores":[{"name":"Standard_E2s_v3","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E4s_v3","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E8s_v3","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E16s_v3","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E32s_v3","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E48s_v3","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E64s_v3","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":6912,"status":"Available"},{"name":"Standard_E2ds_v4","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E4ds_v4","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E8ds_v4","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E16ds_v4","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E20ds_v4","vCores":20,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E32ds_v4","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E48ds_v4","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E64ds_v4","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":6912,"status":"Available"}],"status":"Available"},{"name":"14","supportedVcores":[{"name":"Standard_E2s_v3","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E4s_v3","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E8s_v3","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E16s_v3","vCores":16,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E32s_v3","vCores":32,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E48s_v3","vCores":48,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E64s_v3","vCores":64,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":6912,"status":"Available"},{"name":"Standard_E2ds_v4","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E4ds_v4","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E8ds_v4","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E16ds_v4","vCores":16,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E20ds_v4","vCores":20,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E32ds_v4","vCores":32,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E48ds_v4","vCores":48,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E64ds_v4","vCores":64,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":6912,"status":"Available"}],"status":"Available"}],"status":"Available"}],"supportedHAMode":["SameZone","ZoneRedundant"],"status":"Available"},{"zone":"3","geoBackupSupported":true,"zoneRedundantHaSupported":true,"zoneRedundantHaAndGeoBackupSupported":true,"supportedFlexibleServerEditions":[{"name":"Burstable","supportedStorageEditions":[{"name":"ManagedDisk","supportedStorageMB":[{"name":"32768","supportedIOPS":120,"storageSizeMB":32768,"status":"Available"},{"name":"65536","supportedIOPS":240,"storageSizeMB":65536,"status":"Available"},{"name":"131072","supportedIOPS":500,"storageSizeMB":131072,"status":"Available"},{"name":"262144","supportedIOPS":1100,"storageSizeMB":262144,"status":"Available"},{"name":"524288","supportedIOPS":2300,"storageSizeMB":524288,"status":"Available"},{"name":"1048576","supportedIOPS":5000,"storageSizeMB":1048576,"status":"Available"},{"name":"2097152","supportedIOPS":7500,"storageSizeMB":2097152,"status":"Available"},{"name":"4194304","supportedIOPS":7500,"storageSizeMB":4194304,"status":"Available"},{"name":"8388608","supportedIOPS":16000,"storageSizeMB":8388608,"status":"Available"},{"name":"16777216","supportedIOPS":18000,"storageSizeMB":16777216,"status":"Available"},{"name":"33553408","supportedIOPS":20000,"storageSizeMB":33553408,"status":"Available"}],"status":"Default"}],"supportedServerVersions":[{"name":"11","supportedVcores":[{"name":"Standard_B1ms","vCores":1,"supportedIOPS":640,"supportedMemoryPerVcoreMB":2048,"status":"Available"},{"name":"Standard_B2s","vCores":2,"supportedIOPS":1280,"supportedMemoryPerVcoreMB":2048,"status":"Available"}],"status":"Available"},{"name":"12","supportedVcores":[{"name":"Standard_B1ms","vCores":1,"supportedIOPS":640,"supportedMemoryPerVcoreMB":2048,"status":"Available"},{"name":"Standard_B2s","vCores":2,"supportedIOPS":1280,"supportedMemoryPerVcoreMB":2048,"status":"Available"}],"status":"Available"},{"name":"13","supportedVcores":[{"name":"Standard_B1ms","vCores":1,"supportedIOPS":640,"supportedMemoryPerVcoreMB":2048,"status":"Available"},{"name":"Standard_B2s","vCores":2,"supportedIOPS":1280,"supportedMemoryPerVcoreMB":2048,"status":"Available"}],"status":"Available"},{"name":"14","supportedVcores":[{"name":"Standard_B1ms","vCores":1,"supportedIOPS":640,"supportedMemoryPerVcoreMB":2048,"status":"Available"},{"name":"Standard_B2s","vCores":2,"supportedIOPS":1280,"supportedMemoryPerVcoreMB":2048,"status":"Available"}],"status":"Available"}],"status":"Available"},{"name":"GeneralPurpose","supportedStorageEditions":[{"name":"ManagedDisk","supportedStorageMB":[{"name":"32768","supportedIOPS":120,"storageSizeMB":32768,"status":"Available"},{"name":"65536","supportedIOPS":240,"storageSizeMB":65536,"status":"Available"},{"name":"131072","supportedIOPS":500,"storageSizeMB":131072,"status":"Available"},{"name":"262144","supportedIOPS":1100,"storageSizeMB":262144,"status":"Available"},{"name":"524288","supportedIOPS":2300,"storageSizeMB":524288,"status":"Available"},{"name":"1048576","supportedIOPS":5000,"storageSizeMB":1048576,"status":"Available"},{"name":"2097152","supportedIOPS":7500,"storageSizeMB":2097152,"status":"Available"},{"name":"4194304","supportedIOPS":7500,"storageSizeMB":4194304,"status":"Available"},{"name":"8388608","supportedIOPS":16000,"storageSizeMB":8388608,"status":"Available"},{"name":"16777216","supportedIOPS":18000,"storageSizeMB":16777216,"status":"Available"},{"name":"33553408","supportedIOPS":20000,"storageSizeMB":33553408,"status":"Available"}],"status":"Default"}],"supportedServerVersions":[{"name":"11","supportedVcores":[{"name":"Standard_D2s_v3","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D4s_v3","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D8s_v3","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D16s_v3","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D32s_v3","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D48s_v3","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D64s_v3","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D2ds_v4","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D4ds_v4","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D8ds_v4","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D16ds_v4","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D32ds_v4","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D48ds_v4","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D64ds_v4","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"}],"status":"Available"},{"name":"12","supportedVcores":[{"name":"Standard_D2s_v3","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D4s_v3","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D8s_v3","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D16s_v3","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D32s_v3","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D48s_v3","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D64s_v3","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D2ds_v4","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D4ds_v4","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D8ds_v4","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D16ds_v4","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D32ds_v4","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D48ds_v4","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D64ds_v4","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"}],"status":"Available"},{"name":"13","supportedVcores":[{"name":"Standard_D2s_v3","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D4s_v3","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D8s_v3","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D16s_v3","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D32s_v3","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D48s_v3","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D64s_v3","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D2ds_v4","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D4ds_v4","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D8ds_v4","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D16ds_v4","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D32ds_v4","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D48ds_v4","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D64ds_v4","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"}],"status":"Available"},{"name":"14","supportedVcores":[{"name":"Standard_D2s_v3","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D4s_v3","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D8s_v3","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D16s_v3","vCores":16,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D32s_v3","vCores":32,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D48s_v3","vCores":48,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D64s_v3","vCores":64,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D2ds_v4","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D4ds_v4","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D8ds_v4","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D16ds_v4","vCores":16,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D32ds_v4","vCores":32,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D48ds_v4","vCores":48,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D64ds_v4","vCores":64,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":4096,"status":"Available"}],"status":"Available"}],"status":"Available"},{"name":"MemoryOptimized","supportedStorageEditions":[{"name":"ManagedDisk","supportedStorageMB":[{"name":"32768","supportedIOPS":120,"storageSizeMB":32768,"status":"Available"},{"name":"65536","supportedIOPS":240,"storageSizeMB":65536,"status":"Available"},{"name":"131072","supportedIOPS":500,"storageSizeMB":131072,"status":"Available"},{"name":"262144","supportedIOPS":1100,"storageSizeMB":262144,"status":"Available"},{"name":"524288","supportedIOPS":2300,"storageSizeMB":524288,"status":"Available"},{"name":"1048576","supportedIOPS":5000,"storageSizeMB":1048576,"status":"Available"},{"name":"2097152","supportedIOPS":7500,"storageSizeMB":2097152,"status":"Available"},{"name":"4194304","supportedIOPS":7500,"storageSizeMB":4194304,"status":"Available"},{"name":"8388608","supportedIOPS":16000,"storageSizeMB":8388608,"status":"Available"},{"name":"16777216","supportedIOPS":18000,"storageSizeMB":16777216,"status":"Available"},{"name":"33553408","supportedIOPS":20000,"storageSizeMB":33553408,"status":"Available"}],"status":"Default"}],"supportedServerVersions":[{"name":"11","supportedVcores":[{"name":"Standard_E2s_v3","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E4s_v3","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E8s_v3","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E16s_v3","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E32s_v3","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E48s_v3","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E64s_v3","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":6912,"status":"Available"},{"name":"Standard_E2ds_v4","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E4ds_v4","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E8ds_v4","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E16ds_v4","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E20ds_v4","vCores":20,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E32ds_v4","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E48ds_v4","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E64ds_v4","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":6912,"status":"Available"}],"status":"Available"},{"name":"12","supportedVcores":[{"name":"Standard_E2s_v3","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E4s_v3","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E8s_v3","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E16s_v3","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E32s_v3","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E48s_v3","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E64s_v3","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":6912,"status":"Available"},{"name":"Standard_E2ds_v4","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E4ds_v4","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E8ds_v4","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E16ds_v4","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E20ds_v4","vCores":20,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E32ds_v4","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E48ds_v4","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E64ds_v4","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":6912,"status":"Available"}],"status":"Available"},{"name":"13","supportedVcores":[{"name":"Standard_E2s_v3","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E4s_v3","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E8s_v3","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E16s_v3","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E32s_v3","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E48s_v3","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E64s_v3","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":6912,"status":"Available"},{"name":"Standard_E2ds_v4","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E4ds_v4","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E8ds_v4","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E16ds_v4","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E20ds_v4","vCores":20,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E32ds_v4","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E48ds_v4","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E64ds_v4","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":6912,"status":"Available"}],"status":"Available"},{"name":"14","supportedVcores":[{"name":"Standard_E2s_v3","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E4s_v3","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E8s_v3","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E16s_v3","vCores":16,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E32s_v3","vCores":32,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E48s_v3","vCores":48,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E64s_v3","vCores":64,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":6912,"status":"Available"},{"name":"Standard_E2ds_v4","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E4ds_v4","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E8ds_v4","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E16ds_v4","vCores":16,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E20ds_v4","vCores":20,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E32ds_v4","vCores":32,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E48ds_v4","vCores":48,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E64ds_v4","vCores":64,"supportedIOPS":18000,"supportedMemoryPerVcoreMB":6912,"status":"Available"}],"status":"Available"}],"status":"Available"}],"supportedHAMode":["SameZone","ZoneRedundant"],"status":"Available"}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '73712'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 21 Oct 2022 09:29:17 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"sku": {"name": "Standard_D2s_v3", "tier": "GeneralPurpose"}, "properties":
+      {"administratorLoginPassword": "cliPwd000003", "storage": {"storageSizeGB":
+      32}, "backup": {"backupRetentionDays": 7, "geoRedundantBackup": "Disabled"},
+      "maintenanceWindow": {"customWindow": "Disabled", "startHour": 0, "startMinute":
+      0, "dayOfWeek": 0}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - postgres flexible-server update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '331'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n -p
+      User-Agent:
+      - AZURECLI/2.41.0 azsdk-python-mgmt-rdbms/10.2.0b3 Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.DBforPostgreSQL/flexibleServers/azuredbclitest-000002?api-version=2022-01-20-preview
+  response:
+    body:
+      string: '{"operation":"UpsertServerManagementOperationV2","startTime":"2022-10-21T09:29:18.877Z"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DBforPostgreSQL/locations/eastus/azureAsyncOperation/2ee88744-1528-424b-82f5-7e078d37d7da?api-version=2022-01-20-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '88'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 21 Oct 2022 09:29:18 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DBforPostgreSQL/locations/eastus/operationResults/2ee88744-1528-424b-82f5-7e078d37d7da?api-version=2022-01-20-preview
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - postgres flexible-server update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -p
+      User-Agent:
+      - AZURECLI/2.41.0 azsdk-python-mgmt-rdbms/10.2.0b3 Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DBforPostgreSQL/locations/eastus/azureAsyncOperation/2ee88744-1528-424b-82f5-7e078d37d7da?api-version=2022-01-20-preview
+  response:
+    body:
+      string: '{"name":"2ee88744-1528-424b-82f5-7e078d37d7da","status":"Succeeded","startTime":"2022-10-21T09:29:18.877Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '107'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 21 Oct 2022 09:30:18 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - postgres flexible-server update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -p
+      User-Agent:
+      - AZURECLI/2.41.0 azsdk-python-mgmt-rdbms/10.2.0b3 Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.DBforPostgreSQL/flexibleServers/azuredbclitest-000002?api-version=2022-01-20-preview
+  response:
+    body:
+      string: '{"sku":{"name":"Standard_D2s_v3","tier":"GeneralPurpose"},"properties":{"fullyQualifiedDomainName":"azuredbclitest-000002.postgres.database.azure.com","version":"12","minorVersion":"11","administratorLogin":"cliuser","state":"Ready","availabilityZone":"1","storage":{"storageSizeGB":32},"backup":{"backupRetentionDays":7,"geoRedundantBackup":"Disabled","earliestRestoreDate":"2022-10-21T09:29:23.3019011+00:00"},"network":{"publicNetworkAccess":"Enabled"},"highAvailability":{"mode":"Disabled","state":"NotEnabled"},"maintenanceWindow":{"customWindow":"Disabled","dayOfWeek":0,"startHour":0,"startMinute":0},"storageAutoGrowth":false},"location":"East
+        US","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.DBforPostgreSQL/flexibleServers/azuredbclitest-000002","name":"azuredbclitest-000002","type":"Microsoft.DBforPostgreSQL/flexibleServers"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '903'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 21 Oct 2022 09:30:19 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - postgres flexible-server firewall-rule create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --rule-name --start-ip-address --end-ip-address
+      User-Agent:
+      - AZURECLI/2.41.0 azsdk-python-mgmt-rdbms/10.2.0b3 Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.DBforPostgreSQL/flexibleServers/azuredbclitest-000002?api-version=2022-01-20-preview
+  response:
+    body:
+      string: '{"sku":{"name":"Standard_D2s_v3","tier":"GeneralPurpose"},"properties":{"fullyQualifiedDomainName":"azuredbclitest-000002.postgres.database.azure.com","version":"12","minorVersion":"11","administratorLogin":"cliuser","state":"Ready","availabilityZone":"1","storage":{"storageSizeGB":32},"backup":{"backupRetentionDays":7,"geoRedundantBackup":"Disabled","earliestRestoreDate":"2022-10-21T09:29:23.3019011+00:00"},"network":{"publicNetworkAccess":"Enabled"},"highAvailability":{"mode":"Disabled","state":"NotEnabled"},"maintenanceWindow":{"customWindow":"Disabled","dayOfWeek":0,"startHour":0,"startMinute":0},"storageAutoGrowth":false},"location":"East
+        US","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.DBforPostgreSQL/flexibleServers/azuredbclitest-000002","name":"azuredbclitest-000002","type":"Microsoft.DBforPostgreSQL/flexibleServers"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '903'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 21 Oct 2022 09:32:31 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"startIpAddress": "0.0.0.0", "endIpAddress": "255.255.255.255"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - postgres flexible-server firewall-rule create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '80'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --rule-name --start-ip-address --end-ip-address
+      User-Agent:
+      - AZURECLI/2.41.0 azsdk-python-mgmt-rdbms/10.2.0b3 Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.DBforPostgreSQL/flexibleServers/azuredbclitest-000002/firewallRules/allIps?api-version=2022-01-20-preview
+  response:
+    body:
+      string: '{"operation":"UpsertServerFirewallRulesManagementOperation","startTime":"2022-10-21T09:32:32.83Z"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DBforPostgreSQL/locations/eastus/azureAsyncOperation/f13711e4-09e4-43ef-84f7-a33dd166228f?api-version=2022-01-20-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '98'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 21 Oct 2022 09:32:32 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DBforPostgreSQL/locations/eastus/operationResults/f13711e4-09e4-43ef-84f7-a33dd166228f?api-version=2022-01-20-preview
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - postgres flexible-server firewall-rule create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --rule-name --start-ip-address --end-ip-address
+      User-Agent:
+      - AZURECLI/2.41.0 azsdk-python-mgmt-rdbms/10.2.0b3 Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DBforPostgreSQL/locations/eastus/azureAsyncOperation/f13711e4-09e4-43ef-84f7-a33dd166228f?api-version=2022-01-20-preview
+  response:
+    body:
+      string: '{"name":"f13711e4-09e4-43ef-84f7-a33dd166228f","status":"Succeeded","startTime":"2022-10-21T09:32:32.83Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '106'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 21 Oct 2022 09:33:32 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - postgres flexible-server firewall-rule create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --rule-name --start-ip-address --end-ip-address
+      User-Agent:
+      - AZURECLI/2.41.0 azsdk-python-mgmt-rdbms/10.2.0b3 Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.DBforPostgreSQL/flexibleServers/azuredbclitest-000002/firewallRules/allIps?api-version=2022-01-20-preview
+  response:
+    body:
+      string: '{"properties":{"startIpAddress":"0.0.0.0","endIpAddress":"255.255.255.255"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.DBforPostgreSQL/flexibleServers/azuredbclitest-000002/firewallRules/allIps","name":"allIps","type":"Microsoft.DBforPostgreSQL/flexibleServers/firewallRules"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '343'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 21 Oct 2022 09:33:33 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+version: 1

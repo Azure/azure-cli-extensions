@@ -1,0 +1,490 @@
+interactions:
+- request:
+    body: '{"location": "eastus", "sku": {"name": "F0"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthbot create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '45'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --location --sku --resource-group
+      User-Agent:
+      - AZURECLI/2.18.0 azsdk-python-mgmt-healthbot/2020-10-20-preview Python/3.8.7
+        (Windows-10-10.0.19041-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthBot/healthBots/samplebotname?api-version=2020-12-08
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthBot/healthBots/samplebotname","name":"samplebotname","type":"Microsoft.HealthBot/healthBots","sku":{"name":"F0"},"location":"eastus","systemData":{"createdBy":"guepsh@microsoft.com","createdByType":"User","createdAt":"2021-02-07T12:08:39.8022985Z","lastModifiedBy":"guepsh@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-02-07T12:08:39.8022985Z"},"properties":{"provisioningState":"Accepted"}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/providers/Microsoft.HealthBot/locations/EASTUS/operationStatuses/887e298d-4e9c-4764-86f5-86878dbdb038?api-version=2020-12-08
+      cache-control:
+      - no-cache
+      content-length:
+      - '532'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sun, 07 Feb 2021 12:08:42 GMT
+      etag:
+      - '"a5040722-0000-0100-0000-601fd8490000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:39ac773f-9efe-42dd-90ba-3ebab16f6587
+      server:
+      - Kestrel
+      set-cookie:
+      - admin.healthbot.sid=1612699722.129.36.709883; Max-Age=3600; Path=/; Secure;
+        HttpOnly
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-dns-prefetch-control:
+      - 'off'
+      x-download-options:
+      - noopen
+      x-frame-options:
+      - SAMEORIGIN
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthbot create
+      Connection:
+      - keep-alive
+      Cookie:
+      - admin.healthbot.sid=1612699722.129.36.709883
+      ParameterSetName:
+      - --name --location --sku --resource-group
+      User-Agent:
+      - AZURECLI/2.18.0 azsdk-python-mgmt-healthbot/2020-10-20-preview Python/3.8.7
+        (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.HealthBot/locations/EASTUS/operationStatuses/887e298d-4e9c-4764-86f5-86878dbdb038?api-version=2020-12-08
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.HealthBot/locations/EASTUS/operationStatuses/887e298d-4e9c-4764-86f5-86878dbdb038","name":"887e298d-4e9c-4764-86f5-86878dbdb038","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthBot/healthBots/samplebotname","status":"Working","startTime":"2021-02-07T12:08:40.8645764Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '377'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sun, 07 Feb 2021 12:09:13 GMT
+      etag:
+      - '"ba014ee7-0000-0100-0000-601fd84a0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthbot create
+      Connection:
+      - keep-alive
+      Cookie:
+      - admin.healthbot.sid=1612699722.129.36.709883
+      ParameterSetName:
+      - --name --location --sku --resource-group
+      User-Agent:
+      - AZURECLI/2.18.0 azsdk-python-mgmt-healthbot/2020-10-20-preview Python/3.8.7
+        (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.HealthBot/locations/EASTUS/operationStatuses/887e298d-4e9c-4764-86f5-86878dbdb038?api-version=2020-12-08
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.HealthBot/locations/EASTUS/operationStatuses/887e298d-4e9c-4764-86f5-86878dbdb038","name":"887e298d-4e9c-4764-86f5-86878dbdb038","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthBot/healthBots/samplebotname","status":"Succeeded","startTime":"2021-02-07T12:08:40.8645764Z","endTime":"2021-02-07T12:09:21.0870864Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '438'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sun, 07 Feb 2021 12:09:43 GMT
+      etag:
+      - '"ba01f8ec-0000-0100-0000-601fd8710000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthbot create
+      Connection:
+      - keep-alive
+      Cookie:
+      - admin.healthbot.sid=1612699722.129.36.709883
+      ParameterSetName:
+      - --name --location --sku --resource-group
+      User-Agent:
+      - AZURECLI/2.18.0 azsdk-python-mgmt-healthbot/2020-10-20-preview Python/3.8.7
+        (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthBot/healthBots/samplebotname?api-version=2020-12-08
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthBot/healthBots/samplebotname","name":"samplebotname","type":"Microsoft.HealthBot/healthBots","sku":{"name":"F0"},"location":"eastus","systemData":{"createdBy":"guepsh@microsoft.com","createdByType":"User","createdAt":"2021-02-07T12:08:39.8022985Z","lastModifiedBy":"6db4d6bb-6649-4dc2-84b7-0b5c6894031e","lastModifiedByType":"Application","lastModifiedAt":"2021-02-07T12:08:42.7186314Z"},"properties":{"provisioningState":"Succeeded","botManagementPortalLink":"https://us.healthbot.microsoft.com/account/samplebotname-vc5optp"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '649'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sun, 07 Feb 2021 12:09:43 GMT
+      etag:
+      - '"a5048422-0000-0100-0000-601fd8710000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthbot list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group
+      User-Agent:
+      - AZURECLI/2.18.0 azsdk-python-mgmt-healthbot/2020-10-20-preview Python/3.8.7
+        (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthBot/healthBots?api-version=2020-12-08
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthBot/healthBots/samplebotname","name":"samplebotname","type":"Microsoft.HealthBot/healthBots","sku":{"name":"F0"},"location":"eastus","systemData":{"createdBy":"guepsh@microsoft.com","createdByType":"User","createdAt":"2021-02-07T12:08:39.8022985Z","lastModifiedBy":"6db4d6bb-6649-4dc2-84b7-0b5c6894031e","lastModifiedByType":"Application","lastModifiedAt":"2021-02-07T12:08:42.7186314Z"},"properties":{"provisioningState":"Succeeded","botManagementPortalLink":"https://us.healthbot.microsoft.com/account/samplebotname-vc5optp"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '661'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sun, 07 Feb 2021 12:09:46 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthbot list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g
+      User-Agent:
+      - AZURECLI/2.18.0 azsdk-python-mgmt-healthbot/2020-10-20-preview Python/3.8.7
+        (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthBot/healthBots?api-version=2020-12-08
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthBot/healthBots/samplebotname","name":"samplebotname","type":"Microsoft.HealthBot/healthBots","sku":{"name":"F0"},"location":"eastus","systemData":{"createdBy":"guepsh@microsoft.com","createdByType":"User","createdAt":"2021-02-07T12:08:39.8022985Z","lastModifiedBy":"6db4d6bb-6649-4dc2-84b7-0b5c6894031e","lastModifiedByType":"Application","lastModifiedAt":"2021-02-07T12:08:42.7186314Z"},"properties":{"provisioningState":"Succeeded","botManagementPortalLink":"https://us.healthbot.microsoft.com/account/samplebotname-vc5optp"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '661'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sun, 07 Feb 2021 12:09:47 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthbot show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group
+      User-Agent:
+      - AZURECLI/2.18.0 azsdk-python-mgmt-healthbot/2020-10-20-preview Python/3.8.7
+        (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthBot/healthBots/samplebotname?api-version=2020-12-08
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthBot/healthBots/samplebotname","name":"samplebotname","type":"Microsoft.HealthBot/healthBots","sku":{"name":"F0"},"location":"eastus","systemData":{"createdBy":"guepsh@microsoft.com","createdByType":"User","createdAt":"2021-02-07T12:08:39.8022985Z","lastModifiedBy":"6db4d6bb-6649-4dc2-84b7-0b5c6894031e","lastModifiedByType":"Application","lastModifiedAt":"2021-02-07T12:08:42.7186314Z"},"properties":{"provisioningState":"Succeeded","botManagementPortalLink":"https://us.healthbot.microsoft.com/account/samplebotname-vc5optp"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '649'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sun, 07 Feb 2021 12:09:47 GMT
+      etag:
+      - '"a5048422-0000-0100-0000-601fd8710000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"sku": {"name": "F0"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthbot update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '23'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --sku --resource-group
+      User-Agent:
+      - AZURECLI/2.18.0 azsdk-python-mgmt-healthbot/2020-10-20-preview Python/3.8.7
+        (Windows-10-10.0.19041-SP0)
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthBot/healthBots/samplebotname?api-version=2020-12-08
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthBot/healthBots/samplebotname","name":"samplebotname","type":"Microsoft.HealthBot/healthBots","sku":{"name":"F0"},"location":"eastus","systemData":{"createdBy":"guepsh@microsoft.com","createdByType":"User","createdAt":"2021-02-07T12:08:39.8022985Z","lastModifiedBy":"guepsh@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-02-07T12:09:50.1683896Z"},"properties":{"provisioningState":"Succeeded","botManagementPortalLink":"https://us.healthbot.microsoft.com/account/samplebotname-vc5optp"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '626'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sun, 07 Feb 2021 12:09:55 GMT
+      etag:
+      - '"a504ee22-0000-0100-0000-601fd8900000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:39ac773f-9efe-42dd-90ba-3ebab16f6587
+      server:
+      - Kestrel
+      set-cookie:
+      - admin.healthbot.sid=1612699792.768.35.914638; Max-Age=3600; Path=/; Secure;
+        HttpOnly
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-dns-prefetch-control:
+      - 'off'
+      x-download-options:
+      - noopen
+      x-frame-options:
+      - SAMEORIGIN
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthbot delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -y --name --resource-group
+      User-Agent:
+      - AZURECLI/2.18.0 azsdk-python-mgmt-healthbot/2020-10-20-preview Python/3.8.7
+        (Windows-10-10.0.19041-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthBot/healthBots/samplebotname?api-version=2020-12-08
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Sun, 07 Feb 2021 12:10:02 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:39ac773f-9efe-42dd-90ba-3ebab16f6587
+      server:
+      - Kestrel
+      set-cookie:
+      - admin.healthbot.sid=1612699799.23.35.293330; Max-Age=3600; Path=/; Secure;
+        HttpOnly
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-dns-prefetch-control:
+      - 'off'
+      x-download-options:
+      - noopen
+      x-frame-options:
+      - SAMEORIGIN
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+version: 1

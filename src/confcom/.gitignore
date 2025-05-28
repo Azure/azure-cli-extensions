@@ -1,0 +1,38 @@
+.vscode/settings.json
+.vscode/*.log
+
+# python cache files and directories
+**/*.egg-info/
+**/*.egg-info/*
+**/dist/
+**/dist/*
+**/build/
+**/build/*
+**/__pycache__/
+**/__pycache__/*
+**/*.pyc
+
+# genpolicy cache files
+**/layers_cache/*
+
+# virtual environments
+env/*
+accdevops_env/*
+acclibpy_env/*
+ext_env/*
+
+# memeory leak check footage
+**/memleak-check.log
+
+# temporary shared libraries
+tests/outputs/**
+azext_confcom/bin/
+azext_confcom/bin/*
+**/dmverity-vhd.exe
+**/dmverity-vhd
+**/bin/genpolicy*
+
+# metadata file for coverage reports
+**/.coverage
+
+**/htmlcov

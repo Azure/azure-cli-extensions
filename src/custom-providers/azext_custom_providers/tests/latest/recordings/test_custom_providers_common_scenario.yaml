@@ -1,0 +1,459 @@
+interactions:
+- request:
+    body: '{"location": "westus2", "properties": {"actions": [{"name": "ping", "endpoint":
+      "https://ayniadjso4lay.azurewebsites.net/api", "routingType": "Proxy"}, {"name":
+      "ping1", "endpoint": "https://ayniadjso4lay.azurewebsites.net/api1", "routingType":
+      "Proxy"}], "resourceTypes": [{"name": "users", "endpoint": "https://ayniadjso4lay.azurewebsites.net/api",
+      "routingType": "Proxy, Cache"}], "validations": [{"validationType": "swagger",
+      "specification": "https://raw.githubusercontent.com/jsntcy/TestFixDelete/master/test.json"}]}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - custom-providers resource-provider create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '524'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - --resource-group --name --location --action --action --resource-type --validation
+      User-Agent:
+      - python/3.7.6 (Windows-10-10.0.18362-SP0) msrest/0.6.11 yulocal msrest_azure/0.6.3
+        azure-mgmt-customproviders/0.1.0 Azure-SDK-For-Python AZURECLI/2.4.0
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_custom_providers000001/providers/Microsoft.CustomProviders/resourceProviders/clitest-crp000002?api-version=2018-09-01-preview
+  response:
+    body:
+      string: '{"properties":{"actions":[{"name":"ping","routingType":"Proxy","endpoint":"https://ayniadjso4lay.azurewebsites.net/api"},{"name":"ping1","routingType":"Proxy","endpoint":"https://ayniadjso4lay.azurewebsites.net/api1"}],"resourceTypes":[{"name":"users","routingType":"Proxy,
+        Cache","endpoint":"https://ayniadjso4lay.azurewebsites.net/api"}],"validations":[{"validationType":"Swagger","specification":"https://raw.githubusercontent.com/jsntcy/TestFixDelete/master/test.json"}],"provisioningState":"Accepted"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_custom_providers000001/providers/Microsoft.CustomProviders/resourceproviders/clitest-crp000002","name":"clitest-crp000002","type":"Microsoft.CustomProviders/resourceproviders","location":"westus2","tags":{}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_custom_providers000001/providers/Microsoft.CustomProviders/locations/westus2/operationstatuses/eyJqb2JJZCI6Ik1SUENSVUQ6MkRDTEk6NUZURVNUOjVGQ1VTVE9NOjVGUFJPVklERVJTU0JJQ0VCUkZGWFlWV0s2T1ZKVDdUUzVJN1FEM0RZM1lFQ0FYWE8zNUsyRFlQT1hFVk86MkRDTElURVNUOjJEQ1JQNEpOVDNGSEZJIiwiam9iTG9jYXRpb24iOiJXRVNUVVMyIn0?api-version=2018-09-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '846'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sat, 09 May 2020 08:16:10 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - custom-providers resource-provider create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --location --action --action --resource-type --validation
+      User-Agent:
+      - python/3.7.6 (Windows-10-10.0.18362-SP0) msrest/0.6.11 yulocal msrest_azure/0.6.3
+        azure-mgmt-customproviders/0.1.0 Azure-SDK-For-Python AZURECLI/2.4.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_custom_providers000001/providers/Microsoft.CustomProviders/locations/westus2/operationstatuses/eyJqb2JJZCI6Ik1SUENSVUQ6MkRDTEk6NUZURVNUOjVGQ1VTVE9NOjVGUFJPVklERVJTU0JJQ0VCUkZGWFlWV0s2T1ZKVDdUUzVJN1FEM0RZM1lFQ0FYWE8zNUsyRFlQT1hFVk86MkRDTElURVNUOjJEQ1JQNEpOVDNGSEZJIiwiam9iTG9jYXRpb24iOiJXRVNUVVMyIn0?api-version=2018-09-01-preview
+  response:
+    body:
+      string: '{"status":"Succeeded"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '22'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sat, 09 May 2020 08:16:26 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_custom_providers000001/providers/Microsoft.CustomProviders/locations/westus2/operationstatuses/eyJqb2JJZCI6Ik1SUENSVUQ6MkRDTEk6NUZURVNUOjVGQ1VTVE9NOjVGUFJPVklERVJTU0JJQ0VCUkZGWFlWV0s2T1ZKVDdUUzVJN1FEM0RZM1lFQ0FYWE8zNUsyRFlQT1hFVk86MkRDTElURVNUOjJEQ1JQNEpOVDNGSEZJIiwiam9iTG9jYXRpb24iOiJXRVNUVVMyIn0?api-version=2018-09-01-preview
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - custom-providers resource-provider create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --location --action --action --resource-type --validation
+      User-Agent:
+      - python/3.7.6 (Windows-10-10.0.18362-SP0) msrest/0.6.11 yulocal msrest_azure/0.6.3
+        azure-mgmt-customproviders/0.1.0 Azure-SDK-For-Python AZURECLI/2.4.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_custom_providers000001/providers/Microsoft.CustomProviders/resourceProviders/clitest-crp000002?api-version=2018-09-01-preview
+  response:
+    body:
+      string: '{"properties":{"actions":[{"name":"ping","routingType":"Proxy","endpoint":"https://ayniadjso4lay.azurewebsites.net/api"},{"name":"ping1","routingType":"Proxy","endpoint":"https://ayniadjso4lay.azurewebsites.net/api1"}],"resourceTypes":[{"name":"users","routingType":"Proxy,
+        Cache","endpoint":"https://ayniadjso4lay.azurewebsites.net/api"}],"validations":[{"validationType":"Swagger","specification":"https://raw.githubusercontent.com/jsntcy/TestFixDelete/master/test.json"}],"provisioningState":"Succeeded"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_custom_providers000001/providers/Microsoft.CustomProviders/resourceproviders/clitest-crp000002","name":"clitest-crp000002","type":"Microsoft.CustomProviders/resourceproviders","location":"westus2","tags":{}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '847'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sat, 09 May 2020 08:16:27 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - custom-providers resource-provider show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name
+      User-Agent:
+      - python/3.7.6 (Windows-10-10.0.18362-SP0) msrest/0.6.11 yulocal msrest_azure/0.6.3
+        azure-mgmt-customproviders/0.1.0 Azure-SDK-For-Python AZURECLI/2.4.0
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_custom_providers000001/providers/Microsoft.CustomProviders/resourceProviders/clitest-crp000002?api-version=2018-09-01-preview
+  response:
+    body:
+      string: '{"properties":{"actions":[{"name":"ping","routingType":"Proxy","endpoint":"https://ayniadjso4lay.azurewebsites.net/api"},{"name":"ping1","routingType":"Proxy","endpoint":"https://ayniadjso4lay.azurewebsites.net/api1"}],"resourceTypes":[{"name":"users","routingType":"Proxy,
+        Cache","endpoint":"https://ayniadjso4lay.azurewebsites.net/api"}],"validations":[{"validationType":"Swagger","specification":"https://raw.githubusercontent.com/jsntcy/TestFixDelete/master/test.json"}],"provisioningState":"Succeeded"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_custom_providers000001/providers/Microsoft.CustomProviders/resourceproviders/clitest-crp000002","name":"clitest-crp000002","type":"Microsoft.CustomProviders/resourceproviders","location":"westus2","tags":{}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '847'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sat, 09 May 2020 08:16:30 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - custom-providers resource-provider list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group
+      User-Agent:
+      - python/3.7.6 (Windows-10-10.0.18362-SP0) msrest/0.6.11 yulocal msrest_azure/0.6.3
+        azure-mgmt-customproviders/0.1.0 Azure-SDK-For-Python AZURECLI/2.4.0
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_custom_providers000001/providers/Microsoft.CustomProviders/resourceProviders?api-version=2018-09-01-preview
+  response:
+    body:
+      string: '{"value":[{"properties":{"actions":[{"name":"ping","routingType":"Proxy","endpoint":"https://ayniadjso4lay.azurewebsites.net/api"},{"name":"ping1","routingType":"Proxy","endpoint":"https://ayniadjso4lay.azurewebsites.net/api1"}],"resourceTypes":[{"name":"users","routingType":"Proxy,
+        Cache","endpoint":"https://ayniadjso4lay.azurewebsites.net/api"}],"validations":[{"validationType":"Swagger","specification":"https://raw.githubusercontent.com/jsntcy/TestFixDelete/master/test.json"}],"provisioningState":"Succeeded"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_custom_providers000001/providers/Microsoft.CustomProviders/resourceproviders/clitest-crp000002","name":"clitest-crp000002","type":"Microsoft.CustomProviders/resourceproviders","location":"westus2","tags":{}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '859'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sat, 09 May 2020 08:16:33 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"tags": {"a": "b"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - custom-providers resource-provider update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '20'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - --resource-group --name --tags
+      User-Agent:
+      - python/3.7.6 (Windows-10-10.0.18362-SP0) msrest/0.6.11 yulocal msrest_azure/0.6.3
+        azure-mgmt-customproviders/0.1.0 Azure-SDK-For-Python AZURECLI/2.4.0
+      accept-language:
+      - en-US
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_custom_providers000001/providers/Microsoft.CustomProviders/resourceProviders/clitest-crp000002?api-version=2018-09-01-preview
+  response:
+    body:
+      string: '{"properties":{"actions":[{"name":"ping","routingType":"Proxy","endpoint":"https://ayniadjso4lay.azurewebsites.net/api"},{"name":"ping1","routingType":"Proxy","endpoint":"https://ayniadjso4lay.azurewebsites.net/api1"}],"resourceTypes":[{"name":"users","routingType":"Proxy,
+        Cache","endpoint":"https://ayniadjso4lay.azurewebsites.net/api"}],"validations":[{"validationType":"Swagger","specification":"https://raw.githubusercontent.com/jsntcy/TestFixDelete/master/test.json"}],"provisioningState":"Succeeded"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_custom_providers000001/providers/Microsoft.CustomProviders/resourceproviders/clitest-crp000002","name":"clitest-crp000002","type":"Microsoft.CustomProviders/resourceproviders","location":"westus2","tags":{"a":"b"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '854'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sat, 09 May 2020 08:16:40 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - custom-providers resource-provider delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --resource-group --name -y
+      User-Agent:
+      - python/3.7.6 (Windows-10-10.0.18362-SP0) msrest/0.6.11 yulocal msrest_azure/0.6.3
+        azure-mgmt-customproviders/0.1.0 Azure-SDK-For-Python AZURECLI/2.4.0
+      accept-language:
+      - en-US
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_custom_providers000001/providers/Microsoft.CustomProviders/resourceProviders/clitest-crp000002?api-version=2018-09-01-preview
+  response:
+    body:
+      string: 'null'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_custom_providers000001/providers/Microsoft.CustomProviders/locations/westus2/operationstatuses/eyJqb2JJZCI6Ik1SUENSVUQ6MkRDTEk6NUZURVNUOjVGQ1VTVE9NOjVGUFJPVklERVJTU0JJQ0VCUkZGWFlWV0s2T1ZKVDdUUzVJN1FEM0RZM1lFQ0FYWE8zNUsyRFlQT1hFVk86MkRDTElURVNUOjJEQ1JQNEpOVDNGSEZJIiwiam9iTG9jYXRpb24iOiJXRVNUVVMyIn0?api-version=2018-09-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sat, 09 May 2020 08:16:44 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_custom_providers000001/providers/Microsoft.CustomProviders/locations/westus2/operationresults/eyJqb2JJZCI6Ik1SUENSVUQ6MkRDTEk6NUZURVNUOjVGQ1VTVE9NOjVGUFJPVklERVJTU0JJQ0VCUkZGWFlWV0s2T1ZKVDdUUzVJN1FEM0RZM1lFQ0FYWE8zNUsyRFlQT1hFVk86MkRDTElURVNUOjJEQ1JQNEpOVDNGSEZJIiwiam9iTG9jYXRpb24iOiJXRVNUVVMyIn0?api-version=2018-09-01-preview
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - custom-providers resource-provider delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name -y
+      User-Agent:
+      - python/3.7.6 (Windows-10-10.0.18362-SP0) msrest/0.6.11 yulocal msrest_azure/0.6.3
+        azure-mgmt-customproviders/0.1.0 Azure-SDK-For-Python AZURECLI/2.4.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_custom_providers000001/providers/Microsoft.CustomProviders/locations/westus2/operationstatuses/eyJqb2JJZCI6Ik1SUENSVUQ6MkRDTEk6NUZURVNUOjVGQ1VTVE9NOjVGUFJPVklERVJTU0JJQ0VCUkZGWFlWV0s2T1ZKVDdUUzVJN1FEM0RZM1lFQ0FYWE8zNUsyRFlQT1hFVk86MkRDTElURVNUOjJEQ1JQNEpOVDNGSEZJIiwiam9iTG9jYXRpb24iOiJXRVNUVVMyIn0?api-version=2018-09-01-preview
+  response:
+    body:
+      string: '{"status":"Succeeded"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '22'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sat, 09 May 2020 08:17:00 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_custom_providers000001/providers/Microsoft.CustomProviders/locations/westus2/operationstatuses/eyJqb2JJZCI6Ik1SUENSVUQ6MkRDTEk6NUZURVNUOjVGQ1VTVE9NOjVGUFJPVklERVJTU0JJQ0VCUkZGWFlWV0s2T1ZKVDdUUzVJN1FEM0RZM1lFQ0FYWE8zNUsyRFlQT1hFVk86MkRDTElURVNUOjJEQ1JQNEpOVDNGSEZJIiwiam9iTG9jYXRpb24iOiJXRVNUVVMyIn0?api-version=2018-09-01-preview
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - custom-providers resource-provider show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name
+      User-Agent:
+      - python/3.7.6 (Windows-10-10.0.18362-SP0) msrest/0.6.11 yulocal msrest_azure/0.6.3
+        azure-mgmt-customproviders/0.1.0 Azure-SDK-For-Python AZURECLI/2.4.0
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_custom_providers000001/providers/Microsoft.CustomProviders/resourceProviders/clitest-crp000002?api-version=2018-09-01-preview
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Sat, 09 May 2020 08:17:03 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 404
+      message: Not Found
+version: 1

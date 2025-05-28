@@ -84,7 +84,17 @@ helps['blueprint import'] = """
       - name: Import a blueprint definition and artifacts
         text: |-
                az blueprint import --name MyBlueprint \\
-               --input-path "/path/to/blueprint/directory"
+               --input-path "path/to/blueprint/directory"
+"""
+
+helps['blueprint export'] = """
+    type: command
+    short-summary: Export a blueprint definition and artifacts to json file(s).
+    examples:
+      - name: Export a blueprint definition and artifacts
+        text: |-
+               az blueprint export --name MyBlueprint \\
+               --output-path "path/to/blueprint/directory"
 """
 
 helps['blueprint resource-group'] = """
@@ -203,7 +213,7 @@ helps['blueprint artifact policy create'] = """
                az blueprint artifact policy create \\
                --blueprint-name MyBlueprint --artifact-name MyPolicy --policy-definition-id \\
                "/providers/Microsoft.Authorization/policyDefinitions/00000000-0000-0000-0000-000000000000" \\
-               --parameters @/path/to/file --display-name "Policy to do sth"
+               --parameters path/to/file --display-name "Policy to do sth"
 """
 
 helps['blueprint artifact policy update'] = """
@@ -256,7 +266,7 @@ helps['blueprint artifact template create'] = """
         text: |-
                az blueprint artifact template create \\
                --blueprint-name MyBlueprint --artifact-name MyTemplate \\
-               --parameters @/path/to/parameter/file --template @/path/to/template
+               --parameters path/to/parameter/file --template path/to/template
 """
 
 helps['blueprint artifact template update'] = """
@@ -385,17 +395,18 @@ helps['blueprint assignment create'] = """
                ers/Microsoft.Blueprint/blueprints/MyBlueprint/versions/v2" \\
                --resource-group-value artifact_name=rg-art-1 name=rg1 location=westus \\
                --resource-group-value artifact_name=rg-art-2 name=rg2 location=eastus \\
-               --parameters "@path/to/parameter/file" \\
+               --parameters "path/to/parameter/file" \\
       - name: Assignment with user-assigned managed identity
         text: |-
                az blueprint assignment create --subscription MySubscription --name \\
                MyBlueprintAssignment --location eastus --identity-type UserAssigned \\
-               --user-assigned-identities identity-id \\
+               --user-assigned-identity "/subscriptions/00000000-0000-0000-0000-000000000000 \\
+               /resourcegroups/myResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myIdentity"\\
                --description "Enforce pre-defined MyBlueprint to this subscription." \\
                --blueprint-version "/providers/Microsoft.Management/managementGroups/ContosoOnlineGroup \\
                /providers/Microsoft.Blueprint/blueprints/MyBlueprint/versions/v2" \\
                --resource-group-value artifact_name=rg-art-1 name=rg1 location=eastus \\
-               --parameters "@path/to/parameter/file" \\
+               --parameters "path/to/parameter/file" \\
 """
 
 helps['blueprint assignment update'] = """

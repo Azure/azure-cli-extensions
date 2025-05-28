@@ -1,0 +1,104 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - workloads monitor provider-instance delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --monitor-name -g -n --yes
+      User-Agent:
+      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.12 (Windows-10-10.0.22000-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLI-TESTING/providers/Microsoft.Workloads/monitors/ams-test-cli-monitor/providerInstances/os-cli?api-version=2023-04-01
+  response:
+    body:
+      string: 'null'
+    headers:
+      api-supported-versions:
+      - 2021-12-01-preview, 2022-10-15-preview, 2022-11-01-preview, 2023-04-01
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Workloads/locations/EASTUS2EUAP/operationStatuses/2d882e9f-9af4-485e-abe4-5107d583063b*A0463681377FFA27C7295DB5AE194EA31518B5137A814F82AD32024A5F914EC5?api-version=2023-04-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Apr 2023 11:29:30 GMT
+      etag:
+      - '"0b00620e-0000-3400-0000-643d2d9a0000"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Workloads/locations/EASTUS2EUAP/operationStatuses/2d882e9f-9af4-485e-abe4-5107d583063b*A0463681377FFA27C7295DB5AE194EA31518B5137A814F82AD32024A5F914EC5?api-version=2023-04-01
+      mise-correlation-id:
+      - dd3f959c-3972-4710-b4ca-8a00c81e8247
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - workloads monitor provider-instance delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --monitor-name -g -n --yes
+      User-Agent:
+      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.12 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Workloads/locations/EASTUS2EUAP/operationStatuses/2d882e9f-9af4-485e-abe4-5107d583063b*A0463681377FFA27C7295DB5AE194EA31518B5137A814F82AD32024A5F914EC5?api-version=2023-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Workloads/locations/EASTUS2EUAP/operationStatuses/2d882e9f-9af4-485e-abe4-5107d583063b*A0463681377FFA27C7295DB5AE194EA31518B5137A814F82AD32024A5F914EC5","name":"2d882e9f-9af4-485e-abe4-5107d583063b*A0463681377FFA27C7295DB5AE194EA31518B5137A814F82AD32024A5F914EC5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLI-TESTING/providers/Microsoft.Workloads/monitors/ams-test-cli-monitor/providerInstances/os-cli","status":"Succeeded","startTime":"2023-04-17T11:29:29.8370144Z","endTime":"2023-04-17T11:29:32.8315896Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '645'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Apr 2023 11:29:59 GMT
+      etag:
+      - '"0b004b63-0000-3400-0000-643d2d9c0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+version: 1

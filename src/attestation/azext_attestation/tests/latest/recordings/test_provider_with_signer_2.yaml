@@ -1,0 +1,399 @@
+interactions:
+- request:
+    body: '{"location": "westus", "properties": {"policySigningCertificates": {"keys":
+      [{"alg": "RS256", "kty": "RSA", "use": "sig", "x5c": ["MIIDRjCCAi6gAwIBAgIIJcdZv4O76ywwDQYJKoZIhvcNAQELBQAwHzEdMBsGA1UEAwwUTWFhT3JpZ2luYWxUZXN0Q2VydDEwIBcNMjMxMjA0MDAwMDAwWhgPMjA3MzEyMDQwMDAwMDBaMB8xHTAbBgNVBAMMFE1hYU9yaWdpbmFsVGVzdENlcnQxMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAlwu79hWYy2//Biu1GYtL1LA0EbUel2N1Ij8LeRUJE6UJPDZvesuw03KdWZIcG49oesCWAmvVrbeph0vOtnZi02EBEwIHak8vs0OX8J06gBRADCZ64IzqG+UpGHVt9yc01I+gI+yMJb8161VFwDym/XwY/6KAFi64W0sofTD2f77tgz2x8Kkl4mX8QUjvEafNDtHGVPfPcWiU/wYWT+x2pSLmnijNl97FPabotLUAEdUYHVVIKDvGxyp2am8+74xeGIb9/GVP6NRJCN/yE3FcMc6qNGoysai9gte//A03uWVIJtDBAccniUrPhenLS352YwSP5LQMfqTiIShIBVM5BwIDAQABo4GDMIGAME4GA1UdIwRHMEWAFFFlFjpkdDB5nEgUMuK25bzbSpLVoSOkITAfMR0wGwYDVQQDDBRNYWFPcmlnaW5hbFRlc3RDZXJ0MYIIJcdZv4O76ywwHQYDVR0OBBYEFFFlFjpkdDB5nEgUMuK25bzbSpLVMA8GA1UdEwEB/wQFMAMBAf8wDQYJKoZIhvcNAQELBQADggEBABCUBWBQIg5jc5d3F/EJeP8pq2LwvcFDD753TbGKx7TsaHHgphACnKOCSpREiftsiR5Oic487MYwfFUWB0pgCFc6iWzUV5sRtSHDo4NuA5psgnDcYBnh6TuVfpGArXvHON0K4QbO56fN4xfmfDC4dohuH5OaCwiKK5K1Qb+s5gqo1bwvOMn4cA5A0KtPsdyG2skhVV4o6sF9ChytlVhtC5zDO5Fy0YKBwYtPXzcAL9FauAxLNTFq4Cuye44h2FwfQRON7qkYzxPOMaCU8GMUB8Jf+9AkucwmvF50L40yZCFx9hqAoTcSMo5e2rc7yOyo+TetRpyAqkQ9bFCAdVEf2aU="]}]}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - attestation create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1262'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -l -n -g --certs-input-path
+      User-Agent:
+      - AZURECLI/2.55.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22631-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Attestation/attestationProviders/att2000002?api-version=2020-10-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Attestation/attestationProviders/att2000002","name":"att2000002","type":"Microsoft.Attestation/attestationProviders","location":"westus","properties":{"trustModel":"Isolated","status":"Ready","attestUri":"https://att2000002.wus.attest.azure.net"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '355'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 08 Dec 2023 07:32:10 GMT
+      expires:
+      - '-1'
+      location:
+      - https://att2000002.wus.attest.azure.net/
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-maa-service-version:
+      - 1.11.02509.1778
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - attestation policy show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --attestation-type
+      User-Agent:
+      - AZURECLI/2.55.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Attestation/attestationProviders/att2000002?api-version=2021-06-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Attestation/attestationProviders/att2000002","name":"att2000002","type":"Microsoft.Attestation/attestationProviders","location":"westus","properties":{"trustModel":"Isolated","status":"Ready","attestUri":"https://att2000002.wus.attest.azure.net","publicNetworkAccess":null,"tpmAttestationAuthentication":null}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '418'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 08 Dec 2023 07:32:12 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-maa-service-version:
+      - 1.11.02509.1778
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - attestation policy show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --attestation-type
+      User-Agent:
+      - AZURECLI/2.55.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://att2000002.wus.attest.azure.net/policies/SgxEnclave?api-version=2022-08-01
+  response:
+    body:
+      string: '{"token":"eyJhbGciOiJSUzI1NiIsImprdSI6Imh0dHBzOi8vYXR0MmpneDJ2bmxsY2Yycy53dXMuYXR0ZXN0LmF6dXJlLm5ldC9jZXJ0cyIsImtpZCI6Ilh4UmMydkxoMUU1RnJzTmF3blJIM1B6dUZncWczcTdOdkNkbmpvSkhCR0U9IiwidHlwIjoiSldUIn0.eyJleHAiOjE3MDIwMjQzMzUsImlhdCI6MTcwMjAyMDczNSwiaXNzIjoiaHR0cHM6Ly9hdHQyamd4MnZubGxjZjJzLnd1cy5hdHRlc3QuYXp1cmUubmV0IiwibmJmIjoxNzAyMDIwNzM1LCJ4LW1zLXBvbGljeSI6ImV5SmhiR2NpT2lKdWIyNWxJbjAuZXlKQmRIUmxjM1JoZEdsdmJsQnZiR2xqZVNJNkltUnRWbmxqTW14Mlltb3daMDFUTkhoUE1rNTJZbTFhY0ZvelZubFpXRkp3WWpJMWVXUlhlR3hqTTNNNVVHbENjR016VGpGYVdFSjVZak5DYkdOdVVqVkxTRkkxWTBkVk9VbHVaM1JpV0UxMFl6SmtORXhZVW1wWmJXeHJXbGMxTUdGWFduQmFXRWxwVEVOQ01sbFhlREZhVkRCcFRWUkJhVXRVZERsUE1rWXhaRWRvZG1OdGJEWlpXRkp3WWpJMWVXUlhlR3hqTTNNNVVHbENkMXBZU25SaFdGRnZTMVIwT1U4eWJIcGpNMVpvWW0xT2JHTnVWbk5hV0U0M1dYcHdZbVJJYkhkYVZEQTVTVzVuZEdKWVRYUmpNbVEwVEZkc2VreFhVbXhaYmxadVdqSkdhV0pIVldsWVUwRTVVR2xDY0dNelRqRmFVMmd3WlZoQ2JGQlRTbkJqZVRGcldsZEtNVm95WkdoWmJYaHNTV2wzWjJSdFJuTmtWMVU1V1hrMU1sbFhlREZhVTJzM1dYcHdZbVJJYkhkYVZEQTVTVzVuZEdKWVRYUmpNbVEwVEZjeGVXTXliRzVpYlZaNVNXd3daMUJVTkdkaFdFNTZaRmRWYjJSSWJIZGFWREJwWXpKa05FeFhNWGxqTW14dVltMVdlVWxwZDJka2JVWnpaRmRWT1ZsNU5USlpWM2d4V2xOck4xbDZjR0prU0d4M1dsUXdPVWx1WjNSaVdFMTBZekprTkV4WE1YbGFWelZxWWtkR01scFRTbVJKUkRBdFNVZHNlbU16Vm14TFNGSTFZMGRWT1VsdVRtNWxRekYwWTIxV2RWa3llR2hrYlZWcFRFTkNNbGxYZURGYVZERnFURzVhYUdKSVZteExWSFJxVDJ4ME1HVllRbXhRVkRCcFpVTXhkR041TVhwYU0yZDBZMGhLZGxwSVZtcGtRekZ3V2tOS1pFbEVNQzFKUjJ4Nll6TldiRXRJVWpWalIxVTVTVzVDZVdJeVVqRlpNMUYwWVZkUmFVeERRakpaVjNneFdsUXhha3h1V21oaVNGWnNTMVIwYWs5c2REQmxXRUpzVUZRd2FXVkRNWFJqZVRGNldqTm5kR016V25WSmJEQm5VRlEwWjJGWVRucGtWMVZ2WkVoc2QxcFVNR2xqTTFwMVNXbDNaMlJ0Um5Oa1YxVTVXWGsxTWxsWGVERmFVMnMzV1hwd1ltUkliSGRhVkRBNVNXNW5kR0pZVFhSWldGSXdXbGhPTUZsWVVuQmlNalIwWkVoc2QxcFRTbVJKUkRBdFNVZHNlbU16Vm14TFNGSTFZMGRWT1VsdVVteGFVMGx6U1VoYWFHSklWbXhRVjAxMVpHMUdjMlJYVlhCUE16QTNJbjAuIn0.anzafp6cCktrFMmgoSeMKVhiQOI7G5CTrdQ-pDP8sfO52uihir1S6ckxuPxESIdGor-euWNQfQju0BfmGjL6KgBusGWATy2SiCQGIt0RkR29JLQeSs8NB7AuAwVZ6lFg7iRgvpq5m3eAtsW_mWyvZ7h9sNZcoH2dRm8b3tIWXNgJeE-55WxezwDA3zKq0MtchooGfbXMPTQ2adazLKi8RSTcHj0FqcYTrx_EOKKZ3FAkxceEGimQVG7CuuNN_jy2kk9AMcqT4blqFD_2MgV2thFlGcpEnRkZpIYF-4yT1Sqr-D8AA69-k0LQHuEbghezNdI_XOZA7ir1vHQr2ATYsA"}'
+    headers:
+      content-length:
+      - '2158'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 08 Dec 2023 07:32:15 GMT
+      server:
+      - Kestrel
+      x-ms-maa-service-version:
+      - 1.11.02509.1778
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - attestation policy set
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --attestation-type -f --policy-format
+      User-Agent:
+      - AZURECLI/2.55.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Attestation/attestationProviders/att2000002?api-version=2020-10-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Attestation/attestationProviders/att2000002","name":"att2000002","type":"Microsoft.Attestation/attestationProviders","location":"westus","properties":{"trustModel":"Isolated","status":"Ready","attestUri":"https://att2000002.wus.attest.azure.net"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '355'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 08 Dec 2023 07:32:16 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-maa-service-version:
+      - 1.11.02509.1778
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - attestation policy set
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --attestation-type -f --policy-format
+      User-Agent:
+      - AZURECLI/2.55.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Attestation/attestationProviders/att2000002?api-version=2021-06-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Attestation/attestationProviders/att2000002","name":"att2000002","type":"Microsoft.Attestation/attestationProviders","location":"westus","properties":{"trustModel":"Isolated","status":"Ready","attestUri":"https://att2000002.wus.attest.azure.net","publicNetworkAccess":null,"tpmAttestationAuthentication":null}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '418'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 08 Dec 2023 07:32:18 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-maa-service-version:
+      - 1.11.02509.1778
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '"eyAiYWxnIjoiUlMyNTYiLCAieDVjIjogWyJNSUlEUmpDQ0FpNmdBd0lCQWdJSUpjZFp2NE83Nnl3d0RRWUpLb1pJaHZjTkFRRUxCUUF3SHpFZE1Cc0dBMVVFQXd3VVRXRmhUM0pwWjJsdVlXeFVaWE4wUTJWeWRERXdJQmNOTWpNeE1qQTBNREF3TURBd1doZ1BNakEzTXpFeU1EUXdNREF3TURCYU1COHhIVEFiQmdOVkJBTU1GRTFoWVU5eWFXZHBibUZzVkdWemRFTmxjblF4TUlJQklqQU5CZ2txaGtpRzl3MEJBUUVGQUFPQ0FROEFNSUlCQ2dLQ0FRRUFsd3U3OWhXWXkyLy9CaXUxR1l0TDFMQTBFYlVlbDJOMUlqOExlUlVKRTZVSlBEWnZlc3V3MDNLZFdaSWNHNDlvZXNDV0FtdlZyYmVwaDB2T3RuWmkwMkVCRXdJSGFrOHZzME9YOEowNmdCUkFEQ1o2NEl6cUcrVXBHSFZ0OXljMDFJK2dJK3lNSmI4MTYxVkZ3RHltL1h3WS82S0FGaTY0VzBzb2ZURDJmNzd0Z3oyeDhLa2w0bVg4UVVqdkVhZk5EdEhHVlBmUGNXaVUvd1lXVCt4MnBTTG1uaWpObDk3RlBhYm90TFVBRWRVWUhWVklLRHZHeHlwMmFtOCs3NHhlR0liOS9HVlA2TlJKQ04veUUzRmNNYzZxTkdveXNhaTlndGUvL0EwM3VXVklKdERCQWNjbmlVclBoZW5MUzM1Mll3U1A1TFFNZnFUaUlTaElCVk01QndJREFRQUJvNEdETUlHQU1FNEdBMVVkSXdSSE1FV0FGRkZsRmpwa2REQjVuRWdVTXVLMjViemJTcExWb1NPa0lUQWZNUjB3R3dZRFZRUUREQlJOWVdGUGNtbG5hVzVoYkZSbGMzUkRaWEowTVlJSUpjZFp2NE83Nnl3d0hRWURWUjBPQkJZRUZGRmxGanBrZERCNW5FZ1VNdUsyNWJ6YlNwTFZNQThHQTFVZEV3RUIvd1FGTUFNQkFmOHdEUVlKS29aSWh2Y05BUUVMQlFBRGdnRUJBQkNVQldCUUlnNWpjNWQzRi9FSmVQOHBxMkx3dmNGREQ3NTNUYkdLeDdUc2FISGdwaEFDbktPQ1NwUkVpZnRzaVI1T2ljNDg3TVl3ZkZVV0IwcGdDRmM2aVd6VVY1c1J0U0hEbzROdUE1cHNnbkRjWUJuaDZUdVZmcEdBclh2SE9OMEs0UWJPNTZmTjR4Zm1mREM0ZG9odUg1T2FDd2lLSzVLMVFiK3M1Z3FvMWJ3dk9NbjRjQTVBMEt0UHNkeUcyc2toVlY0bzZzRjlDaHl0bFZodEM1ekRPNUZ5MFlLQndZdFBYemNBTDlGYXVBeExOVEZxNEN1eWU0NGgyRndmUVJPTjdxa1l6eFBPTWFDVThHTVVCOEpmKzlBa3Vjd212RjUwTDQweVpDRng5aHFBb1RjU01vNWUycmM3eU95bytUZXRScHlBcWtROWJGQ0FkVkVmMmFVPSJdfQ.eyJBdHRlc3RhdGlvblBvbGljeSI6ImRtVnljMmx2YmowZ01TNHdPMkYxZEdodmNtbDZZWFJwYjI1eWRXeGxjM3RqT2x0MGVYQmxQVDBpSkdsekxXUmxZblZuWjJGaWJHVWlYU0E5UGlCd1pYSnRhWFFvS1R0OU8ybHpjM1ZoYm1ObGNuVnNaWE43WXpwYmRIbHdaVDA5SWlScGN5MWtaV0oxWjJkaFlteGxJbDBnUFQ0Z2FYTnpkV1VvZEhsd1pUMGlhWE10WkdWaWRXZG5ZV0pzWlNJc0lIWmhiSFZsUFdNdWRtRnNkV1VwTzJNNlczUjVjR1U5UFNJa2MyZDRMVzF5YzJsbmJtVnlJbDBnUFQ0Z2FYTnpkV1VvZEhsd1pUMGljMmQ0TFcxeWMybG5ibVZ5SWl3Z2RtRnNkV1U5WXk1MllXeDFaU2s3WXpwYmRIbHdaVDA5SWlSelozZ3RiWEpsYm1Oc1lYWmxJbDBnUFQ0Z2FYTnpkV1VvZEhsd1pUMGljMmQ0TFcxeVpXNWpiR0YyWlNJc0lIWmhiSFZsUFdNdWRtRnNkV1VwTzJNNlczUjVjR1U5UFNJa2NISnZaSFZqZEMxcFpDSmRJRDAtSUdsemMzVmxLSFI1Y0dVOUluQnliMlIxWTNRdGFXUWlMQ0IyWVd4MVpUMWpMblpoYkhWbEtUdGpPbHQwZVhCbFBUMGlKSE4yYmlKZElEMC1JR2x6YzNWbEtIUjVjR1U5SW5OMmJpSXNJSFpoYkhWbFBXTXVkbUZzZFdVcE8yTTZXM1I1Y0dVOVBTSWtkR1ZsSWwwZ1BUNGdhWE56ZFdVb2RIbHdaVDBpZEdWbElpd2dkbUZzZFdVOVl5NTJZV3gxWlNrN2ZUcyJ9.lUzO5dDT6NcjwqdkxQiwFOkOBOfssucghqSF5AgUacMmlCN9ssiudLWgMTCnGlr2UoKN674Egl2GL8wPcPc3_Ph8syJKmXpOSLgY57zfO2LSSFrD3ZRbB-RkwIM_d9v7545_5cZIQD2gyql4MUATXYKAk3cvmQR1aK5n1rNwqWbesSAOZz-RhVjiYl5I5vsWIVMCy6qM4UyCQki-UNQ2upp1R1ExBMLswfIDjKZxVptkW9jG7A3CdgqAl8jtxYvetkcqe3fEOs9-D_zonHgcKqvyRRp2qw5R8hKaFxeTg311yi_L7xIWehGeOZofBckmweUPNs7LC6mo55e9lnyOhw"'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - attestation policy set
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '2768'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -n -g --attestation-type -f --policy-format
+      User-Agent:
+      - AZURECLI/2.55.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22631-SP0)
+    method: PUT
+    uri: https://att2000002.wus.attest.azure.net/policies/SgxEnclave?api-version=2022-08-01
+  response:
+    body:
+      string: '{"token":"eyJhbGciOiJSUzI1NiIsImprdSI6Imh0dHBzOi8vYXR0MmpneDJ2bmxsY2Yycy53dXMuYXR0ZXN0LmF6dXJlLm5ldC9jZXJ0cyIsImtpZCI6Ilh4UmMydkxoMUU1RnJzTmF3blJIM1B6dUZncWczcTdOdkNkbmpvSkhCR0U9IiwidHlwIjoiSldUIn0.eyJleHAiOjE3MDIwMjQzNDAsImlhdCI6MTcwMjAyMDc0MCwiaXNzIjoiaHR0cHM6Ly9hdHQyamd4MnZubGxjZjJzLnd1cy5hdHRlc3QuYXp1cmUubmV0IiwibmJmIjoxNzAyMDIwNzQwLCJ4LW1zLXBvbGljeS1yZXN1bHQiOiJVcGRhdGVkIiwieC1tcy1wb2xpY3ktc2lnbmVyIjp7ImFsZyI6IlJTMjU2Iiwia3R5IjoiUlNBIiwidXNlIjoic2lnIiwieDVjIjpbIk1JSURSakNDQWk2Z0F3SUJBZ0lJSmNkWnY0Tzc2eXd3RFFZSktvWklodmNOQVFFTEJRQXdIekVkTUJzR0ExVUVBd3dVVFdGaFQzSnBaMmx1WVd4VVpYTjBRMlZ5ZERFd0lCY05Nak14TWpBME1EQXdNREF3V2hnUE1qQTNNekV5TURRd01EQXdNREJhTUI4eEhUQWJCZ05WQkFNTUZFMWhZVTl5YVdkcGJtRnNWR1Z6ZEVObGNuUXhNSUlCSWpBTkJna3Foa2lHOXcwQkFRRUZBQU9DQVE4QU1JSUJDZ0tDQVFFQWx3dTc5aFdZeTIvL0JpdTFHWXRMMUxBMEViVWVsMk4xSWo4TGVSVUpFNlVKUERadmVzdXcwM0tkV1pJY0c0OW9lc0NXQW12VnJiZXBoMHZPdG5aaTAyRUJFd0lIYWs4dnMwT1g4SjA2Z0JSQURDWjY0SXpxRytVcEdIVnQ5eWMwMUkrZ0kreU1KYjgxNjFWRndEeW0vWHdZLzZLQUZpNjRXMHNvZlREMmY3N3RnejJ4OEtrbDRtWDhRVWp2RWFmTkR0SEdWUGZQY1dpVS93WVdUK3gycFNMbW5pak5sOTdGUGFib3RMVUFFZFVZSFZWSUtEdkd4eXAyYW04Kzc0eGVHSWI5L0dWUDZOUkpDTi95RTNGY01jNnFOR295c2FpOWd0ZS8vQTAzdVdWSUp0REJBY2NuaVVyUGhlbkxTMzUyWXdTUDVMUU1mcVRpSVNoSUJWTTVCd0lEQVFBQm80R0RNSUdBTUU0R0ExVWRJd1JITUVXQUZGRmxGanBrZERCNW5FZ1VNdUsyNWJ6YlNwTFZvU09rSVRBZk1SMHdHd1lEVlFRRERCUk5ZV0ZQY21sbmFXNWhiRlJsYzNSRFpYSjBNWUlJSmNkWnY0Tzc2eXd3SFFZRFZSME9CQllFRkZGbEZqcGtkREI1bkVnVU11SzI1YnpiU3BMVk1BOEdBMVVkRXdFQi93UUZNQU1CQWY4d0RRWUpLb1pJaHZjTkFRRUxCUUFEZ2dFQkFCQ1VCV0JRSWc1amM1ZDNGL0VKZVA4cHEyTHd2Y0ZERDc1M1RiR0t4N1RzYUhIZ3BoQUNuS09DU3BSRWlmdHNpUjVPaWM0ODdNWXdmRlVXQjBwZ0NGYzZpV3pVVjVzUnRTSERvNE51QTVwc2duRGNZQm5oNlR1VmZwR0FyWHZIT04wSzRRYk81NmZONHhmbWZEQzRkb2h1SDVPYUN3aUtLNUsxUWIrczVncW8xYnd2T01uNGNBNUEwS3RQc2R5RzJza2hWVjRvNnNGOUNoeXRsVmh0QzV6RE81RnkwWUtCd1l0UFh6Y0FMOUZhdUF4TE5URnE0Q3V5ZTQ0aDJGd2ZRUk9ON3FrWXp4UE9NYUNVOEdNVUI4SmYrOUFrdWN3bXZGNTBMNDB5WkNGeDlocUFvVGNTTW81ZTJyYzd5T3lvK1RldFJweUFxa1E5YkZDQWRWRWYyYVU9Il19LCJ4LW1zLXBvbGljeS10b2tlbi1oYXNoIjoiSVg3dE54N2p5TWduTVpSS0lUMVZxZldYa1p0MXlKWml2WXNiTjZQeTAzcyJ9.hDyrRrFrEjJF41LIQTFyHYWtXwHnEmxseZSz9tl9bjOfaybVJwtFpjN-sAHqEm1k4tVhucpNQUWzJIRHxRPk3hrUtOlrgnBQtK8tEQxSZNl2LjRKipqTn_ypy8wTW3Pgf1N3A7i2kq6T1JL7-UCzQ1YrDU011V3ACoWzSTcazph-hEq9d6BUruu-9QYzl4FQbT3VD0wYgmK3N9Ia-xMPnMGQQbE378UiKIPkEMHDp8FajWnPGOkZpoYV4OBlG2ZLMhpciKP3jJy6BFSere9LNTpAQrfmwQoL4nKg563OPgOpQWQLTS9nb6iMEt_jV3M7Gwo_x5GPNh7Nds9h8SKqGQ"}'
+    headers:
+      content-length:
+      - '2415'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 08 Dec 2023 07:32:19 GMT
+      server:
+      - Kestrel
+      x-ms-maa-service-version:
+      - 1.11.02509.1778
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - attestation policy set
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --attestation-type -f --policy-format
+      User-Agent:
+      - AZURECLI/2.55.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Attestation/attestationProviders/att2000002?api-version=2021-06-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Attestation/attestationProviders/att2000002","name":"att2000002","type":"Microsoft.Attestation/attestationProviders","location":"westus","properties":{"trustModel":"Isolated","status":"Ready","attestUri":"https://att2000002.wus.attest.azure.net","publicNetworkAccess":null,"tpmAttestationAuthentication":null}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '418'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 08 Dec 2023 07:32:20 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-maa-service-version:
+      - 1.11.02509.1778
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - attestation policy set
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --attestation-type -f --policy-format
+      User-Agent:
+      - AZURECLI/2.55.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://att2000002.wus.attest.azure.net/policies/SgxEnclave?api-version=2022-08-01
+  response:
+    body:
+      string: '{"token":"eyJhbGciOiJSUzI1NiIsImprdSI6Imh0dHBzOi8vYXR0MmpneDJ2bmxsY2Yycy53dXMuYXR0ZXN0LmF6dXJlLm5ldC9jZXJ0cyIsImtpZCI6Ilh4UmMydkxoMUU1RnJzTmF3blJIM1B6dUZncWczcTdOdkNkbmpvSkhCR0U9IiwidHlwIjoiSldUIn0.eyJleHAiOjE3MDIwMjQzNDIsImlhdCI6MTcwMjAyMDc0MiwiaXNzIjoiaHR0cHM6Ly9hdHQyamd4MnZubGxjZjJzLnd1cy5hdHRlc3QuYXp1cmUubmV0IiwibmJmIjoxNzAyMDIwNzQyLCJ4LW1zLXBvbGljeSI6ImV5QWlZV3huSWpvaVVsTXlOVFlpTENBaWVEVmpJam9nV3lKTlNVbEVVbXBEUTBGcE5tZEJkMGxDUVdkSlNVcGpaRnAyTkU4M05ubDNkMFJSV1VwTGIxcEphSFpqVGtGUlJVeENVVUYzU0hwRlpFMUNjMGRCTVZWRlFYZDNWVlJYUm1oVU0wcHdXakpzZFZsWGVGVmFXRTR3VVRKV2VXUkVSWGRKUW1OT1RXcE5lRTFxUVRCTlJFRjNUVVJCZDFkb1oxQk5ha0V6VFhwRmVVMUVVWGROUkVGM1RVUkNZVTFDT0hoSVZFRmlRbWRPVmtKQlRVMUdSVEZvV1ZVNWVXRlhaSEJpYlVaelZrZFdlbVJGVG14amJsRjRUVWxKUWtscVFVNUNaMnR4YUd0cFJ6bDNNRUpCVVVWR1FVRlBRMEZST0VGTlNVbENRMmRMUTBGUlJVRnNkM1UzT1doWFdYa3lMeTlDYVhVeFIxbDBUREZNUVRCRllsVmxiREpPTVVscU9FeGxVbFZLUlRaVlNsQkVXblpsYzNWM01ETkxaRmRhU1dOSE5EbHZaWE5EVjBGdGRsWnlZbVZ3YURCMlQzUnVXbWt3TWtWQ1JYZEpTR0ZyT0haek1FOVlPRW93Tm1kQ1VrRkVRMW8yTkVsNmNVY3JWWEJIU0ZaME9YbGpNREZKSzJkSkszbE5TbUk0TVRZeFZrWjNSSGx0TDFoM1dTODJTMEZHYVRZMFZ6QnpiMlpVUkRKbU56ZDBaM295ZURoTGEydzBiVmc0VVZWcWRrVmhaazVFZEVoSFZsQm1VR05YYVZVdmQxbFhWQ3Q0TW5CVFRHMXVhV3BPYkRrM1JsQmhZbTkwVEZWQlJXUlZXVWhXVmtsTFJIWkhlSGx3TW1GdE9DczNOSGhsUjBsaU9TOUhWbEEyVGxKS1EwNHZlVVV6Um1OTll6WnhUa2R2ZVhOaGFUbG5kR1V2TDBFd00zVlhWa2xLZEVSQ1FXTmpibWxWY2xCb1pXNU1Vek0xTWxsM1UxQTFURkZOWm5GVWFVbFRhRWxDVmswMVFuZEpSRUZSUVVKdk5FZEVUVWxIUVUxRk5FZEJNVlZrU1hkU1NFMUZWMEZHUmtac1JtcHdhMlJFUWpWdVJXZFZUWFZMTWpWaWVtSlRjRXhXYjFOUGEwbFVRV1pOVWpCM1IzZFpSRlpSVVVSRVFsSk9XVmRHVUdOdGJHNWhWelZvWWtaU2JHTXpVa1JhV0Vvd1RWbEpTVXBqWkZwMk5FODNObmwzZDBoUldVUldVakJQUWtKWlJVWkdSbXhHYW5CclpFUkNOVzVGWjFWTmRVc3lOV0o2WWxOd1RGWk5RVGhIUVRGVlpFVjNSVUl2ZDFGR1RVRk5Ra0ZtT0hkRVVWbEtTMjlhU1doMlkwNUJVVVZNUWxGQlJHZG5SVUpCUWtOVlFsZENVVWxuTldwak5XUXpSaTlGU21WUU9IQnhNa3gzZG1OR1JFUTNOVE5VWWtkTGVEZFVjMkZJU0dkd2FFRkRia3RQUTFOd1VrVnBablJ6YVZJMVQybGpORGczVFZsM1prWlZWMEl3Y0dkRFJtTTJhVmQ2VlZZMWMxSjBVMGhFYnpST2RVRTFjSE5uYmtSaldVSnVhRFpVZFZabWNFZEJjbGgyU0U5T01FczBVV0pQTlRabVRqUjRabTFtUkVNMFpHOW9kVWcxVDJGRGQybExTelZMTVZGaUszTTFaM0Z2TVdKM2RrOU5ialJqUVRWQk1FdDBVSE5rZVVjeWMydG9WbFkwYnpaelJqbERhSGwwYkZab2RFTTFla1JQTlVaNU1GbExRbmRaZEZCWWVtTkJURGxHWVhWQmVFeE9WRVp4TkVOMWVXVTBOR2d5Um5kbVVWSlBUamR4YTFsNmVGQlBUV0ZEVlRoSFRWVkNPRXBtS3psQmEzVmpkMjEyUmpVd1REUXdlVnBEUm5nNWFIRkJiMVJqVTAxdk5XVXljbU0zZVU5NWJ5dFVaWFJTY0hsQmNXdFJPV0pHUTBGa1ZrVm1NbUZWUFNKZGZRLmV5SkJkSFJsYzNSaGRHbHZibEJ2YkdsamVTSTZJbVJ0Vm5sak1teDJZbW93WjAxVE5IZFBNa1l4WkVkb2RtTnRiRFpaV0ZKd1lqSTFlV1JYZUd4ak0zUnFUMngwTUdWWVFteFFWREJwU2tkc2VreFhVbXhaYmxadVdqSkdhV0pIVldsWVUwRTVVR2xDZDFwWVNuUmhXRkZ2UzFSME9VOHliSHBqTTFab1ltMU9iR051Vm5OYVdFNDNXWHB3WW1SSWJIZGFWREE1U1dsU2NHTjVNV3RhVjBveFdqSmthRmx0ZUd4SmJEQm5VRlEwWjJGWVRucGtWMVZ2WkVoc2QxcFVNR2xoV0UxMFdrZFdhV1JYWkc1WlYwcHpXbE5KYzBsSVdtaGlTRlpzVUZkTmRXUnRSbk5rVjFWd1R6Sk5ObGN6VWpWalIxVTVVRk5KYTJNeVpEUk1WekY1WXpKc2JtSnRWbmxKYkRCblVGUTBaMkZZVG5wa1YxVnZaRWhzZDFwVU1HbGpNbVEwVEZjeGVXTXliRzVpYlZaNVNXbDNaMlJ0Um5Oa1YxVTVXWGsxTWxsWGVERmFVMnMzV1hwd1ltUkliSGRhVkRBNVNXbFNlbG96WjNSaVdFcHNZbTFPYzFsWVdteEpiREJuVUZRMFoyRllUbnBrVjFWdlpFaHNkMXBVTUdsak1tUTBURmN4ZVZwWE5XcGlSMFl5V2xOSmMwbElXbWhpU0Zac1VGZE5kV1J0Um5Oa1YxVndUekpOTmxjelVqVmpSMVU1VUZOSmEyTklTblphU0ZacVpFTXhjRnBEU21SSlJEQXRTVWRzZW1NelZteExTRkkxWTBkVk9VbHVRbmxpTWxJeFdUTlJkR0ZYVVdsTVEwSXlXVmQ0TVZwVU1XcE1ibHBvWWtoV2JFdFVkR3BQYkhRd1pWaENiRkJVTUdsS1NFNHlZbWxLWkVsRU1DMUpSMng2WXpOV2JFdElValZqUjFVNVNXNU9NbUpwU1hOSlNGcG9Za2hXYkZCWFRYVmtiVVp6WkZkVmNFOHlUVFpYTTFJMVkwZFZPVkJUU1d0a1IxWnNTV3d3WjFCVU5HZGhXRTU2WkZkVmIyUkliSGRhVkRCcFpFZFdiRWxwZDJka2JVWnpaRmRWT1ZsNU5USlpWM2d4V2xOck4yWlVjeUo5LmxVek81ZERUNk5jandxZGt4UWl3Rk9rT0JPZnNzdWNnaHFTRjVBZ1VhY01tbENOOXNzaXVkTFdnTVRDbkdscjJVb0tONjc0RWdsMkdMOHdQY1BjM19QaDhzeUpLbVhwT1NMZ1k1N3pmTzJMU1NGckQzWlJiQi1Sa3dJTV9kOXY3NTQ1XzVjWklRRDJneXFsNE1VQVRYWUtBazNjdm1RUjFhSzVuMXJOd3FXYmVzU0FPWnotUmhWamlZbDVJNXZzV0lWTUN5NnFNNFV5Q1FraS1VTlEydXBwMVIxRXhCTUxzd2ZJRGpLWnhWcHRrVzlqRzdBM0NkZ3FBbDhqdHhZdmV0a2NxZTNmRU9zOS1EX3pvbkhnY0txdnlSUnAycXc1UjhoS2FGeGVUZzMxMXlpX0w3eElXZWhHZU9ab2ZCY2ttd2VVUE5zN0xDNm1vNTVlOWxueU9odyJ9.kUB5QUa7Q4hNu1RgfSJrQfzI70Dh90FCDgUa5lYt1emyQUyh4hYHRHYEwK5Bke9kBV3o2NLIc8Me1Hu4duWffpxc3caBVEnV2rpkzpmSADwLS8TGqYI1AmJNH-oSW1Por6O8bNAoF2Y8g0YeiosxBTTGcNzJhoChbFmLsDSDombvRU0eNZwkkc-P-DDjZFHY2gS_wzQrTv9eluYIW-FA8dQK2cxAjxMjlFFSWPh99vc6AooEWV8-hdqhw8o9csNESlrPK-ufc06QN377_rc4FVteYCLM4niWxOWwpClH7RwvTx-PFlZgSVwDCXFKdCbpY0Vyu6ID6jwAoxwtJWsGLw"}'
+    headers:
+      content-length:
+      - '4395'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 08 Dec 2023 07:32:22 GMT
+      server:
+      - Kestrel
+      x-ms-maa-service-version:
+      - 1.11.02509.1778
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - attestation delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -n -g -y
+      User-Agent:
+      - AZURECLI/2.55.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22631-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Attestation/attestationProviders/att2000002?api-version=2020-10-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Fri, 08 Dec 2023 07:32:32 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-maa-service-version:
+      - 1.11.02509.1778
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+    status:
+      code: 200
+      message: OK
+version: 1
