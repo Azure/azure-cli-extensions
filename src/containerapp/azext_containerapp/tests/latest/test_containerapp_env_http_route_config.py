@@ -10,6 +10,7 @@ from azure.mgmt.core.tools import parse_resource_id
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck)
+from knack.testsdk import live_only
 
 from .utils import create_vent_subnet
 
@@ -21,6 +22,7 @@ from .common import TEST_LOCATION, write_test_file, clean_up_test_file
 class ContainerAppEnvHttpRouteConfigTest(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus")
+    @live_only()
     def test_containerapp_env_http_route_config_crudoperations_e2e(self, resource_group):
 
         app1 = self.create_random_name(prefix='routed1', length=24)
