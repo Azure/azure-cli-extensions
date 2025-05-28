@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "connectedmachine extension create",
 )
 class Create(AAZCommand):
-    """Create an extension.
+    """Create operation to create or update the extension.
 
-    :example: Sample command for extension create
-        az connectedmachine extension create --name CustomScriptExtension --location eastus2euap --type CustomScriptExtension --publisher Microsoft.Compute --type-handler-version 1.10 --machine-name myMachine --resource-group myResourceGroup
+    :example: sample command for extension create
+        az connectedmachine extension create --resource-group myResourceGroup --machine-name myMachine --extension-name CustomScriptExtension --location eastus2euap --publisher Microsoft.Compute --type-handler-version 1.10 --type CustomScriptExtension --settings "{commandToExecute:\'powershell.exe -c "Get-Process | Where-Object { $_.CPU -gt 10000 }"\'}"
     """
 
     _aaz_info = {
-        "version": "2024-07-31-preview",
+        "version": "2024-11-10-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}/extensions/{}", "2024-07-31-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}/extensions/{}", "2024-11-10-preview"],
         ]
     }
 
@@ -63,21 +63,18 @@ class Create(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
+
+        # define Arg Group "ExtensionParameters"
+
+        _args_schema = cls._args_schema
         _args_schema.location = AAZResourceLocationArg(
+            arg_group="ExtensionParameters",
             help="The geo-location where the resource lives",
             required=True,
             fmt=AAZResourceLocationArgFormat(
                 resource_group_arg="resource_group",
             ),
         )
-        _args_schema.type = AAZStrArg(
-            options=["--type"],
-            help="Specifies the type of the extension; an example is \"CustomScriptExtension\".",
-        )
-
-        # define Arg Group "ExtensionParameters"
-
-        _args_schema = cls._args_schema
         _args_schema.tags = AAZDictArg(
             options=["--tags"],
             arg_group="ExtensionParameters",
@@ -124,6 +121,11 @@ class Create(AAZCommand):
             options=["--settings"],
             arg_group="Properties",
             help="Json formatted public settings for the extension.",
+        )
+        _args_schema.type = AAZStrArg(
+            options=["--type"],
+            arg_group="Properties",
+            help="Specifies the type of the extension; an example is \"CustomScriptExtension\".",
         )
         _args_schema.type_handler_version = AAZStrArg(
             options=["--type-handler-version"],
@@ -258,7 +260,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-07-31-preview",
+                    "api-version", "2024-11-10-preview",
                     required=True,
                 ),
             }

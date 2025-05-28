@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "astronomer organization create",
 )
 class Create(AAZCommand):
-    """Create a OrganizationResource
+    """Create an Azure resource that provisions a corresponding organization entity in Astronomer
 
     :example: Create a OrganizationResource
         az astronomer organization create --resource-group MyResourceGroup --name MyAstronomerOrganization --location "eastus" --marketplace {"subscription-id":"ntthclydlpqmasr","offer-details":{"publisher-id":"gfsqxygpnerxmvols","offer-id":"krzkefmpxztqyusidzgpchfaswuyce","plan-id":"kndxzygsanuiqzwbfbbvoipv","plan-name":"pwqjwlq","term-unit":"xyygyzcazkuelz","term-id":"pwds"}} --partner-organization {"organization-name":"orgname","workspace-name":"workspacename","single-sign-on-properties":{"aad-domains":["kfbleh"]}} --user {"first-name":"nfh","last-name":"lazfbstcccykibvcrxpmglqam","email-address":".K_@e7N-g1.xjqnbPs"}
@@ -50,7 +50,7 @@ class Create(AAZCommand):
             help="Name of the Organizations resource",
             required=True,
             fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9][a-zA-Z0-9_\-.: ]*$",
+                pattern="^[a-zA-Z0-9][a-zA-Z0-9_\\-.: ]*$",
                 max_length=50,
                 min_length=1,
             ),
@@ -134,7 +134,7 @@ class Create(AAZCommand):
             help="Organization name in partner's system",
             required=True,
             fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9][a-zA-Z0-9_\-.: ]*$",
+                pattern="^[a-zA-Z0-9][a-zA-Z0-9_\\-.: ]*$",
                 max_length=50,
                 min_length=1,
             ),
@@ -151,7 +151,7 @@ class Create(AAZCommand):
             options=["workspace-name"],
             help="Workspace name in partner's system",
             fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9][a-zA-Z0-9_\-.: ]*$",
+                pattern="^[a-zA-Z0-9][a-zA-Z0-9_\\-.: ]*$",
                 max_length=50,
                 min_length=1,
             ),
@@ -185,7 +185,7 @@ class Create(AAZCommand):
             help="Email address of the user",
             required=True,
             fmt=AAZStrArgFormat(
-                pattern="^[A-Za-z0-9._%+-]+@(?:[A-Za-z0-9-]+\.)+[A-Za-z]{2,}$",
+                pattern="^[A-Za-z0-9._%+-]+@(?:[A-Za-z0-9-]+\\.)+[A-Za-z]{2,}$",
             ),
         )
         user.first_name = AAZStrArg(
@@ -356,7 +356,7 @@ class Create(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("identity", AAZObjectType, ".identity")
+            _builder.set_prop("identity", AAZIdentityObjectType, ".identity")
             _builder.set_prop("location", AAZStrType, ".location", typ_kwargs={"flags": {"required": True}})
             _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
@@ -445,7 +445,7 @@ class Create(AAZCommand):
             _schema_on_200_201.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200_201.identity = AAZObjectType()
+            _schema_on_200_201.identity = AAZIdentityObjectType()
             _schema_on_200_201.location = AAZStrType(
                 flags={"required": True},
             )

@@ -111,7 +111,7 @@ def create_fleet(cmd,
     )
 
     if enable_private_cluster:
-        assign_network_contributor_role_to_subnet(cmd, resource_group_name, agent_subnet_id)
+        assign_network_contributor_role_to_subnet(cmd, agent_subnet_id)
 
     return sdk_no_wait(no_wait,
                        client.begin_create_or_update,

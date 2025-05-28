@@ -13,21 +13,21 @@ interactions:
       ParameterSetName:
       - -g -n --mode --sku
       User-Agent:
-      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.71.0 azsdk-python-core/1.31.0 Python/3.12.10 (Windows-11-10.0.26100-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001?api-version=2022-09-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001","name":"clitest.rg000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","test":"test_waf_log_scrubbing","date":"2024-04-22T03:33:07Z","module":"front-door"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001","name":"clitest.rg000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"owner":"jingnanxu"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '364'
+      - '258'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 22 Apr 2024 03:33:12 GMT
+      - Thu, 01 May 2025 07:40:40 GMT
       expires:
       - '-1'
       pragma:
@@ -38,14 +38,16 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
       x-msedge-ref:
-      - 'Ref A: 746E81B62BC2447E86E91461395E54B7 Ref B: MAA201060515047 Ref C: 2024-04-22T03:33:12Z'
+      - 'Ref A: 058B502DCFDD4C8AB7CC16EA3B761B5F Ref B: SYD03EDGE2113 Ref C: 2025-05-01T07:40:41Z'
     status:
       code: 200
       message: OK
 - request:
-    body: '{"location": "westus", "properties": {"policySettings": {"mode": "Prevention"}},
-      "sku": {"name": "Standard_AzureFrontDoor"}}'
+    body: '{"location": "global", "properties": {"policySettings": {"enabledState":
+      "Enabled", "mode": "Prevention"}}, "sku": {"name": "Standard_AzureFrontDoor"}}'
     headers:
       Accept:
       - application/json
@@ -56,27 +58,27 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '124'
+      - '151'
       Content-Type:
       - application/json
       ParameterSetName:
       - -g -n --mode --sku
       User-Agent:
-      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.71.0 azsdk-python-core/1.31.0 Python/3.12.10 (Windows-11-10.0.26100-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2024-02-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2025-03-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","name":"cli000002","location":"WestUs","tags":{},"sku":{"name":"Standard_AzureFrontDoor"},"properties":{"policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Enabled","javascriptChallengeExpirationInMinutes":null,"logScrubbing":null},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"securityPolicyLinks":[],"resourceState":"Enabled","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","name":"cli000002","location":"Global","tags":{},"sku":{"name":"Standard_AzureFrontDoor"},"properties":{"policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Enabled","javascriptChallengeExpirationInMinutes":null,"captchaExpirationInMinutes":null,"logScrubbing":null},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"securityPolicyLinks":[],"resourceState":"Enabled","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '763'
+      - '797'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 22 Apr 2024 03:33:15 GMT
+      - Thu, 01 May 2025 07:40:45 GMT
       expires:
       - '-1'
       pragma:
@@ -87,10 +89,14 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2e396a67-4dc1-43ae-afcc-c6747d291866/australiaeast/9dcf0764-631a-4ee0-8319-6e09cf2df56d
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '799'
       x-msedge-ref:
-      - 'Ref A: 3DC23A03F4164793B5EB196A01098E86 Ref B: MAA201060516045 Ref C: 2024-04-22T03:33:13Z'
+      - 'Ref A: CA1388EA760C4CF18D4A8A4DECC2E325 Ref B: SYD03EDGE1607 Ref C: 2025-05-01T07:40:41Z'
     status:
       code: 201
       message: Created
@@ -108,21 +114,21 @@ interactions:
       ParameterSetName:
       - -g -n --log-scrubbing
       User-Agent:
-      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.71.0 azsdk-python-core/1.31.0 Python/3.12.10 (Windows-11-10.0.26100-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001?api-version=2022-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2025-03-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001","name":"clitest.rg000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","test":"test_waf_log_scrubbing","date":"2024-04-22T03:33:07Z","module":"front-door"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","name":"cli000002","location":"Global","tags":{},"sku":{"name":"Standard_AzureFrontDoor"},"properties":{"policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Enabled","javascriptChallengeExpirationInMinutes":null,"captchaExpirationInMinutes":null,"logScrubbing":null},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"securityPolicyLinks":[],"resourceState":"Enabled","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '364'
+      - '797'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 22 Apr 2024 03:33:17 GMT
+      - Thu, 01 May 2025 07:40:47 GMT
       expires:
       - '-1'
       pragma:
@@ -133,57 +139,15 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
       x-msedge-ref:
-      - 'Ref A: 997F08545E0E461D965E140E21701A6F Ref B: MAA201060514047 Ref C: 2024-04-22T03:33:17Z'
+      - 'Ref A: 7E62B8A39E7C465180651B015A591B6A Ref B: SYD03EDGE2021 Ref C: 2025-05-01T07:40:46Z'
     status:
       code: 200
       message: OK
 - request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - network front-door waf-policy update
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g -n --log-scrubbing
-      User-Agent:
-      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2024-02-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","name":"cli000002","location":"WestUs","tags":{},"sku":{"name":"Standard_AzureFrontDoor"},"properties":{"policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Enabled","javascriptChallengeExpirationInMinutes":null,"logScrubbing":null},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"securityPolicyLinks":[],"resourceState":"Enabled","provisioningState":"Succeeded"}}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '763'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 22 Apr 2024 03:33:19 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-cache:
-      - CONFIG_NOCACHE
-      x-content-type-options:
-      - nosniff
-      x-msedge-ref:
-      - 'Ref A: A9C5A5AC62754901B124A59FB564A91C Ref B: MAA201060513009 Ref C: 2024-04-22T03:33:18Z'
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '{"location": "westus", "properties": {"customRules": {"rules": []}, "managedRules":
+    body: '{"location": "global", "properties": {"customRules": {"rules": []}, "managedRules":
       {"managedRuleSets": []}, "policySettings": {"enabledState": "Enabled", "logScrubbing":
       {"scrubbingRules": [{"matchVariable": "QueryStringArgNames", "selectorMatchOperator":
       "EqualsAny"}], "state": "Enabled"}, "mode": "Prevention", "requestBodyCheck":
@@ -204,21 +168,21 @@ interactions:
       ParameterSetName:
       - -g -n --log-scrubbing
       User-Agent:
-      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.71.0 azsdk-python-core/1.31.0 Python/3.12.10 (Windows-11-10.0.26100-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2024-02-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2025-03-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","name":"cli000002","location":"WestUs","tags":{},"sku":{"name":"Standard_AzureFrontDoor"},"properties":{"policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Enabled","javascriptChallengeExpirationInMinutes":null,"logScrubbing":{"state":"Enabled","scrubbingRules":[{"matchVariable":"QueryStringArgNames","selectorMatchOperator":"EqualsAny","selector":null,"state":"Enabled"}]}},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"securityPolicyLinks":[],"resourceState":"Enabled","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","name":"cli000002","location":"Global","tags":{},"sku":{"name":"Standard_AzureFrontDoor"},"properties":{"policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Enabled","javascriptChallengeExpirationInMinutes":null,"captchaExpirationInMinutes":null,"logScrubbing":{"state":"Enabled","scrubbingRules":[{"matchVariable":"QueryStringArgNames","selectorMatchOperator":"EqualsAny","selector":null,"state":"Enabled"}]}},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"securityPolicyLinks":[],"resourceState":"Enabled","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '907'
+      - '941'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 22 Apr 2024 03:33:20 GMT
+      - Thu, 01 May 2025 07:40:49 GMT
       expires:
       - '-1'
       pragma:
@@ -229,10 +193,14 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2e396a67-4dc1-43ae-afcc-c6747d291866/australiasoutheast/f85842ef-3ef8-423d-85a3-ecaac3934c9d
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '799'
       x-msedge-ref:
-      - 'Ref A: 4E9DB7DE73704BBEAA3E2C0D346D7BCB Ref B: MAA201060513009 Ref C: 2024-04-22T03:33:19Z'
+      - 'Ref A: 18904C3C5EA646C8942B2EBF1C8D520A Ref B: SYD03EDGE2021 Ref C: 2025-05-01T07:40:47Z'
     status:
       code: 200
       message: OK

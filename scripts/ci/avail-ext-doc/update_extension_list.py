@@ -27,7 +27,7 @@ import requests
 #   - azure-docs-cli
 AZURE_CLI_EXTENSIONS_REPO_PATH = os.path.abspath(os.path.join('.', 'azure-cli-extensions'))
 AZURE_DOCS_CLI_REPO_PATH = os.path.abspath(os.path.join('.', 'azure-docs-cli'))
-AVAILABLE_EXTENSIONS_DOC = os.path.join(AZURE_DOCS_CLI_REPO_PATH, 'docs-ref-conceptual', 'azure-cli-extensions-list.md')
+AVAILABLE_EXTENSIONS_DOC = os.path.join(AZURE_DOCS_CLI_REPO_PATH, 'docs-ref-conceptual', 'Latest-version', 'azure-cli-extensions-list.md')
 TEMPLATE_FILE = os.path.join(AZURE_CLI_EXTENSIONS_REPO_PATH, 'scripts', 'ci', 'avail-ext-doc', 'list-template.md')
 
 sys.path.insert(0, os.path.join(AZURE_CLI_EXTENSIONS_REPO_PATH, 'scripts'))

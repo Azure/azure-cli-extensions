@@ -40,7 +40,12 @@ class KataPolicyGenProxy:  # pylint: disable=too-few-public-methods
         needed_assets = ["genpolicy", "genpolicy.exe"]
         # search for genpolicy in the assets from kata-container releases
         for release in r.json():
-            if "genpolicy" in release.get("tag_name"):
+            is_target = (
+                "genpolicy" in release.get("tag_name") and
+                not release.get("draft") and
+                not release.get("prerelease")
+            )
+            if is_target:
                 # these should be newest to oldest
                 for asset in release["assets"]:
                     # download the file if it contains genpolicy

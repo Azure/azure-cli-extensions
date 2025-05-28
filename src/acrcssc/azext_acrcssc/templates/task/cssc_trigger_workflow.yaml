@@ -1,0 +1,62 @@
+version: v1.1.0
+alias:
+  values:
+    ScanImageAndSchedulePatchTask: cssc-scan-image
+    cssc : mcr.microsoft.com/acr/cssc:cbcf692
+    maxLimit: 100
+steps:
+  - cmd: bash -c 'echo "Inside cssc-trigger-workflow task, getting list of images to be patched based on --filter-policy for Registry {{.Run.Registry}}."'
+  - cmd: cssc acr cssc patch --filter-policy csscpolicies/patchpolicy:v1 --dry-run > filterRepos.txt
+    env:
+      - ACR_EXPERIMENTAL_CSSC=true
+  - cmd: bash -c 'sed -n "/^Validating/,/^Total/ {/^Validating/b;/^Total/b;p}" filterRepos.txt' > filterReposToDisplay.txt
+  - cmd: |
+      bash -c '
+      echo "Below images will be scanned and patched (if any os vulnerabilities found) based on --filter-policy.\n$(cat filterReposToDisplay.txt)"
+      totalImages=$(sed -n "s/^Matches found://p" filterReposToDisplay.txt | tr -d "[:space:]")
+      if [ $totalImages -gt $maxLimit ]; then
+        echo "You have exceeded the maximum limit of $maxLimit images that can be scheduled for continuous patching. Adjust the JSON filter to limit the number of images. Failing the workflow."
+        exit 1
+      fi'
+  - cmd: cssc acr cssc patch --filter-policy csscpolicies/patchpolicy:v1 --show-patch-tags --dry-run> filterReposWithPatchTags.txt
+    env:
+      - ACR_EXPERIMENTAL_CSSC=true
+  - cmd: bash -c 'sed -n "/^Listing/,/^Matches/ {/^Listing/b;/^Matches/b;/^Repo/b;p}" filterReposWithPatchTags.txt' > filteredReposAndTags.txt
+  - cmd: bash -c 'sed -n "/^Configured Tag Convention:/p" filterReposWithPatchTags.txt' > tagConvention.txt
+  - cmd: az login --identity --allow-no-subscriptions
+  - id: scan-and-schedule-patch
+    timeout: 1800
+    cmd: |
+        az -c '
+        counter=0; \
+        batchSize=10; \
+        sleepDuration=30; \
+        RegistryName={{.Run.Registry}}; \
+        while read line;do \
+        IFS=',' read -r -a array <<< "${line}"
+        RepoName=${array[0]}
+        OriginalTag=${array[1]}
+        TagName=${array[2]}
+        IncrementedTagNumber=""
+        echo "Tag Convention details: $(cat tagConvention.txt)"
+        if grep -q "floating" tagConvention.txt; then
+          IncrementedTagNumber="patched"
+        else
+          IncrementedTagNumber="1"
+        fi
+
+        if [ $TagName == "N/A" ]; then
+          TagName=$OriginalTag
+        elif [[ $TagName =~ -([0-9]{1,3})$ ]]; then
+          TagNumber=${BASH_REMATCH[1]}
+          IncrementedTagNumber=$((TagNumber+1))
+        fi
+        echo "Scheduling $ScanImageAndSchedulePatchTask for $RegistryName/$RepoName, Tag:$TagName, OriginalTag:$OriginalTag, PatchTag:$OriginalTag-$IncrementedTagNumber"; \
+        az acr task run --name $ScanImageAndSchedulePatchTask --registry $RegistryName --set SOURCE_REPOSITORY=$RepoName --set SOURCE_IMAGE_TAG=$TagName --set SOURCE_IMAGE_ORIGINAL_TAG=$OriginalTag --set SOURCE_IMAGE_NEWPATCH_TAG=$IncrementedTagNumber --no-wait; \
+        counter=$((counter+1)); \
+        if [ $((counter%batchSize)) -eq 0 ]; then \
+          echo "Waiting for $sleepDuration seconds before scheduling scans for next batch of images"; \
+          sleep $sleepDuration; \
+        fi; \
+        done < filteredReposAndTags.txt;'
+    entryPoint: /bin/bash

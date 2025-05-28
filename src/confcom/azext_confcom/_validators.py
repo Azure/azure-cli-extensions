@@ -24,6 +24,11 @@ def validate_print_format(namespace):
         raise CLIError("Can only print in one format at a time")
 
 
+def validate_infrastructure_svn(namespace):
+    if namespace.infrastructure_svn and namespace.exclude_default_fragments:
+        raise CLIError("Cannot set infrastructure SVN without using default fragments")
+
+
 def validate_aci_source(namespace):
     if sum(map(bool, [
         namespace.input_path,

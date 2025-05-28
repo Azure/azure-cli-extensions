@@ -17,14 +17,14 @@ from azure.cli.core.aaz import *
 class Show(AAZCommand):
     """Get a StandbyContainerGroupPoolResource
 
-    :example: Get standby container group pool
-        az standby-container-group-pool show --subscription 461fa159-654a-415f-853a-40b801021944 --resource-group myrg --name mypool
+    :example: StandbyContainerGroupPools_Get
+        az standby-container-group-pool show --resource-group rgstandbypool --name pool --subscription 00000000-0000-0000-0000-000000000009
     """
 
     _aaz_info = {
-        "version": "2024-03-01",
+        "version": "2025-03-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.standbypool/standbycontainergrouppools/{}", "2024-03-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.standbypool/standbycontainergrouppools/{}", "2025-03-01"],
         ]
     }
 
@@ -48,8 +48,8 @@ class Show(AAZCommand):
             help="The resource group",
             required=True,
         )
-        _args_schema.standby_container_group_pool_name = AAZStrArg(
-            options=["-n", "--name", "--standby-container-group-pool-name"],
+        _args_schema.name = AAZStrArg(
+            options=["-n", "--name"],
             help="Name of the standby container group pool",
             required=True,
             id_part="name",
@@ -110,7 +110,7 @@ class Show(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "standbyContainerGroupPoolName", self.ctx.args.standby_container_group_pool_name,
+                    "standbyContainerGroupPoolName", self.ctx.args.name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -124,7 +124,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-03-01",
+                    "api-version", "2025-03-01",
                     required=True,
                 ),
             }
@@ -191,6 +191,7 @@ class Show(AAZCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+            properties.zones = AAZListType()
 
             container_group_properties = cls._schema_on_200.properties.container_group_properties
             container_group_properties.container_group_profile = AAZObjectType(
@@ -223,6 +224,9 @@ class Show(AAZCommand):
             elasticity_profile.refill_policy = AAZStrType(
                 serialized_name="refillPolicy",
             )
+
+            zones = cls._schema_on_200.properties.zones
+            zones.Element = AAZStrType()
 
             system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(

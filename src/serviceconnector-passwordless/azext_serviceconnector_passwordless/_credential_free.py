@@ -690,7 +690,7 @@ class PostgresFlexHandler(TargetHandler):
             self.target_id))
 
     def set_user_admin(self, user_object_id, **kwargs):
-        admins = run_cli_cmd('az postgres flexible-server ad-admin list -g "{}" -s "{}" --subscription "{}"'.format(
+        admins = run_cli_cmd('az postgres flexible-server microsoft-entra-admin list -g "{}" -s "{}" --subscription "{}"'.format(
             self.resource_group, self.db_server, self.subscription))
 
         if not user_object_id:
@@ -706,7 +706,7 @@ class PostgresFlexHandler(TargetHandler):
         admin_info = next((ad for ad in admins if ad.get('objectId', "") == user_object_id), None)
         if not admin_info:
             logger.warning('Set current user as DB Server Microsoft Entra Administrators.')
-            admin_info = run_cli_cmd('az postgres flexible-server ad-admin create -u "{}" -i "{}" -g "{}" -s "{}" --subscription "{}" -t {}'.format(
+            admin_info = run_cli_cmd('az postgres flexible-server microsoft-entra-admin create -u "{}" -i "{}" -g "{}" -s "{}" --subscription "{}" -t {}'.format(
                 self.login_username, user_object_id, self.resource_group, self.db_server, self.subscription, self.login_usertype))
         self.admin_username = admin_info.get('principalName', self.login_username)
 
@@ -1042,6 +1042,8 @@ class FabricSqlHandler(SqlHandler):
         grant_q1 = "ALTER ROLE db_datareader ADD MEMBER \"{}\"".format(self.aad_username)
         grant_q2 = "ALTER ROLE db_datawriter ADD MEMBER \"{}\"".format(self.aad_username)
         grant_q3 = "ALTER ROLE db_ddladmin ADD MEMBER \"{}\"".format(self.aad_username)
+
+        logger.warning("IMPORTANT: Manual steps required to complete this service connection. Please refer to %s for more details.", "https://learn.microsoft.com/en-us/azure/service-connector/how-to-integrate-fabric-sql#share-access-to-sql-database-in-fabric")
 
         return [delete_q, role_q, grant_q1, grant_q2, grant_q3]
 

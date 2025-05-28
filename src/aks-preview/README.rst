@@ -191,6 +191,12 @@ Released version and adopted API version
     * - 13.0.0b9 ~ 13.0.0b9
       - 2024-10-02-preview
       - 
-    * - 13.0.0b10? ~ latest
-      - 2024-10-02-preview
+    * - 14.0.0b1 ~ 14.0.0b3
+      - 2025-01-02-preview
       - 
+    * - 14.0.0b4 ~ 18.0.0b1
+      - 2025-02-02-preview
+      - 
+    * - 18.0.0b2 ~ latest
+      - 2025-03-02-preview
+      -
