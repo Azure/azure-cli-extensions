@@ -3,12 +3,14 @@ import os
 import json
 import tempfile
 
+
 class CosmosdbFleetScenarioTest(ScenarioTest):
 
     @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_fleet', location='westus2')
     def test_cosmosdb_fleet_fleetspace_fleetspaceAccount(self, resource_group):
         # Names
         fleet_name = 'fleetTest'
+        fleet_analytics_name = 'fleetAnalyticsTest'
         fleetspace_name = 'fleetspaceTest'
         account_name = self.create_random_name('acct', 15)
 
@@ -44,10 +46,19 @@ class CosmosdbFleetScenarioTest(ScenarioTest):
             }
         })
 
+        fleet_analytics_body = self._write_temp_json({
+            "properties": {
+                "storageLocationType": "StorageAccount",
+                "storageLocationUri": f"/subscriptions/{self.get_subscription_id()}/resourceGroups/{resource_group}/providers/Microsoft.Storage/storageAccounts/myStorageAccount",
+            }
+        })
+
         self.kwargs.update({
             'rg': resource_group,
             'acct': account_name,
             'fleet': fleet_name,
+            'fanalytics': fleet_analytics_name,
+            'fanalyticsbody': fleet_analytics_body,
             'fsp': fleetspace_name,
             'fspacct': account_name,
             'fspbody': fleetspace_body,
@@ -58,11 +69,15 @@ class CosmosdbFleetScenarioTest(ScenarioTest):
         # Create Cosmos DB account dynamically
         self.cmd('az cosmosdb create -g {rg} -n {acct} --locations regionName=westus2 failoverPriority=0 isZoneRedundant=False')
 
-
         # Fleet
         self.cmd('az cosmosdb fleet create -g {rg} -n {fleet} -l westus2')
         self.cmd('az cosmosdb fleet show -g {rg} -n {fleet}')
         self.cmd('az cosmosdb fleet list -g {rg}')
+
+        # Fleet Analytics
+        self.cmd('az cosmosdb fleet analytics create -g {rg} --fleet-name {fleet} -n {fanalytics} --body @{fanalyticsbody}')
+        self.cmd('az cosmosdb fleet analytics show -g {rg} --fleet-name {fleet} -n {fanalytics}')
+        self.cmd('az cosmosdb fleet analytics list -g {rg} --fleet-name {fleet}')
 
         # Fleetspace
         self.cmd('az cosmosdb fleetspace create -g {rg} --fleet-name {fleet} -n {fsp} --body @{fspbody}')
@@ -76,6 +91,7 @@ class CosmosdbFleetScenarioTest(ScenarioTest):
         self.cmd('az cosmosdb fleetspace account list -g {rg} --fleet-name {fleet} --fleetspace-name {fsp}')
 
         # Deletes
+        self.cmd('az cosmosdb fleet analytics delete -g {rg} --fleet-name {fleet} -n {fanalytics} --yes')
         self.cmd('az cosmosdb fleetspace account delete -g {rg} --fleet-name {fleet} --fleetspace-name {fsp} --fleetspace-account-name {fspacct} --yes')
         self.cmd('az cosmosdb fleetspace delete -g {rg} --fleet-name {fleet} -n {fsp} --yes')
         self.cmd('az cosmosdb fleet delete -g {rg} -n {fleet} --yes')

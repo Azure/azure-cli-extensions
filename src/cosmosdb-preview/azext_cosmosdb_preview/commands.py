@@ -30,7 +30,8 @@ from azext_cosmosdb_preview._client_factory import (
     cf_mongo_cluster_firewall_rules,
     cf_fleet,
     cf_fleetspace,
-    cf_fleetspace_account
+    cf_fleetspace_account,
+    cf_fleet_analytics
 )
 
 
@@ -82,6 +83,10 @@ def load_command_table(self, _):
     cosmosdb_fleetspace_account_sdk = CliCommandType(
         operations_tmpl='azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.operations#FleetspaceAccountOperations.{}',
         client_factory=cf_fleetspace_account)
+
+    cosmosdb_fleet_analytics_sdk = CliCommandType(
+        operations_tmpl='azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.operations#FleetAnalyticsOperations.{}',
+        client_factory=cf_fleet_analytics)
 
     with self.command_group('managed-cassandra cluster', cosmosdb_managed_cassandra_cluster_sdk, client_factory=cf_cassandra_cluster) as g:
         g.custom_command('create', 'cli_cosmosdb_managed_cassandra_cluster_create', supports_no_wait=True)
@@ -194,6 +199,12 @@ def load_command_table(self, _):
     with self.command_group('cosmosdb fleet', cosmosdb_fleet_sdk, client_factory=cf_fleet, is_preview=True) as g:
         g.custom_command('create', 'cli_cosmosdb_fleet_create')
         g.custom_command('list', 'cli_list_cosmosdb_fleets')
+        g.show_command('show', 'get')
+        g.command('delete', 'begin_delete', confirmation=True)
+
+    with self.command_group('cosmosdb fleet analytics', cosmosdb_fleet_analytics_sdk, client_factory=cf_fleet_analytics, is_preview=True) as g:
+        g.custom_command('create', 'cli_cosmosdb_fleet_analytics_create')
+        g.command('list', 'list')
         g.show_command('show', 'get')
         g.command('delete', 'begin_delete', confirmation=True)
 

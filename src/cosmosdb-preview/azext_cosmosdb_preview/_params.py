@@ -31,7 +31,8 @@ from azext_cosmosdb_preview._validators import (
     validate_mongoMI_role_definition_id,
     validate_mongoMI_role_assignment_id,
     validate_fleetspace_body,
-    validate_fleetspaceAccount_body)
+    validate_fleetspaceAccount_body,
+    validate_fleet_analytics_body)
 
 from azext_cosmosdb_preview.actions import (
     CreateGremlinDatabaseRestoreResource,
@@ -217,7 +218,15 @@ FLEETSPACE_ACCOUNT_PROPERTIES_EXAMPLE = """--body "{
             \\"armLocation\\": \\"East US\\"
         }
     }
-}" 
+}"
+"""
+
+FLEET_ANALYTICS_PROPERTIES_EXAMPLE = """--body "{
+    \\"properties\\": {
+        \\"storageLocationType\\": \\"StorageAccount\\",
+        \\"storageLocationUri\\": \\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/example-rg/providers/Microsoft.Storage/storageAccounts/exampleaccount\\"
+    }
+}"
 """
 
 
@@ -828,6 +837,15 @@ def load_arguments(self, _):
     with self.argument_context('cosmosdb fleet create') as c:
         c.argument('location', options_list=['--location', '-l'], help='Location of the Fleet.', required=True)
         c.argument('tags', help="Tags in 'key=value key2=value2' format.")
+
+    # Cosmos DB Fleet Analytics
+    with self.argument_context('cosmosdb fleet analytics') as c:
+        c.argument('resource_group', options_list=['--resource-group', '-g'], help='Name of the resource group.', required=True)
+        c.argument('fleet_name', options_list=['--fleet-name'], help='Name of the Cosmos DB Fleet.', required=True)
+        c.argument('fleet_analytics_name', options_list=['--fleet-analytics-name', '-n'], help='Name of the Fleet Analytics resource.', required=True)
+
+    with self.argument_context('cosmosdb fleet analytics create') as c:
+        c.argument('fleet_analytics_body', options_list=['--body', '-b'], validator=validate_fleet_analytics_body, completer=FilesCompleter(), help="Fleet Analytics body with properties (fields: storageLocationType, storageLocationUri). You can enter it as a string or as a file, e.g., --body @fleetAnalytics.json or " + FLEET_ANALYTICS_PROPERTIES_EXAMPLE)
 
     # Cosmos DB Fleetspace
     with self.argument_context('cosmosdb fleetspace') as c:

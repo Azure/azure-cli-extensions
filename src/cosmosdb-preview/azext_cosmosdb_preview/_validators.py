@@ -471,6 +471,34 @@ def validate_fleetspace_body(cmd, ns):
         ns.fleetspace_body = body
 
 
+def validate_fleet_analytics_body(cmd, ns):
+    from azure.cli.core.util import get_file_json, shell_safe_json_parse
+    import os
+
+    if ns.fleet_analytics_body is not None:
+        if os.path.exists(ns.fleet_analytics_body):
+            body = get_file_json(ns.fleet_analytics_body)
+        else:
+            body = shell_safe_json_parse(ns.fleet_analytics_body)
+
+        if not isinstance(body, dict):
+            raise InvalidArgumentValueError('Fleet Analytics body must be a valid JSON object.')
+
+        props = body.get("properties")
+        if not isinstance(props, dict):
+            raise InvalidArgumentValueError('Missing or invalid "properties" field.')
+
+        slt = props.get("storageLocationType")
+        if slt not in ["StorageAccount", "FabricLakehouse"]:
+            raise InvalidArgumentValueError('"storageLocationType" must be "StorageAccount" or "FabricLakehouse".')
+
+        slu = props.get("storageLocationUri")
+        if not isinstance(slu, str) or not slu.strip():
+            raise InvalidArgumentValueError('"storageLocationUri" must be a non-empty string.')
+
+        ns.fleet_analytics_body = body
+
+
 def validate_fleetspaceAccount_body(cmd, ns):
     from azure.cli.core.util import get_file_json, shell_safe_json_parse
     import os

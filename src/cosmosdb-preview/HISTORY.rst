@@ -2,7 +2,7 @@
 Release History
 ===============
 1.6.0
-* Add support for Fleet/Fleetspace/FleetspaceAccount CRUD actions.
+* Add support for Fleet/Fleetspace/FleetspaceAccount/FleetAnalytics CRUD actions.
 
 +++++++
 1.5.0

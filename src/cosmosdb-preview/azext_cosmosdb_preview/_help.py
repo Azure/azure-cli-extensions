@@ -1811,3 +1811,36 @@ helps['cosmosdb fleetspace account delete'] = """
 type: command
 short-summary: Unregister a database account from a Fleetspace.
 """
+
+helps['cosmosdb fleet analytics'] = """
+type: group
+short-summary: Manage Azure Cosmos DB Fleet Analytics resources.
+"""
+
+helps['cosmosdb fleet analytics create'] = """
+type: command
+short-summary: Create a new Fleet Analytics resource under a Cosmos DB Fleet.
+examples:
+  - name: Create a Fleet Analytics resource
+    text: |
+      az cosmosdb fleet analytics create \\
+        --resource-group MyResourceGroup \\
+        --fleet-name MyFleet \\
+        --fleet-analytics-name MyFleetAnalytics \\
+        --body @fleetAnalytics.json
+"""
+
+helps['cosmosdb fleet analytics show'] = """
+type: command
+short-summary: Show details of a specific Fleet Analytics resource.
+"""
+
+helps['cosmosdb fleet analytics list'] = """
+type: command
+short-summary: List all Fleet Analytics resources under a Fleet.
+"""
+
+helps['cosmosdb fleet analytics delete'] = """
+type: command
+short-summary: Delete a Fleet Analytics resource from a Fleet.
+"""
