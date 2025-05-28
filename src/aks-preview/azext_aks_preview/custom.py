@@ -1399,13 +1399,14 @@ def aks_agentpool_upgrade(cmd,
     if hasUpgradeSetting and node_image_only:
         raise MutuallyExclusiveArgumentError(
             "Conflicting flags. Unable to specify "
-            "max-surge/drain-timeout/node-soak-duration/undrainable-node-behavior/max-unavailable/max-blocked-nodes with node-image-only."
-            "If you want to use "
-            "max-surge/drain-timeout/node-soak-duration/undrainable-node-behavior/max-unavailable/max-blocked-nodes "
-            "with a node image upgrade, please first "
-            "update max-surge/drain-timeout/node-soak-duration/undrainable-node-behavior/max-unavailable/max-blocked-nodes using "
-            '"az aks nodepool update "'
-            '--max-surge/--drain-timeout/--node-soak-duration/--undrainable-node-behavior/--max-unavailable/--max-blocked-nodes".'
+            "max-surge/drain-timeout/node-soak-duration/undrainable-node-behavior/max-unavailable/max-blocked-nodes"
+            " with node-image-only.If you want to use "
+            "max-surge/drain-timeout/node-soak-duration/undrainable-node-behavior/max-unavailable/max-blocked-nodes"
+            " with a node image upgrade, please first update "
+            "max-surge/drain-timeout/node-soak-duration/undrainable-node-behavior/max-unavailable/max-blocked-nodes"
+            " using 'az aks nodepool update "
+            "--max-surge/--drain-timeout/--node-soak-duration/"
+            "--undrainable-node-behavior/--max-unavailable/--max-blocked-nodes'."
         )
 
     if node_image_only:
