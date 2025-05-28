@@ -274,9 +274,6 @@ class Show(AAZCommand):
             explicit_proxy.http_port = AAZIntType(
                 serialized_name="httpPort",
             )
-            explicit_proxy.https_port = AAZIntType(
-                serialized_name="httpsPort",
-            )
             explicit_proxy.pac_file = AAZStrType(
                 serialized_name="pacFile",
             )
