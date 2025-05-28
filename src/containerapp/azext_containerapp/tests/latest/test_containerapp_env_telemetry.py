@@ -11,21 +11,24 @@ from azure.cli.command_modules.containerapp._utils import format_location
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck, live_only, StorageAccountPreparer)
 
+from .custom_preparers import SubnetPreparer
 from .common import TEST_LOCATION
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
+
 class ContainerappEnvTelemetryScenarioTest(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="northeurope")
-    def test_containerapp_env_telemetry_data_dog_e2e(self, resource_group):
+    @SubnetPreparer(location="centralus", delegations='Microsoft.App/environments', service_endpoints="Microsoft.Storage.Global")
+    def test_containerapp_env_telemetry_data_dog_e2e(self, resource_group, subnet_id):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
         env_name = self.create_random_name(prefix='containerapp-env', length=24)
         data_dog_site = self.create_random_name(prefix='dataDog', length=16)
         data_dog_key = self.create_random_name(prefix='dataDog', length=16)
 
-        self.cmd('containerapp env create -g {} -n {} --logs-destination none'.format(resource_group, env_name))
+        self.cmd('containerapp env create -g {} -n {} --logs-destination none -s {}'.format(resource_group, env_name, subnet_id))
 
         containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
 
@@ -103,13 +106,14 @@ class ContainerappEnvTelemetryScenarioTest(ScenarioTest):
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="northeurope")
-    def test_containerapp_env_telemetry_app_insights_e2e(self, resource_group):
+    @SubnetPreparer(location="centralus", delegations='Microsoft.App/environments', service_endpoints="Microsoft.Storage.Global")
+    def test_containerapp_env_telemetry_app_insights_e2e(self, resource_group, subnet_id):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
         env_name = self.create_random_name(prefix='containerapp-env', length=24)
         ai_conn_str = f'InstrumentationKey={self.create_random_name(prefix="ik", length=8)};IngestionEndpoint={self.create_random_name(prefix="ie", length=8)};LiveEndpoint={self.create_random_name(prefix="le", length=8)}'
 
-        self.cmd('containerapp env create -g {} -n {} --logs-destination none'.format(resource_group, env_name))
+        self.cmd('containerapp env create -g {} -n {} --logs-destination none -s {}'.format(resource_group, env_name, subnet_id))
 
         containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
 
@@ -183,12 +187,13 @@ class ContainerappEnvTelemetryScenarioTest(ScenarioTest):
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="northeurope")
-    def test_containerapp_env_telemetry_otlp_e2e(self, resource_group):
+    @SubnetPreparer(location="centralus", delegations='Microsoft.App/environments', service_endpoints="Microsoft.Storage.Global")
+    def test_containerapp_env_telemetry_otlp_e2e(self, resource_group, subnet_id):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
         env_name = self.create_random_name(prefix='containerapp-env', length=24)
 
-        self.cmd('containerapp env create -g {} -n {} --logs-destination none'.format(resource_group, env_name))
+        self.cmd('containerapp env create -g {} -n {} --logs-destination none -s {}'.format(resource_group, env_name, subnet_id))
 
         containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
 

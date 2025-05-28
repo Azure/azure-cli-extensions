@@ -8,12 +8,13 @@ from azure.cli.command_modules.containerapp._utils import format_location
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck, JMESPathCheckExists)
+from knack.testsdk import live_only
 
 from .common import (TEST_LOCATION, STAGE_LOCATION, write_test_file,
                      clean_up_test_file,
                      )
 from .custom_preparers import SubnetPreparer
-from .utils import create_containerapp_env
+from .utils import create_containerapp_env, create_vent_subnet
 
 
 class ContainerappSessionPoolTests(ScenarioTest):
@@ -21,6 +22,7 @@ class ContainerappSessionPoolTests(ScenarioTest):
     @ResourceGroupPreparer()
     @SubnetPreparer(location="centralus", delegations='Microsoft.App/environments',
                     service_endpoints="Microsoft.Storage.Global")
+    @live_only()
     def test_containerapp_sessionpool(self, resource_group, subnet_id, vnet_name, subnet_name):
         location = TEST_LOCATION
         self.cmd('configure --defaults location={}'.format(location))
@@ -105,7 +107,7 @@ class ContainerappSessionPoolTests(ScenarioTest):
                 JMESPathCheck('properties.customContainerTemplate.containers[0].resources.memory', memory),
                 JMESPathCheck('properties.customContainerTemplate.ingress.targetPort', 80),
                 JMESPathCheck('properties.sessionNetworkConfiguration.status', egress),
-                # JMESPathCheck('properties.dynamicPoolConfiguration.cooldownPeriodInSeconds', cooldown),
+                JMESPathCheck('properties.dynamicPoolConfiguration.cooldownPeriodInSeconds', cooldown),
             ])
 
         sessionpool = self.cmd('containerapp sessionpool show -g {} -n {}'.format(resource_group, sessionpool_name_custom)).get_output_in_json()
@@ -135,14 +137,16 @@ class ContainerappSessionPoolTests(ScenarioTest):
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer()
+    @live_only()
     def test_containerapp_sessionpool_registry_update(self, resource_group):
         location = TEST_LOCATION
         if format_location(location) == format_location(STAGE_LOCATION):
             location = "eastasia"
         self.cmd('configure --defaults location={}'.format(location))
+        subnet_id = create_vent_subnet(self, resource_group, self.create_random_name(prefix='name', length=24), location=location)
 
         env_name = self.create_random_name(prefix='aca-sp-env-registry', length=24)
-        self.cmd('containerapp env create -g {} -n {} -l {} --logs-destination none'.format(resource_group, env_name, location), expect_failure=False)
+        self.cmd('containerapp env create -g {} -n {} -l {} --logs-destination none -s {}'.format(resource_group, env_name, location, subnet_id), expect_failure=False)
         containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
         while containerapp_env["properties"]["provisioningState"].lower() in ["waiting", "inprogress"]:
             time.sleep(5)
@@ -204,6 +208,7 @@ class ContainerappSessionPoolTests(ScenarioTest):
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer()
+    @live_only()
     def test_containerapp_sessionpool_registry(self, resource_group):
         location = TEST_LOCATION
         if format_location(location) == format_location(STAGE_LOCATION):
@@ -280,7 +285,9 @@ class ContainerappSessionPoolTests(ScenarioTest):
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer()
-    def test_containerapp_sessionpool_registry_identity(self, resource_group):
+    @SubnetPreparer(location="eastasia", service_endpoints="Microsoft.Storage.Global")
+    @live_only()
+    def test_containerapp_sessionpool_registry_identity(self, resource_group, subnet_id):
         location = TEST_LOCATION
         if format_location(location) == format_location(STAGE_LOCATION):
             location = "eastasia"
@@ -292,7 +299,7 @@ class ContainerappSessionPoolTests(ScenarioTest):
         principal_id = identity_json["principalId"]
         
         env_name = self.create_random_name(prefix='aca-sp-env-registry', length=24)
-        self.cmd('containerapp env create -g {} -n {} -l {} --logs-destination none'.format(resource_group, env_name, location), expect_failure=False)
+        self.cmd('containerapp env create -g {} -n {} -l {} --logs-destination none -s {}'.format(resource_group, env_name, location, subnet_id), expect_failure=False)
         containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
         while containerapp_env["properties"]["provisioningState"].lower() in ["waiting", "inprogress"]:
             time.sleep(5)

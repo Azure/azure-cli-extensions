@@ -8,6 +8,7 @@ from azure.cli.command_modules.containerapp._utils import format_location
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck)
+from knack.testsdk import live_only
 
 from .common import (TEST_LOCATION)
 from .utils import create_containerapp_env
@@ -17,6 +18,7 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 class ContainerAppSessionCodeInterperterNodeLTSTests(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer()
+    @live_only()
     def test_containerapp_session_code_interpreter_nodelts_e2e(self, resource_group):
         location = TEST_LOCATION
         self.cmd('configure --defaults location={}'.format(location))
