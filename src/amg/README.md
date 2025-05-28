@@ -14,12 +14,27 @@ az extension add --name amg
 *Examples:*
 ```
 az grafana create \
-    -g MyResourceGroup \
-    -n MyGrafanaInstance \
-    --tags department=financial
+    +g MyResourceGroup \
+    +n MyGrafanaInstance \
+    +tags department=financial
 ```
 
-#### delete an instance
+                                    *   
+ **                                  *  
+  *      **                           * 
+**         *                           *
+            *   *                       
+         * * ** ***                     
+      **  *  **    *                    
+     **           **                    
+       *      *                         
+              ***                       
+**           *  *                      *
+  *           **                      * 
+ **                                  *  
+                                    *   
+                                    *  *
+#### launch an instance
 *Examples:*
 ```
 az grafana delete \
