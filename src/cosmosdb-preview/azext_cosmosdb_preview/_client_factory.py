@@ -111,3 +111,7 @@ def cf_fleet(cli_ctx, _):
 
 def cf_fleetspace(cli_ctx, _):
     return cf_cosmosdb_preview(cli_ctx).fleetspace
+
+
+def cf_fleetspace_account(cli_ctx, _):
+    return cf_cosmosdb_preview(cli_ctx).fleetspace_account

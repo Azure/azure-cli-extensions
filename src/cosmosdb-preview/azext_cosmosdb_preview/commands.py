@@ -29,7 +29,8 @@ from azext_cosmosdb_preview._client_factory import (
     cf_mongo_clusters,
     cf_mongo_cluster_firewall_rules,
     cf_fleet,
-    cf_fleetspace
+    cf_fleetspace,
+    cf_fleetspace_account
 )
 
 
@@ -69,15 +70,18 @@ def load_command_table(self, _):
     cosmosdb_rbac_mongo_mi_sdk = CliCommandType(
         operations_tmpl='azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.operations#MongoMIResourcesOperations.{}',
         client_factory=cf_mongo_mi_resources)
-    
+
     cosmosdb_fleet_sdk = CliCommandType(
-    operations_tmpl='azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.operations#FleetOperations.{}',
-    client_factory=cf_fleet)
+        operations_tmpl='azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.operations#FleetOperations.{}',
+        client_factory=cf_fleet)
 
     cosmosdb_fleetspace_sdk = CliCommandType(
-    operations_tmpl='azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.operations#FleetspaceOperations.{}',
-    client_factory=cf_fleetspace)
+        operations_tmpl='azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.operations#FleetspaceOperations.{}',
+        client_factory=cf_fleetspace)
 
+    cosmosdb_fleetspace_account_sdk = CliCommandType(
+        operations_tmpl='azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.operations#FleetspaceAccountOperations.{}',
+        client_factory=cf_fleetspace_account)
 
     with self.command_group('managed-cassandra cluster', cosmosdb_managed_cassandra_cluster_sdk, client_factory=cf_cassandra_cluster) as g:
         g.custom_command('create', 'cli_cosmosdb_managed_cassandra_cluster_create', supports_no_wait=True)
@@ -200,6 +204,11 @@ def load_command_table(self, _):
         g.custom_command('update', 'cli_cosmosdb_fleetspace_update')
         g.command('delete', 'begin_delete', confirmation=True)
 
+    with self.command_group('cosmosdb fleetspace account', cosmosdb_fleetspace_account_sdk, client_factory=cf_fleetspace_account, is_preview=True) as g:
+        g.custom_command('create', 'cli_cosmosdb_fleetspace_account_create')
+        g.command('list', 'list')
+        g.show_command('show', 'get')
+        g.command('delete', 'begin_delete', confirmation=True)
 
     # restorable accounts api sdk
     cosmosdb_sdk = CliCommandType(
@@ -416,5 +425,3 @@ def setup_mongocluster_commands(self):
         g.custom_command('list', 'cli_cosmosdb_mongocluster_firewall_rule_list', is_preview=True)
         g.custom_show_command('show', 'cli_cosmosdb_mongocluster_firewall_rule_get', is_preview=True)
         g.custom_command('delete', 'cli_cosmosdb_mongocluster_firewall_rule_delete', confirmation=True)
-
-        

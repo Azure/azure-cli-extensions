@@ -77,7 +77,9 @@ from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import (
     MongoMIRoleAssignmentResource,
     FleetResource,
     FleetspaceResource,
-    FleetspacePropertiesThroughputPoolConfiguration
+    FleetspacePropertiesThroughputPoolConfiguration,
+    FleetspaceAccountResource,
+    FleetspaceAccountPropertiesGlobalDatabaseAccountProperties
 )
 
 from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_mongocluster.models import (
@@ -3246,7 +3248,7 @@ def cli_cosmosdb_fleet_create(client,
             tags = dict(tag.split('=') for tag in tags.split())
         except ValueError:
             raise InvalidArgumentValueError('Tags must be in key=value format.')
-    
+
     fleet_parameters = FleetResource(location=location)
 
     if tags:
@@ -3270,9 +3272,9 @@ def cli_cosmosdb_fleetspace_create(client,
                                    fleet_name,
                                    fleetspace_name,
                                    fleetspace_body):
-    
+
     """Creates an Azure Cosmos DB Fleetspace."""
-    
+
     throughput_pool_config = FleetspacePropertiesThroughputPoolConfiguration(
         min_throughput=fleetspace_body['properties']['throughputPoolConfiguration']['minThroughput'],
         max_throughput=fleetspace_body['properties']['throughputPoolConfiguration']['maxThroughput'],
@@ -3300,7 +3302,7 @@ def cli_cosmosdb_fleetspace_update(client,
                                    fleetspace_body):
 
     """Updates an existing Azure Cosmos DB Fleetspace."""
-    
+
     fleetspace_body = shell_safe_json_parse(fleetspace_body)
 
     throughput_pool_config = FleetspacePropertiesThroughputPoolConfiguration(
@@ -3322,4 +3324,28 @@ def cli_cosmosdb_fleetspace_update(client,
     )
 
 
- 
+def cli_cosmosdb_fleetspace_account_create(client,
+                                           resource_group_name,
+                                           fleet_name,
+                                           fleetspace_name,
+                                           fleetspace_account_name,
+                                           fleetspace_account_body):
+
+    """Creates an Azure Cosmos DB Fleetspace Account."""
+
+    fleetspaceAccountPropertiesGlobalDatabaseAccountProperties = FleetspaceAccountPropertiesGlobalDatabaseAccountProperties(
+        resource_id=fleetspace_account_body['properties']['globalDatabaseAccountProperties']['resourceId'],
+        arm_location=fleetspace_account_body['properties']['globalDatabaseAccountProperties']['armLocation'],
+    )
+
+    fleetspace_account_body = FleetspaceAccountResource(
+        global_database_account_properties=fleetspaceAccountPropertiesGlobalDatabaseAccountProperties
+    )
+
+    return client.begin_create(
+        resource_group_name=resource_group_name,
+        fleet_name=fleet_name,
+        fleetspace_name=fleetspace_name,
+        fleetspace_account_name=fleetspace_account_name,
+        body=fleetspace_account_body
+    )

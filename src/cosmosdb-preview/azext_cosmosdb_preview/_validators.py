@@ -430,6 +430,7 @@ def validate_mongoMI_role_assignment_id(ns):
     if ns.role_assignment_id is not None:
         ns.role_assignment_id = _parse_resource_path(ns.role_assignment_id, False, "mongoMIRoleAssignments")
 
+
 def validate_fleetspace_body(cmd, ns):
     from azure.cli.core.util import get_file_json, shell_safe_json_parse
     import os
@@ -468,3 +469,33 @@ def validate_fleetspace_body(cmd, ns):
             raise InvalidArgumentValueError('"dataRegions" must be a list of strings.')
 
         ns.fleetspace_body = body
+
+
+def validate_fleetspaceAccount_body(cmd, ns):
+    from azure.cli.core.util import get_file_json, shell_safe_json_parse
+    import os
+
+    if ns.fleetspace_account_body is not None:
+        if os.path.exists(ns.fleetspace_account_body):
+            body = get_file_json(ns.fleetspace_account_body)
+        else:
+            body = shell_safe_json_parse(ns.fleetspace_account_body)
+
+        if not isinstance(body, dict):
+            raise InvalidArgumentValueError("Fleetspace Account body must be a valid JSON object.")
+
+        props = body.get("properties")
+        if not isinstance(props, dict):
+            raise InvalidArgumentValueError('Missing or invalid "properties" field.')
+
+        gdp = props.get("globalDatabaseAccountProperties")
+        if not isinstance(gdp, dict):
+            raise InvalidArgumentValueError('Missing or invalid "globalDatabaseAccountProperties".')
+
+        if "resourceId" not in gdp or not isinstance(gdp["resourceId"], str) or not gdp["resourceId"].startswith("/subscriptions/"):
+            raise InvalidArgumentValueError('"resourceId" must be a valid ARM resource ID string.')
+
+        if "armLocation" not in gdp or not isinstance(gdp["armLocation"], str):
+            raise InvalidArgumentValueError('"armLocation" must be a valid string.')
+
+        ns.fleetspace_account_body = body
