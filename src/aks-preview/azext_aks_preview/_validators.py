@@ -897,17 +897,6 @@ def validate_gateway_prefix_size(namespace):
             raise CLIError("--gateway-prefix-size must be in the range [28, 31]")
 
 
-def validate_location_cluster_name_resource_group_mutually_exclusive(namespace):
-    """Validates that location, cluster name, and resource group name are not specified at the same time"""
-    location = namespace.location
-    resource_group_name = namespace.resource_group_name
-    cluster_name = namespace.cluster_name
-    if location and resource_group_name and cluster_name:
-        raise MutuallyExclusiveArgumentError(
-            "Cannot specify --location and --resource-group and --cluster at the same time."
-        )
-
-
 def validate_resource_group_parameter(namespace):
     """Validates that if the user specified the cluster name, resource group name is also specified and vice versa"""
     if namespace.resource_group_name and not namespace.cluster_name:
@@ -916,9 +905,18 @@ def validate_resource_group_parameter(namespace):
         raise RequiredArgumentMissingError("Please specify --resource-group")
 
 
-def validate_location_cluster_parameters_present(namespace):
+def validate_location_resource_group_cluster_parameters(namespace):
+    location = namespace.location
+    resource_group_name = namespace.resource_group_name
+    cluster_name = namespace.cluster_name
     """Validates that either location or cluster details (i.e. resource group and cluster name) are specified"""
-    if not namespace.location and not namespace.cluster_name and not namespace.resource_group_name:
+    if not location and not cluster_name and not resource_group_name:
         raise RequiredArgumentMissingError(
-            "You must specify the location or cluster details (i.e. resource group name and cluster name)."
+            "You must specify --location or --resource-group and --cluster."
+        )
+
+    """Validates that location, cluster name, and resource group name are not specified at the same time"""
+    if location and resource_group_name and cluster_name:
+        raise MutuallyExclusiveArgumentError(
+            "Cannot specify --location and --resource-group and --cluster at the same time."
         )
