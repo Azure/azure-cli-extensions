@@ -11,7 +11,7 @@ from .custom_preparers import ConnectedClusterPreparer
 
 class ContainerAppArcTest(ScenarioTest):
     def __init__(self, *arg, **kwargs):
-        super().__init__(*arg, random_config_dir=False, **kwargs)
+        super().__init__(*arg, random_config_dir=True, **kwargs)
 
     @AllowLargeResponse(8192)
     def test_containerapp_arc_invalid_command(self):

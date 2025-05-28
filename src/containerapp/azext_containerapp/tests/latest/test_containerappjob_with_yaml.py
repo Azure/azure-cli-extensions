@@ -19,7 +19,7 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 class ContainerAppJobsExecutionsLocationNotInStageTest(ScenarioTest):
     def __init__(self, *arg, **kwargs):
-        super().__init__(*arg, random_config_dir=False, **kwargs)
+        super().__init__(*arg, random_config_dir=True, **kwargs)
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="northcentralus")
@@ -454,7 +454,7 @@ class ContainerAppJobsExecutionsLocationNotInStageTest(ScenarioTest):
 
 class ContainerAppJobsExecutionsTest(ScenarioTest):
     def __init__(self, *arg, **kwargs):
-        super().__init__(*arg, random_config_dir=False, **kwargs)
+        super().__init__(*arg, random_config_dir=True, **kwargs)
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="northcentralus")
