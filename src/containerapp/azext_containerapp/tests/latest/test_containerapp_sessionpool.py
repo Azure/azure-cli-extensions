@@ -139,7 +139,6 @@ class ContainerappSessionPoolTests(ScenarioTest):
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer()
-    @ResourceGroupPreparer()
     @SubnetPreparer(location=TEST_LOCATION, delegations='Microsoft.App/environments',
                     service_endpoints="Microsoft.Storage.Global")
     def test_containerapp_sessionpool_registry_update(self, resource_group, subnet_id, vnet_name, subnet_name):
@@ -290,7 +289,7 @@ class ContainerappSessionPoolTests(ScenarioTest):
     @ResourceGroupPreparer()
     @SubnetPreparer(location=TEST_LOCATION, delegations='Microsoft.App/environments',
                     service_endpoints="Microsoft.Storage.Global")
-    def test_containerapp_sessionpool_registry_identity(self, resource_group, subnet_id, vnet_name, subnet_name):
+    def test_containerapp_sessionpool_registry_identity(self, resource_group, subnet_id):
         location = TEST_LOCATION
         if format_location(location) == format_location(STAGE_LOCATION):
             location = "eastasia"
