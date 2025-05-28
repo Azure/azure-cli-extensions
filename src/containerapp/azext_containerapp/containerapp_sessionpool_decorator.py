@@ -253,11 +253,15 @@ class SessionPoolCreateDecorator(SessionPoolPreviewDecorator):
             self.session_pool_def["identity"] = identity_def
 
     def set_up_dynamic_configuration(self):
-        dynamic_pool_def = {}
-        dynamic_pool_def["executionType"] = "Timed"
         if self.get_argument_cooldown_period_in_seconds() is None:
             self.set_argument_cooldown_period_in_seconds(300)
-        dynamic_pool_def["cooldownPeriodInSeconds"] = self.get_argument_cooldown_period_in_seconds()
+
+        dynamic_pool_def = {}
+        lifecycle_config_def = {}
+        lifecycle_config_def["lifecycleType"] = "Timed"
+        lifecycle_config_def["cooldownPeriodInSeconds"] = self.get_argument_cooldown_period_in_seconds()
+        dynamic_pool_def["lifecycleConfiguration"] = lifecycle_config_def
+
         return dynamic_pool_def
 
     def set_up_network_configuration(self):
@@ -481,7 +485,10 @@ class SessionPoolUpdateDecorator(SessionPoolPreviewDecorator):
     def set_up_dynamic_configuration(self):
         if self.get_argument_cooldown_period_in_seconds() is not None:
             dynamic_pool_def = {}
-            dynamic_pool_def["cooldownPeriodInSeconds"] = self.get_argument_cooldown_period_in_seconds()
+            lifecycle_config_def = {}
+            lifecycle_config_def["lifecycleType"] = "Timed"
+            lifecycle_config_def["cooldownPeriodInSeconds"] = self.get_argument_cooldown_period_in_seconds()
+            dynamic_pool_def["lifecycleConfiguration"] = lifecycle_config_def
             safe_set(self.session_pool_def, "properties", "dynamicPoolConfiguration", value=dynamic_pool_def)
 
     def set_up_network_configuration(self):
