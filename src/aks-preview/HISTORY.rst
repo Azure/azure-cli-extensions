@@ -16,6 +16,10 @@ Pending
 +++++++
 * Add option `Ubuntu2204` and `Ubuntu2404` to `--os-sku` for `az aks nodepool add` and `az aks nodepool update`.
 
+18.0.0b4
++++++++
+* Add managed namespace commands `az aks namespace add/update/show/list/delete/get-credentials`
+
 18.0.0b3
 +++++++
 * Add basic lb sku migration support `az aks update --load-balancer-sku standard`
