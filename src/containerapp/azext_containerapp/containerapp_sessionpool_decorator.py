@@ -219,37 +219,38 @@ class SessionPoolCreateDecorator(SessionPoolPreviewDecorator):
             safe_set(self.session_pool_def, "properties", "managedIdentitySettings", value=managed_identity_settings)
 
     def set_up_managed_identity(self):
-        identity_def = deepcopy(ManagedServiceIdentity)
-        identity_def["type"] = "None"
+        if self.get_argument_user_assigned() or self.get_argument_system_assigned() or self.get_argument_registry_identity():
+            identity_def = deepcopy(ManagedServiceIdentity)
+            identity_def["type"] = "None"
 
-        assign_system_identity = self.get_argument_system_assigned()
-        if self.get_argument_user_assigned():
-            assign_user_identities = [x.lower() for x in self.get_argument_user_assigned()]
-        else:
-            assign_user_identities = []
-
-        identity = self.get_argument_registry_identity()
-        if identity:
-            if is_registry_msi_system(identity):
-                assign_system_identity = True
+            assign_system_identity = self.get_argument_system_assigned()
+            if self.get_argument_user_assigned():
+                assign_user_identities = [x.lower() for x in self.get_argument_user_assigned()]
             else:
-                assign_user_identities.append(self.get_argument_registry_identity())
+                assign_user_identities = []
 
-        if assign_system_identity and assign_user_identities:
-            identity_def["type"] = "SystemAssigned, UserAssigned"
-        elif assign_system_identity:
-            identity_def["type"] = "SystemAssigned"
-        elif assign_user_identities:
-            identity_def["type"] = "UserAssigned"
+            identity = self.get_argument_registry_identity()
+            if identity:
+                if is_registry_msi_system(identity):
+                    assign_system_identity = True
+                else:
+                    assign_user_identities.append(self.get_argument_registry_identity())
 
-        if assign_user_identities:
-            identity_def["userAssignedIdentities"] = {}
-            subscription_id = get_subscription_id(self.cmd.cli_ctx)
+            if assign_system_identity and assign_user_identities:
+                identity_def["type"] = "SystemAssigned, UserAssigned"
+            elif assign_system_identity:
+                identity_def["type"] = "SystemAssigned"
+            elif assign_user_identities:
+                identity_def["type"] = "UserAssigned"
 
-            for r in assign_user_identities:
-                r = _ensure_identity_resource_id(subscription_id, self.get_argument_resource_group_name(), r)
-                identity_def["userAssignedIdentities"][r] = {}  # pylint: disable=unsupported-assignment-operation
-        self.session_pool_def["identity"] = identity_def
+            if assign_user_identities:
+                identity_def["userAssignedIdentities"] = {}
+                subscription_id = get_subscription_id(self.cmd.cli_ctx)
+
+                for r in assign_user_identities:
+                    r = _ensure_identity_resource_id(subscription_id, self.get_argument_resource_group_name(), r)
+                    identity_def["userAssignedIdentities"][r] = {}  # pylint: disable=unsupported-assignment-operation
+            self.session_pool_def["identity"] = identity_def
 
     def set_up_dynamic_configuration(self):
         dynamic_pool_def = {}
