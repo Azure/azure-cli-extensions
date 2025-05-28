@@ -1389,13 +1389,23 @@ def aks_agentpool_upgrade(cmd,
         )
 
     # Note: we exclude this option because node image upgrade can't accept nodepool put fields like max surge
-    hasUpgradeSetting = max_surge or drain_timeout or node_soak_duration or undrainable_node_behavior or max_unavailable or max_blocked_nodes
+    hasUpgradeSetting = (
+        max_surge or
+        drain_timeout or
+        node_soak_duration or
+        undrainable_node_behavior or
+        max_unavailable or
+        max_blocked_nodes)
     if hasUpgradeSetting and node_image_only:
         raise MutuallyExclusiveArgumentError(
-            "Conflicting flags. Unable to specify max-surge/drain-timeout/node-soak-duration/undrainable-node-behavior/max-unavailable/max-blocked-nodes with node-image-only."
-            "If you want to use max-surge/drain-timeout/node-soak-duration/undrainable-node-behavior/max-unavailable/max-blocked-nodes with a node image upgrade, please first "
+            "Conflicting flags. Unable to specify "
+            "max-surge/drain-timeout/node-soak-duration/undrainable-node-behavior/max-unavailable/max-blocked-nodes with node-image-only."
+            "If you want to use "
+            "max-surge/drain-timeout/node-soak-duration/undrainable-node-behavior/max-unavailable/max-blocked-nodes "
+            "with a node image upgrade, please first "
             "update max-surge/drain-timeout/node-soak-duration/undrainable-node-behavior/max-unavailable/max-blocked-nodes using "
-            '"az aks nodepool update --max-surge/--drain-timeout/--node-soak-duration/--undrainable-node-behavior/--max-unavailable/--max-blocked-nodes".'
+            '"az aks nodepool update "'
+            '--max-surge/--drain-timeout/--node-soak-duration/--undrainable-node-behavior/--max-unavailable/--max-blocked-nodes".'
         )
 
     if node_image_only:
