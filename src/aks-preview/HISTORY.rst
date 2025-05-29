@@ -12,6 +12,10 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+18.0.0b5
++++++++
+* Add option `Ubuntu2204` and `Ubuntu2404` to `--os-sku` for `az aks nodepool add` and `az aks nodepool update`.
+
 18.0.0b4
 +++++++
 * Add managed namespace commands `az aks namespace add/update/show/list/delete/get-credentials`
