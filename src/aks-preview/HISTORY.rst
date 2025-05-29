@@ -12,9 +12,13 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
-18.0.0b5
+18.0.0b6
 +++++++
 * Add `--max-blocked-nodes` to the `az aks nodepool add/update/upgrade` commands.
+
+18.0.0b5
++++++++
+* Add option `Ubuntu2204` and `Ubuntu2404` to `--os-sku` for `az aks nodepool add` and `az aks nodepool update`.
 
 18.0.0b4
 +++++++
