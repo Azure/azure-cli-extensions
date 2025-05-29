@@ -5,6 +5,7 @@ Describe 'Azure Monitor Metrics Testing' {
             $extensionName = "azuremonitor-metrics"
             $extensionAgentName = "ama-metrics"
             $extensionAgentNamespace = "kube-system"
+            $workspaceResourceGroup = $null  # Initialize here for shared scope
 
             . $PSScriptRoot/../../helper/Constants.ps1
             . $PSScriptRoot/../../helper/Helper.ps1
@@ -46,6 +47,23 @@ Describe 'Azure Monitor Metrics Testing' {
             $extensionExists = $output | ConvertFrom-Json | Where-Object { $_.extensionType -eq $extensionType }
             $extensionExists | Should -Not -BeNullOrEmpty
         }
+
+        It 'Verifies rule groups were created' {
+            $clusterName = $ENVCONFIG.arcClusterName
+            $expectedRuleGroupNames = @(
+                "KubernetesRecordingRulesRuleGroup-$clusterName",
+                "NodeRecordingRulesRuleGroup-$clusterName"
+            )
+
+            $ruleGroups = az resource list --resource-group $($ENVCONFIG.resourceGroup) --resource-type "Microsoft.AlertsManagement/prometheusRuleGroups" --query "[].{name:name, location:location, id:id}" | ConvertFrom-Json
+            $ruleGroups | Should -Not -BeNullOrEmpty -Because "Rule groups may take time to be created after extension onboarding"
+        
+            foreach ($expectedName in $expectedRuleGroupNames) {
+                $matchingGroup = $ruleGroups | Where-Object { $_.name -eq $expectedName }
+                $matchingGroup | Should -Not -BeNullOrEmpty -Because "Rule group '$expectedName' should have been created by create.py"
+            }
+        }
+
 
         It "Deletes the extension from the cluster" {
             $output = az $Env:K8sExtensionName delete -c $($ENVCONFIG.arcClusterName) -g $($ENVCONFIG.resourceGroup) --cluster-type connectedClusters -n $extensionName --force
