@@ -3814,9 +3814,6 @@ def show_environment_premium_ingress(cmd, name, resource_group_name):
 
     try:
         env = ManagedEnvironmentPreviewClient.show(cmd, resource_group_name, name)
-        if not env:
-            raise ResourceNotFoundError(f"The containerapp environment '{name}' does not exist")
-
         ingress_config = safe_get(env, "properties", "ingressConfiguration")
         if not ingress_config:
             return {"message": "No premium ingress configuration found for this environment, using default values."}
@@ -3831,9 +3828,6 @@ def add_environment_premium_ingress(cmd, name, resource_group_name, workload_pro
 
     try:
         env = ManagedEnvironmentPreviewClient.show(cmd, resource_group_name, name)
-        if not env:
-            raise ResourceNotFoundError(f"The containerapp environment '{name}' does not exist")
-
         env_patch = {}
         ingress_config = {}
         safe_set(env_patch, "properties", "ingressConfiguration", value=ingress_config)
@@ -3868,9 +3862,6 @@ def update_environment_premium_ingress(cmd, name, resource_group_name, workload_
 
     try:
         env = ManagedEnvironmentPreviewClient.show(cmd, resource_group_name, name)
-        if not env:
-            raise ResourceNotFoundError(f"The containerapp environment '{name}' does not exist")
-
         env_patch = {}
         ingress_config = {}
         scale = {}
@@ -3916,9 +3907,6 @@ def remove_environment_premium_ingress(cmd, name, resource_group_name, no_wait=F
 
     try:
         env = ManagedEnvironmentPreviewClient.show(cmd, resource_group_name, name)
-        if not env:
-            raise ResourceNotFoundError(f"The containerapp environment '{name}' does not exist")
-
         env_patch = {}
         # Remove the whole section to restore defaults
         safe_set(env_patch, "properties", "ingressConfiguration", value=None)

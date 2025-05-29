@@ -663,12 +663,7 @@ class ContainerappIngressTests(ScenarioTest):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
         env_name = self.create_random_name(prefix='containerapp-env', length=24)
-        logs_workspace_name = self.create_random_name(prefix='containerapp-env', length=24)
-
-        logs_workspace_id = self.cmd(f'monitor log-analytics workspace create -g {resource_group} -n {env_name} -l eastus'.format(resource_group, logs_workspace_name)).get_output_in_json()["customerId"]
-        logs_workspace_key = self.cmd(f'monitor log-analytics workspace get-shared-keys -g {resource_group} -n {env_name}'.format(resource_group, logs_workspace_name)).get_output_in_json()["primarySharedKey"]
-
-        self.cmd(f'containerapp env create -g {resource_group} -n {env_name} --logs-workspace-id {logs_workspace_id} --logs-workspace-key {logs_workspace_key}')
+        self.cmd(f'containerapp env create -g {resource_group} -n {env_name} --logs-destination none')
 
         containerapp_env = self.cmd(f'containerapp env show -g {resource_group} -n {env_name}').get_output_in_json()
 
@@ -715,7 +710,7 @@ class ContainerappIngressTests(ScenarioTest):
             JMESPathCheck('headerCountLimit', None),
         ])
 
-        self.cmd(f'containerapp env premium-ingress remove -g {resource_group} -n {env_name}')
+        self.cmd(f'containerapp env premium-ingress remove -g {resource_group} -n {env_name} -y')
     
         self.cmd(f'containerapp env premium-ingress show -g {resource_group} -n {env_name}', checks=[
             JMESPathCheck('message', 'No premium ingress configuration found for this environment, using default values.'),

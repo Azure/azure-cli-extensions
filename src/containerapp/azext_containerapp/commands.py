@@ -296,4 +296,4 @@ def load_command_table(self, args):
         g.custom_show_command('show', 'show_environment_premium_ingress')
         g.custom_command('add', 'add_environment_premium_ingress')
         g.custom_command('update', 'update_environment_premium_ingress')
-        g.custom_command('remove', 'remove_environment_premium_ingress')
+        g.custom_command('remove', 'remove_environment_premium_ingress', confirmation=True)
