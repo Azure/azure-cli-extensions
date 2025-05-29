@@ -305,7 +305,14 @@ class ContainerappIngressTests(ScenarioTest):
         env = prepare_containerapp_env_for_app_e2e_tests(self)
 
         self.cmd('containerapp create -g {} -n {} --environment {} --ingress external --target-port 0 --revisions-mode labels --target-label label1'.format(resource_group, ca_name, env))
-        time.sleep(5)
+
+        # wait for the first revision to come up and populate in traffic.
+        ingress = self.cmd('containerapp ingress show -g {} -n {}'.format(resource_group, ca_name)).get_output_in_json()
+        for _ in range(100):
+            if ingress["traffic"] != None:
+                break
+            time.sleep(5)
+            traffic = self.cmd('containerapp ingress show -g {} -n {}'.format(resource_group, ca_name)).get_output_in_json()
 
         self.cmd('containerapp ingress show -g {} -n {}'.format(resource_group, ca_name), checks=[
             JMESPathCheck('external', True),
@@ -316,9 +323,6 @@ class ContainerappIngressTests(ScenarioTest):
 
         # Create a new revision with a different label
         self.cmd('containerapp update -g {} -n {} --cpu 1.0 --memory 2Gi --target-label label2'.format(resource_group, ca_name))
-        time.sleep(5)
-
-        revisions_list = self.cmd('containerapp revision list -g {} -n {}'.format(resource_group, ca_name)).get_output_in_json()
 
         # it may take a minute for the new revision to be created and added to traffic.
         traffic = self.cmd('containerapp ingress traffic show -g {} -n {}'.format(resource_group, ca_name)).get_output_in_json()    
@@ -329,6 +333,8 @@ class ContainerappIngressTests(ScenarioTest):
             traffic = self.cmd('containerapp ingress traffic show -g {} -n {}'.format(resource_group, ca_name)).get_output_in_json()
         
         self.assertEqual(len(traffic), 2)
+
+        revisions_list = self.cmd('containerapp revision list -g {} -n {}'.format(resource_group, ca_name)).get_output_in_json()
 
         # TODO: The revision list call isn't handled by extensions, this will only work once the core CLI updates to at least 2024-10-02-preview
         # self.assertEqual(revisions_list[0]["properties"]["labels"], "label1")
