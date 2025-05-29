@@ -2796,6 +2796,16 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         :return: bool
         """
         return self.raw_param.get("migrate_vmas_to_vms")
+  
+    def get_disable_http_proxy(self) -> bool:
+        """Obtain the value of disable_http_proxy.
+
+        :return: bool
+        """
+        # read the original value passed by the command
+        disable_http_proxy = self.raw_param.get("disable_http_proxy")
+
+        return disable_http_proxy
 
 
 # pylint: disable=too-many-public-methods
@@ -5277,6 +5287,26 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         return mc
 
+    def update_http_proxy_config(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update http proxy config for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        if self.context.get_disable_http_proxy():
+            if not mc.http_proxy_config:
+                raise UnknownError(
+                    "Unexpectedly get an empty http proxy config in the process of updating http proxy enabled."
+                )
+            if mc.http_proxy_config is None:
+                mc.http_proxy_config = (
+                    self.models.ManagedClusterHTTPProxyConfig()  # pylint: disable=no-member
+                )
+            mc.http_proxy_config.enabled = False
+
+        return mc
+
     def update_mc_profile_preview(self) -> ManagedCluster:
         """The overall controller used to update the preview ManagedCluster profile.
 
@@ -5352,6 +5382,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_imds_restriction(mc)
         # update VMAS to VMS
         mc = self.update_vmas_to_vms(mc)
+        # update http proxy config
+        mc = self.update_http_proxy_config(mc)
 
         return mc
 

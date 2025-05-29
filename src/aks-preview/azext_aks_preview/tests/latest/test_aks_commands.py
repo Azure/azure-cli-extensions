@@ -6053,6 +6053,15 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             ],
         )
 
+        disable_cmd = "aks update --resource-group={resource_group} --name={name} --disable-http-proxy"
+
+        self.cmd(
+            disable_cmd,
+            checks=[
+                self.check("httpProxyConfig.enabled", "false"),
+            ],
+        )
+
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
         random_name_length=17, name_prefix="clitest", location="westus2"
