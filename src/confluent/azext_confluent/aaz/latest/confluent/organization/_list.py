@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "confluent organization list",
 )
 class List(AAZCommand):
-    """List all organizations under the specified subscription.
+    """List all Confluent organizations under the specified resource group or subscription.
     """
 
     _aaz_info = {
@@ -43,20 +43,17 @@ class List(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.resource_group = AAZResourceGroupNameArg(
-            options=["--resource-group"],
-            help="Resource Group Name",
-        )
+        _args_schema.resource_group = AAZResourceGroupNameArg()
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        condition_0 = has_value(self.ctx.args.resource_group) and has_value(self.ctx.subscription_id)
-        condition_1 = has_value(self.ctx.subscription_id) and has_value(self.ctx.args.resource_group) is not True
+        condition_0 = has_value(self.ctx.subscription_id) and has_value(self.ctx.args.resource_group) is not True
+        condition_1 = has_value(self.ctx.args.resource_group) and has_value(self.ctx.subscription_id)
         if condition_0:
-            self.OrganizationListByResourceGroup(ctx=self.ctx)()
-        if condition_1:
             self.OrganizationListBySubscription(ctx=self.ctx)()
+        if condition_1:
+            self.OrganizationListByResourceGroup(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -71,6 +68,210 @@ class List(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
         next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
         return result, next_link
+
+    class OrganizationListBySubscription(AAZHttpOperation):
+        CLIENT_TYPE = "MgmtClient"
+
+        def __call__(self, *args, **kwargs):
+            request = self.make_request()
+            session = self.client.send_request(request=request, stream=False, **kwargs)
+            if session.http_response.status_code in [200]:
+                return self.on_200(session)
+
+            return self.on_error(session.http_response)
+
+        @property
+        def url(self):
+            return self.client.format_url(
+                "/subscriptions/{subscriptionId}/providers/Microsoft.Confluent/organizations",
+                **self.url_parameters
+            )
+
+        @property
+        def method(self):
+            return "GET"
+
+        @property
+        def error_format(self):
+            return "ODataV4Format"
+
+        @property
+        def url_parameters(self):
+            parameters = {
+                **self.serialize_url_param(
+                    "subscriptionId", self.ctx.subscription_id,
+                    required=True,
+                ),
+            }
+            return parameters
+
+        @property
+        def query_parameters(self):
+            parameters = {
+                **self.serialize_query_param(
+                    "api-version", "2024-02-13",
+                    required=True,
+                ),
+            }
+            return parameters
+
+        @property
+        def header_parameters(self):
+            parameters = {
+                **self.serialize_header_param(
+                    "Accept", "application/json",
+                ),
+            }
+            return parameters
+
+        def on_200(self, session):
+            data = self.deserialize_http_content(session)
+            self.ctx.set_var(
+                "instance",
+                data,
+                schema_builder=self._build_schema_on_200
+            )
+
+        _schema_on_200 = None
+
+        @classmethod
+        def _build_schema_on_200(cls):
+            if cls._schema_on_200 is not None:
+                return cls._schema_on_200
+
+            cls._schema_on_200 = AAZObjectType()
+
+            _schema_on_200 = cls._schema_on_200
+            _schema_on_200.next_link = AAZStrType(
+                serialized_name="nextLink",
+            )
+            _schema_on_200.value = AAZListType()
+
+            value = cls._schema_on_200.value
+            value.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element
+            _element.id = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.location = AAZStrType()
+            _element.name = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.properties = AAZObjectType(
+                flags={"required": True, "client_flatten": True},
+            )
+            _element.system_data = AAZObjectType(
+                serialized_name="systemData",
+                flags={"read_only": True},
+            )
+            _element.tags = AAZDictType()
+            _element.type = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            properties = cls._schema_on_200.value.Element.properties
+            properties.created_time = AAZStrType(
+                serialized_name="createdTime",
+                flags={"read_only": True},
+            )
+            properties.offer_detail = AAZObjectType(
+                serialized_name="offerDetail",
+                flags={"required": True},
+            )
+            properties.organization_id = AAZStrType(
+                serialized_name="organizationId",
+                flags={"read_only": True},
+            )
+            properties.provisioning_state = AAZStrType(
+                serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+            properties.sso_url = AAZStrType(
+                serialized_name="ssoUrl",
+                flags={"read_only": True},
+            )
+            properties.user_detail = AAZObjectType(
+                serialized_name="userDetail",
+                flags={"required": True},
+            )
+
+            offer_detail = cls._schema_on_200.value.Element.properties.offer_detail
+            offer_detail.id = AAZStrType(
+                flags={"required": True},
+            )
+            offer_detail.plan_id = AAZStrType(
+                serialized_name="planId",
+                flags={"required": True},
+            )
+            offer_detail.plan_name = AAZStrType(
+                serialized_name="planName",
+                flags={"required": True},
+            )
+            offer_detail.private_offer_id = AAZStrType(
+                serialized_name="privateOfferId",
+            )
+            offer_detail.private_offer_ids = AAZListType(
+                serialized_name="privateOfferIds",
+            )
+            offer_detail.publisher_id = AAZStrType(
+                serialized_name="publisherId",
+                flags={"required": True},
+            )
+            offer_detail.status = AAZStrType()
+            offer_detail.term_id = AAZStrType(
+                serialized_name="termId",
+            )
+            offer_detail.term_unit = AAZStrType(
+                serialized_name="termUnit",
+                flags={"required": True},
+            )
+
+            private_offer_ids = cls._schema_on_200.value.Element.properties.offer_detail.private_offer_ids
+            private_offer_ids.Element = AAZStrType()
+
+            user_detail = cls._schema_on_200.value.Element.properties.user_detail
+            user_detail.aad_email = AAZStrType(
+                serialized_name="aadEmail",
+            )
+            user_detail.email_address = AAZStrType(
+                serialized_name="emailAddress",
+                flags={"required": True},
+            )
+            user_detail.first_name = AAZStrType(
+                serialized_name="firstName",
+            )
+            user_detail.last_name = AAZStrType(
+                serialized_name="lastName",
+            )
+            user_detail.user_principal_name = AAZStrType(
+                serialized_name="userPrincipalName",
+            )
+
+            system_data = cls._schema_on_200.value.Element.system_data
+            system_data.created_at = AAZStrType(
+                serialized_name="createdAt",
+            )
+            system_data.created_by = AAZStrType(
+                serialized_name="createdBy",
+            )
+            system_data.created_by_type = AAZStrType(
+                serialized_name="createdByType",
+            )
+            system_data.last_modified_at = AAZStrType(
+                serialized_name="lastModifiedAt",
+            )
+            system_data.last_modified_by = AAZStrType(
+                serialized_name="lastModifiedBy",
+            )
+            system_data.last_modified_by_type = AAZStrType(
+                serialized_name="lastModifiedByType",
+            )
+
+            tags = cls._schema_on_200.value.Element.tags
+            tags.Element = AAZStrType()
+
+            return cls._schema_on_200
 
     class OrganizationListByResourceGroup(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
@@ -192,209 +393,7 @@ class List(AAZCommand):
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
-            )
-            properties.sso_url = AAZStrType(
-                serialized_name="ssoUrl",
                 flags={"read_only": True},
-            )
-            properties.user_detail = AAZObjectType(
-                serialized_name="userDetail",
-                flags={"required": True},
-            )
-
-            offer_detail = cls._schema_on_200.value.Element.properties.offer_detail
-            offer_detail.id = AAZStrType(
-                flags={"required": True},
-            )
-            offer_detail.plan_id = AAZStrType(
-                serialized_name="planId",
-                flags={"required": True},
-            )
-            offer_detail.plan_name = AAZStrType(
-                serialized_name="planName",
-                flags={"required": True},
-            )
-            offer_detail.private_offer_id = AAZStrType(
-                serialized_name="privateOfferId",
-            )
-            offer_detail.private_offer_ids = AAZListType(
-                serialized_name="privateOfferIds",
-            )
-            offer_detail.publisher_id = AAZStrType(
-                serialized_name="publisherId",
-                flags={"required": True},
-            )
-            offer_detail.status = AAZStrType()
-            offer_detail.term_id = AAZStrType(
-                serialized_name="termId",
-            )
-            offer_detail.term_unit = AAZStrType(
-                serialized_name="termUnit",
-                flags={"required": True},
-            )
-
-            private_offer_ids = cls._schema_on_200.value.Element.properties.offer_detail.private_offer_ids
-            private_offer_ids.Element = AAZStrType()
-
-            user_detail = cls._schema_on_200.value.Element.properties.user_detail
-            user_detail.aad_email = AAZStrType(
-                serialized_name="aadEmail",
-            )
-            user_detail.email_address = AAZStrType(
-                serialized_name="emailAddress",
-                flags={"required": True},
-            )
-            user_detail.first_name = AAZStrType(
-                serialized_name="firstName",
-            )
-            user_detail.last_name = AAZStrType(
-                serialized_name="lastName",
-            )
-            user_detail.user_principal_name = AAZStrType(
-                serialized_name="userPrincipalName",
-            )
-
-            system_data = cls._schema_on_200.value.Element.system_data
-            system_data.created_at = AAZStrType(
-                serialized_name="createdAt",
-            )
-            system_data.created_by = AAZStrType(
-                serialized_name="createdBy",
-            )
-            system_data.created_by_type = AAZStrType(
-                serialized_name="createdByType",
-            )
-            system_data.last_modified_at = AAZStrType(
-                serialized_name="lastModifiedAt",
-            )
-            system_data.last_modified_by = AAZStrType(
-                serialized_name="lastModifiedBy",
-            )
-            system_data.last_modified_by_type = AAZStrType(
-                serialized_name="lastModifiedByType",
-            )
-
-            tags = cls._schema_on_200.value.Element.tags
-            tags.Element = AAZStrType()
-
-            return cls._schema_on_200
-
-    class OrganizationListBySubscription(AAZHttpOperation):
-        CLIENT_TYPE = "MgmtClient"
-
-        def __call__(self, *args, **kwargs):
-            request = self.make_request()
-            session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [200]:
-                return self.on_200(session)
-
-            return self.on_error(session.http_response)
-
-        @property
-        def url(self):
-            return self.client.format_url(
-                "/subscriptions/{subscriptionId}/providers/Microsoft.Confluent/organizations",
-                **self.url_parameters
-            )
-
-        @property
-        def method(self):
-            return "GET"
-
-        @property
-        def error_format(self):
-            return "ODataV4Format"
-
-        @property
-        def url_parameters(self):
-            parameters = {
-                **self.serialize_url_param(
-                    "subscriptionId", self.ctx.subscription_id,
-                    required=True,
-                ),
-            }
-            return parameters
-
-        @property
-        def query_parameters(self):
-            parameters = {
-                **self.serialize_query_param(
-                    "api-version", "2024-02-13",
-                    required=True,
-                ),
-            }
-            return parameters
-
-        @property
-        def header_parameters(self):
-            parameters = {
-                **self.serialize_header_param(
-                    "Accept", "application/json",
-                ),
-            }
-            return parameters
-
-        def on_200(self, session):
-            data = self.deserialize_http_content(session)
-            self.ctx.set_var(
-                "instance",
-                data,
-                schema_builder=self._build_schema_on_200
-            )
-
-        _schema_on_200 = None
-
-        @classmethod
-        def _build_schema_on_200(cls):
-            if cls._schema_on_200 is not None:
-                return cls._schema_on_200
-
-            cls._schema_on_200 = AAZObjectType()
-
-            _schema_on_200 = cls._schema_on_200
-            _schema_on_200.next_link = AAZStrType(
-                serialized_name="nextLink",
-            )
-            _schema_on_200.value = AAZListType()
-
-            value = cls._schema_on_200.value
-            value.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.value.Element
-            _element.id = AAZStrType(
-                flags={"read_only": True},
-            )
-            _element.location = AAZStrType()
-            _element.name = AAZStrType(
-                flags={"read_only": True},
-            )
-            _element.properties = AAZObjectType(
-                flags={"required": True, "client_flatten": True},
-            )
-            _element.system_data = AAZObjectType(
-                serialized_name="systemData",
-                flags={"read_only": True},
-            )
-            _element.tags = AAZDictType()
-            _element.type = AAZStrType(
-                flags={"read_only": True},
-            )
-
-            properties = cls._schema_on_200.value.Element.properties
-            properties.created_time = AAZStrType(
-                serialized_name="createdTime",
-                flags={"read_only": True},
-            )
-            properties.offer_detail = AAZObjectType(
-                serialized_name="offerDetail",
-                flags={"required": True},
-            )
-            properties.organization_id = AAZStrType(
-                serialized_name="organizationId",
-                flags={"read_only": True},
-            )
-            properties.provisioning_state = AAZStrType(
-                serialized_name="provisioningState",
             )
             properties.sso_url = AAZStrType(
                 serialized_name="ssoUrl",
