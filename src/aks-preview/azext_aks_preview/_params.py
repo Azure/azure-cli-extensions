@@ -43,6 +43,14 @@ from azext_aks_preview._consts import (
     CONST_ABSOLUTEMONTHLY_MAINTENANCE_SCHEDULE,
     CONST_AZURE_KEYVAULT_NETWORK_ACCESS_PRIVATE,
     CONST_AZURE_KEYVAULT_NETWORK_ACCESS_PUBLIC,
+    CONST_NAMESPACE_ADOPTION_POLICY_NEVER,
+    CONST_NAMESPACE_ADOPTION_POLICY_IFIDENTICAL,
+    CONST_NAMESPACE_ADOPTION_POLICY_ALWAYS,
+    CONST_NAMESPACE_NETWORK_POLICY_RULE_DENYALL,
+    CONST_NAMESPACE_NETWORK_POLICY_RULE_ALLOWALL,
+    CONST_NAMESPACE_NETWORK_POLICY_RULE_ALLOWSAMENAMESPACE,
+    CONST_NAMESPACE_DELETE_POLICY_KEEP,
+    CONST_NAMESPACE_DELETE_POLICY_DELETE,
     CONST_CREDENTIAL_FORMAT_AZURE,
     CONST_CREDENTIAL_FORMAT_EXEC,
     CONST_DAILY_MAINTENANCE_SCHEDULE,
@@ -85,6 +93,8 @@ from azext_aks_preview._consts import (
     CONST_OS_SKU_CBLMARINER,
     CONST_OS_SKU_MARINER,
     CONST_OS_SKU_UBUNTU,
+    CONST_OS_SKU_UBUNTU2204,
+    CONST_OS_SKU_UBUNTU2404,
     CONST_OS_SKU_WINDOWS2019,
     CONST_OS_SKU_WINDOWS2022,
     CONST_OS_SKU_WINDOWSANNUAL,
@@ -139,6 +149,8 @@ from azext_aks_preview._consts import (
 
 from azext_aks_preview._validators import (
     validate_acr,
+    validate_namespace_name,
+    validate_resource_quota,
     validate_addon,
     validate_addons,
     validate_agent_pool_name,
@@ -248,13 +260,20 @@ node_os_skus_create = [
     CONST_OS_SKU_UBUNTU,
     CONST_OS_SKU_CBLMARINER,
     CONST_OS_SKU_MARINER,
+    CONST_OS_SKU_UBUNTU2204,
+    CONST_OS_SKU_UBUNTU2404,
 ]
 node_os_skus = node_os_skus_create + [
     CONST_OS_SKU_WINDOWS2019,
     CONST_OS_SKU_WINDOWS2022,
     CONST_OS_SKU_WINDOWSANNUAL,
 ]
-node_os_skus_update = [CONST_OS_SKU_AZURELINUX, CONST_OS_SKU_UBUNTU]
+node_os_skus_update = [
+    CONST_OS_SKU_AZURELINUX,
+    CONST_OS_SKU_UBUNTU,
+    CONST_OS_SKU_UBUNTU2204,
+    CONST_OS_SKU_UBUNTU2404,
+]
 scale_down_modes = [CONST_SCALE_DOWN_MODE_DELETE, CONST_SCALE_DOWN_MODE_DEALLOCATE]
 workload_runtimes = [
     CONST_WORKLOAD_RUNTIME_OCI_CONTAINER,
@@ -327,6 +346,24 @@ node_os_upgrade_channels = [
 nrg_lockdown_restriction_levels = [
     CONST_NRG_LOCKDOWN_RESTRICTION_LEVEL_READONLY,
     CONST_NRG_LOCKDOWN_RESTRICTION_LEVEL_UNRESTRICTED,
+]
+
+# consts for managed namespace
+network_policy_rule = [
+    CONST_NAMESPACE_NETWORK_POLICY_RULE_DENYALL,
+    CONST_NAMESPACE_NETWORK_POLICY_RULE_ALLOWALL,
+    CONST_NAMESPACE_NETWORK_POLICY_RULE_ALLOWSAMENAMESPACE,
+]
+
+adoption_policy = [
+    CONST_NAMESPACE_ADOPTION_POLICY_NEVER,
+    CONST_NAMESPACE_ADOPTION_POLICY_IFIDENTICAL,
+    CONST_NAMESPACE_ADOPTION_POLICY_ALWAYS,
+]
+
+delete_policy = [
+    CONST_NAMESPACE_DELETE_POLICY_KEEP,
+    CONST_NAMESPACE_DELETE_POLICY_DELETE,
 ]
 
 # consts for maintenance configuration
@@ -1432,6 +1469,52 @@ def load_arguments(self, _):
             "nodepool_name",
             help="Node pool name, upto 12 alphanumeric characters",
             validator=validate_nodepool_name,
+        )
+
+    # managed namespace
+    with self.argument_context("aks namespace") as c:
+        c.argument("cluster_name", help="The cluster name.")
+        c.argument(
+            "name",
+            validator=validate_namespace_name,
+            help="The managed namespace name.",
+        )
+
+    for scope in [
+        "aks namespace add",
+        "aks namespace update",
+    ]:
+        with self.argument_context(scope) as c:
+            c.argument("tags", tags_type, help="The tags to set to the managed namespace")
+            c.argument("labels", nargs="*", help="Labels set to the managed namespace")
+            c.argument(
+                "annotations",
+                nargs="*",
+                help="Annotations set to the managed namespace",
+            )
+            c.argument("cpu_request", validator=validate_resource_quota)
+            c.argument("cpu_limit", validator=validate_resource_quota)
+            c.argument("memory_request", validator=validate_resource_quota)
+            c.argument("memory_limit", validator=validate_resource_quota)
+            c.argument("ingress_policy", arg_type=get_enum_type(network_policy_rule))
+            c.argument("egress_policy", arg_type=get_enum_type(network_policy_rule))
+            c.argument("adoption_policy", arg_type=get_enum_type(adoption_policy))
+            c.argument("delete_policy", arg_type=get_enum_type(delete_policy))
+            c.argument("aks_custom_headers")
+            c.argument("no_wait", help="Do not wait for the long-running operation to finish")
+
+    with self.argument_context("aks namespace get-credentials") as c:
+        c.argument(
+            "context_name",
+            options_list=["--context"],
+            help="If specified, overwrite the default context name.",
+        )
+        c.argument(
+            "path",
+            options_list=["--file", "-f"],
+            type=file_type,
+            completer=FilesCompleter(),
+            default=os.path.join(os.path.expanduser("~"), ".kube", "config"),
         )
 
     with self.argument_context("aks nodepool") as c:

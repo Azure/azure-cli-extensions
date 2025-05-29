@@ -6,6 +6,7 @@
 import os
 import pytest
 import unittest
+import time
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse, live_only
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
@@ -91,7 +92,6 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
 
     @live_only()
     def test_workspace_create_destroy(self):
-        print("test_workspace_create_destroy")
         # initialize values
         test_location = get_test_workspace_location()
         test_resource_group = get_test_resource_group()
@@ -102,7 +102,7 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
 
         if all_providers_are_in_capabilities(test_provider_sku_list, get_test_capabilities()):
             # create
-            self.cmd(f'az quantum workspace create -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage_account} -r {test_provider_sku_list} -o json --skip-role-assignment', checks=[
+            self.cmd(f'az quantum workspace create --auto-accept -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage_account} -r {test_provider_sku_list} -o json --skip-role-assignment', checks=[
                 self.check("name", test_workspace_temp),
                 self.check("properties.provisioningState", "Accepted")  # Status is accepted since we're not linking the storage account.
             ])
@@ -111,6 +111,8 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
             self.cmd(f'az quantum workspace set -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -o json', checks=[
                 self.check("name", test_workspace_temp)
             ])
+
+            time.sleep(10)  # Wait for the workspace to be created before fetching quotas
 
             # list quotas
             results = self.cmd('az quantum workspace quotas -o json').get_output_in_json()
@@ -126,7 +128,7 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
 
             # Create workspace with "--skip-role-assignment" and "--skip-autoadd" parameters
             test_workspace_temp = get_test_workspace_random_name()
-            self.cmd(f'az quantum workspace create --skip-autoadd -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage_account} -r {test_provider_sku_list} -o json --skip-role-assignment', checks=[
+            self.cmd(f'az quantum workspace create --skip-autoadd --auto-accept -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage_account} -r {test_provider_sku_list} -o json --skip-role-assignment', checks=[
                 self.check("name", test_workspace_temp),
                 self.check("properties.provisioningState", "Accepted")  # Status is accepted since we're not linking the storage account.
             ])
@@ -139,7 +141,7 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
 
             # Repeat without the "--skip-role-assignment" or "--skip-autoadd" parameters (Uses ARM template and adds C4A plans)
             test_workspace_temp = get_test_workspace_random_name()
-            self.cmd(f'az quantum workspace create -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage_account} -r {test_provider_sku_list} -o json', checks=[
+            self.cmd(f'az quantum workspace create --auto-accept -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage_account} -r {test_provider_sku_list} -o json', checks=[
                 self.check("name", DEPLOYMENT_NAME_PREFIX + test_workspace_temp),
             ])
 
@@ -151,7 +153,7 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
 
             # Create a workspace specifying "--skip-autoadd"
             test_workspace_temp = get_test_workspace_random_name()
-            self.cmd(f'az quantum workspace create --skip-autoadd -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage_account} -r {test_provider_sku_list} -o json', checks=[
+            self.cmd(f'az quantum workspace create --auto-accept --skip-autoadd -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage_account} -r {test_provider_sku_list} -o json', checks=[
                 self.check("name", DEPLOYMENT_NAME_PREFIX + test_workspace_temp),
             ])
 
@@ -163,7 +165,7 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
 
             # Create a workspace specifying a storage account that is not Standard_LRS
             test_workspace_temp = get_test_workspace_random_name()
-            self.cmd(f'az quantum workspace create --skip-autoadd -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage_account_grs} -r {test_provider_sku_list} -o json', checks=[
+            self.cmd(f'az quantum workspace create --auto-accept --skip-autoadd -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage_account_grs} -r {test_provider_sku_list} -o json', checks=[
                 self.check("name", DEPLOYMENT_NAME_PREFIX + test_workspace_temp),
             ])
 
@@ -175,7 +177,7 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
 
             # Create a workspace with a maximum length name, but make sure the deployment name was truncated to a valid length
             test_workspace_temp = get_test_workspace_random_long_name()
-            self.cmd(f'az quantum workspace create --skip-autoadd -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage_account_grs} -r {test_provider_sku_list} -o json', checks=[
+            self.cmd(f'az quantum workspace create --auto-accept --skip-autoadd -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage_account_grs} -r {test_provider_sku_list} -o json', checks=[
                 self.check("name", (DEPLOYMENT_NAME_PREFIX + test_workspace_temp)[:64]),
             ])
 
@@ -189,7 +191,6 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
 
     @live_only()
     def test_workspace_keys(self):
-        print("test_workspace_keys")
         # initialize values
         test_location = get_test_workspace_location()
         test_resource_group = get_test_resource_group()
@@ -198,7 +199,7 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
         test_provider_sku_list = get_test_workspace_provider_sku_list()
 
         # create
-        self.cmd(f'az quantum workspace create -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage_account} -r {test_provider_sku_list} -o json', checks=[
+        self.cmd(f'az quantum workspace create --auto-accept -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage_account} -r {test_provider_sku_list} -o json', checks=[
             self.check("properties.provisioningState", "Succeeded")
         ])
 
@@ -244,7 +245,6 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
     #     self.capsys = capsys
     # # See "TODO" in issue_cmd_with_param_missing in utils.py
 
-    @live_only()
     def test_workspace_errors(self):
         print("test_workspace_errors")
         # initialize values
