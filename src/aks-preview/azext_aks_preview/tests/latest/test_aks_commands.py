@@ -3291,14 +3291,14 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         add_nodepool_cmd = (
             "aks nodepool add -g {resource_group} --cluster-name {name} -n {nodepool_name} --node-count 2 --undrainable-node-behavior Cordon "
-            "--mode user --max-surge 1 --max-blocked-nodes 1"
+            "--mode user --max-surge 1 --max-blocked-nodes 2"
         )
         self.cmd(
             add_nodepool_cmd,
             checks=[
                 self.check("provisioningState", "Succeeded"),
                 self.check("upgradeSettings.undrainableNodeBehavior", "Cordon"),
-                self.check("upgradeSettings.maxBlockedNodes", "1"),
+                self.check("upgradeSettings.maxBlockedNodes", "2"),
             ],
         )
 
