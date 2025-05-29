@@ -60,43 +60,80 @@ class WorkloadOrchestrationTest(ScenarioTest):
         #     f'az workload-orchestration schema delete --resource-group {self.rg} --name {self.schema_name}'
         # )
 
+
     @AllowLargeResponse()
-    def test_context_create_with_capabilities_and_hierarchies(self):
-        # Get existing context and update capabilities
-        context = self.cmd(
-            f'az workload-orchestration context show --subscription {self.context_subscription_id} --resource-group {self.context_rg} --name {self.context_name}'
-        ).get_output_in_json()
+    def test_config_template_lifecycle(self):
+        import tempfile
+        import shutil
 
-        # Add new capabilities
-        capabilities = context["properties"]["capabilities"] + [
-            {"name": f"{self.resource_prefix}-Shampoo", "description": f"{self.resource_prefix}-Shampoo"},
-            {"name": f"{self.resource_prefix}-Soap", "description": f"{self.resource_prefix}-Soap"}
-        ]
-        # Remove duplicates by name/description
-        unique_capabilities = { (c["name"], c["description"]): c for c in capabilities }.values()
+        rg = "ConfigManager-CloudTest-Playground-Portal"
+        location = "eastus2euap"
+        config_template_name = self.create_random_name(prefix="CommonConfig", length=20)
+        version = "1.0.0"
+        description = "Common configuration settings"
 
-        # Write capabilities to a JSON file
-        import json
-        capabilities_file = os.path.join(os.path.dirname(__file__), "context-capabilities.json")
-        with open(capabilities_file, "w") as f:
-            json.dump(list(unique_capabilities), f, separators=(',', ':'))
-
-        # Act: create context with updated capabilities and hierarchies
-        self.cmd(
-            f'az workload-orchestration context create '
-            f'--subscription {self.context_subscription_id} '
-            f'--resource-group {self.context_rg} '
-            f'--location {self.context_location} '
-            f'--name {self.context_name} '
-            f'--capabilities "@{capabilities_file}" '
-            f'--hierarchies [0].name=country [0].description=Country [1].name=region [1].description=Region [2].name=factory [2].description=Factory [3].name=line [3].description=Line'
+        # Prepare a temporary config template file
+        config_content = "configs:\n  AppName: Hotmelt"
+        temp_dir = tempfile.mkdtemp()
+        config_template_file = os.path.join(
+            os.path.dirname(__file__),
+            "resources",
+            "hotmelt-config-template-hard.yaml"
         )
 
-        # List contexts and check for created entry
-        result = self.cmd(
-            f'az workload-orchestration context list --subscription {self.context_subscription_id} --resource-group {self.context_rg}'
-        ).get_output_in_json()
-        assert any(item.get("name") == self.context_name for item in result), f"{self.context_name} not found in context list"
+        with open(config_template_file, "w") as f:
+            f.write(config_content)
 
-        # Clean up the capabilities file
-        os.remove(capabilities_file)
+        try:
+            # Create config-template
+            create_result = self.cmd(
+                f"az workload-orchestration config-template create "
+                f"--resource-group {rg} "
+                f"--config-template-name '{config_template_name}' "
+                f"-l {location} "
+                f"--description '{description}' "
+                f"--config-template-file '{config_template_file}' "
+                f"--version {version}"
+            ).get_output_in_json()
+            assert create_result["status"] == "Succeeded"
+            assert create_result["properties"]["id"].endswith(f"/{config_template_name}/versions/{version}")
+
+            # Show config-template
+            show_result = self.cmd(
+                f"az workload-orchestration config-template show "
+                f"--resource-group {rg} "
+                f"--config-template-name '{config_template_name}'"
+            ).get_output_in_json()
+            assert show_result["name"] == config_template_name
+            assert show_result["properties"]["description"] == description
+            assert show_result["properties"]["provisioningState"] == "Succeeded"
+
+   
+
+            # List config-templates and check for created entry
+            list_result = self.cmd(
+                f"az workload-orchestration config-template list "
+                f"--resource-group {rg}"
+            ).get_output_in_json()
+            assert any(item["name"] == config_template_name for item in list_result), f"{config_template_name} not found in config-template list"
+
+            # Remove config-template version
+            remove_result = self.cmd(
+                f"az workload-orchestration config-template remove-version "
+                f"--resource-group {rg} "
+                f"--config-template-name '{config_template_name}' "
+                f"--version {version}"
+            ).get_output_in_json()
+            assert remove_result["status"] == "Deletion Succeeded"
+
+            # Delete config-template (auto-confirm prompt)
+            self.cmd(
+                f"az workload-orchestration config-template delete "
+                f"--resource-group {rg} "
+                f"--config-template-name '{config_template_name}' --yes",
+                checks=None,
+                expect_failure=False,
+            )
+
+        finally:
+            shutil.rmtree(temp_dir)
