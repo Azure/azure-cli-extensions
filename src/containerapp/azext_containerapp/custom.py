@@ -3827,7 +3827,7 @@ def add_environment_premium_ingress(cmd, name, resource_group_name, workload_pro
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     try:
-        env = ManagedEnvironmentPreviewClient.show(cmd, resource_group_name, name)
+        ManagedEnvironmentPreviewClient.show(cmd, resource_group_name, name)
         env_patch = {}
         ingress_config = {}
         safe_set(env_patch, "properties", "ingressConfiguration", value=ingress_config)
@@ -3861,7 +3861,7 @@ def update_environment_premium_ingress(cmd, name, resource_group_name, workload_
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     try:
-        env = ManagedEnvironmentPreviewClient.show(cmd, resource_group_name, name)
+        ManagedEnvironmentPreviewClient.show(cmd, resource_group_name, name)
         env_patch = {}
         ingress_config = {}
         scale = {}
@@ -3906,7 +3906,7 @@ def remove_environment_premium_ingress(cmd, name, resource_group_name, no_wait=F
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     try:
-        env = ManagedEnvironmentPreviewClient.show(cmd, resource_group_name, name)
+        ManagedEnvironmentPreviewClient.show(cmd, resource_group_name, name)
         env_patch = {}
         # Remove the whole section to restore defaults
         safe_set(env_patch, "properties", "ingressConfiguration", value=None)
