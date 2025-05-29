@@ -6,7 +6,6 @@
 # pylint: disable=line-too-long, too-many-statements, consider-using-f-string, broad-except, no-member, raise-missing-from
 import datetime
 from knack.util import CLIError
-from azure.cli.core.util import shell_safe_json_parse
 from knack.log import get_logger
 from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import (
     AutoscaleSettings,
@@ -3324,8 +3323,6 @@ def cli_cosmosdb_fleetspace_update(client,
                                    fleetspace_body):
 
     """Updates an existing Azure Cosmos DB Fleetspace."""
-
-    fleetspace_body = shell_safe_json_parse(fleetspace_body)
 
     throughput_pool_config = FleetspacePropertiesThroughputPoolConfiguration(
         min_throughput=fleetspace_body['properties']['throughputPoolConfiguration']['minThroughput'],

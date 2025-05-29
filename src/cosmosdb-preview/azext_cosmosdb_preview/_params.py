@@ -857,7 +857,7 @@ def load_arguments(self, _):
         c.argument('fleetspace_body', options_list=['--body', '-b'], validator=validate_fleetspace_body, completer=FilesCompleter(), help="Fleetspace body with properties.throughputPoolConfiguration (fields: minThroughput, maxThroughput, serviceTier, dataRegions). You can enter it as a string or as a file, e.g., --body @fleetspace.json or " + FLEETSPACE_PROPERTIES_EXAMPLE)
 
     with self.argument_context('cosmosdb fleetspace update') as c:
-        c.argument('fleetspace_body', options_list=['--body', '-b'], completer=FilesCompleter(), help="Fleetspace body with properties.throughputPoolConfiguration (fields: minThroughput, maxThroughput, serviceTier, dataRegions). You can enter it as a string or as a file, e.g., --body @fleetspace.json or " + FLEETSPACE_PROPERTIES_EXAMPLE)
+        c.argument('fleetspace_body', options_list=['--body', '-b'], validator=validate_fleetspace_body, completer=FilesCompleter(), help="Fleetspace body with properties.throughputPoolConfiguration (fields: minThroughput, maxThroughput, serviceTier, dataRegions). You can enter it as a string or as a file, e.g., --body @fleetspace.json or " + FLEETSPACE_PROPERTIES_EXAMPLE)
 
     # Cosmos DB Fleetspace account
     with self.argument_context('cosmosdb fleetspace account') as c:
