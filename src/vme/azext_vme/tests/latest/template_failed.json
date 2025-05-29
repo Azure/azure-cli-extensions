@@ -1,0 +1,33 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "clusterName": {
+            "type": "string",
+            "defaultValue": "yihuak3s",
+            "metadata": {
+                "description": "The name of the Kubernetes cluster."
+            }
+        }
+    },
+    "resources": [
+        {
+            "type": "Microsoft.KubernetesConfiguration/extensions",
+            "apiVersion": "2023-05-01",
+            "name": "microsoft.openservicemesh",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [],
+            "identity": {
+                "type": "SystemAssigned"
+            },
+            "properties": {
+                "extensionType": "microsoft.openservicemesh",
+                "releaseTrain": "stable",
+                "version": "1.2.99",
+                "autoUpgradeMinorVersion": false
+            },
+            "scope": "[concat('Microsoft.Kubernetes/connectedClusters/', parameters('clusterName'))]"
+        }
+    ],
+    "outputs": {}
+}
