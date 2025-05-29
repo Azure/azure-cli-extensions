@@ -41,7 +41,7 @@ class DataboxScenario(ScenarioTest):
                  '--sku DataBox '
                  '--contact-name "Public SDK Test" '
                  '--phone 14258828080 '
-                 '--email-list testing@microsoft.com '
+                 '--email-list test@example.com '
                  '--street-address1 "1 MICROSOFT WAY" '
                  '--city Redmond '
                  '--state-or-province WA '
@@ -65,11 +65,11 @@ class DataboxScenario(ScenarioTest):
                  '--resource-group {rg} '
                  '--name {job_name} '
                  '--contact-name "Public SDK Test 1" '
-                 '--email-list testing1@microsoft.com '
+                 '--email-list test1@example.com '
                  '--phone 14258828081',
                  checks=[
                      self.check('details.contactDetails.contactName', 'Public SDK Test 1'),
-                     self.check('details.contactDetails.emailList[0]', 'testing1@microsoft.com'),
+                     self.check('details.contactDetails.emailList[0]', 'test1@example.com'),
                      self.check('details.contactDetails.phone', '14258828081')
                  ])
 
@@ -78,7 +78,7 @@ class DataboxScenario(ScenarioTest):
             self.check('isCancellable', True),
             self.check('isDeletable', False),
             self.check('details.contactDetails.contactName', 'Public SDK Test 1'),
-            self.check('details.contactDetails.emailList[0]', 'testing1@microsoft.com'),
+            self.check('details.contactDetails.emailList[0]', 'test1@example.com'),
             self.check('status', 'DeviceOrdered'),
             self.check('transferType', 'ImportToAzure'),
             self.check('details.keyEncryptionKey.kekType', 'MicrosoftManaged')
@@ -123,7 +123,7 @@ class DataboxScenario(ScenarioTest):
                  '--expected-data-size 1 '
                  '--contact-name "Public SDK Test" '
                  '--phone 14258828080 '
-                 '--email-list testing@microsoft.com '
+                 '--email-list test@example.com '
                  '--street-address1 "1 MICROSOFT WAY" '
                  '--city Redmond '
                  '--state-or-province WA '
@@ -162,7 +162,7 @@ class DataboxScenario(ScenarioTest):
                  '--expected-data-size 1 '
                  '--contact-name "Public SDK Test" '
                  '--phone 14258828080 '
-                 '--email-list testing@microsoft.com '
+                 '--email-list test@example.com '
                  '--street-address1 "1 MICROSOFT WAY" '
                  '--city Redmond '
                  '--state-or-province WA '
@@ -211,7 +211,7 @@ class DataboxScenario(ScenarioTest):
                  '--sku DataBoxCustomerDisk '
                  '--contact-name "Public SDK Test" '
                  '--phone 14258828080 '
-                 '--email-list testing@microsoft.com '
+                 '--email-list test@example.com '
                  '--street-address1 "1 MICROSOFT WAY" '
                  '--city Redmond '
                  '--state-or-province WA '
@@ -246,7 +246,7 @@ class DataboxScenario(ScenarioTest):
                  '--expected-data-size 1 '
                  '--contact-name "Public SDK Test" '
                  '--phone 14258828080 '
-                 '--email-list testing@microsoft.com '
+                 '--email-list test@example.com '
                  '--street-address1 "1 MICROSOFT WAY" '
                  '--city Redmond '
                  '--state-or-province WA '
@@ -273,7 +273,7 @@ class DataboxScenario(ScenarioTest):
                  '--expected-data-size 1 '
                  '--contact-name "Public SDK Test" '
                  '--phone 14258828080 '
-                 '--email-list testing@microsoft.com '
+                 '--email-list test@example.com '
                  '--street-address1 "1 MICROSOFT WAY" '
                  '--city Redmond '
                  '--state-or-province WA '
