@@ -944,12 +944,11 @@ def validate_resource_group_parameter(namespace):
 
 
 def validate_location_resource_group_cluster_parameters(namespace):
-    """Validates that either location or cluster details (i.e. resource group and cluster name) are specified"""
-    """Validates that location, cluster name, and resource group name are not specified at the same time"""
+    """Validates location or cluster details are specified and not mutually exclusive"""
     location = namespace.location
     resource_group_name = namespace.resource_group_name
     cluster_name = namespace.cluster_name
-    if not location and not cluster_name and not resource_group_name:
+    if location and (resource_group_name or cluster_name)::
         raise RequiredArgumentMissingError(
             "You must specify --location or --resource-group and --cluster."
         )
