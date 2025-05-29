@@ -6,6 +6,7 @@ Release History
 1.6.5
 ++++++++++++++++++
 * microsoft.dataprotection.kubernetes: Add support for 'DisableInformerCache' configuration.
+* microsoft.azuremonitor.containers.metrics: Simplify logic and enable correct recording rule groups for managed prom extension
 
 1.6.4
 ++++++++++++++++++
