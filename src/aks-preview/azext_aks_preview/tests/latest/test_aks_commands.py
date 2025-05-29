@@ -15863,6 +15863,7 @@ spec:
         )
 
 
+    @live_only()
     @AllowLargeResponse(99999)
     @AKSCustomResourceGroupPreparer(
         random_name_length=17,
@@ -15950,6 +15951,7 @@ spec:
         self.assertFalse(found_extension)
 
 
+    @live_only()
     @AllowLargeResponse(99999)
     @AKSCustomResourceGroupPreparer(
         random_name_length=17,
