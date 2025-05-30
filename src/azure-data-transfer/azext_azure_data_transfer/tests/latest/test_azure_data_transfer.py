@@ -21,7 +21,7 @@ class ConnectionAndFlowOperations(ScenarioTest):
             'pipeline': 'corptest',
             'storageAccountId': '/subscriptions/389ff96a-b137-405b-a3c8-4d22514708b5/resourceGroups/rpaas-rg-faikh/providers/Microsoft.Storage/storageAccounts/armstrongtest',
             'storageAccount': '/subscriptions/389ff96a-b137-405b-a3c8-4d22514708b5/resourceGroups/rpaas-rg-faikh/providers/Microsoft.Storage/storageAccounts/armstrongtest',
-            'storageContainer': 'armstrong-test-containerd',
+            'storageContainer': 'armstrong-test-containers',
         })
 
         count = len(self.cmd('az azure-data-transfer pipeline list --resource-group {rg}').get_output_in_json())
