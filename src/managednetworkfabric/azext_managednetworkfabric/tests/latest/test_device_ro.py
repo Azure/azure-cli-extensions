@@ -41,6 +41,13 @@ def call_scenario2(test):
     cleanup_scenario(test)
 
 
+def call_scenario3(test):
+    """# Testcase: scenario3"""
+    setup_scenario(test)
+    step_ro_missing_keys(test, checks=[])
+    cleanup_scenario(test)
+
+
 def step_ro_valid_json(test, checks=None):
     """Device run RO operation - valid JSON"""
     if checks is None:
@@ -83,6 +90,21 @@ def step_ro_invalid_json(test, checks=None):
     )
 
 
+def step_ro_missing_keys(test, checks=None):
+    """Device run RO operation - missing configurationState and outputUrl"""
+    if checks is None:
+        checks = []
+    output = test.cmd(
+        "az networkfabric device run-ro --resource-name {name} --resource-group {rg} --ro-command {command}"
+    ).get_output_in_json()
+
+    expected_object = {
+        "deviceConfigurationPreview": {},
+    }
+
+    assert output == expected_object
+
+
 class GA_DeviceRoScenarioTest1(ScenarioTest):
     """DeviceScenario test"""
 
@@ -119,3 +141,22 @@ class GA_DeviceRoScenarioTest2(ScenarioTest):
     def test_GA_Device_Ro_scenario2(self):
         """test scenario for Device CRUD operations - invalid JSON"""
         call_scenario2(self)
+
+
+class GA_DeviceRoScenarioTest3(ScenarioTest):
+    """DeviceScenario test"""
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.kwargs.update(
+            {
+                "name": CONFIG.get("NETWORK_DEVICE", "ro_device_name"),
+                "rg": CONFIG.get("NETWORK_DEVICE", "ro_device_rg"),
+                "command": CONFIG.get("NETWORK_DEVICE", "ro_command"),
+            }
+        )
+
+    @AllowLargeResponse()
+    def test_GA_Device_Ro_scenario3(self):
+        """test scenario for Device CRUD operations - invalid JSON"""
+        call_scenario3(self)
