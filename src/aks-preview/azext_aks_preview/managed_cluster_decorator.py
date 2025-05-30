@@ -2796,7 +2796,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         :return: bool
         """
         return self.raw_param.get("migrate_vmas_to_vms")
-  
+
     def get_disable_http_proxy(self) -> bool:
         """Obtain the value of disable_http_proxy.
 
