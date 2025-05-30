@@ -6511,6 +6511,40 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
         self.assertEqual(dec_mc_1, ground_truth_mc_1)
 
+        # custom value
+        dec_2 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "disable_http_proxy": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+
+        mc_2 = self.models.ManagedCluster(
+            location="test_location",
+            http_proxy_config = self.models.ManagedClusterHTTPProxyConfig(
+                enabled=True,
+                httpProxy="http://cli-proxy-vm:3128/",
+                httpsProxy="https://cli-proxy-vm:3129/",
+            )
+        )
+        dec_2.context.attach_mc(mc_2)
+        # fail on passing the wrong mc object
+        with self.assertRaises(CLIInternalError):
+            dec_2.update_http_proxy_enabled(None)
+        dec_mc_2 = dec_2.update_http_proxy_enabled(mc_2)
+
+        ground_truth_mc_2 = self.models.ManagedCluster(
+            location="test_location",
+            http_proxy_config = self.models.ManagedClusterHTTPProxyConfig(
+                enabled=False,
+                httpProxy="http://cli-proxy-vm:3128/",
+                httpsProxy="https://cli-proxy-vm:3129/",
+            )
+        )
+        self.assertEqual(dec_mc_2, ground_truth_mc_2)
+
     def test_update_pod_identity_profile(self):
         # default value in `aks_update`
         dec_1 = AKSPreviewManagedClusterUpdateDecorator(
