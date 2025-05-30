@@ -366,21 +366,71 @@ interactions:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      vary:
-      - Accept-Encoding
       x-cache:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
-      x-ms-ratelimit-remaining-subscription-global-reads:
-      - '16499'
+      x-ms-failure-cause:
+      - gateway
       x-msedge-ref:
       - 'Ref A: 82F5E352002A45EC87B21A97CBAA8678 Ref B: MAA201060514009 Ref C: 2025-05-13T03:14:33Z'
       x-powered-by:
       - ASP.NET
     status:
-      code: 200
-      message: OK
+      code: 404
+      message: Not Found
+- request:
+    body: '{"location": "northcentralus"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - group create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '30'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -n -l
+      User-Agent:
+      - AZURECLI/2.71.0 azsdk-python-core/1.31.0 Python/3.11.2 (Linux-5.15.167.4-microsoft-standard-WSL2-x86_64-with-glibc2.36)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/client.env_rg_northcentralus?api-version=2022-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/client.env_rg_northcentralus","name":"client.env_rg_northcentralus","type":"Microsoft.Resources/resourceGroups","location":"northcentralus","properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '261'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 27 May 2025 16:19:29 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: C712AF2A1A1F44F89CFA78CC7A9FB60C Ref B: MWH011020809060 Ref C: 2025-05-27T16:19:30Z'
+    status:
+      code: 201
+      message: Created
 - request:
     body: null
     headers:
@@ -389,11 +439,11 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - containerapp create
+      - containerapp env create
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --environment --image --ingress --target-port
+      - -g -n --logs-destination
       User-Agent:
       - AZURECLI/2.72.0 azsdk-python-core/1.31.0 Python/3.10.11 (Windows-10-10.0.26100-SP0)
     method: GET
@@ -1191,7 +1241,7 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '291'
+      - '286'
       content-type:
       - application/json; charset=utf-8
       date:
@@ -1247,7 +1297,7 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '291'
+      - '286'
       content-type:
       - application/json; charset=utf-8
       date:
@@ -1303,7 +1353,7 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '291'
+      - '286'
       content-type:
       - application/json; charset=utf-8
       date:
@@ -1359,7 +1409,7 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '290'
+      - '285'
       content-type:
       - application/json; charset=utf-8
       date:
@@ -2296,7 +2346,7 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '291'
+      - '286'
       content-type:
       - application/json; charset=utf-8
       date:
@@ -2352,7 +2402,7 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '291'
+      - '286'
       content-type:
       - application/json; charset=utf-8
       date:
@@ -2408,7 +2458,7 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '291'
+      - '286'
       content-type:
       - application/json; charset=utf-8
       date:
@@ -3347,7 +3397,7 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '291'
+      - '286'
       content-type:
       - application/json; charset=utf-8
       date:
@@ -3403,7 +3453,7 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '291'
+      - '286'
       content-type:
       - application/json; charset=utf-8
       date:
@@ -3459,7 +3509,7 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '291'
+      - '286'
       content-type:
       - application/json; charset=utf-8
       date:
@@ -3515,7 +3565,7 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '291'
+      - '286'
       content-type:
       - application/json; charset=utf-8
       date:
@@ -3571,7 +3621,7 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '290'
+      - '285'
       content-type:
       - application/json; charset=utf-8
       date:
@@ -4482,11 +4532,11 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - containerapp ingress traffic set
+      - containerapp ingress traffic show
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --label-weight
+      - -g -n
       User-Agent:
       - AZURECLI/2.72.0 azsdk-python-core/1.31.0 Python/3.10.11 (Windows-10-10.0.26100-SP0)
     method: GET
@@ -5058,7 +5108,7 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '291'
+      - '286'
       content-type:
       - application/json; charset=utf-8
       date:
@@ -5114,7 +5164,7 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '291'
+      - '286'
       content-type:
       - application/json; charset=utf-8
       date:
@@ -5170,7 +5220,7 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '291'
+      - '286'
       content-type:
       - application/json; charset=utf-8
       date:
@@ -5226,7 +5276,7 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '291'
+      - '286'
       content-type:
       - application/json; charset=utf-8
       date:
@@ -5282,7 +5332,7 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '290'
+      - '285'
       content-type:
       - application/json; charset=utf-8
       date:
@@ -6219,7 +6269,7 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '291'
+      - '286'
       content-type:
       - application/json; charset=utf-8
       date:
@@ -6275,7 +6325,7 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '291'
+      - '286'
       content-type:
       - application/json; charset=utf-8
       date:
@@ -6443,7 +6493,7 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '290'
+      - '286'
       content-type:
       - application/json; charset=utf-8
       date:
@@ -7018,7 +7068,7 @@ interactions:
       x-ms-operation-identifier:
       - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=e3e9d27a-1dd4-422b-a198-f6c67ce8faec/southeastasia/31c75176-15af-4e05-9d36-57b18c432753
       x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '699'
+      - '199'
       x-msedge-ref:
       - 'Ref A: A9614C12904047A9AEC2B6B020D00F87 Ref B: MAA201060513011 Ref C: 2025-05-13T03:16:59Z'
       x-powered-by:
@@ -8215,7 +8265,7 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '291'
+      - '286'
       content-type:
       - application/json; charset=utf-8
       date:
@@ -8271,7 +8321,7 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '291'
+      - '286'
       content-type:
       - application/json; charset=utf-8
       date:
@@ -8327,7 +8377,7 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '291'
+      - '286'
       content-type:
       - application/json; charset=utf-8
       date:
@@ -8383,7 +8433,7 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '291'
+      - '285'
       content-type:
       - application/json; charset=utf-8
       date:
@@ -9106,7 +9156,7 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '291'
+      - '286'
       content-type:
       - application/json; charset=utf-8
       date:
@@ -9162,7 +9212,7 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '291'
+      - '286'
       content-type:
       - application/json; charset=utf-8
       date:
@@ -9218,7 +9268,7 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '291'
+      - '285'
       content-type:
       - application/json; charset=utf-8
       date:
@@ -10210,7 +10260,7 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '291'
+      - '286'
       content-type:
       - application/json; charset=utf-8
       date:
@@ -10266,7 +10316,7 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '291'
+      - '286'
       content-type:
       - application/json; charset=utf-8
       date:
@@ -10322,7 +10372,7 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '291'
+      - '286'
       content-type:
       - application/json; charset=utf-8
       date:
