@@ -2378,7 +2378,7 @@ helps['containerapp env premium-ingress show'] = """
 
 helps['containerapp env premium-ingress'] = """
     type: group
-    short-summary: Configures premium ingress settings for the environment.
+    short-summary: Configure premium ingress settings for the environment.
     long-summary: |
         Premium ingress settings apply to all applications in the environment. They allow moving the ingress instances to a workload profile and scaling them beyond the system defaults to enable high traffic workloads. Other settings include request idle timeouts, header count limits, and the termination grace period.
     examples:
