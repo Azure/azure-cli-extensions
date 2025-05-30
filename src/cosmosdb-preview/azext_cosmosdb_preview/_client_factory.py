@@ -102,3 +102,20 @@ def cf_mongo_clusters(cli_ctx, _):
 
 def cf_mongo_cluster_firewall_rules(cli_ctx, _):
     return cf_mongocluster_preview(cli_ctx).firewall_rules
+
+
+# fleet
+def cf_fleet(cli_ctx, _):
+    return cf_cosmosdb_preview(cli_ctx).fleet
+
+
+def cf_fleetspace(cli_ctx, _):
+    return cf_cosmosdb_preview(cli_ctx).fleetspace
+
+
+def cf_fleetspace_account(cli_ctx, _):
+    return cf_cosmosdb_preview(cli_ctx).fleetspace_account
+
+
+def cf_fleet_analytics(cli_ctx, _):
+    return cf_cosmosdb_preview(cli_ctx).fleet_analytics

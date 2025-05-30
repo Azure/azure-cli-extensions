@@ -429,3 +429,101 @@ def validate_mongoMI_role_assignment_id(ns):
     """ Extracts Guid role assignment Id """
     if ns.role_assignment_id is not None:
         ns.role_assignment_id = _parse_resource_path(ns.role_assignment_id, False, "mongoMIRoleAssignments")
+
+
+def validate_fleetspace_body(cmd, ns):
+    from azure.cli.core.util import get_file_json, shell_safe_json_parse
+    import os
+
+    if ns.fleetspace_body is not None:
+        if os.path.exists(ns.fleetspace_body):
+            body = get_file_json(ns.fleetspace_body)
+        else:
+            body = shell_safe_json_parse(ns.fleetspace_body)
+
+        if not isinstance(body, dict):
+            raise InvalidArgumentValueError('Invalid fleetspace body. Must be a JSON object.')
+
+        props = body.get('properties', {})
+        if not isinstance(props, dict):
+            raise InvalidArgumentValueError('Missing or invalid "properties" field in fleetspace body.')
+
+        tp_config = props.get('throughputPoolConfiguration', {})
+        if not isinstance(tp_config, dict):
+            raise InvalidArgumentValueError('Missing or invalid "throughputPoolConfiguration" in properties.')
+
+        for field in ['minThroughput', 'maxThroughput', 'serviceTier', 'dataRegions']:
+            if field not in tp_config:
+                raise InvalidArgumentValueError(f'Missing "{field}" in throughputPoolConfiguration.')
+
+        if not isinstance(tp_config['minThroughput'], int) or tp_config['minThroughput'] <= 0:
+            raise InvalidArgumentValueError('"minThroughput" must be a positive integer.')
+
+        if not isinstance(tp_config['maxThroughput'], int) or tp_config['maxThroughput'] <= 0:
+            raise InvalidArgumentValueError('"maxThroughput" must be a positive integer.')
+
+        if not isinstance(tp_config['serviceTier'], str):
+            raise InvalidArgumentValueError('"serviceTier" must be a string.')
+
+        if not isinstance(tp_config['dataRegions'], list) or not all(isinstance(r, str) for r in tp_config['dataRegions']):
+            raise InvalidArgumentValueError('"dataRegions" must be a list of strings.')
+
+        ns.fleetspace_body = body
+
+
+def validate_fleet_analytics_body(cmd, ns):
+    from azure.cli.core.util import get_file_json, shell_safe_json_parse
+    import os
+
+    if ns.fleet_analytics_body is not None:
+        if os.path.exists(ns.fleet_analytics_body):
+            body = get_file_json(ns.fleet_analytics_body)
+        else:
+            body = shell_safe_json_parse(ns.fleet_analytics_body)
+
+        if not isinstance(body, dict):
+            raise InvalidArgumentValueError('Fleet Analytics body must be a valid JSON object.')
+
+        props = body.get("properties")
+        if not isinstance(props, dict):
+            raise InvalidArgumentValueError('Missing or invalid "properties" field.')
+
+        slt = props.get("storageLocationType")
+        if slt not in ["StorageAccount", "FabricLakehouse"]:
+            raise InvalidArgumentValueError('"storageLocationType" must be "StorageAccount" or "FabricLakehouse".')
+
+        slu = props.get("storageLocationUri")
+        if not isinstance(slu, str) or not slu.strip():
+            raise InvalidArgumentValueError('"storageLocationUri" must be a non-empty string.')
+
+        ns.fleet_analytics_body = body
+
+
+def validate_fleetspaceAccount_body(cmd, ns):
+    from azure.cli.core.util import get_file_json, shell_safe_json_parse
+    import os
+
+    if ns.fleetspace_account_body is not None:
+        if os.path.exists(ns.fleetspace_account_body):
+            body = get_file_json(ns.fleetspace_account_body)
+        else:
+            body = shell_safe_json_parse(ns.fleetspace_account_body)
+
+        if not isinstance(body, dict):
+            raise InvalidArgumentValueError("Fleetspace Account body must be a valid JSON object.")
+
+        props = body.get("properties")
+        if not isinstance(props, dict):
+            raise InvalidArgumentValueError('Missing or invalid "properties" field.')
+
+        gdp = props.get("globalDatabaseAccountProperties")
+        if not isinstance(gdp, dict):
+            raise InvalidArgumentValueError('Missing or invalid "globalDatabaseAccountProperties".')
+
+        if "resourceId" not in gdp or not isinstance(gdp["resourceId"], str) or not gdp["resourceId"].startswith("/subscriptions/"):
+            raise InvalidArgumentValueError('"resourceId" must be a valid ARM resource ID string.')
+
+        if "armLocation" not in gdp or not isinstance(gdp["armLocation"], str):
+            raise InvalidArgumentValueError('"armLocation" must be a valid string.')
+
+        ns.fleetspace_account_body = body
