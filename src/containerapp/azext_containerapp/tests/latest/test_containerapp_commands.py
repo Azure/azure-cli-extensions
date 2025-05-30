@@ -305,7 +305,14 @@ class ContainerappIngressTests(ScenarioTest):
         env = prepare_containerapp_env_for_app_e2e_tests(self)
 
         self.cmd('containerapp create -g {} -n {} --environment {} --ingress external --target-port 0 --revisions-mode labels --target-label label1'.format(resource_group, ca_name, env))
-        time.sleep(5)
+
+        # wait for the first revision to come up and populate in traffic.
+        ingress = self.cmd('containerapp ingress show -g {} -n {}'.format(resource_group, ca_name)).get_output_in_json()
+        for _ in range(100):
+            if ingress["traffic"] != None:
+                break
+            time.sleep(5)
+            traffic = self.cmd('containerapp ingress show -g {} -n {}'.format(resource_group, ca_name)).get_output_in_json()
 
         self.cmd('containerapp ingress show -g {} -n {}'.format(resource_group, ca_name), checks=[
             JMESPathCheck('external', True),
@@ -314,8 +321,18 @@ class ContainerappIngressTests(ScenarioTest):
             JMESPathCheck('traffic[0].label', "label1"),
         ])
 
+        # Create a new revision with a different label
         self.cmd('containerapp update -g {} -n {} --cpu 1.0 --memory 2Gi --target-label label2'.format(resource_group, ca_name))
-        time.sleep(5)
+
+        # it may take a minute for the new revision to be created and added to traffic.
+        traffic = self.cmd('containerapp ingress traffic show -g {} -n {}'.format(resource_group, ca_name)).get_output_in_json()    
+        for _ in range(100):
+            if len(traffic) >= 2:
+                break
+            time.sleep(5)
+            traffic = self.cmd('containerapp ingress traffic show -g {} -n {}'.format(resource_group, ca_name)).get_output_in_json()
+        
+        self.assertEqual(len(traffic), 2)
 
         revisions_list = self.cmd('containerapp revision list -g {} -n {}'.format(resource_group, ca_name)).get_output_in_json()
 
@@ -639,6 +656,68 @@ class ContainerappIngressTests(ScenarioTest):
         self.cmd('containerapp ingress cors disable -g {} -n {}'.format(resource_group, ca_name), checks=[
             JMESPathCheck('corsPolicy', None),
         ])
+
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="westeurope")
+    def test_containerapp_env_premium_ingress_commands(self, resource_group):
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+
+        env_name = self.create_random_name(prefix='containerapp-env', length=24)
+        self.cmd(f'containerapp env create -g {resource_group} -n {env_name} --logs-destination none')
+
+        containerapp_env = self.cmd(f'containerapp env show -g {resource_group} -n {env_name}').get_output_in_json()
+
+        self.cmd(f'az containerapp env workload-profile add -g {resource_group} -n {env_name} -w wp-ingress --min-nodes 2 --max-nodes 5 --workload-profile-type D4'.format(env_name, resource_group))
+
+        self.cmd(f'containerapp env premium-ingress show -g {resource_group} -n {env_name}', checks=[
+            JMESPathCheck('message', 'No premium ingress configuration found for this environment, using default values.'),
+        ])
+
+        self.cmd(f'containerapp env premium-ingress add -g {resource_group} -n {env_name} -w wp-ingress --min-replicas 3 --max-replicas 5', checks=[
+            JMESPathCheck('workloadProfileName', 'wp-ingress'),
+            JMESPathCheck('scale.minReplicas', 3),
+            JMESPathCheck('scale.maxReplicas', 5),
+            JMESPathCheck('terminationGracePeriodSeconds', None),
+            JMESPathCheck('requestIdleTimeout', None),
+            JMESPathCheck('headerCountLimit', None),
+        ])
+        
+        self.cmd(f'containerapp env premium-ingress show -g {resource_group} -n {env_name}', checks=[
+            JMESPathCheck('workloadProfileName', 'wp-ingress'),
+            JMESPathCheck('scale.minReplicas', 3),
+            JMESPathCheck('scale.maxReplicas', 5),
+            JMESPathCheck('terminationGracePeriodSeconds', None),
+            JMESPathCheck('requestIdleTimeout', None),
+            JMESPathCheck('headerCountLimit', None),
+        ])
+        
+        self.cmd(f'containerapp env premium-ingress update -g {resource_group} -n {env_name} --min-replicas 4 --max-replicas 20 --termination-grace-period 45 --request-idle-timeout 180 --header-count-limit 40', checks=[
+            JMESPathCheck('workloadProfileName', 'wp-ingress'),
+            JMESPathCheck('scale.minReplicas', 4),
+            JMESPathCheck('scale.maxReplicas', 20),
+            JMESPathCheck('terminationGracePeriodSeconds', 45),
+            JMESPathCheck('requestIdleTimeout', 180),
+            JMESPathCheck('headerCountLimit', 40),
+        ])
+
+        # set removes unspecified optional parameters
+        self.cmd(f'containerapp env premium-ingress add -g {resource_group} -n {env_name} -w wp-ingress --min-replicas 2 --max-replicas 3 --request-idle-timeout 90', checks=[
+            JMESPathCheck('workloadProfileName', 'wp-ingress'),
+            JMESPathCheck('scale.minReplicas', 2),
+            JMESPathCheck('scale.maxReplicas', 3),
+            JMESPathCheck('requestIdleTimeout', 90),
+            JMESPathCheck('terminationGracePeriodSeconds', None),
+            JMESPathCheck('headerCountLimit', None),
+        ])
+
+        self.cmd(f'containerapp env premium-ingress remove -g {resource_group} -n {env_name} -y')
+    
+        self.cmd(f'containerapp env premium-ingress show -g {resource_group} -n {env_name}', checks=[
+            JMESPathCheck('message', 'No premium ingress configuration found for this environment, using default values.'),
+        ])
+
+        # Clean up
+        self.cmd(f'containerapp env delete -g {resource_group} -n {env_name} --yes --no-wait')
 
 
 class ContainerappCustomDomainTests(ScenarioTest):
