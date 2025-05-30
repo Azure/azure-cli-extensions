@@ -6136,7 +6136,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             }
         )
 
-        disable_cmd = "aks update --resource-group={resource_group} --name={name} --disable-http-proxy"
+        disable_cmd = "aks update --resource-group={resource_group} --name={name} --disable-http-proxy --aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/DisableHTTPProxyPreview"
 
         self.cmd(
             disable_cmd,
