@@ -112,6 +112,10 @@ class MaxUnavailableNamespace:
     def __init__(self, max_unavailable):
         self.max_unavailable = max_unavailable
 
+class MaxBlockedNodesNamespace:
+    def __init__(self, max_blocked_nodes):
+        self.max_blocked_nodes = max_blocked_nodes
+
 class SpotMaxPriceNamespace:
     def __init__(self, spot_max_price):
         self.priority = "Spot"
@@ -172,6 +176,22 @@ class TestMaxUnavailable(unittest.TestCase):
     def test_throws_on_negative(self):
         with self.assertRaises(CLIError) as cm:
             validators.validate_max_unavailable(MaxUnavailableNamespace("-3"))
+        self.assertTrue("positive" in str(cm.exception), msg=str(cm.exception))
+
+class TestMaxBlockedNodes(unittest.TestCase):
+    def test_valid_cases(self):
+        valid = ["5", "33%", "1", "100%", "0"]
+        for v in valid:
+            validators.validate_max_blocked_nodes(MaxBlockedNodesNamespace(v))
+
+    def test_throws_on_string(self):
+        with self.assertRaises(CLIError) as cm:
+            validators.validate_max_blocked_nodes(MaxBlockedNodesNamespace("foobar"))
+        self.assertTrue("int or percentage" in str(cm.exception), msg=str(cm.exception))
+
+    def test_throws_on_negative(self):
+        with self.assertRaises(CLIError) as cm:
+            validators.validate_max_blocked_nodes(MaxBlockedNodesNamespace("-3"))
         self.assertTrue("positive" in str(cm.exception), msg=str(cm.exception))
 
 class TestSpotMaxPrice(unittest.TestCase):
