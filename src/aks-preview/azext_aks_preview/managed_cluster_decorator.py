@@ -5297,7 +5297,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         if self.context.get_disable_http_proxy():
             if not mc.http_proxy_config:
                 raise UnknownError(
-                    "Unexpectedly get an empty http proxy config in the process of updating http proxy enabled."
+                    "Unexpectedly get an empty http proxy config in the process of disabling http proxy."
                 )
             if mc.http_proxy_config is None:
                 mc.http_proxy_config = (

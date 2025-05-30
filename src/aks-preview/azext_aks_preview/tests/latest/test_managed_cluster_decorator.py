@@ -6506,7 +6506,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         ground_truth_mc_2 = self.models.ManagedCluster(
             location="test_location",
             http_proxy_config={
-                "enabled": "false",
+                "enabled": "False",
                 "httpProxy": "http://cli-proxy-vm:3128/",
                 "httpsProxy": "https://cli-proxy-vm:3129/",
                 "noProxy": ["localhost", "127.0.0.1"],
