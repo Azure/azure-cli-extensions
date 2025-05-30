@@ -215,8 +215,8 @@ from azext_aks_preview._validators import (
     validate_bootstrap_container_registry_resource_id,
     validate_gateway_prefix_size,
     validate_max_unavailable,
-    validate_location_cluster_name_resource_group_mutually_exclusive,
     validate_resource_group_parameter,
+    validate_location_resource_group_cluster_parameters,
 )
 from azext_aks_preview.azurecontainerstorage._consts import (
     CONST_ACSTOR_ALL,
@@ -2491,14 +2491,14 @@ def load_arguments(self, _):
                    help='Name of resource group.')
         c.argument('cluster_name',
                    options_list=['--cluster-name', '-c'],
-                   validator=validate_location_cluster_name_resource_group_mutually_exclusive,
+                   validator=validate_location_resource_group_cluster_parameters,
                    help='Name of the Kubernetes cluster')
         c.argument('extension_type',
                    options_list=['--extension-type', '-t'],
                    help='Name of the extension type.')
         c.argument('location',
                    options_list=['--location', '-l'],
-                   validator=validate_location_cluster_name_resource_group_mutually_exclusive,
+                   validator=validate_location_resource_group_cluster_parameters,
                    help='Name of the location. Values from: `az account list-locations`')
 
     # Reference: https://learn.microsoft.com/en-us/cli/azure/k8s-extension/extension-types?view=azure-cli-latest
@@ -2509,14 +2509,14 @@ def load_arguments(self, _):
                    help='Name of resource group.')
         c.argument('cluster_name',
                    options_list=['--cluster-name', '-c'],
-                   validator=validate_location_cluster_name_resource_group_mutually_exclusive,
+                   validator=validate_location_resource_group_cluster_parameters,
                    help='Name of the Kubernetes cluster')
         c.argument('extension_type',
                    options_list=['--extension-type', '-t'],
                    help='Name of the extension type.')
         c.argument('location',
                    options_list=['--location', '-l'],
-                   validator=validate_location_cluster_name_resource_group_mutually_exclusive,
+                   validator=validate_location_resource_group_cluster_parameters,
                    help='Name of the location. Values from: `az account list-locations`')
         c.argument('version',
                    help='Version for the extension type.')
