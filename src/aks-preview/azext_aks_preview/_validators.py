@@ -166,6 +166,44 @@ def validate_ip_ranges(namespace):
             pass
 
 
+def validate_namespace_name(namespace):
+    _validate_namespace_name(namespace.name)
+
+
+def _validate_namespace_name(name):
+    """
+    Validates a Kubernetes namespace name.
+    Raises ValueError if the name is invalid.
+    """
+    if name != "":
+        if len(name) < 1 or len(name) > 63:
+            raise ValueError("Namespace name must be between 1 and 63 characters.")
+        pattern = r'^[a-z0-9]([-a-z0-9]*[a-z0-9])?$'
+        if not re.match(pattern, name):
+            raise ValueError(
+                f"Invalid namespace '{name}'. Must consist of lower case alphanumeric characters or '-', "
+                "and must start and end with an alphanumeric character."
+            )
+
+
+def validate_resource_quota(namespace):
+    if namespace.cpu_request is not None:
+        if not namespace.cpu_request.endswith("m"):
+            raise ValueError("--cpu-request must be specified in millicores, like 200m")
+    if namespace.cpu_limit is not None:
+        if not namespace.cpu_limit.endswith("m"):
+            raise ValueError("--cpu-limit must be specified in millicores, like 200m")
+    pattern = r"^\d+(Ki|Mi|Gi|Ti|Pi|Ei)$"
+    if namespace.memory_request is not None:
+        if not re.match(pattern, namespace.memory_request):
+            raise ValueError("--memory-request must be specified in the power-of-two equivalents form:"
+                             "Ei, Pi, Ti, Gi, Mi, Ki.")
+    if namespace.memory_limit is not None:
+        if not re.match(pattern, namespace.memory_limit):
+            raise ValueError("--memory-limit must be specified in the power-of-two equivalents form:"
+                             "Ei, Pi, Ti, Gi, Mi, Ki.")
+
+
 def _validate_nodepool_name(nodepool_name):
     """Validates a nodepool name to be at most 12 characters, alphanumeric only."""
     if nodepool_name != "":
@@ -897,19 +935,25 @@ def validate_gateway_prefix_size(namespace):
             raise CLIError("--gateway-prefix-size must be in the range [28, 31]")
 
 
-def validate_location_cluster_name_resource_group_mutually_exclusive(namespace):
-    """Validates that location, cluster name, and resource group name are not specified at the same time"""
-    location = namespace.location
-    resource_group_name = namespace.resource_group_name
-    cluster_name = namespace.cluster_name
-    if location and resource_group_name and cluster_name:
-        raise MutuallyExclusiveArgumentError(
-            "Cannot specify --location and --resource-group and --cluster at the same time."
-        )
-
-
 def validate_resource_group_parameter(namespace):
+    """Validates that if the user specified the cluster name, resource group name is also specified and vice versa"""
     if namespace.resource_group_name and not namespace.cluster_name:
         raise RequiredArgumentMissingError("Please specify --cluster")
     if not namespace.resource_group_name and namespace.cluster_name:
         raise RequiredArgumentMissingError("Please specify --resource-group")
+
+
+def validate_location_resource_group_cluster_parameters(namespace):
+    """Validates location or cluster details are specified and not mutually exclusive"""
+    location = namespace.location
+    resource_group_name = namespace.resource_group_name
+    cluster_name = namespace.cluster_name
+    if location and (resource_group_name or cluster_name):
+        raise RequiredArgumentMissingError(
+            "You must specify --location or --resource-group and --cluster."
+        )
+
+    if location and resource_group_name and cluster_name:
+        raise MutuallyExclusiveArgumentError(
+            "Cannot specify --location and --resource-group and --cluster at the same time."
+        )

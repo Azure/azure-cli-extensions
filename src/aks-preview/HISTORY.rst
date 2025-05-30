@@ -12,9 +12,25 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
-18.0.0b3
+18.0.0b7
 +++++++
 * Add option `--disable-http-proxy` to `az aks update`.
+
+18.0.0b6
++++++++
+* Quality improvements for `az aks extension` and `az aks extension type` command groups
+
+18.0.0b5
++++++++
+* Add option `Ubuntu2204` and `Ubuntu2404` to `--os-sku` for `az aks nodepool add` and `az aks nodepool update`.
+
+18.0.0b4
++++++++
+* Add managed namespace commands `az aks namespace add/update/show/list/delete/get-credentials`
+
+18.0.0b3
++++++++
+* Add basic lb sku migration support `az aks update --load-balancer-sku standard`
 
 18.0.0b2
 +++++++

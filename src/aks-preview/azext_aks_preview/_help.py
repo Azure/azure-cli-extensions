@@ -816,6 +816,10 @@ helps['aks update'] = """
         - name: --tier
           type: string
           short-summary: Specify SKU tier for managed clusters. '--tier standard' enables a standard managed cluster service with a financially backed SLA. '--tier free' changes a standard managed cluster to a free one.
+        - name: --load-balancer-sku
+          type: string
+          short-summary: Azure Load Balancer SKU selection for your cluster. only standard is accepted.
+          long-summary: Upgrade to Standard Azure Load Balancer SKU for your AKS cluster.
         - name: --load-balancer-managed-outbound-ip-count
           type: int
           short-summary: Load balancer managed outbound IP count.
@@ -1270,6 +1274,8 @@ helps['aks update'] = """
         text: az aks update --disable-cluster-autoscaler -g MyResourceGroup -n MyManagedCluster
       - name: Update min-count or max-count for cluster autoscaler.
         text: az aks update --update-cluster-autoscaler --min-count 1 --max-count 10 -g MyResourceGroup -n MyManagedCluster
+      - name: Upgrade load balancer sku to standard
+        text: az aks update --load-balancer-sku standard -g MyResourceGroup -n MyManagedCluster
       - name: Update a kubernetes cluster with standard SKU load balancer to use two AKS created IPs for the load balancer outbound connection usage.
         text: az aks update -g MyResourceGroup -n MyManagedCluster --load-balancer-managed-outbound-ip-count 2
       - name: Update a kubernetes cluster with standard SKU load balancer to use the provided public IPs for the load balancer outbound connection usage.
@@ -1670,6 +1676,149 @@ helps['aks maintenanceconfiguration update'] = """
                 }
 """
 
+helps['aks namespace'] = """
+    type: group
+    short-summary: Commands to manage namespace in managed Kubernetes cluster.
+"""
+
+helps['aks namespace add'] = """
+    type: command
+    short-summary: Add namespace to the managed Kubernetes cluster.
+    parameters:
+        - name: --cluster-name
+          type: string
+          short-summary: Name of the managed cluster.
+        - name: --tags
+          type: string
+          short-summary: The tags of the managed namespace.
+        - name: --labels
+          type: string
+          short-summary: Labels for the managed namespace.
+        - name: --annotations
+          type: string
+          short-summary: Annotations for the managed namespace.
+        - name: --cpu-request
+          type: string
+          short-summary: CPU request of the namespace.
+        - name: --cpu-limit
+          type: string
+          short-summary: CPU limit of the namespace.
+        - name: --memory-request
+          type: string
+          short-summary: Memory request of the namespace.
+        - name: --memory-limit
+          type: string
+          short-summary: Memory limit of the namespace.
+        - name: --ingress-policy
+          type: string
+          short-summary: Ingress policy for the network. The default value is AllowSameNamespace.
+        - name: --egress-policy
+          type: string
+          short-summary: Egress policy for the network. The default value is AllowAll.
+        - name: --adoption-policy
+          type: string
+          short-summary: Action if Kubernetes namespace with same name already exists. The default value is Never.
+        - name: --delete-policy
+          type: string
+          short-summary: Delete options of a namespace. The default value is Keep.
+        - name: --aks-custom-headers
+          type: string
+          short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2.
+        - name: --no-wait
+          type: bool
+          short-summary: Do not wait for the long-running operation to finish.
+    examples:
+        - name: Create a namespace in an existing AKS cluster.
+          text: az aks namespace add -g MyResourceGroup --cluster-name MyClusterName --name NamespaceName --cpu-request 500m --cpu-limit 800m --memory-request 1Gi --memory-limit 2Gi --aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/ManagedNamespacePreview
+        - name: Create a namespace in an existing AKS cluster with labels, annotations and tags
+          text: az aks namespace add -g MyResourceGroup --cluster-name MyClusterName --name NamespaceName --labels a=b p=q --annotations a=b p=q --tags a=b p=q --cpu-request 500m --cpu-limit 800m --memory-request 1Gi --memory-limit 2Gi --aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/ManagedNamespacePreview
+"""
+
+helps['aks namespace update'] = """
+    type: command
+    short-summary: Update namespace on the managed Kubernetes cluster.
+    parameters:
+        - name: --cluster-name
+          type: string
+          short-summary: Name of the managed cluster.
+        - name: --tags
+          type: string
+          short-summary: The tags of the managed namespace.
+        - name: --labels
+          type: string
+          short-summary: Labels for the managed namespace.
+        - name: --annotations
+          type: string
+          short-summary: Annotations for the managed namespace.
+        - name: --cpu-request
+          type: string
+          short-summary: CPU request of the namespace.
+        - name: --cpu-limit
+          type: string
+          short-summary: CPU limit of the namespace.
+        - name: --memory-request
+          type: string
+          short-summary: Memory request of the namespace.
+        - name: --memory-limit
+          type: string
+          short-summary: Memory limit of the namespace.
+        - name: --ingress-policy
+          type: string
+          short-summary: Ingress policy rule for the network.
+        - name: --egress-policy
+          type: string
+          short-summary: Egress policy rule for the network.
+        - name: --adoption-policy
+          type: string
+          short-summary: Action if Kubernetes namespace with same name already exists.
+        - name: --delete-policy
+          type: string
+          short-summary: Delete options of a namespace
+        - name: --aks-custom-headers
+          type: string
+          short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
+        - name: --no-wait
+          type: bool
+          short-summary: Do not wait for the long-running operation to finish
+    examples:
+        - name: update namespace in an existing AKS cluster.
+          text: az aks namespace update -g MyResourceGroup --cluster-name MyClusterName --name NamespaceName --labels a=b p=q --annotations a=b p=q --tags a=b p=q --cpu-request 600m --cpu-limit 800m --memory-request 2Gi --memory-limit 3Gi --adoption-policy Always --aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/ManagedNamespacePreview
+"""
+
+helps['aks namespace show'] = """
+    type: command
+    short-summary: show the details of a managed namespace in managed Kubernetes cluster.
+"""
+
+helps['aks namespace list'] = """
+    type: command
+    short-summary: List managed namespaces in managed Kubernetes cluster.
+"""
+
+helps['aks namespace delete'] = """
+    type: command
+    short-summary: Delete a managed namespace in managed Kubernetes cluster.
+"""
+
+helps['aks namespace get-credentials'] = """
+type: command
+short-summary: Get access credentials for a managed namespace.
+parameters:
+  - name: --file -f
+    type: string
+    short-summary: Kubernetes configuration file to update. Use "-" to print YAML to stdout instead.
+  - name: --overwrite-existing
+    type: bool
+    short-summary: Overwrite any existing cluster entry with the same name.
+  - name: --output -o
+    type: string
+    long-summary: Credentials are always in YAML format, so this argument is effectively ignored.
+examples:
+  - name: Get access credentials for a managed namespace. (autogenerated)
+    text: az aks namespace get-credentials --resource-group MyResourceGroup --cluster-name MyManagedCluster --name ManagedNamespaceName
+    crafted: true
+"""
+
 helps['aks nodepool'] = """
     type: group
     short-summary: Commands to manage node pools in managed Kubernetes cluster.
@@ -1727,7 +1876,7 @@ helps['aks nodepool add'] = """
           short-summary: The OS Type. Linux or Windows. Windows not supported yet for "VirtualMachines" VM set type.
         - name: --os-sku
           type: string
-          short-summary: The os-sku of the agent node pool. Ubuntu or CBLMariner when os-type is Linux, default is Ubuntu if not set; Windows2019, Windows2022 or WindowsAnnual when os-type is Windows, the current default is Windows2022 if not set.
+          short-summary: The os-sku of the agent node pool. Ubuntu, CBLMariner, Ubuntu2204 or Ubuntu2404 when os-type is Linux, default is Ubuntu if not set; Windows2019, Windows2022 or WindowsAnnual when os-type is Windows, the current default is Windows2022 if not set.
         - name: --enable-fips-image
           type: bool
           short-summary: Use FIPS-enabled OS on agent nodes.
@@ -3286,17 +3435,17 @@ Only the key is returned in response, the value is not. If not specified, defaul
       short-summary: JSON file path for configuration-protected-settings
       long-summary: JSON file path for configuration-protected-settings. If not specified, default value is None
   examples:
-    - name: Install K8s extension on AKS cluster with required parameters
+    - name: Install Cluster extension on AKS cluster with required parameters
       text: az aks extension create --resource-group my-resource-group \
 --cluster-name mycluster --name myextension --extension-type microsoft.flux
-    - name: Install K8s extension with optional parameter configuration settings
+    - name: Install Cluster extension with optional parameter configuration settings
       text: az aks extension create --resource-group abc --cluster-name test --name flux \
 --extension-type microsoft.flux --config useKubeletIdentity=true
 """
 
 helps['aks extension delete'] = """
   type: command
-  short-summary: Delete a Kubernetes Extension.
+  short-summary: Delete a Cluster Extension.
   parameters:
     - name: --resource-group -g
       type: string
@@ -3317,18 +3466,18 @@ helps['aks extension delete'] = """
       long-summary: Specify whether to force delete the extension from the cluster \
 If not specified, default value is false
   examples:
-    - name: Delete an existing Kubernetes extension on AKS cluster
+    - name: Delete an existing Cluster extension on AKS cluster
       text: az aks extension delete --resource-group resource-group --cluster-name cluster --name ext
-    - name: Delete an existing Kubernetes extension on AKS cluster with optional parameters
+    - name: Delete an existing Cluster extension on AKS cluster with optional parameters
       text: az aks extension delete --resource-group resource-group --cluster-name cluster --name ext \
 --yes --force
 """
 
 helps['aks extension update'] = """
   type: command
-  short-summary: Update mutable properties of a Kubernetes Extension.
+  short-summary: Update mutable properties of a Cluster Extension.
   long-summary: For update to ConfigSettings and ConfigProtectedSettings, please \
-refer to documentation of the cluster extension service to check update to these \
+refer to documentation of the Cluster extension service to check update to these \
 properties is supported before updating these properties. \
 The output includes secrets that you must protect. Be sure that you do not include these secrets in your \
  source control. Also verify that no secrets are present in the logs of your command or script. \
@@ -3366,10 +3515,10 @@ Only the key is returned in response, the value is not. If not specified, defaul
       short-summary: Ignores confirmation prompt.
       long-summary: Ignores confirmation prompt. If not specified, default value is false
   examples:
-    - name: Update K8s extension on AKS cluster
+    - name: Update Cluster extension on AKS cluster
       text: az aks extension update --resource-group my-resource-group \
 --cluster-name mycluster --name myextension
-    - name: Update K8s extension on AKS cluster with optional parameters included
+    - name: Update Cluster extension on AKS cluster with optional parameters included
       text: az aks extension update --resource-group my-resource-group \
 --cluster-name mycluster --name myextension \
 --configuration-settings settings-key=settings-value \
@@ -3380,8 +3529,8 @@ Only the key is returned in response, the value is not. If not specified, defaul
 
 helps['aks extension list'] = """
   type: command
-  short-summary: List Kubernetes Extensions
-  long-summary: List all Kubernetes Extensions in a cluster, including their properties. \
+  short-summary: List Cluster Extensions
+  long-summary: List all Cluster Extensions in a cluster, including their properties. \
 The output includes secrets that you must protect. Be sure that you do not include these secrets in your \
   source control. Also verify that no secrets are present in the logs of your command or script. \
   For additional information, see http://aka.ms/clisecrets.
@@ -3393,14 +3542,14 @@ The output includes secrets that you must protect. Be sure that you do not inclu
       type: string
       short-summary: Name of the AKS cluster
   examples:
-    - name: List all Kubernetes Extensions on a cluster
+    - name: List all Cluster Extensions on a cluster
       text: az aks extension list --resource-group <group> --cluster-name <name>
 """
 
 helps['aks extension show'] = """
   type: command
-  short-summary: Show a Kubernetes Extension
-  long-summary: Show a Kubernetes Extension including its properties. \
+  short-summary: Show a Cluster Extension
+  long-summary: Show a Cluster Extension including its properties. \
 The output includes secrets that you must protect. Be sure that you do not include these secrets in your \
   source control. Also verify that no secrets are present in the logs of your command or script. \
   For additional information, see http://aka.ms/clisecrets.
@@ -3415,7 +3564,7 @@ The output includes secrets that you must protect. Be sure that you do not inclu
       type: string
       short-summary: Name of the extension instance
   examples:
-      - name: Show details of a Kubernetes Extension
+      - name: Show details of a Cluster Extension
         text: az aks extension show --resource-group my-resource-group \
 --cluster-name mycluster --name myextension
 """
@@ -3428,7 +3577,7 @@ helps['aks extension type'] = """
 
 helps['aks extension type show'] = """
   type: command
-  short-summary: Show properties for a K8s Extension Type. The properties used for filtering include kubernetes version, location of the cluster.
+  short-summary: Show properties for a Cluster Extension Type. The properties used for filtering include kubernetes version, location of the cluster.
   parameters:
     - name: --extension-type -t
       type: string
@@ -3447,16 +3596,16 @@ helps['aks extension type show'] = """
       long-summary: Location of where we want to retrieve the extension type. If not specified, default value is None
 
   examples:
-    - name: Show properties for a K8s Extension Type for an existing cluster by cluster
+    - name: Show properties for a Cluster Extension Type for an existing cluster by cluster
       text: az aks extension type show --resource-group my-resource-group\
  --cluster-name mycluster --extension-type <type>
-    - name: Show properties for a K8s Extension Type in a location
+    - name: Show properties for a Cluster Extension Type in a location
       text: az aks extension type show --location eastus --extension-type type
 """
 
 helps['aks extension type list'] = """
   type: command
-  short-summary: List available K8s Extension Types. The properties used for filtering include kubernetes version, location of the cluster.
+  short-summary: List available Cluster Extension Types. The properties used for filtering include kubernetes version, location of the cluster.
   parameters:
     - name: --resource-group -g
       type: string
@@ -3474,10 +3623,10 @@ helps['aks extension type list'] = """
       type: string
       short-summary: Specify the release train for the K8s extension type
   examples:
-    - name: List available K8s Extension Types for an existing cluster
+    - name: List available Cluster Extension Types for an existing cluster
       text: az aks extension type list --resource-group my-resource-group \
 --cluster-name mycluster
-    - name: List available K8s Extension Types in a region
+    - name: List available Cluster Extension Types in a region
       text: az aks extension type list --location eastus
 """
 
@@ -3489,7 +3638,7 @@ helps['aks extension type version'] = """
 
 helps['aks extension type version show'] = """
   type: command
-  short-summary: Show properties associated with a K8s Extension Type version. The properties used for filtering include kubernetes version, location of the cluster.
+  short-summary: Show properties associated with a Cluster Extension Type version. The properties used for filtering include kubernetes version, location of the cluster.
   parameters:
     - name: --resource-group -g
       type: string
@@ -3510,16 +3659,16 @@ helps['aks extension type version show'] = """
       short-summary: Location of where we want to retrieve the extension type
       long-summary: Location of where we want to retrieve the extension type. If not specified, default value is None
   examples:
-    - name: Show properties for a K8s Extension Type version for an existing cluster
+    - name: Show properties for a Cluster Extension Type version for an existing cluster
       text: az aks extension type version show --resource-group my-resource-group \
 --cluster-name mycluster --extension-type type --version 1.0.0
-    - name: Show properties for a K8s Extension Type version for a location
+    - name: Show properties for a Cluster Extension Type version for a location
       text: az aks extension type version show --location eastus --extension-type <type> --version 1.0.0
 """
 
 helps['aks extension type version list'] = """
   type: command
-  short-summary: List available K8s Extension Type versions. The properties used for filtering include kubernetes version, location of the cluster.
+  short-summary: List available Cluster Extension Type versions. The properties used for filtering include kubernetes version, location of the cluster.
   parameters:
     - name: --resource-group -g
       type: string
@@ -3537,10 +3686,10 @@ helps['aks extension type version list'] = """
       short-summary: Location of where we want to retrieve the extension type
       long-summary: Location of where we want to retrieve the extension type. If not specified, default value is None
   examples:
-    - name: List available K8s Extension Types for an existing cluster
+    - name: List available Cluster Extension Types for an existing cluster
       text: az aks extension type version list --resource-group my-resource-group \
 --cluster-name mycluster --extension-type <type>
-    - name: List available K8s Extension Types in a region
+    - name: List available Cluster Extension Types in a region
       text: az aks extension type version list --location eastus --extension-type <type>
 """
 

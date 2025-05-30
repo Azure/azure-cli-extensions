@@ -48,7 +48,7 @@ def load_arguments(self, _):
         c.ignore('service_type')
 
     with self.argument_context('containerapp create', arg_group='GitHub Repository', is_preview=True) as c:
-        c.argument('repo', help='Create an app via GitHub Actions in the format: https://github.com/owner/repository-name or owner/repository-name')
+        c.argument('repo', help='Create an app via GitHub Actions in the format: `https://github.com/owner/repository-name` or owner/repository-name')
         c.argument('token', help='A Personal Access Token with write access to the specified repository. For more information: https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line. If not provided or not found in the cache (and using --repo), a browser page will be opened to authenticate with Github.')
         c.argument('branch', options_list=['--branch', '-b'], help='Branch in the provided GitHub repository. Assumed to be the GitHub repository\'s default branch if not specified.')
         c.argument('context_path', help='Path in the repository to run docker build. Defaults to "./". Dockerfile is assumed to be named "Dockerfile" and in this directory.')
@@ -264,7 +264,7 @@ def load_arguments(self, _):
         c.argument('target_label', help="The label to apply to new revisions. Required for revisions-mode 'labels'.", is_preview=True)
 
     with self.argument_context('containerapp up', arg_group='Github Repo') as c:
-        c.argument('repo', help='Create an app via Github Actions. In the format: https://github.com/owner/repository-name or owner/repository-name')
+        c.argument('repo', help='Create an app via Github Actions. In the format: `https://github.com/owner/repository-name` or owner/repository-name')
         c.argument('token', help='A Personal Access Token with write access to the specified repository. For more information: https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line. If not provided or not found in the cache (and using --repo), a browser page will be opened to authenticate with Github.')
         c.argument('branch', options_list=['--branch', '-b'], help='The branch of the Github repo. Assumed to be the Github repo\'s default branch if not specified.')
         c.argument('context_path', help='Path in the repo from which to run the docker build. Defaults to "./". Dockerfile is assumed to be named "Dockerfile" and in this directory.')
@@ -510,3 +510,13 @@ def load_arguments(self, _):
     with self.argument_context('containerapp revision set-mode') as c:
         c.argument('mode', arg_type=get_enum_type(['single', 'multiple', 'labels']), help="The active revisions mode for the container app.")
         c.argument('target_label', help="The label to apply to new revisions. Required for revision mode 'labels'.", is_preview=True)
+
+    with self.argument_context('containerapp env premium-ingress') as c:
+        c.argument('resource_group_name', arg_type=resource_group_name_type, id_part=None)
+        c.argument('name', options_list=['--name', '-n'], help="The name of the managed environment.")
+        c.argument('workload_profile_name', options_list=['--workload-profile-name', '-w'], help="The workload profile to run ingress replicas on. This profile must not be shared with any container app or job.")
+        c.argument('min_replicas', options_list=['--min-replicas'], type=int, help="Minimum number of replicas to run. Default 2, minimum 2.")
+        c.argument('max_replicas', options_list=['--max-replicas'], type=int, help="Maximum number of replicas to run. Default 10. The upper limit is the maximum cores available in the workload profile.")
+        c.argument('termination_grace_period', options_list=['--termination-grace-period', '-t'], type=int, help="Time in seconds to drain requests during ingress shutdown. Default 500, minimum 0, maximum 3600.")
+        c.argument('request_idle_timeout', options_list=['--request-idle-timeout'], type=int, help="Timeout in minutes for idle requests. Default 4, minimum 1.")
+        c.argument('header_count_limit', options_list=['--header-count-limit'], type=int, help="Limit of http headers per request. Default 100, minimum 1.")

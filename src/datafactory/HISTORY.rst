@@ -2,6 +2,9 @@
 
 Release History
 ===============
+1.0.4
+* Support Oracle V2 in Azure Data Factory
+
 1.0.3
 * Enhanced Swagger to support Vertica V2 integration in Azure Data Factory
 * Added Managed Identity (MI) authentication support for Azure Files
