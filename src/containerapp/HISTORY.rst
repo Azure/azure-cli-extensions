@@ -4,6 +4,7 @@ Release History
 ===============
 upcoming
 ++++++
+* 'az containerapp env premium-ingress': New environment level ingress configuration.
 * 'az containerapp sessionpool update': Support `--mi-system-assigned`, `--mi-user-assigned` and `--registry-identity`
 *  Upgrade api-version to 2025-02-02-preview
 
