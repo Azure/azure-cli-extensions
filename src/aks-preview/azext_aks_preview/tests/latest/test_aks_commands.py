@@ -6141,7 +6141,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.cmd(
             disable_cmd,
             checks=[
-                self.check("httpProxyConfig.enabled", "false"),
+                self.check("httpProxyConfig.enabled", False),
             ],
         )
 

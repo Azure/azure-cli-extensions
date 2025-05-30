@@ -6503,7 +6503,6 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         ground_truth_mc_1 = self.models.ManagedCluster(
             location="test_location",
             http_proxy_config={
-                "enabled": "True",
                 "httpProxy": "http://cli-proxy-vm:3128/",
                 "httpsProxy": "https://cli-proxy-vm:3129/",
                 "noProxy": ["localhost", "127.0.0.1"],
@@ -6512,7 +6511,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
         self.assertEqual(dec_mc_1, ground_truth_mc_1)
 
-                # custom value
+        # custom value
         dec_2 = AKSPreviewManagedClusterUpdateDecorator(
             self.cmd,
             self.client,
@@ -6526,13 +6525,13 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         dec_2.context.attach_mc(mc_2)
         # fail on passing the wrong mc object
         with self.assertRaises(CLIInternalError):
-            dec_2.update_http_proxy_config(None)
-        dec_mc_2 = dec_2.update_http_proxy_config(mc_2)
+            dec_2.update_http_proxy_enabled(None)
+        dec_mc_2 = dec_2.update_http_proxy_enabled(mc_2)
 
         ground_truth_mc_2 = self.models.ManagedCluster(
             location="test_location",
             http_proxy_config={
-                "enabled": "False",
+                "enabled": False,
                 "httpProxy": "http://cli-proxy-vm:3128/",
                 "httpsProxy": "https://cli-proxy-vm:3129/",
                 "noProxy": ["localhost", "127.0.0.1"],
