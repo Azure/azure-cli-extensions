@@ -2409,7 +2409,7 @@ helps['containerapp env premium-ingress update'] = """
 
 helps['containerapp env premium-ingress remove'] = """
     type: command
-    short-summary: Removes the ingress settings and restores the system to default values.
+    short-summary: Remove the ingress settings and restores the system to default values.
     examples:
     - name: Reset the ingress settings for the environment to its default values
       text: |
