@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.testsdk.preparers import NoTrafficRecordingPreparer, SingleValueReplacer, get_dummy_cli, CliTestError, ResourceGroupPreparer
+from azure.core.exceptions import HttpResponseError
 from .constants import USERASSIGNED_IDENTITY
 
 class ApicServicePreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
@@ -424,11 +425,11 @@ class ApimServicePreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
             })
 
             # Add echo api
-            self.test_class_instance.cmd('az apim api create -g {} --service-name {} --api-id echo --display-name "Echo API" --path "/echo"'.format(group, name))
-            self.test_class_instance.cmd('az apim api operation create -g {} --service-name {} --api-id echo --url-template "/echo" --method "GET" --display-name "GetOperation"'.format(group, name))
+            self.test_class_instance.cmd('az apim api create -g {} --service-name {} --api-id echotest --display-name "Echo API Test" --path "/echotest"'.format(group, name))
+            self.test_class_instance.cmd('az apim api operation create -g {} --service-name {} --api-id echotest --url-template "/echotest" --method "GET" --display-name "GetOperation"'.format(group, name))
             # Add foo api
-            self.test_class_instance.cmd('az apim api create -g {} --service-name {} --api-id foo --display-name "Foo API" --path "/foo"'.format(group, name))
-            self.test_class_instance.cmd('az apim api operation create -g {} --service-name {} --api-id foo --url-template "/foo" --method "GET" --display-name "GetOperation"'.format(group, name))
+            self.test_class_instance.cmd('az apim api create -g {} --service-name {} --api-id footest --display-name "Foo API Test" --path "/footest"'.format(group, name))
+            self.test_class_instance.cmd('az apim api operation create -g {} --service-name {} --api-id footest --url-template "/footest" --method "GET" --display-name "GetOperation"'.format(group, name))
 
             if self.use_system_assigned_identity:
                 # Grant system assigned identity of API Center access to APIM
@@ -460,3 +461,52 @@ class ApimServicePreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
             template = 'To create an API Center service is required. Please add ' \
                        'decorator @{} in front of this preparer.'
             raise CliTestError(template.format(ApicServicePreparer.__name__))    
+
+
+class ApiAnalysisPreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
+    def __init__(self, name_prefix='clianalysisconfig', parameter_name='config_name', resource_group_parameter_name='resource_group', api_service_parameter_name='service_name', random_name_length=24):
+        super(ApiAnalysisPreparer, self).__init__(name_prefix, random_name_length)
+        self.cli_ctx = get_dummy_cli()
+        self.parameter_name = parameter_name
+        self.resource_group_parameter_name = resource_group_parameter_name
+        self.api_service_parameter_name = api_service_parameter_name
+        self.key = parameter_name
+
+    def create_resource(self, name, **kwargs):
+        group = self._get_resource_group(**kwargs)
+        service = self._get_apic_service(**kwargs)
+
+        template = 'az apic api-analysis create -g {} -n {} -c {}'
+        cmd = template.format(group, service, name)
+        print(cmd)
+        try:
+            self.live_only_execute(self.cli_ctx, cmd)
+        except HttpResponseError as e:
+            if e.message.startswith("(ValidationError) Number of analyzer configs for this service"):
+                configs = self.live_only_execute(self.cli_ctx, 'az apic api-analysis list -g {} -n {}'.format(group, service)).get_output_in_json()
+                config = configs[0]
+                name = config.get('name')
+                pass
+
+        self.test_class_instance.kwargs[self.key] = name
+        return {self.parameter_name: name}
+
+    def remove_resource(self, name, **kwargs):
+        # ResourceGroupPreparer will delete everything
+        pass
+
+    def _get_resource_group(self, **kwargs):
+        try:
+            return kwargs.get(self.resource_group_parameter_name)
+        except KeyError:
+            template = 'To create an API Analysis configuration, a resource group is required. Please add ' \
+                       'decorator @{} in front of this preparer.'
+            raise CliTestError(template.format(ResourceGroupPreparer.__name__))
+
+    def _get_apic_service(self, **kwargs):
+        try:
+            return kwargs.get(self.api_service_parameter_name)
+        except KeyError:
+            template = 'To create an API Analysis configuration, an API Center service is required. Please add ' \
+                       'decorator @{} in front of this preparer.'
+            raise CliTestError(template.format(ApicServicePreparer.__name__))
