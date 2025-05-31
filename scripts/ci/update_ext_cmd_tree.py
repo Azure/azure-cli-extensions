@@ -6,13 +6,15 @@
 import filecmp
 import json
 import os
-import subprocess
 import sys
+import subprocess
+
 from azure.cli.core import get_default_cli
 from azure.cli.core._session import Session
 from azure.cli.core.commands import _load_extension_command_loader
 from azure.cli.core.extension import get_extension_modname, get_extension_path
 from sync_extensions import download_file
+from util import run_az_cmd
 
 STORAGE_ACCOUNT = os.getenv('AZURE_EXTENSION_CMD_TREE_STORAGE_ACCOUNT')
 STORAGE_CONTAINER = os.getenv('AZURE_EXTENSION_CMD_TREE_STORAGE_CONTAINER')
@@ -20,6 +22,36 @@ BLOB_PREFIX = os.getenv('AZURE_EXTENSION_CMD_TREE_BLOB_PREFIX')
 
 az_cli = get_default_cli()
 file_name = 'extCmdTreeToUpload.json'
+
+
+def execute_command(command):
+    """Execute a shell command and return the output."""
+    try:
+        result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        if result.returncode == 0:
+            return result.stdout.strip()
+        else:
+            return f"Error: {result.stderr.strip()}"
+    except Exception as e:
+        return f"Exception: {str(e)}"
+
+
+def get_package_version(package_name):
+    """Get the current version of a Python package."""
+    command = ["pip", "show", package_name]
+    output = execute_command(command)
+    if "Version:" in output:
+        for line in output.splitlines():
+            if line.startswith("Version:"):
+                version = line.split(":")[1].strip()
+                print(f"{package_name} current version: {version}")
+
+
+def upgrade_package(package_name):
+    """Upgrade a Python package to the latest version."""
+    command = ["pip", "install", "--upgrade", package_name]
+    print(f"{command}")
+    return execute_command(command)
 
 
 def merge(data, key, value):
@@ -35,6 +67,16 @@ def merge(data, key, value):
 
 def update_cmd_tree(ext_name):
     print(f"Processing {ext_name}")
+    if ext_name == 'ml':
+        get_package_version("azure-storage-blob")
+        upgrade_package("azure-storage-blob")
+        get_package_version("azure-storage-blob")
+        get_package_version("rpds")
+        upgrade_package("rpds")
+        get_package_version("rpds")
+        get_package_version("rpds-py")
+        upgrade_package("rpds-py")
+        get_package_version("rpds-py")
 
     ext_dir = get_extension_path(ext_name)
     ext_mod = get_extension_modname(ext_name, ext_dir=ext_dir)
@@ -83,19 +125,14 @@ def upload_cmd_tree():
     cmd = ['az', 'storage', 'blob', 'upload', '--container-name', f'{STORAGE_CONTAINER}', '--account-name',
            f'{STORAGE_ACCOUNT}', '--name', f'{blob_file_name}', '--file', f'{file_path}', '--auth-mode', 'login',
            '--overwrite']
-    result = subprocess.run(cmd, capture_output=True)
-    if result.returncode != 0:
-        print(f"Failed to upload '{blob_file_name}' to the storage account")
-        print(result)
+    message = f"Uploading '{blob_file_name}' to the storage"
+    run_az_cmd(cmd, message=message, raise_error=True)
 
     cmd = ['az', 'storage', 'blob', 'url', '--container-name', f'{STORAGE_CONTAINER}', '--account-name',
            f'{STORAGE_ACCOUNT}', '--name', f'{blob_file_name}', '--auth-mode', 'login']
-    result = subprocess.run(cmd, capture_output=True)
-    if result.stdout and result.returncode == 0:
-        url = json.loads(result.stdout)
-    else:
-        print(f"Failed to get the URL for '{blob_file_name}'")
-        raise
+    message = f"Getting the URL for '{blob_file_name}'"
+    result = run_az_cmd(cmd, message=message, raise_error=True)
+    url = json.loads(result.stdout)
 
     download_file_path = os.path.expanduser(os.path.join('~', '.azure', downloaded_file_name))
     download_file(url, download_file_path)
