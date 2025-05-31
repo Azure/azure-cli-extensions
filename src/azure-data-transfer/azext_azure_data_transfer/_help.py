@@ -1,4 +1,4 @@
- # --------------------------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 #
@@ -57,5 +57,5 @@ helps['azure-data-transfer connection flow create'] = """
     short-summary: Links the specified flow.
     examples:
         - name: Links the receive side flow with a send side flow.
-          text: az azure-data-transfer connection flow create --resource-group resourceGroup --connection-name connectionName --name receiveFlowName --flow-type "Mission" --id /subscriptions/389ff96a-b137-405b-a3c8-4d22514708b5/resourceGroups/resourceGroup/providers/microsoft.azuredatatransfer/flows/sendFlow 
+          text: az azure-data-transfer connection flow create --resource-group resourceGroup --connection-name connectionName --name receiveFlowName --flow-type "Mission" --id /subscriptions/389ff96a-b137-405b-a3c8-4d22514708b5/resourceGroups/resourceGroup/providers/microsoft.azuredatatransfer/flows/sendFlow
 """
