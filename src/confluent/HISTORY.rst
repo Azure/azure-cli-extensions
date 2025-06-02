@@ -2,9 +2,9 @@
 
 Release History
 ===============
-0.7.0
+1.0.0
 +++++
-* Updated CLI command descriptions to be more user and ai friendly.
+* Updated CLI command descriptions to be more user and support az mcp commands.
 
 0.6.0
 +++++
