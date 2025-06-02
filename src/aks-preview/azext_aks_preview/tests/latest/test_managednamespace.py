@@ -15,21 +15,23 @@ from azure.cli.core.azclierror import (
 
 @patch("azext_aks_preview.managednamespace.get_mgmt_service_client")
 class TestAddManagedNamespace(unittest.TestCase):
+    def setUp(self):
+        # Set up mock cluster client and location
+        self.mock_cluster = Mock()
+        self.mock_cluster.location = "eastus"
+
+        self.mock_managed_clusters = Mock()
+        self.mock_managed_clusters.get.return_value = self.mock_cluster
+
+        self.mock_client = Mock()
+        self.mock_client.managed_clusters = self.mock_managed_clusters
+
     def test_add_managed_namespace_with_invalid_labels(self, mock_get_client):
         register_aks_preview_resource_type()
         cli_ctx = MockCLI()
         cmd = MockCmd(cli_ctx)
 
-        # Set up mock cluster client and location
-        mock_cluster = Mock()
-        mock_cluster.location = "eastus"
-
-        mock_managed_clusters = Mock()
-        mock_managed_clusters.get.return_value = mock_cluster
-
-        mock_client = Mock()
-        mock_client.managed_clusters = mock_managed_clusters
-        mock_get_client.return_value = mock_client
+        mock_get_client.return_value = self.mock_client
 
         raw_parameters = {
             "resource_group_name": "test_rg",
@@ -47,16 +49,7 @@ class TestAddManagedNamespace(unittest.TestCase):
         cli_ctx = MockCLI()
         cmd = MockCmd(cli_ctx)
 
-        # Set up mock cluster client and location
-        mock_cluster = Mock()
-        mock_cluster.location = "eastus"
-
-        mock_managed_clusters = Mock()
-        mock_managed_clusters.get.return_value = mock_cluster
-
-        mock_client = Mock()
-        mock_client.managed_clusters = mock_managed_clusters
-        mock_get_client.return_value = mock_client
+        mock_get_client.return_value = self.mock_client
 
         raw_parameters = {
             "resource_group_name": "test_rg",
@@ -75,16 +68,7 @@ class TestAddManagedNamespace(unittest.TestCase):
         cli_ctx = MockCLI()
         cmd = MockCmd(cli_ctx)
 
-        # Set up mock cluster client and location
-        mock_cluster = Mock()
-        mock_cluster.location = "eastus"
-
-        mock_managed_clusters = Mock()
-        mock_managed_clusters.get.return_value = mock_cluster
-
-        mock_client = Mock()
-        mock_client.managed_clusters = mock_managed_clusters
-        mock_get_client.return_value = mock_client
+        mock_get_client.return_value = self.mock_client
 
         raw_parameters = {
             "resource_group_name": "test_rg",
@@ -102,16 +86,7 @@ class TestAddManagedNamespace(unittest.TestCase):
         cli_ctx = MockCLI()
         cmd = MockCmd(cli_ctx)
 
-        # Set up mock cluster client and location
-        mock_cluster = Mock()
-        mock_cluster.location = "eastus"
-
-        mock_managed_clusters = Mock()
-        mock_managed_clusters.get.return_value = mock_cluster
-
-        mock_client = Mock()
-        mock_client.managed_clusters = mock_managed_clusters
-        mock_get_client.return_value = mock_client
+        mock_get_client.return_value = self.mock_client
 
         raw_parameters = {
             "resource_group_name": "test_rg",
@@ -133,16 +108,7 @@ class TestAddManagedNamespace(unittest.TestCase):
         cli_ctx = MockCLI()
         cmd = MockCmd(cli_ctx)
 
-        # Set up mock cluster client and location
-        mock_cluster = Mock()
-        mock_cluster.location = "eastus"
-
-        mock_managed_clusters = Mock()
-        mock_managed_clusters.get.return_value = mock_cluster
-
-        mock_client = Mock()
-        mock_client.managed_clusters = mock_managed_clusters
-        mock_get_client.return_value = mock_client
+        mock_get_client.return_value = self.mock_client
 
         raw_parameters = {
             "resource_group_name": "test_rg",
@@ -165,16 +131,7 @@ class TestAddManagedNamespace(unittest.TestCase):
         cli_ctx = MockCLI()
         cmd = MockCmd(cli_ctx)
 
-        # Set up mock cluster client and location
-        mock_cluster = Mock()
-        mock_cluster.location = "eastus"
-
-        mock_managed_clusters = Mock()
-        mock_managed_clusters.get.return_value = mock_cluster
-
-        mock_client = Mock()
-        mock_client.managed_clusters = mock_managed_clusters
-        mock_get_client.return_value = mock_client
+        mock_get_client.return_value = self.mock_client
 
         raw_parameters = {
             "resource_group_name": "test_rg",
@@ -198,16 +155,7 @@ class TestAddManagedNamespace(unittest.TestCase):
         cli_ctx = MockCLI()
         cmd = MockCmd(cli_ctx)
 
-        # Set up mock cluster client and location
-        mock_cluster = Mock()
-        mock_cluster.location = "eastus"
-
-        mock_managed_clusters = Mock()
-        mock_managed_clusters.get.return_value = mock_cluster
-
-        mock_client = Mock()
-        mock_client.managed_clusters = mock_managed_clusters
-        mock_get_client.return_value = mock_client
+        mock_get_client.return_value = self.mock_client
 
         raw_parameters = {
             "resource_group_name": "test_rg",
@@ -232,21 +180,24 @@ class TestAddManagedNamespace(unittest.TestCase):
 
 @patch("azext_aks_preview.managednamespace.get_mgmt_service_client")
 class TestUpdateManagedNamespace(unittest.TestCase):
+    def setUp(self):
+        # Set up mock cluster client and location
+        self.mock_cluster = Mock()
+        self.mock_cluster.location = "eastus"
+
+        self.mock_managed_clusters = Mock()
+        self.mock_managed_clusters.get.return_value = self.mock_cluster
+
+        self.mock_client = Mock()
+        self.mock_client.managed_clusters = self.mock_managed_clusters
+
+
     def test_update_managed_namespace_with_invalid_ingress_policy(self, mock_get_client):
         register_aks_preview_resource_type()
         cli_ctx = MockCLI()
         cmd = MockCmd(cli_ctx)
 
-        # Set up mock cluster client and location
-        mock_cluster = Mock()
-        mock_cluster.location = "eastus"
-
-        mock_managed_clusters = Mock()
-        mock_managed_clusters.get.return_value = mock_cluster
-
-        mock_client = Mock()
-        mock_client.managed_clusters = mock_managed_clusters
-        mock_get_client.return_value = mock_client
+        mock_get_client.return_value = self.mock_client
 
         raw_parameters = {
             "resource_group_name": "test_rg",
@@ -268,16 +219,7 @@ class TestUpdateManagedNamespace(unittest.TestCase):
         cli_ctx = MockCLI()
         cmd = MockCmd(cli_ctx)
 
-        # Set up mock cluster client and location
-        mock_cluster = Mock()
-        mock_cluster.location = "eastus"
-
-        mock_managed_clusters = Mock()
-        mock_managed_clusters.get.return_value = mock_cluster
-
-        mock_client = Mock()
-        mock_client.managed_clusters = mock_managed_clusters
-        mock_get_client.return_value = mock_client
+        mock_get_client.return_value = self.mock_client
 
         raw_parameters = {
             "resource_group_name": "test_rg",
@@ -300,16 +242,7 @@ class TestUpdateManagedNamespace(unittest.TestCase):
         cli_ctx = MockCLI()
         cmd = MockCmd(cli_ctx)
 
-        # Set up mock cluster client and location
-        mock_cluster = Mock()
-        mock_cluster.location = "eastus"
-
-        mock_managed_clusters = Mock()
-        mock_managed_clusters.get.return_value = mock_cluster
-
-        mock_client = Mock()
-        mock_client.managed_clusters = mock_managed_clusters
-        mock_get_client.return_value = mock_client
+        mock_get_client.return_value = self.mock_client
 
         raw_parameters = {
             "resource_group_name": "test_rg",
@@ -333,16 +266,7 @@ class TestUpdateManagedNamespace(unittest.TestCase):
         cli_ctx = MockCLI()
         cmd = MockCmd(cli_ctx)
 
-        # Set up mock cluster client and location
-        mock_cluster = Mock()
-        mock_cluster.location = "eastus"
-
-        mock_managed_clusters = Mock()
-        mock_managed_clusters.get.return_value = mock_cluster
-
-        mock_client = Mock()
-        mock_client.managed_clusters = mock_managed_clusters
-        mock_get_client.return_value = mock_client
+        mock_get_client.return_value = self.mock_client
 
         raw_parameters = {
             "resource_group_name": "test_rg",

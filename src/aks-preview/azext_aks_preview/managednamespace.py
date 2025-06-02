@@ -29,18 +29,19 @@ from azext_aks_preview._consts import (
 from azext_aks_preview._client_factory import CUSTOM_MGMT_AKS_PREVIEW
 
 
+def get_cluster_location(cmd, resource_group_name, cluster_name):
+    containerservice_client = get_mgmt_service_client(cmd.cli_ctx, ContainerServiceClient)
+    cluster = containerservice_client.managed_clusters.get(resource_group_name, cluster_name)
+    return cluster.location
+
+
 def aks_managed_namespace_add(cmd, client, raw_parameters, headers, no_wait):
     resource_group_name = raw_parameters.get("resource_group_name")
     cluster_name = raw_parameters.get("cluster_name")
     namespace_name = raw_parameters.get("name")
 
-    # Get the cluster location
-    containerservice_client = get_mgmt_service_client(cmd.cli_ctx, ContainerServiceClient)
-    cluster = containerservice_client.managed_clusters.get(resource_group_name, cluster_name)
-    cluster_location = cluster.location
-
     namespace_config = constructNamespace(cmd, raw_parameters, namespace_name)
-    namespace_config.location = cluster_location
+    namespace_config.location = get_cluster_location(cmd, resource_group_name, cluster_name)
 
     return sdk_no_wait(
         no_wait,
@@ -203,12 +204,8 @@ def aks_managed_namespace_update(cmd, client, raw_parameters, headers, existedNa
     cluster_name = raw_parameters.get("cluster_name")
     namespace_name = raw_parameters.get("name")
 
-    # Get the cluster location
-    containerservice_client = get_mgmt_service_client(cmd.cli_ctx, ContainerServiceClient)
-    cluster = containerservice_client.managed_clusters.get(resource_group_name, cluster_name)
-    cluster_location = cluster.location
     namespace_config = updateNamespace(cmd, raw_parameters, existedNamespace)
-    namespace_config.location = cluster_location
+    namespace_config.location = get_cluster_location(cmd, resource_group_name, cluster_name)
 
     return sdk_no_wait(
         no_wait,
