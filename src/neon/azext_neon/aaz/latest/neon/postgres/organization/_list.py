@@ -16,7 +16,7 @@ from azure.cli.core.aaz import *
     is_preview=True,
 )
 class List(AAZCommand):
-    """List all Neon organizations under a subscription.
+    """List all Neon organizations associated with a specific subscription ID.
 
     :example: Organizations_ListBySubscription
         az neon postgres organization list --subscription 12345678-1234-1234-1234-123456789abc --resource-group demoResourceGroup

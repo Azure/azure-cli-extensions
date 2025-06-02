@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "neon postgres branch show",
 )
 class Show(AAZCommand):
-    """Retrieve details of a specific Neon branch.
+    """Retrieve details of a specific branch within a Neon Postgres database.
 
     :example: Show Branch Details
         az neon postgres branch show --subscription 38a546de-5736-48e8-a69a-5cc636794112 --resource-group rgneon --organization-name org-cli-test --project-id old-frost-16758796 --branch-id br-spring-field-a8vje3tr

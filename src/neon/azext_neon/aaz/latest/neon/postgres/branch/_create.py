@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "neon postgres branch create",
 )
 class Create(AAZCommand):
-    """Create a new branch in a Neon project.
+    """Create a new branch within a Neon Postgres database.
 
     :example: Create a Branch
         az neon postgres branch create --resource-group rgneon --organization-name org-cli-test --project-name old-frost-16758796 --branch-name test-branch --entity-name test-branch --role-name test_role --database-name testneondb

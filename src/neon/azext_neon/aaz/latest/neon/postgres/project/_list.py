@@ -15,9 +15,7 @@ from azure.cli.core.aaz import *
     "neon postgres project list",
 )
 class List(AAZCommand):
-    """List Neon Projects associated with Neon Organization resource
-
-    List Neon Project associated with your Neon Organization resource, including those shared with you.
+    """List all Neon projects associated with a specific Neon organization.
 
     :example: List Neon Projects within an Organization
         az neon postgres project list --resource-group rgneon --organization-name org-cli-test

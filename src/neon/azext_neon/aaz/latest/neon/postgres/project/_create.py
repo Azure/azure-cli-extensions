@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "neon postgres project create",
 )
 class Create(AAZCommand):
-    """Create a new Neon project under an organization.
+    """Create a new Neon project resource within Azure.
 
     :example: Create Neon Project
         az neon postgres project create --resource-group rgneon --organization-name neon-org --project-name neon-project --region eastus2 --pg-version 17 --branch "{branch-name:main, role-name:owner_role,database-name:neondb}"

@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "neon postgres project show",
 )
 class Show(AAZCommand):
-    """Retrieve details of a specific Neon project.
+    """Retrieve details of a specific Neon project resource.
 
     :example: Show Neon Project Deatils
         az neon postgres project show --resource-group rgneon --organization-name org-cli-test --project-id old-frost-16758796

@@ -11,6 +11,10 @@
 from azure.cli.core.aaz import *
 
 
+@register_command(
+    "neon postgres create",
+    is_preview=True,
+)
 class Create(AAZCommand):
     """Create a Neon organization
 

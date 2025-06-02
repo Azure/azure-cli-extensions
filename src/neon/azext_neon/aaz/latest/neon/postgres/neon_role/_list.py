@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "neon postgres neon-role list",
 )
 class List(AAZCommand):
-    """List all roles in a Neon branch.
+    """List all roles and permissions associated with a specific branch in Neon Postgres.
 
     :example: List Neon Roles under a Branch
         az neon postgres neon-role list --resource-group rgneon --organization-name org-test-cli --project-id old-frost-16758796 --branch-id br-spring-field-a8vje3tr
