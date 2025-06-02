@@ -12,6 +12,8 @@ from azure.cli.core.azclierror import (
 from azure.cli.core.util import (
     sdk_no_wait,
 )
+from azure.cli.core.commands.client_factory import get_mgmt_service_client
+from azure.mgmt.containerservice import ContainerServiceClient
 
 from azext_aks_preview._consts import (
     CONST_NAMESPACE_NETWORK_POLICY_RULE_DENYALL,
@@ -31,7 +33,14 @@ def aks_managed_namespace_add(cmd, client, raw_parameters, headers, no_wait):
     resource_group_name = raw_parameters.get("resource_group_name")
     cluster_name = raw_parameters.get("cluster_name")
     namespace_name = raw_parameters.get("name")
+
+    # Get the cluster location
+    containerservice_client = get_mgmt_service_client(cmd.cli_ctx, ContainerServiceClient)
+    cluster = containerservice_client.managed_clusters.get(resource_group_name, cluster_name)
+    cluster_location = cluster.location
+
     namespace_config = constructNamespace(cmd, raw_parameters, namespace_name)
+    namespace_config.location = cluster_location
 
     return sdk_no_wait(
         no_wait,
@@ -193,7 +202,13 @@ def aks_managed_namespace_update(cmd, client, raw_parameters, headers, existedNa
     resource_group_name = raw_parameters.get("resource_group_name")
     cluster_name = raw_parameters.get("cluster_name")
     namespace_name = raw_parameters.get("name")
+
+    # Get the cluster location
+    containerservice_client = get_mgmt_service_client(cmd.cli_ctx, ContainerServiceClient)
+    cluster = containerservice_client.managed_clusters.get(resource_group_name, cluster_name)
+    cluster_location = cluster.location
     namespace_config = updateNamespace(cmd, raw_parameters, existedNamespace)
+    namespace_config.location = cluster_location
 
     return sdk_no_wait(
         no_wait,
