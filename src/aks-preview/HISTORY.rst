@@ -12,6 +12,10 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+18.0.0b7
++++++++
+* Populate location of managed namespaces using managed cluster's location
+
 18.0.0b6
 +++++++
 * Quality improvements for `az aks extension` and `az aks extension type` command groups
