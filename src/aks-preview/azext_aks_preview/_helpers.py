@@ -403,8 +403,8 @@ def _check_if_extension_type_is_in_allow_list(extension_type_name):
 
 def raise_validation_error_if_extension_type_not_in_allow_list(extension_type_name):
     if not _check_if_extension_type_is_in_allow_list(extension_type_name):
-        raise ValidationError(f"Failed to get extension type version by cluster for {extension_type_name.lower()} " +
-                              f"as it is not in allowed list of extension types {allowed_extensions}")
+        raise ValidationError(f"Operation failed as extension type {extension_type_name.lower()} " +
+                              f"is not in allowed list of extension types {allowed_extensions}")
 
 
 def filter_hard_taints(node_initialization_taints: List[str]) -> List[str]:
@@ -442,3 +442,9 @@ def get_all_extensions_in_allow_list(result):
         if _check_if_extension_type_is_in_allow_list(obj.extension_type.lower()):
             output.append(obj)
     return output
+
+
+def get_extension_in_allow_list(result):
+    if _check_if_extension_type_is_in_allow_list(result.extension_type.lower()):
+        return result
+    return None

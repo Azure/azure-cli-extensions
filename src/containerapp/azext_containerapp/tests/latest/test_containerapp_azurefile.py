@@ -28,7 +28,7 @@ class ContainerAppMountAzureFileTest(ScenarioTest):
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus")
-    @SubnetPreparer(location="eastus", delegations='Microsoft.App/environments', service_endpoints="Microsoft.Storage.Global")
+    @SubnetPreparer(location="centralus", delegations='Microsoft.App/environments', service_endpoints="Microsoft.Storage.Global")
     def test_container_app_mount_azurefile_e2e(self, resource_group, subnet_id, vnet_name, subnet_name):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
