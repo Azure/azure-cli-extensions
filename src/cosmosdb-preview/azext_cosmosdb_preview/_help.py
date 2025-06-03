@@ -1699,3 +1699,148 @@ examples:
         --scope "/dbs/mydb/colls/mycontainer" \\
         --principal-id 6328f5f7-dbf7-4244-bba8-fbb9d8066506
 """
+
+helps['cosmosdb fleet'] = """
+type: group
+short-summary: Manage Azure Cosmos DB Fleet resources.
+"""
+
+helps['cosmosdb fleet create'] = """
+type: command
+short-summary: Create a new Cosmos DB Fleet.
+examples:
+  - name: Create a fleet
+    text: |
+      az cosmosdb fleet create \\
+        --resource-group MyResourceGroup \\
+        --fleet-name MyFleet \\
+        --location westus
+"""
+
+helps['cosmosdb fleet list'] = """
+type: command
+short-summary: List Cosmos DB Fleets in a subscription or resource group.
+"""
+
+helps['cosmosdb fleet show'] = """
+type: command
+short-summary: Show details of a specific Cosmos DB Fleet.
+"""
+
+helps['cosmosdb fleet delete'] = """
+type: command
+short-summary: Delete a specific Cosmos DB Fleet.
+"""
+
+helps['cosmosdb fleetspace'] = """
+type: group
+short-summary: Manage Cosmos DB Fleetspace resources.
+"""
+
+helps['cosmosdb fleetspace create'] = """
+type: command
+short-summary: Create a new Fleetspace under a Cosmos DB Fleet.
+examples:
+  - name: Create a fleetspace
+    text: |
+      az cosmosdb fleetspace create \\
+        --resource-group MyResourceGroup \\
+        --fleet-name MyFleet \\
+        --fleetspace-name MyFleetspace \\
+        --body @fleetspace.json
+"""
+
+helps['cosmosdb fleetspace update'] = """
+type: command
+short-summary: Update an existing Cosmos DB Fleetspace.
+examples:
+  - name: Update fleetspace throughput settings
+    text: |
+      az cosmosdb fleetspace update \\
+        --resource-group MyResourceGroup \\
+        --fleet-name MyFleet \\
+        --fleetspace-name MyFleetspace \\
+        --body @fleetspace.json
+"""
+
+helps['cosmosdb fleetspace list'] = """
+type: command
+short-summary: List all Fleetspaces under a Fleet.
+"""
+
+helps['cosmosdb fleetspace show'] = """
+type: command
+short-summary: Show details of a specific Fleetspace.
+"""
+
+helps['cosmosdb fleetspace delete'] = """
+type: command
+short-summary: Delete a Fleetspace from a Fleet.
+"""
+
+helps['cosmosdb fleetspace account'] = """
+type: group
+short-summary: Manage database accounts within a Cosmos DB Fleetspace.
+"""
+
+helps['cosmosdb fleetspace account create'] = """
+type: command
+short-summary: Register an existing Cosmos DB database account to a Fleetspace.
+examples:
+  - name: Register a database account to a fleetspace
+    text: |
+      az cosmosdb fleetspace account create \\
+        --resource-group MyResourceGroup \\
+        --fleet-name MyFleet \\
+        --fleetspace-name MyFleetspace \\
+        --fleetspace-account-name MyAccount \\
+        --body @fleetspaceAccount.json
+"""
+
+helps['cosmosdb fleetspace account list'] = """
+type: command
+short-summary: List all database accounts associated with a Fleetspace.
+"""
+
+helps['cosmosdb fleetspace account show'] = """
+type: command
+short-summary: Show details of a registered database account in a Fleetspace.
+"""
+
+helps['cosmosdb fleetspace account delete'] = """
+type: command
+short-summary: Unregister a database account from a Fleetspace.
+"""
+
+helps['cosmosdb fleet analytics'] = """
+type: group
+short-summary: Manage Azure Cosmos DB Fleet Analytics resources.
+"""
+
+helps['cosmosdb fleet analytics create'] = """
+type: command
+short-summary: Create a new Fleet Analytics resource under a Cosmos DB Fleet.
+examples:
+  - name: Create a Fleet Analytics resource
+    text: |
+      az cosmosdb fleet analytics create \\
+        --resource-group MyResourceGroup \\
+        --fleet-name MyFleet \\
+        --fleet-analytics-name MyFleetAnalytics \\
+        --body @fleetAnalytics.json
+"""
+
+helps['cosmosdb fleet analytics show'] = """
+type: command
+short-summary: Show details of a specific Fleet Analytics resource.
+"""
+
+helps['cosmosdb fleet analytics list'] = """
+type: command
+short-summary: List all Fleet Analytics resources under a Fleet.
+"""
+
+helps['cosmosdb fleet analytics delete'] = """
+type: command
+short-summary: Delete a Fleet Analytics resource from a Fleet.
+"""

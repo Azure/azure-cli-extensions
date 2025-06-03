@@ -7952,6 +7952,34 @@ class FleetspaceAccountListResult(_serialization.Model):
         self.next_link: Optional[str] = None
 
 
+class FleetspaceAccountPropertiesGlobalDatabaseAccountProperties(_serialization.Model):  # pylint: disable=name-too-long
+    """Configuration for fleetspace Account in the fleetspace.
+
+    :ivar resource_id: The resource identifier of global database account in the Fleetspace
+     Account.
+    :vartype resource_id: str
+    :ivar arm_location: The location of  global database account in the Fleetspace Account.
+    :vartype arm_location: str
+    """
+
+    _attribute_map = {
+        "resource_id": {"key": "resourceId", "type": "str"},
+        "arm_location": {"key": "armLocation", "type": "str"},
+    }
+
+    def __init__(self, *, resource_id: Optional[str] = None, arm_location: Optional[str] = None, **kwargs: Any) -> None:
+        """
+        :keyword resource_id: The resource identifier of global database account in the Fleetspace
+         Account.
+        :paramtype resource_id: str
+        :keyword arm_location: The location of  global database account in the Fleetspace Account.
+        :paramtype arm_location: str
+        """
+        super().__init__(**kwargs)
+        self.resource_id = resource_id
+        self.arm_location = arm_location
+
+
 class FleetspaceAccountResource(ProxyResource):
     """An Azure Cosmos DB Fleetspace Account.
 
@@ -7972,11 +8000,10 @@ class FleetspaceAccountResource(ProxyResource):
      "Uninitialized", "Initializing", "InternallyReady", "Online", "Deleting", "Succeeded",
      "Failed", "Canceled", "Updating", and "Creating".
     :vartype provisioning_state: str or ~azure.mgmt.cosmosdb.models.Status
-    :ivar account_resource_identifier: The resource identifier of global database account in the
-     Fleetspace Account.
-    :vartype account_resource_identifier: str
-    :ivar account_location: The location of  global database account in the Fleetspace Account.
-    :vartype account_location: str
+    :ivar global_database_account_properties: Configuration for fleetspace Account in the
+     fleetspace.
+    :vartype global_database_account_properties:
+     ~azure.mgmt.cosmosdb.models.FleetspaceAccountPropertiesGlobalDatabaseAccountProperties
     """
 
     _validation = {
@@ -7992,16 +8019,19 @@ class FleetspaceAccountResource(ProxyResource):
         "type": {"key": "type", "type": "str"},
         "system_data": {"key": "systemData", "type": "SystemData"},
         "provisioning_state": {"key": "properties.provisioningState", "type": "str"},
-        "account_resource_identifier": {"key": "properties.accountResourceIdentifier", "type": "str"},
-        "account_location": {"key": "properties.accountLocation", "type": "str"},
+        "global_database_account_properties": {
+            "key": "properties.globalDatabaseAccountProperties",
+            "type": "FleetspaceAccountPropertiesGlobalDatabaseAccountProperties",
+        },
     }
 
     def __init__(
         self,
         *,
         provisioning_state: Optional[Union[str, "_models.Status"]] = None,
-        account_resource_identifier: Optional[str] = None,
-        account_location: Optional[str] = None,
+        global_database_account_properties: Optional[
+            "_models.FleetspaceAccountPropertiesGlobalDatabaseAccountProperties"
+        ] = None,
         **kwargs: Any
     ) -> None:
         """
@@ -8009,16 +8039,14 @@ class FleetspaceAccountResource(ProxyResource):
          "Uninitialized", "Initializing", "InternallyReady", "Online", "Deleting", "Succeeded",
          "Failed", "Canceled", "Updating", and "Creating".
         :paramtype provisioning_state: str or ~azure.mgmt.cosmosdb.models.Status
-        :keyword account_resource_identifier: The resource identifier of global database account in the
-         Fleetspace Account.
-        :paramtype account_resource_identifier: str
-        :keyword account_location: The location of  global database account in the Fleetspace Account.
-        :paramtype account_location: str
+        :keyword global_database_account_properties: Configuration for fleetspace Account in the
+         fleetspace.
+        :paramtype global_database_account_properties:
+         ~azure.mgmt.cosmosdb.models.FleetspaceAccountPropertiesGlobalDatabaseAccountProperties
         """
         super().__init__(**kwargs)
         self.provisioning_state = provisioning_state
-        self.account_resource_identifier = account_resource_identifier
-        self.account_location = account_location
+        self.global_database_account_properties = global_database_account_properties
 
 
 class FleetspaceListResult(_serialization.Model):

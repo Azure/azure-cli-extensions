@@ -19,12 +19,15 @@ class ListCredential(AAZCommand):
 
     :example: List credential
         az databox job list-credential -g rg -n job-name
+
+    :example: JobsListCredentials
+        az databox job list-credential --resource-group YourResourceGroupName --job-name TestJobName1
     """
 
     _aaz_info = {
-        "version": "2022-12-01",
+        "version": "2025-02-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.databox/jobs/{}/listcredentials", "2022-12-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.databox/jobs/{}/listcredentials", "2025-02-01"],
         ]
     }
 
@@ -50,7 +53,7 @@ class ListCredential(AAZCommand):
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
-                pattern="^[-\w\.]+$",
+                pattern="^[-\\w\\.]+$",
                 max_length=24,
                 min_length=3,
             ),
@@ -125,7 +128,7 @@ class ListCredential(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-12-01",
+                    "api-version", "2025-02-01",
                     required=True,
                 ),
             }
@@ -173,13 +176,17 @@ class ListCredential(AAZCommand):
             )
             _element.job_secrets = AAZObjectType(
                 serialized_name="jobSecrets",
+                flags={"read_only": True},
             )
 
             job_secrets = cls._schema_on_200.value.Element.job_secrets
             job_secrets.dc_access_security_code = AAZObjectType(
                 serialized_name="dcAccessSecurityCode",
+                flags={"read_only": True},
             )
-            job_secrets.error = AAZObjectType()
+            job_secrets.error = AAZObjectType(
+                flags={"read_only": True},
+            )
             _ListCredentialHelper._build_schema_cloud_error_read(job_secrets.error)
             job_secrets.job_secrets_type = AAZStrType(
                 serialized_name="jobSecretsType",
@@ -407,7 +414,9 @@ class _ListCredentialHelper:
             _schema.target = cls._schema_cloud_error_read.target
             return
 
-        cls._schema_cloud_error_read = _schema_cloud_error_read = AAZObjectType()
+        cls._schema_cloud_error_read = _schema_cloud_error_read = AAZObjectType(
+            flags={"read_only": True}
+        )
 
         cloud_error_read = _schema_cloud_error_read
         cloud_error_read.additional_info = AAZListType(
@@ -425,7 +434,11 @@ class _ListCredentialHelper:
         additional_info.Element = AAZObjectType()
 
         _element = _schema_cloud_error_read.additional_info.Element
+        _element.info = AAZDictType()
         _element.type = AAZStrType()
+
+        info = _schema_cloud_error_read.additional_info.Element.info
+        info.Element = AAZAnyType()
 
         details = _schema_cloud_error_read.details
         details.Element = AAZObjectType()
