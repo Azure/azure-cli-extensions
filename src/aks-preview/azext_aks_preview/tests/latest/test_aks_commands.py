@@ -38,7 +38,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         super(AzureKubernetesServiceScenarioTest, self).__init__(
             method_name, recording_processors=[KeyReplacer()]
         )
-        self.cmd('extension add -n k8s-extension')
 
     def _get_versions(self, location):
         """Return the previous and current Kubernetes minor release versions, such as ("1.11.6", "1.12.4")."""
@@ -15964,7 +15963,8 @@ spec:
         )
 
 
-    @AllowLargeResponse()
+    @live_only()
+    @AllowLargeResponse(99999)
     @AKSCustomResourceGroupPreparer(
         random_name_length=17,
         name_prefix="clitest",
@@ -15988,6 +15988,8 @@ spec:
             'ssh_key_value': self.generate_ssh_keys(),
             'location': resource_group_location,
         })
+
+        self.cmd('extension add -n k8s-extension')
 
         # create storage account
         self.cmd('storage account create --name {storageAccount} --resource-group {rg} '
@@ -16049,7 +16051,8 @@ spec:
         self.assertFalse(found_extension)
 
 
-    @AllowLargeResponse()
+    @live_only()
+    @AllowLargeResponse(99999)
     @AKSCustomResourceGroupPreparer(
         random_name_length=17,
         name_prefix="clitest",
@@ -16073,6 +16076,8 @@ spec:
             'ssh_key_value': self.generate_ssh_keys(),
             'location': resource_group_location,
         })
+
+        self.cmd('extension add -n k8s-extension')
         self.cmd('feature register --namespace Microsoft.KubernetesConfiguration --name ExtensionTypes')
 
         is_extension_types_feature_registered = False
