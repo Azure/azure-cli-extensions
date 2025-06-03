@@ -11,21 +11,14 @@
 from azure.cli.core.aaz import *
 
 
-@register_command(
-    "azure-data-transfer connection delete",
-    confirmation="Are you sure you want to perform this operation?",
-)
 class Delete(AAZCommand):
-    """Delete the connection resource.
-
-    :example: Deletes the connection resource
-        az azure-data-transfer connection delete --resource-group testRG --connection-name testConnection
+    """Delete the pipeline resource.
     """
 
     _aaz_info = {
         "version": "2025-05-21",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.azuredatatransfer/connections/{}", "2025-05-21"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.azuredatatransfer/pipelines/{}", "2025-05-21"],
         ]
     }
 
@@ -46,9 +39,9 @@ class Delete(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.connection_name = AAZStrArg(
-            options=["-n", "--name", "--connection-name"],
-            help="The name for the connection to perform the operation on.",
+        _args_schema.pipeline_name = AAZStrArg(
+            options=["-n", "--name", "--pipeline-name"],
+            help="The name for the pipeline to perform the operation on.",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
@@ -64,7 +57,7 @@ class Delete(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.ConnectionsDelete(ctx=self.ctx)()
+        yield self.PipelinesDelete(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -75,7 +68,7 @@ class Delete(AAZCommand):
     def post_operations(self):
         pass
 
-    class ConnectionsDelete(AAZHttpOperation):
+    class PipelinesDelete(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -114,7 +107,7 @@ class Delete(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AzureDataTransfer/connections/{connectionName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AzureDataTransfer/pipelines/{pipelineName}",
                 **self.url_parameters
             )
 
@@ -130,7 +123,7 @@ class Delete(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "connectionName", self.ctx.args.connection_name,
+                    "pipelineName", self.ctx.args.pipeline_name,
                     required=True,
                 ),
                 **self.serialize_url_param(

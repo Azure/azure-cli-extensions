@@ -15,13 +15,16 @@ from azure.cli.core.aaz import *
     "azure-data-transfer pipeline approve-connection",
 )
 class ApproveConnection(AAZCommand):
-    """Approves the specified connection in a pipeline.
+    """Approves the specified connection request in a pipeline.
+
+    :example: Approves the specified connection in a pipeline
+        az azure-data-transfer pipeline approve-connection --resource-group testRG --pipeline-name testPipeline --connection-id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/testRG/providers/Microsoft.AzureDataTransfer/connections/testConnection --status-reason Example reason
     """
 
     _aaz_info = {
-        "version": "2024-09-27",
+        "version": "2025-05-21",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/Microsoft.AzureDataTransfer/pipelines/{}/approveconnection", "2024-09-27"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.azuredatatransfer/pipelines/{}/approveconnection", "2025-05-21"],
         ]
     }
 
@@ -44,7 +47,7 @@ class ApproveConnection(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.pipeline_name = AAZStrArg(
             options=["-n", "--name", "--pipeline-name"],
-            help="The name for the pipeline that is to be requested.",
+            help="The name for the pipeline to perform the operation on.",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
@@ -60,10 +63,10 @@ class ApproveConnection(AAZCommand):
         # define Arg Group "Connection"
 
         _args_schema = cls._args_schema
-        _args_schema.id = AAZStrArg(
-            options=["--id"],
+        _args_schema.connection_id = AAZStrArg(
+            options=["--id", "--connection-id"],
             arg_group="Connection",
-            help="ID of the resource.",
+            help="ID of the connection to be approved.",
             required=True,
         )
         _args_schema.status_reason = AAZStrArg(
@@ -154,7 +157,7 @@ class ApproveConnection(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-09-27",
+                    "api-version", "2025-05-21",
                     required=True,
                 ),
             }
@@ -179,7 +182,7 @@ class ApproveConnection(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("id", AAZStrType, ".id", typ_kwargs={"flags": {"required": True}})
+            _builder.set_prop("id", AAZStrType, ".connection_id", typ_kwargs={"flags": {"required": True}})
             _builder.set_prop("statusReason", AAZStrType, ".status_reason")
 
             return self.serialize_content(_content_value)
@@ -205,6 +208,7 @@ class ApproveConnection(AAZCommand):
             _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
+            _schema_on_200.identity = AAZIdentityObjectType()
             _schema_on_200.location = AAZStrType(
                 flags={"required": True},
             )
@@ -221,6 +225,37 @@ class ApproveConnection(AAZCommand):
                 flags={"read_only": True},
             )
 
+            identity = cls._schema_on_200.identity
+            identity.principal_id = AAZStrType(
+                serialized_name="principalId",
+                flags={"read_only": True},
+            )
+            identity.tenant_id = AAZStrType(
+                serialized_name="tenantId",
+                flags={"read_only": True},
+            )
+            identity.type = AAZStrType(
+                flags={"required": True},
+            )
+            identity.user_assigned_identities = AAZDictType(
+                serialized_name="userAssignedIdentities",
+            )
+
+            user_assigned_identities = cls._schema_on_200.identity.user_assigned_identities
+            user_assigned_identities.Element = AAZObjectType(
+                nullable=True,
+            )
+
+            _element = cls._schema_on_200.identity.user_assigned_identities.Element
+            _element.client_id = AAZStrType(
+                serialized_name="clientId",
+                flags={"read_only": True},
+            )
+            _element.principal_id = AAZStrType(
+                serialized_name="principalId",
+                flags={"read_only": True},
+            )
+
             properties = cls._schema_on_200.properties
             properties.approver = AAZStrType(
                 flags={"read_only": True},
@@ -232,6 +267,10 @@ class ApproveConnection(AAZCommand):
             properties.direction = AAZStrType()
             properties.flow_types = AAZListType(
                 serialized_name="flowTypes",
+            )
+            properties.force_disabled_status = AAZListType(
+                serialized_name="forceDisabledStatus",
+                flags={"read_only": True},
             )
             properties.justification = AAZStrType()
             properties.link_status = AAZStrType(
@@ -277,6 +316,9 @@ class ApproveConnection(AAZCommand):
 
             flow_types = cls._schema_on_200.properties.flow_types
             flow_types.Element = AAZStrType()
+
+            force_disabled_status = cls._schema_on_200.properties.force_disabled_status
+            force_disabled_status.Element = AAZStrType()
 
             policies = cls._schema_on_200.properties.policies
             policies.Element = AAZStrType()

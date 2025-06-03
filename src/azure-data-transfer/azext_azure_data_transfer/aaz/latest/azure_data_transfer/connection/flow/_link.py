@@ -16,12 +16,15 @@ from azure.cli.core.aaz import *
 )
 class Link(AAZCommand):
     """Links the specified flow.
+
+    :example: Links the specified flow
+        az azure-data-transfer connection flow link --resource-group testRG --connection-name testConnection --flow-name testFlow --id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/testRG/providers/Microsoft.AzureDataTransfer/connections/testConnection/flows/testFlow
     """
 
     _aaz_info = {
-        "version": "2024-09-27",
+        "version": "2025-05-21",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/Microsoft.AzureDataTransfer/connections/{}/flows/{}/link", "2024-09-27"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.azuredatatransfer/connections/{}/flows/{}/link", "2025-05-21"],
         ]
     }
 
@@ -44,7 +47,7 @@ class Link(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.connection_name = AAZStrArg(
             options=["--connection-name"],
-            help="The name for the connection that is to be requested.",
+            help="The name for the connection to perform the operation on.",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
@@ -54,8 +57,8 @@ class Link(AAZCommand):
             ),
         )
         _args_schema.flow_name = AAZStrArg(
-            options=["-n", "--name", "--flow-name"],
-            help="The name for the flow that is to be onboarded.",
+            options=["--flow-name"],
+            help="The name for the flow to perform the operation on.",
             required=True,
             id_part="child_name_1",
             fmt=AAZStrArgFormat(
@@ -169,7 +172,7 @@ class Link(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-09-27",
+                    "api-version", "2025-05-21",
                     required=True,
                 ),
             }
@@ -255,7 +258,9 @@ class Link(AAZCommand):
             )
 
             user_assigned_identities = cls._schema_on_200.identity.user_assigned_identities
-            user_assigned_identities.Element = AAZObjectType()
+            user_assigned_identities.Element = AAZObjectType(
+                nullable=True,
+            )
 
             _element = cls._schema_on_200.identity.user_assigned_identities.Element
             _element.client_id = AAZStrType(
@@ -283,7 +288,13 @@ class Link(AAZCommand):
             plan.version = AAZStrType()
 
             properties = cls._schema_on_200.properties
+            properties.api_flow_options = AAZObjectType(
+                serialized_name="apiFlowOptions",
+            )
             properties.connection = AAZObjectType()
+            properties.consumer_group = AAZStrType(
+                serialized_name="consumerGroup",
+            )
             properties.customer_managed_key_vault_uri = AAZStrType(
                 serialized_name="customerManagedKeyVaultUri",
             )
@@ -296,12 +307,19 @@ class Link(AAZCommand):
             properties.destination_endpoints = AAZListType(
                 serialized_name="destinationEndpoints",
             )
+            properties.event_hub_id = AAZStrType(
+                serialized_name="eventHubId",
+            )
             properties.flow_id = AAZStrType(
                 serialized_name="flowId",
                 flags={"read_only": True},
             )
             properties.flow_type = AAZStrType(
                 serialized_name="flowType",
+            )
+            properties.force_disabled_status = AAZListType(
+                serialized_name="forceDisabledStatus",
+                flags={"read_only": True},
             )
             properties.key_vault_uri = AAZStrType(
                 serialized_name="keyVaultUri",
@@ -340,6 +358,9 @@ class Link(AAZCommand):
             properties.storage_container_name = AAZStrType(
                 serialized_name="storageContainerName",
             )
+            properties.storage_table_name = AAZStrType(
+                serialized_name="storageTableName",
+            )
             properties.stream_id = AAZStrType(
                 serialized_name="streamId",
             )
@@ -348,6 +369,27 @@ class Link(AAZCommand):
             )
             properties.stream_protocol = AAZStrType(
                 serialized_name="streamProtocol",
+            )
+
+            api_flow_options = cls._schema_on_200.properties.api_flow_options
+            api_flow_options.api_mode = AAZStrType(
+                serialized_name="apiMode",
+            )
+            api_flow_options.audience_override = AAZStrType(
+                serialized_name="audienceOverride",
+            )
+            api_flow_options.cname = AAZStrType()
+            api_flow_options.identity_translation = AAZStrType(
+                serialized_name="identityTranslation",
+            )
+            api_flow_options.remote_calling_mode_client_id = AAZStrType(
+                serialized_name="remoteCallingModeClientId",
+            )
+            api_flow_options.remote_endpoint = AAZStrType(
+                serialized_name="remoteEndpoint",
+            )
+            api_flow_options.sender_client_id = AAZStrType(
+                serialized_name="senderClientId",
             )
 
             connection = cls._schema_on_200.properties.connection
@@ -365,6 +407,9 @@ class Link(AAZCommand):
 
             destination_endpoints = cls._schema_on_200.properties.destination_endpoints
             destination_endpoints.Element = AAZStrType()
+
+            force_disabled_status = cls._schema_on_200.properties.force_disabled_status
+            force_disabled_status.Element = AAZStrType()
 
             messaging_options = cls._schema_on_200.properties.messaging_options
             messaging_options.billing_tier = AAZStrType(

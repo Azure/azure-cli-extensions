@@ -11,23 +11,14 @@
 from azure.cli.core.aaz import *
 
 
-@register_command(
-    "azure-data-transfer connection create",
-)
 class Create(AAZCommand):
-    """Create the connection resource.
-
-    :example: Creates a receive side connection
-        az azure-data-transfer connection create --resource-group testRG --connection-name testConnection --location East US --justification justification --pipeline testdc --requirement-id id --direction Receive --remote-subscription-id 1cca59fe-5643-4156-99c7-284a599092c0
-
-    :example: Creates a send side connection
-        az azure-data-transfer connection create --resource-group testRG --connection-name testConnection --location East US --pipeline testdc --pin 1234
+    """Create the pipeline resource.
     """
 
     _aaz_info = {
         "version": "2025-05-21",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.azuredatatransfer/connections/{}", "2025-05-21"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.azuredatatransfer/pipelines/{}", "2025-05-21"],
         ]
     }
 
@@ -48,9 +39,9 @@ class Create(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.connection_name = AAZStrArg(
-            options=["-n", "--name", "--connection", "--connection-name"],
-            help="The name for the connection to perform the operation on.",
+        _args_schema.pipeline_name = AAZStrArg(
+            options=["-n", "--name", "--pipeline-name"],
+            help="The name for the pipeline to perform the operation on.",
             required=True,
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9-]{3,64}$",
@@ -61,26 +52,6 @@ class Create(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
-
-        # define Arg Group "Connection"
-
-        _args_schema = cls._args_schema
-        _args_schema.location = AAZResourceLocationArg(
-            arg_group="Connection",
-            help="The geo-location where the resource lives",
-            required=True,
-            fmt=AAZResourceLocationArgFormat(
-                resource_group_arg="resource_group",
-            ),
-        )
-        _args_schema.tags = AAZDictArg(
-            options=["--tags"],
-            arg_group="Connection",
-            help="Resource tags.",
-        )
-
-        tags = cls._args_schema.tags
-        tags.Element = AAZStrArg()
 
         # define Arg Group "Identity"
 
@@ -101,69 +72,79 @@ class Create(AAZCommand):
         mi_user_assigned = cls._args_schema.mi_user_assigned
         mi_user_assigned.Element = AAZStrArg()
 
+        # define Arg Group "Pipeline"
+
+        _args_schema = cls._args_schema
+        _args_schema.location = AAZResourceLocationArg(
+            arg_group="Pipeline",
+            help="The geo-location where the resource lives",
+            required=True,
+            fmt=AAZResourceLocationArgFormat(
+                resource_group_arg="resource_group",
+            ),
+        )
+        _args_schema.tags = AAZDictArg(
+            options=["--tags"],
+            arg_group="Pipeline",
+            help="Resource tags.",
+        )
+
+        tags = cls._args_schema.tags
+        tags.Element = AAZStrArg()
+
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.direction = AAZStrArg(
-            options=["--direction"],
+        _args_schema.disabled_flow_types = AAZListArg(
+            options=["--disabled-flow-types"],
             arg_group="Properties",
-            help="Direction of data movement. Allowed values: Receive, Send.",
-            enum={"Receive": "Receive", "Send": "Send"},
+            help="The flow types that are disabled for this pipeline",
+        )
+        _args_schema.display_name = AAZStrArg(
+            options=["--display-name"],
+            arg_group="Properties",
+            help="Display name of this pipeline",
         )
         _args_schema.flow_types = AAZListArg(
             options=["--flow-types"],
             arg_group="Properties",
-            help="The flow types being requested for this connection",
-        )
-        _args_schema.justification = AAZStrArg(
-            options=["--justification"],
-            arg_group="Properties",
-            help="Justification for the connection request",
-        )
-        _args_schema.pin = AAZStrArg(
-            options=["--pin"],
-            arg_group="Properties",
-            help="PIN to link requests together",
-        )
-        _args_schema.pipeline = AAZStrArg(
-            options=["--pipeline"],
-            arg_group="Properties",
-            help="Pipeline to use to transfer data",
+            help="The flow types allowed for this pipeline",
         )
         _args_schema.policies = AAZListArg(
             options=["--policies"],
             arg_group="Properties",
-            help="The policies for this connection",
+            help="The policies for this pipeline",
         )
-        _args_schema.primary_contact = AAZStrArg(
-            options=["--primary-contact"],
+        _args_schema.quarantine_download_storage_account = AAZStrArg(
+            options=["--quarantine-download-storage-account"],
             arg_group="Properties",
-            help="The primary contact for this connection request",
+            help="Quarantine Download Storage Account",
         )
-        _args_schema.remote_subscription_id = AAZStrArg(
-            options=["--remote-subscription-id"],
+        _args_schema.quarantine_download_storage_container = AAZStrArg(
+            options=["--quarantine-download-storage-container"],
             arg_group="Properties",
-            help="Subscription ID to link cloud subscriptions together",
+            help="Quarantine Download Storage Container",
         )
-        _args_schema.requirement_id = AAZStrArg(
-            options=["--requirement-id"],
+        _args_schema.remote_cloud = AAZStrArg(
+            options=["--remote-cloud"],
             arg_group="Properties",
-            help="Requirement ID of the connection",
+            help="Remote cloud of the data to be transferred or received",
         )
-        _args_schema.schema_uris = AAZListArg(
-            options=["--schema-uris"],
+        _args_schema.status = AAZStrArg(
+            options=["--status"],
             arg_group="Properties",
-            help="The schema URIs for this connection",
+            help="Status of the current pipeline",
+            enum={"Disabled": "Disabled", "Enabled": "Enabled"},
         )
-        _args_schema.schemas = AAZListArg(
-            options=["--schemas"],
+        _args_schema.subscribers = AAZListArg(
+            options=["--subscribers"],
             arg_group="Properties",
-            help="The schemas for this connection",
+            help="Subscribers of this resource",
         )
-        _args_schema.secondary_contacts = AAZListArg(
-            options=["--secondary-contacts"],
-            arg_group="Properties",
-            help="The secondary contacts for this connection request",
+
+        disabled_flow_types = cls._args_schema.disabled_flow_types
+        disabled_flow_types.Element = AAZStrArg(
+            enum={"API": "API", "BasicFiles": "BasicFiles", "Complex": "Complex", "Data": "Data", "DevSecOps": "DevSecOps", "DiskImages": "DiskImages", "Messaging": "Messaging", "MicrosoftInternal": "MicrosoftInternal", "Mission": "Mission", "MissionOpaqueXML": "MissionOpaqueXML", "Opaque": "Opaque", "Standard": "Standard", "StreamingVideo": "StreamingVideo", "Unknown": "Unknown"},
         )
 
         flow_types = cls._args_schema.flow_types
@@ -174,56 +155,23 @@ class Create(AAZCommand):
         policies = cls._args_schema.policies
         policies.Element = AAZStrArg()
 
-        schema_uris = cls._args_schema.schema_uris
-        schema_uris.Element = AAZStrArg()
+        subscribers = cls._args_schema.subscribers
+        subscribers.Element = AAZObjectArg()
 
-        schemas = cls._args_schema.schemas
-        schemas.Element = AAZObjectArg()
-
-        _element = cls._args_schema.schemas.Element
-        _element.connection_id = AAZStrArg(
-            options=["connection-id"],
-            help="Connection ID associated with this schema",
+        _element = cls._args_schema.subscribers.Element
+        _element.email = AAZStrArg(
+            options=["email"],
+            help="Email of the subscriber",
         )
-        _element.content = AAZStrArg(
-            options=["content"],
-            help="Content of the schema",
+        _element.notifications = AAZIntArg(
+            options=["notifications"],
+            help="Number specifying what notifications to receive",
         )
-        _element.direction = AAZStrArg(
-            options=["direction"],
-            help="The direction of the schema.",
-            enum={"Receive": "Receive", "Send": "Send"},
-        )
-        _element.id = AAZStrArg(
-            options=["id"],
-            help="ID associated with this schema",
-        )
-        _element.name = AAZStrArg(
-            options=["name"],
-            help="Name of the schema",
-        )
-        _element.schema_type = AAZStrArg(
-            options=["schema-type"],
-            help="The Schema Type",
-            enum={"Xsd": "Xsd", "Zip": "Zip"},
-        )
-        _element.schema_uri = AAZStrArg(
-            options=["schema-uri"],
-            help="Uri containing SAS token for the zipped schema",
-        )
-        _element.status = AAZStrArg(
-            options=["status"],
-            help="Status of the schema",
-            enum={"Approved": "Approved", "New": "New"},
-        )
-
-        secondary_contacts = cls._args_schema.secondary_contacts
-        secondary_contacts.Element = AAZStrArg()
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.ConnectionsCreateOrUpdate(ctx=self.ctx)()
+        yield self.PipelinesCreateOrUpdate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -238,7 +186,7 @@ class Create(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class ConnectionsCreateOrUpdate(AAZHttpOperation):
+    class PipelinesCreateOrUpdate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -268,7 +216,7 @@ class Create(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AzureDataTransfer/connections/{connectionName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AzureDataTransfer/pipelines/{pipelineName}",
                 **self.url_parameters
             )
 
@@ -284,7 +232,7 @@ class Create(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "connectionName", self.ctx.args.connection_name,
+                    "pipelineName", self.ctx.args.pipeline_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -343,18 +291,19 @@ class Create(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("direction", AAZStrType, ".direction")
+                properties.set_prop("disabledFlowTypes", AAZListType, ".disabled_flow_types")
+                properties.set_prop("displayName", AAZStrType, ".display_name")
                 properties.set_prop("flowTypes", AAZListType, ".flow_types")
-                properties.set_prop("justification", AAZStrType, ".justification")
-                properties.set_prop("pin", AAZStrType, ".pin")
-                properties.set_prop("pipeline", AAZStrType, ".pipeline", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("policies", AAZListType, ".policies")
-                properties.set_prop("primaryContact", AAZStrType, ".primary_contact")
-                properties.set_prop("remoteSubscriptionId", AAZStrType, ".remote_subscription_id")
-                properties.set_prop("requirementId", AAZStrType, ".requirement_id")
-                properties.set_prop("schemaUris", AAZListType, ".schema_uris")
-                properties.set_prop("schemas", AAZListType, ".schemas")
-                properties.set_prop("secondaryContacts", AAZListType, ".secondary_contacts")
+                properties.set_prop("quarantineDownloadStorageAccount", AAZStrType, ".quarantine_download_storage_account")
+                properties.set_prop("quarantineDownloadStorageContainer", AAZStrType, ".quarantine_download_storage_container")
+                properties.set_prop("remoteCloud", AAZStrType, ".remote_cloud", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("status", AAZStrType, ".status")
+                properties.set_prop("subscribers", AAZListType, ".subscribers")
+
+            disabled_flow_types = _builder.get(".properties.disabledFlowTypes")
+            if disabled_flow_types is not None:
+                disabled_flow_types.set_elements(AAZStrType, ".")
 
             flow_types = _builder.get(".properties.flowTypes")
             if flow_types is not None:
@@ -364,28 +313,14 @@ class Create(AAZCommand):
             if policies is not None:
                 policies.set_elements(AAZStrType, ".")
 
-            schema_uris = _builder.get(".properties.schemaUris")
-            if schema_uris is not None:
-                schema_uris.set_elements(AAZStrType, ".")
+            subscribers = _builder.get(".properties.subscribers")
+            if subscribers is not None:
+                subscribers.set_elements(AAZObjectType, ".")
 
-            schemas = _builder.get(".properties.schemas")
-            if schemas is not None:
-                schemas.set_elements(AAZObjectType, ".")
-
-            _elements = _builder.get(".properties.schemas[]")
+            _elements = _builder.get(".properties.subscribers[]")
             if _elements is not None:
-                _elements.set_prop("connectionId", AAZStrType, ".connection_id")
-                _elements.set_prop("content", AAZStrType, ".content")
-                _elements.set_prop("direction", AAZStrType, ".direction")
-                _elements.set_prop("id", AAZStrType, ".id")
-                _elements.set_prop("name", AAZStrType, ".name")
-                _elements.set_prop("schemaType", AAZStrType, ".schema_type")
-                _elements.set_prop("schemaUri", AAZStrType, ".schema_uri")
-                _elements.set_prop("status", AAZStrType, ".status")
-
-            secondary_contacts = _builder.get(".properties.secondaryContacts")
-            if secondary_contacts is not None:
-                secondary_contacts.set_elements(AAZStrType, ".")
+                _elements.set_prop("email", AAZStrType, ".email")
+                _elements.set_prop("notifications", AAZIntType, ".notifications")
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -426,6 +361,7 @@ class Create(AAZCommand):
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
+            _CreateHelper._build_schema_system_data_read(_schema_on_200_201.system_data)
             _schema_on_200_201.tags = AAZDictType()
             _schema_on_200_201.type = AAZStrType(
                 flags={"read_only": True},
@@ -463,116 +399,54 @@ class Create(AAZCommand):
             )
 
             properties = cls._schema_on_200_201.properties
-            properties.approver = AAZStrType(
+            properties.connections = AAZListType(
                 flags={"read_only": True},
             )
-            properties.date_submitted = AAZStrType(
-                serialized_name="dateSubmitted",
-                flags={"read_only": True},
+            properties.disabled_flow_types = AAZListType(
+                serialized_name="disabledFlowTypes",
             )
-            properties.direction = AAZStrType()
+            properties.display_name = AAZStrType(
+                serialized_name="displayName",
+            )
             properties.flow_types = AAZListType(
                 serialized_name="flowTypes",
             )
-            properties.force_disabled_status = AAZListType(
-                serialized_name="forceDisabledStatus",
-                flags={"read_only": True},
-            )
-            properties.justification = AAZStrType()
-            properties.link_status = AAZStrType(
-                serialized_name="linkStatus",
-                flags={"read_only": True},
-            )
-            properties.linked_connection_id = AAZStrType(
-                serialized_name="linkedConnectionId",
-                flags={"read_only": True},
-            )
-            properties.pin = AAZStrType()
-            properties.pipeline = AAZStrType(
-                flags={"required": True},
-            )
             properties.policies = AAZListType()
-            properties.primary_contact = AAZStrType(
-                serialized_name="primaryContact",
-            )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
-            properties.remote_subscription_id = AAZStrType(
-                serialized_name="remoteSubscriptionId",
+            properties.quarantine_download_storage_account = AAZStrType(
+                serialized_name="quarantineDownloadStorageAccount",
             )
-            properties.requirement_id = AAZStrType(
-                serialized_name="requirementId",
+            properties.quarantine_download_storage_container = AAZStrType(
+                serialized_name="quarantineDownloadStorageContainer",
             )
-            properties.schema_uris = AAZListType(
-                serialized_name="schemaUris",
+            properties.remote_cloud = AAZStrType(
+                serialized_name="remoteCloud",
+                flags={"required": True},
             )
-            properties.schemas = AAZListType()
-            properties.secondary_contacts = AAZListType(
-                serialized_name="secondaryContacts",
-            )
-            properties.status = AAZStrType(
-                flags={"read_only": True},
-            )
-            properties.status_reason = AAZStrType(
-                serialized_name="statusReason",
-                flags={"read_only": True},
-            )
+            properties.status = AAZStrType()
+            properties.subscribers = AAZListType()
+
+            connections = cls._schema_on_200_201.properties.connections
+            connections.Element = AAZFreeFormDictType()
+
+            disabled_flow_types = cls._schema_on_200_201.properties.disabled_flow_types
+            disabled_flow_types.Element = AAZStrType()
 
             flow_types = cls._schema_on_200_201.properties.flow_types
             flow_types.Element = AAZStrType()
 
-            force_disabled_status = cls._schema_on_200_201.properties.force_disabled_status
-            force_disabled_status.Element = AAZStrType()
-
             policies = cls._schema_on_200_201.properties.policies
             policies.Element = AAZStrType()
 
-            schema_uris = cls._schema_on_200_201.properties.schema_uris
-            schema_uris.Element = AAZStrType()
+            subscribers = cls._schema_on_200_201.properties.subscribers
+            subscribers.Element = AAZObjectType()
 
-            schemas = cls._schema_on_200_201.properties.schemas
-            schemas.Element = AAZObjectType()
-
-            _element = cls._schema_on_200_201.properties.schemas.Element
-            _element.connection_id = AAZStrType(
-                serialized_name="connectionId",
-            )
-            _element.content = AAZStrType()
-            _element.direction = AAZStrType()
-            _element.id = AAZStrType()
-            _element.name = AAZStrType()
-            _element.schema_type = AAZStrType(
-                serialized_name="schemaType",
-            )
-            _element.schema_uri = AAZStrType(
-                serialized_name="schemaUri",
-            )
-            _element.status = AAZStrType()
-
-            secondary_contacts = cls._schema_on_200_201.properties.secondary_contacts
-            secondary_contacts.Element = AAZStrType()
-
-            system_data = cls._schema_on_200_201.system_data
-            system_data.created_at = AAZStrType(
-                serialized_name="createdAt",
-            )
-            system_data.created_by = AAZStrType(
-                serialized_name="createdBy",
-            )
-            system_data.created_by_type = AAZStrType(
-                serialized_name="createdByType",
-            )
-            system_data.last_modified_at = AAZStrType(
-                serialized_name="lastModifiedAt",
-            )
-            system_data.last_modified_by = AAZStrType(
-                serialized_name="lastModifiedBy",
-            )
-            system_data.last_modified_by_type = AAZStrType(
-                serialized_name="lastModifiedByType",
-            )
+            _element = cls._schema_on_200_201.properties.subscribers.Element
+            _element.email = AAZStrType()
+            _element.notifications = AAZIntType()
 
             tags = cls._schema_on_200_201.tags
             tags.Element = AAZStrType()
@@ -582,6 +456,50 @@ class Create(AAZCommand):
 
 class _CreateHelper:
     """Helper class for Create"""
+
+    _schema_system_data_read = None
+
+    @classmethod
+    def _build_schema_system_data_read(cls, _schema):
+        if cls._schema_system_data_read is not None:
+            _schema.created_at = cls._schema_system_data_read.created_at
+            _schema.created_by = cls._schema_system_data_read.created_by
+            _schema.created_by_type = cls._schema_system_data_read.created_by_type
+            _schema.last_modified_at = cls._schema_system_data_read.last_modified_at
+            _schema.last_modified_by = cls._schema_system_data_read.last_modified_by
+            _schema.last_modified_by_type = cls._schema_system_data_read.last_modified_by_type
+            return
+
+        cls._schema_system_data_read = _schema_system_data_read = AAZObjectType(
+            flags={"read_only": True}
+        )
+
+        system_data_read = _schema_system_data_read
+        system_data_read.created_at = AAZStrType(
+            serialized_name="createdAt",
+        )
+        system_data_read.created_by = AAZStrType(
+            serialized_name="createdBy",
+        )
+        system_data_read.created_by_type = AAZStrType(
+            serialized_name="createdByType",
+        )
+        system_data_read.last_modified_at = AAZStrType(
+            serialized_name="lastModifiedAt",
+        )
+        system_data_read.last_modified_by = AAZStrType(
+            serialized_name="lastModifiedBy",
+        )
+        system_data_read.last_modified_by_type = AAZStrType(
+            serialized_name="lastModifiedByType",
+        )
+
+        _schema.created_at = cls._schema_system_data_read.created_at
+        _schema.created_by = cls._schema_system_data_read.created_by
+        _schema.created_by_type = cls._schema_system_data_read.created_by_type
+        _schema.last_modified_at = cls._schema_system_data_read.last_modified_at
+        _schema.last_modified_by = cls._schema_system_data_read.last_modified_by
+        _schema.last_modified_by_type = cls._schema_system_data_read.last_modified_by_type
 
 
 __all__ = ["Create"]

@@ -15,13 +15,16 @@ from azure.cli.core.aaz import *
     "azure-data-transfer connection list",
 )
 class List(AAZCommand):
-    """List connections in a subscription.
+    """List connections in a resource group.
+
+    :example: Gets connections in a resource group
+        az azure-data-transfer connection list --resource-group testRG
     """
 
     _aaz_info = {
-        "version": "2024-09-27",
+        "version": "2025-05-21",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/Microsoft.AzureDataTransfer/connections", "2024-09-27"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.azuredatatransfer/connections", "2025-05-21"],
         ]
     }
 
@@ -109,7 +112,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-09-27",
+                    "api-version", "2025-05-21",
                     required=True,
                 ),
             }
@@ -145,7 +148,9 @@ class List(AAZCommand):
             _schema_on_200.next_link = AAZStrType(
                 serialized_name="nextLink",
             )
-            _schema_on_200.value = AAZListType()
+            _schema_on_200.value = AAZListType(
+                flags={"required": True},
+            )
 
             value = cls._schema_on_200.value
             value.Element = AAZObjectType()
@@ -154,6 +159,7 @@ class List(AAZCommand):
             _element.id = AAZStrType(
                 flags={"read_only": True},
             )
+            _element.identity = AAZIdentityObjectType()
             _element.location = AAZStrType(
                 flags={"required": True},
             )
@@ -170,6 +176,37 @@ class List(AAZCommand):
                 flags={"read_only": True},
             )
 
+            identity = cls._schema_on_200.value.Element.identity
+            identity.principal_id = AAZStrType(
+                serialized_name="principalId",
+                flags={"read_only": True},
+            )
+            identity.tenant_id = AAZStrType(
+                serialized_name="tenantId",
+                flags={"read_only": True},
+            )
+            identity.type = AAZStrType(
+                flags={"required": True},
+            )
+            identity.user_assigned_identities = AAZDictType(
+                serialized_name="userAssignedIdentities",
+            )
+
+            user_assigned_identities = cls._schema_on_200.value.Element.identity.user_assigned_identities
+            user_assigned_identities.Element = AAZObjectType(
+                nullable=True,
+            )
+
+            _element = cls._schema_on_200.value.Element.identity.user_assigned_identities.Element
+            _element.client_id = AAZStrType(
+                serialized_name="clientId",
+                flags={"read_only": True},
+            )
+            _element.principal_id = AAZStrType(
+                serialized_name="principalId",
+                flags={"read_only": True},
+            )
+
             properties = cls._schema_on_200.value.Element.properties
             properties.approver = AAZStrType(
                 flags={"read_only": True},
@@ -181,6 +218,10 @@ class List(AAZCommand):
             properties.direction = AAZStrType()
             properties.flow_types = AAZListType(
                 serialized_name="flowTypes",
+            )
+            properties.force_disabled_status = AAZListType(
+                serialized_name="forceDisabledStatus",
+                flags={"read_only": True},
             )
             properties.justification = AAZStrType()
             properties.link_status = AAZStrType(
@@ -226,6 +267,9 @@ class List(AAZCommand):
 
             flow_types = cls._schema_on_200.value.Element.properties.flow_types
             flow_types.Element = AAZStrType()
+
+            force_disabled_status = cls._schema_on_200.value.Element.properties.force_disabled_status
+            force_disabled_status.Element = AAZStrType()
 
             policies = cls._schema_on_200.value.Element.properties.policies
             policies.Element = AAZStrType()

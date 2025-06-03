@@ -16,12 +16,15 @@ from azure.cli.core.aaz import *
 )
 class Link(AAZCommand):
     """Links the connection to its pending connection.
+
+    :example: Links the specified connection
+        az azure-data-transfer connection link --resource-group testRG --connection-name receiveConnection --pending-connection-id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/testRG/providers/Microsoft.AzureDataTransfer/connections/sendConnection
     """
 
     _aaz_info = {
-        "version": "2024-09-27",
+        "version": "2025-05-21",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/Microsoft.AzureDataTransfer/connections/{}/link", "2024-09-27"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.azuredatatransfer/connections/{}/link", "2025-05-21"],
         ]
     }
 
@@ -44,7 +47,7 @@ class Link(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.connection_name = AAZStrArg(
             options=["-n", "--name", "--connection-name"],
-            help="The name for the connection that is to be requested.",
+            help="Name of the connection for linking(Receive side)",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
@@ -60,10 +63,10 @@ class Link(AAZCommand):
         # define Arg Group "Connection"
 
         _args_schema = cls._args_schema
-        _args_schema.id = AAZStrArg(
-            options=["--id"],
+        _args_schema.pending_connection_id = AAZStrArg(
+            options=["--id", "--pending-connection-id"],
             arg_group="Connection",
-            help="ID of the connection to be connected.",
+            help="ID of the Send side connection to link",
             required=True,
         )
         _args_schema.status_reason = AAZStrArg(
@@ -154,7 +157,7 @@ class Link(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-09-27",
+                    "api-version", "2025-05-21",
                     required=True,
                 ),
             }
@@ -179,7 +182,7 @@ class Link(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("id", AAZStrType, ".id", typ_kwargs={"flags": {"required": True}})
+            _builder.set_prop("id", AAZStrType, ".pending_connection_id", typ_kwargs={"flags": {"required": True}})
             _builder.set_prop("statusReason", AAZStrType, ".status_reason")
 
             return self.serialize_content(_content_value)
@@ -205,6 +208,7 @@ class Link(AAZCommand):
             _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
+            _schema_on_200.identity = AAZIdentityObjectType()
             _schema_on_200.location = AAZStrType(
                 flags={"required": True},
             )
@@ -221,6 +225,37 @@ class Link(AAZCommand):
                 flags={"read_only": True},
             )
 
+            identity = cls._schema_on_200.identity
+            identity.principal_id = AAZStrType(
+                serialized_name="principalId",
+                flags={"read_only": True},
+            )
+            identity.tenant_id = AAZStrType(
+                serialized_name="tenantId",
+                flags={"read_only": True},
+            )
+            identity.type = AAZStrType(
+                flags={"required": True},
+            )
+            identity.user_assigned_identities = AAZDictType(
+                serialized_name="userAssignedIdentities",
+            )
+
+            user_assigned_identities = cls._schema_on_200.identity.user_assigned_identities
+            user_assigned_identities.Element = AAZObjectType(
+                nullable=True,
+            )
+
+            _element = cls._schema_on_200.identity.user_assigned_identities.Element
+            _element.client_id = AAZStrType(
+                serialized_name="clientId",
+                flags={"read_only": True},
+            )
+            _element.principal_id = AAZStrType(
+                serialized_name="principalId",
+                flags={"read_only": True},
+            )
+
             properties = cls._schema_on_200.properties
             properties.approver = AAZStrType(
                 flags={"read_only": True},
@@ -232,6 +267,10 @@ class Link(AAZCommand):
             properties.direction = AAZStrType()
             properties.flow_types = AAZListType(
                 serialized_name="flowTypes",
+            )
+            properties.force_disabled_status = AAZListType(
+                serialized_name="forceDisabledStatus",
+                flags={"read_only": True},
             )
             properties.justification = AAZStrType()
             properties.link_status = AAZStrType(
@@ -277,6 +316,9 @@ class Link(AAZCommand):
 
             flow_types = cls._schema_on_200.properties.flow_types
             flow_types.Element = AAZStrType()
+
+            force_disabled_status = cls._schema_on_200.properties.force_disabled_status
+            force_disabled_status.Element = AAZStrType()
 
             policies = cls._schema_on_200.properties.policies
             policies.Element = AAZStrType()

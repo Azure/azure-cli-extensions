@@ -16,12 +16,15 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get pipeline resource.
+
+    :example: Gets pipeline resource
+        az azure-data-transfer pipeline show --resource-group testRG --pipeline-name testPipeline
     """
 
     _aaz_info = {
-        "version": "2024-09-27",
+        "version": "2025-05-21",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/Microsoft.AzureDataTransfer/pipelines/{}", "2024-09-27"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.azuredatatransfer/pipelines/{}", "2025-05-21"],
         ]
     }
 
@@ -43,7 +46,7 @@ class Show(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.pipeline_name = AAZStrArg(
             options=["-n", "--name", "--pipeline-name"],
-            help="The name for the pipeline that is to be requested.",
+            help="The name for the pipeline to perform the operation on.",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
@@ -122,7 +125,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-09-27",
+                    "api-version", "2025-05-21",
                     required=True,
                 ),
             }
@@ -158,6 +161,7 @@ class Show(AAZCommand):
             _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
+            _schema_on_200.identity = AAZIdentityObjectType()
             _schema_on_200.location = AAZStrType(
                 flags={"required": True},
             )
@@ -175,9 +179,43 @@ class Show(AAZCommand):
                 flags={"read_only": True},
             )
 
+            identity = cls._schema_on_200.identity
+            identity.principal_id = AAZStrType(
+                serialized_name="principalId",
+                flags={"read_only": True},
+            )
+            identity.tenant_id = AAZStrType(
+                serialized_name="tenantId",
+                flags={"read_only": True},
+            )
+            identity.type = AAZStrType(
+                flags={"required": True},
+            )
+            identity.user_assigned_identities = AAZDictType(
+                serialized_name="userAssignedIdentities",
+            )
+
+            user_assigned_identities = cls._schema_on_200.identity.user_assigned_identities
+            user_assigned_identities.Element = AAZObjectType(
+                nullable=True,
+            )
+
+            _element = cls._schema_on_200.identity.user_assigned_identities.Element
+            _element.client_id = AAZStrType(
+                serialized_name="clientId",
+                flags={"read_only": True},
+            )
+            _element.principal_id = AAZStrType(
+                serialized_name="principalId",
+                flags={"read_only": True},
+            )
+
             properties = cls._schema_on_200.properties
             properties.connections = AAZListType(
                 flags={"read_only": True},
+            )
+            properties.disabled_flow_types = AAZListType(
+                serialized_name="disabledFlowTypes",
             )
             properties.display_name = AAZStrType(
                 serialized_name="displayName",
@@ -190,14 +228,24 @@ class Show(AAZCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+            properties.quarantine_download_storage_account = AAZStrType(
+                serialized_name="quarantineDownloadStorageAccount",
+            )
+            properties.quarantine_download_storage_container = AAZStrType(
+                serialized_name="quarantineDownloadStorageContainer",
+            )
             properties.remote_cloud = AAZStrType(
                 serialized_name="remoteCloud",
                 flags={"required": True},
             )
+            properties.status = AAZStrType()
             properties.subscribers = AAZListType()
 
             connections = cls._schema_on_200.properties.connections
             connections.Element = AAZFreeFormDictType()
+
+            disabled_flow_types = cls._schema_on_200.properties.disabled_flow_types
+            disabled_flow_types.Element = AAZStrType()
 
             flow_types = cls._schema_on_200.properties.flow_types
             flow_types.Element = AAZStrType()

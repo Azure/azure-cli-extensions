@@ -15,13 +15,20 @@ from azure.cli.core.aaz import *
     "azure-data-transfer pipeline list",
 )
 class List(AAZCommand):
-    """List pipelines in a resource group.
+    """List Pipeline resource by Subscription or Resource Group
+
+    :example: Gets pipelines in a subscription
+        az azure-data-transfer pipeline list
+
+    :example: Gets pipelines in a resource group
+        az azure-data-transfer pipeline list --resource-group testRG
     """
 
     _aaz_info = {
-        "version": "2024-09-27",
+        "version": "2025-05-21",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/Microsoft.AzureDataTransfer/pipelines", "2024-09-27"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.azuredatatransfer/pipelines", "2025-05-21"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.azuredatatransfer/pipelines", "2025-05-21"],
         ]
     }
 
@@ -43,13 +50,18 @@ class List(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            required=True,
+            help="Specifies the name of the resource group to list the pipelines",
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.PipelinesListByResourceGroup(ctx=self.ctx)()
+        condition_0 = has_value(self.ctx.args.resource_group) and has_value(self.ctx.subscription_id)
+        condition_1 = has_value(self.ctx.subscription_id) and has_value(self.ctx.args.resource_group) is not True
+        if condition_0:
+            self.PipelinesListByResourceGroup(ctx=self.ctx)()
+        if condition_1:
+            self.PipelinesListBySubscription(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -109,7 +121,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-09-27",
+                    "api-version", "2025-05-21",
                     required=True,
                 ),
             }
@@ -145,7 +157,9 @@ class List(AAZCommand):
             _schema_on_200.next_link = AAZStrType(
                 serialized_name="nextLink",
             )
-            _schema_on_200.value = AAZListType()
+            _schema_on_200.value = AAZListType(
+                flags={"required": True},
+            )
 
             value = cls._schema_on_200.value
             value.Element = AAZObjectType()
@@ -154,6 +168,7 @@ class List(AAZCommand):
             _element.id = AAZStrType(
                 flags={"read_only": True},
             )
+            _element.identity = AAZIdentityObjectType()
             _element.location = AAZStrType(
                 flags={"required": True},
             )
@@ -171,9 +186,43 @@ class List(AAZCommand):
                 flags={"read_only": True},
             )
 
+            identity = cls._schema_on_200.value.Element.identity
+            identity.principal_id = AAZStrType(
+                serialized_name="principalId",
+                flags={"read_only": True},
+            )
+            identity.tenant_id = AAZStrType(
+                serialized_name="tenantId",
+                flags={"read_only": True},
+            )
+            identity.type = AAZStrType(
+                flags={"required": True},
+            )
+            identity.user_assigned_identities = AAZDictType(
+                serialized_name="userAssignedIdentities",
+            )
+
+            user_assigned_identities = cls._schema_on_200.value.Element.identity.user_assigned_identities
+            user_assigned_identities.Element = AAZObjectType(
+                nullable=True,
+            )
+
+            _element = cls._schema_on_200.value.Element.identity.user_assigned_identities.Element
+            _element.client_id = AAZStrType(
+                serialized_name="clientId",
+                flags={"read_only": True},
+            )
+            _element.principal_id = AAZStrType(
+                serialized_name="principalId",
+                flags={"read_only": True},
+            )
+
             properties = cls._schema_on_200.value.Element.properties
             properties.connections = AAZListType(
                 flags={"read_only": True},
+            )
+            properties.disabled_flow_types = AAZListType(
+                serialized_name="disabledFlowTypes",
             )
             properties.display_name = AAZStrType(
                 serialized_name="displayName",
@@ -186,14 +235,215 @@ class List(AAZCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+            properties.quarantine_download_storage_account = AAZStrType(
+                serialized_name="quarantineDownloadStorageAccount",
+            )
+            properties.quarantine_download_storage_container = AAZStrType(
+                serialized_name="quarantineDownloadStorageContainer",
+            )
             properties.remote_cloud = AAZStrType(
                 serialized_name="remoteCloud",
                 flags={"required": True},
             )
+            properties.status = AAZStrType()
             properties.subscribers = AAZListType()
 
             connections = cls._schema_on_200.value.Element.properties.connections
             connections.Element = AAZFreeFormDictType()
+
+            disabled_flow_types = cls._schema_on_200.value.Element.properties.disabled_flow_types
+            disabled_flow_types.Element = AAZStrType()
+
+            flow_types = cls._schema_on_200.value.Element.properties.flow_types
+            flow_types.Element = AAZStrType()
+
+            policies = cls._schema_on_200.value.Element.properties.policies
+            policies.Element = AAZStrType()
+
+            subscribers = cls._schema_on_200.value.Element.properties.subscribers
+            subscribers.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.properties.subscribers.Element
+            _element.email = AAZStrType()
+            _element.notifications = AAZIntType()
+
+            tags = cls._schema_on_200.value.Element.tags
+            tags.Element = AAZStrType()
+
+            return cls._schema_on_200
+
+    class PipelinesListBySubscription(AAZHttpOperation):
+        CLIENT_TYPE = "MgmtClient"
+
+        def __call__(self, *args, **kwargs):
+            request = self.make_request()
+            session = self.client.send_request(request=request, stream=False, **kwargs)
+            if session.http_response.status_code in [200]:
+                return self.on_200(session)
+
+            return self.on_error(session.http_response)
+
+        @property
+        def url(self):
+            return self.client.format_url(
+                "/subscriptions/{subscriptionId}/providers/Microsoft.AzureDataTransfer/pipelines",
+                **self.url_parameters
+            )
+
+        @property
+        def method(self):
+            return "GET"
+
+        @property
+        def error_format(self):
+            return "MgmtErrorFormat"
+
+        @property
+        def url_parameters(self):
+            parameters = {
+                **self.serialize_url_param(
+                    "subscriptionId", self.ctx.subscription_id,
+                    required=True,
+                ),
+            }
+            return parameters
+
+        @property
+        def query_parameters(self):
+            parameters = {
+                **self.serialize_query_param(
+                    "api-version", "2025-05-21",
+                    required=True,
+                ),
+            }
+            return parameters
+
+        @property
+        def header_parameters(self):
+            parameters = {
+                **self.serialize_header_param(
+                    "Accept", "application/json",
+                ),
+            }
+            return parameters
+
+        def on_200(self, session):
+            data = self.deserialize_http_content(session)
+            self.ctx.set_var(
+                "instance",
+                data,
+                schema_builder=self._build_schema_on_200
+            )
+
+        _schema_on_200 = None
+
+        @classmethod
+        def _build_schema_on_200(cls):
+            if cls._schema_on_200 is not None:
+                return cls._schema_on_200
+
+            cls._schema_on_200 = AAZObjectType()
+
+            _schema_on_200 = cls._schema_on_200
+            _schema_on_200.next_link = AAZStrType(
+                serialized_name="nextLink",
+            )
+            _schema_on_200.value = AAZListType(
+                flags={"required": True},
+            )
+
+            value = cls._schema_on_200.value
+            value.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element
+            _element.id = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.identity = AAZIdentityObjectType()
+            _element.location = AAZStrType(
+                flags={"required": True},
+            )
+            _element.name = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.properties = AAZObjectType()
+            _element.system_data = AAZObjectType(
+                serialized_name="systemData",
+                flags={"read_only": True},
+            )
+            _ListHelper._build_schema_system_data_read(_element.system_data)
+            _element.tags = AAZDictType()
+            _element.type = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            identity = cls._schema_on_200.value.Element.identity
+            identity.principal_id = AAZStrType(
+                serialized_name="principalId",
+                flags={"read_only": True},
+            )
+            identity.tenant_id = AAZStrType(
+                serialized_name="tenantId",
+                flags={"read_only": True},
+            )
+            identity.type = AAZStrType(
+                flags={"required": True},
+            )
+            identity.user_assigned_identities = AAZDictType(
+                serialized_name="userAssignedIdentities",
+            )
+
+            user_assigned_identities = cls._schema_on_200.value.Element.identity.user_assigned_identities
+            user_assigned_identities.Element = AAZObjectType(
+                nullable=True,
+            )
+
+            _element = cls._schema_on_200.value.Element.identity.user_assigned_identities.Element
+            _element.client_id = AAZStrType(
+                serialized_name="clientId",
+                flags={"read_only": True},
+            )
+            _element.principal_id = AAZStrType(
+                serialized_name="principalId",
+                flags={"read_only": True},
+            )
+
+            properties = cls._schema_on_200.value.Element.properties
+            properties.connections = AAZListType(
+                flags={"read_only": True},
+            )
+            properties.disabled_flow_types = AAZListType(
+                serialized_name="disabledFlowTypes",
+            )
+            properties.display_name = AAZStrType(
+                serialized_name="displayName",
+            )
+            properties.flow_types = AAZListType(
+                serialized_name="flowTypes",
+            )
+            properties.policies = AAZListType()
+            properties.provisioning_state = AAZStrType(
+                serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+            properties.quarantine_download_storage_account = AAZStrType(
+                serialized_name="quarantineDownloadStorageAccount",
+            )
+            properties.quarantine_download_storage_container = AAZStrType(
+                serialized_name="quarantineDownloadStorageContainer",
+            )
+            properties.remote_cloud = AAZStrType(
+                serialized_name="remoteCloud",
+                flags={"required": True},
+            )
+            properties.status = AAZStrType()
+            properties.subscribers = AAZListType()
+
+            connections = cls._schema_on_200.value.Element.properties.connections
+            connections.Element = AAZFreeFormDictType()
+
+            disabled_flow_types = cls._schema_on_200.value.Element.properties.disabled_flow_types
+            disabled_flow_types.Element = AAZStrType()
 
             flow_types = cls._schema_on_200.value.Element.properties.flow_types
             flow_types.Element = AAZStrType()

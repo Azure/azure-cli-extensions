@@ -15,13 +15,16 @@ from azure.cli.core.aaz import *
     "azure-data-transfer connection list-pending-flow",
 )
 class ListPendingFlow(AAZCommand):
-    """Lists all pending flows for a connection.
+    """List all pending flows for linking to a receive flow[P.[
+
+    :example: Lists a list of pending flows
+        az azure-data-transfer connection list-pending-flow --resource-group testRG --connection-name testConnection
     """
 
     _aaz_info = {
-        "version": "2024-09-27",
+        "version": "2025-05-21",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/Microsoft.AzureDataTransfer/connections/{}/listpendingflows", "2024-09-27"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.azuredatatransfer/connections/{}/listpendingflows", "2025-05-21"],
         ]
     }
 
@@ -44,7 +47,7 @@ class ListPendingFlow(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.connection_name = AAZStrArg(
             options=["--connection-name"],
-            help="The name for the connection that is to be requested.",
+            help="The name for the connection to perform the operation on.",
             required=True,
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9-]{3,64}$",
@@ -123,7 +126,7 @@ class ListPendingFlow(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-09-27",
+                    "api-version", "2025-05-21",
                     required=True,
                 ),
             }
@@ -159,16 +162,24 @@ class ListPendingFlow(AAZCommand):
             _schema_on_200.next_link = AAZStrType(
                 serialized_name="nextLink",
             )
-            _schema_on_200.value = AAZListType()
+            _schema_on_200.value = AAZListType(
+                flags={"required": True},
+            )
 
             value = cls._schema_on_200.value
             value.Element = AAZObjectType()
 
             _element = cls._schema_on_200.value.Element
+            _element.api_flow_options = AAZObjectType(
+                serialized_name="apiFlowOptions",
+            )
             _element.connection = AAZObjectType()
             _element.connection_id = AAZStrType(
                 serialized_name="connectionId",
                 flags={"read_only": True},
+            )
+            _element.consumer_group = AAZStrType(
+                serialized_name="consumerGroup",
             )
             _element.customer_managed_key_vault_uri = AAZStrType(
                 serialized_name="customerManagedKeyVaultUri",
@@ -182,12 +193,19 @@ class ListPendingFlow(AAZCommand):
             _element.destination_endpoints = AAZListType(
                 serialized_name="destinationEndpoints",
             )
+            _element.event_hub_id = AAZStrType(
+                serialized_name="eventHubId",
+            )
             _element.flow_id = AAZStrType(
                 serialized_name="flowId",
                 flags={"read_only": True},
             )
             _element.flow_type = AAZStrType(
                 serialized_name="flowType",
+            )
+            _element.force_disabled_status = AAZListType(
+                serialized_name="forceDisabledStatus",
+                flags={"read_only": True},
             )
             _element.id = AAZStrType(
                 flags={"read_only": True},
@@ -235,6 +253,9 @@ class ListPendingFlow(AAZCommand):
             _element.storage_container_name = AAZStrType(
                 serialized_name="storageContainerName",
             )
+            _element.storage_table_name = AAZStrType(
+                serialized_name="storageTableName",
+            )
             _element.stream_id = AAZStrType(
                 serialized_name="streamId",
             )
@@ -257,6 +278,27 @@ class ListPendingFlow(AAZCommand):
                 flags={"read_only": True},
             )
 
+            api_flow_options = cls._schema_on_200.value.Element.api_flow_options
+            api_flow_options.api_mode = AAZStrType(
+                serialized_name="apiMode",
+            )
+            api_flow_options.audience_override = AAZStrType(
+                serialized_name="audienceOverride",
+            )
+            api_flow_options.cname = AAZStrType()
+            api_flow_options.identity_translation = AAZStrType(
+                serialized_name="identityTranslation",
+            )
+            api_flow_options.remote_calling_mode_client_id = AAZStrType(
+                serialized_name="remoteCallingModeClientId",
+            )
+            api_flow_options.remote_endpoint = AAZStrType(
+                serialized_name="remoteEndpoint",
+            )
+            api_flow_options.sender_client_id = AAZStrType(
+                serialized_name="senderClientId",
+            )
+
             connection = cls._schema_on_200.value.Element.connection
             connection.id = AAZStrType(
                 flags={"required": True},
@@ -272,6 +314,9 @@ class ListPendingFlow(AAZCommand):
 
             destination_endpoints = cls._schema_on_200.value.Element.destination_endpoints
             destination_endpoints.Element = AAZStrType()
+
+            force_disabled_status = cls._schema_on_200.value.Element.force_disabled_status
+            force_disabled_status.Element = AAZStrType()
 
             messaging_options = cls._schema_on_200.value.Element.messaging_options
             messaging_options.billing_tier = AAZStrType(

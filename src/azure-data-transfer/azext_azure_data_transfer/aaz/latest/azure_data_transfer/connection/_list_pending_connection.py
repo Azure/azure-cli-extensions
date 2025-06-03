@@ -15,13 +15,16 @@ from azure.cli.core.aaz import *
     "azure-data-transfer connection list-pending-connection",
 )
 class ListPendingConnection(AAZCommand):
-    """Lists all pending connections for a connection.
+    """Lists all pending remote connections that are linkable to this connection.
+
+    :example: Lists a list of pending connections
+        az azure-data-transfer connection list-pending-connection --resource-group testRG --connection-name testConnection
     """
 
     _aaz_info = {
-        "version": "2024-09-27",
+        "version": "2025-05-21",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/Microsoft.AzureDataTransfer/connections/{}/listpendingconnections", "2024-09-27"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.azuredatatransfer/connections/{}/listpendingconnections", "2025-05-21"],
         ]
     }
 
@@ -44,7 +47,7 @@ class ListPendingConnection(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.connection_name = AAZStrArg(
             options=["-n", "--name", "--connection-name"],
-            help="The name for the connection that is to be requested.",
+            help="The name for the connection to perform the operation on.",
             required=True,
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9-]{3,64}$",
@@ -123,7 +126,7 @@ class ListPendingConnection(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-09-27",
+                    "api-version", "2025-05-21",
                     required=True,
                 ),
             }
@@ -159,7 +162,9 @@ class ListPendingConnection(AAZCommand):
             _schema_on_200.next_link = AAZStrType(
                 serialized_name="nextLink",
             )
-            _schema_on_200.value = AAZListType()
+            _schema_on_200.value = AAZListType(
+                flags={"required": True},
+            )
 
             value = cls._schema_on_200.value
             value.Element = AAZObjectType()
@@ -175,6 +180,10 @@ class ListPendingConnection(AAZCommand):
             _element.direction = AAZStrType()
             _element.flow_types = AAZListType(
                 serialized_name="flowTypes",
+            )
+            _element.force_disabled_status = AAZListType(
+                serialized_name="forceDisabledStatus",
+                flags={"read_only": True},
             )
             _element.id = AAZStrType(
                 flags={"read_only": True},
@@ -241,6 +250,9 @@ class ListPendingConnection(AAZCommand):
 
             flow_types = cls._schema_on_200.value.Element.flow_types
             flow_types.Element = AAZStrType()
+
+            force_disabled_status = cls._schema_on_200.value.Element.force_disabled_status
+            force_disabled_status.Element = AAZStrType()
 
             policies = cls._schema_on_200.value.Element.policies
             policies.Element = AAZStrType()

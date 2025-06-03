@@ -16,12 +16,15 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get connection resource.
+
+    :example: Gets connection resource
+        az azure-data-transfer connection show --resource-group testRG --connection-name testConnection
     """
 
     _aaz_info = {
-        "version": "2024-09-27",
+        "version": "2025-05-21",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.azuredatatransfer/connections/{}", "2024-09-27"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.azuredatatransfer/connections/{}", "2025-05-21"],
         ]
     }
 
@@ -43,7 +46,7 @@ class Show(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.connection_name = AAZStrArg(
             options=["-n", "--name", "--connection-name"],
-            help="The name for the connection that is to be requested.",
+            help="The name for the connection to perform the operation on.",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
@@ -122,7 +125,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-09-27",
+                    "api-version", "2025-05-21",
                     required=True,
                 ),
             }
@@ -158,6 +161,7 @@ class Show(AAZCommand):
             _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
+            _schema_on_200.identity = AAZIdentityObjectType()
             _schema_on_200.location = AAZStrType(
                 flags={"required": True},
             )
@@ -174,6 +178,37 @@ class Show(AAZCommand):
                 flags={"read_only": True},
             )
 
+            identity = cls._schema_on_200.identity
+            identity.principal_id = AAZStrType(
+                serialized_name="principalId",
+                flags={"read_only": True},
+            )
+            identity.tenant_id = AAZStrType(
+                serialized_name="tenantId",
+                flags={"read_only": True},
+            )
+            identity.type = AAZStrType(
+                flags={"required": True},
+            )
+            identity.user_assigned_identities = AAZDictType(
+                serialized_name="userAssignedIdentities",
+            )
+
+            user_assigned_identities = cls._schema_on_200.identity.user_assigned_identities
+            user_assigned_identities.Element = AAZObjectType(
+                nullable=True,
+            )
+
+            _element = cls._schema_on_200.identity.user_assigned_identities.Element
+            _element.client_id = AAZStrType(
+                serialized_name="clientId",
+                flags={"read_only": True},
+            )
+            _element.principal_id = AAZStrType(
+                serialized_name="principalId",
+                flags={"read_only": True},
+            )
+
             properties = cls._schema_on_200.properties
             properties.approver = AAZStrType(
                 flags={"read_only": True},
@@ -185,6 +220,10 @@ class Show(AAZCommand):
             properties.direction = AAZStrType()
             properties.flow_types = AAZListType(
                 serialized_name="flowTypes",
+            )
+            properties.force_disabled_status = AAZListType(
+                serialized_name="forceDisabledStatus",
+                flags={"read_only": True},
             )
             properties.justification = AAZStrType()
             properties.link_status = AAZStrType(
@@ -230,6 +269,9 @@ class Show(AAZCommand):
 
             flow_types = cls._schema_on_200.properties.flow_types
             flow_types.Element = AAZStrType()
+
+            force_disabled_status = cls._schema_on_200.properties.force_disabled_status
+            force_disabled_status.Element = AAZStrType()
 
             policies = cls._schema_on_200.properties.policies
             policies.Element = AAZStrType()

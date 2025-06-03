@@ -16,12 +16,15 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update the flow resource.
+
+    :example: Update the flow
+        az azure-data-transfer connection flow --resource-group testRG --connection testConnection --name testFlow --flow-type Complex
     """
 
     _aaz_info = {
-        "version": "2024-09-27",
+        "version": "2025-05-21",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/Microsoft.AzureDataTransfer/connections/{}/flows/{}", "2024-09-27"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.azuredatatransfer/connections/{}/flows/{}", "2025-05-21"],
         ]
     }
 
@@ -46,7 +49,7 @@ class Update(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.connection_name = AAZStrArg(
             options=["--connection-name"],
-            help="The name for the connection that is to be requested.",
+            help="The name for the connection to perform the operation on.",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
@@ -57,7 +60,7 @@ class Update(AAZCommand):
         )
         _args_schema.flow_name = AAZStrArg(
             options=["-n", "--name", "--flow-name"],
-            help="The name for the flow that is to be onboarded.",
+            help="The name for the flow to perform the operation on.",
             required=True,
             id_part="child_name_1",
             fmt=AAZStrArgFormat(
@@ -76,7 +79,7 @@ class Update(AAZCommand):
         _args_schema.plan = AAZObjectArg(
             options=["--plan"],
             arg_group="Flow",
-            help="Plan for the resource.",
+            help="Details of the resource plan.",
             nullable=True,
         )
         _args_schema.tags = AAZDictArg(
@@ -120,14 +123,20 @@ class Update(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.connection = AAZObjectArg(
-            options=["--connection"],
+        _args_schema.api_flow_options = AAZObjectArg(
+            options=["--api-flow-options"],
             arg_group="Properties",
-            help="The connection associated with this flow",
+            help="The API Flow configuration options for Azure Data Transfer API Flow type.",
             nullable=True,
         )
-        _args_schema.customer_managed_key_vault_uri = AAZStrArg(
-            options=["--customer-managed-key-vault-uri"],
+        _args_schema.consumer_group = AAZStrArg(
+            options=["--consumer-group"],
+            arg_group="Properties",
+            help="Event Hub Consumer Group",
+            nullable=True,
+        )
+        _args_schema.customer_key_vault_uri = AAZStrArg(
+            options=["--customer-key-vault-uri"],
             arg_group="Properties",
             help="The URI to the customer managed key for this flow",
             nullable=True,
@@ -135,12 +144,12 @@ class Update(AAZCommand):
         _args_schema.data_type = AAZStrArg(
             options=["--data-type"],
             arg_group="Properties",
-            help="Transfer Storage Blobs or Tables",
+            help="Type of data to transfer via the flow.",
             nullable=True,
             enum={"Blob": "Blob", "Table": "Table"},
         )
-        _args_schema.destination_endpoint_ports = AAZListArg(
-            options=["--destination-endpoint-ports"],
+        _args_schema.endpoint_ports = AAZListArg(
+            options=["--endpoint-ports"],
             arg_group="Properties",
             help="The destination endpoint ports of the stream",
             nullable=True,
@@ -151,18 +160,18 @@ class Update(AAZCommand):
             help="The destination endpoints of the stream",
             nullable=True,
         )
+        _args_schema.event_hub_id = AAZResourceIdArg(
+            options=["--event-hub-id"],
+            arg_group="Properties",
+            help="Event Hub ID",
+            nullable=True,
+        )
         _args_schema.flow_type = AAZStrArg(
             options=["--flow-type"],
             arg_group="Properties",
             help="The flow type for this flow",
             nullable=True,
-            enum={"BasicFiles": "BasicFiles", "Complex": "Complex", "Data": "Data", "DevSecOps": "DevSecOps", "Messaging": "Messaging", "MicrosoftInternal": "MicrosoftInternal", "Mission": "Mission", "MissionOpaqueXML": "MissionOpaqueXML", "Opaque": "Opaque", "Standard": "Standard", "StreamingVideo": "StreamingVideo", "Unknown": "Unknown"},
-        )
-        _args_schema.key_vault_uri = AAZStrArg(
-            options=["--key-vault-uri"],
-            arg_group="Properties",
-            help="AME, PME, or TORUS only! AKV Chain Containing SAS Token",
-            nullable=True,
+            enum={"API": "API", "BasicFiles": "BasicFiles", "Complex": "Complex", "Data": "Data", "DevSecOps": "DevSecOps", "DiskImages": "DiskImages", "Messaging": "Messaging", "MicrosoftInternal": "MicrosoftInternal", "Mission": "Mission", "MissionOpaqueXML": "MissionOpaqueXML", "Opaque": "Opaque", "Standard": "Standard", "StreamingVideo": "StreamingVideo", "Unknown": "Unknown"},
         )
         _args_schema.messaging_options = AAZObjectArg(
             options=["--messaging-options"],
@@ -174,12 +183,6 @@ class Update(AAZCommand):
             options=["--passphrase"],
             arg_group="Properties",
             help="The passphrase used for SRT streams",
-            nullable=True,
-        )
-        _args_schema.policies = AAZListArg(
-            options=["--policies"],
-            arg_group="Properties",
-            help="The policies for this flow",
             nullable=True,
         )
         _args_schema.schema = AAZObjectArg(
@@ -225,6 +228,12 @@ class Update(AAZCommand):
             help="Storage Container Name",
             nullable=True,
         )
+        _args_schema.storage_table_name = AAZStrArg(
+            options=["--storage-table-name"],
+            arg_group="Properties",
+            help="Storage Table Name",
+            nullable=True,
+        )
         _args_schema.stream_id = AAZStrArg(
             options=["--stream-id"],
             arg_group="Properties",
@@ -245,24 +254,47 @@ class Update(AAZCommand):
             enum={"RTP": "RTP", "SRT": "SRT", "UDP": "UDP"},
         )
 
-        connection = cls._args_schema.connection
-        connection.id = AAZStrArg(
-            options=["id"],
-            help="Id of the connection",
+        api_flow_options = cls._args_schema.api_flow_options
+        api_flow_options.api_mode = AAZStrArg(
+            options=["api-mode"],
+            help="Remote Calling Mode in the Azure Data Transfer API Flow, which describes how the API Flow will be invoked",
+            nullable=True,
+            enum={"Endpoint": "Endpoint", "SDK": "SDK"},
         )
-        connection.name = AAZStrArg(
-            options=["name"],
-            help="Name of the connection",
+        api_flow_options.audience_override = AAZStrArg(
+            options=["audience-override"],
+            help="Optional field to override the audience of the remote endpoint",
             nullable=True,
         )
-        connection.subscription_name = AAZStrArg(
-            options=["subscription-name"],
-            help="Name of the subscription with the connection",
+        api_flow_options.cname = AAZStrArg(
+            options=["cname"],
+            help="Unique CNAME to represent the Azure Data Transfer API Flow instance",
+            nullable=True,
+        )
+        api_flow_options.identity_translation = AAZStrArg(
+            options=["identity-translation"],
+            help="Flag for if Azure Data Transfer API Flow should extract the user token",
+            nullable=True,
+            enum={"ServiceIdentity": "ServiceIdentity", "UserIdentity": "UserIdentity"},
+        )
+        api_flow_options.remote_calling_mode_client_id = AAZStrArg(
+            options=["remote-calling-mode-client-id"],
+            help="Remote stub app registration Client ID",
+            nullable=True,
+        )
+        api_flow_options.remote_endpoint = AAZStrArg(
+            options=["remote-endpoint"],
+            help="Remote host to which communication needs to be made",
+            nullable=True,
+        )
+        api_flow_options.sender_client_id = AAZStrArg(
+            options=["sender-client-id"],
+            help="Sender's app user assigned Manage Identity client ID",
             nullable=True,
         )
 
-        destination_endpoint_ports = cls._args_schema.destination_endpoint_ports
-        destination_endpoint_ports.Element = AAZIntArg(
+        endpoint_ports = cls._args_schema.endpoint_ports
+        endpoint_ports.Element = AAZIntArg(
             nullable=True,
         )
 
@@ -277,11 +309,6 @@ class Update(AAZCommand):
             help="Billing tier for this messaging flow",
             nullable=True,
             enum={"BlobTransport": "BlobTransport", "Premium": "Premium", "Standard": "Standard"},
-        )
-
-        policies = cls._args_schema.policies
-        policies.Element = AAZStrArg(
-            nullable=True,
         )
 
         schema = cls._args_schema.schema
@@ -424,7 +451,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-09-27",
+                    "api-version", "2025-05-21",
                     required=True,
                 ),
             }
@@ -527,7 +554,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-09-27",
+                    "api-version", "2025-05-21",
                     required=True,
                 ),
             }
@@ -600,16 +627,16 @@ class Update(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("connection", AAZObjectType, ".connection")
-                properties.set_prop("customerManagedKeyVaultUri", AAZStrType, ".customer_managed_key_vault_uri")
+                properties.set_prop("apiFlowOptions", AAZObjectType, ".api_flow_options")
+                properties.set_prop("consumerGroup", AAZStrType, ".consumer_group")
+                properties.set_prop("customerManagedKeyVaultUri", AAZStrType, ".customer_key_vault_uri")
                 properties.set_prop("dataType", AAZStrType, ".data_type")
-                properties.set_prop("destinationEndpointPorts", AAZListType, ".destination_endpoint_ports")
+                properties.set_prop("destinationEndpointPorts", AAZListType, ".endpoint_ports")
                 properties.set_prop("destinationEndpoints", AAZListType, ".destination_endpoints")
+                properties.set_prop("eventHubId", AAZStrType, ".event_hub_id")
                 properties.set_prop("flowType", AAZStrType, ".flow_type")
-                properties.set_prop("keyVaultUri", AAZStrType, ".key_vault_uri")
                 properties.set_prop("messagingOptions", AAZObjectType, ".messaging_options")
                 properties.set_prop("passphrase", AAZStrType, ".passphrase")
-                properties.set_prop("policies", AAZListType, ".policies")
                 properties.set_prop("schema", AAZObjectType, ".schema")
                 properties.set_prop("serviceBusQueueId", AAZStrType, ".service_bus_queue_id")
                 properties.set_prop("sourceAddresses", AAZObjectType, ".source_addresses")
@@ -617,15 +644,20 @@ class Update(AAZCommand):
                 properties.set_prop("storageAccountId", AAZStrType, ".storage_account_id")
                 properties.set_prop("storageAccountName", AAZStrType, ".storage_account_name")
                 properties.set_prop("storageContainerName", AAZStrType, ".storage_container_name")
+                properties.set_prop("storageTableName", AAZStrType, ".storage_table_name")
                 properties.set_prop("streamId", AAZStrType, ".stream_id")
                 properties.set_prop("streamLatency", AAZIntType, ".stream_latency")
                 properties.set_prop("streamProtocol", AAZStrType, ".stream_protocol")
 
-            connection = _builder.get(".properties.connection")
-            if connection is not None:
-                connection.set_prop("id", AAZStrType, ".id", typ_kwargs={"flags": {"required": True}})
-                connection.set_prop("name", AAZStrType, ".name")
-                connection.set_prop("subscriptionName", AAZStrType, ".subscription_name")
+            api_flow_options = _builder.get(".properties.apiFlowOptions")
+            if api_flow_options is not None:
+                api_flow_options.set_prop("apiMode", AAZStrType, ".api_mode")
+                api_flow_options.set_prop("audienceOverride", AAZStrType, ".audience_override")
+                api_flow_options.set_prop("cname", AAZStrType, ".cname")
+                api_flow_options.set_prop("identityTranslation", AAZStrType, ".identity_translation")
+                api_flow_options.set_prop("remoteCallingModeClientId", AAZStrType, ".remote_calling_mode_client_id")
+                api_flow_options.set_prop("remoteEndpoint", AAZStrType, ".remote_endpoint")
+                api_flow_options.set_prop("senderClientId", AAZStrType, ".sender_client_id")
 
             destination_endpoint_ports = _builder.get(".properties.destinationEndpointPorts")
             if destination_endpoint_ports is not None:
@@ -638,10 +670,6 @@ class Update(AAZCommand):
             messaging_options = _builder.get(".properties.messagingOptions")
             if messaging_options is not None:
                 messaging_options.set_prop("billingTier", AAZStrType, ".billing_tier")
-
-            policies = _builder.get(".properties.policies")
-            if policies is not None:
-                policies.set_elements(AAZStrType, ".")
 
             schema = _builder.get(".properties.schema")
             if schema is not None:
@@ -737,7 +765,9 @@ class _UpdateHelper:
         )
 
         user_assigned_identities = _schema_flow_read.identity.user_assigned_identities
-        user_assigned_identities.Element = AAZObjectType()
+        user_assigned_identities.Element = AAZObjectType(
+            nullable=True,
+        )
 
         _element = _schema_flow_read.identity.user_assigned_identities.Element
         _element.client_id = AAZStrType(
@@ -765,7 +795,13 @@ class _UpdateHelper:
         plan.version = AAZStrType()
 
         properties = _schema_flow_read.properties
+        properties.api_flow_options = AAZObjectType(
+            serialized_name="apiFlowOptions",
+        )
         properties.connection = AAZObjectType()
+        properties.consumer_group = AAZStrType(
+            serialized_name="consumerGroup",
+        )
         properties.customer_managed_key_vault_uri = AAZStrType(
             serialized_name="customerManagedKeyVaultUri",
         )
@@ -778,12 +814,19 @@ class _UpdateHelper:
         properties.destination_endpoints = AAZListType(
             serialized_name="destinationEndpoints",
         )
+        properties.event_hub_id = AAZStrType(
+            serialized_name="eventHubId",
+        )
         properties.flow_id = AAZStrType(
             serialized_name="flowId",
             flags={"read_only": True},
         )
         properties.flow_type = AAZStrType(
             serialized_name="flowType",
+        )
+        properties.force_disabled_status = AAZListType(
+            serialized_name="forceDisabledStatus",
+            flags={"read_only": True},
         )
         properties.key_vault_uri = AAZStrType(
             serialized_name="keyVaultUri",
@@ -822,6 +865,9 @@ class _UpdateHelper:
         properties.storage_container_name = AAZStrType(
             serialized_name="storageContainerName",
         )
+        properties.storage_table_name = AAZStrType(
+            serialized_name="storageTableName",
+        )
         properties.stream_id = AAZStrType(
             serialized_name="streamId",
         )
@@ -830,6 +876,27 @@ class _UpdateHelper:
         )
         properties.stream_protocol = AAZStrType(
             serialized_name="streamProtocol",
+        )
+
+        api_flow_options = _schema_flow_read.properties.api_flow_options
+        api_flow_options.api_mode = AAZStrType(
+            serialized_name="apiMode",
+        )
+        api_flow_options.audience_override = AAZStrType(
+            serialized_name="audienceOverride",
+        )
+        api_flow_options.cname = AAZStrType()
+        api_flow_options.identity_translation = AAZStrType(
+            serialized_name="identityTranslation",
+        )
+        api_flow_options.remote_calling_mode_client_id = AAZStrType(
+            serialized_name="remoteCallingModeClientId",
+        )
+        api_flow_options.remote_endpoint = AAZStrType(
+            serialized_name="remoteEndpoint",
+        )
+        api_flow_options.sender_client_id = AAZStrType(
+            serialized_name="senderClientId",
         )
 
         connection = _schema_flow_read.properties.connection
@@ -847,6 +914,9 @@ class _UpdateHelper:
 
         destination_endpoints = _schema_flow_read.properties.destination_endpoints
         destination_endpoints.Element = AAZStrType()
+
+        force_disabled_status = _schema_flow_read.properties.force_disabled_status
+        force_disabled_status.Element = AAZStrType()
 
         messaging_options = _schema_flow_read.properties.messaging_options
         messaging_options.billing_tier = AAZStrType(

@@ -17,12 +17,15 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete the flow resource.
+
+    :example: Deletes the flow resource
+        az azure-data-transfer connection flow delete --resource-group testRG --connection-name testConnection --flow-name testFlow
     """
 
     _aaz_info = {
-        "version": "2024-09-27",
+        "version": "2025-05-21",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/Microsoft.AzureDataTransfer/connections/{}/flows/{}", "2024-09-27"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.azuredatatransfer/connections/{}/flows/{}", "2025-05-21"],
         ]
     }
 
@@ -45,7 +48,7 @@ class Delete(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.connection_name = AAZStrArg(
             options=["--connection-name"],
-            help="The name for the connection that is to be requested.",
+            help="The name for the connection to perform the operation on.",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
@@ -56,7 +59,7 @@ class Delete(AAZCommand):
         )
         _args_schema.flow_name = AAZStrArg(
             options=["-n", "--name", "--flow-name"],
-            help="The name for the flow that is to be onboarded.",
+            help="The name for the flow to perform the operation on.",
             required=True,
             id_part="child_name_1",
             fmt=AAZStrArgFormat(
@@ -160,7 +163,7 @@ class Delete(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-09-27",
+                    "api-version", "2025-05-21",
                     required=True,
                 ),
             }

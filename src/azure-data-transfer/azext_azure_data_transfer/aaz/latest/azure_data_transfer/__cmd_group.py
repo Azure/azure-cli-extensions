@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "azure-data-transfer",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Azure data transfer commandlets
+    """Azure data transfer commands
     """
     pass
 

@@ -16,12 +16,15 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update the connection resource.
+
+    :example: Update the given connection
+        az azure-data-transfer connection update --name connectionName --resourceGroup testRG --tags key1=value1 key2=value2
     """
 
     _aaz_info = {
-        "version": "2024-09-27",
+        "version": "2025-05-21",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/Microsoft.AzureDataTransfer/connections/{}", "2024-09-27"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.azuredatatransfer/connections/{}", "2025-05-21"],
         ]
     }
 
@@ -46,7 +49,7 @@ class Update(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.connection_name = AAZStrArg(
             options=["-n", "--name", "--connection-name"],
-            help="The name for the connection that is to be requested.",
+            help="The name for the connection to perform the operation on.",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
@@ -74,152 +77,9 @@ class Update(AAZCommand):
             nullable=True,
         )
 
+        # define Arg Group "Identity"
+
         # define Arg Group "Properties"
-
-        _args_schema = cls._args_schema
-        _args_schema.direction = AAZStrArg(
-            options=["--direction"],
-            arg_group="Properties",
-            help="Direction of data movement",
-            nullable=True,
-            enum={"Receive": "Receive", "Send": "Send"},
-        )
-        _args_schema.flow_types = AAZListArg(
-            options=["--flow-types"],
-            arg_group="Properties",
-            help="The flow types being requested for this connection",
-            nullable=True,
-        )
-        _args_schema.justification = AAZStrArg(
-            options=["--justification"],
-            arg_group="Properties",
-            help="Justification for the connection request",
-            nullable=True,
-        )
-        _args_schema.pin = AAZStrArg(
-            options=["--pin"],
-            arg_group="Properties",
-            help="PIN to link requests together",
-            nullable=True,
-        )
-        _args_schema.pipeline = AAZStrArg(
-            options=["--pipeline"],
-            arg_group="Properties",
-            help="Pipeline to use to transfer data",
-        )
-        _args_schema.policies = AAZListArg(
-            options=["--policies"],
-            arg_group="Properties",
-            help="The policies for this connection",
-            nullable=True,
-        )
-        _args_schema.primary_contact = AAZStrArg(
-            options=["--primary-contact"],
-            arg_group="Properties",
-            help="The primary contact for this connection request",
-            nullable=True,
-        )
-        _args_schema.remote_subscription_id = AAZStrArg(
-            options=["--remote-subscription-id"],
-            arg_group="Properties",
-            help="Subscription ID to link cloud subscriptions together",
-            nullable=True,
-        )
-        _args_schema.requirement_id = AAZStrArg(
-            options=["--requirement-id"],
-            arg_group="Properties",
-            help="Requirement ID of the connection",
-            nullable=True,
-        )
-        _args_schema.schema_uris = AAZListArg(
-            options=["--schema-uris"],
-            arg_group="Properties",
-            help="The schema URIs for this connection",
-            nullable=True,
-        )
-        _args_schema.schemas = AAZListArg(
-            options=["--schemas"],
-            arg_group="Properties",
-            help="The schemas for this connection",
-            nullable=True,
-        )
-        _args_schema.secondary_contacts = AAZListArg(
-            options=["--secondary-contacts"],
-            arg_group="Properties",
-            help="The secondary contacts for this connection request",
-            nullable=True,
-        )
-
-        flow_types = cls._args_schema.flow_types
-        flow_types.Element = AAZStrArg(
-            nullable=True,
-            enum={"BasicFiles": "BasicFiles", "Complex": "Complex", "Data": "Data", "DevSecOps": "DevSecOps", "Messaging": "Messaging", "MicrosoftInternal": "MicrosoftInternal", "Mission": "Mission", "MissionOpaqueXML": "MissionOpaqueXML", "Opaque": "Opaque", "Standard": "Standard", "StreamingVideo": "StreamingVideo", "Unknown": "Unknown"},
-        )
-
-        policies = cls._args_schema.policies
-        policies.Element = AAZStrArg(
-            nullable=True,
-        )
-
-        schema_uris = cls._args_schema.schema_uris
-        schema_uris.Element = AAZStrArg(
-            nullable=True,
-        )
-
-        schemas = cls._args_schema.schemas
-        schemas.Element = AAZObjectArg(
-            nullable=True,
-        )
-
-        _element = cls._args_schema.schemas.Element
-        _element.connection_id = AAZStrArg(
-            options=["connection-id"],
-            help="Connection ID associated with this schema",
-            nullable=True,
-        )
-        _element.content = AAZStrArg(
-            options=["content"],
-            help="Content of the schema",
-            nullable=True,
-        )
-        _element.direction = AAZStrArg(
-            options=["direction"],
-            help="The direction of the schema.",
-            nullable=True,
-            enum={"Receive": "Receive", "Send": "Send"},
-        )
-        _element.id = AAZStrArg(
-            options=["id"],
-            help="ID associated with this schema",
-            nullable=True,
-        )
-        _element.name = AAZStrArg(
-            options=["name"],
-            help="Name of the schema",
-            nullable=True,
-        )
-        _element.schema_type = AAZStrArg(
-            options=["schema-type"],
-            help="The Schema Type",
-            nullable=True,
-            enum={"Xsd": "Xsd", "Zip": "Zip"},
-        )
-        _element.schema_uri = AAZStrArg(
-            options=["schema-uri"],
-            help="Uri containing SAS token for the zipped schema",
-            nullable=True,
-        )
-        _element.status = AAZStrArg(
-            options=["status"],
-            help="Status of the schema",
-            nullable=True,
-            enum={"Approved": "Approved", "New": "New"},
-        )
-
-        secondary_contacts = cls._args_schema.secondary_contacts
-        secondary_contacts.Element = AAZStrArg(
-            nullable=True,
-        )
         return cls._args_schema
 
     def _execute_operations(self):
@@ -300,7 +160,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-09-27",
+                    "api-version", "2025-05-21",
                     required=True,
                 ),
             }
@@ -371,7 +231,7 @@ class Update(AAZCommand):
 
         @property
         def method(self):
-            return "PUT"
+            return "PATCH"
 
         @property
         def error_format(self):
@@ -399,7 +259,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-09-27",
+                    "api-version", "2025-05-21",
                     required=True,
                 ),
             }
@@ -457,54 +317,9 @@ class Update(AAZCommand):
                 value=instance,
                 typ=AAZObjectType
             )
+            _builder.set_prop("identity", AAZIdentityObjectType)
             _builder.set_prop("properties", AAZObjectType)
             _builder.set_prop("tags", AAZDictType, ".tags")
-
-            properties = _builder.get(".properties")
-            if properties is not None:
-                properties.set_prop("direction", AAZStrType, ".direction")
-                properties.set_prop("flowTypes", AAZListType, ".flow_types")
-                properties.set_prop("justification", AAZStrType, ".justification")
-                properties.set_prop("pin", AAZStrType, ".pin")
-                properties.set_prop("pipeline", AAZStrType, ".pipeline", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("policies", AAZListType, ".policies")
-                properties.set_prop("primaryContact", AAZStrType, ".primary_contact")
-                properties.set_prop("remoteSubscriptionId", AAZStrType, ".remote_subscription_id")
-                properties.set_prop("requirementId", AAZStrType, ".requirement_id")
-                properties.set_prop("schemaUris", AAZListType, ".schema_uris")
-                properties.set_prop("schemas", AAZListType, ".schemas")
-                properties.set_prop("secondaryContacts", AAZListType, ".secondary_contacts")
-
-            flow_types = _builder.get(".properties.flowTypes")
-            if flow_types is not None:
-                flow_types.set_elements(AAZStrType, ".")
-
-            policies = _builder.get(".properties.policies")
-            if policies is not None:
-                policies.set_elements(AAZStrType, ".")
-
-            schema_uris = _builder.get(".properties.schemaUris")
-            if schema_uris is not None:
-                schema_uris.set_elements(AAZStrType, ".")
-
-            schemas = _builder.get(".properties.schemas")
-            if schemas is not None:
-                schemas.set_elements(AAZObjectType, ".")
-
-            _elements = _builder.get(".properties.schemas[]")
-            if _elements is not None:
-                _elements.set_prop("connectionId", AAZStrType, ".connection_id")
-                _elements.set_prop("content", AAZStrType, ".content")
-                _elements.set_prop("direction", AAZStrType, ".direction")
-                _elements.set_prop("id", AAZStrType, ".id")
-                _elements.set_prop("name", AAZStrType, ".name")
-                _elements.set_prop("schemaType", AAZStrType, ".schema_type")
-                _elements.set_prop("schemaUri", AAZStrType, ".schema_uri")
-                _elements.set_prop("status", AAZStrType, ".status")
-
-            secondary_contacts = _builder.get(".properties.secondaryContacts")
-            if secondary_contacts is not None:
-                secondary_contacts.set_elements(AAZStrType, ".")
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -530,6 +345,7 @@ class _UpdateHelper:
     def _build_schema_connection_read(cls, _schema):
         if cls._schema_connection_read is not None:
             _schema.id = cls._schema_connection_read.id
+            _schema.identity = cls._schema_connection_read.identity
             _schema.location = cls._schema_connection_read.location
             _schema.name = cls._schema_connection_read.name
             _schema.properties = cls._schema_connection_read.properties
@@ -544,6 +360,7 @@ class _UpdateHelper:
         connection_read.id = AAZStrType(
             flags={"read_only": True},
         )
+        connection_read.identity = AAZIdentityObjectType()
         connection_read.location = AAZStrType(
             flags={"required": True},
         )
@@ -560,6 +377,37 @@ class _UpdateHelper:
             flags={"read_only": True},
         )
 
+        identity = _schema_connection_read.identity
+        identity.principal_id = AAZStrType(
+            serialized_name="principalId",
+            flags={"read_only": True},
+        )
+        identity.tenant_id = AAZStrType(
+            serialized_name="tenantId",
+            flags={"read_only": True},
+        )
+        identity.type = AAZStrType(
+            flags={"required": True},
+        )
+        identity.user_assigned_identities = AAZDictType(
+            serialized_name="userAssignedIdentities",
+        )
+
+        user_assigned_identities = _schema_connection_read.identity.user_assigned_identities
+        user_assigned_identities.Element = AAZObjectType(
+            nullable=True,
+        )
+
+        _element = _schema_connection_read.identity.user_assigned_identities.Element
+        _element.client_id = AAZStrType(
+            serialized_name="clientId",
+            flags={"read_only": True},
+        )
+        _element.principal_id = AAZStrType(
+            serialized_name="principalId",
+            flags={"read_only": True},
+        )
+
         properties = _schema_connection_read.properties
         properties.approver = AAZStrType(
             flags={"read_only": True},
@@ -571,6 +419,10 @@ class _UpdateHelper:
         properties.direction = AAZStrType()
         properties.flow_types = AAZListType(
             serialized_name="flowTypes",
+        )
+        properties.force_disabled_status = AAZListType(
+            serialized_name="forceDisabledStatus",
+            flags={"read_only": True},
         )
         properties.justification = AAZStrType()
         properties.link_status = AAZStrType(
@@ -616,6 +468,9 @@ class _UpdateHelper:
 
         flow_types = _schema_connection_read.properties.flow_types
         flow_types.Element = AAZStrType()
+
+        force_disabled_status = _schema_connection_read.properties.force_disabled_status
+        force_disabled_status.Element = AAZStrType()
 
         policies = _schema_connection_read.properties.policies
         policies.Element = AAZStrType()
@@ -669,6 +524,7 @@ class _UpdateHelper:
         tags.Element = AAZStrType()
 
         _schema.id = cls._schema_connection_read.id
+        _schema.identity = cls._schema_connection_read.identity
         _schema.location = cls._schema_connection_read.location
         _schema.name = cls._schema_connection_read.name
         _schema.properties = cls._schema_connection_read.properties
