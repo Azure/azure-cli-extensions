@@ -1443,6 +1443,7 @@ def load_arguments(self, _):
         )
 
         c.argument('migrate_vmas_to_vms', is_preview=True, action='store_true')
+        c.argument("disable_http_proxy", action="store_true", is_preview=True)
 
     with self.argument_context("aks upgrade") as c:
         c.argument("kubernetes_version", completer=get_k8s_upgrades_completion_list)

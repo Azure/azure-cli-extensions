@@ -1262,6 +1262,9 @@ helps['aks update'] = """
         - name: --migrate-vmas-to-vms
           type: bool
           short-summary: Migrate cluster with VMAS node pool to VMS node pool.
+        - name: --disable-http-proxy
+          type: bool
+          short-summary: Disable HTTP Proxy Configuration on the cluster.
     examples:
       - name: Reconcile the cluster back to its current state.
         text: az aks update -g MyResourceGroup -n MyManagedCluster

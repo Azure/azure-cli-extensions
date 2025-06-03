@@ -6022,7 +6022,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     # In any case, AKS clirunner will execute this case in live mode every day to ensure that there are no problems,
     # so mark this case as live_only.
     @live_only()
-    @AllowLargeResponse()
+    @AllowLargeResponse(99999)
     @AKSCustomResourceGroupPreparer(
         random_name_length=17, name_prefix="clitest", location="westus2"
     )
@@ -6127,6 +6127,28 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 self.check("httpProxyConfig.httpsProxy", "https://cli-proxy-vm:3129/"),
                 self.exists("httpProxyConfig.trustedCa"),
             ],
+        )
+
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+            }
+        )
+
+        disable_cmd = "aks update --resource-group={resource_group} --name={name} --disable-http-proxy --aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/DisableHTTPProxyPreview"
+
+        self.cmd(
+            disable_cmd,
+            checks=[
+                self.check("httpProxyConfig.enabled", False),
+            ],
+        )
+
+        # delete
+        self.cmd(
+            "aks delete -g {resource_group} -n {name} --yes --no-wait",
+            checks=[self.is_empty()],
         )
 
     @AllowLargeResponse()
