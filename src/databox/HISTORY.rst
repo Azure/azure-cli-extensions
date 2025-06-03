@@ -2,6 +2,11 @@
 
 Release History
 ===============
+1.2.0
+++++++
+* `az databox job create`: Add new parameters `--model` to support new generation of databox devices.
+* `az databox available-skus`: Add new command to fetch list of available databox skus.
+* `az databox job`: Add new subcommand `mitigate` to support customer intervention for databox jobs.
 
 1.1.0
 ++++++
