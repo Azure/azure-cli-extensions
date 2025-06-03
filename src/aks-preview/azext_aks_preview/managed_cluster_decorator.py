@@ -2849,6 +2849,16 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
 
         return disable_http_proxy
 
+    def get_enable_http_proxy(self) -> bool:
+        """Obtain the value of enable_http_proxy.
+
+        :return: bool
+        """
+        # read the original value passed by the command
+        enable_http_proxy = self.raw_param.get("enable_http_proxy")
+
+        return enable_http_proxy
+
 
 # pylint: disable=too-many-public-methods
 class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
@@ -5340,11 +5350,26 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         self._ensure_mc(mc)
 
         if self.context.get_disable_http_proxy():
+            if not mc.http_proxy_config:
+                raise UnknownError(
+                    "Unexpectedly get an empty http proxy config in the process of disabling http proxy."
+                )
             if mc.http_proxy_config is None:
                 mc.http_proxy_config = (
                     self.models.ManagedClusterHTTPProxyConfig()  # pylint: disable=no-member
                 )
             mc.http_proxy_config.enabled = False
+        
+        if self.context.get_enable_http_proxy():
+            if not mc.http_proxy_config:
+                raise UnknownError(
+                    "Unexpectedly get an empty http proxy config in the process of enabling http proxy."
+                )
+            if mc.http_proxy_config is None:
+                mc.http_proxy_config = (
+                    self.models.ManagedClusterHTTPProxyConfig()  # pylint: disable=no-member
+                )
+            mc.http_proxy_config.enabled = True
 
         return mc
 
