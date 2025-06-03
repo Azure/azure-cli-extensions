@@ -7285,7 +7285,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         ])
 
         delete_namespace_cmd = (
-            "aks namespace delete --resource-group={resource_group} --cluster-name={resource_name} --name={namespace_name}"
+            "aks namespace delete --resource-group={resource_group} --cluster-name={resource_name} --name={namespace_name} --no-wait"
         )
 
         self.cmd(
@@ -7293,6 +7293,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             checks=[self.is_empty()],
         )
 
+        time.sleep(10)
+        
         self.cmd(
             "aks delete -g {resource_group} -n {resource_name} --yes --no-wait",
             checks=[self.is_empty()],
