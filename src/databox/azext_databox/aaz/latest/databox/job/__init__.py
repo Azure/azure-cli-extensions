@@ -15,5 +15,6 @@ from ._delete import *
 from ._list import *
 from ._list_credential import *
 from ._mark_devices_shipped import *
+from ._mitigate import *
 from ._show import *
 from ._update import *

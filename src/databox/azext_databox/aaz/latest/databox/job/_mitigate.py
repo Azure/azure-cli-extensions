@@ -12,31 +12,26 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "databox job delete",
-    confirmation="Are you sure you want to perform this operation?",
+    "databox job mitigate",
 )
-class Delete(AAZCommand):
-    """Delete a job.
+class Mitigate(AAZCommand):
+    """Request to mitigate for a given job
 
-    :example: Delete job
-        az databox job delete -n job-name -g rg
-
-    :example: JobsDelete
-        az databox job delete --resource-group YourResourceGroupName --job-name TestJobName1
+    :example: Mitigate
+        az databox job mitigate --job-name TestJobName1 --resource-group YourResourceGroupName --srn-resolution-map "{testDISK-1:MoveToCleanUpDevice,testDISK-2:Resume}"
     """
 
     _aaz_info = {
         "version": "2025-02-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.databox/jobs/{}", "2025-02-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.databox/jobs/{}/mitigate", "2025-02-01"],
         ]
     }
 
-    AZ_SUPPORT_NO_WAIT = True
-
     def _handler(self, command_args):
         super()._handler(command_args)
-        return self.build_lro_poller(self._execute_operations, None)
+        self._execute_operations()
+        return None
 
     _args_schema = None
 
@@ -50,7 +45,7 @@ class Delete(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.job_name = AAZStrArg(
-            options=["-n", "--name", "--job-name"],
+            options=["--job-name"],
             help="The name of the job Resource within the specified resource group. job names must be between 3 and 24 characters in length and use any alphanumeric and underscore only",
             required=True,
             id_part="name",
@@ -63,11 +58,31 @@ class Delete(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
+
+        # define Arg Group "MitigateJobRequest"
+
+        _args_schema = cls._args_schema
+        _args_schema.resolution_code = AAZStrArg(
+            options=["--resolution-code"],
+            arg_group="MitigateJobRequest",
+            help="Resolution code for the job",
+            enum={"MoveToCleanUpDevice": "MoveToCleanUpDevice", "None": "None", "ReachOutToOperation": "ReachOutToOperation", "Restart": "Restart", "Resume": "Resume"},
+        )
+        _args_schema.srn_resolution_map = AAZDictArg(
+            options=["--srn-resolution-map"],
+            arg_group="MitigateJobRequest",
+            help="Serial number and the customer resolution code corresponding to each serial number",
+        )
+
+        srn_resolution_map = cls._args_schema.srn_resolution_map
+        srn_resolution_map.Element = AAZStrArg(
+            enum={"MoveToCleanUpDevice": "MoveToCleanUpDevice", "None": "None", "ReachOutToOperation": "ReachOutToOperation", "Restart": "Restart", "Resume": "Resume"},
+        )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.JobsDelete(ctx=self.ctx)()
+        self.Mitigate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -78,52 +93,27 @@ class Delete(AAZCommand):
     def post_operations(self):
         pass
 
-    class JobsDelete(AAZHttpOperation):
+    class Mitigate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [202]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200,
-                    self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
-                    path_format_arguments=self.url_parameters,
-                )
-            if session.http_response.status_code in [200]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200,
-                    self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
-                    path_format_arguments=self.url_parameters,
-                )
             if session.http_response.status_code in [204]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_204,
-                    self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
-                    path_format_arguments=self.url_parameters,
-                )
+                return self.on_204(session)
 
             return self.on_error(session.http_response)
 
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataBox/jobs/{jobName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataBox/jobs/{jobName}/mitigate",
                 **self.url_parameters
             )
 
         @property
         def method(self):
-            return "DELETE"
+            return "POST"
 
         @property
         def error_format(self):
@@ -157,15 +147,37 @@ class Delete(AAZCommand):
             }
             return parameters
 
-        def on_200(self, session):
-            pass
+        @property
+        def header_parameters(self):
+            parameters = {
+                **self.serialize_header_param(
+                    "Content-Type", "application/json",
+                ),
+            }
+            return parameters
+
+        @property
+        def content(self):
+            _content_value, _builder = self.new_content_builder(
+                self.ctx.args,
+                typ=AAZObjectType,
+                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
+            )
+            _builder.set_prop("customerResolutionCode", AAZStrType, ".resolution_code")
+            _builder.set_prop("serialNumberCustomerResolutionMap", AAZDictType, ".srn_resolution_map")
+
+            serial_number_customer_resolution_map = _builder.get(".serialNumberCustomerResolutionMap")
+            if serial_number_customer_resolution_map is not None:
+                serial_number_customer_resolution_map.set_elements(AAZStrType, ".")
+
+            return self.serialize_content(_content_value)
 
         def on_204(self, session):
             pass
 
 
-class _DeleteHelper:
-    """Helper class for Delete"""
+class _MitigateHelper:
+    """Helper class for Mitigate"""
 
 
-__all__ = ["Delete"]
+__all__ = ["Mitigate"]
