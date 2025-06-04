@@ -239,6 +239,9 @@ aks update:
     disable_retina_flow_logs:
       rule_exclusions:  
         - option_length_too_long
+    disable_http_proxy:
+      rule_exclusions:  
+        - option_length_too_long
 aks delete:
   parameters:
     ignore_pod_disruption_budget:

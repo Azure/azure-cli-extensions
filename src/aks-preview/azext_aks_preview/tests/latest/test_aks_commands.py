@@ -3294,6 +3294,70 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             checks=[self.is_empty()],
         )
 
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17, name_prefix="clitest", location="westus2"
+    )
+    def test_aks_nodepool_max_blocked_nodes(
+        self, resource_group, resource_group_location
+    ):
+        aks_name = self.create_random_name("cliakstest", 16)
+        np_name = self.create_random_name("clinp", 12)
+        self.kwargs.update(
+            {
+                "name": aks_name,
+                "resource_group": resource_group,
+                "nodepool_name": np_name,
+                "ssh_key_value": self.generate_ssh_keys(),
+            }
+        )
+
+        # create
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} "
+            "--ssh-key-value={ssh_key_value} -c 1"
+        )
+        self.cmd(
+            create_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+            ],
+        )
+
+        add_nodepool_cmd = (
+            "aks nodepool add -g {resource_group} --cluster-name {name} -n {nodepool_name} --node-count 2 --undrainable-node-behavior Cordon "
+            "--mode user --max-surge 1 --max-blocked-nodes 2"
+        )
+        self.cmd(
+            add_nodepool_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("upgradeSettings.undrainableNodeBehavior", "Cordon"),
+                self.check("upgradeSettings.maxBlockedNodes", "2"),
+            ],
+        )
+
+        update_nodepool_cmd = (
+            "aks nodepool update -g {resource_group} --cluster-name {name} -n {nodepool_name} "
+            "--max-blocked-nodes 2"
+        )
+        self.cmd(
+            update_nodepool_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("upgradeSettings.undrainableNodeBehavior", "Cordon"),
+                self.check("upgradeSettings.maxBlockedNodes", "2"),
+            ],
+        )
+
+        # actually running an upgrade is too expensive for these tests.
+
+        # delete
+        self.cmd(
+            "aks delete -g {resource_group} -n {name} --yes --no-wait",
+            checks=[self.is_empty()],
+        )
+
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
@@ -6022,7 +6086,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     # In any case, AKS clirunner will execute this case in live mode every day to ensure that there are no problems,
     # so mark this case as live_only.
     @live_only()
-    @AllowLargeResponse()
+    @AllowLargeResponse(99999)
     @AKSCustomResourceGroupPreparer(
         random_name_length=17, name_prefix="clitest", location="westus2"
     )
@@ -6127,6 +6191,28 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 self.check("httpProxyConfig.httpsProxy", "https://cli-proxy-vm:3129/"),
                 self.exists("httpProxyConfig.trustedCa"),
             ],
+        )
+
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+            }
+        )
+
+        disable_cmd = "aks update --resource-group={resource_group} --name={name} --disable-http-proxy --aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/DisableHTTPProxyPreview"
+
+        self.cmd(
+            disable_cmd,
+            checks=[
+                self.check("httpProxyConfig.enabled", False),
+            ],
+        )
+
+        # delete
+        self.cmd(
+            "aks delete -g {resource_group} -n {name} --yes --no-wait",
+            checks=[self.is_empty()],
         )
 
     @AllowLargeResponse()
@@ -7205,9 +7291,9 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         )
     
     @AllowLargeResponse()
-    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='eastus2')
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='uksouth')
     def test_aks_managed_namespace(self, resource_group, resource_group_location):
-        # reset the count so in replay mode the random names will start with 0
+        # reset the count so that in replay mode the random names will start with 0
         self.test_resources_count = 0
         # kwargs for string formatting
         resource_name = self.create_random_name('cliakstest', 16)
@@ -7221,10 +7307,11 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             'ssh_key_value': self.generate_ssh_keys(),
         })
 
-        create_cmd = ' '.join([
-            'aks', 'create', '--resource-group={resource_group}', '--name={resource_name}', '--location={location}',
-            '--ssh-key-value={ssh_key_value}'
-        ])
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={resource_name} --location={location} "
+            "--enable-aad --aad-admin-group-object-ids 00000000-0000-0000-0000-000000000001 "
+            "--ssh-key-value={ssh_key_value}"
+        )
 
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
@@ -7252,11 +7339,25 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             ],
         )
 
-        list_namespace_cmd = (
+        list_namespace_full_cmd = (
             "aks namespace list --resource-group={resource_group} --cluster-name={resource_name} -o json"
         )
         
-        namespace_list = self.cmd(list_namespace_cmd).get_output_in_json()
+        namespace_list = self.cmd(list_namespace_full_cmd).get_output_in_json()
+        assert len(namespace_list) > 0
+
+        list_namespace_with_resource_group_cmd = (
+            "aks namespace list --resource-group={resource_group} -o json"
+        )
+        
+        namespace_list = self.cmd(list_namespace_with_resource_group_cmd).get_output_in_json()
+        assert len(namespace_list) > 0
+
+        list_namespace_subscription_level_cmd = (
+            "aks namespace list -o json"
+        )
+        
+        namespace_list = self.cmd(list_namespace_subscription_level_cmd).get_output_in_json()
         assert len(namespace_list) > 0
 
         fd, temp_path = tempfile.mkstemp()
@@ -7291,6 +7392,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             delete_namespace_cmd,
             checks=[self.is_empty()],
         )
+
+        time.sleep(2*60)
 
         self.cmd(
             "aks delete -g {resource_group} -n {resource_name} --yes --no-wait",
