@@ -3,6 +3,10 @@
 Release History
 ===============
 
+8.0.0b4
+++++++
+* Fixes 'device run-ro' command for missing fields in the response.
+
 8.0.0b3
 ++++++
 * Adding custom output formatting for 'device' run-ro command
