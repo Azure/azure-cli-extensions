@@ -162,7 +162,7 @@ def check_and_enable_bundle_feature_flag(
 
         call_subprocess_raise_output(command)
 
-        # Wait for the feature flag to be enabled on the dp side
+        # Wait for the feature flag to be enabled on the dp side.
         time.sleep(30)
         print("Enabled the bundle feature flag successfully.")
 
