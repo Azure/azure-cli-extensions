@@ -121,7 +121,10 @@ from azure.cli.core.azclierror import (
     ValidationError,
 )
 from azure.cli.core.commands import LongRunningOperation
-from azure.cli.core.commands.client_factory import get_subscription_id
+from azure.cli.core.commands.client_factory import (
+    get_subscription_id,
+    get_mgmt_service_client,
+)
 from azure.cli.core.profiles import ResourceType
 from azure.cli.core.util import (
     in_cloud_console,
@@ -326,10 +329,20 @@ def aks_namespace_show(
 def aks_namespace_list(
     cmd,  # pylint: disable=unused-argument
     client,
-    resource_group_name,
-    cluster_name
+    resource_group_name=None,
+    cluster_name=None,
 ):
-    return client.list_by_managed_cluster(resource_group_name, cluster_name)
+    if resource_group_name and cluster_name:
+        return client.list_by_managed_cluster(resource_group_name, cluster_name)
+    rcf = get_mgmt_service_client(cmd.cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES)
+    full_resource_type = "Microsoft.ContainerService/managedClusters/managedNamespaces"
+    filters = [f"resourceType eq '{full_resource_type}'"]
+    if resource_group_name:
+        filters.append(f"resourceGroup eq '{resource_group_name}'")
+    odata_filter = " and ".join(filters)
+    expand = "createdTime,changedTime,provisioningState"
+    resources = rcf.resources.list(filter=odata_filter, expand=expand)
+    return list(resources)
 
 
 def aks_namespace_delete(
