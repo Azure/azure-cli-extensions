@@ -3333,6 +3333,9 @@ helps['aks approuting zone add'] = """
     type: command
     short-summary: Add DNS Zone(s) to App Routing.
     long-summary: This command adds multiple DNS zone resource IDs to App Routing.
+    examples:
+      - name: Add DNS zones to App Routing.
+        text: az aks approuting zone add --resource-group MyResourceGroup --name MyManagedCluster --ids zoneResourceId
     parameters:
       - name: --ids
         type: string
