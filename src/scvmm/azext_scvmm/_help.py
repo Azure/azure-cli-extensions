@@ -601,7 +601,7 @@ helps[
 --resource-group contoso-rg \
 --scvmm-id /subscriptions/01234567-0123-0123-0123-0123456789ab/resourceGroups/contoso-rg/providers/Microsoft.ScVmm/vmmServers/contoso-vmmserver
 
-      - name: Create VMware resources from all Arc for Servers machines in the specified subscription belonging to that vCenter
+      - name: Create SCVMM resources from all Arc for Servers machines in the specified subscription belonging to that vCenter
         text: |-
                 az scvmm vm create-from-machines \
 --subscription contoso-sub \

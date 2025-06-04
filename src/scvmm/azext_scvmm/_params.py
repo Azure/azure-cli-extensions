@@ -189,7 +189,7 @@ def load_arguments(self: AzCommandsLoader, _):
             'resource_name', resource_name, options_list=['--name', '-n'],
             help="Name of the Microsoft.HybridCompute Machine resource. "
             "Provide this parameter if you want to "
-            "convert a single machine to VMware VM."
+            "convert a single machine to SCVMM VM."
         )
         c.argument(
             'scvmm', options_list=['--scvmm-id', '-v'],
@@ -330,7 +330,7 @@ def load_arguments(self: AzCommandsLoader, _):
         c.argument(
             'delete_from_host',
             action='store_true',
-            help='Delete the VM from the VMware host.',
+            help='Delete the VM from the SCVMM host.',
         )
         c.argument(
             'delete_machine',
