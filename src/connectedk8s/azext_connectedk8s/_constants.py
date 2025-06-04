@@ -304,6 +304,7 @@ Fetch_Signingkey_CR_Save_Failed_Fault_Type = (
 KAP_CR_Save_Failed_Fault_Type = "Error occured while fetching KAP CR snapshot"
 Fetch_KAP_CR_Save_Failed_Fault_Type = "Exception occured while fetching KAP CR snapshot"
 Fetch_Arc_Agent_Logs_Failed_Fault_Type = "Error occured in arc agents logger"
+Fetch_Namespace_Pod_Logs_Failed_Fault_Type = "Error occured in namespace pods logger"
 Fetch_Arc_Agents_Events_Logs_Failed_Fault_Type = (
     "Error occured in arc agents events logger"
 )
@@ -371,6 +372,7 @@ Diagnostic_Check_Incomplete = "Incomplete"
 # Name of the checks and operations
 Retrieve_Arc_Agents_Event_Logs = "retrieved_arc_agents_event_logs"
 Retrieve_Arc_Agents_Logs = "retrieved_arc_agents_logs"
+Retrieve_Namespace_Logs = "retrieved_namespace_logs"
 Retrieve_Deployments_Logs = "retrieved_deployments_logs"
 Retrieve_Arc_Workload_Identity_Events_Logs = (
     "retrieved_arc_workload_identity_event_logs"

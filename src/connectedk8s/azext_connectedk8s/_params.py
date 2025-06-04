@@ -605,3 +605,8 @@ def load_arguments(self: Connectedk8sCommandsLoader, _: CLICommand) -> None:
             action="store_true",
             help="Skip SSL verification for any cluster connection.",
         )
+        c.argument(
+            "kube_namespace",
+            options_list=["--kube-namespace"],
+            help="Kube namespace to troubleshoot from current machine.",
+        )

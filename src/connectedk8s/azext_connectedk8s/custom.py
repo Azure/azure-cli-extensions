@@ -3992,6 +3992,7 @@ def troubleshoot(
     skip_ssl_verification: bool = False,
     no_wait: bool = False,
     tags: dict[str, str] | None = None,
+    kube_namespace: str | None = None,
 ) -> None:
     try:
         logger.warning("Diagnoser running. This may take a while ...\n")
@@ -4090,7 +4091,7 @@ def troubleshoot(
 
         # Check if agents have been added to the cluster
         arc_agents_pod_list = corev1_api_instance.list_namespaced_pod(
-            namespace="azure-arc"
+            namespace = "azure-arc",
         )
 
         # To verify if arc agents have been added to the cluster
@@ -4102,6 +4103,14 @@ def troubleshoot(
             ) = troubleshootutils.retrieve_arc_agents_logs(
                 corev1_api_instance, filepath_with_timestamp, storage_space_available
             )
+            # For storing pod logs in a given namespace
+            if kube_namespace:
+                (
+                    diagnostic_checks[consts.Retrieve_Namespace_Logs],
+                    storage_space_available,
+                ) = troubleshootutils.retrieve_namespace_logs(
+                    corev1_api_instance, filepath_with_timestamp, storage_space_available, kube_namespace
+                )
 
             # For storing all arc agents events logs
             (

@@ -287,6 +287,97 @@ def retrieve_arc_agents_logs(
 
     return consts.Diagnostic_Check_Failed, storage_space_available
 
+def retrieve_namespace_logs(
+    corev1_api_instance: CoreV1Api,
+    filepath_with_timestamp: str,
+    storage_space_available: bool,
+    kube_namespace: str,
+) -> tuple[str, bool]:
+    print(f"Step: {get_utctimestring()}: Retrieve logs from pods in '{kube_namespace}' namespace.")
+    try:
+        if storage_space_available:
+            # To retrieve all of the pods that are present in the Cluster namespace
+            namespace_pod_list = corev1_api_instance.list_namespaced_pod(
+                namespace=kube_namespace
+            )
+            # creating a folder for the namespace inside the timestamp folder
+            namespace_folder_name = f"ns_{kube_namespace}"
+            namespace_logs_path = os.path.join(
+                    filepath_with_timestamp, namespace_folder_name
+                )
+            os.mkdir(namespace_logs_path)
+
+            # Traversing through all pods in the namespace
+            for each_namespace_pod in namespace_pod_list.items:
+                # Fetching the current Pod name and creating a folder with that name inside the timestamp folder
+                pod_name = each_namespace_pod.metadata.name
+
+                pod_name_logs_path = os.path.join(namespace_logs_path, pod_name)
+                with contextlib.suppress(FileExistsError):
+                    os.mkdir(pod_name_logs_path)
+                # If the pod is not in Running state we wont be able to get logs of the containers
+                if each_namespace_pod.status.phase != "Running":
+                    continue
+                # Traversing through all of the containers present inside each pods
+                for each_container in each_namespace_pod.spec.containers:
+                    # Fetching the Container name
+                    container_name = each_container.name
+                    # Creating a text file with the name of the container and adding that containers logs in it
+                    container_log = corev1_api_instance.read_namespaced_pod_log(
+                        name=pod_name, container=container_name, namespace=kube_namespace
+                    )
+                    # Path to add the pods container logs.
+                    namespace_pod_container_logs_path = os.path.join(
+                        pod_name_logs_path, container_name + ".txt"
+                    )
+                    with open(namespace_pod_container_logs_path, "w+") as container_file:
+                        container_file.write(str(container_log))
+
+        return consts.Diagnostic_Check_Passed, storage_space_available
+
+    # For handling storage or OS exception that may occur during the execution
+    except OSError as e:
+        if "[Errno 28]" in str(e):
+            storage_space_available = False
+            telemetry.set_exception(
+                exception=e,
+                fault_type=consts.No_Storage_Space_Available_Fault_Type,
+                summary="No space left on device",
+            )
+            shutil.rmtree(filepath_with_timestamp, ignore_errors=False)
+        else:
+            logger.exception(
+                "An exception has occured while trying to fetch the namespace pod "
+                "logs from the cluster."
+            )
+            telemetry.set_exception(
+                exception=e,
+                fault_type=consts.Fetch_Namespace_Pod_Logs_Failed_Fault_Type,
+                summary="Error occured in namespace pods logger",
+            )
+            diagnoser_output.append(
+                "An exception has occured while trying to fetch the namespace pods logs from "
+                f"the cluster. Exception: {e}\n"
+            )
+
+    # To handle any exception that may occur during the execution
+    except Exception as e:
+        logger.exception(
+            "An exception has occured while trying to fetch the namespace pods logs "
+            "from the cluster."
+        )
+        telemetry.set_exception(
+            exception=e,
+            fault_type=consts.Fetch_Namespace_Pod_Logs_Failed_Fault_Type,
+            summary="Error occured in namespace pods logger",
+        )
+        diagnoser_output.append(
+            "An exception has occured while trying to fetch the namespace pods logs from the "
+            f"cluster. Exception: {e}\n"
+        )
+
+    return consts.Diagnostic_Check_Failed, storage_space_available
+
 
 def retrieve_arc_agents_event_logs(
     filepath_with_timestamp: str,
