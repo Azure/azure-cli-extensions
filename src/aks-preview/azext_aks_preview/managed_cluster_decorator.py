@@ -5355,7 +5355,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                     self.models.ManagedClusterHTTPProxyConfig()  # pylint: disable=no-member
                 )
             mc.http_proxy_config.enabled = False
-        
+
         if self.context.get_enable_http_proxy():
             if mc.http_proxy_config is None:
                 mc.http_proxy_config = (
