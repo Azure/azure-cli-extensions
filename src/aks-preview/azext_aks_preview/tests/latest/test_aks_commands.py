@@ -7339,11 +7339,25 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             ],
         )
 
-        list_namespace_cmd = (
+        list_namespace_full_cmd = (
             "aks namespace list --resource-group={resource_group} --cluster-name={resource_name} -o json"
         )
         
-        namespace_list = self.cmd(list_namespace_cmd).get_output_in_json()
+        namespace_list = self.cmd(list_namespace_full_cmd).get_output_in_json()
+        assert len(namespace_list) > 0
+
+        list_namespace_with_resource_group_cmd = (
+            "aks namespace list --resource-group={resource_group} -o json"
+        )
+        
+        namespace_list = self.cmd(list_namespace_with_resource_group_cmd).get_output_in_json()
+        assert len(namespace_list) > 0
+
+        list_namespace_subscription_level_cmd = (
+            "aks namespace list -o json"
+        )
+        
+        namespace_list = self.cmd(list_namespace_subscription_level_cmd).get_output_in_json()
         assert len(namespace_list) > 0
 
         fd, temp_path = tempfile.mkstemp()
