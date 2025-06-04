@@ -227,6 +227,44 @@ class Publish(AAZCommand):
                 flags={"read_only": True, "nullable": True}
             )
             properties.published_solution_versions_for_external_validation.Element = AAZFreeFormDictType()
+            
+            # Adding bulk publish schema
+            properties.publish_id = AAZStrType(
+                serialized_name="publishId",
+                flags={"read_only": True}
+            )
+            properties.published_targets = AAZListType(
+                serialized_name="publishedTargets",
+                flags={"read_only": True, "nullable": True}
+            )
+            properties.failed_targets = AAZListType(
+                serialized_name="failedTargets",
+                flags={"read_only": True, "nullable": True}
+            )
+            
+            # Define published targets element schema
+            published_targets = properties.published_targets
+            published_targets.Element = AAZObjectType()
+            published_targets.Element.solution_version_id = AAZStrType(
+                serialized_name="solutionVersionId",
+                flags={"read_only": True}
+            )
+            published_targets.Element.target_id = AAZStrType(
+                serialized_name="targetId",
+                flags={"read_only": True}
+            )
+            
+            # Define failed targets element schema
+            failed_targets = properties.failed_targets
+            failed_targets.Element = AAZObjectType()
+            failed_targets.Element.target_id = AAZStrType(
+                serialized_name="targetId",
+                flags={"read_only": True}
+            )
+            failed_targets.Element.error = AAZStrType(
+                serialized_name="error",
+                flags={"read_only": True}
+            )
 
             return cls._schema_on_200
 

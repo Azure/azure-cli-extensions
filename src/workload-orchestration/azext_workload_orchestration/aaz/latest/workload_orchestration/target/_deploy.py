@@ -255,6 +255,40 @@ class Deploy(AAZCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+            # Add the new schema fields for bulk deployment
+            properties.deployed_targets = AAZListType(
+                serialized_name="deployedTargets",
+                flags={"read_only": True, "nullable": True}
+            )
+            properties.failed_targets = AAZListType(
+                serialized_name="failedTargets",
+                flags={"read_only": True, "nullable": True}
+            )
+            
+            # Define deployed targets element schema
+            deployed_targets = properties.deployed_targets
+            deployed_targets.Element = AAZObjectType()
+            deployed_targets.Element.solution_version_id = AAZStrType(
+                serialized_name="solutionVersionId",
+                flags={"read_only": True}
+            )
+            deployed_targets.Element.target_id = AAZStrType(
+                serialized_name="targetId",
+                flags={"read_only": True}
+            )
+            
+            # Define failed targets element schema
+            failed_targets = properties.failed_targets
+            failed_targets.Element = AAZObjectType()
+            failed_targets.Element.target_id = AAZStrType(
+                serialized_name="targetId",
+                flags={"read_only": True}
+            )
+            failed_targets.Element.error = AAZStrType(
+                serialized_name="error",
+                flags={"read_only": True}
+            )
+            
             properties.reconciliation_policy = AAZObjectType(
                 serialized_name="reconciliationPolicy",
             )

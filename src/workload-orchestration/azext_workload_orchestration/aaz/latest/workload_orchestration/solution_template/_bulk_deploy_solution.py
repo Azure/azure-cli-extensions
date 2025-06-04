@@ -31,7 +31,7 @@ class BulkDeploySolution(AAZCommand):
 
     def _handler(self, command_args):
         super()._handler(command_args)
-        return self.build_lro_poller(self._execute_operations, None)
+        return self.build_lro_poller(self._execute_operations, self._output)
 
     _args_schema = None
 
@@ -179,6 +179,12 @@ class BulkDeploySolution(AAZCommand):
     @register_callback
     def post_operations(self):
         pass
+    
+    def _output(self, *args, **kwargs):
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+        return result
+
+
 
     class SolutionTemplateVersionsBulkDeploySolution(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
@@ -186,22 +192,88 @@ class BulkDeploySolution(AAZCommand):
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [202]:
+            if session.http_response.status_code in [202,200]:
                 return self.client.build_lro_polling(
                     self.ctx.args.no_wait,
                     session,
-                    None,
+                    self.on_200,
                     self.on_error,
                     lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
 
             return self.on_error(session.http_response)
+    
+        def on_200(self, session):
+                    data = self.deserialize_http_content(session)
+                    self.ctx.set_var(
+                        "instance",
+                        data,
+                        schema_builder=self._build_schema_on_200
+        )
+                    
+
+        _schema_on_200 = None
+        @classmethod
+        def _build_schema_on_200(cls):
+            if cls._schema_on_200 is not None:
+                return cls._schema_on_200
+
+            cls._schema_on_200 = AAZObjectType()
+
+            _schema_on_200 = cls._schema_on_200
+            _schema_on_200.id = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200.name = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200.resource_id = AAZStrType(
+                serialized_name="resourceId",
+                flags={"read_only": True},
+            )
+            _schema_on_200.status = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200.start_time = AAZStrType(
+                serialized_name="startTime",
+                flags={"read_only": True},
+            )
+            _schema_on_200.end_time = AAZStrType(
+                serialized_name="endTime",
+                flags={"read_only": True},
+            )
+            _schema_on_200.properties = AAZObjectType()
+
+            properties = cls._schema_on_200.properties
+            properties.solution_template_version_id = AAZStrType(
+                serialized_name="SolutionTemplateVersionId",
+                flags={"read_only": True},
+            )
+            properties.deployed_targets = AAZListType(
+                serialized_name="DeployedTargets",
+                flags={"read_only": True},
+            )
+
+            deployed_targets = cls._schema_on_200.properties.deployed_targets
+            deployed_targets.Element = AAZObjectType()
+
+            deployed_target = deployed_targets.Element
+            deployed_target.solution_version_id = AAZStrType(
+                serialized_name="SolutionVersionId",
+                flags={"read_only": True},
+            )
+            deployed_target.target_id = AAZStrType(
+                serialized_name="TargetId",
+                flags={"read_only": True},
+            )
+
+            return cls._schema_on_200
 
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Edge/solutionTemplates/{solutionTemplateName}/versions/{solutionTemplateVersionName}/bulkDeploySolution",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/microsoft.edge/solutionTemplates/{solutionTemplateName}/versions/{solutionTemplateVersionName}/bulkDeploySolution",
                 **self.url_parameters
             )
 
