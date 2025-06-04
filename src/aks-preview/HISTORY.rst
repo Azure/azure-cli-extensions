@@ -12,7 +12,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
-19.0.0b1
+18.0.0b10
 +++++++
 * Wrap the ARG call in the managed namespace list command
 
