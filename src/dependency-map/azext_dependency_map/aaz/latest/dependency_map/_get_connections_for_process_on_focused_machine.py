@@ -11,9 +11,6 @@
 from azure.cli.core.aaz import *
 
 
-@register_command(
-    "dependency-map get-connections-for-process-on-focused-machine",
-)
 class GetConnectionsForProcessOnFocusedMachine(AAZCommand):
     """Get network connections of a process
 

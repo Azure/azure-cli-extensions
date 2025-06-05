@@ -11,9 +11,6 @@
 from azure.cli.core.aaz import *
 
 
-@register_command(
-    "dependency-map get-connections-with-connected-machine-for-focused-machine",
-)
 class GetConnectionsWithConnectedMachineForFocusedMachine(AAZCommand):
     """Get network connections between machines
 

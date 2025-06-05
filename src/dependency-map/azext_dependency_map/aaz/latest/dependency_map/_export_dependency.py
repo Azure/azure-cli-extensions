@@ -11,9 +11,6 @@
 from azure.cli.core.aaz import *
 
 
-@register_command(
-    "dependency-map export-dependency",
-)
 class ExportDependency(AAZCommand):
     """Export dependencies
 

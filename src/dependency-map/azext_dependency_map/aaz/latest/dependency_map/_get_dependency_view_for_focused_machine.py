@@ -11,9 +11,6 @@
 from azure.cli.core.aaz import *
 
 
-@register_command(
-    "dependency-map get-dependency-view-for-focused-machine",
-)
 class GetDependencyViewForFocusedMachine(AAZCommand):
     """Get dependency map of single machine
 
