@@ -321,6 +321,9 @@ helps['grafana folder'] = """
 helps['grafana folder create'] = """
     type: command
     short-summary: Create a new folder.
+    examples:
+        - name: Create a folder with title.
+          text: az grafana folder create -g MyResourceGroup -n MyGrafana --title "My Folder"
 """
 
 helps['grafana folder show'] = """
@@ -371,6 +374,9 @@ helps['grafana api-key'] = """
 helps['grafana api-key create'] = """
     type: command
     short-summary: Create a new API key.
+    examples:
+        - name: Create a new API key.
+          text: az grafana api-key create -g myResourceGroup -n myGrafana --key myKey
 """
 
 helps['grafana api-key list'] = """
@@ -458,6 +464,9 @@ helps['grafana integrations monitor'] = """
 helps['grafana integrations monitor add'] = """
     type: command
     short-summary: Link an Azure Monitor workspace to a Grafana instance.
+    examples:
+        - name: Link an Azure Monitor workspace to a Grafana instance.
+          text: az grafana integrations monitor add -g MyResourceGroup -n MyGrafana --monitor-rg-name MyMonitorResourceGroup --monitor-name MyMonitor
 """
 
 helps['grafana integrations monitor list'] = """

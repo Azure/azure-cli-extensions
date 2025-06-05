@@ -4,6 +4,8 @@
 # --------------------------------------------------------------------------------------------
 
 # pylint: disable=line-too-long
+from ._format import vme_list_table_format
+
 
 def load_command_table(self, _):
 
@@ -11,3 +13,4 @@ def load_command_table(self, _):
         g.custom_command('upgrade', 'upgrade_vme')
         g.custom_command('install', 'install_vme')
         g.custom_command('uninstall', 'uninstall_vme')
+        g.custom_command('list', 'list_vme', table_transformer=vme_list_table_format)

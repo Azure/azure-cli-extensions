@@ -160,6 +160,7 @@ def load_command_table(self: AzCommandsLoader, _):
             supports_no_wait=True,
             validator=validate_param_combos_for_vm,
         )
+        g.custom_command('create-from-machines', 'create_from_machines')
         g.custom_command(
             'delete', 'delete_vm', supports_no_wait=True, confirmation=True
         )

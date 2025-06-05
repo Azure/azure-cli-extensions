@@ -13,10 +13,9 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "neon postgres project show",
-    is_preview=True,
 )
 class Show(AAZCommand):
-    """Get details of a Neon Project resource
+    """Retrieve details of a specific Neon project resource.
 
     :example: Show Neon Project Deatils
         az neon postgres project show --resource-group rgneon --organization-name org-cli-test --project-id old-frost-16758796
@@ -47,7 +46,7 @@ class Show(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.organization_name = AAZStrArg(
             options=["--organization-name"],
-            help="The name of the Neon Organization resource",
+            help="Name of the Neon organization.",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
@@ -55,10 +54,13 @@ class Show(AAZCommand):
                 max_length=50,
                 min_length=1,
             ),
+            blank=AAZPromptInput(
+                msg="Please provide Neon Organization name:",
+            ),
         )
         _args_schema.project_id = AAZStrArg(
             options=["--project-id"],
-            help="The id of the Neon Project resource.",
+            help="Id of the Neon project",
             required=True,
             id_part="child_name_1",
             fmt=AAZStrArgFormat(
@@ -66,7 +68,7 @@ class Show(AAZCommand):
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="The name of the Azure resource group",
+            help="Name of the Azure resource group.",
             required=True,
         )
         return cls._args_schema
@@ -225,7 +227,7 @@ class Show(AAZCommand):
 
             attributes = cls._schema_on_200.properties.attributes
             attributes.Element = AAZObjectType()
-            _ShowHelper._build_schema_models_attributes_read(attributes.Element)
+            _ShowHelper._build_schema_attributes_read(attributes.Element)
 
             branch = cls._schema_on_200.properties.branch
             branch.attributes = AAZListType()
@@ -262,23 +264,23 @@ class Show(AAZCommand):
 
             attributes = cls._schema_on_200.properties.branch.attributes
             attributes.Element = AAZObjectType()
-            _ShowHelper._build_schema_models_attributes_read(attributes.Element)
+            _ShowHelper._build_schema_attributes_read(attributes.Element)
 
             databases = cls._schema_on_200.properties.branch.databases
             databases.Element = AAZObjectType()
-            _ShowHelper._build_schema_models_neon_database_properties_read(databases.Element)
+            _ShowHelper._build_schema_neon_database_properties_read(databases.Element)
 
             endpoints = cls._schema_on_200.properties.branch.endpoints
             endpoints.Element = AAZObjectType()
-            _ShowHelper._build_schema_models_endpoint_properties_read(endpoints.Element)
+            _ShowHelper._build_schema_endpoint_properties_read(endpoints.Element)
 
             roles = cls._schema_on_200.properties.branch.roles
             roles.Element = AAZObjectType()
-            _ShowHelper._build_schema_models_neon_role_properties_read(roles.Element)
+            _ShowHelper._build_schema_neon_role_properties_read(roles.Element)
 
             databases = cls._schema_on_200.properties.databases
             databases.Element = AAZObjectType()
-            _ShowHelper._build_schema_models_neon_database_properties_read(databases.Element)
+            _ShowHelper._build_schema_neon_database_properties_read(databases.Element)
 
             default_endpoint_settings = cls._schema_on_200.properties.default_endpoint_settings
             default_endpoint_settings.autoscaling_limit_max_cu = AAZFloatType(
@@ -292,11 +294,11 @@ class Show(AAZCommand):
 
             endpoints = cls._schema_on_200.properties.endpoints
             endpoints.Element = AAZObjectType()
-            _ShowHelper._build_schema_models_endpoint_properties_read(endpoints.Element)
+            _ShowHelper._build_schema_endpoint_properties_read(endpoints.Element)
 
             roles = cls._schema_on_200.properties.roles
             roles.Element = AAZObjectType()
-            _ShowHelper._build_schema_models_neon_role_properties_read(roles.Element)
+            _ShowHelper._build_schema_neon_role_properties_read(roles.Element)
 
             system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(
@@ -324,194 +326,194 @@ class Show(AAZCommand):
 class _ShowHelper:
     """Helper class for Show"""
 
-    _schema_models_attributes_read = None
+    _schema_attributes_read = None
 
     @classmethod
-    def _build_schema_models_attributes_read(cls, _schema):
-        if cls._schema_models_attributes_read is not None:
-            _schema.name = cls._schema_models_attributes_read.name
-            _schema.value = cls._schema_models_attributes_read.value
+    def _build_schema_attributes_read(cls, _schema):
+        if cls._schema_attributes_read is not None:
+            _schema.name = cls._schema_attributes_read.name
+            _schema.value = cls._schema_attributes_read.value
             return
 
-        cls._schema_models_attributes_read = _schema_models_attributes_read = AAZObjectType()
+        cls._schema_attributes_read = _schema_attributes_read = AAZObjectType()
 
-        models_attributes_read = _schema_models_attributes_read
-        models_attributes_read.name = AAZStrType(
+        attributes_read = _schema_attributes_read
+        attributes_read.name = AAZStrType(
             flags={"required": True},
         )
-        models_attributes_read.value = AAZStrType(
+        attributes_read.value = AAZStrType(
             flags={"required": True},
         )
 
-        _schema.name = cls._schema_models_attributes_read.name
-        _schema.value = cls._schema_models_attributes_read.value
+        _schema.name = cls._schema_attributes_read.name
+        _schema.value = cls._schema_attributes_read.value
 
-    _schema_models_endpoint_properties_read = None
+    _schema_endpoint_properties_read = None
 
     @classmethod
-    def _build_schema_models_endpoint_properties_read(cls, _schema):
-        if cls._schema_models_endpoint_properties_read is not None:
-            _schema.attributes = cls._schema_models_endpoint_properties_read.attributes
-            _schema.branch_id = cls._schema_models_endpoint_properties_read.branch_id
-            _schema.created_at = cls._schema_models_endpoint_properties_read.created_at
-            _schema.endpoint_type = cls._schema_models_endpoint_properties_read.endpoint_type
-            _schema.entity_id = cls._schema_models_endpoint_properties_read.entity_id
-            _schema.entity_name = cls._schema_models_endpoint_properties_read.entity_name
-            _schema.project_id = cls._schema_models_endpoint_properties_read.project_id
-            _schema.provisioning_state = cls._schema_models_endpoint_properties_read.provisioning_state
+    def _build_schema_endpoint_properties_read(cls, _schema):
+        if cls._schema_endpoint_properties_read is not None:
+            _schema.attributes = cls._schema_endpoint_properties_read.attributes
+            _schema.branch_id = cls._schema_endpoint_properties_read.branch_id
+            _schema.created_at = cls._schema_endpoint_properties_read.created_at
+            _schema.endpoint_type = cls._schema_endpoint_properties_read.endpoint_type
+            _schema.entity_id = cls._schema_endpoint_properties_read.entity_id
+            _schema.entity_name = cls._schema_endpoint_properties_read.entity_name
+            _schema.project_id = cls._schema_endpoint_properties_read.project_id
+            _schema.provisioning_state = cls._schema_endpoint_properties_read.provisioning_state
             return
 
-        cls._schema_models_endpoint_properties_read = _schema_models_endpoint_properties_read = AAZObjectType()
+        cls._schema_endpoint_properties_read = _schema_endpoint_properties_read = AAZObjectType()
 
-        models_endpoint_properties_read = _schema_models_endpoint_properties_read
-        models_endpoint_properties_read.attributes = AAZListType()
-        models_endpoint_properties_read.branch_id = AAZStrType(
+        endpoint_properties_read = _schema_endpoint_properties_read
+        endpoint_properties_read.attributes = AAZListType()
+        endpoint_properties_read.branch_id = AAZStrType(
             serialized_name="branchId",
         )
-        models_endpoint_properties_read.created_at = AAZStrType(
+        endpoint_properties_read.created_at = AAZStrType(
             serialized_name="createdAt",
             flags={"read_only": True},
         )
-        models_endpoint_properties_read.endpoint_type = AAZStrType(
+        endpoint_properties_read.endpoint_type = AAZStrType(
             serialized_name="endpointType",
         )
-        models_endpoint_properties_read.entity_id = AAZStrType(
+        endpoint_properties_read.entity_id = AAZStrType(
             serialized_name="entityId",
             flags={"read_only": True},
         )
-        models_endpoint_properties_read.entity_name = AAZStrType(
+        endpoint_properties_read.entity_name = AAZStrType(
             serialized_name="entityName",
         )
-        models_endpoint_properties_read.project_id = AAZStrType(
+        endpoint_properties_read.project_id = AAZStrType(
             serialized_name="projectId",
         )
-        models_endpoint_properties_read.provisioning_state = AAZStrType(
+        endpoint_properties_read.provisioning_state = AAZStrType(
             serialized_name="provisioningState",
             flags={"read_only": True},
         )
 
-        attributes = _schema_models_endpoint_properties_read.attributes
+        attributes = _schema_endpoint_properties_read.attributes
         attributes.Element = AAZObjectType()
-        cls._build_schema_models_attributes_read(attributes.Element)
+        cls._build_schema_attributes_read(attributes.Element)
 
-        _schema.attributes = cls._schema_models_endpoint_properties_read.attributes
-        _schema.branch_id = cls._schema_models_endpoint_properties_read.branch_id
-        _schema.created_at = cls._schema_models_endpoint_properties_read.created_at
-        _schema.endpoint_type = cls._schema_models_endpoint_properties_read.endpoint_type
-        _schema.entity_id = cls._schema_models_endpoint_properties_read.entity_id
-        _schema.entity_name = cls._schema_models_endpoint_properties_read.entity_name
-        _schema.project_id = cls._schema_models_endpoint_properties_read.project_id
-        _schema.provisioning_state = cls._schema_models_endpoint_properties_read.provisioning_state
+        _schema.attributes = cls._schema_endpoint_properties_read.attributes
+        _schema.branch_id = cls._schema_endpoint_properties_read.branch_id
+        _schema.created_at = cls._schema_endpoint_properties_read.created_at
+        _schema.endpoint_type = cls._schema_endpoint_properties_read.endpoint_type
+        _schema.entity_id = cls._schema_endpoint_properties_read.entity_id
+        _schema.entity_name = cls._schema_endpoint_properties_read.entity_name
+        _schema.project_id = cls._schema_endpoint_properties_read.project_id
+        _schema.provisioning_state = cls._schema_endpoint_properties_read.provisioning_state
 
-    _schema_models_neon_database_properties_read = None
+    _schema_neon_database_properties_read = None
 
     @classmethod
-    def _build_schema_models_neon_database_properties_read(cls, _schema):
-        if cls._schema_models_neon_database_properties_read is not None:
-            _schema.attributes = cls._schema_models_neon_database_properties_read.attributes
-            _schema.branch_id = cls._schema_models_neon_database_properties_read.branch_id
-            _schema.created_at = cls._schema_models_neon_database_properties_read.created_at
-            _schema.entity_id = cls._schema_models_neon_database_properties_read.entity_id
-            _schema.entity_name = cls._schema_models_neon_database_properties_read.entity_name
-            _schema.owner_name = cls._schema_models_neon_database_properties_read.owner_name
-            _schema.provisioning_state = cls._schema_models_neon_database_properties_read.provisioning_state
+    def _build_schema_neon_database_properties_read(cls, _schema):
+        if cls._schema_neon_database_properties_read is not None:
+            _schema.attributes = cls._schema_neon_database_properties_read.attributes
+            _schema.branch_id = cls._schema_neon_database_properties_read.branch_id
+            _schema.created_at = cls._schema_neon_database_properties_read.created_at
+            _schema.entity_id = cls._schema_neon_database_properties_read.entity_id
+            _schema.entity_name = cls._schema_neon_database_properties_read.entity_name
+            _schema.owner_name = cls._schema_neon_database_properties_read.owner_name
+            _schema.provisioning_state = cls._schema_neon_database_properties_read.provisioning_state
             return
 
-        cls._schema_models_neon_database_properties_read = _schema_models_neon_database_properties_read = AAZObjectType()
+        cls._schema_neon_database_properties_read = _schema_neon_database_properties_read = AAZObjectType()
 
-        models_neon_database_properties_read = _schema_models_neon_database_properties_read
-        models_neon_database_properties_read.attributes = AAZListType()
-        models_neon_database_properties_read.branch_id = AAZStrType(
+        neon_database_properties_read = _schema_neon_database_properties_read
+        neon_database_properties_read.attributes = AAZListType()
+        neon_database_properties_read.branch_id = AAZStrType(
             serialized_name="branchId",
         )
-        models_neon_database_properties_read.created_at = AAZStrType(
+        neon_database_properties_read.created_at = AAZStrType(
             serialized_name="createdAt",
             flags={"read_only": True},
         )
-        models_neon_database_properties_read.entity_id = AAZStrType(
+        neon_database_properties_read.entity_id = AAZStrType(
             serialized_name="entityId",
             flags={"read_only": True},
         )
-        models_neon_database_properties_read.entity_name = AAZStrType(
+        neon_database_properties_read.entity_name = AAZStrType(
             serialized_name="entityName",
         )
-        models_neon_database_properties_read.owner_name = AAZStrType(
+        neon_database_properties_read.owner_name = AAZStrType(
             serialized_name="ownerName",
         )
-        models_neon_database_properties_read.provisioning_state = AAZStrType(
+        neon_database_properties_read.provisioning_state = AAZStrType(
             serialized_name="provisioningState",
             flags={"read_only": True},
         )
 
-        attributes = _schema_models_neon_database_properties_read.attributes
+        attributes = _schema_neon_database_properties_read.attributes
         attributes.Element = AAZObjectType()
-        cls._build_schema_models_attributes_read(attributes.Element)
+        cls._build_schema_attributes_read(attributes.Element)
 
-        _schema.attributes = cls._schema_models_neon_database_properties_read.attributes
-        _schema.branch_id = cls._schema_models_neon_database_properties_read.branch_id
-        _schema.created_at = cls._schema_models_neon_database_properties_read.created_at
-        _schema.entity_id = cls._schema_models_neon_database_properties_read.entity_id
-        _schema.entity_name = cls._schema_models_neon_database_properties_read.entity_name
-        _schema.owner_name = cls._schema_models_neon_database_properties_read.owner_name
-        _schema.provisioning_state = cls._schema_models_neon_database_properties_read.provisioning_state
+        _schema.attributes = cls._schema_neon_database_properties_read.attributes
+        _schema.branch_id = cls._schema_neon_database_properties_read.branch_id
+        _schema.created_at = cls._schema_neon_database_properties_read.created_at
+        _schema.entity_id = cls._schema_neon_database_properties_read.entity_id
+        _schema.entity_name = cls._schema_neon_database_properties_read.entity_name
+        _schema.owner_name = cls._schema_neon_database_properties_read.owner_name
+        _schema.provisioning_state = cls._schema_neon_database_properties_read.provisioning_state
 
-    _schema_models_neon_role_properties_read = None
+    _schema_neon_role_properties_read = None
 
     @classmethod
-    def _build_schema_models_neon_role_properties_read(cls, _schema):
-        if cls._schema_models_neon_role_properties_read is not None:
-            _schema.attributes = cls._schema_models_neon_role_properties_read.attributes
-            _schema.branch_id = cls._schema_models_neon_role_properties_read.branch_id
-            _schema.created_at = cls._schema_models_neon_role_properties_read.created_at
-            _schema.entity_id = cls._schema_models_neon_role_properties_read.entity_id
-            _schema.entity_name = cls._schema_models_neon_role_properties_read.entity_name
-            _schema.is_super_user = cls._schema_models_neon_role_properties_read.is_super_user
-            _schema.permissions = cls._schema_models_neon_role_properties_read.permissions
-            _schema.provisioning_state = cls._schema_models_neon_role_properties_read.provisioning_state
+    def _build_schema_neon_role_properties_read(cls, _schema):
+        if cls._schema_neon_role_properties_read is not None:
+            _schema.attributes = cls._schema_neon_role_properties_read.attributes
+            _schema.branch_id = cls._schema_neon_role_properties_read.branch_id
+            _schema.created_at = cls._schema_neon_role_properties_read.created_at
+            _schema.entity_id = cls._schema_neon_role_properties_read.entity_id
+            _schema.entity_name = cls._schema_neon_role_properties_read.entity_name
+            _schema.is_super_user = cls._schema_neon_role_properties_read.is_super_user
+            _schema.permissions = cls._schema_neon_role_properties_read.permissions
+            _schema.provisioning_state = cls._schema_neon_role_properties_read.provisioning_state
             return
 
-        cls._schema_models_neon_role_properties_read = _schema_models_neon_role_properties_read = AAZObjectType()
+        cls._schema_neon_role_properties_read = _schema_neon_role_properties_read = AAZObjectType()
 
-        models_neon_role_properties_read = _schema_models_neon_role_properties_read
-        models_neon_role_properties_read.attributes = AAZListType()
-        models_neon_role_properties_read.branch_id = AAZStrType(
+        neon_role_properties_read = _schema_neon_role_properties_read
+        neon_role_properties_read.attributes = AAZListType()
+        neon_role_properties_read.branch_id = AAZStrType(
             serialized_name="branchId",
         )
-        models_neon_role_properties_read.created_at = AAZStrType(
+        neon_role_properties_read.created_at = AAZStrType(
             serialized_name="createdAt",
             flags={"read_only": True},
         )
-        models_neon_role_properties_read.entity_id = AAZStrType(
+        neon_role_properties_read.entity_id = AAZStrType(
             serialized_name="entityId",
             flags={"read_only": True},
         )
-        models_neon_role_properties_read.entity_name = AAZStrType(
+        neon_role_properties_read.entity_name = AAZStrType(
             serialized_name="entityName",
         )
-        models_neon_role_properties_read.is_super_user = AAZBoolType(
+        neon_role_properties_read.is_super_user = AAZBoolType(
             serialized_name="isSuperUser",
         )
-        models_neon_role_properties_read.permissions = AAZListType()
-        models_neon_role_properties_read.provisioning_state = AAZStrType(
+        neon_role_properties_read.permissions = AAZListType()
+        neon_role_properties_read.provisioning_state = AAZStrType(
             serialized_name="provisioningState",
             flags={"read_only": True},
         )
 
-        attributes = _schema_models_neon_role_properties_read.attributes
+        attributes = _schema_neon_role_properties_read.attributes
         attributes.Element = AAZObjectType()
-        cls._build_schema_models_attributes_read(attributes.Element)
+        cls._build_schema_attributes_read(attributes.Element)
 
-        permissions = _schema_models_neon_role_properties_read.permissions
+        permissions = _schema_neon_role_properties_read.permissions
         permissions.Element = AAZStrType()
 
-        _schema.attributes = cls._schema_models_neon_role_properties_read.attributes
-        _schema.branch_id = cls._schema_models_neon_role_properties_read.branch_id
-        _schema.created_at = cls._schema_models_neon_role_properties_read.created_at
-        _schema.entity_id = cls._schema_models_neon_role_properties_read.entity_id
-        _schema.entity_name = cls._schema_models_neon_role_properties_read.entity_name
-        _schema.is_super_user = cls._schema_models_neon_role_properties_read.is_super_user
-        _schema.permissions = cls._schema_models_neon_role_properties_read.permissions
-        _schema.provisioning_state = cls._schema_models_neon_role_properties_read.provisioning_state
+        _schema.attributes = cls._schema_neon_role_properties_read.attributes
+        _schema.branch_id = cls._schema_neon_role_properties_read.branch_id
+        _schema.created_at = cls._schema_neon_role_properties_read.created_at
+        _schema.entity_id = cls._schema_neon_role_properties_read.entity_id
+        _schema.entity_name = cls._schema_neon_role_properties_read.entity_name
+        _schema.is_super_user = cls._schema_neon_role_properties_read.is_super_user
+        _schema.permissions = cls._schema_neon_role_properties_read.permissions
+        _schema.provisioning_state = cls._schema_neon_role_properties_read.provisioning_state
 
 
 __all__ = ["Show"]
