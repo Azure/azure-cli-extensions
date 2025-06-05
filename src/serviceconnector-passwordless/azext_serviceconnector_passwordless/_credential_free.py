@@ -31,7 +31,14 @@ from azure.cli.command_modules.serviceconnector._validators import (
     get_source_resource_name,
     get_target_resource_name,
 )
-from ._utils import run_cli_cmd, get_local_ip, confirm_all_ip_allow, confirm_admin_set, confirm_enable_entra_auth, is_packaged_installed
+from ._utils import (
+    run_cli_cmd,
+    get_local_ip,
+    confirm_all_ip_allow,
+    confirm_admin_set,
+    confirm_enable_entra_auth,
+    is_packaged_installed
+)
 logger = get_logger(__name__)
 
 AUTHTYPES = {

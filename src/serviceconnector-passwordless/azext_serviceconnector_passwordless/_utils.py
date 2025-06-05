@@ -148,5 +148,5 @@ def is_packaged_installed(package_name):
     except ImportError:
         return False
     except Exception as e:
-        logger.error(f"Error checking for package {package_name}: {e}")
+        logger.error("Error checking for package %s: %s", package_name, str(e))
         return False
