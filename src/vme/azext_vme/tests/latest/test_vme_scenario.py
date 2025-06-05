@@ -9,12 +9,10 @@ import os
 import time
 
 from contextlib import redirect_stdout
-from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, live_only, record_only)
-from knack.log import get_logger
+from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, live_only)
 from azure.core.exceptions import ResourceNotFoundError
 from knack.util import CLIError
 
-from azext_vme.tests.latest.testutils import deploy_arm_template_with_tags, delete_arm_template
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 logger = logging.getLogger('azure.cli.testsdk')
@@ -25,7 +23,7 @@ def _get_test_data_file(filename):
     temp_dir = os.path.join(root, "temp")
     return os.path.join(temp_dir, filename).replace("\\", "\\\\")
 
-class VmeInstallUninstallScenarioTest(ScenarioTest):
+class VmeScenarioTest(ScenarioTest):
     # os.environ["AZURE_CLI_TEST_DEV_RESOURCE_GROUP_NAME"] = "vmetestrg"
     # os.environ["AZURE_LOCAL_DISCONNECTED"] = "true"
 
@@ -33,7 +31,7 @@ class VmeInstallUninstallScenarioTest(ScenarioTest):
     @ResourceGroupPreparer(
         name_prefix="vmetest", location="eastus2euap", random_name_length=12
     )
-    def test_vme_install_uninstall_live(self, resource_group, resource_group_location):
+    def test_vme_live(self, resource_group, resource_group_location):
         managed_cluster_name = self.create_random_name(prefix="vmetest", length=12)
         connected_cluster_name = self.create_random_name(prefix="cc-vme-", length=12)
         kubeconfig = _get_test_data_file(managed_cluster_name + "-config.yaml")
@@ -69,6 +67,8 @@ class VmeInstallUninstallScenarioTest(ScenarioTest):
         with redirect_stdout(captured_output):
             self.cmd("vme install -g {rg} -c {cluster_name} --include all --kube-config {kubeconfig} --kube-context {kubecontext}")
             self.assertIn("All extensions installed successfully.", captured_output.getvalue())
+
+        self.cmd("vme list -g {rg} -c {cluster_name}")
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
