@@ -3,6 +3,10 @@
 Release History
 ===============
 
+2.1.0
+++++++
+* Updated descriptions of the commands.
+
 2.0.0
 ++++++
 * Incorporated new cluster property values for cli refresh
