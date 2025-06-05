@@ -138,3 +138,14 @@ def confirm_admin_set():
         logger.warning(
             'Unable to prompt for confirmation as no tty available. Use --yes to enable the operation.')
         return False
+
+def is_packaged_installed(package_name):
+    """Check if a package is installed in the current Python environment."""
+    try:
+        __import__(package_name)
+        return True
+    except ImportError:
+        return False
+    except Exception as e:
+        logger.error(f"Error checking for package {package_name}: {e}")
+        return False
