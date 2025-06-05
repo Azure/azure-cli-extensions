@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "qumulo",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage qumulo
+    """Manage Qumulo
     """
     pass
 

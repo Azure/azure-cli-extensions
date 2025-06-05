@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "qumulo storage",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage qumulo storage
+    """Manage Qumulo storage resources through the Azure CLI.
     """
     pass
 
