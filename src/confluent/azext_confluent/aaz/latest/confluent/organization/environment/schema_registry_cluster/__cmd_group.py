@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "confluent organization environment schema-registry-cluster",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Commands to get the schema registry cluster details in a environment
+    """Retrieve details of Schema Registry clusters within a Confluent environment.
     """
     pass
 

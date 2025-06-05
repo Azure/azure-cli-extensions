@@ -12,16 +12,16 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "confluent organization create-user",
+    "confluent organization access default list-cluster",
 )
-class CreateUser(AAZCommand):
-    """Invite a new user to join the Confluent organization.
+class ListCluster(AAZCommand):
+    """List all Confluent cluster within an environment in an organization
     """
 
     _aaz_info = {
         "version": "2024-02-13",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.confluent/organizations/{}/access/default/createinvitation", "2024-02-13"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.confluent/organizations/{}/access/default/listclusters", "2024-02-13"],
         ]
     }
 
@@ -54,40 +54,19 @@ class CreateUser(AAZCommand):
         # define Arg Group "Body"
 
         _args_schema = cls._args_schema
-        _args_schema.email = AAZStrArg(
-            options=["--email"],
+        _args_schema.search_filters = AAZDictArg(
+            options=["--search-filters"],
             arg_group="Body",
-            help="Email of the logged in user",
-        )
-        _args_schema.organization_id = AAZStrArg(
-            options=["--organization-id"],
-            arg_group="Body",
-            help="Id of the organization",
-        )
-        _args_schema.upn = AAZStrArg(
-            options=["--upn"],
-            arg_group="Body",
-            help="Upn of the logged in user",
+            help="Search filters for the request",
         )
 
-        # define Arg Group "InvitedUserDetails"
-
-        _args_schema = cls._args_schema
-        _args_schema.auth_type = AAZStrArg(
-            options=["--auth-type"],
-            arg_group="InvitedUserDetails",
-            help="Auth type of the user",
-        )
-        _args_schema.invited_email = AAZStrArg(
-            options=["--invited-email"],
-            arg_group="InvitedUserDetails",
-            help="UPN/Email of the user who is being invited",
-        )
+        search_filters = cls._args_schema.search_filters
+        search_filters.Element = AAZStrArg()
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.AccessInviteUser(ctx=self.ctx)()
+        self.AccessListClusters(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -102,7 +81,7 @@ class CreateUser(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class AccessInviteUser(AAZHttpOperation):
+    class AccessListClusters(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -116,7 +95,7 @@ class CreateUser(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Confluent/organizations/{organizationName}/access/default/createInvitation",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Confluent/organizations/{organizationName}/access/default/listClusters",
                 **self.url_parameters
             )
 
@@ -175,15 +154,11 @@ class CreateUser(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("email", AAZStrType, ".email")
-            _builder.set_prop("invitedUserDetails", AAZObjectType)
-            _builder.set_prop("organizationId", AAZStrType, ".organization_id")
-            _builder.set_prop("upn", AAZStrType, ".upn")
+            _builder.set_prop("searchFilters", AAZDictType, ".search_filters")
 
-            invited_user_details = _builder.get(".invitedUserDetails")
-            if invited_user_details is not None:
-                invited_user_details.set_prop("auth_type", AAZStrType, ".auth_type")
-                invited_user_details.set_prop("invitedEmail", AAZStrType, ".invited_email")
+            search_filters = _builder.get(".searchFilters")
+            if search_filters is not None:
+                search_filters.set_elements(AAZStrType, ".")
 
             return self.serialize_content(_content_value)
 
@@ -205,27 +180,78 @@ class CreateUser(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.accepted_at = AAZStrType()
-            _schema_on_200.auth_type = AAZStrType()
-            _schema_on_200.email = AAZStrType()
-            _schema_on_200.expires_at = AAZStrType()
-            _schema_on_200.id = AAZStrType()
+            _schema_on_200.data = AAZListType()
             _schema_on_200.kind = AAZStrType()
             _schema_on_200.metadata = AAZObjectType()
-            _schema_on_200.status = AAZStrType()
 
-            metadata = cls._schema_on_200.metadata
+            data = cls._schema_on_200.data
+            data.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.data.Element
+            _element.display_name = AAZStrType()
+            _element.id = AAZStrType()
+            _element.kind = AAZStrType()
+            _element.metadata = AAZObjectType()
+            _element.spec = AAZObjectType()
+            _element.status = AAZObjectType()
+
+            metadata = cls._schema_on_200.data.Element.metadata
             metadata.created_at = AAZStrType()
             metadata.deleted_at = AAZStrType()
             metadata.resource_name = AAZStrType()
             metadata.self = AAZStrType()
             metadata.updated_at = AAZStrType()
 
+            spec = cls._schema_on_200.data.Element.spec
+            spec.api_endpoint = AAZStrType()
+            spec.availability = AAZStrType()
+            spec.byok = AAZObjectType()
+            spec.cloud = AAZStrType()
+            spec.config = AAZObjectType()
+            spec.display_name = AAZStrType()
+            spec.environment = AAZObjectType()
+            spec.http_endpoint = AAZStrType()
+            spec.kafka_bootstrap_endpoint = AAZStrType()
+            spec.network = AAZObjectType()
+            spec.region = AAZStrType()
+            spec.zone = AAZStrType()
+
+            byok = cls._schema_on_200.data.Element.spec.byok
+            byok.id = AAZStrType()
+            byok.related = AAZStrType()
+            byok.resource_name = AAZStrType()
+
+            config = cls._schema_on_200.data.Element.spec.config
+            config.kind = AAZStrType()
+
+            environment = cls._schema_on_200.data.Element.spec.environment
+            environment.environment = AAZStrType()
+            environment.id = AAZStrType()
+            environment.related = AAZStrType()
+            environment.resource_name = AAZStrType()
+
+            network = cls._schema_on_200.data.Element.spec.network
+            network.environment = AAZStrType()
+            network.id = AAZStrType()
+            network.related = AAZStrType()
+            network.resource_name = AAZStrType()
+
+            status = cls._schema_on_200.data.Element.status
+            status.cku = AAZIntType()
+            status.phase = AAZStrType()
+
+            metadata = cls._schema_on_200.metadata
+            metadata.first = AAZStrType()
+            metadata.last = AAZStrType()
+            metadata.next = AAZStrType()
+            metadata.prev = AAZStrType()
+            metadata.total_size = AAZIntType()
+
             return cls._schema_on_200
 
 
-class _CreateUserHelper:
-    """Helper class for CreateUser"""
+class _ListClusterHelper:
+    """Helper class for ListCluster"""
 
 
-__all__ = ["CreateUser"]
+__all__ = ["ListCluster"]
