@@ -235,6 +235,10 @@ def create_connectedk8s(
         configuration_settings,
         configuration_protected_settings,
     )
+
+    # Validate and update bundle feature flag value if provided
+    validate_connect_cluster_bundle_feature_flag_value(configuration_settings, yes)
+
     arc_agentry_configurations = generate_arc_agent_configuration(
         configuration_settings, configuration_protected_settings
     )
@@ -1512,6 +1516,169 @@ def set_security_profile(enable_workload_identity: bool) -> SecurityProfile:
     return security_profile
 
 
+def get_k8s_extension_module(module_name):
+    try:
+        # adding the installed extension in the path
+        from azure.cli.core.extension.operations import add_extension_to_path
+        add_extension_to_path(consts.CONST_K8S_EXTENSION_NAME)
+        # import the extension module
+        from importlib import import_module
+        azext_custom = import_module(module_name)
+        return azext_custom
+    except ImportError:
+        raise ImportError(  # pylint: disable=raise-missing-from
+            "Please add CLI extension `k8s-extension` to disable bundle feature flag.\n"
+            "Run command `az extension add --name k8s-extension`"
+        )
+
+
+def get_bundle_feature_flag_from_arc_agentry_config(
+    current_arc_agentry_config: list[ArcAgentryConfigurations]
+) -> str | None:
+    for agentry_config in current_arc_agentry_config:
+        if agentry_config.feature == consts.Arc_Agentry_Bundle_Feature and \
+           consts.Arc_Agentry_Bundle_Feature_Setting in agentry_config.settings:
+            return agentry_config.settings[consts.Arc_Agentry_Bundle_Feature_Setting].lower()
+    return None
+
+
+def get_bundle_feature_flag_from_configuration_settings(
+    configuration_settings: dict[str, Any]
+) -> str | None:
+    settings = configuration_settings.get(consts.Arc_Agentry_Bundle_Feature, {})
+    value = settings.get(consts.Arc_Agentry_Bundle_Feature_Setting)
+    return value if value is None else value.lower()
+
+
+def validate_bundle_feature_flag_value(
+    configuration_settings: dict[str, Any]
+) -> str | None:
+    print(f"Step: {utils.get_utctimestring()}: Validating the bundle feature flag value")
+    value = get_bundle_feature_flag_from_configuration_settings(configuration_settings)
+
+    if value:
+        # Remove leading and trailing whitespace and quotes
+        value = value.strip().strip("'\"")
+
+        if value and value not in consts.Bundle_Feature_Value_List:
+            raise InvalidArgumentValueError(
+                f"Not supported value for the feature flag '{consts.Arc_Agentry_Bundle_Feature_Setting}': "
+                f"'{value}'. Please specify a value from the list: {consts.Bundle_Feature_Value_List}."
+            )
+
+        configuration_settings[consts.Arc_Agentry_Bundle_Feature][consts.Arc_Agentry_Bundle_Feature_Setting] = value
+        print(f"Step: {utils.get_utctimestring()}: Setting the bundle feature flag value to '{value}'")
+
+    return value
+
+
+def validate_connect_cluster_bundle_feature_flag_value(
+    configuration_settings: dict[str, Any],
+    yes: bool = False,
+):
+    bundle_feature_flag_value = validate_bundle_feature_flag_value(configuration_settings)
+
+    # If the bundle feature flag value is None, skip the validation
+    if bundle_feature_flag_value is None:
+        return
+
+    if bundle_feature_flag_value == "preview":
+        confirmation_message = (
+            f"You are about to enter the 'preview' mode for {consts.Arc_Agentry_Bundle_Feature_Setting}. "
+            "In this mode, all SLA support will be discontinued, and the cluster will remain in 'preview' mode "
+            "until it is disconnected from Arc. Are you sure you want to proceed? "
+        )
+
+        utils.user_confirmation(confirmation_message, yes)
+
+        logger.warning(
+            "Entered %s 'preview' mode. All SLA support is discontinued, and the cluster will remain in 'preview' mode "
+            "until it is disconnected from Arc.",
+            consts.Arc_Agentry_Bundle_Feature_Setting
+        )
+
+    elif bundle_feature_flag_value == "disabled":
+        err_msg = (
+            f"{consts.Arc_Agentry_Bundle_Feature_Setting} 'disabled' mode can only be set using 'az connectedk8s update'. "
+            f"To keep the bundle feature flag off during cluster connection, remove "
+            f"{consts.Arc_Agentry_Bundle_Feature_Setting} from the --config."
+        )
+        raise ArgumentUsageError(err_msg)
+
+
+def validate_update_cluster_bundle_feature_flag_value(
+    cmd: CLICommmand,
+    current_arc_agentry_config: list[ArcAgentryConfigurations],
+    configuration_settings: dict[str, Any],
+    resource_group_name: str,
+    cluster_name: str,
+):
+    bundle_feature_flag_value = validate_bundle_feature_flag_value(configuration_settings)
+
+    # If the bundle feature flag value is None, skip the validation
+    if bundle_feature_flag_value is None:
+        return
+
+    current_bundle_feature_flag_value = get_bundle_feature_flag_from_arc_agentry_config(current_arc_agentry_config)
+
+    if bundle_feature_flag_value == "preview":
+        err_msg = (
+            f"{consts.Arc_Agentry_Bundle_Feature_Setting} 'preview' mode can only be enabled when a cluster "
+            "is first connected to Arc with 'az connectedk8s connect'. Updating the preview mode config with "
+            "'az connectedk8s update' is not allowed."
+        )
+        raise ArgumentUsageError(err_msg)
+
+    if current_bundle_feature_flag_value == "preview":
+        err_msg = (
+            f"The cluster is in {consts.Arc_Agentry_Bundle_Feature_Setting} 'preview' mode, "
+            "updating the value is not allowed."
+        )
+        raise ArgumentUsageError(err_msg)
+
+    invalid_transition = (
+        (current_bundle_feature_flag_value == "enabled" and bundle_feature_flag_value == "") or
+        (current_bundle_feature_flag_value == "" and bundle_feature_flag_value == "disabled")
+    )
+
+    if invalid_transition:
+        err_msg = (
+            f"Could not set {consts.Arc_Agentry_Bundle_Feature}.{consts.Arc_Agentry_Bundle_Feature_Setting} from "
+            f"'{current_bundle_feature_flag_value}' to '{bundle_feature_flag_value}'."
+        )
+
+        raise ArgumentUsageError(err_msg)
+
+    # If the bundle feature flag is set to 'disabled', check if any bundle extensions are installed
+    if current_bundle_feature_flag_value == "enabled" and bundle_feature_flag_value == "disabled":
+        client_factory = get_k8s_extension_module(consts.CONST_K8S_EXTENSION_CLIENT_FACTORY_MOD_NAME)
+        client = client_factory.cf_k8s_extension_operation(cmd.cli_ctx)
+        k8s_extension_custom_mod = get_k8s_extension_module(consts.CONST_K8S_EXTENSION_CUSTOM_MOD_NAME)
+        extensions = k8s_extension_custom_mod.list_k8s_extension(
+            client,
+            resource_group_name,
+            cluster_name,
+            "connectedClusters",
+        )
+
+        installed_bundle_extensions = [
+            ext.extension_type.lower()
+            for ext in extensions
+            if ext.extension_type.lower() in consts.Bundle_Extension_Type_List
+        ]
+
+        if installed_bundle_extensions:
+            err_msg = (
+                f"Could not set {consts.Arc_Agentry_Bundle_Feature}.{consts.Arc_Agentry_Bundle_Feature_Setting} to "
+                f"'disabled' - detected the following extension types on the cluster: {installed_bundle_extensions}.\n"
+                f"Please remove them with 'az k8s-extension delete --cluster-name <clusterName> "
+                f"--cluster-type <clusterType> --resource-group <resourceGroupName> --name <extensionName>' "
+                f"and try turning off the feature again."
+            )
+
+            raise ArgumentUsageError(err_msg)
+
+
 def generate_arc_agent_configuration(
     configuration_settings: dict[str, Any],
     redacted_protected_settings: dict[str, Any],
@@ -2072,9 +2239,6 @@ def update_connected_cluster(
         configuration_settings,
         configuration_protected_settings,
     )
-    arc_agentry_configurations = generate_arc_agent_configuration(
-        configuration_settings, redacted_protected_values
-    )
 
     # Fetch Connected Cluster for agent version
     connected_cluster = client.get(resource_group_name, cluster_name)
@@ -2088,6 +2252,15 @@ def update_connected_cluster(
             + consts.Doc_Provisioned_Cluster_Update_Url
         )
         raise InvalidArgumentValueError(err_msg)
+
+    # Validate and update bundle feature flag value if provided
+    validate_update_cluster_bundle_feature_flag_value(
+        cmd, connected_cluster.arc_agentry_configurations, configuration_settings, resource_group_name, cluster_name
+    )
+
+    arc_agentry_configurations = generate_arc_agent_configuration(
+        configuration_settings, redacted_protected_values
+    )
 
     # Patching the connected cluster ARM resource
     arm_properties_unset = (
@@ -2654,6 +2827,22 @@ def upgrade_agents(
             for message in consts.Helm_Install_Release_Userfault_Messages
         ):
             telemetry.set_user_fault()
+
+        namespace = "azure-arc"
+        label_selector = "job-name=agent-update-validator"
+
+        # Get the list of pods matching the label
+        pods = api_instance.list_namespaced_pod(namespace=namespace, label_selector=label_selector)
+
+        # Extract the terminated message from the container
+        if pods.items:
+            pod = pods.items[0]
+            container_statuses = pod.status.container_statuses
+            if container_statuses:
+                state = container_statuses[0].state
+                if state.terminated:
+                    helm_upgrade_error_message = state.terminated.message
+
         telemetry.set_exception(
             exception=error_helm_upgrade.decode("ascii"),
             fault_type=consts.Install_HelmRelease_Fault_Type,

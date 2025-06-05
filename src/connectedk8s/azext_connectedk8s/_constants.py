@@ -517,3 +517,15 @@ Doc_Agent_Version_Support_Policy_Url = "https://learn.microsoft.com/en-us/azure/
 # "Application code shouldn't block the creation of resources for a resource provider that is in the registering state."
 # See https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/resource-providers-and-types#register-resource-provider
 allowed_rp_registration_states = ["Registering", "Registered"]
+
+Connected_Cluster_Type = "connectedclusters"
+
+Arc_Agentry_Bundle_Feature = "extensionSets"
+Arc_Agentry_Bundle_Feature_Setting = "versionManagedExtensions"
+
+Bundle_Feature_Value_List = ["enabled", "disabled", "preview"]
+Bundle_Extension_Type_List = ["microsoft.iotoperations", "microsoft.extensiondiagnostics", "microsoft.arc.containerstorage", "microsoft.azure.secretstore"]
+
+CONST_K8S_EXTENSION_NAME = "k8s-extension"
+CONST_K8S_EXTENSION_CLIENT_FACTORY_MOD_NAME = "azext_k8s_extension._client_factory"
+CONST_K8S_EXTENSION_CUSTOM_MOD_NAME = "azext_k8s_extension.custom"

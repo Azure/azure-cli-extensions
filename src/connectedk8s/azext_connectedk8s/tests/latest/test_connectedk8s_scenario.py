@@ -12,13 +12,18 @@ import shutil
 import stat
 import subprocess
 import time
-from subprocess import PIPE
+from subprocess import PIPE, Popen
 
 import oras.client  # type: ignore[import-untyped]
 import psutil
 import requests
 from azure.cli.core import get_default_cli
-from azure.cli.core.azclierror import RequiredArgumentMissingError, ValidationError
+from azure.cli.core.azclierror import (
+    ArgumentUsageError,
+    RequiredArgumentMissingError,
+    ValidationError,
+    InvalidArgumentValueError
+)
 from azure.cli.testsdk import (  # pylint: disable=import-error
     LiveScenarioTest,
     ResourceGroupPreparer,
@@ -171,6 +176,25 @@ client."
         logger.warning("Unable to install kubectl. Error: " + str(e))
         return
 
+def get_bundle_feature_flag_from_config_map(
+    kubectl_client_location: str,
+    kube_config: str | None,
+    kube_context: str | None
+) -> str | None:
+    cmd = [kubectl_client_location, "get", "configmap", "azure-clusterconfig", "-n", "azure-arc", "-o", "jsonpath={.data.EXTENSION_BUNDLE_ENABLED_FEATURE_FLAG}"]
+    if kube_config:
+        cmd.extend(["--kubeconfig", kube_config])
+    if kube_context:
+        cmd.extend(["--context", kube_context])
+
+    cmd_output = Popen(cmd, stdout=PIPE, stderr=PIPE)
+    
+    bundle_feature_flag, stderr = cmd_output.communicate()
+    if cmd_output.returncode == 0:
+        return bundle_feature_flag.decode()
+    else:
+        print("Error:", stderr.decode())
+        return None
 
 class Connectedk8sScenarioTest(LiveScenarioTest):
     @live_only()
@@ -265,6 +289,236 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
 
         # delete the kube config
         os.remove(_get_test_data_file(managed_cluster_name + "-config.yaml"))
+
+
+    @live_only()
+    @ResourceGroupPreparer(
+        name_prefix="conk8stest", location=CONFIG["location"], random_name_length=16
+    )
+    def test_connect_withbundlefeatureflag(self, resource_group):
+        managed_cluster_name = self.create_random_name(prefix="test-connect", length=24)
+        kubeconfig = _get_test_data_file(managed_cluster_name + "-config.yaml")
+        self.kwargs.update(
+            {
+                "rg": resource_group,
+                "name": self.create_random_name(prefix="cc-", length=12),
+                "kubeconfig": kubeconfig,
+                "managed_cluster_name": managed_cluster_name,
+                "location": CONFIG["location"],
+            }
+        )
+
+        self.cmd("aks create -g {rg} -n {managed_cluster_name} --generate-ssh-keys")
+        self.cmd(
+            "aks get-credentials -g {rg} -n {managed_cluster_name} -f {kubeconfig} --admin"
+        )
+
+        with self.assertRaisesRegex(InvalidArgumentValueError, "Not supported value for the feature flag"):
+            self.cmd(
+                "connectedk8s connect -g {rg} -n {name} --location {location} --disable-auto-upgrade --kube-config {kubeconfig} \
+                --kube-context {managed_cluster_name}-admin --config extensionSets.versionManagedExtensions='off'")
+            
+        with self.assertRaisesRegex(ArgumentUsageError, "versionManagedExtensions 'disabled' mode can only be set using 'az connectedk8s update'."):
+            self.cmd(
+                "connectedk8s connect -g {rg} -n {name} --location {location} --disable-auto-upgrade --kube-config {kubeconfig} \
+                --kube-context {managed_cluster_name}-admin --config extensionSets.versionManagedExtensions='disabled'"
+            )
+
+        with self.assertLogs(level='WARNING') as cm:
+            self.cmd(
+            "connectedk8s connect -g {rg} -n {name} -l {location} --disable-auto-upgrade --kube-config {kubeconfig} \
+            --kube-context {managed_cluster_name}-admin --config extensionSets.versionManagedExtensions='preview' --yes",
+            checks=[
+                self.check("resourceGroup", "{rg}"),
+                self.check("name", "{name}"),
+                self.check("arcAgentryConfigurations[0].settings.versionManagedExtensions", "preview"),
+            ],
+        )
+
+        self.assertIn(
+            "All SLA support is discontinued, and the cluster will remain in 'preview' mode until it is disconnected from Arc.",
+            ''.join(cm.output)
+        )
+
+        kubectl_client_location = install_kubectl_client()
+        configmap_bundle_feature_flag = get_bundle_feature_flag_from_config_map(kubectl_client_location, kubeconfig, f"{managed_cluster_name}-admin")
+        self.assertEqual(configmap_bundle_feature_flag, "preview")
+
+        with self.assertRaisesRegex(ArgumentUsageError, "The cluster is in versionManagedExtensions 'preview' mode, updating the value is not allowed."):
+            self.cmd(
+                "connectedk8s update -g {rg} -n {name} --auto-upgrade false --kube-config {kubeconfig} \
+                --kube-context {managed_cluster_name}-admin --config extensionSets.versionManagedExtensions='enabled'")
+
+        self.cmd(
+            "connectedk8s delete -g {rg} -n {name} --kube-config {kubeconfig} --kube-context " \
+            "{managed_cluster_name}-admin --yes"
+        )
+
+        self.cmd(
+            "connectedk8s connect -g {rg} -n {name} -l {location} --disable-auto-upgrade --kube-config {kubeconfig} \
+            --kube-context {managed_cluster_name}-admin --config extensionSets.versionManagedExtensions='enabled'",
+            checks=[
+                self.check("resourceGroup", "{rg}"),
+                self.check("name", "{name}"),
+                self.check("arcAgentryConfigurations[0].settings.versionManagedExtensions", "enabled"),
+            ],
+        )
+
+        configmap_bundle_feature_flag = get_bundle_feature_flag_from_config_map(kubectl_client_location, kubeconfig, f"{managed_cluster_name}-admin")
+        self.assertEqual(configmap_bundle_feature_flag, "enabled")
+
+    @live_only()
+    @ResourceGroupPreparer(
+        name_prefix="conk8stest", location=CONFIG["location"], random_name_length=16
+    )
+    def test_update_withbundlefeatureflag(self, resource_group):
+        managed_cluster_name = self.create_random_name(prefix="test-connect", length=24)
+        kubeconfig = _get_test_data_file(managed_cluster_name + "-config.yaml")
+        self.kwargs.update(
+            {
+                "rg": resource_group,
+                "name": self.create_random_name(prefix="cc-", length=12),
+                "kubeconfig": kubeconfig,
+                "managed_cluster_name": managed_cluster_name,
+                "location": CONFIG["location"],
+            }
+        )
+
+        self.cmd("aks create -g {rg} -n {managed_cluster_name} --generate-ssh-keys")
+        self.cmd(
+            "aks get-credentials -g {rg} -n {managed_cluster_name} -f {kubeconfig} --admin"
+        )
+
+        self.cmd(
+            "connectedk8s connect -g {rg} -n {name} -l {location} --disable-auto-upgrade --kube-config {kubeconfig} \
+            --kube-context {managed_cluster_name}-admin --config extensionSets.versionManagedExtensions='enabled'",
+            checks=[
+                self.check("resourceGroup", "{rg}"),
+                self.check("name", "{name}"),
+                self.check("arcAgentryConfigurations[0].settings.versionManagedExtensions", "enabled"),
+            ],
+        )
+
+        kubectl_client_location = install_kubectl_client()
+        configmap_bundle_feature_flag = get_bundle_feature_flag_from_config_map(kubectl_client_location, kubeconfig, f"{managed_cluster_name}-admin")
+        self.assertEqual(configmap_bundle_feature_flag, "enabled")
+
+        with self.assertRaisesRegex(InvalidArgumentValueError, "Not supported value for the feature flag"):
+            self.cmd(
+                "connectedk8s update -g {rg} -n {name} --auto-upgrade false --kube-config {kubeconfig} \
+                --kube-context {managed_cluster_name}-admin --config extensionSets.versionManagedExtensions='on'")
+
+        with self.assertRaisesRegex(ArgumentUsageError, "Updating the preview mode config with 'az connectedk8s update' is not allowed."):
+            self.cmd(
+                "connectedk8s update -g {rg} -n {name} --auto-upgrade false --kube-config {kubeconfig} \
+                --kube-context {managed_cluster_name}-admin --config extensionSets.versionManagedExtensions='preview'")
+
+        with self.assertRaisesRegex(ArgumentUsageError, "Could not set extensionSets.versionManagedExtensions from 'enabled' to ''"):
+            self.cmd(
+                "connectedk8s update -g {rg} -n {name} --auto-upgrade false --kube-config {kubeconfig} \
+                --kube-context {managed_cluster_name}-admin --config extensionSets.versionManagedExtensions=''")
+
+        # Without any bundle extensions installed on the cluster, the bundle feature flag can be set to 'disabled'
+        # All leading and trailing single and double quotes and whitespaces should be automatically stripped
+        self.cmd(
+            "connectedk8s update -g {rg} -n {name} --auto-upgrade false --kube-config {kubeconfig} \
+            --kube-context {managed_cluster_name}-admin --config extensionSets.versionManagedExtensions=\"  disabled\"",
+            checks=[
+                self.check("arcAgentryConfigurations[0].settings.versionManagedExtensions", "disabled"),
+            ],
+        )
+
+        configmap_bundle_feature_flag = get_bundle_feature_flag_from_config_map(kubectl_client_location, kubeconfig, f"{managed_cluster_name}-admin")
+        self.assertEqual(configmap_bundle_feature_flag, "disabled")
+
+        self.cmd(
+            "connectedk8s update -g {rg} -n {name} --auto-upgrade false --kube-config {kubeconfig} \
+            --kube-context {managed_cluster_name}-admin --config extensionSets.versionManagedExtensions='enabled'",
+            checks=[
+                self.check("arcAgentryConfigurations[0].settings.versionManagedExtensions", "enabled"),
+            ],
+        )
+
+        self.cmd("k8s-extension create --cluster-name {name} --resource-group {rg} --cluster-type connectedClusters \
+                 --extension-type microsoft.iotoperations.platform --name azure-iot-operations-platform \
+                 --release-train preview --auto-upgrade-minor-version False --config installTrustManager=true \
+                 --config installCertManager=true --version 0.7.6 --release-namespace cert-manager --scope cluster")
+
+        self.cmd("k8s-extension create --cluster-name {name} --resource-group {rg} --cluster-type connectedClusters \
+                 --extension-type microsoft.azure.secretstore --name azure-secret-store --auto-upgrade-minor-version False \
+                 --config rotationPollIntervalInSeconds=120 --config validatingAdmissionPolicies.applyPolicies=false \
+                 --scope cluster")
+
+        # With bundle extensions installed on the cluster, the bundle feature flag cannot be set to 'disabled'
+        with self.assertRaisesRegex(ArgumentUsageError, "detected the following extension types on the cluster"):
+            self.cmd(
+                "connectedk8s update -g {rg} -n {name} --auto-upgrade false --kube-config {kubeconfig} \
+                --kube-context {managed_cluster_name}-admin --config extensionSets.versionManagedExtensions='disabled'")
+            
+        configmap_bundle_feature_flag = get_bundle_feature_flag_from_config_map(kubectl_client_location, kubeconfig, f"{managed_cluster_name}-admin")
+        self.assertEqual(configmap_bundle_feature_flag, "enabled")
+
+    @live_only()
+    @ResourceGroupPreparer(
+        name_prefix="conk8stest", location=CONFIG["location"], random_name_length=16
+    )
+    def test_upgrade_with_agentupdatevalidator(self, resource_group):
+        managed_cluster_name = self.create_random_name(prefix="test-connect", length=24)
+        kubeconfig = _get_test_data_file(managed_cluster_name + "-config.yaml")
+        self.kwargs.update(
+            {
+                "rg": resource_group,
+                "name": self.create_random_name(prefix="cc-", length=12),
+                "kubeconfig": kubeconfig,
+                "managed_cluster_name": managed_cluster_name,
+                "location": CONFIG["location"],
+            }
+        )
+        self.cmd("aks create -g {rg} -n {managed_cluster_name} --generate-ssh-keys")
+        self.cmd(
+            "aks get-credentials -g {rg} -n {managed_cluster_name} -f {kubeconfig} --admin"
+        )
+
+        self.cmd(
+            "connectedk8s connect -g {rg} -n {name} -l {location} --disable-auto-upgrade --kube-config {kubeconfig} \
+            --kube-context {managed_cluster_name}-admin --config extensionSets.versionManagedExtensions='enabled'",
+            checks=[
+                self.check("resourceGroup", "{rg}"),
+                self.check("name", "{name}"),
+                self.check("arcAgentryConfigurations[0].settings.versionManagedExtensions", "enabled"),
+            ],
+        )
+
+        self.cmd(
+            "connectedk8s upgrade -g {rg} -n {name} --agent-version 1.24.4 --kube-config {kubeconfig} \
+            --kube-context {managed_cluster_name}-admin",
+        )
+
+        self.cmd("k8s-extension create --cluster-name {name} --resource-group {rg} --cluster-type connectedClusters \
+                 --extension-type microsoft.iotoperations.platform --name azure-iot-operations-platform \
+                 --release-train preview --auto-upgrade-minor-version False --config installTrustManager=true \
+                 --config installCertManager=true --version 0.7.6 --release-namespace cert-manager --scope cluster")
+
+        self.cmd("k8s-extension create --cluster-name {name} --resource-group {rg} --cluster-type connectedClusters \
+                 --extension-type microsoft.azure.secretstore --name azure-secret-store --auto-upgrade-minor-version False \
+                 --config rotationPollIntervalInSeconds=120 --config validatingAdmissionPolicies.applyPolicies=false \
+                 --scope cluster")
+
+        self.cmd("k8s-extension create --cluster-name {name} --resource-group {rg} --cluster-type connectedClusters \
+                 --extension-type microsoft.arc.containerstorage --name azure-arc-containerstorage \
+                 --auto-upgrade-minor-version False --config feature.diskStorageClass=default,local-path \
+                 --config edgeStorageConfiguration.create=True --scope cluster")
+        
+        self.cmd("k8s-extension create --cluster-name {name} --resource-group {rg} --cluster-type connectedClusters \
+                --extension-type microsoft.graytown.testextension --name graytown-test-extension --version 1.302.0 \
+                --release-train preview --auto-upgrade-minor-version False --release-namespace graytowntest --scope cluster")
+
+        # The error message should be achieved from the agent-update-validator
+        with self.assertRaisesRegex(CLIError, "The target agent version 1.26.0 is not compatible."):
+            self.cmd(
+                "connectedk8s upgrade -g {rg} -n {name} --agent-version 1.26.0 --kube-config {kubeconfig} \
+                --kube-context {managed_cluster_name}-admin",
+            )
 
     @live_only()
     @ResourceGroupPreparer(
