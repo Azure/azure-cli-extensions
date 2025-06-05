@@ -193,7 +193,7 @@ def get_bundle_feature_flag_from_config_map(
     if cmd_output.returncode == 0:
         return bundle_feature_flag.decode()
     else:
-        print("Error:", stderr.decode())
+        logger.warning("Failed to get bundle feature flag from config map: " + str(stderr.decode()))
         return None
 
 class Connectedk8sScenarioTest(LiveScenarioTest):

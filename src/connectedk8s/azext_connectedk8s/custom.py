@@ -81,7 +81,7 @@ if TYPE_CHECKING:
     from azure.cli.core.commands import AzCliCommand
     from azure.core.polling import LROPoller
     from Crypto.PublicKey.RSA import RsaKey
-    from knack.commands import CLICommmand
+    from knack.commands import CLICommand
     from kubernetes.client import V1NodeList
     from kubernetes.config.kube_config import ConfigNode
     from requests.models import Response
@@ -99,7 +99,7 @@ logger = get_logger(__name__)
 
 
 def create_connectedk8s(
-    cmd: CLICommmand,
+    cmd: CLICommand,
     client: ConnectedClusterOperations,
     resource_group_name: str,
     cluster_name: str,
@@ -1047,7 +1047,7 @@ def validate_existing_provisioned_cluster_for_reput(
                 raise InvalidArgumentValueError(err_msg)
 
 
-def send_cloud_telemetry(cmd: CLICommmand) -> str:
+def send_cloud_telemetry(cmd: CLICommand) -> str:
     telemetry.add_extension_event(
         "connectedk8s", {"Context.Default.AzureCLI.AzureCloud": cmd.cli_ctx.cloud.name}
     )
@@ -1293,7 +1293,7 @@ def connected_cluster_exists(
     return True
 
 
-def get_default_config_dp_endpoint(cmd: CLICommmand, location: str) -> str:
+def get_default_config_dp_endpoint(cmd: CLICommand, location: str) -> str:
     cloud_based_domain = cmd.cli_ctx.cloud.endpoints.active_directory.split(".")[2]
     config_dp_endpoint = (
         f"https://{location}.dp.kubernetesconfiguration.azure.{cloud_based_domain}"
@@ -1302,7 +1302,7 @@ def get_default_config_dp_endpoint(cmd: CLICommmand, location: str) -> str:
 
 
 def get_config_dp_endpoint(
-    cmd: CLICommmand,
+    cmd: CLICommand,
     location: str,
     values_file: str | None,
     arm_metadata: dict[str, Any] | None = None,
@@ -1607,7 +1607,7 @@ def validate_connect_cluster_bundle_feature_flag_value(
 
 
 def validate_update_cluster_bundle_feature_flag_value(
-    cmd: CLICommmand,
+    cmd: CLICommand,
     current_arc_agentry_config: list[ArcAgentryConfigurations],
     configuration_settings: dict[str, Any],
     resource_group_name: str,
@@ -1900,7 +1900,7 @@ def list_connectedk8s(
 
 
 def delete_connectedk8s(
-    cmd: CLICommmand,
+    cmd: CLICommand,
     client: ConnectedClusterOperations,
     resource_group_name: str,
     cluster_name: str,
@@ -2162,7 +2162,7 @@ def update_connected_cluster_internal(
 
 
 def update_connected_cluster(
-    cmd: CLICommmand,
+    cmd: CLICommand,
     client: ConnectedClusterOperations,
     resource_group_name: str,
     cluster_name: str,
@@ -2524,7 +2524,7 @@ def update_connected_cluster(
 
 
 def upgrade_agents(
-    cmd: CLICommmand,
+    cmd: CLICommand,
     client: ConnectedClusterOperations,
     resource_group_name: str,
     cluster_name: str,
@@ -2986,7 +2986,7 @@ def get_all_helm_values(
 
 
 def enable_features(
-    cmd: CLICommmand,
+    cmd: CLICommand,
     client: ConnectedClusterOperations,
     resource_group_name: str,
     cluster_name: str,
@@ -3219,7 +3219,7 @@ def enable_features(
 
 
 def disable_features(
-    cmd: CLICommmand,
+    cmd: CLICommand,
     client: ConnectedClusterOperations,
     resource_group_name: str,
     cluster_name: str,
@@ -3358,7 +3358,7 @@ def disable_features(
 
 
 def get_chart_and_disable_features(
-    cmd: CLICommmand,
+    cmd: CLICommand,
     connected_cluster: ConnectedCluster,
     kube_config: str | None,
     kube_context: str | None,
@@ -3449,7 +3449,7 @@ def get_chart_and_disable_features(
 
 
 def disable_cluster_connect(
-    cmd: CLICommmand,
+    cmd: CLICommand,
     client: ConnectedClusterOperations,
     resource_group_name: str,
     cluster_name: str,
@@ -3656,7 +3656,7 @@ def handle_merge(
 
 
 def client_side_proxy_wrapper(
-    cmd: CLICommmand,
+    cmd: CLICommand,
     client: ConnectedClusterOperations,
     resource_group_name: str,
     cluster_name: str,
@@ -3827,7 +3827,7 @@ def client_side_proxy_wrapper(
 
 
 def client_side_proxy_main(
-    cmd: CLICommmand,
+    cmd: CLICommand,
     tenant_id: str,
     client: ConnectedClusterOperations,
     resource_group_name: str,
@@ -3898,7 +3898,7 @@ def client_side_proxy_main(
 
 
 def client_side_proxy(
-    cmd: CLICommmand,
+    cmd: CLICommand,
     tenant_id: str,
     client: ConnectedClusterOperations,
     resource_group_name: str,
@@ -4031,7 +4031,7 @@ def client_side_proxy(
 
 
 def check_cl_registration_and_get_oid(
-    cmd: CLICommmand, cl_oid: str | None, subscription_id: str | None
+    cmd: CLICommand, cl_oid: str | None, subscription_id: str | None
 ) -> tuple[bool, str]:
     print(
         f"Step: {utils.get_utctimestring()}: Checking Custom Location(Microsoft.ExtendedLocation) RP Registration state for this Subscription, and attempt to get the Custom Location Object ID (OID),if registered"
@@ -4070,7 +4070,7 @@ def check_cl_registration_and_get_oid(
     return enable_custom_locations, custom_locations_oid
 
 
-def get_custom_locations_oid(cmd: CLICommmand, cl_oid: str | None) -> str:
+def get_custom_locations_oid(cmd: CLICommand, cl_oid: str | None) -> str:
     try:
         graph_client = graph_client_factory(cmd.cli_ctx)
         app_id = "bc313c14-388c-4e7d-a58e-70017303ee3b"
@@ -4131,7 +4131,7 @@ def get_custom_locations_oid(cmd: CLICommmand, cl_oid: str | None) -> str:
 
 
 def troubleshoot(
-    cmd: CLICommmand,
+    cmd: CLICommand,
     client: ConnectedClusterOperations,
     resource_group_name: str,
     cluster_name: str,
