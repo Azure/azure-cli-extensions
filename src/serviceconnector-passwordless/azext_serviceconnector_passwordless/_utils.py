@@ -139,6 +139,7 @@ def confirm_admin_set():
             'Unable to prompt for confirmation as no tty available. Use --yes to enable the operation.')
         return False
 
+
 def is_packaged_installed(package_name):
     """Check if a package is installed in the current Python environment."""
     try:
