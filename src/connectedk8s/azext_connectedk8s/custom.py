@@ -1556,7 +1556,7 @@ def validate_bundle_feature_flag_value(
     print(f"Step: {utils.get_utctimestring()}: Validating the bundle feature flag value")
     value = get_bundle_feature_flag_from_configuration_settings(configuration_settings)
 
-    if value:
+    if value is not None:
         # Remove leading and trailing whitespace and quotes
         value = value.strip().strip("'\"")
 
