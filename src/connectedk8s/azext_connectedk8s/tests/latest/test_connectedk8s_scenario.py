@@ -290,7 +290,6 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
         # delete the kube config
         os.remove(_get_test_data_file(managed_cluster_name + "-config.yaml"))
 
-
     @live_only()
     @ResourceGroupPreparer(
         name_prefix="conk8stest", location=CONFIG["location"], random_name_length=16
@@ -372,7 +371,7 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
         name_prefix="conk8stest", location=CONFIG["location"], random_name_length=16
     )
     def test_update_withbundlefeatureflag(self, resource_group):
-        managed_cluster_name = self.create_random_name(prefix="test-connect", length=24)
+        managed_cluster_name = self.create_random_name(prefix="test-update", length=24)
         kubeconfig = _get_test_data_file(managed_cluster_name + "-config.yaml")
         self.kwargs.update(
             {
@@ -463,7 +462,7 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
         name_prefix="conk8stest", location=CONFIG["location"], random_name_length=16
     )
     def test_upgrade_with_agentupdatevalidator(self, resource_group):
-        managed_cluster_name = self.create_random_name(prefix="test-connect", length=24)
+        managed_cluster_name = self.create_random_name(prefix="test-upgrade", length=24)
         kubeconfig = _get_test_data_file(managed_cluster_name + "-config.yaml")
         self.kwargs.update(
             {
