@@ -13,11 +13,10 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "neon postgres organization delete",
-    is_preview=True,
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
-    """Delete a Neon Postgres Organization
+    """Delete an existing Neon organization within Azure.
 
     :example: Delete Neon Postgres Organization
         az neon postgres organization delete --subscription 12345678-1234-1234-1234-123456789abc --resource-group demoResourceGroup --name demoNeonResource
@@ -59,7 +58,7 @@ class Delete(AAZCommand):
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="The name of the Azure resource group",
+            help="Name of the Azure resource group.",
             required=True,
         )
         return cls._args_schema
