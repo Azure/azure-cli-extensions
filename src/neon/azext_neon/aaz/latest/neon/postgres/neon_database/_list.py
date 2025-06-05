@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "neon postgres neon-database list",
 )
 class List(AAZCommand):
-    """List NeonDatabase resources by Branch
+    """List all Neon Postgres databases associated with a specific branch.
 
     :example: List Neon Databases under a Branch
         az neon postgres neon-database list --resource-group rgneon --organization-name org-test-cli --project-id old-frost-16758796 --branch-id br-spring-field-a8vje3tr
@@ -47,7 +47,7 @@ class List(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.branch_id = AAZStrArg(
             options=["--branch-id"],
-            help="The id of the Neon Branch resource",
+            help="Id of the Neon branch",
             required=True,
             fmt=AAZStrArgFormat(
                 pattern="^\\S.{0,62}\\S$|^\\S$",
@@ -55,24 +55,27 @@ class List(AAZCommand):
         )
         _args_schema.organization_name = AAZStrArg(
             options=["--organization-name"],
-            help="Name of the Neon Organizations resource",
+            help="Name of the Neon organization.",
             required=True,
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9][a-zA-Z0-9_\\-.: ]*$",
                 max_length=50,
                 min_length=1,
             ),
+            blank=AAZPromptInput(
+                msg="Please provide Neon Organization name:",
+            ),
         )
         _args_schema.project_id = AAZStrArg(
             options=["--project-id"],
-            help="The id of the Neon Project resource.",
+            help="Id of the Neon project",
             required=True,
             fmt=AAZStrArgFormat(
                 pattern="^\\S.{0,62}\\S$|^\\S$",
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="The name of the Azure resource group",
+            help="Name of the Azure resource group.",
             required=True,
         )
         return cls._args_schema
@@ -109,7 +112,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Neon.Postgres/organizations/{organizationName}/projects/{projectName}/branches/{branchName}/neondatabases",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Neon.Postgres/organizations/{organizationName}/projects/{projectName}/branches/{branchName}/neonDatabases",
                 **self.url_parameters
             )
 
