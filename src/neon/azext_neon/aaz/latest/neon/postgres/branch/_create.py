@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "neon postgres branch create",
 )
 class Create(AAZCommand):
-    """Create a Branch
+    """Create a new branch within a Neon Postgres database.
 
     :example: Create a Branch
         az neon postgres branch create --resource-group rgneon --organization-name org-cli-test --project-name old-frost-16758796 --branch-name test-branch --entity-name test-branch --role-name test_role --database-name testneondb
@@ -47,7 +47,7 @@ class Create(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.branch_name = AAZStrArg(
             options=["-n", "--name", "--branch-name"],
-            help="The name of the Branch",
+            help="Name of the Neon branch.",
             required=True,
             fmt=AAZStrArgFormat(
                 pattern="^\\S.{0,62}\\S$|^\\S$",
@@ -55,24 +55,27 @@ class Create(AAZCommand):
         )
         _args_schema.organization_name = AAZStrArg(
             options=["--organization-name"],
-            help="Name of the Neon Organizations resource",
+            help="Name of the Neon organization.",
             required=True,
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9][a-zA-Z0-9_\\-.: ]*$",
                 max_length=50,
                 min_length=1,
             ),
+            blank=AAZPromptInput(
+                msg="Please provide Neon Organization name:",
+            ),
         )
         _args_schema.project_name = AAZStrArg(
             options=["--project-name"],
-            help="The Id of the Neon Project.",
+            help="Name of the Neon project.",
             required=True,
             fmt=AAZStrArgFormat(
                 pattern="^\\S.{0,62}\\S$|^\\S$",
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="The name of the Azure resource group",
+            help="Name of the Azure resource group.",
             required=True,
         )
 
@@ -107,31 +110,31 @@ class Create(AAZCommand):
         )
         return cls._args_schema
 
-    _args_models_attributes_create = None
+    _args_attributes_create = None
 
     @classmethod
-    def _build_args_models_attributes_create(cls, _schema):
-        if cls._args_models_attributes_create is not None:
-            _schema.name = cls._args_models_attributes_create.name
-            _schema.value = cls._args_models_attributes_create.value
+    def _build_args_attributes_create(cls, _schema):
+        if cls._args_attributes_create is not None:
+            _schema.name = cls._args_attributes_create.name
+            _schema.value = cls._args_attributes_create.value
             return
 
-        cls._args_models_attributes_create = AAZObjectArg()
+        cls._args_attributes_create = AAZObjectArg()
 
-        models_attributes_create = cls._args_models_attributes_create
-        models_attributes_create.name = AAZStrArg(
+        attributes_create = cls._args_attributes_create
+        attributes_create.name = AAZStrArg(
             options=["name"],
             help="Name of the attribute",
             required=True,
         )
-        models_attributes_create.value = AAZStrArg(
+        attributes_create.value = AAZStrArg(
             options=["value"],
             help="Value of the attribute",
             required=True,
         )
 
-        _schema.name = cls._args_models_attributes_create.name
-        _schema.value = cls._args_models_attributes_create.value
+        _schema.name = cls._args_attributes_create.name
+        _schema.value = cls._args_attributes_create.value
 
     def _execute_operations(self):
         self.pre_operations()
@@ -326,7 +329,7 @@ class Create(AAZCommand):
 
             attributes = cls._schema_on_200_201.properties.attributes
             attributes.Element = AAZObjectType()
-            _CreateHelper._build_schema_models_attributes_read(attributes.Element)
+            _CreateHelper._build_schema_attributes_read(attributes.Element)
 
             databases = cls._schema_on_200_201.properties.databases
             databases.Element = AAZObjectType()
@@ -357,7 +360,7 @@ class Create(AAZCommand):
 
             attributes = cls._schema_on_200_201.properties.databases.Element.attributes
             attributes.Element = AAZObjectType()
-            _CreateHelper._build_schema_models_attributes_read(attributes.Element)
+            _CreateHelper._build_schema_attributes_read(attributes.Element)
 
             endpoints = cls._schema_on_200_201.properties.endpoints
             endpoints.Element = AAZObjectType()
@@ -391,7 +394,7 @@ class Create(AAZCommand):
 
             attributes = cls._schema_on_200_201.properties.endpoints.Element.attributes
             attributes.Element = AAZObjectType()
-            _CreateHelper._build_schema_models_attributes_read(attributes.Element)
+            _CreateHelper._build_schema_attributes_read(attributes.Element)
 
             roles = cls._schema_on_200_201.properties.roles
             roles.Element = AAZObjectType()
@@ -423,7 +426,7 @@ class Create(AAZCommand):
 
             attributes = cls._schema_on_200_201.properties.roles.Element.attributes
             attributes.Element = AAZObjectType()
-            _CreateHelper._build_schema_models_attributes_read(attributes.Element)
+            _CreateHelper._build_schema_attributes_read(attributes.Element)
 
             permissions = cls._schema_on_200_201.properties.roles.Element.permissions
             permissions.Element = AAZStrType()
@@ -455,33 +458,33 @@ class _CreateHelper:
     """Helper class for Create"""
 
     @classmethod
-    def _build_schema_models_attributes_create(cls, _builder):
+    def _build_schema_attributes_create(cls, _builder):
         if _builder is None:
             return
         _builder.set_prop("name", AAZStrType, ".name", typ_kwargs={"flags": {"required": True}})
         _builder.set_prop("value", AAZStrType, ".value", typ_kwargs={"flags": {"required": True}})
 
-    _schema_models_attributes_read = None
+    _schema_attributes_read = None
 
     @classmethod
-    def _build_schema_models_attributes_read(cls, _schema):
-        if cls._schema_models_attributes_read is not None:
-            _schema.name = cls._schema_models_attributes_read.name
-            _schema.value = cls._schema_models_attributes_read.value
+    def _build_schema_attributes_read(cls, _schema):
+        if cls._schema_attributes_read is not None:
+            _schema.name = cls._schema_attributes_read.name
+            _schema.value = cls._schema_attributes_read.value
             return
 
-        cls._schema_models_attributes_read = _schema_models_attributes_read = AAZObjectType()
+        cls._schema_attributes_read = _schema_attributes_read = AAZObjectType()
 
-        models_attributes_read = _schema_models_attributes_read
-        models_attributes_read.name = AAZStrType(
+        attributes_read = _schema_attributes_read
+        attributes_read.name = AAZStrType(
             flags={"required": True},
         )
-        models_attributes_read.value = AAZStrType(
+        attributes_read.value = AAZStrType(
             flags={"required": True},
         )
 
-        _schema.name = cls._schema_models_attributes_read.name
-        _schema.value = cls._schema_models_attributes_read.value
+        _schema.name = cls._schema_attributes_read.name
+        _schema.value = cls._schema_attributes_read.value
 
 
 __all__ = ["Create"]
