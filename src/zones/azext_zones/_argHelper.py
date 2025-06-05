@@ -25,6 +25,9 @@ def build_arg_query(resource_groups, tags):
 
     query = "Resources"
     if resource_groups is not None and len(resource_groups) > 0:
+        # ARG returns all resource groups as lowercase, so we need to lowercase the input
+        resource_groups = resource_groups.lower()
+
         query += " | where resourceGroup in ({0})".format(','.join(f"'{item}'" for item in resource_groups.split(',')))
 
     if tags is not None:
