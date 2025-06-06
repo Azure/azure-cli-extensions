@@ -48,7 +48,8 @@ from azext_aks_preview._helpers import (
     check_is_azure_cli_core_editable_installed,
     check_is_private_cluster,
     get_cluster_snapshot_by_snapshot_id,
-    setup_common_safeguards_profile,
+    # TODO (NickKeller): update this according to the new deployment safeguard API
+    # setup_common_safeguards_profile,
     filter_hard_taints,
 )
 from azext_aks_preview._loadbalancer import create_load_balancer_profile
