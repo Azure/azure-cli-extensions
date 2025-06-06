@@ -175,7 +175,7 @@ def attach_fragment_to_image(image_name: str, filename: str):
     print(f"Fragment attached to image '{image_name}' with Digest:{digest}")
 
 
-def generate_imports_from_image_name(image_name: str, minimum_svn: int) -> List[dict]:
+def generate_imports_from_image_name(image_name: str, minimum_svn: str) -> List[dict]:
     cose_proxy = CoseSignToolProxy()
     fragment_hashes = discover(image_name)
     import_list = []
