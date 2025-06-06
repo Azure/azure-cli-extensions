@@ -3434,11 +3434,12 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         return mc
 
     def set_up_safeguards_profile(self, mc: ManagedCluster) -> ManagedCluster:
-        excludedNamespaces = self.context.get_safeguards_excluded_namespaces()
-        version = self.context.get_safeguards_version()
-        level = self.context.get_safeguards_level()
-        # provided any value?
-        mc = setup_common_safeguards_profile(level, version, excludedNamespaces, mc, self.models)
+        # TODO (NickKeller): update this according to the new deployment safeguard API
+        # excludedNamespaces = self.context.get_safeguards_excluded_namespaces()
+        # version = self.context.get_safeguards_version()
+        # level = self.context.get_safeguards_level()
+        # # provided any value?
+        # mc = setup_common_safeguards_profile(level, version, excludedNamespaces, mc, self.models)
         return mc
 
     def set_up_azure_service_mesh_profile(self, mc: ManagedCluster) -> ManagedCluster:
@@ -4893,19 +4894,20 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         """Update safeguards profile for the ManagedCluster object
         :return: the ManagedCluster object
         """
+        # TODO (NickKeller): update this according to the new deployment safeguard API
 
-        self._ensure_mc(mc)
+        # self._ensure_mc(mc)
 
-        excludedNamespaces = self.context.get_safeguards_excluded_namespaces()
-        version = self.context.get_safeguards_version()
-        level = self.context.get_safeguards_level()
+        # excludedNamespaces = self.context.get_safeguards_excluded_namespaces()
+        # version = self.context.get_safeguards_version()
+        # level = self.context.get_safeguards_level()
 
-        mc = setup_common_safeguards_profile(level, version, excludedNamespaces, mc, self.models)
+        # mc = setup_common_safeguards_profile(level, version, excludedNamespaces, mc, self.models)
 
-        if level is not None:
-            mc.safeguards_profile.level = level
-        if version is not None:
-            mc.safeguards_profile.version = version
+        # if level is not None:
+        #     mc.safeguards_profile.level = level
+        # if version is not None:
+        #     mc.safeguards_profile.version = version
 
         return mc
 
