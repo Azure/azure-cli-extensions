@@ -48,7 +48,8 @@ from azext_aks_preview._helpers import (
     check_is_azure_cli_core_editable_installed,
     check_is_private_cluster,
     get_cluster_snapshot_by_snapshot_id,
-    setup_common_safeguards_profile,
+    # TODO (NickKeller): update this according to the new deployment safeguard API
+    # setup_common_safeguards_profile,
     filter_hard_taints,
 )
 from azext_aks_preview._loadbalancer import create_load_balancer_profile
@@ -3434,11 +3435,12 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         return mc
 
     def set_up_safeguards_profile(self, mc: ManagedCluster) -> ManagedCluster:
-        excludedNamespaces = self.context.get_safeguards_excluded_namespaces()
-        version = self.context.get_safeguards_version()
-        level = self.context.get_safeguards_level()
-        # provided any value?
-        mc = setup_common_safeguards_profile(level, version, excludedNamespaces, mc, self.models)
+        # TODO (NickKeller): update this according to the new deployment safeguard API
+        # excludedNamespaces = self.context.get_safeguards_excluded_namespaces()
+        # version = self.context.get_safeguards_version()
+        # level = self.context.get_safeguards_level()
+        # # provided any value?
+        # mc = setup_common_safeguards_profile(level, version, excludedNamespaces, mc, self.models)
         return mc
 
     def set_up_azure_service_mesh_profile(self, mc: ManagedCluster) -> ManagedCluster:
@@ -4893,19 +4895,20 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         """Update safeguards profile for the ManagedCluster object
         :return: the ManagedCluster object
         """
+        # TODO (NickKeller): update this according to the new deployment safeguard API
 
-        self._ensure_mc(mc)
+        # self._ensure_mc(mc)
 
-        excludedNamespaces = self.context.get_safeguards_excluded_namespaces()
-        version = self.context.get_safeguards_version()
-        level = self.context.get_safeguards_level()
+        # excludedNamespaces = self.context.get_safeguards_excluded_namespaces()
+        # version = self.context.get_safeguards_version()
+        # level = self.context.get_safeguards_level()
 
-        mc = setup_common_safeguards_profile(level, version, excludedNamespaces, mc, self.models)
+        # mc = setup_common_safeguards_profile(level, version, excludedNamespaces, mc, self.models)
 
-        if level is not None:
-            mc.safeguards_profile.level = level
-        if version is not None:
-            mc.safeguards_profile.version = version
+        # if level is not None:
+        #     mc.safeguards_profile.level = level
+        # if version is not None:
+        #     mc.safeguards_profile.version = version
 
         return mc
 
