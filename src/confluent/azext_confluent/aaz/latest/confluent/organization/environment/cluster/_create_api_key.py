@@ -15,13 +15,13 @@ from azure.cli.core.aaz import *
     "confluent organization environment cluster create-api-key",
 )
 class CreateApiKey(AAZCommand):
-    """Creates API key for a schema registry Cluster ID or Kafka Cluster ID under a environment
+    """Creates API key for a schema registry Cluster ID or Kafka Cluster ID under an environment.
     """
 
     _aaz_info = {
-        "version": "2024-02-13",
+        "version": "2024-07-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.confluent/organizations/{}/environments/{}/clusters/{}/createapikey", "2024-02-13"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.confluent/organizations/{}/environments/{}/clusters/{}/createapikey", "2024-07-01"],
         ]
     }
 
@@ -49,7 +49,7 @@ class CreateApiKey(AAZCommand):
         )
         _args_schema.environment_id = AAZStrArg(
             options=["--environment-id"],
-            help="Confluent environment id",
+            help="Confluent environment ID.",
             required=True,
             id_part="child_name_1",
         )
@@ -60,8 +60,7 @@ class CreateApiKey(AAZCommand):
             id_part="name",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            options=["--resource-group"],
-            help="Resource group name",
+            help="Resource group.",
             required=True,
         )
 
@@ -153,7 +152,7 @@ class CreateApiKey(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-02-13",
+                    "api-version", "2024-07-01",
                     required=True,
                 ),
             }
