@@ -14,13 +14,13 @@ import hashlib
 import json
 import logging
 import os
+import re
 import shutil
 import tempfile
 import unittest
 
 from packaging import version
 from util import SRC_PATH
-from wheel.install import WHEEL_INFO_RE
 
 from util import get_ext_metadata, get_whl_from_url, get_index_data
 
@@ -30,6 +30,14 @@ logger.setLevel(logging.DEBUG)
 ch = logging.StreamHandler()
 ch.setLevel(logging.DEBUG)
 logger.addHandler(ch)
+
+
+# copy from wheel==0.30.0
+WHEEL_INFO_RE = re.compile(
+    r"""^(?P<namever>(?P<name>.+?)(-(?P<ver>\d.+?))?)
+    ((-(?P<build>\d.*?))?-(?P<pyver>.+?)-(?P<abi>.+?)-(?P<plat>.+?)
+    \.whl|\.dist-info)$""",
+    re.VERBOSE).match
 
 
 def get_sha256sum(a_file):
@@ -85,8 +93,6 @@ class TestIndex(unittest.TestCase):
                                  "Extension name mismatch in extensions['{}']. "
                                  "Found an extension in the list with name "
                                  "{}".format(ext_name, item['metadata']['name']))
-                # Due to https://github.com/pypa/wheel/issues/235 we prevent whls built with 0.31.0 or greater.
-                # 0.29.0, 0.30.0 are the two previous versions before that release.
                 parsed_filename = WHEEL_INFO_RE(item['filename'])
                 p = parsed_filename.groupdict()
                 self.assertTrue(p.get('name'), "Can't get name for {}".format(item['filename']))
@@ -196,15 +202,27 @@ class TestIndex(unittest.TestCase):
                 else:
                     raise ex
 
-            # Due to https://github.com/pypa/wheel/issues/195 we prevent whls built with 0.31.0 or greater.
-            # 0.29.0, 0.30.0 are the two previous versions before that release.
             supported_generators = ['bdist_wheel (0.29.0)', 'bdist_wheel (0.30.0)']
             self.assertIn(metadata.get('generator'), supported_generators,
                           "{}: 'generator' should be one of {}. "
-                          "Build the extension with a different version of the 'wheel' package "
-                          "(e.g. `pip install wheel==0.30.0`). "
-                          "This is due to https://github.com/pypa/wheel/issues/195".format(ext_name,
+                          "Please install the latest azdev."
+                          "(e.g. `pip install azdev==0.2.3b1 && `)."
+                          "And update the extension index with the latest azdev."
+                          "(e.g. `azdev extension update-index xxx.whl`).".format(ext_name,
                                                                                            supported_generators))
+
+            # Ignore generator which is hardcoded in azdev/operations/extensions/metadata.py.
+            metadata.pop('generator', None)
+            item['metadata'].pop('generator', None)
+
+            # Ignore test_requires which is defined in setup.py.
+            # e.g: https://hciarcvmsstorage.z13.web.core.windows.net/cli-extensions/stack_hci_vm-1.7.8-py3-none-any.whl
+            metadata['extensions']['python.details'].pop('document_names', None)
+            item['metadata']['extensions']['python.details'].pop('document_names', None)
+
+            # Ignore test_requires which is defined in setup.py.
+            item['metadata'].pop('test_requires', None)
+
             self.assertDictEqual(metadata, item['metadata'],
                                  "Metadata for {} in index doesn't match the expected of: \n"
                                  "{}".format(item['filename'], json.dumps(metadata, indent=2, sort_keys=True,
