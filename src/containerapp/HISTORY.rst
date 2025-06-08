@@ -4,6 +4,7 @@ Release History
 ===============
 upcoming
 ++++++
+* 'az containerapp patch': Support Cloud Patch scenario in North Central US Staging region
 
 1.2.0b1
 ++++++
