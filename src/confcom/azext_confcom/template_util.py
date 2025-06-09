@@ -505,7 +505,7 @@ def process_env_vars_from_config(container) -> List[Dict[str, str]]:
         name = case_insensitive_dict_get(env_var, "name")
         secure_value = case_insensitive_dict_get(env_var, "secureValue")
         is_secure = bool(secure_value)
-        value = case_insensitive_dict_get(env_var, "value") or secure_value
+        value = case_insensitive_dict_get(env_var, "value") or secure_value or ""
 
         if not name and not is_secure:
             eprint(
@@ -515,8 +515,6 @@ def process_env_vars_from_config(container) -> List[Dict[str, str]]:
             eprint(
                 "Environment variable with secure value is missing a name"
             )
-        elif not value:
-            eprint(f'Environment variable {name} does not have a value. Please check the template file.')
 
         env_vars.append({
             config.ACI_FIELD_CONTAINERS_ENVS_NAME: name,
@@ -1494,3 +1492,198 @@ def process_seccomp_policy(policy2):
         # put temp_syscalls back into policy
         policy['syscalls'] = temp_syscalls
     return policy
+
+
+def convert_config_v0_to_v1(old_data):
+    """
+    Convert a JSON structure from the 'v0' format to the 'v1' format.
+    If the input is already in 'v1' format, return the original input.
+
+    :param old_data: Dictionary in the old format.
+    :return: Dictionary in the new format.
+
+    Expected old_data schema (simplified):
+    {
+        "version": "1.0",
+        "containers": [
+            {
+                "name": "...",
+                "containerImage": "...",
+                "environmentVariables": [
+                    {
+                        "name": "...",
+                        "value": "...",
+                        "strategy": "string" or "re2" (optional, default is string)
+                    }
+                ],
+                "command": [...],
+                "workingDir": "...",
+                "mounts": [
+                    {
+                        "mountType": "...",
+                        "mountPath": "...",
+                        "readonly": bool
+                    }
+                ]
+            },
+            ...
+        ]
+    }
+
+    Returns a structure matching the 'new' format:
+    {
+        "version": "...",
+        "fragments": [],
+        "containers": [
+            {
+                "name": "...",
+                "properties": {
+                    "image": "...",
+                    "workingDir": "...",
+                    "execProcesses": [
+                        {
+                            "command": [...]
+                        }
+                    ],
+                    "volumeMounts": [
+                        {
+                            "name": "...",
+                            "mountPath": "...",
+                            "mountType": "...",
+                            "readOnly": bool
+                        }
+                    ],
+                    "environmentVariables": [
+                        {
+                            "name": "...",
+                            "value": "...",
+                            "regex": bool (only present if we decide so, default is false)
+                        }
+                    ]
+                }
+            },
+            ...
+        ]
+    }
+    """
+    if not detect_old_format(old_data):
+        logger.warning("JSON config is already in v1 format")
+        return old_data
+
+    # Prepare the structure of the new JSON
+    new_data = {
+        config.ACI_FIELD_VERSION: old_data.get(config.ACI_FIELD_VERSION, "1.0"),  # default if missing
+        config.ACI_FIELD_CONTAINERS_REGO_FRAGMENTS: [],  # empty by default in your example
+        config.ACI_FIELD_CONTAINERS: []
+    }
+
+    old_containers = old_data.get(config.ACI_FIELD_CONTAINERS, [])
+
+    for old_container in old_containers:
+        # Build the 'environmentVariables' section in the new format
+        new_envs = []
+        for env_var in old_container.get(config.ACI_FIELD_CONTAINERS_ENVS) or []:
+            # Decide if we need 'regex' or not, based on 'strategy' or your custom logic
+            # Here we'll assume "strategy"=="re2" means 'regex' = True
+            # If strategy is missing or 'string', omit 'regex' or set it to False
+            env_entry = {
+                config.ACI_FIELD_CONTAINERS_ENVS_NAME: env_var.get(config.ACI_FIELD_CONTAINERS_ENVS_NAME),
+                config.ACI_FIELD_CONTAINERS_ENVS_VALUE: env_var.get(config.ACI_FIELD_CONTAINERS_ENVS_VALUE, "")
+            }
+            strategy = env_var.get(config.ACI_FIELD_CONTAINERS_ENVS_STRATEGY)
+            if strategy == "re2":
+                env_entry["regex"] = True
+
+            new_envs.append(env_entry)
+
+        # Build the 'execProcesses' from the old 'command'
+        exec_processes = []
+        old_command_list = old_container.get(config.ACI_FIELD_CONTAINERS_EXEC_PROCESSES, [])
+        if old_command_list:
+            exec_processes.append({config.ACI_FIELD_CONTAINERS_COMMAND: old_command_list})
+
+        command = old_container.get(config.ACI_FIELD_CONTAINERS_COMMAND)
+
+        # Liveness probe => exec process
+        liveness_probe = old_container.get(config.ACI_FIELD_CONTAINERS_LIVENESS_PROBE, {})
+        liveness_exec = liveness_probe.get(config.ACI_FIELD_CONTAINERS_PROBE_ACTION, {})
+        liveness_command = liveness_exec.get(config.ACI_FIELD_CONTAINERS_COMMAND, [])
+        if liveness_command:
+            exec_processes.append({
+                config.ACI_FIELD_CONTAINERS_COMMAND: liveness_command
+            })
+
+        # Readiness probe => exec process
+        readiness_probe = old_container.get(config.ACI_FIELD_CONTAINERS_READINESS_PROBE, {})
+        readiness_exec = readiness_probe.get(config.ACI_FIELD_CONTAINERS_PROBE_ACTION, {})
+        readiness_command = readiness_exec.get(config.ACI_FIELD_CONTAINERS_COMMAND, [])
+        if readiness_command:
+            exec_processes.append({
+                config.ACI_FIELD_CONTAINERS_COMMAND: readiness_command
+            })
+
+        # Build the 'volumeMounts' section
+        volume_mounts = []
+        for mount in old_container.get(config.ACI_FIELD_CONTAINERS_MOUNTS) or []:
+            # For 'name', we can take the mountType or generate something else:
+            # e.g. if mountType is "azureFile", name "azurefile"
+            mount_name = mount.get(config.ACI_FIELD_CONTAINERS_MOUNTS_TYPE, "defaultName").lower()
+            volume_mount = {
+                config.ACI_FIELD_CONTAINERS_ENVS_NAME: mount_name,
+                config.ACI_FIELD_TEMPLATE_MOUNTS_PATH: mount.get(config.ACI_FIELD_CONTAINERS_MOUNTS_PATH),
+                config.ACI_FIELD_TEMPLATE_MOUNTS_TYPE: mount.get(config.ACI_FIELD_CONTAINERS_MOUNTS_TYPE),
+                config.ACI_FIELD_TEMPLATE_MOUNTS_READONLY: mount.get(config.ACI_FIELD_CONTAINERS_MOUNTS_READONLY, True),
+            }
+            volume_mounts.append(volume_mount)
+
+        # Create the container's "properties" object
+        container_properties = {
+            config.ACI_FIELD_TEMPLATE_IMAGE: old_container.get(config.ACI_FIELD_CONTAINERS_CONTAINERIMAGE),
+            config.ACI_FIELD_CONTAINERS_EXEC_PROCESSES: exec_processes,
+            config.ACI_FIELD_TEMPLATE_VOLUME_MOUNTS: volume_mounts,
+            config.ACI_FIELD_CONTAINERS_ENVS: new_envs,
+            config.ACI_FIELD_CONTAINERS_COMMAND: command,
+        }
+
+        if old_container.get(config.ACI_FIELD_TEMPLATE_SECURITY_CONTEXT) is not None:
+            container_properties[
+                config.ACI_FIELD_TEMPLATE_SECURITY_CONTEXT
+            ] = old_container[config.ACI_FIELD_TEMPLATE_SECURITY_CONTEXT]
+
+        if old_container.get(config.ACI_FIELD_CONTAINERS_ALLOW_ELEVATED) is not None:
+            if config.ACI_FIELD_TEMPLATE_SECURITY_CONTEXT not in container_properties:
+                container_properties[config.ACI_FIELD_TEMPLATE_SECURITY_CONTEXT] = {}
+            container_properties[
+                config.ACI_FIELD_TEMPLATE_SECURITY_CONTEXT
+            ][config.ACI_FIELD_CONTAINERS_PRIVILEGED] = old_container.get(config.ACI_FIELD_CONTAINERS_ALLOW_ELEVATED)
+
+        if old_container.get(config.ACI_FIELD_CONTAINERS_WORKINGDIR) is not None:
+            container_properties[
+                config.ACI_FIELD_CONTAINERS_WORKINGDIR
+            ] = old_container.get(config.ACI_FIELD_CONTAINERS_WORKINGDIR)
+
+        # Finally, assemble the new container dict
+        new_container = {
+            config.ACI_FIELD_CONTAINERS_NAME: old_container.get(config.ACI_FIELD_CONTAINERS_NAME),
+            config.ACI_FIELD_TEMPLATE_PROPERTIES: container_properties
+        }
+
+        new_data[config.ACI_FIELD_CONTAINERS].append(new_container)
+
+    return new_data
+
+
+def detect_old_format(old_data):
+    # we want to encourage customers to transition to the new format. The best way to check for the old format is
+    # to see if the json is flattened. This is an appropriate check since the image name is required
+    # and they are located in different places in the two formats
+    old_containers = old_data.get(config.ACI_FIELD_CONTAINERS, [])
+    if len(old_containers) > 0 and old_containers[0].get(config.ACI_FIELD_CONTAINERS_CONTAINERIMAGE) is not None:
+        logger.warning(
+            "%s %s %s",
+            "(Deprecation Warning) The input format used is deprecated.",
+            "To view the current format, please look at the examples in: ",
+            "https://github.com/Azure/azure-cli-extensions/blob/main/src/confcom/azext_confcom/README.md"
+        )
+        return True
+    return False
