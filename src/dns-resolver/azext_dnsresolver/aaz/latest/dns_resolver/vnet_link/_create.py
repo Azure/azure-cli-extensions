@@ -22,9 +22,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-07-01-preview",
+        "version": "2022-07-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/dnsforwardingrulesets/{}/virtualnetworklinks/{}", "2023-07-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/dnsforwardingrulesets/{}/virtualnetworklinks/{}", "2022-07-01"],
         ]
     }
 
@@ -66,13 +66,8 @@ class Create(AAZCommand):
             help="The name of the virtual network link.",
             required=True,
         )
-
-        # define Arg Group "Properties"
-
-        _args_schema = cls._args_schema
         _args_schema.metadata = AAZDictArg(
             options=["--metadata"],
-            arg_group="Properties",
             help="Metadata attached to the forwarding rule. Expect value: KEY1=VALUE1 KEY2=VALUE2 ...",
         )
 
@@ -175,7 +170,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-07-01-preview",
+                    "api-version", "2022-07-01",
                     required=True,
                 ),
             }
@@ -283,21 +278,27 @@ class Create(AAZCommand):
             system_data = cls._schema_on_200_201.system_data
             system_data.created_at = AAZStrType(
                 serialized_name="createdAt",
+                flags={"read_only": True},
             )
             system_data.created_by = AAZStrType(
                 serialized_name="createdBy",
+                flags={"read_only": True},
             )
             system_data.created_by_type = AAZStrType(
                 serialized_name="createdByType",
+                flags={"read_only": True},
             )
             system_data.last_modified_at = AAZStrType(
                 serialized_name="lastModifiedAt",
+                flags={"read_only": True},
             )
             system_data.last_modified_by = AAZStrType(
                 serialized_name="lastModifiedBy",
+                flags={"read_only": True},
             )
             system_data.last_modified_by_type = AAZStrType(
                 serialized_name="lastModifiedByType",
+                flags={"read_only": True},
             )
 
             return cls._schema_on_200_201

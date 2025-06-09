@@ -12,26 +12,27 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "dns-resolver policy show",
+    "dns-resolver domain-list bulk",
 )
-class Show(AAZCommand):
-    """Get properties of a DNS resolver policy.
+class Bulk(AAZCommand):
+    """Uploads or downloads the list of domains for a DNS Resolver Domain List from a storage link.
 
-    :example: Retrieve DNS resolver policy
-        az dns-resolver policy show --resource-group sampleResourceGroup --dns-resolver-policy-name sampleDnsResolverPolicy
+    :example: Upload DNS resolver domain list domains
+        az dns-resolver domain-list bulk --resource-group sampleResourceGroup --dns-resolver-domain-list-name sampleDnsResolverDomainList --action Upload --storage-url https://sampleStorageAccount.blob.core.windows.net/sample-container/sampleBlob.txt?sv=2022-11-02&sr=b&sig=39Up9jzHkxhUIhFEjEh9594DJxe7w6cIRCgOV6ICGS0%3A377&sp=rcw
     """
 
     _aaz_info = {
         "version": "2025-05-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/dnsresolverpolicies/{}", "2025-05-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/dnsresolverdomainlists/{}/bulk", "2025-05-01"],
         ]
     }
 
+    AZ_SUPPORT_NO_WAIT = True
+
     def _handler(self, command_args):
         super()._handler(command_args)
-        self._execute_operations()
-        return self._output()
+        return self.build_lro_poller(self._execute_operations, self._output)
 
     _args_schema = None
 
@@ -44,9 +45,17 @@ class Show(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.dns_resolver_policy_name = AAZStrArg(
-            options=["-n", "--name", "--dns-resolver-policy-name"],
-            help="The name of the DNS resolver policy.",
+        _args_schema.if_match = AAZStrArg(
+            options=["--if-match"],
+            help="ETag of the resource. Omit this value to always overwrite the current resource. Specify the last-seen ETag value to prevent accidentally overwriting any concurrent changes.",
+        )
+        _args_schema.if_none_match = AAZStrArg(
+            options=["--if-none-match"],
+            help="Set to '*' to allow a new resource to be created, but to prevent updating an existing resource. Other values will be ignored.",
+        )
+        _args_schema.dns_resolver_domain_list_name = AAZStrArg(
+            options=["--dns-resolver-domain-list-name"],
+            help="The name of the DNS resolver domain list.",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
@@ -58,11 +67,28 @@ class Show(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
+
+        # define Arg Group "Properties"
+
+        _args_schema = cls._args_schema
+        _args_schema.action = AAZStrArg(
+            options=["--action"],
+            arg_group="Properties",
+            help="The action to take in the request, Upload or Download.",
+            required=True,
+            enum={"Download": "Download", "Upload": "Upload"},
+        )
+        _args_schema.storage_url = AAZStrArg(
+            options=["--storage-url"],
+            arg_group="Properties",
+            help="The storage account blob file URL to be used in the bulk upload or download request of DNS resolver domain list.",
+            required=True,
+        )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.DnsResolverPoliciesGet(ctx=self.ctx)()
+        yield self.DnsResolverDomainListsBulk(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -77,27 +103,43 @@ class Show(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class DnsResolverPoliciesGet(AAZHttpOperation):
+    class DnsResolverDomainListsBulk(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
+            if session.http_response.status_code in [202]:
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200,
+                    self.on_error,
+                    lro_options={"final-state-via": "azure-async-operation"},
+                    path_format_arguments=self.url_parameters,
+                )
             if session.http_response.status_code in [200]:
-                return self.on_200(session)
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200,
+                    self.on_error,
+                    lro_options={"final-state-via": "azure-async-operation"},
+                    path_format_arguments=self.url_parameters,
+                )
 
             return self.on_error(session.http_response)
 
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/dnsResolverPolicies/{dnsResolverPolicyName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/dnsResolverDomainLists/{dnsResolverDomainListName}/bulk",
                 **self.url_parameters
             )
 
         @property
         def method(self):
-            return "GET"
+            return "POST"
 
         @property
         def error_format(self):
@@ -107,7 +149,7 @@ class Show(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "dnsResolverPolicyName", self.ctx.args.dns_resolver_policy_name,
+                    "dnsResolverDomainListName", self.ctx.args.dns_resolver_domain_list_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -135,10 +177,35 @@ class Show(AAZCommand):
         def header_parameters(self):
             parameters = {
                 **self.serialize_header_param(
+                    "If-Match", self.ctx.args.if_match,
+                ),
+                **self.serialize_header_param(
+                    "If-None-Match", self.ctx.args.if_none_match,
+                ),
+                **self.serialize_header_param(
+                    "Content-Type", "application/json",
+                ),
+                **self.serialize_header_param(
                     "Accept", "application/json",
                 ),
             }
             return parameters
+
+        @property
+        def content(self):
+            _content_value, _builder = self.new_content_builder(
+                self.ctx.args,
+                typ=AAZObjectType,
+                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
+            )
+            _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True, "client_flatten": True}})
+
+            properties = _builder.get(".properties")
+            if properties is not None:
+                properties.set_prop("action", AAZStrType, ".action", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("storageUrl", AAZStrType, ".storage_url", typ_kwargs={"flags": {"required": True}})
+
+            return self.serialize_content(_content_value)
 
         def on_200(self, session):
             data = self.deserialize_http_content(session)
@@ -183,6 +250,11 @@ class Show(AAZCommand):
             )
 
             properties = cls._schema_on_200.properties
+            properties.domains = AAZListType()
+            properties.domains_url = AAZStrType(
+                serialized_name="domainsUrl",
+                flags={"read_only": True},
+            )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
@@ -191,6 +263,9 @@ class Show(AAZCommand):
                 serialized_name="resourceGuid",
                 flags={"read_only": True},
             )
+
+            domains = cls._schema_on_200.properties.domains
+            domains.Element = AAZStrType()
 
             system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(
@@ -218,8 +293,8 @@ class Show(AAZCommand):
             return cls._schema_on_200
 
 
-class _ShowHelper:
-    """Helper class for Show"""
+class _BulkHelper:
+    """Helper class for Bulk"""
 
 
-__all__ = ["Show"]
+__all__ = ["Bulk"]

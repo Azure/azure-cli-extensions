@@ -22,9 +22,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-07-01-preview",
+        "version": "2022-07-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/dnsresolvers/{}/outboundendpoints/{}", "2023-07-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/dnsresolvers/{}/outboundendpoints/{}", "2022-07-01"],
         ]
     }
 
@@ -66,12 +66,7 @@ class Create(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
-
-        # define Arg Group "Parameters"
-
-        _args_schema = cls._args_schema
         _args_schema.location = AAZResourceLocationArg(
-            arg_group="Parameters",
             help="Location. Values from: `az account list-locations`. You can configure the default location using `az configure --defaults location=<location>`.",
             required=True,
             fmt=AAZResourceLocationArgFormat(
@@ -80,7 +75,6 @@ class Create(AAZCommand):
         )
         _args_schema.tags = AAZDictArg(
             options=["--tags"],
-            arg_group="Parameters",
             help="Space-separated tags: key[=value] [key[=value] ...].",
         )
 
@@ -183,7 +177,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-07-01-preview",
+                    "api-version", "2022-07-01",
                     required=True,
                 ),
             }
@@ -295,21 +289,27 @@ class Create(AAZCommand):
             system_data = cls._schema_on_200_201.system_data
             system_data.created_at = AAZStrType(
                 serialized_name="createdAt",
+                flags={"read_only": True},
             )
             system_data.created_by = AAZStrType(
                 serialized_name="createdBy",
+                flags={"read_only": True},
             )
             system_data.created_by_type = AAZStrType(
                 serialized_name="createdByType",
+                flags={"read_only": True},
             )
             system_data.last_modified_at = AAZStrType(
                 serialized_name="lastModifiedAt",
+                flags={"read_only": True},
             )
             system_data.last_modified_by = AAZStrType(
                 serialized_name="lastModifiedBy",
+                flags={"read_only": True},
             )
             system_data.last_modified_by_type = AAZStrType(
                 serialized_name="lastModifiedByType",
+                flags={"read_only": True},
             )
 
             tags = cls._schema_on_200_201.tags
