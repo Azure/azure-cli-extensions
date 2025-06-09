@@ -18,7 +18,7 @@ class Bulk(AAZCommand):
     """Uploads or downloads the list of domains for a DNS Resolver Domain List from a storage link.
 
     :example: Upload DNS resolver domain list domains
-        az dns-resolver domain-list bulk --resource-group sampleResourceGroup --dns-resolver-domain-list-name sampleDnsResolverDomainList --action Upload --storage-url https://sampleStorageAccount.blob.core.windows.net/sample-container/sampleBlob.txt?sv=2022-11-02&sr=b&sig=39Up9jzHkxhUIhFEjEh9594DJxe7w6cIRCgOV6ICGS0%3A377&sp=rcw
+        az dns-resolver domain-list bulk --resource-group sampleResourceGroup --name sampleDnsResolverDomainList --action Upload --storage-url https://sampleStorageAccount.blob.core.windows.net/sample-container/sampleBlob.txt?sv=2022-11-02&sr=b&sig=39Up9jzHkxhUIhFEjEh9594DJxe7w6cIRCgOV6ICGS0%3A377&sp=rcw
     """
 
     _aaz_info = {
@@ -53,8 +53,8 @@ class Bulk(AAZCommand):
             options=["--if-none-match"],
             help="Set to '*' to allow a new resource to be created, but to prevent updating an existing resource. Other values will be ignored.",
         )
-        _args_schema.dns_resolver_domain_list_name = AAZStrArg(
-            options=["--dns-resolver-domain-list-name"],
+        _args_schema.name = AAZStrArg(
+            options=["--name"],
             help="The name of the DNS resolver domain list.",
             required=True,
             id_part="name",
@@ -149,7 +149,7 @@ class Bulk(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "dnsResolverDomainListName", self.ctx.args.dns_resolver_domain_list_name,
+                    "dnsResolverDomainListName", self.ctx.args.name,
                     required=True,
                 ),
                 **self.serialize_url_param(

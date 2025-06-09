@@ -7,6 +7,7 @@
 # pylint: disable=too-many-lines
 from datetime import datetime
 from datetime import timedelta
+import os
 from azure.cli.testsdk import (
     ResourceGroupPreparer,
     ScenarioTest
@@ -61,8 +62,15 @@ class DnsResolverPolicyClientTest(ScenarioTest):
         # Create a storage account for the domain list bulk usage
         self.cmd('storage account create -n {storage_account_name} -g {rg} --sku Standard_LRS')
         self.cmd('storage container create -n {container_name} --account-name {storage_account_name}')
-        self.cmd('storage blob upload --account-name {storage_account_name} --container-name {container_name} --name download_blob.txt --file download_blob.txt')
-        self.cmd('storage blob upload --account-name {storage_account_name} --container-name {container_name} --name upload_blob.txt --file upload_blob.txt')
+
+        current_directory = os.path.dirname(os.path.abspath(__file__))
+        upload_blob_path = os.path.join(current_directory, 'upload_blob.txt')
+        download_blob_path = os.path.join(current_directory, 'download_blob.txt')
+        self.kwargs['upload_blob_path'] = upload_blob_path
+        self.kwargs['download_blob_path'] = download_blob_path
+
+        self.cmd('storage blob upload --account-name {storage_account_name} --container-name {container_name} --name download_blob.txt --file "{download_blob_path}"')
+        self.cmd('storage blob upload --account-name {storage_account_name} --container-name {container_name} --name upload_blob.txt --file "{upload_blob_path}"')
 
         self.kwargs['sas_upload_url'] = self.cmd(
             'storage blob generate-sas --account-name {storage_account_name} --container-name {container_name} --name upload_blob.txt --permissions r --expiry {expiry_time} --full-uri'
@@ -96,8 +104,8 @@ class DnsResolverPolicyClientTest(ScenarioTest):
         )
 
         # Test bulk domain APIs
-        self.cmd('dns-resolver domain-list bulk --dns-resolver-domain-list-name {dns_resolver_domain_list_name} -g {rg} --action Upload --storage-url {sas_upload_url}')
-        self.cmd('dns-resolver domain-list bulk --dns-resolver-domain-list-name {dns_resolver_domain_list_name} -g {rg} --action Download --storage-url {sas_download_token}')
+        self.cmd('dns-resolver domain-list bulk --name {dns_resolver_domain_list_name} -g {rg} --action Upload --storage-url {sas_upload_url}')
+        self.cmd('dns-resolver domain-list bulk --name {dns_resolver_domain_list_name} -g {rg} --action Download --storage-url {sas_download_token}')
 
         self.cmd('dns-resolver domain-list delete -n {dns_resolver_domain_list_name} -g {rg} --no-wait --yes')
 
