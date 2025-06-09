@@ -12,10 +12,10 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "confluent organization",
+    "confluent organization access default",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Perform administrative operations on Confluent organization entities via Azure.
+    """Manage Default
     """
     pass
 
