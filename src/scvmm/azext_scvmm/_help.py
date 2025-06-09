@@ -584,6 +584,31 @@ helps[
 """
 
 helps[
+    'scvmm vm create-from-machines'
+] = """
+    type: command
+    short-summary: "Create VMInstance resource(s) from existing Microsoft.HybridCompute machines."
+    examples:
+      - name: Create SCVMM VM resources from the specified Arc for Servers machine in the vCenter
+        text: |-
+                az scvmm vm create-from-machines \
+--resource-group contoso-rg --name contoso-vm \
+--scvmm-id /subscriptions/01234567-0123-0123-0123-0123456789ab/resourceGroups/contoso-rg/providers/Microsoft.ScVmm/vmmServers/contoso-vmmserver
+
+      - name: Creates SCVMM VM resources from all Arc for Servers machines in the specified resource group belonging to that vCenter
+        text: |-
+                az scvmm vm create-from-machines \
+--resource-group contoso-rg \
+--scvmm-id /subscriptions/01234567-0123-0123-0123-0123456789ab/resourceGroups/contoso-rg/providers/Microsoft.ScVmm/vmmServers/contoso-vmmserver
+
+      - name: Create SCVMM resources from all Arc for Servers machines in the specified subscription belonging to that vCenter
+        text: |-
+                az scvmm vm create-from-machines \
+--subscription contoso-sub \
+--scvmm-id /subscriptions/01234567-0123-0123-0123-0123456789ab/resourceGroups/contoso-rg/providers/Microsoft.ScVmm/vmmServers/contoso-vmmserver
+"""
+
+helps[
     'scvmm vm delete'
 ] = """
     type: command

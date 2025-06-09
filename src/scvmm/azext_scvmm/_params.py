@@ -28,6 +28,10 @@ def load_arguments(self: AzCommandsLoader, _):
         id_part='name',
     )
 
+    resource_name = CLIArgumentType(
+        options_list='--resource-name', help='Name of the resource.', id_part='name'
+    )
+
     custom_location_type = CLIArgumentType(
         options_list=['--custom-location'],
         help='Name or ID of the custom location that will manage this resource.',
@@ -172,6 +176,26 @@ def load_arguments(self: AzCommandsLoader, _):
             "bus=<> lun=<> vhd-type=<> qos-name=<> qos-id=<>.",
         )
 
+    with self.argument_context('scvmm vm create-from-machines') as c:
+        c.argument(
+            'rg_name', options_list=['--resource-group', '-g'],
+            help=(
+                "Name of the resource group which will be scanned for HCRP machines. "
+                "NOTE: The default group configured using 'az configure --defaults group=`<name>`' "
+                "is not used, and it must be specified explicitly."
+            )
+        )
+        c.argument(
+            'resource_name', resource_name, options_list=['--name', '-n'],
+            help="Name of the Microsoft.HybridCompute Machine resource. "
+            "Provide this parameter if you want to "
+            "convert a single machine to SCVMM VM."
+        )
+        c.argument(
+            'scvmm', options_list=['--scvmm-id', '-v'],
+            help="ARM ID of the scvmm to which the machines will be linked."
+        )
+
     with self.argument_context('scvmm vm stop') as c:
         c.argument(
             'skip_shutdown',
@@ -306,7 +330,7 @@ def load_arguments(self: AzCommandsLoader, _):
         c.argument(
             'delete_from_host',
             action='store_true',
-            help='Delete the VM from the VMware host.',
+            help='Delete the VM from the SCVMM host.',
         )
         c.argument(
             'delete_machine',

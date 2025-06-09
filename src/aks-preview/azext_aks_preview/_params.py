@@ -93,6 +93,8 @@ from azext_aks_preview._consts import (
     CONST_OS_SKU_CBLMARINER,
     CONST_OS_SKU_MARINER,
     CONST_OS_SKU_UBUNTU,
+    CONST_OS_SKU_UBUNTU2204,
+    CONST_OS_SKU_UBUNTU2404,
     CONST_OS_SKU_WINDOWS2019,
     CONST_OS_SKU_WINDOWS2022,
     CONST_OS_SKU_WINDOWSANNUAL,
@@ -213,8 +215,9 @@ from azext_aks_preview._validators import (
     validate_bootstrap_container_registry_resource_id,
     validate_gateway_prefix_size,
     validate_max_unavailable,
-    validate_location_cluster_name_resource_group_mutually_exclusive,
+    validate_max_blocked_nodes,
     validate_resource_group_parameter,
+    validate_location_resource_group_cluster_parameters,
 )
 from azext_aks_preview.azurecontainerstorage._consts import (
     CONST_ACSTOR_ALL,
@@ -258,13 +261,20 @@ node_os_skus_create = [
     CONST_OS_SKU_UBUNTU,
     CONST_OS_SKU_CBLMARINER,
     CONST_OS_SKU_MARINER,
+    CONST_OS_SKU_UBUNTU2204,
+    CONST_OS_SKU_UBUNTU2404,
 ]
 node_os_skus = node_os_skus_create + [
     CONST_OS_SKU_WINDOWS2019,
     CONST_OS_SKU_WINDOWS2022,
     CONST_OS_SKU_WINDOWSANNUAL,
 ]
-node_os_skus_update = [CONST_OS_SKU_AZURELINUX, CONST_OS_SKU_UBUNTU]
+node_os_skus_update = [
+    CONST_OS_SKU_AZURELINUX,
+    CONST_OS_SKU_UBUNTU,
+    CONST_OS_SKU_UBUNTU2204,
+    CONST_OS_SKU_UBUNTU2404,
+]
 scale_down_modes = [CONST_SCALE_DOWN_MODE_DELETE, CONST_SCALE_DOWN_MODE_DEALLOCATE]
 workload_runtimes = [
     CONST_WORKLOAD_RUNTIME_OCI_CONTAINER,
@@ -1434,6 +1444,7 @@ def load_arguments(self, _):
         )
 
         c.argument('migrate_vmas_to_vms', is_preview=True, action='store_true')
+        c.argument("disable_http_proxy", action="store_true", is_preview=True)
 
     with self.argument_context("aks upgrade") as c:
         c.argument("kubernetes_version", completer=get_k8s_upgrades_completion_list)
@@ -1584,6 +1595,7 @@ def load_arguments(self, _):
         c.argument("node_soak_duration", type=int)
         c.argument("undrainable_node_behavior")
         c.argument("max_unavailable", validator=validate_max_unavailable)
+        c.argument("max_blocked_nodes", validator=validate_max_blocked_nodes)
         c.argument("mode", arg_type=get_enum_type(node_mode_types))
         c.argument("scale_down_mode", arg_type=get_enum_type(scale_down_modes))
         c.argument("max_pods", type=int, options_list=["--max-pods", "-m"])
@@ -1716,6 +1728,7 @@ def load_arguments(self, _):
         c.argument("node_soak_duration", type=int)
         c.argument("undrainable_node_behavior")
         c.argument("max_unavailable", validator=validate_max_unavailable)
+        c.argument("max_blocked_nodes", validator=validate_max_blocked_nodes)
         c.argument("mode", arg_type=get_enum_type(node_mode_types))
         c.argument("scale_down_mode", arg_type=get_enum_type(scale_down_modes))
         # extensions
@@ -1787,6 +1800,7 @@ def load_arguments(self, _):
         c.argument("node_soak_duration", type=int)
         c.argument("undrainable_node_behavior")
         c.argument("max_unavailable", validator=validate_max_unavailable)
+        c.argument("max_blocked_nodes", validator=validate_max_blocked_nodes)
         c.argument("snapshot_id", validator=validate_snapshot_id)
         c.argument(
             "yes",
@@ -2482,14 +2496,14 @@ def load_arguments(self, _):
                    help='Name of resource group.')
         c.argument('cluster_name',
                    options_list=['--cluster-name', '-c'],
-                   validator=validate_location_cluster_name_resource_group_mutually_exclusive,
+                   validator=validate_location_resource_group_cluster_parameters,
                    help='Name of the Kubernetes cluster')
         c.argument('extension_type',
                    options_list=['--extension-type', '-t'],
                    help='Name of the extension type.')
         c.argument('location',
                    options_list=['--location', '-l'],
-                   validator=validate_location_cluster_name_resource_group_mutually_exclusive,
+                   validator=validate_location_resource_group_cluster_parameters,
                    help='Name of the location. Values from: `az account list-locations`')
 
     # Reference: https://learn.microsoft.com/en-us/cli/azure/k8s-extension/extension-types?view=azure-cli-latest
@@ -2500,14 +2514,14 @@ def load_arguments(self, _):
                    help='Name of resource group.')
         c.argument('cluster_name',
                    options_list=['--cluster-name', '-c'],
-                   validator=validate_location_cluster_name_resource_group_mutually_exclusive,
+                   validator=validate_location_resource_group_cluster_parameters,
                    help='Name of the Kubernetes cluster')
         c.argument('extension_type',
                    options_list=['--extension-type', '-t'],
                    help='Name of the extension type.')
         c.argument('location',
                    options_list=['--location', '-l'],
-                   validator=validate_location_cluster_name_resource_group_mutually_exclusive,
+                   validator=validate_location_resource_group_cluster_parameters,
                    help='Name of the location. Values from: `az account list-locations`')
         c.argument('version',
                    help='Version for the extension type.')

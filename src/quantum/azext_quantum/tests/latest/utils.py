@@ -3,17 +3,17 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-TEST_SUBS_DEFAULT = "916dfd6d-030c-4bd9-b579-7bb6d1926e97"
+TEST_SUBS_DEFAULT = "1916d14f-6594-4756-955d-9b95970a73a8"
 TEST_RG_DEFAULT = "e2e-scenarios"
-TEST_WORKSPACE_DEFAULT = "e2e-qsharp-tests"
+TEST_WORKSPACE_DEFAULT = "qw-e2e-tests-wus2"
 TEST_WORKSPACE_DEFAULT_LOCATION = "westus2"
-TEST_WORKSPACE_DEFAULT_STORAGE = "e2etests"
-TEST_WORKSPACE_DEFAULT_STORAGE_GRS = "e2etestsgrs"
-TEST_WORKSPACE_DEFAULT_PROVIDER_SKU_LIST = "Microsoft.ChemistryHpc/Basic"
-TEST_CAPABILITIES_DEFAULT = "new.Microsoft.ChemistryHpc;submit.Microsoft.ChemistryHpc"
-TEST_TARGET_DEFAULT_PROVIDER_SKU_LIST = "Microsoft.ChemistryHpc/Basic"
-TEST_TARGET_DEFAULT_PROVIDER = "Microsoft.ChemistryHpc"
-TEST_TARGET_DEFAULT_TARGET = "microsoft.hpc"
+TEST_WORKSPACE_DEFAULT_STORAGE = "qwe2etestswus2"
+TEST_WORKSPACE_DEFAULT_STORAGE_GRS = "qwe2etestsgrswus2"
+TEST_WORKSPACE_DEFAULT_PROVIDER_SKU_LIST = "quantinuum/credits1"
+TEST_CAPABILITIES_DEFAULT = "new.quantinuum;submit.quantinuum"
+TEST_TARGET_DEFAULT_PROVIDER_SKU_LIST = "quantinuum/credits1"
+TEST_TARGET_DEFAULT_PROVIDER = "quantinuum"
+TEST_TARGET_DEFAULT_TARGET = "quantinuum.sim.h1-1sc"
 
 
 def get_from_os_environment(env_name, default):

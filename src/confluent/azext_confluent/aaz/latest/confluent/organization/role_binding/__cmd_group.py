@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "confluent organization role-binding",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage Role binding
+    """Manage role bindings within a Confluent organization.
     """
     pass
 
