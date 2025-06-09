@@ -10,30 +10,7 @@
 
 from azure.cli.core.commands import AzCliCommand
 
-from .custom_commands.storage_class import enable_storage_class, disable_storage_class
 from .custom_commands.load_balancer import enable_load_balancer, disable_load_balancer
-
-
-def enable_storage_class_cmd(cmd: AzCliCommand, resource_uri: str):
-    """
-    Enable storage class service in a connected cluster
-
-
-    :param resource_uri: The resource uri of the connected cluster
-    """
-
-    return enable_storage_class(cmd, resource_uri)
-
-
-def disable_storage_class_cmd(cmd: AzCliCommand, resource_uri: str):
-    """
-    Disable storage class service in a connected cluster
-
-
-    :param resource_uri: The resource uri of the connected cluster
-    """
-
-    return disable_storage_class(cmd, resource_uri)
 
 
 def enable_load_balancer_cmd(cmd: AzCliCommand, resource_uri: str):

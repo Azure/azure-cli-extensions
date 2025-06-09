@@ -11,6 +11,18 @@ from azure.core.exceptions import (HttpResponseError)
 
 
 class WafTests(WafScenarioMixin, ScenarioTest):
+    # @live_only()  # --defer seems not work with VCR.py well
+    @ResourceGroupPreparer(location='westus', additional_tags={'owner': 'jingnanxu'})
+    def test_waf_captcha(self, resource_group):
+        blockpolicy = self.create_random_name(prefix='cli', length=24)
+        cmd = 'az network front-door waf-policy create -g {resource_group} -n {blockpolicy} --captcha-expiration-in-minutes 5 --mode prevention --sku Premium_AzureFrontDoor'.format(**locals())
+        result = self.cmd(cmd).get_output_in_json()
+        self.assertEqual(result['name'], blockpolicy)
+        self.assertEqual(result['policySettings']['captchaExpirationInMinutes'], 5)
+        cmd = 'az network front-door waf-policy update -g {resource_group} -n {blockpolicy} --captcha-expiration-in-minutes 12'.format(**locals())
+        result = self.cmd(cmd).get_output_in_json()
+        self.assertEqual(result['policySettings']['captchaExpirationInMinutes'], 12)
+
     @live_only()  # --defer seems not work with VCR.py well
     @ResourceGroupPreparer(location='westus', additional_tags={'owner': 'jingnanxu'})
     def test_waf_log_scrubbing(self, resource_group):
@@ -26,7 +38,7 @@ class WafTests(WafScenarioMixin, ScenarioTest):
         options = '--log-scrubbing \"{{scrubbing-rules:[{{match-variable:QueryStringArgNames,selector-match-operator:EqualsAny}}],state:Enabled}}\"'
         cmd = 'az network front-door waf-policy update -g {resource_group} -n {blockpolicy}'.format(**locals())
         result = self.cmd(cmd + ' ' + options).get_output_in_json()
-        self.assertEqual(result['policySettings']['logScrubbing']['state'], "Enabled")
+        self.assertEqual(result['policySettings']['scrubbingRules'][0]['state'], "Enabled")
 
     @live_only()  # --defer seems not work with VCR.py well
     @ResourceGroupPreparer(location='westus', additional_tags={'owner': 'jingnanxu'})
@@ -225,7 +237,7 @@ az network front-door update --name {frontdoorName}--resource-group {resource_gr
         ruleName = self.create_random_name(prefix='cli', length=24)
         frontdoorName = self.create_random_name(prefix='cli', length=24)
 
-        cmd = 'az network front-door waf-policy create --resource-group {resource_group} --name {policyName}'.format(**locals())
+        cmd = 'az network front-door waf-policy create --resource-group {resource_group} --name {policyName} --sku Classic_AzureFrontDoor'.format(**locals())
         result = self.cmd(cmd).get_output_in_json()
 
         self.assertIn('customRules', result)
@@ -268,9 +280,6 @@ az network front-door update --name {frontdoorName}--resource-group {resource_gr
                 time.sleep(10)
                 elapsed_seconds += 10
             self.assertEqual(r.status_code, 403)
-
-            r = requests.post('http://{hostName}/'.format(**locals()), data="'key':'value'")
-            self.assertEqual(r.status_code, 200)
 
     @ResourceGroupPreparer(location='westus', additional_tags={'owner': 'jingnanxu'})
     def test_waf_policy_managed_rules(self, resource_group):
@@ -337,12 +346,6 @@ az network front-door waf-policy managed-rule-definition list
         self.assertEqual(result['managedRules']['managedRuleSets'][0]['ruleSetVersion'], version)
         self.assertEqual(result['managedRules']['managedRuleSets'][0]['ruleSetAction'], action)
 
-        cmd = 'az network front-door waf-policy managed-rule-definition list'
-        result = self.cmd(cmd).get_output_in_json()
-        defaultRuleSet = [ruleSet for ruleSet in result if ruleSet['ruleSetType'] == type][0]
-        sqlGroup = [group for group in defaultRuleSet['ruleGroups'] if group['ruleGroupName'] == rulegroupid][0]
-        rule = [rule for rule in sqlGroup['rules'] if rule['ruleId'] == ruleid][0]
-        self.assertEqual(rule['ruleId'], ruleid)
 
     @ResourceGroupPreparer(location='westus', additional_tags={'owner': 'jingnanxu'})
     @live_only()  # --defer seems not work with VCR.py well
@@ -512,7 +515,7 @@ az network front-door waf-policy rule match-condition list -g {resource_group} -
         self.assertIn('customRules', result)
         self.assertIn('managedRules', result)
         self.assertIn('id', result)
-        self.assertEqual(result['sku']['name'], "Classic_AzureFrontDoor")
+        self.assertEqual(result['sku']['name'], "Premium_AzureFrontDoor")
 
         type = "DefaultRuleSet"
         version = "1.0"

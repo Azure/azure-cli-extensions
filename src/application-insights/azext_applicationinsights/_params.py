@@ -77,7 +77,7 @@ def load_arguments(self, _):
         c.argument('offset', help='Filter results based on UTC hour offset.', type=get_period_type(as_timedelta=True))
 
     with self.argument_context('monitor app-insights events show') as c:
-        from .vendored_sdks.applicationinsights.models import EventType
+        from .util import EventType
         c.argument('event_type', options_list=['--type'], arg_type=get_enum_type(EventType), help='The type of events to retrieve.')
         c.argument('event', options_list=['--event'], help='GUID of the event to retrieve. This could be obtained by first listing and filtering events, then selecting an event of interest.')
         c.argument('start_time', arg_type=get_datetime_type(help='Start-time of time range for which to retrieve data.'))

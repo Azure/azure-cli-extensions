@@ -10,11 +10,7 @@ from codecs import open
 from setuptools import setup, find_packages
 
 # HISTORY.rst entry.
-VERSION = "1.0.0"
-try:
-    from azext_confidentialledger.manual.version import VERSION
-except ImportError:
-    pass
+VERSION = "2.0.0"
 
 # The full list of classifiers is available at
 # https://pypi.python.org/pypi?%3Aaction=list_classifiers

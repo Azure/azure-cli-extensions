@@ -3,39 +3,11 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-
-def applicationinsights_data_plane_client(cli_ctx, _, subscription=None):
-    """Initialize Log Analytics data client for use with CLI."""
-    from .vendored_sdks.applicationinsights import ApplicationInsightsDataClient
-    from azure.cli.core._profile import Profile
-    profile = Profile(cli_ctx=cli_ctx)
-    cred, _, _ = profile.get_login_credentials(
-        resource=cli_ctx.cloud.endpoints.app_insights_resource_id,
-        subscription_id=subscription
-    )
-    return ApplicationInsightsDataClient(
-        cred,
-        base_url=f'{cli_ctx.cloud.endpoints.app_insights_resource_id}/v1'
-    )
-
-
 def applicationinsights_mgmt_plane_client(cli_ctx, **kwargs):
     """Initialize Log Analytics mgmt client for use with CLI."""
     from .vendored_sdks.mgmt_applicationinsights import ApplicationInsightsManagementClient
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
     return get_mgmt_service_client(cli_ctx, ApplicationInsightsManagementClient, **kwargs)
-
-
-def cf_query(cli_ctx, _):
-    return applicationinsights_data_plane_client(cli_ctx, _).query
-
-
-def cf_metrics(cli_ctx, _):
-    return applicationinsights_data_plane_client(cli_ctx, _).metrics
-
-
-def cf_events(cli_ctx, _):
-    return applicationinsights_data_plane_client(cli_ctx, _).events
 
 
 def cf_components(cli_ctx, _):

@@ -1,0 +1,13 @@
+description: 'CLI UT Load Test - Engine reference with User Assigned Managed Identity'
+engineInstances: 1
+keyVaultReferenceIdentity : "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/microsoft.managedidentity/userassignedidentities/sample-kv-id"
+referenceIdentities:
+  - kind: "KeyVault"
+    type: "UserAssigned"
+    value: /subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/microsoft.managedidentity/userassignedidentities/sample-kv-over-ride-id
+  - kind: "Metrics"
+    type: "UserAssigned"
+    value: /subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/microsoft.managedidentity/userassignedidentities/sample-metrics-mi
+  - kind: Engine
+    type: UserAssigned
+    value: /subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/microsoft.managedidentity/userassignedidentities/sample-mi

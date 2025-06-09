@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "network perimeter link update",
 )
 class Update(AAZCommand):
-    """Update NSP link resource.
+    """Create or update a network security perimeter link.
 
-    :example: Update NSP Link
-        az network perimeter link update --name link1 --perimeter-name nsp1 --resource-group rg1 --local-inbound-profile "[\'*\']"
+    :example: Update a network security perimeter link
+        az network perimeter link update --name link1 --perimeter-name nsp1 --resource-group rg1 --local-inbound-profile "[\\'*\\']"
     """
 
     _aaz_info = {
-        "version": "2023-08-01-preview",
+        "version": "2024-07-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networksecurityperimeters/{}/links/{}", "2023-08-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networksecurityperimeters/{}/links/{}", "2024-07-01"],
         ]
     }
 
@@ -51,12 +51,20 @@ class Update(AAZCommand):
             help="The name of the NSP link.",
             required=True,
             id_part="child_name_1",
+            fmt=AAZStrArgFormat(
+                pattern="(^[a-zA-Z0-9]+[a-zA-Z0-9_.-]*[a-zA-Z0-9_]+$)|(^[a-zA-Z0-9]$)",
+                max_length=80,
+            ),
         )
         _args_schema.perimeter_name = AAZStrArg(
             options=["--perimeter-name"],
             help="The name of the network security perimeter.",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="(^[a-zA-Z0-9]+[a-zA-Z0-9_.-]*[a-zA-Z0-9_]+$)|(^[a-zA-Z0-9]$)",
+                max_length=80,
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -103,12 +111,12 @@ class Update(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.NspLinksGet(ctx=self.ctx)()
+        self.NetworkSecurityPerimeterLinksGet(ctx=self.ctx)()
         self.pre_instance_update(self.ctx.vars.instance)
         self.InstanceUpdateByJson(ctx=self.ctx)()
         self.InstanceUpdateByGeneric(ctx=self.ctx)()
         self.post_instance_update(self.ctx.vars.instance)
-        self.NspLinksCreateOrUpdate(ctx=self.ctx)()
+        self.NetworkSecurityPerimeterLinksCreateOrUpdate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -128,10 +136,10 @@ class Update(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=False)
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class NspLinksGet(AAZHttpOperation):
+    class NetworkSecurityPerimeterLinksGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -183,7 +191,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-08-01-preview",
+                    "api-version", "2024-07-01",
                     required=True,
                 ),
             }
@@ -218,7 +226,7 @@ class Update(AAZCommand):
 
             return cls._schema_on_200
 
-    class NspLinksCreateOrUpdate(AAZHttpOperation):
+    class NetworkSecurityPerimeterLinksCreateOrUpdate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -270,7 +278,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-08-01-preview",
+                    "api-version", "2024-07-01",
                     required=True,
                 ),
             }
@@ -328,7 +336,7 @@ class Update(AAZCommand):
                 value=instance,
                 typ=AAZObjectType
             )
-            _builder.set_prop("properties", AAZObjectType)
+            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
 
             properties = _builder.get(".properties")
             if properties is not None:
@@ -363,26 +371,29 @@ class _UpdateHelper:
     @classmethod
     def _build_schema_nsp_link_read(cls, _schema):
         if cls._schema_nsp_link_read is not None:
-            _schema.etag = cls._schema_nsp_link_read.etag
             _schema.id = cls._schema_nsp_link_read.id
             _schema.name = cls._schema_nsp_link_read.name
             _schema.properties = cls._schema_nsp_link_read.properties
+            _schema.system_data = cls._schema_nsp_link_read.system_data
             _schema.type = cls._schema_nsp_link_read.type
             return
 
         cls._schema_nsp_link_read = _schema_nsp_link_read = AAZObjectType()
 
         nsp_link_read = _schema_nsp_link_read
-        nsp_link_read.etag = AAZStrType(
-            flags={"read_only": True},
-        )
         nsp_link_read.id = AAZStrType(
             flags={"read_only": True},
         )
         nsp_link_read.name = AAZStrType(
             flags={"read_only": True},
         )
-        nsp_link_read.properties = AAZObjectType()
+        nsp_link_read.properties = AAZObjectType(
+            flags={"client_flatten": True},
+        )
+        nsp_link_read.system_data = AAZObjectType(
+            serialized_name="systemData",
+            flags={"read_only": True},
+        )
         nsp_link_read.type = AAZStrType(
             flags={"read_only": True},
         )
@@ -434,10 +445,30 @@ class _UpdateHelper:
         remote_outbound_profiles = _schema_nsp_link_read.properties.remote_outbound_profiles
         remote_outbound_profiles.Element = AAZStrType()
 
-        _schema.etag = cls._schema_nsp_link_read.etag
+        system_data = _schema_nsp_link_read.system_data
+        system_data.created_at = AAZStrType(
+            serialized_name="createdAt",
+        )
+        system_data.created_by = AAZStrType(
+            serialized_name="createdBy",
+        )
+        system_data.created_by_type = AAZStrType(
+            serialized_name="createdByType",
+        )
+        system_data.last_modified_at = AAZStrType(
+            serialized_name="lastModifiedAt",
+        )
+        system_data.last_modified_by = AAZStrType(
+            serialized_name="lastModifiedBy",
+        )
+        system_data.last_modified_by_type = AAZStrType(
+            serialized_name="lastModifiedByType",
+        )
+
         _schema.id = cls._schema_nsp_link_read.id
         _schema.name = cls._schema_nsp_link_read.name
         _schema.properties = cls._schema_nsp_link_read.properties
+        _schema.system_data = cls._schema_nsp_link_read.system_data
         _schema.type = cls._schema_nsp_link_read.type
 
 

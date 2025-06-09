@@ -14,6 +14,7 @@ from azure.cli.command_modules.acs.addonconfiguration import (
     sanitize_loganalytics_ws_resource_id,
     ensure_default_log_analytics_workspace_for_monitoring
 )
+import azure.cli.command_modules.acs.addonconfiguration
 from azext_aks_preview._helpers import (
     check_is_monitoring_addon_enabled,
 )
@@ -43,6 +44,22 @@ from azext_aks_preview._consts import (
 )
 
 logger = get_logger(__name__)
+
+azure.cli.command_modules.acs.addonconfiguration.ContainerInsightsStreams = [
+    "Microsoft-ContainerLog",
+    "Microsoft-ContainerLogV2-HighScale",
+    "Microsoft-KubeEvents",
+    "Microsoft-KubePodInventory",
+    "Microsoft-KubeNodeInventory",
+    "Microsoft-KubePVInventory",
+    "Microsoft-KubeServices",
+    "Microsoft-KubeMonAgentEvents",
+    "Microsoft-InsightsMetrics",
+    "Microsoft-ContainerInventory",
+    "Microsoft-ContainerNodeInventory",
+    "Microsoft-Perf",
+    "Microsoft-RetinaNetworkFlowLogs",
+]
 
 
 # pylint: disable=too-many-locals

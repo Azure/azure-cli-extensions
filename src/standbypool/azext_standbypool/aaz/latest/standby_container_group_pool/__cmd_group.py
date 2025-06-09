@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "standby-container-group-pool",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Standby Container Group Pool Operations
+    """Manage Standby Container Group Pool
     """
     pass
 

@@ -22,9 +22,9 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-02-15-preview",
+        "version": "2024-06-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkpacketbrokers/{}", "2024-02-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkpacketbrokers/{}", "2024-06-15-preview"],
         ]
     }
 
@@ -49,6 +49,9 @@ class Show(AAZCommand):
             help="Name of the Network Packet Broker.",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z]{1}[a-zA-Z0-9-_]{2,127}$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -120,7 +123,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-02-15-preview",
+                    "api-version", "2024-06-15-preview",
                     required=True,
                 ),
             }
@@ -175,6 +178,10 @@ class Show(AAZCommand):
             )
 
             properties = cls._schema_on_200.properties
+            properties.last_operation = AAZObjectType(
+                serialized_name="lastOperation",
+                flags={"read_only": True},
+            )
             properties.neighbor_group_ids = AAZListType(
                 serialized_name="neighborGroupIds",
                 flags={"read_only": True},
@@ -197,6 +204,11 @@ class Show(AAZCommand):
             )
             properties.source_interface_ids = AAZListType(
                 serialized_name="sourceInterfaceIds",
+                flags={"read_only": True},
+            )
+
+            last_operation = cls._schema_on_200.properties.last_operation
+            last_operation.details = AAZStrType(
                 flags={"read_only": True},
             )
 

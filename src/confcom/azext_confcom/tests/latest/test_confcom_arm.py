@@ -11,7 +11,7 @@ from unittest.mock import patch
 
 from azext_confcom.security_policy import (
     OutputType,
-    load_policy_from_str,
+    load_policy_from_json,
     load_policy_from_arm_template_str,
 )
 import azext_confcom.config as config
@@ -33,7 +33,7 @@ class PolicyGeneratingArm(unittest.TestCase):
             "containers": [
                 {
                     "name": "simple-container",
-                    "containerImage": "mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot",
+                    "containerImage": "mcr.microsoft.com/azurelinux/base/python:3.12",
                     "environmentVariables": [
                         {
                             "name":"PATH",
@@ -65,7 +65,7 @@ class PolicyGeneratingArm(unittest.TestCase):
         "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
         "contentVersion": "1.0.0.0",
         "variables": {
-            "image": "mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot"
+            "image": "mcr.microsoft.com/azurelinux/base/python:3.12"
         },
 
 
@@ -204,7 +204,7 @@ class PolicyGeneratingArm(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        with load_policy_from_str(cls.custom_json) as aci_policy:
+        with load_policy_from_json(cls.custom_json) as aci_policy:
             aci_policy.populate_policy_content_for_all_images()
             cls.aci_policy = aci_policy
 
@@ -697,7 +697,7 @@ class PolicyGeneratingArmParametersIncorrect(unittest.TestCase):
         "contentVersion": "1.0.0.0",
         "parameters": {
             "image": {
-            "value": "mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot"
+            "value": "mcr.microsoft.com/azurelinux/base/python:3.12"
             },
             "containername": {
             "value": "simple-container"
@@ -758,7 +758,7 @@ class PolicyGeneratingArmParameters(unittest.TestCase):
                 "metadata": {
                     "description": "Name for the image"
                 },
-                "defaultValue": "mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot"
+                "defaultValue": "mcr.microsoft.com/azurelinux/base/python:3.12"
             },
 
             "port": {
@@ -855,7 +855,7 @@ class PolicyGeneratingArmParameters(unittest.TestCase):
         # see if we have environment variables specific to the python image in the parameter file
         python_flag = False
         for rules in output_json[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS]:
-            if "PYTHON" in rules[config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS_RULE]:
+            if "python" in rules[config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS_RULE]:
                 python_flag = True
         self.assertTrue(python_flag)
 
@@ -898,7 +898,7 @@ class PolicyGeneratingArmParameters2(unittest.TestCase):
             "metadata": {
                 "description": "Name for the container group"
             },
-            "defaultValue":"mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot"
+            "defaultValue":"mcr.microsoft.com/azurelinux/base/python:3.12"
             },
              "imagebase": {
             "type": "string",
@@ -970,6 +970,12 @@ class PolicyGeneratingArmParameters2(unittest.TestCase):
                     "name": "[parameters('containername')]",
                     "properties": {
                     "image": "[parameters('image')]",
+                    "environmentVariables": [
+                        {
+                        "name": "THIM_ENDPOINT",
+                        "value": "===CONFIDENTIAL.THIM.ENDPOINT==="
+                        }
+                    ],
                     "ports": [
                         {
                         "port": "[parameters('port')]"
@@ -1023,10 +1029,15 @@ class PolicyGeneratingArmParameters2(unittest.TestCase):
 
         # see if we have environment variables specific to the python image in the parameter file
         python_flag = False
+        thim_flag = False
         for value in output_json[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS]:
-            if "PYTHON" in value[config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS_RULE]:
+            if "python" in value[config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS_RULE]:
                 python_flag = True
+            if f"{config.ACI_FIELD_TEMPLATE_SPECIAL_ENV_VAR_REGEX_NAME}=.*" == value[config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS_RULE]:
+                thim_flag = True
         self.assertTrue(python_flag)
+        self.assertTrue(thim_flag)
+
 
 
 class PolicyGeneratingArmContainerConfig(unittest.TestCase):
@@ -1067,7 +1078,7 @@ class PolicyGeneratingArmContainerConfig(unittest.TestCase):
             "metadata": {
                 "description": "Name for the container group"
             },
-            "defaultValue":"mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot"
+            "defaultValue":"mcr.microsoft.com/azurelinux/base/python:3.12"
             },
              "imagebase": {
             "type": "string",
@@ -1412,7 +1423,7 @@ class PolicyDiff(unittest.TestCase):
     "contentVersion": "1.0.0.0",
     "variables": {
         "container1name": "aci-test",
-        "container1image": "mcr.microsoft.com/cbl-mariner/distroless/minimal:2.0"
+        "container1image": "mcr.microsoft.com/azurelinux/base/python:3.12"
     },
     "resources": [
         {
@@ -1491,7 +1502,7 @@ class PolicyDiff(unittest.TestCase):
     "contentVersion": "1.0.0.0",
     "variables": {
         "container1name": "aci-test",
-        "container1image": "mcr.microsoft.com/cbl-mariner/distroless/minimal:2.0"
+        "container1image": "mcr.microsoft.com/azurelinux/base/python:3.12"
     },
     "resources": [
         {
@@ -1622,7 +1633,7 @@ class PolicyGeneratingArmInfrastructureSvn(unittest.TestCase):
         "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
         "contentVersion": "1.0.0.0",
         "variables": {
-            "image": "mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot"
+            "image": "mcr.microsoft.com/azurelinux/base/python:3.12"
         },
 
 
@@ -1790,9 +1801,9 @@ class MultiplePolicyTemplate(unittest.TestCase):
     "contentVersion": "1.0.0.0",
     "variables": {
         "container1name": "aci-test",
-        "container1image": "mcr.microsoft.com/cbl-mariner/distroless/minimal:2.0",
+        "container1image": "mcr.microsoft.com/azurelinux/distroless/base:3.0",
         "container2name": "aci-test2",
-        "container2image": "mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot"
+        "container2image": "mcr.microsoft.com/azurelinux/base/python:3.12"
     },
     "resources": [
         {
@@ -1816,6 +1827,11 @@ class MultiplePolicyTemplate(unittest.TestCase):
                                     "memoryInGb": 1.5
                                 }
                             },
+                            "command": [
+                            "/bin/sh",
+                            "-c",
+                            "ls"
+                            ],
                             "ports": [
                                 {
                                     "port": 80
@@ -1876,6 +1892,11 @@ class MultiplePolicyTemplate(unittest.TestCase):
                         "name": "[variables('container2name')]",
                         "properties": {
                             "image": "[variables('container2image')]",
+                            "command": [
+                            "/bin/sh",
+                            "-c",
+                            "ls"
+                            ],
                             "resources": {
                                 "requests": {
                                     "cpu": 1,
@@ -1933,6 +1954,11 @@ class MultiplePolicyTemplate(unittest.TestCase):
                         "name": "aci-test-1",
                         "properties": {
                             "image": "[variables('container1image')]",
+                            "command": [
+                            "/bin/sh",
+                            "-c",
+                            "ls"
+                            ],
                             "resources": {
                                 "requests": {
                                     "cpu": 1,
@@ -1951,6 +1977,11 @@ class MultiplePolicyTemplate(unittest.TestCase):
                         "name": "aci-test-2",
                         "properties": {
                             "image": "[variables('container1image')]",
+                            "command": [
+                            "/bin/sh",
+                            "-c",
+                            "ls"
+                            ],
                             "resources": {
                                 "requests": {
                                     "cpu": 1,
@@ -1969,6 +2000,11 @@ class MultiplePolicyTemplate(unittest.TestCase):
                         "name": "aci-test-3",
                         "properties": {
                             "image": "[variables('container1image')]",
+                            "command": [
+                            "/bin/sh",
+                            "-c",
+                            "ls"
+                            ],
                             "resources": {
                                 "requests": {
                                     "cpu": 1,
@@ -2049,7 +2085,7 @@ class MultiplePolicyTemplate(unittest.TestCase):
         is_valid, diff = self.aci_policy.validate_cce_policy()
         self.assertFalse(is_valid)
         # just check to make sure the containers in both policies are different
-        expected_diff = {"aci-test": "mcr.microsoft.com/cbl-mariner/distroless/minimal:2.0 not found in policy"}
+        expected_diff = {"aci-test": "mcr.microsoft.com/azurelinux/distroless/base:3.0 not found in policy"}
         self.assertEqual(diff, expected_diff)
 
     def test_multiple_diffs(self):
@@ -2086,7 +2122,7 @@ class PolicyGeneratingArmInitContainer(unittest.TestCase):
                 "metadata": {
                     "description": "Name for the container group"
                 },
-                "defaultValue":"mcr.microsoft.com/cbl-mariner/distroless/minimal:2.0"
+                "defaultValue":"mcr.microsoft.com/azurelinux/distroless/base:3.0"
             },
             "containername": {
                 "type": "string",
@@ -2168,7 +2204,7 @@ class PolicyGeneratingArmInitContainer(unittest.TestCase):
                     {
                         "name": "init-container-python",
                         "properties": {
-                            "image": "mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot",
+                            "image": "mcr.microsoft.com/azurelinux/base/python:3.12",
                             "environmentVariables": [
                                 {
                                     "name":"PATH",
@@ -2271,7 +2307,7 @@ class PolicyGeneratingDisableStdioAccess(unittest.TestCase):
                 "metadata": {
                     "description": "Name for the container group"
                 },
-                "defaultValue":"mcr.microsoft.com/cbl-mariner/distroless/minimal:2.0"
+                "defaultValue":"mcr.microsoft.com/azurelinux/distroless/base:3.0"
             },
             "containername": {
                 "type": "string",
@@ -2417,7 +2453,7 @@ class PolicyGeneratingOmitId(unittest.TestCase):
                 "metadata": {
                     "description": "Name for the container group"
                 },
-                "defaultValue":"mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot"
+                "defaultValue":"mcr.microsoft.com/azurelinux/base/python:3.12"
             },
             "containername": {
                 "type": "string",
@@ -2560,7 +2596,7 @@ class PolicyGeneratingAllowElevated(unittest.TestCase):
                 "metadata": {
                     "description": "Name for the container group"
                 },
-                "defaultValue":"mcr.microsoft.com/cbl-mariner/distroless/minimal:2.0"
+                "defaultValue":"mcr.microsoft.com/azurelinux/distroless/base:3.0"
             },
             "containername": {
                 "type": "string",
@@ -2695,7 +2731,7 @@ class PrintExistingPolicy(unittest.TestCase):
             "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
             "contentVersion": "1.0.0.0",
             "variables": {
-                "image": "mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot"
+                "image": "mcr.microsoft.com/azurelinux/base/python:3.12"
             },
 
 
@@ -2835,7 +2871,7 @@ class PrintExistingPolicy(unittest.TestCase):
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "variables": {
-    "image": "mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot"
+    "image": "mcr.microsoft.com/azurelinux/base/python:3.12"
   },
   "parameters": {
     "containergroupname": {
@@ -2991,7 +3027,7 @@ class PolicyGeneratingArmWildcardEnvs(unittest.TestCase):
             "containers": [
                 {
                     "name": "simple-container",
-                    "containerImage": "mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot",
+                    "containerImage": "mcr.microsoft.com/azurelinux/base/python:3.12",
                     "environmentVariables": [
                         {
                             "name":"PATH",
@@ -3017,7 +3053,7 @@ class PolicyGeneratingArmWildcardEnvs(unittest.TestCase):
         "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
         "contentVersion": "1.0.0.0",
         "variables": {
-            "image": "mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot"
+            "image": "mcr.microsoft.com/azurelinux/base/python:3.12"
         },
 
 
@@ -3135,7 +3171,7 @@ class PolicyGeneratingArmWildcardEnvs(unittest.TestCase):
         "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
         "contentVersion": "1.0.0.0",
         "variables": {
-            "image": "mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot"
+            "image": "mcr.microsoft.com/azurelinux/base/python:3.12"
         },
 
 
@@ -3251,7 +3287,7 @@ class PolicyGeneratingArmWildcardEnvs(unittest.TestCase):
         "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
         "contentVersion": "1.0.0.0",
         "variables": {
-            "image": "mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot"
+            "image": "mcr.microsoft.com/azurelinux/base/python:3.12"
         },
 
 
@@ -3385,7 +3421,7 @@ class PolicyGeneratingArmWildcardEnvs(unittest.TestCase):
         "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
         "contentVersion": "1.0.0.0",
         "variables": {
-            "image": "mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot"
+            "image": "mcr.microsoft.com/azurelinux/base/python:3.12"
         },
 
 
@@ -3530,7 +3566,7 @@ class PolicyGeneratingArmWildcardEnvs(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        with load_policy_from_str(cls.custom_json) as aci_policy:
+        with load_policy_from_json(cls.custom_json) as aci_policy:
             aci_policy.populate_policy_content_for_all_images()
             cls.aci_policy = aci_policy
 
@@ -3640,7 +3676,7 @@ class PolicyGeneratingEdgeCases(unittest.TestCase):
                 "metadata": {
                     "description": "Name for the container group"
                 },
-                "defaultValue":"mcr.microsoft.com/cbl-mariner/distroless/minimal:2.0"
+                "defaultValue":"mcr.microsoft.com/azurelinux/distroless/base:3.0"
             },
             "containername": {
                 "type": "string",
@@ -3768,7 +3804,7 @@ class PolicyGeneratingEdgeCases(unittest.TestCase):
 
         # see if the remote image and the local one produce the same output
         self.assertEqual(env_var, "PORT=parameters('abc')")
-        self.assertEqual(regular_image_json[0][config.POLICY_FIELD_CONTAINERS_ID], "mcr.microsoft.com/cbl-mariner/distroless/minimal:2.0")
+        self.assertEqual(regular_image_json[0][config.POLICY_FIELD_CONTAINERS_ID], "mcr.microsoft.com/azurelinux/distroless/base:3.0")
 
     def test_arm_template_config_map_sidecar(self):
         regular_image_json = json.loads(
@@ -3788,7 +3824,7 @@ class PolicyGeneratingSecurityContext(unittest.TestCase):
         "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
         "contentVersion": "1.0.0.0",
         "variables": {
-            "image": "mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot"
+            "image": "mcr.microsoft.com/azurelinux/base/python:3.12"
         },
 
 
@@ -3929,7 +3965,7 @@ class PolicyGeneratingSecurityContext(unittest.TestCase):
         "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
         "contentVersion": "1.0.0.0",
         "variables": {
-            "image": "mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot"
+            "image": "mcr.microsoft.com/azurelinux/base/python:3.12"
         },
 
 
@@ -4080,7 +4116,7 @@ class PolicyGeneratingSecurityContext(unittest.TestCase):
         "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
         "contentVersion": "1.0.0.0",
         "variables": {
-            "image": "mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot"
+            "image": "mcr.microsoft.com/azurelinux/base/python:3.12"
         },
 
 
@@ -4227,7 +4263,7 @@ class PolicyGeneratingSecurityContext(unittest.TestCase):
         "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
         "contentVersion": "1.0.0.0",
         "variables": {
-            "image": "mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot"
+            "image": "mcr.microsoft.com/azurelinux/base/python:3.12"
         },
 
 
@@ -4396,20 +4432,7 @@ class PolicyGeneratingSecurityContext(unittest.TestCase):
         cls.aci_arm_policy4.populate_policy_content_for_all_images()
 
     def test_arm_template_security_context_defaults(self):
-        expected_user_json = json.loads("""{
-            "user_idname":
-            {
-                "pattern": "nonroot",
-                "strategy": "name"
-            },
-            "group_idnames": [
-                {
-                    "pattern": "",
-                    "strategy": "any"
-                }
-            ],
-            "umask": "0022"
-        }""")
+        expected_user_json = config.DEFAULT_USER
 
         regular_image_json = json.loads(
             self.aci_arm_policy.get_serialized_output(
@@ -4515,7 +4538,7 @@ class PolicyGeneratingSecurityContextUserEdgeCases(unittest.TestCase):
         "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
         "contentVersion": "1.0.0.0",
         "variables": {
-            "image": "mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot"
+            "image": "mcr.microsoft.com/azurelinux/base/python:3.12"
         },
 
 
@@ -4665,7 +4688,7 @@ class PolicyGeneratingSecurityContextUserEdgeCases(unittest.TestCase):
         "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
         "contentVersion": "1.0.0.0",
         "variables": {
-            "image": "mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot"
+            "image": "mcr.microsoft.com/azurelinux/base/python:3.12"
         },
 
 
@@ -5035,7 +5058,7 @@ class PolicyGeneratingSecurityContextUserEdgeCases(unittest.TestCase):
         self.assertEqual(deepdiff.DeepDiff(regular_image_json[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_USER], expected_user_json, ignore_order=True), {})
 
     def test_arm_template_security_context_uid_gid(self):
-        dockerfile_contents = ["FROM mcr.microsoft.com/cbl-mariner/distroless/minimal:2.0\n", "USER 456:123\n"]
+        dockerfile_contents = ["FROM mcr.microsoft.com/azurelinux/distroless/base:3.0\n", "USER 456:123\n"]
 
         try:
             with open(self.dockerfile_path, "w") as dockerfile:
@@ -5074,7 +5097,7 @@ class PolicyGeneratingSecurityContextUserEdgeCases(unittest.TestCase):
         self.client.images.remove(image[0].attrs.get("Id"))
 
     def test_arm_template_security_context_user_gid(self):
-        dockerfile_contents = ["FROM mcr.microsoft.com/cbl-mariner/distroless/minimal:2.0\n", "USER test_user:123\n"]
+        dockerfile_contents = ["FROM mcr.microsoft.com/azurelinux/distroless/base:3.0\n", "USER test_user:123\n"]
 
         try:
             with open(self.dockerfile_path2, "w") as dockerfile:
@@ -5113,7 +5136,7 @@ class PolicyGeneratingSecurityContextUserEdgeCases(unittest.TestCase):
         self.client.images.remove(image[0].attrs.get("Id"))
 
     def test_arm_template_security_context_user_group(self):
-        dockerfile_contents = ["FROM mcr.microsoft.com/cbl-mariner/distroless/minimal:2.0\n", "USER test_user:test_group\n"]
+        dockerfile_contents = ["FROM mcr.microsoft.com/azurelinux/distroless/base:3.0\n", "USER test_user:test_group\n"]
         try:
             with open(self.dockerfile_path3, "w") as dockerfile:
                 dockerfile.writelines(dockerfile_contents)
@@ -5152,7 +5175,7 @@ class PolicyGeneratingSecurityContextUserEdgeCases(unittest.TestCase):
 
     def test_arm_template_security_context_uid_group(self):
         # valid values are "user", "uid",
-        dockerfile_contents = ["FROM mcr.microsoft.com/cbl-mariner/distroless/minimal:2.0\n", "USER 456:test_group\n"]
+        dockerfile_contents = ["FROM mcr.microsoft.com/azurelinux/distroless/base:3.0\n", "USER 456:test_group\n"]
         try:
             with open(self.dockerfile_path4, "w") as dockerfile:
                 dockerfile.writelines(dockerfile_contents)
@@ -5191,7 +5214,7 @@ class PolicyGeneratingSecurityContextUserEdgeCases(unittest.TestCase):
         self.client.images.remove(image[0].attrs.get("Id"))
 
     def test_arm_template_security_context_uid(self):
-        dockerfile_contents = ["FROM mcr.microsoft.com/cbl-mariner/distroless/minimal:2.0\n", "USER 456\n"]
+        dockerfile_contents = ["FROM mcr.microsoft.com/azurelinux/distroless/base:3.0\n", "USER 456\n"]
         try:
             with open(self.dockerfile_path5, "w") as dockerfile:
                 dockerfile.writelines(dockerfile_contents)
@@ -5229,7 +5252,7 @@ class PolicyGeneratingSecurityContextUserEdgeCases(unittest.TestCase):
         self.client.images.remove(image[0].attrs.get("Id"))
 
     def test_arm_template_security_context_user_dockerfile(self):
-        dockerfile_contents = ["FROM mcr.microsoft.com/cbl-mariner/distroless/minimal:2.0\n", "USER test_user\n"]
+        dockerfile_contents = ["FROM mcr.microsoft.com/azurelinux/distroless/base:3.0\n", "USER test_user\n"]
         try:
             with open(self.dockerfile_path6, "w") as dockerfile:
                 dockerfile.writelines(dockerfile_contents)
@@ -5273,7 +5296,7 @@ class PolicyGeneratingSecurityContextSeccompProfileEdgeCases(unittest.TestCase):
         "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
         "contentVersion": "1.0.0.0",
         "variables": {
-            "image": "mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot"
+            "image": "mcr.microsoft.com/azurelinux/base/python:3.12"
         },
 
 
@@ -5626,7 +5649,7 @@ class PolicyZeroSidecar(unittest.TestCase):
         "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
         "contentVersion": "1.0.0.0",
         "variables": {
-            "image": "mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot"
+            "image": "mcr.microsoft.com/azurelinux/base/python:3.12"
         },
 
 

@@ -1,4 +1,4 @@
-# pylint: disable=too-many-lines
+# pylint: disable=line-too-long,useless-suppression,too-many-lines
 # coding=utf-8
 # --------------------------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved.
@@ -7,20 +7,15 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
+from collections.abc import MutableMapping
 import datetime
-import sys
 from typing import Any, Dict, List, Optional, TYPE_CHECKING, Union
 
-from .. import _serialization
-
-if sys.version_info >= (3, 9):
-    from collections.abc import MutableMapping
-else:
-    from typing import MutableMapping  # type: ignore
+from .._utils import serialization as _serialization
 
 if TYPE_CHECKING:
     from .. import models as _models
-JSON = MutableMapping[str, Any]  # pylint: disable=unsubscriptable-object
+JSON = MutableMapping[str, Any]
 
 
 class AccessRule(_serialization.Model):
@@ -165,7 +160,7 @@ class AccountKeyMetadata(_serialization.Model):
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.generation_time = None
+        self.generation_time: Optional[datetime.datetime] = None
 
 
 class AnalyticalStorageConfiguration(_serialization.Model):
@@ -243,9 +238,9 @@ class ARMProxyResource(_serialization.Model):
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.id = None
-        self.name = None
-        self.type = None
+        self.id: Optional[str] = None
+        self.name: Optional[str] = None
+        self.type: Optional[str] = None
 
 
 class ARMResourceProperties(_serialization.Model):
@@ -309,9 +304,9 @@ class ARMResourceProperties(_serialization.Model):
         :paramtype identity: ~azure.mgmt.cosmosdb.models.ManagedServiceIdentity
         """
         super().__init__(**kwargs)
-        self.id = None
-        self.name = None
-        self.type = None
+        self.id: Optional[str] = None
+        self.name: Optional[str] = None
+        self.type: Optional[str] = None
         self.location = location
         self.tags = tags
         self.identity = identity
@@ -462,7 +457,7 @@ class AutoscaleSettingsResource(_serialization.Model):
         super().__init__(**kwargs)
         self.max_throughput = max_throughput
         self.auto_upgrade_policy = auto_upgrade_policy
-        self.target_max_throughput = None
+        self.target_max_throughput: Optional[int] = None
 
 
 class AutoUpgradePolicyResource(_serialization.Model):
@@ -487,6 +482,32 @@ class AutoUpgradePolicyResource(_serialization.Model):
         """
         super().__init__(**kwargs)
         self.throughput_policy = throughput_policy
+
+
+class AzureBlobContainer(_serialization.Model):
+    """An Azure Blob container.
+
+    All required parameters must be populated in order to send to server.
+
+    :ivar container_name: Azure Blob container. Required.
+    :vartype container_name: str
+    """
+
+    _validation = {
+        "container_name": {"required": True},
+    }
+
+    _attribute_map = {
+        "container_name": {"key": "containerName", "type": "str"},
+    }
+
+    def __init__(self, *, container_name: str, **kwargs: Any) -> None:
+        """
+        :keyword container_name: Azure Blob container. Required.
+        :paramtype container_name: str
+        """
+        super().__init__(**kwargs)
+        self.container_name = container_name
 
 
 class DataTransferDataSourceSink(_serialization.Model):
@@ -563,6 +584,32 @@ class AzureBlobDataTransferDataSourceSink(DataTransferDataSourceSink):
         self.endpoint_url = endpoint_url
 
 
+class AzureBlobSourceSinkDetails(_serialization.Model):
+    """An Azure Blob Storage data source/sink.
+
+    All required parameters must be populated in order to send to server.
+
+    :ivar endpoint_url: Azure Blob container endpoint. Required.
+    :vartype endpoint_url: str
+    """
+
+    _validation = {
+        "endpoint_url": {"required": True, "pattern": r"^https?://[^/$.?# ]+.[^ ]*$"},
+    }
+
+    _attribute_map = {
+        "endpoint_url": {"key": "endpointUrl", "type": "str"},
+    }
+
+    def __init__(self, *, endpoint_url: str, **kwargs: Any) -> None:
+        """
+        :keyword endpoint_url: Azure Blob container endpoint. Required.
+        :paramtype endpoint_url: str
+        """
+        super().__init__(**kwargs)
+        self.endpoint_url = endpoint_url
+
+
 class BackupInformation(_serialization.Model):
     """Backup information of a resource.
 
@@ -583,7 +630,7 @@ class BackupInformation(_serialization.Model):
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.continuous_backup_information = None
+        self.continuous_backup_information: Optional["_models.ContinuousBackupInformation"] = None
 
 
 class BackupPolicy(_serialization.Model):
@@ -765,6 +812,75 @@ class BackupSchedule(_serialization.Model):
         self.retention_in_hours = retention_in_hours
 
 
+class BaseCopyJobProperties(_serialization.Model):
+    """Base copy job properties.
+
+    You probably want to use the sub-classes and not this class directly. Known sub-classes are:
+    BlobToCassandraRUCopyJobProperties, CassandraRUToBlobCopyJobProperties,
+    CassandraRUToCassandraRUCopyJobProperties, MongoRUToMongoRUCopyJobProperties,
+    MongoRUToMongoVCoreCopyJobProperties, NoSqlRUToNoSqlRUCopyJobProperties
+
+    All required parameters must be populated in order to send to server.
+
+    :ivar job_type: Copy Job Type. Known values are: "CassandraRUToCassandraRU",
+     "CassandraRUToAzureBlobStorage", "AzureBlobStorageToCassandraRU", "MongoRUToMongoRU",
+     "MongoRUToMongoVCore", and "NoSqlRUToNoSqlRU".
+    :vartype job_type: str or ~azure.mgmt.cosmosdb.models.CopyJobType
+    """
+
+    _validation = {
+        "job_type": {"required": True},
+    }
+
+    _attribute_map = {
+        "job_type": {"key": "jobType", "type": "str"},
+    }
+
+    _subtype_map = {
+        "job_type": {
+            "AzureBlobStorageToCassandraRU": "BlobToCassandraRUCopyJobProperties",
+            "CassandraRUToAzureBlobStorage": "CassandraRUToBlobCopyJobProperties",
+            "CassandraRUToCassandraRU": "CassandraRUToCassandraRUCopyJobProperties",
+            "MongoRUToMongoRU": "MongoRUToMongoRUCopyJobProperties",
+            "MongoRUToMongoVCore": "MongoRUToMongoVCoreCopyJobProperties",
+            "NoSqlRUToNoSqlRU": "NoSqlRUToNoSqlRUCopyJobProperties",
+        }
+    }
+
+    def __init__(self, **kwargs: Any) -> None:
+        """ """
+        super().__init__(**kwargs)
+        self.job_type: Optional[str] = None
+
+
+class BaseCopyJobTask(_serialization.Model):
+    """The properties of a Copy Job Task.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar total_count: Task level Total Count.
+    :vartype total_count: int
+    :ivar processed_count: Task level Processed Count.
+    :vartype processed_count: int
+    """
+
+    _validation = {
+        "total_count": {"readonly": True},
+        "processed_count": {"readonly": True},
+    }
+
+    _attribute_map = {
+        "total_count": {"key": "totalCount", "type": "int"},
+        "processed_count": {"key": "processedCount", "type": "int"},
+    }
+
+    def __init__(self, **kwargs: Any) -> None:
+        """ """
+        super().__init__(**kwargs)
+        self.total_count: Optional[int] = None
+        self.processed_count: Optional[int] = None
+
+
 class BaseCosmosDataTransferDataSourceSink(DataTransferDataSourceSink):
     """A base CosmosDB data source/sink.
 
@@ -806,6 +922,104 @@ class BaseCosmosDataTransferDataSourceSink(DataTransferDataSourceSink):
         super().__init__(**kwargs)
         self.component: str = "BaseCosmosDataTransferDataSourceSink"
         self.remote_account_name = remote_account_name
+
+
+class BlobToCassandraRUCopyJobProperties(BaseCopyJobProperties):
+    """Source Azure Blob Storage to Destination Cassandra copy job properties.
+
+    All required parameters must be populated in order to send to server.
+
+    :ivar job_type: Copy Job Type. Known values are: "CassandraRUToCassandraRU",
+     "CassandraRUToAzureBlobStorage", "AzureBlobStorageToCassandraRU", "MongoRUToMongoRU",
+     "MongoRUToMongoVCore", and "NoSqlRUToNoSqlRU".
+    :vartype job_type: str or ~azure.mgmt.cosmosdb.models.CopyJobType
+    :ivar source_details: Azure Storage container DataStore details. Required.
+    :vartype source_details: ~azure.mgmt.cosmosdb.models.AzureBlobSourceSinkDetails
+    :ivar destination_details: Destination Cassandra DataStore details.
+    :vartype destination_details: ~azure.mgmt.cosmosdb.models.CosmosDBSourceSinkDetails
+    :ivar tasks: Copy Job tasks. Required.
+    :vartype tasks: list[~azure.mgmt.cosmosdb.models.BlobToCassandraRUCopyJobTask]
+    """
+
+    _validation = {
+        "job_type": {"required": True},
+        "source_details": {"required": True},
+        "tasks": {"required": True},
+    }
+
+    _attribute_map = {
+        "job_type": {"key": "jobType", "type": "str"},
+        "source_details": {"key": "sourceDetails", "type": "AzureBlobSourceSinkDetails"},
+        "destination_details": {"key": "destinationDetails", "type": "CosmosDBSourceSinkDetails"},
+        "tasks": {"key": "tasks", "type": "[BlobToCassandraRUCopyJobTask]"},
+    }
+
+    def __init__(
+        self,
+        *,
+        source_details: "_models.AzureBlobSourceSinkDetails",
+        tasks: List["_models.BlobToCassandraRUCopyJobTask"],
+        destination_details: Optional["_models.CosmosDBSourceSinkDetails"] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword source_details: Azure Storage container DataStore details. Required.
+        :paramtype source_details: ~azure.mgmt.cosmosdb.models.AzureBlobSourceSinkDetails
+        :keyword destination_details: Destination Cassandra DataStore details.
+        :paramtype destination_details: ~azure.mgmt.cosmosdb.models.CosmosDBSourceSinkDetails
+        :keyword tasks: Copy Job tasks. Required.
+        :paramtype tasks: list[~azure.mgmt.cosmosdb.models.BlobToCassandraRUCopyJobTask]
+        """
+        super().__init__(**kwargs)
+        self.job_type: str = "AzureBlobStorageToCassandraRU"
+        self.source_details = source_details
+        self.destination_details = destination_details
+        self.tasks = tasks
+
+
+class BlobToCassandraRUCopyJobTask(BaseCopyJobTask):
+    """BlobToCassandraRUCopyJobTask.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    All required parameters must be populated in order to send to server.
+
+    :ivar total_count: Task level Total Count.
+    :vartype total_count: int
+    :ivar processed_count: Task level Processed Count.
+    :vartype processed_count: int
+    :ivar source: Source Azure Blob container. Required.
+    :vartype source: ~azure.mgmt.cosmosdb.models.AzureBlobContainer
+    :ivar destination: Destination Cassandra table. Required.
+    :vartype destination: ~azure.mgmt.cosmosdb.models.CosmosDBCassandraTable
+    """
+
+    _validation = {
+        "total_count": {"readonly": True},
+        "processed_count": {"readonly": True},
+        "source": {"required": True},
+        "destination": {"required": True},
+    }
+
+    _attribute_map = {
+        "total_count": {"key": "totalCount", "type": "int"},
+        "processed_count": {"key": "processedCount", "type": "int"},
+        "source": {"key": "source", "type": "AzureBlobContainer"},
+        "destination": {"key": "destination", "type": "CosmosDBCassandraTable"},
+    }
+
+    def __init__(
+        self, *, source: "_models.AzureBlobContainer", destination: "_models.CosmosDBCassandraTable", **kwargs: Any
+    ) -> None:
+        """
+        :keyword source: Source Azure Blob container. Required.
+        :paramtype source: ~azure.mgmt.cosmosdb.models.AzureBlobContainer
+        :keyword destination: Destination Cassandra table. Required.
+        :paramtype destination: ~azure.mgmt.cosmosdb.models.CosmosDBCassandraTable
+        """
+        super().__init__(**kwargs)
+        self.source = source
+        self.destination = destination
 
 
 class Capability(_serialization.Model):
@@ -926,9 +1140,9 @@ class CapacityModeChangeTransitionState(_serialization.Model):
         self.capacity_mode_transition_status = capacity_mode_transition_status
         self.current_capacity_mode = current_capacity_mode
         self.previous_capacity_mode = previous_capacity_mode
-        self.capacity_mode_transition_begin_timestamp = None
-        self.capacity_mode_transition_end_timestamp = None
-        self.capacity_mode_last_successful_transition_end_timestamp = None
+        self.capacity_mode_transition_begin_timestamp: Optional[datetime.datetime] = None
+        self.capacity_mode_transition_end_timestamp: Optional[datetime.datetime] = None
+        self.capacity_mode_last_successful_transition_end_timestamp: Optional[datetime.datetime] = None
 
 
 class CassandraClusterDataCenterNodeItem(_serialization.Model):
@@ -1386,9 +1600,9 @@ class ExtendedResourceProperties(_serialization.Model):
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.rid = None
-        self.ts = None
-        self.etag = None
+        self.rid: Optional[str] = None
+        self.ts: Optional[float] = None
+        self.etag: Optional[str] = None
 
 
 class CassandraKeyspaceResource(_serialization.Model):
@@ -1455,9 +1669,9 @@ class CassandraKeyspaceGetPropertiesResource(CassandraKeyspaceResource, Extended
         :paramtype id: str
         """
         super().__init__(id=id, **kwargs)
-        self.rid = None
-        self.ts = None
-        self.etag = None
+        self.rid: Optional[str] = None
+        self.ts: Optional[float] = None
+        self.etag: Optional[str] = None
         self.id = id
 
 
@@ -1558,7 +1772,7 @@ class CassandraKeyspaceListResult(_serialization.Model):
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.value = None
+        self.value: Optional[List["_models.CassandraKeyspaceGetResults"]] = None
 
 
 class CassandraPartitionKey(_serialization.Model):
@@ -1579,6 +1793,481 @@ class CassandraPartitionKey(_serialization.Model):
         """
         super().__init__(**kwargs)
         self.name = name
+
+
+class CassandraRoleAssignmentListResult(_serialization.Model):
+    """The relevant Role Assignments.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar value: List of Role Assignments and their properties.
+    :vartype value: list[~azure.mgmt.cosmosdb.models.CassandraRoleAssignmentResource]
+    :ivar next_link: The link used to get the next page of results.
+    :vartype next_link: str
+    """
+
+    _validation = {
+        "value": {"readonly": True},
+        "next_link": {"readonly": True},
+    }
+
+    _attribute_map = {
+        "value": {"key": "value", "type": "[CassandraRoleAssignmentResource]"},
+        "next_link": {"key": "nextLink", "type": "str"},
+    }
+
+    def __init__(self, **kwargs: Any) -> None:
+        """ """
+        super().__init__(**kwargs)
+        self.value: Optional[List["_models.CassandraRoleAssignmentResource"]] = None
+        self.next_link: Optional[str] = None
+
+
+class Resource(_serialization.Model):
+    """Common fields that are returned in the response for all Azure Resource Manager resources.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar id: Fully qualified resource ID for the resource. E.g.
+     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".
+    :vartype id: str
+    :ivar name: The name of the resource.
+    :vartype name: str
+    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
+     "Microsoft.Storage/storageAccounts".
+    :vartype type: str
+    :ivar system_data: Azure Resource Manager metadata containing createdBy and modifiedBy
+     information.
+    :vartype system_data: ~azure.mgmt.cosmosdb.models.SystemData
+    """
+
+    _validation = {
+        "id": {"readonly": True},
+        "name": {"readonly": True},
+        "type": {"readonly": True},
+        "system_data": {"readonly": True},
+    }
+
+    _attribute_map = {
+        "id": {"key": "id", "type": "str"},
+        "name": {"key": "name", "type": "str"},
+        "type": {"key": "type", "type": "str"},
+        "system_data": {"key": "systemData", "type": "SystemData"},
+    }
+
+    def __init__(self, **kwargs: Any) -> None:
+        """ """
+        super().__init__(**kwargs)
+        self.id: Optional[str] = None
+        self.name: Optional[str] = None
+        self.type: Optional[str] = None
+        self.system_data: Optional["_models.SystemData"] = None
+
+
+class ProxyResource(Resource):
+    """The resource model definition for a Azure Resource Manager proxy resource. It will not have
+    tags and a location.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar id: Fully qualified resource ID for the resource. E.g.
+     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".
+    :vartype id: str
+    :ivar name: The name of the resource.
+    :vartype name: str
+    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
+     "Microsoft.Storage/storageAccounts".
+    :vartype type: str
+    :ivar system_data: Azure Resource Manager metadata containing createdBy and modifiedBy
+     information.
+    :vartype system_data: ~azure.mgmt.cosmosdb.models.SystemData
+    """
+
+
+class CassandraRoleAssignmentResource(ProxyResource):
+    """Parameters to create and update an Azure Cosmos DB Cassandra Role Assignment.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar id: Fully qualified resource ID for the resource. E.g.
+     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".
+    :vartype id: str
+    :ivar name: The name of the resource.
+    :vartype name: str
+    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
+     "Microsoft.Storage/storageAccounts".
+    :vartype type: str
+    :ivar system_data: Azure Resource Manager metadata containing createdBy and modifiedBy
+     information.
+    :vartype system_data: ~azure.mgmt.cosmosdb.models.SystemData
+    :ivar role_definition_id: The unique identifier for the associated Role Definition.
+    :vartype role_definition_id: str
+    :ivar scope: The data plane resource path for which access is being granted through this
+     Cassandra Role Assignment.
+    :vartype scope: str
+    :ivar principal_id: The unique identifier for the associated AAD principal in the AAD graph to
+     which access is being granted through this Cassandra Role Assignment. Tenant ID for the
+     principal is inferred using the tenant associated with the subscription.
+    :vartype principal_id: str
+    :ivar provisioning_state: Provisioning state of the resource.
+    :vartype provisioning_state: str
+    """
+
+    _validation = {
+        "id": {"readonly": True},
+        "name": {"readonly": True},
+        "type": {"readonly": True},
+        "system_data": {"readonly": True},
+        "provisioning_state": {"readonly": True},
+    }
+
+    _attribute_map = {
+        "id": {"key": "id", "type": "str"},
+        "name": {"key": "name", "type": "str"},
+        "type": {"key": "type", "type": "str"},
+        "system_data": {"key": "systemData", "type": "SystemData"},
+        "role_definition_id": {"key": "properties.roleDefinitionId", "type": "str"},
+        "scope": {"key": "properties.scope", "type": "str"},
+        "principal_id": {"key": "properties.principalId", "type": "str"},
+        "provisioning_state": {"key": "properties.provisioningState", "type": "str"},
+    }
+
+    def __init__(
+        self,
+        *,
+        role_definition_id: Optional[str] = None,
+        scope: Optional[str] = None,
+        principal_id: Optional[str] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword role_definition_id: The unique identifier for the associated Role Definition.
+        :paramtype role_definition_id: str
+        :keyword scope: The data plane resource path for which access is being granted through this
+         Cassandra Role Assignment.
+        :paramtype scope: str
+        :keyword principal_id: The unique identifier for the associated AAD principal in the AAD graph
+         to which access is being granted through this Cassandra Role Assignment. Tenant ID for the
+         principal is inferred using the tenant associated with the subscription.
+        :paramtype principal_id: str
+        """
+        super().__init__(**kwargs)
+        self.role_definition_id = role_definition_id
+        self.scope = scope
+        self.principal_id = principal_id
+        self.provisioning_state: Optional[str] = None
+
+
+class CassandraRoleDefinitionListResult(_serialization.Model):
+    """The relevant Role Definitions.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar value: List of Role Definitions and their properties.
+    :vartype value: list[~azure.mgmt.cosmosdb.models.CassandraRoleDefinitionResource]
+    :ivar next_link: The link used to get the next page of results.
+    :vartype next_link: str
+    """
+
+    _validation = {
+        "value": {"readonly": True},
+        "next_link": {"readonly": True},
+    }
+
+    _attribute_map = {
+        "value": {"key": "value", "type": "[CassandraRoleDefinitionResource]"},
+        "next_link": {"key": "nextLink", "type": "str"},
+    }
+
+    def __init__(self, **kwargs: Any) -> None:
+        """ """
+        super().__init__(**kwargs)
+        self.value: Optional[List["_models.CassandraRoleDefinitionResource"]] = None
+        self.next_link: Optional[str] = None
+
+
+class CassandraRoleDefinitionResource(ProxyResource):
+    """Parameters to create and update an Azure Cosmos DB Cassandra Role Definition.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar id: Fully qualified resource ID for the resource. E.g.
+     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".
+    :vartype id: str
+    :ivar name: The name of the resource.
+    :vartype name: str
+    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
+     "Microsoft.Storage/storageAccounts".
+    :vartype type: str
+    :ivar system_data: Azure Resource Manager metadata containing createdBy and modifiedBy
+     information.
+    :vartype system_data: ~azure.mgmt.cosmosdb.models.SystemData
+    :ivar id_properties_id: The path id for the Role Definition.
+    :vartype id_properties_id: str
+    :ivar role_name: A user-friendly name for the Role Definition. Must be unique for the database
+     account.
+    :vartype role_name: str
+    :ivar type_properties_type: Indicates whether the Role Definition was built-in or user created.
+     Known values are: "BuiltInRole" and "CustomRole".
+    :vartype type_properties_type: str or ~azure.mgmt.cosmosdb.models.RoleDefinitionType
+    :ivar assignable_scopes: A set of fully qualified Scopes at or below which Cassandra Role
+     Assignments may be created using this Role Definition. This will allow application of this Role
+     Definition on the entire database account or any underlying Database / Collection. Must have at
+     least one element. Scopes higher than Database account are not enforceable as assignable
+     Scopes. Note that resources referenced in assignable Scopes need not exist.
+    :vartype assignable_scopes: list[str]
+    :ivar permissions: The set of operations allowed through this Role Definition.
+    :vartype permissions: list[~azure.mgmt.cosmosdb.models.PermissionAutoGenerated2]
+    """
+
+    _validation = {
+        "id": {"readonly": True},
+        "name": {"readonly": True},
+        "type": {"readonly": True},
+        "system_data": {"readonly": True},
+    }
+
+    _attribute_map = {
+        "id": {"key": "id", "type": "str"},
+        "name": {"key": "name", "type": "str"},
+        "type": {"key": "type", "type": "str"},
+        "system_data": {"key": "systemData", "type": "SystemData"},
+        "id_properties_id": {"key": "properties.id", "type": "str"},
+        "role_name": {"key": "properties.roleName", "type": "str"},
+        "type_properties_type": {"key": "properties.type", "type": "str"},
+        "assignable_scopes": {"key": "properties.assignableScopes", "type": "[str]"},
+        "permissions": {"key": "properties.permissions", "type": "[PermissionAutoGenerated2]"},
+    }
+
+    def __init__(
+        self,
+        *,
+        id_properties_id: Optional[str] = None,
+        role_name: Optional[str] = None,
+        type_properties_type: Optional[Union[str, "_models.RoleDefinitionType"]] = None,
+        assignable_scopes: Optional[List[str]] = None,
+        permissions: Optional[List["_models.PermissionAutoGenerated2"]] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword id_properties_id: The path id for the Role Definition.
+        :paramtype id_properties_id: str
+        :keyword role_name: A user-friendly name for the Role Definition. Must be unique for the
+         database account.
+        :paramtype role_name: str
+        :keyword type_properties_type: Indicates whether the Role Definition was built-in or user
+         created. Known values are: "BuiltInRole" and "CustomRole".
+        :paramtype type_properties_type: str or ~azure.mgmt.cosmosdb.models.RoleDefinitionType
+        :keyword assignable_scopes: A set of fully qualified Scopes at or below which Cassandra Role
+         Assignments may be created using this Role Definition. This will allow application of this Role
+         Definition on the entire database account or any underlying Database / Collection. Must have at
+         least one element. Scopes higher than Database account are not enforceable as assignable
+         Scopes. Note that resources referenced in assignable Scopes need not exist.
+        :paramtype assignable_scopes: list[str]
+        :keyword permissions: The set of operations allowed through this Role Definition.
+        :paramtype permissions: list[~azure.mgmt.cosmosdb.models.PermissionAutoGenerated2]
+        """
+        super().__init__(**kwargs)
+        self.id_properties_id = id_properties_id
+        self.role_name = role_name
+        self.type_properties_type = type_properties_type
+        self.assignable_scopes = assignable_scopes
+        self.permissions = permissions
+
+
+class CassandraRUToBlobCopyJobProperties(BaseCopyJobProperties):
+    """Source Cassandra to Destination Azure Blob Storage copy job properties.
+
+    All required parameters must be populated in order to send to server.
+
+    :ivar job_type: Copy Job Type. Known values are: "CassandraRUToCassandraRU",
+     "CassandraRUToAzureBlobStorage", "AzureBlobStorageToCassandraRU", "MongoRUToMongoRU",
+     "MongoRUToMongoVCore", and "NoSqlRUToNoSqlRU".
+    :vartype job_type: str or ~azure.mgmt.cosmosdb.models.CopyJobType
+    :ivar source_details: Source Cassandra DataStore details.
+    :vartype source_details: ~azure.mgmt.cosmosdb.models.CosmosDBSourceSinkDetails
+    :ivar destination_details: Destination Cassandra DataStore details. Required.
+    :vartype destination_details: ~azure.mgmt.cosmosdb.models.AzureBlobSourceSinkDetails
+    :ivar tasks: Copy Job tasks. Required.
+    :vartype tasks: list[~azure.mgmt.cosmosdb.models.CassandraRUToBlobCopyJobTask]
+    """
+
+    _validation = {
+        "job_type": {"required": True},
+        "destination_details": {"required": True},
+        "tasks": {"required": True},
+    }
+
+    _attribute_map = {
+        "job_type": {"key": "jobType", "type": "str"},
+        "source_details": {"key": "sourceDetails", "type": "CosmosDBSourceSinkDetails"},
+        "destination_details": {"key": "destinationDetails", "type": "AzureBlobSourceSinkDetails"},
+        "tasks": {"key": "tasks", "type": "[CassandraRUToBlobCopyJobTask]"},
+    }
+
+    def __init__(
+        self,
+        *,
+        destination_details: "_models.AzureBlobSourceSinkDetails",
+        tasks: List["_models.CassandraRUToBlobCopyJobTask"],
+        source_details: Optional["_models.CosmosDBSourceSinkDetails"] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword source_details: Source Cassandra DataStore details.
+        :paramtype source_details: ~azure.mgmt.cosmosdb.models.CosmosDBSourceSinkDetails
+        :keyword destination_details: Destination Cassandra DataStore details. Required.
+        :paramtype destination_details: ~azure.mgmt.cosmosdb.models.AzureBlobSourceSinkDetails
+        :keyword tasks: Copy Job tasks. Required.
+        :paramtype tasks: list[~azure.mgmt.cosmosdb.models.CassandraRUToBlobCopyJobTask]
+        """
+        super().__init__(**kwargs)
+        self.job_type: str = "CassandraRUToAzureBlobStorage"
+        self.source_details = source_details
+        self.destination_details = destination_details
+        self.tasks = tasks
+
+
+class CassandraRUToBlobCopyJobTask(BaseCopyJobTask):
+    """CassandraRUToBlobCopyJobTask.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    All required parameters must be populated in order to send to server.
+
+    :ivar total_count: Task level Total Count.
+    :vartype total_count: int
+    :ivar processed_count: Task level Processed Count.
+    :vartype processed_count: int
+    :ivar source: Source Cassandra table. Required.
+    :vartype source: ~azure.mgmt.cosmosdb.models.CosmosDBCassandraTable
+    :ivar destination: Destination Azure Blob container. Required.
+    :vartype destination: ~azure.mgmt.cosmosdb.models.AzureBlobContainer
+    """
+
+    _validation = {
+        "total_count": {"readonly": True},
+        "processed_count": {"readonly": True},
+        "source": {"required": True},
+        "destination": {"required": True},
+    }
+
+    _attribute_map = {
+        "total_count": {"key": "totalCount", "type": "int"},
+        "processed_count": {"key": "processedCount", "type": "int"},
+        "source": {"key": "source", "type": "CosmosDBCassandraTable"},
+        "destination": {"key": "destination", "type": "AzureBlobContainer"},
+    }
+
+    def __init__(
+        self, *, source: "_models.CosmosDBCassandraTable", destination: "_models.AzureBlobContainer", **kwargs: Any
+    ) -> None:
+        """
+        :keyword source: Source Cassandra table. Required.
+        :paramtype source: ~azure.mgmt.cosmosdb.models.CosmosDBCassandraTable
+        :keyword destination: Destination Azure Blob container. Required.
+        :paramtype destination: ~azure.mgmt.cosmosdb.models.AzureBlobContainer
+        """
+        super().__init__(**kwargs)
+        self.source = source
+        self.destination = destination
+
+
+class CassandraRUToCassandraRUCopyJobProperties(BaseCopyJobProperties):  # pylint: disable=name-too-long
+    """Source Cassandra to Destination Cassandra copy job properties.
+
+    All required parameters must be populated in order to send to server.
+
+    :ivar job_type: Copy Job Type. Known values are: "CassandraRUToCassandraRU",
+     "CassandraRUToAzureBlobStorage", "AzureBlobStorageToCassandraRU", "MongoRUToMongoRU",
+     "MongoRUToMongoVCore", and "NoSqlRUToNoSqlRU".
+    :vartype job_type: str or ~azure.mgmt.cosmosdb.models.CopyJobType
+    :ivar source_details: Source Cassandra DataStore details.
+    :vartype source_details: ~azure.mgmt.cosmosdb.models.CosmosDBSourceSinkDetails
+    :ivar destination_details: Destination Cassandra DataStore details.
+    :vartype destination_details: ~azure.mgmt.cosmosdb.models.CosmosDBSourceSinkDetails
+    :ivar tasks: Copy Job tasks. Required.
+    :vartype tasks: list[~azure.mgmt.cosmosdb.models.CassandraRUToCassandraRUCopyJobTask]
+    """
+
+    _validation = {
+        "job_type": {"required": True},
+        "tasks": {"required": True},
+    }
+
+    _attribute_map = {
+        "job_type": {"key": "jobType", "type": "str"},
+        "source_details": {"key": "sourceDetails", "type": "CosmosDBSourceSinkDetails"},
+        "destination_details": {"key": "destinationDetails", "type": "CosmosDBSourceSinkDetails"},
+        "tasks": {"key": "tasks", "type": "[CassandraRUToCassandraRUCopyJobTask]"},
+    }
+
+    def __init__(
+        self,
+        *,
+        tasks: List["_models.CassandraRUToCassandraRUCopyJobTask"],
+        source_details: Optional["_models.CosmosDBSourceSinkDetails"] = None,
+        destination_details: Optional["_models.CosmosDBSourceSinkDetails"] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword source_details: Source Cassandra DataStore details.
+        :paramtype source_details: ~azure.mgmt.cosmosdb.models.CosmosDBSourceSinkDetails
+        :keyword destination_details: Destination Cassandra DataStore details.
+        :paramtype destination_details: ~azure.mgmt.cosmosdb.models.CosmosDBSourceSinkDetails
+        :keyword tasks: Copy Job tasks. Required.
+        :paramtype tasks: list[~azure.mgmt.cosmosdb.models.CassandraRUToCassandraRUCopyJobTask]
+        """
+        super().__init__(**kwargs)
+        self.job_type: str = "CassandraRUToCassandraRU"
+        self.source_details = source_details
+        self.destination_details = destination_details
+        self.tasks = tasks
+
+
+class CassandraRUToCassandraRUCopyJobTask(BaseCopyJobTask):
+    """CassandraRUToCassandraRUCopyJobTask.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    All required parameters must be populated in order to send to server.
+
+    :ivar total_count: Task level Total Count.
+    :vartype total_count: int
+    :ivar processed_count: Task level Processed Count.
+    :vartype processed_count: int
+    :ivar source: Source Cassandra table. Required.
+    :vartype source: ~azure.mgmt.cosmosdb.models.CosmosDBCassandraTable
+    :ivar destination: Destination Cassandra table. Required.
+    :vartype destination: ~azure.mgmt.cosmosdb.models.CosmosDBCassandraTable
+    """
+
+    _validation = {
+        "total_count": {"readonly": True},
+        "processed_count": {"readonly": True},
+        "source": {"required": True},
+        "destination": {"required": True},
+    }
+
+    _attribute_map = {
+        "total_count": {"key": "totalCount", "type": "int"},
+        "processed_count": {"key": "processedCount", "type": "int"},
+        "source": {"key": "source", "type": "CosmosDBCassandraTable"},
+        "destination": {"key": "destination", "type": "CosmosDBCassandraTable"},
+    }
+
+    def __init__(
+        self, *, source: "_models.CosmosDBCassandraTable", destination: "_models.CosmosDBCassandraTable", **kwargs: Any
+    ) -> None:
+        """
+        :keyword source: Source Cassandra table. Required.
+        :paramtype source: ~azure.mgmt.cosmosdb.models.CosmosDBCassandraTable
+        :keyword destination: Destination Cassandra table. Required.
+        :paramtype destination: ~azure.mgmt.cosmosdb.models.CosmosDBCassandraTable
+        """
+        super().__init__(**kwargs)
+        self.source = source
+        self.destination = destination
 
 
 class CassandraSchema(_serialization.Model):
@@ -1828,9 +2517,9 @@ class CassandraTableGetPropertiesResource(CassandraTableResource, ExtendedResour
         super().__init__(
             id=id, default_ttl=default_ttl, schema=schema, analytical_storage_ttl=analytical_storage_ttl, **kwargs
         )
-        self.rid = None
-        self.ts = None
-        self.etag = None
+        self.rid: Optional[str] = None
+        self.ts: Optional[float] = None
+        self.etag: Optional[str] = None
         self.id = id
         self.default_ttl = default_ttl
         self.schema = schema
@@ -1934,7 +2623,7 @@ class CassandraTableListResult(_serialization.Model):
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.value = None
+        self.value: Optional[List["_models.CassandraTableGetResults"]] = None
 
 
 class CassandraViewCreateUpdateParameters(ARMResourceProperties):
@@ -2107,9 +2796,9 @@ class CassandraViewGetPropertiesResource(CassandraViewResource, ExtendedResource
         :paramtype view_definition: str
         """
         super().__init__(id=id, view_definition=view_definition, **kwargs)
-        self.rid = None
-        self.ts = None
-        self.etag = None
+        self.rid: Optional[str] = None
+        self.ts: Optional[float] = None
+        self.etag: Optional[str] = None
         self.id = id
         self.view_definition = view_definition
 
@@ -2211,7 +2900,7 @@ class CassandraViewListResult(_serialization.Model):
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.value = None
+        self.value: Optional[List["_models.CassandraViewGetResults"]] = None
 
 
 class Certificate(_serialization.Model):
@@ -2258,69 +2947,8 @@ class ChaosFaultListResponse(_serialization.Model):
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.value = None
-        self.next_link = None
-
-
-class Resource(_serialization.Model):
-    """Common fields that are returned in the response for all Azure Resource Manager resources.
-
-    Variables are only populated by the server, and will be ignored when sending a request.
-
-    :ivar id: Fully qualified resource ID for the resource. E.g.
-     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".  # pylint: disable=line-too-long
-    :vartype id: str
-    :ivar name: The name of the resource.
-    :vartype name: str
-    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
-     "Microsoft.Storage/storageAccounts".
-    :vartype type: str
-    :ivar system_data: Azure Resource Manager metadata containing createdBy and modifiedBy
-     information.
-    :vartype system_data: ~azure.mgmt.cosmosdb.models.SystemData
-    """
-
-    _validation = {
-        "id": {"readonly": True},
-        "name": {"readonly": True},
-        "type": {"readonly": True},
-        "system_data": {"readonly": True},
-    }
-
-    _attribute_map = {
-        "id": {"key": "id", "type": "str"},
-        "name": {"key": "name", "type": "str"},
-        "type": {"key": "type", "type": "str"},
-        "system_data": {"key": "systemData", "type": "SystemData"},
-    }
-
-    def __init__(self, **kwargs: Any) -> None:
-        """ """
-        super().__init__(**kwargs)
-        self.id = None
-        self.name = None
-        self.type = None
-        self.system_data = None
-
-
-class ProxyResource(Resource):
-    """The resource model definition for a Azure Resource Manager proxy resource. It will not have
-    tags and a location.
-
-    Variables are only populated by the server, and will be ignored when sending a request.
-
-    :ivar id: Fully qualified resource ID for the resource. E.g.
-     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".  # pylint: disable=line-too-long
-    :vartype id: str
-    :ivar name: The name of the resource.
-    :vartype name: str
-    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
-     "Microsoft.Storage/storageAccounts".
-    :vartype type: str
-    :ivar system_data: Azure Resource Manager metadata containing createdBy and modifiedBy
-     information.
-    :vartype system_data: ~azure.mgmt.cosmosdb.models.SystemData
-    """
+        self.value: Optional[List["_models.ChaosFaultResource"]] = None
+        self.next_link: Optional[str] = None
 
 
 class ChaosFaultResource(ProxyResource):
@@ -2329,7 +2957,7 @@ class ChaosFaultResource(ProxyResource):
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :ivar id: Fully qualified resource ID for the resource. E.g.
-     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".  # pylint: disable=line-too-long
+     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
@@ -2397,7 +3025,7 @@ class ChaosFaultResource(ProxyResource):
         self.region = region
         self.database_name = database_name
         self.container_name = container_name
-        self.provisioning_state = None
+        self.provisioning_state: Optional[str] = None
 
 
 class ClientEncryptionIncludedPath(_serialization.Model):
@@ -2609,9 +3237,9 @@ class ClientEncryptionKeyGetPropertiesResource(ClientEncryptionKeyResource, Exte
             key_wrap_metadata=key_wrap_metadata,
             **kwargs
         )
-        self.rid = None
-        self.ts = None
-        self.etag = None
+        self.rid: Optional[str] = None
+        self.ts: Optional[float] = None
+        self.etag: Optional[str] = None
         self.id = id
         self.encryption_algorithm = encryption_algorithm
         self.wrapped_data_encryption_key = wrapped_data_encryption_key
@@ -2677,7 +3305,7 @@ class ClientEncryptionKeysListResult(_serialization.Model):
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.value = None
+        self.value: Optional[List["_models.ClientEncryptionKeyGetResults"]] = None
 
 
 class ClientEncryptionPolicy(_serialization.Model):
@@ -2808,9 +3436,9 @@ class ManagedCassandraARMResourceProperties(_serialization.Model):
         :paramtype identity: ~azure.mgmt.cosmosdb.models.ManagedCassandraManagedServiceIdentity
         """
         super().__init__(**kwargs)
-        self.id = None
-        self.name = None
-        self.type = None
+        self.id: Optional[str] = None
+        self.name: Optional[str] = None
+        self.type: Optional[str] = None
         self.location = location
         self.tags = tags
         self.identity = identity
@@ -2901,9 +3529,9 @@ class ClusterResourceProperties(_serialization.Model):
     :ivar delegated_management_subnet_id: Resource id of a subnet that this cluster's management
      service should have its network interface attached to. The subnet must be routable to all
      subnets that will be delegated to data centers. The resource id must be of the form
-     '/subscriptions/:code:`<subscription id>`/resourceGroups/:code:`<resource
-     group>`/providers/Microsoft.Network/virtualNetworks/:code:`<virtual
-     network>`/subnets/:code:`<subnet>`'.
+     '/subscriptions/\\ :code:`<subscription id>`/resourceGroups/\\ :code:`<resource
+     group>`/providers/Microsoft.Network/virtualNetworks/\\ :code:`<virtual network>`/subnets/\\
+     :code:`<subnet>`'.
     :vartype delegated_management_subnet_id: str
     :ivar cassandra_version: Which version of Cassandra should this cluster converge to running
      (e.g., 3.11). When updated, the cluster may take some time to migrate to the new version.
@@ -3055,9 +3683,9 @@ class ClusterResourceProperties(_serialization.Model):
         :keyword delegated_management_subnet_id: Resource id of a subnet that this cluster's management
          service should have its network interface attached to. The subnet must be routable to all
          subnets that will be delegated to data centers. The resource id must be of the form
-         '/subscriptions/:code:`<subscription id>`/resourceGroups/:code:`<resource
-         group>`/providers/Microsoft.Network/virtualNetworks/:code:`<virtual
-         network>`/subnets/:code:`<subnet>`'.
+         '/subscriptions/\\ :code:`<subscription id>`/resourceGroups/\\ :code:`<resource
+         group>`/providers/Microsoft.Network/virtualNetworks/\\ :code:`<virtual network>`/subnets/\\
+         :code:`<subnet>`'.
         :paramtype delegated_management_subnet_id: str
         :keyword cassandra_version: Which version of Cassandra should this cluster converge to running
          (e.g., 3.11). When updated, the cluster may take some time to migrate to the new version.
@@ -3137,9 +3765,9 @@ class ClusterResourceProperties(_serialization.Model):
         self.auto_replicate = auto_replicate
         self.client_certificates = client_certificates
         self.external_gossip_certificates = external_gossip_certificates
-        self.gossip_certificates = None
+        self.gossip_certificates: Optional[List["_models.Certificate"]] = None
         self.external_seed_nodes = external_seed_nodes
-        self.seed_nodes = None
+        self.seed_nodes: Optional[List["_models.SeedNode"]] = None
         self.external_data_centers = external_data_centers
         self.hours_between_backups = hours_between_backups
         self.deallocated = deallocated
@@ -3150,7 +3778,7 @@ class ClusterResourceProperties(_serialization.Model):
         self.backup_schedules = backup_schedules
         self.scheduled_event_strategy = scheduled_event_strategy
         self.azure_connection_method = azure_connection_method
-        self.private_link_resource_id = None
+        self.private_link_resource_id: Optional[str] = None
 
 
 class Column(_serialization.Model):
@@ -3187,15 +3815,15 @@ class CommandAsyncPostBody(_serialization.Model):
     :ivar command: The command which should be run. Required.
     :vartype command: str
     :ivar arguments: The arguments for the command to be run.
-    :vartype arguments: dict[str, str]
+    :vartype arguments: JSON
     :ivar host: IP address of the cassandra host to run the command on. Required.
     :vartype host: str
     :ivar cassandra_stop_start: If true, stops cassandra before executing the command and then
      start it again.
     :vartype cassandra_stop_start: bool
-    :ivar readwrite: If true, allows the command to *write* to the cassandra directory, otherwise
+    :ivar read_write: If true, allows the command to *write* to the cassandra directory, otherwise
      read-only.
-    :vartype readwrite: bool
+    :vartype read_write: bool
     """
 
     _validation = {
@@ -3205,10 +3833,10 @@ class CommandAsyncPostBody(_serialization.Model):
 
     _attribute_map = {
         "command": {"key": "command", "type": "str"},
-        "arguments": {"key": "arguments", "type": "{str}"},
+        "arguments": {"key": "arguments", "type": "object"},
         "host": {"key": "host", "type": "str"},
         "cassandra_stop_start": {"key": "cassandra-stop-start", "type": "bool"},
-        "readwrite": {"key": "readwrite", "type": "bool"},
+        "read_write": {"key": "readWrite", "type": "bool"},
     }
 
     def __init__(
@@ -3216,31 +3844,31 @@ class CommandAsyncPostBody(_serialization.Model):
         *,
         command: str,
         host: str,
-        arguments: Optional[Dict[str, str]] = None,
+        arguments: Optional[JSON] = None,
         cassandra_stop_start: Optional[bool] = None,
-        readwrite: Optional[bool] = None,
+        read_write: Optional[bool] = None,
         **kwargs: Any
     ) -> None:
         """
         :keyword command: The command which should be run. Required.
         :paramtype command: str
         :keyword arguments: The arguments for the command to be run.
-        :paramtype arguments: dict[str, str]
+        :paramtype arguments: JSON
         :keyword host: IP address of the cassandra host to run the command on. Required.
         :paramtype host: str
         :keyword cassandra_stop_start: If true, stops cassandra before executing the command and then
          start it again.
         :paramtype cassandra_stop_start: bool
-        :keyword readwrite: If true, allows the command to *write* to the cassandra directory,
+        :keyword read_write: If true, allows the command to *write* to the cassandra directory,
          otherwise read-only.
-        :paramtype readwrite: bool
+        :paramtype read_write: bool
         """
         super().__init__(**kwargs)
         self.command = command
         self.arguments = arguments
         self.host = host
         self.cassandra_stop_start = cassandra_stop_start
-        self.readwrite = readwrite
+        self.read_write = read_write
 
 
 class CommandOutput(_serialization.Model):
@@ -3697,7 +4325,7 @@ class ContainerPartitionKey(_serialization.Model):
         self.paths = paths
         self.kind = kind
         self.version = version
-        self.system_key = None
+        self.system_key: Optional[bool] = None
 
 
 class ContinuousBackupInformation(_serialization.Model):
@@ -3804,6 +4432,153 @@ class ContinuousModeProperties(_serialization.Model):
         """
         super().__init__(**kwargs)
         self.tier = tier
+
+
+class CopyJobFeedResults(_serialization.Model):
+    """The List operation response, that contains the Copy Jobs and their properties.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar value: List of Copy Jobs and their properties.
+    :vartype value: list[~azure.mgmt.cosmosdb.models.CopyJobGetResults]
+    :ivar next_link: URL to get the next set of Copy Job list results if there are any.
+    :vartype next_link: str
+    """
+
+    _validation = {
+        "value": {"readonly": True},
+        "next_link": {"readonly": True},
+    }
+
+    _attribute_map = {
+        "value": {"key": "value", "type": "[CopyJobGetResults]"},
+        "next_link": {"key": "nextLink", "type": "str"},
+    }
+
+    def __init__(self, **kwargs: Any) -> None:
+        """ """
+        super().__init__(**kwargs)
+        self.value: Optional[List["_models.CopyJobGetResults"]] = None
+        self.next_link: Optional[str] = None
+
+
+class CopyJobGetResults(ARMProxyResource):
+    """A Cosmos DB Copy Job.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    All required parameters must be populated in order to send to server.
+
+    :ivar id: The unique resource identifier of the database account.
+    :vartype id: str
+    :ivar name: The name of the database account.
+    :vartype name: str
+    :ivar type: The type of Azure resource.
+    :vartype type: str
+    :ivar properties: The properties of a Copy Job. Required.
+    :vartype properties: ~azure.mgmt.cosmosdb.models.CopyJobProperties
+    """
+
+    _validation = {
+        "id": {"readonly": True},
+        "name": {"readonly": True},
+        "type": {"readonly": True},
+        "properties": {"required": True},
+    }
+
+    _attribute_map = {
+        "id": {"key": "id", "type": "str"},
+        "name": {"key": "name", "type": "str"},
+        "type": {"key": "type", "type": "str"},
+        "properties": {"key": "properties", "type": "CopyJobProperties"},
+    }
+
+    def __init__(self, *, properties: "_models.CopyJobProperties", **kwargs: Any) -> None:
+        """
+        :keyword properties: The properties of a Copy Job. Required.
+        :paramtype properties: ~azure.mgmt.cosmosdb.models.CopyJobProperties
+        """
+        super().__init__(**kwargs)
+        self.properties = properties
+
+
+class CopyJobProperties(_serialization.Model):
+    """The properties of a Copy Job.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    All required parameters must be populated in order to send to server.
+
+    :ivar job_properties: Job Properties. Required.
+    :vartype job_properties: ~azure.mgmt.cosmosdb.models.BaseCopyJobProperties
+    :ivar status: Job Status. Known values are: "Pending", "Partitioning", "Running", "Paused",
+     "Completed", "Faulted", and "Cancelled".
+    :vartype status: str or ~azure.mgmt.cosmosdb.models.CopyJobStatus
+    :ivar processed_count: Processed Count.
+    :vartype processed_count: int
+    :ivar total_count: Total Count.
+    :vartype total_count: int
+    :ivar last_updated_utc_time: Last Updated Time (ISO-8601 format).
+    :vartype last_updated_utc_time: ~datetime.datetime
+    :ivar worker_count: Worker count.
+    :vartype worker_count: int
+    :ivar error: Error response for Faulted job.
+    :vartype error: ~azure.mgmt.cosmosdb.models.ErrorResponseAutoGenerated
+    :ivar duration: Total Duration of Job.
+    :vartype duration: str
+    :ivar mode: Mode of job execution. Known values are: "Offline" and "Online".
+    :vartype mode: str or ~azure.mgmt.cosmosdb.models.CopyJobMode
+    """
+
+    _validation = {
+        "job_properties": {"required": True},
+        "status": {"readonly": True},
+        "processed_count": {"readonly": True},
+        "total_count": {"readonly": True},
+        "last_updated_utc_time": {"readonly": True},
+        "worker_count": {"minimum": 0},
+        "error": {"readonly": True},
+        "duration": {"readonly": True},
+    }
+
+    _attribute_map = {
+        "job_properties": {"key": "jobProperties", "type": "BaseCopyJobProperties"},
+        "status": {"key": "status", "type": "str"},
+        "processed_count": {"key": "processedCount", "type": "int"},
+        "total_count": {"key": "totalCount", "type": "int"},
+        "last_updated_utc_time": {"key": "lastUpdatedUtcTime", "type": "iso-8601"},
+        "worker_count": {"key": "workerCount", "type": "int"},
+        "error": {"key": "error", "type": "ErrorResponseAutoGenerated"},
+        "duration": {"key": "duration", "type": "str"},
+        "mode": {"key": "mode", "type": "str"},
+    }
+
+    def __init__(
+        self,
+        *,
+        job_properties: "_models.BaseCopyJobProperties",
+        worker_count: Optional[int] = None,
+        mode: Optional[Union[str, "_models.CopyJobMode"]] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword job_properties: Job Properties. Required.
+        :paramtype job_properties: ~azure.mgmt.cosmosdb.models.BaseCopyJobProperties
+        :keyword worker_count: Worker count.
+        :paramtype worker_count: int
+        :keyword mode: Mode of job execution. Known values are: "Offline" and "Online".
+        :paramtype mode: str or ~azure.mgmt.cosmosdb.models.CopyJobMode
+        """
+        super().__init__(**kwargs)
+        self.job_properties = job_properties
+        self.status: Optional[Union[str, "_models.CopyJobStatus"]] = None
+        self.processed_count: Optional[int] = None
+        self.total_count: Optional[int] = None
+        self.last_updated_utc_time: Optional[datetime.datetime] = None
+        self.worker_count = worker_count
+        self.error: Optional["_models.ErrorResponseAutoGenerated"] = None
+        self.duration: Optional[str] = None
+        self.mode = mode
 
 
 class CorsPolicy(_serialization.Model):
@@ -3920,6 +4695,158 @@ class CosmosCassandraDataTransferDataSourceSink(BaseCosmosDataTransferDataSource
         self.component: str = "CosmosDBCassandra"
         self.keyspace_name = keyspace_name
         self.table_name = table_name
+
+
+class CosmosDBCassandraTable(_serialization.Model):
+    """A CosmosDB Cassandra table.
+
+    All required parameters must be populated in order to send to server.
+
+    :ivar keyspace_name: Azure Cosmos DB for Apache Cassandra keyspace. Required.
+    :vartype keyspace_name: str
+    :ivar table_name: Azure Cosmos DB for Apache Cassandra table. Required.
+    :vartype table_name: str
+    """
+
+    _validation = {
+        "keyspace_name": {"required": True},
+        "table_name": {"required": True},
+    }
+
+    _attribute_map = {
+        "keyspace_name": {"key": "keyspaceName", "type": "str"},
+        "table_name": {"key": "tableName", "type": "str"},
+    }
+
+    def __init__(self, *, keyspace_name: str, table_name: str, **kwargs: Any) -> None:
+        """
+        :keyword keyspace_name: Azure Cosmos DB for Apache Cassandra keyspace. Required.
+        :paramtype keyspace_name: str
+        :keyword table_name: Azure Cosmos DB for Apache Cassandra table. Required.
+        :paramtype table_name: str
+        """
+        super().__init__(**kwargs)
+        self.keyspace_name = keyspace_name
+        self.table_name = table_name
+
+
+class CosmosDBMongoCollection(_serialization.Model):
+    """A CosmosDB Mongo collection.
+
+    All required parameters must be populated in order to send to server.
+
+    :ivar database_name: Azure Cosmos DB for MongoDB (RU) database. Required.
+    :vartype database_name: str
+    :ivar collection_name: Azure Cosmos DB for MongoDB (RU) collection. Required.
+    :vartype collection_name: str
+    """
+
+    _validation = {
+        "database_name": {"required": True},
+        "collection_name": {"required": True},
+    }
+
+    _attribute_map = {
+        "database_name": {"key": "databaseName", "type": "str"},
+        "collection_name": {"key": "collectionName", "type": "str"},
+    }
+
+    def __init__(self, *, database_name: str, collection_name: str, **kwargs: Any) -> None:
+        """
+        :keyword database_name: Azure Cosmos DB for MongoDB (RU) database. Required.
+        :paramtype database_name: str
+        :keyword collection_name: Azure Cosmos DB for MongoDB (RU) collection. Required.
+        :paramtype collection_name: str
+        """
+        super().__init__(**kwargs)
+        self.database_name = database_name
+        self.collection_name = collection_name
+
+
+class CosmosDBMongoVCoreCollection(_serialization.Model):
+    """A CosmosDB Mongo vCore collection.
+
+    All required parameters must be populated in order to send to server.
+
+    :ivar database_name: Azure Cosmos DB for MongoDB (vCore) database. Required.
+    :vartype database_name: str
+    :ivar collection_name: Azure Cosmos DB for MongoDB (vCore) collection. Required.
+    :vartype collection_name: str
+    """
+
+    _validation = {
+        "database_name": {"required": True},
+        "collection_name": {"required": True},
+    }
+
+    _attribute_map = {
+        "database_name": {"key": "databaseName", "type": "str"},
+        "collection_name": {"key": "collectionName", "type": "str"},
+    }
+
+    def __init__(self, *, database_name: str, collection_name: str, **kwargs: Any) -> None:
+        """
+        :keyword database_name: Azure Cosmos DB for MongoDB (vCore) database. Required.
+        :paramtype database_name: str
+        :keyword collection_name: Azure Cosmos DB for MongoDB (vCore) collection. Required.
+        :paramtype collection_name: str
+        """
+        super().__init__(**kwargs)
+        self.database_name = database_name
+        self.collection_name = collection_name
+
+
+class CosmosDBNoSqlContainer(_serialization.Model):
+    """A CosmosDB NoSQL container.
+
+    All required parameters must be populated in order to send to server.
+
+    :ivar database_name: Azure Cosmos DB for NoSQL database. Required.
+    :vartype database_name: str
+    :ivar container_name: Azure Cosmos DB for NoSQL container. Required.
+    :vartype container_name: str
+    """
+
+    _validation = {
+        "database_name": {"required": True},
+        "container_name": {"required": True},
+    }
+
+    _attribute_map = {
+        "database_name": {"key": "databaseName", "type": "str"},
+        "container_name": {"key": "containerName", "type": "str"},
+    }
+
+    def __init__(self, *, database_name: str, container_name: str, **kwargs: Any) -> None:
+        """
+        :keyword database_name: Azure Cosmos DB for NoSQL database. Required.
+        :paramtype database_name: str
+        :keyword container_name: Azure Cosmos DB for NoSQL container. Required.
+        :paramtype container_name: str
+        """
+        super().__init__(**kwargs)
+        self.database_name = database_name
+        self.container_name = container_name
+
+
+class CosmosDBSourceSinkDetails(_serialization.Model):
+    """A CosmosDB data source/sink details.
+
+    :ivar remote_account_name: Name of remote account in case of cross-account data transfer.
+    :vartype remote_account_name: str
+    """
+
+    _attribute_map = {
+        "remote_account_name": {"key": "remoteAccountName", "type": "str"},
+    }
+
+    def __init__(self, *, remote_account_name: Optional[str] = None, **kwargs: Any) -> None:
+        """
+        :keyword remote_account_name: Name of remote account in case of cross-account data transfer.
+        :paramtype remote_account_name: str
+        """
+        super().__init__(**kwargs)
+        self.remote_account_name = remote_account_name
 
 
 class CosmosMongoDataTransferDataSourceSink(BaseCosmosDataTransferDataSourceSink):
@@ -4183,10 +5110,10 @@ class DatabaseAccountConnectionString(_serialization.Model):
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.connection_string = None
-        self.description = None
-        self.key_kind = None
-        self.type = None
+        self.connection_string: Optional[str] = None
+        self.description: Optional[str] = None
+        self.key_kind: Optional[Union[str, "_models.Kind"]] = None
+        self.type: Optional[Union[str, "_models.Type"]] = None
 
 
 class DatabaseAccountCreateUpdateParameters(ARMResourceProperties):
@@ -4323,6 +5250,9 @@ class DatabaseAccountCreateUpdateParameters(ARMResourceProperties):
     :ivar enable_per_region_per_partition_autoscale: Flag to indicate enabling/disabling of
      Per-Region Per-partition autoscale Preview feature on the account.
     :vartype enable_per_region_per_partition_autoscale: bool
+    :ivar enable_all_versions_and_deletes_change_feed: Flag to indicate if All Versions and Deletes
+     Change feed feature is enabled on the account.
+    :vartype enable_all_versions_and_deletes_change_feed: bool
     """
 
     _validation = {
@@ -4389,6 +5319,10 @@ class DatabaseAccountCreateUpdateParameters(ARMResourceProperties):
             "key": "properties.enablePerRegionPerPartitionAutoscale",
             "type": "bool",
         },
+        "enable_all_versions_and_deletes_change_feed": {
+            "key": "properties.enableAllVersionsAndDeletesChangeFeed",
+            "type": "bool",
+        },
     }
 
     database_account_offer_type = "Standard"
@@ -4436,6 +5370,7 @@ class DatabaseAccountCreateUpdateParameters(ARMResourceProperties):
         enable_priority_based_execution: Optional[bool] = None,
         default_priority_level: Optional[Union[str, "_models.DefaultPriorityLevel"]] = None,
         enable_per_region_per_partition_autoscale: Optional[bool] = None,
+        enable_all_versions_and_deletes_change_feed: Optional[bool] = None,
         **kwargs: Any
     ) -> None:
         """
@@ -4554,6 +5489,9 @@ class DatabaseAccountCreateUpdateParameters(ARMResourceProperties):
         :keyword enable_per_region_per_partition_autoscale: Flag to indicate enabling/disabling of
          Per-Region Per-partition autoscale Preview feature on the account.
         :paramtype enable_per_region_per_partition_autoscale: bool
+        :keyword enable_all_versions_and_deletes_change_feed: Flag to indicate if All Versions and
+         Deletes Change feed feature is enabled on the account.
+        :paramtype enable_all_versions_and_deletes_change_feed: bool
         """
         super().__init__(location=location, tags=tags, identity=identity, **kwargs)
         self.kind = kind
@@ -4586,7 +5524,7 @@ class DatabaseAccountCreateUpdateParameters(ARMResourceProperties):
         self.capacity = capacity
         self.capacity_mode = capacity_mode
         self.enable_materialized_views = enable_materialized_views
-        self.keys_metadata = None
+        self.keys_metadata: Optional["_models.DatabaseAccountKeysMetadata"] = None
         self.enable_partition_merge = enable_partition_merge
         self.enable_burst_capacity = enable_burst_capacity
         self.minimal_tls_version = minimal_tls_version
@@ -4594,6 +5532,7 @@ class DatabaseAccountCreateUpdateParameters(ARMResourceProperties):
         self.enable_priority_based_execution = enable_priority_based_execution
         self.default_priority_level = default_priority_level
         self.enable_per_region_per_partition_autoscale = enable_per_region_per_partition_autoscale
+        self.enable_all_versions_and_deletes_change_feed = enable_all_versions_and_deletes_change_feed
 
 
 class DatabaseAccountGetResults(ARMResourceProperties):
@@ -4750,6 +5689,9 @@ class DatabaseAccountGetResults(ARMResourceProperties):
     :ivar enable_per_region_per_partition_autoscale: Flag to indicate enabling/disabling of
      Per-Region Per-partition autoscale Preview feature on the account.
     :vartype enable_per_region_per_partition_autoscale: bool
+    :ivar enable_all_versions_and_deletes_change_feed: Flag to indicate if All Versions and Deletes
+     Change feed feature is enabled on the account.
+    :vartype enable_all_versions_and_deletes_change_feed: bool
     """
 
     _validation = {
@@ -4839,6 +5781,10 @@ class DatabaseAccountGetResults(ARMResourceProperties):
             "key": "properties.enablePerRegionPerPartitionAutoscale",
             "type": "bool",
         },
+        "enable_all_versions_and_deletes_change_feed": {
+            "key": "properties.enableAllVersionsAndDeletesChangeFeed",
+            "type": "bool",
+        },
     }
 
     def __init__(  # pylint: disable=too-many-locals
@@ -4884,6 +5830,7 @@ class DatabaseAccountGetResults(ARMResourceProperties):
         enable_priority_based_execution: Optional[bool] = None,
         default_priority_level: Optional[Union[str, "_models.DefaultPriorityLevel"]] = None,
         enable_per_region_per_partition_autoscale: Optional[bool] = None,
+        enable_all_versions_and_deletes_change_feed: Optional[bool] = None,
         **kwargs: Any
     ) -> None:
         """
@@ -5003,24 +5950,27 @@ class DatabaseAccountGetResults(ARMResourceProperties):
         :keyword enable_per_region_per_partition_autoscale: Flag to indicate enabling/disabling of
          Per-Region Per-partition autoscale Preview feature on the account.
         :paramtype enable_per_region_per_partition_autoscale: bool
+        :keyword enable_all_versions_and_deletes_change_feed: Flag to indicate if All Versions and
+         Deletes Change feed feature is enabled on the account.
+        :paramtype enable_all_versions_and_deletes_change_feed: bool
         """
         super().__init__(location=location, tags=tags, identity=identity, **kwargs)
         self.kind = kind
-        self.system_data = None
-        self.provisioning_state = None
-        self.document_endpoint = None
-        self.database_account_offer_type = None
+        self.system_data: Optional["_models.SystemData"] = None
+        self.provisioning_state: Optional[str] = None
+        self.document_endpoint: Optional[str] = None
+        self.database_account_offer_type: Optional[Literal["Standard"]] = None
         self.ip_rules = ip_rules
         self.is_virtual_network_filter_enabled = is_virtual_network_filter_enabled
         self.enable_automatic_failover = enable_automatic_failover
         self.consistency_policy = consistency_policy
         self.capabilities = capabilities
-        self.write_locations = None
-        self.read_locations = None
-        self.locations = None
-        self.failover_policies = None
+        self.write_locations: Optional[List["_models.Location"]] = None
+        self.read_locations: Optional[List["_models.Location"]] = None
+        self.locations: Optional[List["_models.Location"]] = None
+        self.failover_policies: Optional[List["_models.FailoverPolicy"]] = None
         self.virtual_network_rules = virtual_network_rules
-        self.private_endpoint_connections = None
+        self.private_endpoint_connections: Optional[List["_models.PrivateEndpointConnection"]] = None
         self.enable_multiple_write_locations = enable_multiple_write_locations
         self.enable_cassandra_connector = enable_cassandra_connector
         self.connector_offer = connector_offer
@@ -5032,7 +5982,7 @@ class DatabaseAccountGetResults(ARMResourceProperties):
         self.api_properties = api_properties
         self.enable_analytical_storage = enable_analytical_storage
         self.analytical_storage_configuration = analytical_storage_configuration
-        self.instance_id = None
+        self.instance_id: Optional[str] = None
         self.create_mode = create_mode
         self.restore_parameters = restore_parameters
         self.backup_policy = backup_policy
@@ -5045,7 +5995,7 @@ class DatabaseAccountGetResults(ARMResourceProperties):
         self.capacity_mode = capacity_mode
         self.capacity_mode_change_transition_state = capacity_mode_change_transition_state
         self.enable_materialized_views = enable_materialized_views
-        self.keys_metadata = None
+        self.keys_metadata: Optional["_models.DatabaseAccountKeysMetadata"] = None
         self.enable_partition_merge = enable_partition_merge
         self.enable_burst_capacity = enable_burst_capacity
         self.minimal_tls_version = minimal_tls_version
@@ -5053,6 +6003,7 @@ class DatabaseAccountGetResults(ARMResourceProperties):
         self.enable_priority_based_execution = enable_priority_based_execution
         self.default_priority_level = default_priority_level
         self.enable_per_region_per_partition_autoscale = enable_per_region_per_partition_autoscale
+        self.enable_all_versions_and_deletes_change_feed = enable_all_versions_and_deletes_change_feed
 
 
 class DatabaseAccountKeysMetadata(_serialization.Model):
@@ -5091,10 +6042,10 @@ class DatabaseAccountKeysMetadata(_serialization.Model):
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.primary_master_key = None
-        self.secondary_master_key = None
-        self.primary_readonly_master_key = None
-        self.secondary_readonly_master_key = None
+        self.primary_master_key: Optional["_models.AccountKeyMetadata"] = None
+        self.secondary_master_key: Optional["_models.AccountKeyMetadata"] = None
+        self.primary_readonly_master_key: Optional["_models.AccountKeyMetadata"] = None
+        self.secondary_readonly_master_key: Optional["_models.AccountKeyMetadata"] = None
 
 
 class DatabaseAccountListConnectionStringsResult(_serialization.Model):  # pylint: disable=name-too-long
@@ -5146,8 +6097,8 @@ class DatabaseAccountListReadOnlyKeysResult(_serialization.Model):
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.primary_readonly_master_key = None
-        self.secondary_readonly_master_key = None
+        self.primary_readonly_master_key: Optional[str] = None
+        self.secondary_readonly_master_key: Optional[str] = None
 
 
 class DatabaseAccountListKeysResult(DatabaseAccountListReadOnlyKeysResult):
@@ -5182,8 +6133,8 @@ class DatabaseAccountListKeysResult(DatabaseAccountListReadOnlyKeysResult):
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.primary_master_key = None
-        self.secondary_master_key = None
+        self.primary_master_key: Optional[str] = None
+        self.secondary_master_key: Optional[str] = None
 
 
 class DatabaseAccountRegenerateKeyParameters(_serialization.Model):
@@ -5234,7 +6185,7 @@ class DatabaseAccountsListResult(_serialization.Model):
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.value = None
+        self.value: Optional[List["_models.DatabaseAccountGetResults"]] = None
 
 
 class DatabaseAccountUpdateParameters(_serialization.Model):
@@ -5351,6 +6302,9 @@ class DatabaseAccountUpdateParameters(_serialization.Model):
     :ivar enable_per_region_per_partition_autoscale: Flag to indicate enabling/disabling of
      Per-Region Per-partition autoscale Preview feature on the account.
     :vartype enable_per_region_per_partition_autoscale: bool
+    :ivar enable_all_versions_and_deletes_change_feed: Flag to indicate if All Versions and Deletes
+     Change feed feature is enabled on the account.
+    :vartype enable_all_versions_and_deletes_change_feed: bool
     """
 
     _validation = {
@@ -5405,6 +6359,10 @@ class DatabaseAccountUpdateParameters(_serialization.Model):
             "key": "properties.enablePerRegionPerPartitionAutoscale",
             "type": "bool",
         },
+        "enable_all_versions_and_deletes_change_feed": {
+            "key": "properties.enableAllVersionsAndDeletesChangeFeed",
+            "type": "bool",
+        },
     }
 
     def __init__(  # pylint: disable=too-many-locals
@@ -5447,6 +6405,7 @@ class DatabaseAccountUpdateParameters(_serialization.Model):
         enable_priority_based_execution: Optional[bool] = None,
         default_priority_level: Optional[Union[str, "_models.DefaultPriorityLevel"]] = None,
         enable_per_region_per_partition_autoscale: Optional[bool] = None,
+        enable_all_versions_and_deletes_change_feed: Optional[bool] = None,
         **kwargs: Any
     ) -> None:
         """
@@ -5557,6 +6516,9 @@ class DatabaseAccountUpdateParameters(_serialization.Model):
         :keyword enable_per_region_per_partition_autoscale: Flag to indicate enabling/disabling of
          Per-Region Per-partition autoscale Preview feature on the account.
         :paramtype enable_per_region_per_partition_autoscale: bool
+        :keyword enable_all_versions_and_deletes_change_feed: Flag to indicate if All Versions and
+         Deletes Change feed feature is enabled on the account.
+        :paramtype enable_all_versions_and_deletes_change_feed: bool
         """
         super().__init__(**kwargs)
         self.tags = tags
@@ -5589,7 +6551,7 @@ class DatabaseAccountUpdateParameters(_serialization.Model):
         self.capacity = capacity
         self.capacity_mode = capacity_mode
         self.enable_materialized_views = enable_materialized_views
-        self.keys_metadata = None
+        self.keys_metadata: Optional["_models.DatabaseAccountKeysMetadata"] = None
         self.enable_partition_merge = enable_partition_merge
         self.enable_burst_capacity = enable_burst_capacity
         self.minimal_tls_version = minimal_tls_version
@@ -5597,6 +6559,7 @@ class DatabaseAccountUpdateParameters(_serialization.Model):
         self.enable_priority_based_execution = enable_priority_based_execution
         self.default_priority_level = default_priority_level
         self.enable_per_region_per_partition_autoscale = enable_per_region_per_partition_autoscale
+        self.enable_all_versions_and_deletes_change_feed = enable_all_versions_and_deletes_change_feed
 
 
 class DatabaseRestoreResource(_serialization.Model):
@@ -5678,10 +6641,10 @@ class DataCenterResourceProperties(_serialization.Model):
     :ivar delegated_subnet_id: Resource id of a subnet the nodes in this data center should have
      their network interfaces connected to. The subnet must be in the same region specified in
      'dataCenterLocation' and must be able to route to the subnet specified in the cluster's
-     'delegatedManagementSubnetId' property. This resource id will be of the form
-     '/subscriptions/:code:`<subscription id>`/resourceGroups/:code:`<resource
-     group>`/providers/Microsoft.Network/virtualNetworks/:code:`<virtual
-     network>`/subnets/:code:`<subnet>`'.
+     'delegatedManagementSubnetId' property. This resource id will be of the form '/subscriptions/\\
+     :code:`<subscription id>`/resourceGroups/\\ :code:`<resource
+     group>`/providers/Microsoft.Network/virtualNetworks/\\ :code:`<virtual network>`/subnets/\\
+     :code:`<subnet>`'.
     :vartype delegated_subnet_id: str
     :ivar node_count: The number of nodes the data center should have. This is the desired number.
      After it is set, it may take some time for the data center to be scaled to match. To monitor
@@ -5779,10 +6742,10 @@ class DataCenterResourceProperties(_serialization.Model):
         :keyword delegated_subnet_id: Resource id of a subnet the nodes in this data center should have
          their network interfaces connected to. The subnet must be in the same region specified in
          'dataCenterLocation' and must be able to route to the subnet specified in the cluster's
-         'delegatedManagementSubnetId' property. This resource id will be of the form
-         '/subscriptions/:code:`<subscription id>`/resourceGroups/:code:`<resource
-         group>`/providers/Microsoft.Network/virtualNetworks/:code:`<virtual
-         network>`/subnets/:code:`<subnet>`'.
+         'delegatedManagementSubnetId' property. This resource id will be of the form '/subscriptions/\\
+         :code:`<subscription id>`/resourceGroups/\\ :code:`<resource
+         group>`/providers/Microsoft.Network/virtualNetworks/\\ :code:`<virtual network>`/subnets/\\
+         :code:`<subnet>`'.
         :paramtype delegated_subnet_id: str
         :keyword node_count: The number of nodes the data center should have. This is the desired
          number. After it is set, it may take some time for the data center to be scaled to match. To
@@ -5824,7 +6787,7 @@ class DataCenterResourceProperties(_serialization.Model):
         self.data_center_location = data_center_location
         self.delegated_subnet_id = delegated_subnet_id
         self.node_count = node_count
-        self.seed_nodes = None
+        self.seed_nodes: Optional[List["_models.SeedNode"]] = None
         self.base64_encoded_cassandra_yaml_fragment = base64_encoded_cassandra_yaml_fragment
         self.managed_disk_customer_key_uri = managed_disk_customer_key_uri
         self.backup_storage_customer_key_uri = backup_storage_customer_key_uri
@@ -5862,8 +6825,8 @@ class DataTransferJobFeedResults(_serialization.Model):
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.value = None
-        self.next_link = None
+        self.value: Optional[List["_models.DataTransferJobGetResults"]] = None
+        self.next_link: Optional[str] = None
 
 
 class DataTransferJobGetResults(ARMProxyResource):
@@ -5952,16 +6915,16 @@ class DataTransferJobGetResults(ARMProxyResource):
         :paramtype mode: str or ~azure.mgmt.cosmosdb.models.DataTransferJobMode
         """
         super().__init__(**kwargs)
-        self.job_name = None
+        self.job_name: Optional[str] = None
         self.source = source
         self.destination = destination
-        self.status = None
-        self.processed_count = None
-        self.total_count = None
-        self.last_updated_utc_time = None
+        self.status: Optional[str] = None
+        self.processed_count: Optional[int] = None
+        self.total_count: Optional[int] = None
+        self.last_updated_utc_time: Optional[datetime.datetime] = None
         self.worker_count = worker_count
-        self.error = None
-        self.duration = None
+        self.error: Optional["_models.ErrorResponseAutoGenerated"] = None
+        self.duration: Optional[str] = None
         self.mode = mode
 
 
@@ -6043,16 +7006,16 @@ class DataTransferJobProperties(_serialization.Model):
         :paramtype mode: str or ~azure.mgmt.cosmosdb.models.DataTransferJobMode
         """
         super().__init__(**kwargs)
-        self.job_name = None
+        self.job_name: Optional[str] = None
         self.source = source
         self.destination = destination
-        self.status = None
-        self.processed_count = None
-        self.total_count = None
-        self.last_updated_utc_time = None
+        self.status: Optional[str] = None
+        self.processed_count: Optional[int] = None
+        self.total_count: Optional[int] = None
+        self.last_updated_utc_time: Optional[datetime.datetime] = None
         self.worker_count = worker_count
-        self.error = None
-        self.duration = None
+        self.error: Optional["_models.ErrorResponseAutoGenerated"] = None
+        self.duration: Optional[str] = None
         self.mode = mode
 
 
@@ -6085,9 +7048,9 @@ class RegionalServiceResource(_serialization.Model):
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.name = None
-        self.location = None
-        self.status = None
+        self.name: Optional[str] = None
+        self.location: Optional[str] = None
+        self.status: Optional[Union[str, "_models.ServiceStatus"]] = None
 
 
 class DataTransferRegionalServiceResource(RegionalServiceResource):
@@ -6308,11 +7271,11 @@ class ServiceResourceProperties(_serialization.Model):
         """
         super().__init__(**kwargs)
         self.additional_properties = additional_properties
-        self.creation_time = None
+        self.creation_time: Optional[datetime.datetime] = None
         self.instance_size = instance_size
         self.instance_count = instance_count
         self.service_type: Optional[str] = None
-        self.status = None
+        self.status: Optional[Union[str, "_models.ServiceStatus"]] = None
 
 
 class DataTransferServiceResourceProperties(ServiceResourceProperties):
@@ -6385,7 +7348,7 @@ class DataTransferServiceResourceProperties(ServiceResourceProperties):
             **kwargs
         )
         self.service_type: str = "DataTransfer"
-        self.locations = None
+        self.locations: Optional[List["_models.DataTransferRegionalServiceResource"]] = None
 
 
 class DiagnosticLogSettings(_serialization.Model):
@@ -6436,8 +7399,8 @@ class ErrorAdditionalInfo(_serialization.Model):
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.type = None
-        self.info = None
+        self.type: Optional[str] = None
+        self.info: Optional[JSON] = None
 
 
 class ErrorDetail(_serialization.Model):
@@ -6476,11 +7439,54 @@ class ErrorDetail(_serialization.Model):
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.code = None
-        self.message = None
-        self.target = None
-        self.details = None
-        self.additional_info = None
+        self.code: Optional[str] = None
+        self.message: Optional[str] = None
+        self.target: Optional[str] = None
+        self.details: Optional[List["_models.ErrorDetail"]] = None
+        self.additional_info: Optional[List["_models.ErrorAdditionalInfo"]] = None
+
+
+class ErrorDetailAutoGenerated(_serialization.Model):
+    """The error detail.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar code: The error code.
+    :vartype code: str
+    :ivar message: The error message.
+    :vartype message: str
+    :ivar target: The error target.
+    :vartype target: str
+    :ivar details: The error details.
+    :vartype details: list[~azure.mgmt.cosmosdb.models.ErrorDetailAutoGenerated]
+    :ivar additional_info: The error additional info.
+    :vartype additional_info: list[~azure.mgmt.cosmosdb.models.ErrorAdditionalInfo]
+    """
+
+    _validation = {
+        "code": {"readonly": True},
+        "message": {"readonly": True},
+        "target": {"readonly": True},
+        "details": {"readonly": True},
+        "additional_info": {"readonly": True},
+    }
+
+    _attribute_map = {
+        "code": {"key": "code", "type": "str"},
+        "message": {"key": "message", "type": "str"},
+        "target": {"key": "target", "type": "str"},
+        "details": {"key": "details", "type": "[ErrorDetailAutoGenerated]"},
+        "additional_info": {"key": "additionalInfo", "type": "[ErrorAdditionalInfo]"},
+    }
+
+    def __init__(self, **kwargs: Any) -> None:
+        """ """
+        super().__init__(**kwargs)
+        self.code: Optional[str] = None
+        self.message: Optional[str] = None
+        self.target: Optional[str] = None
+        self.details: Optional[List["_models.ErrorDetailAutoGenerated"]] = None
+        self.additional_info: Optional[List["_models.ErrorAdditionalInfo"]] = None
 
 
 class ErrorResponse(_serialization.Model):
@@ -6528,6 +7534,27 @@ class ErrorResponseAutoGenerated(_serialization.Model):
         super().__init__(**kwargs)
         self.code = code
         self.message = message
+
+
+class ErrorResponseAutoGenerated2(_serialization.Model):
+    """Common error response for all Azure Resource Manager APIs to return error details for failed
+    operations. (This also follows the OData error response format.).
+
+    :ivar error: The error object.
+    :vartype error: ~azure.mgmt.cosmosdb.models.ErrorDetailAutoGenerated
+    """
+
+    _attribute_map = {
+        "error": {"key": "error", "type": "ErrorDetailAutoGenerated"},
+    }
+
+    def __init__(self, *, error: Optional["_models.ErrorDetailAutoGenerated"] = None, **kwargs: Any) -> None:
+        """
+        :keyword error: The error object.
+        :paramtype error: ~azure.mgmt.cosmosdb.models.ErrorDetailAutoGenerated
+        """
+        super().__init__(**kwargs)
+        self.error = error
 
 
 class ExcludedPath(_serialization.Model):
@@ -6619,9 +7646,683 @@ class FailoverPolicy(_serialization.Model):
         :paramtype failover_priority: int
         """
         super().__init__(**kwargs)
-        self.id = None
+        self.id: Optional[str] = None
         self.location_name = location_name
         self.failover_priority = failover_priority
+
+
+class FleetAnalyticsListResult(_serialization.Model):
+    """The response of the List operation that contains the FleetAnalytics and their properties.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar value: List of FleetAnalytics and their properties.
+    :vartype value: list[~azure.mgmt.cosmosdb.models.FleetAnalyticsResource]
+    :ivar next_link: The link used to get the next page of results.
+    :vartype next_link: str
+    """
+
+    _validation = {
+        "value": {"readonly": True},
+        "next_link": {"readonly": True},
+    }
+
+    _attribute_map = {
+        "value": {"key": "value", "type": "[FleetAnalyticsResource]"},
+        "next_link": {"key": "nextLink", "type": "str"},
+    }
+
+    def __init__(self, **kwargs: Any) -> None:
+        """ """
+        super().__init__(**kwargs)
+        self.value: Optional[List["_models.FleetAnalyticsResource"]] = None
+        self.next_link: Optional[str] = None
+
+
+class FleetAnalyticsResource(ProxyResource):
+    """An Azure Cosmos DB FleetAnalytics.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar id: Fully qualified resource ID for the resource. E.g.
+     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".
+    :vartype id: str
+    :ivar name: The name of the resource.
+    :vartype name: str
+    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
+     "Microsoft.Storage/storageAccounts".
+    :vartype type: str
+    :ivar system_data: Azure Resource Manager metadata containing createdBy and modifiedBy
+     information.
+    :vartype system_data: ~azure.mgmt.cosmosdb.models.SystemData
+    :ivar provisioning_state: A provisioning state of the FleetAnalytics. Known values are:
+     "Uninitialized", "Initializing", "InternallyReady", "Online", "Deleting", "Succeeded",
+     "Failed", "Canceled", "Updating", and "Creating".
+    :vartype provisioning_state: str or ~azure.mgmt.cosmosdb.models.Status
+    :ivar storage_location_type: The type of the fleet analytics resource. Known values are:
+     "StorageAccount" and "FabricLakehouse".
+    :vartype storage_location_type: str or
+     ~azure.mgmt.cosmosdb.models.FleetAnalyticsPropertiesStorageLocationType
+    :ivar storage_location_uri: The unique identifier of the fleet analytics resource.
+    :vartype storage_location_uri: str
+    """
+
+    _validation = {
+        "id": {"readonly": True},
+        "name": {"readonly": True},
+        "type": {"readonly": True},
+        "system_data": {"readonly": True},
+    }
+
+    _attribute_map = {
+        "id": {"key": "id", "type": "str"},
+        "name": {"key": "name", "type": "str"},
+        "type": {"key": "type", "type": "str"},
+        "system_data": {"key": "systemData", "type": "SystemData"},
+        "provisioning_state": {"key": "properties.provisioningState", "type": "str"},
+        "storage_location_type": {"key": "properties.storageLocationType", "type": "str"},
+        "storage_location_uri": {"key": "properties.storageLocationUri", "type": "str"},
+    }
+
+    def __init__(
+        self,
+        *,
+        provisioning_state: Optional[Union[str, "_models.Status"]] = None,
+        storage_location_type: Optional[Union[str, "_models.FleetAnalyticsPropertiesStorageLocationType"]] = None,
+        storage_location_uri: Optional[str] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword provisioning_state: A provisioning state of the FleetAnalytics. Known values are:
+         "Uninitialized", "Initializing", "InternallyReady", "Online", "Deleting", "Succeeded",
+         "Failed", "Canceled", "Updating", and "Creating".
+        :paramtype provisioning_state: str or ~azure.mgmt.cosmosdb.models.Status
+        :keyword storage_location_type: The type of the fleet analytics resource. Known values are:
+         "StorageAccount" and "FabricLakehouse".
+        :paramtype storage_location_type: str or
+         ~azure.mgmt.cosmosdb.models.FleetAnalyticsPropertiesStorageLocationType
+        :keyword storage_location_uri: The unique identifier of the fleet analytics resource.
+        :paramtype storage_location_uri: str
+        """
+        super().__init__(**kwargs)
+        self.provisioning_state = provisioning_state
+        self.storage_location_type = storage_location_type
+        self.storage_location_uri = storage_location_uri
+
+
+class FleetListResult(_serialization.Model):
+    """The response of the List operation that contains the fleets and their properties.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar value: List of fleets and their properties.
+    :vartype value: list[~azure.mgmt.cosmosdb.models.FleetResource]
+    :ivar next_link: The link used to get the next page of results.
+    :vartype next_link: str
+    """
+
+    _validation = {
+        "value": {"readonly": True},
+        "next_link": {"readonly": True},
+    }
+
+    _attribute_map = {
+        "value": {"key": "value", "type": "[FleetResource]"},
+        "next_link": {"key": "nextLink", "type": "str"},
+    }
+
+    def __init__(self, **kwargs: Any) -> None:
+        """ """
+        super().__init__(**kwargs)
+        self.value: Optional[List["_models.FleetResource"]] = None
+        self.next_link: Optional[str] = None
+
+
+class TrackedResource(Resource):
+    """The resource model definition for an Azure Resource Manager tracked top level resource which
+    has 'tags' and a 'location'.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    All required parameters must be populated in order to send to server.
+
+    :ivar id: Fully qualified resource ID for the resource. E.g.
+     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".
+    :vartype id: str
+    :ivar name: The name of the resource.
+    :vartype name: str
+    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
+     "Microsoft.Storage/storageAccounts".
+    :vartype type: str
+    :ivar system_data: Azure Resource Manager metadata containing createdBy and modifiedBy
+     information.
+    :vartype system_data: ~azure.mgmt.cosmosdb.models.SystemData
+    :ivar tags: Resource tags.
+    :vartype tags: dict[str, str]
+    :ivar location: The geo-location where the resource lives. Required.
+    :vartype location: str
+    """
+
+    _validation = {
+        "id": {"readonly": True},
+        "name": {"readonly": True},
+        "type": {"readonly": True},
+        "system_data": {"readonly": True},
+        "location": {"required": True},
+    }
+
+    _attribute_map = {
+        "id": {"key": "id", "type": "str"},
+        "name": {"key": "name", "type": "str"},
+        "type": {"key": "type", "type": "str"},
+        "system_data": {"key": "systemData", "type": "SystemData"},
+        "tags": {"key": "tags", "type": "{str}"},
+        "location": {"key": "location", "type": "str"},
+    }
+
+    def __init__(self, *, location: str, tags: Optional[Dict[str, str]] = None, **kwargs: Any) -> None:
+        """
+        :keyword tags: Resource tags.
+        :paramtype tags: dict[str, str]
+        :keyword location: The geo-location where the resource lives. Required.
+        :paramtype location: str
+        """
+        super().__init__(**kwargs)
+        self.tags = tags
+        self.location = location
+
+
+class FleetResource(TrackedResource):
+    """An Azure Cosmos DB FleetResource.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    All required parameters must be populated in order to send to server.
+
+    :ivar id: Fully qualified resource ID for the resource. E.g.
+     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".
+    :vartype id: str
+    :ivar name: The name of the resource.
+    :vartype name: str
+    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
+     "Microsoft.Storage/storageAccounts".
+    :vartype type: str
+    :ivar system_data: Azure Resource Manager metadata containing createdBy and modifiedBy
+     information.
+    :vartype system_data: ~azure.mgmt.cosmosdb.models.SystemData
+    :ivar tags: Resource tags.
+    :vartype tags: dict[str, str]
+    :ivar location: The geo-location where the resource lives. Required.
+    :vartype location: str
+    :ivar provisioning_state: A provisioning state of the Fleet. Known values are: "Uninitialized",
+     "Initializing", "InternallyReady", "Online", "Deleting", "Succeeded", "Failed", "Canceled",
+     "Updating", and "Creating".
+    :vartype provisioning_state: str or ~azure.mgmt.cosmosdb.models.Status
+    """
+
+    _validation = {
+        "id": {"readonly": True},
+        "name": {"readonly": True},
+        "type": {"readonly": True},
+        "system_data": {"readonly": True},
+        "location": {"required": True},
+    }
+
+    _attribute_map = {
+        "id": {"key": "id", "type": "str"},
+        "name": {"key": "name", "type": "str"},
+        "type": {"key": "type", "type": "str"},
+        "system_data": {"key": "systemData", "type": "SystemData"},
+        "tags": {"key": "tags", "type": "{str}"},
+        "location": {"key": "location", "type": "str"},
+        "provisioning_state": {"key": "properties.provisioningState", "type": "str"},
+    }
+
+    def __init__(
+        self,
+        *,
+        location: str,
+        tags: Optional[Dict[str, str]] = None,
+        provisioning_state: Optional[Union[str, "_models.Status"]] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword tags: Resource tags.
+        :paramtype tags: dict[str, str]
+        :keyword location: The geo-location where the resource lives. Required.
+        :paramtype location: str
+        :keyword provisioning_state: A provisioning state of the Fleet. Known values are:
+         "Uninitialized", "Initializing", "InternallyReady", "Online", "Deleting", "Succeeded",
+         "Failed", "Canceled", "Updating", and "Creating".
+        :paramtype provisioning_state: str or ~azure.mgmt.cosmosdb.models.Status
+        """
+        super().__init__(tags=tags, location=location, **kwargs)
+        self.provisioning_state = provisioning_state
+
+
+class FleetResourceUpdate(_serialization.Model):
+    """Represents a fleet resource for updates.
+
+    :ivar provisioning_state: A provisioning state of the Fleet. Known values are: "Uninitialized",
+     "Initializing", "InternallyReady", "Online", "Deleting", "Succeeded", "Failed", "Canceled",
+     "Updating", and "Creating".
+    :vartype provisioning_state: str or ~azure.mgmt.cosmosdb.models.Status
+    """
+
+    _attribute_map = {
+        "provisioning_state": {"key": "properties.provisioningState", "type": "str"},
+    }
+
+    def __init__(self, *, provisioning_state: Optional[Union[str, "_models.Status"]] = None, **kwargs: Any) -> None:
+        """
+        :keyword provisioning_state: A provisioning state of the Fleet. Known values are:
+         "Uninitialized", "Initializing", "InternallyReady", "Online", "Deleting", "Succeeded",
+         "Failed", "Canceled", "Updating", and "Creating".
+        :paramtype provisioning_state: str or ~azure.mgmt.cosmosdb.models.Status
+        """
+        super().__init__(**kwargs)
+        self.provisioning_state = provisioning_state
+
+
+class FleetspaceAccountListResult(_serialization.Model):
+    """The List operation response, that contains the global database accounts and their properties.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar value: List of global database accounts in a fleetspace and their properties.
+    :vartype value: list[~azure.mgmt.cosmosdb.models.FleetspaceAccountResource]
+    :ivar next_link: The link used to get the next page of results.
+    :vartype next_link: str
+    """
+
+    _validation = {
+        "value": {"readonly": True},
+        "next_link": {"readonly": True},
+    }
+
+    _attribute_map = {
+        "value": {"key": "value", "type": "[FleetspaceAccountResource]"},
+        "next_link": {"key": "nextLink", "type": "str"},
+    }
+
+    def __init__(self, **kwargs: Any) -> None:
+        """ """
+        super().__init__(**kwargs)
+        self.value: Optional[List["_models.FleetspaceAccountResource"]] = None
+        self.next_link: Optional[str] = None
+
+
+class FleetspaceAccountPropertiesGlobalDatabaseAccountProperties(_serialization.Model):  # pylint: disable=name-too-long
+    """Configuration for fleetspace Account in the fleetspace.
+
+    :ivar resource_id: The resource identifier of global database account in the Fleetspace
+     Account.
+    :vartype resource_id: str
+    :ivar arm_location: The location of  global database account in the Fleetspace Account.
+    :vartype arm_location: str
+    """
+
+    _attribute_map = {
+        "resource_id": {"key": "resourceId", "type": "str"},
+        "arm_location": {"key": "armLocation", "type": "str"},
+    }
+
+    def __init__(self, *, resource_id: Optional[str] = None, arm_location: Optional[str] = None, **kwargs: Any) -> None:
+        """
+        :keyword resource_id: The resource identifier of global database account in the Fleetspace
+         Account.
+        :paramtype resource_id: str
+        :keyword arm_location: The location of  global database account in the Fleetspace Account.
+        :paramtype arm_location: str
+        """
+        super().__init__(**kwargs)
+        self.resource_id = resource_id
+        self.arm_location = arm_location
+
+
+class FleetspaceAccountResource(ProxyResource):
+    """An Azure Cosmos DB Fleetspace Account.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar id: Fully qualified resource ID for the resource. E.g.
+     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".
+    :vartype id: str
+    :ivar name: The name of the resource.
+    :vartype name: str
+    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
+     "Microsoft.Storage/storageAccounts".
+    :vartype type: str
+    :ivar system_data: Azure Resource Manager metadata containing createdBy and modifiedBy
+     information.
+    :vartype system_data: ~azure.mgmt.cosmosdb.models.SystemData
+    :ivar provisioning_state: A provisioning state of the Fleetspace Account. Known values are:
+     "Uninitialized", "Initializing", "InternallyReady", "Online", "Deleting", "Succeeded",
+     "Failed", "Canceled", "Updating", and "Creating".
+    :vartype provisioning_state: str or ~azure.mgmt.cosmosdb.models.Status
+    :ivar global_database_account_properties: Configuration for fleetspace Account in the
+     fleetspace.
+    :vartype global_database_account_properties:
+     ~azure.mgmt.cosmosdb.models.FleetspaceAccountPropertiesGlobalDatabaseAccountProperties
+    """
+
+    _validation = {
+        "id": {"readonly": True},
+        "name": {"readonly": True},
+        "type": {"readonly": True},
+        "system_data": {"readonly": True},
+    }
+
+    _attribute_map = {
+        "id": {"key": "id", "type": "str"},
+        "name": {"key": "name", "type": "str"},
+        "type": {"key": "type", "type": "str"},
+        "system_data": {"key": "systemData", "type": "SystemData"},
+        "provisioning_state": {"key": "properties.provisioningState", "type": "str"},
+        "global_database_account_properties": {
+            "key": "properties.globalDatabaseAccountProperties",
+            "type": "FleetspaceAccountPropertiesGlobalDatabaseAccountProperties",
+        },
+    }
+
+    def __init__(
+        self,
+        *,
+        provisioning_state: Optional[Union[str, "_models.Status"]] = None,
+        global_database_account_properties: Optional[
+            "_models.FleetspaceAccountPropertiesGlobalDatabaseAccountProperties"
+        ] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword provisioning_state: A provisioning state of the Fleetspace Account. Known values are:
+         "Uninitialized", "Initializing", "InternallyReady", "Online", "Deleting", "Succeeded",
+         "Failed", "Canceled", "Updating", and "Creating".
+        :paramtype provisioning_state: str or ~azure.mgmt.cosmosdb.models.Status
+        :keyword global_database_account_properties: Configuration for fleetspace Account in the
+         fleetspace.
+        :paramtype global_database_account_properties:
+         ~azure.mgmt.cosmosdb.models.FleetspaceAccountPropertiesGlobalDatabaseAccountProperties
+        """
+        super().__init__(**kwargs)
+        self.provisioning_state = provisioning_state
+        self.global_database_account_properties = global_database_account_properties
+
+
+class FleetspaceListResult(_serialization.Model):
+    """The response of the List operation that contains the fleetspaces and their properties.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar value: List of fleetspaces and their properties.
+    :vartype value: list[~azure.mgmt.cosmosdb.models.FleetspaceResource]
+    :ivar next_link: The link used to get the next page of results.
+    :vartype next_link: str
+    """
+
+    _validation = {
+        "value": {"readonly": True},
+        "next_link": {"readonly": True},
+    }
+
+    _attribute_map = {
+        "value": {"key": "value", "type": "[FleetspaceResource]"},
+        "next_link": {"key": "nextLink", "type": "str"},
+    }
+
+    def __init__(self, **kwargs: Any) -> None:
+        """ """
+        super().__init__(**kwargs)
+        self.value: Optional[List["_models.FleetspaceResource"]] = None
+        self.next_link: Optional[str] = None
+
+
+class FleetspacePropertiesThroughputPoolConfiguration(_serialization.Model):  # pylint: disable=name-too-long
+    """Configuration for throughput pool in the fleetspace.
+
+    :ivar min_throughput: Minimum throughput for the pool.
+    :vartype min_throughput: int
+    :ivar max_throughput: Maximum throughput for the pool.
+    :vartype max_throughput: int
+    :ivar service_tier: Service Tier for the fleetspace. GeneralPurpose types refers to single
+     write region accounts that can be added to this fleetspace, whereas BusinessCritical refers to
+     multi write region. Known values are: "GeneralPurpose" and "BusinessCritical".
+    :vartype service_tier: str or
+     ~azure.mgmt.cosmosdb.models.FleetspacePropertiesThroughputPoolConfigurationServiceTier
+    :ivar data_regions: List of data regions assigned to the fleetspace. Eg [westus2].
+    :vartype data_regions: list[str]
+    """
+
+    _validation = {
+        "data_regions": {"min_items": 1},
+    }
+
+    _attribute_map = {
+        "min_throughput": {"key": "minThroughput", "type": "int"},
+        "max_throughput": {"key": "maxThroughput", "type": "int"},
+        "service_tier": {"key": "serviceTier", "type": "str"},
+        "data_regions": {"key": "dataRegions", "type": "[str]"},
+    }
+
+    def __init__(
+        self,
+        *,
+        min_throughput: Optional[int] = None,
+        max_throughput: Optional[int] = None,
+        service_tier: Optional[Union[str, "_models.FleetspacePropertiesThroughputPoolConfigurationServiceTier"]] = None,
+        data_regions: Optional[List[str]] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword min_throughput: Minimum throughput for the pool.
+        :paramtype min_throughput: int
+        :keyword max_throughput: Maximum throughput for the pool.
+        :paramtype max_throughput: int
+        :keyword service_tier: Service Tier for the fleetspace. GeneralPurpose types refers to single
+         write region accounts that can be added to this fleetspace, whereas BusinessCritical refers to
+         multi write region. Known values are: "GeneralPurpose" and "BusinessCritical".
+        :paramtype service_tier: str or
+         ~azure.mgmt.cosmosdb.models.FleetspacePropertiesThroughputPoolConfigurationServiceTier
+        :keyword data_regions: List of data regions assigned to the fleetspace. Eg [westus2].
+        :paramtype data_regions: list[str]
+        """
+        super().__init__(**kwargs)
+        self.min_throughput = min_throughput
+        self.max_throughput = max_throughput
+        self.service_tier = service_tier
+        self.data_regions = data_regions
+
+
+class FleetspaceResource(ProxyResource):
+    """An Azure Cosmos DB Fleetspace.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar id: Fully qualified resource ID for the resource. E.g.
+     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".
+    :vartype id: str
+    :ivar name: The name of the resource.
+    :vartype name: str
+    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
+     "Microsoft.Storage/storageAccounts".
+    :vartype type: str
+    :ivar system_data: Azure Resource Manager metadata containing createdBy and modifiedBy
+     information.
+    :vartype system_data: ~azure.mgmt.cosmosdb.models.SystemData
+    :ivar provisioning_state: A provisioning state of the Fleetspace. Known values are:
+     "Uninitialized", "Initializing", "InternallyReady", "Online", "Deleting", "Succeeded",
+     "Failed", "Canceled", "Updating", and "Creating".
+    :vartype provisioning_state: str or ~azure.mgmt.cosmosdb.models.Status
+    :ivar fleetspace_api_kind: The kind of API this fleetspace belongs to. Acceptable values:
+     'NoSQL'. "NoSQL"
+    :vartype fleetspace_api_kind: str or
+     ~azure.mgmt.cosmosdb.models.FleetspacePropertiesFleetspaceApiKind
+    :ivar throughput_pool_configuration: Configuration for throughput pool in the fleetspace.
+    :vartype throughput_pool_configuration:
+     ~azure.mgmt.cosmosdb.models.FleetspacePropertiesThroughputPoolConfiguration
+    """
+
+    _validation = {
+        "id": {"readonly": True},
+        "name": {"readonly": True},
+        "type": {"readonly": True},
+        "system_data": {"readonly": True},
+    }
+
+    _attribute_map = {
+        "id": {"key": "id", "type": "str"},
+        "name": {"key": "name", "type": "str"},
+        "type": {"key": "type", "type": "str"},
+        "system_data": {"key": "systemData", "type": "SystemData"},
+        "provisioning_state": {"key": "properties.provisioningState", "type": "str"},
+        "fleetspace_api_kind": {"key": "properties.fleetspaceApiKind", "type": "str"},
+        "throughput_pool_configuration": {
+            "key": "properties.throughputPoolConfiguration",
+            "type": "FleetspacePropertiesThroughputPoolConfiguration",
+        },
+    }
+
+    def __init__(
+        self,
+        *,
+        provisioning_state: Optional[Union[str, "_models.Status"]] = None,
+        fleetspace_api_kind: Optional[Union[str, "_models.FleetspacePropertiesFleetspaceApiKind"]] = None,
+        throughput_pool_configuration: Optional["_models.FleetspacePropertiesThroughputPoolConfiguration"] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword provisioning_state: A provisioning state of the Fleetspace. Known values are:
+         "Uninitialized", "Initializing", "InternallyReady", "Online", "Deleting", "Succeeded",
+         "Failed", "Canceled", "Updating", and "Creating".
+        :paramtype provisioning_state: str or ~azure.mgmt.cosmosdb.models.Status
+        :keyword fleetspace_api_kind: The kind of API this fleetspace belongs to. Acceptable values:
+         'NoSQL'. "NoSQL"
+        :paramtype fleetspace_api_kind: str or
+         ~azure.mgmt.cosmosdb.models.FleetspacePropertiesFleetspaceApiKind
+        :keyword throughput_pool_configuration: Configuration for throughput pool in the fleetspace.
+        :paramtype throughput_pool_configuration:
+         ~azure.mgmt.cosmosdb.models.FleetspacePropertiesThroughputPoolConfiguration
+        """
+        super().__init__(**kwargs)
+        self.provisioning_state = provisioning_state
+        self.fleetspace_api_kind = fleetspace_api_kind
+        self.throughput_pool_configuration = throughput_pool_configuration
+
+
+class FleetspaceUpdate(_serialization.Model):
+    """Represents a fleetspace resource for updates.
+
+    :ivar provisioning_state: A provisioning state of the Fleetspace. Known values are:
+     "Uninitialized", "Initializing", "InternallyReady", "Online", "Deleting", "Succeeded",
+     "Failed", "Canceled", "Updating", and "Creating".
+    :vartype provisioning_state: str or ~azure.mgmt.cosmosdb.models.Status
+    :ivar fleetspace_api_kind: The kind of API this fleetspace belongs to. Acceptable values:
+     'NoSQL'. "NoSQL"
+    :vartype fleetspace_api_kind: str or
+     ~azure.mgmt.cosmosdb.models.FleetspacePropertiesFleetspaceApiKind
+    :ivar throughput_pool_configuration: Configuration for throughput pool in the fleetspace.
+    :vartype throughput_pool_configuration:
+     ~azure.mgmt.cosmosdb.models.FleetspacePropertiesThroughputPoolConfiguration
+    """
+
+    _attribute_map = {
+        "provisioning_state": {"key": "properties.provisioningState", "type": "str"},
+        "fleetspace_api_kind": {"key": "properties.fleetspaceApiKind", "type": "str"},
+        "throughput_pool_configuration": {
+            "key": "properties.throughputPoolConfiguration",
+            "type": "FleetspacePropertiesThroughputPoolConfiguration",
+        },
+    }
+
+    def __init__(
+        self,
+        *,
+        provisioning_state: Optional[Union[str, "_models.Status"]] = None,
+        fleetspace_api_kind: Optional[Union[str, "_models.FleetspacePropertiesFleetspaceApiKind"]] = None,
+        throughput_pool_configuration: Optional["_models.FleetspacePropertiesThroughputPoolConfiguration"] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword provisioning_state: A provisioning state of the Fleetspace. Known values are:
+         "Uninitialized", "Initializing", "InternallyReady", "Online", "Deleting", "Succeeded",
+         "Failed", "Canceled", "Updating", and "Creating".
+        :paramtype provisioning_state: str or ~azure.mgmt.cosmosdb.models.Status
+        :keyword fleetspace_api_kind: The kind of API this fleetspace belongs to. Acceptable values:
+         'NoSQL'. "NoSQL"
+        :paramtype fleetspace_api_kind: str or
+         ~azure.mgmt.cosmosdb.models.FleetspacePropertiesFleetspaceApiKind
+        :keyword throughput_pool_configuration: Configuration for throughput pool in the fleetspace.
+        :paramtype throughput_pool_configuration:
+         ~azure.mgmt.cosmosdb.models.FleetspacePropertiesThroughputPoolConfiguration
+        """
+        super().__init__(**kwargs)
+        self.provisioning_state = provisioning_state
+        self.fleetspace_api_kind = fleetspace_api_kind
+        self.throughput_pool_configuration = throughput_pool_configuration
+
+
+class FullTextPath(_serialization.Model):
+    """Represents the full text path specification.
+
+    All required parameters must be populated in order to send to server.
+
+    :ivar path: The path to the full text field in the document. Required.
+    :vartype path: str
+    :ivar language: The language of the full text field in the document.
+    :vartype language: str
+    """
+
+    _validation = {
+        "path": {"required": True},
+    }
+
+    _attribute_map = {
+        "path": {"key": "path", "type": "str"},
+        "language": {"key": "language", "type": "str"},
+    }
+
+    def __init__(self, *, path: str, language: Optional[str] = None, **kwargs: Any) -> None:
+        """
+        :keyword path: The path to the full text field in the document. Required.
+        :paramtype path: str
+        :keyword language: The language of the full text field in the document.
+        :paramtype language: str
+        """
+        super().__init__(**kwargs)
+        self.path = path
+        self.language = language
+
+
+class FullTextPolicy(_serialization.Model):
+    """Cosmos DB FullText Policy.
+
+    :ivar default_language: The default language for a full text paths.
+    :vartype default_language: str
+    :ivar full_text_paths: List of FullText Paths.
+    :vartype full_text_paths: list[~azure.mgmt.cosmosdb.models.FullTextPath]
+    """
+
+    _attribute_map = {
+        "default_language": {"key": "defaultLanguage", "type": "str"},
+        "full_text_paths": {"key": "fullTextPaths", "type": "[FullTextPath]"},
+    }
+
+    def __init__(
+        self,
+        *,
+        default_language: Optional[str] = None,
+        full_text_paths: Optional[List["_models.FullTextPath"]] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword default_language: The default language for a full text paths.
+        :paramtype default_language: str
+        :keyword full_text_paths: List of FullText Paths.
+        :paramtype full_text_paths: list[~azure.mgmt.cosmosdb.models.FullTextPath]
+        """
+        super().__init__(**kwargs)
+        self.default_language = default_language
+        self.full_text_paths = full_text_paths
 
 
 class GraphAPIComputeRegionalServiceResource(RegionalServiceResource):
@@ -6657,7 +8358,7 @@ class GraphAPIComputeRegionalServiceResource(RegionalServiceResource):
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.graph_api_compute_endpoint = None
+        self.graph_api_compute_endpoint: Optional[str] = None
 
 
 class GraphAPIComputeServiceResource(_serialization.Model):
@@ -6805,7 +8506,7 @@ class GraphAPIComputeServiceResourceProperties(ServiceResourceProperties):
         )
         self.service_type: str = "GraphAPICompute"
         self.graph_api_compute_endpoint = graph_api_compute_endpoint
-        self.locations = None
+        self.locations: Optional[List["_models.GraphAPIComputeRegionalServiceResource"]] = None
 
 
 class GraphResource(_serialization.Model):
@@ -7034,7 +8735,7 @@ class GraphResourcesListResult(_serialization.Model):
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.value = None
+        self.value: Optional[List["_models.GraphResourceGetResults"]] = None
 
 
 class GremlinDatabaseCreateUpdateParameters(ARMResourceProperties):
@@ -7234,9 +8935,9 @@ class GremlinDatabaseGetPropertiesResource(GremlinDatabaseResource, ExtendedReso
         :paramtype create_mode: str or ~azure.mgmt.cosmosdb.models.CreateMode
         """
         super().__init__(id=id, restore_parameters=restore_parameters, create_mode=create_mode, **kwargs)
-        self.rid = None
-        self.ts = None
-        self.etag = None
+        self.rid: Optional[str] = None
+        self.ts: Optional[float] = None
+        self.etag: Optional[str] = None
         self.id = id
         self.restore_parameters = restore_parameters
         self.create_mode = create_mode
@@ -7339,7 +9040,7 @@ class GremlinDatabaseListResult(_serialization.Model):
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.value = None
+        self.value: Optional[List["_models.GremlinDatabaseGetResults"]] = None
 
 
 class GremlinDatabaseRestoreResource(_serialization.Model):
@@ -7668,9 +9369,9 @@ class GremlinGraphGetPropertiesResource(GremlinGraphResource, ExtendedResourcePr
             create_mode=create_mode,
             **kwargs
         )
-        self.rid = None
-        self.ts = None
-        self.etag = None
+        self.rid: Optional[str] = None
+        self.ts: Optional[float] = None
+        self.etag: Optional[str] = None
         self.id = id
         self.indexing_policy = indexing_policy
         self.partition_key = partition_key
@@ -7779,7 +9480,226 @@ class GremlinGraphListResult(_serialization.Model):
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.value = None
+        self.value: Optional[List["_models.GremlinGraphGetResults"]] = None
+
+
+class GremlinRoleAssignmentListResult(_serialization.Model):
+    """The relevant Role Assignments.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar value: List of Role Assignments and their properties.
+    :vartype value: list[~azure.mgmt.cosmosdb.models.GremlinRoleAssignmentResource]
+    :ivar next_link: The link used to get the next page of results.
+    :vartype next_link: str
+    """
+
+    _validation = {
+        "value": {"readonly": True},
+        "next_link": {"readonly": True},
+    }
+
+    _attribute_map = {
+        "value": {"key": "value", "type": "[GremlinRoleAssignmentResource]"},
+        "next_link": {"key": "nextLink", "type": "str"},
+    }
+
+    def __init__(self, **kwargs: Any) -> None:
+        """ """
+        super().__init__(**kwargs)
+        self.value: Optional[List["_models.GremlinRoleAssignmentResource"]] = None
+        self.next_link: Optional[str] = None
+
+
+class GremlinRoleAssignmentResource(ProxyResource):
+    """Parameters to create and update an Azure Cosmos DB Gremlin Role Assignment.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar id: Fully qualified resource ID for the resource. E.g.
+     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".
+    :vartype id: str
+    :ivar name: The name of the resource.
+    :vartype name: str
+    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
+     "Microsoft.Storage/storageAccounts".
+    :vartype type: str
+    :ivar system_data: Azure Resource Manager metadata containing createdBy and modifiedBy
+     information.
+    :vartype system_data: ~azure.mgmt.cosmosdb.models.SystemData
+    :ivar role_definition_id: The unique identifier for the associated Role Definition.
+    :vartype role_definition_id: str
+    :ivar scope: The data plane resource path for which access is being granted through this
+     Gremlin Role Assignment.
+    :vartype scope: str
+    :ivar principal_id: The unique identifier for the associated AAD principal in the AAD graph to
+     which access is being granted through this Gremlin Role Assignment. Tenant ID for the principal
+     is inferred using the tenant associated with the subscription.
+    :vartype principal_id: str
+    :ivar provisioning_state: Provisioning state of the resource.
+    :vartype provisioning_state: str
+    """
+
+    _validation = {
+        "id": {"readonly": True},
+        "name": {"readonly": True},
+        "type": {"readonly": True},
+        "system_data": {"readonly": True},
+        "provisioning_state": {"readonly": True},
+    }
+
+    _attribute_map = {
+        "id": {"key": "id", "type": "str"},
+        "name": {"key": "name", "type": "str"},
+        "type": {"key": "type", "type": "str"},
+        "system_data": {"key": "systemData", "type": "SystemData"},
+        "role_definition_id": {"key": "properties.roleDefinitionId", "type": "str"},
+        "scope": {"key": "properties.scope", "type": "str"},
+        "principal_id": {"key": "properties.principalId", "type": "str"},
+        "provisioning_state": {"key": "properties.provisioningState", "type": "str"},
+    }
+
+    def __init__(
+        self,
+        *,
+        role_definition_id: Optional[str] = None,
+        scope: Optional[str] = None,
+        principal_id: Optional[str] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword role_definition_id: The unique identifier for the associated Role Definition.
+        :paramtype role_definition_id: str
+        :keyword scope: The data plane resource path for which access is being granted through this
+         Gremlin Role Assignment.
+        :paramtype scope: str
+        :keyword principal_id: The unique identifier for the associated AAD principal in the AAD graph
+         to which access is being granted through this Gremlin Role Assignment. Tenant ID for the
+         principal is inferred using the tenant associated with the subscription.
+        :paramtype principal_id: str
+        """
+        super().__init__(**kwargs)
+        self.role_definition_id = role_definition_id
+        self.scope = scope
+        self.principal_id = principal_id
+        self.provisioning_state: Optional[str] = None
+
+
+class GremlinRoleDefinitionListResult(_serialization.Model):
+    """The relevant Role Definitions.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar value: List of Role Definitions and their properties.
+    :vartype value: list[~azure.mgmt.cosmosdb.models.GremlinRoleDefinitionResource]
+    :ivar next_link: The link used to get the next page of results.
+    :vartype next_link: str
+    """
+
+    _validation = {
+        "value": {"readonly": True},
+        "next_link": {"readonly": True},
+    }
+
+    _attribute_map = {
+        "value": {"key": "value", "type": "[GremlinRoleDefinitionResource]"},
+        "next_link": {"key": "nextLink", "type": "str"},
+    }
+
+    def __init__(self, **kwargs: Any) -> None:
+        """ """
+        super().__init__(**kwargs)
+        self.value: Optional[List["_models.GremlinRoleDefinitionResource"]] = None
+        self.next_link: Optional[str] = None
+
+
+class GremlinRoleDefinitionResource(ProxyResource):
+    """Parameters to create and update an Azure Cosmos DB Gremlin Role Definition.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar id: Fully qualified resource ID for the resource. E.g.
+     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".
+    :vartype id: str
+    :ivar name: The name of the resource.
+    :vartype name: str
+    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
+     "Microsoft.Storage/storageAccounts".
+    :vartype type: str
+    :ivar system_data: Azure Resource Manager metadata containing createdBy and modifiedBy
+     information.
+    :vartype system_data: ~azure.mgmt.cosmosdb.models.SystemData
+    :ivar id_properties_id: The path id for the Role Definition.
+    :vartype id_properties_id: str
+    :ivar role_name: A user-friendly name for the Role Definition. Must be unique for the database
+     account.
+    :vartype role_name: str
+    :ivar type_properties_type: Indicates whether the Role Definition was built-in or user created.
+     Known values are: "BuiltInRole" and "CustomRole".
+    :vartype type_properties_type: str or ~azure.mgmt.cosmosdb.models.RoleDefinitionType
+    :ivar assignable_scopes: A set of fully qualified Scopes at or below which Gremlin Role
+     Assignments may be created using this Role Definition. This will allow application of this Role
+     Definition on the entire database account or any underlying Database / Collection. Must have at
+     least one element. Scopes higher than Database account are not enforceable as assignable
+     Scopes. Note that resources referenced in assignable Scopes need not exist.
+    :vartype assignable_scopes: list[str]
+    :ivar permissions: The set of operations allowed through this Role Definition.
+    :vartype permissions: list[~azure.mgmt.cosmosdb.models.PermissionAutoGenerated4]
+    """
+
+    _validation = {
+        "id": {"readonly": True},
+        "name": {"readonly": True},
+        "type": {"readonly": True},
+        "system_data": {"readonly": True},
+    }
+
+    _attribute_map = {
+        "id": {"key": "id", "type": "str"},
+        "name": {"key": "name", "type": "str"},
+        "type": {"key": "type", "type": "str"},
+        "system_data": {"key": "systemData", "type": "SystemData"},
+        "id_properties_id": {"key": "properties.id", "type": "str"},
+        "role_name": {"key": "properties.roleName", "type": "str"},
+        "type_properties_type": {"key": "properties.type", "type": "str"},
+        "assignable_scopes": {"key": "properties.assignableScopes", "type": "[str]"},
+        "permissions": {"key": "properties.permissions", "type": "[PermissionAutoGenerated4]"},
+    }
+
+    def __init__(
+        self,
+        *,
+        id_properties_id: Optional[str] = None,
+        role_name: Optional[str] = None,
+        type_properties_type: Optional[Union[str, "_models.RoleDefinitionType"]] = None,
+        assignable_scopes: Optional[List[str]] = None,
+        permissions: Optional[List["_models.PermissionAutoGenerated4"]] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword id_properties_id: The path id for the Role Definition.
+        :paramtype id_properties_id: str
+        :keyword role_name: A user-friendly name for the Role Definition. Must be unique for the
+         database account.
+        :paramtype role_name: str
+        :keyword type_properties_type: Indicates whether the Role Definition was built-in or user
+         created. Known values are: "BuiltInRole" and "CustomRole".
+        :paramtype type_properties_type: str or ~azure.mgmt.cosmosdb.models.RoleDefinitionType
+        :keyword assignable_scopes: A set of fully qualified Scopes at or below which Gremlin Role
+         Assignments may be created using this Role Definition. This will allow application of this Role
+         Definition on the entire database account or any underlying Database / Collection. Must have at
+         least one element. Scopes higher than Database account are not enforceable as assignable
+         Scopes. Note that resources referenced in assignable Scopes need not exist.
+        :paramtype assignable_scopes: list[str]
+        :keyword permissions: The set of operations allowed through this Role Definition.
+        :paramtype permissions: list[~azure.mgmt.cosmosdb.models.PermissionAutoGenerated4]
+        """
+        super().__init__(**kwargs)
+        self.id_properties_id = id_properties_id
+        self.role_name = role_name
+        self.type_properties_type = type_properties_type
+        self.assignable_scopes = assignable_scopes
+        self.permissions = permissions
 
 
 class IncludedPath(_serialization.Model):
@@ -8016,7 +9936,7 @@ class ListBackups(_serialization.Model):
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.value = None
+        self.value: Optional[List["_models.BackupResource"]] = None
 
 
 class ListClusters(_serialization.Model):
@@ -8059,7 +9979,7 @@ class ListCommands(_serialization.Model):
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.value = None
+        self.value: Optional[List["_models.CommandPublicResource"]] = None
 
 
 class ListDataCenters(_serialization.Model):
@@ -8082,7 +10002,7 @@ class ListDataCenters(_serialization.Model):
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.value = None
+        self.value: Optional[List["_models.DataCenterResource"]] = None
 
 
 class Location(_serialization.Model):
@@ -8147,10 +10067,10 @@ class Location(_serialization.Model):
         :paramtype is_zone_redundant: bool
         """
         super().__init__(**kwargs)
-        self.id = None
+        self.id: Optional[str] = None
         self.location_name = location_name
-        self.document_endpoint = None
-        self.provisioning_state = None
+        self.document_endpoint: Optional[str] = None
+        self.provisioning_state: Optional[str] = None
         self.failover_priority = failover_priority
         self.is_zone_redundant = is_zone_redundant
 
@@ -8212,7 +10132,7 @@ class LocationListResult(_serialization.Model):
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.value = None
+        self.value: Optional[List["_models.LocationGetResult"]] = None
 
 
 class LocationProperties(_serialization.Model):
@@ -8236,7 +10156,7 @@ class LocationProperties(_serialization.Model):
     :vartype is_subscription_region_access_allowed_for_az: bool
     :ivar status: Enum to indicate current buildout status of the region. Known values are:
      "Uninitialized", "Initializing", "InternallyReady", "Online", "Deleting", "Succeeded",
-     "Failed", "Canceled", and "Updating".
+     "Failed", "Canceled", "Updating", and "Creating".
     :vartype status: str or ~azure.mgmt.cosmosdb.models.Status
     """
 
@@ -8267,12 +10187,12 @@ class LocationProperties(_serialization.Model):
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.supports_availability_zone = None
-        self.is_residency_restricted = None
-        self.backup_storage_redundancies = None
-        self.is_subscription_region_access_allowed_for_regular = None
-        self.is_subscription_region_access_allowed_for_az = None
-        self.status = None
+        self.supports_availability_zone: Optional[bool] = None
+        self.is_residency_restricted: Optional[bool] = None
+        self.backup_storage_redundancies: Optional[List[Union[str, "_models.BackupStorageRedundancy"]]] = None
+        self.is_subscription_region_access_allowed_for_regular: Optional[bool] = None
+        self.is_subscription_region_access_allowed_for_az: Optional[bool] = None
+        self.status: Optional[Union[str, "_models.Status"]] = None
 
 
 class ManagedCassandraManagedServiceIdentity(_serialization.Model):
@@ -8307,8 +10227,8 @@ class ManagedCassandraManagedServiceIdentity(_serialization.Model):
         :paramtype type: str or ~azure.mgmt.cosmosdb.models.ManagedCassandraResourceIdentityType
         """
         super().__init__(**kwargs)
-        self.principal_id = None
-        self.tenant_id = None
+        self.principal_id: Optional[str] = None
+        self.tenant_id: Optional[str] = None
         self.type = type
 
 
@@ -8369,7 +10289,7 @@ class ManagedServiceIdentity(_serialization.Model):
     :vartype type: str or ~azure.mgmt.cosmosdb.models.ResourceIdentityType
     :ivar user_assigned_identities: The list of user identities associated with resource. The user
      identity dictionary key references will be ARM resource ids in the form:
-     '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}'.  # pylint: disable=line-too-long
+     '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}'.
     :vartype user_assigned_identities: dict[str,
      ~azure.mgmt.cosmosdb.models.ManagedServiceIdentityUserAssignedIdentity]
     """
@@ -8404,13 +10324,13 @@ class ManagedServiceIdentity(_serialization.Model):
         :paramtype type: str or ~azure.mgmt.cosmosdb.models.ResourceIdentityType
         :keyword user_assigned_identities: The list of user identities associated with resource. The
          user identity dictionary key references will be ARM resource ids in the form:
-         '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}'.  # pylint: disable=line-too-long
+         '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}'.
         :paramtype user_assigned_identities: dict[str,
          ~azure.mgmt.cosmosdb.models.ManagedServiceIdentityUserAssignedIdentity]
         """
         super().__init__(**kwargs)
-        self.principal_id = None
-        self.tenant_id = None
+        self.principal_id: Optional[str] = None
+        self.tenant_id: Optional[str] = None
         self.type = type
         self.user_assigned_identities = user_assigned_identities
 
@@ -8439,8 +10359,8 @@ class ManagedServiceIdentityUserAssignedIdentity(_serialization.Model):  # pylin
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.principal_id = None
-        self.client_id = None
+        self.principal_id: Optional[str] = None
+        self.client_id: Optional[str] = None
 
 
 class MaterializedViewDefinition(_serialization.Model):
@@ -8483,9 +10403,37 @@ class MaterializedViewDefinition(_serialization.Model):
         :paramtype definition: str
         """
         super().__init__(**kwargs)
-        self.source_collection_rid = None
+        self.source_collection_rid: Optional[str] = None
         self.source_collection_id = source_collection_id
         self.definition = definition
+
+
+class MaterializedViewDetails(_serialization.Model):
+    """MaterializedViewDetails, contains Id & _rid fields of materialized view.
+
+    :ivar id: Id field of Materialized container.
+    :vartype id: str
+    :ivar rid: _rid field of Materialized container.
+    :vartype rid: str
+    """
+
+    _attribute_map = {
+        "id": {"key": "id", "type": "str"},
+        "rid": {"key": "_rid", "type": "str"},
+    }
+
+    def __init__(
+        self, *, id: Optional[str] = None, rid: Optional[str] = None, **kwargs: Any  # pylint: disable=redefined-builtin
+    ) -> None:
+        """
+        :keyword id: Id field of Materialized container.
+        :paramtype id: str
+        :keyword rid: _rid field of Materialized container.
+        :paramtype rid: str
+        """
+        super().__init__(**kwargs)
+        self.id = id
+        self.rid = rid
 
 
 class MaterializedViewsBuilderRegionalServiceResource(RegionalServiceResource):  # pylint: disable=name-too-long
@@ -8644,7 +10592,7 @@ class MaterializedViewsBuilderServiceResourceProperties(ServiceResourcePropertie
             **kwargs
         )
         self.service_type: str = "MaterializedViewsBuilder"
-        self.locations = None
+        self.locations: Optional[List["_models.MaterializedViewsBuilderRegionalServiceResource"]] = None
 
 
 class MergeParameters(_serialization.Model):
@@ -8708,12 +10656,12 @@ class Metric(_serialization.Model):
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.start_time = None
-        self.end_time = None
-        self.time_grain = None
-        self.unit = None
-        self.name = None
-        self.metric_values = None
+        self.start_time: Optional[datetime.datetime] = None
+        self.end_time: Optional[datetime.datetime] = None
+        self.time_grain: Optional[str] = None
+        self.unit: Optional[Union[str, "_models.UnitType"]] = None
+        self.name: Optional["_models.MetricName"] = None
+        self.metric_values: Optional[List["_models.MetricValue"]] = None
 
 
 class MetricAvailability(_serialization.Model):
@@ -8740,8 +10688,8 @@ class MetricAvailability(_serialization.Model):
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.time_grain = None
-        self.retention = None
+        self.time_grain: Optional[str] = None
+        self.retention: Optional[str] = None
 
 
 class MetricDefinition(_serialization.Model):
@@ -8782,11 +10730,11 @@ class MetricDefinition(_serialization.Model):
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.metric_availabilities = None
-        self.primary_aggregation_type = None
-        self.unit = None
-        self.resource_uri = None
-        self.name = None
+        self.metric_availabilities: Optional[List["_models.MetricAvailability"]] = None
+        self.primary_aggregation_type: Optional[Union[str, "_models.PrimaryAggregationType"]] = None
+        self.unit: Optional[Union[str, "_models.UnitType"]] = None
+        self.resource_uri: Optional[str] = None
+        self.name: Optional["_models.MetricName"] = None
 
 
 class MetricDefinitionsListResult(_serialization.Model):
@@ -8809,7 +10757,7 @@ class MetricDefinitionsListResult(_serialization.Model):
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.value = None
+        self.value: Optional[List["_models.MetricDefinition"]] = None
 
 
 class MetricListResult(_serialization.Model):
@@ -8832,7 +10780,7 @@ class MetricListResult(_serialization.Model):
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.value = None
+        self.value: Optional[List["_models.Metric"]] = None
 
 
 class MetricName(_serialization.Model):
@@ -8859,8 +10807,8 @@ class MetricName(_serialization.Model):
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.value = None
-        self.localized_value = None
+        self.value: Optional[str] = None
+        self.localized_value: Optional[str] = None
 
 
 class MetricValue(_serialization.Model):
@@ -8903,12 +10851,12 @@ class MetricValue(_serialization.Model):
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.count = None
-        self.average = None
-        self.maximum = None
-        self.minimum = None
-        self.timestamp = None
-        self.total = None
+        self.count: Optional[int] = None
+        self.average: Optional[float] = None
+        self.maximum: Optional[float] = None
+        self.minimum: Optional[float] = None
+        self.timestamp: Optional[datetime.datetime] = None
+        self.total: Optional[float] = None
 
 
 class MongoDBCollectionCreateUpdateParameters(ARMResourceProperties):
@@ -9155,9 +11103,9 @@ class MongoDBCollectionGetPropertiesResource(MongoDBCollectionResource, Extended
             create_mode=create_mode,
             **kwargs
         )
-        self.rid = None
-        self.ts = None
-        self.etag = None
+        self.rid: Optional[str] = None
+        self.ts: Optional[float] = None
+        self.etag: Optional[str] = None
         self.id = id
         self.shard_key = shard_key
         self.indexes = indexes
@@ -9263,7 +11211,7 @@ class MongoDBCollectionListResult(_serialization.Model):
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.value = None
+        self.value: Optional[List["_models.MongoDBCollectionGetResults"]] = None
 
 
 class MongoDBDatabaseCreateUpdateParameters(ARMResourceProperties):
@@ -9463,9 +11411,9 @@ class MongoDBDatabaseGetPropertiesResource(MongoDBDatabaseResource, ExtendedReso
         :paramtype create_mode: str or ~azure.mgmt.cosmosdb.models.CreateMode
         """
         super().__init__(id=id, restore_parameters=restore_parameters, create_mode=create_mode, **kwargs)
-        self.rid = None
-        self.ts = None
-        self.etag = None
+        self.rid: Optional[str] = None
+        self.ts: Optional[float] = None
+        self.etag: Optional[str] = None
         self.id = id
         self.restore_parameters = restore_parameters
         self.create_mode = create_mode
@@ -9568,7 +11516,7 @@ class MongoDBDatabaseListResult(_serialization.Model):
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.value = None
+        self.value: Optional[List["_models.MongoDBDatabaseGetResults"]] = None
 
 
 class MongoIndex(_serialization.Model):
@@ -9649,6 +11597,225 @@ class MongoIndexOptions(_serialization.Model):
         super().__init__(**kwargs)
         self.expire_after_seconds = expire_after_seconds
         self.unique = unique
+
+
+class MongoMIRoleAssignmentListResult(_serialization.Model):
+    """The relevant Role Assignments.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar value: List of Role Assignments and their properties.
+    :vartype value: list[~azure.mgmt.cosmosdb.models.MongoMIRoleAssignmentResource]
+    :ivar next_link: The link used to get the next page of results.
+    :vartype next_link: str
+    """
+
+    _validation = {
+        "value": {"readonly": True},
+        "next_link": {"readonly": True},
+    }
+
+    _attribute_map = {
+        "value": {"key": "value", "type": "[MongoMIRoleAssignmentResource]"},
+        "next_link": {"key": "nextLink", "type": "str"},
+    }
+
+    def __init__(self, **kwargs: Any) -> None:
+        """ """
+        super().__init__(**kwargs)
+        self.value: Optional[List["_models.MongoMIRoleAssignmentResource"]] = None
+        self.next_link: Optional[str] = None
+
+
+class MongoMIRoleAssignmentResource(ProxyResource):
+    """Parameters to create and update an Azure Cosmos DB MongoMI Role Assignment.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar id: Fully qualified resource ID for the resource. E.g.
+     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".
+    :vartype id: str
+    :ivar name: The name of the resource.
+    :vartype name: str
+    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
+     "Microsoft.Storage/storageAccounts".
+    :vartype type: str
+    :ivar system_data: Azure Resource Manager metadata containing createdBy and modifiedBy
+     information.
+    :vartype system_data: ~azure.mgmt.cosmosdb.models.SystemData
+    :ivar role_definition_id: The unique identifier for the associated Role Definition.
+    :vartype role_definition_id: str
+    :ivar scope: The data plane resource path for which access is being granted through this
+     MongoMI Role Assignment.
+    :vartype scope: str
+    :ivar principal_id: The unique identifier for the associated AAD principal in the AAD graph to
+     which access is being granted through this MongoMI Role Assignment. Tenant ID for the principal
+     is inferred using the tenant associated with the subscription.
+    :vartype principal_id: str
+    :ivar provisioning_state: Provisioning state of the resource.
+    :vartype provisioning_state: str
+    """
+
+    _validation = {
+        "id": {"readonly": True},
+        "name": {"readonly": True},
+        "type": {"readonly": True},
+        "system_data": {"readonly": True},
+        "provisioning_state": {"readonly": True},
+    }
+
+    _attribute_map = {
+        "id": {"key": "id", "type": "str"},
+        "name": {"key": "name", "type": "str"},
+        "type": {"key": "type", "type": "str"},
+        "system_data": {"key": "systemData", "type": "SystemData"},
+        "role_definition_id": {"key": "properties.roleDefinitionId", "type": "str"},
+        "scope": {"key": "properties.scope", "type": "str"},
+        "principal_id": {"key": "properties.principalId", "type": "str"},
+        "provisioning_state": {"key": "properties.provisioningState", "type": "str"},
+    }
+
+    def __init__(
+        self,
+        *,
+        role_definition_id: Optional[str] = None,
+        scope: Optional[str] = None,
+        principal_id: Optional[str] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword role_definition_id: The unique identifier for the associated Role Definition.
+        :paramtype role_definition_id: str
+        :keyword scope: The data plane resource path for which access is being granted through this
+         MongoMI Role Assignment.
+        :paramtype scope: str
+        :keyword principal_id: The unique identifier for the associated AAD principal in the AAD graph
+         to which access is being granted through this MongoMI Role Assignment. Tenant ID for the
+         principal is inferred using the tenant associated with the subscription.
+        :paramtype principal_id: str
+        """
+        super().__init__(**kwargs)
+        self.role_definition_id = role_definition_id
+        self.scope = scope
+        self.principal_id = principal_id
+        self.provisioning_state: Optional[str] = None
+
+
+class MongoMIRoleDefinitionListResult(_serialization.Model):
+    """The relevant Role Definitions.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar value: List of Role Definitions and their properties.
+    :vartype value: list[~azure.mgmt.cosmosdb.models.MongoMIRoleDefinitionResource]
+    :ivar next_link: The link used to get the next page of results.
+    :vartype next_link: str
+    """
+
+    _validation = {
+        "value": {"readonly": True},
+        "next_link": {"readonly": True},
+    }
+
+    _attribute_map = {
+        "value": {"key": "value", "type": "[MongoMIRoleDefinitionResource]"},
+        "next_link": {"key": "nextLink", "type": "str"},
+    }
+
+    def __init__(self, **kwargs: Any) -> None:
+        """ """
+        super().__init__(**kwargs)
+        self.value: Optional[List["_models.MongoMIRoleDefinitionResource"]] = None
+        self.next_link: Optional[str] = None
+
+
+class MongoMIRoleDefinitionResource(ProxyResource):
+    """Parameters to create and update an Azure Cosmos DB MongoMI Role Definition.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar id: Fully qualified resource ID for the resource. E.g.
+     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".
+    :vartype id: str
+    :ivar name: The name of the resource.
+    :vartype name: str
+    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
+     "Microsoft.Storage/storageAccounts".
+    :vartype type: str
+    :ivar system_data: Azure Resource Manager metadata containing createdBy and modifiedBy
+     information.
+    :vartype system_data: ~azure.mgmt.cosmosdb.models.SystemData
+    :ivar id_properties_id: The path id for the Role Definition.
+    :vartype id_properties_id: str
+    :ivar role_name: A user-friendly name for the Role Definition. Must be unique for the database
+     account.
+    :vartype role_name: str
+    :ivar type_properties_type: Indicates whether the Role Definition was built-in or user created.
+     Known values are: "BuiltInRole" and "CustomRole".
+    :vartype type_properties_type: str or ~azure.mgmt.cosmosdb.models.RoleDefinitionType
+    :ivar assignable_scopes: A set of fully qualified Scopes at or below which MongoMI Role
+     Assignments may be created using this Role Definition. This will allow application of this Role
+     Definition on the entire database account or any underlying Database / Collection. Must have at
+     least one element. Scopes higher than Database account are not enforceable as assignable
+     Scopes. Note that resources referenced in assignable Scopes need not exist.
+    :vartype assignable_scopes: list[str]
+    :ivar permissions: The set of operations allowed through this Role Definition.
+    :vartype permissions: list[~azure.mgmt.cosmosdb.models.PermissionAutoGenerated3]
+    """
+
+    _validation = {
+        "id": {"readonly": True},
+        "name": {"readonly": True},
+        "type": {"readonly": True},
+        "system_data": {"readonly": True},
+    }
+
+    _attribute_map = {
+        "id": {"key": "id", "type": "str"},
+        "name": {"key": "name", "type": "str"},
+        "type": {"key": "type", "type": "str"},
+        "system_data": {"key": "systemData", "type": "SystemData"},
+        "id_properties_id": {"key": "properties.id", "type": "str"},
+        "role_name": {"key": "properties.roleName", "type": "str"},
+        "type_properties_type": {"key": "properties.type", "type": "str"},
+        "assignable_scopes": {"key": "properties.assignableScopes", "type": "[str]"},
+        "permissions": {"key": "properties.permissions", "type": "[PermissionAutoGenerated3]"},
+    }
+
+    def __init__(
+        self,
+        *,
+        id_properties_id: Optional[str] = None,
+        role_name: Optional[str] = None,
+        type_properties_type: Optional[Union[str, "_models.RoleDefinitionType"]] = None,
+        assignable_scopes: Optional[List[str]] = None,
+        permissions: Optional[List["_models.PermissionAutoGenerated3"]] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword id_properties_id: The path id for the Role Definition.
+        :paramtype id_properties_id: str
+        :keyword role_name: A user-friendly name for the Role Definition. Must be unique for the
+         database account.
+        :paramtype role_name: str
+        :keyword type_properties_type: Indicates whether the Role Definition was built-in or user
+         created. Known values are: "BuiltInRole" and "CustomRole".
+        :paramtype type_properties_type: str or ~azure.mgmt.cosmosdb.models.RoleDefinitionType
+        :keyword assignable_scopes: A set of fully qualified Scopes at or below which MongoMI Role
+         Assignments may be created using this Role Definition. This will allow application of this Role
+         Definition on the entire database account or any underlying Database / Collection. Must have at
+         least one element. Scopes higher than Database account are not enforceable as assignable
+         Scopes. Note that resources referenced in assignable Scopes need not exist.
+        :paramtype assignable_scopes: list[str]
+        :keyword permissions: The set of operations allowed through this Role Definition.
+        :paramtype permissions: list[~azure.mgmt.cosmosdb.models.PermissionAutoGenerated3]
+        """
+        super().__init__(**kwargs)
+        self.id_properties_id = id_properties_id
+        self.role_name = role_name
+        self.type_properties_type = type_properties_type
+        self.assignable_scopes = assignable_scopes
+        self.permissions = permissions
 
 
 class MongoRoleDefinitionCreateUpdateParameters(_serialization.Model):  # pylint: disable=name-too-long
@@ -9814,7 +11981,210 @@ class MongoRoleDefinitionListResult(_serialization.Model):
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.value = None
+        self.value: Optional[List["_models.MongoRoleDefinitionGetResults"]] = None
+
+
+class MongoRUToMongoRUCopyJobProperties(BaseCopyJobProperties):
+    """Source Mongo to Destination Mongo copy job properties.
+
+    All required parameters must be populated in order to send to server.
+
+    :ivar job_type: Copy Job Type. Known values are: "CassandraRUToCassandraRU",
+     "CassandraRUToAzureBlobStorage", "AzureBlobStorageToCassandraRU", "MongoRUToMongoRU",
+     "MongoRUToMongoVCore", and "NoSqlRUToNoSqlRU".
+    :vartype job_type: str or ~azure.mgmt.cosmosdb.models.CopyJobType
+    :ivar source_details: Source Mongo DataStore details.
+    :vartype source_details: ~azure.mgmt.cosmosdb.models.CosmosDBSourceSinkDetails
+    :ivar destination_details: Destination Mongo DataStore details.
+    :vartype destination_details: ~azure.mgmt.cosmosdb.models.CosmosDBSourceSinkDetails
+    :ivar tasks: Copy Job tasks. Required.
+    :vartype tasks: list[~azure.mgmt.cosmosdb.models.MongoRUToMongoRUCopyJobTask]
+    """
+
+    _validation = {
+        "job_type": {"required": True},
+        "tasks": {"required": True},
+    }
+
+    _attribute_map = {
+        "job_type": {"key": "jobType", "type": "str"},
+        "source_details": {"key": "sourceDetails", "type": "CosmosDBSourceSinkDetails"},
+        "destination_details": {"key": "destinationDetails", "type": "CosmosDBSourceSinkDetails"},
+        "tasks": {"key": "tasks", "type": "[MongoRUToMongoRUCopyJobTask]"},
+    }
+
+    def __init__(
+        self,
+        *,
+        tasks: List["_models.MongoRUToMongoRUCopyJobTask"],
+        source_details: Optional["_models.CosmosDBSourceSinkDetails"] = None,
+        destination_details: Optional["_models.CosmosDBSourceSinkDetails"] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword source_details: Source Mongo DataStore details.
+        :paramtype source_details: ~azure.mgmt.cosmosdb.models.CosmosDBSourceSinkDetails
+        :keyword destination_details: Destination Mongo DataStore details.
+        :paramtype destination_details: ~azure.mgmt.cosmosdb.models.CosmosDBSourceSinkDetails
+        :keyword tasks: Copy Job tasks. Required.
+        :paramtype tasks: list[~azure.mgmt.cosmosdb.models.MongoRUToMongoRUCopyJobTask]
+        """
+        super().__init__(**kwargs)
+        self.job_type: str = "MongoRUToMongoRU"
+        self.source_details = source_details
+        self.destination_details = destination_details
+        self.tasks = tasks
+
+
+class MongoRUToMongoRUCopyJobTask(BaseCopyJobTask):
+    """MongoRUToMongoRUCopyJobTask.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    All required parameters must be populated in order to send to server.
+
+    :ivar total_count: Task level Total Count.
+    :vartype total_count: int
+    :ivar processed_count: Task level Processed Count.
+    :vartype processed_count: int
+    :ivar source: Source Mongo (RU) collection. Required.
+    :vartype source: ~azure.mgmt.cosmosdb.models.CosmosDBMongoCollection
+    :ivar destination: Destination Mongo (RU) collection. Required.
+    :vartype destination: ~azure.mgmt.cosmosdb.models.CosmosDBMongoCollection
+    """
+
+    _validation = {
+        "total_count": {"readonly": True},
+        "processed_count": {"readonly": True},
+        "source": {"required": True},
+        "destination": {"required": True},
+    }
+
+    _attribute_map = {
+        "total_count": {"key": "totalCount", "type": "int"},
+        "processed_count": {"key": "processedCount", "type": "int"},
+        "source": {"key": "source", "type": "CosmosDBMongoCollection"},
+        "destination": {"key": "destination", "type": "CosmosDBMongoCollection"},
+    }
+
+    def __init__(
+        self,
+        *,
+        source: "_models.CosmosDBMongoCollection",
+        destination: "_models.CosmosDBMongoCollection",
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword source: Source Mongo (RU) collection. Required.
+        :paramtype source: ~azure.mgmt.cosmosdb.models.CosmosDBMongoCollection
+        :keyword destination: Destination Mongo (RU) collection. Required.
+        :paramtype destination: ~azure.mgmt.cosmosdb.models.CosmosDBMongoCollection
+        """
+        super().__init__(**kwargs)
+        self.source = source
+        self.destination = destination
+
+
+class MongoRUToMongoVCoreCopyJobProperties(BaseCopyJobProperties):
+    """Source Mongo to Destination Mongo vCore copy job properties.
+
+    All required parameters must be populated in order to send to server.
+
+    :ivar job_type: Copy Job Type. Known values are: "CassandraRUToCassandraRU",
+     "CassandraRUToAzureBlobStorage", "AzureBlobStorageToCassandraRU", "MongoRUToMongoRU",
+     "MongoRUToMongoVCore", and "NoSqlRUToNoSqlRU".
+    :vartype job_type: str or ~azure.mgmt.cosmosdb.models.CopyJobType
+    :ivar source_details: Source Mongo (RU) DataStore details.
+    :vartype source_details: ~azure.mgmt.cosmosdb.models.CosmosDBSourceSinkDetails
+    :ivar destination_details: Destination Mongo (vCore) DataStore details. Required.
+    :vartype destination_details: ~azure.mgmt.cosmosdb.models.MongoVCoreSourceSinkDetails
+    :ivar tasks: Copy Job tasks. Required.
+    :vartype tasks: list[~azure.mgmt.cosmosdb.models.MongoRUToMongoVCoreCopyJobTask]
+    """
+
+    _validation = {
+        "job_type": {"required": True},
+        "destination_details": {"required": True},
+        "tasks": {"required": True},
+    }
+
+    _attribute_map = {
+        "job_type": {"key": "jobType", "type": "str"},
+        "source_details": {"key": "sourceDetails", "type": "CosmosDBSourceSinkDetails"},
+        "destination_details": {"key": "destinationDetails", "type": "MongoVCoreSourceSinkDetails"},
+        "tasks": {"key": "tasks", "type": "[MongoRUToMongoVCoreCopyJobTask]"},
+    }
+
+    def __init__(
+        self,
+        *,
+        destination_details: "_models.MongoVCoreSourceSinkDetails",
+        tasks: List["_models.MongoRUToMongoVCoreCopyJobTask"],
+        source_details: Optional["_models.CosmosDBSourceSinkDetails"] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword source_details: Source Mongo (RU) DataStore details.
+        :paramtype source_details: ~azure.mgmt.cosmosdb.models.CosmosDBSourceSinkDetails
+        :keyword destination_details: Destination Mongo (vCore) DataStore details. Required.
+        :paramtype destination_details: ~azure.mgmt.cosmosdb.models.MongoVCoreSourceSinkDetails
+        :keyword tasks: Copy Job tasks. Required.
+        :paramtype tasks: list[~azure.mgmt.cosmosdb.models.MongoRUToMongoVCoreCopyJobTask]
+        """
+        super().__init__(**kwargs)
+        self.job_type: str = "MongoRUToMongoVCore"
+        self.source_details = source_details
+        self.destination_details = destination_details
+        self.tasks = tasks
+
+
+class MongoRUToMongoVCoreCopyJobTask(BaseCopyJobTask):
+    """MongoRUToMongoVCoreCopyJobTask.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    All required parameters must be populated in order to send to server.
+
+    :ivar total_count: Task level Total Count.
+    :vartype total_count: int
+    :ivar processed_count: Task level Processed Count.
+    :vartype processed_count: int
+    :ivar source: Source Mongo (RU) collection. Required.
+    :vartype source: ~azure.mgmt.cosmosdb.models.CosmosDBMongoCollection
+    :ivar destination: Destination Mongo (vCore) collection. Required.
+    :vartype destination: ~azure.mgmt.cosmosdb.models.CosmosDBMongoVCoreCollection
+    """
+
+    _validation = {
+        "total_count": {"readonly": True},
+        "processed_count": {"readonly": True},
+        "source": {"required": True},
+        "destination": {"required": True},
+    }
+
+    _attribute_map = {
+        "total_count": {"key": "totalCount", "type": "int"},
+        "processed_count": {"key": "processedCount", "type": "int"},
+        "source": {"key": "source", "type": "CosmosDBMongoCollection"},
+        "destination": {"key": "destination", "type": "CosmosDBMongoVCoreCollection"},
+    }
+
+    def __init__(
+        self,
+        *,
+        source: "_models.CosmosDBMongoCollection",
+        destination: "_models.CosmosDBMongoVCoreCollection",
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword source: Source Mongo (RU) collection. Required.
+        :paramtype source: ~azure.mgmt.cosmosdb.models.CosmosDBMongoCollection
+        :keyword destination: Destination Mongo (vCore) collection. Required.
+        :paramtype destination: ~azure.mgmt.cosmosdb.models.CosmosDBMongoVCoreCollection
+        """
+        super().__init__(**kwargs)
+        self.source = source
+        self.destination = destination
 
 
 class MongoUserDefinitionCreateUpdateParameters(_serialization.Model):  # pylint: disable=name-too-long
@@ -9982,7 +12352,41 @@ class MongoUserDefinitionListResult(_serialization.Model):
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.value = None
+        self.value: Optional[List["_models.MongoUserDefinitionGetResults"]] = None
+
+
+class MongoVCoreSourceSinkDetails(_serialization.Model):
+    """A CosmosDB Mongo vCore data source/sink details.
+
+    :ivar host_name:
+    :vartype host_name: str
+    :ivar connection_string_key_vault_uri: URI of Azure KeyVault secret containing connection
+     string.
+    :vartype connection_string_key_vault_uri: str
+    """
+
+    _validation = {
+        "connection_string_key_vault_uri": {"pattern": r"^https?://[^/$.?# ]+.[^ ]*$"},
+    }
+
+    _attribute_map = {
+        "host_name": {"key": "hostName", "type": "str"},
+        "connection_string_key_vault_uri": {"key": "connectionStringKeyVaultUri", "type": "str"},
+    }
+
+    def __init__(
+        self, *, host_name: Optional[str] = None, connection_string_key_vault_uri: Optional[str] = None, **kwargs: Any
+    ) -> None:
+        """
+        :keyword host_name:
+        :paramtype host_name: str
+        :keyword connection_string_key_vault_uri: URI of Azure KeyVault secret containing connection
+         string.
+        :paramtype connection_string_key_vault_uri: str
+        """
+        super().__init__(**kwargs)
+        self.host_name = host_name
+        self.connection_string_key_vault_uri = connection_string_key_vault_uri
 
 
 class NetworkSecurityPerimeter(_serialization.Model):
@@ -10030,7 +12434,7 @@ class NetworkSecurityPerimeterConfiguration(ProxyResource):
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :ivar id: Fully qualified resource ID for the resource. E.g.
-     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".  # pylint: disable=line-too-long
+     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
@@ -10154,8 +12558,10 @@ class NetworkSecurityPerimeterConfigurationProperties(_serialization.Model):  # 
         :paramtype profile: ~azure.mgmt.cosmosdb.models.NetworkSecurityProfile
         """
         super().__init__(**kwargs)
-        self.provisioning_state = None
-        self.provisioning_issues = None
+        self.provisioning_state: Optional[
+            Union[str, "_models.NetworkSecurityPerimeterConfigurationProvisioningState"]
+        ] = None
+        self.provisioning_issues: Optional[List["_models.ProvisioningIssue"]] = None
         self.network_security_perimeter = network_security_perimeter
         self.resource_association = resource_association
         self.profile = profile
@@ -10214,6 +12620,103 @@ class NetworkSecurityProfile(_serialization.Model):
         self.enabled_log_categories = enabled_log_categories
 
 
+class NoSqlRUToNoSqlRUCopyJobProperties(BaseCopyJobProperties):
+    """Source SQL to Destination SQL copy job properties.
+
+    All required parameters must be populated in order to send to server.
+
+    :ivar job_type: Copy Job Type. Known values are: "CassandraRUToCassandraRU",
+     "CassandraRUToAzureBlobStorage", "AzureBlobStorageToCassandraRU", "MongoRUToMongoRU",
+     "MongoRUToMongoVCore", and "NoSqlRUToNoSqlRU".
+    :vartype job_type: str or ~azure.mgmt.cosmosdb.models.CopyJobType
+    :ivar source_details: Source SQL DataStore details.
+    :vartype source_details: ~azure.mgmt.cosmosdb.models.CosmosDBSourceSinkDetails
+    :ivar destination_details: Destination SQL DataStore details.
+    :vartype destination_details: ~azure.mgmt.cosmosdb.models.CosmosDBSourceSinkDetails
+    :ivar tasks: Copy Job tasks. Required.
+    :vartype tasks: list[~azure.mgmt.cosmosdb.models.NoSqlRUToNoSqlRUCopyJobTask]
+    """
+
+    _validation = {
+        "job_type": {"required": True},
+        "tasks": {"required": True},
+    }
+
+    _attribute_map = {
+        "job_type": {"key": "jobType", "type": "str"},
+        "source_details": {"key": "sourceDetails", "type": "CosmosDBSourceSinkDetails"},
+        "destination_details": {"key": "destinationDetails", "type": "CosmosDBSourceSinkDetails"},
+        "tasks": {"key": "tasks", "type": "[NoSqlRUToNoSqlRUCopyJobTask]"},
+    }
+
+    def __init__(
+        self,
+        *,
+        tasks: List["_models.NoSqlRUToNoSqlRUCopyJobTask"],
+        source_details: Optional["_models.CosmosDBSourceSinkDetails"] = None,
+        destination_details: Optional["_models.CosmosDBSourceSinkDetails"] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword source_details: Source SQL DataStore details.
+        :paramtype source_details: ~azure.mgmt.cosmosdb.models.CosmosDBSourceSinkDetails
+        :keyword destination_details: Destination SQL DataStore details.
+        :paramtype destination_details: ~azure.mgmt.cosmosdb.models.CosmosDBSourceSinkDetails
+        :keyword tasks: Copy Job tasks. Required.
+        :paramtype tasks: list[~azure.mgmt.cosmosdb.models.NoSqlRUToNoSqlRUCopyJobTask]
+        """
+        super().__init__(**kwargs)
+        self.job_type: str = "NoSqlRUToNoSqlRU"
+        self.source_details = source_details
+        self.destination_details = destination_details
+        self.tasks = tasks
+
+
+class NoSqlRUToNoSqlRUCopyJobTask(BaseCopyJobTask):
+    """NoSqlRUToNoSqlRUCopyJobTask.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    All required parameters must be populated in order to send to server.
+
+    :ivar total_count: Task level Total Count.
+    :vartype total_count: int
+    :ivar processed_count: Task level Processed Count.
+    :vartype processed_count: int
+    :ivar source: Source SQL container. Required.
+    :vartype source: ~azure.mgmt.cosmosdb.models.CosmosDBNoSqlContainer
+    :ivar destination: Destination SQL container. Required.
+    :vartype destination: ~azure.mgmt.cosmosdb.models.CosmosDBNoSqlContainer
+    """
+
+    _validation = {
+        "total_count": {"readonly": True},
+        "processed_count": {"readonly": True},
+        "source": {"required": True},
+        "destination": {"required": True},
+    }
+
+    _attribute_map = {
+        "total_count": {"key": "totalCount", "type": "int"},
+        "processed_count": {"key": "processedCount", "type": "int"},
+        "source": {"key": "source", "type": "CosmosDBNoSqlContainer"},
+        "destination": {"key": "destination", "type": "CosmosDBNoSqlContainer"},
+    }
+
+    def __init__(
+        self, *, source: "_models.CosmosDBNoSqlContainer", destination: "_models.CosmosDBNoSqlContainer", **kwargs: Any
+    ) -> None:
+        """
+        :keyword source: Source SQL container. Required.
+        :paramtype source: ~azure.mgmt.cosmosdb.models.CosmosDBNoSqlContainer
+        :keyword destination: Destination SQL container. Required.
+        :paramtype destination: ~azure.mgmt.cosmosdb.models.CosmosDBNoSqlContainer
+        """
+        super().__init__(**kwargs)
+        self.source = source
+        self.destination = destination
+
+
 class NotebookWorkspace(ARMProxyResource):
     """A notebook workspace resource.
 
@@ -10251,8 +12754,8 @@ class NotebookWorkspace(ARMProxyResource):
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.notebook_server_endpoint = None
-        self.status = None
+        self.notebook_server_endpoint: Optional[str] = None
+        self.status: Optional[str] = None
 
 
 class NotebookWorkspaceConnectionInfoResult(_serialization.Model):
@@ -10280,8 +12783,8 @@ class NotebookWorkspaceConnectionInfoResult(_serialization.Model):
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.auth_token = None
-        self.notebook_server_endpoint = None
+        self.auth_token: Optional[str] = None
+        self.notebook_server_endpoint: Optional[str] = None
 
 
 class NotebookWorkspaceCreateUpdateParameters(ARMProxyResource):
@@ -10471,8 +12974,8 @@ class PartitionMetric(Metric):
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.partition_id = None
-        self.partition_key_range_id = None
+        self.partition_id: Optional[str] = None
+        self.partition_key_range_id: Optional[str] = None
 
 
 class PartitionMetricListResult(_serialization.Model):
@@ -10495,7 +12998,7 @@ class PartitionMetricListResult(_serialization.Model):
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.value = None
+        self.value: Optional[List["_models.PartitionMetric"]] = None
 
 
 class Usage(_serialization.Model):
@@ -10535,11 +13038,11 @@ class Usage(_serialization.Model):
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.unit = None
-        self.name = None
-        self.quota_period = None
-        self.limit = None
-        self.current_value = None
+        self.unit: Optional[Union[str, "_models.UnitType"]] = None
+        self.name: Optional["_models.MetricName"] = None
+        self.quota_period: Optional[str] = None
+        self.limit: Optional[int] = None
+        self.current_value: Optional[int] = None
 
 
 class PartitionUsage(Usage):
@@ -10587,8 +13090,8 @@ class PartitionUsage(Usage):
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.partition_id = None
-        self.partition_key_range_id = None
+        self.partition_id: Optional[str] = None
+        self.partition_key_range_id: Optional[str] = None
 
 
 class PartitionUsagesResult(_serialization.Model):
@@ -10612,7 +13115,7 @@ class PartitionUsagesResult(_serialization.Model):
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.value = None
+        self.value: Optional[List["_models.PartitionUsage"]] = None
 
 
 class PercentileMetric(_serialization.Model):
@@ -10656,12 +13159,12 @@ class PercentileMetric(_serialization.Model):
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.start_time = None
-        self.end_time = None
-        self.time_grain = None
-        self.unit = None
-        self.name = None
-        self.metric_values = None
+        self.start_time: Optional[datetime.datetime] = None
+        self.end_time: Optional[datetime.datetime] = None
+        self.time_grain: Optional[str] = None
+        self.unit: Optional[Union[str, "_models.UnitType"]] = None
+        self.name: Optional["_models.MetricName"] = None
+        self.metric_values: Optional[List["_models.PercentileMetricValue"]] = None
 
 
 class PercentileMetricListResult(_serialization.Model):
@@ -10684,7 +13187,7 @@ class PercentileMetricListResult(_serialization.Model):
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.value = None
+        self.value: Optional[List["_models.PercentileMetric"]] = None
 
 
 class PercentileMetricValue(MetricValue):
@@ -10755,13 +13258,13 @@ class PercentileMetricValue(MetricValue):
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.p10 = None
-        self.p25 = None
-        self.p50 = None
-        self.p75 = None
-        self.p90 = None
-        self.p95 = None
-        self.p99 = None
+        self.p10: Optional[float] = None
+        self.p25: Optional[float] = None
+        self.p50: Optional[float] = None
+        self.p75: Optional[float] = None
+        self.p90: Optional[float] = None
+        self.p95: Optional[float] = None
+        self.p99: Optional[float] = None
 
 
 class PeriodicModeBackupPolicy(BackupPolicy):
@@ -10926,6 +13429,123 @@ class PermissionAutoGenerated(_serialization.Model):
         self.not_data_actions = not_data_actions
 
 
+class PermissionAutoGenerated2(_serialization.Model):
+    """The set of data plane operations permitted through this Role Definition.
+
+    :ivar id: The id for the permission.
+    :vartype id: str
+    :ivar data_actions: An array of data actions that are allowed.
+    :vartype data_actions: list[str]
+    :ivar not_data_actions: An array of data actions that are denied.
+    :vartype not_data_actions: list[str]
+    """
+
+    _attribute_map = {
+        "id": {"key": "id", "type": "str"},
+        "data_actions": {"key": "dataActions", "type": "[str]"},
+        "not_data_actions": {"key": "notDataActions", "type": "[str]"},
+    }
+
+    def __init__(
+        self,
+        *,
+        id: Optional[str] = None,  # pylint: disable=redefined-builtin
+        data_actions: Optional[List[str]] = None,
+        not_data_actions: Optional[List[str]] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword id: The id for the permission.
+        :paramtype id: str
+        :keyword data_actions: An array of data actions that are allowed.
+        :paramtype data_actions: list[str]
+        :keyword not_data_actions: An array of data actions that are denied.
+        :paramtype not_data_actions: list[str]
+        """
+        super().__init__(**kwargs)
+        self.id = id
+        self.data_actions = data_actions
+        self.not_data_actions = not_data_actions
+
+
+class PermissionAutoGenerated3(_serialization.Model):
+    """The set of data plane operations permitted through this Role Definition.
+
+    :ivar id: The id for the permission.
+    :vartype id: str
+    :ivar data_actions: An array of data actions that are allowed.
+    :vartype data_actions: list[str]
+    :ivar not_data_actions: An array of data actions that are denied.
+    :vartype not_data_actions: list[str]
+    """
+
+    _attribute_map = {
+        "id": {"key": "id", "type": "str"},
+        "data_actions": {"key": "dataActions", "type": "[str]"},
+        "not_data_actions": {"key": "notDataActions", "type": "[str]"},
+    }
+
+    def __init__(
+        self,
+        *,
+        id: Optional[str] = None,  # pylint: disable=redefined-builtin
+        data_actions: Optional[List[str]] = None,
+        not_data_actions: Optional[List[str]] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword id: The id for the permission.
+        :paramtype id: str
+        :keyword data_actions: An array of data actions that are allowed.
+        :paramtype data_actions: list[str]
+        :keyword not_data_actions: An array of data actions that are denied.
+        :paramtype not_data_actions: list[str]
+        """
+        super().__init__(**kwargs)
+        self.id = id
+        self.data_actions = data_actions
+        self.not_data_actions = not_data_actions
+
+
+class PermissionAutoGenerated4(_serialization.Model):
+    """The set of data plane operations permitted through this Role Definition.
+
+    :ivar id: The id for the permission.
+    :vartype id: str
+    :ivar data_actions: An array of data actions that are allowed.
+    :vartype data_actions: list[str]
+    :ivar not_data_actions: An array of data actions that are denied.
+    :vartype not_data_actions: list[str]
+    """
+
+    _attribute_map = {
+        "id": {"key": "id", "type": "str"},
+        "data_actions": {"key": "dataActions", "type": "[str]"},
+        "not_data_actions": {"key": "notDataActions", "type": "[str]"},
+    }
+
+    def __init__(
+        self,
+        *,
+        id: Optional[str] = None,  # pylint: disable=redefined-builtin
+        data_actions: Optional[List[str]] = None,
+        not_data_actions: Optional[List[str]] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword id: The id for the permission.
+        :paramtype id: str
+        :keyword data_actions: An array of data actions that are allowed.
+        :paramtype data_actions: list[str]
+        :keyword not_data_actions: An array of data actions that are denied.
+        :paramtype not_data_actions: list[str]
+        """
+        super().__init__(**kwargs)
+        self.id = id
+        self.data_actions = data_actions
+        self.not_data_actions = not_data_actions
+
+
 class PhysicalPartitionId(_serialization.Model):
     """PhysicalPartitionId object.
 
@@ -10976,8 +13596,8 @@ class PhysicalPartitionStorageInfo(_serialization.Model):
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.id = None
-        self.storage_in_kb = None
+        self.id: Optional[str] = None
+        self.storage_in_kb: Optional[float] = None
 
 
 class PhysicalPartitionStorageInfoCollection(_serialization.Model):
@@ -11005,7 +13625,7 @@ class PhysicalPartitionStorageInfoCollection(_serialization.Model):
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.physical_partition_storage_info_collection = None
+        self.physical_partition_storage_info_collection: Optional[List["_models.PhysicalPartitionStorageInfo"]] = None
 
 
 class PhysicalPartitionThroughputInfoProperties(_serialization.Model):  # pylint: disable=name-too-long
@@ -11048,6 +13668,8 @@ class PhysicalPartitionThroughputInfoResource(_serialization.Model):
     :vartype id: str
     :ivar throughput: Throughput of a physical partition.
     :vartype throughput: float
+    :ivar target_throughput: Target throughput of a physical partition.
+    :vartype target_throughput: float
     """
 
     _validation = {
@@ -11057,20 +13679,29 @@ class PhysicalPartitionThroughputInfoResource(_serialization.Model):
     _attribute_map = {
         "id": {"key": "id", "type": "str"},
         "throughput": {"key": "throughput", "type": "float"},
+        "target_throughput": {"key": "targetThroughput", "type": "float"},
     }
 
     def __init__(
-        self, *, id: str, throughput: Optional[float] = None, **kwargs: Any  # pylint: disable=redefined-builtin
+        self,
+        *,
+        id: str,  # pylint: disable=redefined-builtin
+        throughput: Optional[float] = None,
+        target_throughput: Optional[float] = None,
+        **kwargs: Any
     ) -> None:
         """
         :keyword id: Id of a physical partition. Required.
         :paramtype id: str
         :keyword throughput: Throughput of a physical partition.
         :paramtype throughput: float
+        :keyword target_throughput: Target throughput of a physical partition.
+        :paramtype target_throughput: float
         """
         super().__init__(**kwargs)
         self.id = id
         self.throughput = throughput
+        self.target_throughput = target_throughput
 
 
 class PhysicalPartitionThroughputInfoResult(ARMResourceProperties):
@@ -11156,22 +13787,71 @@ class PhysicalPartitionThroughputInfoResultPropertiesResource(
     """
 
 
-class PrivateEndpointConnection(ProxyResource):
-    """A private endpoint connection.
+class ResourceAutoGenerated(_serialization.Model):
+    """Common fields that are returned in the response for all Azure Resource Manager resources.
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :ivar id: Fully qualified resource ID for the resource. E.g.
-     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".  # pylint: disable=line-too-long
+    :ivar id: Fully qualified resource ID for the resource. Ex -
+     /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
     :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
      "Microsoft.Storage/storageAccounts".
     :vartype type: str
-    :ivar system_data: Azure Resource Manager metadata containing createdBy and modifiedBy
-     information.
-    :vartype system_data: ~azure.mgmt.cosmosdb.models.SystemData
+    """
+
+    _validation = {
+        "id": {"readonly": True},
+        "name": {"readonly": True},
+        "type": {"readonly": True},
+    }
+
+    _attribute_map = {
+        "id": {"key": "id", "type": "str"},
+        "name": {"key": "name", "type": "str"},
+        "type": {"key": "type", "type": "str"},
+    }
+
+    def __init__(self, **kwargs: Any) -> None:
+        """ """
+        super().__init__(**kwargs)
+        self.id: Optional[str] = None
+        self.name: Optional[str] = None
+        self.type: Optional[str] = None
+
+
+class ProxyResourceAutoGenerated(ResourceAutoGenerated):
+    """The resource model definition for a Azure Resource Manager proxy resource. It will not have
+    tags and a location.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar id: Fully qualified resource ID for the resource. Ex -
+     /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
+    :vartype id: str
+    :ivar name: The name of the resource.
+    :vartype name: str
+    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
+     "Microsoft.Storage/storageAccounts".
+    :vartype type: str
+    """
+
+
+class PrivateEndpointConnection(ProxyResourceAutoGenerated):
+    """A private endpoint connection.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar id: Fully qualified resource ID for the resource. Ex -
+     /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
+    :vartype id: str
+    :ivar name: The name of the resource.
+    :vartype name: str
+    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
+     "Microsoft.Storage/storageAccounts".
+    :vartype type: str
     :ivar private_endpoint: Private endpoint which the connection belongs to.
     :vartype private_endpoint: ~azure.mgmt.cosmosdb.models.PrivateEndpointProperty
     :ivar private_link_service_connection_state: Connection State of the Private Endpoint
@@ -11188,14 +13868,12 @@ class PrivateEndpointConnection(ProxyResource):
         "id": {"readonly": True},
         "name": {"readonly": True},
         "type": {"readonly": True},
-        "system_data": {"readonly": True},
     }
 
     _attribute_map = {
         "id": {"key": "id", "type": "str"},
         "name": {"key": "name", "type": "str"},
         "type": {"key": "type", "type": "str"},
-        "system_data": {"key": "systemData", "type": "SystemData"},
         "private_endpoint": {"key": "properties.privateEndpoint", "type": "PrivateEndpointProperty"},
         "private_link_service_connection_state": {
             "key": "properties.privateLinkServiceConnectionState",
@@ -11313,9 +13991,9 @@ class PrivateLinkResource(ARMProxyResource):
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.group_id = None
-        self.required_members = None
-        self.required_zone_names = None
+        self.group_id: Optional[str] = None
+        self.required_members: Optional[List[str]] = None
+        self.required_zone_names: Optional[List[str]] = None
 
 
 class PrivateLinkResourceListResult(_serialization.Model):
@@ -11372,7 +14050,7 @@ class PrivateLinkServiceConnectionStateProperty(_serialization.Model):  # pylint
         super().__init__(**kwargs)
         self.status = status
         self.description = description
-        self.actions_required = None
+        self.actions_required: Optional[str] = None
 
 
 class Privilege(_serialization.Model):
@@ -11460,8 +14138,8 @@ class ProvisioningIssue(_serialization.Model):
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.name = None
-        self.properties = None
+        self.name: Optional[str] = None
+        self.properties: Optional["_models.ProvisioningIssueProperties"] = None
 
 
 class ProvisioningIssueProperties(_serialization.Model):
@@ -11507,11 +14185,11 @@ class ProvisioningIssueProperties(_serialization.Model):
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.issue_type = None
-        self.severity = None
-        self.description = None
-        self.suggested_resource_ids = None
-        self.suggested_access_rules = None
+        self.issue_type: Optional[Union[str, "_models.IssueType"]] = None
+        self.severity: Optional[Union[str, "_models.Severity"]] = None
+        self.description: Optional[str] = None
+        self.suggested_resource_ids: Optional[List[str]] = None
+        self.suggested_access_rules: Optional[List["_models.AccessRule"]] = None
 
 
 class RedistributeThroughputParameters(ARMResourceProperties):
@@ -11716,7 +14394,7 @@ class RestoreParametersBase(_serialization.Model):
 
     :ivar restore_source: The id of the restorable database account from which the restore has to
      be initiated. For example:
-     /subscriptions/{subscriptionId}/providers/Microsoft.DocumentDB/locations/{location}/restorableDatabaseAccounts/{restorableDatabaseAccountName}.  # pylint: disable=line-too-long
+     /subscriptions/{subscriptionId}/providers/Microsoft.DocumentDB/locations/{location}/restorableDatabaseAccounts/{restorableDatabaseAccountName}.
     :vartype restore_source: str
     :ivar restore_timestamp_in_utc: Time to which the account has to be restored (ISO-8601 format).
     :vartype restore_timestamp_in_utc: ~datetime.datetime
@@ -11742,7 +14420,7 @@ class RestoreParametersBase(_serialization.Model):
         """
         :keyword restore_source: The id of the restorable database account from which the restore has
          to be initiated. For example:
-         /subscriptions/{subscriptionId}/providers/Microsoft.DocumentDB/locations/{location}/restorableDatabaseAccounts/{restorableDatabaseAccountName}.  # pylint: disable=line-too-long
+         /subscriptions/{subscriptionId}/providers/Microsoft.DocumentDB/locations/{location}/restorableDatabaseAccounts/{restorableDatabaseAccountName}.
         :paramtype restore_source: str
         :keyword restore_timestamp_in_utc: Time to which the account has to be restored (ISO-8601
          format).
@@ -11762,7 +14440,7 @@ class ResourceRestoreParameters(RestoreParametersBase):
 
     :ivar restore_source: The id of the restorable database account from which the restore has to
      be initiated. For example:
-     /subscriptions/{subscriptionId}/providers/Microsoft.DocumentDB/locations/{location}/restorableDatabaseAccounts/{restorableDatabaseAccountName}.  # pylint: disable=line-too-long
+     /subscriptions/{subscriptionId}/providers/Microsoft.DocumentDB/locations/{location}/restorableDatabaseAccounts/{restorableDatabaseAccountName}.
     :vartype restore_source: str
     :ivar restore_timestamp_in_utc: Time to which the account has to be restored (ISO-8601 format).
     :vartype restore_timestamp_in_utc: ~datetime.datetime
@@ -11849,16 +14527,16 @@ class RestorableDatabaseAccountGetResult(_serialization.Model):
         :paramtype deletion_time: ~datetime.datetime
         """
         super().__init__(**kwargs)
-        self.id = None
-        self.name = None
-        self.type = None
+        self.id: Optional[str] = None
+        self.name: Optional[str] = None
+        self.type: Optional[str] = None
         self.location = location
         self.account_name = account_name
         self.creation_time = creation_time
         self.oldest_restorable_time = oldest_restorable_time
         self.deletion_time = deletion_time
-        self.api_type = None
-        self.restorable_locations = None
+        self.api_type: Optional[Union[str, "_models.ApiType"]] = None
+        self.restorable_locations: Optional[List["_models.RestorableLocationResource"]] = None
 
 
 class RestorableDatabaseAccountsListResult(_serialization.Model):
@@ -11882,7 +14560,7 @@ class RestorableDatabaseAccountsListResult(_serialization.Model):
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.value = None
+        self.value: Optional[List["_models.RestorableDatabaseAccountGetResult"]] = None
 
 
 class RestorableGremlinDatabaseGetResult(_serialization.Model):
@@ -11921,9 +14599,9 @@ class RestorableGremlinDatabaseGetResult(_serialization.Model):
         :paramtype resource: ~azure.mgmt.cosmosdb.models.RestorableGremlinDatabasePropertiesResource
         """
         super().__init__(**kwargs)
-        self.id = None
-        self.name = None
-        self.type = None
+        self.id: Optional[str] = None
+        self.name: Optional[str] = None
+        self.type: Optional[str] = None
         self.resource = resource
 
 
@@ -11973,13 +14651,13 @@ class RestorableGremlinDatabasePropertiesResource(_serialization.Model):  # pyli
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.rid = None
-        self.operation_type = None
-        self.can_undelete = None
-        self.can_undelete_reason = None
-        self.event_timestamp = None
-        self.owner_id = None
-        self.owner_resource_id = None
+        self.rid: Optional[str] = None
+        self.operation_type: Optional[Union[str, "_models.OperationType"]] = None
+        self.can_undelete: Optional[str] = None
+        self.can_undelete_reason: Optional[str] = None
+        self.event_timestamp: Optional[str] = None
+        self.owner_id: Optional[str] = None
+        self.owner_resource_id: Optional[str] = None
 
 
 class RestorableGremlinDatabasesListResult(_serialization.Model):
@@ -12002,7 +14680,7 @@ class RestorableGremlinDatabasesListResult(_serialization.Model):
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.value = None
+        self.value: Optional[List["_models.RestorableGremlinDatabaseGetResult"]] = None
 
 
 class RestorableGremlinGraphGetResult(_serialization.Model):
@@ -12041,9 +14719,9 @@ class RestorableGremlinGraphGetResult(_serialization.Model):
         :paramtype resource: ~azure.mgmt.cosmosdb.models.RestorableGremlinGraphPropertiesResource
         """
         super().__init__(**kwargs)
-        self.id = None
-        self.name = None
-        self.type = None
+        self.id: Optional[str] = None
+        self.name: Optional[str] = None
+        self.type: Optional[str] = None
         self.resource = resource
 
 
@@ -12093,13 +14771,13 @@ class RestorableGremlinGraphPropertiesResource(_serialization.Model):
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.rid = None
-        self.operation_type = None
-        self.can_undelete = None
-        self.can_undelete_reason = None
-        self.event_timestamp = None
-        self.owner_id = None
-        self.owner_resource_id = None
+        self.rid: Optional[str] = None
+        self.operation_type: Optional[Union[str, "_models.OperationType"]] = None
+        self.can_undelete: Optional[str] = None
+        self.can_undelete_reason: Optional[str] = None
+        self.event_timestamp: Optional[str] = None
+        self.owner_id: Optional[str] = None
+        self.owner_resource_id: Optional[str] = None
 
 
 class RestorableGremlinGraphsListResult(_serialization.Model):
@@ -12122,7 +14800,7 @@ class RestorableGremlinGraphsListResult(_serialization.Model):
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.value = None
+        self.value: Optional[List["_models.RestorableGremlinGraphGetResult"]] = None
 
 
 class RestorableGremlinResourcesGetResult(_serialization.Model):
@@ -12166,9 +14844,9 @@ class RestorableGremlinResourcesGetResult(_serialization.Model):
         :paramtype graph_names: list[str]
         """
         super().__init__(**kwargs)
-        self.id = None
-        self.name = None
-        self.type = None
+        self.id: Optional[str] = None
+        self.name: Optional[str] = None
+        self.type: Optional[str] = None
         self.database_name = database_name
         self.graph_names = graph_names
 
@@ -12194,7 +14872,7 @@ class RestorableGremlinResourcesListResult(_serialization.Model):
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.value = None
+        self.value: Optional[List["_models.RestorableGremlinResourcesGetResult"]] = None
 
 
 class RestorableLocationResource(_serialization.Model):
@@ -12232,10 +14910,10 @@ class RestorableLocationResource(_serialization.Model):
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.location_name = None
-        self.regional_database_account_instance_id = None
-        self.creation_time = None
-        self.deletion_time = None
+        self.location_name: Optional[str] = None
+        self.regional_database_account_instance_id: Optional[str] = None
+        self.creation_time: Optional[datetime.datetime] = None
+        self.deletion_time: Optional[datetime.datetime] = None
 
 
 class RestorableMongodbCollectionGetResult(_serialization.Model):
@@ -12274,9 +14952,9 @@ class RestorableMongodbCollectionGetResult(_serialization.Model):
         :paramtype resource: ~azure.mgmt.cosmosdb.models.RestorableMongodbCollectionPropertiesResource
         """
         super().__init__(**kwargs)
-        self.id = None
-        self.name = None
-        self.type = None
+        self.id: Optional[str] = None
+        self.name: Optional[str] = None
+        self.type: Optional[str] = None
         self.resource = resource
 
 
@@ -12326,13 +15004,13 @@ class RestorableMongodbCollectionPropertiesResource(_serialization.Model):  # py
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.rid = None
-        self.operation_type = None
-        self.can_undelete = None
-        self.can_undelete_reason = None
-        self.event_timestamp = None
-        self.owner_id = None
-        self.owner_resource_id = None
+        self.rid: Optional[str] = None
+        self.operation_type: Optional[Union[str, "_models.OperationType"]] = None
+        self.can_undelete: Optional[str] = None
+        self.can_undelete_reason: Optional[str] = None
+        self.event_timestamp: Optional[str] = None
+        self.owner_id: Optional[str] = None
+        self.owner_resource_id: Optional[str] = None
 
 
 class RestorableMongodbCollectionsListResult(_serialization.Model):
@@ -12355,7 +15033,7 @@ class RestorableMongodbCollectionsListResult(_serialization.Model):
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.value = None
+        self.value: Optional[List["_models.RestorableMongodbCollectionGetResult"]] = None
 
 
 class RestorableMongodbDatabaseGetResult(_serialization.Model):
@@ -12394,9 +15072,9 @@ class RestorableMongodbDatabaseGetResult(_serialization.Model):
         :paramtype resource: ~azure.mgmt.cosmosdb.models.RestorableMongodbDatabasePropertiesResource
         """
         super().__init__(**kwargs)
-        self.id = None
-        self.name = None
-        self.type = None
+        self.id: Optional[str] = None
+        self.name: Optional[str] = None
+        self.type: Optional[str] = None
         self.resource = resource
 
 
@@ -12446,13 +15124,13 @@ class RestorableMongodbDatabasePropertiesResource(_serialization.Model):  # pyli
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.rid = None
-        self.operation_type = None
-        self.can_undelete = None
-        self.can_undelete_reason = None
-        self.event_timestamp = None
-        self.owner_id = None
-        self.owner_resource_id = None
+        self.rid: Optional[str] = None
+        self.operation_type: Optional[Union[str, "_models.OperationType"]] = None
+        self.can_undelete: Optional[str] = None
+        self.can_undelete_reason: Optional[str] = None
+        self.event_timestamp: Optional[str] = None
+        self.owner_id: Optional[str] = None
+        self.owner_resource_id: Optional[str] = None
 
 
 class RestorableMongodbDatabasesListResult(_serialization.Model):
@@ -12475,7 +15153,7 @@ class RestorableMongodbDatabasesListResult(_serialization.Model):
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.value = None
+        self.value: Optional[List["_models.RestorableMongodbDatabaseGetResult"]] = None
 
 
 class RestorableMongodbResourcesGetResult(_serialization.Model):
@@ -12519,9 +15197,9 @@ class RestorableMongodbResourcesGetResult(_serialization.Model):
         :paramtype collection_names: list[str]
         """
         super().__init__(**kwargs)
-        self.id = None
-        self.name = None
-        self.type = None
+        self.id: Optional[str] = None
+        self.name: Optional[str] = None
+        self.type: Optional[str] = None
         self.database_name = database_name
         self.collection_names = collection_names
 
@@ -12546,7 +15224,7 @@ class RestorableMongodbResourcesListResult(_serialization.Model):
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.value = None
+        self.value: Optional[List["_models.RestorableMongodbResourcesGetResult"]] = None
 
 
 class RestorableSqlContainerGetResult(_serialization.Model):
@@ -12585,9 +15263,9 @@ class RestorableSqlContainerGetResult(_serialization.Model):
         :paramtype resource: ~azure.mgmt.cosmosdb.models.RestorableSqlContainerPropertiesResource
         """
         super().__init__(**kwargs)
-        self.id = None
-        self.name = None
-        self.type = None
+        self.id: Optional[str] = None
+        self.name: Optional[str] = None
+        self.type: Optional[str] = None
         self.resource = resource
 
 
@@ -12647,13 +15325,13 @@ class RestorableSqlContainerPropertiesResource(_serialization.Model):
          ~azure.mgmt.cosmosdb.models.RestorableSqlContainerPropertiesResourceContainer
         """
         super().__init__(**kwargs)
-        self.rid = None
-        self.operation_type = None
-        self.can_undelete = None
-        self.can_undelete_reason = None
-        self.event_timestamp = None
-        self.owner_id = None
-        self.owner_resource_id = None
+        self.rid: Optional[str] = None
+        self.operation_type: Optional[Union[str, "_models.OperationType"]] = None
+        self.can_undelete: Optional[str] = None
+        self.can_undelete_reason: Optional[str] = None
+        self.event_timestamp: Optional[str] = None
+        self.owner_id: Optional[str] = None
+        self.owner_resource_id: Optional[str] = None
         self.container = container
 
 
@@ -12689,10 +15367,14 @@ class SqlContainerResource(_serialization.Model):
     :ivar materialized_view_definition: The configuration for defining Materialized Views. This
      must be specified only for creating a Materialized View container.
     :vartype materialized_view_definition: ~azure.mgmt.cosmosdb.models.MaterializedViewDefinition
+    :ivar materialized_views: Materialized Views defined on the container.
+    :vartype materialized_views: list[~azure.mgmt.cosmosdb.models.MaterializedViewDetails]
     :ivar computed_properties: List of computed properties.
     :vartype computed_properties: list[~azure.mgmt.cosmosdb.models.ComputedProperty]
     :ivar vector_embedding_policy: The vector embedding policy for the container.
     :vartype vector_embedding_policy: ~azure.mgmt.cosmosdb.models.VectorEmbeddingPolicy
+    :ivar full_text_policy: The FullText policy for the container.
+    :vartype full_text_policy: ~azure.mgmt.cosmosdb.models.FullTextPolicy
     """
 
     _validation = {
@@ -12711,8 +15393,10 @@ class SqlContainerResource(_serialization.Model):
         "restore_parameters": {"key": "restoreParameters", "type": "ResourceRestoreParameters"},
         "create_mode": {"key": "createMode", "type": "str"},
         "materialized_view_definition": {"key": "materializedViewDefinition", "type": "MaterializedViewDefinition"},
+        "materialized_views": {"key": "materializedViews", "type": "[MaterializedViewDetails]"},
         "computed_properties": {"key": "computedProperties", "type": "[ComputedProperty]"},
         "vector_embedding_policy": {"key": "vectorEmbeddingPolicy", "type": "VectorEmbeddingPolicy"},
+        "full_text_policy": {"key": "fullTextPolicy", "type": "FullTextPolicy"},
     }
 
     def __init__(
@@ -12729,8 +15413,10 @@ class SqlContainerResource(_serialization.Model):
         restore_parameters: Optional["_models.ResourceRestoreParameters"] = None,
         create_mode: Union[str, "_models.CreateMode"] = "Default",
         materialized_view_definition: Optional["_models.MaterializedViewDefinition"] = None,
+        materialized_views: Optional[List["_models.MaterializedViewDetails"]] = None,
         computed_properties: Optional[List["_models.ComputedProperty"]] = None,
         vector_embedding_policy: Optional["_models.VectorEmbeddingPolicy"] = None,
+        full_text_policy: Optional["_models.FullTextPolicy"] = None,
         **kwargs: Any
     ) -> None:
         """
@@ -12761,10 +15447,14 @@ class SqlContainerResource(_serialization.Model):
         :keyword materialized_view_definition: The configuration for defining Materialized Views. This
          must be specified only for creating a Materialized View container.
         :paramtype materialized_view_definition: ~azure.mgmt.cosmosdb.models.MaterializedViewDefinition
+        :keyword materialized_views: Materialized Views defined on the container.
+        :paramtype materialized_views: list[~azure.mgmt.cosmosdb.models.MaterializedViewDetails]
         :keyword computed_properties: List of computed properties.
         :paramtype computed_properties: list[~azure.mgmt.cosmosdb.models.ComputedProperty]
         :keyword vector_embedding_policy: The vector embedding policy for the container.
         :paramtype vector_embedding_policy: ~azure.mgmt.cosmosdb.models.VectorEmbeddingPolicy
+        :keyword full_text_policy: The FullText policy for the container.
+        :paramtype full_text_policy: ~azure.mgmt.cosmosdb.models.FullTextPolicy
         """
         super().__init__(**kwargs)
         self.id = id
@@ -12778,8 +15468,10 @@ class SqlContainerResource(_serialization.Model):
         self.restore_parameters = restore_parameters
         self.create_mode = create_mode
         self.materialized_view_definition = materialized_view_definition
+        self.materialized_views = materialized_views
         self.computed_properties = computed_properties
         self.vector_embedding_policy = vector_embedding_policy
+        self.full_text_policy = full_text_policy
 
 
 class RestorableSqlContainerPropertiesResourceContainer(
@@ -12825,10 +15517,14 @@ class RestorableSqlContainerPropertiesResourceContainer(
     :ivar materialized_view_definition: The configuration for defining Materialized Views. This
      must be specified only for creating a Materialized View container.
     :vartype materialized_view_definition: ~azure.mgmt.cosmosdb.models.MaterializedViewDefinition
+    :ivar materialized_views: Materialized Views defined on the container.
+    :vartype materialized_views: list[~azure.mgmt.cosmosdb.models.MaterializedViewDetails]
     :ivar computed_properties: List of computed properties.
     :vartype computed_properties: list[~azure.mgmt.cosmosdb.models.ComputedProperty]
     :ivar vector_embedding_policy: The vector embedding policy for the container.
     :vartype vector_embedding_policy: ~azure.mgmt.cosmosdb.models.VectorEmbeddingPolicy
+    :ivar full_text_policy: The FullText policy for the container.
+    :vartype full_text_policy: ~azure.mgmt.cosmosdb.models.FullTextPolicy
     :ivar self_property: A system generated property that specifies the addressable path of the
      container resource.
     :vartype self_property: str
@@ -12857,8 +15553,10 @@ class RestorableSqlContainerPropertiesResourceContainer(
         "restore_parameters": {"key": "restoreParameters", "type": "ResourceRestoreParameters"},
         "create_mode": {"key": "createMode", "type": "str"},
         "materialized_view_definition": {"key": "materializedViewDefinition", "type": "MaterializedViewDefinition"},
+        "materialized_views": {"key": "materializedViews", "type": "[MaterializedViewDetails]"},
         "computed_properties": {"key": "computedProperties", "type": "[ComputedProperty]"},
         "vector_embedding_policy": {"key": "vectorEmbeddingPolicy", "type": "VectorEmbeddingPolicy"},
+        "full_text_policy": {"key": "fullTextPolicy", "type": "FullTextPolicy"},
         "self_property": {"key": "_self", "type": "str"},
     }
 
@@ -12876,8 +15574,10 @@ class RestorableSqlContainerPropertiesResourceContainer(
         restore_parameters: Optional["_models.ResourceRestoreParameters"] = None,
         create_mode: Union[str, "_models.CreateMode"] = "Default",
         materialized_view_definition: Optional["_models.MaterializedViewDefinition"] = None,
+        materialized_views: Optional[List["_models.MaterializedViewDetails"]] = None,
         computed_properties: Optional[List["_models.ComputedProperty"]] = None,
         vector_embedding_policy: Optional["_models.VectorEmbeddingPolicy"] = None,
+        full_text_policy: Optional["_models.FullTextPolicy"] = None,
         **kwargs: Any
     ) -> None:
         """
@@ -12908,10 +15608,14 @@ class RestorableSqlContainerPropertiesResourceContainer(
         :keyword materialized_view_definition: The configuration for defining Materialized Views. This
          must be specified only for creating a Materialized View container.
         :paramtype materialized_view_definition: ~azure.mgmt.cosmosdb.models.MaterializedViewDefinition
+        :keyword materialized_views: Materialized Views defined on the container.
+        :paramtype materialized_views: list[~azure.mgmt.cosmosdb.models.MaterializedViewDetails]
         :keyword computed_properties: List of computed properties.
         :paramtype computed_properties: list[~azure.mgmt.cosmosdb.models.ComputedProperty]
         :keyword vector_embedding_policy: The vector embedding policy for the container.
         :paramtype vector_embedding_policy: ~azure.mgmt.cosmosdb.models.VectorEmbeddingPolicy
+        :keyword full_text_policy: The FullText policy for the container.
+        :paramtype full_text_policy: ~azure.mgmt.cosmosdb.models.FullTextPolicy
         """
         super().__init__(
             id=id,
@@ -12925,14 +15629,16 @@ class RestorableSqlContainerPropertiesResourceContainer(
             restore_parameters=restore_parameters,
             create_mode=create_mode,
             materialized_view_definition=materialized_view_definition,
+            materialized_views=materialized_views,
             computed_properties=computed_properties,
             vector_embedding_policy=vector_embedding_policy,
+            full_text_policy=full_text_policy,
             **kwargs
         )
-        self.rid = None
-        self.ts = None
-        self.etag = None
-        self.self_property = None
+        self.rid: Optional[str] = None
+        self.ts: Optional[float] = None
+        self.etag: Optional[str] = None
+        self.self_property: Optional[str] = None
         self.id = id
         self.indexing_policy = indexing_policy
         self.partition_key = partition_key
@@ -12944,8 +15650,10 @@ class RestorableSqlContainerPropertiesResourceContainer(
         self.restore_parameters = restore_parameters
         self.create_mode = create_mode
         self.materialized_view_definition = materialized_view_definition
+        self.materialized_views = materialized_views
         self.computed_properties = computed_properties
         self.vector_embedding_policy = vector_embedding_policy
+        self.full_text_policy = full_text_policy
 
 
 class RestorableSqlContainersListResult(_serialization.Model):
@@ -12968,7 +15676,7 @@ class RestorableSqlContainersListResult(_serialization.Model):
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.value = None
+        self.value: Optional[List["_models.RestorableSqlContainerGetResult"]] = None
 
 
 class RestorableSqlDatabaseGetResult(_serialization.Model):
@@ -13007,9 +15715,9 @@ class RestorableSqlDatabaseGetResult(_serialization.Model):
         :paramtype resource: ~azure.mgmt.cosmosdb.models.RestorableSqlDatabasePropertiesResource
         """
         super().__init__(**kwargs)
-        self.id = None
-        self.name = None
-        self.type = None
+        self.id: Optional[str] = None
+        self.name: Optional[str] = None
+        self.type: Optional[str] = None
         self.resource = resource
 
 
@@ -13068,13 +15776,13 @@ class RestorableSqlDatabasePropertiesResource(_serialization.Model):
          ~azure.mgmt.cosmosdb.models.RestorableSqlDatabasePropertiesResourceDatabase
         """
         super().__init__(**kwargs)
-        self.rid = None
-        self.operation_type = None
-        self.can_undelete = None
-        self.can_undelete_reason = None
-        self.event_timestamp = None
-        self.owner_id = None
-        self.owner_resource_id = None
+        self.rid: Optional[str] = None
+        self.operation_type: Optional[Union[str, "_models.OperationType"]] = None
+        self.can_undelete: Optional[str] = None
+        self.can_undelete_reason: Optional[str] = None
+        self.event_timestamp: Optional[str] = None
+        self.owner_id: Optional[str] = None
+        self.owner_resource_id: Optional[str] = None
         self.database = database
 
 
@@ -13199,12 +15907,12 @@ class RestorableSqlDatabasePropertiesResourceDatabase(
         :paramtype create_mode: str or ~azure.mgmt.cosmosdb.models.CreateMode
         """
         super().__init__(id=id, restore_parameters=restore_parameters, create_mode=create_mode, **kwargs)
-        self.rid = None
-        self.ts = None
-        self.etag = None
-        self.colls = None
-        self.users = None
-        self.self_property = None
+        self.rid: Optional[str] = None
+        self.ts: Optional[float] = None
+        self.etag: Optional[str] = None
+        self.colls: Optional[str] = None
+        self.users: Optional[str] = None
+        self.self_property: Optional[str] = None
         self.id = id
         self.restore_parameters = restore_parameters
         self.create_mode = create_mode
@@ -13230,7 +15938,7 @@ class RestorableSqlDatabasesListResult(_serialization.Model):
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.value = None
+        self.value: Optional[List["_models.RestorableSqlDatabaseGetResult"]] = None
 
 
 class RestorableSqlResourcesGetResult(_serialization.Model):
@@ -13274,9 +15982,9 @@ class RestorableSqlResourcesGetResult(_serialization.Model):
         :paramtype collection_names: list[str]
         """
         super().__init__(**kwargs)
-        self.id = None
-        self.name = None
-        self.type = None
+        self.id: Optional[str] = None
+        self.name: Optional[str] = None
+        self.type: Optional[str] = None
         self.database_name = database_name
         self.collection_names = collection_names
 
@@ -13301,7 +16009,7 @@ class RestorableSqlResourcesListResult(_serialization.Model):
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.value = None
+        self.value: Optional[List["_models.RestorableSqlResourcesGetResult"]] = None
 
 
 class RestorableTableGetResult(_serialization.Model):
@@ -13340,9 +16048,9 @@ class RestorableTableGetResult(_serialization.Model):
         :paramtype resource: ~azure.mgmt.cosmosdb.models.RestorableTablePropertiesResource
         """
         super().__init__(**kwargs)
-        self.id = None
-        self.name = None
-        self.type = None
+        self.id: Optional[str] = None
+        self.name: Optional[str] = None
+        self.type: Optional[str] = None
         self.resource = resource
 
 
@@ -13392,13 +16100,13 @@ class RestorableTablePropertiesResource(_serialization.Model):
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.rid = None
-        self.operation_type = None
-        self.can_undelete = None
-        self.can_undelete_reason = None
-        self.event_timestamp = None
-        self.owner_id = None
-        self.owner_resource_id = None
+        self.rid: Optional[str] = None
+        self.operation_type: Optional[Union[str, "_models.OperationType"]] = None
+        self.can_undelete: Optional[str] = None
+        self.can_undelete_reason: Optional[str] = None
+        self.event_timestamp: Optional[str] = None
+        self.owner_id: Optional[str] = None
+        self.owner_resource_id: Optional[str] = None
 
 
 class RestorableTableResourcesGetResult(_serialization.Model):
@@ -13429,9 +16137,9 @@ class RestorableTableResourcesGetResult(_serialization.Model):
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.id = None
-        self.name = None
-        self.type = None
+        self.id: Optional[str] = None
+        self.name: Optional[str] = None
+        self.type: Optional[str] = None
 
 
 class RestorableTableResourcesListResult(_serialization.Model):
@@ -13454,7 +16162,7 @@ class RestorableTableResourcesListResult(_serialization.Model):
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.value = None
+        self.value: Optional[List["_models.RestorableTableResourcesGetResult"]] = None
 
 
 class RestorableTablesListResult(_serialization.Model):
@@ -13477,7 +16185,7 @@ class RestorableTablesListResult(_serialization.Model):
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.value = None
+        self.value: Optional[List["_models.RestorableTableGetResult"]] = None
 
 
 class RestoreParameters(RestoreParametersBase):
@@ -13485,7 +16193,7 @@ class RestoreParameters(RestoreParametersBase):
 
     :ivar restore_source: The id of the restorable database account from which the restore has to
      be initiated. For example:
-     /subscriptions/{subscriptionId}/providers/Microsoft.DocumentDB/locations/{location}/restorableDatabaseAccounts/{restorableDatabaseAccountName}.  # pylint: disable=line-too-long
+     /subscriptions/{subscriptionId}/providers/Microsoft.DocumentDB/locations/{location}/restorableDatabaseAccounts/{restorableDatabaseAccountName}.
     :vartype restore_source: str
     :ivar restore_timestamp_in_utc: Time to which the account has to be restored (ISO-8601 format).
     :vartype restore_timestamp_in_utc: ~datetime.datetime
@@ -13535,7 +16243,7 @@ class RestoreParameters(RestoreParametersBase):
         """
         :keyword restore_source: The id of the restorable database account from which the restore has
          to be initiated. For example:
-         /subscriptions/{subscriptionId}/providers/Microsoft.DocumentDB/locations/{location}/restorableDatabaseAccounts/{restorableDatabaseAccountName}.  # pylint: disable=line-too-long
+         /subscriptions/{subscriptionId}/providers/Microsoft.DocumentDB/locations/{location}/restorableDatabaseAccounts/{restorableDatabaseAccountName}.
         :paramtype restore_source: str
         :keyword restore_timestamp_in_utc: Time to which the account has to be restored (ISO-8601
          format).
@@ -13793,7 +16501,7 @@ class ServiceResourceListResult(_serialization.Model):
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.value = None
+        self.value: Optional[List["_models.ServiceResource"]] = None
 
 
 class SpatialSpec(_serialization.Model):
@@ -13964,10 +16672,14 @@ class SqlContainerGetPropertiesResource(SqlContainerResource, ExtendedResourcePr
     :ivar materialized_view_definition: The configuration for defining Materialized Views. This
      must be specified only for creating a Materialized View container.
     :vartype materialized_view_definition: ~azure.mgmt.cosmosdb.models.MaterializedViewDefinition
+    :ivar materialized_views: Materialized Views defined on the container.
+    :vartype materialized_views: list[~azure.mgmt.cosmosdb.models.MaterializedViewDetails]
     :ivar computed_properties: List of computed properties.
     :vartype computed_properties: list[~azure.mgmt.cosmosdb.models.ComputedProperty]
     :ivar vector_embedding_policy: The vector embedding policy for the container.
     :vartype vector_embedding_policy: ~azure.mgmt.cosmosdb.models.VectorEmbeddingPolicy
+    :ivar full_text_policy: The FullText policy for the container.
+    :vartype full_text_policy: ~azure.mgmt.cosmosdb.models.FullTextPolicy
     """
 
     _validation = {
@@ -13992,8 +16704,10 @@ class SqlContainerGetPropertiesResource(SqlContainerResource, ExtendedResourcePr
         "restore_parameters": {"key": "restoreParameters", "type": "ResourceRestoreParameters"},
         "create_mode": {"key": "createMode", "type": "str"},
         "materialized_view_definition": {"key": "materializedViewDefinition", "type": "MaterializedViewDefinition"},
+        "materialized_views": {"key": "materializedViews", "type": "[MaterializedViewDetails]"},
         "computed_properties": {"key": "computedProperties", "type": "[ComputedProperty]"},
         "vector_embedding_policy": {"key": "vectorEmbeddingPolicy", "type": "VectorEmbeddingPolicy"},
+        "full_text_policy": {"key": "fullTextPolicy", "type": "FullTextPolicy"},
     }
 
     def __init__(
@@ -14010,8 +16724,10 @@ class SqlContainerGetPropertiesResource(SqlContainerResource, ExtendedResourcePr
         restore_parameters: Optional["_models.ResourceRestoreParameters"] = None,
         create_mode: Union[str, "_models.CreateMode"] = "Default",
         materialized_view_definition: Optional["_models.MaterializedViewDefinition"] = None,
+        materialized_views: Optional[List["_models.MaterializedViewDetails"]] = None,
         computed_properties: Optional[List["_models.ComputedProperty"]] = None,
         vector_embedding_policy: Optional["_models.VectorEmbeddingPolicy"] = None,
+        full_text_policy: Optional["_models.FullTextPolicy"] = None,
         **kwargs: Any
     ) -> None:
         """
@@ -14042,10 +16758,14 @@ class SqlContainerGetPropertiesResource(SqlContainerResource, ExtendedResourcePr
         :keyword materialized_view_definition: The configuration for defining Materialized Views. This
          must be specified only for creating a Materialized View container.
         :paramtype materialized_view_definition: ~azure.mgmt.cosmosdb.models.MaterializedViewDefinition
+        :keyword materialized_views: Materialized Views defined on the container.
+        :paramtype materialized_views: list[~azure.mgmt.cosmosdb.models.MaterializedViewDetails]
         :keyword computed_properties: List of computed properties.
         :paramtype computed_properties: list[~azure.mgmt.cosmosdb.models.ComputedProperty]
         :keyword vector_embedding_policy: The vector embedding policy for the container.
         :paramtype vector_embedding_policy: ~azure.mgmt.cosmosdb.models.VectorEmbeddingPolicy
+        :keyword full_text_policy: The FullText policy for the container.
+        :paramtype full_text_policy: ~azure.mgmt.cosmosdb.models.FullTextPolicy
         """
         super().__init__(
             id=id,
@@ -14059,13 +16779,15 @@ class SqlContainerGetPropertiesResource(SqlContainerResource, ExtendedResourcePr
             restore_parameters=restore_parameters,
             create_mode=create_mode,
             materialized_view_definition=materialized_view_definition,
+            materialized_views=materialized_views,
             computed_properties=computed_properties,
             vector_embedding_policy=vector_embedding_policy,
+            full_text_policy=full_text_policy,
             **kwargs
         )
-        self.rid = None
-        self.ts = None
-        self.etag = None
+        self.rid: Optional[str] = None
+        self.ts: Optional[float] = None
+        self.etag: Optional[str] = None
         self.id = id
         self.indexing_policy = indexing_policy
         self.partition_key = partition_key
@@ -14077,8 +16799,10 @@ class SqlContainerGetPropertiesResource(SqlContainerResource, ExtendedResourcePr
         self.restore_parameters = restore_parameters
         self.create_mode = create_mode
         self.materialized_view_definition = materialized_view_definition
+        self.materialized_views = materialized_views
         self.computed_properties = computed_properties
         self.vector_embedding_policy = vector_embedding_policy
+        self.full_text_policy = full_text_policy
 
 
 class SqlContainerGetResults(ARMResourceProperties):
@@ -14178,7 +16902,7 @@ class SqlContainerListResult(_serialization.Model):
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.value = None
+        self.value: Optional[List["_models.SqlContainerGetResults"]] = None
 
 
 class SqlDatabaseCreateUpdateParameters(ARMResourceProperties):
@@ -14347,9 +17071,9 @@ class SqlDatabaseGetPropertiesResource(SqlDatabaseResource, ExtendedResourceProp
         :paramtype users: str
         """
         super().__init__(id=id, restore_parameters=restore_parameters, create_mode=create_mode, **kwargs)
-        self.rid = None
-        self.ts = None
-        self.etag = None
+        self.rid: Optional[str] = None
+        self.ts: Optional[float] = None
+        self.etag: Optional[str] = None
         self.colls = colls
         self.users = users
         self.id = id
@@ -14454,7 +17178,7 @@ class SqlDatabaseListResult(_serialization.Model):
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.value = None
+        self.value: Optional[List["_models.SqlDatabaseGetResults"]] = None
 
 
 class SqlDedicatedGatewayRegionalServiceResource(RegionalServiceResource):  # pylint: disable=name-too-long
@@ -14490,7 +17214,7 @@ class SqlDedicatedGatewayRegionalServiceResource(RegionalServiceResource):  # py
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.sql_dedicated_gateway_endpoint = None
+        self.sql_dedicated_gateway_endpoint: Optional[str] = None
 
 
 class SqlDedicatedGatewayServiceResource(_serialization.Model):
@@ -14657,7 +17381,7 @@ class SqlDedicatedGatewayServiceResourceProperties(ServiceResourceProperties):  
         self.service_type: str = "SqlDedicatedGateway"
         self.sql_dedicated_gateway_endpoint = sql_dedicated_gateway_endpoint
         self.dedicated_gateway_type = dedicated_gateway_type
-        self.locations = None
+        self.locations: Optional[List["_models.SqlDedicatedGatewayRegionalServiceResource"]] = None
 
 
 class SqlRoleAssignmentCreateUpdateParameters(_serialization.Model):
@@ -14787,7 +17511,7 @@ class SqlRoleAssignmentListResult(_serialization.Model):
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.value = None
+        self.value: Optional[List["_models.SqlRoleAssignmentGetResults"]] = None
 
 
 class SqlRoleDefinitionCreateUpdateParameters(_serialization.Model):
@@ -14943,7 +17667,7 @@ class SqlRoleDefinitionListResult(_serialization.Model):
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.value = None
+        self.value: Optional[List["_models.SqlRoleDefinitionGetResults"]] = None
 
 
 class SqlStoredProcedureCreateUpdateParameters(ARMResourceProperties):
@@ -15107,9 +17831,9 @@ class SqlStoredProcedureGetPropertiesResource(SqlStoredProcedureResource, Extend
         :paramtype body: str
         """
         super().__init__(id=id, body=body, **kwargs)
-        self.rid = None
-        self.ts = None
-        self.etag = None
+        self.rid: Optional[str] = None
+        self.ts: Optional[float] = None
+        self.etag: Optional[str] = None
         self.id = id
         self.body = body
 
@@ -15204,7 +17928,7 @@ class SqlStoredProcedureListResult(_serialization.Model):
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.value = None
+        self.value: Optional[List["_models.SqlStoredProcedureGetResults"]] = None
 
 
 class SqlTriggerCreateUpdateParameters(ARMResourceProperties):
@@ -15406,9 +18130,9 @@ class SqlTriggerGetPropertiesResource(SqlTriggerResource, ExtendedResourceProper
         :paramtype trigger_operation: str or ~azure.mgmt.cosmosdb.models.TriggerOperation
         """
         super().__init__(id=id, body=body, trigger_type=trigger_type, trigger_operation=trigger_operation, **kwargs)
-        self.rid = None
-        self.ts = None
-        self.etag = None
+        self.rid: Optional[str] = None
+        self.ts: Optional[float] = None
+        self.etag: Optional[str] = None
         self.id = id
         self.body = body
         self.trigger_type = trigger_type
@@ -15505,7 +18229,7 @@ class SqlTriggerListResult(_serialization.Model):
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.value = None
+        self.value: Optional[List["_models.SqlTriggerGetResults"]] = None
 
 
 class SqlUserDefinedFunctionCreateUpdateParameters(ARMResourceProperties):  # pylint: disable=name-too-long
@@ -15671,9 +18395,9 @@ class SqlUserDefinedFunctionGetPropertiesResource(
         :paramtype body: str
         """
         super().__init__(id=id, body=body, **kwargs)
-        self.rid = None
-        self.ts = None
-        self.etag = None
+        self.rid: Optional[str] = None
+        self.ts: Optional[float] = None
+        self.etag: Optional[str] = None
         self.id = id
         self.body = body
 
@@ -15768,7 +18492,7 @@ class SqlUserDefinedFunctionListResult(_serialization.Model):
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.value = None
+        self.value: Optional[List["_models.SqlUserDefinedFunctionGetResults"]] = None
 
 
 class SystemData(_serialization.Model):
@@ -16032,9 +18756,9 @@ class TableGetPropertiesResource(TableResource, ExtendedResourceProperties):
         :paramtype create_mode: str or ~azure.mgmt.cosmosdb.models.CreateMode
         """
         super().__init__(id=id, restore_parameters=restore_parameters, create_mode=create_mode, **kwargs)
-        self.rid = None
-        self.ts = None
-        self.etag = None
+        self.rid: Optional[str] = None
+        self.ts: Optional[float] = None
+        self.etag: Optional[str] = None
         self.id = id
         self.restore_parameters = restore_parameters
         self.create_mode = create_mode
@@ -16137,7 +18861,7 @@ class TableListResult(_serialization.Model):
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.value = None
+        self.value: Optional[List["_models.TableGetResults"]] = None
 
 
 class TableRoleAssignmentListResult(_serialization.Model):
@@ -16164,8 +18888,8 @@ class TableRoleAssignmentListResult(_serialization.Model):
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.value = None
-        self.next_link = None
+        self.value: Optional[List["_models.TableRoleAssignmentResource"]] = None
+        self.next_link: Optional[str] = None
 
 
 class TableRoleAssignmentResource(ProxyResource):
@@ -16174,7 +18898,7 @@ class TableRoleAssignmentResource(ProxyResource):
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :ivar id: Fully qualified resource ID for the resource. E.g.
-     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".  # pylint: disable=line-too-long
+     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
@@ -16239,7 +18963,7 @@ class TableRoleAssignmentResource(ProxyResource):
         self.role_definition_id = role_definition_id
         self.scope = scope
         self.principal_id = principal_id
-        self.provisioning_state = None
+        self.provisioning_state: Optional[str] = None
 
 
 class TableRoleDefinitionListResult(_serialization.Model):
@@ -16266,8 +18990,8 @@ class TableRoleDefinitionListResult(_serialization.Model):
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.value = None
-        self.next_link = None
+        self.value: Optional[List["_models.TableRoleDefinitionResource"]] = None
+        self.next_link: Optional[str] = None
 
 
 class TableRoleDefinitionResource(ProxyResource):
@@ -16276,7 +19000,7 @@ class TableRoleDefinitionResource(ProxyResource):
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :ivar id: Fully qualified resource ID for the resource. E.g.
-     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".  # pylint: disable=line-too-long
+     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
@@ -16483,7 +19207,7 @@ class ThroughputPoolAccountResource(ProxyResource):
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :ivar id: Fully qualified resource ID for the resource. E.g.
-     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".  # pylint: disable=line-too-long
+     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
@@ -16495,7 +19219,7 @@ class ThroughputPoolAccountResource(ProxyResource):
     :vartype system_data: ~azure.mgmt.cosmosdb.models.SystemData
     :ivar provisioning_state: A provisioning state of the ThroughputPool Account. Known values are:
      "Uninitialized", "Initializing", "InternallyReady", "Online", "Deleting", "Succeeded",
-     "Failed", "Canceled", and "Updating".
+     "Failed", "Canceled", "Updating", and "Creating".
     :vartype provisioning_state: str or ~azure.mgmt.cosmosdb.models.Status
     :ivar account_resource_identifier: The resource identifier of global database account in the
      throughputPool.
@@ -16536,7 +19260,7 @@ class ThroughputPoolAccountResource(ProxyResource):
         """
         :keyword provisioning_state: A provisioning state of the ThroughputPool Account. Known values
          are: "Uninitialized", "Initializing", "InternallyReady", "Online", "Deleting", "Succeeded",
-         "Failed", "Canceled", and "Updating".
+         "Failed", "Canceled", "Updating", and "Creating".
         :paramtype provisioning_state: str or ~azure.mgmt.cosmosdb.models.Status
         :keyword account_resource_identifier: The resource identifier of global database account in the
          throughputPool.
@@ -16548,7 +19272,7 @@ class ThroughputPoolAccountResource(ProxyResource):
         self.provisioning_state = provisioning_state
         self.account_resource_identifier = account_resource_identifier
         self.account_location = account_location
-        self.account_instance_id = None
+        self.account_instance_id: Optional[str] = None
 
 
 class ThroughputPoolAccountsListResult(_serialization.Model):
@@ -16575,62 +19299,8 @@ class ThroughputPoolAccountsListResult(_serialization.Model):
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.value = None
-        self.next_link = None
-
-
-class TrackedResource(Resource):
-    """The resource model definition for an Azure Resource Manager tracked top level resource which
-    has 'tags' and a 'location'.
-
-    Variables are only populated by the server, and will be ignored when sending a request.
-
-    All required parameters must be populated in order to send to server.
-
-    :ivar id: Fully qualified resource ID for the resource. E.g.
-     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".  # pylint: disable=line-too-long
-    :vartype id: str
-    :ivar name: The name of the resource.
-    :vartype name: str
-    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
-     "Microsoft.Storage/storageAccounts".
-    :vartype type: str
-    :ivar system_data: Azure Resource Manager metadata containing createdBy and modifiedBy
-     information.
-    :vartype system_data: ~azure.mgmt.cosmosdb.models.SystemData
-    :ivar tags: Resource tags.
-    :vartype tags: dict[str, str]
-    :ivar location: The geo-location where the resource lives. Required.
-    :vartype location: str
-    """
-
-    _validation = {
-        "id": {"readonly": True},
-        "name": {"readonly": True},
-        "type": {"readonly": True},
-        "system_data": {"readonly": True},
-        "location": {"required": True},
-    }
-
-    _attribute_map = {
-        "id": {"key": "id", "type": "str"},
-        "name": {"key": "name", "type": "str"},
-        "type": {"key": "type", "type": "str"},
-        "system_data": {"key": "systemData", "type": "SystemData"},
-        "tags": {"key": "tags", "type": "{str}"},
-        "location": {"key": "location", "type": "str"},
-    }
-
-    def __init__(self, *, location: str, tags: Optional[Dict[str, str]] = None, **kwargs: Any) -> None:
-        """
-        :keyword tags: Resource tags.
-        :paramtype tags: dict[str, str]
-        :keyword location: The geo-location where the resource lives. Required.
-        :paramtype location: str
-        """
-        super().__init__(**kwargs)
-        self.tags = tags
-        self.location = location
+        self.value: Optional[List["_models.ThroughputPoolAccountResource"]] = None
+        self.next_link: Optional[str] = None
 
 
 class ThroughputPoolResource(TrackedResource):
@@ -16641,7 +19311,7 @@ class ThroughputPoolResource(TrackedResource):
     All required parameters must be populated in order to send to server.
 
     :ivar id: Fully qualified resource ID for the resource. E.g.
-     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".  # pylint: disable=line-too-long
+     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
@@ -16657,7 +19327,7 @@ class ThroughputPoolResource(TrackedResource):
     :vartype location: str
     :ivar provisioning_state: A provisioning state of the ThroughputPool. Known values are:
      "Uninitialized", "Initializing", "InternallyReady", "Online", "Deleting", "Succeeded",
-     "Failed", "Canceled", and "Updating".
+     "Failed", "Canceled", "Updating", and "Creating".
     :vartype provisioning_state: str or ~azure.mgmt.cosmosdb.models.Status
     :ivar max_throughput: Value for throughput to be shared among CosmosDB resources in the pool.
     :vartype max_throughput: int
@@ -16698,7 +19368,7 @@ class ThroughputPoolResource(TrackedResource):
         :paramtype location: str
         :keyword provisioning_state: A provisioning state of the ThroughputPool. Known values are:
          "Uninitialized", "Initializing", "InternallyReady", "Online", "Deleting", "Succeeded",
-         "Failed", "Canceled", and "Updating".
+         "Failed", "Canceled", "Updating", and "Creating".
         :paramtype provisioning_state: str or ~azure.mgmt.cosmosdb.models.Status
         :keyword max_throughput: Value for throughput to be shared among CosmosDB resources in the
          pool.
@@ -16733,8 +19403,8 @@ class ThroughputPoolsListResult(_serialization.Model):
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.value = None
-        self.next_link = None
+        self.value: Optional[List["_models.ThroughputPoolResource"]] = None
+        self.next_link: Optional[str] = None
 
 
 class ThroughputPoolUpdate(_serialization.Model):
@@ -16742,7 +19412,7 @@ class ThroughputPoolUpdate(_serialization.Model):
 
     :ivar provisioning_state: A provisioning state of the ThroughputPool. Known values are:
      "Uninitialized", "Initializing", "InternallyReady", "Online", "Deleting", "Succeeded",
-     "Failed", "Canceled", and "Updating".
+     "Failed", "Canceled", "Updating", and "Creating".
     :vartype provisioning_state: str or ~azure.mgmt.cosmosdb.models.Status
     :ivar max_throughput: Value for throughput to be shared among CosmosDB resources in the pool.
     :vartype max_throughput: int
@@ -16763,7 +19433,7 @@ class ThroughputPoolUpdate(_serialization.Model):
         """
         :keyword provisioning_state: A provisioning state of the ThroughputPool. Known values are:
          "Uninitialized", "Initializing", "InternallyReady", "Online", "Deleting", "Succeeded",
-         "Failed", "Canceled", and "Updating".
+         "Failed", "Canceled", "Updating", and "Creating".
         :paramtype provisioning_state: str or ~azure.mgmt.cosmosdb.models.Status
         :keyword max_throughput: Value for throughput to be shared among CosmosDB resources in the
          pool.
@@ -16840,10 +19510,10 @@ class ThroughputSettingsResource(_serialization.Model):
         super().__init__(**kwargs)
         self.throughput = throughput
         self.autoscale_settings = autoscale_settings
-        self.minimum_throughput = None
-        self.offer_replace_pending = None
-        self.instant_maximum_throughput = None
-        self.soft_allowed_maximum_throughput = None
+        self.minimum_throughput: Optional[str] = None
+        self.offer_replace_pending: Optional[str] = None
+        self.instant_maximum_throughput: Optional[str] = None
+        self.soft_allowed_maximum_throughput: Optional[str] = None
         self.throughput_buckets = throughput_buckets
 
 
@@ -16928,15 +19598,15 @@ class ThroughputSettingsGetPropertiesResource(ThroughputSettingsResource, Extend
             throughput_buckets=throughput_buckets,
             **kwargs
         )
-        self.rid = None
-        self.ts = None
-        self.etag = None
+        self.rid: Optional[str] = None
+        self.ts: Optional[float] = None
+        self.etag: Optional[str] = None
         self.throughput = throughput
         self.autoscale_settings = autoscale_settings
-        self.minimum_throughput = None
-        self.offer_replace_pending = None
-        self.instant_maximum_throughput = None
-        self.soft_allowed_maximum_throughput = None
+        self.minimum_throughput: Optional[str] = None
+        self.offer_replace_pending: Optional[str] = None
+        self.instant_maximum_throughput: Optional[str] = None
+        self.soft_allowed_maximum_throughput: Optional[str] = None
         self.throughput_buckets = throughput_buckets
 
 
@@ -17147,7 +19817,7 @@ class UsagesResult(_serialization.Model):
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.value = None
+        self.value: Optional[List["_models.Usage"]] = None
 
 
 class VectorEmbedding(_serialization.Model):
@@ -17269,7 +19939,7 @@ class VirtualNetworkRule(_serialization.Model):
     """Virtual Network ACL Rule object.
 
     :ivar id: Resource ID of a subnet, for example:
-     /subscriptions/{subscriptionId}/resourceGroups/{groupName}/providers/Microsoft.Network/virtualNetworks/{virtualNetworkName}/subnets/{subnetName}.  # pylint: disable=line-too-long
+     /subscriptions/{subscriptionId}/resourceGroups/{groupName}/providers/Microsoft.Network/virtualNetworks/{virtualNetworkName}/subnets/{subnetName}.
     :vartype id: str
     :ivar ignore_missing_v_net_service_endpoint: Create firewall rule before the virtual network
      has vnet service endpoint enabled.
@@ -17290,7 +19960,7 @@ class VirtualNetworkRule(_serialization.Model):
     ) -> None:
         """
         :keyword id: Resource ID of a subnet, for example:
-         /subscriptions/{subscriptionId}/resourceGroups/{groupName}/providers/Microsoft.Network/virtualNetworks/{virtualNetworkName}/subnets/{subnetName}.  # pylint: disable=line-too-long
+         /subscriptions/{subscriptionId}/resourceGroups/{groupName}/providers/Microsoft.Network/virtualNetworks/{virtualNetworkName}/subnets/{subnetName}.
         :paramtype id: str
         :keyword ignore_missing_v_net_service_endpoint: Create firewall rule before the virtual network
          has vnet service endpoint enabled.

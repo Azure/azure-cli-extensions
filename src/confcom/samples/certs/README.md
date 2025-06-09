@@ -7,6 +7,10 @@
 - Must have the [`confcom` extension version 1.1.0 or greater](../../README.md) installed
 - Must have [ORAS CLI](https://oras.land/docs/installation/) installed (tested with version 1.1.0)
 
+## Notes
+
+The script `create_certchain.sh` will create the necessary certificates and private keys to sign a fragment policy. This script is used for testing purposes only and should not be used for production systems.
+
 ## Update Config
 
 *This step sets up the configuration for creating certs to sign the fragment policy. This only needs to be done once.*

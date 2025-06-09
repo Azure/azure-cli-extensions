@@ -216,6 +216,14 @@ helps['dataprotection backup-instance validate-for-backup'] = """
         text: az dataprotection backup-instance validate-for-backup -g sarath-rg --vault-name sarath-vault --backup-instance backup_instance.json
 """
 
+helps['dataprotection backup-instance validate-for-update'] = """
+    type: command
+    short-summary: Validate whether update for backup instance will be successful or not.
+    examples:
+      - name: Validate for modify backup
+        text: az dataprotection backup-instance validate-for-update -g testRG -v testVault --backup-instance-name "testdisk-testdisk-00000000-0000-0000-0000-0000000000000" --uami "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/testRG/providers/Microsoft.ManagedIdentity/userAssignedIdentities/testuami"
+"""
+
 helps['dataprotection backup-instance restore trigger'] = """
     type: command
     short-summary: Triggers restore for a BackupInstance.

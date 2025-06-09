@@ -172,7 +172,7 @@ def __to_communication_identifier(participants):
     return [identifier_from_raw_id(p) for p in participants]
 
 
-def __to_room_participant(presenters, attendees, consumers):
+def __to_room_participant(presenters, attendees, consumers, collaborators):
     from azure.communication.identity._shared.models import identifier_from_raw_id
     from azure.communication.rooms import RoomParticipant, ParticipantRole
 
@@ -192,6 +192,11 @@ def __to_room_participant(presenters, attendees, consumers):
         identifiers = [identifier_from_raw_id(p) for p in consumers]
         participants.extend([RoomParticipant(communication_identifier=i,
                                              role=ParticipantRole.CONSUMER) for i in identifiers])
+
+    if collaborators is not None:
+        identifiers = [identifier_from_raw_id(p) for p in collaborators]
+        participants.extend([RoomParticipant(communication_identifier=i,
+                                             role=ParticipantRole.COLLABORATOR) for i in identifiers])
 
     return participants
 
@@ -225,9 +230,10 @@ def communication_rooms_create_room(client,
                                     pstn_dial_out_enabled=None,
                                     presenters=None,
                                     attendees=None,
-                                    consumers=None):
+                                    consumers=None,
+                                    collaborators=None):
     try:
-        room_participants = __to_room_participant(presenters, attendees, consumers)
+        room_participants = __to_room_participant(presenters, attendees, consumers, collaborators)
         pstn_dialed_out_enabled_str = __to_room_pstn_dial_out_enabled(pstn_dial_out_enabled)
 
         if pstn_dialed_out_enabled_str is None:
@@ -298,11 +304,12 @@ def communication_rooms_get_participants(client, room_id):
 def communication_rooms_add_or_update_participants(client, room_id,
                                                    presenters=None,
                                                    attendees=None,
-                                                   consumers=None):
+                                                   consumers=None,
+                                                   collaborators=None):
     try:
         return client.add_or_update_participants(
             room_id=room_id,
-            participants=__to_room_participant(presenters, attendees, consumers))
+            participants=__to_room_participant(presenters, attendees, consumers, collaborators))
     except HttpResponseError:
         raise
     except Exception as ex:

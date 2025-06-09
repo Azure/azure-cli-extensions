@@ -16,16 +16,16 @@ from azure.cli.core.aaz import *
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
-    """Delete an extension.
+    """Delete operation to delete the extension.
 
-    :example: Sample command for extension delete
-        az connectedmachine extension delete --name myName --machine-name myMachine --resource-group myResourceGroup
+    :example: sample command for extension delete
+        az connectedmachine extension delete --resource-group myResourceGroup --machine-name myMachine --extension-name MMA
     """
 
     _aaz_info = {
-        "version": "2024-07-31-preview",
+        "version": "2024-11-10-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}/extensions/{}", "2024-07-31-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}/extensions/{}", "2024-11-10-preview"],
         ]
     }
 
@@ -158,7 +158,7 @@ class Delete(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-07-31-preview",
+                    "api-version", "2024-11-10-preview",
                     required=True,
                 ),
             }

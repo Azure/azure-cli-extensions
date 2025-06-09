@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.1.1
+++++++
+* Update the CLI command documentation
+
 1.1.0
 ++++++
 * Add: metrics enabled flag while creating tag rule

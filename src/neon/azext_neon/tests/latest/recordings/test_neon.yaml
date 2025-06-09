@@ -1,59 +1,62 @@
 interactions:
 - request:
-    body: '{"location": "eastus2euap", "properties": {"companyDetails": {"businessPhone":
+    body: '{"location": "centraluseuap", "properties": {"companyDetails": {"businessPhone":
       "+1234567890", "companyName": "SampleCompany", "country": "USA", "domain": "samplecompany.com",
       "numberOfEmployees": 500, "officeAddress": "5678 Azure Blvd"}, "marketplaceDetails":
-      {"offerDetails": {"offerId": "neon_test", "planId": "neon_test_1", "planName":
-      "Neon Serverless Postgres - Free (Test_Liftr)", "publisherId": "neon1722366567200",
-      "termId": "gmz7xq9ge3py", "termUnit": "P1M"}, "subscriptionId": "yxmkfivp",
-      "subscriptionStatus": "PendingFulfillmentStart"}, "partnerOrganizationProperties":
-      {"organizationId": "org67890", "organizationName": "PartnerOrgForCLITest1",
-      "singleSignOnProperties": {"aadDomains": ["partnerorgtest.com"], "enterpriseAppId":
-      "app67890", "singleSignOnState": "Enable", "singleSignOnUrl": "https://sso.partnerorgtest.com"}},
-      "userDetails": {"emailAddress": "khanalmas@example.com", "firstName": "Almas",
-      "lastName": "Khan", "phoneNumber": "+1234567890", "upn": "khanalmas_microsoft.com#EXT#@qumulotesttenant2.onmicrosoft.com"}}}'
+      {"offerDetails": {"offerId": "neon_serverless_postgres_azure_prod", "planId":
+      "neon_serverless_postgres_azure_prod_free", "planName": "Free Plan", "publisherId":
+      "neon1722366567200", "termId": "gmz7xq9ge3py", "termUnit": "P1M"}, "subscriptionId":
+      "b6ca5a0a-c4be-454f-cc46-a400799b9d49", "subscriptionStatus": "PendingFulfillmentStart"},
+      "partnerOrganizationProperties": {"organizationId": "", "organizationName":
+      "Neon-Cli-Scenario-Tests", "singleSignOnProperties": {"aadDomains": [], "enterpriseAppId":
+      "", "singleSignOnState": "Enable", "singleSignOnUrl": ""}}, "projectProperties":
+      {"branch": {"databaseName": "neondb", "entityName": "main", "roleName": "onwer_role"},
+      "entityName": "TestProject1", "pgVersion": 17, "regionId": "eastus2"}, "userDetails":
+      {"emailAddress": "sralluri211@outlook.com", "firstName": "Srinivas", "lastName":
+      "Alluri", "phoneNumber": "+1234567890", "upn": "sralluri211@outlook.com"}},
+      "tags": {"key": "value"}}'
     headers:
       Accept:
       - application/json
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - neon postgres create
+      - neon postgres organization create
       Connection:
       - keep-alive
       Content-Length:
-      - '1043'
+      - '1202'
       Content-Type:
       - application/json
       ParameterSetName:
-      - --resource-group --name --location --subscription --marketplace-details --user-details
-        --company-details --partner-organization-properties
+      - --resource-group --name --location --tags --subscription --marketplace-details
+        --user-details --company-details --partner-organization-properties --project-properties
       User-Agent:
-      - AZURECLI/2.65.0 azsdk-python-core/1.31.0 Python/3.11.0 (Windows-10-10.0.26100-SP0)
+      - AZURECLI/2.72.0 azsdk-python-core/1.31.0 Python/3.10.11 (Windows-10-10.0.26100-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NeonDemoRG/providers/Neon.Postgres/organizations/NeonCLITestOrg1?api-version=2024-08-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/neonrg/providers/Neon.Postgres/organizations/Neon-Cli-Scenario-Tests?api-version=2025-03-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NeonDemoRG/providers/Neon.Postgres/organizations/NeonCLITestOrg1","name":"NeonCLITestOrg1","type":"neon.postgres/organizations","location":"eastus2euap","systemData":{"createdBy":"khanalmas@microsoft.com","createdByType":"User","createdAt":"2024-10-21T19:03:11.7505214Z","lastModifiedBy":"khanalmas@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-10-21T19:03:11.7505214Z"},"properties":{"marketplaceDetails":{"subscriptionId":"yxmkfivp","subscriptionStatus":"PendingFulfillmentStart","offerDetails":{"publisherId":"neon1722366567200","offerId":"neon_test","planId":"neon_test_1","planName":"Neon
-        Serverless Postgres - Free (Test_Liftr)","termUnit":"P1M","termId":"gmz7xq9ge3py"}},"userDetails":{"firstName":"Almas","lastName":"Khan","emailAddress":"khanalmas@example.com","upn":"khanalmas_microsoft.com#EXT#@qumulotesttenant2.onmicrosoft.com","phoneNumber":"+1234567890"},"companyDetails":{"companyName":"SampleCompany","country":"USA","officeAddress":"5678
-        Azure Blvd","businessPhone":"+1234567890","domain":"samplecompany.com","numberOfEmployees":500},"provisioningState":"Accepted","partnerOrganizationProperties":{"organizationId":"org67890","organizationName":"PartnerOrgForCLITest1","singleSignOnProperties":{"singleSignOnState":"Enable","enterpriseAppId":"app67890","singleSignOnUrl":"https://sso.partnerorgtest.com","aadDomains":["partnerorgtest.com"]}}}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/neonrg/providers/Neon.Postgres/organizations/Neon-Cli-Scenario-Tests","name":"Neon-Cli-Scenario-Tests","type":"neon.postgres/organizations","location":"centraluseuap","tags":{"key":"value"},"systemData":{"createdBy":"sralluri211@outlook.com","createdByType":"User","createdAt":"2025-04-29T10:48:04.0414565Z","lastModifiedBy":"sralluri211@outlook.com","lastModifiedByType":"User","lastModifiedAt":"2025-04-29T10:48:04.0414565Z"},"properties":{"marketplaceDetails":{"subscriptionId":"b6ca5a0a-c4be-454f-cc46-a400799b9d49","subscriptionStatus":"PendingFulfillmentStart","offerDetails":{"publisherId":"neon1722366567200","offerId":"neon_serverless_postgres_azure_prod","planId":"neon_serverless_postgres_azure_prod_free","planName":"Free
+        Plan","termUnit":"P1M","termId":"gmz7xq9ge3py"}},"userDetails":{"firstName":"Srinivas","lastName":"Alluri","emailAddress":"sralluri211@outlook.com","upn":"sralluri211@outlook.com","phoneNumber":"+1234567890"},"companyDetails":{"companyName":"SampleCompany","country":"USA","officeAddress":"5678
+        Azure Blvd","businessPhone":"+1234567890","domain":"samplecompany.com","numberOfEmployees":500},"provisioningState":"Accepted","partnerOrganizationProperties":{"organizationId":"","organizationName":"Neon-Cli-Scenario-Tests","singleSignOnProperties":{"singleSignOnState":"Enable","enterpriseAppId":"","singleSignOnUrl":"","aadDomains":[]}},"projectProperties":{"regionId":"eastus2","storage":0,"pgVersion":17,"historyRetention":0,"defaultEndpointSettings":null,"branch":{"projectId":null,"parentId":null,"roleName":"onwer_role","databaseName":"neondb","roles":null,"databases":null,"endpoints":null,"attributes":null,"entityId":null,"entityName":"main","createdAt":null,"provisioningState":null},"roles":null,"databases":null,"endpoints":null,"entityId":null,"entityName":"TestProject1","createdAt":null,"provisioningState":null,"attributes":null}}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/providers/Neon.Postgres/locations/EASTUS2EUAP/operationStatuses/730f0858-2a4b-4962-bd2b-464c777c78c2*FCC0E4765A68B00CD123FFF2CC55F30B3EE19192AF146687474D4CA2757C9EFD?api-version=2024-08-01-preview&t=638651341988287323&c=MIIHhzCCBm-gAwIBAgITHgVsohlR2527oAb3YwAABWyiGTANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwOTIyMTIzNzU1WhcNMjUwMzIxMTIzNzU1WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMhrLEJmsmtpzYzyjkwosX72drFxelF_0kAmuW7jzqQUwb3Vbkmt3AMdawBA7iPG-j-_iaEVRdn5iaEuJE6hSge15_CbeDkRt-qHgospNLcjh6GjynbLyFCQH_IkKY4Mc0yIlKxilQSCf2V6ah2w7S1CyC5zwZroBYavu5w0ZL02jRKMTNVzB03DnGhQGJ7gJbtKJ9AbjVcFwFTpT0Z0Yo-sLpwoVvADWng0JznFSekROEXCF_U3gHMssCctipkbrivaRFNKL3OjHjvuPxD8gsBo2BR_swq3Eyj-68_1B2-zYVD0d811pP8URR-43YYAMXO2Us1Uw6dn-b351XnW8JECAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBTLk-Eh1Xfk5Jotz1gl5hr4G-tKhTAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAG22HO9nSE7AYf9OZGmPXw_SpE0CIxcQiahWc3LG3zRYLxmiKsYYlN9_r_6fPeEmIs7P7xm7g_xAAHLymI5BQDzGsW5GzAzYVOwolJBj3EcX1bxxIqeEgLvHNmYOr4D5MZFv14TGMHziu0TzPAbbVe9-DmMbrqs1mszrnuUiHTsmKE2oNmv4gjZMYSJAdsUzkjxQEa8t1t7FUEvbDkWkYSdqK0-OoTDVLsRVwRNk9XJ04coDgWql1-iv6bYNXyhC0L_-bdTOs_Gnzu-tFEA2we7Zkew_fhDuJwGTDnhaqvhush0SPJuFmoYBvmEzEJsc_Bjay2DrOHiLTopNoBJVrt8&s=IBx_lnp7wu4AgfWSn9v3vBFt0wmatvQrH8KqsvbHFEVJi1duUWB9mKzn4PtgAW4Au6cfv1QlbT4kXW8psGEHhKZD1kYMYJQg72lzvuS1p5UhD90QnbfofYu0NXyvtzWr5fdwyb6EmPH8RaO9pO5BPWcGldKq0kAoapzPjT3k1Qtz0ONUMU5ZQZpSqyeD_4CsOlVEPeIRuYD1QHvp9hm8ej0zeiJRlTWpoLg7hScrLI4lOjXax918fI2PAmmKKFHdAYFgGAtWV-Fl9k6QkK0pcLEMo7eraOkY9GEgBDijVVsrXmZNQoAnuVJt27dc2zsqk1TwsmxCzxjuPD2NTd3hYw&h=-awJTg6kBBNiWYbW2XVmlXZHddLLQ8L7Mq_vwwBYOXw
+      - https://management.azure.com/providers/Neon.Postgres/locations/CENTRALUSEUAP/operationStatuses/a365b19c-5e32-4680-bf92-128181c6b7da*33080CDAA3B48581D06C07FC6F0AD979F8AED23E1755AAE02BB4B231A29799C4?api-version=2025-03-01&t=638815205024332023&c=MIIHhzCCBm-gAwIBAgITfAeDEnPW_KxJbq8EjgAAB4MSczANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjUwNDIwMTUyMDI3WhcNMjUxMDE3MTUyMDI3WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALO1SAvt4DI7FxxBmZBcfoKDLiXpS8U5adZbRlRvVm-EcAWqGNnVo1AxaXu3ghKMY95LxffhvcYAZ56WhgOxA_gpAUzm4t0yW0aVzv7vAOWZHIG1fvTcWY_sHCkuTyCNAcRbNbaqbidaK9ZOTQ19baUQ26kVkP7tjTi6DWWRlM25d4YQcGaWJoBwUtol-hgB5Z_rVMljRF5Q1T9_3YpRBw57SpHvmb30JNQSpndyeu--Ip8pMwpNaiIRF70G8WfbTBoJhRqNqNAKBLU3CAVV4H6lYrXtSK-gkZC0EzjZ4ze_XVDGBd1sOPsbMx4aQgZEiuDJuuk9eqTzzur3IDUdrP0CAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBSRrAa71kVppeoZonY7QPy_R7XWQzAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAChQXwS0_EaMb7G3BWGDeoNhAAEaoKkJVUy5HVGyWKADFm6Tp2WidwOIMoOu-IuoA634ORJ7bIwsC2WhUA0Z8-c2AAD956dAtCkn5pEBXSqwuKMM3l9KOClAY1RiAQcP-GWtmb_mqZspO78GHaq-mwiyIDUICM-uZl-qR6UVt6rLn5xPqHNkenxrslS_G3IJ9yCV1sflxhz93B7VR9H7BtOxd_nqZOD5uSV3OpPnATTRO0KB3VBbZ0KqvdtWoHjNywLqMuhJUufHw2zmlQ-Yj3ndha_yTvOQlT-85ikSoyWI0P4_GeEwX9RdkiVHVzx3gR8HzFKkJXOwRvxQE_9Ov_0&s=rBrycYXMBaseUtiGHRXh0PPfwIikmBKFRF06h56H7E_HNCdYZ46f_Gy96TNd3LLthkRDuJOBop_CjK3gvzCZjyDRUBT4muBJh6a7U13YkeshiHacszenpjmUdfBxyHmeB_xfvhPsN5JT9avZxpHGq-mP8SVv9Omrrdr-fjA8rMadJwksfDAFLbOuS9efNTV1m5pj69QUjdn8ddBxfyRw3-lMUyIij1ckXcGE5TA80xTAAFleU8rMK5a8wqIgTQnImKw5FM2W-0Q-hqBGXEZzQcR_teBHmnuwik4ZLMfKrZ4zzw-uo8nvwS2DlFaOQahLyTcSjmiErGCg55LEl850rw&h=V2sv0k_q1bKCHheAyKydgp9I7Q407TKY2rY1f-9QdiI
       cache-control:
       - no-cache
       content-length:
-      - '1455'
+      - '1952'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 21 Oct 2024 19:03:18 GMT
+      - Tue, 29 Apr 2025 10:48:21 GMT
       etag:
-      - '"0000e348-0000-3300-0000-6716a5760000"'
+      - '"1800f4ff-0000-3300-0000-6810ae750000"'
       expires:
       - '-1'
       location:
-      - https://eastus2euap.management.azure.com/providers/Neon.Postgres/locations/EASTUS2EUAP/operationStatuses/730f0858-2a4b-4962-bd2b-464c777c78c2*FCC0E4765A68B00CD123FFF2CC55F30B3EE19192AF146687474D4CA2757C9EFD?api-version=2024-08-01-preview&t=638651341988287323&c=MIIHhzCCBm-gAwIBAgITHgVsohlR2527oAb3YwAABWyiGTANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwOTIyMTIzNzU1WhcNMjUwMzIxMTIzNzU1WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMhrLEJmsmtpzYzyjkwosX72drFxelF_0kAmuW7jzqQUwb3Vbkmt3AMdawBA7iPG-j-_iaEVRdn5iaEuJE6hSge15_CbeDkRt-qHgospNLcjh6GjynbLyFCQH_IkKY4Mc0yIlKxilQSCf2V6ah2w7S1CyC5zwZroBYavu5w0ZL02jRKMTNVzB03DnGhQGJ7gJbtKJ9AbjVcFwFTpT0Z0Yo-sLpwoVvADWng0JznFSekROEXCF_U3gHMssCctipkbrivaRFNKL3OjHjvuPxD8gsBo2BR_swq3Eyj-68_1B2-zYVD0d811pP8URR-43YYAMXO2Us1Uw6dn-b351XnW8JECAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBTLk-Eh1Xfk5Jotz1gl5hr4G-tKhTAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAG22HO9nSE7AYf9OZGmPXw_SpE0CIxcQiahWc3LG3zRYLxmiKsYYlN9_r_6fPeEmIs7P7xm7g_xAAHLymI5BQDzGsW5GzAzYVOwolJBj3EcX1bxxIqeEgLvHNmYOr4D5MZFv14TGMHziu0TzPAbbVe9-DmMbrqs1mszrnuUiHTsmKE2oNmv4gjZMYSJAdsUzkjxQEa8t1t7FUEvbDkWkYSdqK0-OoTDVLsRVwRNk9XJ04coDgWql1-iv6bYNXyhC0L_-bdTOs_Gnzu-tFEA2we7Zkew_fhDuJwGTDnhaqvhush0SPJuFmoYBvmEzEJsc_Bjay2DrOHiLTopNoBJVrt8&s=IBx_lnp7wu4AgfWSn9v3vBFt0wmatvQrH8KqsvbHFEVJi1duUWB9mKzn4PtgAW4Au6cfv1QlbT4kXW8psGEHhKZD1kYMYJQg72lzvuS1p5UhD90QnbfofYu0NXyvtzWr5fdwyb6EmPH8RaO9pO5BPWcGldKq0kAoapzPjT3k1Qtz0ONUMU5ZQZpSqyeD_4CsOlVEPeIRuYD1QHvp9hm8ej0zeiJRlTWpoLg7hScrLI4lOjXax918fI2PAmmKKFHdAYFgGAtWV-Fl9k6QkK0pcLEMo7eraOkY9GEgBDijVVsrXmZNQoAnuVJt27dc2zsqk1TwsmxCzxjuPD2NTd3hYw&h=-awJTg6kBBNiWYbW2XVmlXZHddLLQ8L7Mq_vwwBYOXw
+      - https://eastus2euap.management.azure.com/providers/Neon.Postgres/locations/CENTRALUSEUAP/operationStatuses/a365b19c-5e32-4680-bf92-128181c6b7da*33080CDAA3B48581D06C07FC6F0AD979F8AED23E1755AAE02BB4B231A29799C4?api-version=2025-03-01&t=638815205024332023&c=MIIHhzCCBm-gAwIBAgITfAeDEnPW_KxJbq8EjgAAB4MSczANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjUwNDIwMTUyMDI3WhcNMjUxMDE3MTUyMDI3WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALO1SAvt4DI7FxxBmZBcfoKDLiXpS8U5adZbRlRvVm-EcAWqGNnVo1AxaXu3ghKMY95LxffhvcYAZ56WhgOxA_gpAUzm4t0yW0aVzv7vAOWZHIG1fvTcWY_sHCkuTyCNAcRbNbaqbidaK9ZOTQ19baUQ26kVkP7tjTi6DWWRlM25d4YQcGaWJoBwUtol-hgB5Z_rVMljRF5Q1T9_3YpRBw57SpHvmb30JNQSpndyeu--Ip8pMwpNaiIRF70G8WfbTBoJhRqNqNAKBLU3CAVV4H6lYrXtSK-gkZC0EzjZ4ze_XVDGBd1sOPsbMx4aQgZEiuDJuuk9eqTzzur3IDUdrP0CAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBSRrAa71kVppeoZonY7QPy_R7XWQzAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAChQXwS0_EaMb7G3BWGDeoNhAAEaoKkJVUy5HVGyWKADFm6Tp2WidwOIMoOu-IuoA634ORJ7bIwsC2WhUA0Z8-c2AAD956dAtCkn5pEBXSqwuKMM3l9KOClAY1RiAQcP-GWtmb_mqZspO78GHaq-mwiyIDUICM-uZl-qR6UVt6rLn5xPqHNkenxrslS_G3IJ9yCV1sflxhz93B7VR9H7BtOxd_nqZOD5uSV3OpPnATTRO0KB3VBbZ0KqvdtWoHjNywLqMuhJUufHw2zmlQ-Yj3ndha_yTvOQlT-85ikSoyWI0P4_GeEwX9RdkiVHVzx3gR8HzFKkJXOwRvxQE_9Ov_0&s=rBrycYXMBaseUtiGHRXh0PPfwIikmBKFRF06h56H7E_HNCdYZ46f_Gy96TNd3LLthkRDuJOBop_CjK3gvzCZjyDRUBT4muBJh6a7U13YkeshiHacszenpjmUdfBxyHmeB_xfvhPsN5JT9avZxpHGq-mP8SVv9Omrrdr-fjA8rMadJwksfDAFLbOuS9efNTV1m5pj69QUjdn8ddBxfyRw3-lMUyIij1ckXcGE5TA80xTAAFleU8rMK5a8wqIgTQnImKw5FM2W-0Q-hqBGXEZzQcR_teBHmnuwik4ZLMfKrZ4zzw-uo8nvwS2DlFaOQahLyTcSjmiErGCg55LEl850rw&h=V2sv0k_q1bKCHheAyKydgp9I7Q407TKY2rY1f-9QdiI
       pragma:
       - no-cache
       request-context:
@@ -64,6 +67,10 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-async-operation-timeout:
+      - P6D
+      x-ms-operation-identifier:
+      - tenantId=f27f5a05-ee13-4d31-b6d9-6bfe7b758c17,objectId=4bbfdfc1-e177-47a1-88cd-1461c549e46e/southeastasia/593b0048-e6f5-472a-982e-2b453b5dfebb
       x-ms-providerhub-traffic:
       - 'True'
       x-ms-ratelimit-remaining-subscription-global-writes:
@@ -71,7 +78,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-writes:
       - '199'
       x-msedge-ref:
-      - 'Ref A: ED30862ABCFD4A3891726A96A378E6BA Ref B: MAA201060514053 Ref C: 2024-10-21T19:03:10Z'
+      - 'Ref A: 5B6C82C3B377404FBC18D79B3F2978BB Ref B: MAA201060514011 Ref C: 2025-04-29T10:48:03Z'
     status:
       code: 201
       message: Created
@@ -83,30 +90,30 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - neon postgres create
+      - neon postgres organization create
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --name --location --subscription --marketplace-details --user-details
-        --company-details --partner-organization-properties
+      - --resource-group --name --location --tags --subscription --marketplace-details
+        --user-details --company-details --partner-organization-properties --project-properties
       User-Agent:
-      - AZURECLI/2.65.0 azsdk-python-core/1.31.0 Python/3.11.0 (Windows-10-10.0.26100-SP0)
+      - AZURECLI/2.72.0 azsdk-python-core/1.31.0 Python/3.10.11 (Windows-10-10.0.26100-SP0)
     method: GET
-    uri: https://management.azure.com/providers/Neon.Postgres/locations/EASTUS2EUAP/operationStatuses/730f0858-2a4b-4962-bd2b-464c777c78c2*FCC0E4765A68B00CD123FFF2CC55F30B3EE19192AF146687474D4CA2757C9EFD?api-version=2024-08-01-preview&t=638651341988287323&c=MIIHhzCCBm-gAwIBAgITHgVsohlR2527oAb3YwAABWyiGTANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwOTIyMTIzNzU1WhcNMjUwMzIxMTIzNzU1WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMhrLEJmsmtpzYzyjkwosX72drFxelF_0kAmuW7jzqQUwb3Vbkmt3AMdawBA7iPG-j-_iaEVRdn5iaEuJE6hSge15_CbeDkRt-qHgospNLcjh6GjynbLyFCQH_IkKY4Mc0yIlKxilQSCf2V6ah2w7S1CyC5zwZroBYavu5w0ZL02jRKMTNVzB03DnGhQGJ7gJbtKJ9AbjVcFwFTpT0Z0Yo-sLpwoVvADWng0JznFSekROEXCF_U3gHMssCctipkbrivaRFNKL3OjHjvuPxD8gsBo2BR_swq3Eyj-68_1B2-zYVD0d811pP8URR-43YYAMXO2Us1Uw6dn-b351XnW8JECAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBTLk-Eh1Xfk5Jotz1gl5hr4G-tKhTAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAG22HO9nSE7AYf9OZGmPXw_SpE0CIxcQiahWc3LG3zRYLxmiKsYYlN9_r_6fPeEmIs7P7xm7g_xAAHLymI5BQDzGsW5GzAzYVOwolJBj3EcX1bxxIqeEgLvHNmYOr4D5MZFv14TGMHziu0TzPAbbVe9-DmMbrqs1mszrnuUiHTsmKE2oNmv4gjZMYSJAdsUzkjxQEa8t1t7FUEvbDkWkYSdqK0-OoTDVLsRVwRNk9XJ04coDgWql1-iv6bYNXyhC0L_-bdTOs_Gnzu-tFEA2we7Zkew_fhDuJwGTDnhaqvhush0SPJuFmoYBvmEzEJsc_Bjay2DrOHiLTopNoBJVrt8&s=IBx_lnp7wu4AgfWSn9v3vBFt0wmatvQrH8KqsvbHFEVJi1duUWB9mKzn4PtgAW4Au6cfv1QlbT4kXW8psGEHhKZD1kYMYJQg72lzvuS1p5UhD90QnbfofYu0NXyvtzWr5fdwyb6EmPH8RaO9pO5BPWcGldKq0kAoapzPjT3k1Qtz0ONUMU5ZQZpSqyeD_4CsOlVEPeIRuYD1QHvp9hm8ej0zeiJRlTWpoLg7hScrLI4lOjXax918fI2PAmmKKFHdAYFgGAtWV-Fl9k6QkK0pcLEMo7eraOkY9GEgBDijVVsrXmZNQoAnuVJt27dc2zsqk1TwsmxCzxjuPD2NTd3hYw&h=-awJTg6kBBNiWYbW2XVmlXZHddLLQ8L7Mq_vwwBYOXw
+    uri: https://management.azure.com/providers/Neon.Postgres/locations/CENTRALUSEUAP/operationStatuses/a365b19c-5e32-4680-bf92-128181c6b7da*33080CDAA3B48581D06C07FC6F0AD979F8AED23E1755AAE02BB4B231A29799C4?api-version=2025-03-01&t=638815205024332023&c=MIIHhzCCBm-gAwIBAgITfAeDEnPW_KxJbq8EjgAAB4MSczANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjUwNDIwMTUyMDI3WhcNMjUxMDE3MTUyMDI3WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALO1SAvt4DI7FxxBmZBcfoKDLiXpS8U5adZbRlRvVm-EcAWqGNnVo1AxaXu3ghKMY95LxffhvcYAZ56WhgOxA_gpAUzm4t0yW0aVzv7vAOWZHIG1fvTcWY_sHCkuTyCNAcRbNbaqbidaK9ZOTQ19baUQ26kVkP7tjTi6DWWRlM25d4YQcGaWJoBwUtol-hgB5Z_rVMljRF5Q1T9_3YpRBw57SpHvmb30JNQSpndyeu--Ip8pMwpNaiIRF70G8WfbTBoJhRqNqNAKBLU3CAVV4H6lYrXtSK-gkZC0EzjZ4ze_XVDGBd1sOPsbMx4aQgZEiuDJuuk9eqTzzur3IDUdrP0CAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBSRrAa71kVppeoZonY7QPy_R7XWQzAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAChQXwS0_EaMb7G3BWGDeoNhAAEaoKkJVUy5HVGyWKADFm6Tp2WidwOIMoOu-IuoA634ORJ7bIwsC2WhUA0Z8-c2AAD956dAtCkn5pEBXSqwuKMM3l9KOClAY1RiAQcP-GWtmb_mqZspO78GHaq-mwiyIDUICM-uZl-qR6UVt6rLn5xPqHNkenxrslS_G3IJ9yCV1sflxhz93B7VR9H7BtOxd_nqZOD5uSV3OpPnATTRO0KB3VBbZ0KqvdtWoHjNywLqMuhJUufHw2zmlQ-Yj3ndha_yTvOQlT-85ikSoyWI0P4_GeEwX9RdkiVHVzx3gR8HzFKkJXOwRvxQE_9Ov_0&s=rBrycYXMBaseUtiGHRXh0PPfwIikmBKFRF06h56H7E_HNCdYZ46f_Gy96TNd3LLthkRDuJOBop_CjK3gvzCZjyDRUBT4muBJh6a7U13YkeshiHacszenpjmUdfBxyHmeB_xfvhPsN5JT9avZxpHGq-mP8SVv9Omrrdr-fjA8rMadJwksfDAFLbOuS9efNTV1m5pj69QUjdn8ddBxfyRw3-lMUyIij1ckXcGE5TA80xTAAFleU8rMK5a8wqIgTQnImKw5FM2W-0Q-hqBGXEZzQcR_teBHmnuwik4ZLMfKrZ4zzw-uo8nvwS2DlFaOQahLyTcSjmiErGCg55LEl850rw&h=V2sv0k_q1bKCHheAyKydgp9I7Q407TKY2rY1f-9QdiI
   response:
     body:
-      string: '{"id":"/providers/Neon.Postgres/locations/EASTUS2EUAP/operationStatuses/730f0858-2a4b-4962-bd2b-464c777c78c2*FCC0E4765A68B00CD123FFF2CC55F30B3EE19192AF146687474D4CA2757C9EFD","name":"730f0858-2a4b-4962-bd2b-464c777c78c2*FCC0E4765A68B00CD123FFF2CC55F30B3EE19192AF146687474D4CA2757C9EFD","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NeonDemoRG/providers/Neon.Postgres/organizations/NeonCLITestOrg1","status":"Accepted","startTime":"2024-10-21T19:03:15.8369382Z"}'
+      string: '{"id":"/providers/Neon.Postgres/locations/CENTRALUSEUAP/operationStatuses/a365b19c-5e32-4680-bf92-128181c6b7da*33080CDAA3B48581D06C07FC6F0AD979F8AED23E1755AAE02BB4B231A29799C4","name":"a365b19c-5e32-4680-bf92-128181c6b7da*33080CDAA3B48581D06C07FC6F0AD979F8AED23E1755AAE02BB4B231A29799C4","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/neonrg/providers/Neon.Postgres/organizations/Neon-Cli-Scenario-Tests","status":"Accepted","startTime":"2025-04-29T10:48:19.6806062Z"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '496'
+      - '502'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 21 Oct 2024 19:03:19 GMT
+      - Tue, 29 Apr 2025 10:48:23 GMT
       etag:
-      - '"02001855-0000-3300-0000-6716a5740000"'
+      - '"15005fb0-0000-3300-0000-6810ae730000"'
       expires:
       - '-1'
       pragma:
@@ -117,8 +124,10 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - ''
       x-msedge-ref:
-      - 'Ref A: 4058D59966FB42AC9DC132A925AE4E96 Ref B: MAA201060514053 Ref C: 2024-10-21T19:03:18Z'
+      - 'Ref A: EDC4F2CAB03644C7AA2D8009901A5E27 Ref B: MAA201060514011 Ref C: 2025-04-29T10:48:22Z'
     status:
       code: 200
       message: OK
@@ -130,30 +139,30 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - neon postgres create
+      - neon postgres organization create
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --name --location --subscription --marketplace-details --user-details
-        --company-details --partner-organization-properties
+      - --resource-group --name --location --tags --subscription --marketplace-details
+        --user-details --company-details --partner-organization-properties --project-properties
       User-Agent:
-      - AZURECLI/2.65.0 azsdk-python-core/1.31.0 Python/3.11.0 (Windows-10-10.0.26100-SP0)
+      - AZURECLI/2.72.0 azsdk-python-core/1.31.0 Python/3.10.11 (Windows-10-10.0.26100-SP0)
     method: GET
-    uri: https://management.azure.com/providers/Neon.Postgres/locations/EASTUS2EUAP/operationStatuses/730f0858-2a4b-4962-bd2b-464c777c78c2*FCC0E4765A68B00CD123FFF2CC55F30B3EE19192AF146687474D4CA2757C9EFD?api-version=2024-08-01-preview&t=638651341988287323&c=MIIHhzCCBm-gAwIBAgITHgVsohlR2527oAb3YwAABWyiGTANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwOTIyMTIzNzU1WhcNMjUwMzIxMTIzNzU1WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMhrLEJmsmtpzYzyjkwosX72drFxelF_0kAmuW7jzqQUwb3Vbkmt3AMdawBA7iPG-j-_iaEVRdn5iaEuJE6hSge15_CbeDkRt-qHgospNLcjh6GjynbLyFCQH_IkKY4Mc0yIlKxilQSCf2V6ah2w7S1CyC5zwZroBYavu5w0ZL02jRKMTNVzB03DnGhQGJ7gJbtKJ9AbjVcFwFTpT0Z0Yo-sLpwoVvADWng0JznFSekROEXCF_U3gHMssCctipkbrivaRFNKL3OjHjvuPxD8gsBo2BR_swq3Eyj-68_1B2-zYVD0d811pP8URR-43YYAMXO2Us1Uw6dn-b351XnW8JECAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBTLk-Eh1Xfk5Jotz1gl5hr4G-tKhTAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAG22HO9nSE7AYf9OZGmPXw_SpE0CIxcQiahWc3LG3zRYLxmiKsYYlN9_r_6fPeEmIs7P7xm7g_xAAHLymI5BQDzGsW5GzAzYVOwolJBj3EcX1bxxIqeEgLvHNmYOr4D5MZFv14TGMHziu0TzPAbbVe9-DmMbrqs1mszrnuUiHTsmKE2oNmv4gjZMYSJAdsUzkjxQEa8t1t7FUEvbDkWkYSdqK0-OoTDVLsRVwRNk9XJ04coDgWql1-iv6bYNXyhC0L_-bdTOs_Gnzu-tFEA2we7Zkew_fhDuJwGTDnhaqvhush0SPJuFmoYBvmEzEJsc_Bjay2DrOHiLTopNoBJVrt8&s=IBx_lnp7wu4AgfWSn9v3vBFt0wmatvQrH8KqsvbHFEVJi1duUWB9mKzn4PtgAW4Au6cfv1QlbT4kXW8psGEHhKZD1kYMYJQg72lzvuS1p5UhD90QnbfofYu0NXyvtzWr5fdwyb6EmPH8RaO9pO5BPWcGldKq0kAoapzPjT3k1Qtz0ONUMU5ZQZpSqyeD_4CsOlVEPeIRuYD1QHvp9hm8ej0zeiJRlTWpoLg7hScrLI4lOjXax918fI2PAmmKKFHdAYFgGAtWV-Fl9k6QkK0pcLEMo7eraOkY9GEgBDijVVsrXmZNQoAnuVJt27dc2zsqk1TwsmxCzxjuPD2NTd3hYw&h=-awJTg6kBBNiWYbW2XVmlXZHddLLQ8L7Mq_vwwBYOXw
+    uri: https://management.azure.com/providers/Neon.Postgres/locations/CENTRALUSEUAP/operationStatuses/a365b19c-5e32-4680-bf92-128181c6b7da*33080CDAA3B48581D06C07FC6F0AD979F8AED23E1755AAE02BB4B231A29799C4?api-version=2025-03-01&t=638815205024332023&c=MIIHhzCCBm-gAwIBAgITfAeDEnPW_KxJbq8EjgAAB4MSczANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjUwNDIwMTUyMDI3WhcNMjUxMDE3MTUyMDI3WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALO1SAvt4DI7FxxBmZBcfoKDLiXpS8U5adZbRlRvVm-EcAWqGNnVo1AxaXu3ghKMY95LxffhvcYAZ56WhgOxA_gpAUzm4t0yW0aVzv7vAOWZHIG1fvTcWY_sHCkuTyCNAcRbNbaqbidaK9ZOTQ19baUQ26kVkP7tjTi6DWWRlM25d4YQcGaWJoBwUtol-hgB5Z_rVMljRF5Q1T9_3YpRBw57SpHvmb30JNQSpndyeu--Ip8pMwpNaiIRF70G8WfbTBoJhRqNqNAKBLU3CAVV4H6lYrXtSK-gkZC0EzjZ4ze_XVDGBd1sOPsbMx4aQgZEiuDJuuk9eqTzzur3IDUdrP0CAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBSRrAa71kVppeoZonY7QPy_R7XWQzAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAChQXwS0_EaMb7G3BWGDeoNhAAEaoKkJVUy5HVGyWKADFm6Tp2WidwOIMoOu-IuoA634ORJ7bIwsC2WhUA0Z8-c2AAD956dAtCkn5pEBXSqwuKMM3l9KOClAY1RiAQcP-GWtmb_mqZspO78GHaq-mwiyIDUICM-uZl-qR6UVt6rLn5xPqHNkenxrslS_G3IJ9yCV1sflxhz93B7VR9H7BtOxd_nqZOD5uSV3OpPnATTRO0KB3VBbZ0KqvdtWoHjNywLqMuhJUufHw2zmlQ-Yj3ndha_yTvOQlT-85ikSoyWI0P4_GeEwX9RdkiVHVzx3gR8HzFKkJXOwRvxQE_9Ov_0&s=rBrycYXMBaseUtiGHRXh0PPfwIikmBKFRF06h56H7E_HNCdYZ46f_Gy96TNd3LLthkRDuJOBop_CjK3gvzCZjyDRUBT4muBJh6a7U13YkeshiHacszenpjmUdfBxyHmeB_xfvhPsN5JT9avZxpHGq-mP8SVv9Omrrdr-fjA8rMadJwksfDAFLbOuS9efNTV1m5pj69QUjdn8ddBxfyRw3-lMUyIij1ckXcGE5TA80xTAAFleU8rMK5a8wqIgTQnImKw5FM2W-0Q-hqBGXEZzQcR_teBHmnuwik4ZLMfKrZ4zzw-uo8nvwS2DlFaOQahLyTcSjmiErGCg55LEl850rw&h=V2sv0k_q1bKCHheAyKydgp9I7Q407TKY2rY1f-9QdiI
   response:
     body:
-      string: '{"id":"/providers/Neon.Postgres/locations/EASTUS2EUAP/operationStatuses/730f0858-2a4b-4962-bd2b-464c777c78c2*FCC0E4765A68B00CD123FFF2CC55F30B3EE19192AF146687474D4CA2757C9EFD","name":"730f0858-2a4b-4962-bd2b-464c777c78c2*FCC0E4765A68B00CD123FFF2CC55F30B3EE19192AF146687474D4CA2757C9EFD","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NeonDemoRG/providers/Neon.Postgres/organizations/NeonCLITestOrg1","status":"Accepted","startTime":"2024-10-21T19:03:15.8369382Z"}'
+      string: '{"id":"/providers/Neon.Postgres/locations/CENTRALUSEUAP/operationStatuses/a365b19c-5e32-4680-bf92-128181c6b7da*33080CDAA3B48581D06C07FC6F0AD979F8AED23E1755AAE02BB4B231A29799C4","name":"a365b19c-5e32-4680-bf92-128181c6b7da*33080CDAA3B48581D06C07FC6F0AD979F8AED23E1755AAE02BB4B231A29799C4","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/neonrg/providers/Neon.Postgres/organizations/Neon-Cli-Scenario-Tests","status":"Accepted","startTime":"2025-04-29T10:48:19.6806062Z"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '496'
+      - '502'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 21 Oct 2024 19:03:50 GMT
+      - Tue, 29 Apr 2025 10:48:54 GMT
       etag:
-      - '"02001855-0000-3300-0000-6716a5740000"'
+      - '"15005fb0-0000-3300-0000-6810ae730000"'
       expires:
       - '-1'
       pragma:
@@ -164,8 +173,10 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - ''
       x-msedge-ref:
-      - 'Ref A: 26357773ADD041868DC0C9DF50F83635 Ref B: MAA201060514053 Ref C: 2024-10-21T19:03:49Z'
+      - 'Ref A: 0B80A49CD3F84696836F001FBDD414B1 Ref B: MAA201060514011 Ref C: 2025-04-29T10:48:54Z'
     status:
       code: 200
       message: OK
@@ -177,30 +188,30 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - neon postgres create
+      - neon postgres organization create
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --name --location --subscription --marketplace-details --user-details
-        --company-details --partner-organization-properties
+      - --resource-group --name --location --tags --subscription --marketplace-details
+        --user-details --company-details --partner-organization-properties --project-properties
       User-Agent:
-      - AZURECLI/2.65.0 azsdk-python-core/1.31.0 Python/3.11.0 (Windows-10-10.0.26100-SP0)
+      - AZURECLI/2.72.0 azsdk-python-core/1.31.0 Python/3.10.11 (Windows-10-10.0.26100-SP0)
     method: GET
-    uri: https://management.azure.com/providers/Neon.Postgres/locations/EASTUS2EUAP/operationStatuses/730f0858-2a4b-4962-bd2b-464c777c78c2*FCC0E4765A68B00CD123FFF2CC55F30B3EE19192AF146687474D4CA2757C9EFD?api-version=2024-08-01-preview&t=638651341988287323&c=MIIHhzCCBm-gAwIBAgITHgVsohlR2527oAb3YwAABWyiGTANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwOTIyMTIzNzU1WhcNMjUwMzIxMTIzNzU1WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMhrLEJmsmtpzYzyjkwosX72drFxelF_0kAmuW7jzqQUwb3Vbkmt3AMdawBA7iPG-j-_iaEVRdn5iaEuJE6hSge15_CbeDkRt-qHgospNLcjh6GjynbLyFCQH_IkKY4Mc0yIlKxilQSCf2V6ah2w7S1CyC5zwZroBYavu5w0ZL02jRKMTNVzB03DnGhQGJ7gJbtKJ9AbjVcFwFTpT0Z0Yo-sLpwoVvADWng0JznFSekROEXCF_U3gHMssCctipkbrivaRFNKL3OjHjvuPxD8gsBo2BR_swq3Eyj-68_1B2-zYVD0d811pP8URR-43YYAMXO2Us1Uw6dn-b351XnW8JECAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBTLk-Eh1Xfk5Jotz1gl5hr4G-tKhTAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAG22HO9nSE7AYf9OZGmPXw_SpE0CIxcQiahWc3LG3zRYLxmiKsYYlN9_r_6fPeEmIs7P7xm7g_xAAHLymI5BQDzGsW5GzAzYVOwolJBj3EcX1bxxIqeEgLvHNmYOr4D5MZFv14TGMHziu0TzPAbbVe9-DmMbrqs1mszrnuUiHTsmKE2oNmv4gjZMYSJAdsUzkjxQEa8t1t7FUEvbDkWkYSdqK0-OoTDVLsRVwRNk9XJ04coDgWql1-iv6bYNXyhC0L_-bdTOs_Gnzu-tFEA2we7Zkew_fhDuJwGTDnhaqvhush0SPJuFmoYBvmEzEJsc_Bjay2DrOHiLTopNoBJVrt8&s=IBx_lnp7wu4AgfWSn9v3vBFt0wmatvQrH8KqsvbHFEVJi1duUWB9mKzn4PtgAW4Au6cfv1QlbT4kXW8psGEHhKZD1kYMYJQg72lzvuS1p5UhD90QnbfofYu0NXyvtzWr5fdwyb6EmPH8RaO9pO5BPWcGldKq0kAoapzPjT3k1Qtz0ONUMU5ZQZpSqyeD_4CsOlVEPeIRuYD1QHvp9hm8ej0zeiJRlTWpoLg7hScrLI4lOjXax918fI2PAmmKKFHdAYFgGAtWV-Fl9k6QkK0pcLEMo7eraOkY9GEgBDijVVsrXmZNQoAnuVJt27dc2zsqk1TwsmxCzxjuPD2NTd3hYw&h=-awJTg6kBBNiWYbW2XVmlXZHddLLQ8L7Mq_vwwBYOXw
+    uri: https://management.azure.com/providers/Neon.Postgres/locations/CENTRALUSEUAP/operationStatuses/a365b19c-5e32-4680-bf92-128181c6b7da*33080CDAA3B48581D06C07FC6F0AD979F8AED23E1755AAE02BB4B231A29799C4?api-version=2025-03-01&t=638815205024332023&c=MIIHhzCCBm-gAwIBAgITfAeDEnPW_KxJbq8EjgAAB4MSczANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjUwNDIwMTUyMDI3WhcNMjUxMDE3MTUyMDI3WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALO1SAvt4DI7FxxBmZBcfoKDLiXpS8U5adZbRlRvVm-EcAWqGNnVo1AxaXu3ghKMY95LxffhvcYAZ56WhgOxA_gpAUzm4t0yW0aVzv7vAOWZHIG1fvTcWY_sHCkuTyCNAcRbNbaqbidaK9ZOTQ19baUQ26kVkP7tjTi6DWWRlM25d4YQcGaWJoBwUtol-hgB5Z_rVMljRF5Q1T9_3YpRBw57SpHvmb30JNQSpndyeu--Ip8pMwpNaiIRF70G8WfbTBoJhRqNqNAKBLU3CAVV4H6lYrXtSK-gkZC0EzjZ4ze_XVDGBd1sOPsbMx4aQgZEiuDJuuk9eqTzzur3IDUdrP0CAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBSRrAa71kVppeoZonY7QPy_R7XWQzAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAChQXwS0_EaMb7G3BWGDeoNhAAEaoKkJVUy5HVGyWKADFm6Tp2WidwOIMoOu-IuoA634ORJ7bIwsC2WhUA0Z8-c2AAD956dAtCkn5pEBXSqwuKMM3l9KOClAY1RiAQcP-GWtmb_mqZspO78GHaq-mwiyIDUICM-uZl-qR6UVt6rLn5xPqHNkenxrslS_G3IJ9yCV1sflxhz93B7VR9H7BtOxd_nqZOD5uSV3OpPnATTRO0KB3VBbZ0KqvdtWoHjNywLqMuhJUufHw2zmlQ-Yj3ndha_yTvOQlT-85ikSoyWI0P4_GeEwX9RdkiVHVzx3gR8HzFKkJXOwRvxQE_9Ov_0&s=rBrycYXMBaseUtiGHRXh0PPfwIikmBKFRF06h56H7E_HNCdYZ46f_Gy96TNd3LLthkRDuJOBop_CjK3gvzCZjyDRUBT4muBJh6a7U13YkeshiHacszenpjmUdfBxyHmeB_xfvhPsN5JT9avZxpHGq-mP8SVv9Omrrdr-fjA8rMadJwksfDAFLbOuS9efNTV1m5pj69QUjdn8ddBxfyRw3-lMUyIij1ckXcGE5TA80xTAAFleU8rMK5a8wqIgTQnImKw5FM2W-0Q-hqBGXEZzQcR_teBHmnuwik4ZLMfKrZ4zzw-uo8nvwS2DlFaOQahLyTcSjmiErGCg55LEl850rw&h=V2sv0k_q1bKCHheAyKydgp9I7Q407TKY2rY1f-9QdiI
   response:
     body:
-      string: '{"id":"/providers/Neon.Postgres/locations/EASTUS2EUAP/operationStatuses/730f0858-2a4b-4962-bd2b-464c777c78c2*FCC0E4765A68B00CD123FFF2CC55F30B3EE19192AF146687474D4CA2757C9EFD","name":"730f0858-2a4b-4962-bd2b-464c777c78c2*FCC0E4765A68B00CD123FFF2CC55F30B3EE19192AF146687474D4CA2757C9EFD","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NeonDemoRG/providers/Neon.Postgres/organizations/NeonCLITestOrg1","status":"Succeeded","startTime":"2024-10-21T19:03:15.8369382Z","endTime":"2024-10-21T19:04:16.1971954Z","error":{},"properties":null}'
+      string: '{"id":"/providers/Neon.Postgres/locations/CENTRALUSEUAP/operationStatuses/a365b19c-5e32-4680-bf92-128181c6b7da*33080CDAA3B48581D06C07FC6F0AD979F8AED23E1755AAE02BB4B231A29799C4","name":"a365b19c-5e32-4680-bf92-128181c6b7da*33080CDAA3B48581D06C07FC6F0AD979F8AED23E1755AAE02BB4B231A29799C4","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/neonrg/providers/Neon.Postgres/organizations/Neon-Cli-Scenario-Tests","status":"Accepted","startTime":"2025-04-29T10:48:19.6806062Z"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '567'
+      - '502'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 21 Oct 2024 19:04:20 GMT
+      - Tue, 29 Apr 2025 10:49:25 GMT
       etag:
-      - '"02005a55-0000-3300-0000-6716a5b00000"'
+      - '"15005fb0-0000-3300-0000-6810ae730000"'
       expires:
       - '-1'
       pragma:
@@ -211,8 +222,10 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - ''
       x-msedge-ref:
-      - 'Ref A: 174BF0B1D75C461D9C6AB07210D96E54 Ref B: MAA201060514053 Ref C: 2024-10-21T19:04:20Z'
+      - 'Ref A: C31F33CFA33F4ECBAFC5E71E615A2190 Ref B: MAA201060514011 Ref C: 2025-04-29T10:49:25Z'
     status:
       code: 200
       message: OK
@@ -224,32 +237,179 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - neon postgres create
+      - neon postgres organization create
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --name --location --subscription --marketplace-details --user-details
-        --company-details --partner-organization-properties
+      - --resource-group --name --location --tags --subscription --marketplace-details
+        --user-details --company-details --partner-organization-properties --project-properties
       User-Agent:
-      - AZURECLI/2.65.0 azsdk-python-core/1.31.0 Python/3.11.0 (Windows-10-10.0.26100-SP0)
+      - AZURECLI/2.72.0 azsdk-python-core/1.31.0 Python/3.10.11 (Windows-10-10.0.26100-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NeonDemoRG/providers/Neon.Postgres/organizations/NeonCLITestOrg1?api-version=2024-08-01-preview
+    uri: https://management.azure.com/providers/Neon.Postgres/locations/CENTRALUSEUAP/operationStatuses/a365b19c-5e32-4680-bf92-128181c6b7da*33080CDAA3B48581D06C07FC6F0AD979F8AED23E1755AAE02BB4B231A29799C4?api-version=2025-03-01&t=638815205024332023&c=MIIHhzCCBm-gAwIBAgITfAeDEnPW_KxJbq8EjgAAB4MSczANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjUwNDIwMTUyMDI3WhcNMjUxMDE3MTUyMDI3WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALO1SAvt4DI7FxxBmZBcfoKDLiXpS8U5adZbRlRvVm-EcAWqGNnVo1AxaXu3ghKMY95LxffhvcYAZ56WhgOxA_gpAUzm4t0yW0aVzv7vAOWZHIG1fvTcWY_sHCkuTyCNAcRbNbaqbidaK9ZOTQ19baUQ26kVkP7tjTi6DWWRlM25d4YQcGaWJoBwUtol-hgB5Z_rVMljRF5Q1T9_3YpRBw57SpHvmb30JNQSpndyeu--Ip8pMwpNaiIRF70G8WfbTBoJhRqNqNAKBLU3CAVV4H6lYrXtSK-gkZC0EzjZ4ze_XVDGBd1sOPsbMx4aQgZEiuDJuuk9eqTzzur3IDUdrP0CAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBSRrAa71kVppeoZonY7QPy_R7XWQzAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAChQXwS0_EaMb7G3BWGDeoNhAAEaoKkJVUy5HVGyWKADFm6Tp2WidwOIMoOu-IuoA634ORJ7bIwsC2WhUA0Z8-c2AAD956dAtCkn5pEBXSqwuKMM3l9KOClAY1RiAQcP-GWtmb_mqZspO78GHaq-mwiyIDUICM-uZl-qR6UVt6rLn5xPqHNkenxrslS_G3IJ9yCV1sflxhz93B7VR9H7BtOxd_nqZOD5uSV3OpPnATTRO0KB3VBbZ0KqvdtWoHjNywLqMuhJUufHw2zmlQ-Yj3ndha_yTvOQlT-85ikSoyWI0P4_GeEwX9RdkiVHVzx3gR8HzFKkJXOwRvxQE_9Ov_0&s=rBrycYXMBaseUtiGHRXh0PPfwIikmBKFRF06h56H7E_HNCdYZ46f_Gy96TNd3LLthkRDuJOBop_CjK3gvzCZjyDRUBT4muBJh6a7U13YkeshiHacszenpjmUdfBxyHmeB_xfvhPsN5JT9avZxpHGq-mP8SVv9Omrrdr-fjA8rMadJwksfDAFLbOuS9efNTV1m5pj69QUjdn8ddBxfyRw3-lMUyIij1ckXcGE5TA80xTAAFleU8rMK5a8wqIgTQnImKw5FM2W-0Q-hqBGXEZzQcR_teBHmnuwik4ZLMfKrZ4zzw-uo8nvwS2DlFaOQahLyTcSjmiErGCg55LEl850rw&h=V2sv0k_q1bKCHheAyKydgp9I7Q407TKY2rY1f-9QdiI
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NeonDemoRG/providers/Neon.Postgres/organizations/NeonCLITestOrg1","name":"NeonCLITestOrg1","type":"neon.postgres/organizations","location":"eastus2euap","systemData":{"createdBy":"khanalmas@microsoft.com","createdByType":"User","createdAt":"2024-10-21T19:03:11.7505214Z","lastModifiedBy":"b41fa140-8cb4-43b1-a086-717c2f41909e","lastModifiedByType":"Application","lastModifiedAt":"2024-10-21T19:04:16.4363549Z"},"properties":{"marketplaceDetails":{"subscriptionId":"0e758fc3-3dd7-419e-d32e-25d5072f837e","subscriptionStatus":"Subscribed","offerDetails":{"publisherId":"neon1722366567200","offerId":"neon_test","planId":"neon_test_1","planName":"Neon
-        Serverless Postgres - Free (Test_Liftr)","termUnit":"P1M","termId":"gmz7xq9ge3py"}},"userDetails":{"firstName":"Almas","lastName":"Khan","emailAddress":"khanalmas@example.com","upn":"khanalmas_microsoft.com#EXT#@qumulotesttenant2.onmicrosoft.com","phoneNumber":"+1234567890"},"companyDetails":{"companyName":"SampleCompany","country":"USA","officeAddress":"5678
-        Azure Blvd","businessPhone":"+1234567890","domain":"samplecompany.com","numberOfEmployees":500},"provisioningState":"Succeeded","partnerOrganizationProperties":{"organizationId":"org67890","organizationName":"PartnerOrgForCLITest1","singleSignOnProperties":{"singleSignOnState":"Enable","enterpriseAppId":"app67890","singleSignOnUrl":"https://console.neon.tech/azure/sso/org-super-grass-33609650","aadDomains":["partnerorgtest.com"]}}}}'
+      string: '{"id":"/providers/Neon.Postgres/locations/CENTRALUSEUAP/operationStatuses/a365b19c-5e32-4680-bf92-128181c6b7da*33080CDAA3B48581D06C07FC6F0AD979F8AED23E1755AAE02BB4B231A29799C4","name":"a365b19c-5e32-4680-bf92-128181c6b7da*33080CDAA3B48581D06C07FC6F0AD979F8AED23E1755AAE02BB4B231A29799C4","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/neonrg/providers/Neon.Postgres/organizations/Neon-Cli-Scenario-Tests","status":"Accepted","startTime":"2025-04-29T10:48:19.6806062Z"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1521'
+      - '502'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 21 Oct 2024 19:04:21 GMT
+      - Tue, 29 Apr 2025 10:49:57 GMT
       etag:
-      - '"0000d649-0000-3300-0000-6716a5b00000"'
+      - '"15005fb0-0000-3300-0000-6810ae730000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - ''
+      x-msedge-ref:
+      - 'Ref A: F1A479B8305D4AB785177A2407B112CB Ref B: MAA201060514011 Ref C: 2025-04-29T10:49:57Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neon postgres organization create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --location --tags --subscription --marketplace-details
+        --user-details --company-details --partner-organization-properties --project-properties
+      User-Agent:
+      - AZURECLI/2.72.0 azsdk-python-core/1.31.0 Python/3.10.11 (Windows-10-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Neon.Postgres/locations/CENTRALUSEUAP/operationStatuses/a365b19c-5e32-4680-bf92-128181c6b7da*33080CDAA3B48581D06C07FC6F0AD979F8AED23E1755AAE02BB4B231A29799C4?api-version=2025-03-01&t=638815205024332023&c=MIIHhzCCBm-gAwIBAgITfAeDEnPW_KxJbq8EjgAAB4MSczANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjUwNDIwMTUyMDI3WhcNMjUxMDE3MTUyMDI3WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALO1SAvt4DI7FxxBmZBcfoKDLiXpS8U5adZbRlRvVm-EcAWqGNnVo1AxaXu3ghKMY95LxffhvcYAZ56WhgOxA_gpAUzm4t0yW0aVzv7vAOWZHIG1fvTcWY_sHCkuTyCNAcRbNbaqbidaK9ZOTQ19baUQ26kVkP7tjTi6DWWRlM25d4YQcGaWJoBwUtol-hgB5Z_rVMljRF5Q1T9_3YpRBw57SpHvmb30JNQSpndyeu--Ip8pMwpNaiIRF70G8WfbTBoJhRqNqNAKBLU3CAVV4H6lYrXtSK-gkZC0EzjZ4ze_XVDGBd1sOPsbMx4aQgZEiuDJuuk9eqTzzur3IDUdrP0CAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBSRrAa71kVppeoZonY7QPy_R7XWQzAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAChQXwS0_EaMb7G3BWGDeoNhAAEaoKkJVUy5HVGyWKADFm6Tp2WidwOIMoOu-IuoA634ORJ7bIwsC2WhUA0Z8-c2AAD956dAtCkn5pEBXSqwuKMM3l9KOClAY1RiAQcP-GWtmb_mqZspO78GHaq-mwiyIDUICM-uZl-qR6UVt6rLn5xPqHNkenxrslS_G3IJ9yCV1sflxhz93B7VR9H7BtOxd_nqZOD5uSV3OpPnATTRO0KB3VBbZ0KqvdtWoHjNywLqMuhJUufHw2zmlQ-Yj3ndha_yTvOQlT-85ikSoyWI0P4_GeEwX9RdkiVHVzx3gR8HzFKkJXOwRvxQE_9Ov_0&s=rBrycYXMBaseUtiGHRXh0PPfwIikmBKFRF06h56H7E_HNCdYZ46f_Gy96TNd3LLthkRDuJOBop_CjK3gvzCZjyDRUBT4muBJh6a7U13YkeshiHacszenpjmUdfBxyHmeB_xfvhPsN5JT9avZxpHGq-mP8SVv9Omrrdr-fjA8rMadJwksfDAFLbOuS9efNTV1m5pj69QUjdn8ddBxfyRw3-lMUyIij1ckXcGE5TA80xTAAFleU8rMK5a8wqIgTQnImKw5FM2W-0Q-hqBGXEZzQcR_teBHmnuwik4ZLMfKrZ4zzw-uo8nvwS2DlFaOQahLyTcSjmiErGCg55LEl850rw&h=V2sv0k_q1bKCHheAyKydgp9I7Q407TKY2rY1f-9QdiI
+  response:
+    body:
+      string: '{"id":"/providers/Neon.Postgres/locations/CENTRALUSEUAP/operationStatuses/a365b19c-5e32-4680-bf92-128181c6b7da*33080CDAA3B48581D06C07FC6F0AD979F8AED23E1755AAE02BB4B231A29799C4","name":"a365b19c-5e32-4680-bf92-128181c6b7da*33080CDAA3B48581D06C07FC6F0AD979F8AED23E1755AAE02BB4B231A29799C4","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/neonrg/providers/Neon.Postgres/organizations/Neon-Cli-Scenario-Tests","status":"Accepted","startTime":"2025-04-29T10:48:19.6806062Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '502'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 29 Apr 2025 10:50:28 GMT
+      etag:
+      - '"15005fb0-0000-3300-0000-6810ae730000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - ''
+      x-msedge-ref:
+      - 'Ref A: AF8142D854FA4B50BE4CF6E42F247871 Ref B: MAA201060514011 Ref C: 2025-04-29T10:50:27Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neon postgres organization create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --location --tags --subscription --marketplace-details
+        --user-details --company-details --partner-organization-properties --project-properties
+      User-Agent:
+      - AZURECLI/2.72.0 azsdk-python-core/1.31.0 Python/3.10.11 (Windows-10-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Neon.Postgres/locations/CENTRALUSEUAP/operationStatuses/a365b19c-5e32-4680-bf92-128181c6b7da*33080CDAA3B48581D06C07FC6F0AD979F8AED23E1755AAE02BB4B231A29799C4?api-version=2025-03-01&t=638815205024332023&c=MIIHhzCCBm-gAwIBAgITfAeDEnPW_KxJbq8EjgAAB4MSczANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjUwNDIwMTUyMDI3WhcNMjUxMDE3MTUyMDI3WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALO1SAvt4DI7FxxBmZBcfoKDLiXpS8U5adZbRlRvVm-EcAWqGNnVo1AxaXu3ghKMY95LxffhvcYAZ56WhgOxA_gpAUzm4t0yW0aVzv7vAOWZHIG1fvTcWY_sHCkuTyCNAcRbNbaqbidaK9ZOTQ19baUQ26kVkP7tjTi6DWWRlM25d4YQcGaWJoBwUtol-hgB5Z_rVMljRF5Q1T9_3YpRBw57SpHvmb30JNQSpndyeu--Ip8pMwpNaiIRF70G8WfbTBoJhRqNqNAKBLU3CAVV4H6lYrXtSK-gkZC0EzjZ4ze_XVDGBd1sOPsbMx4aQgZEiuDJuuk9eqTzzur3IDUdrP0CAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBSRrAa71kVppeoZonY7QPy_R7XWQzAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAChQXwS0_EaMb7G3BWGDeoNhAAEaoKkJVUy5HVGyWKADFm6Tp2WidwOIMoOu-IuoA634ORJ7bIwsC2WhUA0Z8-c2AAD956dAtCkn5pEBXSqwuKMM3l9KOClAY1RiAQcP-GWtmb_mqZspO78GHaq-mwiyIDUICM-uZl-qR6UVt6rLn5xPqHNkenxrslS_G3IJ9yCV1sflxhz93B7VR9H7BtOxd_nqZOD5uSV3OpPnATTRO0KB3VBbZ0KqvdtWoHjNywLqMuhJUufHw2zmlQ-Yj3ndha_yTvOQlT-85ikSoyWI0P4_GeEwX9RdkiVHVzx3gR8HzFKkJXOwRvxQE_9Ov_0&s=rBrycYXMBaseUtiGHRXh0PPfwIikmBKFRF06h56H7E_HNCdYZ46f_Gy96TNd3LLthkRDuJOBop_CjK3gvzCZjyDRUBT4muBJh6a7U13YkeshiHacszenpjmUdfBxyHmeB_xfvhPsN5JT9avZxpHGq-mP8SVv9Omrrdr-fjA8rMadJwksfDAFLbOuS9efNTV1m5pj69QUjdn8ddBxfyRw3-lMUyIij1ckXcGE5TA80xTAAFleU8rMK5a8wqIgTQnImKw5FM2W-0Q-hqBGXEZzQcR_teBHmnuwik4ZLMfKrZ4zzw-uo8nvwS2DlFaOQahLyTcSjmiErGCg55LEl850rw&h=V2sv0k_q1bKCHheAyKydgp9I7Q407TKY2rY1f-9QdiI
+  response:
+    body:
+      string: '{"id":"/providers/Neon.Postgres/locations/CENTRALUSEUAP/operationStatuses/a365b19c-5e32-4680-bf92-128181c6b7da*33080CDAA3B48581D06C07FC6F0AD979F8AED23E1755AAE02BB4B231A29799C4","name":"a365b19c-5e32-4680-bf92-128181c6b7da*33080CDAA3B48581D06C07FC6F0AD979F8AED23E1755AAE02BB4B231A29799C4","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/neonrg/providers/Neon.Postgres/organizations/Neon-Cli-Scenario-Tests","status":"Succeeded","startTime":"2025-04-29T10:48:19.6806062Z","endTime":"2025-04-29T10:50:43.8387286Z","error":{},"properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '573'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 29 Apr 2025 10:51:00 GMT
+      etag:
+      - '"15008eb2-0000-3300-0000-6810af040000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - ''
+      x-msedge-ref:
+      - 'Ref A: C4AFFB145A8B4CD0AAB917C911F8E9A2 Ref B: MAA201060514011 Ref C: 2025-04-29T10:50:59Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neon postgres organization create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --location --tags --subscription --marketplace-details
+        --user-details --company-details --partner-organization-properties --project-properties
+      User-Agent:
+      - AZURECLI/2.72.0 azsdk-python-core/1.31.0 Python/3.10.11 (Windows-10-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/neonrg/providers/Neon.Postgres/organizations/Neon-Cli-Scenario-Tests?api-version=2025-03-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/neonrg/providers/Neon.Postgres/organizations/Neon-Cli-Scenario-Tests","name":"Neon-Cli-Scenario-Tests","type":"neon.postgres/organizations","location":"centraluseuap","tags":{"key":"value"},"systemData":{"createdBy":"sralluri211@outlook.com","createdByType":"User","createdAt":"2025-04-29T10:48:04.0414565Z","lastModifiedBy":"b41fa140-8cb4-43b1-a086-717c2f41909e","lastModifiedByType":"Application","lastModifiedAt":"2025-04-29T10:50:56.5471702Z"},"properties":{"marketplaceDetails":{"subscriptionId":"8e9772d5-6ab6-4c5a-dff6-d9bad3df85d8","subscriptionStatus":"Subscribed","offerDetails":{"publisherId":"neon1722366567200","offerId":"neon_serverless_postgres_azure_prod","planId":"neon_serverless_postgres_azure_prod_free","planName":"Free
+        Plan","termUnit":"P1M","termId":"gmz7xq9ge3py"}},"userDetails":{"firstName":"Srinivas","lastName":"Alluri","emailAddress":"sralluri211@outlook.com","upn":"sralluri211@outlook.com","phoneNumber":"+1234567890"},"companyDetails":{"companyName":"SampleCompany","country":"USA","officeAddress":"5678
+        Azure Blvd","businessPhone":"+1234567890","domain":"samplecompany.com","numberOfEmployees":500},"provisioningState":"Succeeded","partnerOrganizationProperties":{"organizationId":"org-muddy-lab-01043080","organizationName":"Neon-Cli-Scenario-Tests","singleSignOnProperties":{"singleSignOnState":"Enable","enterpriseAppId":"","singleSignOnUrl":"https://console.neon.tech/azure/sso/org-muddy-lab-01043080","aadDomains":[]}},"projectProperties":{"regionId":"eastus2","storage":0,"pgVersion":17,"historyRetention":0,"branch":{"roleName":"onwer_role","databaseName":"neondb","entityName":"main"},"entityName":"TestProject1"}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1730'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 29 Apr 2025 10:51:01 GMT
+      etag:
+      - '"19000a01-0000-3300-0000-6810af100000"'
       expires:
       - '-1'
       pragma:
@@ -265,7 +425,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '3749'
       x-msedge-ref:
-      - 'Ref A: 0756F368610746F9BDB1BB3668441FD5 Ref B: MAA201060514053 Ref C: 2024-10-21T19:04:20Z'
+      - 'Ref A: 858DA2CA32FC4F2FB24AD9E1DFB8F954 Ref B: MAA201060514011 Ref C: 2025-04-29T10:51:00Z'
     status:
       code: 200
       message: OK
@@ -283,39 +443,26 @@ interactions:
       ParameterSetName:
       - --subscription --resource-group
       User-Agent:
-      - AZURECLI/2.65.0 azsdk-python-core/1.31.0 Python/3.11.0 (Windows-10-10.0.26100-SP0)
+      - AZURECLI/2.72.0 azsdk-python-core/1.31.0 Python/3.10.11 (Windows-10-10.0.26100-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NeonDemoRG/providers/Neon.Postgres/organizations?api-version=2024-08-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/neonrg/providers/Neon.Postgres/organizations?api-version=2025-03-01
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NeonDemoRG/providers/Neon.Postgres/organizations/testOrgAAK","name":"testOrgAAK","type":"neon.postgres/organizations","location":"eastus2euap","systemData":{"createdBy":"khanalmas@microsoft.com","createdByType":"User","createdAt":"2024-10-21T07:12:25.3271874Z","lastModifiedBy":"b41fa140-8cb4-43b1-a086-717c2f41909e","lastModifiedByType":"Application","lastModifiedAt":"2024-10-21T07:14:54.8372555Z"},"properties":{"marketplaceDetails":{"subscriptionId":"cb35e68e-40d2-4571-c4a3-69dfc1688178","subscriptionStatus":"Subscribed","offerDetails":{"publisherId":"neon1722366567200","offerId":"neon_test","planId":"neon_test_1","planName":"Neon
-        Serverless Postgres - Free (Test_Liftr)","termUnit":"P1M","termId":"gmz7xq9ge3py"}},"userDetails":{"firstName":"Almas","lastName":"Khan","emailAddress":"khanalmas@microsoft.com","upn":"khanalmas_microsoft.com#EXT#@qumulotesttenant2.onmicrosoft.com"},"companyDetails":{"companyName":"","country":"","businessPhone":""},"provisioningState":"Succeeded","partnerOrganizationProperties":{"organizationName":"testOrgAAK","singleSignOnProperties":{"singleSignOnState":"Enable","singleSignOnUrl":"https://console.neon.tech/azure/sso/org-broad-bird-88286889"}}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NeonDemoRG/providers/Neon.Postgres/organizations/almasTestNeonCLI","name":"almasTestNeonCLI","type":"neon.postgres/organizations","location":"eastus2euap","systemData":{"createdBy":"khanalmas@microsoft.com","createdByType":"User","createdAt":"2024-10-21T15:40:16.7969677Z","lastModifiedBy":"b41fa140-8cb4-43b1-a086-717c2f41909e","lastModifiedByType":"Application","lastModifiedAt":"2024-10-21T16:10:38.0484556Z"},"properties":{"marketplaceDetails":{"subscriptionId":"5455c40c-702f-42ef-cba5-2110af5b5dfa","subscriptionStatus":"Subscribed","offerDetails":{"publisherId":"neon1722366567200","offerId":"neon_test","planId":"neon_test_1","planName":"Neon
-        Serverless Postgres - Free (Test_Liftr)","termUnit":"P1M","termId":"gmz7xq9ge3py"}},"userDetails":{"firstName":"Almas","lastName":"Khan","emailAddress":"khanalmas@microsoft.com","upn":"khanalmas_microsoft.com#EXT#@qumulotesttenant2.onmicrosoft.com","phoneNumber":"+1234567890"},"companyDetails":{"companyName":"DemoCompany","country":"USA","officeAddress":"1234
-        Azure Ave","businessPhone":"+1234567890","domain":"demo.com","numberOfEmployees":500},"provisioningState":"Failed","partnerOrganizationProperties":{"organizationId":"org12345","organizationName":"PartnerOrg","singleSignOnProperties":{"singleSignOnState":"Enable","enterpriseAppId":"app12345","singleSignOnUrl":"https://console.neon.tech/azure/sso/org-icy-scene-94742526","aadDomains":["partnerorg.com"]}}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NeonDemoRG/providers/Neon.Postgres/organizations/NeonTestResource","name":"NeonTestResource","type":"neon.postgres/organizations","location":"eastus2euap","systemData":{"createdBy":"khanalmas@microsoft.com","createdByType":"User","createdAt":"2024-10-21T16:34:49.0962829Z","lastModifiedBy":"b41fa140-8cb4-43b1-a086-717c2f41909e","lastModifiedByType":"Application","lastModifiedAt":"2024-10-21T16:36:28.8779884Z"},"properties":{"marketplaceDetails":{"subscriptionId":"cc303643-4057-491f-cc8e-030a0fcdb5e6","subscriptionStatus":"Subscribed","offerDetails":{"publisherId":"neon1722366567200","offerId":"neon_test","planId":"neon_test_1","planName":"Neon
-        Serverless Postgres - Free (Test_Liftr)","termUnit":"P1M","termId":"gmz7xq9ge3py"}},"userDetails":{"firstName":"Almas","lastName":"Khan","emailAddress":"khanalmas@example.com","upn":"khanalmas_microsoft.com#EXT#@qumulotesttenant2.onmicrosoft.com","phoneNumber":"+1234567890"},"companyDetails":{"companyName":"SampleCompany","country":"USA","officeAddress":"5678
-        Azure Blvd","businessPhone":"+1234567890","domain":"samplecompany.com","numberOfEmployees":500},"provisioningState":"Succeeded","partnerOrganizationProperties":{"organizationId":"org67890","organizationName":"PartnerOrgTest","singleSignOnProperties":{"singleSignOnState":"Enable","enterpriseAppId":"app67890","singleSignOnUrl":"https://console.neon.tech/azure/sso/org-delicate-morning-13588151","aadDomains":["partnerorgtest.com"]}}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NeonDemoRG/providers/Neon.Postgres/organizations/testCLI3","name":"testCLI3","type":"neon.postgres/organizations","location":"eastus2euap","systemData":{"createdBy":"khanalmas@microsoft.com","createdByType":"User","createdAt":"2024-10-21T18:03:52.7521565Z","lastModifiedBy":"b41fa140-8cb4-43b1-a086-717c2f41909e","lastModifiedByType":"Application","lastModifiedAt":"2024-10-21T18:04:53.9735963Z"},"properties":{"marketplaceDetails":{"subscriptionId":"8e525940-3300-4809-c0fd-fccf77cfd730","subscriptionStatus":"Subscribed","offerDetails":{"publisherId":"neon1722366567200","offerId":"neon_test","planId":"neon_test_1","planName":"Neon
-        Serverless Postgres - Free (Test_Liftr)","termUnit":"P1M","termId":"gmz7xq9ge3py"}},"userDetails":{"firstName":"Almas","lastName":"Khan","emailAddress":"khanalmas@microsoft.com","upn":"khanalmas_microsoft.com#EXT#@qumulotesttenant2.onmicrosoft.com"},"companyDetails":{"companyName":"","country":"","businessPhone":""},"provisioningState":"Succeeded","partnerOrganizationProperties":{"organizationName":"testCLI3","singleSignOnProperties":{"singleSignOnState":"Enable","singleSignOnUrl":"https://console.neon.tech/azure/sso/org-long-waterfall-13574342"}}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NeonDemoRG/providers/Neon.Postgres/organizations/almasTestNeonCLI1","name":"almasTestNeonCLI1","type":"neon.postgres/organizations","location":"eastus2euap","systemData":{"createdBy":"khanalmas@microsoft.com","createdByType":"User","createdAt":"2024-10-21T18:13:21.5974908Z","lastModifiedBy":"b41fa140-8cb4-43b1-a086-717c2f41909e","lastModifiedByType":"Application","lastModifiedAt":"2024-10-21T18:14:41.9817237Z"},"properties":{"marketplaceDetails":{"subscriptionId":"d7956329-f6f6-4310-c32a-6d3c46bffbc4","subscriptionStatus":"Subscribed","offerDetails":{"publisherId":"neon1722366567200","offerId":"neon_test","planId":"neon_test_1","planName":"Neon
-        Serverless Postgres - Free (Test_Liftr)","termUnit":"P1M","termId":"gmz7xq9ge3py"}},"userDetails":{"firstName":"Almas","lastName":"Khan","emailAddress":"khanalmas@microsoft.com","upn":"khanalmas_microsoft.com#EXT#@qumulotesttenant2.onmicrosoft.com","phoneNumber":"+1234567890"},"companyDetails":{"companyName":"DemoCompany","country":"USA","officeAddress":"1234
-        Azure Ave","businessPhone":"+1234567890","domain":"demo.com","numberOfEmployees":500},"provisioningState":"Succeeded","partnerOrganizationProperties":{"organizationId":"org12345","organizationName":"PartnerOrg","singleSignOnProperties":{"singleSignOnState":"Enable","enterpriseAppId":"app12345","singleSignOnUrl":"https://console.neon.tech/azure/sso/org-autumn-smoke-39663810","aadDomains":["partnerorg.com"]}}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NeonDemoRG/providers/Neon.Postgres/organizations/NeonTestResourceForCLI1","name":"NeonTestResourceForCLI1","type":"neon.postgres/organizations","location":"eastus2euap","systemData":{"createdBy":"khanalmas@microsoft.com","createdByType":"User","createdAt":"2024-10-21T18:45:42.3180151Z","lastModifiedBy":"b41fa140-8cb4-43b1-a086-717c2f41909e","lastModifiedByType":"Application","lastModifiedAt":"2024-10-21T18:47:46.488867Z"},"properties":{"marketplaceDetails":{"subscriptionId":"e16f9b75-7a70-45cb-d5b4-8c91faafd1db","subscriptionStatus":"Subscribed","offerDetails":{"publisherId":"neon1722366567200","offerId":"neon_test","planId":"neon_test_1","planName":"Neon
-        Serverless Postgres - Free (Test_Liftr)","termUnit":"P1M","termId":"gmz7xq9ge3py"}},"userDetails":{"firstName":"Almas","lastName":"Khan","emailAddress":"khanalmas@example.com","upn":"khanalmas_microsoft.com#EXT#@qumulotesttenant2.onmicrosoft.com","phoneNumber":"+1234567890"},"companyDetails":{"companyName":"SampleCompany","country":"USA","officeAddress":"5678
-        Azure Blvd","businessPhone":"+1234567890","domain":"samplecompany.com","numberOfEmployees":500},"provisioningState":"Succeeded","partnerOrganizationProperties":{"organizationId":"org67890","organizationName":"PartnerOrgTestForCLI1","singleSignOnProperties":{"singleSignOnState":"Enable","enterpriseAppId":"app67890","singleSignOnUrl":"https://console.neon.tech/azure/sso/org-black-field-23860974","aadDomains":["partnerorgtest.com"]}}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NeonDemoRG/providers/Neon.Postgres/organizations/NeonTestResourceForCLI2","name":"NeonTestResourceForCLI2","type":"neon.postgres/organizations","location":"eastus2euap","systemData":{"createdBy":"khanalmas@microsoft.com","createdByType":"User","createdAt":"2024-10-21T18:49:26.3211919Z","lastModifiedBy":"b41fa140-8cb4-43b1-a086-717c2f41909e","lastModifiedByType":"Application","lastModifiedAt":"2024-10-21T18:50:42.8908266Z"},"properties":{"marketplaceDetails":{"subscriptionId":"db3e2813-417f-441e-c220-550fa20ed372","subscriptionStatus":"Subscribed","offerDetails":{"publisherId":"neon1722366567200","offerId":"neon_test","planId":"neon_test_1","planName":"Neon
-        Serverless Postgres - Free (Test_Liftr)","termUnit":"P1M","termId":"gmz7xq9ge3py"}},"userDetails":{"firstName":"Almas","lastName":"Khan","emailAddress":"khanalmas@example.com","upn":"khanalmas_microsoft.com#EXT#@qumulotesttenant2.onmicrosoft.com","phoneNumber":"+1234567890"},"companyDetails":{"companyName":"SampleCompany","country":"USA","officeAddress":"5678
-        Azure Blvd","businessPhone":"+1234567890","domain":"samplecompany.com","numberOfEmployees":500},"provisioningState":"Succeeded","partnerOrganizationProperties":{"organizationId":"org67890","organizationName":"PartnerOrgTestForCLI2","singleSignOnProperties":{"singleSignOnState":"Enable","enterpriseAppId":"app67890","singleSignOnUrl":"https://console.neon.tech/azure/sso/org-dry-heart-14145168","aadDomains":["partnerorgtest.com"]}}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NeonDemoRG/providers/Neon.Postgres/organizations/NeonTestResourceForCLI3","name":"NeonTestResourceForCLI3","type":"neon.postgres/organizations","location":"eastus2euap","systemData":{"createdBy":"khanalmas@microsoft.com","createdByType":"User","createdAt":"2024-10-21T18:53:07.8740855Z","lastModifiedBy":"b41fa140-8cb4-43b1-a086-717c2f41909e","lastModifiedByType":"Application","lastModifiedAt":"2024-10-21T18:53:59.8132572Z"},"properties":{"marketplaceDetails":{"subscriptionId":"b075c3cc-fa48-46f1-d7a8-56e7de262ec1","subscriptionStatus":"Subscribed","offerDetails":{"publisherId":"neon1722366567200","offerId":"neon_test","planId":"neon_test_1","planName":"Neon
-        Serverless Postgres - Free (Test_Liftr)","termUnit":"P1M","termId":"gmz7xq9ge3py"}},"userDetails":{"firstName":"Almas","lastName":"Khan","emailAddress":"khanalmas@example.com","upn":"khanalmas_microsoft.com#EXT#@qumulotesttenant2.onmicrosoft.com","phoneNumber":"+1234567890"},"companyDetails":{"companyName":"SampleCompany","country":"USA","officeAddress":"5678
-        Azure Blvd","businessPhone":"+1234567890","domain":"samplecompany.com","numberOfEmployees":500},"provisioningState":"Succeeded","partnerOrganizationProperties":{"organizationId":"org67890","organizationName":"PartnerOrgTestForCLI3","singleSignOnProperties":{"singleSignOnState":"Enable","enterpriseAppId":"app67890","singleSignOnUrl":"https://console.neon.tech/azure/sso/org-lucky-snow-46458514","aadDomains":["partnerorgtest.com"]}}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NeonDemoRG/providers/Neon.Postgres/organizations/NeonCLITestResource1","name":"NeonCLITestResource1","type":"neon.postgres/organizations","location":"eastus2euap","systemData":{"createdBy":"khanalmas@microsoft.com","createdByType":"User","createdAt":"2024-10-21T18:56:12.8009938Z","lastModifiedBy":"b41fa140-8cb4-43b1-a086-717c2f41909e","lastModifiedByType":"Application","lastModifiedAt":"2024-10-21T18:57:47.0688822Z"},"properties":{"marketplaceDetails":{"subscriptionId":"372b00ba-f425-4a84-de2f-c8ad6ca94da9","subscriptionStatus":"Subscribed","offerDetails":{"publisherId":"neon1722366567200","offerId":"neon_test","planId":"neon_test_1","planName":"Neon
-        Serverless Postgres - Free (Test_Liftr)","termUnit":"P1M","termId":"gmz7xq9ge3py"}},"userDetails":{"firstName":"Almas","lastName":"Khan","emailAddress":"khanalmas@example.com","upn":"khanalmas_microsoft.com#EXT#@qumulotesttenant2.onmicrosoft.com","phoneNumber":"+1234567890"},"companyDetails":{"companyName":"SampleCompany","country":"USA","officeAddress":"5678
-        Azure Blvd","businessPhone":"+1234567890","domain":"samplecompany.com","numberOfEmployees":500},"provisioningState":"Succeeded","partnerOrganizationProperties":{"organizationId":"org67890","organizationName":"PartnerOrgCLITest","singleSignOnProperties":{"singleSignOnState":"Enable","enterpriseAppId":"app67890","singleSignOnUrl":"https://console.neon.tech/azure/sso/org-young-term-63759514","aadDomains":["partnerorgtest.com"]}}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NeonDemoRG/providers/Neon.Postgres/organizations/NeonCLITestOrg1","name":"NeonCLITestOrg1","type":"neon.postgres/organizations","location":"eastus2euap","systemData":{"createdBy":"khanalmas@microsoft.com","createdByType":"User","createdAt":"2024-10-21T19:03:11.7505214Z","lastModifiedBy":"b41fa140-8cb4-43b1-a086-717c2f41909e","lastModifiedByType":"Application","lastModifiedAt":"2024-10-21T19:04:16.4363549Z"},"properties":{"marketplaceDetails":{"subscriptionId":"0e758fc3-3dd7-419e-d32e-25d5072f837e","subscriptionStatus":"Subscribed","offerDetails":{"publisherId":"neon1722366567200","offerId":"neon_test","planId":"neon_test_1","planName":"Neon
-        Serverless Postgres - Free (Test_Liftr)","termUnit":"P1M","termId":"gmz7xq9ge3py"}},"userDetails":{"firstName":"Almas","lastName":"Khan","emailAddress":"khanalmas@example.com","upn":"khanalmas_microsoft.com#EXT#@qumulotesttenant2.onmicrosoft.com","phoneNumber":"+1234567890"},"companyDetails":{"companyName":"SampleCompany","country":"USA","officeAddress":"5678
-        Azure Blvd","businessPhone":"+1234567890","domain":"samplecompany.com","numberOfEmployees":500},"provisioningState":"Succeeded","partnerOrganizationProperties":{"organizationId":"org67890","organizationName":"PartnerOrgForCLITest1","singleSignOnProperties":{"singleSignOnState":"Enable","enterpriseAppId":"app67890","singleSignOnUrl":"https://console.neon.tech/azure/sso/org-super-grass-33609650","aadDomains":["partnerorgtest.com"]}}}}]}'
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/neonrg/providers/Neon.Postgres/organizations/Test-Neon-Org-Cli-IT","name":"Test-Neon-Org-Cli-IT","type":"neon.postgres/organizations","location":"Central
+        US EUAP","tags":{},"systemData":{"createdBy":"sralluri211@outlook.com","createdByType":"User","createdAt":"2025-04-28T15:15:55.6562051Z","lastModifiedBy":"b41fa140-8cb4-43b1-a086-717c2f41909e","lastModifiedByType":"Application","lastModifiedAt":"2025-04-28T15:18:51.6630889Z"},"properties":{"marketplaceDetails":{"subscriptionId":"5f4139c6-4fe3-4c38-c107-74694350e8ad","subscriptionStatus":"Subscribed","offerDetails":{"publisherId":"neon1722366567200","offerId":"neon_serverless_postgres_azure_prod","planId":"neon_serverless_postgres_azure_prod_free","planName":"Free
+        Plan","termUnit":"P1M","termId":"gmz7xq9ge3py"}},"userDetails":{"firstName":"Srinivas","lastName":"Alluri","emailAddress":"sralluri211@outlook.com","upn":"sralluri211@outlook.com","phoneNumber":""},"companyDetails":{"companyName":"","country":"","businessPhone":""},"provisioningState":"Succeeded","partnerOrganizationProperties":{"organizationId":"org-round-wildflower-92733070","organizationName":"Test-Neon-Org-Cli-IT","singleSignOnProperties":{"singleSignOnState":"Enable","singleSignOnUrl":"https://console.neon.tech/azure/sso/org-round-wildflower-92733070"}},"projectProperties":{"regionId":"Central
+        US EUAP","storage":0,"pgVersion":17,"historyRetention":0,"branch":{"databaseName":"neondb"},"entityName":"Test-Neon-Project-Cli-IT"}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/neonrg/providers/Neon.Postgres/organizations/Neon-Cli-Scenario-Tests","name":"Neon-Cli-Scenario-Tests","type":"neon.postgres/organizations","location":"centraluseuap","tags":{"key":"value"},"systemData":{"createdBy":"sralluri211@outlook.com","createdByType":"User","createdAt":"2025-04-29T10:48:04.0414565Z","lastModifiedBy":"b41fa140-8cb4-43b1-a086-717c2f41909e","lastModifiedByType":"Application","lastModifiedAt":"2025-04-29T10:50:56.5471702Z"},"properties":{"marketplaceDetails":{"subscriptionId":"8e9772d5-6ab6-4c5a-dff6-d9bad3df85d8","subscriptionStatus":"Subscribed","offerDetails":{"publisherId":"neon1722366567200","offerId":"neon_serverless_postgres_azure_prod","planId":"neon_serverless_postgres_azure_prod_free","planName":"Free
+        Plan","termUnit":"P1M","termId":"gmz7xq9ge3py"}},"userDetails":{"firstName":"Srinivas","lastName":"Alluri","emailAddress":"sralluri211@outlook.com","upn":"sralluri211@outlook.com","phoneNumber":"+1234567890"},"companyDetails":{"companyName":"SampleCompany","country":"USA","officeAddress":"5678
+        Azure Blvd","businessPhone":"+1234567890","domain":"samplecompany.com","numberOfEmployees":500},"provisioningState":"Succeeded","partnerOrganizationProperties":{"organizationId":"org-muddy-lab-01043080","organizationName":"Neon-Cli-Scenario-Tests","singleSignOnProperties":{"singleSignOnState":"Enable","enterpriseAppId":"","singleSignOnUrl":"https://console.neon.tech/azure/sso/org-muddy-lab-01043080","aadDomains":[]}},"projectProperties":{"regionId":"eastus2","storage":0,"pgVersion":17,"historyRetention":0,"branch":{"roleName":"onwer_role","databaseName":"neondb","entityName":"main"},"entityName":"TestProject1"}}}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '14720'
+      - '3281'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 21 Oct 2024 19:04:23 GMT
+      - Tue, 29 Apr 2025 10:51:02 GMT
       expires:
       - '-1'
       pragma:
@@ -327,12 +474,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-original-request-ids:
-      - 98d23c15-f517-4e02-91ab-1c6bce2d5559
-      - 3ae21bc8-3f3c-43a1-bc91-37404300d5ef
+      - cc14cbc7-f4cd-48f7-a329-7265c2d2743f
+      x-ms-providerhub-traffic:
+      - 'True'
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '3749'
       x-msedge-ref:
-      - 'Ref A: A01865F5763B447783D61BBCD4FFB442 Ref B: MAA201060515029 Ref C: 2024-10-21T19:04:22Z'
+      - 'Ref A: ACC851881F054EB7BDA6AFFFABEA6787 Ref B: MAA201060514017 Ref C: 2025-04-29T10:51:02Z'
     status:
       code: 200
       message: OK
@@ -350,25 +498,25 @@ interactions:
       ParameterSetName:
       - --subscription --resource-group --name
       User-Agent:
-      - AZURECLI/2.65.0 azsdk-python-core/1.31.0 Python/3.11.0 (Windows-10-10.0.26100-SP0)
+      - AZURECLI/2.72.0 azsdk-python-core/1.31.0 Python/3.10.11 (Windows-10-10.0.26100-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NeonDemoRG/providers/Neon.Postgres/organizations/NeonCLITestOrg1?api-version=2024-08-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/neonrg/providers/Neon.Postgres/organizations/Neon-Cli-Scenario-Tests?api-version=2025-03-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NeonDemoRG/providers/Neon.Postgres/organizations/NeonCLITestOrg1","name":"NeonCLITestOrg1","type":"neon.postgres/organizations","location":"eastus2euap","systemData":{"createdBy":"khanalmas@microsoft.com","createdByType":"User","createdAt":"2024-10-21T19:03:11.7505214Z","lastModifiedBy":"b41fa140-8cb4-43b1-a086-717c2f41909e","lastModifiedByType":"Application","lastModifiedAt":"2024-10-21T19:04:16.4363549Z"},"properties":{"marketplaceDetails":{"subscriptionId":"0e758fc3-3dd7-419e-d32e-25d5072f837e","subscriptionStatus":"Subscribed","offerDetails":{"publisherId":"neon1722366567200","offerId":"neon_test","planId":"neon_test_1","planName":"Neon
-        Serverless Postgres - Free (Test_Liftr)","termUnit":"P1M","termId":"gmz7xq9ge3py"}},"userDetails":{"firstName":"Almas","lastName":"Khan","emailAddress":"khanalmas@example.com","upn":"khanalmas_microsoft.com#EXT#@qumulotesttenant2.onmicrosoft.com","phoneNumber":"+1234567890"},"companyDetails":{"companyName":"SampleCompany","country":"USA","officeAddress":"5678
-        Azure Blvd","businessPhone":"+1234567890","domain":"samplecompany.com","numberOfEmployees":500},"provisioningState":"Succeeded","partnerOrganizationProperties":{"organizationId":"org67890","organizationName":"PartnerOrgForCLITest1","singleSignOnProperties":{"singleSignOnState":"Enable","enterpriseAppId":"app67890","singleSignOnUrl":"https://console.neon.tech/azure/sso/org-super-grass-33609650","aadDomains":["partnerorgtest.com"]}}}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/neonrg/providers/Neon.Postgres/organizations/Neon-Cli-Scenario-Tests","name":"Neon-Cli-Scenario-Tests","type":"neon.postgres/organizations","location":"centraluseuap","tags":{"key":"value"},"systemData":{"createdBy":"sralluri211@outlook.com","createdByType":"User","createdAt":"2025-04-29T10:48:04.0414565Z","lastModifiedBy":"b41fa140-8cb4-43b1-a086-717c2f41909e","lastModifiedByType":"Application","lastModifiedAt":"2025-04-29T10:50:56.5471702Z"},"properties":{"marketplaceDetails":{"subscriptionId":"8e9772d5-6ab6-4c5a-dff6-d9bad3df85d8","subscriptionStatus":"Subscribed","offerDetails":{"publisherId":"neon1722366567200","offerId":"neon_serverless_postgres_azure_prod","planId":"neon_serverless_postgres_azure_prod_free","planName":"Free
+        Plan","termUnit":"P1M","termId":"gmz7xq9ge3py"}},"userDetails":{"firstName":"Srinivas","lastName":"Alluri","emailAddress":"sralluri211@outlook.com","upn":"sralluri211@outlook.com","phoneNumber":"+1234567890"},"companyDetails":{"companyName":"SampleCompany","country":"USA","officeAddress":"5678
+        Azure Blvd","businessPhone":"+1234567890","domain":"samplecompany.com","numberOfEmployees":500},"provisioningState":"Succeeded","partnerOrganizationProperties":{"organizationId":"org-muddy-lab-01043080","organizationName":"Neon-Cli-Scenario-Tests","singleSignOnProperties":{"singleSignOnState":"Enable","enterpriseAppId":"","singleSignOnUrl":"https://console.neon.tech/azure/sso/org-muddy-lab-01043080","aadDomains":[]}},"projectProperties":{"regionId":"eastus2","storage":0,"pgVersion":17,"historyRetention":0,"branch":{"roleName":"onwer_role","databaseName":"neondb","entityName":"main"},"entityName":"TestProject1"}}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1521'
+      - '1730'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 21 Oct 2024 19:04:25 GMT
+      - Tue, 29 Apr 2025 10:51:03 GMT
       etag:
-      - '"0000d649-0000-3300-0000-6716a5b00000"'
+      - '"19000a01-0000-3300-0000-6810af100000"'
       expires:
       - '-1'
       pragma:
@@ -384,7 +532,835 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '3749'
       x-msedge-ref:
-      - 'Ref A: 884C6BD67CA443D0BAEE1D537781E9F2 Ref B: MAA201060516037 Ref C: 2024-10-21T19:04:24Z'
+      - 'Ref A: 7D87F0DF62EB4731BC4F9889D56593B2 Ref B: MAA201060516045 Ref C: 2025-04-29T10:51:03Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"branch": {"databaseName": "clidb", "entityName": "dev-cli-branch",
+      "roleName": "dev_role"}, "pgVersion": 17, "regionId": "eastus2"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neon postgres project create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '149'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-group --organization-name --project-name --pg-version --region
+        --branch
+      User-Agent:
+      - AZURECLI/2.72.0 azsdk-python-core/1.31.0 Python/3.10.11 (Windows-10-10.0.26100-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/neonrg/providers/Neon.Postgres/organizations/Neon-Cli-Scenario-Tests/projects/TestProject2?api-version=2025-03-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/neonrg/providers/Neon.Postgres/organizations/Neon-Cli-Scenario-Tests/projects/TestProject2","name":"TestProject2","type":"neon.postgres/organizations/projects","systemData":{"createdBy":"sralluri211@outlook.com","createdByType":"User","createdAt":"2025-04-29T10:51:05.5300286Z","lastModifiedBy":"sralluri211@outlook.com","lastModifiedByType":"User","lastModifiedAt":"2025-04-29T10:51:05.5300286Z"},"properties":{"regionId":"eastus2","storage":0,"pgVersion":17,"historyRetention":1,"defaultEndpointSettings":{"autoscalingLimitMinCu":0.25,"autoscalingLimitMaxCu":0.25},"branch":{"projectId":"small-math-74041588","parentId":null,"roleName":null,"databaseName":null,"roles":null,"databases":null,"endpoints":null,"attributes":null,"entityId":"br-red-heart-a8pa9ko2","entityName":"main","createdAt":"Apr
+        29, 2025 10:51 AM","provisioningState":null},"roles":[{"branchId":"br-red-heart-a8pa9ko2","permissions":null,"isSuperUser":false,"entityId":null,"entityName":"clidb_owner","createdAt":"Apr
+        29, 2025 10:51 AM","provisioningState":"Succeeded","attributes":null}],"databases":[{"branchId":"br-red-heart-a8pa9ko2","ownerName":"clidb_owner","entityId":null,"entityName":"clidb","createdAt":"Apr
+        29, 2025 10:51 AM","provisioningState":"Succeeded","attributes":null}],"endpoints":[{"projectId":"small-math-74041588","branchId":"br-red-heart-a8pa9ko2","endpointType":"read_write","entityId":null,"entityName":null,"createdAt":"Apr
+        29, 2025 10:51 AM","provisioningState":"Succeeded","attributes":null}],"entityId":"small-math-74041588","entityName":"TestProject2","createdAt":"Apr
+        29, 2025 10:51 AM","provisioningState":"Succeeded","attributes":null}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1715'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 29 Apr 2025 10:51:08 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:726af22e-a98d-41b8-8be8-c1f253ced955
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=f27f5a05-ee13-4d31-b6d9-6bfe7b758c17,objectId=4bbfdfc1-e177-47a1-88cd-1461c549e46e/southeastasia/7f28519a-744c-4bf4-b08a-ae52e88b3321
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: AB250C825CE24DFB908FDEC51DE2EBFB Ref B: MAA201060514037 Ref C: 2025-04-29T10:51:05Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neon postgres project list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --organization-name
+      User-Agent:
+      - AZURECLI/2.72.0 azsdk-python-core/1.31.0 Python/3.10.11 (Windows-10-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/neonrg/providers/Neon.Postgres/organizations/Neon-Cli-Scenario-Tests/projects?api-version=2025-03-01
+  response:
+    body:
+      string: '{"value":[{"properties":{"regionId":"eastus2","storage":0,"pgVersion":17,"historyRetention":0,"entityId":"small-math-74041588","entityName":"TestProject2","createdAt":"Apr
+        29, 2025 10:51 AM","provisioningState":"Succeeded"}},{"properties":{"regionId":"eastus2","storage":0,"pgVersion":17,"historyRetention":0,"entityId":"floral-unit-14000088","entityName":"TestProject1","createdAt":"Apr
+        29, 2025 10:49 AM","provisioningState":"Succeeded"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '442'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 29 Apr 2025 10:51:11 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:726af22e-a98d-41b8-8be8-c1f253ced955
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=f27f5a05-ee13-4d31-b6d9-6bfe7b758c17,objectId=4bbfdfc1-e177-47a1-88cd-1461c549e46e/southeastasia/dae7a186-09a9-4e70-b7b4-ce9a31f17047
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: CB773480735A44468240BE9768D37BAE Ref B: MAA201060515035 Ref C: 2025-04-29T10:51:09Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neon postgres project show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --organization-name --project-id
+      User-Agent:
+      - AZURECLI/2.72.0 azsdk-python-core/1.31.0 Python/3.10.11 (Windows-10-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/neonrg/providers/Neon.Postgres/organizations/Test-Neon-Org-Cli-IT/projects/withered-sea-55021972?api-version=2025-03-01
+  response:
+    body:
+      string: '{"properties":{"regionId":"eastus2","storage":36442128,"pgVersion":17,"historyRetention":1,"defaultEndpointSettings":{"autoscalingLimitMinCu":0.25,"autoscalingLimitMaxCu":0.25},"branch":null,"roles":null,"databases":null,"endpoints":null,"entityId":"withered-sea-55021972","entityName":"Test-Neon-Project-Cli-IT","createdAt":"Apr
+        28, 2025 3:18 PM","provisioningState":"Succeeded","attributes":null}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '399'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 29 Apr 2025 10:51:12 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:726af22e-a98d-41b8-8be8-c1f253ced955
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=f27f5a05-ee13-4d31-b6d9-6bfe7b758c17,objectId=4bbfdfc1-e177-47a1-88cd-1461c549e46e/southeastasia/41661f1b-4532-48a4-a8b5-bbd7961eae6a
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: F0EB75E0949D4BAF83F5CA0D8DEAA83D Ref B: MAA201060516039 Ref C: 2025-04-29T10:51:11Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neon postgres branch list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --organization-name --project-id
+      User-Agent:
+      - AZURECLI/2.72.0 azsdk-python-core/1.31.0 Python/3.10.11 (Windows-10-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/neonrg/providers/Neon.Postgres/organizations/Test-Neon-Org-Cli-IT/projects/withered-sea-55021972/branches?api-version=2025-03-01
+  response:
+    body:
+      string: '{"value":[{"properties":{"projectId":"withered-sea-55021972","parentId":"br-frosty-bird-a85qx3j8","attributes":[{"name":"createdAt","value":"Apr
+        29, 2025 3:57 AM"},{"name":"logicalSize","value":"30842880"},{"name":"cpuUsedSec","value":"78"},{"name":"computeTimeSeconds","value":"78"},{"name":"activeTimeSeconds","value":"304"},{"name":"writtenDataBytes","value":"195880"},{"name":"dataTransferBytes","value":"0"},{"name":"isProtected","value":"false"},{"name":"isDefault","value":"false"},{"name":"lastActive","value":"Apr
+        29, 2025 3:40 AM"},{"name":"autoscalingLimitMinCu","value":"0.25"},{"name":"autoscalingLimitMaxCu","value":"0.25"}],"entityId":"br-purple-recipe-a8e2kkbc","entityName":"dev-cli","createdAt":"Apr
+        29, 2025 3:57 AM","provisioningState":"idle"}},{"properties":{"projectId":"withered-sea-55021972","parentId":"br-frosty-bird-a85qx3j8","attributes":[{"name":"createdAt","value":"Apr
+        29, 2025 3:44 AM"},{"name":"logicalSize","value":"30842880"},{"name":"cpuUsedSec","value":"76"},{"name":"computeTimeSeconds","value":"76"},{"name":"activeTimeSeconds","value":"300"},{"name":"writtenDataBytes","value":"195880"},{"name":"dataTransferBytes","value":"0"},{"name":"isProtected","value":"false"},{"name":"isDefault","value":"false"},{"name":"lastActive","value":"Apr
+        29, 2025 3:40 AM"},{"name":"autoscalingLimitMinCu","value":"0.25"},{"name":"autoscalingLimitMaxCu","value":"0.25"}],"entityId":"br-damp-pond-a81l2vrl","entityName":"dev","createdAt":"Apr
+        29, 2025 3:44 AM","provisioningState":"idle"}},{"properties":{"projectId":"withered-sea-55021972","parentId":"br-frosty-bird-a85qx3j8","attributes":[{"name":"createdAt","value":"Apr
+        29, 2025 3:40 AM"},{"name":"logicalSize","value":"30842880"},{"name":"cpuUsedSec","value":"81"},{"name":"computeTimeSeconds","value":"81"},{"name":"activeTimeSeconds","value":"316"},{"name":"writtenDataBytes","value":"195936"},{"name":"dataTransferBytes","value":"0"},{"name":"isProtected","value":"false"},{"name":"isDefault","value":"false"},{"name":"lastActive","value":"Apr
+        29, 2025 3:40 AM"},{"name":"autoscalingLimitMinCu","value":"0.25"},{"name":"autoscalingLimitMaxCu","value":"0.25"}],"entityId":"br-white-breeze-a8oeqp9e","entityName":"cli-branch","createdAt":"Apr
+        29, 2025 3:40 AM","provisioningState":"idle"}},{"properties":{"projectId":"withered-sea-55021972","parentId":"br-frosty-bird-a85qx3j8","attributes":[{"name":"createdAt","value":"Apr
+        29, 2025 3:29 AM"},{"name":"logicalSize","value":"30842880"},{"name":"cpuUsedSec","value":"81"},{"name":"computeTimeSeconds","value":"81"},{"name":"activeTimeSeconds","value":"316"},{"name":"writtenDataBytes","value":"195936"},{"name":"dataTransferBytes","value":"0"},{"name":"isProtected","value":"false"},{"name":"isDefault","value":"false"},{"name":"lastActive","value":"Apr
+        29, 2025 3:40 AM"},{"name":"autoscalingLimitMinCu","value":"0.25"},{"name":"autoscalingLimitMaxCu","value":"0.25"}],"entityId":"br-calm-tree-a8pe4sit","entityName":"dev-branch","createdAt":"Apr
+        29, 2025 3:29 AM","provisioningState":"idle"}},{"properties":{"projectId":"withered-sea-55021972","attributes":[{"name":"createdAt","value":"Apr
+        28, 2025 3:18 PM"},{"name":"logicalSize","value":"30785536"},{"name":"cpuUsedSec","value":"78"},{"name":"computeTimeSeconds","value":"78"},{"name":"activeTimeSeconds","value":"308"},{"name":"writtenDataBytes","value":"34535520"},{"name":"dataTransferBytes","value":"0"},{"name":"isProtected","value":"false"},{"name":"isDefault","value":"true"},{"name":"lastActive","value":"Apr
+        29, 2025 3:40 AM"},{"name":"autoscalingLimitMinCu","value":"0.25"},{"name":"autoscalingLimitMaxCu","value":"0.25"}],"entityId":"br-frosty-bird-a85qx3j8","entityName":"main","createdAt":"Apr
+        28, 2025 3:18 PM","provisioningState":"idle"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '3738'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 29 Apr 2025 10:51:15 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:726af22e-a98d-41b8-8be8-c1f253ced955
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=f27f5a05-ee13-4d31-b6d9-6bfe7b758c17,objectId=4bbfdfc1-e177-47a1-88cd-1461c549e46e/southeastasia/1df2d174-c5fe-4522-a768-dc5e671d2b70
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: DA3AE0A299AB422B9AEE8207BFDC17FD Ref B: MAA201060515045 Ref C: 2025-04-29T10:51:13Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"databaseName": "neondb", "parentId": "br-frosty-bird-a85qx3j8",
+      "roleName": "onwer_role"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neon postgres branch create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '107'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-group --organization-name --project-name --name --parent-id --role-name
+        --database-name
+      User-Agent:
+      - AZURECLI/2.72.0 azsdk-python-core/1.31.0 Python/3.10.11 (Windows-10-10.0.26100-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/neonrg/providers/Neon.Postgres/organizations/Test-Neon-Org-Cli-IT/projects/withered-sea-55021972/branches/dev-cli-branch?api-version=2025-03-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/neonrg/providers/Neon.Postgres/organizations/Test-Neon-Org-Cli-IT/projects/withered-sea-55021972/branches/dev-cli-branch","name":"dev-cli-branch","type":"neon.postgres/organizations/projects/branches","systemData":{"createdBy":"sralluri211@outlook.com","createdByType":"User","createdAt":"2025-04-29T10:51:16.0773282Z","lastModifiedBy":"sralluri211@outlook.com","lastModifiedByType":"User","lastModifiedAt":"2025-04-29T10:51:16.0773282Z"},"properties":{"projectId":"withered-sea-55021972","parentId":"br-frosty-bird-a85qx3j8","roleName":null,"databaseName":null,"roles":null,"databases":null,"endpoints":null,"attributes":[{"name":"logicalSize","value":""},{"name":"cpuUsedSec","value":"0"},{"name":"computeTimeSeconds","value":"0"},{"name":"activeTimeSeconds","value":"0"},{"name":"writtenDataBytes","value":"0"},{"name":"dataTransferBytes","value":"0"},{"name":"isProtected","value":"false"},{"name":"isDefault","value":"false"}],"entityId":"br-raspy-mouse-a8s9ldcq","entityName":"dev-cli-branch","createdAt":"Apr
+        29, 2025 10:51 AM","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1142'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 29 Apr 2025 10:51:17 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:726af22e-a98d-41b8-8be8-c1f253ced955
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=f27f5a05-ee13-4d31-b6d9-6bfe7b758c17,objectId=4bbfdfc1-e177-47a1-88cd-1461c549e46e/southeastasia/7b806305-ea3b-4bb9-a51c-29542daa601d
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: CD51A6056E5D4FA7A8EB9C090E985ADF Ref B: MAA201060514009 Ref C: 2025-04-29T10:51:15Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neon postgres neon-database list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --organization-name --project-id --branch-id
+      User-Agent:
+      - AZURECLI/2.72.0 azsdk-python-core/1.31.0 Python/3.10.11 (Windows-10-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/neonrg/providers/Neon.Postgres/organizations/Test-Neon-Org-Cli-IT/projects/withered-sea-55021972/branches/br-frosty-bird-a85qx3j8/neonDatabases?api-version=2025-03-01
+  response:
+    body:
+      string: '{"value":[{"properties":{"branchId":"br-frosty-bird-a85qx3j8","ownerName":"neondb_owner","entityId":"1643012","entityName":"neondb","createdAt":"Apr
+        28, 2025 3:18 PM","provisioningState":"Succeeded"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '202'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 29 Apr 2025 10:51:19 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:726af22e-a98d-41b8-8be8-c1f253ced955
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=f27f5a05-ee13-4d31-b6d9-6bfe7b758c17,objectId=4bbfdfc1-e177-47a1-88cd-1461c549e46e/southeastasia/475f11b1-9003-4582-b087-c78ca9b20eb4
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 96398DAAD6ED44079A163206CA583DE9 Ref B: MAA201060513017 Ref C: 2025-04-29T10:51:18Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neon postgres neon-role list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --organization-name --project-id --branch-id
+      User-Agent:
+      - AZURECLI/2.72.0 azsdk-python-core/1.31.0 Python/3.10.11 (Windows-10-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/neonrg/providers/Neon.Postgres/organizations/Test-Neon-Org-Cli-IT/projects/withered-sea-55021972/branches/br-frosty-bird-a85qx3j8/neonRoles?api-version=2025-03-01
+  response:
+    body:
+      string: '{"value":[{"properties":{"branchId":"br-frosty-bird-a85qx3j8","isSuperUser":false,"entityName":"neondb_owner","createdAt":"Apr
+        28, 2025 3:18 PM","provisioningState":"Succeeded"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '180'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 29 Apr 2025 10:51:21 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:726af22e-a98d-41b8-8be8-c1f253ced955
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=f27f5a05-ee13-4d31-b6d9-6bfe7b758c17,objectId=4bbfdfc1-e177-47a1-88cd-1461c549e46e/southeastasia/5048bf47-34c3-4a77-94ca-e8e28a041619
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 11C495AC7BF942BEA9A9E43767443CF3 Ref B: MAA201060514011 Ref C: 2025-04-29T10:51:20Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neon postgres branch delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --resource-group --organization-name --project-id --branch-id --yes
+      User-Agent:
+      - AZURECLI/2.72.0 azsdk-python-core/1.31.0 Python/3.10.11 (Windows-10-10.0.26100-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/neonrg/providers/Neon.Postgres/organizations/Test-Neon-Org-Cli-IT/projects/purple-dew-38706216/branches/br-muddy-cherry-a8wbc7ux?api-version=2025-03-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 29 Apr 2025 10:51:22 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:726af22e-a98d-41b8-8be8-c1f253ced955
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=f27f5a05-ee13-4d31-b6d9-6bfe7b758c17,objectId=4bbfdfc1-e177-47a1-88cd-1461c549e46e/southeastasia/1421d00c-1f00-40ff-8905-b0774d9da41a
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '199'
+      x-ms-ratelimit-remaining-subscription-global-deletes:
+      - '2999'
+      x-msedge-ref:
+      - 'Ref A: 89CFD77A108A43509CACC916815EA251 Ref B: MAA201060514025 Ref C: 2025-04-29T10:51:21Z'
+    status:
+      code: 204
+      message: No Content
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neon postgres project delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --resource-group --organization-name --project-id --yes
+      User-Agent:
+      - AZURECLI/2.72.0 azsdk-python-core/1.31.0 Python/3.10.11 (Windows-10-10.0.26100-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/neonrg/providers/Neon.Postgres/organizations/Test-Neon-Org-Cli-IT/projects/purple-dew-38706216?api-version=2025-03-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 29 Apr 2025 10:51:24 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:726af22e-a98d-41b8-8be8-c1f253ced955
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=f27f5a05-ee13-4d31-b6d9-6bfe7b758c17,objectId=4bbfdfc1-e177-47a1-88cd-1461c549e46e/southeastasia/dd5a6631-be13-4be7-83cc-a86920b1ed97
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '199'
+      x-ms-ratelimit-remaining-subscription-global-deletes:
+      - '2999'
+      x-msedge-ref:
+      - 'Ref A: 9098C5E227E346F7AA2DF70A7E088F86 Ref B: MAA201060514045 Ref C: 2025-04-29T10:51:23Z'
+    status:
+      code: 204
+      message: No Content
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neon postgres organization delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --resource-group --name --subscription --yes
+      User-Agent:
+      - AZURECLI/2.72.0 azsdk-python-core/1.31.0 Python/3.10.11 (Windows-10-10.0.26100-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/neonrg/providers/Neon.Postgres/organizations/Neon-Cli-Scenario-Tests?api-version=2025-03-01
+  response:
+    body:
+      string: 'null'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/providers/Neon.Postgres/locations/CENTRALUSEUAP/operationStatuses/0eaaa81b-4e19-4202-8562-c2c111b18749*33080CDAA3B48581D06C07FC6F0AD979F8AED23E1755AAE02BB4B231A29799C4?api-version=2025-03-01&t=638815206900457549&c=MIIHhzCCBm-gAwIBAgITfAeDEnPW_KxJbq8EjgAAB4MSczANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjUwNDIwMTUyMDI3WhcNMjUxMDE3MTUyMDI3WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALO1SAvt4DI7FxxBmZBcfoKDLiXpS8U5adZbRlRvVm-EcAWqGNnVo1AxaXu3ghKMY95LxffhvcYAZ56WhgOxA_gpAUzm4t0yW0aVzv7vAOWZHIG1fvTcWY_sHCkuTyCNAcRbNbaqbidaK9ZOTQ19baUQ26kVkP7tjTi6DWWRlM25d4YQcGaWJoBwUtol-hgB5Z_rVMljRF5Q1T9_3YpRBw57SpHvmb30JNQSpndyeu--Ip8pMwpNaiIRF70G8WfbTBoJhRqNqNAKBLU3CAVV4H6lYrXtSK-gkZC0EzjZ4ze_XVDGBd1sOPsbMx4aQgZEiuDJuuk9eqTzzur3IDUdrP0CAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBSRrAa71kVppeoZonY7QPy_R7XWQzAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAChQXwS0_EaMb7G3BWGDeoNhAAEaoKkJVUy5HVGyWKADFm6Tp2WidwOIMoOu-IuoA634ORJ7bIwsC2WhUA0Z8-c2AAD956dAtCkn5pEBXSqwuKMM3l9KOClAY1RiAQcP-GWtmb_mqZspO78GHaq-mwiyIDUICM-uZl-qR6UVt6rLn5xPqHNkenxrslS_G3IJ9yCV1sflxhz93B7VR9H7BtOxd_nqZOD5uSV3OpPnATTRO0KB3VBbZ0KqvdtWoHjNywLqMuhJUufHw2zmlQ-Yj3ndha_yTvOQlT-85ikSoyWI0P4_GeEwX9RdkiVHVzx3gR8HzFKkJXOwRvxQE_9Ov_0&s=DjqHmMZ_XfjBYyb8_F8E1uhxojOPdK7NW7ZBCD3ygeZHotvmoHI2wDPwro_tmigQEF9BO-wez-i8v5q7p2LKQ__qPdDZJbUr_nQiucSHgtCvDvuWZGPPKi9PNoYcBYHGnGFEbm39TS2viuc9okjYOJ0_bftq-tba7j6IARMRHi4cLsfy_OID-NHQhIINdwAz931k_HAjySAOqFUbTf2OMxQ4l1dQnacCYtBYRU4QaTEWCeH5ISyd5oVM1rI4XYhMZu8x0iAG3fjCeayWujSC-u9dhOr4zB8Yf17BPnQC1wQjOVvtRovtAK5PDBaCS5-APp-YqmzNXJzgNZVfHlRIAg&h=mW8wPs6rJTkdKHUARxRCj0MdDV7ghioYaGNi9xAeZ7k
+      cache-control:
+      - no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 29 Apr 2025 10:51:29 GMT
+      etag:
+      - '"19004b01-0000-3300-0000-6810af310000"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/providers/Neon.Postgres/locations/CENTRALUSEUAP/operationStatuses/0eaaa81b-4e19-4202-8562-c2c111b18749*33080CDAA3B48581D06C07FC6F0AD979F8AED23E1755AAE02BB4B231A29799C4?api-version=2025-03-01&t=638815206900457549&c=MIIHhzCCBm-gAwIBAgITfAeDEnPW_KxJbq8EjgAAB4MSczANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjUwNDIwMTUyMDI3WhcNMjUxMDE3MTUyMDI3WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALO1SAvt4DI7FxxBmZBcfoKDLiXpS8U5adZbRlRvVm-EcAWqGNnVo1AxaXu3ghKMY95LxffhvcYAZ56WhgOxA_gpAUzm4t0yW0aVzv7vAOWZHIG1fvTcWY_sHCkuTyCNAcRbNbaqbidaK9ZOTQ19baUQ26kVkP7tjTi6DWWRlM25d4YQcGaWJoBwUtol-hgB5Z_rVMljRF5Q1T9_3YpRBw57SpHvmb30JNQSpndyeu--Ip8pMwpNaiIRF70G8WfbTBoJhRqNqNAKBLU3CAVV4H6lYrXtSK-gkZC0EzjZ4ze_XVDGBd1sOPsbMx4aQgZEiuDJuuk9eqTzzur3IDUdrP0CAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBSRrAa71kVppeoZonY7QPy_R7XWQzAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAChQXwS0_EaMb7G3BWGDeoNhAAEaoKkJVUy5HVGyWKADFm6Tp2WidwOIMoOu-IuoA634ORJ7bIwsC2WhUA0Z8-c2AAD956dAtCkn5pEBXSqwuKMM3l9KOClAY1RiAQcP-GWtmb_mqZspO78GHaq-mwiyIDUICM-uZl-qR6UVt6rLn5xPqHNkenxrslS_G3IJ9yCV1sflxhz93B7VR9H7BtOxd_nqZOD5uSV3OpPnATTRO0KB3VBbZ0KqvdtWoHjNywLqMuhJUufHw2zmlQ-Yj3ndha_yTvOQlT-85ikSoyWI0P4_GeEwX9RdkiVHVzx3gR8HzFKkJXOwRvxQE_9Ov_0&s=DjqHmMZ_XfjBYyb8_F8E1uhxojOPdK7NW7ZBCD3ygeZHotvmoHI2wDPwro_tmigQEF9BO-wez-i8v5q7p2LKQ__qPdDZJbUr_nQiucSHgtCvDvuWZGPPKi9PNoYcBYHGnGFEbm39TS2viuc9okjYOJ0_bftq-tba7j6IARMRHi4cLsfy_OID-NHQhIINdwAz931k_HAjySAOqFUbTf2OMxQ4l1dQnacCYtBYRU4QaTEWCeH5ISyd5oVM1rI4XYhMZu8x0iAG3fjCeayWujSC-u9dhOr4zB8Yf17BPnQC1wQjOVvtRovtAK5PDBaCS5-APp-YqmzNXJzgNZVfHlRIAg&h=mW8wPs6rJTkdKHUARxRCj0MdDV7ghioYaGNi9xAeZ7k
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:726af22e-a98d-41b8-8be8-c1f253ced955
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=f27f5a05-ee13-4d31-b6d9-6bfe7b758c17,objectId=4bbfdfc1-e177-47a1-88cd-1461c549e46e/southeastasia/24edea16-cd6b-4b2e-bd85-5a4d5c75e711
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '199'
+      x-ms-ratelimit-remaining-subscription-global-deletes:
+      - '2999'
+      x-msedge-ref:
+      - 'Ref A: A832F1A61CE1497A9B554026A6C25515 Ref B: MAA201060513009 Ref C: 2025-04-29T10:51:25Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neon postgres organization delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --subscription --yes
+      User-Agent:
+      - AZURECLI/2.72.0 azsdk-python-core/1.31.0 Python/3.10.11 (Windows-10-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Neon.Postgres/locations/CENTRALUSEUAP/operationStatuses/0eaaa81b-4e19-4202-8562-c2c111b18749*33080CDAA3B48581D06C07FC6F0AD979F8AED23E1755AAE02BB4B231A29799C4?api-version=2025-03-01&t=638815206900457549&c=MIIHhzCCBm-gAwIBAgITfAeDEnPW_KxJbq8EjgAAB4MSczANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjUwNDIwMTUyMDI3WhcNMjUxMDE3MTUyMDI3WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALO1SAvt4DI7FxxBmZBcfoKDLiXpS8U5adZbRlRvVm-EcAWqGNnVo1AxaXu3ghKMY95LxffhvcYAZ56WhgOxA_gpAUzm4t0yW0aVzv7vAOWZHIG1fvTcWY_sHCkuTyCNAcRbNbaqbidaK9ZOTQ19baUQ26kVkP7tjTi6DWWRlM25d4YQcGaWJoBwUtol-hgB5Z_rVMljRF5Q1T9_3YpRBw57SpHvmb30JNQSpndyeu--Ip8pMwpNaiIRF70G8WfbTBoJhRqNqNAKBLU3CAVV4H6lYrXtSK-gkZC0EzjZ4ze_XVDGBd1sOPsbMx4aQgZEiuDJuuk9eqTzzur3IDUdrP0CAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBSRrAa71kVppeoZonY7QPy_R7XWQzAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAChQXwS0_EaMb7G3BWGDeoNhAAEaoKkJVUy5HVGyWKADFm6Tp2WidwOIMoOu-IuoA634ORJ7bIwsC2WhUA0Z8-c2AAD956dAtCkn5pEBXSqwuKMM3l9KOClAY1RiAQcP-GWtmb_mqZspO78GHaq-mwiyIDUICM-uZl-qR6UVt6rLn5xPqHNkenxrslS_G3IJ9yCV1sflxhz93B7VR9H7BtOxd_nqZOD5uSV3OpPnATTRO0KB3VBbZ0KqvdtWoHjNywLqMuhJUufHw2zmlQ-Yj3ndha_yTvOQlT-85ikSoyWI0P4_GeEwX9RdkiVHVzx3gR8HzFKkJXOwRvxQE_9Ov_0&s=DjqHmMZ_XfjBYyb8_F8E1uhxojOPdK7NW7ZBCD3ygeZHotvmoHI2wDPwro_tmigQEF9BO-wez-i8v5q7p2LKQ__qPdDZJbUr_nQiucSHgtCvDvuWZGPPKi9PNoYcBYHGnGFEbm39TS2viuc9okjYOJ0_bftq-tba7j6IARMRHi4cLsfy_OID-NHQhIINdwAz931k_HAjySAOqFUbTf2OMxQ4l1dQnacCYtBYRU4QaTEWCeH5ISyd5oVM1rI4XYhMZu8x0iAG3fjCeayWujSC-u9dhOr4zB8Yf17BPnQC1wQjOVvtRovtAK5PDBaCS5-APp-YqmzNXJzgNZVfHlRIAg&h=mW8wPs6rJTkdKHUARxRCj0MdDV7ghioYaGNi9xAeZ7k
+  response:
+    body:
+      string: '{"id":"/providers/Neon.Postgres/locations/CENTRALUSEUAP/operationStatuses/0eaaa81b-4e19-4202-8562-c2c111b18749*33080CDAA3B48581D06C07FC6F0AD979F8AED23E1755AAE02BB4B231A29799C4","name":"0eaaa81b-4e19-4202-8562-c2c111b18749*33080CDAA3B48581D06C07FC6F0AD979F8AED23E1755AAE02BB4B231A29799C4","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/neonrg/providers/Neon.Postgres/organizations/Neon-Cli-Scenario-Tests","status":"Deleting","startTime":"2025-04-29T10:51:26.962942Z"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/providers/Neon.Postgres/locations/centraluseuap/operationStatuses/0eaaa81b-4e19-4202-8562-c2c111b18749*33080CDAA3B48581D06C07FC6F0AD979F8AED23E1755AAE02BB4B231A29799C4?api-version=2025-03-01&t=638815206914218661&c=MIIHhzCCBm-gAwIBAgITfAeDEnPW_KxJbq8EjgAAB4MSczANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjUwNDIwMTUyMDI3WhcNMjUxMDE3MTUyMDI3WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALO1SAvt4DI7FxxBmZBcfoKDLiXpS8U5adZbRlRvVm-EcAWqGNnVo1AxaXu3ghKMY95LxffhvcYAZ56WhgOxA_gpAUzm4t0yW0aVzv7vAOWZHIG1fvTcWY_sHCkuTyCNAcRbNbaqbidaK9ZOTQ19baUQ26kVkP7tjTi6DWWRlM25d4YQcGaWJoBwUtol-hgB5Z_rVMljRF5Q1T9_3YpRBw57SpHvmb30JNQSpndyeu--Ip8pMwpNaiIRF70G8WfbTBoJhRqNqNAKBLU3CAVV4H6lYrXtSK-gkZC0EzjZ4ze_XVDGBd1sOPsbMx4aQgZEiuDJuuk9eqTzzur3IDUdrP0CAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBSRrAa71kVppeoZonY7QPy_R7XWQzAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAChQXwS0_EaMb7G3BWGDeoNhAAEaoKkJVUy5HVGyWKADFm6Tp2WidwOIMoOu-IuoA634ORJ7bIwsC2WhUA0Z8-c2AAD956dAtCkn5pEBXSqwuKMM3l9KOClAY1RiAQcP-GWtmb_mqZspO78GHaq-mwiyIDUICM-uZl-qR6UVt6rLn5xPqHNkenxrslS_G3IJ9yCV1sflxhz93B7VR9H7BtOxd_nqZOD5uSV3OpPnATTRO0KB3VBbZ0KqvdtWoHjNywLqMuhJUufHw2zmlQ-Yj3ndha_yTvOQlT-85ikSoyWI0P4_GeEwX9RdkiVHVzx3gR8HzFKkJXOwRvxQE_9Ov_0&s=UFzX0USF_ND3OcGRMvRPo2NxYJna5aJhQMQScirJkYe4xReRDgiImz6IDb87VKmHXz1E-3u9Yhp9L0iIlknJO5LIlGXpQLAgOD5JKnakMy2uQG6McQvuwoy0IyFy2aDuxIhXGrQFGXcpASCP9etlWC2SUXNZtbH_1GAGQZGOZaSiwRnlXak_hODB5HNspkkRdY4GDSAo3YrxERYe4xyuSEWhpQvYENOh8CxiH-PNe5zChZPd11z1IfDX3ysk3K7coP3o5rLqCs-8J5hPl-iYk68QP43HB4ZvUjrozRNGMvjAzxwr8u41rxktVFpHtpgtGlSaN_RZ1bHgUrrOmdcTQw&h=G1QAFLjoIsYQ4v5iWgs8FFERrishsA1CPZD2Lr5afUQ
+      cache-control:
+      - no-cache
+      content-length:
+      - '501'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 29 Apr 2025 10:51:31 GMT
+      etag:
+      - '"150040b3-0000-3300-0000-6810af2f0000"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/providers/Neon.Postgres/locations/centraluseuap/operationStatuses/0eaaa81b-4e19-4202-8562-c2c111b18749*33080CDAA3B48581D06C07FC6F0AD979F8AED23E1755AAE02BB4B231A29799C4?api-version=2025-03-01&t=638815206914218661&c=MIIHhzCCBm-gAwIBAgITfAeDEnPW_KxJbq8EjgAAB4MSczANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjUwNDIwMTUyMDI3WhcNMjUxMDE3MTUyMDI3WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALO1SAvt4DI7FxxBmZBcfoKDLiXpS8U5adZbRlRvVm-EcAWqGNnVo1AxaXu3ghKMY95LxffhvcYAZ56WhgOxA_gpAUzm4t0yW0aVzv7vAOWZHIG1fvTcWY_sHCkuTyCNAcRbNbaqbidaK9ZOTQ19baUQ26kVkP7tjTi6DWWRlM25d4YQcGaWJoBwUtol-hgB5Z_rVMljRF5Q1T9_3YpRBw57SpHvmb30JNQSpndyeu--Ip8pMwpNaiIRF70G8WfbTBoJhRqNqNAKBLU3CAVV4H6lYrXtSK-gkZC0EzjZ4ze_XVDGBd1sOPsbMx4aQgZEiuDJuuk9eqTzzur3IDUdrP0CAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBSRrAa71kVppeoZonY7QPy_R7XWQzAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAChQXwS0_EaMb7G3BWGDeoNhAAEaoKkJVUy5HVGyWKADFm6Tp2WidwOIMoOu-IuoA634ORJ7bIwsC2WhUA0Z8-c2AAD956dAtCkn5pEBXSqwuKMM3l9KOClAY1RiAQcP-GWtmb_mqZspO78GHaq-mwiyIDUICM-uZl-qR6UVt6rLn5xPqHNkenxrslS_G3IJ9yCV1sflxhz93B7VR9H7BtOxd_nqZOD5uSV3OpPnATTRO0KB3VBbZ0KqvdtWoHjNywLqMuhJUufHw2zmlQ-Yj3ndha_yTvOQlT-85ikSoyWI0P4_GeEwX9RdkiVHVzx3gR8HzFKkJXOwRvxQE_9Ov_0&s=UFzX0USF_ND3OcGRMvRPo2NxYJna5aJhQMQScirJkYe4xReRDgiImz6IDb87VKmHXz1E-3u9Yhp9L0iIlknJO5LIlGXpQLAgOD5JKnakMy2uQG6McQvuwoy0IyFy2aDuxIhXGrQFGXcpASCP9etlWC2SUXNZtbH_1GAGQZGOZaSiwRnlXak_hODB5HNspkkRdY4GDSAo3YrxERYe4xyuSEWhpQvYENOh8CxiH-PNe5zChZPd11z1IfDX3ysk3K7coP3o5rLqCs-8J5hPl-iYk68QP43HB4ZvUjrozRNGMvjAzxwr8u41rxktVFpHtpgtGlSaN_RZ1bHgUrrOmdcTQw&h=G1QAFLjoIsYQ4v5iWgs8FFERrishsA1CPZD2Lr5afUQ
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - ''
+      x-msedge-ref:
+      - 'Ref A: 25469B537F9C4D77B551EF38DFA18035 Ref B: MAA201060513009 Ref C: 2025-04-29T10:51:30Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neon postgres organization delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --subscription --yes
+      User-Agent:
+      - AZURECLI/2.72.0 azsdk-python-core/1.31.0 Python/3.10.11 (Windows-10-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Neon.Postgres/locations/CENTRALUSEUAP/operationStatuses/0eaaa81b-4e19-4202-8562-c2c111b18749*33080CDAA3B48581D06C07FC6F0AD979F8AED23E1755AAE02BB4B231A29799C4?api-version=2025-03-01&t=638815206900457549&c=MIIHhzCCBm-gAwIBAgITfAeDEnPW_KxJbq8EjgAAB4MSczANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjUwNDIwMTUyMDI3WhcNMjUxMDE3MTUyMDI3WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALO1SAvt4DI7FxxBmZBcfoKDLiXpS8U5adZbRlRvVm-EcAWqGNnVo1AxaXu3ghKMY95LxffhvcYAZ56WhgOxA_gpAUzm4t0yW0aVzv7vAOWZHIG1fvTcWY_sHCkuTyCNAcRbNbaqbidaK9ZOTQ19baUQ26kVkP7tjTi6DWWRlM25d4YQcGaWJoBwUtol-hgB5Z_rVMljRF5Q1T9_3YpRBw57SpHvmb30JNQSpndyeu--Ip8pMwpNaiIRF70G8WfbTBoJhRqNqNAKBLU3CAVV4H6lYrXtSK-gkZC0EzjZ4ze_XVDGBd1sOPsbMx4aQgZEiuDJuuk9eqTzzur3IDUdrP0CAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBSRrAa71kVppeoZonY7QPy_R7XWQzAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAChQXwS0_EaMb7G3BWGDeoNhAAEaoKkJVUy5HVGyWKADFm6Tp2WidwOIMoOu-IuoA634ORJ7bIwsC2WhUA0Z8-c2AAD956dAtCkn5pEBXSqwuKMM3l9KOClAY1RiAQcP-GWtmb_mqZspO78GHaq-mwiyIDUICM-uZl-qR6UVt6rLn5xPqHNkenxrslS_G3IJ9yCV1sflxhz93B7VR9H7BtOxd_nqZOD5uSV3OpPnATTRO0KB3VBbZ0KqvdtWoHjNywLqMuhJUufHw2zmlQ-Yj3ndha_yTvOQlT-85ikSoyWI0P4_GeEwX9RdkiVHVzx3gR8HzFKkJXOwRvxQE_9Ov_0&s=DjqHmMZ_XfjBYyb8_F8E1uhxojOPdK7NW7ZBCD3ygeZHotvmoHI2wDPwro_tmigQEF9BO-wez-i8v5q7p2LKQ__qPdDZJbUr_nQiucSHgtCvDvuWZGPPKi9PNoYcBYHGnGFEbm39TS2viuc9okjYOJ0_bftq-tba7j6IARMRHi4cLsfy_OID-NHQhIINdwAz931k_HAjySAOqFUbTf2OMxQ4l1dQnacCYtBYRU4QaTEWCeH5ISyd5oVM1rI4XYhMZu8x0iAG3fjCeayWujSC-u9dhOr4zB8Yf17BPnQC1wQjOVvtRovtAK5PDBaCS5-APp-YqmzNXJzgNZVfHlRIAg&h=mW8wPs6rJTkdKHUARxRCj0MdDV7ghioYaGNi9xAeZ7k
+  response:
+    body:
+      string: '{"id":"/providers/Neon.Postgres/locations/CENTRALUSEUAP/operationStatuses/0eaaa81b-4e19-4202-8562-c2c111b18749*33080CDAA3B48581D06C07FC6F0AD979F8AED23E1755AAE02BB4B231A29799C4","name":"0eaaa81b-4e19-4202-8562-c2c111b18749*33080CDAA3B48581D06C07FC6F0AD979F8AED23E1755AAE02BB4B231A29799C4","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/neonrg/providers/Neon.Postgres/organizations/Neon-Cli-Scenario-Tests","status":"Deleting","startTime":"2025-04-29T10:51:26.962942Z"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/providers/Neon.Postgres/locations/centraluseuap/operationStatuses/0eaaa81b-4e19-4202-8562-c2c111b18749*33080CDAA3B48581D06C07FC6F0AD979F8AED23E1755AAE02BB4B231A29799C4?api-version=2025-03-01&t=638815207220844732&c=MIIHhzCCBm-gAwIBAgITfAeDEnPW_KxJbq8EjgAAB4MSczANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjUwNDIwMTUyMDI3WhcNMjUxMDE3MTUyMDI3WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALO1SAvt4DI7FxxBmZBcfoKDLiXpS8U5adZbRlRvVm-EcAWqGNnVo1AxaXu3ghKMY95LxffhvcYAZ56WhgOxA_gpAUzm4t0yW0aVzv7vAOWZHIG1fvTcWY_sHCkuTyCNAcRbNbaqbidaK9ZOTQ19baUQ26kVkP7tjTi6DWWRlM25d4YQcGaWJoBwUtol-hgB5Z_rVMljRF5Q1T9_3YpRBw57SpHvmb30JNQSpndyeu--Ip8pMwpNaiIRF70G8WfbTBoJhRqNqNAKBLU3CAVV4H6lYrXtSK-gkZC0EzjZ4ze_XVDGBd1sOPsbMx4aQgZEiuDJuuk9eqTzzur3IDUdrP0CAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBSRrAa71kVppeoZonY7QPy_R7XWQzAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAChQXwS0_EaMb7G3BWGDeoNhAAEaoKkJVUy5HVGyWKADFm6Tp2WidwOIMoOu-IuoA634ORJ7bIwsC2WhUA0Z8-c2AAD956dAtCkn5pEBXSqwuKMM3l9KOClAY1RiAQcP-GWtmb_mqZspO78GHaq-mwiyIDUICM-uZl-qR6UVt6rLn5xPqHNkenxrslS_G3IJ9yCV1sflxhz93B7VR9H7BtOxd_nqZOD5uSV3OpPnATTRO0KB3VBbZ0KqvdtWoHjNywLqMuhJUufHw2zmlQ-Yj3ndha_yTvOQlT-85ikSoyWI0P4_GeEwX9RdkiVHVzx3gR8HzFKkJXOwRvxQE_9Ov_0&s=dRCS2cbr1qkPLMOBZIJf0Tg_AIFcWSb6ANxX6C_P5O03jbvWNmJcWRRHUGdkZJMO-BdDFfcBN7iKDf-AZCXue1u4wUJ147YL-Nlv8GJfe_pqh26zdPHqnrU-QqklD3G7CXezJ_5kZg_8rc992VwTDbCJf-4sNsfak9zoxNv1SHH8ebBBKz6GL26mKhL-7Cpy237-ABsGQ31zOwSVjG3n5NVlnWnbW74ih-qSfXFhscpVK0P3xuhgeHI3i0tBPFOZKV2uaMg0XlnG1PlxZzM_Y5s0bHv3j0woSUyZ8eARBo_xgSSQfBqdeiwqtmIPlXCJP16txo9c0ZpDvxwUk2thlQ&h=YcKJurNRv0-KN_MlM4rFayZM1jlPGwhtcCYA4tSYsmM
+      cache-control:
+      - no-cache
+      content-length:
+      - '501'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 29 Apr 2025 10:52:01 GMT
+      etag:
+      - '"150040b3-0000-3300-0000-6810af2f0000"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/providers/Neon.Postgres/locations/centraluseuap/operationStatuses/0eaaa81b-4e19-4202-8562-c2c111b18749*33080CDAA3B48581D06C07FC6F0AD979F8AED23E1755AAE02BB4B231A29799C4?api-version=2025-03-01&t=638815207221000967&c=MIIHhzCCBm-gAwIBAgITfAeDEnPW_KxJbq8EjgAAB4MSczANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjUwNDIwMTUyMDI3WhcNMjUxMDE3MTUyMDI3WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALO1SAvt4DI7FxxBmZBcfoKDLiXpS8U5adZbRlRvVm-EcAWqGNnVo1AxaXu3ghKMY95LxffhvcYAZ56WhgOxA_gpAUzm4t0yW0aVzv7vAOWZHIG1fvTcWY_sHCkuTyCNAcRbNbaqbidaK9ZOTQ19baUQ26kVkP7tjTi6DWWRlM25d4YQcGaWJoBwUtol-hgB5Z_rVMljRF5Q1T9_3YpRBw57SpHvmb30JNQSpndyeu--Ip8pMwpNaiIRF70G8WfbTBoJhRqNqNAKBLU3CAVV4H6lYrXtSK-gkZC0EzjZ4ze_XVDGBd1sOPsbMx4aQgZEiuDJuuk9eqTzzur3IDUdrP0CAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBSRrAa71kVppeoZonY7QPy_R7XWQzAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAChQXwS0_EaMb7G3BWGDeoNhAAEaoKkJVUy5HVGyWKADFm6Tp2WidwOIMoOu-IuoA634ORJ7bIwsC2WhUA0Z8-c2AAD956dAtCkn5pEBXSqwuKMM3l9KOClAY1RiAQcP-GWtmb_mqZspO78GHaq-mwiyIDUICM-uZl-qR6UVt6rLn5xPqHNkenxrslS_G3IJ9yCV1sflxhz93B7VR9H7BtOxd_nqZOD5uSV3OpPnATTRO0KB3VBbZ0KqvdtWoHjNywLqMuhJUufHw2zmlQ-Yj3ndha_yTvOQlT-85ikSoyWI0P4_GeEwX9RdkiVHVzx3gR8HzFKkJXOwRvxQE_9Ov_0&s=K4Imvnohog0JvnO_X9G-SGyRfEZrH82c0j2TTTlKQIiIyvPd7tqO7k6uzSZj37CguIKjrjkdeQvPnSru9DrapC3Tq3BqOXJycpmomBYx9Bynk6QPcGJaKS-W4yemZge28jIY0wdyYBCDX7Fd0dc2so4dN8RMZh1ZUvdZSskTDqqouVqfBYLbHLajZcbZtoRKvdpICRF-4qhCymVXsza4iKBILfw9CVEG8K2Yow_g5QoNu1Tskk0sW9ownfEcWV7dyyui2AekPvseNOXiPXliOmXt9Bp-nl8tOxqkkcYZhoDvntxnNUKRkVtmRfKu4ojwm5VudMKFzpIsuPXHdVah8w&h=qi6JUZxqO8pvNcrN6X-w4gRCLdEKu2e3hSLovbJLNzw
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - ''
+      x-msedge-ref:
+      - 'Ref A: 8612CC59D0374044987409FDE7AD2A7C Ref B: MAA201060513009 Ref C: 2025-04-29T10:52:01Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neon postgres organization delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --subscription --yes
+      User-Agent:
+      - AZURECLI/2.72.0 azsdk-python-core/1.31.0 Python/3.10.11 (Windows-10-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Neon.Postgres/locations/CENTRALUSEUAP/operationStatuses/0eaaa81b-4e19-4202-8562-c2c111b18749*33080CDAA3B48581D06C07FC6F0AD979F8AED23E1755AAE02BB4B231A29799C4?api-version=2025-03-01&t=638815206900457549&c=MIIHhzCCBm-gAwIBAgITfAeDEnPW_KxJbq8EjgAAB4MSczANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjUwNDIwMTUyMDI3WhcNMjUxMDE3MTUyMDI3WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALO1SAvt4DI7FxxBmZBcfoKDLiXpS8U5adZbRlRvVm-EcAWqGNnVo1AxaXu3ghKMY95LxffhvcYAZ56WhgOxA_gpAUzm4t0yW0aVzv7vAOWZHIG1fvTcWY_sHCkuTyCNAcRbNbaqbidaK9ZOTQ19baUQ26kVkP7tjTi6DWWRlM25d4YQcGaWJoBwUtol-hgB5Z_rVMljRF5Q1T9_3YpRBw57SpHvmb30JNQSpndyeu--Ip8pMwpNaiIRF70G8WfbTBoJhRqNqNAKBLU3CAVV4H6lYrXtSK-gkZC0EzjZ4ze_XVDGBd1sOPsbMx4aQgZEiuDJuuk9eqTzzur3IDUdrP0CAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBSRrAa71kVppeoZonY7QPy_R7XWQzAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAChQXwS0_EaMb7G3BWGDeoNhAAEaoKkJVUy5HVGyWKADFm6Tp2WidwOIMoOu-IuoA634ORJ7bIwsC2WhUA0Z8-c2AAD956dAtCkn5pEBXSqwuKMM3l9KOClAY1RiAQcP-GWtmb_mqZspO78GHaq-mwiyIDUICM-uZl-qR6UVt6rLn5xPqHNkenxrslS_G3IJ9yCV1sflxhz93B7VR9H7BtOxd_nqZOD5uSV3OpPnATTRO0KB3VBbZ0KqvdtWoHjNywLqMuhJUufHw2zmlQ-Yj3ndha_yTvOQlT-85ikSoyWI0P4_GeEwX9RdkiVHVzx3gR8HzFKkJXOwRvxQE_9Ov_0&s=DjqHmMZ_XfjBYyb8_F8E1uhxojOPdK7NW7ZBCD3ygeZHotvmoHI2wDPwro_tmigQEF9BO-wez-i8v5q7p2LKQ__qPdDZJbUr_nQiucSHgtCvDvuWZGPPKi9PNoYcBYHGnGFEbm39TS2viuc9okjYOJ0_bftq-tba7j6IARMRHi4cLsfy_OID-NHQhIINdwAz931k_HAjySAOqFUbTf2OMxQ4l1dQnacCYtBYRU4QaTEWCeH5ISyd5oVM1rI4XYhMZu8x0iAG3fjCeayWujSC-u9dhOr4zB8Yf17BPnQC1wQjOVvtRovtAK5PDBaCS5-APp-YqmzNXJzgNZVfHlRIAg&h=mW8wPs6rJTkdKHUARxRCj0MdDV7ghioYaGNi9xAeZ7k
+  response:
+    body:
+      string: '{"id":"/providers/Neon.Postgres/locations/CENTRALUSEUAP/operationStatuses/0eaaa81b-4e19-4202-8562-c2c111b18749*33080CDAA3B48581D06C07FC6F0AD979F8AED23E1755AAE02BB4B231A29799C4","name":"0eaaa81b-4e19-4202-8562-c2c111b18749*33080CDAA3B48581D06C07FC6F0AD979F8AED23E1755AAE02BB4B231A29799C4","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/neonrg/providers/Neon.Postgres/organizations/Neon-Cli-Scenario-Tests","status":"Deleting","startTime":"2025-04-29T10:51:26.962942Z"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/providers/Neon.Postgres/locations/centraluseuap/operationStatuses/0eaaa81b-4e19-4202-8562-c2c111b18749*33080CDAA3B48581D06C07FC6F0AD979F8AED23E1755AAE02BB4B231A29799C4?api-version=2025-03-01&t=638815207534194655&c=MIIHhzCCBm-gAwIBAgITfAeDEnPW_KxJbq8EjgAAB4MSczANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjUwNDIwMTUyMDI3WhcNMjUxMDE3MTUyMDI3WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALO1SAvt4DI7FxxBmZBcfoKDLiXpS8U5adZbRlRvVm-EcAWqGNnVo1AxaXu3ghKMY95LxffhvcYAZ56WhgOxA_gpAUzm4t0yW0aVzv7vAOWZHIG1fvTcWY_sHCkuTyCNAcRbNbaqbidaK9ZOTQ19baUQ26kVkP7tjTi6DWWRlM25d4YQcGaWJoBwUtol-hgB5Z_rVMljRF5Q1T9_3YpRBw57SpHvmb30JNQSpndyeu--Ip8pMwpNaiIRF70G8WfbTBoJhRqNqNAKBLU3CAVV4H6lYrXtSK-gkZC0EzjZ4ze_XVDGBd1sOPsbMx4aQgZEiuDJuuk9eqTzzur3IDUdrP0CAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBSRrAa71kVppeoZonY7QPy_R7XWQzAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAChQXwS0_EaMb7G3BWGDeoNhAAEaoKkJVUy5HVGyWKADFm6Tp2WidwOIMoOu-IuoA634ORJ7bIwsC2WhUA0Z8-c2AAD956dAtCkn5pEBXSqwuKMM3l9KOClAY1RiAQcP-GWtmb_mqZspO78GHaq-mwiyIDUICM-uZl-qR6UVt6rLn5xPqHNkenxrslS_G3IJ9yCV1sflxhz93B7VR9H7BtOxd_nqZOD5uSV3OpPnATTRO0KB3VBbZ0KqvdtWoHjNywLqMuhJUufHw2zmlQ-Yj3ndha_yTvOQlT-85ikSoyWI0P4_GeEwX9RdkiVHVzx3gR8HzFKkJXOwRvxQE_9Ov_0&s=gbjp4LHVnJivY0D3ONE5EFwFMb8zuufacern5FCy3BBD6uDfWewan1t1ExnebDYW-5ZAbNnXTLsYR3U0Raj2Xg2qDFcuZpHNW9DeUrZ7C1abfS3flXiKDtl4oCjMg7YfncI1G-EgEULjm0M64fbkp_UUw6DjbZOQG-gWYAJ-Dmi4NGPrAP7zsCw12H2QemO8ZjfOEJ58INq1JpLfnYsT2NJidKAWycDlRmVu-HHZzEHDJpKlKbFZGFlpokVJNwJDbljmxytyckx0LPdTcmKQ6LTfs7Bq06r1U-zxq420TZEjzwy9JPYh96G6xsO2MNEjkbpBMZ0mg_TMLV7ICxR5hA&h=4UZ_z-jazdVIQPXUjN901_xDAOwtS922S0Tvsmy5egc
+      cache-control:
+      - no-cache
+      content-length:
+      - '501'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 29 Apr 2025 10:52:33 GMT
+      etag:
+      - '"150040b3-0000-3300-0000-6810af2f0000"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/providers/Neon.Postgres/locations/centraluseuap/operationStatuses/0eaaa81b-4e19-4202-8562-c2c111b18749*33080CDAA3B48581D06C07FC6F0AD979F8AED23E1755AAE02BB4B231A29799C4?api-version=2025-03-01&t=638815207534350751&c=MIIHhzCCBm-gAwIBAgITfAeDEnPW_KxJbq8EjgAAB4MSczANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjUwNDIwMTUyMDI3WhcNMjUxMDE3MTUyMDI3WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALO1SAvt4DI7FxxBmZBcfoKDLiXpS8U5adZbRlRvVm-EcAWqGNnVo1AxaXu3ghKMY95LxffhvcYAZ56WhgOxA_gpAUzm4t0yW0aVzv7vAOWZHIG1fvTcWY_sHCkuTyCNAcRbNbaqbidaK9ZOTQ19baUQ26kVkP7tjTi6DWWRlM25d4YQcGaWJoBwUtol-hgB5Z_rVMljRF5Q1T9_3YpRBw57SpHvmb30JNQSpndyeu--Ip8pMwpNaiIRF70G8WfbTBoJhRqNqNAKBLU3CAVV4H6lYrXtSK-gkZC0EzjZ4ze_XVDGBd1sOPsbMx4aQgZEiuDJuuk9eqTzzur3IDUdrP0CAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBSRrAa71kVppeoZonY7QPy_R7XWQzAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAChQXwS0_EaMb7G3BWGDeoNhAAEaoKkJVUy5HVGyWKADFm6Tp2WidwOIMoOu-IuoA634ORJ7bIwsC2WhUA0Z8-c2AAD956dAtCkn5pEBXSqwuKMM3l9KOClAY1RiAQcP-GWtmb_mqZspO78GHaq-mwiyIDUICM-uZl-qR6UVt6rLn5xPqHNkenxrslS_G3IJ9yCV1sflxhz93B7VR9H7BtOxd_nqZOD5uSV3OpPnATTRO0KB3VBbZ0KqvdtWoHjNywLqMuhJUufHw2zmlQ-Yj3ndha_yTvOQlT-85ikSoyWI0P4_GeEwX9RdkiVHVzx3gR8HzFKkJXOwRvxQE_9Ov_0&s=bzAx0ya2DLvsl15mjLFSLnO7SCUon4CsCJYp-hlNlDk57toL8Sl5PAk4EeFQO4EkU-_e2SWGblisf4YG_ZdkhNNfBtyHevNK_vkMdJYm-u4KYY0l6-aPa7SLgZeAkrTNq6yHPGe9xmVqN1oAA98WtL0TzQ4Ii7TqtJK7ThIqNoikkDZpTIpdPpThdAzqYGsyIqozJp5QCHGVl5PHrp9MjG-vUV-L920PifJbVncF_-lwnhiys3wVPv-LrOSm9bIBQijMcBhw6XCYcsJulYqt0s8ahbbuMyE4WcN6-r6X2UzFHkxARZLjaORm8SVqi3727OQL9aSWQ4UN4J1xap3uig&h=RgLCH_rkGV-SnmgwlWI6dB4EZwNDcnRhhucoROck3-8
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - ''
+      x-msedge-ref:
+      - 'Ref A: 805BF65ADAD24A90A8B05978C1EE90C9 Ref B: MAA201060513009 Ref C: 2025-04-29T10:52:32Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neon postgres organization delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --subscription --yes
+      User-Agent:
+      - AZURECLI/2.72.0 azsdk-python-core/1.31.0 Python/3.10.11 (Windows-10-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Neon.Postgres/locations/CENTRALUSEUAP/operationStatuses/0eaaa81b-4e19-4202-8562-c2c111b18749*33080CDAA3B48581D06C07FC6F0AD979F8AED23E1755AAE02BB4B231A29799C4?api-version=2025-03-01&t=638815206900457549&c=MIIHhzCCBm-gAwIBAgITfAeDEnPW_KxJbq8EjgAAB4MSczANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjUwNDIwMTUyMDI3WhcNMjUxMDE3MTUyMDI3WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALO1SAvt4DI7FxxBmZBcfoKDLiXpS8U5adZbRlRvVm-EcAWqGNnVo1AxaXu3ghKMY95LxffhvcYAZ56WhgOxA_gpAUzm4t0yW0aVzv7vAOWZHIG1fvTcWY_sHCkuTyCNAcRbNbaqbidaK9ZOTQ19baUQ26kVkP7tjTi6DWWRlM25d4YQcGaWJoBwUtol-hgB5Z_rVMljRF5Q1T9_3YpRBw57SpHvmb30JNQSpndyeu--Ip8pMwpNaiIRF70G8WfbTBoJhRqNqNAKBLU3CAVV4H6lYrXtSK-gkZC0EzjZ4ze_XVDGBd1sOPsbMx4aQgZEiuDJuuk9eqTzzur3IDUdrP0CAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBSRrAa71kVppeoZonY7QPy_R7XWQzAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAChQXwS0_EaMb7G3BWGDeoNhAAEaoKkJVUy5HVGyWKADFm6Tp2WidwOIMoOu-IuoA634ORJ7bIwsC2WhUA0Z8-c2AAD956dAtCkn5pEBXSqwuKMM3l9KOClAY1RiAQcP-GWtmb_mqZspO78GHaq-mwiyIDUICM-uZl-qR6UVt6rLn5xPqHNkenxrslS_G3IJ9yCV1sflxhz93B7VR9H7BtOxd_nqZOD5uSV3OpPnATTRO0KB3VBbZ0KqvdtWoHjNywLqMuhJUufHw2zmlQ-Yj3ndha_yTvOQlT-85ikSoyWI0P4_GeEwX9RdkiVHVzx3gR8HzFKkJXOwRvxQE_9Ov_0&s=DjqHmMZ_XfjBYyb8_F8E1uhxojOPdK7NW7ZBCD3ygeZHotvmoHI2wDPwro_tmigQEF9BO-wez-i8v5q7p2LKQ__qPdDZJbUr_nQiucSHgtCvDvuWZGPPKi9PNoYcBYHGnGFEbm39TS2viuc9okjYOJ0_bftq-tba7j6IARMRHi4cLsfy_OID-NHQhIINdwAz931k_HAjySAOqFUbTf2OMxQ4l1dQnacCYtBYRU4QaTEWCeH5ISyd5oVM1rI4XYhMZu8x0iAG3fjCeayWujSC-u9dhOr4zB8Yf17BPnQC1wQjOVvtRovtAK5PDBaCS5-APp-YqmzNXJzgNZVfHlRIAg&h=mW8wPs6rJTkdKHUARxRCj0MdDV7ghioYaGNi9xAeZ7k
+  response:
+    body:
+      string: '{"id":"/providers/Neon.Postgres/locations/CENTRALUSEUAP/operationStatuses/0eaaa81b-4e19-4202-8562-c2c111b18749*33080CDAA3B48581D06C07FC6F0AD979F8AED23E1755AAE02BB4B231A29799C4","name":"0eaaa81b-4e19-4202-8562-c2c111b18749*33080CDAA3B48581D06C07FC6F0AD979F8AED23E1755AAE02BB4B231A29799C4","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/neonrg/providers/Neon.Postgres/organizations/Neon-Cli-Scenario-Tests","status":"Succeeded","startTime":"2025-04-29T10:51:26.962942Z","endTime":"2025-04-29T10:52:41.5855097Z","error":{},"properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '572'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 29 Apr 2025 10:53:04 GMT
+      etag:
+      - '"150071b4-0000-3300-0000-6810af790000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - ''
+      x-msedge-ref:
+      - 'Ref A: 2444BE11945F48BE8A97F917887A5BF5 Ref B: MAA201060513009 Ref C: 2025-04-29T10:53:03Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neon postgres organization delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --subscription --yes
+      User-Agent:
+      - AZURECLI/2.72.0 azsdk-python-core/1.31.0 Python/3.10.11 (Windows-10-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Neon.Postgres/locations/CENTRALUSEUAP/operationStatuses/0eaaa81b-4e19-4202-8562-c2c111b18749*33080CDAA3B48581D06C07FC6F0AD979F8AED23E1755AAE02BB4B231A29799C4?api-version=2025-03-01&t=638815206900457549&c=MIIHhzCCBm-gAwIBAgITfAeDEnPW_KxJbq8EjgAAB4MSczANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjUwNDIwMTUyMDI3WhcNMjUxMDE3MTUyMDI3WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALO1SAvt4DI7FxxBmZBcfoKDLiXpS8U5adZbRlRvVm-EcAWqGNnVo1AxaXu3ghKMY95LxffhvcYAZ56WhgOxA_gpAUzm4t0yW0aVzv7vAOWZHIG1fvTcWY_sHCkuTyCNAcRbNbaqbidaK9ZOTQ19baUQ26kVkP7tjTi6DWWRlM25d4YQcGaWJoBwUtol-hgB5Z_rVMljRF5Q1T9_3YpRBw57SpHvmb30JNQSpndyeu--Ip8pMwpNaiIRF70G8WfbTBoJhRqNqNAKBLU3CAVV4H6lYrXtSK-gkZC0EzjZ4ze_XVDGBd1sOPsbMx4aQgZEiuDJuuk9eqTzzur3IDUdrP0CAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBSRrAa71kVppeoZonY7QPy_R7XWQzAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAChQXwS0_EaMb7G3BWGDeoNhAAEaoKkJVUy5HVGyWKADFm6Tp2WidwOIMoOu-IuoA634ORJ7bIwsC2WhUA0Z8-c2AAD956dAtCkn5pEBXSqwuKMM3l9KOClAY1RiAQcP-GWtmb_mqZspO78GHaq-mwiyIDUICM-uZl-qR6UVt6rLn5xPqHNkenxrslS_G3IJ9yCV1sflxhz93B7VR9H7BtOxd_nqZOD5uSV3OpPnATTRO0KB3VBbZ0KqvdtWoHjNywLqMuhJUufHw2zmlQ-Yj3ndha_yTvOQlT-85ikSoyWI0P4_GeEwX9RdkiVHVzx3gR8HzFKkJXOwRvxQE_9Ov_0&s=DjqHmMZ_XfjBYyb8_F8E1uhxojOPdK7NW7ZBCD3ygeZHotvmoHI2wDPwro_tmigQEF9BO-wez-i8v5q7p2LKQ__qPdDZJbUr_nQiucSHgtCvDvuWZGPPKi9PNoYcBYHGnGFEbm39TS2viuc9okjYOJ0_bftq-tba7j6IARMRHi4cLsfy_OID-NHQhIINdwAz931k_HAjySAOqFUbTf2OMxQ4l1dQnacCYtBYRU4QaTEWCeH5ISyd5oVM1rI4XYhMZu8x0iAG3fjCeayWujSC-u9dhOr4zB8Yf17BPnQC1wQjOVvtRovtAK5PDBaCS5-APp-YqmzNXJzgNZVfHlRIAg&h=mW8wPs6rJTkdKHUARxRCj0MdDV7ghioYaGNi9xAeZ7k
+  response:
+    body:
+      string: '{"id":"/providers/Neon.Postgres/locations/CENTRALUSEUAP/operationStatuses/0eaaa81b-4e19-4202-8562-c2c111b18749*33080CDAA3B48581D06C07FC6F0AD979F8AED23E1755AAE02BB4B231A29799C4","name":"0eaaa81b-4e19-4202-8562-c2c111b18749*33080CDAA3B48581D06C07FC6F0AD979F8AED23E1755AAE02BB4B231A29799C4","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/neonrg/providers/Neon.Postgres/organizations/Neon-Cli-Scenario-Tests","status":"Succeeded","startTime":"2025-04-29T10:51:26.962942Z","endTime":"2025-04-29T10:52:41.5855097Z","error":{},"properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '572'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 29 Apr 2025 10:53:05 GMT
+      etag:
+      - '"150071b4-0000-3300-0000-6810af790000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - ''
+      x-msedge-ref:
+      - 'Ref A: 35636A77B51B44B88E1D1D90B09777A7 Ref B: MAA201060513009 Ref C: 2025-04-29T10:53:04Z'
     status:
       code: 200
       message: OK

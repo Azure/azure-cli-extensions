@@ -97,7 +97,8 @@ def acipolicygen_confcom(
     # gather information about the fragments being used in the new policy
     if include_fragments:
         fragments_list = os_util.load_json_from_file(fragments_json or input_path)
-        fragments_list = fragments_list.get("fragments", []) or fragments_list
+        if isinstance(fragments_list, dict):
+            fragments_list = fragments_list.get("fragments", [])
 
         # convert to list if it's just a dict
         if not isinstance(fragments_list, list):
@@ -114,7 +115,7 @@ def acipolicygen_confcom(
     )
     # error checking for making sure an input is provided is above
     if input_path:
-        container_group_policies = security_policy.load_policy_from_file(
+        container_group_policies = security_policy.load_policy_from_json_file(
             input_path,
             debug_mode=debug_mode,
             infrastructure_svn=infrastructure_svn,
@@ -143,7 +144,10 @@ def acipolicygen_confcom(
             debug_mode=debug_mode,
             disable_stdio=disable_stdio,
             approve_wildcards=approve_wildcards,
-            diff_mode=diff
+            diff_mode=diff,
+            rego_imports=fragments_list,
+            exclude_default_fragments=exclude_default_fragments,
+            infrastructure_svn=infrastructure_svn,
         )
 
     exit_code = 0
@@ -158,6 +162,7 @@ def acipolicygen_confcom(
     # and associate them with each container group
 
     if include_fragments:
+        logger.info("Including fragments in the policy")
         fragment_policy_list = []
         container_names = []
         fragment_imports = []
@@ -165,11 +170,13 @@ def acipolicygen_confcom(
             fragment_imports.extend(policy.get_fragments())
             for container in policy.get_images():
                 container_names.append(container.get_container_image())
+        # get all the fragments that are being used in the policy
         fragment_policy_list = get_all_fragment_contents(container_names, fragment_imports)
         for policy in container_group_policies:
             policy.set_fragment_contents(fragment_policy_list)
 
     for count, policy in enumerate(container_group_policies):
+        # this is where parameters and variables are populated
         policy.populate_policy_content_for_all_images(
             individual_image=bool(image_name), tar_mapping=tar_mapping, faster_hashing=faster_hashing
         )
@@ -221,7 +228,7 @@ def acifragmentgen_confcom(
     feed: str,
     key: str,
     chain: str,
-    minimum_svn: int,
+    minimum_svn: str,
     image_target: str = "",
     algo: str = "ES384",
     fragment_path: str = None,
@@ -285,7 +292,7 @@ def acifragmentgen_confcom(
         # this is using --input
         if not tar_mapping:
             tar_mapping = os_util.load_tar_mapping_from_config_file(input_path)
-        policy = security_policy.load_policy_from_config_file(
+        policy = security_policy.load_policy_from_json_file(
             input_path, debug_mode=debug_mode, disable_stdio=disable_stdio
         )
     # get all of the fragments that are being used in the policy

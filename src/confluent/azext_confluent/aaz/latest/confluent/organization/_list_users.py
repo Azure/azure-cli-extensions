@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "confluent organization list-users",
 )
 class ListUsers(AAZCommand):
-    """Organization users details
+    """List all the details of users within a Confluent organization.
     """
 
     _aaz_info = {
@@ -48,8 +48,6 @@ class ListUsers(AAZCommand):
             id_part="name",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            options=["--resource-group"],
-            help="Resource group name",
             required=True,
         )
 
