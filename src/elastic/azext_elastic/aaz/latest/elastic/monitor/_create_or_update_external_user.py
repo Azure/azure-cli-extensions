@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "elastic monitor create-or-update-external-user",
 )
 class CreateOrUpdateExternalUser(AAZCommand):
-    """Create or update external user
+    """Create or update external user configurations for your Elastic monitor resource, enabling access and management by external users.
 
     :example: Create or update external user
         az monitor create-or-update-external-user --monitor-name {monitor} -g {rg} --user-name newuser --full-name fullname --password password --email-id email@outlook.com --roles [admin,other_role]

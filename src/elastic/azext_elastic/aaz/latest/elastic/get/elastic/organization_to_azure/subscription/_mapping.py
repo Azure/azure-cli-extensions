@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "elastic get elastic organization-to-azure subscription mapping",
 )
 class Mapping(AAZCommand):
-    """Get Elastic Organization To Azure Subscription Mapping details for the logged-in user.
+    """Retrieve mapping details between the Elastic Organization and Azure Subscription for the logged-in user.
 
     :example: Organizations_GetElasticToAzureSubscriptionMapping
         az elastic get elastic organization-to-azure subscription mapping

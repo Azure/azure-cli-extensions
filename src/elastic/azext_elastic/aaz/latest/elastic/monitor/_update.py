@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "elastic monitor update",
 )
 class Update(AAZCommand):
-    """Update a monitor resource.
+    """Update an existing Elastic monitor resource in your Azure subscription, ensuring optimal observability and performance.
 
     :example: Update monitor
         az elastic monitor update -n monitor -g rg --tags "{tag:test,tag1:test1}"

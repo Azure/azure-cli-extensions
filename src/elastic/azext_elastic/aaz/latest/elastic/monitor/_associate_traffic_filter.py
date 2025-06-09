@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "elastic monitor associate-traffic-filter",
 )
 class AssociateTrafficFilter(AAZCommand):
-    """Associate traffic filter
+    """Associate a traffic filter with your Elastic monitor resource to control and manage network traffic.
 
     :example: Monitor associate traffic filter
         az elastic monitor associate-traffic-filter --monitor-name name -g rg --ruleset-id

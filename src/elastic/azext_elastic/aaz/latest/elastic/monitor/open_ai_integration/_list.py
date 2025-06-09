@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "elastic monitor open-ai-integration list",
 )
 class List(AAZCommand):
-    """List OpenAI integration rule for a given monitor resource.
+    """List all OpenAI integration rules for a given Elastic monitor resource, helping you manage AI-driven observability and monitoring.
 
     :example: OpenAI_List
         az elastic monitor open-ai-integration list --resource-group myResourceGroup --monitor-name myMonitor

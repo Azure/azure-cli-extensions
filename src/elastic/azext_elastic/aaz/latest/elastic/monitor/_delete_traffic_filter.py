@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "elastic monitor delete-traffic-filter",
 )
 class DeleteTrafficFilter(AAZCommand):
-    """Delete traffic filter
+    """Delete an existing traffic filter associated with your Elastic monitor resource, removing its network traffic control capabilities.
 
     :example: Delete traffic filter
         az elastic monitor delete-traffic-filter --monitor-name name -g rg --ruleset-id id

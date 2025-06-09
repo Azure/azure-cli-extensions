@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "elastic monitor tag-rule",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage tag rule with elastic.
+    """Manage tag rules with Elastic, enabling fine-grained control over observability based on resource tags.
     """
     pass
 

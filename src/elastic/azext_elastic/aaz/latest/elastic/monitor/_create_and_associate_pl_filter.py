@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "elastic monitor create-and-associate-pl-filter",
 )
 class CreateAndAssociatePlFilter(AAZCommand):
-    """Create and associate pl filter
+    """Create and associate a PL filter with your Elastic monitor resource to control and manage network traffic.
 
     :example: Create and associate pl filter
         az elastic monitor create-and-associate-pl-filter --monitor-name monitor -g rg --name name

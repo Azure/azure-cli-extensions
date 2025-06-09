@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "elastic monitor create-and-associate-ip-filter",
 )
 class CreateAndAssociateIpFilter(AAZCommand):
-    """Create and associate ip filter
+    """Create and associate an IP filter with your Elastic monitor resource to control and manage network traffic.
 
     :example: Create and associate ip filter
         az elastic monitor create-and-associate-ip-filter --monitor-name name -g rg --name name --ips  192.168.131.0, 192.168.132.6/22

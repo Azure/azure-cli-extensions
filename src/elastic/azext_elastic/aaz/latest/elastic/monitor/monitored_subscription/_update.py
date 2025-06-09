@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "elastic monitor monitored-subscription update",
 )
 class Update(AAZCommand):
-    """Update the subscriptions that should be monitored by the Elastic monitor resource.
+    """Update subscriptions to be monitored by the Elastic monitor resource, ensuring optimal observability and performance.
     """
 
     _aaz_info = {
