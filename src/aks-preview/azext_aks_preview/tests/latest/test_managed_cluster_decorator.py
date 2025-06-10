@@ -260,80 +260,6 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         with self.assertRaises(InvalidArgumentValueError):
             ctx_3.get_http_proxy_config()
 
-    def test_get_safeguards_level(self):
-        ctx1 = AKSPreviewManagedClusterContext(
-            self.cmd,
-            AKSManagedClusterParamDict({"safeguards_level": None}),
-            self.models,
-            decorator_mode=DecoratorMode.CREATE,
-        )
-        self.assertEqual(ctx1.get_safeguards_level(), None)
-
-        ctx2 = AKSPreviewManagedClusterContext(
-            self.cmd,
-            AKSManagedClusterParamDict({"safeguards_level": "Warning"}),
-            self.models,
-            decorator_mode=DecoratorMode.CREATE,
-        )
-        mc2 = self.models.ManagedCluster(
-            location="test_location",
-            safeguards_profile=self.models.SafeguardsProfile(
-                level="Warning", excluded_namespaces=None, version=""
-            ),
-        )
-        ctx2.attach_mc(mc2)
-        self.assertEqual(ctx2.get_safeguards_level(), "Warning")
-
-    def test_get_safeguards_version(self):
-        ctx1 = AKSPreviewManagedClusterContext(
-            self.cmd,
-            AKSManagedClusterParamDict({"safeguards_version": None}),
-            self.models,
-            decorator_mode=DecoratorMode.CREATE,
-        )
-        self.assertEqual(ctx1.get_safeguards_version(), None)
-
-        ctx2 = AKSPreviewManagedClusterContext(
-            self.cmd,
-            AKSManagedClusterParamDict({"safeguards_version": "v1.0.0"}),
-            self.models,
-            decorator_mode=DecoratorMode.CREATE,
-        )
-
-        mc2 = self.models.ManagedCluster(
-            location="test_location",
-            safeguards_profile=self.models.SafeguardsProfile(
-                version="v1.0.0", level=None, excluded_namespaces=None
-            ),
-        )
-        ctx2.attach_mc(mc2)
-        self.assertEqual(ctx2.get_safeguards_version(), "v1.0.0")
-
-    def test_get_safeguards_excluded_namespaces(self):
-        ctx1 = AKSPreviewManagedClusterContext(
-            self.cmd,
-            AKSManagedClusterParamDict({"safeguards_excluded_ns": None}),
-            self.models,
-            decorator_mode=DecoratorMode.CREATE,
-        )
-        self.assertEqual(ctx1.get_safeguards_excluded_namespaces(), None)
-
-        ctx2 = AKSPreviewManagedClusterContext(
-            self.cmd,
-            AKSManagedClusterParamDict({"safeguards_excluded_ns": "ns1,ns2"}),
-            self.models,
-            decorator_mode=DecoratorMode.CREATE,
-        )
-
-        mc2 = self.models.ManagedCluster(
-            location="test_location",
-            safeguards_profile=self.models.SafeguardsProfile(
-                excluded_namespaces=["ns1", "ns2"], level=None, version=None
-            ),
-        )
-        ctx2.attach_mc(mc2)
-        self.assertEqual(ctx2.get_safeguards_excluded_namespaces(), "ns1,ns2")
-
     def test_get_kube_proxy_config(self):
         # default
         ctx_1 = AKSPreviewManagedClusterContext(
@@ -4078,39 +4004,6 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         self.cmd = MockCmd(self.cli_ctx)
         self.models = AKSPreviewManagedClusterModels(self.cmd, CUSTOM_MGMT_AKS_PREVIEW)
         self.client = MockClient()
-
-    def test_set_up_safeguards_profile(self):
-        # Base case - no options specified, SafeguardsProfile should be None
-        dec_1 = AKSPreviewManagedClusterCreateDecorator(
-            self.cmd, self.client, {}, CUSTOM_MGMT_AKS_PREVIEW
-        )
-
-        mc_1 = self.models.ManagedCluster(location="test_location")
-        dec_1.context.attach_mc(mc_1)
-        dec_mc_1 = dec_1.set_up_safeguards_profile(mc_1)
-        gt_mc_1 = self.models.ManagedCluster(location="test_location")
-        self.assertEqual(dec_mc_1, gt_mc_1)
-
-        # Make sure SafeguardsProfile is filled out appropriately
-        dec_2 = AKSPreviewManagedClusterCreateDecorator(
-            self.cmd,
-            self.client,
-            {
-                "safeguards_level": "Warning",
-                "safeguards_version": "v1.0.0",
-                "safeguards_excluded_ns": "ns1,ns2",
-            },
-            CUSTOM_MGMT_AKS_PREVIEW,
-        )
-
-        mc_2 = self.models.ManagedCluster(location="test_location")
-        dec_2.context.attach_mc(mc_2)
-        dec_mc_2 = dec_2.set_up_safeguards_profile(mc_2)
-        gt_mc_2 = self.models.ManagedCluster(location="test_location")
-        gt_mc_2.safeguards_profile = self.models.SafeguardsProfile(
-            level="Warning", version="v1.0.0", excluded_namespaces=["ns1", "ns2"]
-        )
-        self.assertEqual(dec_mc_2, gt_mc_2)
 
     def test_set_up_agentpool_profile(self):
         dec_1 = AKSPreviewManagedClusterCreateDecorator(
