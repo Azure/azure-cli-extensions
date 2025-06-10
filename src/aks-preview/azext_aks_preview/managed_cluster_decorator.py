@@ -48,7 +48,6 @@ from azext_aks_preview._helpers import (
     check_is_azure_cli_core_editable_installed,
     check_is_private_cluster,
     get_cluster_snapshot_by_snapshot_id,
-    setup_common_safeguards_profile,
     filter_hard_taints,
 )
 from azext_aks_preview._loadbalancer import create_load_balancer_profile
@@ -3433,14 +3432,6 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             mc.auto_upgrade_profile.node_os_upgrade_channel = node_os_upgrade_channel
         return mc
 
-    def set_up_safeguards_profile(self, mc: ManagedCluster) -> ManagedCluster:
-        excludedNamespaces = self.context.get_safeguards_excluded_namespaces()
-        version = self.context.get_safeguards_version()
-        level = self.context.get_safeguards_level()
-        # provided any value?
-        mc = setup_common_safeguards_profile(level, version, excludedNamespaces, mc, self.models)
-        return mc
-
     def set_up_azure_service_mesh_profile(self, mc: ManagedCluster) -> ManagedCluster:
         """Set up azure service mesh for the ManagedCluster object.
 
@@ -3629,8 +3620,6 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc = self.set_up_node_resource_group_profile(mc)
         # set up auto upgrade profile
         mc = self.set_up_auto_upgrade_profile(mc)
-        # set up safeguards profile
-        mc = self.set_up_safeguards_profile(mc)
         # set up azure service mesh profile
         mc = self.set_up_azure_service_mesh_profile(mc)
         # setup k8s support plan
@@ -4889,26 +4878,6 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             mc.auto_upgrade_profile.node_os_upgrade_channel = node_os_upgrade_channel
         return mc
 
-    def update_safeguards_profile(self, mc: ManagedCluster) -> ManagedCluster:
-        """Update safeguards profile for the ManagedCluster object
-        :return: the ManagedCluster object
-        """
-
-        self._ensure_mc(mc)
-
-        excludedNamespaces = self.context.get_safeguards_excluded_namespaces()
-        version = self.context.get_safeguards_version()
-        level = self.context.get_safeguards_level()
-
-        mc = setup_common_safeguards_profile(level, version, excludedNamespaces, mc, self.models)
-
-        if level is not None:
-            mc.safeguards_profile.level = level
-        if version is not None:
-            mc.safeguards_profile.version = version
-
-        return mc
-
     def update_azure_service_mesh_profile(self, mc: ManagedCluster) -> ManagedCluster:
         """Update azure service mesh profile for the ManagedCluster object.
         """
@@ -5395,8 +5364,6 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_node_resource_group_profile(mc)
         # update auto upgrade profile
         mc = self.update_auto_upgrade_profile(mc)
-        # update safeguards_profile
-        mc = self.update_safeguards_profile(mc)
         # update cluster upgrade settings profile
         mc = self.update_upgrade_settings(mc)
         # update nodepool taints

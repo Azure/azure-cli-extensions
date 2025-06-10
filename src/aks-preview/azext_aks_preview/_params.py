@@ -934,7 +934,11 @@ def load_arguments(self, _):
             help="The deployment safeguards version",
             is_preview=True,
         )
-        c.argument("safeguards_excluded_ns", type=str, is_preview=True)
+        c.argument(
+            "safeguards_excluded_ns",
+            type=str,
+            is_preview=True
+        )
         # azure monitor profile
         c.argument(
             "enable_azuremonitormetrics",
@@ -1345,8 +1349,15 @@ def load_arguments(self, _):
             arg_type=get_enum_type(safeguards_levels),
             is_preview=True,
         )
-        c.argument("safeguards_version", help="The deployment safeguards version", is_preview=True)
-        c.argument("safeguards_excluded_ns", is_preview=True)
+        c.argument(
+            "safeguards_version",
+            help="The deployment safeguards version",
+            is_preview=True
+        )
+        c.argument(
+            "safeguards_excluded_ns",
+            is_preview=True
+        )
         c.argument(
             "enable_acns",
             action="store_true",
