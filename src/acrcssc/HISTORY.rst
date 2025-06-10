@@ -2,6 +2,10 @@
 
 Release History
 ===============
+1.0.0b3
++++++++
+* Remove msrestazure dependency
+
 1.0.0b2
 ++++++
 * Bug fix: Updated to allow for az login when the account doesn't have any active subscriptions

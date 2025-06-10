@@ -17,13 +17,13 @@ from ._constants import (
 )
 from azure.cli.core.commands import LongRunningOperation
 from azure.cli.core.commands.progress import IndeterminateProgressBar
+from azure.core.exceptions import HttpResponseError
 from azure.cli.core.profiles import ResourceType, get_sdk
 from azure.cli.core.azclierror import AzCLIError, ResourceNotFoundError
 from azure.core.polling import PollingMethod
 from azure.mgmt.core.tools import parse_resource_id
 from knack.log import get_logger
 from enum import Enum
-from msrestazure.azure_exceptions import CloudError
 
 
 logger = get_logger(__name__)
@@ -239,7 +239,7 @@ class WorkflowTaskStatus:
                 taskrun.task_log_result = tasklog
             except ResourceNotFoundError as e:
                 logger.debug("Failed to get logs for taskrun: %s with exception: %s", taskrun.run_id, e)
-            except CloudError as e:
+            except HttpResponseError as e:
                 logger.debug("An unexpected exception has occurred for taskrun: %s with exception: %s",
                              taskrun.run_id, e)
 
@@ -439,7 +439,7 @@ class WorkflowTaskStatus:
                 registry_name=registry_name,
                 run_id=run_id)
             log_file_sas = response.log_link
-        except (AttributeError, CloudError) as e:
+        except (AttributeError, HttpResponseError) as e:
             logger.debug("%s Exception: %s", error_msg, e)
             raise AzCLIError(error_msg)
         except ResourceNotFoundError as e:
@@ -476,7 +476,7 @@ class WorkflowTaskStatus:
         try:
             response = client.get(resource_group_name, registry_name, run_id)
             return response.status
-        except (AttributeError, CloudError):
+        except (AttributeError, HttpResponseError):
             return None
 
     @staticmethod
