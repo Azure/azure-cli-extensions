@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "amlfs wait",
+    "amlfs import wait",
 )
 class Wait(AAZWaitCommand):
     """Place the CLI in a waiting state until a condition is met.
@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagecache/amlfilesystems/{}", "2023-05-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagecache/amlfilesystems/{}/importjobs/{}", "2024-07-01"],
         ]
     }
 
@@ -41,10 +41,21 @@ class Wait(AAZWaitCommand):
 
         _args_schema = cls._args_schema
         _args_schema.aml_filesystem_name = AAZStrArg(
-            options=["-n", "--name", "--aml-filesystem-name"],
+            options=["--aml-filesystem-name"],
             help="Name for the AML file system. Allows alphanumerics, underscores, and hyphens. Start and end with alphanumeric.",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^[0-9a-zA-Z][-0-9a-zA-Z_]{0,78}[0-9a-zA-Z]$",
+                max_length=80,
+                min_length=2,
+            ),
+        )
+        _args_schema.import_job_name = AAZStrArg(
+            options=["-n", "--name", "--import-job-name"],
+            help="Name for the import job. Allows alphanumerics, underscores, and hyphens. Start and end with alphanumeric.",
+            required=True,
+            id_part="child_name_1",
             fmt=AAZStrArgFormat(
                 pattern="^[0-9a-zA-Z][-0-9a-zA-Z_]{0,78}[0-9a-zA-Z]$",
                 max_length=80,
@@ -58,7 +69,7 @@ class Wait(AAZWaitCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.AmlFilesystemsGet(ctx=self.ctx)()
+        self.ImportJobsGet(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -73,7 +84,7 @@ class Wait(AAZWaitCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=False)
         return result
 
-    class AmlFilesystemsGet(AAZHttpOperation):
+    class ImportJobsGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -87,7 +98,7 @@ class Wait(AAZWaitCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.StorageCache/amlFilesystems/{amlFilesystemName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.StorageCache/amlFilesystems/{amlFilesystemName}/importJobs/{importJobName}",
                 **self.url_parameters
             )
 
@@ -97,13 +108,17 @@ class Wait(AAZWaitCommand):
 
         @property
         def error_format(self):
-            return "ODataV4Format"
+            return "MgmtErrorFormat"
 
         @property
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
                     "amlFilesystemName", self.ctx.args.aml_filesystem_name,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "importJobName", self.ctx.args.import_job_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -121,7 +136,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-05-01",
+                    "api-version", "2024-07-01",
                     required=True,
                 ),
             }
@@ -157,7 +172,6 @@ class Wait(AAZWaitCommand):
             _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.identity = AAZIdentityObjectType()
             _schema_on_200.location = AAZStrType(
                 flags={"required": True},
             )
@@ -167,7 +181,6 @@ class Wait(AAZWaitCommand):
             _schema_on_200.properties = AAZObjectType(
                 flags={"client_flatten": True},
             )
-            _schema_on_200.sku = AAZObjectType()
             _schema_on_200.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
@@ -176,155 +189,50 @@ class Wait(AAZWaitCommand):
             _schema_on_200.type = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.zones = AAZListType()
-
-            identity = cls._schema_on_200.identity
-            identity.principal_id = AAZStrType(
-                serialized_name="principalId",
-                flags={"read_only": True},
-            )
-            identity.tenant_id = AAZStrType(
-                serialized_name="tenantId",
-                flags={"read_only": True},
-            )
-            identity.type = AAZStrType()
-            identity.user_assigned_identities = AAZDictType(
-                serialized_name="userAssignedIdentities",
-            )
-
-            user_assigned_identities = cls._schema_on_200.identity.user_assigned_identities
-            user_assigned_identities.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.identity.user_assigned_identities.Element
-            _element.client_id = AAZStrType(
-                serialized_name="clientId",
-                flags={"read_only": True},
-            )
-            _element.principal_id = AAZStrType(
-                serialized_name="principalId",
-                flags={"read_only": True},
-            )
 
             properties = cls._schema_on_200.properties
-            properties.client_info = AAZObjectType(
-                serialized_name="clientInfo",
-                flags={"read_only": True},
+            properties.admin_status = AAZStrType(
+                serialized_name="adminStatus",
             )
-            properties.encryption_settings = AAZObjectType(
-                serialized_name="encryptionSettings",
+            properties.conflict_resolution_mode = AAZStrType(
+                serialized_name="conflictResolutionMode",
             )
-            properties.filesystem_subnet = AAZStrType(
-                serialized_name="filesystemSubnet",
-                flags={"required": True},
+            properties.import_prefixes = AAZListType(
+                serialized_name="importPrefixes",
             )
-            properties.health = AAZObjectType(
-                flags={"read_only": True},
-            )
-            properties.hsm = AAZObjectType()
-            properties.maintenance_window = AAZObjectType(
-                serialized_name="maintenanceWindow",
-                flags={"required": True},
+            properties.maximum_errors = AAZIntType(
+                serialized_name="maximumErrors",
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
-            properties.storage_capacity_ti_b = AAZFloatType(
-                serialized_name="storageCapacityTiB",
-                flags={"required": True},
-            )
-            properties.throughput_provisioned_m_bps = AAZIntType(
-                serialized_name="throughputProvisionedMBps",
-                flags={"read_only": True},
+            properties.status = AAZObjectType(
+                flags={"client_flatten": True, "read_only": True},
             )
 
-            client_info = cls._schema_on_200.properties.client_info
-            client_info.container_storage_interface = AAZObjectType(
-                serialized_name="containerStorageInterface",
-                flags={"read_only": True},
-            )
-            client_info.lustre_version = AAZStrType(
-                serialized_name="lustreVersion",
-                flags={"read_only": True},
-            )
-            client_info.mgs_address = AAZStrType(
-                serialized_name="mgsAddress",
-                flags={"read_only": True},
-            )
-            client_info.mount_command = AAZStrType(
-                serialized_name="mountCommand",
-                flags={"read_only": True},
-            )
+            import_prefixes = cls._schema_on_200.properties.import_prefixes
+            import_prefixes.Element = AAZStrType()
 
-            container_storage_interface = cls._schema_on_200.properties.client_info.container_storage_interface
-            container_storage_interface.persistent_volume = AAZStrType(
-                serialized_name="persistentVolume",
+            status = cls._schema_on_200.properties.status
+            status.blobs_imported_per_second = AAZIntType(
+                serialized_name="blobsImportedPerSecond",
                 flags={"read_only": True},
             )
-            container_storage_interface.persistent_volume_claim = AAZStrType(
-                serialized_name="persistentVolumeClaim",
+            status.blobs_walked_per_second = AAZIntType(
+                serialized_name="blobsWalkedPerSecond",
                 flags={"read_only": True},
             )
-            container_storage_interface.storage_class = AAZStrType(
-                serialized_name="storageClass",
+            status.imported_directories = AAZIntType(
+                serialized_name="importedDirectories",
                 flags={"read_only": True},
             )
-
-            encryption_settings = cls._schema_on_200.properties.encryption_settings
-            encryption_settings.key_encryption_key = AAZObjectType(
-                serialized_name="keyEncryptionKey",
-            )
-
-            key_encryption_key = cls._schema_on_200.properties.encryption_settings.key_encryption_key
-            key_encryption_key.key_url = AAZStrType(
-                serialized_name="keyUrl",
-                flags={"required": True},
-            )
-            key_encryption_key.source_vault = AAZObjectType(
-                serialized_name="sourceVault",
-                flags={"required": True},
-            )
-
-            source_vault = cls._schema_on_200.properties.encryption_settings.key_encryption_key.source_vault
-            source_vault.id = AAZStrType()
-
-            health = cls._schema_on_200.properties.health
-            health.state = AAZStrType()
-            health.status_code = AAZStrType(
-                serialized_name="statusCode",
-            )
-            health.status_description = AAZStrType(
-                serialized_name="statusDescription",
-            )
-
-            hsm = cls._schema_on_200.properties.hsm
-            hsm.archive_status = AAZListType(
-                serialized_name="archiveStatus",
+            status.imported_files = AAZIntType(
+                serialized_name="importedFiles",
                 flags={"read_only": True},
             )
-            hsm.settings = AAZObjectType()
-
-            archive_status = cls._schema_on_200.properties.hsm.archive_status
-            archive_status.Element = AAZObjectType(
-                flags={"read_only": True},
-            )
-
-            _element = cls._schema_on_200.properties.hsm.archive_status.Element
-            _element.filesystem_path = AAZStrType(
-                serialized_name="filesystemPath",
-                flags={"read_only": True},
-            )
-            _element.status = AAZObjectType(
-                flags={"read_only": True},
-            )
-
-            status = cls._schema_on_200.properties.hsm.archive_status.Element.status
-            status.error_code = AAZStrType(
-                serialized_name="errorCode",
-                flags={"read_only": True},
-            )
-            status.error_message = AAZStrType(
-                serialized_name="errorMessage",
+            status.imported_symlinks = AAZIntType(
+                serialized_name="importedSymlinks",
                 flags={"read_only": True},
             )
             status.last_completion_time = AAZStrType(
@@ -335,36 +243,41 @@ class Wait(AAZWaitCommand):
                 serialized_name="lastStartedTime",
                 flags={"read_only": True},
             )
-            status.percent_complete = AAZIntType(
-                serialized_name="percentComplete",
+            status.preexisting_directories = AAZIntType(
+                serialized_name="preexistingDirectories",
+                flags={"read_only": True},
+            )
+            status.preexisting_files = AAZIntType(
+                serialized_name="preexistingFiles",
+                flags={"read_only": True},
+            )
+            status.preexisting_symlinks = AAZIntType(
+                serialized_name="preexistingSymlinks",
                 flags={"read_only": True},
             )
             status.state = AAZStrType(
                 flags={"read_only": True},
             )
-
-            settings = cls._schema_on_200.properties.hsm.settings
-            settings.container = AAZStrType(
-                flags={"required": True},
+            status.status_message = AAZStrType(
+                serialized_name="statusMessage",
+                flags={"read_only": True},
             )
-            settings.import_prefix = AAZStrType(
-                serialized_name="importPrefix",
+            status.total_blobs_imported = AAZIntType(
+                serialized_name="totalBlobsImported",
+                flags={"read_only": True},
             )
-            settings.logging_container = AAZStrType(
-                serialized_name="loggingContainer",
-                flags={"required": True},
+            status.total_blobs_walked = AAZIntType(
+                serialized_name="totalBlobsWalked",
+                flags={"read_only": True},
             )
-
-            maintenance_window = cls._schema_on_200.properties.maintenance_window
-            maintenance_window.day_of_week = AAZStrType(
-                serialized_name="dayOfWeek",
+            status.total_conflicts = AAZIntType(
+                serialized_name="totalConflicts",
+                flags={"read_only": True},
             )
-            maintenance_window.time_of_day_utc = AAZStrType(
-                serialized_name="timeOfDayUTC",
+            status.total_errors = AAZIntType(
+                serialized_name="totalErrors",
+                flags={"read_only": True},
             )
-
-            sku = cls._schema_on_200.sku
-            sku.name = AAZStrType()
 
             system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(
@@ -388,9 +301,6 @@ class Wait(AAZWaitCommand):
 
             tags = cls._schema_on_200.tags
             tags.Element = AAZStrType()
-
-            zones = cls._schema_on_200.zones
-            zones.Element = AAZStrType()
 
             return cls._schema_on_200
 
