@@ -24,6 +24,8 @@ class DatastoreNetappVolumeCreate(_DatastoreCreate):
         setattr(args_schema.mount_option, '_registered', False)
         setattr(args_schema.target_id, '_registered', False)
         setattr(args_schema.elastic_san_volume, '_registered', False)
+        setattr(args_schema.size_gb, '_registered', False)
+        setattr(args_schema.storage_pool_id, '_registered', False)
 
         return args_schema
 
@@ -43,6 +45,8 @@ class DatastoreDiskPoolVolumeCreate(_DatastoreCreate):
         setattr(args_schema.lun_name, '_required', True)
         setattr(args_schema.target_id, '_required', True)
         setattr(args_schema.elastic_san_volume, '_registered', False)
+        setattr(args_schema.size_gb, '_registered', False)
+        setattr(args_schema.storage_pool_id, '_registered', False)
 
         return args_schema
 
@@ -63,5 +67,29 @@ class DatastoreElasticVsanVolumeCreate(_DatastoreCreate):
         setattr(args_schema.mount_option, '_registered', False)
         setattr(args_schema.target_id, '_registered', False)
         setattr(args_schema.elastic_san_volume, '_required', True)
+        setattr(args_schema.size_gb, '_registered', False)
+        setattr(args_schema.storage_pool_id, '_registered', False)
+
+        return args_schema
+
+
+@register_command(
+    "vmware datastore pure-storage-volume create",
+)
+class DatastorePureStorageVolumeCreate(_DatastoreCreate):
+    """Create a Pure Storage volume in a private cloud cluster using PureStorage.Block provider.
+    """
+
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+
+        setattr(args_schema.net_app_volume, '_registered', False)
+        setattr(args_schema.lun_name, '_registered', False)
+        setattr(args_schema.mount_option, '_registered', False)
+        setattr(args_schema.target_id, '_registered', False)
+        setattr(args_schema.elastic_san_volume, '_registered', False)
+        setattr(args_schema.size_gb, '_required', True)
+        setattr(args_schema.storage_pool_id, '_required', True)
 
         return args_schema

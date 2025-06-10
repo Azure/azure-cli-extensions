@@ -58,6 +58,10 @@ def load_datastore_commands(self):
         from .operations.datastore import DatastoreElasticVsanVolumeCreate
         self.command_table['vmware datastore elastic-san-volume create'] = DatastoreElasticVsanVolumeCreate(loader=self)
 
+    with self.command_group('vmware datastore pure-storage-volume'):
+        from .operations.datastore import DatastorePureStorageVolumeCreate
+        self.command_table['vmware datastore pure-storage-volume create'] = DatastorePureStorageVolumeCreate(loader=self)
+
 
 def load_script_execution_commands(self):
     with self.command_group('vmware script-execution') as g:
