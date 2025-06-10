@@ -387,13 +387,14 @@ def _is_sku_standard_or_higher(sku):
     }
     return sku in allowed_skus
 
+
 def _is_nativeclient_enabled(bastion):
     if bastion['sku']['name'] == BastionSku.Developer.value:
         return True
-    elif _is_sku_standard_or_higher(bastion['sku']['name']):
+    if _is_sku_standard_or_higher(bastion['sku']['name']):
         return bastion['enableTunneling']
-    else:
-        return False
+    return False
+
 
 def handle_error_response(response):
     try:

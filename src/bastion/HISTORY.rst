@@ -2,7 +2,7 @@
 
 Release History
 ===============
-1.5.0
+1.4.1
 ++++++
 * Enable SSH connectivity support for Developer SKU.
 
