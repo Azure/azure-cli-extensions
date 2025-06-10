@@ -267,7 +267,9 @@ class EnhancedMonitoring:  # pylint: disable=too-many-instance-attributes
                     created = True
                 except HttpResponseError as cex:
                     logger.info("Error during role assignment %s", cex)
-                    raise
+                    if ((not cex.error) or (not cex.error.code) or
+                            (PRINCIPAL_NOT_FOUND_ERROR != cex.error.code.lower())):
+                        raise
 
                 if (not created) and ((datetime.now() - start_time).total_seconds() < MAX_WAIT_TIME_FOR_SP_SECONDS):
                     logger.info("Error during role assignment - waiting 5 seconds before next attempt")
