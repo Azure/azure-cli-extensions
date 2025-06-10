@@ -2,6 +2,10 @@
 
 Release History
 ===============
+1.5.0
+++++++
+* Enable SSH connectivity support for Developer SKU.
+
 1.4.0
 ++++++
 * Add support for bastion developer create.
