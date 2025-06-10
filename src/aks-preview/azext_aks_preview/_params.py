@@ -926,28 +926,16 @@ def load_arguments(self, _):
         c.argument(
             "safeguards_level",
             arg_type=get_enum_type(safeguards_levels),
-            deprecate_info=c.deprecate(
-                target="--safeguards-level",
-                hide=True,
-            ),
             is_preview=True,
         )
         c.argument(
             "safeguards_version",
-            deprecate_info=c.deprecate(
-                target="--safeguards-version",
-                hide=True,
-            ),
             type=str,
             help="The deployment safeguards version",
             is_preview=True,
         )
         c.argument(
             "safeguards_excluded_ns",
-            deprecate_info=c.deprecate(
-                target="--safeguards-excluded-ns",
-                hide=True,
-            ),
             type=str,
             is_preview=True
         )
@@ -1359,27 +1347,15 @@ def load_arguments(self, _):
         c.argument(
             "safeguards_level",
             arg_type=get_enum_type(safeguards_levels),
-            deprecate_info=c.deprecate(
-                target="--safeguards-level",
-                hide=True,
-            ),
             is_preview=True,
         )
         c.argument(
             "safeguards_version",
-            deprecate_info=c.deprecate(
-                target="--safeguards-version",
-                hide=True,
-            ),
             help="The deployment safeguards version",
             is_preview=True
         )
         c.argument(
             "safeguards_excluded_ns",
-            deprecate_info=c.deprecate(
-                target="--safeguards-excluded-ns",
-                hide=True,
-            ),
             is_preview=True
         )
         c.argument(
