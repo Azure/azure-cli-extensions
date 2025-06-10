@@ -5,6 +5,7 @@
 - Bump minimum required Az CLI version to `2.70.0`
 - Upgrade default API version from `2023-09-01` to `2024-09-01`
 - Add `--management-network` and `--uplink-network` to `az vmware addon hcx create` and `az vmware addon hcx update`
+- Add `az vmware cluster host` command group
 
 ## 7.2.0 (2025-02)
 
