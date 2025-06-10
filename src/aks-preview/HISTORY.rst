@@ -12,9 +12,13 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
-18.0.0b11
+18.0.0b12
 +++++++
 * Add option `--enable-http-proxy` to `az aks update`.
+
+18.0.0b11
++++++++
+* Vendor new SDK and bump API version to 2025-04-02-preview.
 
 18.0.0b10
 +++++++
