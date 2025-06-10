@@ -4,9 +4,6 @@ Release History
 ===============
 upcoming
 ++++++
-
-1.2.0b2
-++++++
 * 'az containerapp session code-interpreter execute': Extend maximum supported value of `--timeout-in-seconds` from 60 to 180.
 
 1.2.0b1
