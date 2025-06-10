@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from msrestazure.tools import parse_resource_id
+from azure.mgmt.core.tools import parse_resource_id
 
 from knack.util import CLIError
 
