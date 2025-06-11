@@ -7,7 +7,6 @@ import os
 import unittest
 
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
-from msrestazure.azure_exceptions import CloudError
 
 
 class VmwareAddonScenarioTest(ScenarioTest):
