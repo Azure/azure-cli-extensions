@@ -220,7 +220,7 @@ def validate_session_timeout_in_seconds(cmd, namespace):
     timeout_in_seconds = namespace.timeout_in_seconds
     if timeout_in_seconds is not None:
         if timeout_in_seconds <= 0 or timeout_in_seconds > 240:
-            raise ValidationError("timeout in seconds must be in range [1, 240].")
+            raise ValidationError("Timeout in seconds must be in range [1, 240].")
 
 
 def validate_debug(cmd, namespace):
