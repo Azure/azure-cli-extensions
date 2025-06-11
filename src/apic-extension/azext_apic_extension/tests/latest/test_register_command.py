@@ -149,7 +149,7 @@ class RegisterCommandTests(ScenarioTest):
             self.check('description', 'This is a sample server Petstore server.  You can find out more about Swagger at [http://swagger.io](http://swagger.io) or on [irc.freenode.net, #swagger](http://swagger.io/irc/).  For this sample, you can use the api key `special-key` to test the authorization filters.'),
             self.check('name', 'openapi'),
             self.check('specification.name', 'openapi'),
-            self.check('specification.version', '2-0'),
+            self.check('specification.version', '2.0'),
             self.check('title', 'openapi'),
         ])
 
@@ -185,7 +185,7 @@ class RegisterCommandTests(ScenarioTest):
             self.check('description', 'This is a sample server Petstore server.  You can find out more about Swagger at [http://swagger.io](http://swagger.io) or on [irc.freenode.net, #swagger](http://swagger.io/irc/).  For this sample, you can use the api key `special-key` to test the authorization filters.'),
             self.check('name', 'openapi'),
             self.check('specification.name', 'openapi'),
-            self.check('specification.version', '2-0'),
+            self.check('specification.version', '2.0'),
             self.check('title', 'openapi'),
         ])
 

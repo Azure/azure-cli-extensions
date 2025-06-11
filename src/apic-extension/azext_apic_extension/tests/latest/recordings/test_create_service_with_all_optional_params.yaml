@@ -23,18 +23,18 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/cli000002?api-version=2024-03-01
   response:
     body:
-      string: '{"type":"Microsoft.ApiCenter/services","location":"westeurope","identity":{"type":"SystemAssigned","principalId":"7c9e2f97-877e-42e8-9d47-5a13ea077783","tenantId":"1e440324-bdf3-4f3c-adc0-aa9a44e32e86"},"sku":{"name":"Free"},"properties":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/cli000002","name":"cli000002","tags":{"test":"value"},"systemData":{"createdAt":"2024-10-09T08:20:04.3604014Z","lastModifiedAt":"2024-10-09T08:20:04.3603872Z"}}'
+      string: '{"type":"Microsoft.ApiCenter/services","location":"westeurope","identity":{"type":"SystemAssigned","principalId":"711d002a-830a-44cd-b030-77ff03ee216f","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47"},"sku":{"name":"Free"},"properties":{"portalHostname":"cli000002.portal.westeurope.azure-apicenter.ms","provisioningState":"Succeeded"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/cli000002","name":"cli000002","tags":{"test":"value"},"systemData":{"createdAt":"2025-05-26T07:40:42.488448Z","lastModifiedAt":"2025-05-26T07:40:42.4884341Z"}}'
     headers:
       api-supported-versions:
-      - 2023-07-01-preview, 2024-03-01, 2024-03-15-preview
+      - 2023-07-01-preview, 2024-03-01, 2024-03-15-preview, 2024-06-01-preview
       cache-control:
       - no-cache
       content-length:
-      - '525'
+      - '621'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 09 Oct 2024 08:20:05 GMT
+      - Mon, 26 May 2025 07:40:43 GMT
       expires:
       - '-1'
       pragma:
@@ -47,12 +47,14 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=33608faa-33a6-4705-beb1-c8904392c4a4/southeastasia/df9ba0ec-0590-45fe-9d87-62b52cd6e73e
       x-ms-ratelimit-remaining-subscription-global-writes:
-      - '2998'
+      - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '198'
+      - '799'
       x-msedge-ref:
-      - 'Ref A: 19B7C9AAAE19443FA458991FB13B0241 Ref B: MAA201060513031 Ref C: 2024-10-09T08:20:00Z'
+      - 'Ref A: C10822F58EB943D39BEC73C509B019F9 Ref B: MAA201060513039 Ref C: 2025-05-26T07:40:37Z'
       x-powered-by:
       - ASP.NET
     status:
