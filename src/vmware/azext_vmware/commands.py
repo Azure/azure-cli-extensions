@@ -73,7 +73,9 @@ def load_datastore_commands(self):
 
 def load_script_execution_commands(self):
     with self.command_group('vmware script-execution') as g:
+        from .operations.script_execution import ScriptExecutionGetExecutionLog
         g.custom_command('create', 'script_execution_create')
+        self.command_table["vmware script-execution get-execution-log"] = ScriptExecutionGetExecutionLog(loader=self)
 
 
 def load_placement_policy_commands(self):

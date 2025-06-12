@@ -9,6 +9,7 @@
 - Add `az vmware datastores pure-storage-volume` command group
 - Add `az vmware provisioned-network` command group
 - Add `--zones` to `az vmware private-cloud create`
+- Add `az vmware script-execution get-execution-log` command
 - [BREAKING CHANGE] Remove `--nsxt-password` and `--vcenter-password` as parameters for `az vmware private-cloud create` and `az vmware private-cloud update`
 
 ## 7.2.0 (2025-02)

@@ -19,7 +19,8 @@ class VmwareScriptScenarioTest(ScenarioTest):
             'privatecloud': 'cloud1',
             'scriptExecution': 'addSsoServer',
             'scriptPackage': 'Microsoft.AVS.Management@3.0.48',
-            'scriptCmdlet': 'New-ExternalSsoDomain'
+            'scriptCmdlet': 'New-ExternalSsoDomain',
+            'outputType': "\"[\'Error\', \'Information\', \'Output\', \'Warning\']\""
         })
 
         count = len(self.cmd('az vmware script-package list -g {rg} -c {privatecloud}').get_output_in_json())
@@ -49,3 +50,6 @@ class VmwareScriptScenarioTest(ScenarioTest):
 
         rsp = self.cmd('az vmware script-execution delete -g {rg} -c {privatecloud} -n {scriptExecution} --yes').output
         self.assertEqual(len(rsp), 0)
+
+        self.cmd('az vmware script-execution get-execution-log -g {rg} --private-cloud-name {privatecloud} --script-execution-name {scriptExecution}')
+        self.cmd('az vmware script-execution get-execution-log -g {rg} --private-cloud-name {privatecloud} --script-execution-name {scriptExecution} --script-output-stream-type {outputType}')

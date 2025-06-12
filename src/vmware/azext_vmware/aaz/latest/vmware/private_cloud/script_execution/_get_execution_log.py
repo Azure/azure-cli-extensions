@@ -11,16 +11,14 @@
 from azure.cli.core.aaz import *
 
 
-@register_command(
-    "vmware script-execution wait",
-)
-class Wait(AAZWaitCommand):
-    """Place the CLI in a waiting state until a condition is met.
+class GetExecutionLog(AAZCommand):
+    """Return the logs for a script execution resource
     """
 
     _aaz_info = {
+        "version": "2024-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}/scriptexecutions/{}", "2024-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}/scriptexecutions/{}/getexecutionlogs", "2024-09-01"],
         ]
     }
 
@@ -40,8 +38,8 @@ class Wait(AAZWaitCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.private_cloud = AAZStrArg(
-            options=["-c", "--private-cloud"],
+        _args_schema.private_cloud_name = AAZStrArg(
+            options=["--private-cloud-name"],
             help="Name of the private cloud",
             required=True,
             id_part="name",
@@ -53,19 +51,27 @@ class Wait(AAZWaitCommand):
             required=True,
         )
         _args_schema.script_execution_name = AAZStrArg(
-            options=["-n", "--name", "--script-execution-name"],
-            help="Name of the user-invoked script execution resource",
+            options=["--script-execution-name"],
+            help="Name of the script cmdlet.",
             required=True,
             id_part="child_name_1",
             fmt=AAZStrArgFormat(
                 pattern="^[-\\w\\._]+$",
             ),
         )
+        _args_schema.script_output_stream_type = AAZListArg(
+            options=["--script-output-stream-type"],
+        )
+
+        script_output_stream_type = cls._args_schema.script_output_stream_type
+        script_output_stream_type.Element = AAZStrArg(
+            enum={"Error": "Error", "Information": "Information", "Output": "Output", "Warning": "Warning"},
+        )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.ScriptExecutionsGet(ctx=self.ctx)()
+        self.ScriptExecutionsGetExecutionLogs(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -77,10 +83,10 @@ class Wait(AAZWaitCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=False)
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class ScriptExecutionsGet(AAZHttpOperation):
+    class ScriptExecutionsGetExecutionLogs(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -94,13 +100,13 @@ class Wait(AAZWaitCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AVS/privateClouds/{privateCloudName}/scriptExecutions/{scriptExecutionName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AVS/privateClouds/{privateCloudName}/scriptExecutions/{scriptExecutionName}/getExecutionLogs",
                 **self.url_parameters
             )
 
         @property
         def method(self):
-            return "GET"
+            return "POST"
 
         @property
         def error_format(self):
@@ -110,7 +116,7 @@ class Wait(AAZWaitCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "privateCloudName", self.ctx.args.private_cloud,
+                    "privateCloudName", self.ctx.args.private_cloud_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -142,10 +148,23 @@ class Wait(AAZWaitCommand):
         def header_parameters(self):
             parameters = {
                 **self.serialize_header_param(
+                    "Content-Type", "application/json",
+                ),
+                **self.serialize_header_param(
                     "Accept", "application/json",
                 ),
             }
             return parameters
+
+        @property
+        def content(self):
+            _content_value, _builder = self.new_content_builder(
+                self.ctx.args.script_output_stream_type,
+                typ=AAZListType,
+            )
+            _builder.set_elements(AAZStrType, ".")
+
+            return self.serialize_content(_content_value)
 
         def on_200(self, session):
             data = self.deserialize_http_content(session)
@@ -232,7 +251,7 @@ class Wait(AAZWaitCommand):
 
             hidden_parameters = cls._schema_on_200.properties.hidden_parameters
             hidden_parameters.Element = AAZObjectType()
-            _WaitHelper._build_schema_script_execution_parameter_read(hidden_parameters.Element)
+            _GetExecutionLogHelper._build_schema_script_execution_parameter_read(hidden_parameters.Element)
 
             information = cls._schema_on_200.properties.information
             information.Element = AAZStrType()
@@ -248,7 +267,7 @@ class Wait(AAZWaitCommand):
 
             parameters = cls._schema_on_200.properties.parameters
             parameters.Element = AAZObjectType()
-            _WaitHelper._build_schema_script_execution_parameter_read(parameters.Element)
+            _GetExecutionLogHelper._build_schema_script_execution_parameter_read(parameters.Element)
 
             warnings = cls._schema_on_200.properties.warnings
             warnings.Element = AAZStrType()
@@ -276,8 +295,8 @@ class Wait(AAZWaitCommand):
             return cls._schema_on_200
 
 
-class _WaitHelper:
-    """Helper class for Wait"""
+class _GetExecutionLogHelper:
+    """Helper class for GetExecutionLog"""
 
     _schema_script_execution_parameter_read = None
 
@@ -365,4 +384,4 @@ class _WaitHelper:
             )
 
 
-__all__ = ["Wait"]
+__all__ = ["GetExecutionLog"]
