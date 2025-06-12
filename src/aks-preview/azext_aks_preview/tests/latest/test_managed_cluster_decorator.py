@@ -885,6 +885,70 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         )
         with self.assertRaises(MutuallyExclusiveArgumentError):
             ctx_6.get_acns_advanced_networkpolicies()
+    
+    def test_mc_get_acns_transit_encryption_type(self):
+        # Default, not set.
+        ctx_1 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_1.get_acns_transit_encryption_type(), None)
+        # Flag set to None.
+        ctx_2 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "enable_acns": True,
+                    "acns_transit_encryption_type": "None",
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_2.get_acns_transit_encryption_type(), "None")
+        # Flag set to FQDN
+        ctx_3 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "enable_acns": True,
+                    "acns_transit_encryption_type": "WireGuard",
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_3.get_acns_transit_encryption_type(), "WireGuard")
+        # Fail on setting transit_encryption_type and disable acns
+        ctx_5 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "acns_transit_encryption_type": "WireGuard",
+                    "disable_acns": True,
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            ctx_5.get_acns_transit_encryption_type()
+        # Fail on setting transit_encryption_type and disable acns security
+        ctx_6 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "acns_transit_encryption_type": "WireGuard",
+                    "disable_acns_security": True,
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            ctx_6.get_acns_transit_encryption_type()
 
 
     def test_mc_get_acns_enablement(self):
