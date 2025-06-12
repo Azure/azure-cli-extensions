@@ -10,6 +10,7 @@ def load_command_table(self, _):
     load_location_commands(self)
     load_datastore_commands(self)
     load_provisioned_network_commands(self)
+    load_pure_storage_policy_commands(self)
     load_script_execution_commands(self)
     load_placement_policy_commands(self)
     load_workload_network_commands(self)
@@ -48,6 +49,15 @@ def load_provisioned_network_commands(self):
           from .operations.provisioned_network import ProvisionedNetworkList, ProvisionedNetworkShow
           self.command_table["vmware provisioned-network list"] = ProvisionedNetworkList(loader=self)
           self.command_table["vmware provisioned-network show"] = ProvisionedNetworkShow(loader=self)
+          
+          
+def load_pure_storage_policy_commands(self):
+    with self.command_group("vmware pure-storage-policy"):
+          from .operations.pure_storage_policy import PureStoragePolicyList, PureStoragePolicyShow, PureStoragePolicyCreate, PureStoragePolicyDelete
+          self.command_table["vmware pure-storage-policy list"] = PureStoragePolicyList(loader=self)
+          self.command_table["vmware pure-storage-policy show"] = PureStoragePolicyShow(loader=self)
+          self.command_table["vmware pure-storage-policy create"] = PureStoragePolicyCreate(loader=self)
+          self.command_table["vmware pure-storage-policy delete"] = PureStoragePolicyDelete(loader=self)
 
 
 def load_datastore_commands(self):
