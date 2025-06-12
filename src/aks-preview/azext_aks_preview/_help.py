@@ -596,6 +596,14 @@ helps['aks create'] = f"""
         - name: --node-provisioning-mode
           type: string
           short-summary: Set the node provisioning mode of the cluster. Valid values are "Auto" and "Manual". For more information on "Auto" mode see aka.ms/aks/nap.
+        - name: --node-provisioning-default-pools
+          type: string
+          short-summary: The set of default Karpenter NodePools configured for node provisioning. Valid values are "Auto" and "None".
+          long-summary: |-
+              The set of default Karpenter NodePools configured for node provisioning. Valid values are "Auto" and "None".
+              Auto: A standard set of Karpenter NodePools are provisioned.
+              None: No Karpenter NodePools are provisioned.
+              WARNING: Changing this from Auto to None on an existing cluster will cause the default Karpenter NodePools to be deleted, which will in turn drain and delete the nodes associated with those pools. It is strongly recommended to not do this unless there are idle nodes ready to take the pods evicted by that action.
         - name: --enable-app-routing
           type: bool
           short-summary: Enable Application Routing addon.
@@ -1230,6 +1238,14 @@ helps['aks update'] = """
         - name: --node-provisioning-mode
           type: string
           short-summary: Set the node provisioning mode of the cluster. Valid values are "Auto" and "Manual". For more information on "Auto" mode see aka.ms/aks/nap.
+        - name: --node-provisioning-default-pools
+          type: string
+          short-summary: The set of default Karpenter NodePools configured for node provisioning. Valid values are "Auto" and "None".
+          long-summary: |-
+              The set of default Karpenter NodePools configured for node provisioning. Valid values are "Auto" and "None".
+              Auto: A standard set of Karpenter NodePools are provisioned.
+              None: No Karpenter NodePools are provisioned.
+              WARNING: Changing this from Auto to None on an existing cluster will cause the default Karpenter NodePools to be deleted, which will in turn drain and delete the nodes associated with those pools. It is strongly recommended to not do this unless there are idle nodes ready to take the pods evicted by that action.
         - name: --enable-ai-toolchain-operator
           type: bool
           short-summary: Enable AI toolchain operator to the cluster
