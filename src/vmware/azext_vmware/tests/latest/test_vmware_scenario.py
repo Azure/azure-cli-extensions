@@ -138,3 +138,6 @@ class VmwareScenarioTest(ScenarioTest):
 
         # delete the private cloud
         self.cmd('vmware private-cloud delete -g {rg} -n {privatecloud} --yes')
+        
+        # get sku list
+        self.cmd('vmware skus list')
