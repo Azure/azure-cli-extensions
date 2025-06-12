@@ -12,10 +12,10 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "amlfs",
+    "amlfs auto-export",
 )
 class __CMDGroup(AAZCommandGroup):
-    """This is an extension to Azure CLI to manage Amlfs resources.
+    """Manage Auto Export Job
     """
     pass
 

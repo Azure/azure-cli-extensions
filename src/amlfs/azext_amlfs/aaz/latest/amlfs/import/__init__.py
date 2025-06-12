@@ -8,16 +8,10 @@
 # pylint: skip-file
 # flake8: noqa
 
-from azure.cli.core.aaz import *
-
-
-@register_command_group(
-    "amlfs",
-)
-class __CMDGroup(AAZCommandGroup):
-    """This is an extension to Azure CLI to manage Amlfs resources.
-    """
-    pass
-
-
-__all__ = ["__CMDGroup"]
+from .__cmd_group import *
+from ._create import *
+from ._delete import *
+from ._list import *
+from ._show import *
+from ._update import *
+from ._wait import *
