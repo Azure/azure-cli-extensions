@@ -131,7 +131,7 @@ from ._ssh_utils import (SSH_DEFAULT_ENCODING, DebugWebSocketConnection, read_de
 from ._utils import (connected_env_check_cert_name_availability, get_oryx_run_image_tags, patchable_check,
                      get_pack_exec_path, is_docker_running, parse_build_env_vars, env_has_managed_identity)
 
-from ._arc_utils import (extract_domain_from_configmap, get_core_dns_deployment, get_core_dns_configmap, backup_custom_core_dns_configmap, get_dns_operator_config,
+from ._arc_utils import (extract_domain_from_configmap, get_core_dns_deployment, get_core_dns_configmap, backup_custom_core_dns_configmap,
                          replace_configmap, replace_deployment, delete_configmap, patch_coredns,
                          create_folder, create_sub_folder,
                          check_kube_connection, create_kube_client)
@@ -144,7 +144,7 @@ from ._constants import (AKS_AZURE_LOCAL_DISTRO, CONTAINER_APPS_RP,
                          DEV_MILVUS_IMAGE, DEV_MILVUS_CONTAINER_NAME, DEV_MILVUS_SERVICE_TYPE, DEV_SERVICE_LIST, CONTAINER_APPS_SDK_MODELS, BLOB_STORAGE_TOKEN_STORE_SECRET_SETTING_NAME,
                          DAPR_SUPPORTED_STATESTORE_DEV_SERVICE_LIST, DAPR_SUPPORTED_PUBSUB_DEV_SERVICE_LIST,
                          JAVA_COMPONENT_CONFIG, JAVA_COMPONENT_EUREKA, JAVA_COMPONENT_ADMIN, JAVA_COMPONENT_NACOS, JAVA_COMPONENT_GATEWAY, DOTNET_COMPONENT_RESOURCE_TYPE,
-                         CUSTOM_CORE_DNS, CORE_DNS, KUBE_SYSTEM, OPENSHIFT_DISTRO, OPENSHIFT_DNS, SETUP_CORE_DNS_SUPPORTED_DISTRO)
+                         CUSTOM_CORE_DNS, CORE_DNS, KUBE_SYSTEM, OPENSHIFT_DISTRO, OPENSHIFT_DNS)
 
 
 logger = get_logger(__name__)
@@ -2182,7 +2182,6 @@ def setup_core_dns(cmd, distro=None, kube_config=None, kube_context=None, skip_s
     original_folder, folder_status, error = create_sub_folder(parent_folder, "original")
     if not folder_status:
         raise ValidationError(error)
-    
     new_filepath_with_timestamp, folder_status, error = create_sub_folder(parent_folder, "new")
     if not folder_status:
         raise ValidationError(error)
@@ -2190,7 +2189,7 @@ def setup_core_dns(cmd, distro=None, kube_config=None, kube_context=None, skip_s
     kube_client = create_kube_client(kube_config, kube_context, skip_ssl_verification)
 
     if distro == AKS_AZURE_LOCAL_DISTRO or distro is None:
-    # backup original deployment and configmap
+        # backup original deployment and configmap
         logger.info("Backup existing coredns deployment and configmap")
         original_coredns_deployment = get_core_dns_deployment(kube_client, original_folder)
         coredns_deployment = copy.deepcopy(original_coredns_deployment)
@@ -2231,7 +2230,7 @@ def setup_core_dns(cmd, distro=None, kube_config=None, kube_context=None, skip_s
 
         try:
             patch_coredns(kube_client, coredns_configmap, coredns_deployment, new_filepath_with_timestamp,
-                        original_custom_core_dns_configmap is not None, not custom_coredns_configmap_volume_set, not custom_coredns_configmap_volume_mounted)
+                          original_custom_core_dns_configmap is not None, not custom_coredns_configmap_volume_set, not custom_coredns_configmap_volume_mounted)
         except Exception as e:
             logger.error(f"Failed to setup custom coredns. {e}")
             logger.info("Start to reverted coredns")
@@ -2265,11 +2264,11 @@ def setup_core_dns(cmd, distro=None, kube_config=None, kube_context=None, skip_s
 
             if not replace_succeeded:
                 logger.error(f"Failed to revert the deployment and configuration. "
-                            f"You can get the original coredns config and deployment from {original_folder}")
+                             f"You can get the original coredns config and deployment from {original_folder}")
     elif distro == OPENSHIFT_DISTRO:
         logger.info("Setting up CoreDNS for OpenShift")
         try:
-            # Create custom CoreDNS resources (ConfigMap, Deployment, Service)
+
             from ._arc_utils import create_openshift_custom_coredns_resources, patch_openshift_dns_operator
 
             create_openshift_custom_coredns_resources(kube_client, OPENSHIFT_DNS)
@@ -2283,7 +2282,7 @@ def setup_core_dns(cmd, distro=None, kube_config=None, kube_context=None, skip_s
         except Exception as e:
             logger.error(f"Failed to setup CoreDNS for OpenShift. {e}")
             raise ValidationError("Failed to setup CoreDNS for OpenShift distro")
-        
+
 
 def init_dapr_components(cmd, resource_group_name, environment_name, statestore="redis", pubsub="redis"):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)

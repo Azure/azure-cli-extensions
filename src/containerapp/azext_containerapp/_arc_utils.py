@@ -278,7 +278,8 @@ def update_deployment(resource_name, resource_namespace, kube_client, deployment
         apps_v1_api.patch_namespaced_deployment(name=resource_name, namespace=resource_namespace, body=deployment)
     except Exception as e:
         raise ValidationError(f"other errors while patching deployment coredns in kube-system {str(e)}")
-    
+
+
 def create_or_update_deployment(name, namespace, kube_client, deployment):
     validate_resource_name_and_resource_namespace_not_empty(name, namespace)
 
@@ -289,10 +290,9 @@ def create_or_update_deployment(name, namespace, kube_client, deployment):
     except client.exceptions.ApiException as e:
         if e.status == 409:
             logger.warning(f"Deployment '{name}' already exists, replacing it")
-            apps_v1_api.replace_namespaced_deployment(name=name,namespace=namespace, body=deployment)
+            apps_v1_api.replace_namespaced_deployment(name=name, namespace=namespace, body=deployment)
         else:
             raise CLIError(f"Failed to create or replace Deployment'{name}': {str(e)}")
-
 
 
 def replace_deployment(resource_name, resource_namespace, kube_client, deployment):
@@ -334,7 +334,8 @@ def update_configmap(resource_name, resource_namespace, kube_client, config_map)
 
     except Exception as e:
         raise CLIError(f"other errors while patching config map coredns in kube-system {str(e)}")
-    
+
+
 def create_or_update_configmap(name, namespace, kube_client, configmap):
     validate_resource_name_and_resource_namespace_not_empty(name, namespace)
 
@@ -345,7 +346,7 @@ def create_or_update_configmap(name, namespace, kube_client, configmap):
     except client.exceptions.ApiException as e:
         if e.status == 409:
             logger.warning(f"Configmap '{name}' already exists, replacing it")
-            core_v1_api.replace_namespaced_config_map(name=name,namespace=namespace, body=configmap)
+            core_v1_api.replace_namespaced_config_map(name=name, namespace=namespace, body=configmap)
         else:
             raise CLIError(f"Failed to create or replace Deployment'{name}': {str(e)}")
 
@@ -386,36 +387,7 @@ def validate_resource_name_and_resource_namespace_not_empty(resource_name, resou
     if resource_namespace is None or len(resource_namespace) == 0:
         raise InvalidArgumentValueError("Arg resource_namespace should not be None or Empty")
 
-def get_dns_operator_config(kube_client, folder=None):
-    try:
-        logger.info("Fetching DNS operator configuration from OpenShift cluster")
-        custom_objects_api = client.CustomObjectsApi(kube_client)
-        dns_operator_config = custom_objects_api.get_cluster_custom_object(
-            group="operator.openshift.io",
-            version="v1",
-            plural="dnses",
-            name="default"
-        )
 
-        # Save the DNS operator configuration to the folder if provided
-        if folder is not None:
-            filepath = os.path.join(folder, "dns-operator-config.json")
-            try:
-                logger.info(f"Saving DNS operator configuration to {filepath}")
-                with open(filepath, "w") as f:
-                    f.write(json.dumps(dns_operator_config, indent=2))
-            except Exception as e:
-                raise ValidationError(f"Failed to save DNS operator configuration to {filepath}: {str(e)}")
-
-        return dns_operator_config
-    except client.exceptions.ApiException as e:
-        if e.status == 404:
-            raise ResourceNotFoundError("DNS operator configuration not found in the OpenShift cluster.")
-        else:
-            raise CLIError(f"Failed to fetch DNS operator configuration: {str(e)}")
-    except Exception as e:
-        raise CLIError(f"An error occurred while fetching DNS operator configuration: {str(e)}")
-    
 def create_or_replace_cluster_role(rbac_api, role_name, role):
     try:
         logger.info(f"Creating new ClusterRole '{role_name}'")
@@ -426,7 +398,8 @@ def create_or_replace_cluster_role(rbac_api, role_name, role):
             rbac_api.replace_cluster_role(name=role_name, body=role)
         else:
             raise CLIError(f"Failed to create or replace ClusterRole '{role_name}': {str(e)}")
-        
+
+
 def create_or_replace_cluster_rolebinding(rbac_api, rolebinding_name, rolebinding):
     try:
         logger.info(f"Creating new ClusterRolebinding '{rolebinding_name}'")
@@ -439,13 +412,11 @@ def create_or_replace_cluster_rolebinding(rbac_api, rolebinding_name, rolebindin
             raise CLIError(f"Failed to create or replace ClusterRole '{rolebinding_name}': {str(e)}")
 
 
-
 def create_openshift_custom_coredns_resources(kube_client, namespace=OPENSHIFT_DNS):
     try:
         logger.info("Creating custom CoreDNS resources in OpenShift")
         core_v1_api = client.CoreV1Api(kube_client)
         rbac_api = client.RbacAuthorizationV1Api(kube_client)
-        apps_v1_api = client.AppsV1Api(kube_client)
 
         # 1. Create ClusterRole
         cluster_role = client.V1ClusterRole(
@@ -485,7 +456,7 @@ def create_openshift_custom_coredns_resources(kube_client, namespace=OPENSHIFT_D
                 )
             ]
         )
-        create_or_replace_cluster_rolebinding(rbac_api,CUSTOM_CORE_DNS, cluster_role_binding)
+        create_or_replace_cluster_rolebinding(rbac_api, CUSTOM_CORE_DNS, cluster_role_binding)
 
         # 3. Create ConfigMap
         existing_config_map = core_v1_api.read_namespaced_config_map(name=CUSTOM_CORE_DNS, namespace=KUBE_SYSTEM)
@@ -500,8 +471,8 @@ def create_openshift_custom_coredns_resources(kube_client, namespace=OPENSHIFT_D
             ),
             data={"Corefile": corefile_data}
         )
-        
-        create_or_update_configmap(name=CUSTOM_CORE_DNS,namespace=namespace,kube_client=kube_client, configmap=config_map)
+
+        create_or_update_configmap(name=CUSTOM_CORE_DNS, namespace=namespace, kube_client=kube_client, configmap=config_map)
         logger.info("Custom CoreDNS ConfigMap created successfully")
 
         # 4. Create Deployment
@@ -545,7 +516,7 @@ def create_openshift_custom_coredns_resources(kube_client, namespace=OPENSHIFT_D
                 )
             )
         )
-        create_or_update_deployment(name=CUSTOM_CORE_DNS,namespace=namespace,kube_client=kube_client, deployment=deployment)
+        create_or_update_deployment(name=CUSTOM_CORE_DNS, namespace=namespace, kube_client=kube_client, deployment=deployment)
         logger.info("Custom CoreDNS Deployment created successfully")
 
         # 5 Create Service
@@ -575,7 +546,8 @@ def create_openshift_custom_coredns_resources(kube_client, namespace=OPENSHIFT_D
             raise CLIError(f"Failed to create custom CoreDNS resources: {str(e)}")
     except Exception as e:
         raise CLIError(f"An error occurred while creating custom CoreDNS resources: {str(e)}")
-    
+
+
 def patch_openshift_dns_operator(kube_client, domain):
     try:
         logger.info("Patching OpenShift DNS operator to add custom resolver")
@@ -621,7 +593,7 @@ def patch_openshift_dns_operator(kube_client, domain):
         raise CLIError(f"Failed to patch DNS operator: {str(e)}")
     except Exception as e:
         raise CLIError(f"An error occurred while patching DNS operator: {str(e)}")
-    
+
 
 def extract_domain_from_configmap(kube_client, resource_name=CUSTOM_CORE_DNS, namespace=KUBE_SYSTEM):
     import re
