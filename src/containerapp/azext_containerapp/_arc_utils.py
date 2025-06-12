@@ -348,7 +348,7 @@ def create_or_update_configmap(name, namespace, kube_client, configmap):
             logger.warning(f"Configmap '{name}' already exists, replacing it")
             core_v1_api.replace_namespaced_config_map(name=name, namespace=namespace, body=configmap)
         else:
-            raise CLIError(f"Failed to create or replace Deployment'{name}': {str(e)}")
+            raise CLIError(f"Failed to create or replace ConfigMap '{name}': {str(e)}")
 
 
 def replace_configmap(resource_name, resource_namespace, kube_client, config_map):
