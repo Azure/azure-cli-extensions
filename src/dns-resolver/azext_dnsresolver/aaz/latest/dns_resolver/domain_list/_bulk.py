@@ -12,22 +12,27 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "dns-resolver forwarding-ruleset wait",
+    "dns-resolver domain-list bulk",
 )
-class Wait(AAZWaitCommand):
-    """Place the CLI in a waiting state until a condition is met.
+class Bulk(AAZCommand):
+    """Uploads or downloads the list of domains for a DNS Resolver Domain List from a storage link.
+
+    :example: Upload DNS resolver domain list domains
+        az dns-resolver domain-list bulk --resource-group sampleResourceGroup --name sampleDnsResolverDomainList --action Upload --storage-url https://sampleStorageAccount.blob.core.windows.net/sample-container/sampleBlob.txt?sv=2022-11-02&sr=b&sig=39Up9jzHkxhUIhFEjEh9594DJxe7w6cIRCgOV6ICGS0%3A377&sp=rcw
     """
 
     _aaz_info = {
+        "version": "2025-05-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/dnsforwardingrulesets/{}", "2025-05-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/dnsresolverdomainlists/{}/bulk", "2025-05-01"],
         ]
     }
 
+    AZ_SUPPORT_NO_WAIT = True
+
     def _handler(self, command_args):
         super()._handler(command_args)
-        self._execute_operations()
-        return self._output()
+        return self.build_lro_poller(self._execute_operations, self._output)
 
     _args_schema = None
 
@@ -40,20 +45,50 @@ class Wait(AAZWaitCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.dns_forwarding_ruleset_name = AAZStrArg(
-            options=["-n", "--name", "--dns-forwarding-ruleset-name"],
-            help="The name of the DNS forwarding ruleset.",
+        _args_schema.if_match = AAZStrArg(
+            options=["--if-match"],
+            help="ETag of the resource. Omit this value to always overwrite the current resource. Specify the last-seen ETag value to prevent accidentally overwriting any concurrent changes.",
+        )
+        _args_schema.if_none_match = AAZStrArg(
+            options=["--if-none-match"],
+            help="Set to '*' to allow a new resource to be created, but to prevent updating an existing resource. Other values will be ignored.",
+        )
+        _args_schema.name = AAZStrArg(
+            options=["--name"],
+            help="The name of the DNS resolver domain list.",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9]([a-zA-Z0-9_\\-]*[a-zA-Z0-9])?$",
+                max_length=80,
+                min_length=1,
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
+            required=True,
+        )
+
+        # define Arg Group "Properties"
+
+        _args_schema = cls._args_schema
+        _args_schema.action = AAZStrArg(
+            options=["--action"],
+            arg_group="Properties",
+            help="The action to take in the request, Upload or Download.",
+            required=True,
+            enum={"Download": "Download", "Upload": "Upload"},
+        )
+        _args_schema.storage_url = AAZStrArg(
+            options=["--storage-url"],
+            arg_group="Properties",
+            help="The storage account blob file URL to be used in the bulk upload or download request of DNS resolver domain list.",
             required=True,
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.DnsForwardingRulesetsGet(ctx=self.ctx)()
+        yield self.DnsResolverDomainListsBulk(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -65,40 +100,56 @@ class Wait(AAZWaitCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=False)
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class DnsForwardingRulesetsGet(AAZHttpOperation):
+    class DnsResolverDomainListsBulk(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
+            if session.http_response.status_code in [202]:
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200,
+                    self.on_error,
+                    lro_options={"final-state-via": "azure-async-operation"},
+                    path_format_arguments=self.url_parameters,
+                )
             if session.http_response.status_code in [200]:
-                return self.on_200(session)
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200,
+                    self.on_error,
+                    lro_options={"final-state-via": "azure-async-operation"},
+                    path_format_arguments=self.url_parameters,
+                )
 
             return self.on_error(session.http_response)
 
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/dnsForwardingRulesets/{dnsForwardingRulesetName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/dnsResolverDomainLists/{dnsResolverDomainListName}/bulk",
                 **self.url_parameters
             )
 
         @property
         def method(self):
-            return "GET"
+            return "POST"
 
         @property
         def error_format(self):
-            return "ODataV4Format"
+            return "MgmtErrorFormat"
 
         @property
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "dnsForwardingRulesetName", self.ctx.args.dns_forwarding_ruleset_name,
+                    "dnsResolverDomainListName", self.ctx.args.name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -126,10 +177,35 @@ class Wait(AAZWaitCommand):
         def header_parameters(self):
             parameters = {
                 **self.serialize_header_param(
+                    "If-Match", self.ctx.args.if_match,
+                ),
+                **self.serialize_header_param(
+                    "If-None-Match", self.ctx.args.if_none_match,
+                ),
+                **self.serialize_header_param(
+                    "Content-Type", "application/json",
+                ),
+                **self.serialize_header_param(
                     "Accept", "application/json",
                 ),
             }
             return parameters
+
+        @property
+        def content(self):
+            _content_value, _builder = self.new_content_builder(
+                self.ctx.args,
+                typ=AAZObjectType,
+                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
+            )
+            _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True, "client_flatten": True}})
+
+            properties = _builder.get(".properties")
+            if properties is not None:
+                properties.set_prop("action", AAZStrType, ".action", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("storageUrl", AAZStrType, ".storage_url", typ_kwargs={"flags": {"required": True}})
+
+            return self.serialize_content(_content_value)
 
         def on_200(self, session):
             data = self.deserialize_http_content(session)
@@ -162,7 +238,7 @@ class Wait(AAZWaitCommand):
                 flags={"read_only": True},
             )
             _schema_on_200.properties = AAZObjectType(
-                flags={"required": True, "client_flatten": True},
+                flags={"client_flatten": True},
             )
             _schema_on_200.system_data = AAZObjectType(
                 serialized_name="systemData",
@@ -174,9 +250,10 @@ class Wait(AAZWaitCommand):
             )
 
             properties = cls._schema_on_200.properties
-            properties.dns_resolver_outbound_endpoints = AAZListType(
-                serialized_name="dnsResolverOutboundEndpoints",
-                flags={"required": True},
+            properties.domains = AAZListType()
+            properties.domains_url = AAZStrType(
+                serialized_name="domainsUrl",
+                flags={"read_only": True},
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
@@ -187,13 +264,8 @@ class Wait(AAZWaitCommand):
                 flags={"read_only": True},
             )
 
-            dns_resolver_outbound_endpoints = cls._schema_on_200.properties.dns_resolver_outbound_endpoints
-            dns_resolver_outbound_endpoints.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.properties.dns_resolver_outbound_endpoints.Element
-            _element.id = AAZStrType(
-                flags={"required": True},
-            )
+            domains = cls._schema_on_200.properties.domains
+            domains.Element = AAZStrType()
 
             system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(
@@ -221,8 +293,8 @@ class Wait(AAZWaitCommand):
             return cls._schema_on_200
 
 
-class _WaitHelper:
-    """Helper class for Wait"""
+class _BulkHelper:
+    """Helper class for Bulk"""
 
 
-__all__ = ["Wait"]
+__all__ = ["Bulk"]
