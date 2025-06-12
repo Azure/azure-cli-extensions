@@ -9,6 +9,7 @@ def load_command_table(self, _):
     load_private_cloud_commands(self)
     load_location_commands(self)
     load_datastore_commands(self)
+    load_provisioned_network_commands(self)
     load_script_execution_commands(self)
     load_placement_policy_commands(self)
     load_workload_network_commands(self)
@@ -40,6 +41,13 @@ def load_location_commands(self):
     with self.command_group('vmware location') as g:
         g.custom_command('checkquotaavailability', 'check_quota_availability', deprecate_info=g.deprecate(redirect='az vmware location check-quota-availability', hide=True))
         g.custom_command('checktrialavailability', 'check_trial_availability', deprecate_info=g.deprecate(redirect='az vmware location check-trial-availability', hide=True))
+
+
+def load_provisioned_network_commands(self):
+    with self.command_group("vmware provisioned-network"):
+          from .operations.provisioned_network import ProvisionedNetworkList, ProvisionedNetworkShow
+          self.command_table["vmware provisioned-network list"] = ProvisionedNetworkList(loader=self)
+          self.command_table["vmware provisioned-network show"] = ProvisionedNetworkShow(loader=self)
 
 
 def load_datastore_commands(self):

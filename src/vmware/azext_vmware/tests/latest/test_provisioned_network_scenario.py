@@ -6,24 +6,23 @@
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
 
 
-class VmwareHostScenarioTest(ScenarioTest):
+class VmwareProvisionedNetworkScenarioTest(ScenarioTest):
     def setUp(self):
         # https://vcrpy.readthedocs.io/en/latest/configuration.html#request-matching
         self.vcr.match_on = ['scheme', 'method', 'path', 'query']  # not 'host', 'port'
-        super(VmwareHostScenarioTest, self).setUp()
+        super(VmwareProvisionedNetworkScenarioTest, self).setUp()
 
-    @ResourceGroupPreparer(name_prefix='cli_test_host_script')
+    @ResourceGroupPreparer(name_prefix='cli_test_provisioned_network_script')
     def test_vmware_host(self):
         self.kwargs.update({
             'subscription': '12341234-1234-1234-1234-123412341234',
             'privatecloud': 'cloud1',
-            'clustername': 'cluster1',
-            'hostname': "esx03-r52.1111111111111111111.westcentralus.prod.azure.com"
+            'provisionednetworkname': "esx03-r52.1111111111111111111.westcentralus.prod.azure.com"
         })
 
-        # list hosts in a cluster
-        count = len(self.cmd('az vmware cluster host list -g rg --cluster-name {clustername} --private-cloud-name {privatecloud}').get_output_in_json())
+        # list provisioned networks
+        count = len(self.cmd('az vmware provisioned-network list -g rg --private-cloud-name {privatecloud}').get_output_in_json())
         self.assertEqual(count, 3, 'count expected to be 3')
 
-        # get a host
-        self.cmd('az vmware cluster host show -g rg --cluster-name {clustername} --private-cloud-name {privatecloud} --host-id {hostname}')
+        # get a provisioned network
+        self.cmd('az vmware provisioned-network show -g rg --private-cloud-name {privatecloud} --n {provisionednetworkname}')
