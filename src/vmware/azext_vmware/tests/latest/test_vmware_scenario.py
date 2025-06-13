@@ -25,7 +25,9 @@ class VmwareScenarioTest(ScenarioTest):
             'cluster': 'pycluster1',
             'hosts': 'fakehost22.nyc1.kubernetes.center fakehost23.nyc1.kubernetes.center fakehost24.nyc1.kubernetes.center',
             'key_vault_key': 'vmwarekey',
-            'vault_url': 'https://keyvault1-kmip-kvault.vault.azure.net/'
+            'vault_url': 'https://keyvault1-kmip-kvault.vault.azure.net/',
+            'clustername': 'cluster1',
+            'hostname': "name"
         })
 
         # check quote availability
@@ -135,6 +137,13 @@ class VmwareScenarioTest(ScenarioTest):
 
         # cluster list zone
         self.cmd('vmware cluster list-zones -g {rg} -c {privatecloud} -n {cluster}')
+        
+        # list hosts
+        count = len(self.cmd('az vmware cluster host list -g rg --cluster-name {clustername} --private-cloud-name {privatecloud}').get_output_in_json())
+        self.assertEqual(count, 3, 'count expected to be 3')
+
+        # get a host
+        self.cmd('az vmware cluster host show -g rg --cluster-name {clustername} --private-cloud-name {privatecloud} --host-id {hostname}')
 
         # delete the private cloud
         self.cmd('vmware private-cloud delete -g {rg} -n {privatecloud} --yes')

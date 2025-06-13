@@ -28,7 +28,7 @@ class VmwareDatastoresScenarioTest(ScenarioTest):
             'volume_id': '/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/ResourceGroup1/providers/Microsoft.NetApp/netAppAccounts/NetAppAccount1/capacityPools/CapacityPool1/volumes/NFSVol1',
             'target_id': '/subscriptions/ba75e79b-dd95-4025-9dbf-3a7ae8dff2b5/resourceGroups/rasivagu-df-rg/providers/Microsoft.StoragePool/diskPools/rasivagu-df-diskpool/iscsiTargets/rasivagu-df-target',
             'san_volume': 'san-volumes',
-            'storage_pool_id': '/subscriptions/cef41485-ad1e-4cc3-a652-4c2620b8a2d0/resourceGroups/ResourceGroup1/providers/PureStorage.Block/storagePools/storagePool1',
+            'storage_pool_id': 'id',
             'size_gb': 64,
         })
         
@@ -59,4 +59,4 @@ class VmwareDatastoresScenarioTest(ScenarioTest):
         self.cmd('az vmware datastore elastic-san-volume create --name SANDatastore1 --resource-group {rg} --private-cloud {privatecloud} --cluster {cluster} --elastic-san-volume {san_volume}')
 
         # # Create a new Pure Storage based datastore
-        self.cmd('az vmware datastore pure-storage-volume create --name PureStorageDatastore1 --resource-group {rg} --private-cloud {privatecloud} --cluster {cluster} --storage-pool-id {storage_pool_id} --size-gb {size_gb}')
+        self.cmd('az vmware datastore pure-storage-volume create --name PureStorageDatastore1 --resource-group {rg} --private-cloud {privatecloud} --cluster {cluster} --storage-pool-id {storage_pool_id} --size-gb {size_gb} --debug')

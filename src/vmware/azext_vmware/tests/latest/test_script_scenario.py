@@ -15,7 +15,7 @@ class VmwareScriptScenarioTest(ScenarioTest):
     @ResourceGroupPreparer(name_prefix='cli_test_vmware_script')
     def test_vmware_script(self):
         self.kwargs.update({
-            'subscription': '12341234-1234-1234-1234-123412341234',
+            'subscription': '00000000-0000-0000-0000-000000000000',
             'privatecloud': 'cloud1',
             'scriptExecution': 'addSsoServer',
             'scriptPackage': 'Microsoft.AVS.Management@3.0.48',

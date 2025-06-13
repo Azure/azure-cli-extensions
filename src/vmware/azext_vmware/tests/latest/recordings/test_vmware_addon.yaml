@@ -21,10 +21,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.74.0 azsdk-python-core/1.31.0 Python/3.12.10 (Windows-11-10.0.26100-SP0)
     method: PUT
-    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_addon000001/providers/Microsoft.AVS/privateClouds/mycloud1?api-version=2023-09-01
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_addon000001/providers/Microsoft.AVS/privateClouds/mycloud1?api-version=2024-09-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1","name":"cloud1","type":"Microsoft.AVS/privateClouds","tags":{},"location":"eastus2","properties":{"managementCluster":{"clusterSize":4,"clusterId":1,"hosts":["fakehost18.nyc1.kubernetes.center","fakehost19.nyc1.kubernetes.center","fakehost20.nyc1.kubernetes.center","fakehost21.nyc1.kubernetes.center"]},"internet":"Disabled","identitySources":[{"name":"group1","alias":"groupAlias","domain":"domain1","baseUserDN":"ou=baseUser","baseGroupDN":"ou=baseGroup","primaryServer":"ldaps://1.1.1.1:636/","secondaryServer":"ldaps://1.1.1.2:636/","ssl":"Enabled"}],"availability":{"strategy":"SingleZone","zone":1},"provisioningState":"Succeeded","circuit":{"primarySubnet":"192.168.53.0/30","secondarySubnet":"192.168.53.4/30","expressRouteID":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tnt13-41a90db2-9d5e-4bd5-a77a-5ce7b58213d6-eastus2/providers/Microsoft.Network/expressroutecircuits/tnt13-41a90db2-9d5e-4bd5-a77a-5ce7b58213d6-eastus2-xconnect"},"endpoints":{"nsxtManager":"https://192.168.50.3/","vcsa":"https://192.168.50.2/"},"networkBlock":"192.168.48.0/22","externalCloudLinks":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mygroup/providers/Microsoft.AVS/privateClouds/cloud2"]},"sku":{"name":"AV36"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1","name":"cloud1","type":"Microsoft.AVS/privateClouds","tags":{},"location":"eastus2","properties":{"managementCluster":{"clusterSize":4,"clusterId":1,"hosts":["fakehost18.nyc1.kubernetes.center","fakehost19.nyc1.kubernetes.center","fakehost20.nyc1.kubernetes.center","fakehost21.nyc1.kubernetes.center"],"vsanDatastoreName":"vsanDatastore1"},"internet":"Disabled","identitySources":[{"name":"group1","alias":"groupAlias","domain":"domain1","baseUserDN":"ou=baseUser","baseGroupDN":"ou=baseGroup","primaryServer":"ldaps://1.1.1.1:636/","secondaryServer":"ldaps://1.1.1.2:636/","ssl":"Enabled"}],"availability":{"strategy":"SingleZone","zone":1},"provisioningState":"Succeeded","circuit":{"primarySubnet":"192.168.53.0/30","secondarySubnet":"192.168.53.4/30","expressRouteID":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tnt13-41a90db2-9d5e-4bd5-a77a-5ce7b58213d6-eastus2/providers/Microsoft.Network/expressroutecircuits/tnt13-41a90db2-9d5e-4bd5-a77a-5ce7b58213d6-eastus2-xconnect"},"endpoints":{"nsxtManager":"https://192.168.50.3/","vcsa":"https://192.168.50.2/"},"networkBlock":"192.168.48.0/22","externalCloudLinks":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mygroup/providers/Microsoft.AVS/privateClouds/cloud2"]},"sku":{"name":"AV36"}}'
     headers:
       access-control-allow-credentials:
       - 'true'
@@ -35,11 +35,11 @@ interactions:
       access-control-allow-origin:
       - '*'
       content-length:
-      - '1377'
+      - '1414'
       content-type:
       - application/json
       date:
-      - Tue, 10 Jun 2025 18:42:11 GMT
+      - Fri, 13 Jun 2025 20:43:35 GMT
       server:
       - Rocket
     status:
@@ -79,7 +79,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 10 Jun 2025 18:42:14 GMT
+      - Fri, 13 Jun 2025 20:43:38 GMT
       server:
       - Rocket
     status:
@@ -123,7 +123,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 10 Jun 2025 18:42:16 GMT
+      - Fri, 13 Jun 2025 20:43:40 GMT
       server:
       - Rocket
     status:
@@ -163,7 +163,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 10 Jun 2025 18:42:19 GMT
+      - Fri, 13 Jun 2025 20:43:42 GMT
       server:
       - Rocket
     status:
@@ -207,7 +207,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 10 Jun 2025 18:42:19 GMT
+      - Fri, 13 Jun 2025 20:43:42 GMT
       server:
       - Rocket
     status:
@@ -247,7 +247,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 10 Jun 2025 18:42:22 GMT
+      - Fri, 13 Jun 2025 20:43:45 GMT
       server:
       - Rocket
     status:
@@ -287,7 +287,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 10 Jun 2025 18:42:24 GMT
+      - Fri, 13 Jun 2025 20:43:47 GMT
       server:
       - Rocket
     status:
@@ -329,7 +329,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 10 Jun 2025 18:42:26 GMT
+      - Fri, 13 Jun 2025 20:43:49 GMT
       server:
       - Rocket
     status:
@@ -369,7 +369,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 10 Jun 2025 18:42:29 GMT
+      - Fri, 13 Jun 2025 20:43:52 GMT
       server:
       - Rocket
     status:
@@ -413,7 +413,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 10 Jun 2025 18:42:32 GMT
+      - Fri, 13 Jun 2025 20:43:54 GMT
       server:
       - Rocket
     status:
@@ -453,7 +453,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 10 Jun 2025 18:42:35 GMT
+      - Fri, 13 Jun 2025 20:43:58 GMT
       server:
       - Rocket
     status:
@@ -497,7 +497,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 10 Jun 2025 18:42:35 GMT
+      - Fri, 13 Jun 2025 20:43:58 GMT
       server:
       - Rocket
     status:
@@ -541,7 +541,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 10 Jun 2025 18:42:37 GMT
+      - Fri, 13 Jun 2025 20:44:00 GMT
       server:
       - Rocket
     status:
@@ -581,7 +581,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 10 Jun 2025 18:42:40 GMT
+      - Fri, 13 Jun 2025 20:44:03 GMT
       server:
       - Rocket
     status:
@@ -625,7 +625,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 10 Jun 2025 18:42:40 GMT
+      - Fri, 13 Jun 2025 20:44:03 GMT
       server:
       - Rocket
     status:
@@ -665,7 +665,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 10 Jun 2025 18:42:43 GMT
+      - Fri, 13 Jun 2025 20:44:05 GMT
       server:
       - Rocket
     status:
@@ -705,7 +705,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 10 Jun 2025 18:42:45 GMT
+      - Fri, 13 Jun 2025 20:44:08 GMT
       server:
       - Rocket
     status:
@@ -747,7 +747,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 10 Jun 2025 18:42:47 GMT
+      - Fri, 13 Jun 2025 20:44:09 GMT
       server:
       - Rocket
     status:
@@ -791,7 +791,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 10 Jun 2025 18:42:50 GMT
+      - Fri, 13 Jun 2025 20:44:12 GMT
       server:
       - Rocket
     status:
@@ -836,7 +836,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 10 Jun 2025 18:42:53 GMT
+      - Fri, 13 Jun 2025 20:44:15 GMT
       server:
       - Rocket
     status:
@@ -881,7 +881,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 10 Jun 2025 18:42:55 GMT
+      - Fri, 13 Jun 2025 20:44:18 GMT
       server:
       - Rocket
     status:
@@ -926,7 +926,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 10 Jun 2025 18:42:58 GMT
+      - Fri, 13 Jun 2025 20:44:21 GMT
       server:
       - Rocket
     status:
@@ -966,7 +966,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 10 Jun 2025 18:43:01 GMT
+      - Fri, 13 Jun 2025 20:44:23 GMT
       server:
       - Rocket
     status:
@@ -1010,7 +1010,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 10 Jun 2025 18:43:01 GMT
+      - Fri, 13 Jun 2025 20:44:23 GMT
       server:
       - Rocket
     status:
@@ -1050,7 +1050,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 10 Jun 2025 18:43:03 GMT
+      - Fri, 13 Jun 2025 20:44:26 GMT
       server:
       - Rocket
     status:
@@ -1095,7 +1095,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 10 Jun 2025 18:43:03 GMT
+      - Fri, 13 Jun 2025 20:44:26 GMT
       server:
       - Rocket
     status:
@@ -1135,7 +1135,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 10 Jun 2025 18:43:06 GMT
+      - Fri, 13 Jun 2025 20:44:29 GMT
       server:
       - Rocket
     status:
@@ -1180,7 +1180,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 10 Jun 2025 18:43:06 GMT
+      - Fri, 13 Jun 2025 20:44:29 GMT
       server:
       - Rocket
     status:
@@ -1220,7 +1220,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 10 Jun 2025 18:43:08 GMT
+      - Fri, 13 Jun 2025 20:44:31 GMT
       server:
       - Rocket
     status:
@@ -1265,7 +1265,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 10 Jun 2025 18:43:08 GMT
+      - Fri, 13 Jun 2025 20:44:31 GMT
       server:
       - Rocket
     status:
@@ -1305,7 +1305,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 10 Jun 2025 18:43:11 GMT
+      - Fri, 13 Jun 2025 20:44:34 GMT
       server:
       - Rocket
     status:
@@ -1347,7 +1347,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 10 Jun 2025 18:43:13 GMT
+      - Fri, 13 Jun 2025 20:44:36 GMT
       server:
       - Rocket
     status:
@@ -1391,7 +1391,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 10 Jun 2025 18:43:16 GMT
+      - Fri, 13 Jun 2025 20:44:39 GMT
       server:
       - Rocket
     status:
@@ -1431,7 +1431,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 10 Jun 2025 18:43:19 GMT
+      - Fri, 13 Jun 2025 20:44:41 GMT
       server:
       - Rocket
     status:
@@ -1475,7 +1475,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 10 Jun 2025 18:43:19 GMT
+      - Fri, 13 Jun 2025 20:44:41 GMT
       server:
       - Rocket
     status:
@@ -1519,7 +1519,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 10 Jun 2025 18:43:21 GMT
+      - Fri, 13 Jun 2025 20:44:44 GMT
       server:
       - Rocket
     status:
@@ -1559,7 +1559,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 10 Jun 2025 18:43:24 GMT
+      - Fri, 13 Jun 2025 20:44:46 GMT
       server:
       - Rocket
     status:
@@ -1603,7 +1603,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 10 Jun 2025 18:43:24 GMT
+      - Fri, 13 Jun 2025 20:44:46 GMT
       server:
       - Rocket
     status:
@@ -1643,7 +1643,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 10 Jun 2025 18:43:27 GMT
+      - Fri, 13 Jun 2025 20:44:50 GMT
       server:
       - Rocket
     status:
@@ -1685,7 +1685,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 10 Jun 2025 18:43:30 GMT
+      - Fri, 13 Jun 2025 20:44:52 GMT
       server:
       - Rocket
     status:
@@ -1725,7 +1725,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 10 Jun 2025 18:43:33 GMT
+      - Fri, 13 Jun 2025 20:44:54 GMT
       server:
       - Rocket
     status:

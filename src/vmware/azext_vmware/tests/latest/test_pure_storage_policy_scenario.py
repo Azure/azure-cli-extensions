@@ -15,7 +15,7 @@ class VmwarePureStoragePolicyScenarioTest(ScenarioTest):
     @ResourceGroupPreparer(name_prefix='cli_test_pure_storage_policy_script')
     def test_vmware_pure_storage_policy(self):
         self.kwargs.update({
-            'subscription': '12341234-1234-1234-1234-123412341234',
+            'subscription': '00000000-0000-0000-0000-000000000000',
             'privatecloud': 'cloud1',
             'storagePolicyName': "storagePolicy1",
             "storagePolicyDefinition": "Definition1",

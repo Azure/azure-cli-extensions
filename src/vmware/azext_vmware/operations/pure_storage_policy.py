@@ -11,7 +11,7 @@ from azure.cli.core.aaz import register_command_group, register_command, AAZComm
 @register_command_group(
     "vmware pure-storage-policy",
 )
-class __CMDGroup(AAZCommandGroup):   # pylint: disable=too-few-public-methods
+class __CMDGroup(AAZCommandGroup):  # pylint: disable=too-few-public-methods
     """Commands to manage Pure Storage policy resources.
     """
 

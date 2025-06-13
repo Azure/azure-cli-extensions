@@ -15,7 +15,7 @@ class VmwareProvisionedNetworkScenarioTest(ScenarioTest):
     @ResourceGroupPreparer(name_prefix='cli_test_provisioned_network_script')
     def test_vmware_host(self):
         self.kwargs.update({
-            'subscription': '12341234-1234-1234-1234-123412341234',
+            'subscription': '00000000-0000-0000-0000-000000000000',
             'privatecloud': 'cloud1',
             'provisionednetworkname': "esx03-r52.1111111111111111111.westcentralus.prod.azure.com"
         })
