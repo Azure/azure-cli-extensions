@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "qumulo storage file-system",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage qumulo storage file system
+    """Manage file system resources within Qumulo storage.
     """
     pass
 
