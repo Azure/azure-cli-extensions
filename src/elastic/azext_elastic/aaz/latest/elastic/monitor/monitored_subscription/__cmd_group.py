@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "elastic monitor monitored-subscription",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage monitored subscription with elastic
+    """Manage subscriptions monitored by the Elastic monitor resource, ensuring optimal observability and performance.
     """
     pass
 

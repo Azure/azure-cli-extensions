@@ -16,7 +16,7 @@ from azure.cli.core.aaz import *
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
-    """Delete the subscriptions that are being monitored by the Elastic monitor resource
+    """Delete subscriptions being monitored by the Elastic monitor resource, removing their observability and monitoring capabilities.
 
     :example: Monitors_DeleteMonitoredSubscriptions
         az elastic monitor monitored-subscription delete --resource-group myResourceGroup --monitor-name myMonitor --configuration-name default

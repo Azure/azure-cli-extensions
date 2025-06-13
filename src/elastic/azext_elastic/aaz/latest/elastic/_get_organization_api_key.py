@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "elastic get-organization-api-key",
 )
 class GetOrganizationApiKey(AAZCommand):
-    """Fetch User API Key from internal database, if it was generated and stored while creating the Elasticsearch Organization.
+    """Fetch the User API Key from the internal database, if it was generated and stored during the creation of the Elasticsearch Organization.
 
     :example: Get organization api key
         az elastic get-organization-api-key --email-id id
