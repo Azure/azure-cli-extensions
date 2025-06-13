@@ -10,6 +10,24 @@
 
 from knack.help_files import helps  # pylint: disable=unused-import
 
+helps['azure-data-transfer pipeline list'] = """
+type: command
+short-summary: List Pipeline resources by Subscription or Resource Group.
+examples:
+        - name: List all pipelines in a resource group.
+          text: az azure-data-transfer pipeline list --resource-group resourceGroup
+        - name: List all pipelines in a subscription.
+          text: az azure-data-transfer pipeline list
+"""
+
+helps['azure-data-transfer pipeline show'] = """
+type: command
+short-summary: Gets Pipeline resource by name.
+examples:
+        - name: Get a pipeline by name in a resource group.
+          text: az azure-data-transfer pipeline show --resource-group resourceGroup --name pipelineName
+"""
+
 helps['azure-data-transfer pipeline approve-connection'] = """
 type: command
 short-summary: Approves the specified connection in a pipeline.
@@ -36,12 +54,60 @@ examples:
           text: az azure-data-transfer connection create --resource-group {rg} --connection-name {sendConnection} --direction Send --location {location} --flow-types ["Mission"] --pipeline {pipeline} --primary-contact abc@microsoft.com --secondary-contacts abc@microsoft.com --pin {pin}
 """
 
+helps['azure-data-transfer connection show'] = """
+type: command
+short-summary: Get the connection resource.
+examples:
+        - name: Get a connection by name in a resource group.
+          text: az azure-data-transfer connection show --resource-group {rg} --name {connectionName}
+"""
+
+helps['azure-data-transfer connection update'] = """
+type: command
+short-summary: Update the connection resource.
+examples:
+        - name: Update a connection by name in a resource group. Update of tags is only supported.
+          text: az azure-data-transfer connection update --resource-group {rg} --name {connectionName} --tags key1=value1 key2=value2
+"""
+
+helps['azure-data-transfer connection delete'] = """
+type: command
+short-summary: Delete the connection resource.
+examples:
+        - name: Delete a connection by name in a resource group.
+          text: az azure-data-transfer connection delete --resource-group {rg} --name {connectionName}
+"""
+
+helps['azure-data-transfer connection list'] = """
+type: command
+short-summary: List connections in a subscription.
+examples:
+        - name: Gets all the connections in a resource group. Pagination is supported by page size and next token.
+          text: az azure-data-transfer connection list --resource-group {rg} --max-items 10 --next-token {nextToken}
+"""
+
 helps['azure-data-transfer connection link'] = """
 type: command
 short-summary: Link receive side connection with a send side connection.
 examples:
         - name: Link receive side connection with a send side connection.
           text: az azure-data-transfer connection link --resource-group {rg} --name receiveConnectionName --id {sendId}
+"""
+
+helps['azure-data-transfer connection list-pending-connection'] = """
+type: command
+short-summary: Lists all pending connections for a receive connection.
+examples:
+        - name: List all pending connections for a receive connection in the remote subscription of the receive side connection
+          text: az azure-data-transfer connection list-pending-connection --resource-group {rg} --name {receiveConnectionName}
+"""
+
+helps['azure-data-transfer connection list-pending-flow'] = """
+type: command
+short-summary: List all pending flows for linking to a receive flow.
+examples:
+        - name: List all pending flows for linking to a receive flow.
+          text: az azure-data-transfer connection list-pending-flow --resource-group {rg} --connection-name {receiveConnectionName}
 """
 
 helps['azure-data-transfer connection flow create'] = """
@@ -52,10 +118,58 @@ examples:
           text: az azure-data-transfer connection flow create --resource-group resourceGroup --connection-name connectionName --name flowName --flow-type "Mission" --location WestUs --status "Enabled" --storage-account /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/resourceGroup/Microsoft.Storage/storageAccounts/accountName --storage-container-name testContainer  --data-type "Blob"
 """
 
+helps['azure-data-transfer connection flow show'] = """
+type: command
+short-summary: Get the flow resource.
+examples:
+        - name: Get a flow by name in a resource group.
+          text: az azure-data-transfer connection flow show --resource-group {rg} --connection-name {connectionName} --name {flowName}
+"""
+
+helps['azure-data-transfer connection flow update'] = """
+type: command
+short-summary: Update the flow resource.
+examples:
+        - name: Update a flow by name in a resource group. Update of tags is only supported.
+          text: az azure-data-transfer connection flow update --resource-group {rg} --connection-name {connectionName} --name {flowName} --tags key1=value1 key2=value2
+"""
+
+helps['azure-data-transfer connection flow delete'] = """
+type: command
+short-summary: Delete the flow resource.
+examples:
+        - name: Delete a flow by name in a resource group.
+          text: az azure-data-transfer connection flow delete --resource-group {rg} --name {connectionName}
+"""
+
+helps['azure-data-transfer connection flow list'] = """
+type: command
+short-summary: List flows in a subscription.
+examples:
+        - name: Gets all the flows in a resource group. Pagination is supported by page size and next token.
+          text: az azure-data-transfer connection flow list --resource-group {rg} --connection-name {connectionName} --max-items 10 --next-token {nextToken}
+"""
+
 helps['azure-data-transfer connection flow link'] = """
 type: command
 short-summary: Links the specified flow.
 examples:
         - name: Links the receive side flow with a send side flow.
           text: az azure-data-transfer connection flow link --resource-group resourceGroup --connection-name connectionName --name receiveFlowName --id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/resourceGroup/providers/microsoft.azuredatatransfer/flows/sendFlow
+"""
+
+helps['azure-data-transfer connection flow disable'] = """
+type: command
+short-summary: Disable the flow resource.
+examples:
+        - name: Disable a flow by name in a resource group.
+          text: az azure-data-transfer connection flow disable --resource-group {rg} --name {connectionName}
+"""
+
+helps['azure-data-transfer connection flow enable'] = """
+type: command
+short-summary: Enable the flow resource.
+examples:
+        - name: Enable a flow by name in a resource group.
+          text: az azure-data-transfer connection flow enable --resource-group {rg} --name {connectionName}
 """

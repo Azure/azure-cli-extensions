@@ -19,7 +19,7 @@ class ApproveConnection(AAZCommand):
     """Approves the specified connection request in a pipeline.
 
     :example: Approves the specified connection in a pipeline
-        az azure-data-transfer pipeline approve-connection --resource-group testRG --pipeline-name testPipeline --connection-id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/testRG/providers/Microsoft.AzureDataTransfer/connections/testConnection --status-reason Example reason
+        az azure-data-transfer pipeline approve-connection --resource-group testRG --pipeline-name testPipeline --connection-id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/testRG/providers/Microsoft.AzureDataTransfer/connections/testConnection --status-reason Reason
     """
 
     _aaz_info = {

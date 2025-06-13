@@ -86,7 +86,7 @@ class ConnectionAndFlowOperations(ScenarioTest):
         count = len(self.cmd('az azure-data-transfer connection flow list --resource-group {rg} --connection-name {sendConnection}').get_output_in_json())
         self.assertEqual(count, 3, 'flows count expected to be 3')
         count = len(self.cmd('az azure-data-transfer connection flow list --resource-group {rg} --max-items 2 --connection-name {sendConnection}').get_output_in_json())
-        self.assertEqual(count, 2, 'flows count expected to be 2 as ma items are passed as 2')
+        self.assertEqual(count, 2, 'flows count expected to be 2 as max items are passed as 2')
 
         self.kwargs['sendFlows'] = send_flows
 
@@ -131,6 +131,55 @@ class ConnectionAndFlowOperations(ScenarioTest):
         ])
  
         self.cmd('az azure-data-transfer connection flow delete --yes --resource-group {rg} --connection-name {sendConnection} --name {flowName}')
+        self.cmd('az azure-data-transfer connection delete --yes --resource-group {rg} --connection-name {sendConnection}')
+
+    @record_only()
+    def test_create_delete_connection_operations(self):
+        self.kwargs.update({
+            'rg': 'rpaas-rg',
+            'subscriptionId': '389ff96a-b137-405b-a3c8-4d22514708b5',
+            'sendConnection': self.create_random_name(prefix='test-send-connection-', length=30),
+            'location': 'eastus',
+            'pipeline': 'corptest',
+        })
+
+        self.cmd('az azure-data-transfer connection create --resource-group {rg} --connection-name {sendConnection} --direction Send --location {location} --flow-types ["Mission"] --pipeline {pipeline} --primary-contact lasuredd@microsoft.com --secondary-contacts lasuredd@microsoft.com --pin 123456')
+
+        self.cmd('az azure-data-transfer connection show --resource-group {rg} --name {sendConnection}', checks=[
+            self.check('name', '{sendConnection}'),
+        ])
+ 
+        self.cmd('az azure-data-transfer connection delete --yes --resource-group {rg} --connection-name {sendConnection}')
+
+        self.cmd('az azure-data-transfer connection show --resource-group {rg} --connection-name {sendConnection}', expect_failure=True)
+    
+    @record_only()
+    def test_create_delete_flow_operations(self):
+        self.kwargs.update({
+            'rg': 'rpaas-rg',
+            'subscriptionId': '389ff96a-b137-405b-a3c8-4d22514708b5',
+            'sendConnection': self.create_random_name(prefix='test-send-connection-', length=30),
+            'flowName': self.create_random_name(prefix='test-send-flow-', length=30),
+            'location': 'eastus',
+            'pipeline': 'corptest',
+            'storageAccountId': '/subscriptions/389ff96a-b137-405b-a3c8-4d22514708b5/resourceGroups/rpaas-rg-faikh/providers/Microsoft.Storage/storageAccounts/armstrongtest',
+            'storageAccount': '/subscriptions/389ff96a-b137-405b-a3c8-4d22514708b5/resourceGroups/rpaas-rg-faikh/providers/Microsoft.Storage/storageAccounts/armstrongtest',
+            'storageContainer': 'armstrong-test-containers',
+        })
+
+        sendId = self.cmd('az azure-data-transfer connection create --resource-group {rg} --connection-name {sendConnection} --direction Send --location {location} --flow-types ["Mission"] --pipeline {pipeline} --primary-contact lasuredd@microsoft.com --secondary-contacts lasuredd@microsoft.com --pin 123456').get_output_in_json().get('id')
+        self.kwargs.update({'sendId': sendId})
+
+        self.cmd('az azure-data-transfer connection flow create --resource-group {rg} --connection-name {sendConnection} --name {flowName} --flow-type "Mission" --location {location} --status "Enabled" --storage-account {storageAccountId} --storage-container-name {storageContainer} --data-type "Blob"')
+
+        self.cmd('az azure-data-transfer connection flow show --resource-group {rg} --connection-name {sendConnection} --name {flowName}', checks=[
+            self.check('name', '{flowName}'),
+        ])
+ 
+        self.cmd('az azure-data-transfer connection flow delete --yes --resource-group {rg} --connection-name {sendConnection} --name {flowName}')
+        
+        self.cmd('az azure-data-transfer connection flow show --resource-group {rg} --connection-name {sendConnection} --name {flowName}', expect_failure=True)
+
         self.cmd('az azure-data-transfer connection delete --yes --resource-group {rg} --connection-name {sendConnection}')
 
     @record_only()

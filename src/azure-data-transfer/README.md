@@ -32,7 +32,7 @@ az azure-data-transfer pipeline show
 
 ```
 
-##### Approve a connection in a pipeline
+##### Approves the specified connection request in a pipeline.
 
 ```
 az azure-data-transfer pipeline approve-connection \
@@ -102,7 +102,7 @@ az azure-data-transfer connection link \
 ##### List connections in a resource group
 
 ```
-az azure-data-transfer connection link \
+az azure-data-transfer connection list \
     --resource-group groupName \
     --maxItems 10
     --nextToken <Link from previous response>
