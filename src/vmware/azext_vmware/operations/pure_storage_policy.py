@@ -5,15 +5,15 @@
 # pylint: disable=line-too-long
 
 from ..aaz.latest.vmware.private_cloud.pure_storage_policy import List, Show, Create, Delete
-from azure.cli.core.aaz import *
+from azure.cli.core.aaz import register_command_group, register_command, AAZCommandGroup
+
 
 @register_command_group(
     "vmware pure-storage-policy",
 )
-class __CMDGroup(AAZCommandGroup):
+class __CMDGroup(AAZCommandGroup):   # pylint: disable=too-few-public-methods
     """Commands to manage Pure Storage policy resources.
     """
-    pass
 
 
 __all__ = ["__CMDGroup"]
@@ -28,15 +28,12 @@ class PureStoragePolicyList(List):
     :example: List ProvisionedNetwork resources.
         az vmware private-cloud pure-storage-policy list --resource-group group1 --private-cloud-name cloud1
     """
-    
+
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         return args_schema
 
-    def pre_operations(self):
-        super().pre_operations()
-        
 
 @register_command(
     "vmware pure-storage-policy show",
@@ -47,16 +44,13 @@ class PureStoragePolicyShow(Show):
     :example: Show details of a Pure Storage policy.
         az vmware private-cloud pure-storage-policy show --resource-group group1 --private-cloud-name cloud1 --storage-policy-name storagePolicy1
     """
-    
+
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         return args_schema
 
-    def pre_operations(self):
-        super().pre_operations()
-        
-        
+
 @register_command(
     "vmware pure-storage-policy create",
 )
@@ -66,16 +60,13 @@ class PureStoragePolicyCreate(Create):
     :example: Create a Pure Storage policy.
         az vmware private-cloud pure-storage-policy create --resource-group group1 --private-cloud-name cloud1 --storage-policy-name storagePolicy1 --storage-policy-definition storagePolicyDefinition1 --storage-pool-id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/PureStorage.Block/storagePools/storagePool1
     """
-    
+
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         return args_schema
 
-    def pre_operations(self):
-        super().pre_operations()
-        
-        
+
 @register_command(
     "vmware pure-storage-policy delete",
     confirmation="This will delete the Pure Storage policy. Are you sure?",
@@ -86,11 +77,8 @@ class PureStoragePolicyDelete(Delete):
     :example: Delete a Pure Storage policy.
         az vmware private-cloud pure-storage-policy delete --resource-group group1 --private-cloud-name cloud1 --storage-policy-name storagePolicy1
     """
-    
+
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         return args_schema
-
-    def pre_operations(self):
-        super().pre_operations()

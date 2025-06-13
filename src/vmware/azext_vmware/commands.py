@@ -46,18 +46,18 @@ def load_location_commands(self):
 
 def load_provisioned_network_commands(self):
     with self.command_group("vmware provisioned-network"):
-          from .operations.provisioned_network import ProvisionedNetworkList, ProvisionedNetworkShow
-          self.command_table["vmware provisioned-network list"] = ProvisionedNetworkList(loader=self)
-          self.command_table["vmware provisioned-network show"] = ProvisionedNetworkShow(loader=self)
-          
-          
+        from .operations.provisioned_network import ProvisionedNetworkList, ProvisionedNetworkShow
+        self.command_table["vmware provisioned-network list"] = ProvisionedNetworkList(loader=self)
+        self.command_table["vmware provisioned-network show"] = ProvisionedNetworkShow(loader=self)
+
+
 def load_pure_storage_policy_commands(self):
     with self.command_group("vmware pure-storage-policy"):
-          from .operations.pure_storage_policy import PureStoragePolicyList, PureStoragePolicyShow, PureStoragePolicyCreate, PureStoragePolicyDelete
-          self.command_table["vmware pure-storage-policy list"] = PureStoragePolicyList(loader=self)
-          self.command_table["vmware pure-storage-policy show"] = PureStoragePolicyShow(loader=self)
-          self.command_table["vmware pure-storage-policy create"] = PureStoragePolicyCreate(loader=self)
-          self.command_table["vmware pure-storage-policy delete"] = PureStoragePolicyDelete(loader=self)
+        from .operations.pure_storage_policy import PureStoragePolicyList, PureStoragePolicyShow, PureStoragePolicyCreate, PureStoragePolicyDelete
+        self.command_table["vmware pure-storage-policy list"] = PureStoragePolicyList(loader=self)
+        self.command_table["vmware pure-storage-policy show"] = PureStoragePolicyShow(loader=self)
+        self.command_table["vmware pure-storage-policy create"] = PureStoragePolicyCreate(loader=self)
+        self.command_table["vmware pure-storage-policy delete"] = PureStoragePolicyDelete(loader=self)
 
 
 def load_datastore_commands(self):

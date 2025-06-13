@@ -5,15 +5,15 @@
 # pylint: disable=line-too-long
 
 from ..aaz.latest.vmware.private_cloud.provisioned_network import List, Show
-from azure.cli.core.aaz import *
+from azure.cli.core.aaz import register_command_group, register_command, AAZCommandGroup
+
 
 @register_command_group(
     "vmware provisioned-network",
 )
-class __CMDGroup(AAZCommandGroup):
+class __CMDGroup(AAZCommandGroup):  # pylint: disable=too-few-public-methods
     """Commands to list and show provisioned network resources.
     """
-    pass
 
 
 __all__ = ["__CMDGroup"]
@@ -34,9 +34,6 @@ class ProvisionedNetworkList(List):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         return args_schema
 
-    def pre_operations(self):
-        super().pre_operations()
-
 
 @register_command(
     "vmware provisioned-network show",
@@ -52,6 +49,3 @@ class ProvisionedNetworkShow(Show):
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         return args_schema
-
-    def pre_operations(self):
-        super().pre_operations()

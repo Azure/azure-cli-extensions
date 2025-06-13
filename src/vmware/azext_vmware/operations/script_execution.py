@@ -5,7 +5,7 @@
 # pylint: disable=line-too-long
 
 from ..aaz.latest.vmware.private_cloud.script_execution import GetExecutionLog
-from azure.cli.core.aaz import *
+from azure.cli.core.aaz import register_command
 
 
 @register_command(
@@ -25,7 +25,6 @@ class ScriptExecutionGetExecutionLog(GetExecutionLog):
 
     def pre_operations(self):
         super().pre_operations()
-        # default the stream type if the user didn’t supply anything
         args = self.ctx.args
         if not getattr(args, 'script_output_stream_type', None):
             args.script_output_stream_type = ["Information", "Warning", "Output", "Error"]
