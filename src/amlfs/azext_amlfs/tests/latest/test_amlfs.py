@@ -9,7 +9,7 @@ from azure.cli.testsdk import *
 
 
 class AmlfsScenario(ScenarioTest):
-    @ResourceGroupPreparer(location='eastus')
+    @ResourceGroupPreparer(location='canadacentral')
     def test_amlfs(self):
         email = self.cmd('account show').get_output_in_json()['user']['name']
         self.kwargs.update({
@@ -20,7 +20,7 @@ class AmlfsScenario(ScenarioTest):
         })
         identity_id = self.cmd('identity create -g {rg} -n {id_name} ').get_output_in_json()['id']
         self.cmd('network vnet create -n {vnet} -g {rg} --address-prefix 20.0.0.0/24')
-        subnet_id = self.cmd('network vnet subnet create -n {subnet} -g {rg} --address-prefix 20.0.0.0/24 --vnet-name {vnet} --delegations Qumulo.Storage/fileSystems').get_output_in_json()['id']
+        subnet_id = self.cmd('network vnet subnet create -n {subnet} -g {rg} --address-prefix 20.0.0.0/24 --vnet-name {vnet}').get_output_in_json()['id']
         self.kwargs.update({
             'identity_id': identity_id,
             'subnet_id': subnet_id
