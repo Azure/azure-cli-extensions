@@ -15,6 +15,7 @@ from .aaz.latest.cloudhsm._list import List as _CloudHsmList
 
 logger = get_logger(__name__)
 
+
 class CloudHsmCreate(_CloudHsmCreate):
     @classmethod
     # pylint: disable=protected-access
@@ -23,10 +24,11 @@ class CloudHsmCreate(_CloudHsmCreate):
         args_schema.family._required = False
         args_schema.family._registered = False
         return args_schema
-    
+
     def pre_operations(self):
         args = self.ctx.args
         args.family = "B"
+
 
 class CloudHsmBackupStart (_CloudHsmBackupStart):
     @classmethod
