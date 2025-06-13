@@ -137,3 +137,8 @@ Release History
 * `az grafana integrations monitor add`: support optional subscription id argument for multi-subscription scenarios
 * `az grafana integrations monitor delete`: support optional subscription id argument for multi-subscription scenarios
 * `az grafana notification-channel`: deprecate command group as part of Grafana legacy alerting deprecation
+
+
+2.6.1
+++++++
+* Remove msrestazure dependency
