@@ -18,13 +18,13 @@ class List(AAZCommand):
     """List script cmdlet resources available for a private cloud to create a script execution resource on a private cloud
 
     :example: List script cmdlet resources.
-        az vmware script-cmdlet list --resource-group group1 --private-cloud cloud1 --script-package package1
+        az vmware script-cmdlet list --resource-group group1 --private-cloud cloud1 --script-package package@1.0.2
     """
 
     _aaz_info = {
-        "version": "2023-09-01",
+        "version": "2024-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}/scriptpackages/{}/scriptcmdlets", "2023-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}/scriptpackages/{}/scriptcmdlets", "2024-09-01"],
         ]
     }
 
@@ -136,7 +136,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-09-01",
+                    "api-version", "2024-09-01",
                     required=True,
                 ),
             }

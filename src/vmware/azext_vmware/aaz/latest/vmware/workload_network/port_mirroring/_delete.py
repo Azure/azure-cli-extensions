@@ -19,13 +19,13 @@ class Delete(AAZCommand):
     """Delete a port mirroring profile by id in a private cloud workload network.
 
     :example: Delete a port mirroring profile by ID in a workload network.
-        az vmware workload-network port-mirroring delete --resource-group group1 --private-cloud cloud1 --port-mirroring portMirroring1
+        az vmware workload-network port-mirroring delete --resource-group group1 --port-mirroring portMirroring1 --private-cloud cloud1
     """
 
     _aaz_info = {
-        "version": "2023-09-01",
+        "version": "2024-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}/workloadnetworks/default/portmirroringprofiles/{}", "2023-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}/workloadnetworks/default/portmirroringprofiles/{}", "2024-09-01"],
         ]
     }
 
@@ -159,7 +159,7 @@ class Delete(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-09-01",
+                    "api-version", "2024-09-01",
                     required=True,
                 ),
             }
