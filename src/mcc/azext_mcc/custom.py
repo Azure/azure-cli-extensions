@@ -147,6 +147,7 @@ class MccEntNodeCreate(_MccEntNodeCreate):
 
         args_schema.cache_node._registered = False
 
+        args_schema.creation_method._registered = False
         args_schema.auto_update_version._registered = False
         args_schema.bgp_configuration._registered = False
         args_schema.cache_node_properties_details_issues_list._registered = False
@@ -155,8 +156,6 @@ class MccEntNodeCreate(_MccEntNodeCreate):
         args_schema.optional_property3._registered = False
         args_schema.optional_property4._registered = False
         args_schema.optional_property5._registered = False
-        args_schema.proxy_url._registered = False
-        args_schema.update_cycle_type._registered = False
         args_schema.update_info_details._registered = False
         args_schema.update_requested_date_time._registered = False
         args_schema.enable_proxy._registered = False
@@ -174,7 +173,7 @@ class MccEntNodeCreate(_MccEntNodeCreate):
         args = self.ctx.args
 
         args.cache_node.is_enabled = True
-        args.optional_property1 = "1"
+        args.creation_method = "1"
 
         if has_value(args.host_os):
             if str(args.host_os).lower() == str("Eflow").lower():
@@ -208,6 +207,14 @@ class MccEntNodeCreate(_MccEntNodeCreate):
             pass
 
         try:
+            if result["properties"]["additionalCacheNodeProperties"]["creationMethod"] == 0:
+                cleanOutput["creationMethod"] = "Portal"
+            elif result["properties"]["additionalCacheNodeProperties"]["creationMethod"] == 1:
+                cleanOutput["creationMethod"] = "CLI"
+        except KeyError:
+            pass
+
+        try:
             cleanOutput["cacheNodeName"] = result["properties"]["cacheNode"]["cacheNodeName"]
         except KeyError:
             pass
@@ -231,10 +238,10 @@ class MccEntNodeUpdate(_MccEntNodeUpdate):
 
         if has_value(args.auto_update_week):
             week = args.auto_update_week
-            if week < 1:
+            if week < 2:
                 err_msg = "InvalidArgumentValue: --auto-update-week: Invalid format: \'" + str(week) + "\' is less than 1"
                 raise ValidationError(err_msg)
-            if week > 4:
+            if week > 3:
                 err_msg = "InvalidArgumentValue: --auto-update-week: Invalid format: \'" + str(week) + "\' is greater than 4"
                 raise ValidationError(err_msg)
 
@@ -472,8 +479,6 @@ class MccEntNodeUpdate(_MccEntNodeUpdate):
         args_schema.optional_property4._registered = False
         args_schema.optional_property5._registered = False
         args_schema.host_os._registered = False
-        args_schema.proxy_url._registered = False
-        args_schema.update_cycle_type._registered = False
         args_schema.update_info_details._registered = False
         args_schema.update_requested_date_time._registered = False
         args_schema.cache_drive.Element.nginx_mapping._registered = False
@@ -502,6 +507,14 @@ class MccEntNodeUpdate(_MccEntNodeUpdate):
 
         try:
             cleanOutput["hostOs"] = result["properties"]["additionalCacheNodeProperties"]["osType"]
+        except KeyError:
+            pass
+
+        try:
+            if result["properties"]["additionalCacheNodeProperties"]["creationMethod"] == 0:
+                cleanOutput["creationMethod"] = "Portal"
+            elif result["properties"]["additionalCacheNodeProperties"]["creationMethod"] == 1:
+                cleanOutput["creationMethod"] = "CLI"
         except KeyError:
             pass
 
@@ -619,6 +632,7 @@ class MccEntNodeList(_MccEntNodeList):
                 pass
 
             cleanCacheNode = {}
+            hasAutoUpdateRing = None
 
             try:
                 cleanCacheNode["cacheNodeState"] = cacheNode["properties"]["additionalCacheNodeProperties"]["cacheNodeStateShortText"]
@@ -637,6 +651,14 @@ class MccEntNodeList(_MccEntNodeList):
 
             try:
                 cleanCacheNode["hostOs"] = cacheNode["properties"]["additionalCacheNodeProperties"]["osType"]
+            except KeyError:
+                pass
+
+            try:
+                if cacheNode["properties"]["additionalCacheNodeProperties"]["creationMethod"] == 0:
+                    cleanCacheNode["creationMethod"] = "Portal"
+                elif cacheNode["properties"]["additionalCacheNodeProperties"]["creationMethod"] == 1:
+                    cleanCacheNode["creationMethod"] = "CLI"
             except KeyError:
                 pass
 
@@ -740,6 +762,14 @@ class MccEntNodeShow(_MccEntNodeShow):
 
         try:
             cleanOutput["hostOs"] = result["properties"]["additionalCacheNodeProperties"]["osType"]
+        except KeyError:
+            pass
+
+        try:
+            if result["properties"]["additionalCacheNodeProperties"]["creationMethod"] == 0:
+                cleanOutput["creationMethod"] = "Portal"
+            elif result["properties"]["additionalCacheNodeProperties"]["creationMethod"] == 1:
+                cleanOutput["creationMethod"] = "CLI"
         except KeyError:
             pass
 
@@ -890,6 +920,11 @@ class MccEntNodeGetProvisioningDetails(_MccEntNodeGetProvisioningDetails):
 
         try:
             cleanOutput["registrationKey"] = result["properties"]["registrationKey"]
+        except KeyError:
+            pass
+
+        try:
+            cleanOutput["tlsCertificateProvisioningKey"] = result["properties"]["tlsCertificateProvisioningKey"]
         except KeyError:
             pass
 
