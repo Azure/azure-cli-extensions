@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command_group(
     "mcc ent node",
-    is_preview=True,
 )
 class __CMDGroup(AAZCommandGroup):
     """Microsoft Connected Cache for Enterprise cache node CLI commands
