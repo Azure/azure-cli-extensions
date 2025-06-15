@@ -12,6 +12,10 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+18.0.0b13
++++++++
+* Add option `--enable-http-proxy` to `az aks update`.
+
 18.0.0b12
 +++++++
 * Add option `--acns-transit-encryption-type <None|WireGuard>` to `az aks create/update`
