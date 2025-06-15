@@ -14,6 +14,7 @@ def load_command_table(self, _):
     load_script_execution_commands(self)
     load_placement_policy_commands(self)
     load_workload_network_commands(self)
+    load_vm_commands(self)
 
 
 def load_private_cloud_commands(self):
@@ -101,6 +102,13 @@ def load_placement_policy_commands(self):
         self.command_table['vmware placement-policy vm-host create'] = PlacementPolicyVMHostCreate(loader=self)
         self.command_table['vmware placement-policy vm-host update'] = PlacementPolicyVMHostUpdate(loader=self)
         self.command_table['vmware placement-policy vm-host delete'] = PlacementPolicyVMHostDelete(loader=self)
+
+
+
+def load_vm_commands(self):
+  with self.command_group('vmware vm'):
+    from .operations.virtual_machines import VmRestrictMovement
+    self.command_table['vmware vm restrict-movement'] = VmRestrictMovement(loader=self)
 
 
 def load_workload_network_commands(self):

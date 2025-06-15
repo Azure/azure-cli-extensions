@@ -26,6 +26,7 @@ class DatastoreNetappVolumeCreate(_DatastoreCreate):
         setattr(args_schema.elastic_san_volume, '_registered', False)
         setattr(args_schema.size_gb, '_registered', False)
         setattr(args_schema.storage_pool_id, '_registered', False)
+        setattr(args_schema.no_wait, '_registered', False)
 
         return args_schema
 
@@ -47,6 +48,7 @@ class DatastoreDiskPoolVolumeCreate(_DatastoreCreate):
         setattr(args_schema.elastic_san_volume, '_registered', False)
         setattr(args_schema.size_gb, '_registered', False)
         setattr(args_schema.storage_pool_id, '_registered', False)
+        setattr(args_schema.no_wait, '_registered', False)
 
         return args_schema
 
@@ -69,6 +71,7 @@ class DatastoreElasticVsanVolumeCreate(_DatastoreCreate):
         setattr(args_schema.elastic_san_volume, '_required', True)
         setattr(args_schema.size_gb, '_registered', False)
         setattr(args_schema.storage_pool_id, '_registered', False)
+        setattr(args_schema.no_wait, '_registered', False)
 
         return args_schema
 
@@ -91,5 +94,6 @@ class DatastorePureStorageVolumeCreate(_DatastoreCreate):
         setattr(args_schema.elastic_san_volume, '_registered', False)
         setattr(args_schema.size_gb, '_required', True)
         setattr(args_schema.storage_pool_id, '_required', True)
+        setattr(args_schema.no_wait, '_registered', False)
 
         return args_schema

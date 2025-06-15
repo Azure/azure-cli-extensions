@@ -64,6 +64,7 @@ class PureStoragePolicyCreate(Create):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
+        setattr(args_schema.no_wait, '_registered', False)
         return args_schema
 
 

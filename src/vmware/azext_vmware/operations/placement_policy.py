@@ -41,6 +41,7 @@ class PlacementPolicyVMCreate(_Create):
 
         setattr(args_schema.vm_host, '_registered', False)
         setattr(args_schema.vm_vm, '_registered', False)
+        setattr(args_schema.no_wait, '_registered', False)
         return args_schema
 
     def pre_operations(self):
@@ -145,6 +146,7 @@ class PlacementPolicyVMHostCreate(_Create):
 
         setattr(args_schema.vm_host, '_registered', False)
         setattr(args_schema.vm_vm, '_registered', False)
+        setattr(args_schema.no_wait, '_registered', False)
         return args_schema
 
     def pre_operations(self):

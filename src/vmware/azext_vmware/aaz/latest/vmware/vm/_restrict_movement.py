@@ -11,9 +11,6 @@
 from azure.cli.core.aaz import *
 
 
-@register_command(
-    "vmware vm restrict-movement",
-)
 class RestrictMovement(AAZCommand):
     """Enable or disable DRS-driven VM movement restriction
 

@@ -66,7 +66,7 @@ class Create(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.storage_policy_definition = AAZStrArg(
-            options=["--storage-policy-definition"],
+            options=["--definition", "--storage-policy-definition"],
             arg_group="Properties",
             help="Definition of a Pure Storage Policy Based Management policy",
             required=True,

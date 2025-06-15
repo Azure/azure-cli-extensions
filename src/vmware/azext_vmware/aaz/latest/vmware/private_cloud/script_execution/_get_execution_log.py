@@ -60,7 +60,8 @@ class GetExecutionLog(AAZCommand):
             ),
         )
         _args_schema.script_output_stream_type = AAZListArg(
-            options=["--script-output-stream-type"],
+            options=["--type", "--script-output-stream-type"],
+            help="Name of the desired output stream to return. If not provided, will return all. An empty array will return nothing.",
         )
 
         script_output_stream_type = cls._args_schema.script_output_stream_type
