@@ -6143,6 +6143,22 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             ],
         )
 
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+            }
+        )
+
+        reenable_cmd = "aks update --resource-group={resource_group} --name={name} --enable-http-proxy"
+
+        self.cmd(
+            reenable_cmd,
+            checks=[
+                self.check("httpProxyConfig.enabled", True),
+            ],
+        )
+
         # delete
         self.cmd(
             "aks delete -g {resource_group} -n {name} --yes --no-wait",
