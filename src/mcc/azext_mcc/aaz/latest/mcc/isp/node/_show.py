@@ -16,9 +16,9 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-05-01-preview",
+        "version": "2024-11-30-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.connectedcache/ispcustomers/{}/ispcachenodes/{}", "2023-05-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.connectedcache/ispcustomers/{}/ispcachenodes/{}", "2024-11-30-preview"],
         ]
     }
 
@@ -134,7 +134,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-05-01-preview",
+                    "api-version", "2024-11-30-preview",
                     required=True,
                 ),
             }
@@ -274,6 +274,13 @@ class Show(AAZCommand):
                 serialized_name="cacheNodeStateShortText",
                 flags={"read_only": True},
             )
+            additional_cache_node_properties.creation_method = AAZIntType(
+                serialized_name="creationMethod",
+            )
+            additional_cache_node_properties.current_tls_certificate = AAZObjectType(
+                serialized_name="currentTlsCertificate",
+                flags={"read_only": True},
+            )
             additional_cache_node_properties.drive_configuration = AAZListType(
                 serialized_name="driveConfiguration",
             )
@@ -283,6 +290,18 @@ class Show(AAZCommand):
             )
             additional_cache_node_properties.is_proxy_required = AAZStrType(
                 serialized_name="isProxyRequired",
+            )
+            additional_cache_node_properties.issues_count = AAZIntType(
+                serialized_name="issuesCount",
+                flags={"read_only": True},
+            )
+            additional_cache_node_properties.issues_list = AAZListType(
+                serialized_name="issuesList",
+                flags={"read_only": True},
+            )
+            additional_cache_node_properties.last_auto_update_info = AAZObjectType(
+                serialized_name="lastAutoUpdateInfo",
+                flags={"read_only": True},
             )
             additional_cache_node_properties.optional_property1 = AAZStrType(
                 serialized_name="optionalProperty1",
@@ -306,14 +325,12 @@ class Show(AAZCommand):
                 serialized_name="productVersion",
                 flags={"read_only": True},
             )
-            additional_cache_node_properties.proxy_url = AAZStrType(
-                serialized_name="proxyUrl",
-            )
             additional_cache_node_properties.proxy_url_configuration = AAZObjectType(
                 serialized_name="proxyUrlConfiguration",
             )
-            additional_cache_node_properties.update_cycle_type = AAZStrType(
-                serialized_name="updateCycleType",
+            additional_cache_node_properties.tls_status = AAZStrType(
+                serialized_name="tlsStatus",
+                flags={"read_only": True},
             )
             additional_cache_node_properties.update_info_details = AAZStrType(
                 serialized_name="updateInfoDetails",
@@ -330,6 +347,34 @@ class Show(AAZCommand):
             cache_node_properties_details_issues_list = cls._schema_on_200.properties.additional_cache_node_properties.cache_node_properties_details_issues_list
             cache_node_properties_details_issues_list.Element = AAZStrType()
 
+            current_tls_certificate = cls._schema_on_200.properties.additional_cache_node_properties.current_tls_certificate
+            current_tls_certificate.action_required = AAZStrType(
+                serialized_name="actionRequired",
+                flags={"read_only": True},
+            )
+            current_tls_certificate.certificate_file_name = AAZStrType(
+                serialized_name="certificateFileName",
+                flags={"read_only": True},
+            )
+            current_tls_certificate.expiry_date = AAZStrType(
+                serialized_name="expiryDate",
+                flags={"read_only": True},
+            )
+            current_tls_certificate.not_before_date = AAZStrType(
+                serialized_name="notBeforeDate",
+                flags={"read_only": True},
+            )
+            current_tls_certificate.subject = AAZStrType(
+                flags={"read_only": True},
+            )
+            current_tls_certificate.subject_alt_name = AAZStrType(
+                serialized_name="subjectAltName",
+                flags={"read_only": True},
+            )
+            current_tls_certificate.thumbprint = AAZStrType(
+                flags={"read_only": True},
+            )
+
             drive_configuration = cls._schema_on_200.properties.additional_cache_node_properties.drive_configuration
             drive_configuration.Element = AAZObjectType()
 
@@ -345,6 +390,79 @@ class Show(AAZCommand):
             )
             _element.size_in_gb = AAZIntType(
                 serialized_name="sizeInGb",
+            )
+
+            issues_list = cls._schema_on_200.properties.additional_cache_node_properties.issues_list
+            issues_list.Element = AAZStrType()
+
+            last_auto_update_info = cls._schema_on_200.properties.additional_cache_node_properties.last_auto_update_info
+            last_auto_update_info.auto_update_last_applied_status = AAZIntType(
+                serialized_name="autoUpdateLastAppliedStatus",
+                flags={"read_only": True},
+            )
+            last_auto_update_info.auto_update_last_applied_status_detailed_text = AAZStrType(
+                serialized_name="autoUpdateLastAppliedStatusDetailedText",
+                flags={"read_only": True},
+            )
+            last_auto_update_info.auto_update_last_applied_status_text = AAZStrType(
+                serialized_name="autoUpdateLastAppliedStatusText",
+                flags={"read_only": True},
+            )
+            last_auto_update_info.auto_update_ring_type = AAZIntType(
+                serialized_name="autoUpdateRingType",
+                flags={"read_only": True},
+            )
+            last_auto_update_info.created_date_time_utc = AAZStrType(
+                serialized_name="createdDateTimeUtc",
+                flags={"read_only": True},
+            )
+            last_auto_update_info.image_uri_before_update = AAZStrType(
+                serialized_name="imageUriBeforeUpdate",
+                flags={"read_only": True},
+            )
+            last_auto_update_info.image_uri_targeted = AAZStrType(
+                serialized_name="imageUriTargeted",
+                flags={"read_only": True},
+            )
+            last_auto_update_info.image_uri_terminal = AAZStrType(
+                serialized_name="imageUriTerminal",
+                flags={"read_only": True},
+            )
+            last_auto_update_info.moved_to_terminal_state_date_time = AAZStrType(
+                serialized_name="movedToTerminalStateDateTime",
+                flags={"read_only": True},
+            )
+            last_auto_update_info.plan_change_log_text = AAZStrType(
+                serialized_name="planChangeLogText",
+                flags={"read_only": True},
+            )
+            last_auto_update_info.plan_id = AAZIntType(
+                serialized_name="planId",
+                flags={"read_only": True},
+            )
+            last_auto_update_info.rule_requested_day = AAZIntType(
+                serialized_name="ruleRequestedDay",
+                flags={"read_only": True},
+            )
+            last_auto_update_info.rule_requested_hour = AAZStrType(
+                serialized_name="ruleRequestedHour",
+                flags={"read_only": True},
+            )
+            last_auto_update_info.rule_requested_minute = AAZStrType(
+                serialized_name="ruleRequestedMinute",
+                flags={"read_only": True},
+            )
+            last_auto_update_info.rule_requested_week = AAZIntType(
+                serialized_name="ruleRequestedWeek",
+                flags={"read_only": True},
+            )
+            last_auto_update_info.time_to_go_live_date_time = AAZStrType(
+                serialized_name="timeToGoLiveDateTime",
+                flags={"read_only": True},
+            )
+            last_auto_update_info.updated_registry_date_time_utc = AAZStrType(
+                serialized_name="updatedRegistryDateTimeUtc",
+                flags={"read_only": True},
             )
 
             proxy_url_configuration = cls._schema_on_200.properties.additional_cache_node_properties.proxy_url_configuration
@@ -611,12 +729,15 @@ class _ShowHelper:
         additional_info.Element = AAZObjectType()
 
         _element = _schema_error_detail_read.additional_info.Element
-        _element.info = AAZObjectType(
+        _element.info = AAZDictType(
             flags={"read_only": True},
         )
         _element.type = AAZStrType(
             flags={"read_only": True},
         )
+
+        info = _schema_error_detail_read.additional_info.Element.info
+        info.Element = AAZAnyType()
 
         details = _schema_error_detail_read.details
         details.Element = AAZObjectType()
