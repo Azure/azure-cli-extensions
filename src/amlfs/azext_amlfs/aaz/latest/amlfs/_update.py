@@ -432,7 +432,7 @@ class _UpdateHelper:
         aml_filesystem_read.id = AAZStrType(
             flags={"read_only": True},
         )
-        aml_filesystem_read.identity = AAZObjectType()
+        aml_filesystem_read.identity = AAZIdentityObjectType()
         aml_filesystem_read.location = AAZStrType(
             flags={"required": True},
         )
