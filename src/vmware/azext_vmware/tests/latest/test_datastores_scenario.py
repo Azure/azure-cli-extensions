@@ -58,4 +58,4 @@ class VmwareDatastoresScenarioTest(ScenarioTest):
         self.cmd('az vmware datastore elastic-san-volume create --name SANDatastore1 --resource-group {rg} --private-cloud {privatecloud} --cluster {cluster} --elastic-san-volume {san_volume}')
 
         # # Create a new Pure Storage based datastore
-        self.cmd('az vmware datastore pure-storage-volume create --name PureStorageDatastore1 --resource-group {rg} --private-cloud {privatecloud} --cluster {cluster} --storage-pool-id {storage_pool_id} --size-gb {size_gb} --debug')
+        self.cmd('az vmware datastore pure-storage-volume create --name PureStorageDatastore1 --resource-group {rg} --private-cloud {privatecloud} --cluster {cluster} --storage-pool-id {storage_pool_id} --size-gb {size_gb}')

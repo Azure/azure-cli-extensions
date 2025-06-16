@@ -81,6 +81,9 @@ class DatastoreElasticVsanVolumeCreate(_DatastoreCreate):
 )
 class DatastorePureStorageVolumeCreate(_DatastoreCreate):
     """Create a Pure Storage volume in a private cloud cluster using PureStorage.Block provider.
+
+    :example: Create a Pure Storage volume in a private cloud.
+        az vmware datastore pure-storage-volume create --name PureStorageDatastore1 --resource-group ResourceGroup1 --private-cloud PrivateCloud1 --cluster Cluster1 --storage-pool-id StoragePool1 --size-gb 64
     """
 
     @classmethod
