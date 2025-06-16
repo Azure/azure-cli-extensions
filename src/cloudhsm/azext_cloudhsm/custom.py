@@ -30,7 +30,7 @@ class CloudHsmCreate(_CloudHsmCreate):
         args.family = "B"
 
 
-class CloudHsmBackupStart (_CloudHsmBackupStart):
+class CloudHsmBackupStart(_CloudHsmBackupStart):
     @classmethod
     # pylint: disable=protected-access
     def _build_arguments_schema(cls, *args, **kwargs):

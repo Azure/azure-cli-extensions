@@ -96,7 +96,7 @@ class Create(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.domain_name_label_scope = AAZStrArg(
-            options=["--domain-name-label-scope"],
+            options=["--domain-label-scope", "--domain-name-label-scope"],
             arg_group="Properties",
             help="The Cloud HSM Cluster's auto-generated Domain Name Label Scope",
             enum={"NoReuse": "NoReuse", "ResourceGroupReuse": "ResourceGroupReuse", "SubscriptionReuse": "SubscriptionReuse", "TenantReuse": "TenantReuse"},
