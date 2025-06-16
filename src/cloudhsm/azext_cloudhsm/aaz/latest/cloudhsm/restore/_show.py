@@ -11,9 +11,6 @@
 from azure.cli.core.aaz import *
 
 
-@register_command(
-    "cloudhsm restore show",
-)
 class Show(AAZCommand):
     """Get the restore operation status of the specified Cloud HSM Cluster
 

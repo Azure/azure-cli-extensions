@@ -11,9 +11,6 @@
 from azure.cli.core.aaz import *
 
 
-@register_command(
-    "cloudhsm backup show",
-)
 class Show(AAZCommand):
     """Get the backup operation status of the specified Cloud HSM Cluster
 
