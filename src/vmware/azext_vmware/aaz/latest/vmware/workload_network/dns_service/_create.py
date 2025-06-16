@@ -18,13 +18,13 @@ class Create(AAZCommand):
     """Create a DNS service by id in a private cloud workload network.
 
     :example: Create a DNS service by ID in a workload network.
-        az vmware workload-network dns-service create --resource-group group1 --private-cloud cloud1 --dns-service dnsService1 --display-name dnsService1 --dns-service-ip 5.5.5.5 --default-dns-zone defaultDnsZone1 --fqdn-zones fqdnZone1 --log-level INFO --revision 1
+        az vmware workload-network dns-service create --resource-group group1 --private-cloud cloud1 --dns-service dnsService1 --display-name dnsService1 --dns-service-ip 5.5.5.5 --default-dns-zone defaultDnsZone1 --fqdn-zones "[fqdnZone1]" --log-level INFO --revision 1
     """
 
     _aaz_info = {
-        "version": "2023-09-01",
+        "version": "2024-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}/workloadnetworks/default/dnsservices/{}", "2023-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}/workloadnetworks/default/dnsservices/{}", "2024-09-01"],
         ]
     }
 
@@ -189,7 +189,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-09-01",
+                    "api-version", "2024-09-01",
                     required=True,
                 ),
             }

@@ -18,13 +18,13 @@ class Show(AAZCommand):
     """Get information about a script cmdlet resource in a specific package on a private cloud
 
     :example: Show a script cmdlet.
-        az vmware script-cmdlet show --resource-group group1 --private-cloud cloud1 --script-package package1 --name cmdlet1
+        az vmware script-cmdlet show --resource-group group1 --private-cloud cloud1 --script-package package@1.0.2 --script-cmdlet-name New-ExternalSsoDomain
     """
 
     _aaz_info = {
-        "version": "2023-09-01",
+        "version": "2024-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}/scriptpackages/{}/scriptcmdlets/{}", "2023-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}/scriptpackages/{}/scriptcmdlets/{}", "2024-09-01"],
         ]
     }
 
@@ -149,7 +149,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-09-01",
+                    "api-version", "2024-09-01",
                     required=True,
                 ),
             }

@@ -18,13 +18,13 @@ class Create(AAZCommand):
     """Create a vm group by id in a private cloud workload network.
 
     :example: Create a VM Group by ID in a workload network.
-        az vmware workload-network vm-group create --resource-group group1 --private-cloud cloud1 --vm-group vmGroup1 --display-name vmGroup1 --members 564d43da-fefc-2a3b-1d92-42855622fa50 --revision 1
+        az vmware workload-network vm-group create --resource-group group1 --private-cloud cloud1 --vm-group vmGroup1 --display-name vmGroup1 --members "[564d43da-fefc-2a3b-1d92-42855622fa50]" --revision 1
     """
 
     _aaz_info = {
-        "version": "2023-09-01",
+        "version": "2024-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}/workloadnetworks/default/vmgroups/{}", "2023-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}/workloadnetworks/default/vmgroups/{}", "2024-09-01"],
         ]
     }
 
@@ -173,7 +173,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-09-01",
+                    "api-version", "2024-09-01",
                     required=True,
                 ),
             }
