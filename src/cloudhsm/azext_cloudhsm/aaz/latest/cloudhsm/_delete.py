@@ -19,7 +19,7 @@ class Delete(AAZCommand):
     """Delete a Cloud HSM
 
     :example: Delete a Cloud HSM
-        az cloudhsm delete --resource-group rgcloudhsm --cluster-name chsm1
+        az cloudhsm delete --resource-group rgcloudhsm --name chsm1
     """
 
     _aaz_info = {
