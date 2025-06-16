@@ -41,10 +41,12 @@ def install_vme(
     for extension_type in include_extension_types:
         extension_resource_id = (
             f"{cluster_resource_id}/Providers/Microsoft.KubernetesConfiguration/"
-            f"extensions/{consts.BundleExtensionNames[extension_type]}"
+            f"extensions/{consts.BundleExtensionTypeNames[extension_type]}"
         )
         try:
-            resources.get_by_id(extension_resource_id, '2022-11-01')
+            ext = resources.get_by_id(extension_resource_id, '2022-11-01')
+            if ext.properties['provisioningState'] == 'Failed':
+                raise ResourceNotFoundError()
             print(f"Extension {extension_type} already exists, skipping installation.")
             continue
         except ResourceNotFoundError:
@@ -61,14 +63,15 @@ def install_vme(
                 "--cluster-type",
                 consts.CONNECTEDCLUSTER_TYPE,
                 "--name",
-                consts.BundleExtensionNames[extension_type],
+                consts.BundleExtensionTypeNames[extension_type],
                 "--extension-type",
                 extension_type,
                 "--scope",
                 "cluster"
             ]
-            utils.call_subprocess_raise_output(command)
+            result = utils.call_subprocess_raise_output(command)
             print(f"Installed extension {extension_type} successfully.")
+            print(result)
 
     print("All extensions installed successfully.")
 
@@ -103,7 +106,7 @@ def uninstall_vme(
                    "--cluster-type",
                    "connectedClusters",
                    "--name",
-                   consts.BundleExtensionNames[extension_type],
+                   consts.BundleExtensionTypeNames[extension_type],
                    "--force",
                    "--yes"]
         utils.call_subprocess_raise_output(command)
@@ -177,3 +180,31 @@ def upgrade_vme(
 
     if (not deployment):
         raise CLIError(consts.UPGRADE_TIMEOUT_MSG.format(wait_timeout))
+
+
+def list_vme(
+        cmd,
+        resource_group_name: str,
+        cluster_name: str):
+    subscription_id = get_subscription_id(cmd.cli_ctx)
+
+    # Check whether the cluster exists
+    resources = cf_resources(cmd.cli_ctx, subscription_id)
+    cluster_resource_id = '/subscriptions/{0}/resourceGroups/{1}/providers/{2}/{3}/{4}'.format(
+        subscription_id, resource_group_name, consts.CONNECTEDCLUSTER_RP, consts.CONNECTEDCLUSTER_TYPE, cluster_name)
+    resources.get_by_id(cluster_resource_id, '2024-12-01-preview')
+
+    results = []
+    extension_names = consts.BundleExtensionNames
+    for extension_name in extension_names:
+        extension_resource_id = (
+            f"{cluster_resource_id}/Providers/Microsoft.KubernetesConfiguration/"
+            f"extensions/{extension_name}"
+        )
+        try:
+            ext = resources.get_by_id(extension_resource_id, '2022-11-01')
+            results.append(ext)
+        except ResourceNotFoundError:
+            continue
+
+    return results

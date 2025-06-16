@@ -16,7 +16,7 @@ from azure.cli.core.aaz import *
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
-    """Delete Organization resource
+    """Delete an existing Confluent organization entity via Azure.
     """
 
     _aaz_info = {
@@ -50,8 +50,6 @@ class Delete(AAZCommand):
             id_part="name",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            options=["--resource-group"],
-            help="Resource Group Name",
             required=True,
         )
         return cls._args_schema

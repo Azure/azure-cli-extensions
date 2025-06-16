@@ -145,6 +145,8 @@ from azext_aks_preview._consts import (
     CONST_ADVANCED_NETWORKPOLICIES_NONE,
     CONST_ADVANCED_NETWORKPOLICIES_FQDN,
     CONST_ADVANCED_NETWORKPOLICIES_L7,
+    CONST_TRANSIT_ENCRYPTION_TYPE_NONE,
+    CONST_TRANSIT_ENCRYPTION_TYPE_WIREGUARD
 )
 
 from azext_aks_preview._validators import (
@@ -215,6 +217,7 @@ from azext_aks_preview._validators import (
     validate_bootstrap_container_registry_resource_id,
     validate_gateway_prefix_size,
     validate_max_unavailable,
+    validate_max_blocked_nodes,
     validate_resource_group_parameter,
     validate_location_resource_group_cluster_parameters,
 )
@@ -318,6 +321,10 @@ advanced_networkpolicies = [
     CONST_ADVANCED_NETWORKPOLICIES_NONE,
     CONST_ADVANCED_NETWORKPOLICIES_FQDN,
     CONST_ADVANCED_NETWORKPOLICIES_L7,
+]
+transit_encryption_types = [
+    CONST_TRANSIT_ENCRYPTION_TYPE_NONE,
+    CONST_TRANSIT_ENCRYPTION_TYPE_WIREGUARD,
 ]
 network_dataplanes = [CONST_NETWORK_DATAPLANE_AZURE, CONST_NETWORK_DATAPLANE_CILIUM]
 disk_driver_versions = [CONST_DISK_DRIVER_V1, CONST_DISK_DRIVER_V2]
@@ -884,6 +891,12 @@ def load_arguments(self, _):
             arg_type=get_enum_type(advanced_networkpolicies),
         )
         c.argument(
+            "acns_transit_encryption_type",
+            is_preview=True,
+            arg_type=get_enum_type(transit_encryption_types),
+            help="Specify the transit encryption type for ACNS. Available values are 'None' and 'WireGuard'.",
+        )
+        c.argument(
             "enable_retina_flow_logs",
             action="store_true",
         )
@@ -933,7 +946,11 @@ def load_arguments(self, _):
             help="The deployment safeguards version",
             is_preview=True,
         )
-        c.argument("safeguards_excluded_ns", type=str, is_preview=True)
+        c.argument(
+            "safeguards_excluded_ns",
+            type=str,
+            is_preview=True
+        )
         # azure monitor profile
         c.argument(
             "enable_azuremonitormetrics",
@@ -1344,8 +1361,15 @@ def load_arguments(self, _):
             arg_type=get_enum_type(safeguards_levels),
             is_preview=True,
         )
-        c.argument("safeguards_version", help="The deployment safeguards version", is_preview=True)
-        c.argument("safeguards_excluded_ns", is_preview=True)
+        c.argument(
+            "safeguards_version",
+            help="The deployment safeguards version",
+            is_preview=True
+        )
+        c.argument(
+            "safeguards_excluded_ns",
+            is_preview=True
+        )
         c.argument(
             "enable_acns",
             action="store_true",
@@ -1366,6 +1390,12 @@ def load_arguments(self, _):
             "acns_advanced_networkpolicies",
             is_preview=True,
             arg_type=get_enum_type(advanced_networkpolicies),
+        )
+        c.argument(
+            "acns_transit_encryption_type",
+            is_preview=True,
+            arg_type=get_enum_type(transit_encryption_types),
+            help="Specify the transit encryption type for ACNS. Available values are 'None' and 'WireGuard'.",
         )
         c.argument(
             "enable_retina_flow_logs",
@@ -1444,6 +1474,7 @@ def load_arguments(self, _):
 
         c.argument('migrate_vmas_to_vms', is_preview=True, action='store_true')
         c.argument("disable_http_proxy", action="store_true", is_preview=True)
+        c.argument("enable_http_proxy", action="store_true", is_preview=True)
 
     with self.argument_context("aks upgrade") as c:
         c.argument("kubernetes_version", completer=get_k8s_upgrades_completion_list)
@@ -1594,6 +1625,7 @@ def load_arguments(self, _):
         c.argument("node_soak_duration", type=int)
         c.argument("undrainable_node_behavior")
         c.argument("max_unavailable", validator=validate_max_unavailable)
+        c.argument("max_blocked_nodes", validator=validate_max_blocked_nodes)
         c.argument("mode", arg_type=get_enum_type(node_mode_types))
         c.argument("scale_down_mode", arg_type=get_enum_type(scale_down_modes))
         c.argument("max_pods", type=int, options_list=["--max-pods", "-m"])
@@ -1726,6 +1758,7 @@ def load_arguments(self, _):
         c.argument("node_soak_duration", type=int)
         c.argument("undrainable_node_behavior")
         c.argument("max_unavailable", validator=validate_max_unavailable)
+        c.argument("max_blocked_nodes", validator=validate_max_blocked_nodes)
         c.argument("mode", arg_type=get_enum_type(node_mode_types))
         c.argument("scale_down_mode", arg_type=get_enum_type(scale_down_modes))
         # extensions
@@ -1797,6 +1830,7 @@ def load_arguments(self, _):
         c.argument("node_soak_duration", type=int)
         c.argument("undrainable_node_behavior")
         c.argument("max_unavailable", validator=validate_max_unavailable)
+        c.argument("max_blocked_nodes", validator=validate_max_blocked_nodes)
         c.argument("snapshot_id", validator=validate_snapshot_id)
         c.argument(
             "yes",

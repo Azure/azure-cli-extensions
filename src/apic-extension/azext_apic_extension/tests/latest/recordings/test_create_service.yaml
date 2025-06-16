@@ -13,12 +13,12 @@ interactions:
       ParameterSetName:
       - -g --name
       User-Agent:
-      - AZURECLI/2.63.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.74.0 azsdk-python-core/1.31.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clirg000001?api-version=2022-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clirg000001?api-version=2024-11-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001","name":"clirg000001","type":"Microsoft.Resources/resourceGroups","location":"eastus","tags":{"product":"azurecli","cause":"automation","test":"test_create_service","date":"2024-10-09T08:19:50Z","module":"apic-extension"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001","name":"clirg000001","type":"Microsoft.Resources/resourceGroups","location":"eastus","tags":{"product":"azurecli","cause":"automation","test":"test_create_service","date":"2025-06-11T05:51:43Z","module":"apic-extension"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
@@ -27,7 +27,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 09 Oct 2024 08:19:52 GMT
+      - Wed, 11 Jun 2025 05:51:54 GMT
       expires:
       - '-1'
       pragma:
@@ -41,7 +41,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '3749'
       x-msedge-ref:
-      - 'Ref A: E1F0A1E604FF44E2A4395A3C4FDBFC9E Ref B: MAA201060515029 Ref C: 2024-10-09T08:19:52Z'
+      - 'Ref A: 334FD7B65530400E9161079625FFE211 Ref B: MAA201060516035 Ref C: 2025-06-11T05:51:54Z'
     status:
       code: 200
       message: OK
@@ -63,23 +63,481 @@ interactions:
       ParameterSetName:
       - -g --name
       User-Agent:
-      - AZURECLI/2.63.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.74.0 azsdk-python-core/1.31.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/cli000002?api-version=2024-03-01
   response:
     body:
-      string: '{"type":"Microsoft.ApiCenter/services","location":"eastus","sku":{"name":"Free"},"properties":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/cli000002","name":"cli000002","tags":{},"systemData":{"createdAt":"2024-10-09T08:19:55.7865503Z","lastModifiedAt":"2024-10-09T08:19:55.7865422Z"}}'
+      string: '{"error":{"code":"MissingSubscriptionRegistration","message":"The subscription
+        is not registered to use namespace ''Microsoft.ApiCenter''. See https://aka.ms/rps-not-found
+        for how to register subscriptions.","details":[{"code":"MissingSubscriptionRegistration","target":"Microsoft.ApiCenter","message":"The
+        subscription is not registered to use namespace ''Microsoft.ApiCenter''. See
+        https://aka.ms/rps-not-found for how to register subscriptions."}]}}'
     headers:
-      api-supported-versions:
-      - 2023-07-01-preview, 2024-03-01, 2024-03-15-preview
       cache-control:
       - no-cache
       content-length:
-      - '367'
+      - '448'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 09 Oct 2024 08:19:55 GMT
+      - Wed, 11 Jun 2025 05:51:57 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-failure-cause:
+      - gateway
+      x-msedge-ref:
+      - 'Ref A: DA9B365EBBEF4C7A959CA0B9ABD0A7F7 Ref B: MAA201060515033 Ref C: 2025-06-11T05:51:55Z'
+    status:
+      code: 409
+      message: Conflict
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      User-Agent:
+      - python-requests/2.32.3
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ApiCenter/register?api-version=2016-02-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ApiCenter","namespace":"Microsoft.ApiCenter","authorizations":[{"applicationId":"a45c1cb0-6899-445e-8961-29576781c228","roleDefinitionId":"eb535636-6f68-45ec-903f-506493b326c2"},{"applicationId":"c3ca1a77-7a87-4dba-b8f8-eea115ae4573","roleDefinitionId":"eb535636-6f68-45ec-903f-506493b326c2"}],"resourceTypes":[{"resourceType":"services","locations":["East
+        US","West Europe","UK South","Central India","Australia East","France Central","Sweden
+        Central","Canada Central","Central US EUAP"],"apiVersions":["2024-06-01-preview","2024-03-15-preview","2024-03-01","2023-07-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SystemAssignedResourceIdentity"},{"resourceType":"operations","locations":["East
+        US","Central US EUAP"],"apiVersions":["2024-06-01-preview","2024-03-15-preview","2024-03-01","2023-07-01-preview"]},{"resourceType":"deletedServices","locations":["East
+        US","West Europe","UK South","Central India","Australia East","France Central","Sweden
+        Central","Canada Central","Central US EUAP"],"apiVersions":["2024-06-01-preview","2024-03-15-preview"]},{"resourceType":"services/eventGridFilters","locations":["East
+        US","West Europe","UK South","Central India","Australia East","France Central","Sweden
+        Central","Canada Central","Central US EUAP"],"apiVersions":["2024-06-01-preview","2024-03-15-preview","2024-03-01","2023-07-01-preview"]}],"registrationState":"Registering"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1503'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Jun 2025 05:52:00 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: 75BB0021E0044D81A6232A5293BFCB54 Ref B: MAA201060515033 Ref C: 2025-06-11T05:51:58Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.32.3
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ApiCenter?api-version=2016-02-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ApiCenter","namespace":"Microsoft.ApiCenter","authorizations":[{"applicationId":"a45c1cb0-6899-445e-8961-29576781c228","roleDefinitionId":"eb535636-6f68-45ec-903f-506493b326c2"},{"applicationId":"c3ca1a77-7a87-4dba-b8f8-eea115ae4573","roleDefinitionId":"eb535636-6f68-45ec-903f-506493b326c2"}],"resourceTypes":[{"resourceType":"services","locations":["East
+        US","West Europe","UK South","Central India","Australia East","France Central","Sweden
+        Central","Canada Central","Central US EUAP"],"apiVersions":["2024-06-01-preview","2024-03-15-preview","2024-03-01","2023-07-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SystemAssignedResourceIdentity"},{"resourceType":"operations","locations":["East
+        US","Central US EUAP"],"apiVersions":["2024-06-01-preview","2024-03-15-preview","2024-03-01","2023-07-01-preview"]},{"resourceType":"deletedServices","locations":["East
+        US","West Europe","UK South","Central India","Australia East","France Central","Sweden
+        Central","Canada Central","Central US EUAP"],"apiVersions":["2024-06-01-preview","2024-03-15-preview"]},{"resourceType":"services/eventGridFilters","locations":["East
+        US","West Europe","UK South","Central India","Australia East","France Central","Sweden
+        Central","Canada Central","Central US EUAP"],"apiVersions":["2024-06-01-preview","2024-03-15-preview","2024-03-01","2023-07-01-preview"]}],"registrationState":"Registering"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1503'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Jun 2025 05:52:10 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: C0C2972FCDDF48978E5DE77308C29C6F Ref B: MAA201060515033 Ref C: 2025-06-11T05:52:10Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.32.3
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ApiCenter?api-version=2016-02-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ApiCenter","namespace":"Microsoft.ApiCenter","authorizations":[{"applicationId":"a45c1cb0-6899-445e-8961-29576781c228","roleDefinitionId":"eb535636-6f68-45ec-903f-506493b326c2"},{"applicationId":"c3ca1a77-7a87-4dba-b8f8-eea115ae4573","roleDefinitionId":"eb535636-6f68-45ec-903f-506493b326c2"}],"resourceTypes":[{"resourceType":"services","locations":["East
+        US","West Europe","UK South","Central India","Australia East","France Central","Sweden
+        Central","Canada Central","Central US EUAP"],"apiVersions":["2024-06-01-preview","2024-03-15-preview","2024-03-01","2023-07-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SystemAssignedResourceIdentity"},{"resourceType":"operations","locations":["East
+        US","Central US EUAP"],"apiVersions":["2024-06-01-preview","2024-03-15-preview","2024-03-01","2023-07-01-preview"]},{"resourceType":"deletedServices","locations":["East
+        US","West Europe","UK South","Central India","Australia East","France Central","Sweden
+        Central","Canada Central","Central US EUAP"],"apiVersions":["2024-06-01-preview","2024-03-15-preview"]},{"resourceType":"services/eventGridFilters","locations":["East
+        US","West Europe","UK South","Central India","Australia East","France Central","Sweden
+        Central","Canada Central","Central US EUAP"],"apiVersions":["2024-06-01-preview","2024-03-15-preview","2024-03-01","2023-07-01-preview"]}],"registrationState":"Registering"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1503'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Jun 2025 05:52:20 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 757420835CDB4665A25B0AF9FA3B5156 Ref B: MAA201060515033 Ref C: 2025-06-11T05:52:21Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.32.3
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ApiCenter?api-version=2016-02-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ApiCenter","namespace":"Microsoft.ApiCenter","authorizations":[{"applicationId":"a45c1cb0-6899-445e-8961-29576781c228","roleDefinitionId":"eb535636-6f68-45ec-903f-506493b326c2"},{"applicationId":"c3ca1a77-7a87-4dba-b8f8-eea115ae4573","roleDefinitionId":"eb535636-6f68-45ec-903f-506493b326c2"}],"resourceTypes":[{"resourceType":"services","locations":["East
+        US","West Europe","UK South","Central India","Australia East","France Central","Sweden
+        Central","Canada Central","Central US EUAP"],"apiVersions":["2024-06-01-preview","2024-03-15-preview","2024-03-01","2023-07-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SystemAssignedResourceIdentity"},{"resourceType":"operations","locations":["East
+        US","Central US EUAP"],"apiVersions":["2024-06-01-preview","2024-03-15-preview","2024-03-01","2023-07-01-preview"]},{"resourceType":"deletedServices","locations":["East
+        US","West Europe","UK South","Central India","Australia East","France Central","Sweden
+        Central","Canada Central","Central US EUAP"],"apiVersions":["2024-06-01-preview","2024-03-15-preview"]},{"resourceType":"services/eventGridFilters","locations":["East
+        US","West Europe","UK South","Central India","Australia East","France Central","Sweden
+        Central","Canada Central","Central US EUAP"],"apiVersions":["2024-06-01-preview","2024-03-15-preview","2024-03-01","2023-07-01-preview"]}],"registrationState":"Registering"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1503'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Jun 2025 05:52:31 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: C9DBB33EED574B5EAE114D56C96504E0 Ref B: MAA201060515033 Ref C: 2025-06-11T05:52:31Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.32.3
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ApiCenter?api-version=2016-02-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ApiCenter","namespace":"Microsoft.ApiCenter","authorizations":[{"applicationId":"a45c1cb0-6899-445e-8961-29576781c228","roleDefinitionId":"eb535636-6f68-45ec-903f-506493b326c2"},{"applicationId":"c3ca1a77-7a87-4dba-b8f8-eea115ae4573","roleDefinitionId":"eb535636-6f68-45ec-903f-506493b326c2"}],"resourceTypes":[{"resourceType":"services","locations":["East
+        US","West Europe","UK South","Central India","Australia East","France Central","Sweden
+        Central","Canada Central","Central US EUAP"],"apiVersions":["2024-06-01-preview","2024-03-15-preview","2024-03-01","2023-07-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SystemAssignedResourceIdentity"},{"resourceType":"operations","locations":["East
+        US","Central US EUAP"],"apiVersions":["2024-06-01-preview","2024-03-15-preview","2024-03-01","2023-07-01-preview"]},{"resourceType":"deletedServices","locations":["East
+        US","West Europe","UK South","Central India","Australia East","France Central","Sweden
+        Central","Canada Central","Central US EUAP"],"apiVersions":["2024-06-01-preview","2024-03-15-preview"]},{"resourceType":"services/eventGridFilters","locations":["East
+        US","West Europe","UK South","Central India","Australia East","France Central","Sweden
+        Central","Canada Central","Central US EUAP"],"apiVersions":["2024-06-01-preview","2024-03-15-preview","2024-03-01","2023-07-01-preview"]}],"registrationState":"Registering"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1503'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Jun 2025 05:52:41 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 845A00D800484C119CC22C3C5E29A51E Ref B: MAA201060515033 Ref C: 2025-06-11T05:52:41Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.32.3
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ApiCenter?api-version=2016-02-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ApiCenter","namespace":"Microsoft.ApiCenter","authorizations":[{"applicationId":"a45c1cb0-6899-445e-8961-29576781c228","roleDefinitionId":"eb535636-6f68-45ec-903f-506493b326c2"},{"applicationId":"c3ca1a77-7a87-4dba-b8f8-eea115ae4573","roleDefinitionId":"eb535636-6f68-45ec-903f-506493b326c2"}],"resourceTypes":[{"resourceType":"services","locations":["East
+        US","West Europe","UK South","Central India","Australia East","France Central","Sweden
+        Central","Canada Central","Central US EUAP"],"apiVersions":["2024-06-01-preview","2024-03-15-preview","2024-03-01","2023-07-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SystemAssignedResourceIdentity"},{"resourceType":"operations","locations":["East
+        US","Central US EUAP"],"apiVersions":["2024-06-01-preview","2024-03-15-preview","2024-03-01","2023-07-01-preview"]},{"resourceType":"deletedServices","locations":["East
+        US","West Europe","UK South","Central India","Australia East","France Central","Sweden
+        Central","Canada Central","Central US EUAP"],"apiVersions":["2024-06-01-preview","2024-03-15-preview"]},{"resourceType":"services/eventGridFilters","locations":["East
+        US","West Europe","UK South","Central India","Australia East","France Central","Sweden
+        Central","Canada Central","Central US EUAP"],"apiVersions":["2024-06-01-preview","2024-03-15-preview","2024-03-01","2023-07-01-preview"]}],"registrationState":"Registering"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1503'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Jun 2025 05:52:51 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 6E5E1E1DC8504D748FE50CBF87820961 Ref B: MAA201060515033 Ref C: 2025-06-11T05:52:51Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.32.3
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ApiCenter?api-version=2016-02-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ApiCenter","namespace":"Microsoft.ApiCenter","authorizations":[{"applicationId":"a45c1cb0-6899-445e-8961-29576781c228","roleDefinitionId":"eb535636-6f68-45ec-903f-506493b326c2"},{"applicationId":"c3ca1a77-7a87-4dba-b8f8-eea115ae4573","roleDefinitionId":"eb535636-6f68-45ec-903f-506493b326c2"}],"resourceTypes":[{"resourceType":"services","locations":["East
+        US","West Europe","UK South","Central India","Australia East","France Central","Sweden
+        Central","Canada Central","Central US EUAP"],"apiVersions":["2024-06-01-preview","2024-03-15-preview","2024-03-01","2023-07-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SystemAssignedResourceIdentity"},{"resourceType":"operations","locations":["East
+        US","Central US EUAP"],"apiVersions":["2024-06-01-preview","2024-03-15-preview","2024-03-01","2023-07-01-preview"]},{"resourceType":"deletedServices","locations":["East
+        US","West Europe","UK South","Central India","Australia East","France Central","Sweden
+        Central","Canada Central","Central US EUAP"],"apiVersions":["2024-06-01-preview","2024-03-15-preview"]},{"resourceType":"services/eventGridFilters","locations":["East
+        US","West Europe","UK South","Central India","Australia East","France Central","Sweden
+        Central","Canada Central","Central US EUAP"],"apiVersions":["2024-06-01-preview","2024-03-15-preview","2024-03-01","2023-07-01-preview"]}],"registrationState":"Registering"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1503'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Jun 2025 05:53:01 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 4C69426437B640B8AED5EC2EC5D9D0E8 Ref B: MAA201060515033 Ref C: 2025-06-11T05:53:02Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.32.3
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ApiCenter?api-version=2016-02-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ApiCenter","namespace":"Microsoft.ApiCenter","authorizations":[{"applicationId":"a45c1cb0-6899-445e-8961-29576781c228","roleDefinitionId":"eb535636-6f68-45ec-903f-506493b326c2"},{"applicationId":"c3ca1a77-7a87-4dba-b8f8-eea115ae4573","roleDefinitionId":"eb535636-6f68-45ec-903f-506493b326c2"}],"resourceTypes":[{"resourceType":"services","locations":["East
+        US","West Europe","UK South","Central India","Australia East","France Central","Sweden
+        Central","Canada Central","Central US EUAP"],"apiVersions":["2024-06-01-preview","2024-03-15-preview","2024-03-01","2023-07-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SystemAssignedResourceIdentity"},{"resourceType":"operations","locations":["East
+        US","Central US EUAP"],"apiVersions":["2024-06-01-preview","2024-03-15-preview","2024-03-01","2023-07-01-preview"]},{"resourceType":"deletedServices","locations":["East
+        US","West Europe","UK South","Central India","Australia East","France Central","Sweden
+        Central","Canada Central","Central US EUAP"],"apiVersions":["2024-06-01-preview","2024-03-15-preview"]},{"resourceType":"services/eventGridFilters","locations":["East
+        US","West Europe","UK South","Central India","Australia East","France Central","Sweden
+        Central","Canada Central","Central US EUAP"],"apiVersions":["2024-06-01-preview","2024-03-15-preview","2024-03-01","2023-07-01-preview"]}],"registrationState":"Registered"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1502'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Jun 2025 05:53:11 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 53F68AD66F7D4DE3B9351DB21A36CB3C Ref B: MAA201060515033 Ref C: 2025-06-11T05:53:12Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus", "sku": {"name": "Free"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - apic create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '47'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --name
+      User-Agent:
+      - AZURECLI/2.74.0 azsdk-python-core/1.31.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/cli000002?api-version=2024-03-01
+  response:
+    body:
+      string: '{"type":"Microsoft.ApiCenter/services","location":"eastus","sku":{"name":"Free"},"properties":{"portalHostname":"cli000002.portal.eastus.azure-apicenter.ms","provisioningState":"Succeeded"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/cli000002","name":"cli000002","tags":{},"systemData":{"createdAt":"2025-06-11T05:53:16.0092843Z","lastModifiedAt":"2025-06-11T05:53:16.0092621Z"}}'
+    headers:
+      api-supported-versions:
+      - 2023-07-01-preview, 2024-03-01, 2024-03-15-preview, 2024-06-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '460'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Jun 2025 05:53:15 GMT
       expires:
       - '-1'
       pragma:
@@ -92,12 +550,14 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=b5ee6c06-c2c2-4e3c-8606-5f170cee077a,objectId=9aec9bf7-7066-4c57-bc6d-3bc7935e826d/southeastasia/df311fb3-e282-4dd3-b012-4e90710611dc
       x-ms-ratelimit-remaining-subscription-global-writes:
       - '2999'
       x-ms-ratelimit-remaining-subscription-writes:
       - '199'
       x-msedge-ref:
-      - 'Ref A: 933740399FE74B248F4FE134B5F6F17F Ref B: MAA201060513049 Ref C: 2024-10-09T08:19:52Z'
+      - 'Ref A: 27D429667B2843C6A2C354801A6AA4FA Ref B: MAA201060515033 Ref C: 2025-06-11T05:53:12Z'
       x-powered-by:
       - ASP.NET
     status:

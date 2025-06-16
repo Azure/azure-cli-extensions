@@ -428,7 +428,7 @@ class PolicyGeneratingArmParametersCleanRoomTarFile(unittest.TestCase):
                 "metadata": {
                     "description": "Name for the container group"
                 },
-                "defaultValue":"mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot"
+                "defaultValue":"mcr.microsoft.com/azurelinux/base/python:3.12"
             },
             "containername2": {
                 "type": "string",
@@ -572,7 +572,7 @@ class PolicyGeneratingArmParametersCleanRoomTarFile(unittest.TestCase):
 
         filename = os.path.join(self.path, "./mariner2.tar")
         create_tar_file(filename)
-        image_mapping = {"mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot": filename}
+        image_mapping = {"mcr.microsoft.com/azurelinux/base/python:3.12": filename}
 
         # check to make sure many:1 mapping doesn't work
         with self.assertRaises(SystemExit) as exc_info:
@@ -624,7 +624,7 @@ class PolicyGeneratingArmParametersCleanRoomTarFile(unittest.TestCase):
                 "metadata": {
                     "description": "Name for the container group"
                 },
-                "defaultValue":"mcr.microsoft.com/cbl-mariner/distroless/minimal:2.0"
+                "defaultValue":"mcr.microsoft.com/azurelinux/distroless/base:3.0"
             },
             "containername": {
                 "type": "string",
@@ -766,7 +766,7 @@ class PolicyGeneratingArmParametersCleanRoomTarFile(unittest.TestCase):
                 "metadata": {
                     "description": "Name for the container group"
                 },
-                "defaultValue":"mcr.microsoft.com/cbl-mariner/distroless/minimal:2.0"
+                "defaultValue":"mcr.microsoft.com/azurelinux/distroless/base:3.0"
             },
             "containername": {
                 "type": "string",

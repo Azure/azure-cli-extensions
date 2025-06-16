@@ -48,7 +48,6 @@ from azext_aks_preview._helpers import (
     check_is_azure_cli_core_editable_installed,
     check_is_private_cluster,
     get_cluster_snapshot_by_snapshot_id,
-    setup_common_safeguards_profile,
     filter_hard_taints,
 )
 from azext_aks_preview._loadbalancer import create_load_balancer_profile
@@ -822,6 +821,21 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                     "--disable-acns-security and --disable-acns cannot be used with acns_advanced_networkpolicies."
                 )
         return self.raw_param.get("acns_advanced_networkpolicies")
+
+    def get_acns_transit_encryption_type(self) -> Union[str, None]:
+        """Get the value of acns_transit_encryption_type
+
+        :return: str or None
+        """
+        disable_acns_security = self.raw_param.get("disable_acns_security")
+        disable_acns = self.raw_param.get("disable_acns")
+        acns_transit_encryption_type = self.raw_param.get("acns_transit_encryption_type")
+        if acns_transit_encryption_type is not None:
+            if disable_acns_security or disable_acns:
+                raise MutuallyExclusiveArgumentError(
+                    "--disable-acns-security and --disable-acns cannot be used with --acns-transit-encryption-type."
+                )
+        return self.raw_param.get("acns_transit_encryption_type")
 
     def get_retina_flow_logs(self, mc: ManagedCluster) -> Union[bool, None]:
         """Get the enablement of retina flow logs
@@ -2849,6 +2863,16 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
 
         return disable_http_proxy
 
+    def get_enable_http_proxy(self) -> bool:
+        """Obtain the value of enable_http_proxy.
+
+        :return: bool
+        """
+        # read the original value passed by the command
+        enable_http_proxy = self.raw_param.get("enable_http_proxy")
+
+        return enable_http_proxy
+
 
 # pylint: disable=too-many-public-methods
 class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
@@ -2976,6 +3000,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         acns = None
         (acns_enabled, acns_observability_enabled, acns_security_enabled) = self.context.get_acns_enablement()
         acns_advanced_networkpolicies = self.context.get_acns_advanced_networkpolicies()
+        acns_transit_encryption_type = self.context.get_acns_transit_encryption_type()
         if acns_enabled is not None:
             acns = self.models.AdvancedNetworking(
                 enabled=acns_enabled,
@@ -2995,6 +3020,15 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                     )
                 else:
                     acns.security.advanced_network_policies = acns_advanced_networkpolicies
+            if acns_transit_encryption_type is not None:
+                if acns.security is None:
+                    acns.security = self.models.AdvancedNetworkingSecurity(
+                        transit_encryption=self.models.AdvancedNetworkingSecurityTransitEncryption(
+                            type=acns_transit_encryption_type
+                        )
+                    )
+                else:
+                    acns.security.transit_encryption.type = acns_transit_encryption_type
             network_profile.advanced_networking = acns
         return mc
 
@@ -3433,14 +3467,6 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             mc.auto_upgrade_profile.node_os_upgrade_channel = node_os_upgrade_channel
         return mc
 
-    def set_up_safeguards_profile(self, mc: ManagedCluster) -> ManagedCluster:
-        excludedNamespaces = self.context.get_safeguards_excluded_namespaces()
-        version = self.context.get_safeguards_version()
-        level = self.context.get_safeguards_level()
-        # provided any value?
-        mc = setup_common_safeguards_profile(level, version, excludedNamespaces, mc, self.models)
-        return mc
-
     def set_up_azure_service_mesh_profile(self, mc: ManagedCluster) -> ManagedCluster:
         """Set up azure service mesh for the ManagedCluster object.
 
@@ -3629,8 +3655,6 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc = self.set_up_node_resource_group_profile(mc)
         # set up auto upgrade profile
         mc = self.set_up_auto_upgrade_profile(mc)
-        # set up safeguards profile
-        mc = self.set_up_safeguards_profile(mc)
         # set up azure service mesh profile
         mc = self.set_up_azure_service_mesh_profile(mc)
         # setup k8s support plan
@@ -4075,6 +4099,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         acns = None
         (acns_enabled, acns_observability_enabled, acns_security_enabled) = self.context.get_acns_enablement()
         acns_advanced_networkpolicies = self.context.get_acns_advanced_networkpolicies()
+        acns_transit_encryption_type = self.context.get_acns_transit_encryption_type()
         if acns_enabled is not None:
             acns = self.models.AdvancedNetworking(
                 enabled=acns_enabled,
@@ -4094,6 +4119,15 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                     )
                 else:
                     acns.security.advanced_network_policies = acns_advanced_networkpolicies
+            if acns_transit_encryption_type is not None:
+                if acns.security is None:
+                    acns.security = self.models.AdvancedNetworkingSecurity(
+                        transit_encryption=self.models.AdvancedNetworkingSecurityTransitEncryption(
+                            type=acns_transit_encryption_type
+                        )
+                    )
+                else:
+                    acns.security.transit_encryption.type = acns_transit_encryption_type
             mc.network_profile.advanced_networking = acns
         return mc
 
@@ -4889,26 +4923,6 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             mc.auto_upgrade_profile.node_os_upgrade_channel = node_os_upgrade_channel
         return mc
 
-    def update_safeguards_profile(self, mc: ManagedCluster) -> ManagedCluster:
-        """Update safeguards profile for the ManagedCluster object
-        :return: the ManagedCluster object
-        """
-
-        self._ensure_mc(mc)
-
-        excludedNamespaces = self.context.get_safeguards_excluded_namespaces()
-        version = self.context.get_safeguards_version()
-        level = self.context.get_safeguards_level()
-
-        mc = setup_common_safeguards_profile(level, version, excludedNamespaces, mc, self.models)
-
-        if level is not None:
-            mc.safeguards_profile.level = level
-        if version is not None:
-            mc.safeguards_profile.version = version
-
-        return mc
-
     def update_azure_service_mesh_profile(self, mc: ManagedCluster) -> ManagedCluster:
         """Update azure service mesh profile for the ManagedCluster object.
         """
@@ -5346,6 +5360,13 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 )
             mc.http_proxy_config.enabled = False
 
+        if self.context.get_enable_http_proxy():
+            if mc.http_proxy_config is None:
+                mc.http_proxy_config = (
+                    self.models.ManagedClusterHTTPProxyConfig()  # pylint: disable=no-member
+                )
+            mc.http_proxy_config.enabled = True
+
         return mc
 
     def update_mc_profile_preview(self) -> ManagedCluster:
@@ -5395,8 +5416,6 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_node_resource_group_profile(mc)
         # update auto upgrade profile
         mc = self.update_auto_upgrade_profile(mc)
-        # update safeguards_profile
-        mc = self.update_safeguards_profile(mc)
         # update cluster upgrade settings profile
         mc = self.update_upgrade_settings(mc)
         # update nodepool taints

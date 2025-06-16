@@ -2,6 +2,10 @@
 
 Release History
 ===============
+1.0.0
++++++
+* Updated CLI command descriptions to be more user and support az mcp commands.
+
 0.6.0
 +++++
 * Added more commands for user access management
