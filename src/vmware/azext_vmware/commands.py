@@ -104,11 +104,10 @@ def load_placement_policy_commands(self):
         self.command_table['vmware placement-policy vm-host delete'] = PlacementPolicyVMHostDelete(loader=self)
 
 
-
 def load_vm_commands(self):
-  with self.command_group('vmware vm'):
-    from .operations.virtual_machines import VmRestrictMovement
-    self.command_table['vmware vm restrict-movement'] = VmRestrictMovement(loader=self)
+    with self.command_group('vmware vm'):
+        from .operations.virtual_machines import VmRestrictMovement
+        self.command_table['vmware vm restrict-movement'] = VmRestrictMovement(loader=self)
 
 
 def load_workload_network_commands(self):

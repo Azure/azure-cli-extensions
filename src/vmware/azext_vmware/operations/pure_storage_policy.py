@@ -26,7 +26,7 @@ class PureStoragePolicyList(List):
     """List Pure Storage policy resources by PrivateCloud.
 
     :example: List ProvisionedNetwork resources.
-        az vmware private-cloud pure-storage-policy list --resource-group group1 --private-cloud-name cloud1
+        az vmware pure-storage-policy list --resource-group group1 --private-cloud-name cloud1
     """
 
     @classmethod
@@ -42,7 +42,7 @@ class PureStoragePolicyShow(Show):
     """Show details of a Pure Storage policy for a private cloud.
 
     :example: Show details of a Pure Storage policy.
-        az vmware private-cloud pure-storage-policy show --resource-group group1 --private-cloud-name cloud1 --storage-policy-name storagePolicy1
+        az vmware pure-storage-policy show --resource-group group1 --private-cloud-name cloud1 --storage-policy-name storagePolicy1
     """
 
     @classmethod
@@ -58,7 +58,7 @@ class PureStoragePolicyCreate(Create):
     """Create a Pure Storage policy for a private cloud.
 
     :example: Create a Pure Storage policy.
-        az vmware private-cloud pure-storage-policy create --resource-group group1 --private-cloud-name cloud1 --storage-policy-name storagePolicy1 --storage-policy-definition storagePolicyDefinition1 --storage-pool-id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/PureStorage.Block/storagePools/storagePool1
+        az vmware pure-storage-policy create --resource-group group1 --private-cloud-name cloud1 --storage-policy-name storagePolicy1 --storage-policy-definition storagePolicyDefinition1 --storage-pool-id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/PureStorage.Block/storagePools/storagePool1
     """
 
     @classmethod
@@ -76,7 +76,7 @@ class PureStoragePolicyDelete(Delete):
     """Delete a Pure Storage policy for a private cloud.
 
     :example: Delete a Pure Storage policy.
-        az vmware private-cloud pure-storage-policy delete --resource-group group1 --private-cloud-name cloud1 --storage-policy-name storagePolicy1
+        az vmware pure-storage-policy delete --resource-group group1 --private-cloud-name cloud1 --storage-policy-name storagePolicy1
     """
 
     @classmethod

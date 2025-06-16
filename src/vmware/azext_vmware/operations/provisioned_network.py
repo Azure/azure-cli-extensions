@@ -26,7 +26,7 @@ class ProvisionedNetworkList(List):
     """List ProvisionedNetwork resources by PrivateCloud.
 
     :example: List ProvisionedNetwork resources.
-        az vmware private-cloud provisioned-network list --resource-group group1 --private-cloud-name cloud1
+        az vmware provisioned-network list --resource-group group1 --private-cloud-name cloud1
     """
 
     @classmethod
@@ -42,7 +42,7 @@ class ProvisionedNetworkShow(Show):
     """ Get a provisioned network by name in a private cloud.
 
     :example: Get a provisioned network by name.
-        az vmware private-cloud provisioned-network show --resource-group group1 --private-cloud-name cloud1 --provisioned-network-name network1
+        az vmware provisioned-network show --resource-group group1 --private-cloud-name cloud1 --provisioned-network-name network1
     """
 
     @classmethod
