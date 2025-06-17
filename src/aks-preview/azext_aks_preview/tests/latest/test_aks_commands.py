@@ -14198,7 +14198,7 @@ spec:
         name_prefix="clitest",
         location="westcentralus",
     )
-    def test_aks_create_node_provisioning_mode_manual(
+    def test_aks_create_node_provisioning_profile(
         self, resource_group, resource_group_location
     ):
         # reset the count so in replay mode the random names will start with 0
@@ -14216,16 +14216,17 @@ spec:
         )
 
         # create
-        # TODO: Use mode Auto instead?
         create_cmd = (
             "aks create --resource-group={resource_group} --name={name} --location={location} "
-            "--ssh-key-value={ssh_key_value} --node-count=1 --enable-managed-identity --node-provisioning-mode=Manual"
+            "--ssh-key-value={ssh_key_value} --node-count=1 --enable-managed-identity --network-plugin azure "
+            "--network-plugin-mode overlay --network-dataplane cilium --node-provisioning-mode=Auto "
+            "--node-provisioning-default-pools=Auto"
         )
         self.cmd(
             create_cmd,
             checks=[
                 self.check("provisioningState", "Succeeded"),
-                self.check("nodeProvisioningProfile.mode", "Manual"),
+                self.check("nodeProvisioningProfile.mode", "Auto"),
             ],
         )
 
@@ -14241,7 +14242,7 @@ spec:
         name_prefix="clitest",
         location="westcentralus",
     )
-    def test_aks_update_node_provisioning_mode_manual(
+    def test_aks_update_node_provisioning_profile(
         self, resource_group, resource_group_location
     ):
         # reset the count so in replay mode the random names will start with 0
@@ -14261,7 +14262,8 @@ spec:
         # create
         create_cmd = (
             "aks create --resource-group={resource_group} --name={name} --location={location} "
-            "--ssh-key-value={ssh_key_value} --node-count=1 --enable-managed-identity"
+            "--ssh-key-value={ssh_key_value} --node-count=1 --enable-managed-identity "
+            "--network-plugin azure --network-plugin-mode overlay --network-dataplane cilium"
         )
         self.cmd(
             create_cmd,
@@ -14271,12 +14273,12 @@ spec:
         )
 
         # update
-        update_cmd = "aks update --resource-group={resource_group} --name={name} --node-provisioning-mode=Manual"
+        update_cmd = "aks update --resource-group={resource_group} --name={name} --node-provisioning-mode=Auto"
         self.cmd(
             update_cmd,
             checks=[
                 self.check("provisioningState", "Succeeded"),
-                self.check("nodeProvisioningProfile.mode", "Manual"),
+                self.check("nodeProvisioningProfile.mode", "Auto"),
             ],
         )
 

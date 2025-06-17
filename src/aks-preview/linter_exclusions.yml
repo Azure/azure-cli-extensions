@@ -102,6 +102,9 @@ aks create:
     enable_retina_flow_logs:
       rule_exclusions:  
         - option_length_too_long
+    node_provisioning_default_pools:
+      rule_exclusions:  
+        - option_length_too_long
 aks update:
   parameters:
     enable_pod_identity_with_kubenet:
@@ -246,6 +249,9 @@ aks update:
       rule_exclusions:  
         - option_length_too_long
     enable_http_proxy:
+      rule_exclusions:  
+        - option_length_too_long
+    node_provisioning_default_pools:
       rule_exclusions:  
         - option_length_too_long
 aks delete:

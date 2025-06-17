@@ -2749,6 +2749,11 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         """
         return self.raw_param.get("node_provisioning_mode")
 
+    def get_node_provisioning_default_pools(self) -> Union[str, None]:
+        """Obtain the value of node_provisioning_default_pools.
+        """
+        return self.raw_param.get("node_provisioning_default_pools")
+
     def get_ai_toolchain_operator(self, enable_validation: bool = False) -> bool:
         """Internal function to obtain the value of enable_ai_toolchain_operator.
 
@@ -3542,10 +3547,26 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
 
         return mc
 
+    def set_up_node_provisioning_default_pools(self, mc: ManagedCluster) -> ManagedCluster:
+        self._ensure_mc(mc)
+
+        default_pools = self.context.get_node_provisioning_default_pools()
+        if default_pools is not None:
+            if mc.node_provisioning_profile is None:
+                mc.node_provisioning_profile = (
+                    self.models.ManagedClusterNodeProvisioningProfile()  # pylint: disable=no-member
+                )
+
+            # set default_node_pools
+            mc.node_provisioning_profile.default_node_pools = default_pools
+
+        return mc
+
     def set_up_node_provisioning_profile(self, mc: ManagedCluster) -> ManagedCluster:
         self._ensure_mc(mc)
 
         mc = self.set_up_node_provisioning_mode(mc)
+        mc = self.set_up_node_provisioning_default_pools(mc)
 
         return mc
 
@@ -5060,6 +5081,21 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         return mc
 
+    def update_node_provisioning_default_pools(self, mc: ManagedCluster) -> ManagedCluster:
+        self._ensure_mc(mc)
+
+        default_pools = self.context.get_node_provisioning_default_pools()
+        if default_pools is not None:
+            if mc.node_provisioning_profile is None:
+                mc.node_provisioning_profile = (
+                    self.models.ManagedClusterNodeProvisioningProfile()  # pylint: disable=no-member
+                )
+
+            # set default_node_pools
+            mc.node_provisioning_profile.default_node_pools = default_pools
+
+        return mc
+
     # pylint: disable=too-many-branches
     def update_app_routing_profile(self, mc: ManagedCluster) -> ManagedCluster:
         """Update app routing profile for the ManagedCluster object.
@@ -5222,6 +5258,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         self._ensure_mc(mc)
 
         mc = self.update_node_provisioning_mode(mc)
+        mc = self.update_node_provisioning_default_pools(mc)
 
         return mc
 
