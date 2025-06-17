@@ -73,7 +73,8 @@ def install_vme(
             print(f"Installed extension {extension_type} successfully.")
             print(result)
 
-    print("All extensions installed successfully.")
+    if len(include_extension_types) > 1:
+        print("All extensions installed successfully.")
 
 
 def uninstall_vme(
@@ -111,7 +112,8 @@ def uninstall_vme(
                    "--yes"]
         utils.call_subprocess_raise_output(command)
         print(f"Uninstalled extension {extension_type} successfully.")
-    print("All extensions uninstalled successfully.")
+    if len(include_extension_types) > 1:
+        print("All extensions uninstalled successfully.")
 
 
 def upgrade_vme(
