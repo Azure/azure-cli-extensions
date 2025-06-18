@@ -11,18 +11,14 @@
 from azure.cli.core.aaz import *
 
 
-@register_command(
-    "mesh volume show",
-    is_preview=True,
-)
-class Show(AAZCommand):
-    """Get the details of a volume.
+class Listvalue(AAZCommand):
+    """Lists the decrypted value of the specified named value of the secret resource. This is a privileged operation.
     """
 
     _aaz_info = {
         "version": "2018-09-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.servicefabricmesh/volumes/{}", "2018-09-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.servicefabricmesh/secrets/{}/values/{}/listvalue", "2018-09-01-preview"],
         ]
     }
 
@@ -45,17 +41,23 @@ class Show(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
-        _args_schema.name = AAZStrArg(
-            options=["-n", "--name"],
-            help="The name of the volume.",
+        _args_schema.secret_name = AAZStrArg(
+            options=["--secret-name"],
+            help="The name of the secret resource.",
             required=True,
             id_part="name",
+        )
+        _args_schema.version = AAZStrArg(
+            options=["-v", "--version"],
+            help="The name of the secret version.",
+            required=True,
+            id_part="child_name_1",
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.VolumeGet(ctx=self.ctx)()
+        self.SecretValueListValue(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -70,7 +72,7 @@ class Show(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class VolumeGet(AAZHttpOperation):
+    class SecretValueListValue(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -84,13 +86,13 @@ class Show(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ServiceFabricMesh/volumes/{volumeResourceName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ServiceFabricMesh/secrets/{secretResourceName}/values/{secretValueResourceName}/listvalue",
                 **self.url_parameters
             )
 
         @property
         def method(self):
-            return "GET"
+            return "POST"
 
         @property
         def error_format(self):
@@ -104,12 +106,17 @@ class Show(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "subscriptionId", self.ctx.subscription_id,
+                    "secretResourceName", self.ctx.args.secret_name,
+                    skip_quote=True,
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "volumeResourceName", self.ctx.args.name,
+                    "secretValueResourceName", self.ctx.args.version,
                     skip_quote=True,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "subscriptionId", self.ctx.subscription_id,
                     required=True,
                 ),
             }
@@ -152,64 +159,13 @@ class Show(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.id = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200.location = AAZStrType(
-                flags={"required": True},
-            )
-            _schema_on_200.name = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200.properties = AAZObjectType(
-                flags={"required": True, "client_flatten": True},
-            )
-            _schema_on_200.tags = AAZDictType()
-            _schema_on_200.type = AAZStrType(
-                flags={"read_only": True},
-            )
-
-            properties = cls._schema_on_200.properties
-            properties.azure_file_parameters = AAZObjectType(
-                serialized_name="azureFileParameters",
-            )
-            properties.description = AAZStrType()
-            properties.provider = AAZStrType(
-                flags={"required": True},
-            )
-            properties.provisioning_state = AAZStrType(
-                serialized_name="provisioningState",
-                flags={"read_only": True},
-            )
-            properties.status = AAZStrType(
-                flags={"read_only": True},
-            )
-            properties.status_details = AAZStrType(
-                serialized_name="statusDetails",
-                flags={"read_only": True},
-            )
-
-            azure_file_parameters = cls._schema_on_200.properties.azure_file_parameters
-            azure_file_parameters.account_key = AAZStrType(
-                serialized_name="accountKey",
-            )
-            azure_file_parameters.account_name = AAZStrType(
-                serialized_name="accountName",
-                flags={"required": True},
-            )
-            azure_file_parameters.share_name = AAZStrType(
-                serialized_name="shareName",
-                flags={"required": True},
-            )
-
-            tags = cls._schema_on_200.tags
-            tags.Element = AAZStrType()
+            _schema_on_200.value = AAZStrType()
 
             return cls._schema_on_200
 
 
-class _ShowHelper:
-    """Helper class for Show"""
+class _ListvalueHelper:
+    """Helper class for Listvalue"""
 
 
-__all__ = ["Show"]
+__all__ = ["Listvalue"]
