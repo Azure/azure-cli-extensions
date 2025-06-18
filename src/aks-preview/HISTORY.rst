@@ -14,6 +14,9 @@ Pending
 * Add `--node-provisioning-default-pools` to the `az aks update` command.
 * Add `--node-provisioning-default-pools` to the `az aks create` command.
 
+18.0.0b14
+* Remove DATA_COSMOS_TABLE and DATA_STORAGE references
+
 18.0.0b13
 +++++++
 * Add option `--enable-http-proxy` to `az aks update`.
