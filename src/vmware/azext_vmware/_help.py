@@ -311,6 +311,19 @@ helps['vmware datastore elastic-san-volume create'] = """
       text: az vmware datastore elastic-san-volume create --name ElasticSANDatastore --resource-group MyResourceGroup --cluster Cluster-1 --private-cloud MyPrivateCloud --elastic-san-volume elasticsan
 """
 
+helps['vmware datastore pure-storage-volume'] = """
+    type: group
+    short-summary: Manage Pure Storage volume resource.
+"""
+
+helps['vmware datastore pure-storage-volume create'] = """
+    type: command
+    short-summary: Create a Pure Storage volume in a private cloud cluster using PureStorage.Block provider.
+    examples:
+    - name: Create a new PureStorage.Block provided Pure Storage volume based datastore.
+      text: az vmware datastore pure-storage-volume create --name PureStorageDatastore --resource-group MyResourceGroup --cluster Cluster-1 --private-cloud MyPrivateCloud --storage-pool-id "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/ResourceGroup1/providers/PureStorage.Block/storagePools/storagePool1" --size-gb 64
+"""
+
 helps['vmware datastore show'] = """
     type: command
     short-summary: Show details of a datastore in a private cloud cluster.

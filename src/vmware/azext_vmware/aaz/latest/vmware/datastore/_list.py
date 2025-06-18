@@ -19,9 +19,9 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-09-01",
+        "version": "2024-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}/clusters/{}/datastores", "2023-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}/clusters/{}/datastores", "2024-09-01"],
         ]
     }
 
@@ -133,7 +133,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-09-01",
+                    "api-version", "2024-09-01",
                     required=True,
                 ),
             }
@@ -208,6 +208,9 @@ class List(AAZCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+            properties.pure_storage_volume = AAZObjectType(
+                serialized_name="pureStorageVolume",
+            )
             properties.status = AAZStrType(
                 flags={"read_only": True},
             )
@@ -236,6 +239,16 @@ class List(AAZCommand):
 
             net_app_volume = cls._schema_on_200.value.Element.properties.net_app_volume
             net_app_volume.id = AAZStrType(
+                flags={"required": True},
+            )
+
+            pure_storage_volume = cls._schema_on_200.value.Element.properties.pure_storage_volume
+            pure_storage_volume.size_gb = AAZIntType(
+                serialized_name="sizeGb",
+                flags={"required": True},
+            )
+            pure_storage_volume.storage_pool_id = AAZStrType(
+                serialized_name="storagePoolId",
                 flags={"required": True},
             )
 
