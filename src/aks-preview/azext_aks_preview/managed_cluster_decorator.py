@@ -3027,13 +3027,10 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                     acns.security.advanced_network_policies = acns_advanced_networkpolicies
             if acns_transit_encryption_type is not None:
                 if acns.security is None:
-                    acns.security = self.models.AdvancedNetworkingSecurity(
-                        transit_encryption=self.models.AdvancedNetworkingSecurityTransitEncryption(
-                            type=acns_transit_encryption_type
-                        )
-                    )
-                else:
-                    acns.security.transit_encryption.type = acns_transit_encryption_type
+                    acns.security = self.models.AdvancedNetworkingSecurity()
+                if acns.security.transit_encryption is None:
+                    acns.security.transit_encryption = self.models.AdvancedNetworkingSecurityTransitEncryption()
+                acns.security.transit_encryption.type = acns_transit_encryption_type
             network_profile.advanced_networking = acns
         return mc
 
@@ -4142,13 +4139,10 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                     acns.security.advanced_network_policies = acns_advanced_networkpolicies
             if acns_transit_encryption_type is not None:
                 if acns.security is None:
-                    acns.security = self.models.AdvancedNetworkingSecurity(
-                        transit_encryption=self.models.AdvancedNetworkingSecurityTransitEncryption(
-                            type=acns_transit_encryption_type
-                        )
-                    )
-                else:
-                    acns.security.transit_encryption.type = acns_transit_encryption_type
+                    acns.security = self.models.AdvancedNetworkingSecurity()
+                if acns.security.transit_encryption is None:
+                    acns.security.transit_encryption = self.models.AdvancedNetworkingSecurityTransitEncryption()
+                acns.security.transit_encryption.type = acns_transit_encryption_type
             mc.network_profile.advanced_networking = acns
         return mc
 
