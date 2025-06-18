@@ -14,16 +14,14 @@ from azure.cli.core.aaz import *
 @register_command(
     "workload-orchestration target publish",
 )
-class Publish(AAZCommand):
+class PublishSolutionVersion(AAZCommand):
     """Post request to publish
-    :example:
-        az workload-orchestration target publish -g {rg} -n {target_name} --review-id {review_id} --solution-name {solution_name} --solution-version {solution_version}
     """
 
     _aaz_info = {
-        "version": "2025-01-01-preview",
+        "version": "2025-06-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.edge/targets/{}/publishsolutionversion", "2025-01-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/MicrosoftEdge/targets/{}/publishsolutionversion", "2025-06-01"],
         ]
     }
 
@@ -62,22 +60,10 @@ class Publish(AAZCommand):
         # define Arg Group "Body"
 
         _args_schema = cls._args_schema
-        _args_schema.review_id = AAZStrArg(
-            options=["--review-id"],
+        _args_schema.solution_version_id = AAZStrArg(
+            options=["--solution-version-id"],
             arg_group="Body",
-            help="Review ID",
-            required=True,
-        )
-        _args_schema.solution = AAZStrArg(
-            options=["--solution-name"],
-            arg_group="Body",
-            help="Solution Name",
-            required=True,
-        )
-        _args_schema.solution_version = AAZStrArg(
-            options=["--solution-version"],
-            arg_group="Body",
-            help="Solution Version Name",
+            help="Solution Version ARM Id",
             required=True,
         )
         return cls._args_schema
@@ -129,7 +115,7 @@ class Publish(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Edge/targets/{targetName}/publishSolutionVersion",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/MicrosoftEdge/targets/{targetName}/publishSolutionVersion",
                 **self.url_parameters
             )
 
@@ -163,7 +149,7 @@ class Publish(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-01-01-preview",
+                    "api-version", "2025-06-01",
                     required=True,
                 ),
             }
@@ -188,9 +174,7 @@ class Publish(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("reviewId", AAZStrType, ".review_id", typ_kwargs={"flags": {"required": True}})
-            _builder.set_prop("solution", AAZStrType, ".solution", typ_kwargs={"flags": {"required": True}})
-            _builder.set_prop("solutionVersion", AAZStrType, ".solution_version", typ_kwargs={"flags": {"required": True}})
+            _builder.set_prop("solutionVersionId", AAZStrType, ".solution_version_id", typ_kwargs={"flags": {"required": True}})
 
             return self.serialize_content(_content_value)
 
@@ -212,65 +196,179 @@ class Publish(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.id = AAZStrType(flags={"read_only": True})
-            _schema_on_200.name = AAZStrType(flags={"read_only": True})
-            _schema_on_200.resource_id = AAZStrType(serialized_name="resourceId", flags={"read_only": True})
-            _schema_on_200.status = AAZStrType(flags={"read_only": True})
-            _schema_on_200.start_time = AAZStrType(serialized_name="startTime", flags={"read_only": True})
-            _schema_on_200.end_time = AAZStrType(serialized_name="endTime", flags={"read_only": True})
+            _schema_on_200.e_tag = AAZStrType(
+                serialized_name="eTag",
+                flags={"read_only": True},
+            )
+            _schema_on_200.extended_location = AAZObjectType(
+                serialized_name="extendedLocation",
+            )
+            _schema_on_200.id = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200.name = AAZStrType(
+                flags={"read_only": True},
+            )
             _schema_on_200.properties = AAZObjectType()
+            _schema_on_200.system_data = AAZObjectType(
+                serialized_name="systemData",
+                flags={"read_only": True},
+            )
+            _schema_on_200.type = AAZStrType(
+                flags={"read_only": True},
+            )
 
-            properties = _schema_on_200.properties
-            properties.status = AAZStrType(flags={"read_only": True})
-            properties.published_solution_versions_for_external_validation = AAZListType(
-                serialized_name="publishedSolutionVersionsForExternalValidation",
-                flags={"read_only": True, "nullable": True}
+            extended_location = cls._schema_on_200.extended_location
+            extended_location.name = AAZStrType(
+                flags={"required": True},
             )
-            properties.published_solution_versions_for_external_validation.Element = AAZFreeFormDictType()
-            
-            # Adding bulk publish schema
-            properties.publish_id = AAZStrType(
-                serialized_name="publishId",
-                flags={"read_only": True}
+            extended_location.type = AAZStrType(
+                flags={"required": True},
             )
-            properties.published_targets = AAZListType(
-                serialized_name="publishedTargets",
-                flags={"read_only": True, "nullable": True}
+
+            properties = cls._schema_on_200.properties
+            properties.action_type = AAZStrType(
+                serialized_name="actionType",
+                flags={"read_only": True},
             )
-            properties.failed_targets = AAZListType(
-                serialized_name="failedTargets",
-                flags={"read_only": True, "nullable": True}
+            properties.configuration = AAZStrType(
+                flags={"read_only": True},
             )
-            
-            # Define published targets element schema
-            published_targets = properties.published_targets
-            published_targets.Element = AAZObjectType()
-            published_targets.Element.solution_version_id = AAZStrType(
-                serialized_name="solutionVersionId",
-                flags={"read_only": True}
+            properties.error_details = AAZObjectType(
+                serialized_name="errorDetails",
+                flags={"read_only": True},
             )
-            published_targets.Element.target_id = AAZStrType(
-                serialized_name="targetId",
-                flags={"read_only": True}
+            _PublishSolutionVersionHelper._build_schema_error_detail_read(properties.error_details)
+            properties.external_validation_id = AAZStrType(
+                serialized_name="externalValidationId",
+                flags={"read_only": True},
             )
-            
-            # Define failed targets element schema
-            failed_targets = properties.failed_targets
-            failed_targets.Element = AAZObjectType()
-            failed_targets.Element.target_id = AAZStrType(
-                serialized_name="targetId",
-                flags={"read_only": True}
+            properties.latest_action_tracking_uri = AAZStrType(
+                serialized_name="latestActionTrackingUri",
+                flags={"read_only": True},
             )
-            failed_targets.Element.error = AAZStrType(
-                serialized_name="error",
-                flags={"read_only": True}
+            properties.provisioning_state = AAZStrType(
+                serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+            properties.review_id = AAZStrType(
+                serialized_name="reviewId",
+                flags={"read_only": True},
+            )
+            properties.revision = AAZIntType(
+                flags={"read_only": True},
+            )
+            properties.solution_dependencies = AAZListType(
+                serialized_name="solutionDependencies",
+                flags={"read_only": True},
+            )
+            properties.solution_instance_name = AAZStrType(
+                serialized_name="solutionInstanceName",
+                flags={"read_only": True},
+            )
+            properties.solution_template_version_id = AAZStrType(
+                serialized_name="solutionTemplateVersionId",
+                flags={"read_only": True},
+            )
+            properties.specification = AAZFreeFormDictType(
+                flags={"required": True},
+            )
+            properties.state = AAZStrType(
+                flags={"read_only": True},
+            )
+            properties.target_display_name = AAZStrType(
+                serialized_name="targetDisplayName",
+                flags={"read_only": True},
+            )
+            properties.target_level_configuration = AAZStrType(
+                serialized_name="targetLevelConfiguration",
+                flags={"read_only": True},
+            )
+
+            solution_dependencies = cls._schema_on_200.properties.solution_dependencies
+            solution_dependencies.Element = AAZObjectType()
+            _PublishSolutionVersionHelper._build_schema_solution_dependency_read(solution_dependencies.Element)
+
+            system_data = cls._schema_on_200.system_data
+            system_data.created_at = AAZStrType(
+                serialized_name="createdAt",
+            )
+            system_data.created_by = AAZStrType(
+                serialized_name="createdBy",
+            )
+            system_data.created_by_type = AAZStrType(
+                serialized_name="createdByType",
+            )
+            system_data.last_modified_at = AAZStrType(
+                serialized_name="lastModifiedAt",
+            )
+            system_data.last_modified_by = AAZStrType(
+                serialized_name="lastModifiedBy",
+            )
+            system_data.last_modified_by_type = AAZStrType(
+                serialized_name="lastModifiedByType",
             )
 
             return cls._schema_on_200
 
 
-class _PublishHelper:
-    """Helper class for Publish"""
+class _PublishSolutionVersionHelper:
+    """Helper class for PublishSolutionVersion"""
+
+    _schema_error_detail_read = None
+
+    @classmethod
+    def _build_schema_error_detail_read(cls, _schema):
+        if cls._schema_error_detail_read is not None:
+            _schema.additional_info = cls._schema_error_detail_read.additional_info
+            _schema.code = cls._schema_error_detail_read.code
+            _schema.details = cls._schema_error_detail_read.details
+            _schema.message = cls._schema_error_detail_read.message
+            _schema.target = cls._schema_error_detail_read.target
+            return
+
+        cls._schema_error_detail_read = _schema_error_detail_read = AAZObjectType(
+            flags={"read_only": True}
+        )
+
+        error_detail_read = _schema_error_detail_read
+        error_detail_read.additional_info = AAZListType(
+            serialized_name="additionalInfo",
+            flags={"read_only": True},
+        )
+        error_detail_read.code = AAZStrType(
+            flags={"read_only": True},
+        )
+        error_detail_read.details = AAZListType(
+            flags={"read_only": True},
+        )
+        error_detail_read.message = AAZStrType(
+            flags={"read_only": True},
+        )
+        error_detail_read.target = AAZStrType(
+            flags={"read_only": True},
+        )
+
+        additional_info = _schema_error_detail_read.additional_info
+        additional_info.Element = AAZObjectType()
+
+        _element = _schema_error_detail_read.additional_info.Element
+        _element.info = AAZFreeFormDictType(
+            flags={"read_only": True},
+        )
+        _element.type = AAZStrType(
+            flags={"read_only": True},
+        )
+
+        details = _schema_error_detail_read.details
+        details.Element = AAZObjectType()
+        cls._build_schema_error_detail_read(details.Element)
+
+        _schema.additional_info = cls._schema_error_detail_read.additional_info
+        _schema.code = cls._schema_error_detail_read.code
+        _schema.details = cls._schema_error_detail_read.details
+        _schema.message = cls._schema_error_detail_read.message
+        _schema.target = cls._schema_error_detail_read.target
 
     _schema_solution_dependency_read = None
 
@@ -278,6 +376,7 @@ class _PublishHelper:
     def _build_schema_solution_dependency_read(cls, _schema):
         if cls._schema_solution_dependency_read is not None:
             _schema.dependencies = cls._schema_solution_dependency_read.dependencies
+            _schema.solution_instance_name = cls._schema_solution_dependency_read.solution_instance_name
             _schema.solution_template_version_id = cls._schema_solution_dependency_read.solution_template_version_id
             _schema.solution_version_id = cls._schema_solution_dependency_read.solution_version_id
             _schema.target_id = cls._schema_solution_dependency_read.target_id
@@ -287,6 +386,9 @@ class _PublishHelper:
 
         solution_dependency_read = _schema_solution_dependency_read
         solution_dependency_read.dependencies = AAZListType()
+        solution_dependency_read.solution_instance_name = AAZStrType(
+            serialized_name="solutionInstanceName",
+        )
         solution_dependency_read.solution_template_version_id = AAZStrType(
             serialized_name="solutionTemplateVersionId",
             flags={"required": True},
@@ -305,9 +407,10 @@ class _PublishHelper:
         cls._build_schema_solution_dependency_read(dependencies.Element)
 
         _schema.dependencies = cls._schema_solution_dependency_read.dependencies
+        _schema.solution_instance_name = cls._schema_solution_dependency_read.solution_instance_name
         _schema.solution_template_version_id = cls._schema_solution_dependency_read.solution_template_version_id
         _schema.solution_version_id = cls._schema_solution_dependency_read.solution_version_id
         _schema.target_id = cls._schema_solution_dependency_read.target_id
 
 
-__all__ = ["Publish"]
+__all__ = ["PublishSolutionVersion"]

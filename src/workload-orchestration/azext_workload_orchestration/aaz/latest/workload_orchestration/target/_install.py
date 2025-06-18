@@ -14,16 +14,14 @@ from azure.cli.core.aaz import *
 @register_command(
     "workload-orchestration target install",
 )
-class Install(AAZCommand):
+class InstallSolution(AAZCommand):
     """Post request to deploy
-    :example: 
-            az workload-orchestration target install -g rg1 -n target1 --solution-name solution1 --solution-version 1.0
     """
 
     _aaz_info = {
-        "version": "2025-01-01-preview",
+        "version": "2025-06-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.edge/targets/{}/installsolution", "2025-01-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/MicrosoftEdge/targets/{}/installsolution", "2025-06-01"],
         ]
     }
 
@@ -31,7 +29,7 @@ class Install(AAZCommand):
 
     def _handler(self, command_args):
         super()._handler(command_args)
-        return self.build_lro_poller(self._execute_operations, self._output)
+        return self.build_lro_poller(self._execute_operations, None)
 
     _args_schema = None
 
@@ -62,16 +60,10 @@ class Install(AAZCommand):
         # define Arg Group "Body"
 
         _args_schema = cls._args_schema
-        _args_schema.solution = AAZStrArg(
-            options=["--solution-name"],
+        _args_schema.solution_version_id = AAZStrArg(
+            options=["--solution-version-id"],
             arg_group="Body",
-            help="Solution Name",
-            required=True,
-        )
-        _args_schema.solution_version = AAZStrArg(
-            options=["--solution-version"],
-            arg_group="Body",
-            help="Solution Version Name",
+            help="Solution Version ARM Id",
             required=True,
         )
         return cls._args_schema
@@ -89,10 +81,6 @@ class Install(AAZCommand):
     def post_operations(self):
         pass
 
-    def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
-        return result
-    
     class TargetsInstallSolution(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
@@ -103,7 +91,7 @@ class Install(AAZCommand):
                 return self.client.build_lro_polling(
                     self.ctx.args.no_wait,
                     session,
-                    self.on_200,
+                    None,
                     self.on_error,
                     lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
@@ -114,7 +102,7 @@ class Install(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Edge/targets/{targetName}/installSolution",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/MicrosoftEdge/targets/{targetName}/installSolution",
                 **self.url_parameters
             )
 
@@ -148,7 +136,7 @@ class Install(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-01-01-preview",
+                    "api-version", "2025-06-01",
                     required=True,
                 ),
             }
@@ -170,81 +158,13 @@ class Install(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("solution", AAZStrType, ".solution", typ_kwargs={"flags": {"required": True}})
-            _builder.set_prop("solutionVersion", AAZStrType, ".solution_version", typ_kwargs={"flags": {"required": True}})
+            _builder.set_prop("solutionVersionId", AAZStrType, ".solution_version_id", typ_kwargs={"flags": {"required": True}})
 
             return self.serialize_content(_content_value)
 
-        def on_200(self, session):
-            data = self.deserialize_http_content(session)
-            self.ctx.set_var(
-                "instance",
-                data,
-                schema_builder=self._build_schema_on_200
-            )
 
-        _schema_on_200 = None
-
-        @classmethod
-        def _build_schema_on_200(cls):
-            if cls._schema_on_200 is not None:
-                return cls._schema_on_200
-
-            cls._schema_on_200 = AAZObjectType()
-
-            _schema_on_200 = cls._schema_on_200
-            _schema_on_200.id = AAZStrType(flags={"read_only": True})
-            _schema_on_200.name = AAZStrType(flags={"read_only": True})
-            _schema_on_200.resource_id = AAZStrType(serialized_name="resourceId", flags={"read_only": True})
-            _schema_on_200.status = AAZStrType(flags={"read_only": True})
-            _schema_on_200.start_time = AAZStrType(serialized_name="startTime", flags={"read_only": True})
-            _schema_on_200.end_time = AAZStrType(serialized_name="endTime", flags={"read_only": True})
-            _schema_on_200.properties = AAZObjectType()
-
-            properties = _schema_on_200.properties
-            properties.status = AAZStrType(flags={"read_only": True})
-
-            return cls._schema_on_200
-
-class _InstallHelper:
-    """Helper class for Publish"""
-
-    _schema_solution_dependency_read = None
-
-    @classmethod
-    def _build_schema_solution_dependency_read(cls, _schema):
-        if cls._schema_solution_dependency_read is not None:
-            _schema.dependencies = cls._schema_solution_dependency_read.dependencies
-            _schema.solution_template_version_id = cls._schema_solution_dependency_read.solution_template_version_id
-            _schema.solution_version_id = cls._schema_solution_dependency_read.solution_version_id
-            _schema.target_id = cls._schema_solution_dependency_read.target_id
-            return
-
-        cls._schema_solution_dependency_read = _schema_solution_dependency_read = AAZObjectType()
-
-        solution_dependency_read = _schema_solution_dependency_read
-        solution_dependency_read.dependencies = AAZListType()
-        solution_dependency_read.solution_template_version_id = AAZStrType(
-            serialized_name="solutionTemplateVersionId",
-            flags={"required": True},
-        )
-        solution_dependency_read.solution_version_id = AAZStrType(
-            serialized_name="solutionVersionId",
-            flags={"required": True},
-        )
-        solution_dependency_read.target_id = AAZStrType(
-            serialized_name="targetId",
-            flags={"required": True},
-        )
-
-        dependencies = _schema_solution_dependency_read.dependencies
-        dependencies.Element = AAZObjectType()
-        cls._build_schema_solution_dependency_read(dependencies.Element)
-
-        _schema.dependencies = cls._schema_solution_dependency_read.dependencies
-        _schema.solution_template_version_id = cls._schema_solution_dependency_read.solution_template_version_id
-        _schema.solution_version_id = cls._schema_solution_dependency_read.solution_version_id
-        _schema.target_id = cls._schema_solution_dependency_read.target_id
+class _InstallSolutionHelper:
+    """Helper class for InstallSolution"""
 
 
-__all__ = ["Install"]
+__all__ = ["InstallSolution"]
