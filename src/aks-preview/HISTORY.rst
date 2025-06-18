@@ -11,6 +11,10 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+
+18.0.0b14
++++++++
+* Add preview flag for `az aks namespace`.
 * Add `--node-provisioning-default-pools` to the `az aks update` command.
 * Add `--node-provisioning-default-pools` to the `az aks create` command.
 
