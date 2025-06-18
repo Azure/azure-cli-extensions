@@ -13,7 +13,6 @@ from azure.cli.core.profiles import ResourceType, get_sdk
 
 from azure.cli.command_modules.storage._client_factory import storage_client_factory
 from azure.cli.command_modules.storage.util import guess_content_type
-from azure.cli.command_modules.storage.sdkutil import get_table_data_type
 from azure.cli.command_modules.storage.url_quote_util import encode_for_url
 from azure.cli.command_modules.storage.oauth_token_util import TokenUpdater
 
@@ -53,20 +52,6 @@ def _query_account_rg(cli_ctx, account_name):
     raise ValueError("Storage account '{}' not found.".format(account_name))
 
 
-def _create_token_credential(cli_ctx):
-    from knack.cli import EVENT_CLI_POST_EXECUTE
-
-    TokenCredential = get_sdk(cli_ctx, ResourceType.DATA_STORAGE, 'common#TokenCredential')
-
-    token_credential = TokenCredential()
-    updater = TokenUpdater(token_credential, cli_ctx)
-
-    def _cancel_timer_event_handler(_, **__):
-        updater.cancel()
-    cli_ctx.register_event(EVENT_CLI_POST_EXECUTE, _cancel_timer_event_handler)
-    return token_credential
-
-
 # region PARAMETER VALIDATORS
 def parse_storage_account(cmd, namespace):
     """Parse storage account which can be either account name or account id"""
@@ -84,17 +69,6 @@ def process_resource_group(cmd, namespace):
     """Processes the resource group parameter from the account name"""
     if namespace.account_name and not namespace.resource_group_name:
         namespace.resource_group_name = _query_account_rg(cmd.cli_ctx, namespace.account_name)[0]
-
-
-def validate_table_payload_format(cmd, namespace):
-    t_table_payload = get_table_data_type(cmd.cli_ctx, 'table', 'TablePayloadFormat')
-    if namespace.accept:
-        formats = {
-            'none': t_table_payload.JSON_NO_METADATA,
-            'minimal': t_table_payload.JSON_MINIMAL_METADATA,
-            'full': t_table_payload.JSON_FULL_METADATA
-        }
-        namespace.accept = formats[namespace.accept.lower()]
 
 
 def validate_bypass(namespace):
@@ -665,16 +639,6 @@ def get_permission_validator(permission_class):
     return validator
 
 
-def table_permission_validator(cmd, namespace):
-    """ A special case for table because the SDK associates the QUERY permission with 'r' """
-    t_table_permissions = get_table_data_type(cmd.cli_ctx, 'table', 'TablePermissions')
-    if namespace.permission:
-        if set(namespace.permission) - set('raud'):
-            help_string = '(r)ead/query (a)dd (u)pdate (d)elete'
-            raise ValueError('valid values are {} or a combination thereof.'.format(help_string))
-        namespace.permission = t_table_permissions(_str=namespace.permission)
-
-
 def validate_fs_public_access(cmd, namespace):
     from .sdkutil import get_fs_access_type
 
@@ -1041,26 +1005,6 @@ def pop_data_client_auth(ns):
     del ns.sas_token
 
 
-def validate_client_auth_parameter(cmd, ns):
-    from .sdkutil import get_container_access_type
-    if ns.public_access:
-        ns.public_access = get_container_access_type(cmd.cli_ctx, ns.public_access.lower())
-    if ns.default_encryption_scope and ns.prevent_encryption_scope_override is not None:
-        # simply try to retrieve the remaining variables from environment variables
-        if not ns.account_name:
-            ns.account_name = get_config_value(cmd, 'storage', 'account', None)
-        if ns.account_name and not ns.resource_group_name:
-            ns.resource_group_name = _query_account_rg(cmd.cli_ctx, account_name=ns.account_name)[0]
-        pop_data_client_auth(ns)
-    elif (ns.default_encryption_scope and ns.prevent_encryption_scope_override is None) or \
-         (not ns.default_encryption_scope and ns.prevent_encryption_scope_override is not None):
-        raise CLIError("usage error: You need to specify both --default-encryption-scope and "
-                       "--prevent-encryption-scope-override to set encryption scope information "
-                       "when creating container.")
-    else:
-        validate_client_parameters(cmd, ns)
-
-
 def validate_encryption_scope_client_params(ns):
     if ns.encryption_scope:
         # will use track2 client and socket_timeout is unused
@@ -1217,98 +1161,6 @@ def _process_blob_batch_container_parameters(cmd, namespace, source=True):
 
     # Finally, grab missing storage connection parameters from environment variables
     validate_client_parameters(cmd, namespace)
-
-
-def get_source_file_or_blob_service_client(cmd, namespace):
-    """
-    Create the second file service or blob service client for batch copy command, which is used to
-    list the source files or blobs. If both the source account and source URI are omitted, it
-    indicates that user want to copy files or blobs in the same storage account, therefore the
-    destination client will be set None hence the command will use destination client.
-    """
-
-    usage_string = 'invalid usage: supply only one of the following argument sets:' + \
-                   '\n\t   --source-uri  [--source-sas]' + \
-                   '\n\tOR --source-container' + \
-                   '\n\tOR --source-container --source-account-name --source-account-key' + \
-                   '\n\tOR --source-container --source-account-name --source-sas' + \
-                   '\n\tOR --source-share --source-account-name --source-account-key' + \
-                   '\n\tOR --source-share --source-account-name --source-account-sas'
-
-    ns = vars(namespace)
-    source_account = ns.pop('source_account_name', None)
-    source_key = ns.pop('source_account_key', None)
-    source_uri = ns.pop('source_uri', None)
-    source_sas = ns.get('source_sas', None)
-    source_container = ns.get('source_container', None)
-    source_share = ns.get('source_share', None)
-
-    if source_uri and source_account:
-        raise ValueError(usage_string)
-    if not source_uri and bool(source_container) == bool(source_share):  # must be container or share
-        raise ValueError(usage_string)
-
-    if (not source_account) and (not source_uri):
-        # Set the source_client to None if neither source_account or source_uri is given. This
-        # indicates the command that the source files share or blob container is in the same storage
-        # account as the destination file share or blob container.
-        #
-        # The command itself should create the source service client since the validator can't
-        # access the destination client through the namespace.
-        #
-        # A few arguments check will be made as well so as not to cause ambiguity.
-        if source_key or source_sas:
-            raise ValueError('invalid usage: --source-account-name is missing; the source account is assumed to be the'
-                             ' same as the destination account. Do not provide --source-sas or --source-account-key')
-
-        source_account, source_key, source_sas = ns['account_name'], ns['account_key'], ns['sas_token']
-
-    if source_account:
-        if not (source_key or source_sas):
-            # when neither storage account key or SAS is given, try to fetch the key in the current
-            # subscription
-            source_key = _query_account_key(cmd.cli_ctx, source_account)
-
-    elif source_uri:
-        if source_key or source_container or source_share:
-            raise ValueError(usage_string)
-
-        from .storage_url_helpers import StorageResourceIdentifier
-        if source_sas:
-            source_uri = '{}{}{}'.format(source_uri, '?', source_sas.lstrip('?'))
-        identifier = StorageResourceIdentifier(cmd.cli_ctx.cloud, source_uri)
-        nor_container_or_share = not identifier.container and not identifier.share
-        if not identifier.is_url():
-            raise ValueError('incorrect usage: --source-uri expects a URI')
-        if identifier.blob or identifier.directory or identifier.filename or nor_container_or_share:
-            raise ValueError('incorrect usage: --source-uri has to be blob container or file share')
-
-        source_account = identifier.account_name
-        source_container = identifier.container
-        source_share = identifier.share
-
-        if identifier.sas_token:
-            source_sas = identifier.sas_token
-        else:
-            source_key = _query_account_key(cmd.cli_ctx, identifier.account_name)
-
-    # config source account credential
-    ns['source_account_name'] = source_account
-    ns['source_account_key'] = source_key
-    ns['source_container'] = source_container
-    ns['source_share'] = source_share
-    # get sas token for source
-    if not source_sas:
-        from .util import create_short_lived_container_sas, create_short_lived_share_sas
-        if source_container:
-            source_sas = create_short_lived_container_sas(cmd, account_name=source_account,
-                                                          account_key=source_key,
-                                                          container=source_container)
-        if source_share:
-            source_sas = create_short_lived_share_sas(cmd, account_name=source_account,
-                                                      account_key=source_key,
-                                                      share=source_share)
-    ns['source_sas'] = source_sas
 
 
 def validate_text_configuration(cmd, ns):

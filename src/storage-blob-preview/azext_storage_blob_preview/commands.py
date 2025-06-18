@@ -13,7 +13,7 @@ from .profiles import CUSTOM_DATA_STORAGE_BLOB
 
 def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-statements
 
-    def get_custom_sdk(custom_module, client_factory, resource_type=ResourceType.DATA_STORAGE):
+    def get_custom_sdk(custom_module, client_factory, resource_type=CUSTOM_DATA_STORAGE_BLOB):
         """Returns a CliCommandType instance with specified operation template based on the given custom module name.
         This is useful when the command is not defined in the default 'custom' module but instead in a module under
         'operations' package."""

@@ -41,35 +41,11 @@ def collect_blob_objects(blob_service, container, pattern=None):
                 yield blob_name, blob
 
 
-def collect_files(cmd, file_service, share, pattern=None):
-    """
-    Search files in the the given file share recursively. Filter the files by matching their path to the given pattern.
-    Returns a iterable of tuple (dir, name).
-    """
-    if not file_service:
-        raise ValueError('missing parameter file_service')
-
-    if not share:
-        raise ValueError('missing parameter share')
-
-    if not _pattern_has_wildcards(pattern):
-        return [pattern]
-
-    return glob_files_remotely(cmd, file_service, share, pattern)
-
-
 def create_blob_service_from_storage_client(cmd, client):
     t_block_blob_svc = cmd.get_models('blob#BlockBlobService')
     return t_block_blob_svc(account_name=client.account_name,
                             account_key=client.account_key,
                             sas_token=client.sas_token)
-
-
-def create_file_share_from_storage_client(cmd, account_name=None, account_key=None, sas_token=None):
-    t_file_svc = cmd.get_models('file.fileservice#FileService', resource_type=ResourceType.DATA_STORAGE)
-    return t_file_svc(account_name=account_name,
-                      account_key=account_key,
-                      sas_token=sas_token)
 
 
 def filter_none(iterable):
@@ -87,22 +63,6 @@ def glob_files_locally(folder_path, pattern):
             full_path = os.path.join(root, f)
             if not pattern or _match_path(full_path, pattern):
                 yield (full_path, full_path[len_folder_path:])
-
-
-def glob_files_remotely(cmd, client, share_name, pattern):
-    """glob the files in remote file share based on the given pattern"""
-    from collections import deque
-    t_dir, t_file = cmd.get_models('file.models#Directory', 'file.models#File', resource_type=ResourceType.DATA_STORAGE)
-
-    queue = deque([""])
-    while queue:
-        current_dir = queue.pop()
-        for f in client.list_directories_and_files(share_name, current_dir):
-            if isinstance(f, t_file):
-                if not pattern or _match_path(os.path.join(current_dir, f.name), pattern):
-                    yield current_dir, f.name
-            elif isinstance(f, t_dir):
-                queue.appendleft(os.path.join(current_dir, f.name))
 
 
 def create_short_lived_blob_sas(cmd, account_name, account_key, container, blob):
@@ -143,20 +103,6 @@ def create_short_lived_container_sas(cmd, account_name, account_key, container):
                                        permission=t_blob_permissions(read=True), expiry=expiry, protocol='https')
 
     return sas_token
-
-
-def create_short_lived_share_sas(cmd, account_name, account_key, share):
-    from datetime import datetime, timedelta
-    if cmd.supported_api_version(min_api='2017-04-17'):
-        t_sas = cmd.get_models('file.sharedaccesssignature#FileSharedAccessSignature',
-                               resource_type=ResourceType.DATA_STORAGE)
-    else:
-        t_sas = cmd.get_models('sharedaccesssignature#SharedAccessSignature', resource_type=ResourceType.DATA_STORAGE)
-
-    t_file_permissions = cmd.get_models('file.models#FilePermissions', resource_type=ResourceType.DATA_STORAGE)
-    expiry = (datetime.utcnow() + timedelta(days=1)).strftime('%Y-%m-%dT%H:%M:%SZ')
-    sas = t_sas(account_name, account_key)
-    return sas.generate_share(share, permission=t_file_permissions(read=True), expiry=expiry, protocol='https')
 
 
 def mkdir_p(path):

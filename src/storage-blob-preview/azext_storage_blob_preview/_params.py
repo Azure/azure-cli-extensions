@@ -6,6 +6,7 @@
 
 from azure.cli.core.commands.validators import validate_tags
 from azure.cli.core.commands.parameters import (get_enum_type, get_three_state_flag)
+from azure.cli.core.profiles import ResourceType
 
 from ._validators import (validate_metadata, get_permission_validator, get_permission_help_string,
                           as_user_validator, blob_tier_validator)
@@ -16,12 +17,12 @@ from .profiles import CUSTOM_DATA_STORAGE_BLOB
 def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statements, too-many-lines
     from knack.arguments import CLIArgumentType
 
-    from .sdkutil import get_table_data_type
     from .completers import get_storage_name_completion_list
 
     t_base_blob_service = self.get_sdk('blob.baseblobservice#BaseBlobService')
     t_file_service = self.get_sdk('file#FileService')
-    t_table_service = get_table_data_type(self.cli_ctx, 'table', 'TableService')
+    t_table_service = self.get_sdk('_table_service_client#TableServiceClient',
+                                   resource_type=ResourceType.DATA_STORAGE_TABLE)
     t_blob_tier = self.get_sdk('_generated.models._azure_blob_storage_enums#AccessTierOptional',
                                resource_type=CUSTOM_DATA_STORAGE_BLOB)
     t_rehydrate_priority = self.get_sdk('_generated.models._azure_blob_storage_enums#RehydratePriority',
