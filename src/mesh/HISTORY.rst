@@ -3,7 +3,7 @@
 Release History
 ===============
 
-1.0.0a2
+1.0.0b2
 ++++++++++++++++++
 
 * Migrate to AAZ command.
