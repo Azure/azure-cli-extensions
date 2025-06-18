@@ -12,6 +12,10 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+18.0.0b15
++++++++
+* Fixed NPE issue for `--acns-transit-encryption-type`.
+
 18.0.0b14
 +++++++
 * Add preview flag for `az aks namespace`.
