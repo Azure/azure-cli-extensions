@@ -3,7 +3,7 @@
 Release History
 ===============
 
-1.0.0b2
+2.0.0b1
 ++++++
 * Remove `az notification-hub test-send`
 
