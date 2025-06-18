@@ -75,8 +75,20 @@ class VmwareAddonScenarioTest(ScenarioTest):
         # Create an HCX addon
         self.cmd('az vmware addon hcx create -g {rg} -c {privatecloud} --offer offerId')
 
-        # # Update an HCX addon
-        # self.cmd('az vmware addon hcx update -g {rg} -c {privatecloud} --offer offerId')
+        self.cmd('az vmware addon hcx create -g {rg} -c {privatecloud} --offer offerId --management-network 10.3.1.0/24')
+
+        self.cmd('az vmware addon hcx create -g {rg} -c {privatecloud} --offer offerId --uplink-network 10.3.2.0/24')
+
+        self.cmd('az vmware addon hcx create -g {rg} -c {privatecloud} --offer offerId --management-network 10.3.1.0/24 --uplink-network 10.3.2.0/24')
+
+        # Update an HCX addon
+        self.cmd('az vmware addon hcx update -g {rg} -c {privatecloud} --offer offerId')
+
+        self.cmd('az vmware addon hcx update -g {rg} -c {privatecloud} --offer offerId --management-network 10.3.1.0/24')
+
+        self.cmd('az vmware addon hcx update -g {rg} -c {privatecloud} --offer offerId --uplink-network 10.3.2.0/24')
+
+        self.cmd('az vmware addon hcx update -g {rg} -c {privatecloud} --offer offerId --management-network 10.3.1.0/24 --uplink-network 10.3.2.0/24')
 
         # Show a HCX addon
         self.cmd('az vmware addon hcx show -g {rg} -c {privatecloud}')
