@@ -1,0 +1,67 @@
+interactions:
+- request:
+    body: '{"location": "eastus", "properties": {"azureFileParameters": {"accountKey":
+      "provide-account-key-here", "accountName": "sbzdemoaccount", "shareName": "sharel"},
+      "description": "Service Fabric Mesh sample volume.", "provider": "SFAzureFile"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mesh volume create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '241'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -l -n --template-file
+      User-Agent:
+      - AZURECLI/2.74.0 azsdk-python-core/1.31.0 Python/3.10.11 (Windows-10-10.0.26100-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_create_volume_with_json_file000001/providers/Microsoft.ServiceFabricMesh/volumes/volume000002?api-version=2018-09-01-preview
+  response:
+    body:
+      string: "{\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/CLI_TEST_CREATE_VOLUME_WITH_JSON_FILEHLCB4OU4UBNI2RLO237LZNVDGJDVJ2A7BFIVBS/providers/Microsoft.ServiceFabricMesh/volumes/VOLUME26AR\",\r\n
+        \ \"name\": \"volume000002\",\r\n  \"type\": \"Microsoft.ServiceFabricMesh/volumes\",\r\n
+        \ \"tags\": {},\r\n  \"location\": \"eastus\",\r\n  \"properties\": {\r\n
+        \   \"provisioningState\": \"Succeeded\",\r\n    \"description\": \"Service
+        Fabric Mesh sample volume.\",\r\n    \"azureFileParameters\": {\r\n      \"accountName\":
+        \"sbzdemoaccount\",\r\n      \"shareName\": \"sharel\"\r\n    },\r\n    \"provider\":
+        \"SFAzureFile\"\r\n  }\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '592'
+      content-type:
+      - application/json
+      date:
+      - Wed, 18 Jun 2025 07:14:06 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-atlas-response-duration:
+      - '93'
+      - '284'
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=b5ee6c06-c2c2-4e3c-8606-5f170cee077a,objectId=5944f00a-6fd4-4820-b3b7-1c8eaedcc836/japaneast/1184d9a0-d1c9-4ba2-8d2e-b33e87cdc2c5
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: 42D56D7F5871411E9BF4CAB8ECEBA1DB Ref B: TYO201151004060 Ref C: 2025-06-18T07:14:04Z'
+    status:
+      code: 200
+      message: OK
+version: 1

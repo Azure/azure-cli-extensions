@@ -11,12 +11,14 @@
 from azure.cli.core.aaz import *
 
 
-@register_command(
-    "mesh volume show",
-    is_preview=True,
-)
-class Show(AAZCommand):
-    """Get the details of a volume.
+class Create(AAZCommand):
+    """Create a volume.
+
+    :example: Create a volume with a template file on a remote URL.
+        az mesh volume create --location westus --name myvolume --resource-group mygroup --template-uri https://mystorage.blob.core.windows.net/templates/volumeDescription.json
+
+    :example: Create a volume with a template file on local disk.
+        az mesh volume create --location westus --name myvolume --resource-group mygroup --template-file ./volumeDescription.json
     """
 
     _aaz_info = {
@@ -47,15 +49,60 @@ class Show(AAZCommand):
         )
         _args_schema.name = AAZStrArg(
             options=["-n", "--name"],
-            help="The name of the volume.",
+            help="The identity of the volume.",
             required=True,
-            id_part="name",
         )
+        _args_schema.location = AAZResourceLocationArg(
+            help="The geo-location where the resource lives",
+            required=True,
+            fmt=AAZResourceLocationArgFormat(
+                resource_group_arg="resource_group",
+            ),
+        )
+
+        # define Arg Group "Properties"
+
+        _args_schema = cls._args_schema
+        _args_schema.azure_file_parameters = AAZObjectArg(
+            options=["--azure-file-parameters"],
+            arg_group="Properties",
+            help="This type describes a volume provided by an Azure Files file share.",
+        )
+        _args_schema.description = AAZStrArg(
+            options=["--description"],
+            arg_group="Properties",
+            help="User readable description of the volume.",
+        )
+        _args_schema.provider = AAZStrArg(
+            options=["--provider"],
+            arg_group="Properties",
+            help="Provider of the volume.",
+            required=True,
+            enum={"SFAzureFile": "SFAzureFile"},
+        )
+
+        azure_file_parameters = cls._args_schema.azure_file_parameters
+        azure_file_parameters.account_key = AAZStrArg(
+            options=["account-key"],
+            help="Access key of the Azure storage account for the File Share.",
+        )
+        azure_file_parameters.account_name = AAZStrArg(
+            options=["account-name"],
+            help="Name of the Azure storage account for the File Share.",
+            required=True,
+        )
+        azure_file_parameters.share_name = AAZStrArg(
+            options=["share-name"],
+            help="Name of the Azure Files file share that provides storage for the volume.",
+            required=True,
+        )
+
+        # define Arg Group "VolumeResourceDescription"
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.VolumeGet(ctx=self.ctx)()
+        self.VolumeCreate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -70,14 +117,16 @@ class Show(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class VolumeGet(AAZHttpOperation):
+    class VolumeCreate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [200]:
-                return self.on_200(session)
+            if session.http_response.status_code in [200, 201]:
+                return self.on_200_201(session)
+            if session.http_response.status_code in [202]:
+                return self.on_202(session)
 
             return self.on_error(session.http_response)
 
@@ -90,7 +139,7 @@ class Show(AAZCommand):
 
         @property
         def method(self):
-            return "GET"
+            return "PUT"
 
         @property
         def error_format(self):
@@ -129,47 +178,74 @@ class Show(AAZCommand):
         def header_parameters(self):
             parameters = {
                 **self.serialize_header_param(
+                    "Content-Type", "application/json",
+                ),
+                **self.serialize_header_param(
                     "Accept", "application/json",
                 ),
             }
             return parameters
 
-        def on_200(self, session):
+        @property
+        def content(self):
+            _content_value, _builder = self.new_content_builder(
+                self.ctx.args,
+                typ=AAZObjectType,
+                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
+            )
+            _builder.set_prop("location", AAZStrType, ".location", typ_kwargs={"flags": {"required": True}})
+            _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True, "client_flatten": True}})
+
+            properties = _builder.get(".properties")
+            if properties is not None:
+                properties.set_prop("azureFileParameters", AAZObjectType, ".azure_file_parameters")
+                properties.set_prop("description", AAZStrType, ".description")
+                properties.set_prop("provider", AAZStrType, ".provider", typ_kwargs={"flags": {"required": True}})
+
+            azure_file_parameters = _builder.get(".properties.azureFileParameters")
+            if azure_file_parameters is not None:
+                azure_file_parameters.set_prop("accountKey", AAZStrType, ".account_key")
+                azure_file_parameters.set_prop("accountName", AAZStrType, ".account_name", typ_kwargs={"flags": {"required": True}})
+                azure_file_parameters.set_prop("shareName", AAZStrType, ".share_name", typ_kwargs={"flags": {"required": True}})
+
+            return self.serialize_content(_content_value)
+
+        def on_200_201(self, session):
             data = self.deserialize_http_content(session)
             self.ctx.set_var(
                 "instance",
                 data,
-                schema_builder=self._build_schema_on_200
+                schema_builder=self._build_schema_on_200_201
             )
 
-        _schema_on_200 = None
+        _schema_on_200_201 = None
 
         @classmethod
-        def _build_schema_on_200(cls):
-            if cls._schema_on_200 is not None:
-                return cls._schema_on_200
+        def _build_schema_on_200_201(cls):
+            if cls._schema_on_200_201 is not None:
+                return cls._schema_on_200_201
 
-            cls._schema_on_200 = AAZObjectType()
+            cls._schema_on_200_201 = AAZObjectType()
 
-            _schema_on_200 = cls._schema_on_200
-            _schema_on_200.id = AAZStrType(
+            _schema_on_200_201 = cls._schema_on_200_201
+            _schema_on_200_201.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.location = AAZStrType(
+            _schema_on_200_201.location = AAZStrType(
                 flags={"required": True},
             )
-            _schema_on_200.name = AAZStrType(
+            _schema_on_200_201.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.properties = AAZObjectType(
+            _schema_on_200_201.properties = AAZObjectType(
                 flags={"required": True, "client_flatten": True},
             )
-            _schema_on_200.tags = AAZDictType()
-            _schema_on_200.type = AAZStrType(
+            _schema_on_200_201.tags = AAZDictType()
+            _schema_on_200_201.type = AAZStrType(
                 flags={"read_only": True},
             )
 
-            properties = cls._schema_on_200.properties
+            properties = cls._schema_on_200_201.properties
             properties.azure_file_parameters = AAZObjectType(
                 serialized_name="azureFileParameters",
             )
@@ -189,7 +265,7 @@ class Show(AAZCommand):
                 flags={"read_only": True},
             )
 
-            azure_file_parameters = cls._schema_on_200.properties.azure_file_parameters
+            azure_file_parameters = cls._schema_on_200_201.properties.azure_file_parameters
             azure_file_parameters.account_key = AAZStrType(
                 serialized_name="accountKey",
             )
@@ -202,14 +278,17 @@ class Show(AAZCommand):
                 flags={"required": True},
             )
 
-            tags = cls._schema_on_200.tags
+            tags = cls._schema_on_200_201.tags
             tags.Element = AAZStrType()
 
-            return cls._schema_on_200
+            return cls._schema_on_200_201
+
+        def on_202(self, session):
+            pass
 
 
-class _ShowHelper:
-    """Helper class for Show"""
+class _CreateHelper:
+    """Helper class for Create"""
 
 
-__all__ = ["Show"]
+__all__ = ["Create"]
