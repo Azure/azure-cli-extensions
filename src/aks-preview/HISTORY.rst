@@ -12,6 +12,10 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+18.0.0b16
++++++++
+* Remove DATA_COSMOS_TABLE and DATA_STORAGE references
+
 18.0.0b15
 +++++++
 * Fixed NPE issue for `--acns-transit-encryption-type`.
@@ -21,9 +25,6 @@ Pending
 * Add preview flag for `az aks namespace`.
 * Add `--node-provisioning-default-pools` to the `az aks update` command.
 * Add `--node-provisioning-default-pools` to the `az aks create` command.
-
-18.0.0b14
-* Remove DATA_COSMOS_TABLE and DATA_STORAGE references
 
 18.0.0b13
 +++++++
