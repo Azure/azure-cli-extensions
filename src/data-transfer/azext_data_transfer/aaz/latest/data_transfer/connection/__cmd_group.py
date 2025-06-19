@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command_group(
     "data-transfer connection",
+    is_preview=True,
 )
 class __CMDGroup(AAZCommandGroup):
     """Data transfer connection commands

@@ -8,6 +8,7 @@ from azure.cli.testsdk import (
 
 class ConnectionAndFlowOperations(ScenarioTest):
     
+    @record_only()
     def test_pipeline_view_operations(self):
         self.kwargs.update({
             'rg': 'rpaas-rg',
@@ -22,6 +23,7 @@ class ConnectionAndFlowOperations(ScenarioTest):
             self.check('name', '{pipeline}'),
         ])
 
+    @record_only()
     def test_reject_connection_operations(self):
         self.kwargs.update({
             'rg': 'rpaas-rg',
@@ -42,6 +44,7 @@ class ConnectionAndFlowOperations(ScenarioTest):
 
         self.cmd('az data-transfer connection delete --yes --resource-group {rg} --connection-name {rejectedConnection}')
 
+    @record_only()
     def test_update_connection_operations(self):
         self.kwargs.update({
             'rg': 'rpaas-rg',
@@ -59,6 +62,7 @@ class ConnectionAndFlowOperations(ScenarioTest):
 
         self.cmd('az data-transfer connection delete --yes --resource-group {rg} --connection-name {connectionName}')
 
+    @record_only()
     def test_list_operations_with_pagination(self):
         self.kwargs.update({
             'rg': 'rpaas-rg',
@@ -96,6 +100,7 @@ class ConnectionAndFlowOperations(ScenarioTest):
                 self.cmd('az data-transfer connection flow delete --yes --resource-group {rg} --connection-name {sendConnection} --name {flowName}')
         self.cmd('az data-transfer connection delete --yes --resource-group {rg} --connection-name {sendConnection}')
     
+    @record_only()
     def test_enable_disable_flow_operations(self):
         self.kwargs.update({
             'rg': 'rpaas-rg',
@@ -133,6 +138,7 @@ class ConnectionAndFlowOperations(ScenarioTest):
         self.cmd('az data-transfer connection flow delete --yes --resource-group {rg} --connection-name {sendConnection} --name {flowName}')
         self.cmd('az data-transfer connection delete --yes --resource-group {rg} --connection-name {sendConnection}')
 
+    @record_only()
     def test_create_delete_connection_operations(self):
         self.kwargs.update({
             'rg': 'rpaas-rg',
@@ -152,6 +158,7 @@ class ConnectionAndFlowOperations(ScenarioTest):
 
         self.cmd('az data-transfer connection show --resource-group {rg} --connection-name {sendConnection}', expect_failure=True)
     
+    @record_only()
     def test_create_delete_flow_operations(self):
         self.kwargs.update({
             'rg': 'rpaas-rg',
@@ -180,6 +187,7 @@ class ConnectionAndFlowOperations(ScenarioTest):
 
         self.cmd('az data-transfer connection delete --yes --resource-group {rg} --connection-name {sendConnection}')
 
+    @record_only()
     def test_connection_flow_link_operations(self):
         self.kwargs.update({
             'rg': 'rpaas-rg',

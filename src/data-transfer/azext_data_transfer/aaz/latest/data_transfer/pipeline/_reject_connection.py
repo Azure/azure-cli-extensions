@@ -19,7 +19,7 @@ class RejectConnection(AAZCommand):
     """Rejects the specified connection request in a pipeline.
 
     :example: Rejects the specified connection in a pipeline
-        az data-transfer pipeline reject-connection --resource-group testRG --pipeline-name testPipeline --connection-id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/testRG/providers/Microsoft.AzureDataTransfer/connections/testConnection --status-reason Example reason
+        az azure-data-transfer pipeline reject-connection --resource-group testRG --pipeline-name testPipeline --connection-id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/testRG/providers/Microsoft.AzureDataTransfer/connections/testConnection --status-reason Example reason
     """
 
     _aaz_info = {
