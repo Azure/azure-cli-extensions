@@ -5,7 +5,6 @@
 
 
 import os
-from azure.cli.core.profiles import ResourceType
 
 
 def collect_blobs(blob_service, container, pattern=None):

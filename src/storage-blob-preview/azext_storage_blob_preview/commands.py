@@ -5,7 +5,6 @@
 
 from azure.cli.core.commands import CliCommandType
 from azure.cli.core.commands.arm import show_exception_handler
-from azure.cli.core.profiles import ResourceType
 
 from ._client_factory import cf_blob_client, cf_container_client, cf_blob_service
 from .profiles import CUSTOM_DATA_STORAGE_BLOB

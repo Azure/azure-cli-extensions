@@ -14,7 +14,6 @@ from azure.cli.core.profiles import ResourceType, get_sdk
 from azure.cli.command_modules.storage._client_factory import storage_client_factory
 from azure.cli.command_modules.storage.util import guess_content_type
 from azure.cli.command_modules.storage.url_quote_util import encode_for_url
-from azure.cli.command_modules.storage.oauth_token_util import TokenUpdater
 
 from knack.log import get_logger
 from knack.util import CLIError
