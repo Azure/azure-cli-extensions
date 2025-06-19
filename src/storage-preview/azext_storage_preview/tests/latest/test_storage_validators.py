@@ -94,7 +94,6 @@ class TestStorageValidators(unittest.TestCase):
             actual = ipv4_range_type(input)
 
 
-@api_version_constraint(resource_type=CUSTOM_MGMT_STORAGE, min_api='2016-12-01')
 class TestEncryptionValidators(unittest.TestCase):
     def setUp(self):
         self.cli = MockCLI()
