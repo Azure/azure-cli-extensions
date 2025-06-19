@@ -20,7 +20,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002/listKeys?api-version=2024-01-01&$expand=kerb
   response:
     body:
-      string: '{"keys":[{"creationTime":"2025-06-18T14:30:51.7781760Z","keyName":"key1","value":"veryFakedStorageAccountKey==","permissions":"FULL"},{"creationTime":"2025-06-18T14:30:51.7781760Z","keyName":"key2","value":"veryFakedStorageAccountKey==","permissions":"FULL"}]}'
+      string: '{"keys":[{"creationTime":"2025-06-19T08:57:59.4417483Z","keyName":"key1","value":"veryFakedStorageAccountKey==","permissions":"FULL"},{"creationTime":"2025-06-19T08:57:59.4417483Z","keyName":"key2","value":"veryFakedStorageAccountKey==","permissions":"FULL"}]}'
     headers:
       cache-control:
       - no-cache
@@ -29,7 +29,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Wed, 18 Jun 2025 14:31:15 GMT
+      - Thu, 19 Jun 2025 08:58:22 GMT
       expires:
       - '-1'
       pragma:
@@ -41,7 +41,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=b5ee6c06-c2c2-4e3c-8606-5f170cee077a,objectId=cf65b850-7325-4f89-a4a7-83b1a6daff5a/eastus2euap/45157571-5cf7-4e29-8e8c-fa7bb2e18f69
+      - tenantId=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a,objectId=a7250e3a-0e5e-48e2-9a34-45f1f5e1a91e/eastus2euap/b8a32e2a-a18b-4614-b2ee-4f69a88cc755
       x-ms-ratelimit-remaining-subscription-resource-requests:
       - '799'
     status:
@@ -65,7 +65,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.74.0 azsdk-python-storage-file-share/12.21.0 Python/3.12.10 (Windows-10-10.0.19045-SP0)
       x-ms-date:
-      - Wed, 18 Jun 2025 14:31:15 GMT
+      - Thu, 19 Jun 2025 08:58:23 GMT
       x-ms-version:
       - '2025-05-05'
     method: PUT
@@ -77,11 +77,11 @@ interactions:
       content-length:
       - '0'
       date:
-      - Wed, 18 Jun 2025 14:31:17 GMT
+      - Thu, 19 Jun 2025 08:58:24 GMT
       etag:
-      - '"0x8DDAE74C932E28D"'
+      - '"0x8DDAF0F737BF32A"'
       last-modified:
-      - Wed, 18 Jun 2025 14:31:17 GMT
+      - Thu, 19 Jun 2025 08:58:25 GMT
       server:
       - Windows-Azure-File/1.0 Microsoft-HTTPAPI/2.0
       x-ms-version:
@@ -105,17 +105,25 @@ interactions:
       ParameterSetName:
       - --share-name --source -p --account-name --account-key
       User-Agent:
-      - AZURECLI/2.74.0 azsdk-python-storage-file-share/12.21.0 Python/3.12.10 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.74.0 azsdk-python-storage-file-share/12.12.0b1 Python/3.12.10 (Windows-10-10.0.19045-SP0)
       x-ms-allow-trailing-dot:
       - 'true'
       x-ms-content-length:
       - '131072'
       x-ms-date:
-      - Wed, 18 Jun 2025 14:31:17 GMT
+      - Thu, 19 Jun 2025 08:58:25 GMT
+      x-ms-file-attributes:
+      - none
+      x-ms-file-creation-time:
+      - now
+      x-ms-file-last-write-time:
+      - now
+      x-ms-file-permission:
+      - Inherit
       x-ms-type:
       - file
       x-ms-version:
-      - '2025-05-05'
+      - '2022-11-02'
     method: PUT
     uri: https://clitest000002.file.core.windows.net/share000003/sample_file.bin...
   response:
@@ -125,31 +133,31 @@ interactions:
       content-length:
       - '0'
       date:
-      - Wed, 18 Jun 2025 14:31:18 GMT
+      - Thu, 19 Jun 2025 08:58:26 GMT
       etag:
-      - '"0x8DDAE74CA2AE10A"'
+      - '"0x8DDAF0F749C4500"'
       last-modified:
-      - Wed, 18 Jun 2025 14:31:18 GMT
+      - Thu, 19 Jun 2025 08:58:27 GMT
       server:
       - Windows-Azure-File/1.0 Microsoft-HTTPAPI/2.0
       x-ms-file-attributes:
       - Archive
       x-ms-file-change-time:
-      - '2025-06-18T14:31:18.7725578Z'
+      - '2025-06-19T08:58:27.2247040Z'
       x-ms-file-creation-time:
-      - '2025-06-18T14:31:18.7725578Z'
+      - '2025-06-19T08:58:27.2247040Z'
       x-ms-file-id:
       - '13835128424026341376'
       x-ms-file-last-write-time:
-      - '2025-06-18T14:31:18.7725578Z'
+      - '2025-06-19T08:58:27.2247040Z'
       x-ms-file-parent-id:
       - '0'
       x-ms-file-permission-key:
-      - 7365364180276919867*14886630921777665717
+      - 9772994320596989886*3386793573352087344
       x-ms-request-server-encrypted:
       - 'true'
       x-ms-version:
-      - '2025-05-05'
+      - '2022-11-02'
     status:
       code: 201
       message: Created
@@ -171,15 +179,15 @@ interactions:
       ParameterSetName:
       - --share-name --source -p --account-name --account-key
       User-Agent:
-      - AZURECLI/2.74.0 azsdk-python-storage-file-share/12.21.0 Python/3.12.10 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.74.0 azsdk-python-storage-file-share/12.12.0b1 Python/3.12.10 (Windows-10-10.0.19045-SP0)
       x-ms-allow-trailing-dot:
       - 'true'
       x-ms-date:
-      - Wed, 18 Jun 2025 14:31:18 GMT
+      - Thu, 19 Jun 2025 08:58:27 GMT
       x-ms-range:
       - bytes=0-131071
       x-ms-version:
-      - '2025-05-05'
+      - '2022-11-02'
       x-ms-write:
       - update
     method: PUT
@@ -193,19 +201,19 @@ interactions:
       content-md5:
       - DfvoqkwgtS4bi/PLbL3xkw==
       date:
-      - Wed, 18 Jun 2025 14:31:19 GMT
+      - Thu, 19 Jun 2025 08:58:28 GMT
       etag:
-      - '"0x8DDAE74CAE05B96"'
+      - '"0x8DDAF0F755DAA3A"'
       last-modified:
-      - Wed, 18 Jun 2025 14:31:19 GMT
+      - Thu, 19 Jun 2025 08:58:28 GMT
       server:
       - Windows-Azure-File/1.0 Microsoft-HTTPAPI/2.0
       x-ms-file-last-write-time:
-      - '2025-06-18T14:31:19.9618966Z'
+      - '2025-06-19T08:58:28.4921402Z'
       x-ms-request-server-encrypted:
       - 'true'
       x-ms-version:
-      - '2025-05-05'
+      - '2022-11-02'
     status:
       code: 201
       message: Created
@@ -223,13 +231,13 @@ interactions:
       ParameterSetName:
       - -s -p --account-name --account-key
       User-Agent:
-      - AZURECLI/2.74.0 azsdk-python-storage-file-share/12.21.0 Python/3.12.10 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.74.0 azsdk-python-storage-file-share/12.12.0b1 Python/3.12.10 (Windows-10-10.0.19045-SP0)
       x-ms-allow-trailing-dot:
       - 'true'
       x-ms-date:
-      - Wed, 18 Jun 2025 14:31:20 GMT
+      - Thu, 19 Jun 2025 08:58:28 GMT
       x-ms-version:
-      - '2025-05-05'
+      - '2022-11-02'
     method: HEAD
     uri: https://clitest000002.file.core.windows.net/share000003/sample_file.bin...
   response:
@@ -241,27 +249,27 @@ interactions:
       content-type:
       - application/octet-stream
       date:
-      - Wed, 18 Jun 2025 14:31:21 GMT
+      - Thu, 19 Jun 2025 08:58:29 GMT
       etag:
-      - '"0x8DDAE74CAE05B96"'
+      - '"0x8DDAF0F755DAA3A"'
       last-modified:
-      - Wed, 18 Jun 2025 14:31:19 GMT
+      - Thu, 19 Jun 2025 08:58:28 GMT
       server:
       - Windows-Azure-File/1.0 Microsoft-HTTPAPI/2.0
       x-ms-file-attributes:
       - Archive
       x-ms-file-change-time:
-      - '2025-06-18T14:31:19.9618966Z'
+      - '2025-06-19T08:58:28.4921402Z'
       x-ms-file-creation-time:
-      - '2025-06-18T14:31:18.7725578Z'
+      - '2025-06-19T08:58:27.2247040Z'
       x-ms-file-id:
       - '13835128424026341376'
       x-ms-file-last-write-time:
-      - '2025-06-18T14:31:19.9618966Z'
+      - '2025-06-19T08:58:28.4921402Z'
       x-ms-file-parent-id:
       - '0'
       x-ms-file-permission-key:
-      - 7365364180276919867*14886630921777665717
+      - 9772994320596989886*3386793573352087344
       x-ms-lease-state:
       - available
       x-ms-lease-status:
@@ -271,7 +279,7 @@ interactions:
       x-ms-type:
       - File
       x-ms-version:
-      - '2025-05-05'
+      - '2022-11-02'
     status:
       code: 200
       message: OK
@@ -289,15 +297,15 @@ interactions:
       ParameterSetName:
       - --share-name -p --dest --account-name --account-key
       User-Agent:
-      - AZURECLI/2.74.0 azsdk-python-storage-file-share/12.21.0 Python/3.12.10 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.74.0 azsdk-python-storage-file-share/12.12.0b1 Python/3.12.10 (Windows-10-10.0.19045-SP0)
       x-ms-allow-trailing-dot:
       - 'true'
       x-ms-date:
-      - Wed, 18 Jun 2025 14:31:21 GMT
+      - Thu, 19 Jun 2025 08:58:30 GMT
       x-ms-range:
       - bytes=0-33554431
       x-ms-version:
-      - '2025-05-05'
+      - '2022-11-02'
     method: GET
     uri: https://clitest000002.file.core.windows.net/share000003/sample_file.bin...
   response:
@@ -313,27 +321,27 @@ interactions:
       content-type:
       - application/octet-stream
       date:
-      - Wed, 18 Jun 2025 14:31:23 GMT
+      - Thu, 19 Jun 2025 08:58:30 GMT
       etag:
-      - '"0x8DDAE74CAE05B96"'
+      - '"0x8DDAF0F755DAA3A"'
       last-modified:
-      - Wed, 18 Jun 2025 14:31:19 GMT
+      - Thu, 19 Jun 2025 08:58:28 GMT
       server:
       - Windows-Azure-File/1.0 Microsoft-HTTPAPI/2.0
       x-ms-file-attributes:
       - Archive
       x-ms-file-change-time:
-      - '2025-06-18T14:31:19.9618966Z'
+      - '2025-06-19T08:58:28.4921402Z'
       x-ms-file-creation-time:
-      - '2025-06-18T14:31:18.7725578Z'
+      - '2025-06-19T08:58:27.2247040Z'
       x-ms-file-id:
       - '13835128424026341376'
       x-ms-file-last-write-time:
-      - '2025-06-18T14:31:19.9618966Z'
+      - '2025-06-19T08:58:28.4921402Z'
       x-ms-file-parent-id:
       - '0'
       x-ms-file-permission-key:
-      - 7365364180276919867*14886630921777665717
+      - 9772994320596989886*3386793573352087344
       x-ms-lease-state:
       - available
       x-ms-lease-status:
@@ -343,7 +351,7 @@ interactions:
       x-ms-type:
       - File
       x-ms-version:
-      - '2025-05-05'
+      - '2022-11-02'
     status:
       code: 206
       message: Partial Content
@@ -361,13 +369,13 @@ interactions:
       ParameterSetName:
       - --share-name -p --dest --account-name --account-key
       User-Agent:
-      - AZURECLI/2.74.0 azsdk-python-storage-file-share/12.21.0 Python/3.12.10 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.74.0 azsdk-python-storage-file-share/12.12.0b1 Python/3.12.10 (Windows-10-10.0.19045-SP0)
       x-ms-allow-trailing-dot:
       - 'true'
       x-ms-date:
-      - Wed, 18 Jun 2025 14:31:24 GMT
+      - Thu, 19 Jun 2025 08:58:33 GMT
       x-ms-version:
-      - '2025-05-05'
+      - '2022-11-02'
     method: HEAD
     uri: https://clitest000002.file.core.windows.net/share000003/sample_file.bin...
   response:
@@ -379,27 +387,27 @@ interactions:
       content-type:
       - application/octet-stream
       date:
-      - Wed, 18 Jun 2025 14:31:24 GMT
+      - Thu, 19 Jun 2025 08:58:32 GMT
       etag:
-      - '"0x8DDAE74CAE05B96"'
+      - '"0x8DDAF0F755DAA3A"'
       last-modified:
-      - Wed, 18 Jun 2025 14:31:19 GMT
+      - Thu, 19 Jun 2025 08:58:28 GMT
       server:
       - Windows-Azure-File/1.0 Microsoft-HTTPAPI/2.0
       x-ms-file-attributes:
       - Archive
       x-ms-file-change-time:
-      - '2025-06-18T14:31:19.9618966Z'
+      - '2025-06-19T08:58:28.4921402Z'
       x-ms-file-creation-time:
-      - '2025-06-18T14:31:18.7725578Z'
+      - '2025-06-19T08:58:27.2247040Z'
       x-ms-file-id:
       - '13835128424026341376'
       x-ms-file-last-write-time:
-      - '2025-06-18T14:31:19.9618966Z'
+      - '2025-06-19T08:58:28.4921402Z'
       x-ms-file-parent-id:
       - '0'
       x-ms-file-permission-key:
-      - 7365364180276919867*14886630921777665717
+      - 9772994320596989886*3386793573352087344
       x-ms-lease-state:
       - available
       x-ms-lease-status:
@@ -409,7 +417,7 @@ interactions:
       x-ms-type:
       - File
       x-ms-version:
-      - '2025-05-05'
+      - '2022-11-02'
     status:
       code: 200
       message: OK
@@ -427,34 +435,34 @@ interactions:
       ParameterSetName:
       - --share-name -p --dest --disallow-trailing-dot --account-name --account-key
       User-Agent:
-      - AZURECLI/2.74.0 azsdk-python-storage-file-share/12.21.0 Python/3.12.10 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.74.0 azsdk-python-storage-file-share/12.12.0b1 Python/3.12.10 (Windows-10-10.0.19045-SP0)
       x-ms-allow-trailing-dot:
       - 'false'
       x-ms-date:
-      - Wed, 18 Jun 2025 14:31:24 GMT
+      - Thu, 19 Jun 2025 08:58:33 GMT
       x-ms-range:
       - bytes=0-33554431
       x-ms-version:
-      - '2025-05-05'
+      - '2022-11-02'
     method: GET
     uri: https://clitest000002.file.core.windows.net/share000003/sample_file.bin...
   response:
     body:
       string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?><Error><Code>ResourceNotFound</Code><Message>The
-        specified resource does not exist.\nRequestId:a9364b60-201a-0064-6a5d-e01368000000\nTime:2025-06-18T14:31:25.8179760Z</Message></Error>"
+        specified resource does not exist.\nRequestId:afbaf314-801a-004f-57f8-e03cfe000000\nTime:2025-06-19T08:58:34.8681085Z</Message></Error>"
     headers:
       content-length:
       - '221'
       content-type:
       - application/xml
       date:
-      - Wed, 18 Jun 2025 14:31:25 GMT
+      - Thu, 19 Jun 2025 08:58:33 GMT
       server:
       - Windows-Azure-File/1.0 Microsoft-HTTPAPI/2.0
       x-ms-error-code:
       - ResourceNotFound
       x-ms-version:
-      - '2025-05-05'
+      - '2022-11-02'
     status:
       code: 404
       message: The specified resource does not exist.
@@ -475,17 +483,17 @@ interactions:
       - --source-account-name --source-path --source-share --destination-path --destination-share
         --account-name --account-key
       User-Agent:
-      - AZURECLI/2.74.0 azsdk-python-storage-file-share/12.21.0 Python/3.12.10 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.74.0 azsdk-python-storage-file-share/12.12.0b1 Python/3.12.10 (Windows-10-10.0.19045-SP0)
       x-ms-allow-trailing-dot:
       - 'true'
       x-ms-copy-source:
-      - https://clitest7eksuxbbefhgzcdhw.file.core.windows.net/shareipov2e7zjvoawex3hvq/sample_file.bin...
+      - https://clitest3lmoi7jqkkmddm6ve.file.core.windows.net/shareuipde7at46n46iyvyqp/sample_file.bin...
       x-ms-date:
-      - Wed, 18 Jun 2025 14:31:26 GMT
+      - Thu, 19 Jun 2025 08:58:35 GMT
       x-ms-source-allow-trailing-dot:
       - 'true'
       x-ms-version:
-      - '2025-05-05'
+      - '2022-11-02'
     method: PUT
     uri: https://clitest000002.file.core.windows.net/share000003/sample_file_dst.bin...
   response:
@@ -495,19 +503,19 @@ interactions:
       content-length:
       - '0'
       date:
-      - Wed, 18 Jun 2025 14:31:26 GMT
+      - Thu, 19 Jun 2025 08:58:36 GMT
       etag:
-      - '"0x8DDAE74CF6D544E"'
+      - '"0x8DDAF0F7A9816DB"'
       last-modified:
-      - Wed, 18 Jun 2025 14:31:27 GMT
+      - Thu, 19 Jun 2025 08:58:37 GMT
       server:
       - Windows-Azure-File/1.0 Microsoft-HTTPAPI/2.0
       x-ms-copy-id:
-      - 1081cb61-4624-4cee-a42c-a0e5c3b74ee0
+      - 92cc7352-39b7-43ee-9e3c-bd8176e34aff
       x-ms-copy-status:
       - success
       x-ms-version:
-      - '2025-05-05'
+      - '2022-11-02'
     status:
       code: 202
       message: Accepted
@@ -525,13 +533,13 @@ interactions:
       ParameterSetName:
       - -s -p --account-name --account-key
       User-Agent:
-      - AZURECLI/2.74.0 azsdk-python-storage-file-share/12.21.0 Python/3.12.10 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.74.0 azsdk-python-storage-file-share/12.12.0b1 Python/3.12.10 (Windows-10-10.0.19045-SP0)
       x-ms-allow-trailing-dot:
       - 'true'
       x-ms-date:
-      - Wed, 18 Jun 2025 14:31:27 GMT
+      - Thu, 19 Jun 2025 08:58:37 GMT
       x-ms-version:
-      - '2025-05-05'
+      - '2022-11-02'
     method: HEAD
     uri: https://clitest000002.file.core.windows.net/share000003/sample_file_dst.bin...
   response:
@@ -543,37 +551,37 @@ interactions:
       content-type:
       - application/octet-stream
       date:
-      - Wed, 18 Jun 2025 14:31:28 GMT
+      - Thu, 19 Jun 2025 08:58:38 GMT
       etag:
-      - '"0x8DDAE74CF6D544E"'
+      - '"0x8DDAF0F7A9816DB"'
       last-modified:
-      - Wed, 18 Jun 2025 14:31:27 GMT
+      - Thu, 19 Jun 2025 08:58:37 GMT
       server:
       - Windows-Azure-File/1.0 Microsoft-HTTPAPI/2.0
       x-ms-copy-completion-time:
-      - Wed, 18 Jun 2025 14:31:27 GMT
+      - Thu, 19 Jun 2025 08:58:37 GMT
       x-ms-copy-id:
-      - 1081cb61-4624-4cee-a42c-a0e5c3b74ee0
+      - 92cc7352-39b7-43ee-9e3c-bd8176e34aff
       x-ms-copy-progress:
       - 131072/131072
       x-ms-copy-source:
-      - https://clitest7eksuxbbefhgzcdhw.file.core.windows.net/shareipov2e7zjvoawex3hvq/sample_file.bin...
+      - https://clitest3lmoi7jqkkmddm6ve.file.core.windows.net/shareuipde7at46n46iyvyqp/sample_file.bin...
       x-ms-copy-status:
       - success
       x-ms-file-attributes:
       - Archive
       x-ms-file-change-time:
-      - '2025-06-18T14:31:27.5966542Z'
+      - '2025-06-19T08:58:37.2636379Z'
       x-ms-file-creation-time:
-      - '2025-06-18T14:31:27.5966542Z'
+      - '2025-06-19T08:58:37.2636379Z'
       x-ms-file-id:
       - '13835093239654252544'
       x-ms-file-last-write-time:
-      - '2025-06-18T14:31:27.5966542Z'
+      - '2025-06-19T08:58:37.2636379Z'
       x-ms-file-parent-id:
       - '0'
       x-ms-file-permission-key:
-      - 7365364180276919867*14886630921777665717
+      - 9772994320596989886*3386793573352087344
       x-ms-lease-state:
       - available
       x-ms-lease-status:
@@ -583,7 +591,7 @@ interactions:
       x-ms-type:
       - File
       x-ms-version:
-      - '2025-05-05'
+      - '2022-11-02'
     status:
       code: 200
       message: OK
@@ -604,17 +612,17 @@ interactions:
       - --source-account-name --source-path --source-share --destination-path --destination-share
         --disallow-trailing-dot --account-name --account-key
       User-Agent:
-      - AZURECLI/2.74.0 azsdk-python-storage-file-share/12.21.0 Python/3.12.10 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.74.0 azsdk-python-storage-file-share/12.12.0b1 Python/3.12.10 (Windows-10-10.0.19045-SP0)
       x-ms-allow-trailing-dot:
       - 'false'
       x-ms-copy-source:
-      - https://clitest7eksuxbbefhgzcdhw.file.core.windows.net/shareipov2e7zjvoawex3hvq/sample_file.bin...
+      - https://clitest3lmoi7jqkkmddm6ve.file.core.windows.net/shareuipde7at46n46iyvyqp/sample_file.bin...
       x-ms-date:
-      - Wed, 18 Jun 2025 14:31:29 GMT
+      - Thu, 19 Jun 2025 08:58:39 GMT
       x-ms-source-allow-trailing-dot:
       - 'true'
       x-ms-version:
-      - '2025-05-05'
+      - '2022-11-02'
     method: PUT
     uri: https://clitest000002.file.core.windows.net/share000003/sample_file_dst.bin...
   response:
@@ -624,19 +632,19 @@ interactions:
       content-length:
       - '0'
       date:
-      - Wed, 18 Jun 2025 14:31:33 GMT
+      - Thu, 19 Jun 2025 08:58:40 GMT
       etag:
-      - '"0x8DDAE74D34AC512"'
+      - '"0x8DDAF0F7CD093EA"'
       last-modified:
-      - Wed, 18 Jun 2025 14:31:34 GMT
+      - Thu, 19 Jun 2025 08:58:40 GMT
       server:
       - Windows-Azure-File/1.0 Microsoft-HTTPAPI/2.0
       x-ms-copy-id:
-      - 88aea343-49b9-44f6-bd90-95aae560ef9f
+      - 3d11dba2-5776-407b-a1d1-30fa69ed8d53
       x-ms-copy-status:
       - success
       x-ms-version:
-      - '2025-05-05'
+      - '2022-11-02'
     status:
       code: 202
       message: Accepted
@@ -654,13 +662,13 @@ interactions:
       ParameterSetName:
       - -s -p --disallow-trailing-dot --account-name --account-key
       User-Agent:
-      - AZURECLI/2.74.0 azsdk-python-storage-file-share/12.21.0 Python/3.12.10 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.74.0 azsdk-python-storage-file-share/12.12.0b1 Python/3.12.10 (Windows-10-10.0.19045-SP0)
       x-ms-allow-trailing-dot:
       - 'false'
       x-ms-date:
-      - Wed, 18 Jun 2025 14:31:34 GMT
+      - Thu, 19 Jun 2025 08:58:41 GMT
       x-ms-version:
-      - '2025-05-05'
+      - '2022-11-02'
     method: HEAD
     uri: https://clitest000002.file.core.windows.net/share000003/sample_file_dst.bin...
   response:
@@ -672,37 +680,37 @@ interactions:
       content-type:
       - application/octet-stream
       date:
-      - Wed, 18 Jun 2025 14:31:38 GMT
+      - Thu, 19 Jun 2025 08:58:41 GMT
       etag:
-      - '"0x8DDAE74D34AC512"'
+      - '"0x8DDAF0F7CD093EA"'
       last-modified:
-      - Wed, 18 Jun 2025 14:31:34 GMT
+      - Thu, 19 Jun 2025 08:58:40 GMT
       server:
       - Windows-Azure-File/1.0 Microsoft-HTTPAPI/2.0
       x-ms-copy-completion-time:
-      - Wed, 18 Jun 2025 14:31:34 GMT
+      - Thu, 19 Jun 2025 08:58:40 GMT
       x-ms-copy-id:
-      - 88aea343-49b9-44f6-bd90-95aae560ef9f
+      - 3d11dba2-5776-407b-a1d1-30fa69ed8d53
       x-ms-copy-progress:
       - 131072/131072
       x-ms-copy-source:
-      - https://clitest7eksuxbbefhgzcdhw.file.core.windows.net/shareipov2e7zjvoawex3hvq/sample_file.bin...
+      - https://clitest3lmoi7jqkkmddm6ve.file.core.windows.net/shareuipde7at46n46iyvyqp/sample_file.bin...
       x-ms-copy-status:
       - success
       x-ms-file-attributes:
       - Archive
       x-ms-file-change-time:
-      - '2025-06-18T14:31:34.0810514Z'
+      - '2025-06-19T08:58:40.9892842Z'
       x-ms-file-creation-time:
-      - '2025-06-18T14:31:34.0810514Z'
+      - '2025-06-19T08:58:40.9892842Z'
       x-ms-file-id:
       - '13835163608398430208'
       x-ms-file-last-write-time:
-      - '2025-06-18T14:31:34.0810514Z'
+      - '2025-06-19T08:58:40.9892842Z'
       x-ms-file-parent-id:
       - '0'
       x-ms-file-permission-key:
-      - 7365364180276919867*14886630921777665717
+      - 9772994320596989886*3386793573352087344
       x-ms-lease-state:
       - available
       x-ms-lease-status:
@@ -712,7 +720,7 @@ interactions:
       x-ms-type:
       - File
       x-ms-version:
-      - '2025-05-05'
+      - '2022-11-02'
     status:
       code: 200
       message: OK
@@ -733,36 +741,36 @@ interactions:
       - --source-account-name --source-path --source-share --destination-path --destination-share
         --disallow-source-trailing-dot --account-name --account-key
       User-Agent:
-      - AZURECLI/2.74.0 azsdk-python-storage-file-share/12.21.0 Python/3.12.10 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.74.0 azsdk-python-storage-file-share/12.12.0b1 Python/3.12.10 (Windows-10-10.0.19045-SP0)
       x-ms-allow-trailing-dot:
       - 'true'
       x-ms-copy-source:
-      - https://clitest7eksuxbbefhgzcdhw.file.core.windows.net/shareipov2e7zjvoawex3hvq/sample_file.bin...
+      - https://clitest3lmoi7jqkkmddm6ve.file.core.windows.net/shareuipde7at46n46iyvyqp/sample_file.bin...
       x-ms-date:
-      - Wed, 18 Jun 2025 14:31:38 GMT
+      - Thu, 19 Jun 2025 08:58:43 GMT
       x-ms-source-allow-trailing-dot:
       - 'false'
       x-ms-version:
-      - '2025-05-05'
+      - '2022-11-02'
     method: PUT
     uri: https://clitest000002.file.core.windows.net/share000003/sample_file_dst.bin...
   response:
     body:
       string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?><Error><Code>ResourceNotFound</Code><Message>The
-        specified resource does not exist.\nRequestId:6d41db5e-501a-0023-685d-e07833000000\nTime:2025-06-18T14:31:39.7619545Z</Message></Error>"
+        specified resource does not exist.\nRequestId:6f0bb27a-801a-005f-25f8-e0f996000000\nTime:2025-06-19T08:58:44.4029323Z</Message></Error>"
     headers:
       content-length:
       - '221'
       content-type:
       - application/xml
       date:
-      - Wed, 18 Jun 2025 14:31:39 GMT
+      - Thu, 19 Jun 2025 08:58:43 GMT
       server:
       - Windows-Azure-File/1.0 Microsoft-HTTPAPI/2.0
       x-ms-error-code:
       - ResourceNotFound
       x-ms-version:
-      - '2025-05-05'
+      - '2022-11-02'
     status:
       code: 404
       message: The specified resource does not exist.
@@ -782,13 +790,13 @@ interactions:
       ParameterSetName:
       - -s -p --account-name --account-key
       User-Agent:
-      - AZURECLI/2.74.0 azsdk-python-storage-file-share/12.21.0 Python/3.12.10 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.74.0 azsdk-python-storage-file-share/12.12.0b1 Python/3.12.10 (Windows-10-10.0.19045-SP0)
       x-ms-allow-trailing-dot:
       - 'true'
       x-ms-date:
-      - Wed, 18 Jun 2025 14:31:40 GMT
+      - Thu, 19 Jun 2025 08:58:44 GMT
       x-ms-version:
-      - '2025-05-05'
+      - '2022-11-02'
     method: DELETE
     uri: https://clitest000002.file.core.windows.net/share000003/sample_file.bin...
   response:
@@ -798,11 +806,11 @@ interactions:
       content-length:
       - '0'
       date:
-      - Wed, 18 Jun 2025 14:31:40 GMT
+      - Thu, 19 Jun 2025 08:58:45 GMT
       server:
       - Windows-Azure-File/1.0 Microsoft-HTTPAPI/2.0
       x-ms-version:
-      - '2025-05-05'
+      - '2022-11-02'
     status:
       code: 202
       message: Accepted
@@ -820,13 +828,13 @@ interactions:
       ParameterSetName:
       - -s -p --account-name --account-key
       User-Agent:
-      - AZURECLI/2.74.0 azsdk-python-storage-file-share/12.21.0 Python/3.12.10 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.74.0 azsdk-python-storage-file-share/12.12.0b1 Python/3.12.10 (Windows-10-10.0.19045-SP0)
       x-ms-allow-trailing-dot:
       - 'true'
       x-ms-date:
-      - Wed, 18 Jun 2025 14:31:41 GMT
+      - Thu, 19 Jun 2025 08:58:46 GMT
       x-ms-version:
-      - '2025-05-05'
+      - '2022-11-02'
     method: HEAD
     uri: https://clitest000002.file.core.windows.net/share000003/sample_file.bin...
   response:
@@ -834,7 +842,7 @@ interactions:
       string: ''
     headers:
       date:
-      - Wed, 18 Jun 2025 14:31:42 GMT
+      - Thu, 19 Jun 2025 08:58:47 GMT
       server:
       - Windows-Azure-File/1.0 Microsoft-HTTPAPI/2.0
       transfer-encoding:
@@ -842,7 +850,7 @@ interactions:
       x-ms-error-code:
       - ResourceNotFound
       x-ms-version:
-      - '2025-05-05'
+      - '2022-11-02'
     status:
       code: 404
       message: The specified resource does not exist.
@@ -862,17 +870,25 @@ interactions:
       ParameterSetName:
       - --share-name --source -p --disallow-trailing-dot --account-name --account-key
       User-Agent:
-      - AZURECLI/2.74.0 azsdk-python-storage-file-share/12.21.0 Python/3.12.10 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.74.0 azsdk-python-storage-file-share/12.12.0b1 Python/3.12.10 (Windows-10-10.0.19045-SP0)
       x-ms-allow-trailing-dot:
       - 'false'
       x-ms-content-length:
       - '131072'
       x-ms-date:
-      - Wed, 18 Jun 2025 14:31:43 GMT
+      - Thu, 19 Jun 2025 08:58:48 GMT
+      x-ms-file-attributes:
+      - none
+      x-ms-file-creation-time:
+      - now
+      x-ms-file-last-write-time:
+      - now
+      x-ms-file-permission:
+      - Inherit
       x-ms-type:
       - file
       x-ms-version:
-      - '2025-05-05'
+      - '2022-11-02'
     method: PUT
     uri: https://clitest000002.file.core.windows.net/share000003/sample_file.bin...
   response:
@@ -882,31 +898,31 @@ interactions:
       content-length:
       - '0'
       date:
-      - Wed, 18 Jun 2025 14:31:44 GMT
+      - Thu, 19 Jun 2025 08:58:49 GMT
       etag:
-      - '"0x8DDAE74D9632E8F"'
+      - '"0x8DDAF0F81E7C19A"'
       last-modified:
-      - Wed, 18 Jun 2025 14:31:44 GMT
+      - Thu, 19 Jun 2025 08:58:49 GMT
       server:
       - Windows-Azure-File/1.0 Microsoft-HTTPAPI/2.0
       x-ms-file-attributes:
       - Archive
       x-ms-file-change-time:
-      - '2025-06-18T14:31:44.3073679Z'
+      - '2025-06-19T08:58:49.5297946Z'
       x-ms-file-creation-time:
-      - '2025-06-18T14:31:44.3073679Z'
+      - '2025-06-19T08:58:49.5297946Z'
       x-ms-file-id:
-      - '13835146016212385792'
+      - '13835075647468208128'
       x-ms-file-last-write-time:
-      - '2025-06-18T14:31:44.3073679Z'
+      - '2025-06-19T08:58:49.5297946Z'
       x-ms-file-parent-id:
       - '0'
       x-ms-file-permission-key:
-      - 7365364180276919867*14886630921777665717
+      - 9772994320596989886*3386793573352087344
       x-ms-request-server-encrypted:
       - 'true'
       x-ms-version:
-      - '2025-05-05'
+      - '2022-11-02'
     status:
       code: 201
       message: Created
@@ -928,15 +944,15 @@ interactions:
       ParameterSetName:
       - --share-name --source -p --disallow-trailing-dot --account-name --account-key
       User-Agent:
-      - AZURECLI/2.74.0 azsdk-python-storage-file-share/12.21.0 Python/3.12.10 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.74.0 azsdk-python-storage-file-share/12.12.0b1 Python/3.12.10 (Windows-10-10.0.19045-SP0)
       x-ms-allow-trailing-dot:
       - 'false'
       x-ms-date:
-      - Wed, 18 Jun 2025 14:31:44 GMT
+      - Thu, 19 Jun 2025 08:58:49 GMT
       x-ms-range:
       - bytes=0-131071
       x-ms-version:
-      - '2025-05-05'
+      - '2022-11-02'
       x-ms-write:
       - update
     method: PUT
@@ -950,19 +966,19 @@ interactions:
       content-md5:
       - DfvoqkwgtS4bi/PLbL3xkw==
       date:
-      - Wed, 18 Jun 2025 14:31:45 GMT
+      - Thu, 19 Jun 2025 08:58:50 GMT
       etag:
-      - '"0x8DDAE74DA1D1547"'
+      - '"0x8DDAF0F82A03035"'
       last-modified:
-      - Wed, 18 Jun 2025 14:31:45 GMT
+      - Thu, 19 Jun 2025 08:58:50 GMT
       server:
       - Windows-Azure-File/1.0 Microsoft-HTTPAPI/2.0
       x-ms-file-last-write-time:
-      - '2025-06-18T14:31:45.5256903Z'
+      - '2025-06-19T08:58:50.7384885Z'
       x-ms-request-server-encrypted:
       - 'true'
       x-ms-version:
-      - '2025-05-05'
+      - '2022-11-02'
     status:
       code: 201
       message: Created
@@ -980,13 +996,13 @@ interactions:
       ParameterSetName:
       - -s -p --disallow-trailing-dot --account-name --account-key
       User-Agent:
-      - AZURECLI/2.74.0 azsdk-python-storage-file-share/12.21.0 Python/3.12.10 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.74.0 azsdk-python-storage-file-share/12.12.0b1 Python/3.12.10 (Windows-10-10.0.19045-SP0)
       x-ms-allow-trailing-dot:
       - 'false'
       x-ms-date:
-      - Wed, 18 Jun 2025 14:31:45 GMT
+      - Thu, 19 Jun 2025 08:58:51 GMT
       x-ms-version:
-      - '2025-05-05'
+      - '2022-11-02'
     method: HEAD
     uri: https://clitest000002.file.core.windows.net/share000003/sample_file.bin...
   response:
@@ -998,27 +1014,27 @@ interactions:
       content-type:
       - application/octet-stream
       date:
-      - Wed, 18 Jun 2025 14:31:46 GMT
+      - Thu, 19 Jun 2025 08:58:52 GMT
       etag:
-      - '"0x8DDAE74DA1D1547"'
+      - '"0x8DDAF0F82A03035"'
       last-modified:
-      - Wed, 18 Jun 2025 14:31:45 GMT
+      - Thu, 19 Jun 2025 08:58:50 GMT
       server:
       - Windows-Azure-File/1.0 Microsoft-HTTPAPI/2.0
       x-ms-file-attributes:
       - Archive
       x-ms-file-change-time:
-      - '2025-06-18T14:31:45.5256903Z'
+      - '2025-06-19T08:58:50.7384885Z'
       x-ms-file-creation-time:
-      - '2025-06-18T14:31:44.3073679Z'
+      - '2025-06-19T08:58:49.5297946Z'
       x-ms-file-id:
-      - '13835146016212385792'
+      - '13835075647468208128'
       x-ms-file-last-write-time:
-      - '2025-06-18T14:31:45.5256903Z'
+      - '2025-06-19T08:58:50.7384885Z'
       x-ms-file-parent-id:
       - '0'
       x-ms-file-permission-key:
-      - 7365364180276919867*14886630921777665717
+      - 9772994320596989886*3386793573352087344
       x-ms-lease-state:
       - available
       x-ms-lease-status:
@@ -1028,7 +1044,7 @@ interactions:
       x-ms-type:
       - File
       x-ms-version:
-      - '2025-05-05'
+      - '2022-11-02'
     status:
       code: 200
       message: OK
@@ -1048,13 +1064,21 @@ interactions:
       ParameterSetName:
       - --share-name --name --fail-on-exist --account-name --account-key
       User-Agent:
-      - AZURECLI/2.74.0 azsdk-python-storage-file-share/12.21.0 Python/3.12.10 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.74.0 azsdk-python-storage-file-share/12.12.0b1 Python/3.12.10 (Windows-10-10.0.19045-SP0)
       x-ms-allow-trailing-dot:
       - 'true'
       x-ms-date:
-      - Wed, 18 Jun 2025 14:31:47 GMT
+      - Thu, 19 Jun 2025 08:58:52 GMT
+      x-ms-file-attributes:
+      - none
+      x-ms-file-creation-time:
+      - now
+      x-ms-file-last-write-time:
+      - now
+      x-ms-file-permission:
+      - inherit
       x-ms-version:
-      - '2025-05-05'
+      - '2022-11-02'
     method: PUT
     uri: https://clitest000002.file.core.windows.net/share000003/dir000004..?restype=directory
   response:
@@ -1064,31 +1088,31 @@ interactions:
       content-length:
       - '0'
       date:
-      - Wed, 18 Jun 2025 14:31:47 GMT
+      - Thu, 19 Jun 2025 08:58:53 GMT
       etag:
-      - '"0x8DDAE74DC0147E3"'
+      - '"0x8DDAF0F84A46A7F"'
       last-modified:
-      - Wed, 18 Jun 2025 14:31:48 GMT
+      - Thu, 19 Jun 2025 08:58:54 GMT
       server:
       - Windows-Azure-File/1.0 Microsoft-HTTPAPI/2.0
       x-ms-file-attributes:
       - Directory
       x-ms-file-change-time:
-      - '2025-06-18T14:31:48.6989283Z'
+      - '2025-06-19T08:58:54.1216383Z'
       x-ms-file-creation-time:
-      - '2025-06-18T14:31:48.6989283Z'
+      - '2025-06-19T08:58:54.1216383Z'
       x-ms-file-id:
-      - '13835110831840296960'
+      - '13835146016212385792'
       x-ms-file-last-write-time:
-      - '2025-06-18T14:31:48.6989283Z'
+      - '2025-06-19T08:58:54.1216383Z'
       x-ms-file-parent-id:
       - '0'
       x-ms-file-permission-key:
-      - 11983174674767724860*14886630921777665717
+      - 5177847491955099833*3386793573352087344
       x-ms-request-server-encrypted:
       - 'true'
       x-ms-version:
-      - '2025-05-05'
+      - '2022-11-02'
     status:
       code: 201
       message: Created
@@ -1106,36 +1130,36 @@ interactions:
       ParameterSetName:
       - -s --account-name --account-key
       User-Agent:
-      - AZURECLI/2.74.0 azsdk-python-storage-file-share/12.21.0 Python/3.12.10 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.74.0 azsdk-python-storage-file-share/12.12.0b1 Python/3.12.10 (Windows-10-10.0.19045-SP0)
       x-ms-allow-trailing-dot:
       - 'true'
       x-ms-date:
-      - Wed, 18 Jun 2025 14:31:49 GMT
+      - Thu, 19 Jun 2025 08:58:54 GMT
       x-ms-version:
-      - '2025-05-05'
+      - '2022-11-02'
     method: GET
     uri: https://clitest000002.file.core.windows.net/share000003?restype=directory&comp=list&include=timestamps,Etag,Attributes,PermissionKey
   response:
     body:
       string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?><EnumerationResults
         ServiceEndpoint=\"https://clitest000002.file.core.windows.net/\" ShareName=\"share000003\"
-        DirectoryPath=\"\"><DirectoryId>0</DirectoryId><Entries><Directory><Name>dir000004..</Name><FileId>13835110831840296960</FileId><Properties><CreationTime>2025-06-18T14:31:48.6989283Z</CreationTime><LastAccessTime>2025-06-18T14:31:48.6989283Z</LastAccessTime><LastWriteTime>2025-06-18T14:31:48.6989283Z</LastWriteTime><ChangeTime>2025-06-18T14:31:48.6989283Z</ChangeTime><Last-Modified>Wed,
-        18 Jun 2025 14:31:48 GMT</Last-Modified><Etag>\"0x8DDAE74DC0147E3\"</Etag></Properties><Attributes>Directory</Attributes><PermissionKey>11983174674767724860*14886630921777665717</PermissionKey></Directory><File><Name>sample_file.bin</Name><FileId>13835146016212385792</FileId><Properties><Content-Length>131072</Content-Length><CreationTime>2025-06-18T14:31:44.3073679Z</CreationTime><LastAccessTime>2025-06-18T14:31:44.3073679Z</LastAccessTime><LastWriteTime>2025-06-18T14:31:45.5256903Z</LastWriteTime><ChangeTime>2025-06-18T14:31:45.5256903Z</ChangeTime><Last-Modified>Wed,
-        18 Jun 2025 14:31:45 GMT</Last-Modified><Etag>\"0x8DDAE74DA1D1547\"</Etag></Properties><Attributes>Archive</Attributes><PermissionKey>7365364180276919867*14886630921777665717</PermissionKey></File><File><Name>sample_file_dst.bin</Name><FileId>13835163608398430208</FileId><Properties><Content-Length>131072</Content-Length><CreationTime>2025-06-18T14:31:34.0810514Z</CreationTime><LastAccessTime>2025-06-18T14:31:34.0810514Z</LastAccessTime><LastWriteTime>2025-06-18T14:31:34.0810514Z</LastWriteTime><ChangeTime>2025-06-18T14:31:34.0810514Z</ChangeTime><Last-Modified>Wed,
-        18 Jun 2025 14:31:34 GMT</Last-Modified><Etag>\"0x8DDAE74D34AC512\"</Etag></Properties><Attributes>Archive</Attributes><PermissionKey>7365364180276919867*14886630921777665717</PermissionKey></File><File><Name>sample_file_dst.bin...</Name><FileId>13835093239654252544</FileId><Properties><Content-Length>131072</Content-Length><CreationTime>2025-06-18T14:31:27.5966542Z</CreationTime><LastAccessTime>2025-06-18T14:31:27.5966542Z</LastAccessTime><LastWriteTime>2025-06-18T14:31:27.5966542Z</LastWriteTime><ChangeTime>2025-06-18T14:31:27.5966542Z</ChangeTime><Last-Modified>Wed,
-        18 Jun 2025 14:31:27 GMT</Last-Modified><Etag>\"0x8DDAE74CF6D544E\"</Etag></Properties><Attributes>Archive</Attributes><PermissionKey>7365364180276919867*14886630921777665717</PermissionKey></File></Entries><NextMarker
+        DirectoryPath=\"\"><DirectoryId>0</DirectoryId><Entries><Directory><Name>dir000004..</Name><FileId>13835146016212385792</FileId><Properties><CreationTime>2025-06-19T08:58:54.1216383Z</CreationTime><LastAccessTime>2025-06-19T08:58:54.1216383Z</LastAccessTime><LastWriteTime>2025-06-19T08:58:54.1216383Z</LastWriteTime><ChangeTime>2025-06-19T08:58:54.1216383Z</ChangeTime><Last-Modified>Thu,
+        19 Jun 2025 08:58:54 GMT</Last-Modified><Etag>\"0x8DDAF0F84A46A7F\"</Etag></Properties><Attributes>Directory</Attributes><PermissionKey>5177847491955099833*3386793573352087344</PermissionKey></Directory><File><Name>sample_file.bin</Name><FileId>13835075647468208128</FileId><Properties><Content-Length>131072</Content-Length><CreationTime>2025-06-19T08:58:49.5297946Z</CreationTime><LastAccessTime>2025-06-19T08:58:49.5297946Z</LastAccessTime><LastWriteTime>2025-06-19T08:58:50.7384885Z</LastWriteTime><ChangeTime>2025-06-19T08:58:50.7384885Z</ChangeTime><Last-Modified>Thu,
+        19 Jun 2025 08:58:50 GMT</Last-Modified><Etag>\"0x8DDAF0F82A03035\"</Etag></Properties><Attributes>Archive</Attributes><PermissionKey>9772994320596989886*3386793573352087344</PermissionKey></File><File><Name>sample_file_dst.bin</Name><FileId>13835163608398430208</FileId><Properties><Content-Length>131072</Content-Length><CreationTime>2025-06-19T08:58:40.9892842Z</CreationTime><LastAccessTime>2025-06-19T08:58:40.9892842Z</LastAccessTime><LastWriteTime>2025-06-19T08:58:40.9892842Z</LastWriteTime><ChangeTime>2025-06-19T08:58:40.9892842Z</ChangeTime><Last-Modified>Thu,
+        19 Jun 2025 08:58:40 GMT</Last-Modified><Etag>\"0x8DDAF0F7CD093EA\"</Etag></Properties><Attributes>Archive</Attributes><PermissionKey>9772994320596989886*3386793573352087344</PermissionKey></File><File><Name>sample_file_dst.bin...</Name><FileId>13835093239654252544</FileId><Properties><Content-Length>131072</Content-Length><CreationTime>2025-06-19T08:58:37.2636379Z</CreationTime><LastAccessTime>2025-06-19T08:58:37.2636379Z</LastAccessTime><LastWriteTime>2025-06-19T08:58:37.2636379Z</LastWriteTime><ChangeTime>2025-06-19T08:58:37.2636379Z</ChangeTime><Last-Modified>Thu,
+        19 Jun 2025 08:58:37 GMT</Last-Modified><Etag>\"0x8DDAF0F7A9816DB\"</Etag></Properties><Attributes>Archive</Attributes><PermissionKey>9772994320596989886*3386793573352087344</PermissionKey></File></Entries><NextMarker
         /></EnumerationResults>"
     headers:
       content-type:
       - application/xml
       date:
-      - Wed, 18 Jun 2025 14:31:50 GMT
+      - Thu, 19 Jun 2025 08:58:55 GMT
       server:
       - Windows-Azure-File/1.0 Microsoft-HTTPAPI/2.0
       transfer-encoding:
       - chunked
       x-ms-version:
-      - '2025-05-05'
+      - '2022-11-02'
     status:
       code: 200
       message: OK
@@ -1153,13 +1177,13 @@ interactions:
       ParameterSetName:
       - --share-name -n --account-name --account-key
       User-Agent:
-      - AZURECLI/2.74.0 azsdk-python-storage-file-share/12.21.0 Python/3.12.10 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.74.0 azsdk-python-storage-file-share/12.12.0b1 Python/3.12.10 (Windows-10-10.0.19045-SP0)
       x-ms-allow-trailing-dot:
       - 'true'
       x-ms-date:
-      - Wed, 18 Jun 2025 14:31:51 GMT
+      - Thu, 19 Jun 2025 08:58:56 GMT
       x-ms-version:
-      - '2025-05-05'
+      - '2022-11-02'
     method: GET
     uri: https://clitest000002.file.core.windows.net/share000003/dir000004..?restype=directory
   response:
@@ -1169,31 +1193,31 @@ interactions:
       content-length:
       - '0'
       date:
-      - Wed, 18 Jun 2025 14:31:52 GMT
+      - Thu, 19 Jun 2025 08:58:57 GMT
       etag:
-      - '"0x8DDAE74DC0147E3"'
+      - '"0x8DDAF0F84A46A7F"'
       last-modified:
-      - Wed, 18 Jun 2025 14:31:48 GMT
+      - Thu, 19 Jun 2025 08:58:54 GMT
       server:
       - Windows-Azure-File/1.0 Microsoft-HTTPAPI/2.0
       x-ms-file-attributes:
       - Directory
       x-ms-file-change-time:
-      - '2025-06-18T14:31:48.6989283Z'
+      - '2025-06-19T08:58:54.1216383Z'
       x-ms-file-creation-time:
-      - '2025-06-18T14:31:48.6989283Z'
+      - '2025-06-19T08:58:54.1216383Z'
       x-ms-file-id:
-      - '13835110831840296960'
+      - '13835146016212385792'
       x-ms-file-last-write-time:
-      - '2025-06-18T14:31:48.6989283Z'
+      - '2025-06-19T08:58:54.1216383Z'
       x-ms-file-parent-id:
       - '0'
       x-ms-file-permission-key:
-      - 11983174674767724860*14886630921777665717
+      - 5177847491955099833*3386793573352087344
       x-ms-server-encrypted:
       - 'true'
       x-ms-version:
-      - '2025-05-05'
+      - '2022-11-02'
     status:
       code: 200
       message: OK
@@ -1214,13 +1238,21 @@ interactions:
       - --share-name --name --fail-on-exist --disallow-trailing-dot --account-name
         --account-key
       User-Agent:
-      - AZURECLI/2.74.0 azsdk-python-storage-file-share/12.21.0 Python/3.12.10 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.74.0 azsdk-python-storage-file-share/12.12.0b1 Python/3.12.10 (Windows-10-10.0.19045-SP0)
       x-ms-allow-trailing-dot:
       - 'false'
       x-ms-date:
-      - Wed, 18 Jun 2025 14:31:53 GMT
+      - Thu, 19 Jun 2025 08:58:58 GMT
+      x-ms-file-attributes:
+      - none
+      x-ms-file-creation-time:
+      - now
+      x-ms-file-last-write-time:
+      - now
+      x-ms-file-permission:
+      - inherit
       x-ms-version:
-      - '2025-05-05'
+      - '2022-11-02'
     method: PUT
     uri: https://clitest000002.file.core.windows.net/share000003/dir000004..?restype=directory
   response:
@@ -1230,31 +1262,31 @@ interactions:
       content-length:
       - '0'
       date:
-      - Wed, 18 Jun 2025 14:31:54 GMT
+      - Thu, 19 Jun 2025 08:58:59 GMT
       etag:
-      - '"0x8DDAE74DF68FD14"'
+      - '"0x8DDAF0F87FAD1DC"'
       last-modified:
-      - Wed, 18 Jun 2025 14:31:54 GMT
+      - Thu, 19 Jun 2025 08:58:59 GMT
       server:
       - Windows-Azure-File/1.0 Microsoft-HTTPAPI/2.0
       x-ms-file-attributes:
       - Directory
       x-ms-file-change-time:
-      - '2025-06-18T14:31:54.4117524Z'
+      - '2025-06-19T08:58:59.7210588Z'
       x-ms-file-creation-time:
-      - '2025-06-18T14:31:54.4117524Z'
+      - '2025-06-19T08:58:59.7210588Z'
       x-ms-file-id:
-      - '13835181200584474624'
+      - '13835110831840296960'
       x-ms-file-last-write-time:
-      - '2025-06-18T14:31:54.4117524Z'
+      - '2025-06-19T08:58:59.7210588Z'
       x-ms-file-parent-id:
       - '0'
       x-ms-file-permission-key:
-      - 11983174674767724860*14886630921777665717
+      - 5177847491955099833*3386793573352087344
       x-ms-request-server-encrypted:
       - 'true'
       x-ms-version:
-      - '2025-05-05'
+      - '2022-11-02'
     status:
       code: 201
       message: Created
@@ -1272,37 +1304,37 @@ interactions:
       ParameterSetName:
       - -s --account-name --account-key
       User-Agent:
-      - AZURECLI/2.74.0 azsdk-python-storage-file-share/12.21.0 Python/3.12.10 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.74.0 azsdk-python-storage-file-share/12.12.0b1 Python/3.12.10 (Windows-10-10.0.19045-SP0)
       x-ms-allow-trailing-dot:
       - 'true'
       x-ms-date:
-      - Wed, 18 Jun 2025 14:31:54 GMT
+      - Thu, 19 Jun 2025 08:59:00 GMT
       x-ms-version:
-      - '2025-05-05'
+      - '2022-11-02'
     method: GET
     uri: https://clitest000002.file.core.windows.net/share000003?restype=directory&comp=list&include=timestamps,Etag,Attributes,PermissionKey
   response:
     body:
       string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?><EnumerationResults
         ServiceEndpoint=\"https://clitest000002.file.core.windows.net/\" ShareName=\"share000003\"
-        DirectoryPath=\"\"><DirectoryId>0</DirectoryId><Entries><Directory><Name>dir000004</Name><FileId>13835181200584474624</FileId><Properties><CreationTime>2025-06-18T14:31:54.4117524Z</CreationTime><LastAccessTime>2025-06-18T14:31:54.4117524Z</LastAccessTime><LastWriteTime>2025-06-18T14:31:54.4117524Z</LastWriteTime><ChangeTime>2025-06-18T14:31:54.4117524Z</ChangeTime><Last-Modified>Wed,
-        18 Jun 2025 14:31:54 GMT</Last-Modified><Etag>\"0x8DDAE74DF68FD14\"</Etag></Properties><Attributes>Directory</Attributes><PermissionKey>11983174674767724860*14886630921777665717</PermissionKey></Directory><Directory><Name>dir000004..</Name><FileId>13835110831840296960</FileId><Properties><CreationTime>2025-06-18T14:31:48.6989283Z</CreationTime><LastAccessTime>2025-06-18T14:31:48.6989283Z</LastAccessTime><LastWriteTime>2025-06-18T14:31:48.6989283Z</LastWriteTime><ChangeTime>2025-06-18T14:31:48.6989283Z</ChangeTime><Last-Modified>Wed,
-        18 Jun 2025 14:31:48 GMT</Last-Modified><Etag>\"0x8DDAE74DC0147E3\"</Etag></Properties><Attributes>Directory</Attributes><PermissionKey>11983174674767724860*14886630921777665717</PermissionKey></Directory><File><Name>sample_file.bin</Name><FileId>13835146016212385792</FileId><Properties><Content-Length>131072</Content-Length><CreationTime>2025-06-18T14:31:44.3073679Z</CreationTime><LastAccessTime>2025-06-18T14:31:44.3073679Z</LastAccessTime><LastWriteTime>2025-06-18T14:31:45.5256903Z</LastWriteTime><ChangeTime>2025-06-18T14:31:45.5256903Z</ChangeTime><Last-Modified>Wed,
-        18 Jun 2025 14:31:45 GMT</Last-Modified><Etag>\"0x8DDAE74DA1D1547\"</Etag></Properties><Attributes>Archive</Attributes><PermissionKey>7365364180276919867*14886630921777665717</PermissionKey></File><File><Name>sample_file_dst.bin</Name><FileId>13835163608398430208</FileId><Properties><Content-Length>131072</Content-Length><CreationTime>2025-06-18T14:31:34.0810514Z</CreationTime><LastAccessTime>2025-06-18T14:31:34.0810514Z</LastAccessTime><LastWriteTime>2025-06-18T14:31:34.0810514Z</LastWriteTime><ChangeTime>2025-06-18T14:31:34.0810514Z</ChangeTime><Last-Modified>Wed,
-        18 Jun 2025 14:31:34 GMT</Last-Modified><Etag>\"0x8DDAE74D34AC512\"</Etag></Properties><Attributes>Archive</Attributes><PermissionKey>7365364180276919867*14886630921777665717</PermissionKey></File><File><Name>sample_file_dst.bin...</Name><FileId>13835093239654252544</FileId><Properties><Content-Length>131072</Content-Length><CreationTime>2025-06-18T14:31:27.5966542Z</CreationTime><LastAccessTime>2025-06-18T14:31:27.5966542Z</LastAccessTime><LastWriteTime>2025-06-18T14:31:27.5966542Z</LastWriteTime><ChangeTime>2025-06-18T14:31:27.5966542Z</ChangeTime><Last-Modified>Wed,
-        18 Jun 2025 14:31:27 GMT</Last-Modified><Etag>\"0x8DDAE74CF6D544E\"</Etag></Properties><Attributes>Archive</Attributes><PermissionKey>7365364180276919867*14886630921777665717</PermissionKey></File></Entries><NextMarker
+        DirectoryPath=\"\"><DirectoryId>0</DirectoryId><Entries><Directory><Name>dir000004</Name><FileId>13835110831840296960</FileId><Properties><CreationTime>2025-06-19T08:58:59.7210588Z</CreationTime><LastAccessTime>2025-06-19T08:58:59.7210588Z</LastAccessTime><LastWriteTime>2025-06-19T08:58:59.7210588Z</LastWriteTime><ChangeTime>2025-06-19T08:58:59.7210588Z</ChangeTime><Last-Modified>Thu,
+        19 Jun 2025 08:58:59 GMT</Last-Modified><Etag>\"0x8DDAF0F87FAD1DC\"</Etag></Properties><Attributes>Directory</Attributes><PermissionKey>5177847491955099833*3386793573352087344</PermissionKey></Directory><Directory><Name>dir000004..</Name><FileId>13835146016212385792</FileId><Properties><CreationTime>2025-06-19T08:58:54.1216383Z</CreationTime><LastAccessTime>2025-06-19T08:58:54.1216383Z</LastAccessTime><LastWriteTime>2025-06-19T08:58:54.1216383Z</LastWriteTime><ChangeTime>2025-06-19T08:58:54.1216383Z</ChangeTime><Last-Modified>Thu,
+        19 Jun 2025 08:58:54 GMT</Last-Modified><Etag>\"0x8DDAF0F84A46A7F\"</Etag></Properties><Attributes>Directory</Attributes><PermissionKey>5177847491955099833*3386793573352087344</PermissionKey></Directory><File><Name>sample_file.bin</Name><FileId>13835075647468208128</FileId><Properties><Content-Length>131072</Content-Length><CreationTime>2025-06-19T08:58:49.5297946Z</CreationTime><LastAccessTime>2025-06-19T08:58:49.5297946Z</LastAccessTime><LastWriteTime>2025-06-19T08:58:50.7384885Z</LastWriteTime><ChangeTime>2025-06-19T08:58:50.7384885Z</ChangeTime><Last-Modified>Thu,
+        19 Jun 2025 08:58:50 GMT</Last-Modified><Etag>\"0x8DDAF0F82A03035\"</Etag></Properties><Attributes>Archive</Attributes><PermissionKey>9772994320596989886*3386793573352087344</PermissionKey></File><File><Name>sample_file_dst.bin</Name><FileId>13835163608398430208</FileId><Properties><Content-Length>131072</Content-Length><CreationTime>2025-06-19T08:58:40.9892842Z</CreationTime><LastAccessTime>2025-06-19T08:58:40.9892842Z</LastAccessTime><LastWriteTime>2025-06-19T08:58:40.9892842Z</LastWriteTime><ChangeTime>2025-06-19T08:58:40.9892842Z</ChangeTime><Last-Modified>Thu,
+        19 Jun 2025 08:58:40 GMT</Last-Modified><Etag>\"0x8DDAF0F7CD093EA\"</Etag></Properties><Attributes>Archive</Attributes><PermissionKey>9772994320596989886*3386793573352087344</PermissionKey></File><File><Name>sample_file_dst.bin...</Name><FileId>13835093239654252544</FileId><Properties><Content-Length>131072</Content-Length><CreationTime>2025-06-19T08:58:37.2636379Z</CreationTime><LastAccessTime>2025-06-19T08:58:37.2636379Z</LastAccessTime><LastWriteTime>2025-06-19T08:58:37.2636379Z</LastWriteTime><ChangeTime>2025-06-19T08:58:37.2636379Z</ChangeTime><Last-Modified>Thu,
+        19 Jun 2025 08:58:37 GMT</Last-Modified><Etag>\"0x8DDAF0F7A9816DB\"</Etag></Properties><Attributes>Archive</Attributes><PermissionKey>9772994320596989886*3386793573352087344</PermissionKey></File></Entries><NextMarker
         /></EnumerationResults>"
     headers:
       content-type:
       - application/xml
       date:
-      - Wed, 18 Jun 2025 14:31:55 GMT
+      - Thu, 19 Jun 2025 08:59:01 GMT
       server:
       - Windows-Azure-File/1.0 Microsoft-HTTPAPI/2.0
       transfer-encoding:
       - chunked
       x-ms-version:
-      - '2025-05-05'
+      - '2022-11-02'
     status:
       code: 200
       message: OK
@@ -1320,13 +1352,13 @@ interactions:
       ParameterSetName:
       - --share-name -n --disallow-trailing-dot --account-name --account-key
       User-Agent:
-      - AZURECLI/2.74.0 azsdk-python-storage-file-share/12.21.0 Python/3.12.10 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.74.0 azsdk-python-storage-file-share/12.12.0b1 Python/3.12.10 (Windows-10-10.0.19045-SP0)
       x-ms-allow-trailing-dot:
       - 'false'
       x-ms-date:
-      - Wed, 18 Jun 2025 14:31:56 GMT
+      - Thu, 19 Jun 2025 08:59:02 GMT
       x-ms-version:
-      - '2025-05-05'
+      - '2022-11-02'
     method: GET
     uri: https://clitest000002.file.core.windows.net/share000003/dir000004?restype=directory
   response:
@@ -1336,31 +1368,31 @@ interactions:
       content-length:
       - '0'
       date:
-      - Wed, 18 Jun 2025 14:31:57 GMT
+      - Thu, 19 Jun 2025 08:59:02 GMT
       etag:
-      - '"0x8DDAE74DF68FD14"'
+      - '"0x8DDAF0F87FAD1DC"'
       last-modified:
-      - Wed, 18 Jun 2025 14:31:54 GMT
+      - Thu, 19 Jun 2025 08:58:59 GMT
       server:
       - Windows-Azure-File/1.0 Microsoft-HTTPAPI/2.0
       x-ms-file-attributes:
       - Directory
       x-ms-file-change-time:
-      - '2025-06-18T14:31:54.4117524Z'
+      - '2025-06-19T08:58:59.7210588Z'
       x-ms-file-creation-time:
-      - '2025-06-18T14:31:54.4117524Z'
+      - '2025-06-19T08:58:59.7210588Z'
       x-ms-file-id:
-      - '13835181200584474624'
+      - '13835110831840296960'
       x-ms-file-last-write-time:
-      - '2025-06-18T14:31:54.4117524Z'
+      - '2025-06-19T08:58:59.7210588Z'
       x-ms-file-parent-id:
       - '0'
       x-ms-file-permission-key:
-      - 11983174674767724860*14886630921777665717
+      - 5177847491955099833*3386793573352087344
       x-ms-server-encrypted:
       - 'true'
       x-ms-version:
-      - '2025-05-05'
+      - '2022-11-02'
     status:
       code: 200
       message: OK
@@ -1382,7 +1414,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.74.0 azsdk-python-storage-file-share/12.21.0 Python/3.12.10 (Windows-10-10.0.19045-SP0)
       x-ms-date:
-      - Wed, 18 Jun 2025 14:31:58 GMT
+      - Thu, 19 Jun 2025 08:59:03 GMT
       x-ms-version:
       - '2025-05-05'
     method: DELETE
@@ -1394,7 +1426,7 @@ interactions:
       content-length:
       - '0'
       date:
-      - Wed, 18 Jun 2025 14:31:59 GMT
+      - Thu, 19 Jun 2025 08:59:04 GMT
       server:
       - Windows-Azure-File/1.0 Microsoft-HTTPAPI/2.0
       x-ms-version:
