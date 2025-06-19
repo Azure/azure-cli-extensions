@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "qumulo storage file-system create",
 )
 class Create(AAZCommand):
-    """Create a FileSystemResource
+    """Create a new Qumulo file system storage resource.
     """
 
     _aaz_info = {
@@ -311,9 +311,9 @@ class Create(AAZCommand):
                 marketplace_details.set_prop("publisherId", AAZStrType, ".publisher_id")
                 marketplace_details.set_prop("termUnit", AAZStrType, ".term_unit")
 
-            private_ips = _builder.get(".properties.privateIPs")
-            if private_ips is not None:
-                private_ips.set_elements(AAZStrType, ".")
+            private_i_ps = _builder.get(".properties.privateIPs")
+            if private_i_ps is not None:
+                private_i_ps.set_elements(AAZStrType, ".")
 
             user_details = _builder.get(".properties.userDetails")
             if user_details is not None:
@@ -413,7 +413,7 @@ class Create(AAZCommand):
                 serialized_name="marketplaceDetails",
                 flags={"required": True},
             )
-            properties.private_ips = AAZListType(
+            properties.private_i_ps = AAZListType(
                 serialized_name="privateIPs",
             )
             properties.provisioning_state = AAZStrType(
@@ -452,8 +452,8 @@ class Create(AAZCommand):
                 serialized_name="termUnit",
             )
 
-            private_ips = cls._schema_on_200_201.properties.private_ips
-            private_ips.Element = AAZStrType()
+            private_i_ps = cls._schema_on_200_201.properties.private_i_ps
+            private_i_ps.Element = AAZStrType()
 
             user_details = cls._schema_on_200_201.properties.user_details
             user_details.email = AAZStrType(
