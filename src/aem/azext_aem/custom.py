@@ -771,8 +771,8 @@ class EnhancedMonitoring:  # pylint: disable=too-many-instance-attributes
     def _check_table_and_content(self, storage_account_name, key, table_name,
                                  filter_string, timeout_in_minutes):
         sleep_period = 15
-        TableService = get_sdk(self._cmd.cli_ctx, '_table_service_client#TableServiceClient',
-                               resource_type=ResourceType.DATA_STORAGE_TABLE)
+        TableService = get_sdk(self._cmd.cli_ctx, ResourceType.DATA_STORAGE_TABLE,
+                               '_table_service_client#TableServiceClient')
         table_client = get_data_service_client(
             self._cmd.cli_ctx,
             TableService,
