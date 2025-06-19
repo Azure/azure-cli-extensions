@@ -100,8 +100,7 @@ def aks_kollect_cmd(cmd,    # pylint: disable=too-many-statements,too-many-local
         storage_account_keys = storage_client.storage_accounts.list_keys(parsed_storage_account['resource_group'],
                                                                          storage_account_name)
 
-        t_generate_blob_service_sas = get_sdk(cmd.cli_ctx, '#generate_account_sas',
-                                              resource_type=ResourceType.DATA_STORAGE_BLOB)
+        t_generate_blob_service_sas = get_sdk(cmd.cli_ctx, ResourceType.DATA_STORAGE_BLOB, '#generate_account_sas')
 
         sas_token = t_generate_blob_service_sas(storage_account_name,
                                                 storage_account_keys.keys[0].value,
