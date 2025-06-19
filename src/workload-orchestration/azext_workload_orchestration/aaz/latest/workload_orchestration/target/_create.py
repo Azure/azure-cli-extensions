@@ -16,14 +16,15 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create a Target Resource
-    :example: Create a Target Resource
+        :example: Create a Target Resource
         az workload-orchestration target create -g {rg} -n {target_name} --location {location} --capabilities {capabilities} --description {description} --display-name {display_name} --hierarchy-level {hierarchy_level} --solution-scope {solution_scope} --state {state} --target-specification {target_specification}
+
     """
 
     _aaz_info = {
-        "version": "2025-01-01-preview",
+        "version": "2025-06-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.edge/targets/{}", "2025-01-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.edge/targets/{}", "2025-06-01"],
         ]
     }
 
@@ -66,6 +67,11 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="List of capabilities",
         )
+        _args_schema.context_id = AAZResourceIdArg(
+            options=["--context-id"],
+            arg_group="Properties",
+            help="ArmId of Context",
+        )
         _args_schema.description = AAZStrArg(
             options=["--description"],
             arg_group="Properties",
@@ -85,6 +91,9 @@ class Create(AAZCommand):
             options=["--solution-scope"],
             arg_group="Properties",
             help="Defines the Kubernetes namespace that the app will be deployed to. If not supplied, it will default to solution template name",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-z0-9]([-a-z0-9]*[a-z0-9])?$",
+            ),
         )
         _args_schema.state = AAZStrArg(
             options=["--state"],
@@ -187,7 +196,7 @@ class Create(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Edge/targets/{targetName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.edge/targets/{targetName}",
                 **self.url_parameters
             )
 
@@ -221,7 +230,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-01-01-preview",
+                    "api-version", "2025-06-01",
                     required=True,
                 ),
             }
@@ -259,6 +268,7 @@ class Create(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("capabilities", AAZListType, ".capabilities", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("contextId", AAZStrType, ".context_id", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("description", AAZStrType, ".description", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("displayName", AAZStrType, ".display_name", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("hierarchyLevel", AAZStrType, ".hierarchy_level", typ_kwargs={"flags": {"required": True}})
@@ -334,6 +344,10 @@ class Create(AAZCommand):
 
             properties = cls._schema_on_200_201.properties
             properties.capabilities = AAZListType(
+                flags={"required": True},
+            )
+            properties.context_id = AAZStrType(
+                serialized_name="contextId",
                 flags={"required": True},
             )
             properties.description = AAZStrType(
