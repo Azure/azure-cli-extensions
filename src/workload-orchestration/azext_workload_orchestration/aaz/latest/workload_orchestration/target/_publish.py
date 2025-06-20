@@ -84,7 +84,7 @@ class Publish(AAZCommand):
         
         # Add new parameter (v2025_06_01)
         _args_schema.solution_version_id = AAZStrArg(
-            options=["--solution-template-version-id"],
+            options=["--solution-version-id"],
             arg_group="Body",
             help="Solution Version ARM Id",
             required=True,
