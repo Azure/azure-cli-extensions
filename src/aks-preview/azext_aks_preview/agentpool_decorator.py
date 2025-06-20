@@ -1391,7 +1391,7 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
         agentpool = self.update_ssh_access(agentpool)
 
         # update locald DNS profile
-        localdns_profile = self.context.get_localdns_profile()
+        agentpool = self.context.get_localdns_profile()
 
         return agentpool
 
