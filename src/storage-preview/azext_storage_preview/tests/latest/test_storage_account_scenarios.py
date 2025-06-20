@@ -12,7 +12,6 @@ from ...profiles import CUSTOM_MGMT_STORAGE
 
 class StorageAccountTests(StorageScenarioMixin, ScenarioTest):
     @AllowLargeResponse()
-    @api_version_constraint(CUSTOM_MGMT_STORAGE, min_api='2021-09-01')
     @ResourceGroupPreparer(name_prefix='cli_test_storage_account_dns_et')
     def test_storage_account_dns_endpoint_type(self, resource_group):
         self.kwargs.update({
@@ -27,7 +26,6 @@ class StorageAccountTests(StorageScenarioMixin, ScenarioTest):
                  checks=[JMESPathCheck('dnsEndpointType', 'AzureDnsZone')])
 
     @AllowLargeResponse()
-    @api_version_constraint(CUSTOM_MGMT_STORAGE, min_api='2021-08-01')
     @ResourceGroupPreparer(name_prefix='cli_test_storage_account_sftp')
     def test_storage_account_sftp(self, resource_group):
         self.kwargs.update({
@@ -43,7 +41,6 @@ class StorageAccountTests(StorageScenarioMixin, ScenarioTest):
         self.cmd('storage account update -n {sa} --enable-local-user false',
                  checks=[JMESPathCheck('isSftpEnabled', False), JMESPathCheck('isLocalUserEnabled', False)])
 
-    @api_version_constraint(CUSTOM_MGMT_STORAGE, min_api='2021-08-01')
     @ResourceGroupPreparer()
     def test_storage_account_with_files_adds_sam_account_name(self, resource_group):
         name = self.create_random_name(prefix='cli', length=24)
@@ -98,7 +95,6 @@ class StorageAccountTests(StorageScenarioMixin, ScenarioTest):
         self.assertEqual(activeDirectoryProperties['netBiosDomainName'], self.kwargs['net_bios_domain_name'])
 
 
-    @api_version_constraint(CUSTOM_MGMT_STORAGE, min_api='2022-05-01')
     @ResourceGroupPreparer()
     def test_create_storage_account_with_files_aadkerb(self, resource_group):
         name = self.create_random_name(prefix='cli', length=24)
@@ -118,7 +114,6 @@ class StorageAccountTests(StorageScenarioMixin, ScenarioTest):
         self.assertEqual(activeDirectoryProperties['domainGuid'], self.kwargs['domain_guid'])
         self.assertEqual(activeDirectoryProperties['domainName'], self.kwargs['domain_name'])
 
-    @api_version_constraint(CUSTOM_MGMT_STORAGE, min_api='2022-05-01')
     @ResourceGroupPreparer()
     def test_create_storage_account_with_files_aadkerb_false(self, resource_group):
         name = self.create_random_name(prefix='cli', length=24)
@@ -132,7 +127,6 @@ class StorageAccountTests(StorageScenarioMixin, ScenarioTest):
         self.assertIn('azureFilesIdentityBasedAuthentication', result)
         self.assertEqual(result['azureFilesIdentityBasedAuthentication']['directoryServiceOptions'], 'None')
 
-    @api_version_constraint(CUSTOM_MGMT_STORAGE, min_api='2022-05-01')
     @ResourceGroupPreparer()
     def test_create_storage_account_with_files_aadkerb_true(self, resource_group):
         name = self.create_random_name(prefix='cli', length=24)
@@ -152,7 +146,6 @@ class StorageAccountTests(StorageScenarioMixin, ScenarioTest):
         self.assertEqual(activeDirectoryProperties['domainGuid'], self.kwargs['domain_guid'])
         self.assertEqual(activeDirectoryProperties['domainName'], self.kwargs['domain_name'])
 
-    @api_version_constraint(CUSTOM_MGMT_STORAGE, min_api='2022-05-01')
     @ResourceGroupPreparer()
     def test_update_storage_account_with_files_aadkerb(self, resource_group):
         name = self.create_random_name(prefix='cli', length=24)
@@ -180,7 +173,6 @@ class StorageAccountTests(StorageScenarioMixin, ScenarioTest):
         self.assertEqual(activeDirectoryProperties['domainGuid'], self.kwargs['domain_guid'])
         self.assertEqual(activeDirectoryProperties['domainName'], self.kwargs['domain_name'])
 
-    @api_version_constraint(CUSTOM_MGMT_STORAGE, min_api='2022-05-01')
     @ResourceGroupPreparer()
     def test_update_storage_account_with_files_aadkerb_false(self, resource_group):
         name = self.create_random_name(prefix='cli', length=24)
@@ -193,7 +185,6 @@ class StorageAccountTests(StorageScenarioMixin, ScenarioTest):
         self.assertIn('azureFilesIdentityBasedAuthentication', result)
         self.assertEqual(result['azureFilesIdentityBasedAuthentication']['directoryServiceOptions'], 'None')
 
-    @api_version_constraint(CUSTOM_MGMT_STORAGE, min_api='2019-04-01')
     @ResourceGroupPreparer()
     def test_update_storage_account_with_files_aadkerb_true(self, resource_group):
         name = self.create_random_name(prefix='cli', length=24)
@@ -215,7 +206,6 @@ class StorageAccountTests(StorageScenarioMixin, ScenarioTest):
         self.assertEqual(activeDirectoryProperties['domainGuid'], self.kwargs['domain_guid'])
         self.assertEqual(activeDirectoryProperties['domainName'], self.kwargs['domain_name'])
 
-    @api_version_constraint(CUSTOM_MGMT_STORAGE, min_api='2021-08-01')
     @ResourceGroupPreparer()
     def test_storage_account_with_files_adds_sam_account_name(self, resource_group):
         name = self.create_random_name(prefix='cli', length=24)

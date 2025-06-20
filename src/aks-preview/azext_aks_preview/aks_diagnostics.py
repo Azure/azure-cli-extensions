@@ -28,6 +28,7 @@ from azure.cli.core.commands.client_factory import (
     get_mgmt_service_client,
     get_subscription_id,
 )
+from azure.cli.core.profiles import ResourceType, get_sdk
 from azure.core.exceptions import HttpResponseError
 from azure.mgmt.core.tools import is_valid_resource_id, parse_resource_id, resource_id
 from knack.log import get_logger
@@ -98,24 +99,20 @@ def aks_kollect_cmd(cmd,    # pylint: disable=too-many-statements,too-many-local
             cmd.cli_ctx, parsed_storage_account['subscription'])
         storage_account_keys = storage_client.storage_accounts.list_keys(parsed_storage_account['resource_group'],
                                                                          storage_account_name)
-        kwargs = {
-            'account_name': storage_account_name,
-            'account_key': storage_account_keys.keys[0].value
-        }
-        cloud_storage_client = _cloud_storage_account_service_factory(
-            cmd.cli_ctx, kwargs)
 
-        sas_token = cloud_storage_client.generate_shared_access_signature(
-            'b',
-            'sco',
-            'rwdlacup',
-            datetime.datetime.utcnow() + datetime.timedelta(days=1))
+        t_generate_blob_service_sas = get_sdk(cmd.cli_ctx, ResourceType.DATA_STORAGE_BLOB, '#generate_account_sas')
 
-        readonly_sas_token = cloud_storage_client.generate_shared_access_signature(
-            'b',
-            'sco',
-            'rl',
-            datetime.datetime.utcnow() + datetime.timedelta(days=1))
+        sas_token = t_generate_blob_service_sas(storage_account_name,
+                                                storage_account_keys.keys[0].value,
+                                                resource_types='sco',
+                                                permission='rwdlacup',
+                                                expiry=datetime.datetime.utcnow() + datetime.timedelta(days=1))
+
+        readonly_sas_token = t_generate_blob_service_sas(storage_account_name,
+                                                         storage_account_keys.keys[0].value,
+                                                         resource_types='sco',
+                                                         permission='rl',
+                                                         expiry=datetime.datetime.utcnow() + datetime.timedelta(days=1))
 
         readonly_sas_token = readonly_sas_token.strip('?')
 
@@ -481,17 +478,6 @@ def _display_diagnostics_report(temp_kubeconfig_path):   # pylint: disable=too-m
     else:
         logger.warning("Could not get networking status. "
                        "Please run 'az aks kanalyze' command later to get the analysis results.")
-
-
-def _cloud_storage_account_service_factory(cli_ctx, kwargs):
-    from azure.cli.core.profiles import ResourceType, get_sdk
-    t_cloud_storage_account = get_sdk(
-        cli_ctx, ResourceType.DATA_STORAGE, 'common#CloudStorageAccount')
-    account_name = kwargs.pop('account_name', None)
-    account_key = kwargs.pop('account_key', None)
-    sas_token = kwargs.pop('sas_token', None)
-    kwargs.pop('connection_string', None)
-    return t_cloud_storage_account(account_name, account_key, sas_token)
 
 
 def _format_hyperlink(the_link):
