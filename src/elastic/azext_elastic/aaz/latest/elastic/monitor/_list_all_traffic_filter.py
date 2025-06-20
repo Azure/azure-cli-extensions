@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "elastic monitor list-all-traffic-filter",
 )
 class ListAllTrafficFilter(AAZCommand):
-    """List all traffic filter
+    """List all traffic filters associated with your Elastic monitor resource, helping you manage network traffic control.
 
     :example: List all traffic filter
         az elastic monitor list-all-traffic-filter --monitor-name name -g rg

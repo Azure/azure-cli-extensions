@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "elastic get",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage to get Elastic details
+    """Manage and retrieve detailed information about your Elastic resources, including configurations and status.
     """
     pass
 

@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "elastic monitor open-ai-integration get-statu",
 )
 class GetStatu(AAZCommand):
-    """Get OpenAI integration status for a given integration.
+    """Get the status of OpenAI integration for a given Elastic monitor resource, ensuring optimal observability and performance.
 
     :example: OpenAI_GetStatus
         az elastic monitor open-ai-integration get-statu --resource-group myResourceGroup --monitor-name myMonitor --integration-name default

@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "elastic monitor",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage monitor with elastic.
+    """Manage monitoring configurations and resources with Elastic, ensuring optimal observability and performance.
     """
     pass
 
