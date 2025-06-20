@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "confluent organization environment schema-registry-cluster list",
 )
 class List(AAZCommand):
-    """List schema registry clusters
+    """List all Schema Registry clusters within a Confluent environment.
     """
 
     _aaz_info = {
@@ -53,8 +53,6 @@ class List(AAZCommand):
             required=True,
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            options=["--resource-group"],
-            help="Resource Group Name",
             required=True,
         )
         _args_schema.page_size = AAZIntArg(

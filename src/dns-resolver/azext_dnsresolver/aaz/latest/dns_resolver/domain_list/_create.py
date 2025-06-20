@@ -19,12 +19,15 @@ class Create(AAZCommand):
 
     :example: Upsert DNS resolver domain list
         az dns-resolver domain-list create --resource-group sampleResourceGroup --dns-resolver-domain-list-name sampleDnsResolverDomainList --location westus2 --tags "{key1:value1}" --domains "[contoso.com]"
+
+    :example: Upsert DNS resolver domain list with no domains (for usage with bulk API)
+        az dns-resolver domain-list create --resource-group sampleResourceGroup --dns-resolver-domain-list-name sampleDnsResolverDomainList --location westus2 --tags "{key1:value1}"
     """
 
     _aaz_info = {
-        "version": "2023-07-01-preview",
+        "version": "2025-05-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/dnsresolverdomainlists/{}", "2023-07-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/dnsresolverdomainlists/{}", "2025-05-01"],
         ]
     }
 
@@ -94,7 +97,6 @@ class Create(AAZCommand):
             options=["--domains"],
             arg_group="Properties",
             help="The domains in the domain list.",
-            required=True,
         )
 
         domains = cls._args_schema.domains
@@ -182,7 +184,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-07-01-preview",
+                    "api-version", "2025-05-01",
                     required=True,
                 ),
             }
@@ -214,12 +216,12 @@ class Create(AAZCommand):
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
             _builder.set_prop("location", AAZStrType, ".location", typ_kwargs={"flags": {"required": True}})
-            _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True, "client_flatten": True}})
+            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("domains", AAZListType, ".domains", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("domains", AAZListType, ".domains")
 
             domains = _builder.get(".properties.domains")
             if domains is not None:
@@ -262,7 +264,7 @@ class Create(AAZCommand):
                 flags={"read_only": True},
             )
             _schema_on_200_201.properties = AAZObjectType(
-                flags={"required": True, "client_flatten": True},
+                flags={"client_flatten": True},
             )
             _schema_on_200_201.system_data = AAZObjectType(
                 serialized_name="systemData",
@@ -274,8 +276,10 @@ class Create(AAZCommand):
             )
 
             properties = cls._schema_on_200_201.properties
-            properties.domains = AAZListType(
-                flags={"required": True},
+            properties.domains = AAZListType()
+            properties.domains_url = AAZStrType(
+                serialized_name="domainsUrl",
+                flags={"read_only": True},
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
