@@ -5,6 +5,7 @@
 
 import base64
 import os
+from azure.cli.core.util import get_file_json
 from types import SimpleNamespace
 from typing import Dict, TypeVar, Union, List
 
@@ -41,7 +42,11 @@ from azext_aks_preview._consts import (
     CONST_DEFAULT_WINDOWS_VMS_VM_SIZE,
     CONST_SSH_ACCESS_LOCALUSER,
     CONST_GPU_DRIVER_NONE,
+    CONST_LOCAL_DNS_MODE_REQUIRED,
+    CONST_LOCAL_DNS_MODE_PREFERRED,
+    CONST_LOCAL_DNS_MODE_DISABLED,
 )
+
 from azext_aks_preview._helpers import (
     get_nodepool_snapshot_by_snapshot_id,
     filter_hard_taints,
@@ -808,6 +813,59 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
         # read the original value passed by the command
         return self.raw_param.get("disable_fips_image")
 
+    def get_set_localdns(self) -> bool:
+        return self.raw_param.get("set_localdns", False)
+
+    def get_localdns_config(self):
+        return self.raw_param.get("localdns_config")
+
+    def get_localdns_mode(self):
+        return self.raw_param.get("localdns_mode")
+
+    def get_localdns_profile(self):
+        """
+        Returns the local DNS profile dict if set, or None.
+        Handles validation and file loading.
+        """
+        set_localdns = self.get_set_localdns()
+        config = self.get_localdns_config()
+        mode = self.get_localdns_mode()
+        if not set_localdns and (config or mode):
+            raise InvalidArgumentValueError(
+                '--set-localdns must be specified when using --localdns-config or --localdns-mode.'
+            )
+        if set_localdns:
+            if not (config or mode):
+                raise InvalidArgumentValueError(
+                    '--set-localdns requires either --localdns-config or --localdns-mode.'
+                )
+            if config and mode:
+                raise MutuallyExclusiveArgumentError(
+                    'Cannot specify both --localdns-config and --localdns-mode.'
+                )
+            if config:
+                if not isinstance(config, str) or not os.path.isfile(config):
+                    raise InvalidArgumentValueError(
+                        f"{config} is not a valid file, or not accessible."
+                    )
+                profile = get_file_json(config)
+                if not isinstance(profile, dict):
+                    raise InvalidArgumentValueError(
+                        f"Error reading local DNS config from {config}."
+                        "Please provide a valid JSON file."
+                    )
+                return profile
+            if mode:
+                if mode not in [
+                    CONST_LOCAL_DNS_MODE_REQUIRED,
+                    CONST_LOCAL_DNS_MODE_PREFERRED,
+                    CONST_LOCAL_DNS_MODE_DISABLED
+                ]:
+                    raise InvalidArgumentValueError(f"Invalid local DNS mode: {mode}")
+                # Return a minimal profile dict with just the mode
+                return {"mode": mode}
+        return None
+
 
 class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
     def __init__(
@@ -1341,6 +1399,9 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
 
         # update ssh access
         agentpool = self.update_ssh_access(agentpool)
+
+        # update locald DNS profile
+        agentpool = self.context.get_localdns_profile()
 
         return agentpool
 
