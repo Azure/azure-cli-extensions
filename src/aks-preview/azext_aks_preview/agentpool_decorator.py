@@ -842,7 +842,7 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
             if config and mode:
                 raise MutuallyExclusiveArgumentError(
                     'Cannot specify both --localdns-config and --localdns-mode.'
-                    )
+                )
             if config:
                 try:
                     if isinstance(config, str):
@@ -854,7 +854,11 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
                     raise InvalidArgumentValueError(f"Failed to load local DNS config file: {ex}")
                 return profile
             if mode:
-                if mode not in [CONST_LOCAL_DNS_MODE_REQUIRED, CONST_LOCAL_DNS_MODE_PREFERRED, CONST_LOCAL_DNS_MODE_DISABLED]:
+                if mode not in [
+                    CONST_LOCAL_DNS_MODE_REQUIRED,
+                    CONST_LOCAL_DNS_MODE_PREFERRED,
+                    CONST_LOCAL_DNS_MODE_DISABLED
+                ]:
                     raise InvalidArgumentValueError(f"Invalid local DNS mode: {mode}")
                 # Return a minimal profile dict with just the mode
                 return {"mode": mode}
