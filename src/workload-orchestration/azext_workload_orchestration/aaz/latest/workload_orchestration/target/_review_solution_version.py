@@ -17,7 +17,7 @@ from azure.cli.core.aaz import *
 class ReviewSolutionVersion(AAZCommand):
     """Post request to review configuration
     :example:
-        az workload-orchestration target review --target-name MyTarget --resource-group MyResourceGroup --solution-version-id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myRG/providers/Microsoft.edge/solutionTemplateVersions/mySolutionTemplateVersion
+        az workload-orchestration target review --target-name MyTarget --resource-group MyResourceGroup --solution-template-version-id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myRG/providers/Microsoft.edge/solutionTemplateVersions/mySolutionTemplateVersion
     """
 
     _aaz_info = {
@@ -295,12 +295,7 @@ class ReviewSolutionVersion(AAZCommand):
             _schema_on_200.extended_location = AAZObjectType(
                 serialized_name="extendedLocation",
             )
-            _schema_on_200.id = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200.name = AAZStrType(
-                flags={"read_only": True},
-            )
+
             _schema_on_200.resourceId = AAZStrType(
                 serialized_name="resourceId",
                 flags={"read_only": True},
