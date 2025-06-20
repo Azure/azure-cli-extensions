@@ -4,9 +4,12 @@ Release History
 ===============
 upcoming
 ++++++
+* 'az containerapp session code-interpreter execute': Extend maximum supported value of `--timeout-in-seconds` from 60 to 220.
+* 'az containerapp job create': Fix message with `--help`
 
 1.2.0b1
 ++++++
+* 'az containerapp env premium-ingress': New environment level ingress configuration.
 * 'az containerapp sessionpool update': Support `--mi-system-assigned`, `--mi-user-assigned` and `--registry-identity`
 *  Upgrade api-version to 2025-02-02-preview
 
@@ -282,11 +285,7 @@ upcoming
 * 'az containerapp create/update': --yaml support properties for api-version 2023-04-01-preview (e.g. subPath, mountOptions)
 * 'az containerapp service': add support for creation and deletion of kafka
 * 'az containerapp create': --registry-server support registry with custom port
-* 'az containerapp create': fix containerapp create not waiting for ready environment
 * Add regex to fix validation for containerapp name
-* Add 'az containerapp ingress cors' for CORS support
-* 'az container app env create/update': support --enable-mtls parameter
-* 'az containerapp up': fix issue where --repo throws KeyError
 
 0.3.33
 ++++++
