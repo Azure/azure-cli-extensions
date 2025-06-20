@@ -831,20 +831,24 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
         config = self.get_localdns_config()
         mode = self.get_localdns_mode()
         if not set_localdns and (config or mode):
-            raise InvalidArgumentValueError("--set-localdns must be specified when using --localdns-config or --localdns-mode.")
+            raise InvalidArgumentValueError(
+                '--set-localdns must be specified when using --localdns-config or --localdns-mode.'
+                )
         if set_localdns:
             if not (config or mode):
-                raise InvalidArgumentValueError("--set-localdns requires either --localdns-config or --localdns-mode.")
+                raise InvalidArgumentValueError(
+                    '--set-localdns requires either --localdns-config or --localdns-mode.'
+                    )
             if config and mode:
-                raise MutuallyExclusiveArgumentError("Cannot specify both --localdns-config and --localdns-mode.")
+                raise MutuallyExclusiveArgumentError(
+                    'Cannot specify both --localdns-config and --localdns-mode.'
+                    )
             if config:
-                # Load and validate JSON file
                 try:
                     if isinstance(config, str):
                         with open(config, "r") as f:
                             profile = json.load(f)
                     else:
-                        # If already file-like (from CLI file_type)
                         profile = json.load(config)
                 except Exception as ex:
                     raise InvalidArgumentValueError(f"Failed to load local DNS config file: {ex}")
