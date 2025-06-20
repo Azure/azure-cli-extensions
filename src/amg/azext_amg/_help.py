@@ -368,7 +368,8 @@ helps['grafana user show'] = """
 
 helps['grafana api-key'] = """
     type: group
-    short-summary: Commands to manage api keys.
+    short-summary: Commands to manage API keys.
+    long-summary: API keys are deprecated by Grafana Labs and will not be supported in Grafana 12 and above. Please use service accounts instead.
 """
 
 helps['grafana api-key create'] = """
