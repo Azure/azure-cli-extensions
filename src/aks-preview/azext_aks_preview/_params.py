@@ -1831,7 +1831,7 @@ def load_arguments(self, _):
             "set_localdns",
             options_list=["--set-localdns"],
             action="store_true",
-            help="Enable or update the local DNS profile for this nodepool. Must be used with --localdns-mode or --localdns-config."
+            help="Update local DNS profile for this nodepool. Must be used with --localdns-mode or --localdns-config."
         )
         c.argument(
             "localdns_config",

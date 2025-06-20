@@ -5,6 +5,7 @@
 
 import base64
 import os
+from azure.cli.core.util import get_file_json
 from types import SimpleNamespace
 from typing import Dict, TypeVar, Union, List
 
@@ -45,7 +46,6 @@ from azext_aks_preview._consts import (
     CONST_LOCAL_DNS_MODE_PREFERRED,
     CONST_LOCAL_DNS_MODE_DISABLED,
 )
-import json
 
 from azext_aks_preview._helpers import (
     get_nodepool_snapshot_by_snapshot_id,
@@ -833,25 +833,27 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
         if not set_localdns and (config or mode):
             raise InvalidArgumentValueError(
                 '--set-localdns must be specified when using --localdns-config or --localdns-mode.'
-                )
+            )
         if set_localdns:
             if not (config or mode):
                 raise InvalidArgumentValueError(
                     '--set-localdns requires either --localdns-config or --localdns-mode.'
-                    )
+                )
             if config and mode:
                 raise MutuallyExclusiveArgumentError(
                     'Cannot specify both --localdns-config and --localdns-mode.'
                 )
             if config:
-                try:
-                    if isinstance(config, str):
-                        with open(config, "r") as f:
-                            profile = json.load(f)
-                    else:
-                        profile = json.load(config)
-                except Exception as ex:
-                    raise InvalidArgumentValueError(f"Failed to load local DNS config file: {ex}")
+                if not isinstance(config, str) or not os.path.isfile(config):
+                    raise InvalidArgumentValueError(
+                        f"{config} is not a valid file, or not accessible."
+                    )
+                profile = get_file_json(config)
+                if not isinstance(profile, dict):
+                    raise InvalidArgumentValueError(
+                        f"Error reading local DNS config from {config}."
+                        "Please provide a valid JSON file."
+                    )
                 return profile
             if mode:
                 if mode not in [
