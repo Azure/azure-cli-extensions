@@ -47,8 +47,8 @@ setupAZ(){
         azdev setup -c "${cli_repo}" -r "${ext_repo}"
     fi
 
-    # fix the issue that vcrpy>=4.3.0 is not compatible with urllib3
-    pip install vcrpy==4.2.1
+    # need the fix in commit #69621c6 to adapt to the HTTPSHandler in urllib in python3.12
+    pip install vcrpy==6.0.2
 
     # fix the issue "Cannot import name 'AccessTokenInfo' from 'azure.core.credentials'"
     pip install azure-identity==1.17.1
