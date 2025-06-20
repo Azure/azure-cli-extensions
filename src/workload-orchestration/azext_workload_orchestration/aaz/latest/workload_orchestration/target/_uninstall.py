@@ -17,13 +17,13 @@ from azure.cli.core.aaz import *
 class Uninstall(AAZCommand):
     """Post request to uninstall
     :example: Uninstall a solution from a target
-        az workload-orchestration target uninstall -g rg1 -n target1 --solution-instance-name solutionInstanceName --solution-name solutionName
+        az workload-orchestration target uninstall -g rg1 -n target1 --solution-instance-name solutionInstanceName --solution-template-id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myRG/providers/Microsoft.Edge/solutionTemplates/mySolutionTemplate
     """
 
     _aaz_info = {
-        "version": "2025-01-01-preview",
+        "version": "2025-06-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.edge/targets/{}/uninstallsolution", "2025-01-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.edge/targets/{}/uninstallsolution", "2025-06-01"],
         ]
     }
 
@@ -67,10 +67,10 @@ class Uninstall(AAZCommand):
             arg_group="Body",
             help="Solution Instance Name",
         )
-        _args_schema.solution_name = AAZStrArg(
-            options=["--solution-name"],
+        _args_schema.solution_template_id = AAZStrArg(
+            options=["--solution-template-id"],
             arg_group="Body",
-            help="Solution Name",
+            help="Solution Template ARM Id",
             required=True,
         )
         return cls._args_schema
@@ -143,7 +143,7 @@ class Uninstall(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-01-01-preview",
+                    "api-version", "2025-06-01",
                     required=True,
                 ),
             }
@@ -166,7 +166,7 @@ class Uninstall(AAZCommand):
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
             _builder.set_prop("solutionInstanceName", AAZStrType, ".solution_instance_name")
-            _builder.set_prop("solutionName", AAZStrType, ".solution_name", typ_kwargs={"flags": {"required": True}})
+            _builder.set_prop("solutionTemplateId", AAZStrType, ".solution_template_id", typ_kwargs={"flags": {"required": True}})
 
             return self.serialize_content(_content_value)
         

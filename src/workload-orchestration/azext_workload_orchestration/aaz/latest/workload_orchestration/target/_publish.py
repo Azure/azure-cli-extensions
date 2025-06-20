@@ -17,13 +17,13 @@ from azure.cli.core.aaz import *
 class Publish(AAZCommand):
     """Post request to publish
     :example:
-        az workload-orchestration target publish -g {rg} -n {target_name} --review-id {review_id} --solution-name {solution_name} --solution-version {solution_version}
+        az workload-orchestration target publish -g {rg} -n {target_name} --solution-template-version-id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myRG/providers/Microsoft.edge/solutionVersions/mySolutionVersion
     """
 
     _aaz_info = {
-        "version": "2025-01-01-preview",
+        "version": "2025-06-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.edge/targets/{}/publishsolutionversion", "2025-01-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/Microsoft.edge/targets/{}/publishsolutionversion", "2025-06-01"],
         ]
     }
 
@@ -62,22 +62,31 @@ class Publish(AAZCommand):
         # define Arg Group "Body"
 
         _args_schema = cls._args_schema
-        _args_schema.review_id = AAZStrArg(
-            options=["--review-id"],
+        # Remove these parameters (v2025_06_01)
+        # _args_schema.review_id = AAZStrArg(
+        #     options=["--review-id"],
+        #     arg_group="Body",
+        #     help="Review ID",
+        #     required=True,
+        # )
+        # _args_schema.solution = AAZStrArg(
+        #     options=["--solution-name"],
+        #     arg_group="Body",
+        #     help="Solution Name",
+        #     required=True,
+        # )
+        # _args_schema.solution_version = AAZStrArg(
+        #     options=["--solution-version"],
+        #     arg_group="Body",
+        #     help="Solution Version Name",
+        #     required=True,
+        # )
+        
+        # Add new parameter (v2025_06_01)
+        _args_schema.solution_version_id = AAZStrArg(
+            options=["--solution-template-version-id"],
             arg_group="Body",
-            help="Review ID",
-            required=True,
-        )
-        _args_schema.solution = AAZStrArg(
-            options=["--solution-name"],
-            arg_group="Body",
-            help="Solution Name",
-            required=True,
-        )
-        _args_schema.solution_version = AAZStrArg(
-            options=["--solution-version"],
-            arg_group="Body",
-            help="Solution Version Name",
+            help="Solution Version ARM Id",
             required=True,
         )
         return cls._args_schema
@@ -129,7 +138,7 @@ class Publish(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Edge/targets/{targetName}/publishSolutionVersion",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.edge/targets/{targetName}/publishSolutionVersion",
                 **self.url_parameters
             )
 
@@ -163,7 +172,7 @@ class Publish(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-01-01-preview",
+                    "api-version", "2025-06-01",
                     required=True,
                 ),
             }
@@ -188,9 +197,13 @@ class Publish(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("reviewId", AAZStrType, ".review_id", typ_kwargs={"flags": {"required": True}})
-            _builder.set_prop("solution", AAZStrType, ".solution", typ_kwargs={"flags": {"required": True}})
-            _builder.set_prop("solutionVersion", AAZStrType, ".solution_version", typ_kwargs={"flags": {"required": True}})
+            # Remove these properties (v2025_06_01)
+            # _builder.set_prop("reviewId", AAZStrType, ".review_id", typ_kwargs={"flags": {"required": True}})
+            # _builder.set_prop("solution", AAZStrType, ".solution", typ_kwargs={"flags": {"required": True}})
+            # _builder.set_prop("solutionVersion", AAZStrType, ".solution_version", typ_kwargs={"flags": {"required": True}})
+            
+            # Add new property (v2025_06_01)
+            _builder.set_prop("solutionVersionId", AAZStrType, ".solution_version_id", typ_kwargs={"flags": {"required": True}})
 
             return self.serialize_content(_content_value)
 

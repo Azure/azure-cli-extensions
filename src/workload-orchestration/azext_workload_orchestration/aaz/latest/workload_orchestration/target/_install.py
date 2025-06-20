@@ -15,15 +15,15 @@ from azure.cli.core.aaz import *
     "workload-orchestration target install",
 )
 class Install(AAZCommand):
-    """Post request to deploy
-    :example: 
-            az workload-orchestration target install -g rg1 -n target1 --solution-name solution1 --solution-version 1.0
+    """Post request to install a solution
+    :example: Install a solution to a target
+        az workload-orchestration target install -g rg1 -n target1 --solution-template-version-id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myRG/providers/Microsoft.Edge/solutionVersions/mySolutionVersion
     """
 
     _aaz_info = {
-        "version": "2025-01-01-preview",
+        "version": "2025-06-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.edge/targets/{}/installsolution", "2025-01-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.edge/targets/{}/installsolution", "2025-06-01"],
         ]
     }
 
@@ -60,20 +60,30 @@ class Install(AAZCommand):
         )
 
         # define Arg Group "Body"
-
         _args_schema = cls._args_schema
-        _args_schema.solution = AAZStrArg(
-            options=["--solution-name"],
+        
+        # Remove these parameters (v2025_06_01)
+        # _args_schema.solution = AAZStrArg(
+        #     options=["--solution"],
+        #     arg_group="Body",
+        #     help="Solution Name",
+        #     required=True,
+        # )
+        # _args_schema.solution_version = AAZStrArg(
+        #     options=["--solution-version"],
+        #     arg_group="Body",
+        #     help="Solution Version Name",
+        #     required=True,
+        # )
+        
+        # Add new parameter (v2025_06_01)
+        _args_schema.solution_version_id = AAZStrArg(
+            options=["--solution-template-version-id"],
             arg_group="Body",
-            help="Solution Name",
+            help="Solution Version ARM Id",
             required=True,
         )
-        _args_schema.solution_version = AAZStrArg(
-            options=["--solution-version"],
-            arg_group="Body",
-            help="Solution Version Name",
-            required=True,
-        )
+        
         return cls._args_schema
 
     def _execute_operations(self):
@@ -148,7 +158,7 @@ class Install(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-01-01-preview",
+                    "api-version", "2025-06-01",
                     required=True,
                 ),
             }
@@ -170,9 +180,14 @@ class Install(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("solution", AAZStrType, ".solution", typ_kwargs={"flags": {"required": True}})
-            _builder.set_prop("solutionVersion", AAZStrType, ".solution_version", typ_kwargs={"flags": {"required": True}})
-
+            
+            # Remove these properties (v2025_06_01)
+            # _builder.set_prop("solution", AAZStrType, ".solution", typ_kwargs={"flags": {"required": True}})
+            # _builder.set_prop("solutionVersion", AAZStrType, ".solution_version", typ_kwargs={"flags": {"required": True}})
+            
+            # Add new property (v2025_06_01)
+            _builder.set_prop("solutionVersionId", AAZStrType, ".solution_version_id", typ_kwargs={"flags": {"required": True}})
+            
             return self.serialize_content(_content_value)
 
         def on_200(self, session):

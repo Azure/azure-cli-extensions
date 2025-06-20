@@ -17,13 +17,13 @@ from azure.cli.core.aaz import *
 class ReviewSolutionVersion(AAZCommand):
     """Post request to review configuration
     :example:
-        az workload-orchestration target review --target-name MyTarget --resource-group MyResourceGroup --solution-name MySolutionTemplate --solution-version 1.0.0
+        az workload-orchestration target review --target-name MyTarget --resource-group MyResourceGroup --solution-version-id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myRG/providers/Microsoft.edge/solutionTemplateVersions/mySolutionTemplateVersion
     """
 
     _aaz_info = {
-        "version": "2025-01-01-preview",
+        "version": "2025-06-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.edge/targets/{}/reviewsolutionversion", "2025-01-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/Microsoft.edge/targets/{}/reviewsolutionversion", "2025-06-01"],
         ]
     }
 
@@ -76,16 +76,25 @@ class ReviewSolutionVersion(AAZCommand):
                 max_length=24,
             ),
         )
-        _args_schema.solution_template = AAZStrArg(
-            options=["--solution-name","--solution-template-name"],
+        # Remove these parameters (v2025_06_01)
+        # _args_schema.solution_template = AAZStrArg(
+        #     options=["--solution-name","--solution-template-name"],
+        #     arg_group="Body",
+        #     help="Solution Template Name",
+        #     required=True,
+        # )
+        # _args_schema.solution_template_version = AAZStrArg(
+        #     options=["--solution-version","--solution-template-version"],
+        #     arg_group="Body",
+        #     help="Solution Template Version Name",
+        #     required=True,
+        # )
+        
+        # Add new parameter (v2025_06_01)
+        _args_schema.solution_template_version_id = AAZStrArg(
+            options=["--solution-template-version-id"],
             arg_group="Body",
-            help="Solution Template Name",
-            required=True,
-        )
-        _args_schema.solution_template_version = AAZStrArg(
-            options=["--solution-version","--solution-template-version"],
-            arg_group="Body",
-            help="Solution Template Version Name",
+            help="Solution Template Version ARM Id",
             required=True,
         )
 
@@ -187,7 +196,7 @@ class ReviewSolutionVersion(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Edge/targets/{targetName}/reviewSolutionVersion",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.edge/targets/{targetName}/reviewSolutionVersion",
                 **self.url_parameters
             )
 
@@ -221,7 +230,7 @@ class ReviewSolutionVersion(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-01-01-preview",
+                    "api-version", "2025-06-01",
                     required=True,
                 ),
             }
@@ -248,8 +257,12 @@ class ReviewSolutionVersion(AAZCommand):
             )
             _builder.set_prop("solutionDependencies", AAZListType, ".solution_dependencies")
             _builder.set_prop("solutionInstanceName", AAZStrType, ".solution_instance_name")
-            _builder.set_prop("solutionTemplate", AAZStrType, ".solution_template", typ_kwargs={"flags": {"required": True}})
-            _builder.set_prop("solutionTemplateVersion", AAZStrType, ".solution_template_version", typ_kwargs={"flags": {"required": True}})
+            # Remove these properties (v2025_06_01)
+            # _builder.set_prop("solutionTemplate", AAZStrType, ".solution_template", typ_kwargs={"flags": {"required": True}})
+            # _builder.set_prop("solutionTemplateVersion", AAZStrType, ".solution_template_version", typ_kwargs={"flags": {"required": True}})
+            
+            # Add new property (v2025_06_01)
+            _builder.set_prop("solutionTemplateVersionId", AAZStrType, ".solution_template_version_id", typ_kwargs={"flags": {"required": True}})
 
             solution_dependencies = _builder.get(".solutionDependencies")
             if solution_dependencies is not None:
