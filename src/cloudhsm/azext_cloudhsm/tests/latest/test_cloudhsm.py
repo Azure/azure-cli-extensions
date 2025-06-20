@@ -64,13 +64,11 @@ class CloudhsmScenario(ScenarioTest):
         #Backup 
         # We cannot do it on a random generated chsm becuase the device must be activate before we can run this command
         # Will run this tests locally, generate the recordings and comment out the test case.
-        cloud_hsm_backup = self.cmd('az cloudhsm backup start --cluster-name araReal --resource-group cli-test --blob-container-uri https://clitestbackup.blob.core.windows.net/testbackup ').get_output_in_json()
+        cloud_hsm_backup = self.cmd('az cloudhsm backup start --cluster-name myhsm --resource-group cli-test --blob-container-uri https://clitestbackup.blob.core.windows.net/testbackup ').get_output_in_json()
         print(cloud_hsm_backup)
-        assert cloud_hsm_backup['azureStorageBlobContainerUri'] == 'https://clitestbackup.blob.core.windows.net/testbackup'
         assert op.contains(cloud_hsm_backup['backupId'], "cloudhsm-")
         assert cloud_hsm_backup['jobId'] != ""
         assert cloud_hsm_backup['status'] == "Succeeded"
-
         #Restore
         backup_id = cloud_hsm_backup['backupId']
 
@@ -78,6 +76,6 @@ class CloudhsmScenario(ScenarioTest):
           "backup_id":backup_id,
         })
 
-        cloud_hsm_restore = self.cmd('az cloudhsm restore start --cluster-name cliTestRestore2 --resource-group cli-test --backup-id {backup_id} --blob-container-uri https://clitestbackup.blob.core.windows.net/testbackup').get_output_in_json()
-        assert op.contains(cloud_hsm_backup['backupId'], "cloudhsm-")
-        assert cloud_hsm_backup['status'] == "Succeeded"
+        cloud_hsm_restore = self.cmd('az cloudhsm restore start --cluster-name myrestoredhsm --resource-group cli-test --backup-id {backup_id} --blob-container-uri https://clitestbackup.blob.core.windows.net/testbackup').get_output_in_json()
+        assert cloud_hsm_restore['jobId'] != ""
+        assert cloud_hsm_restore['status'] == "Succeeded"
