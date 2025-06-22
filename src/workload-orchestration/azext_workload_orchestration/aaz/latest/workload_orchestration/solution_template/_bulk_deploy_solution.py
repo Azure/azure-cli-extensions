@@ -12,18 +12,18 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "workload-orchestration solution-template bulk-deploy-solution",
+    "workload-orchestration solution-template bulk-deploy",
 )
 class BulkDeploySolution(AAZCommand):
     """Post request for bulk deploy
     :example: Create a BulkDeploySolution
-        az workload-orchestration solution-template bulk-deploy-solution --resource-group rg1 --solution-name st1 --solution-version 1.0.0 --targets ''
+        az workload-orchestration solution-template bulk-deploy --resource-group rg1 --solution-name st1 --solution-version 1.0.0 --targets '[{"solution-version-id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg1/providers/Microsoft.Edge/targets/target1/solutions/solution1/versions/1.0.0"}]'
     """
 
     _aaz_info = {
         "version": "2025-06-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.edge/solutiontemplates/{}/versions/{}/bulkdeploysolution", "2025-06-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/Microsoft.Edge/solutiontemplates/{}/versions/{}/bulkdeploysolution", "2025-06-01"],
         ]
     }
 
@@ -69,103 +69,23 @@ class BulkDeploySolution(AAZCommand):
         # define Arg Group "Body"
 
         _args_schema = cls._args_schema
-        _args_schema.solution_dependencies = AAZListArg(
-            options=["--solution-dependencies"],
-            arg_group="Body",
-            help="Solution dependencies",
-        )
-        _args_schema.solution_instance_name = AAZStrArg(
-            options=["--solution-instance-name"],
-            arg_group="Body",
-            help="Name of the solution instance",
-            fmt=AAZStrArgFormat(
-                pattern="^(?!v-)(?!.*-v-)[a-zA-Z0-9]([-a-zA-Z0-9]*[a-zA-Z0-9])?(\\.[a-zA-Z0-9]([-a-zA-Z0-9]*[a-zA-Z0-9])?)*$",
-            ),
-        )
         _args_schema.targets = AAZListArg(
             options=["--targets"],
             arg_group="Body",
-            help="Targets to which solution needs to be deployed",
+            help="Targets to which solution needs to be deployed. Each target must contain solution-version-id.",
             required=True,
         )
-
-        solution_dependencies = cls._args_schema.solution_dependencies
-        solution_dependencies.Element = AAZObjectArg()
-        cls._build_args_solution_dependency_parameter_create(solution_dependencies.Element)
 
         targets = cls._args_schema.targets
         targets.Element = AAZObjectArg()
 
         _element = cls._args_schema.targets.Element
-        _element.solution_instance_name = AAZStrArg(
-            options=["solution-instance-name"],
-            help="Name of the solution instance",
-            fmt=AAZStrArgFormat(
-                pattern="^(?!v-)(?!.*-v-)[a-zA-Z0-9]([-a-zA-Z0-9]*[a-zA-Z0-9])?(\\.[a-zA-Z0-9]([-a-zA-Z0-9]*[a-zA-Z0-9])?)*$",
-            ),
-        )
-        _element.target_id = AAZResourceIdArg(
-            options=["target-id"],
-            help="ArmId of Target",
+        _element.solution_version_id = AAZResourceIdArg(
+            options=["solution-version-id"],
+            help="ArmId of Target Solution Version",
             required=True,
         )
         return cls._args_schema
-
-    _args_solution_dependency_parameter_create = None
-
-    @classmethod
-    def _build_args_solution_dependency_parameter_create(cls, _schema):
-        if cls._args_solution_dependency_parameter_create is not None:
-            _schema.dependencies = cls._args_solution_dependency_parameter_create.dependencies
-            _schema.solution_instance_name = cls._args_solution_dependency_parameter_create.solution_instance_name
-            _schema.solution_template_id = cls._args_solution_dependency_parameter_create.solution_template_id
-            _schema.solution_template_version = cls._args_solution_dependency_parameter_create.solution_template_version
-            _schema.solution_version_id = cls._args_solution_dependency_parameter_create.solution_version_id
-            _schema.target_id = cls._args_solution_dependency_parameter_create.target_id
-            return
-
-        cls._args_solution_dependency_parameter_create = AAZObjectArg()
-
-        solution_dependency_parameter_create = cls._args_solution_dependency_parameter_create
-        solution_dependency_parameter_create.dependencies = AAZListArg(
-            options=["dependencies"],
-            help="Solution dependencies",
-        )
-        solution_dependency_parameter_create.solution_instance_name = AAZStrArg(
-            options=["solution-instance-name"],
-            help="Solution Instance Name",
-            fmt=AAZStrArgFormat(
-                pattern="^(?!v-)(?!.*-v-)[a-z0-9]([-a-z0-9]*[a-z0-9])?$",
-                max_length=24,
-            ),
-        )
-        solution_dependency_parameter_create.solution_template_id = AAZStrArg(
-            options=["solution-template-id"],
-            help="Solution Template Id",
-        )
-        solution_dependency_parameter_create.solution_template_version = AAZStrArg(
-            options=["solution-template-version"],
-            help="Solution Template Version",
-        )
-        solution_dependency_parameter_create.solution_version_id = AAZStrArg(
-            options=["solution-version-id"],
-            help="Solution Version Id",
-        )
-        solution_dependency_parameter_create.target_id = AAZStrArg(
-            options=["target-id"],
-            help="Target Id",
-        )
-
-        dependencies = cls._args_solution_dependency_parameter_create.dependencies
-        dependencies.Element = AAZObjectArg()
-        cls._build_args_solution_dependency_parameter_create(dependencies.Element)
-
-        _schema.dependencies = cls._args_solution_dependency_parameter_create.dependencies
-        _schema.solution_instance_name = cls._args_solution_dependency_parameter_create.solution_instance_name
-        _schema.solution_template_id = cls._args_solution_dependency_parameter_create.solution_template_id
-        _schema.solution_template_version = cls._args_solution_dependency_parameter_create.solution_template_version
-        _schema.solution_version_id = cls._args_solution_dependency_parameter_create.solution_version_id
-        _schema.target_id = cls._args_solution_dependency_parameter_create.target_id
 
     def _execute_operations(self):
         self.pre_operations()
@@ -247,11 +167,11 @@ class BulkDeploySolution(AAZCommand):
 
             properties = cls._schema_on_200.properties
             properties.solution_template_version_id = AAZStrType(
-                serialized_name="SolutionTemplateVersionId",
+                serialized_name="solutionTemplateVersionId",
                 flags={"read_only": True},
             )
             properties.deployed_targets = AAZListType(
-                serialized_name="DeployedTargets",
+                serialized_name="deployedTargets",
                 flags={"read_only": True},
             )
 
@@ -260,11 +180,11 @@ class BulkDeploySolution(AAZCommand):
 
             deployed_target = deployed_targets.Element
             deployed_target.solution_version_id = AAZStrType(
-                serialized_name="SolutionVersionId",
+                serialized_name="solutionVersionId",
                 flags={"read_only": True},
             )
             deployed_target.target_id = AAZStrType(
-                serialized_name="TargetId",
+                serialized_name="targetId",
                 flags={"read_only": True},
             )
 
@@ -273,7 +193,7 @@ class BulkDeploySolution(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/microsoft.edge/solutionTemplates/{solutionTemplateName}/versions/{solutionTemplateVersionName}/bulkDeploySolution",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Edge/solutionTemplates/{solutionTemplateName}/versions/{solutionTemplateVersionName}/bulkDeploySolution",
                 **self.url_parameters
             )
 
@@ -333,13 +253,7 @@ class BulkDeploySolution(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("solutionDependencies", AAZListType, ".solution_dependencies")
-            _builder.set_prop("solutionInstanceName", AAZStrType, ".solution_instance_name")
             _builder.set_prop("targets", AAZListType, ".targets", typ_kwargs={"flags": {"required": True}})
-
-            solution_dependencies = _builder.get(".solutionDependencies")
-            if solution_dependencies is not None:
-                _BulkDeploySolutionHelper._build_schema_solution_dependency_parameter_create(solution_dependencies.set_elements(AAZObjectType, "."))
 
             targets = _builder.get(".targets")
             if targets is not None:
@@ -347,29 +261,9 @@ class BulkDeploySolution(AAZCommand):
 
             _elements = _builder.get(".targets[]")
             if _elements is not None:
-                _elements.set_prop("solutionInstanceName", AAZStrType, ".solution_instance_name")
-                _elements.set_prop("targetId", AAZStrType, ".target_id", typ_kwargs={"flags": {"required": True}})
+                _elements.set_prop("solutionVersionId", AAZStrType, ".solution_version_id", typ_kwargs={"flags": {"required": True}})
 
             return self.serialize_content(_content_value)
-
-
-class _BulkDeploySolutionHelper:
-    """Helper class for BulkDeploySolution"""
-
-    @classmethod
-    def _build_schema_solution_dependency_parameter_create(cls, _builder):
-        if _builder is None:
-            return
-        _builder.set_prop("dependencies", AAZListType, ".dependencies")
-        _builder.set_prop("solutionInstanceName", AAZStrType, ".solution_instance_name")
-        _builder.set_prop("solutionTemplateId", AAZStrType, ".solution_template_id")
-        _builder.set_prop("solutionTemplateVersion", AAZStrType, ".solution_template_version")
-        _builder.set_prop("solutionVersionId", AAZStrType, ".solution_version_id")
-        _builder.set_prop("targetId", AAZStrType, ".target_id")
-
-        dependencies = _builder.get(".dependencies")
-        if dependencies is not None:
-            cls._build_schema_solution_dependency_parameter_create(dependencies.set_elements(AAZObjectType, "."))
 
 
 __all__ = ["BulkDeploySolution"]
