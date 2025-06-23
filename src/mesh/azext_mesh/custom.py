@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-# pylint: disable=too-few-public-methods,too-many-arguments,no-self-use,too-many-locals,line-too-long,unused-argument
+# pylint: disable=too-few-public-methods,too-many-arguments,no-self-use,too-many-locals,line-too-long,unused-argument,no-else-break,no-else-return
 
 from __future__ import print_function
 from collections import OrderedDict
@@ -19,9 +19,11 @@ from knack.util import CLIError
 
 from azure.cli.core.util import get_file_json, shell_safe_json_parse, sdk_no_wait
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
+from azure.cli.core.azclierror import ArgumentUsageError
 from azure.cli.core.profiles import ResourceType, get_sdk
 from sfmergeutility import SFMergeUtility  # pylint: disable=E0611,import-error
-
+from azext_mesh.aaz.latest.mesh.secretvalue import Show as _SecretValueShow, Listvalue as _SecretValueListValue
+from azext_mesh.aaz.latest.mesh.volume import Create as _VolumeCreate
 
 logger = get_logger(__name__)
 
@@ -288,7 +290,7 @@ def generate_arm_template(cmd, input_yaml_files=None, parameters=None):
     return _generate_arm_template_core(input_yaml_files, parameters)
 
 
-def create_volume(client, resource_group_name,
+def create_volume(cmd, resource_group_name,
                   name, location,
                   template_file=None, template_uri=None):
     """Create a volume. """
@@ -300,15 +302,30 @@ def create_volume(client, resource_group_name,
         volume_properties = get_file_json(template_file, preserve_order=True)
         volume_properties = json.loads(json.dumps(volume_properties))
     else:
-        raise CLIError('One of --template-file or --template-uri has to be specified')
+        raise ArgumentUsageError('One of --template-file or --template-uri has to be specified')
 
     volume_properties['location'] = location
-    return client.create(resource_group_name, name, volume_properties)
+    return _VolumeCreate(cli_ctx=cmd.cli_ctx)(command_args={
+        'resource_group': resource_group_name,
+        'name': name,
+        'location': location,
+        'provider': volume_properties.get('provider', 'SFAzureFile'),
+        'azure_file_parameters': volume_properties.get('azure_file_parameters', None),
+        'description': volume_properties.get('description', None),
+    })
 
 
-def secret_show(client, resource_group_name, secret_name, secret_value_resource_name, show_value=False):
-    secret_data = client.get(resource_group_name, secret_name, secret_value_resource_name)
+def secret_show(cmd, resource_group_name, secret_name, secret_value_resource_name, show_value=False):
+    secret_data = _SecretValueShow(cli_ctx=cmd.cli_ctx)(command_args={
+        'secret_name': secret_name,
+        'resource_group': resource_group_name,
+        'version': secret_value_resource_name
+    })
     if show_value:
-        secret_value = client.list_value(resource_group_name, secret_name, secret_value_resource_name)
-        secret_data.value = secret_value.value
+        secret_value = _SecretValueListValue(cli_ctx=cmd.cli_ctx)(command_args={
+            'secret_name': secret_name,
+            'resource_group': resource_group_name,
+            'version': secret_value_resource_name
+        })
+        secret_data['value'] = secret_value['value']
     return secret_data

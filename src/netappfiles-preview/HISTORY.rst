@@ -2,6 +2,10 @@
 
 Release History
 ===============
+1.0.0b4
+++++++++
+* Remove msrestazure dependency
+
 1.0.0b3
 +++++
 Add new command `az netappfiles volume list-quota-report` 

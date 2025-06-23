@@ -166,6 +166,44 @@ def validate_ip_ranges(namespace):
             pass
 
 
+def validate_namespace_name(namespace):
+    _validate_namespace_name(namespace.name)
+
+
+def _validate_namespace_name(name):
+    """
+    Validates a Kubernetes namespace name.
+    Raises ValueError if the name is invalid.
+    """
+    if name != "":
+        if len(name) < 1 or len(name) > 63:
+            raise ValueError("Namespace name must be between 1 and 63 characters.")
+        pattern = r'^[a-z0-9]([-a-z0-9]*[a-z0-9])?$'
+        if not re.match(pattern, name):
+            raise ValueError(
+                f"Invalid namespace '{name}'. Must consist of lower case alphanumeric characters or '-', "
+                "and must start and end with an alphanumeric character."
+            )
+
+
+def validate_resource_quota(namespace):
+    if namespace.cpu_request is not None:
+        if not namespace.cpu_request.endswith("m"):
+            raise ValueError("--cpu-request must be specified in millicores, like 200m")
+    if namespace.cpu_limit is not None:
+        if not namespace.cpu_limit.endswith("m"):
+            raise ValueError("--cpu-limit must be specified in millicores, like 200m")
+    pattern = r"^\d+(Ki|Mi|Gi|Ti|Pi|Ei)$"
+    if namespace.memory_request is not None:
+        if not re.match(pattern, namespace.memory_request):
+            raise ValueError("--memory-request must be specified in the power-of-two equivalents form:"
+                             "Ei, Pi, Ti, Gi, Mi, Ki.")
+    if namespace.memory_limit is not None:
+        if not re.match(pattern, namespace.memory_limit):
+            raise ValueError("--memory-limit must be specified in the power-of-two equivalents form:"
+                             "Ei, Pi, Ti, Gi, Mi, Ki.")
+
+
 def _validate_nodepool_name(nodepool_name):
     """Validates a nodepool name to be at most 12 characters, alphanumeric only."""
     if nodepool_name != "":
@@ -479,6 +517,22 @@ def validate_max_unavailable(namespace):
     except ValueError:
         # pylint: disable=raise-missing-from
         raise CLIError("--max-unavailable should be an int or percentage")
+
+
+def validate_max_blocked_nodes(namespace):
+    """validates parameters max blocked nodes is positive integers or percents."""
+    if namespace.max_blocked_nodes is None:
+        return
+    int_or_percent = namespace.max_blocked_nodes
+    if int_or_percent.endswith('%'):
+        int_or_percent = int_or_percent.rstrip('%s')
+
+    try:
+        if int(int_or_percent) < 0:
+            raise InvalidArgumentValueError('--max-blocked-nodes must be be positive')
+    except ValueError:
+        # pylint: disable=raise-missing-from
+        raise InvalidArgumentValueError('--max-blocked-nodes should be an int or percentage')
 
 
 def validate_assign_identity(namespace):
@@ -895,3 +949,27 @@ def validate_gateway_prefix_size(namespace):
             raise ArgumentUsageError("--gateway-prefix-size can only be set for Gateway-mode nodepools")
         if namespace.gateway_prefix_size < 28 or namespace.gateway_prefix_size > 31:
             raise CLIError("--gateway-prefix-size must be in the range [28, 31]")
+
+
+def validate_resource_group_parameter(namespace):
+    """Validates that if the user specified the cluster name, resource group name is also specified and vice versa"""
+    if namespace.resource_group_name and not namespace.cluster_name:
+        raise RequiredArgumentMissingError("Please specify --cluster")
+    if not namespace.resource_group_name and namespace.cluster_name:
+        raise RequiredArgumentMissingError("Please specify --resource-group")
+
+
+def validate_location_resource_group_cluster_parameters(namespace):
+    """Validates location or cluster details are specified and not mutually exclusive"""
+    location = namespace.location
+    resource_group_name = namespace.resource_group_name
+    cluster_name = namespace.cluster_name
+    if location and (resource_group_name or cluster_name):
+        raise RequiredArgumentMissingError(
+            "You must specify --location or --resource-group and --cluster."
+        )
+
+    if location and resource_group_name and cluster_name:
+        raise MutuallyExclusiveArgumentError(
+            "Cannot specify --location and --resource-group and --cluster at the same time."
+        )

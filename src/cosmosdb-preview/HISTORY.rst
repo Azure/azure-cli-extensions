@@ -1,6 +1,14 @@
 .. :changelog:
 Release History
 ===============
+1.6.0
+* Add support for Fleet/Fleetspace/FleetspaceAccount/FleetAnalytics CRUD actions.
+
++++++++
+1.5.0
+* Add support for Gremlin/Cassandra/Mongo RBAC role definition and assignment CRUD actions.
+
++++++++
 1.4.0
 *  Add support for private endpoint in VPN based datacenter deployments in managed cassandra.
 

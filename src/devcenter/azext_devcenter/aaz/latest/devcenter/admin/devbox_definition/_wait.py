@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}/devboxdefinitions/{}", "2024-10-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}/devboxdefinitions/{}", "2025-04-01-preview"],
         ]
     }
 
@@ -136,7 +136,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-10-01-preview",
+                    "api-version", "2025-04-01-preview",
                     required=True,
                 ),
             }
@@ -167,128 +167,107 @@ class Wait(AAZWaitCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _WaitHelper._build_schema_dev_box_definition_read(cls._schema_on_200)
+
+            _schema_on_200 = cls._schema_on_200
+            _schema_on_200.id = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200.location = AAZStrType(
+                flags={"required": True},
+            )
+            _schema_on_200.name = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
+            _schema_on_200.system_data = AAZObjectType(
+                serialized_name="systemData",
+                flags={"read_only": True},
+            )
+            _schema_on_200.tags = AAZDictType()
+            _schema_on_200.type = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            properties = cls._schema_on_200.properties
+            properties.active_image_reference = AAZObjectType(
+                serialized_name="activeImageReference",
+                flags={"read_only": True},
+            )
+            _WaitHelper._build_schema_image_reference_read(properties.active_image_reference)
+            properties.hibernate_support = AAZStrType(
+                serialized_name="hibernateSupport",
+            )
+            properties.image_reference = AAZObjectType(
+                serialized_name="imageReference",
+                flags={"required": True},
+            )
+            _WaitHelper._build_schema_image_reference_read(properties.image_reference)
+            properties.image_validation_error_details = AAZObjectType(
+                serialized_name="imageValidationErrorDetails",
+                flags={"read_only": True},
+            )
+            properties.image_validation_status = AAZStrType(
+                serialized_name="imageValidationStatus",
+                flags={"read_only": True},
+            )
+            properties.os_storage_type = AAZStrType(
+                serialized_name="osStorageType",
+            )
+            properties.provisioning_state = AAZStrType(
+                serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+            properties.sku = AAZObjectType(
+                flags={"required": True},
+            )
+            properties.validation_status = AAZStrType(
+                serialized_name="validationStatus",
+                flags={"read_only": True},
+            )
+
+            image_validation_error_details = cls._schema_on_200.properties.image_validation_error_details
+            image_validation_error_details.code = AAZStrType()
+            image_validation_error_details.message = AAZStrType()
+
+            sku = cls._schema_on_200.properties.sku
+            sku.capacity = AAZIntType()
+            sku.family = AAZStrType()
+            sku.name = AAZStrType(
+                flags={"required": True},
+            )
+            sku.size = AAZStrType()
+            sku.tier = AAZStrType()
+
+            system_data = cls._schema_on_200.system_data
+            system_data.created_at = AAZStrType(
+                serialized_name="createdAt",
+            )
+            system_data.created_by = AAZStrType(
+                serialized_name="createdBy",
+            )
+            system_data.created_by_type = AAZStrType(
+                serialized_name="createdByType",
+            )
+            system_data.last_modified_at = AAZStrType(
+                serialized_name="lastModifiedAt",
+            )
+            system_data.last_modified_by = AAZStrType(
+                serialized_name="lastModifiedBy",
+            )
+            system_data.last_modified_by_type = AAZStrType(
+                serialized_name="lastModifiedByType",
+            )
+
+            tags = cls._schema_on_200.tags
+            tags.Element = AAZStrType()
 
             return cls._schema_on_200
 
 
 class _WaitHelper:
     """Helper class for Wait"""
-
-    _schema_dev_box_definition_read = None
-
-    @classmethod
-    def _build_schema_dev_box_definition_read(cls, _schema):
-        if cls._schema_dev_box_definition_read is not None:
-            _schema.id = cls._schema_dev_box_definition_read.id
-            _schema.location = cls._schema_dev_box_definition_read.location
-            _schema.name = cls._schema_dev_box_definition_read.name
-            _schema.properties = cls._schema_dev_box_definition_read.properties
-            _schema.system_data = cls._schema_dev_box_definition_read.system_data
-            _schema.tags = cls._schema_dev_box_definition_read.tags
-            _schema.type = cls._schema_dev_box_definition_read.type
-            return
-
-        cls._schema_dev_box_definition_read = _schema_dev_box_definition_read = AAZObjectType()
-
-        dev_box_definition_read = _schema_dev_box_definition_read
-        dev_box_definition_read.id = AAZStrType(
-            flags={"read_only": True},
-        )
-        dev_box_definition_read.location = AAZStrType(
-            flags={"required": True},
-        )
-        dev_box_definition_read.name = AAZStrType(
-            flags={"read_only": True},
-        )
-        dev_box_definition_read.properties = AAZObjectType(
-            flags={"client_flatten": True},
-        )
-        dev_box_definition_read.system_data = AAZObjectType(
-            serialized_name="systemData",
-            flags={"read_only": True},
-        )
-        dev_box_definition_read.tags = AAZDictType()
-        dev_box_definition_read.type = AAZStrType(
-            flags={"read_only": True},
-        )
-
-        properties = _schema_dev_box_definition_read.properties
-        properties.active_image_reference = AAZObjectType(
-            serialized_name="activeImageReference",
-        )
-        cls._build_schema_image_reference_read(properties.active_image_reference)
-        properties.hibernate_support = AAZStrType(
-            serialized_name="hibernateSupport",
-        )
-        properties.image_reference = AAZObjectType(
-            serialized_name="imageReference",
-            flags={"required": True},
-        )
-        cls._build_schema_image_reference_read(properties.image_reference)
-        properties.image_validation_error_details = AAZObjectType(
-            serialized_name="imageValidationErrorDetails",
-        )
-        properties.image_validation_status = AAZStrType(
-            serialized_name="imageValidationStatus",
-        )
-        properties.os_storage_type = AAZStrType(
-            serialized_name="osStorageType",
-        )
-        properties.provisioning_state = AAZStrType(
-            serialized_name="provisioningState",
-            flags={"read_only": True},
-        )
-        properties.sku = AAZObjectType(
-            flags={"required": True},
-        )
-        properties.validation_status = AAZStrType(
-            serialized_name="validationStatus",
-        )
-
-        image_validation_error_details = _schema_dev_box_definition_read.properties.image_validation_error_details
-        image_validation_error_details.code = AAZStrType()
-        image_validation_error_details.message = AAZStrType()
-
-        sku = _schema_dev_box_definition_read.properties.sku
-        sku.capacity = AAZIntType()
-        sku.family = AAZStrType()
-        sku.name = AAZStrType(
-            flags={"required": True},
-        )
-        sku.size = AAZStrType()
-        sku.tier = AAZStrType()
-
-        system_data = _schema_dev_box_definition_read.system_data
-        system_data.created_at = AAZStrType(
-            serialized_name="createdAt",
-        )
-        system_data.created_by = AAZStrType(
-            serialized_name="createdBy",
-        )
-        system_data.created_by_type = AAZStrType(
-            serialized_name="createdByType",
-        )
-        system_data.last_modified_at = AAZStrType(
-            serialized_name="lastModifiedAt",
-        )
-        system_data.last_modified_by = AAZStrType(
-            serialized_name="lastModifiedBy",
-        )
-        system_data.last_modified_by_type = AAZStrType(
-            serialized_name="lastModifiedByType",
-        )
-
-        tags = _schema_dev_box_definition_read.tags
-        tags.Element = AAZStrType()
-
-        _schema.id = cls._schema_dev_box_definition_read.id
-        _schema.location = cls._schema_dev_box_definition_read.location
-        _schema.name = cls._schema_dev_box_definition_read.name
-        _schema.properties = cls._schema_dev_box_definition_read.properties
-        _schema.system_data = cls._schema_dev_box_definition_read.system_data
-        _schema.tags = cls._schema_dev_box_definition_read.tags
-        _schema.type = cls._schema_dev_box_definition_read.type
 
     _schema_image_reference_read = None
 

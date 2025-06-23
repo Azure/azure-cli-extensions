@@ -10,9 +10,9 @@ import os
 from azure.cli.core.util import sdk_no_wait
 from azure.cli.core.profiles import ResourceType, get_sdk
 from azure.cli.core.commands.client_factory import get_mgmt_service_client, get_data_service_client
+from azure.core.exceptions import HttpResponseError
 from azure.mgmt.compute.models import ResourceIdentityType
-from msrestazure.tools import parse_resource_id
-from msrestazure.azure_exceptions import CloudError
+from azure.mgmt.core.tools import parse_resource_id
 
 from knack.util import CLIError
 from knack.log import get_logger
@@ -265,10 +265,10 @@ class EnhancedMonitoring:  # pylint: disable=too-many-instance-attributes
 
                     self._roles_client.role_assignments.create(scope, assignment_name, params_role_assignment)
                     created = True
-                except CloudError as cex:
+                except HttpResponseError as cex:
                     logger.info("Error during role assignment %s", cex)
-                    if ((not cex.error) or (not cex.error.error) or
-                            (PRINCIPAL_NOT_FOUND_ERROR != cex.error.error.lower())):
+                    if ((not cex.error) or (not cex.error.code) or
+                            (PRINCIPAL_NOT_FOUND_ERROR != cex.error.code.lower())):
                         raise
 
                 if (not created) and ((datetime.now() - start_time).total_seconds() < MAX_WAIT_TIME_FOR_SP_SECONDS):

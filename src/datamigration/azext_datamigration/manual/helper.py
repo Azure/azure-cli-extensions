@@ -70,7 +70,7 @@ def is_valid_guid(guid):
 def is_base64(s):
     try:
         return base64.b64encode(base64.b64decode(s)).decode() == s
-    except Exception:
+    except Exception:  # pylint: disable=broad-except
         return False
 
 
@@ -372,7 +372,7 @@ def get_latest_nuget_org_version(package_id):
     service_index_response = None
     try:
         service_index_response = requests.get("https://api.nuget.org/v3/index.json")
-    except Exception:
+    except Exception:  # pylint: disable=broad-except
         print("Unable to connect to NuGet.org to check for updates.")
 
     if (service_index_response is None or
@@ -530,7 +530,7 @@ def is_valid_ir_key_format(key):
         if not is_valid_guid(key_parts[1]) or not is_base64(key_parts[-1]):
             return False
         return True
-    except Exception:
+    except Exception:  # pylint: disable=broad-except
         return False
 
 
@@ -539,7 +539,7 @@ def is_valid_ir_key_format(key):
 # -----------------------------------------------------------------------------------------------------------------
 def check_whether_gateway_installed(name):
 
-    import winreg
+    import winreg  # pylint: disable=import-error
     # Connecting to key in registry
     accessRegistry = winreg.ConnectRegistry(None, winreg.HKEY_LOCAL_MACHINE)
 
@@ -626,7 +626,7 @@ def register_ir(key, installed_ir_path=None):
 # -----------------------------------------------------------------------------------------------------------------
 def get_cmd_file_path():
 
-    import winreg
+    import winreg  # pylint: disable=import-error
     try:
         # Connecting to key in registry
         accessRegistry = winreg.ConnectRegistry(None, winreg.HKEY_LOCAL_MACHINE)

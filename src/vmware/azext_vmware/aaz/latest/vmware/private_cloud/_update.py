@@ -19,9 +19,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-09-01",
+        "version": "2024-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}", "2023-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}", "2024-09-01"],
         ]
     }
 
@@ -151,24 +151,6 @@ class Update(AAZCommand):
             options=["--network-block"],
             arg_group="Properties",
             help="The block of addresses should be unique across VNet in your subscription as well as on-premise. Make sure the CIDR format is conformed to (A.B.C.D/X) where A,B,C,D are between 0 and 255, and X is between 0 and 22",
-        )
-        _args_schema.nsxt_password = AAZPasswordArg(
-            options=["--nsxt-password"],
-            arg_group="Properties",
-            help="Optionally, set the NSX-T Manager password when the private cloud is created",
-            nullable=True,
-            blank=AAZPromptPasswordInput(
-                msg="Password:",
-            ),
-        )
-        _args_schema.vcenter_password = AAZPasswordArg(
-            options=["--vcenter-password"],
-            arg_group="Properties",
-            help="Optionally, set the vCenter admin password when the private cloud is created",
-            nullable=True,
-            blank=AAZPromptPasswordInput(
-                msg="Password:",
-            ),
         )
 
         encryption = cls._args_schema.encryption
@@ -348,7 +330,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-09-01",
+                    "api-version", "2024-09-01",
                     required=True,
                 ),
             }
@@ -447,7 +429,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-09-01",
+                    "api-version", "2024-09-01",
                     required=True,
                 ),
             }
@@ -523,8 +505,6 @@ class Update(AAZCommand):
                 properties.set_prop("internet", AAZStrType, ".internet")
                 properties.set_prop("managementCluster", AAZObjectType, ".", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("networkBlock", AAZStrType, ".network_block", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("nsxtPassword", AAZStrType, ".nsxt_password", typ_kwargs={"flags": {"secret": True}})
-                properties.set_prop("vcenterPassword", AAZStrType, ".vcenter_password", typ_kwargs={"flags": {"secret": True}})
 
             encryption = _builder.get(".properties.encryption")
             if encryption is not None:
@@ -636,6 +616,7 @@ class _UpdateHelper:
             _schema.system_data = cls._schema_private_cloud_read.system_data
             _schema.tags = cls._schema_private_cloud_read.tags
             _schema.type = cls._schema_private_cloud_read.type
+            _schema.zones = cls._schema_private_cloud_read.zones
             return
 
         cls._schema_private_cloud_read = _schema_private_cloud_read = AAZObjectType()
@@ -665,6 +646,7 @@ class _UpdateHelper:
         private_cloud_read.type = AAZStrType(
             flags={"read_only": True},
         )
+        private_cloud_read.zones = AAZListType()
 
         identity = _schema_private_cloud_read.identity
         identity.principal_id = AAZStrType(
@@ -897,6 +879,9 @@ class _UpdateHelper:
         tags = _schema_private_cloud_read.tags
         tags.Element = AAZStrType()
 
+        zones = _schema_private_cloud_read.zones
+        zones.Element = AAZStrType()
+
         _schema.id = cls._schema_private_cloud_read.id
         _schema.identity = cls._schema_private_cloud_read.identity
         _schema.location = cls._schema_private_cloud_read.location
@@ -906,6 +891,7 @@ class _UpdateHelper:
         _schema.system_data = cls._schema_private_cloud_read.system_data
         _schema.tags = cls._schema_private_cloud_read.tags
         _schema.type = cls._schema_private_cloud_read.type
+        _schema.zones = cls._schema_private_cloud_read.zones
 
 
 __all__ = ["Update"]

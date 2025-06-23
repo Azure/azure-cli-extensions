@@ -186,6 +186,24 @@ class AzureMeshServiceScenarioTest(ScenarioTest):
 
         self.cmd('az mesh app delete -g {rg} --name {app_name} --yes')
 
+    @ResourceGroupPreparer(name_prefix='cli_test_create_volume_with_json_file')
+    def test_create_volume_with_json_file(self, resource_group):
+        curr_dir = os.path.dirname(os.path.realpath(__file__))
+        data_file = os.path.join(curr_dir, 'data/template1.json').replace('\\', '\\\\')
+
+        self.kwargs.update({
+            'volume': self.create_random_name('volume', 10),
+            'data_file': data_file
+        })
+
+        self.cmd('mesh volume create -g {rg} -l eastus -n {volume} --template-file {data_file}', checks=[
+            self.check('name', '{volume}'),
+            self.check('azureFileParameters.accountName', 'sbzdemoaccount'),
+            self.check('azureFileParameters.shareName', 'sharel'),
+            self.check('description', 'Service Fabric Mesh sample volume.'),
+            self.check('provider', 'SFAzureFile')
+        ])
+
 
 if __name__ == '__main__':
     unittest.main()
