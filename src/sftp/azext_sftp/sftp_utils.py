@@ -18,39 +18,98 @@ logger = log.get_logger(__name__)
 
 
 def start_sftp_connection(op_info):
+    """Start an SFTP connection using the provided session information."""
     try:
-        sftp_arg_list = []
-        if op_info.sftp_args:
-            sftp_arg_list = op_info.sftp_args.split(' ')
-
         env = os.environ.copy()
 
         retry_attempt = 0
-        retry_attempts_allowed = 0
+        retry_attempts_allowed = 2  # Allow a couple retries for network issues
         successful_connection = False
         sftp_process = None
-        connection_duration = None
+        connection_start_time = None# Build destination and command
+        destination = op_info.get_destination()
+        
+        # Base SFTP command with security options (similar to SSH extension patterns)
+        command = [
+            get_ssh_client_path("sftp", op_info.ssh_client_folder),
+            "-o", "PasswordAuthentication=no",
+            "-o", "StrictHostKeyChecking=no",
+            "-o", "UserKnownHostsFile=/dev/null",
+            "-o", "PubkeyAcceptedKeyTypes=rsa-sha2-256-cert-v01@openssh.com,rsa-sha2-256",
+            "-o", "LogLevel=ERROR"  # Reduce verbose output
+        ]
+        
+        # Add session-specific arguments (keys, certs, port)
+        command.extend(op_info.build_args())
+        
+        # Add any additional SFTP arguments
+        if op_info.sftp_args:
+            if isinstance(op_info.sftp_args, str):
+                sftp_arg_list = op_info.sftp_args.split(' ')
+            else:
+                sftp_arg_list = op_info.sftp_args
+            command.extend(sftp_arg_list)
+            
+        # Add destination
+        command.append(destination)
 
-        # connect with certificate
-        destination = [op_info.username + "@" + op_info.host]
-        command = ['sftp', "-o PasswordAuthentication=false", "-o PubkeyAcceptedKeyTypes=rsa-sha2-256-cert-v01@openssh.com,rsa-sha2-256"]
-        command = command + op_info.build_args() + sftp_arg_list + destination
+        logger.debug("SFTP command: %s", ' '.join(command))
 
-        while (retry_attempt <= retry_attempts_allowed and not successful_connection):
-            connection_duration = time.time()
+        while retry_attempt <= retry_attempts_allowed and not successful_connection:
+            connection_start_time = time.time()
+            
             try:
-                print("Running command: " + ' '.join(command))
-                sftp_process = subprocess.Popen(command, env=env, encoding='utf-8', shell=True)
+                print(f"Connecting to SFTP server (attempt {retry_attempt + 1})...")
+                logger.debug("Running SFTP command: %s", ' '.join(command))
+                
+                # Start SFTP process interactively
+                if platform.system() == 'Windows':
+                    # On Windows, don't use shell=True for better argument handling
+                    sftp_process = subprocess.Popen(command, env=env, encoding='utf-8')
+                else:
+                    sftp_process = subprocess.Popen(command, env=env, encoding='utf-8')
+                  # Wait for the process to complete or be interrupted
+                return_code = sftp_process.wait()
+                
+                if return_code == 0:
+                    successful_connection = True
+                    connection_duration = time.time() - connection_start_time
+                    logger.debug("SFTP connection successful in %.2f seconds", connection_duration)
+                else:
+                    logger.warning("SFTP connection failed with return code: %d", return_code)
+                    
+            except KeyboardInterrupt:
+                logger.info("Connection interrupted by user")
+                if sftp_process:
+                    sftp_process.terminate()
+                break
             except OSError as e:
-                raise azclierror.UnclassifiedUserFault(f"Failed to start sftp connection with error: {str(e)}.",
-                                                       const.RECOMMENDATION_SSH_CLIENT_NOT_FOUND)
-            connection_duration = time.time() - connection_duration
-            if sftp_process and sftp_process.poll() == 0:
-                successful_connection = True
+                error_msg = f"Failed to start SFTP connection: {str(e)}"
+                if retry_attempt >= retry_attempts_allowed:
+                    raise azclierror.UnclassifiedUserFault(error_msg, const.RECOMMENDATION_SSH_CLIENT_NOT_FOUND)
+                else:
+                    logger.warning("%s. Retrying...", error_msg)
+            
+            connection_duration = time.time() - connection_start_time
+            logger.debug("Connection attempt %d duration: %.2f seconds", retry_attempt + 1, connection_duration)
             retry_attempt += 1
+            
+            # Brief pause before retry
+            if retry_attempt <= retry_attempts_allowed and not successful_connection:
+                time.sleep(1)
 
+        if not successful_connection:
+            raise azclierror.UnclassifiedUserFault(
+                "Failed to establish SFTP connection after multiple attempts.",
+                "Please check your network connection, credentials, and that the SFTP server is accessible."
+            )
+
+    except KeyboardInterrupt:
+        logger.info("SFTP connection interrupted by user")
     finally:
-        print("Connection duration: " + str(connection_duration))
+        if connection_start_time:
+            total_duration = time.time() - connection_start_time
+            logger.debug("Total connection session duration: %.2f seconds", total_duration)
 
 
 def create_ssh_keyfile(private_key_file, ssh_client_folder=None):
@@ -59,7 +118,7 @@ def create_ssh_keyfile(private_key_file, ssh_client_folder=None):
     logger.debug("Running ssh-keygen command %s", ' '.join(command))
     try:
         subprocess.call(command)
-    except OSErrorw as e:
+    except OSError as e:
         colorama.init()
         raise azclierror.BadRequestError(f"Failed to create ssh key file with error: {str(e)}.",
                                          const.RECOMMENDATION_SSH_CLIENT_NOT_FOUND)
