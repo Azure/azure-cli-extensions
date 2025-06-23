@@ -136,9 +136,6 @@ class ContainerServiceClient(MultiApiClientMixin, _SDKClient):
         elif api_version == '2025-04-02-preview':
             from .v2025_04_02_preview import models
             return models
-        elif api_version == '2025-04-02-preview':
-            from .v2025_02_02_preview import models
-            return models
         raise ValueError("API version {} is not available".format(api_version))
 
     @property
@@ -226,7 +223,7 @@ class ContainerServiceClient(MultiApiClientMixin, _SDKClient):
     @property
     def identity_bindings(self):
         api_version = '2025-04-02-preview'
-        from .v2025_02_02_preview.operations import IdentityBindingsOperations as OperationClass
+        from .v2025_04_02_preview.operations import IdentityBindingsOperations as OperationClass
         return OperationClass(
             self._client, self._config,
             Serializer(self._models_dict(api_version)),
