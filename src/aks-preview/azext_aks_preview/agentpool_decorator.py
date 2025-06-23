@@ -17,6 +17,7 @@ from azure.cli.command_modules.acs.agentpool_decorator import (
     AKSAgentPoolUpdateDecorator,
 )
 from azure.cli.core.azclierror import (
+    CLIInternalError,
     InvalidArgumentValueError,
     MutuallyExclusiveArgumentError,
 )
@@ -1079,6 +1080,10 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         """
         mode = self.context.raw_param.get("mode")
         if mode == CONST_NODEPOOL_MODE_MANAGEDSYSTEM:
+            # Raise error if agentpool is None
+            if agentpool is None:
+                raise CLIInternalError("agentpool cannot be None for ManagedSystem mode")
+
             # Instead of creating a new instance, modify the existing one
             # Keep name and set mode to ManagedSystem
             name = agentpool.name
