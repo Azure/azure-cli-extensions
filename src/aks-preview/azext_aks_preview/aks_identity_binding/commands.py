@@ -7,21 +7,11 @@ def aks_ib_cmd_create(
     managed_identity_resource_id: str,
     no_wait: bool = False,
 ):
-    from azure.mgmt.core.tools import parse_resource_id
     from azure.cli.core.util import sdk_no_wait
-    from azext_aks_preview._client_factory import get_msi_client
     from azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks.models import (
         IdentityBinding,
         IdentityBindingProperties,
         IdentityBindingManagedIdentityProfile,
-    )
-
-    # FIXME(hbc): workaround for resolving MI from client side
-    parsed_managed_identity_resource_id = parse_resource_id(managed_identity_resource_id)
-    msi_client = get_msi_client(cmd.cli_ctx, subscription_id=parsed_managed_identity_resource_id['subscription'])
-    msi = msi_client.user_assigned_identities.get(
-        parsed_managed_identity_resource_id['resource_group'],
-        parsed_managed_identity_resource_id['resource_name'],
     )
 
     instance = IdentityBinding(
@@ -29,14 +19,10 @@ def aks_ib_cmd_create(
         properties=IdentityBindingProperties(
             managed_identity=IdentityBindingManagedIdentityProfile(
                 resource_id=managed_identity_resource_id,
-                client_id=msi.client_id,
-                object_id=msi.principal_id,
-                tenant_id=msi.tenant_id,
             )
         )
     )
     instance.name = name
-    print(instance)
 
     return sdk_no_wait(
         no_wait,

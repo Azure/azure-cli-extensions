@@ -12475,13 +12475,9 @@ class IdentityBindingManagedIdentityProfile(_serialization.Model):
         """
         super().__init__(**kwargs)
         self.resource_id = resource_id
-        # FIXME: disable for client side value
-        self.object_id = kwargs.get('object_id', None)
-        self.client_id = kwargs.get('client_id', None)
-        self.tenant_id = kwargs.get('tenant_id', None)
-        # self.object_id: Optional[str] = None
-        # self.client_id: Optional[str] = None
-        # self.tenant_id: Optional[str] = None
+        self.object_id: Optional[str] = None
+        self.client_id: Optional[str] = None
+        self.tenant_id: Optional[str] = None
 
 
 class IdentityBindingOidcIssuerProfile(_serialization.Model):
