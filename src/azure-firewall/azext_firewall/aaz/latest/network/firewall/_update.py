@@ -19,9 +19,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-01-01",
+        "version": "2024-10-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/azurefirewalls/{}", "2022-01-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/azurefirewalls/{}", "2024-10-01"],
         ]
     }
 
@@ -53,6 +53,11 @@ class Update(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
+        _args_schema.extended_location = AAZObjectArg(
+            options=["--extended-location"],
+            help="The extended location of type local virtual network gateway.",
+            nullable=True,
+        )
         _args_schema.firewall_policy = AAZStrArg(
             options=["--policy", "--firewall-policy"],
             help="Name or ID of the firewallPolicy associated with this azure firewall.",
@@ -78,6 +83,19 @@ class Update(AAZCommand):
             options=["-z", "--zones"],
             help="Space-separated list of availability zones into which to provision the resource. Allowed values: 1, 2, 3.",
             nullable=True,
+        )
+
+        extended_location = cls._args_schema.extended_location
+        extended_location.name = AAZStrArg(
+            options=["name"],
+            help="The name of the extended location.",
+            nullable=True,
+        )
+        extended_location.type = AAZStrArg(
+            options=["type"],
+            help="The type of the extended location.",
+            nullable=True,
+            enum={"EdgeZone": "EdgeZone"},
         )
 
         tags = cls._args_schema.tags
@@ -290,7 +308,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-01-01",
+                    "api-version", "2024-10-01",
                     required=True,
                 ),
             }
@@ -389,7 +407,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-01-01",
+                    "api-version", "2024-10-01",
                     required=True,
                 ),
             }
@@ -447,9 +465,15 @@ class Update(AAZCommand):
                 value=instance,
                 typ=AAZObjectType
             )
+            _builder.set_prop("extendedLocation", AAZObjectType, ".extended_location")
             _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
             _builder.set_prop("zones", AAZListType, ".zones")
+
+            extended_location = _builder.get(".extendedLocation")
+            if extended_location is not None:
+                extended_location.set_prop("name", AAZStrType, ".name")
+                extended_location.set_prop("type", AAZStrType, ".type")
 
             properties = _builder.get(".properties")
             if properties is not None:
@@ -604,6 +628,7 @@ class _UpdateHelper:
     def _build_schema_azure_firewall_read(cls, _schema):
         if cls._schema_azure_firewall_read is not None:
             _schema.etag = cls._schema_azure_firewall_read.etag
+            _schema.extended_location = cls._schema_azure_firewall_read.extended_location
             _schema.id = cls._schema_azure_firewall_read.id
             _schema.location = cls._schema_azure_firewall_read.location
             _schema.name = cls._schema_azure_firewall_read.name
@@ -619,6 +644,9 @@ class _UpdateHelper:
         azure_firewall_read.etag = AAZStrType(
             flags={"read_only": True},
         )
+        azure_firewall_read.extended_location = AAZObjectType(
+            serialized_name="extendedLocation",
+        )
         azure_firewall_read.id = AAZStrType()
         azure_firewall_read.location = AAZStrType()
         azure_firewall_read.name = AAZStrType(
@@ -633,12 +661,19 @@ class _UpdateHelper:
         )
         azure_firewall_read.zones = AAZListType()
 
+        extended_location = _schema_azure_firewall_read.extended_location
+        extended_location.name = AAZStrType()
+        extended_location.type = AAZStrType()
+
         properties = _schema_azure_firewall_read.properties
         properties.additional_properties = AAZDictType(
             serialized_name="additionalProperties",
         )
         properties.application_rule_collections = AAZListType(
             serialized_name="applicationRuleCollections",
+        )
+        properties.autoscale_configuration = AAZObjectType(
+            serialized_name="autoscaleConfiguration",
         )
         properties.firewall_policy = AAZObjectType(
             serialized_name="firewallPolicy",
@@ -652,6 +687,7 @@ class _UpdateHelper:
         )
         properties.ip_groups = AAZListType(
             serialized_name="ipGroups",
+            flags={"read_only": True},
         )
         properties.management_ip_configuration = AAZObjectType(
             serialized_name="managementIpConfiguration",
@@ -742,6 +778,16 @@ class _UpdateHelper:
 
         target_fqdns = _schema_azure_firewall_read.properties.application_rule_collections.Element.properties.rules.Element.target_fqdns
         target_fqdns.Element = AAZStrType()
+
+        autoscale_configuration = _schema_azure_firewall_read.properties.autoscale_configuration
+        autoscale_configuration.max_capacity = AAZIntType(
+            serialized_name="maxCapacity",
+            nullable=True,
+        )
+        autoscale_configuration.min_capacity = AAZIntType(
+            serialized_name="minCapacity",
+            nullable=True,
+        )
 
         hub_ip_addresses = _schema_azure_firewall_read.properties.hub_ip_addresses
         hub_ip_addresses.private_ip_address = AAZStrType(
@@ -927,6 +973,7 @@ class _UpdateHelper:
         zones.Element = AAZStrType()
 
         _schema.etag = cls._schema_azure_firewall_read.etag
+        _schema.extended_location = cls._schema_azure_firewall_read.extended_location
         _schema.id = cls._schema_azure_firewall_read.id
         _schema.location = cls._schema_azure_firewall_read.location
         _schema.name = cls._schema_azure_firewall_read.name
