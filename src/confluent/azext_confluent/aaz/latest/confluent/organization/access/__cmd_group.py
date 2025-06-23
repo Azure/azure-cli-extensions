@@ -12,10 +12,10 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "neon postgres compute",
+    "confluent organization access",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage Compute
+    """Manage Access for List Cluster, Environment, Invitation, Role Binding Names with in the Confluent organization.
     """
     pass
 

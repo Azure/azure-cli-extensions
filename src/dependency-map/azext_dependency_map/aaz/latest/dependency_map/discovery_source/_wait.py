@@ -12,24 +12,22 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "neon postgres compute list",
+    "dependency-map discovery-source wait",
 )
-class List(AAZCommand):
-    """List Compute resources by Branch
+class Wait(AAZWaitCommand):
+    """Place the CLI in a waiting state until a condition is met.
     """
 
     _aaz_info = {
-        "version": "2025-03-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/neon.postgres/organizations/{}/projects/{}/branches/{}/computes", "2025-03-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dependencymap/maps/{}/discoverysources/{}", "2025-01-31-preview"],
         ]
     }
 
-    AZ_SUPPORT_PAGINATION = True
-
     def _handler(self, command_args):
         super()._handler(command_args)
-        return self.build_paging(self._execute_operations, self._output)
+        self._execute_operations()
+        return self._output()
 
     _args_schema = None
 
@@ -42,41 +40,32 @@ class List(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.branch_name = AAZStrArg(
-            options=["--branch-name"],
-            help="The name of the Branch",
+        _args_schema.map_name = AAZStrArg(
+            options=["--map-name"],
+            help="Maps resource name",
             required=True,
+            id_part="name",
             fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9-]{3,24}$",
-            ),
-        )
-        _args_schema.organization_name = AAZStrArg(
-            options=["--organization-name"],
-            help="Name of the Neon Organizations resource",
-            required=True,
-            fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9][a-zA-Z0-9_\\-.: ]*$",
-                max_length=50,
-                min_length=1,
-            ),
-        )
-        _args_schema.project_id = AAZStrArg(
-            options=["--project-id"],
-            help="The name of the Neon Project resource.",
-            required=True,
-            fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9-]{3,24}$",
+                pattern="^[a-zA-Z][a-zA-Z0-9-]{2,23}$",
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="Name of the Resource Group",
             required=True,
+        )
+        _args_schema.source_name = AAZStrArg(
+            options=["-n", "--name", "--source-name"],
+            help="discovery source resource",
+            required=True,
+            id_part="child_name_1",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z][a-zA-Z0-9-]{2,23}$",
+            ),
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.ComputesList(ctx=self.ctx)()
+        self.DiscoverySourcesGet(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -88,11 +77,10 @@ class List(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
-        next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
-        return result, next_link
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=False)
+        return result
 
-    class ComputesList(AAZHttpOperation):
+    class DiscoverySourcesGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -106,7 +94,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Neon.Postgres/organizations/{organizationName}/projects/{projectName}/branches/{branchName}/computes",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DependencyMap/maps/{mapName}/discoverySources/{sourceName}",
                 **self.url_parameters
             )
 
@@ -122,19 +110,15 @@ class List(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "branchName", self.ctx.args.branch_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "organizationName", self.ctx.args.organization_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "projectName", self.ctx.args.project_id,
+                    "mapName", self.ctx.args.map_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
                     "resourceGroupName", self.ctx.args.resource_group,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "sourceName", self.ctx.args.source_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -148,7 +132,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-03-01",
+                    "api-version", "2025-01-31-preview",
                     required=True,
                 ),
             }
@@ -181,68 +165,40 @@ class List(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.next_link = AAZStrType(
-                serialized_name="nextLink",
+            _schema_on_200.id = AAZStrType(
+                flags={"read_only": True},
             )
-            _schema_on_200.value = AAZListType(
+            _schema_on_200.location = AAZStrType(
                 flags={"required": True},
             )
-
-            value = cls._schema_on_200.value
-            value.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.value.Element
-            _element.id = AAZStrType(
+            _schema_on_200.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.name = AAZStrType(
-                flags={"read_only": True},
-            )
-            _element.properties = AAZObjectType()
-            _element.system_data = AAZObjectType(
+            _schema_on_200.properties = AAZObjectType()
+            _schema_on_200.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _element.type = AAZStrType(
+            _schema_on_200.tags = AAZDictType()
+            _schema_on_200.type = AAZStrType(
                 flags={"read_only": True},
             )
 
-            properties = cls._schema_on_200.value.Element.properties
-            properties.attributes = AAZListType()
-            properties.cpu_cores = AAZIntType(
-                serialized_name="cpuCores",
-            )
-            properties.created_at = AAZStrType(
-                serialized_name="createdAt",
-                flags={"read_only": True},
-            )
-            properties.entity_id = AAZStrType(
-                serialized_name="entityId",
-                flags={"read_only": True},
-            )
-            properties.entity_name = AAZStrType(
-                serialized_name="entityName",
-            )
-            properties.memory = AAZIntType()
+            properties = cls._schema_on_200.properties
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
-            properties.region = AAZStrType()
-            properties.status = AAZStrType()
-
-            attributes = cls._schema_on_200.value.Element.properties.attributes
-            attributes.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.value.Element.properties.attributes.Element
-            _element.name = AAZStrType(
+            properties.source_id = AAZStrType(
+                serialized_name="sourceId",
                 flags={"required": True},
             )
-            _element.value = AAZStrType(
+            properties.source_type = AAZStrType(
+                serialized_name="sourceType",
                 flags={"required": True},
             )
 
-            system_data = cls._schema_on_200.value.Element.system_data
+            system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(
                 serialized_name="createdAt",
             )
@@ -262,11 +218,14 @@ class List(AAZCommand):
                 serialized_name="lastModifiedByType",
             )
 
+            tags = cls._schema_on_200.tags
+            tags.Element = AAZStrType()
+
             return cls._schema_on_200
 
 
-class _ListHelper:
-    """Helper class for List"""
+class _WaitHelper:
+    """Helper class for Wait"""
 
 
-__all__ = ["List"]
+__all__ = ["Wait"]

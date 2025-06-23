@@ -20,11 +20,11 @@ FAILED = "Failed"
 SUCCEEDED = "Succeeded"
 CANCELLED = "Cancelled"
 Bundle_FeatureFlag_NotEnabled = "Bundle feature flag is not enabled."
-UPGRADE_IN_PROGRESS_MSG = "Version managed extensions upgrade is in progress …"
+UPGRADE_IN_PROGRESS_MSG = "Version managed extensions upgrade is in progress..."
 UPGRADE_SUCCEEDED_MSG = "Version managed extensions upgrade completed!"
 UPGRADE_FAILED_MSG = "Version managed extensions upgrade failed. Error: "
 UPGRADE_CANCELED_MSG = "Version managed extensions upgrade is canceled."
-UPGRADE_NOTSTARTED_MSG = "Waiting for version managed extensions upgrade to start …"
+UPGRADE_NOTSTARTED_MSG = "Waiting for version managed extensions upgrade to start..."
 UPGRADE_TIMEOUT_MSG = """
 Error: version managed extensions upgrade could not start in {0} seconds. Check out common issues here: <url>
 """
@@ -34,9 +34,14 @@ BundleExtensionTypes = [
     "microsoft.azure.secretstore"
 ]
 
-BundleExtensionNames = {
+BundleExtensionTypeNames = {
     "microsoft.arc.containerstorage": "azure-arc-containerstorage",
     "microsoft.azure.secretstore": "azure-secret-store",
 }
 
 IncludedExtensionTypes = BundleExtensionTypes + ["all"]
+BundleExtensionNames = [
+    "azure-arc-containerstorage",
+    "azure-secret-store",
+    "microsoft.extensiondiagnostics-v0"
+]
