@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "storage-actions task preview-action",
-    is_preview=True,
 )
 class PreviewAction(AAZCommand):
     """Runs the input conditions against input object metadata properties and designates matched objects in response.
