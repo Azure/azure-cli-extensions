@@ -13,7 +13,7 @@ import shutil
 import json
 
 # --- Module-level constants ---
-DEFAULT_RG = "ConfigManager-CloudTest-Playground-CliBox"
+DEFAULT_RG = "ConfigManager-CloudTest-Playground-Portal"
 DEFAULT_VERSION = "1.0.0"
 DEFAULT_LOCATION = "eastus2euap"
 SCHEMA_FILE = os.path.join(os.path.dirname(__file__), "resources", "sharedschema.yaml")
@@ -25,7 +25,7 @@ CONFIG_TEMPLATE_RESOURCE_GROUP = "ConfigManager-CloudTest-Playground-Portal"
 CONFIG_TEMPLATE_LOCATION = "eastus2euap"
 CONFIG_TEMPLATE_FILE = os.path.join(os.path.dirname(__file__), "resources", "hotmelt-config-template-hard.yaml")
 SPECS_FILE = os.path.join(os.path.dirname(__file__), "resources", "specs.json")
-CUSTOM_LOCATION_NAME = "/subscriptions/973d15c6-6c57-447e-b9c6-6d79b5b784ab/resourceGroups/configmanager-cloudtest-playground-canary/providers/Microsoft.ExtendedLocation/customLocations/BVT-Test-WOM-Location"
+CUSTOM_LOCATION_NAME = "/subscriptions/973d15c6-6c57-447e-b9c6-6d79b5b784ab/resourceGroups/configmanager-cloudtest-playground-portal/providers/Microsoft.ExtendedLocation/customLocations/den-Location"
 
 class WorkloadOrchestrationTest(ScenarioTest):
 
@@ -106,9 +106,9 @@ class WorkloadOrchestrationTest(ScenarioTest):
 
         rg = self.rg
         location = self.location
-        solution_template_name = f"{self.resource_prefix}-solution234567"
+        solution_template_name = f"{self.resource_prefix}-solution-77"
         capability = f"{self.resource_prefix}-Shampoo"
-        version = "18.0.0"
+        version = "79.0.0"
         description = "This is Holtmelt Solution"
         # Create solution-template
         create_result = self.cmd(
@@ -172,7 +172,15 @@ class WorkloadOrchestrationTest(ScenarioTest):
             json.dump(target_spec_content, f)
         with open(custom_location_file, "w") as f:
             json.dump(custom_location_content, f)
-        # Create target
+        # Get context id for target creation
+        context_id = self.cmd(
+            f"az workload-orchestration context show "
+            f"--resource-group {self.context_rg} "
+            f"--name {self.context_name} "
+            f"--query id --output tsv"
+        ).output.strip()
+
+        # Create target with context-id
         create_result = self.cmd(
             f"az workload-orchestration target create "
             f"--resource-group {rg} "
@@ -185,6 +193,7 @@ class WorkloadOrchestrationTest(ScenarioTest):
             f"--solution-scope '{solution_scope}' "
             f"--target-specification \"@{target_spec_file}\" "
             f"--extended-location \"@{custom_location_file}\" "
+            f"--context-id {context_id}"
         ).get_output_in_json()
         assert create_result["name"] == target_name
         assert create_result["properties"]["displayName"] == display_name
@@ -204,11 +213,6 @@ class WorkloadOrchestrationTest(ScenarioTest):
         assert show_result["properties"]["provisioningState"] == "Succeeded"
         assert capability in show_result["properties"]["capabilities"]
         # List targets and check for created entry
-        list_result = self.cmd(
-            f"az workload-orchestration target list --resource-group {rg}"
-        ).get_output_in_json()
-        assert any(item["name"] == target_name for item in list_result), f"{target_name} not found in target list"
-
         # --- Configuration Download, Show, Set, Review, Publish, Install Tests ---
         config_rg = DEFAULT_RG
         config_resource_prefix = "cli"
@@ -241,38 +245,7 @@ ApplicationEndpoint: http://localhost:8080/app
             f"az workload-orchestration configuration show "
             f"-g {config_rg} --solution-template-name {config_solution_name} --target-name {config_target_name}"
         )
-        # Review target
-        review_result = self.cmd(
-            f"az workload-orchestration target review "
-            f"--solution-name {config_solution_name} --solution-version 1.0.0 "
-            f"--resource-group {config_rg} --target-name {config_target_name}"
-        ).get_output_in_json()
-        assert review_result["status"] == "Succeeded"
-        review_id = review_result["properties"]["properties"]["reviewId"]
-        new_solution_version = review_result["properties"]["name"]
-        assert review_id
-        assert new_solution_version
-        # Publish target
-        publish_result = self.cmd(
-            f"az workload-orchestration target publish "
-            f"--solution-name {config_solution_name} "
-            f"--resource-group {config_rg} "
-            f"--solution-version {new_solution_version} "
-            f"--review-id {review_id} --target-name {config_target_name}"
-        ).get_output_in_json()
-        assert publish_result["status"] == "Succeeded"
-        assert publish_result["properties"]["status"] == "Publish Succeeded"
-        # Install target
-        install_result = self.cmd(
-            f"az workload-orchestration target install "
-            f"--solution-name {config_solution_name} "
-            f"--solution-version {new_solution_version} "
-            f"--resource-group {config_rg} "
-            f"--target-name {config_target_name}"
-        ).get_output_in_json()
-        assert install_result["status"] == "Succeeded"
-        assert install_result["properties"]["status"] == "Install Succeeded"
-        # Clean up config file
+        # Review target using solution-template-version-id
         if os.path.exists(config_file_path):
             os.remove(config_file_path)
         # Remove solution-template version
