@@ -3,6 +3,10 @@
 Release History
 ===============
 
+2.0.0b1
+++++++
+* Remove `az notification-hub test-send`
+
 1.0.0a1
 ++++++
 * Migrate command to AAZ

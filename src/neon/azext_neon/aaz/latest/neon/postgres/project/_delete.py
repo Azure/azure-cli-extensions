@@ -13,11 +13,10 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "neon postgres project delete",
-    is_experimental=True,
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
-    """Deletes a Neon Project resource
+    """Delete an existing Neon project resource within Azure.
 
     :example: Delete Neon Project
         az neon postgres project delete --resource-group rgneon --organization-name org-cli-test --project-id old-frost-16758796
@@ -48,7 +47,7 @@ class Delete(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.organization_name = AAZStrArg(
             options=["--organization-name"],
-            help="The Name of Neon Organization resource",
+            help="Name of the Neon organization.",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
@@ -56,10 +55,13 @@ class Delete(AAZCommand):
                 max_length=50,
                 min_length=1,
             ),
+            blank=AAZPromptInput(
+                msg="Please provide Neon Organization name:",
+            ),
         )
         _args_schema.project_id = AAZStrArg(
             options=["--project-id"],
-            help="The id of the Neon Project resource.",
+            help="Id of the Neon project",
             required=True,
             id_part="child_name_1",
             fmt=AAZStrArgFormat(
@@ -67,7 +69,7 @@ class Delete(AAZCommand):
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="The name of the Azure resource group",
+            help="Name of the Azure resource group.",
             required=True,
         )
         return cls._args_schema

@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "neon postgres branch",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage Branch
+    """Manage branches within a Neon Postgres database.
     """
     pass
 

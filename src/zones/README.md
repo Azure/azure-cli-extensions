@@ -58,7 +58,7 @@ Omit 'dependent' resources from the output. These are resources that by themselv
 az zones validate --omit-dependent-resources
 ```
 
-Validate all resources with specific tags. Resources that have ALL specified tags will be returned
+Validate all resources with specific tags. Resources that have ALL specified tags will be returned. Tags are case-sensitive.
 
 ```bash
 az zones validate --tags env=prod,criticality=high

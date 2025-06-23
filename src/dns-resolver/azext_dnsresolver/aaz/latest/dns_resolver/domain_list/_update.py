@@ -22,9 +22,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-07-01-preview",
+        "version": "2025-05-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/dnsresolverdomainlists/{}", "2023-07-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/dnsresolverdomainlists/{}", "2025-05-01"],
         ]
     }
 
@@ -92,6 +92,7 @@ class Update(AAZCommand):
             options=["--domains"],
             arg_group="Properties",
             help="The domains in the domain list.",
+            nullable=True,
         )
 
         domains = cls._args_schema.domains
@@ -178,7 +179,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-07-01-preview",
+                    "api-version", "2025-05-01",
                     required=True,
                 ),
             }
@@ -277,7 +278,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-07-01-preview",
+                    "api-version", "2025-05-01",
                     required=True,
                 ),
             }
@@ -341,12 +342,12 @@ class Update(AAZCommand):
                 value=instance,
                 typ=AAZObjectType
             )
-            _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True, "client_flatten": True}})
+            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("domains", AAZListType, ".domains", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("domains", AAZListType, ".domains")
 
             domains = _builder.get(".properties.domains")
             if domains is not None:
@@ -401,7 +402,7 @@ class _UpdateHelper:
             flags={"read_only": True},
         )
         dns_resolver_domain_list_read.properties = AAZObjectType(
-            flags={"required": True, "client_flatten": True},
+            flags={"client_flatten": True},
         )
         dns_resolver_domain_list_read.system_data = AAZObjectType(
             serialized_name="systemData",
@@ -413,8 +414,10 @@ class _UpdateHelper:
         )
 
         properties = _schema_dns_resolver_domain_list_read.properties
-        properties.domains = AAZListType(
-            flags={"required": True},
+        properties.domains = AAZListType()
+        properties.domains_url = AAZStrType(
+            serialized_name="domainsUrl",
+            flags={"read_only": True},
         )
         properties.provisioning_state = AAZStrType(
             serialized_name="provisioningState",

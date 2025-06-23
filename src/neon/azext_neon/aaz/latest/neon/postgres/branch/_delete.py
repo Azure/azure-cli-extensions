@@ -16,7 +16,7 @@ from azure.cli.core.aaz import *
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
-    """Delete a Branch
+    """Delete an existing branch within a Neon Postgres database.
 
     :example: Delete Branch
         az neon postgres branch delete --subscription 38a546de-5736-48e8-a69a-5cc636794112 --resource-group rgneon --organization-name org-cli-test --project-id old-frost-16758796 --branch-id br-spring-field-a8vje3tr
@@ -47,7 +47,7 @@ class Delete(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.branch_id = AAZStrArg(
             options=["--branch-id"],
-            help="The id of the Neon Branch resource",
+            help="Id of the Neon branch",
             required=True,
             id_part="child_name_2",
             fmt=AAZStrArgFormat(
@@ -56,7 +56,7 @@ class Delete(AAZCommand):
         )
         _args_schema.organization_name = AAZStrArg(
             options=["--organization-name"],
-            help="Name of the Neon Organizations resource",
+            help="Name of the Neon organization.",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
@@ -64,10 +64,13 @@ class Delete(AAZCommand):
                 max_length=50,
                 min_length=1,
             ),
+            blank=AAZPromptInput(
+                msg="Please provide Neon Organization name:",
+            ),
         )
         _args_schema.project_id = AAZStrArg(
             options=["--project-id"],
-            help="The id of the Neon Project resource.",
+            help="Id of the Neon project",
             required=True,
             id_part="child_name_1",
             fmt=AAZStrArgFormat(
@@ -75,7 +78,7 @@ class Delete(AAZCommand):
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="The name of the Azure resource group",
+            help="Name of the Azure resource group.",
             required=True,
         )
         return cls._args_schema

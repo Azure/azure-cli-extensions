@@ -2,6 +2,10 @@
 
 Release History
 ===============
+3.3.4
+++++++
+* Some improvements and issue fixes.
+
 3.3.3
 ++++++
 * Add documentation explaining manual steps required for connecting to SQL database in Fabric.

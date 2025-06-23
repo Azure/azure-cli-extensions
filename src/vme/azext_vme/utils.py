@@ -6,16 +6,37 @@
 import shutil
 import subprocess
 import time
+import sys
 from azure.core.exceptions import ResourceNotFoundError
 from knack.util import CLIError
 from knack.log import get_logger
 from azext_vme import consts
-
+import threading
+from ._client_factory import cf_deployments
 
 logger = get_logger(__name__)
 
 
-def call_subprocess_raise_output(cmd: list, logcmd: bool = True) -> str:
+class PollingAnimation:
+    def __init__(self):
+        self.tickers = ["/", "|", "\\", "-", "/", "|", "\\", "-"]
+        self.currTicker = 0
+        self.running = True
+
+    def tick(self):
+        while self.running:  # Keep the animation going
+            sys.stdout.write('\r' + self.tickers[self.currTicker] + " Running ..")
+            sys.stdout.flush()
+            self.currTicker = (self.currTicker + 1) % len(self.tickers)
+            time.sleep(0.5)  # Adjust speed if needed
+
+    def flush(self):
+        self.running = False  # Stop the animation
+        sys.stdout.write("\r\033[K")  # Clears the line
+        sys.stdout.flush()
+
+
+def call_subprocess_raise_output(cmd: list, logcmd: bool = False, logstatus: bool = True) -> str:
     """
     Call a subprocess and raise a CLIError with the output if it fails.
 
@@ -32,6 +53,11 @@ def call_subprocess_raise_output(cmd: list, logcmd: bool = True) -> str:
         # Log the command to be run, but do not log the password.
         print(f"Running command: {' '.join(log_cmd)}")
 
+    if logstatus:
+        animation = PollingAnimation()
+        spinner_thread = threading.Thread(target=animation.tick)
+        spinner_thread.start()
+
     try:
         called_process = subprocess.run(
             cmd, encoding="utf-8", capture_output=True, text=True, check=True
@@ -43,15 +69,21 @@ def call_subprocess_raise_output(cmd: list, logcmd: bool = True) -> str:
             called_process.stderr,
         )
 
+        if logstatus:
+            animation.running = False
+            spinner_thread.join()
+            animation.flush()
         return called_process.stdout
     except subprocess.CalledProcessError as error:
+        if logstatus:
+            animation.running = False
+            spinner_thread.join()
+            animation.flush()
         all_output: str = (
             f"Command: {' '.join(log_cmd)}\n"
-            f"stdout: {error.stdout}\n"
-            f"stderr: {error.stderr}\n"
-            f"Return code: {error.returncode}"
+            f"{error.stderr}"
         )
-        logger.debug("The following command failed to run:\n%s", all_output)
+
         # Raise the error without the original exception, which may contain secrets.
         raise CLIError(all_output) from None
 
@@ -89,10 +121,10 @@ def check_and_add_cli_extension(cli_extension_name):
         "-o",
         "tsv"
     ]
-    result = call_subprocess_raise_output(command, False)
+    result = call_subprocess_raise_output(command, False, False)
 
     if not (cli_extension_name in result.strip()):
-        print(f"{cli_extension_name} is not installed. Adding it now...")
+        print(f"Installing az cli extension {cli_extension_name}...")
         command = [
             str(shutil.which("az")),
             "extension",
@@ -101,10 +133,11 @@ def check_and_add_cli_extension(cli_extension_name):
             cli_extension_name
         ]
         call_subprocess_raise_output(command)
+        print(f"Installed az cli extension {cli_extension_name} successfully.")
 
 
 def check_and_enable_bundle_feature_flag(
-        cluster, resource_group_name, cluster_name, kube_config=None, kube_context=None):
+        cmd, subscription_id, cluster, resource_group_name, cluster_name, kube_config=None, kube_context=None):
     """Enable the bundle feature flag for the given cluster if it's not already enabled."""
 
     auto_upgrade = extract_auto_upgrade_value(cluster)
@@ -130,8 +163,23 @@ def check_and_enable_bundle_feature_flag(
 
         call_subprocess_raise_output(command)
 
-        # Wait for the feature flag to be enabled on the dp side
-        time.sleep(5)
+        # Wait for the feature flag to be enabled on the dp side.
+        wait_timeout = 300
+        start_time = time.time()
+        deployment_name = (consts.ARC_UPDATE_PREFIX + cluster_name).lower()
+        client = cf_deployments(cmd.cli_ctx, subscription_id)
+        deployment = None
+        while time.time() - start_time < wait_timeout:
+            try:
+                deployment = client.get(resource_group_name, deployment_name)
+                break
+            except ResourceNotFoundError:
+                print(f"[{get_utctimestring()}] Waiting for the bundle feature flag to propagate...")
+                time.sleep(5)
+
+        if (not deployment):
+            raise CLIError("The bundle feature flag failed to propagate within the timeout period.")
+        print("Enabled the bundle feature flag successfully.")
 
 
 def check_deployment_status(resources, deployment, timestamp):
@@ -168,3 +216,7 @@ def handle_failure(resources, deployment, timestamp):
             )
 
     raise CLIError(f"[{timestamp}] {consts.UPGRADE_FAILED_MSG + deployment.properties.error.message}")
+
+
+def get_utctimestring() -> str:
+    return time.strftime("%Y-%m-%dT%H-%M-%SZ", time.gmtime())

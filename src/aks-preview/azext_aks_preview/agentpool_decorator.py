@@ -503,6 +503,26 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
         # this parameter does not need validation
         return max_unavailable
 
+    def get_max_blocked_nodes(self) -> str:
+        """Obtain the value of max_blocked_nodes.
+
+        :return: string
+        """
+        # read the original value passed by the command
+        max_blocked_nodes = self.raw_param.get("max_blocked_nodes")
+        # In create mode, try to read the property value corresponding to the parameter from the `agentpool` object
+        if self.decorator_mode == DecoratorMode.CREATE:
+            if (
+                self.agentpool and
+                self.agentpool.upgrade_settings and
+                self.agentpool.upgrade_settings.max_blocked_nodes is not None
+            ):
+                max_blocked_nodes = self.agentpool.upgrade_settings.max_blocked_nodes
+
+        # this parameter does not need dynamic completion
+        # this parameter does not need validation
+        return max_blocked_nodes
+
     def get_enable_artifact_streaming(self) -> bool:
         """Obtain the value of enable_artifact_streaming.
         :return: bool
@@ -1127,6 +1147,10 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         if max_unavailable:
             upgrade_settings.max_unavailable = max_unavailable
 
+        max_blocked_nodes = self.context.get_max_blocked_nodes()
+        if max_blocked_nodes:
+            upgrade_settings.max_blocked_nodes = max_blocked_nodes
+
         agentpool.upgrade_settings = upgrade_settings
         return agentpool
 
@@ -1350,6 +1374,11 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
         undrainable_node_behavior = self.context.get_undrainable_node_behavior()
         if undrainable_node_behavior:
             upgrade_settings.undrainable_node_behavior = undrainable_node_behavior
+            agentpool.upgrade_settings = upgrade_settings
+
+        max_blocked_nodes = self.context.get_max_blocked_nodes()
+        if max_blocked_nodes:
+            upgrade_settings.max_blocked_nodes = max_blocked_nodes
             agentpool.upgrade_settings = upgrade_settings
 
         max_unavailable = self.context.get_max_unavailable()

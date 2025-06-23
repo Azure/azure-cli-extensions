@@ -2,8 +2,9 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-# pylint: disable=unused-argument,too-many-lines
+# pylint: disable=unused-argument,too-many-lines,too-many-locals
 
+from collections import defaultdict
 from getpass import getpass
 from azure.cli.command_modules.acs._client_factory import get_resources_client
 from azure.cli.core.azclierror import (
@@ -13,11 +14,14 @@ from azure.cli.core.azclierror import (
     InvalidArgumentValueError,
 )
 from azure.cli.core.util import sdk_no_wait
+from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.core.exceptions import ResourceNotFoundError  # type: ignore
 from azure.mgmt.core.tools import is_valid_resource_id
-from .scvmm_utils import get_resource_id, get_extended_location
+from .scvmm_utils import get_logger, get_resource_id, get_extended_location
 from .scvmm_constants import (
     AVAILABILITYSET_RESOURCE_TYPE,
+    MACHINE_KIND,
+    SCVMM_API_VERSION,
     SCVMM_NAMESPACE,
     CLOUD_RESOURCE_TYPE,
     VMMSERVER_RESOURCE_TYPE,
@@ -26,6 +30,7 @@ from .scvmm_constants import (
     INVENTORY_ITEM_TYPE,
     MACHINE_KIND_SCVMM,
     DEFAULT_VMMSERVER_PORT,
+    EXTENDED_LOCATION_TYPE,
     EXTENDED_LOCATION_NAMESPACE,
     CUSTOM_LOCATION_RESOURCE_TYPE,
     MACHINES_RESOURCE_TYPE,
@@ -53,6 +58,7 @@ from .scvmm_constants import (
 from .vendored_sdks.scvmm.models import (
     Cloud,
     CloudProperties,
+    ExtendedLocation,
     HardwareProfile,
     HardwareProfileUpdate,
     InfrastructureProfile,
@@ -120,8 +126,11 @@ from .vendored_sdks.hybridcompute.operations import (
     MachineExtensionsOperations,
 )
 
+from .vendored_sdks.resourcegraph.models import QueryRequest, QueryRequestOptions, QueryResponse
+
 from ._client_factory import (
     cf_machine,
+    cf_resource_graph,
     cf_virtual_machine_instance,
 )
 
@@ -536,6 +545,161 @@ def get_hcrp_machine_id(
     )
     assert machine_id is not None
     return machine_id
+
+
+def create_from_machines(
+    cmd,
+    client: VirtualMachineInstancesOperations,
+    scvmm,
+    rg_name=None,
+    resource_name=None,
+):
+    scvmm_id = scvmm
+    machine_id = resource_name
+    if resource_name is not None:
+        if rg_name is None:
+            raise RequiredArgumentMissingError(
+                "--resource-group is required when --machine-name is provided."
+            )
+        machine_id = get_resource_id(
+            cmd,
+            rg_name,
+            HCRP_NAMESPACE,
+            MACHINES_RESOURCE_TYPE,
+            resource_name,
+        )
+    if not is_valid_resource_id(scvmm_id):
+        raise InvalidArgumentValueError(
+            "Please provide a valid scvmm resource id "
+            "using --scvmm-id."
+        )
+    assert isinstance(scvmm_id, str)
+
+    logger = get_logger(__name__)
+    arg_client = cf_resource_graph(cmd.cli_ctx)
+    machine_client = cf_machine(cmd.cli_ctx)
+    scvmm_sub = scvmm_id.split("/")[2]
+    resources_client = get_resources_client(cmd.cli_ctx, scvmm_sub)
+    scvmm = resources_client.get_by_id(scvmm_id, SCVMM_API_VERSION)
+    logger.info("Searching for machines in the SCVMM %s ...", scvmm.name)
+
+    query = f"""
+Resources
+{rg_name and "| where resourceGroup =~ '{}'".format(rg_name) or ""}
+{machine_id and "| where id =~ '{}'".format(machine_id) or ""}
+| where type =~ 'Microsoft.HybridCompute/machines'
+| where isempty(kind) or kind =~ '{MACHINE_KIND}'
+| extend p=parse_json(properties)
+| extend u = tolower(tostring(p['vmUuid']))
+| where isnotempty(u)
+| where location =~ '{scvmm.location}'
+| extend vmUuidRev = strcat(
+    substring(u, 6, 2), substring(u, 4, 2), substring(u, 2, 2), substring(u, 0, 2), '-',
+    substring(u, 11, 2), substring(u, 9, 2), '-',
+    substring(u, 16, 2), substring(u, 14, 2), '-',
+    substring(u, 19))
+| extend vmUuid=pack_array(u, vmUuidRev)
+| mv-expand vmUuid
+| extend vmUuid=tostring(vmUuid)
+| project machineId=id, name, resourceGroup, vmUuid, kind
+| join kind=inner (
+ExtensibilityResources
+| where type =~ 'Microsoft.SCVMM/VMMServers/InventoryItems'
+| where kind =~ 'VirtualMachine'
+| where id startswith '{scvmm.id}/InventoryItems'
+| extend p=parse_json(properties)
+| extend biosId = tolower(tostring(p['biosGuid']))
+| extend managedResourceId=tolower(tostring(p['managedResourceId']))
+| project inventoryId=id, biosId, managedResourceId
+) on $left.vmUuid == $right.biosId
+| project-away vmUuid
+"""
+    query = " ".join(query.splitlines())
+
+    # https://github.com/wpbrown/azmeta-libs/blob/4495d2d55f052032fe11416f5c59e2f2e79c2d73/azmeta/src/azmeta/access/resource_graph.py
+    skip_token = None
+    vm_list = []
+    while True:
+        query_options = QueryRequestOptions(skip_token=skip_token)
+        query_request = QueryRequest(
+            subscriptions=[get_subscription_id(cmd.cli_ctx)],
+            query=query,
+            options=query_options,
+        )
+        query_response: QueryResponse = arg_client.resources(query_request)
+        vm_list.extend(query_response.data)
+        skip_token = query_response.skip_token
+        if skip_token is None:
+            break
+    logger.info("%s machines will be attempted to be linked to the SCVMM %s ...", len(vm_list), scvmm.name)
+    failed = 0
+    linked = 0
+    biosId2VM = defaultdict(list)
+    for vm in vm_list:
+        biosId2VM[vm["biosId"]].append(vm)
+    for i, vm in enumerate(vm_list):
+        prefix = f"[{i + 1}/{len(vm_list)}]"
+        machineId = vm["machineId"]
+        machineName = vm["name"]
+        machineRG = vm["resourceGroup"]
+        machineKind = vm["kind"]
+        inventoryId = vm["inventoryId"]
+        managedResourceId = vm["managedResourceId"]
+        biosId = vm["biosId"]
+        if len(biosId2VM[biosId]) > 1:
+            logger.warning(
+                "%s Skipping machine %s with biosId %s "
+                "because there are multiple machines with the same biosId: %s .",
+                prefix, machineName, biosId, biosId2VM[biosId])
+            continue
+        if managedResourceId:
+            if SCVMM_NAMESPACE.lower() in managedResourceId.lower():
+                logger.info(
+                    "%s Machine %s is already linked to managed resource %s .",
+                    prefix, machineName, managedResourceId)
+                continue
+            if managedResourceId.lower() != machineId.lower():
+                logger.warning(
+                    "%s Skipping machine %s because the inventory item "
+                    "is linked to a different resource: %s .",
+                    prefix, machineName, managedResourceId)
+                continue
+        logger.info(
+            "%s Linking machine %s to SCVMM %s with inventoryId: %s ...",
+            prefix, machineName, scvmm.name, inventoryId)
+        vmi = VirtualMachineInstance(
+            extended_location=ExtendedLocation(
+                type=EXTENDED_LOCATION_TYPE,
+                name=scvmm.extended_location.name,
+            ),
+            infrastructure_profile=InfrastructureProfile(
+                inventory_item_id=inventoryId,
+            ),
+        )
+        try:
+            if not machineKind:
+                m = MachineUpdate(
+                    kind=MACHINE_KIND,
+                )
+                _ = machine_client.update(machineRG, machineName, m)
+            _ = client.begin_create_or_update(
+                machineId, vmi
+            ).result()
+            linked += 1
+        except Exception as e:  # pylint: disable=broad-except
+            logger.warning(
+                "%s Failed to link machine %s to SCVMM %s. Error: %s",
+                prefix, machineName, scvmm.name, e)
+            failed += 1
+    logger.info(
+        "[%s/%s] machines were successfully linked to the SCVMM %s .",
+        linked, len(vm_list), scvmm.name)
+    logger.info(
+        "[%s/%s] machines failed to be linked to the SCVMM %s .",
+        failed, len(vm_list), scvmm.name)
+    logger.info(
+        "[%s/%s] machines were skipped.",
+        len(vm_list) - linked - failed, len(vm_list))
 
 
 # pylint: disable=too-many-locals
