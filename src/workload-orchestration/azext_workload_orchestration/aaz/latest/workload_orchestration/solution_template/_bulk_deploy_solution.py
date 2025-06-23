@@ -17,7 +17,7 @@ from azure.cli.core.aaz import *
 class BulkDeploySolution(AAZCommand):
     """Post request for bulk deploy
     :example: Create a BulkDeploySolution
-        az workload-orchestration solution-template bulk-deploy --resource-group rg1 --solution-name st1 --solution-version 1.0.0 --targets '[{"solution-version-id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg1/providers/Microsoft.Edge/targets/target1/solutions/solution1/versions/1.0.0"}]'
+              az workload-orchestration solution-template bulk-deploy --targets "@targets.json" --name "<solution-template-name>" --version "<solution-template-version>" -g <rg>
     """
 
     _aaz_info = {
@@ -48,7 +48,7 @@ class BulkDeploySolution(AAZCommand):
             required=True,
         )
         _args_schema.solution_template_name = AAZStrArg(
-            options=["--solution-name"],
+            options=["--solution-template-name","--name"],
             help="The name of the SolutionTemplate",
             required=True,
             id_part="name",
@@ -57,7 +57,7 @@ class BulkDeploySolution(AAZCommand):
             ),
         )
         _args_schema.solution_template_version_name = AAZStrArg(
-            options=["--solution-version"],
+            options=["--solution-template-version","--version"],
             help="The name of the SolutionTemplateVersion",
             required=True,
             id_part="child_name_1",

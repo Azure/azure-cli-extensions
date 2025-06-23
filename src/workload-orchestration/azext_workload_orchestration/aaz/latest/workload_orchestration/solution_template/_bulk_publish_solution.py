@@ -16,8 +16,9 @@ from azure.cli.core.aaz import *
 )
 class BulkPublishSolution(AAZCommand):
     """Post request to bulk publish
-    example: Publish bulk publish solution
-        az workload-orchestration solution-template bulk-publish --resource-group rg1 
+     :example: Publish bulk publish solution
+            az workload-orchestration solution-template bulk-publish --targets "@targets.json" --name <solution-template-name> --version "<solution-template-version>" -g <rg>
+
     """
 
     _aaz_info = {
@@ -52,7 +53,7 @@ class BulkPublishSolution(AAZCommand):
             required=True,
         )
         _args_schema.solution_template_name = AAZStrArg(
-            options=["--solution-name"],
+            options=["--solution-template-name","--name"],
             help="The name of the SolutionTemplate",
             required=True,
             id_part="name",
@@ -61,7 +62,7 @@ class BulkPublishSolution(AAZCommand):
             ),
         )
         _args_schema.solution_template_version_name = AAZStrArg(
-            options=["--solution-version"],
+            options=["--solution-template-version","--version"],
             help="The name of the SolutionTemplateVersion",
             required=True,
             id_part="child_name_1",
