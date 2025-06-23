@@ -36,9 +36,9 @@ interactions:
       ParameterSetName:
       - -l --action --blobs --container
       User-Agent:
-      - AZURECLI/2.60.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.74.0 azsdk-python-core/1.31.0 Python/3.12.10 (Windows-10-10.0.19045-SP0)
     method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StorageActions/locations/eastus2euap/previewActions?api-version=2023-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StorageActions/locations/eastus2/previewActions?api-version=2023-01-01
   response:
     body:
       string: '{"properties":{"container":{"name":"firstContainer","metadata":[{"key":"mContainerKey1","value":"mContainerValue1"}]},"blobs":[{"matchedBlock":"If","properties":[{"key":"Creation-Time","value":"Wed,
@@ -54,7 +54,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Sat, 18 May 2024 10:32:43 GMT
+      - Mon, 23 Jun 2025 09:44:02 GMT
       expires:
       - '-1'
       pragma:
@@ -67,9 +67,11 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a,objectId=a7250e3a-0e5e-48e2-9a34-45f1f5e1a91e/eastus2euap/ce73ccef-4fa9-42d0-a59d-f3853a6681da
+      - tenantId=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a,objectId=a7250e3a-0e5e-48e2-9a34-45f1f5e1a91e/eastus2euap/ac24a137-8129-4ecd-b9f7-4d566f6762eb
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '199'
     status:
       code: 200
       message: OK
