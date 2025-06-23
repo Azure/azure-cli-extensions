@@ -42,6 +42,7 @@ from azext_aks_preview._consts import (
     CONST_IMDS_RESTRICTION_DISABLED,
     CONST_AVAILABILITY_SET,
     CONST_VIRTUAL_MACHINES,
+    CONST_NODEPOOL_MODE_MANAGEDSYSTEM,
 )
 from azext_aks_preview._helpers import (
     check_is_apiserver_vnet_integration_cluster,
@@ -1229,6 +1230,16 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         disable_image_integrity = self.raw_param.get("disable_image_integrity")
 
         return disable_image_integrity
+
+    def get_enable_managed_system_pool(self) -> bool:
+        """Obtain the value of enable_managed_system_pool.
+
+        :return: bool
+        """
+        # read the original value passed by the command
+        enable_managed_system_pool = self.raw_param.get("enable_managed_system_pool")
+
+        return enable_managed_system_pool
 
     def get_cluster_snapshot_id(self) -> Union[str, None]:
         """Obtain the values of cluster_snapshot_id.
@@ -2912,8 +2923,13 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
 
         :return: None
         """
+        # If enable_managed_system_pool is True, set the mode to ManagedSystem for the default nodepool
+        raw_parameters = self.__raw_parameters.copy()
+        if self.context.get_enable_managed_system_pool():
+            raw_parameters["mode"] = CONST_NODEPOOL_MODE_MANAGEDSYSTEM
+
         self.agentpool_decorator = AKSPreviewAgentPoolAddDecorator(
-            self.cmd, self.client, self.__raw_parameters, self.resource_type, self.agentpool_decorator_mode
+            self.cmd, self.client, raw_parameters, self.resource_type, self.agentpool_decorator_mode
         )
         self.agentpool_context = self.agentpool_decorator.context
         self.context.attach_agentpool_context(self.agentpool_context)
