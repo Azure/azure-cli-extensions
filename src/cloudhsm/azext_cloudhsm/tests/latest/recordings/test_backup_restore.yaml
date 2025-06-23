@@ -1,6 +1,6 @@
 interactions:
 - request:
-    body: '{"blobContainerUri": "https://clitestbackup.blob.core.windows.net/testbackup"}'
+    body: '{"azureStorageBlobContainerUri": "https://clitestbackup.blob.core.windows.net/testbackup"}'
     headers:
       Accept:
       - application/json
@@ -120,7 +120,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test/providers/Microsoft.HardwareSecurityModules/cloudHsmClusters/myhsm/backupOperationStatus/08d796457ad74ac6ab5e6cd5f174c5e3?api-version=2025-03-31
   response:
     body:
-      string: '{"properties":{"backupId":"cloudhsm-0e35c989-c582-4b3c-958d-596e4c4fe133-2025061314364592","blobContainerUri":"https://clitestbackup.blob.core.windows.net/testbackup","status":"Succeeded","statusDetails":"HSM
+      string: '{"properties":{"backupId":"cloudhsm-0e35c989-c582-4b3c-958d-596e4c4fe133-2025061314364592","azureStorageBlobContainerUri":"https://clitestbackup.blob.core.windows.net/testbackup","status":"Succeeded","statusDetails":"HSM
         Backup Time: 6/13/2025 1:40:04 PM +00:00 UTC.","startTime":"2025-06-13T14:36:45Z","endTime":"2025-06-13T14:36:53Z","jobId":"08d796457ad74ac6ab5e6cd5f174c5e3"}}'
     headers:
       cache-control:
@@ -151,7 +151,7 @@ interactions:
       code: 200
       message: OK
 - request:
-    body: '{"blobContainerUri": "https://clitestbackup.blob.core.windows.net/testbackup",
+    body: '{"azureStorageBlobContainerUri": "https://clitestbackup.blob.core.windows.net/testbackup",
       "backupId": "cloudhsm-0e35c989-c582-4b3c-958d-596e4c4fe133-2025061314364592"}'
     headers:
       Accept:
