@@ -42,14 +42,21 @@ class SftpCustomCommandTest(unittest.TestCase):
 
     def test_sftp_connect_preprod(self):
         cmd = mock.Mock()
+        cmd.cli_ctx = mock.Mock()
+        cmd.cli_ctx.cloud = mock.Mock()
+        cmd.cli_ctx.cloud.name = "azurecloud"
         # 1. start devfabric
         # 2. get host and port from df
         # 3. call sftp_connect
         # def sftp_connect(cmd, storage_account, port = 22, cert_file=None, public_key_file=None):
         print("testing")
+        print(cmd.cli_ctx.cloud.name)
         custom.sftp_connect(
             cmd = cmd,
             storage_account = 'accounts8dd1b07a2e1fc8f',
             port = 10122,
-            cert_file = 'C:\\Users\\johnli1\\AppData\\Local\\Temp\\id_rsa.pub-aadcert.pub'
+            #cert_file = 'C:\\Users\\johnli1\\AppData\\Local\\Temp\\id_rsa.pub-aadcert.pub',
+            cert_file = 'C:\\Users\\johnli1\\.ssh\\id_rsa-corpcert.pub',
             host_override = '127.0.0.1')
+        # purposely fail
+        self.assertTrue(False)

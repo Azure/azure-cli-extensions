@@ -8,8 +8,9 @@ import hashlib
 import json
 import tempfile
 import time
+import datetime
+import shutil
 import oschmod
-import subprocess
 
 from knack import log
 from azure.cli.core import azclierror
@@ -20,10 +21,13 @@ from azure.cli.core._profile import Profile
 from . import rsa_parser
 from . import sftp_info
 from . import sftp_utils
+from . import file_utils
+from . import constants as const
 
 logger = log.get_logger(__name__)
 
-def sftp_cert(cmd, cert_path=None, public_key_file=None):
+def sftp_cert(cmd, cert_path=None, public_key_file=None, ssh_client_folder=None):
+    """Generate SSH certificate for SFTP authentication."""
     if not cert_path and not public_key_file:
         raise azclierror.RequiredArgumentMissingError("--file or --public-key-file must be provided.")
     if cert_path and not os.path.isdir(os.path.dirname(cert_path)):
@@ -33,22 +37,24 @@ def sftp_cert(cmd, cert_path=None, public_key_file=None):
         public_key_file = os.path.abspath(public_key_file)
     if cert_path:
         cert_path = os.path.abspath(cert_path)
+    if ssh_client_folder:
+        ssh_client_folder = os.path.abspath(ssh_client_folder)
 
     # If user doesn't provide a public key, save generated key pair to the same folder as --file
     keys_folder = None
     if not public_key_file:
         keys_folder = os.path.dirname(cert_path)
 
-    public_key_file, _, _ = _check_or_create_public_private_files(public_key_file, None, keys_folder, None)
+    public_key_file, _, _ = _check_or_create_public_private_files(public_key_file, None, keys_folder, ssh_client_folder)
     # certificate generated here
-    cert_file, _ = _get_and_write_certificate(cmd, public_key_file, cert_path, None)
+    cert_file, _ = _get_and_write_certificate(cmd, public_key_file, cert_path, ssh_client_folder)
 
     if keys_folder:
         logger.warning("%s contains sensitive information (id_rsa, id_rsa.pub). "
                        "Please delete once this certificate is no longer being used.", keys_folder)
     # pylint: disable=broad-except
     try:
-        cert_expiration = sftp_utils.get_certificate_start_and_end_times(cert_file, None)[1]
+        cert_expiration = sftp_utils.get_certificate_start_and_end_times(cert_file, ssh_client_folder)[1]
         print_styled_text((Style.SUCCESS,
                            f"Generated SSH certificate {cert_file} is valid until {cert_expiration} in local time."))
     except Exception as e:
@@ -56,26 +62,108 @@ def sftp_cert(cmd, cert_path=None, public_key_file=None):
         print_styled_text((Style.SUCCESS, f"Generated SSH certificate {cert_file}."))
 
 
-def sftp_connect(cmd, storage_account, port = 10122, cert_file=None, private_key_file=None, public_key_file=None, host_override=None, sftp_args=None):
-    # user cert if provided, otherwise generate one
-    if not cert_file and not public_key_file:
-        raise azclierror.RequiredArgumentMissingError("Either --cert-file or --public-key-file must be provided.")
+def sftp_connect(cmd, storage_account, port=22, cert_file=None, private_key_file=None, public_key_file=None, host_override=None, sftp_args=None, ssh_client_folder=None):
+    """Connect to Azure Storage Account via SFTP with automatic certificate generation if needed."""
+    
+    # Validate input parameters
+    _assert_args(storage_account, cert_file, public_key_file, private_key_file)
+    
+    # Allow connection with no credentials for fully managed experience
+    auto_generate_cert = False
+    delete_keys = False
+    delete_cert = False
+    credentials_folder = None
+    
+    if not cert_file and not public_key_file and not private_key_file:
+        print_styled_text((Style.ACTION, "No credentials provided. Will generate SSH certificate automatically..."))
+        auto_generate_cert = True
+        delete_cert = True
+        delete_keys = True
+        credentials_folder = tempfile.mkdtemp(prefix="aadsftp")
     
     if cert_file and public_key_file:
-        print_styled_text((Style.WARNING, "Both --cert-file and --public-key-file provided. Using --cert-file."))
+        print_styled_text((Style.WARNING, "Both --certificate-file and --public-key-file provided. Using --certificate-file."))
 
-    public_key_file, _, _ = _check_or_create_public_private_files(public_key_file, None, None, None)
-    # this causes 'unprotected private key file' failure:
-    cert_file, user = _get_and_write_certificate(cmd, public_key_file, None, None)
-    #if not cert_file:
-    #print_styled_text((Style.WARNING, "Generating SSH certificate..."))
+    try:        # Get or create keys/certificate
+        if auto_generate_cert:
+            public_key_file, private_key_file, _ = _check_or_create_public_private_files(None, None, credentials_folder, ssh_client_folder)
+            cert_file, user = _get_and_write_certificate(cmd, public_key_file, None, ssh_client_folder)
+        elif not cert_file:
+            public_key_file, private_key_file, _ = _check_or_create_public_private_files(public_key_file, private_key_file, None, ssh_client_folder)
+            print_styled_text((Style.ACTION, "Generating SSH certificate..."))
+            cert_file, user = _get_and_write_certificate(cmd, public_key_file, None, ssh_client_folder)
+            delete_cert = True
+        else:
+            # Validate existing certificate
+            print("DEBUG: Validating provided certificate file...")
+            if not os.path.isfile(cert_file):
+                raise azclierror.FileOperationError(f"Certificate file {cert_file} not found.")
+            
+            # Check certificate validity
+            try:
+                print("DEBUG: Checking certificate validity...")
+                times = sftp_utils.get_certificate_start_and_end_times(cert_file, ssh_client_folder)
+                if times and times[1] < datetime.datetime.now():
+                    print_styled_text((Style.WARNING, f"Certificate {cert_file} has expired. Generating new certificate..."))
+                    # Extract public key from existing cert and generate new one
+                    temp_dir = tempfile.mkdtemp(prefix="aadsftp")
+                    public_key_file = os.path.join(temp_dir, "id_rsa.pub")
+                    private_key_file = os.path.join(temp_dir, "id_rsa")
+                    sftp_utils.create_ssh_keyfile(private_key_file, ssh_client_folder)
+                    cert_file, user = _get_and_write_certificate(cmd, public_key_file, None, ssh_client_folder)
+                    delete_cert = True
+                    delete_keys = True
+                else:
+                    user = sftp_utils.get_ssh_cert_principals(cert_file, ssh_client_folder)[0].lower()
+            except Exception as e:
+                logger.warning("Could not validate certificate: %s. Proceeding with provided certificate.", str(e))
+                user = sftp_utils.get_ssh_cert_principals(cert_file, ssh_client_folder)[0].lower()
 
-    if '@' in user: user = user.split('@')[0] # only use username part of UPN
-    username = storage_account + "." + user + "###OAuthSettingsOverride=True;OAuthTenantId=44f1980d-fc79-4cda-a367-883a275a4800;OAuthAppId=f33b34cb-1069-40dc-9873-50b2d4b6e881;OAuthSrpAppId=233acdea-7279-4f7b-92ce-180145123ba5;"
-
-    sftp_session = sftp_info.SFTPSession(cert_file, private_key_file, username, host_override, port, None, None, None)
-    print_styled_text((Style.SUCCESS, f"Connecting to {storage_account}..."))
-    sftp_utils.start_sftp_connection(sftp_session)
+        # Process username - extract username part if it's a UPN
+        if '@' in user:
+            user = user.split('@')[0]
+            
+        # Build Azure Storage SFTP username format
+        # Note: Removed hardcoded tenant/app IDs - these should be configured based on the environment
+        username = f"{storage_account}.{user}"
+          # Determine hostname
+        if host_override:
+            hostname = host_override
+            print("DEBUG: Using host override:", hostname)
+        else:
+            # Standard Azure Storage SFTP endpoint format
+            hostname = f"{storage_account}.blob.core.windows.net"        # Create SFTP session and connect
+            print("DEBUG: Using default hostname:", hostname)
+        sftp_session = sftp_info.SFTPSession(
+            storage_account=storage_account,
+            username=username, 
+            host=hostname,
+            port=port,
+            cert_file=cert_file,
+            private_key_file=private_key_file,
+            sftp_args=sftp_args,
+            ssh_client_folder=ssh_client_folder,
+            ssh_proxy_folder=None,
+            credentials_folder=credentials_folder,
+            yes_without_prompt=False
+        )
+          # Set local user for username resolution
+        sftp_session.local_user = user
+        sftp_session.resolve_connection_info(host_override)
+        
+        print_styled_text((Style.SUCCESS, f"Connecting to {storage_account} at {sftp_session.get_host()}:{port} as {sftp_session.username}..."))
+        _do_sftp_op(cmd, sftp_session, sftp_utils.start_sftp_connection)
+        
+    except Exception as e:
+        # Clean up generated credentials on error
+        if delete_keys or delete_cert:
+            logger.debug("An error occurred. Cleaning up generated credentials.")
+            _cleanup_credentials(delete_keys, delete_cert, credentials_folder, cert_file, private_key_file, public_key_file)
+        raise e
+    finally:
+        # Clean up generated credentials after successful connection
+        if delete_keys or delete_cert:
+            _cleanup_credentials(delete_keys, delete_cert, credentials_folder, cert_file, private_key_file, public_key_file)
 
 
 ### Helpers ###
@@ -136,6 +224,7 @@ def _get_and_write_certificate(cmd, public_key_file, cert_file, ssh_client_folde
 
     scopes = [scope]
     data = _prepare_jwk_data(public_key_file)
+    from azure.cli.core._profile import Profile
     profile = Profile(cli_ctx=cmd.cli_ctx)
 
     t0 = time.time()
@@ -209,3 +298,45 @@ def _get_modulus_exponent(public_key_file):
     exponent = parser.exponent
 
     return modulus, exponent
+
+def _assert_args(storage_account, cert_file, public_key_file, private_key_file):
+    """Validate SFTP connection arguments, following SSH extension patterns."""
+    if not storage_account:
+        raise azclierror.RequiredArgumentMissingError("Storage account name is required.")
+
+    if cert_file and not os.path.isfile(cert_file):
+        raise azclierror.FileOperationError(f"Certificate file {cert_file} not found.")
+    
+    if public_key_file and not os.path.isfile(public_key_file):
+        raise azclierror.FileOperationError(f"Public key file {public_key_file} not found.")
+        
+    if private_key_file and not os.path.isfile(private_key_file):
+        raise azclierror.FileOperationError(f"Private key file {private_key_file} not found.")
+
+def _do_sftp_op(cmd, sftp_session, op_call):
+    """Execute SFTP operation with session, similar to SSH extension's _do_ssh_op."""
+    # Validate session before operation
+    sftp_session.validate_session()
+    
+    # Call the actual operation (connection, etc.)
+    return op_call(sftp_session)
+
+
+def _cleanup_credentials(delete_keys, delete_cert, credentials_folder, cert_file, private_key_file, public_key_file):
+    """Clean up generated credentials similar to SSH extension pattern."""
+    try:
+        if delete_cert and cert_file and os.path.isfile(cert_file):
+            file_utils.delete_file(cert_file, f"Deleting generated certificate {cert_file}", warning=False)
+            
+        if delete_keys:
+            if private_key_file and os.path.isfile(private_key_file):
+                file_utils.delete_file(private_key_file, f"Deleting generated private key {private_key_file}", warning=False)
+            if public_key_file and os.path.isfile(public_key_file):
+                file_utils.delete_file(public_key_file, f"Deleting generated public key {public_key_file}", warning=False)
+                
+        if credentials_folder and os.path.isdir(credentials_folder):
+            logger.debug("Deleting credentials folder %s", credentials_folder)
+            shutil.rmtree(credentials_folder)
+            
+    except OSError as e:
+        logger.warning("Failed to clean up credentials: %s", str(e))
