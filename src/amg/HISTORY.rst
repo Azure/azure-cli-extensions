@@ -142,6 +142,6 @@ Release History
 ++++++
 * Remove msrestazure dependency
 
-2.6.2
+2.7.0
 ++++++
 * `az grafana api-key`: deprecate command group as Grafana Labs is sunsetting API keys
