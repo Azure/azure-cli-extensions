@@ -1475,7 +1475,6 @@ class Deserializer:
                 value = self.deserialize_data(raw_value, attr_desc["type"])
                 d_attrs[attr] = value
         except (AttributeError, TypeError, KeyError) as err:
-            print(err)
             msg = "Unable to deserialize to object: " + class_name  # type: ignore
             raise DeserializationError(msg) from err
         additional_properties = self._build_additional_properties(attributes, data)
