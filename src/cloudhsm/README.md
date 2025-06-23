@@ -2,4 +2,4 @@
 This is an extension to Azure CLI to manage Cloudhsm resources.
 
 ## How to use ##
-Please add commands usage here.
+az extension add --name cloudhsm
