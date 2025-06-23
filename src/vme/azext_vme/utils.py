@@ -12,6 +12,7 @@ from knack.util import CLIError
 from knack.log import get_logger
 from azext_vme import consts
 import threading
+from ._client_factory import cf_deployments
 
 logger = get_logger(__name__)
 
@@ -136,7 +137,7 @@ def check_and_add_cli_extension(cli_extension_name):
 
 
 def check_and_enable_bundle_feature_flag(
-        cluster, resource_group_name, cluster_name, kube_config=None, kube_context=None):
+        cmd, subscription_id, cluster, resource_group_name, cluster_name, kube_config=None, kube_context=None):
     """Enable the bundle feature flag for the given cluster if it's not already enabled."""
 
     auto_upgrade = extract_auto_upgrade_value(cluster)
@@ -163,7 +164,21 @@ def check_and_enable_bundle_feature_flag(
         call_subprocess_raise_output(command)
 
         # Wait for the feature flag to be enabled on the dp side.
-        time.sleep(30)
+        wait_timeout = 300
+        start_time = time.time()
+        deployment_name = (consts.ARC_UPDATE_PREFIX + cluster_name).lower()
+        client = cf_deployments(cmd.cli_ctx, subscription_id)
+        deployment = None
+        while time.time() - start_time < wait_timeout:
+            try:
+                deployment = client.get(resource_group_name, deployment_name)
+                break
+            except ResourceNotFoundError:
+                print(f"[{get_utctimestring()}] Waiting for the bundle feature flag to propagate...")
+                time.sleep(5)
+
+        if (not deployment):
+            raise CLIError("The bundle feature flag failed to propagate within the timeout period.")
         print("Enabled the bundle feature flag successfully.")
 
 
@@ -201,3 +216,7 @@ def handle_failure(resources, deployment, timestamp):
             )
 
     raise CLIError(f"[{timestamp}] {consts.UPGRADE_FAILED_MSG + deployment.properties.error.message}")
+
+
+def get_utctimestring() -> str:
+    return time.strftime("%Y-%m-%dT%H-%M-%SZ", time.gmtime())

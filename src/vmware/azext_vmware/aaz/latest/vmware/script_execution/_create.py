@@ -16,9 +16,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-09-01",
+        "version": "2024-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}/scriptexecutions/{}", "2023-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}/scriptexecutions/{}", "2024-09-01"],
         ]
     }
 
@@ -110,9 +110,12 @@ class Create(AAZCommand):
         cls._build_args_script_execution_parameter_create(hidden_parameters.Element)
 
         named_outputs = cls._args_schema.named_outputs
-        named_outputs.Element = AAZFreeFormDictArg(
+        named_outputs.Element = AAZDictArg(
             blank={},
         )
+
+        _element = cls._args_schema.named_outputs.Element
+        _element.Element = AAZAnyTypeArg()
 
         output = cls._args_schema.output
         output.Element = AAZStrArg()
@@ -263,7 +266,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-09-01",
+                    "api-version", "2024-09-01",
                     required=True,
                 ),
             }
@@ -307,11 +310,11 @@ class Create(AAZCommand):
 
             named_outputs = _builder.get(".properties.namedOutputs")
             if named_outputs is not None:
-                named_outputs.set_elements(AAZFreeFormDictType, ".")
+                named_outputs.set_elements(AAZDictType, ".")
 
             _elements = _builder.get(".properties.namedOutputs{}")
             if _elements is not None:
-                _elements.set_anytype_elements(".")
+                _elements.set_elements(AAZAnyType, ".")
 
             output = _builder.get(".properties.output")
             if output is not None:
@@ -414,7 +417,10 @@ class Create(AAZCommand):
             information.Element = AAZStrType()
 
             named_outputs = cls._schema_on_200_201.properties.named_outputs
-            named_outputs.Element = AAZFreeFormDictType()
+            named_outputs.Element = AAZDictType()
+
+            _element = cls._schema_on_200_201.properties.named_outputs.Element
+            _element.Element = AAZAnyType()
 
             output = cls._schema_on_200_201.properties.output
             output.Element = AAZStrType()
