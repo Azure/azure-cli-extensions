@@ -50,7 +50,7 @@ class AzureFirewallScenario(ScenarioTest):
 
         self.cmd('network public-ip create -g {rg} -n {pubip} --allocation-method Static --sku Standard --edge-zone losangeles')
         self.cmd('network vnet create -g {rg} -n {vnet} --address-prefix 10.0.0.0/16 --subnet-name AzureFirewallSubnet --subnet-prefix 10.0.1.0/26 --edge-zone losangeles')
-        self.cmd('network firewall create -g {rg} -n {firewall} --vnet-name {vnet} --public-ip {pubip} --enable-dns-proxy true --extended-location type=EdgeZone name=losangeles', checks=[
+        self.cmd('network firewall create -g {rg} -n {firewall} --vnet-name {vnet} --public-ip {pubip} --enable-dns-proxy true --edge-zone losangeles', checks=[
             self.check('extendedLocation.type', 'EdgeZone'),
             self.check('extendedLocation.name', 'losangeles')
         ])
