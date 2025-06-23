@@ -136,7 +136,6 @@ class ContainerServiceClient:  # pylint: disable=too-many-instance-attributes
         self._client: ARMPipelineClient = ARMPipelineClient(base_url=base_url, policies=_policies, **kwargs)
 
         client_models = {k: v for k, v in _models.__dict__.items() if isinstance(v, type)}
-        print('client_models', client_models)
         self._serialize = Serializer(client_models)
         self._deserialize = Deserializer(client_models)
         self._serialize.client_side_validation = False
