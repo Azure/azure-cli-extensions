@@ -15754,17 +15754,11 @@ spec:
                 "acr_id": acr_id,
             }
         )
-        # enable anonymous pull for ACR
-        update_acr_cmd = (
-            "acr update --resource-group {resource_group} --name {acr_name} "
-            "--anonymous-pull-enabled true -o json"
-        )
-        self.cmd(update_acr_cmd, checks=[self.check("provisioningState", "Succeeded")])
 
         # enable acr artifact cache
         enable_acr_artifact_cache_cmd = (
-            "acr cache create -n aks-mcr -r {acr_name} "
-            "--source-repo \"mcr.microsoft.com/*\" --target-repo \"*\" -o json"
+            "acr cache create -n aks-managed-mcr -r {acr_name} "
+            "--source-repo \"mcr.microsoft.com/*\" --target-repo \"aks-managed-repository/*\" -o json"
         )
         self.cmd(enable_acr_artifact_cache_cmd, checks=[self.check("provisioningState", "Succeeded")])
 
