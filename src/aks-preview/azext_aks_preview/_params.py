@@ -65,9 +65,6 @@ from azext_aks_preview._consts import (
     CONST_GPU_INSTANCE_PROFILE_MIG7_G,
     CONST_LOAD_BALANCER_SKU_BASIC,
     CONST_LOAD_BALANCER_SKU_STANDARD,
-    CONST_LOCAL_DNS_MODE_REQUIRED,
-    CONST_LOCAL_DNS_MODE_PREFERRED,
-    CONST_LOCAL_DNS_MODE_DISABLED,
     CONST_MANAGED_CLUSTER_SKU_TIER_FREE,
     CONST_MANAGED_CLUSTER_SKU_TIER_STANDARD,
     CONST_MANAGED_CLUSTER_SKU_TIER_PREMIUM,
@@ -1826,29 +1823,23 @@ def load_arguments(self, _):
             arg_type=get_enum_type(node_os_skus_update),
             validator=validate_os_sku,
         )
-        # local dns
+
+    with self.argument_context('aks nodepool add') as c:
         c.argument(
-            "set_localdns",
-            options_list=["--set-localdns"],
-            action="store_true",
-            help="Update local DNS profile for this nodepool. Must be used with --localdns-mode or --localdns-config."
+            'localdns_config',
+            options_list=['--localdns-config'],
+            help='Path to a JSON file to configure the local DNS profile for a new nodepool.'
         )
+
+    with self.argument_context('aks nodepool update') as c:
         c.argument(
-            "localdns_config",
-            options_list=["--localdns-config"],
-            type=file_type,
-            help="Path to a JSON file with the local DNS profile configuration. Must be used with --set-localdns."
+            'localdns_config',
+            options_list=['--localdns-config'],
+            help='Path to a JSON file to configure the local DNS profile for an existing nodepool.'
         )
-        c.argument(
-            "localdns_mode",
-            options_list=["--localdns-mode"],
-            arg_type=get_enum_type([
-                CONST_LOCAL_DNS_MODE_REQUIRED,
-                CONST_LOCAL_DNS_MODE_PREFERRED,
-                CONST_LOCAL_DNS_MODE_DISABLED
-            ]),
-            help="The mode for the local DNS profile. Must be used with --set-localdns."
-        )
+
+
+
         # In update scenario, use emtpy str as default.
         c.argument('ssh_access', arg_type=get_enum_type(ssh_accesses), is_preview=True)
         c.argument('yes', options_list=['--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')

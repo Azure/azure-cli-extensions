@@ -11,30 +11,16 @@ from azure.cli.core.azclierror import InvalidArgumentValueError, MutuallyExclusi
 from types import SimpleNamespace
 import tempfile
 import json
+from knack.util import CLIError
 
 class TestLocalDNSProfile(unittest.TestCase):
     def setUp(self):
         self.cmd = Mock()
         self.models = Mock()
-        self.models.AgentPoolLocalDNSProfile = lambda **kwargs: SimpleNamespace(**kwargs)
+        self.models.LocalDNSProfile = lambda **kwargs: SimpleNamespace(**kwargs)
         self.agentpool_decorator_mode = AgentPoolDecoratorMode.STANDALONE
 
-    def test_localdns_mode(self):
-        ctx = AKSPreviewAgentPoolContext(
-            self.cmd,
-            AKSAgentPoolParamDict({
-                "set_localdns": True,
-                "localdns_mode": "preferred",
-                "localdns_config": None
-            }),
-            self.models,
-            DecoratorMode.UPDATE,
-            self.agentpool_decorator_mode,
-        )
-        profile = ctx.get_localdns_profile()
-        self.assertEqual(profile, {"mode": "preferred"})
-
-    def test_localdns_config(self):
+    def test_localdns_config_valid(self):
         config = {"mode": "required", "custom": "foo"}
         with tempfile.NamedTemporaryFile(mode="w+", delete=False) as f:
             json.dump(config, f)
@@ -42,8 +28,6 @@ class TestLocalDNSProfile(unittest.TestCase):
             ctx = AKSPreviewAgentPoolContext(
                 self.cmd,
                 AKSAgentPoolParamDict({
-                    "set_localdns": True,
-                    "localdns_mode": None,
                     "localdns_config": f.name
                 }),
                 self.models,
@@ -53,14 +37,11 @@ class TestLocalDNSProfile(unittest.TestCase):
             profile = ctx.get_localdns_profile()
             self.assertEqual(profile, config)
 
-    def test_localdns_validation(self):
-        # Missing --set-localdns
+    def test_localdns_config_invalid_file(self):
         ctx = AKSPreviewAgentPoolContext(
             self.cmd,
             AKSAgentPoolParamDict({
-                "set_localdns": False,
-                "localdns_mode": "preferred",
-                "localdns_config": None
+                "localdns_config": "nonexistent_file.json"
             }),
             self.models,
             DecoratorMode.UPDATE,
@@ -68,34 +49,35 @@ class TestLocalDNSProfile(unittest.TestCase):
         )
         with self.assertRaises(InvalidArgumentValueError):
             ctx.get_localdns_profile()
-        # Both config and mode
+
+    def test_localdns_config_invalid_json(self):
+        with tempfile.NamedTemporaryFile(mode="w+", delete=False) as f:
+            f.write("not a json")
+            f.flush()
+            ctx = AKSPreviewAgentPoolContext(
+                self.cmd,
+                AKSAgentPoolParamDict({
+                    "localdns_config": f.name
+                }),
+                self.models,
+                DecoratorMode.UPDATE,
+                self.agentpool_decorator_mode,
+            )
+            with self.assertRaises(CLIError):
+                ctx.get_localdns_profile()
+
+    def test_localdns_config_none(self):
         ctx = AKSPreviewAgentPoolContext(
             self.cmd,
             AKSAgentPoolParamDict({
-                "set_localdns": True,
-                "localdns_mode": "preferred",
-                "localdns_config": "foo.json"
-            }),
-            self.models,
-            DecoratorMode.UPDATE,
-            self.agentpool_decorator_mode,
-        )
-        with self.assertRaises(MutuallyExclusiveArgumentError):
-            ctx.get_localdns_profile()
-        # Neither config nor mode
-        ctx = AKSPreviewAgentPoolContext(
-            self.cmd,
-            AKSAgentPoolParamDict({
-                "set_localdns": True,
-                "localdns_mode": None,
                 "localdns_config": None
             }),
             self.models,
             DecoratorMode.UPDATE,
             self.agentpool_decorator_mode,
         )
-        with self.assertRaises(InvalidArgumentValueError):
-            ctx.get_localdns_profile()
+        profile = ctx.get_localdns_profile()
+        self.assertIsNone(profile)
 
 if __name__ == "__main__":
     unittest.main()

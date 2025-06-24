@@ -372,8 +372,3 @@ CONST_K8S_EXTENSION_TYPE_CLIENT_FACTORY_MOD_NAME = "azext_k8s_extension_types._c
 CONST_K8S_EXTENSION_NAME = "k8s-extension"
 CONST_K8S_EXTENSION_ACTION_MOD_NAME = "azext_k8s_extension.action"
 CONST_K8S_EXTENSION_FORMAT_MOD_NAME = "azext_k8s_extension._format"
-
-# Local DNS profile modes
-CONST_LOCAL_DNS_MODE_REQUIRED = "Required"
-CONST_LOCAL_DNS_MODE_PREFERRED = "Preferred"
-CONST_LOCAL_DNS_MODE_DISABLED = "Disabled"
