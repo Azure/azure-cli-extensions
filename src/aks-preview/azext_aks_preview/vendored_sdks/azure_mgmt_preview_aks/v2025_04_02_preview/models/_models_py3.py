@@ -12451,8 +12451,7 @@ class IdentityBindingManagedIdentityProfile(_serialization.Model):
             "pattern": r"^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
         },
         "tenant_id": {
-            # FIXME: disable for client side value
-            # "readonly": True,
+            "readonly": True,
             "max_length": 36,
             "min_length": 36,
             "pattern": r"^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
