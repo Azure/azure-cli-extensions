@@ -276,7 +276,7 @@ class Update(AAZCommand):
         _args_schema.auto_update_week = AAZIntArg(
             options=["--auto-update-week"],
             arg_group="Configuration",
-            help="Week of month (1-4) that cache node will automatically install software update",
+            help="Week of month that cache node will automatically install software update. Allowed Values: 2-3",
             nullable=True,
             fmt=AAZIntArgFormat(
                 maximum=5,
