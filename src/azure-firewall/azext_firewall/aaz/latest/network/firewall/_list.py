@@ -21,6 +21,7 @@ class List(AAZCommand):
     _aaz_info = {
         "version": "2024-10-01",
         "resources": [
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.network/azurefirewalls", "2024-10-01"],
             ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/azurefirewalls", "2024-10-01"],
         ]
     }
@@ -42,14 +43,17 @@ class List(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.resource_group = AAZResourceGroupNameArg(
-            required=True,
-        )
+        _args_schema.resource_group = AAZResourceGroupNameArg()
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.AzureFirewallsList(ctx=self.ctx)()
+        condition_0 = has_value(self.ctx.args.resource_group) and has_value(self.ctx.subscription_id)
+        condition_1 = has_value(self.ctx.subscription_id) and has_value(self.ctx.args.resource_group) is not True
+        if condition_0:
+            self.AzureFirewallsList(ctx=self.ctx)()
+        if condition_1:
+            self.AzureFirewallsListAll(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -98,6 +102,421 @@ class List(AAZCommand):
                     "resourceGroupName", self.ctx.args.resource_group,
                     required=True,
                 ),
+                **self.serialize_url_param(
+                    "subscriptionId", self.ctx.subscription_id,
+                    required=True,
+                ),
+            }
+            return parameters
+
+        @property
+        def query_parameters(self):
+            parameters = {
+                **self.serialize_query_param(
+                    "api-version", "2024-10-01",
+                    required=True,
+                ),
+            }
+            return parameters
+
+        @property
+        def header_parameters(self):
+            parameters = {
+                **self.serialize_header_param(
+                    "Accept", "application/json",
+                ),
+            }
+            return parameters
+
+        def on_200(self, session):
+            data = self.deserialize_http_content(session)
+            self.ctx.set_var(
+                "instance",
+                data,
+                schema_builder=self._build_schema_on_200
+            )
+
+        _schema_on_200 = None
+
+        @classmethod
+        def _build_schema_on_200(cls):
+            if cls._schema_on_200 is not None:
+                return cls._schema_on_200
+
+            cls._schema_on_200 = AAZObjectType()
+
+            _schema_on_200 = cls._schema_on_200
+            _schema_on_200.next_link = AAZStrType(
+                serialized_name="nextLink",
+            )
+            _schema_on_200.value = AAZListType()
+
+            value = cls._schema_on_200.value
+            value.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element
+            _element.etag = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.extended_location = AAZObjectType(
+                serialized_name="extendedLocation",
+            )
+            _element.id = AAZStrType()
+            _element.location = AAZStrType()
+            _element.name = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
+            _element.tags = AAZDictType()
+            _element.type = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.zones = AAZListType()
+
+            extended_location = cls._schema_on_200.value.Element.extended_location
+            extended_location.name = AAZStrType()
+            extended_location.type = AAZStrType()
+
+            properties = cls._schema_on_200.value.Element.properties
+            properties.additional_properties = AAZDictType(
+                serialized_name="additionalProperties",
+            )
+            properties.application_rule_collections = AAZListType(
+                serialized_name="applicationRuleCollections",
+            )
+            properties.autoscale_configuration = AAZObjectType(
+                serialized_name="autoscaleConfiguration",
+            )
+            properties.firewall_policy = AAZObjectType(
+                serialized_name="firewallPolicy",
+            )
+            _ListHelper._build_schema_sub_resource_read(properties.firewall_policy)
+            properties.hub_ip_addresses = AAZObjectType(
+                serialized_name="hubIPAddresses",
+            )
+            properties.ip_configurations = AAZListType(
+                serialized_name="ipConfigurations",
+            )
+            properties.ip_groups = AAZListType(
+                serialized_name="ipGroups",
+                flags={"read_only": True},
+            )
+            properties.management_ip_configuration = AAZObjectType(
+                serialized_name="managementIpConfiguration",
+            )
+            _ListHelper._build_schema_azure_firewall_ip_configuration_read(properties.management_ip_configuration)
+            properties.nat_rule_collections = AAZListType(
+                serialized_name="natRuleCollections",
+            )
+            properties.network_rule_collections = AAZListType(
+                serialized_name="networkRuleCollections",
+            )
+            properties.provisioning_state = AAZStrType(
+                serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+            properties.sku = AAZObjectType()
+            properties.threat_intel_mode = AAZStrType(
+                serialized_name="threatIntelMode",
+            )
+            properties.virtual_hub = AAZObjectType(
+                serialized_name="virtualHub",
+            )
+            _ListHelper._build_schema_sub_resource_read(properties.virtual_hub)
+
+            additional_properties = cls._schema_on_200.value.Element.properties.additional_properties
+            additional_properties.Element = AAZStrType()
+
+            application_rule_collections = cls._schema_on_200.value.Element.properties.application_rule_collections
+            application_rule_collections.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.properties.application_rule_collections.Element
+            _element.etag = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.id = AAZStrType()
+            _element.name = AAZStrType()
+            _element.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
+
+            properties = cls._schema_on_200.value.Element.properties.application_rule_collections.Element.properties
+            properties.action = AAZObjectType()
+            _ListHelper._build_schema_azure_firewall_rc_action_read(properties.action)
+            properties.priority = AAZIntType()
+            properties.provisioning_state = AAZStrType(
+                serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+            properties.rules = AAZListType()
+
+            rules = cls._schema_on_200.value.Element.properties.application_rule_collections.Element.properties.rules
+            rules.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.properties.application_rule_collections.Element.properties.rules.Element
+            _element.description = AAZStrType()
+            _element.fqdn_tags = AAZListType(
+                serialized_name="fqdnTags",
+            )
+            _element.name = AAZStrType()
+            _element.protocols = AAZListType()
+            _element.source_addresses = AAZListType(
+                serialized_name="sourceAddresses",
+            )
+            _element.source_ip_groups = AAZListType(
+                serialized_name="sourceIpGroups",
+            )
+            _element.target_fqdns = AAZListType(
+                serialized_name="targetFqdns",
+            )
+
+            fqdn_tags = cls._schema_on_200.value.Element.properties.application_rule_collections.Element.properties.rules.Element.fqdn_tags
+            fqdn_tags.Element = AAZStrType()
+
+            protocols = cls._schema_on_200.value.Element.properties.application_rule_collections.Element.properties.rules.Element.protocols
+            protocols.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.properties.application_rule_collections.Element.properties.rules.Element.protocols.Element
+            _element.port = AAZIntType()
+            _element.protocol_type = AAZStrType(
+                serialized_name="protocolType",
+            )
+
+            source_addresses = cls._schema_on_200.value.Element.properties.application_rule_collections.Element.properties.rules.Element.source_addresses
+            source_addresses.Element = AAZStrType()
+
+            source_ip_groups = cls._schema_on_200.value.Element.properties.application_rule_collections.Element.properties.rules.Element.source_ip_groups
+            source_ip_groups.Element = AAZStrType()
+
+            target_fqdns = cls._schema_on_200.value.Element.properties.application_rule_collections.Element.properties.rules.Element.target_fqdns
+            target_fqdns.Element = AAZStrType()
+
+            autoscale_configuration = cls._schema_on_200.value.Element.properties.autoscale_configuration
+            autoscale_configuration.max_capacity = AAZIntType(
+                serialized_name="maxCapacity",
+                nullable=True,
+            )
+            autoscale_configuration.min_capacity = AAZIntType(
+                serialized_name="minCapacity",
+                nullable=True,
+            )
+
+            hub_ip_addresses = cls._schema_on_200.value.Element.properties.hub_ip_addresses
+            hub_ip_addresses.private_ip_address = AAZStrType(
+                serialized_name="privateIPAddress",
+            )
+            hub_ip_addresses.public_i_ps = AAZObjectType(
+                serialized_name="publicIPs",
+            )
+
+            public_i_ps = cls._schema_on_200.value.Element.properties.hub_ip_addresses.public_i_ps
+            public_i_ps.addresses = AAZListType()
+            public_i_ps.count = AAZIntType()
+
+            addresses = cls._schema_on_200.value.Element.properties.hub_ip_addresses.public_i_ps.addresses
+            addresses.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.properties.hub_ip_addresses.public_i_ps.addresses.Element
+            _element.address = AAZStrType()
+
+            ip_configurations = cls._schema_on_200.value.Element.properties.ip_configurations
+            ip_configurations.Element = AAZObjectType()
+            _ListHelper._build_schema_azure_firewall_ip_configuration_read(ip_configurations.Element)
+
+            ip_groups = cls._schema_on_200.value.Element.properties.ip_groups
+            ip_groups.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.properties.ip_groups.Element
+            _element.change_number = AAZStrType(
+                serialized_name="changeNumber",
+                flags={"read_only": True},
+            )
+            _element.id = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            nat_rule_collections = cls._schema_on_200.value.Element.properties.nat_rule_collections
+            nat_rule_collections.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.properties.nat_rule_collections.Element
+            _element.etag = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.id = AAZStrType()
+            _element.name = AAZStrType()
+            _element.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
+
+            properties = cls._schema_on_200.value.Element.properties.nat_rule_collections.Element.properties
+            properties.action = AAZObjectType()
+            properties.priority = AAZIntType()
+            properties.provisioning_state = AAZStrType(
+                serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+            properties.rules = AAZListType()
+
+            action = cls._schema_on_200.value.Element.properties.nat_rule_collections.Element.properties.action
+            action.type = AAZStrType()
+
+            rules = cls._schema_on_200.value.Element.properties.nat_rule_collections.Element.properties.rules
+            rules.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.properties.nat_rule_collections.Element.properties.rules.Element
+            _element.description = AAZStrType()
+            _element.destination_addresses = AAZListType(
+                serialized_name="destinationAddresses",
+            )
+            _element.destination_ports = AAZListType(
+                serialized_name="destinationPorts",
+            )
+            _element.name = AAZStrType()
+            _element.protocols = AAZListType()
+            _element.source_addresses = AAZListType(
+                serialized_name="sourceAddresses",
+            )
+            _element.source_ip_groups = AAZListType(
+                serialized_name="sourceIpGroups",
+            )
+            _element.translated_address = AAZStrType(
+                serialized_name="translatedAddress",
+            )
+            _element.translated_fqdn = AAZStrType(
+                serialized_name="translatedFqdn",
+            )
+            _element.translated_port = AAZStrType(
+                serialized_name="translatedPort",
+            )
+
+            destination_addresses = cls._schema_on_200.value.Element.properties.nat_rule_collections.Element.properties.rules.Element.destination_addresses
+            destination_addresses.Element = AAZStrType()
+
+            destination_ports = cls._schema_on_200.value.Element.properties.nat_rule_collections.Element.properties.rules.Element.destination_ports
+            destination_ports.Element = AAZStrType()
+
+            protocols = cls._schema_on_200.value.Element.properties.nat_rule_collections.Element.properties.rules.Element.protocols
+            protocols.Element = AAZStrType()
+
+            source_addresses = cls._schema_on_200.value.Element.properties.nat_rule_collections.Element.properties.rules.Element.source_addresses
+            source_addresses.Element = AAZStrType()
+
+            source_ip_groups = cls._schema_on_200.value.Element.properties.nat_rule_collections.Element.properties.rules.Element.source_ip_groups
+            source_ip_groups.Element = AAZStrType()
+
+            network_rule_collections = cls._schema_on_200.value.Element.properties.network_rule_collections
+            network_rule_collections.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.properties.network_rule_collections.Element
+            _element.etag = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.id = AAZStrType()
+            _element.name = AAZStrType()
+            _element.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
+
+            properties = cls._schema_on_200.value.Element.properties.network_rule_collections.Element.properties
+            properties.action = AAZObjectType()
+            _ListHelper._build_schema_azure_firewall_rc_action_read(properties.action)
+            properties.priority = AAZIntType()
+            properties.provisioning_state = AAZStrType(
+                serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+            properties.rules = AAZListType()
+
+            rules = cls._schema_on_200.value.Element.properties.network_rule_collections.Element.properties.rules
+            rules.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.properties.network_rule_collections.Element.properties.rules.Element
+            _element.description = AAZStrType()
+            _element.destination_addresses = AAZListType(
+                serialized_name="destinationAddresses",
+            )
+            _element.destination_fqdns = AAZListType(
+                serialized_name="destinationFqdns",
+            )
+            _element.destination_ip_groups = AAZListType(
+                serialized_name="destinationIpGroups",
+            )
+            _element.destination_ports = AAZListType(
+                serialized_name="destinationPorts",
+            )
+            _element.name = AAZStrType()
+            _element.protocols = AAZListType()
+            _element.source_addresses = AAZListType(
+                serialized_name="sourceAddresses",
+            )
+            _element.source_ip_groups = AAZListType(
+                serialized_name="sourceIpGroups",
+            )
+
+            destination_addresses = cls._schema_on_200.value.Element.properties.network_rule_collections.Element.properties.rules.Element.destination_addresses
+            destination_addresses.Element = AAZStrType()
+
+            destination_fqdns = cls._schema_on_200.value.Element.properties.network_rule_collections.Element.properties.rules.Element.destination_fqdns
+            destination_fqdns.Element = AAZStrType()
+
+            destination_ip_groups = cls._schema_on_200.value.Element.properties.network_rule_collections.Element.properties.rules.Element.destination_ip_groups
+            destination_ip_groups.Element = AAZStrType()
+
+            destination_ports = cls._schema_on_200.value.Element.properties.network_rule_collections.Element.properties.rules.Element.destination_ports
+            destination_ports.Element = AAZStrType()
+
+            protocols = cls._schema_on_200.value.Element.properties.network_rule_collections.Element.properties.rules.Element.protocols
+            protocols.Element = AAZStrType()
+
+            source_addresses = cls._schema_on_200.value.Element.properties.network_rule_collections.Element.properties.rules.Element.source_addresses
+            source_addresses.Element = AAZStrType()
+
+            source_ip_groups = cls._schema_on_200.value.Element.properties.network_rule_collections.Element.properties.rules.Element.source_ip_groups
+            source_ip_groups.Element = AAZStrType()
+
+            sku = cls._schema_on_200.value.Element.properties.sku
+            sku.name = AAZStrType()
+            sku.tier = AAZStrType()
+
+            tags = cls._schema_on_200.value.Element.tags
+            tags.Element = AAZStrType()
+
+            zones = cls._schema_on_200.value.Element.zones
+            zones.Element = AAZStrType()
+
+            return cls._schema_on_200
+
+    class AzureFirewallsListAll(AAZHttpOperation):
+        CLIENT_TYPE = "MgmtClient"
+
+        def __call__(self, *args, **kwargs):
+            request = self.make_request()
+            session = self.client.send_request(request=request, stream=False, **kwargs)
+            if session.http_response.status_code in [200]:
+                return self.on_200(session)
+
+            return self.on_error(session.http_response)
+
+        @property
+        def url(self):
+            return self.client.format_url(
+                "/subscriptions/{subscriptionId}/providers/Microsoft.Network/azureFirewalls",
+                **self.url_parameters
+            )
+
+        @property
+        def method(self):
+            return "GET"
+
+        @property
+        def error_format(self):
+            return "ODataV4Format"
+
+        @property
+        def url_parameters(self):
+            parameters = {
                 **self.serialize_url_param(
                     "subscriptionId", self.ctx.subscription_id,
                     required=True,
