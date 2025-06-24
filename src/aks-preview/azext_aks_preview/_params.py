@@ -1765,6 +1765,12 @@ def load_arguments(self, _):
         )
         # virtual machines
         c.argument("vm_sizes", is_preview=True)
+        # local DNS
+        c.argument(
+            'localdns_config',
+            options_list=['--localdns-config'],
+            help='Path to a JSON file to configure the local DNS profile for a new nodepool.'
+        )
 
     with self.argument_context("aks nodepool update") as c:
         c.argument(
@@ -1824,22 +1830,7 @@ def load_arguments(self, _):
             validator=validate_os_sku,
         )
 
-    with self.argument_context('aks nodepool add') as c:
-        c.argument(
-            'localdns_config',
-            options_list=['--localdns-config'],
-            help='Path to a JSON file to configure the local DNS profile for a new nodepool.'
-        )
-
     with self.argument_context('aks nodepool update') as c:
-        c.argument(
-            'localdns_config',
-            options_list=['--localdns-config'],
-            help='Path to a JSON file to configure the local DNS profile for an existing nodepool.'
-        )
-
-
-
         # In update scenario, use emtpy str as default.
         c.argument('ssh_access', arg_type=get_enum_type(ssh_accesses), is_preview=True)
         c.argument('yes', options_list=['--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
@@ -1873,6 +1864,12 @@ def load_arguments(self, _):
         c.argument(
             "disable_fips_image",
             action="store_true"
+        )
+        c.argument(
+            'localdns_config',
+            options_list=['--localdns-config'],
+            help='Path to a JSON file to configure the local DNS profile for an existing nodepool.',
+            action='store'
         )
 
     with self.argument_context("aks nodepool upgrade") as c:
