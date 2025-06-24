@@ -12,6 +12,8 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+* Removed the KataMshvVmIsolation option to --workload-runtime, due to GA.
+
 18.0.0b13
 +++++++
 * Add option `--enable-http-proxy` to `az aks update`.
