@@ -21,6 +21,7 @@ from ._configuration import ContainerServiceClientConfiguration
 from .operations import (
     AgentPoolsOperations,
     ContainerServiceOperations,
+    IdentityBindingsOperations,
     LoadBalancersOperations,
     MachinesOperations,
     MaintenanceConfigurationsOperations,
@@ -184,6 +185,9 @@ class ContainerServiceClient:  # pylint: disable=too-many-instance-attributes
             self._client, self._config, self._serialize, self._deserialize, "2025-04-02-preview"
         )
         self.load_balancers = LoadBalancersOperations(
+            self._client, self._config, self._serialize, self._deserialize, "2025-04-02-preview"
+        )
+        self.identity_bindings = IdentityBindingsOperations(
             self._client, self._config, self._serialize, self._deserialize, "2025-04-02-preview"
         )
 

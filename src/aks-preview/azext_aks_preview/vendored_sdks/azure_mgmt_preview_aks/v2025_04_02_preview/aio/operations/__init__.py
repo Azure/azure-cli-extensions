@@ -28,6 +28,7 @@ from ._managed_cluster_snapshots_operations import ManagedClusterSnapshotsOperat
 from ._trusted_access_roles_operations import TrustedAccessRolesOperations  # type: ignore
 from ._trusted_access_role_bindings_operations import TrustedAccessRoleBindingsOperations  # type: ignore
 from ._load_balancers_operations import LoadBalancersOperations  # type: ignore
+from ._identity_bindings_operations import IdentityBindingsOperations  # type: ignore
 
 from ._patch import __all__ as _patch_all
 from ._patch import *
@@ -50,6 +51,7 @@ __all__ = [
     "TrustedAccessRolesOperations",
     "TrustedAccessRoleBindingsOperations",
     "LoadBalancersOperations",
+    "IdentityBindingsOperations",
 ]
 __all__.extend([p for p in _patch_all if p not in __all__])  # pyright: ignore
 _patch_sdk()

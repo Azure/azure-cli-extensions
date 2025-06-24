@@ -221,6 +221,17 @@ class ContainerServiceClient(MultiApiClientMixin, _SDKClient):
         return OperationClass(self._client, self._config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)), api_version)
 
     @property
+    def identity_bindings(self):
+        api_version = '2025-04-02-preview'
+        from .v2025_04_02_preview.operations import IdentityBindingsOperations as OperationClass
+        return OperationClass(
+            self._client, self._config,
+            Serializer(self._models_dict(api_version)),
+            Deserializer(self._models_dict(api_version)),
+            api_version
+        )
+
+    @property
     def maintenance_configurations(self):
         """Instance depends on the API version:
 
