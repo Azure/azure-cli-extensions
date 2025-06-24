@@ -2924,12 +2924,11 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         :return: None
         """
         # If enable_managed_system_pool is True, set the mode to ManagedSystem for the default nodepool
-        raw_parameters = self.__raw_parameters.copy()
         if self.context.get_enable_managed_system_pool():
-            raw_parameters["mode"] = CONST_NODEPOOL_MODE_MANAGEDSYSTEM
+            self.__raw_parameters["mode"] = CONST_NODEPOOL_MODE_MANAGEDSYSTEM
 
         self.agentpool_decorator = AKSPreviewAgentPoolAddDecorator(
-            self.cmd, self.client, raw_parameters, self.resource_type, self.agentpool_decorator_mode
+            self.cmd, self.client, self.__raw_parameters, self.resource_type, self.agentpool_decorator_mode
         )
         self.agentpool_context = self.agentpool_decorator.context
         self.context.attach_agentpool_context(self.agentpool_context)
