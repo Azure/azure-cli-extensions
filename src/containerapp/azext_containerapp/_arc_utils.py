@@ -561,14 +561,16 @@ def patch_openshift_dns_operator(kube_client, domain):
             plural="dnses",
             name="default"
         )
+        
+        coredns_service = client.CoreV1Api(kube_client).read_namespaced_service(name=CUSTOM_CORE_DNS, namespace=OPENSHIFT_DNS);
 
         # Add the custom resolver to the DNS operator configuration
         servers = dns_operator_config.get("spec", {}).get("servers", [])
         custom_resolver = {
             "name": CUSTOM_CORE_DNS,
-            "zones": [domain],
+            "zones": [domain, f"internal.{domain}"],
             "forwardPlugin": {
-                "upstreams": [f"{CUSTOM_CORE_DNS}.svc.cluster.local"]
+                "upstreams": [coredns_service.spec.cluster_ip],
             }
         }
 
