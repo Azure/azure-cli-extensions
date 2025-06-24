@@ -12439,15 +12439,13 @@ class IdentityBindingManagedIdentityProfile(_serialization.Model):
             "pattern": r"^/subscriptions/[a-zA-Z0-9-]+/resourceGroups/[a-zA-Z0-9-]+/providers/Microsoft.ManagedIdentity/userAssignedIdentities/[a-zA-Z0-9-]+$",
         },
         "object_id": {
-            # FIXME: disable for client side value
-            # "readonly": True,
+            "readonly": True,
             "max_length": 36,
             "min_length": 36,
             "pattern": r"^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
         },
         "client_id": {
-            # FIXME: disable for client side value
-            # "readonly": True,
+            "readonly": True,
             "max_length": 36,
             "min_length": 36,
             "pattern": r"^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
@@ -12514,14 +12512,14 @@ class IdentityBindingProperties(_serialization.Model):
 
     :ivar managed_identity: The managed cluster resource ID. Required.
     :vartype managed_identity:
-     ~azure.mgmt.containerservice.v2025_02_02_preview.models.IdentityBindingManagedIdentityProfile
+     ~azure.mgmt.containerservice.v2025_04_02_preview.models.IdentityBindingManagedIdentityProfile
     :ivar oidc_issuer: The OIDC issuer URL of the IdentityBinding.
     :vartype oidc_issuer:
-     ~azure.mgmt.containerservice.v2025_02_02_preview.models.IdentityBindingOidcIssuerProfile
+     ~azure.mgmt.containerservice.v2025_04_02_preview.models.IdentityBindingOidcIssuerProfile
     :ivar provisioning_state: The status of the last operation. Known values are: "Succeeded",
      "Failed", "Canceled", "Creating", "Updating", and "Deleting".
     :vartype provisioning_state: str or
-     ~azure.mgmt.containerservice.v2025_02_02_preview.models.IdentityBindingProvisioningState
+     ~azure.mgmt.containerservice.v2025_04_02_preview.models.IdentityBindingProvisioningState
     """
 
     _validation = {
