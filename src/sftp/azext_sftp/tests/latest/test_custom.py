@@ -274,7 +274,7 @@ class SftpCustomCommandTest(unittest.TestCase):
     @mock.patch('azext_sftp.custom._do_sftp_op')
     @mock.patch('azext_sftp.sftp_utils.get_ssh_cert_principals')
     def test_sftp_connect_default_port(self, mock_get_principals, mock_do_sftp):
-        """Test connect with default port (should be 22)."""
+        """Test connect with default port (should be None to let OpenSSH use its default)."""
         cmd = mock.Mock()
         cmd.cli_ctx.cloud.name = "azurecloud"
         mock_get_principals.return_value = ["testuser@domain.com"]
@@ -288,11 +288,11 @@ class SftpCustomCommandTest(unittest.TestCase):
             sftp_batch_commands="ls\nexit\n"
         )
         
-        # Verify the session was created with port 22 (default)
+        # Verify the session was created with port None (lets OpenSSH use default)
         mock_do_sftp.assert_called_once()
         call_args = mock_do_sftp.call_args[0]
         sftp_session = call_args[1]  # Second argument is the SFTP session
-        self.assertEqual(sftp_session.port, 22)
+        self.assertEqual(sftp_session.port, None)
 
     @mock.patch('azext_sftp.custom._do_sftp_op')
     @mock.patch('azext_sftp.sftp_utils.get_ssh_cert_principals')

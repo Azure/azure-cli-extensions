@@ -75,7 +75,9 @@ def sftp_connect(cmd, storage_account, port=None, cert_file=None, private_key_fi
     credentials_folder = None
     
     if not cert_file and not public_key_file and not private_key_file:
-        print_styled_text((Style.ACTION, "No credentials provided. Will generate SSH certificate automatically..."))
+        print_styled_text((Style.ACTION, "Fully managed mode: No credentials provided."))
+        print_styled_text((Style.ACTION, "Generating SSH key pair and certificate automatically..."))
+        print_styled_text((Style.WARNING, "Note: Generated credentials will be cleaned up after connection."))
         auto_generate_cert = True
         delete_cert = True
         delete_keys = True
@@ -83,6 +85,7 @@ def sftp_connect(cmd, storage_account, port=None, cert_file=None, private_key_fi
     
     if cert_file and public_key_file:
         print_styled_text((Style.WARNING, "Both --certificate-file and --public-key-file provided. Using --certificate-file."))
+        print_styled_text((Style.ACTION, "To use public key instead, omit --certificate-file parameter."))
 
     try:        # Get or create keys/certificate
         if auto_generate_cert:
@@ -95,13 +98,13 @@ def sftp_connect(cmd, storage_account, port=None, cert_file=None, private_key_fi
             delete_cert = True
         else:
             # Validate existing certificate
-            print("DEBUG: Validating provided certificate file...")
+            logger.debug("Validating provided certificate file...")
             if not os.path.isfile(cert_file):
                 raise azclierror.FileOperationError(f"Certificate file {cert_file} not found.")
             
             # Check certificate validity
             try:
-                print("DEBUG: Checking certificate validity...")
+                logger.debug("Checking certificate validity...")
                 times = sftp_utils.get_certificate_start_and_end_times(cert_file, ssh_client_folder)
                 if times and times[1] < datetime.datetime.now():
                     print_styled_text((Style.WARNING, f"Certificate {cert_file} has expired. Generating new certificate..."))
@@ -124,11 +127,22 @@ def sftp_connect(cmd, storage_account, port=None, cert_file=None, private_key_fi
             user = user.split('@')[0]
             
         # Build Azure Storage SFTP username format
-        # Note: Removed hardcoded tenant/app IDs - these should be configured based on the environment
         username = f"{storage_account}.{user}"
-          # Determine hostname        # Use cloud-aware hostname resolution
+        
+        # Use cloud-aware hostname resolution
         storage_suffix = _get_storage_endpoint_suffix(cmd)
         hostname = f"{storage_account}.{storage_suffix}"
+        
+        # Inform user about connection details
+        print_styled_text((Style.ACTION, f"Azure Storage SFTP Connection Details:"))
+        print_styled_text((Style.PRIMARY, f"  Storage Account: {storage_account}"))
+        print_styled_text((Style.PRIMARY, f"  Username: {username}"))
+        if port is not None:
+            print_styled_text((Style.PRIMARY, f"  Endpoint: {hostname}:{port}"))
+        else:
+            print_styled_text((Style.PRIMARY, f"  Endpoint: {hostname} (default SSH port)"))
+        print_styled_text((Style.PRIMARY, f"  Cloud Environment: {cmd.cli_ctx.cloud.name}"))
+        
         sftp_session = sftp_info.SFTPSession(
             storage_account=storage_account,
             username=username, 
@@ -143,11 +157,12 @@ def sftp_connect(cmd, storage_account, port=None, cert_file=None, private_key_fi
             yes_without_prompt=False,
             sftp_batch_commands=sftp_batch_commands
         )
-          # Set local user for username resolution
+        
+        # Set local user for username resolution
         sftp_session.local_user = user
         sftp_session.resolve_connection_info()
         
-        print_styled_text((Style.SUCCESS, f"Connecting to {storage_account} at {sftp_session.get_host()}:{port} as {sftp_session.username}..."))
+        print_styled_text((Style.SUCCESS, f"Establishing SFTP connection..."))
         _do_sftp_op(cmd, sftp_session, sftp_utils.start_sftp_connection)
         
     except Exception as e:

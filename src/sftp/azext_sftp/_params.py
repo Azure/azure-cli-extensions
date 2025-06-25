@@ -21,23 +21,26 @@ def load_arguments(self, _):
 
     with self.argument_context('sftp connect') as c:
         c.argument('storage_account', options_list=['--storage-account', '-s'],
-                   help='Azure Storage Account name for SFTP connection.')
+                   help='Azure Storage Account name for SFTP connection. Must have SFTP enabled.')
         c.argument('port', options_list=['--port'], 
-                   help='SFTP port. Default: 22 for Azure Storage SFTP.', 
-                   type=int, default=22)
+                   help='SFTP port. If not specified, uses SSH default port (typically 22).', 
+                   type=int)
         c.argument('cert_file', options_list=['--certificate-file', '-c'],
-                   help='Path to certificate file used for authentication. '
-                   'Will be generated automatically if not provided.')
+                   help='Path to SSH certificate file for authentication. '
+                   'Must be generated with "az sftp cert" or compatible Azure AD certificate. '
+                   'If not provided, certificate will be generated automatically.')
         c.argument('private_key_file', options_list=['--private-key-file', '-i'],
-                   help='Path to RSA private key file. If not provided, a key pair will be generated.')
+                   help='Path to RSA private key file. If provided without certificate, '
+                   'a certificate will be generated automatically from this key.')
         c.argument('public_key_file', options_list=['--public-key-file', '-p'], 
-                   help='Path to RSA public key file. If not provided, a key pair will be generated.')
+                   help='Path to RSA public key file. If provided without certificate, '
+                   'a certificate will be generated automatically from this key.')
         c.argument('sftp_args', options_list=['--sftp-args'],
                    help='Additional arguments to pass to the SFTP client. '
-                   'These arguments will be passed directly to the underlying SFTP command.')
+                   'Example: "-v" for verbose output, "-o ConnectTimeout=30" for custom timeout.')
         c.argument('ssh_client_folder', options_list=['--ssh-client-folder'],
                    help='Path to folder containing SSH client executables (ssh, sftp, ssh-keygen). '
                    'Default: Uses executables from PATH or C:\\Windows\\System32\\OpenSSH on Windows.')
         c.argument('sftp_batch_commands', options_list=['--batch-commands'],
-                   help='SFTP batch commands to execute after connecting. '
-                   'Example: "ls\\nget file.txt" to list files and download file.txt')
+                   help='SFTP batch commands to execute after connecting (non-interactive mode). '
+                   'Separate commands with \\n. Example: "ls\\nget file.txt\\nbye"')
