@@ -16,7 +16,7 @@ from io import StringIO
 
 def run_all_tests():
     """Run all tests in the latest folder with detailed reporting."""
-    print("🧪 SFTP Extension Test Suite")
+    print("SFTP Extension Test Suite")
     print("=" * 50)
     
     # Get the directory containing this script
@@ -24,8 +24,8 @@ def run_all_tests():
     
     # Get all test files
     test_files = [f for f in os.listdir(test_dir) if f.startswith('test_') and f.endswith('.py')]
-    print(f"📁 Test Directory: {test_dir}")
-    print(f"📋 Found {len(test_files)} test files:")
+    print(f"Test Directory: {test_dir}")
+    print(f"Found {len(test_files)} test files:")
     for test_file in sorted(test_files):
         print(f"   • {test_file}")
     print()
@@ -37,7 +37,7 @@ def run_all_tests():
     
     # Count total tests
     total_tests = suite.countTestCases()
-    print(f"🎯 Total test cases discovered: {total_tests}")
+    print(f"Total test cases discovered: {total_tests}")
     print("-" * 50)
     
     runner = unittest.TextTestRunner(verbosity=2, stream=sys.stdout, buffer=True)
@@ -48,42 +48,42 @@ def run_all_tests():
     
     # Print summary
     print("=" * 50)
-    print("📊 TEST SUMMARY")
+    print("TEST SUMMARY")
     print("=" * 50)
-    print(f"⏱️  Total time: {duration:.2f} seconds")
-    print(f"✅ Tests run: {result.testsRun}")
-    print(f"❌ Failures: {len(result.failures)}")
-    print(f"💥 Errors: {len(result.errors)}")
-    print(f"⏭️  Skipped: {len(result.skipped)}")
+    print(f"Total time: {duration:.2f} seconds")
+    print(f"Tests run: {result.testsRun}")
+    print(f"Failures: {len(result.failures)}")
+    print(f"Errors: {len(result.errors)}")
+    print(f"Skipped: {len(result.skipped)}")
     
     if result.failures:
-        print(f"\n🔴 FAILURES ({len(result.failures)}):")
+        print(f"\nFAILURES ({len(result.failures)}):")
         for test, traceback in result.failures:
             print(f"   • {test}")
     
     if result.errors:
-        print(f"\n💥 ERRORS ({len(result.errors)}):")
+        print(f"\nERRORS ({len(result.errors)}):")
         for test, traceback in result.errors:
             print(f"   • {test}")
             
     if result.skipped:
-        print(f"\n⏭️  SKIPPED ({len(result.skipped)}):")
+        print(f"\nSKIPPED ({len(result.skipped)}):")
         for test, reason in result.skipped:
             print(f"   • {test}: {reason}")
     
     success_rate = ((result.testsRun - len(result.failures) - len(result.errors)) / result.testsRun * 100) if result.testsRun > 0 else 0
-    print(f"\n🎯 Success Rate: {success_rate:.1f}%")
+    print(f"\nSuccess Rate: {success_rate:.1f}%")
     
     if result.wasSuccessful():
-        print("🎉 ALL TESTS PASSED!")
+        print("ALL TESTS PASSED!")
     else:
-        print("❌ SOME TESTS FAILED!")
+        print("SOME TESTS FAILED!")
     
     return result.wasSuccessful()
 
 def run_specific_test(test_module):
     """Run a specific test module with detailed reporting."""
-    print(f"🧪 Running specific test: {test_module}")
+    print(f"Running specific test: {test_module}")
     print("=" * 50)
     
     test_dir = os.path.dirname(os.path.abspath(__file__))
@@ -97,7 +97,7 @@ def run_specific_test(test_module):
     try:
         suite = loader.loadTestsFromName(test_module)
         total_tests = suite.countTestCases()
-        print(f"🎯 Test cases in {test_module}: {total_tests}")
+        print(f"Test cases in {test_module}: {total_tests}")
         print("-" * 50)
         
         runner = unittest.TextTestRunner(verbosity=2, stream=sys.stdout, buffer=True)
@@ -108,23 +108,23 @@ def run_specific_test(test_module):
         
         # Print summary
         print("=" * 50)
-        print(f"📊 {test_module.upper()} SUMMARY")
+        print(f"{test_module.upper()} SUMMARY")
         print("=" * 50)
-        print(f"⏱️  Time: {duration:.2f} seconds")
-        print(f"✅ Tests run: {result.testsRun}")
-        print(f"❌ Failures: {len(result.failures)}")
-        print(f"💥 Errors: {len(result.errors)}")
-        print(f"⏭️  Skipped: {len(result.skipped)}")
+        print(f"Time: {duration:.2f} seconds")
+        print(f"Tests run: {result.testsRun}")
+        print(f"Failures: {len(result.failures)}")
+        print(f"Errors: {len(result.errors)}")
+        print(f"Skipped: {len(result.skipped)}")
         
         if result.wasSuccessful():
-            print("🎉 ALL TESTS PASSED!")
+            print("ALL TESTS PASSED!")
         else:
-            print("❌ SOME TESTS FAILED!")
+            print("SOME TESTS FAILED!")
             
         return result.wasSuccessful()
         
     except Exception as e:
-        print(f"❌ Error loading test module '{test_module}': {e}")
+        print(f"Error loading test module '{test_module}': {e}")
         print("Available test modules:")
         test_files = [f[:-3] for f in os.listdir(test_dir) if f.startswith('test_') and f.endswith('.py')]
         for test_file in sorted(test_files):
@@ -133,7 +133,7 @@ def run_specific_test(test_module):
 
 def run_specific_test_file(test_file):
     """Run all tests in a specific test file."""
-    print(f"🧪 Running test file: {test_file}")
+    print(f"Running test file: {test_file}")
     print("=" * 50)
     
     test_dir = os.path.dirname(os.path.abspath(__file__))
@@ -147,7 +147,7 @@ def run_specific_test_file(test_file):
     
     test_path = os.path.join(test_dir, test_file)
     if not os.path.exists(test_path):
-        print(f"❌ Test file not found: {test_path}")
+        print(f"Test file not found: {test_path}")
         return False
     
     start_time = time.time()
@@ -157,7 +157,7 @@ def run_specific_test_file(test_file):
         # Load tests from specific file
         suite = loader.discover(test_dir, pattern=test_file)
         total_tests = suite.countTestCases()
-        print(f"🎯 Test cases in {test_file}: {total_tests}")
+        print(f"Test cases in {test_file}: {total_tests}")
         print("-" * 50)
         
         runner = unittest.TextTestRunner(verbosity=2, stream=sys.stdout, buffer=True)
@@ -168,23 +168,23 @@ def run_specific_test_file(test_file):
         
         # Print summary
         print("=" * 50)
-        print(f"📊 {test_file.upper()} SUMMARY")
+        print(f"{test_file.upper()} SUMMARY")
         print("=" * 50)
-        print(f"⏱️  Time: {duration:.2f} seconds")
-        print(f"✅ Tests run: {result.testsRun}")
-        print(f"❌ Failures: {len(result.failures)}")
-        print(f"💥 Errors: {len(result.errors)}")
-        print(f"⏭️  Skipped: {len(result.skipped)}")
+        print(f"Time: {duration:.2f} seconds")
+        print(f"Tests run: {result.testsRun}")
+        print(f"Failures: {len(result.failures)}")
+        print(f"Errors: {len(result.errors)}")
+        print(f"Skipped: {len(result.skipped)}")
         
         if result.wasSuccessful():
-            print("🎉 ALL TESTS PASSED!")
+            print("ALL TESTS PASSED!")
         else:
-            print("❌ SOME TESTS FAILED!")
+            print("SOME TESTS FAILED!")
             
         return result.wasSuccessful()
         
     except Exception as e:
-        print(f"❌ Error loading test file '{test_file}': {e}")
+        print(f"Error loading test file '{test_file}': {e}")
         return False
 
 
@@ -193,11 +193,11 @@ def list_available_tests():
     test_dir = os.path.dirname(os.path.abspath(__file__))
     test_files = [f for f in os.listdir(test_dir) if f.startswith('test_') and f.endswith('.py')]
     
-    print("📋 Available Test Files:")
+    print("Available Test Files:")
     print("=" * 30)
     for test_file in sorted(test_files):
         print(f"   • {test_file}")
-    print(f"\n📊 Total: {len(test_files)} test files")
+    print(f"\nTotal: {len(test_files)} test files")
 
 
 if __name__ == '__main__':
@@ -240,7 +240,7 @@ Examples:
         success = run_specific_test_file(args.file)
     else:
         if not args.integration:
-            print("ℹ️  Running unit tests only. Use --integration to include integration tests.")
+            print("Running unit tests only. Use --integration to include integration tests.")
             print("   Note: Integration tests require valid SFTP credentials.")
             print()
         
@@ -248,9 +248,9 @@ Examples:
     
     print("\n" + "=" * 50)
     if success:
-        print("🎉 SUCCESS: All tests passed!")
+        print("SUCCESS: All tests passed!")
     else:
-        print("❌ FAILURE: Some tests failed!")
+        print("FAILURE: Some tests failed!")
     print("=" * 50)
     
     sys.exit(0 if success else 1)
