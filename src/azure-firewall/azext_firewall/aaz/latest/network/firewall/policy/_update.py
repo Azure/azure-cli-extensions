@@ -135,18 +135,9 @@ class Update(AAZCommand):
                 minimum=0,
             ),
         )
-        explicit_proxy.https_port = AAZIntArg(
-            options=["https-port"],
-            help="Port number for explicit proxy https protocol, cannot be greater than 64000.",
-            nullable=True,
-            fmt=AAZIntArgFormat(
-                maximum=64000,
-                minimum=0,
-            ),
-        )
         explicit_proxy.pac_file = AAZStrArg(
             options=["pac-file"],
-            help="SAS URL for PAC file.",
+            help="URL for PAC file.",
             nullable=True,
         )
         explicit_proxy.pac_file_port = AAZIntArg(
@@ -162,13 +153,6 @@ class Update(AAZCommand):
         # define Arg Group "Identity Instance"
 
         _args_schema = cls._args_schema
-        _args_schema.identity_type = AAZStrArg(
-            options=["--identity-type"],
-            arg_group="Identity Instance",
-            help="The type of identity used for the resource. The type 'SystemAssigned, UserAssigned' includes both an implicitly created identity and a set of user assigned identities. The type 'None' will remove any identities from the virtual machine.",
-            nullable=True,
-            enum={"None": "None", "SystemAssigned": "SystemAssigned", "SystemAssigned, UserAssigned": "SystemAssigned, UserAssigned", "UserAssigned": "UserAssigned"},
-        )
         _args_schema.user_assigned_identities = AAZDictArg(
             options=["--user-assigned-identities"],
             arg_group="Identity Instance",
@@ -657,12 +641,16 @@ class Update(AAZCommand):
 
             identity = _builder.get(".identity")
             if identity is not None:
-                identity.set_prop("type", AAZStrType, ".identity_type")
-                identity.set_prop("userAssignedIdentities", AAZDictType, ".user_assigned_identities")
+                identity_type = _builder.get(".identity.type")
+                if identity_type == "None":
+                    identity.set_prop("type", AAZStrType, ".identity_type")
+                else:    
+                    identity.set_prop("type", AAZStrType, ".identity_type")
+                    identity.set_prop("userAssignedIdentities", AAZDictType, ".user_assigned_identities")
 
-            user_assigned_identities = _builder.get(".identity.userAssignedIdentities")
-            if user_assigned_identities is not None:
-                user_assigned_identities.set_elements(AAZObjectType, ".")
+                    user_assigned_identities = _builder.get(".identity.userAssignedIdentities")
+                    if user_assigned_identities is not None:
+                        user_assigned_identities.set_elements(AAZObjectType, ".")
 
             properties = _builder.get(".properties")
             if properties is not None:
@@ -691,7 +679,6 @@ class Update(AAZCommand):
                 explicit_proxy.set_prop("enableExplicitProxy", AAZBoolType, ".enable_explicit_proxy", typ_kwargs={"nullable": True})
                 explicit_proxy.set_prop("enablePacFile", AAZBoolType, ".enable_pac_file", typ_kwargs={"nullable": True})
                 explicit_proxy.set_prop("httpPort", AAZIntType, ".http_port")
-                explicit_proxy.set_prop("httpsPort", AAZIntType, ".https_port")
                 explicit_proxy.set_prop("pacFile", AAZStrType, ".pac_file")
                 explicit_proxy.set_prop("pacFilePort", AAZIntType, ".pac_file_port")
 
@@ -951,9 +938,6 @@ class _UpdateHelper:
         )
         explicit_proxy.http_port = AAZIntType(
             serialized_name="httpPort",
-        )
-        explicit_proxy.https_port = AAZIntType(
-            serialized_name="httpsPort",
         )
         explicit_proxy.pac_file = AAZStrType(
             serialized_name="pacFile",
