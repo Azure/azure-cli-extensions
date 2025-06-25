@@ -16,7 +16,6 @@ from ._list import *
 from ._list_untitled1 import *
 from ._publish import *
 from ._remove_revision import *
-from ._resolve import *
 from ._review_solution_version import *
 from ._update_external_validation_status import *
 from ._show import *
