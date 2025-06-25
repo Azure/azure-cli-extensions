@@ -18,15 +18,15 @@ class SFTPSession():
     connection parameters and provides methods for session management.
     """
     
-    def __init__(self, storage_account, username=None, host=None, port=22, 
+    def __init__(self, storage_account, username=None, host=None, port=None, 
                  public_key_file=None, private_key_file=None, cert_file=None,
                  sftp_args=None, ssh_client_folder=None, ssh_proxy_folder=None,
-                 credentials_folder=None, yes_without_prompt=False):
+                 credentials_folder=None, yes_without_prompt=False, sftp_batch_commands=None):
         # Core connection parameters
         self.storage_account = storage_account
         self.username = username
         self.host = host
-        self.port = port or 22
+        self.port = port
         
         # Authentication files
         self.public_key_file = os.path.abspath(public_key_file) if public_key_file else None
@@ -39,25 +39,17 @@ class SFTPSession():
         self.ssh_proxy_folder = os.path.abspath(ssh_proxy_folder) if ssh_proxy_folder else None
         self.credentials_folder = os.path.abspath(credentials_folder) if credentials_folder else None
         self.yes_without_prompt = yes_without_prompt
-          # Runtime state (similar to SSH extension patterns)
+        self.sftp_batch_commands = sftp_batch_commands
+        
+        # Runtime state (similar to SSH extension patterns)
         self.delete_credentials = False
         self.local_user = None
 
-    def resolve_connection_info(self, host_override=None):
-        """Resolve connection information like hostname and username.
-        
-        Args:
-            host_override: Optional hostname override for testing or custom endpoints
-        """
-        # Determine hostname (similar to SSH extension's pattern)
-        if host_override:
-            self.host = host_override
-        elif self.host:
-            # Use already set host
-            pass
-        else:
-            # Standard Azure Storage SFTP endpoint format
-            self.host = f"{self.storage_account}.blob.core.windows.net"
+    def resolve_connection_info(self):
+        """Resolve connection information like hostname and username."""
+        # Hostname should already be set by the caller using cloud-aware logic
+        if not self.host:
+            raise azclierror.ValidationError("Host must be set before calling resolve_connection_info()")
         
         # Extract username from certificate if available
         if self.cert_file and self.local_user:
@@ -83,20 +75,21 @@ class SFTPSession():
         # Add private key if provided
         if self.private_key_file:
             args.extend(["-i", self.private_key_file])
-            
-        # Add certificate if provided
+              # Add certificate if provided
         if self.cert_file:
-            args.extend(["-o", f"CertificateFile={self.cert_file}"])
+            args.extend(["-o", f"CertificateFile=\"{self.cert_file}\""])
             
-        # Add port if non-standard
-        if self.port and self.port != 22:
+        # Add port if specified
+        if self.port is not None:
             args.extend(["-P", str(self.port)])
             
         return args
 
     def get_host(self):
         """Get the host for the connection (similar to SSH extension pattern)."""
-        return self.host or f"{self.storage_account}.blob.core.windows.net"
+        if not self.host:
+            raise azclierror.ValidationError("Host not set. Call resolve_connection_info() first.")
+        return self.host
 
     def get_destination(self):
         """Get the destination string for SFTP connection."""
