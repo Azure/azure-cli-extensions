@@ -215,6 +215,34 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         }
         self.assertEqual(addon_consts, ground_truth_addon_consts)
 
+    def test_get_enable_managed_system_pool(self):
+        # default - parameter not specified
+        ctx_1 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_1.get_enable_managed_system_pool(), None)
+
+        # enabled
+        ctx_2 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"enable_managed_system_pool": True}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_2.get_enable_managed_system_pool(), True)
+
+        # disabled
+        ctx_3 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"enable_managed_system_pool": False}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_3.get_enable_managed_system_pool(), False)
+
     def test_get_http_proxy_config(self):
         # default
         ctx_1 = AKSPreviewManagedClusterContext(
@@ -885,7 +913,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         )
         with self.assertRaises(MutuallyExclusiveArgumentError):
             ctx_6.get_acns_advanced_networkpolicies()
-    
+
     def test_mc_get_acns_transit_encryption_type(self):
         # Default, not set.
         ctx_1 = AKSPreviewManagedClusterContext(
@@ -3801,7 +3829,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         self.assertEqual(new_profile, self.models.ServiceMeshProfile(
             mode="Istio", istio=self.models.IstioServiceMesh(revisions=["asm-1-18"])
         ))
-    
+
     def test_handle_egress_gateways_asm(self):
         ctx_0 = AKSPreviewManagedClusterContext(
             self.cmd,
@@ -9020,7 +9048,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             ),
         )
         self.assertEqual(dec_mc_1, ground_truth_mc_1)
-    
+
     def test_update_vmas_to_vms(self):
         # Should not update mc if unset
         dec_0 = AKSPreviewManagedClusterUpdateDecorator(
@@ -9060,14 +9088,14 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         dec_1.context.attach_mc(mc_1)
         with self.assertRaises(CLIError):
             dec_1.update_vmas_to_vms(mc_1)
-        
+
         # Should raise error if cluster has more than 1 AP
         dec_2 = AKSPreviewManagedClusterUpdateDecorator(
             self.cmd,
             self.client,
             {
                 "migrate_vmas_to_vms": True,
-                "yes": True,                
+                "yes": True,
             },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
@@ -9086,7 +9114,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         dec_2.context.attach_mc(mc_2)
         with self.assertRaises(CLIError):
             dec_2.update_vmas_to_vms(mc_2)
-        
+
         # Should migrate vmas-blb to vms-slb
         dec_3 = AKSPreviewManagedClusterUpdateDecorator(
             self.cmd,
@@ -9111,7 +9139,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         mc_3.network_profile = network_profile_3
         dec_3.context.attach_mc(mc_3)
         dec_mc_3 = dec_3.update_vmas_to_vms(mc_3)
-        
+
         ground_truth_mc_3 = self.models.ManagedCluster(
             location="test_location",
         )
