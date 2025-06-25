@@ -11,14 +11,20 @@
 from azure.cli.core.aaz import *
 
 
-class GetProvisioningDetails(AAZCommand):
-    """Retrieves Microsoft Connected Cache for Enterprise cache node details and keys needed to provision cache node.
+@register_command(
+    "mcc ent node get-deployment-details",
+)
+class GetDeploymentDetails(AAZCommand):
+    """Retrieves Microsoft Connected Cache for Enterprise cache node details and keys needed to deploy cache node.
+
+    :example: Get Deployment Details For MCC Enterprise Cache Node
+        az mcc ent node get-deployment-details --mcc-resource-name [MccResourceName] --cache-node-name [MccCacheNodeName] --resource-group [MccResourceRgName]
     """
 
     _aaz_info = {
-        "version": "2023-05-01-preview",
+        "version": "2024-11-30-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.connectedcache/enterprisemcccustomers/{}/enterprisemcccachenodes/{}/getcachenodeinstalldetails", "2023-05-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.connectedcache/enterprisemcccustomers/{}/enterprisemcccachenodes/{}/getcachenodeinstalldetails", "2024-11-30-preview"],
         ]
     }
 
@@ -134,7 +140,7 @@ class GetProvisioningDetails(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-05-01-preview",
+                    "api-version", "2024-11-30-preview",
                     required=True,
                 ),
             }
@@ -193,9 +199,15 @@ class GetProvisioningDetails(AAZCommand):
             properties.customer_id = AAZStrType(
                 serialized_name="customerId",
             )
+            properties.drive_configuration = AAZListType(
+                serialized_name="driveConfiguration",
+            )
             properties.primary_account_key = AAZStrType(
                 serialized_name="primaryAccountKey",
                 flags={"secret": True, "read_only": True},
+            )
+            properties.proxy_url_configuration = AAZObjectType(
+                serialized_name="proxyUrlConfiguration",
             )
             properties.registration_key = AAZStrType(
                 serialized_name="registrationKey",
@@ -204,6 +216,32 @@ class GetProvisioningDetails(AAZCommand):
             properties.secondary_account_key = AAZStrType(
                 serialized_name="secondaryAccountKey",
                 flags={"secret": True, "read_only": True},
+            )
+            properties.tls_certificate_provisioning_key = AAZStrType(
+                serialized_name="tlsCertificateProvisioningKey",
+                flags={"secret": True, "read_only": True},
+            )
+
+            drive_configuration = cls._schema_on_200.properties.drive_configuration
+            drive_configuration.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.drive_configuration.Element
+            _element.cache_number = AAZIntType(
+                serialized_name="cacheNumber",
+            )
+            _element.nginx_mapping = AAZStrType(
+                serialized_name="nginxMapping",
+            )
+            _element.physical_path = AAZStrType(
+                serialized_name="physicalPath",
+            )
+            _element.size_in_gb = AAZIntType(
+                serialized_name="sizeInGb",
+            )
+
+            proxy_url_configuration = cls._schema_on_200.properties.proxy_url_configuration
+            proxy_url_configuration.proxy_url = AAZStrType(
+                serialized_name="proxyUrl",
             )
 
             system_data = cls._schema_on_200.system_data
@@ -232,8 +270,8 @@ class GetProvisioningDetails(AAZCommand):
             return cls._schema_on_200
 
 
-class _GetProvisioningDetailsHelper:
-    """Helper class for GetProvisioningDetails"""
+class _GetDeploymentDetailsHelper:
+    """Helper class for GetDeploymentDetails"""
 
 
-__all__ = ["GetProvisioningDetails"]
+__all__ = ["GetDeploymentDetails"]
