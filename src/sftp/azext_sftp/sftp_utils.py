@@ -8,6 +8,8 @@ import os
 import platform
 import subprocess
 import time
+import sys
+import signal
 
 from knack import log
 from azure.cli.core import azclierror
@@ -21,7 +23,6 @@ def start_sftp_connection(op_info):
     """Start an SFTP connection using the provided session information."""
     try:
         env = os.environ.copy()
-
         retry_attempt = 0
         retry_attempts_allowed = 2  # Allow a couple retries for network issues
         successful_connection = False
@@ -45,6 +46,9 @@ def start_sftp_connection(op_info):
             command.extend(sftp_arg_list)
         command.append(destination)
         logger.debug("SFTP command: %s", ' '.join(command))
+        creationflags = 0
+        if platform.system() == "Windows":
+            creationflags = subprocess.CREATE_NEW_PROCESS_GROUP
         while retry_attempt <= retry_attempts_allowed and not successful_connection:
             connection_start_time = time.time()
             try:
@@ -53,23 +57,36 @@ def start_sftp_connection(op_info):
                 # If batch commands are provided, use them as stdin
                 batch_input = getattr(op_info, 'sftp_batch_commands', None)
                 if batch_input:
-                    sftp_process = subprocess.Popen(command, env=env, encoding='utf-8', stdin=subprocess.PIPE)
+                    sftp_process = subprocess.Popen(
+                        command, env=env, encoding='utf-8', stdin=subprocess.PIPE, creationflags=creationflags
+                    )
                     sftp_process.communicate(input=batch_input)
                     return_code = sftp_process.returncode
                 else:
-                    sftp_process = subprocess.Popen(command, env=env, encoding='utf-8')
-                    return_code = sftp_process.wait()
+                    sftp_process = subprocess.Popen(
+                        command, env=env, encoding='utf-8', creationflags=creationflags
+                    )
+                    try:
+                        return_code = sftp_process.wait()
+                    except KeyboardInterrupt:
+                        logger.info("Connection interrupted by user (KeyboardInterrupt)")
+                        if sftp_process:
+                            if platform.system() == "Windows":
+                                # Send CTRL_BREAK_EVENT to the process group
+                                sftp_process.send_signal(signal.CTRL_BREAK_EVENT)
+                            else:
+                                sftp_process.terminate()
+                            try:
+                                sftp_process.wait(timeout=5)
+                            except Exception:
+                                pass
+                        return
                 if return_code == 0:
                     successful_connection = True
                     connection_duration = time.time() - connection_start_time
                     logger.debug("SFTP connection successful in %.2f seconds", connection_duration)
                 else:
                     logger.warning("SFTP connection failed with return code: %d", return_code)
-            except KeyboardInterrupt:
-                logger.info("Connection interrupted by user")
-                if sftp_process:
-                    sftp_process.terminate()
-                break
             except OSError as e:
                 error_msg = f"Failed to start SFTP connection: {str(e)}"
                 if retry_attempt >= retry_attempts_allowed:
@@ -89,7 +106,8 @@ def start_sftp_connection(op_info):
             )
 
     except KeyboardInterrupt:
-        logger.info("SFTP connection interrupted by user")
+        logger.info("SFTP connection interrupted by user (outer handler)")
+        print("\nSFTP session exited cleanly.")
     finally:
         if connection_start_time:
             total_duration = time.time() - connection_start_time

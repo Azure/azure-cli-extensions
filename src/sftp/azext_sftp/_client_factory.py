@@ -4,9 +4,9 @@
 # --------------------------------------------------------------------------------------------
 
 def cf_sftp(cli_ctx, *_):
-
-    from azure.cli.core.commands.client_factory import get_mgmt_service_client
-    # TODO: Replace CONTOSO with the appropriate label and uncomment
-    # from azure.mgmt.CONTOSO import CONTOSOManagementClient
-    # return get_mgmt_service_client(cli_ctx, CONTOSOManagementClient)
+    """
+    Client factory for SFTP extension.
+    This extension doesn't require a specific Azure management client
+    as it operates using SSH/SFTP protocols directly.
+    """
     return None
