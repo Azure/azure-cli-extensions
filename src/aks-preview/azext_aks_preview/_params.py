@@ -1862,6 +1862,7 @@ def load_arguments(self, _):
             "disable_fips_image",
             action="store_true"
         )
+        # local DNS
         c.argument(
             'localdns_config',
             help='Path to a JSON file to configure the local DNS profile for an existing nodepool.',
