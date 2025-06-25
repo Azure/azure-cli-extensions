@@ -46,7 +46,7 @@ class Download(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.target_name = AAZStrArg(
-            options=["-t", "--target-name"],
+            options=["--target-name"],
             help="The name of the Configuration",
             required=True,
             id_part="name",
@@ -55,7 +55,7 @@ class Download(AAZCommand):
             ),
         )
         _args_schema.solution_template_name = AAZStrArg(
-            options=["-s", "--solution-template-name"],
+            options=["--solution-template-name"],
             help="The name of the DynamicConfiguration",
             required=False,
             id_part="child_name_1",

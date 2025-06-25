@@ -48,7 +48,7 @@ class ShowConfig(AAZCommand):
             required=True,
         )
         _args_schema.solution_name = AAZStrArg(
-            options=["-s", "--solution-template-name"],
+            options=["--solution-template-name"],
             help="The name of the Solution, This is required only to get solution configurations",
             # required=True,
             id_part="name",
@@ -59,7 +59,7 @@ class ShowConfig(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.level_name = AAZStrArg(
-            options=["-t", "--target-name"],
+            options=["--target-name"],
             help="The Target or Site name at which values needs to be set",
 
             required = True,
