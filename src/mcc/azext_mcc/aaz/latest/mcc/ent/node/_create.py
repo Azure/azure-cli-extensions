@@ -13,16 +13,18 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "mcc ent node create",
-    is_preview=True,
 )
 class Create(AAZCommand):
     """Creates a Microsoft Connected Cache for Enterprise cache node with specified parameters.
+
+    :example: Create MCC Enterprise Cache Node
+        az mcc ent resource create --mcc-resource-name [MccResourceName] --cache-node-name [MccCacheNodeName] --host-os [WindowsOrLinux] --resource-group [MccResourceRgName]
     """
 
     _aaz_info = {
-        "version": "2023-05-01-preview",
+        "version": "2024-11-30-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.connectedcache/enterprisemcccustomers/{}/enterprisemcccachenodes/{}", "2023-05-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.connectedcache/enterprisemcccustomers/{}/enterprisemcccachenodes/{}", "2024-11-30-preview"],
         ]
     }
 
@@ -67,6 +69,19 @@ class Create(AAZCommand):
             required=True,
         )
 
+        # define Arg Group "AdditionalCacheNodeProperties"
+
+        _args_schema = cls._args_schema
+        _args_schema.creation_method = AAZIntArg(
+            options=["--creation-method"],
+            arg_group="AdditionalCacheNodeProperties",
+            help="Resource creation method of mcc cache node resource, cli or portal",
+            fmt=AAZIntArgFormat(
+                maximum=5,
+                minimum=0,
+            ),
+        )
+
         # define Arg Group "Configuration"
 
         _args_schema = cls._args_schema
@@ -94,7 +109,7 @@ class Create(AAZCommand):
             options=["--enable-proxy"],
             arg_group="Configuration",
             help="Cache node resource requires a proxy",
-            enum={"Disabled": "Disabled", "Enabled": "Enabled", "None": "None", "Required": "Required"},
+            enum={"None": "None", "Required": "Required"},
         )
         _args_schema.optional_property1 = AAZStrArg(
             options=["--optional-property1"],
@@ -127,21 +142,10 @@ class Create(AAZCommand):
             help="Host operating system of the cache node.",
             enum={"Eflow": "Eflow", "Linux": "Linux", "Windows": "Windows"},
         )
-        _args_schema.proxy_url = AAZStrArg(
-            options=["--proxy-url"],
-            arg_group="Configuration",
-            help="Host proxy address configuration. Ex: xxx.xxx.x.x or http://exampleproxy.com.",
-        )
         _args_schema.proxy_host = AAZStrArg(
             options=["--proxy-host"],
             arg_group="Configuration",
             help="Host proxy address configuration. Ex: xxx.xxx.x.x or http://exampleproxy.com.",
-        )
-        _args_schema.update_cycle_type = AAZStrArg(
-            options=["--update-cycle-type"],
-            arg_group="Configuration",
-            help="Update Cycle Type",
-            enum={"Fast": "Fast", "Preview": "Preview", "Slow": "Slow"},
         )
         _args_schema.update_info_details = AAZStrArg(
             options=["--update-info-details"],
@@ -226,7 +230,7 @@ class Create(AAZCommand):
             help="Day of week (1-7) that cache node will automatically install software update",
             fmt=AAZIntArgFormat(
                 maximum=7,
-                minimum=1,
+                minimum=0,
             ),
         )
         cache_node.auto_update_time = AAZStrArg(
@@ -241,7 +245,7 @@ class Create(AAZCommand):
             help="Week of month (1-4) that cache node will automatically install software update",
             fmt=AAZIntArgFormat(
                 maximum=5,
-                minimum=1,
+                minimum=0,
             ),
         )
         cache_node.auto_update_ring = AAZStrArg(
@@ -407,7 +411,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-05-01-preview",
+                    "api-version", "2024-11-30-preview",
                     required=True,
                 ),
             }
@@ -449,6 +453,7 @@ class Create(AAZCommand):
                 additional_cache_node_properties.set_prop("autoUpdateVersion", AAZStrType, ".auto_update_version")
                 additional_cache_node_properties.set_prop("bgpConfiguration", AAZObjectType, ".bgp_configuration")
                 additional_cache_node_properties.set_prop("cacheNodePropertiesDetailsIssuesList", AAZListType, ".cache_node_properties_details_issues_list")
+                additional_cache_node_properties.set_prop("creationMethod", AAZIntType, ".creation_method")
                 additional_cache_node_properties.set_prop("driveConfiguration", AAZListType, ".cache_drive")
                 additional_cache_node_properties.set_prop("isProxyRequired", AAZStrType, ".enable_proxy")
                 additional_cache_node_properties.set_prop("optionalProperty1", AAZStrType, ".optional_property1")
@@ -457,9 +462,7 @@ class Create(AAZCommand):
                 additional_cache_node_properties.set_prop("optionalProperty4", AAZStrType, ".optional_property4")
                 additional_cache_node_properties.set_prop("optionalProperty5", AAZStrType, ".optional_property5")
                 additional_cache_node_properties.set_prop("osType", AAZStrType, ".host_os")
-                additional_cache_node_properties.set_prop("proxyUrl", AAZStrType, ".proxy_url")
                 additional_cache_node_properties.set_prop("proxyUrlConfiguration", AAZObjectType)
-                additional_cache_node_properties.set_prop("updateCycleType", AAZStrType, ".update_cycle_type")
                 additional_cache_node_properties.set_prop("updateInfoDetails", AAZStrType, ".update_info_details")
                 additional_cache_node_properties.set_prop("updateRequestedDateTime", AAZStrType, ".update_requested_date_time")
 
@@ -642,6 +645,13 @@ class Create(AAZCommand):
                 serialized_name="cacheNodeStateShortText",
                 flags={"read_only": True},
             )
+            additional_cache_node_properties.creation_method = AAZIntType(
+                serialized_name="creationMethod",
+            )
+            additional_cache_node_properties.current_tls_certificate = AAZObjectType(
+                serialized_name="currentTlsCertificate",
+                flags={"read_only": True},
+            )
             additional_cache_node_properties.drive_configuration = AAZListType(
                 serialized_name="driveConfiguration",
             )
@@ -651,6 +661,18 @@ class Create(AAZCommand):
             )
             additional_cache_node_properties.is_proxy_required = AAZStrType(
                 serialized_name="isProxyRequired",
+            )
+            additional_cache_node_properties.issues_count = AAZIntType(
+                serialized_name="issuesCount",
+                flags={"read_only": True},
+            )
+            additional_cache_node_properties.issues_list = AAZListType(
+                serialized_name="issuesList",
+                flags={"read_only": True},
+            )
+            additional_cache_node_properties.last_auto_update_info = AAZObjectType(
+                serialized_name="lastAutoUpdateInfo",
+                flags={"read_only": True},
             )
             additional_cache_node_properties.optional_property1 = AAZStrType(
                 serialized_name="optionalProperty1",
@@ -674,14 +696,12 @@ class Create(AAZCommand):
                 serialized_name="productVersion",
                 flags={"read_only": True},
             )
-            additional_cache_node_properties.proxy_url = AAZStrType(
-                serialized_name="proxyUrl",
-            )
             additional_cache_node_properties.proxy_url_configuration = AAZObjectType(
                 serialized_name="proxyUrlConfiguration",
             )
-            additional_cache_node_properties.update_cycle_type = AAZStrType(
-                serialized_name="updateCycleType",
+            additional_cache_node_properties.tls_status = AAZStrType(
+                serialized_name="tlsStatus",
+                flags={"read_only": True},
             )
             additional_cache_node_properties.update_info_details = AAZStrType(
                 serialized_name="updateInfoDetails",
@@ -698,6 +718,34 @@ class Create(AAZCommand):
             cache_node_properties_details_issues_list = cls._schema_on_200_201.properties.additional_cache_node_properties.cache_node_properties_details_issues_list
             cache_node_properties_details_issues_list.Element = AAZStrType()
 
+            current_tls_certificate = cls._schema_on_200_201.properties.additional_cache_node_properties.current_tls_certificate
+            current_tls_certificate.action_required = AAZStrType(
+                serialized_name="actionRequired",
+                flags={"read_only": True},
+            )
+            current_tls_certificate.certificate_file_name = AAZStrType(
+                serialized_name="certificateFileName",
+                flags={"read_only": True},
+            )
+            current_tls_certificate.expiry_date = AAZStrType(
+                serialized_name="expiryDate",
+                flags={"read_only": True},
+            )
+            current_tls_certificate.not_before_date = AAZStrType(
+                serialized_name="notBeforeDate",
+                flags={"read_only": True},
+            )
+            current_tls_certificate.subject = AAZStrType(
+                flags={"read_only": True},
+            )
+            current_tls_certificate.subject_alt_name = AAZStrType(
+                serialized_name="subjectAltName",
+                flags={"read_only": True},
+            )
+            current_tls_certificate.thumbprint = AAZStrType(
+                flags={"read_only": True},
+            )
+
             drive_configuration = cls._schema_on_200_201.properties.additional_cache_node_properties.drive_configuration
             drive_configuration.Element = AAZObjectType()
 
@@ -713,6 +761,79 @@ class Create(AAZCommand):
             )
             _element.size_in_gb = AAZIntType(
                 serialized_name="sizeInGb",
+            )
+
+            issues_list = cls._schema_on_200_201.properties.additional_cache_node_properties.issues_list
+            issues_list.Element = AAZStrType()
+
+            last_auto_update_info = cls._schema_on_200_201.properties.additional_cache_node_properties.last_auto_update_info
+            last_auto_update_info.auto_update_last_applied_status = AAZIntType(
+                serialized_name="autoUpdateLastAppliedStatus",
+                flags={"read_only": True},
+            )
+            last_auto_update_info.auto_update_last_applied_status_detailed_text = AAZStrType(
+                serialized_name="autoUpdateLastAppliedStatusDetailedText",
+                flags={"read_only": True},
+            )
+            last_auto_update_info.auto_update_last_applied_status_text = AAZStrType(
+                serialized_name="autoUpdateLastAppliedStatusText",
+                flags={"read_only": True},
+            )
+            last_auto_update_info.auto_update_ring_type = AAZIntType(
+                serialized_name="autoUpdateRingType",
+                flags={"read_only": True},
+            )
+            last_auto_update_info.created_date_time_utc = AAZStrType(
+                serialized_name="createdDateTimeUtc",
+                flags={"read_only": True},
+            )
+            last_auto_update_info.image_uri_before_update = AAZStrType(
+                serialized_name="imageUriBeforeUpdate",
+                flags={"read_only": True},
+            )
+            last_auto_update_info.image_uri_targeted = AAZStrType(
+                serialized_name="imageUriTargeted",
+                flags={"read_only": True},
+            )
+            last_auto_update_info.image_uri_terminal = AAZStrType(
+                serialized_name="imageUriTerminal",
+                flags={"read_only": True},
+            )
+            last_auto_update_info.moved_to_terminal_state_date_time = AAZStrType(
+                serialized_name="movedToTerminalStateDateTime",
+                flags={"read_only": True},
+            )
+            last_auto_update_info.plan_change_log_text = AAZStrType(
+                serialized_name="planChangeLogText",
+                flags={"read_only": True},
+            )
+            last_auto_update_info.plan_id = AAZIntType(
+                serialized_name="planId",
+                flags={"read_only": True},
+            )
+            last_auto_update_info.rule_requested_day = AAZIntType(
+                serialized_name="ruleRequestedDay",
+                flags={"read_only": True},
+            )
+            last_auto_update_info.rule_requested_hour = AAZStrType(
+                serialized_name="ruleRequestedHour",
+                flags={"read_only": True},
+            )
+            last_auto_update_info.rule_requested_minute = AAZStrType(
+                serialized_name="ruleRequestedMinute",
+                flags={"read_only": True},
+            )
+            last_auto_update_info.rule_requested_week = AAZIntType(
+                serialized_name="ruleRequestedWeek",
+                flags={"read_only": True},
+            )
+            last_auto_update_info.time_to_go_live_date_time = AAZStrType(
+                serialized_name="timeToGoLiveDateTime",
+                flags={"read_only": True},
+            )
+            last_auto_update_info.updated_registry_date_time_utc = AAZStrType(
+                serialized_name="updatedRegistryDateTimeUtc",
+                flags={"read_only": True},
             )
 
             proxy_url_configuration = cls._schema_on_200_201.properties.additional_cache_node_properties.proxy_url_configuration
@@ -979,12 +1100,15 @@ class _CreateHelper:
         additional_info.Element = AAZObjectType()
 
         _element = _schema_error_detail_read.additional_info.Element
-        _element.info = AAZObjectType(
+        _element.info = AAZDictType(
             flags={"read_only": True},
         )
         _element.type = AAZStrType(
             flags={"read_only": True},
         )
+
+        info = _schema_error_detail_read.additional_info.Element.info
+        info.Element = AAZAnyType()
 
         details = _schema_error_detail_read.details
         details.Element = AAZObjectType()

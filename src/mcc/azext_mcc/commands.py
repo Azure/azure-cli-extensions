@@ -21,10 +21,10 @@ def load_command_table(self, _):
         self.command_table['mcc ent resource list'] = MccEntResourceList(loader=self)
 
     with self.command_group('mcc ent node'):
-        from .custom import MccEntNodeCreate, MccEntNodeUpdate, MccEntNodeDelete, MccEntNodeList, MccEntNodeShow, MccEntNodeGetProvisioningDetails
+        from .custom import MccEntNodeCreate, MccEntNodeUpdate, MccEntNodeDelete, MccEntNodeList, MccEntNodeShow, MccEntNodeGetDeploymentDetails
         self.command_table['mcc ent node create'] = MccEntNodeCreate(loader=self)
         self.command_table['mcc ent node update'] = MccEntNodeUpdate(loader=self)
         self.command_table['mcc ent node delete'] = MccEntNodeDelete(loader=self)
         self.command_table['mcc ent node list'] = MccEntNodeList(loader=self)
         self.command_table['mcc ent node show'] = MccEntNodeShow(loader=self)
-        self.command_table['mcc ent node get-provisioning-details'] = MccEntNodeGetProvisioningDetails(loader=self)
+        self.command_table['mcc ent node get-deployment-details'] = MccEntNodeGetDeploymentDetails(loader=self)

@@ -7,6 +7,7 @@
 # pylint: disable=unused-import, line-too-long, unused-argument
 
 import os
+import time
 
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
 from azure.cli.testsdk import *
@@ -19,8 +20,8 @@ class MccScenario(ScenarioTest):
         self.kwargs.update({
           'loc': group_location,
           'name': self.create_random_name(prefix='cli', length=24),
-          'mcc_resource_name': self.create_random_name(prefix='mcc_cli_ci_tst_cst', length=30),
-          'cache_node_name': self.create_random_name(prefix='mcc_cli_ci_tst_node', length=30),
+          'mcc_resource_name': self.create_random_name(prefix='mcc_cli_ci_tst_cst', length=25),
+          'cache_node_name': self.create_random_name(prefix='mcc_cli_ci_tst_node', length=25),
           'host_os': 'Windows',
           'cache_drive': '\"[{physical-path:/var/mcc,size-in-gb:50}]\"',
           'proxy': 'enabled',
@@ -66,6 +67,9 @@ class MccScenario(ScenarioTest):
                  '--mcc-resource-name {mcc_resource_name}').get_output_in_json()
         assert len(node_list) > 0
 
+        # Show MCC node# Wait for node creation to complete before updating resource
+        time.sleep(30)  # 30 second delay
+
         # Update MCC node
         self.cmd('az mcc ent node update '
                  '-g {rg} '
@@ -102,6 +106,9 @@ class MccScenario(ScenarioTest):
                  '--mcc-resource-name {mcc_resource_name} '
                  '--cache-node-name {cache_node_name} '
                  '-y')
+        
+        # Wait for node deletion to complete before deleting resource
+        time.sleep(30)  # 30 second delay
 
         # Delete MCC resource
         self.cmd('az mcc ent resource delete '
