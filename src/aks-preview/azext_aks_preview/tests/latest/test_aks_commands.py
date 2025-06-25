@@ -783,6 +783,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         create_cmd = (
             "aks create --resource-group={resource_group} --name={name} --enable-managed-identity "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AppGatewayWithOverlayPreview "
             "-a ingress-appgw --appgw-subnet-cidr 10.232.0.0/26 "
             "--ssh-key-value={ssh_key_value} -o json"
         )
