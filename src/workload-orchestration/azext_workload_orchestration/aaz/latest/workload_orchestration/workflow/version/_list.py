@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "workload-orchestration workflow version list",
-    is_preview=True,
 )
 class List(AAZCommand):
     """List Workflow Version Resources

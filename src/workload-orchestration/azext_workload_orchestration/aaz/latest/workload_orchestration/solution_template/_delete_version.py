@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "workload-orchestration solution-template delete-version",
-    is_preview=True,
 )
 class DeleteVersion(AAZCommand):
     """Delete Solution Template Version Resource

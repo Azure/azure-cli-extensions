@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "workload-orchestration schema list-untitled1",
-    is_preview=True,
 )
 class ListUntitled1(AAZCommand):
     """List by subscription

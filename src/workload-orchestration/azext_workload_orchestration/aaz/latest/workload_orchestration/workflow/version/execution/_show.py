@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "workload-orchestration workflow version execution show",
-    is_preview=True,
 )
 class Show(AAZCommand):
     """Get Execution Resource

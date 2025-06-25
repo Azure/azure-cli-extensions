@@ -53,7 +53,7 @@ class Wait(AAZWaitCommand):
             ),
         )
         _args_schema.schema_version_name = AAZStrArg(
-            options=["-n", "--name", "--schema-version-name"],
+            options=["-v", "--version", "--schema-version-name"],
             help="The name of the SchemaVersion",
             required=True,
             id_part="child_name_1",
