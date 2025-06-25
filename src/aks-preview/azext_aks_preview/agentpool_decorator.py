@@ -43,7 +43,6 @@ from azext_aks_preview._consts import (
     CONST_SSH_ACCESS_LOCALUSER,
     CONST_GPU_DRIVER_NONE,
 )
-
 from azext_aks_preview._helpers import (
     get_nodepool_snapshot_by_snapshot_id,
     filter_hard_taints,
@@ -810,15 +809,8 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
         # read the original value passed by the command
         return self.raw_param.get("disable_fips_image")
 
-    def get_set_localdns(self) -> bool:
-        return self.raw_param.get("set_localdns", False)
-
     def get_localdns_config(self):
         return self.raw_param.get("localdns_config")
-
-    def get_localdns_mode(self):
-        return self.raw_param.get("localdns_mode")
-
     def get_localdns_profile(self):
         """
         Returns the local DNS profile dict if set, or None.

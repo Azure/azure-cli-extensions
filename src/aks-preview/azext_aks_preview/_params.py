@@ -1768,7 +1768,6 @@ def load_arguments(self, _):
         # local DNS
         c.argument(
             'localdns_config',
-            options_list=['--localdns-config'],
             help='Path to a JSON file to configure the local DNS profile for a new nodepool.'
         )
 
@@ -1829,8 +1828,6 @@ def load_arguments(self, _):
             arg_type=get_enum_type(node_os_skus_update),
             validator=validate_os_sku,
         )
-
-    with self.argument_context('aks nodepool update') as c:
         # In update scenario, use emtpy str as default.
         c.argument('ssh_access', arg_type=get_enum_type(ssh_accesses), is_preview=True)
         c.argument('yes', options_list=['--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
@@ -1867,9 +1864,7 @@ def load_arguments(self, _):
         )
         c.argument(
             'localdns_config',
-            options_list=['--localdns-config'],
             help='Path to a JSON file to configure the local DNS profile for an existing nodepool.',
-            action='store'
         )
 
     with self.argument_context("aks nodepool upgrade") as c:
