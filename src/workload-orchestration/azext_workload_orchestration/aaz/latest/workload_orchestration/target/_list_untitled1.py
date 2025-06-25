@@ -17,6 +17,8 @@ from azure.cli.core.aaz import *
 )
 class ListUntitled1(AAZCommand):
     """List by subscription
+    :example: List Targets
+        az workload-orchestration target list-subscriptions
     """
 
     _aaz_info = {
@@ -182,6 +184,9 @@ class ListUntitled1(AAZCommand):
             properties = cls._schema_on_200.value.Element.properties
             properties.capabilities = AAZListType(
                 flags={"required": True},
+            )
+            properties.context_id = AAZStrType(
+                serialized_name="contextId",
             )
             properties.description = AAZStrType(
                 flags={"required": True},

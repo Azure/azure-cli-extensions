@@ -16,7 +16,7 @@ from azure.cli.core.aaz import *
 )
 class Resolve(AAZCommand):
     """Post request to resolve configuration
-    :example:
+    :example: Resolve configuration for a target
         az workload-orchestration target resolve -g MyResourceGroup -n MyTarget --solution-name MySolutionTemplate --solution-version 1.0.0 --solution-instance-name MySolutionInstanceName
     """
 
@@ -48,7 +48,7 @@ class Resolve(AAZCommand):
             required=True,
         )
         _args_schema.target_name = AAZStrArg(
-            options=["--target-name"],
+            options=["--target-name", "--name", "-n"],
             help="Name of the target",
             required=True,
             id_part="name",
@@ -83,7 +83,7 @@ class Resolve(AAZCommand):
             required=True,
         )
         _args_schema.solution_template_version = AAZStrArg(
-            options=["--solution-version","--solution-template-version"],
+            options=["--solution-version","--solution-template-version","-version","-v"],
             arg_group="Body",
             help="Solution Template Version Name",
             required=True,

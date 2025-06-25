@@ -16,6 +16,8 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get a Target Resource
+    :example: Show a Target
+        az workload-orchestration target show -n myTarget -g myResourceGroup
     """
 
     _aaz_info = {
@@ -192,6 +194,9 @@ class Show(AAZCommand):
             properties = cls._schema_on_200.properties
             properties.capabilities = AAZListType(
                 flags={"required": True},
+            )
+            properties.context_id = AAZStrType(
+                serialized_name="contextId",
             )
             properties.description = AAZStrType(
                 flags={"required": True},

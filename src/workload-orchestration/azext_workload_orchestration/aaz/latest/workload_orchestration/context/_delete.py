@@ -17,6 +17,8 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete Context Resource
+    :example: Delete a Context
+        az workload-orchestration context delete -n myContext -g myResourceGroup
     """
 
     _aaz_info = {

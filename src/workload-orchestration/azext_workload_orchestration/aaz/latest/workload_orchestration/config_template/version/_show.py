@@ -42,7 +42,7 @@ class Show(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.config_template_name = AAZStrArg(
-            options=["--config-template-name"],
+            options=["--config-template-name", "-n", "--name"],
             help="The name of the ConfigTemplate",
             required=True,
             id_part="name",
@@ -51,7 +51,7 @@ class Show(AAZCommand):
             ),
         )
         _args_schema.config_template_version_name = AAZStrArg(
-            options=["-n", "--name", "--config-template-version-name"],
+            options=["-v", "--version", "--config-template-version-name"],
             help="The name of the ConfigTemplateVersion",
             required=True,
             id_part="child_name_1",

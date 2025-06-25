@@ -17,6 +17,8 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete a Solution Template Resource
+    :example: Delete a Solution Template
+        az workload-orchestration solution-template delete -n mySolutionTemplate -g myResourceGroup
     """
 
     _aaz_info = {

@@ -17,6 +17,8 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete a Schema Resource
+    :example: Delete a Schema
+        az workload-orchestration schema delete -n mySchema -g myResourceGroup --version
     """
 
     _aaz_info = {

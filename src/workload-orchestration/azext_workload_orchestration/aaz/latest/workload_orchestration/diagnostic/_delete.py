@@ -17,6 +17,8 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete specified Diagnostic resource.
+    :example: Delete a Diagnostic
+        az workload-orchestration diagnostic delete -n myDiagnostic -g myResourceGroup
     """
 
     _aaz_info = {

@@ -16,6 +16,8 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get details of specified Diagnostic resource.
+    :example: Show a Diagnostic         
+        az workload-orchestration diagnostic show -n myDiagnostic -g myResourceGroup
     """
 
     _aaz_info = {

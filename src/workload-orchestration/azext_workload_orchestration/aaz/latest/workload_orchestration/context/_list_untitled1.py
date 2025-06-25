@@ -17,6 +17,8 @@ from azure.cli.core.aaz import *
 )
 class ListUntitled1(AAZCommand):
     """List by specified resource group
+    :example: List Contexts
+        az workload-orchestration context list -g myResourceGroup
     """
 
     _aaz_info = {

@@ -43,7 +43,7 @@ class Execute(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.context_name = AAZStrArg(
-            options=["--context-name"],
+            options=["--context-name","--name","-n"],
             help="The name of the Context.",
             required=True,
             id_part="name",

@@ -16,6 +16,8 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get a Config Template Resource
+    :example: Show a Config Template
+        az workload-orchestration config-template show -n myConfigTemplate -g myResourceGroup
     """
 
     _aaz_info = {

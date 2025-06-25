@@ -45,7 +45,7 @@ class Show(AAZCommand):
             required=True,
         )
         _args_schema.schema_name = AAZStrArg(
-            options=["--schema-name"],
+            options=["-n", "--name", "--schema-name"],
             help="The name of the Schema",
             required=True,
             id_part="name",
@@ -54,7 +54,7 @@ class Show(AAZCommand):
             ),
         )
         _args_schema.schema_version_name = AAZStrArg(
-            options=["-n", "--name", "--schema-version-name"],
+            options=["-v", "--version", "--schema-version-name"],
             help="The name of the SchemaVersion",
             required=True,
             id_part="child_name_1",

@@ -16,6 +16,8 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List by subscription
+    :example: List Contexts by Subscription
+        az workload-orchestration context list-subscriptions
     """
 
     _aaz_info = {

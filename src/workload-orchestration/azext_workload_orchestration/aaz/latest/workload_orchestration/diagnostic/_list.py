@@ -16,6 +16,8 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List Diagnostics resources within an Azure subscription.
+    :example: List Diagnostics by subscription
+        az workload-orchestration diagnostic list --subscription mySubscription
     """
 
     _aaz_info = {

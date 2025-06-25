@@ -18,7 +18,7 @@ import yaml
 class Create(AAZCommand):
     """Create a Schema Resource
     :example: Create a Schema
-        az workload-orchestration schema create -g rg1 -n schema1 --location eastus  --schema-file schema.yaml
+        az workload-orchestration schema create -n mySchema -g myResourceGroup --location eastus --version 1.0.0 --schema-file ./schema.yaml
     """
 
     _aaz_info = {
@@ -89,7 +89,7 @@ class Create(AAZCommand):
             )
 
         _args_schema.value = AAZFileArg(
-                options=["--schema-file"],
+                options=["--schema-file","-f"],
                 help="Path to the schema file",
         )
         

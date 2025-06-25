@@ -16,6 +16,8 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List by subscription
+    :example: List Config Templates by subscription
+        az workload-orchestration config-template list --subscription mySubscription
     """
 
     _aaz_info = {

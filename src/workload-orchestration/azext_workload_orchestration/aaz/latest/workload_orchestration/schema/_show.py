@@ -16,6 +16,8 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get a Schema Resource
+    :example: Show a Schema
+        az workload-orchestration schema show -n mySchema -g myResourceGroup
     """
 
     _aaz_info = {

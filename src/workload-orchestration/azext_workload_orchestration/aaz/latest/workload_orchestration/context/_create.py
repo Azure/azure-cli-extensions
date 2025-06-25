@@ -17,7 +17,7 @@ from azure.cli.core.aaz import *
 class Create(AAZCommand):
     """Create Context Resource
     :example: Create Context Resource
-        az workload-orchestration context create -g MyResourceGroup -n MyContext --location eastus --capabilities '[{"description":"description","name":"name","state":"active"}]' --hierarchies '[{"description":"description","name":"name"}]'
+        az workload-orchestration context create -g MyResourceGroup -n MyContext --location eastus --capabilities '[{"description":"description","name":"name"}]' --hierarchies '[{"description":"description","name":"name"}]'
     """
 
     _aaz_info = {

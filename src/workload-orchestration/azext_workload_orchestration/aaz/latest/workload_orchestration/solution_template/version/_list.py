@@ -46,7 +46,7 @@ class List(AAZCommand):
             required=True,
         )
         _args_schema.solution_template_name = AAZStrArg(
-            options=["--solution-template-name"],
+            options=["--solution-template-name","-n", "--name"],
             help="The name of the SolutionTemplate",
             required=True,
             fmt=AAZStrArgFormat(

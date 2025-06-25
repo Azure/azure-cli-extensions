@@ -16,6 +16,8 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List by subscription
+    :example: List Schemas
+        az workload-orchestration schema list
     """
 
     _aaz_info = {

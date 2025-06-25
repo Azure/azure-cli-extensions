@@ -43,7 +43,7 @@ class List(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.config_template_name = AAZStrArg(
-            options=["--config-template-name"],
+            options=["-n", "--name", "--config-template-name"],
             help="The name of the ConfigTemplate",
             required=True,
             fmt=AAZStrArgFormat(

@@ -18,6 +18,8 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete a Config Template Resource
+       :example: Delete a Config Template 
+        az workload-orchestration config-template delete -n myConfigTemplate -g myResourceGroup
     """
 
     _aaz_info = {

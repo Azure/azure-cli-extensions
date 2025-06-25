@@ -16,6 +16,8 @@ from azure.cli.core.aaz import *
 )
 class RemoveVersion(AAZCommand):
     """Remove Solution Template Version Resource
+    :example: Remove a Solution Template Version
+        az workload-orchestration solution-template remove-version -n mySolutionTemplate -g myResourceGroup --version 1.0.0
     """
 
     _aaz_info = {
@@ -46,7 +48,7 @@ class RemoveVersion(AAZCommand):
             required=True,
         )
         _args_schema.solution_template_name = AAZStrArg(
-            options=["--solution-template-name"],
+            options=["--solution-template-name", "--name", "-n"],
             help="The name of the SolutionTemplate",
             required=True,
             id_part="name",
@@ -59,7 +61,7 @@ class RemoveVersion(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.version = AAZStrArg(
-            options=["--version"],
+            options=["--version", "-v"],
             arg_group="Body",
             help="Version of the Resource",
             required=True,

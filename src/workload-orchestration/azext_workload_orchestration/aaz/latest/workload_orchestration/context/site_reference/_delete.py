@@ -17,6 +17,8 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete Site Reference Resource
+    :example: Delete a Site Reference
+        az workload-orchestration context site-reference delete -n mySiteReference -g myResourceGroup --context-name myContext
     """
 
     _aaz_info = {

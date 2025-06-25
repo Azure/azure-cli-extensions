@@ -48,7 +48,7 @@ class BulkDeploySolution(AAZCommand):
             required=True,
         )
         _args_schema.solution_template_name = AAZStrArg(
-            options=["--solution-template-name","--name"],
+            options=["-n", "--name", "--solution-template-name"],
             help="The name of the SolutionTemplate",
             required=True,
             id_part="name",
@@ -57,7 +57,7 @@ class BulkDeploySolution(AAZCommand):
             ),
         )
         _args_schema.solution_template_version_name = AAZStrArg(
-            options=["--solution-template-version","--version"],
+            options=["--solution-template-version","--version","-v"],
             help="The name of the SolutionTemplateVersion",
             required=True,
             id_part="child_name_1",

@@ -46,7 +46,7 @@ class List(AAZCommand):
             required=True,
         )
         _args_schema.schema_name = AAZStrArg(
-            options=["--schema-name"],
+            options=["-n", "--name", "--schema-name"],
             help="The name of the Schema",
             required=True,
             fmt=AAZStrArgFormat(

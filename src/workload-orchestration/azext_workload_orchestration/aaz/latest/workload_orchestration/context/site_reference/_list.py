@@ -16,6 +16,8 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List Site Reference Resources
+    :example: List Site References
+        az workload-orchestration context site-reference list --context-name myContext -g myResourceGroup
     """
 
     _aaz_info = {

@@ -22,8 +22,10 @@ from azure.cli.core.azclierror import CLIInternalError
 )
 class ShowConfig2(AAZCommand):
     """To set the values to configurations available at specified hierarchical entity
-    :example: Set a Configuration
+    :example: Set a Configuration through editor
               az workload-orchestration configuration set -g rg1 --target-name target1 --solution-template-name solutionTemplate1
+    :example: Set a Configuration through file
+              az workload-orchestration configuration set -g rg1 --target-name target1 --solution-template-name solutionTemplate1 --file /path/to/config.yaml
     """
 
     _aaz_info = {
@@ -53,7 +55,7 @@ class ShowConfig2(AAZCommand):
             required=True,
         )
         _args_schema.solution_name = AAZStrArg(
-            options=["--solution-template-name"],
+            options=["-s", "--solution-template-name"],
             help="The name of the Solution, This is required only to set solution configurations",
             # required=True,
 
@@ -64,7 +66,7 @@ class ShowConfig2(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.level_name = AAZStrArg(
-            options=["--target-name"],
+            options=["-t", "--target-name"],
             help="The Deployment Target or Site name at which values needs to be set",
             required=True,
             fmt=AAZStrArgFormat(
@@ -73,7 +75,7 @@ class ShowConfig2(AAZCommand):
         )
 
         _args_schema.file_path = AAZFileArg(
-            options=["--file"],
+            options=["--file","-f"],
             help="Path to a file containing the configuration values. If provided, the editor will not be opened.",
             required=False,
         )
