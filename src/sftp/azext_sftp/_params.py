@@ -24,19 +24,20 @@ def load_arguments(self, _):
                    help='Azure Storage Account name for SFTP connection.')
         c.argument('port', options_list=['--port'], 
                    help='SFTP port. Default: 22 for Azure Storage SFTP.', 
-                   type=int, default=10122)
+                   type=int, default=22)
         c.argument('cert_file', options_list=['--certificate-file', '-c'],
                    help='Path to certificate file used for authentication. '
                    'Will be generated automatically if not provided.')
-        c.argument('private_key_file', options_list=['--private-key-file', '-i'], 
+        c.argument('private_key_file', options_list=['--private-key-file', '-i'],
                    help='Path to RSA private key file. If not provided, a key pair will be generated.')
         c.argument('public_key_file', options_list=['--public-key-file', '-p'], 
                    help='Path to RSA public key file. If not provided, a key pair will be generated.')
-        c.argument('host_override', options_list=['--host'],
-                   help='Override SFTP hostname. Default: {storage_account}.blob.core.windows.net')
         c.argument('sftp_args', options_list=['--sftp-args'],
                    help='Additional arguments to pass to the SFTP client. '
                    'These arguments will be passed directly to the underlying SFTP command.')
         c.argument('ssh_client_folder', options_list=['--ssh-client-folder'],
                    help='Path to folder containing SSH client executables (ssh, sftp, ssh-keygen). '
                    'Default: Uses executables from PATH or C:\\Windows\\System32\\OpenSSH on Windows.')
+        c.argument('sftp_batch_commands', options_list=['--batch-commands'],
+                   help='SFTP batch commands to execute after connecting. '
+                   'Example: "ls\\nget file.txt" to list files and download file.txt')

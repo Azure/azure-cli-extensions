@@ -120,7 +120,7 @@ def check_or_create_public_private_files(public_key_file, private_key_file, cred
 
     if not public_key_file:
         if private_key_file:
-            public_key_file = private_key_file + ".pub"
+            public_key_file = str(private_key_file) + ".pub"
         else:
             raise azclierror.RequiredArgumentMissingError("Public key file not specified")
 
@@ -175,7 +175,7 @@ def get_and_write_certificate(cmd, public_key_file, cert_file, ssh_client_folder
     telemetry.add_extension_event('sftp', {'Context.Default.AzureCLI.SFTPGetCertificateTime': time_elapsed})
 
     if not cert_file:
-        cert_file = public_key_file + "-aadcert.pub"
+        cert_file = str(public_key_file) + "-aadcert.pub"
 
     logger.debug("Generating certificate %s", cert_file)
     

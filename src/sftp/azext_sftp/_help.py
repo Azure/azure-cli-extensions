@@ -51,14 +51,19 @@ helps['sftp connect'] = """
         - name: Connect with automatic certificate generation (fully managed)
           text: az sftp connect --storage-account mystorageaccount
         - name: Connect to storage account with existing certificate
-          text: az sftp connect --storage-account mystorageaccount --certificate-file ~/my_cert.pub
-        - name: Connect with existing SSH key pair
+          text: az sftp connect --storage-account mystorageaccount --certificate-file ~/my_cert.pub        - name: Connect with existing SSH key pair
           text: az sftp connect --storage-account mystorageaccount --public-key-file ~/.ssh/id_rsa.pub --private-key-file ~/.ssh/id_rsa
-        - name: Connect with custom port and host
-          text: az sftp connect --storage-account mystorageaccount --port 22 --host custom.sftp.host
+        - name: Connect with custom port
+          text: az sftp connect --storage-account mystorageaccount --port 2222
         - name: Connect with additional SFTP arguments
-          text: az sftp connect --storage-account mystorageaccount --sftp-args "-v"        - name: Connect with custom SSH client folder (Windows)
+          text: az sftp connect --storage-account mystorageaccount --sftp-args "-v"
+        - name: Connect with custom SSH client folder (Windows)
           text: az sftp connect --storage-account mystorageaccount --ssh-client-folder "C:\\Program Files\\OpenSSH"
-        - name: Connect to different Azure regions with custom hostname
-          text: az sftp connect --storage-account mystorageaccount --host mystorageaccount.sftp.customdomain.com
+        - name: Connect in different Azure clouds (automatic hostname resolution)
+          text: |
+            # The extension automatically resolves hostnames based on Azure cloud:
+            # Azure Public: mystorageaccount.blob.core.windows.net
+            # Azure China: mystorageaccount.blob.core.chinacloudapi.cn  
+            # Azure Government: mystorageaccount.blob.core.usgovcloudapi.net
+            az sftp connect --storage-account mystorageaccount
 """

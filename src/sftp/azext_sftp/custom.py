@@ -62,7 +62,7 @@ def sftp_cert(cmd, cert_path=None, public_key_file=None, ssh_client_folder=None)
         print_styled_text((Style.SUCCESS, f"Generated SSH certificate {cert_file}."))
 
 
-def sftp_connect(cmd, storage_account, port=22, cert_file=None, private_key_file=None, public_key_file=None, host_override=None, sftp_args=None, ssh_client_folder=None):
+def sftp_connect(cmd, storage_account, port=None, cert_file=None, private_key_file=None, public_key_file=None, sftp_args=None, ssh_client_folder=None, sftp_batch_commands=None):
     """Connect to Azure Storage Account via SFTP with automatic certificate generation if needed."""
     
     # Validate input parameters
@@ -126,14 +126,9 @@ def sftp_connect(cmd, storage_account, port=22, cert_file=None, private_key_file
         # Build Azure Storage SFTP username format
         # Note: Removed hardcoded tenant/app IDs - these should be configured based on the environment
         username = f"{storage_account}.{user}"
-          # Determine hostname
-        if host_override:
-            hostname = host_override
-            print("DEBUG: Using host override:", hostname)
-        else:
-            # Standard Azure Storage SFTP endpoint format
-            hostname = f"{storage_account}.blob.core.windows.net"        # Create SFTP session and connect
-            print("DEBUG: Using default hostname:", hostname)
+          # Determine hostname        # Use cloud-aware hostname resolution
+        storage_suffix = _get_storage_endpoint_suffix(cmd)
+        hostname = f"{storage_account}.{storage_suffix}"
         sftp_session = sftp_info.SFTPSession(
             storage_account=storage_account,
             username=username, 
@@ -145,11 +140,12 @@ def sftp_connect(cmd, storage_account, port=22, cert_file=None, private_key_file
             ssh_client_folder=ssh_client_folder,
             ssh_proxy_folder=None,
             credentials_folder=credentials_folder,
-            yes_without_prompt=False
+            yes_without_prompt=False,
+            sftp_batch_commands=sftp_batch_commands
         )
           # Set local user for username resolution
         sftp_session.local_user = user
-        sftp_session.resolve_connection_info(host_override)
+        sftp_session.resolve_connection_info()
         
         print_styled_text((Style.SUCCESS, f"Connecting to {storage_account} at {sftp_session.get_host()}:{port} as {sftp_session.username}..."))
         _do_sftp_op(cmd, sftp_session, sftp_utils.start_sftp_connection)
@@ -189,7 +185,7 @@ def _check_or_create_public_private_files(public_key_file, private_key_file, cre
 
     if not public_key_file:
         if private_key_file:
-            public_key_file = private_key_file + ".pub"
+            public_key_file = str(private_key_file) + ".pub"
         else:
             raise azclierror.RequiredArgumentMissingError("Public key file not specified")
 
@@ -244,7 +240,9 @@ def _get_and_write_certificate(cmd, public_key_file, cert_file, ssh_client_folde
     telemetry.add_extension_event('ssh', {'Context.Default.AzureCLI.SSHGetCertificateTime': time_elapsed})
 
     if not cert_file:
-        cert_file = public_key_file + "-aadcert.pub"
+        # Remove any existing file extension before adding the certificate suffix
+        base_name = os.path.splitext(str(public_key_file))[0]
+        cert_file = base_name + "-aadcert.pub"
 
     logger.debug("Generating certificate %s", cert_file)
     # cert written to here
@@ -340,3 +338,15 @@ def _cleanup_credentials(delete_keys, delete_cert, credentials_folder, cert_file
             
     except OSError as e:
         logger.warning("Failed to clean up credentials: %s", str(e))
+
+def _get_storage_endpoint_suffix(cmd):
+    """Get the appropriate storage endpoint suffix based on Azure cloud environment.
+    
+    This follows the same pattern as the SSH extension for cloud environment handling.
+    """
+    cloud_to_storage_suffix = {
+        "azurecloud": "blob.core.windows.net",
+        "azurechinacloud": "blob.core.chinacloudapi.cn", 
+        "azureusgovernment": "blob.core.usgovcloudapi.net"
+    }
+    return cloud_to_storage_suffix.get(cmd.cli_ctx.cloud.name.lower(), "blob.core.windows.net")
