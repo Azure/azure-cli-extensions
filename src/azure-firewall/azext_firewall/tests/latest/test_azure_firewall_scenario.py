@@ -927,7 +927,7 @@ class AzureFirewallScenario(ScenarioTest):
     def test_azure_firewall_policy_explicit_proxy(self, resource_group):
         self.kwargs.update({
             'policy_name': 'testFirewallPolicy',
-            'sas_url': "https://clitestatorageaccount.blob.core.windows.net/explicitproxycontainer/pacfile.pac?sp=r&st=2024-01-09T08:48:06Z&se=2024-01-09T16:48:06Z&spr=https&sv=2022-11-02&sr=b&sig=5B0q%2B90BH0fkPZK6G6LHKRIGMY%2FljNOfsSQ8xaQB6mw%3D"
+            'sas_url': "https://clitestatorageaccount.blob.core.windows.net/explicitproxycontainer/pacfile.pac?sp=r&st=2024-01-09T08:48:06Z&se=2024-01-09T16:48:06Z&spr=https&sv=2022-11-02&sr=b&sig=***"
         })
         self.cmd('network firewall policy create -g {rg} -n {policy_name} --sku Premium --explicit-proxy enable-explicit-proxy=true http-port=85 https-port=121 enable-pac-file=true pac-file-port=122 pac-file="{sas_url}"',
                  checks=[
