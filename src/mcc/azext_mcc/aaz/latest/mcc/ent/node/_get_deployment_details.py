@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class GetDeploymentDetails(AAZCommand):
     """Retrieves Microsoft Connected Cache for Enterprise cache node details and keys needed to deploy cache node.
+
+    :example: Get Deployment Details For MCC Enterprise Cache Node
+        az mcc ent node get-deployment-details --mcc-resource-name [MccResourceName] --cache-node-name [MccCacheNodeName] --resource-group [MccResourceRgName]
     """
 
     _aaz_info = {

@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """Retrieves relevant information about all Microsoft Connected Cache for Enterprise resources under the resource group.
+
+    :example: List MCC Enterprise Resources in Resource Group
+        az mcc ent resource list --resource-group [MccResourceRgName]
     """
 
     _aaz_info = {

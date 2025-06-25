@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Deletes an existing Microsoft Connected Cache for Enterprise resource.
+
+    :example: Delete MCC Enterprise Resource
+        az mcc ent resource delete --mcc-resource-name [MccResourceName] --resource-group [MccResourceRgName]
     """
 
     _aaz_info = {

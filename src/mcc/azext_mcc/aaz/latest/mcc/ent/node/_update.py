@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Configures a Microsoft Connected Cache for Enterprise cache node with specified configuration parameters.
+
+    :example: Update MCC Enterprise Cache Node
+        az mcc ent node update --mcc-resource-name [MccResourceName] --cache-node-name [MccCacheNodeName] --resource-group [MccResourceRgName] --cache-drive "[{physical-path:/var/mcc,size-in-gb:XX}]" --proxy [EnabledOrDisabled] --proxy-host [URLOrIPForProxy] --proxy-port [ProxyPortNumber] --auto-update-day [AutoUpdateDay] --auto-update-time [HH:mm] --auto-update-week [AutoUpdateWeekOfMonth] --auto-update-ring [SlowOrFastUpdateRing]
     """
 
     _aaz_info = {

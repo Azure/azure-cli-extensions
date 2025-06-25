@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Creates a Microsoft Connected Cache for Enterprise cache node with specified parameters.
+
+    :example: Create MCC Enterprise Cache Node
+        az mcc ent resource create --mcc-resource-name [MccResourceName] --cache-node-name [MccCacheNodeName] --host-os [WindowsOrLinux] --resource-group [MccResourceRgName]
     """
 
     _aaz_info = {
