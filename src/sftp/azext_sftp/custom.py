@@ -27,27 +27,54 @@ from . import constants as const
 logger = log.get_logger(__name__)
 
 def sftp_cert(cmd, cert_path=None, public_key_file=None, ssh_client_folder=None):
-    """Generate SSH certificate for SFTP authentication."""
+    """
+    Generate SSH certificate for SFTP authentication using Azure AD.
+    
+    Args:
+        cmd: CLI command context
+        cert_path: Path where the certificate should be written
+        public_key_file: Path to existing RSA public key file
+        ssh_client_folder: Path to SSH client executables directory
+        
+    Returns:
+        None
+        
+    Raises:
+        RequiredArgumentMissingError: When required arguments are missing
+        InvalidArgumentValueError: When provided paths are invalid
+    """
+    logger.debug("Starting SFTP certificate generation")
+    
     if not cert_path and not public_key_file:
         raise azclierror.RequiredArgumentMissingError("--file or --public-key-file must be provided.")
+    
     if cert_path and not os.path.isdir(os.path.dirname(cert_path)):
         raise azclierror.InvalidArgumentValueError(f"{os.path.dirname(cert_path)} folder doesn't exist")
 
+    # Normalize paths to absolute paths
     if public_key_file:
         public_key_file = os.path.abspath(public_key_file)
+        logger.debug("Using public key file: %s", public_key_file)
     if cert_path:
         cert_path = os.path.abspath(cert_path)
+        logger.debug("Certificate will be written to: %s", cert_path)
     if ssh_client_folder:
         ssh_client_folder = os.path.abspath(ssh_client_folder)
+        logger.debug("Using SSH client folder: %s", ssh_client_folder)
 
     # If user doesn't provide a public key, save generated key pair to the same folder as --file
     keys_folder = None
     if not public_key_file:
         keys_folder = os.path.dirname(cert_path)
+        logger.debug("Will generate key pair in: %s", keys_folder)
 
-    public_key_file, _, _ = _check_or_create_public_private_files(public_key_file, None, keys_folder, ssh_client_folder)
-    # certificate generated here
-    cert_file, _ = _get_and_write_certificate(cmd, public_key_file, cert_path, ssh_client_folder)
+    try:
+        public_key_file, _, _ = _check_or_create_public_private_files(public_key_file, None, keys_folder, ssh_client_folder)
+        # certificate generated here
+        cert_file, _ = _get_and_write_certificate(cmd, public_key_file, cert_path, ssh_client_folder)
+    except Exception as e:
+        logger.error("Failed to generate certificate: %s", str(e))
+        raise
 
     if keys_folder:
         logger.warning("%s contains sensitive information (id_rsa, id_rsa.pub). "
@@ -63,7 +90,27 @@ def sftp_cert(cmd, cert_path=None, public_key_file=None, ssh_client_folder=None)
 
 
 def sftp_connect(cmd, storage_account, port=None, cert_file=None, private_key_file=None, public_key_file=None, sftp_args=None, ssh_client_folder=None, sftp_batch_commands=None):
-    """Connect to Azure Storage Account via SFTP with automatic certificate generation if needed."""
+    """
+    Connect to Azure Storage Account via SFTP with automatic certificate generation if needed.
+    
+    Args:
+        cmd: CLI command context
+        storage_account: Azure Storage Account name or resource ID
+        port: SFTP port number (default: 22)
+        cert_file: Path to SSH certificate file
+        private_key_file: Path to SSH private key file
+        public_key_file: Path to SSH public key file
+        sftp_args: Additional SFTP client arguments
+        ssh_client_folder: Path to SSH client executables
+        sftp_batch_commands: Non-interactive SFTP commands to execute
+        
+    Returns:
+        None
+        
+    Raises:
+        Various Azure CLI errors for validation and connection issues
+    """
+    logger.debug("Starting SFTP connection to storage account: %s", storage_account)
     
     # Validate input parameters
     _assert_args(storage_account, cert_file, public_key_file, private_key_file)
@@ -75,6 +122,7 @@ def sftp_connect(cmd, storage_account, port=None, cert_file=None, private_key_fi
     credentials_folder = None
     
     if not cert_file and not public_key_file and not private_key_file:
+        logger.info("Fully managed mode: No credentials provided")
         print_styled_text((Style.ACTION, "Fully managed mode: No credentials provided."))
         print_styled_text((Style.ACTION, "Generating SSH key pair and certificate automatically..."))
         print_styled_text((Style.WARNING, "Note: Generated credentials will be cleaned up after connection."))
@@ -239,20 +287,17 @@ def _get_and_write_certificate(cmd, public_key_file, cert_file, ssh_client_folde
     profile = Profile(cli_ctx=cmd.cli_ctx)
 
     t0 = time.time()
-    # We currently are using the presence of get_msal_token to detect if we are running on an older azure cli client
-    # TODO: Remove when adal has been deprecated for a while
+    # Use MSAL token for modern Azure CLI authentication
     if hasattr(profile, "get_msal_token"):
-        # we used to use the username from the token but now we throw it away
         _, certificate = profile.get_msal_token(scopes, data)
     else:
-        # likely uses this path
-        # credentia.get_token().token is the certificate
+        # Fallback for older Azure CLI versions
         credential, _, _ = profile.get_login_credentials(subscription_id=profile.get_subscription()["id"])
         certificatedata = credential.get_token(*scopes, data=data)
         certificate = certificatedata.token
 
     time_elapsed = time.time() - t0
-    telemetry.add_extension_event('ssh', {'Context.Default.AzureCLI.SSHGetCertificateTime': time_elapsed})
+    telemetry.add_extension_event('sftp', {'Context.Default.AzureCLI.SftpGetCertificateTime': time_elapsed})
 
     if not cert_file:
         # Remove any existing file extension before adding the certificate suffix

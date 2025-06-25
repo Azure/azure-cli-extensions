@@ -26,9 +26,10 @@ CLASSIFIERS = [
     'Intended Audience :: System Administrators',
     'Programming Language :: Python',
     'Programming Language :: Python :: 3',
-    'Programming Language :: Python :: 3.6',
-    'Programming Language :: Python :: 3.7',
     'Programming Language :: Python :: 3.8',
+    'Programming Language :: Python :: 3.9',
+    'Programming Language :: Python :: 3.10',
+    'Programming Language :: Python :: 3.11',
     'License :: OSI Approved :: MIT License',
 ]
 
@@ -43,8 +44,7 @@ with open('HISTORY.rst', 'r', encoding='utf-8') as f:
 setup(
     name='sftp',
     version=VERSION,
-    description='Microsoft Azure Command-Line Tools Sftp Extension',
-    # TODO: Update author and email, if applicable
+    description='Microsoft Azure Command-Line Tools SFTP Extension',
     author='Microsoft Corporation',
     author_email='azpycli@microsoft.com',
     # TODO: change to your extension source code repo if the code will not be put in azure-cli-extensions repo

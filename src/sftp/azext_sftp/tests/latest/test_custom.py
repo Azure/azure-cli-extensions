@@ -14,24 +14,36 @@ import shutil
 
 
 class SftpCustomCommandTest(unittest.TestCase):
+    """Test suite for SFTP custom commands."""
+
+    def setUp(self):
+        """Set up test fixtures before each test method."""
+        super().setUp()
+
+    def tearDown(self):
+        """Tear down test fixtures after each test method."""
+        super().tearDown()
 
     def test_sftp_cert_no_args(self):
+        """Test that sftp_cert raises error when no arguments provided."""
         cmd = mock.Mock()
-        self.assertRaises(
-            azclierror.RequiredArgumentMissingError, custom.sftp_cert, cmd)
+        with self.assertRaises(azclierror.RequiredArgumentMissingError):
+            custom.sftp_cert(cmd)
 
     @mock.patch('os.path.isdir')
     def test_sftp_cert_cert_file_missing(self, mock_isdir):
+        """Test that sftp_cert raises error when certificate directory doesn't exist."""
         cmd = mock.Mock()
         mock_isdir.return_value = False
-        self.assertRaises(
-            azclierror.InvalidArgumentValueError, custom.sftp_cert, cmd, cert_path="cert")
+        with self.assertRaises(azclierror.InvalidArgumentValueError):
+            custom.sftp_cert(cmd, cert_path="cert")
 
     @mock.patch('os.path.isdir')
     @mock.patch('os.path.abspath')
     @mock.patch('azext_sftp.custom._check_or_create_public_private_files')
     @mock.patch('azext_sftp.custom._get_and_write_certificate')
     def test_sftp_cert(self, mock_write_cert, mock_get_keys, mock_abspath, mock_isdir):
+        """Test successful certificate generation."""
         cmd = mock.Mock()
         mock_isdir.return_value = True
         mock_abspath.side_effect = ['/pubkey/path', '/cert/path', '/client/path']
@@ -44,6 +56,10 @@ class SftpCustomCommandTest(unittest.TestCase):
         mock_write_cert.assert_called_once_with(cmd, 'pubkey', '/cert/path', None)
 
     def test_sftp_connect_preprod(self):
+        """Test SFTP connection to preprod environment.
+        
+        Owner: johnli1
+        """
         cmd = mock.Mock()
         cmd.cli_ctx = mock.Mock()
         cmd.cli_ctx.cloud = mock.Mock()
