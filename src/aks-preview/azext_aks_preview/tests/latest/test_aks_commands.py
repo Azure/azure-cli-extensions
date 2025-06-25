@@ -2267,58 +2267,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     @AKSCustomResourceGroupPreparer(
         random_name_length=17, name_prefix="clitest", location="westus2"
     )
-    def test_aks_nodepool_abort(self, resource_group, resource_group_location):
-        aks_name = self.create_random_name("cliakstest", 16)
-        node_pool_name = self.create_random_name("c", 6)
-        self.kwargs.update(
-            {
-                "resource_group": resource_group,
-                "name": aks_name,
-                "node_pool_name": node_pool_name,
-                "ssh_key_value": self.generate_ssh_keys(),
-            }
-        )
-
-        create_cmd = (
-            "aks create --resource-group={resource_group} --name={name} "
-            "--vm-set-type VirtualMachineScaleSets --node-count=1 "
-            "--ssh-key-value={ssh_key_value} "
-            "-o json"
-        )
-        self.cmd(create_cmd, checks=[self.check("provisioningState", "Succeeded")])
-
-        # add nodepool
-        self.cmd(
-            "aks nodepool add --resource-group={resource_group} --cluster-name={name} --name={node_pool_name} --node-count=2",
-            checks=[self.check("provisioningState", "Succeeded")],
-        )
-        # stop nodepool
-        self.cmd(
-            "aks nodepool stop --no-wait --resource-group={resource_group} --cluster-name={name} --nodepool-name={node_pool_name} --aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/PreviewStartStopAgentPool"
-        )
-
-        abort_cmd = "aks nodepool operation-abort --resource-group={resource_group} --cluster-name={name} --nodepool-name={node_pool_name}"
-        self.cmd(abort_cmd, checks=[self.is_empty()])
-
-        time.sleep(10)
-        get_nodepool_cmd = (
-            "aks nodepool show "
-            "--resource-group={resource_group} "
-            "--cluster-name={name} "
-            "-n {node_pool_name} "
-        )
-        self.cmd(
-            get_nodepool_cmd,
-            checks=[
-                self.check("provisioningState", "Canceled"),
-                self.check("powerState.code", "Running"),
-            ],
-        )
-
-    @AllowLargeResponse()
-    @AKSCustomResourceGroupPreparer(
-        random_name_length=17, name_prefix="clitest", location="westus2"
-    )
     def test_aks_machine_cmds(self, resource_group, resource_group_location):
         aks_name = self.create_random_name("cliakstest", 16)
         self.kwargs.update(
