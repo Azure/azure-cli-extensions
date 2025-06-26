@@ -17,8 +17,11 @@ from azure.cli.core.aaz import *
 class Update(AAZCommand):
     """Update a LoadBalancer
 
-    :example: Update a load balancer
+    :example: Update a load balancer advertise mode
         az k8s-runtime load-balancer update --load-balancer-name testlb1 --resource-uri subscriptions/00000000-1111-2222-3333-444444444444/resourceGroups/example/providers/Microsoft.Kubernetes/connectedClusters/cluster1 --advertise-mode ARP
+
+    :example: Update a load balancer IP address
+        az k8s-runtime load-balancer update --load-balancer-name testlb1 --resource-uri subscriptions/00000000-1111-2222-3333-444444444444/resourceGroups/example/providers/Microsoft.Kubernetes/connectedClusters/cluster1 --addresses "192.168.50.1/32"
     """
 
     _aaz_info = {
