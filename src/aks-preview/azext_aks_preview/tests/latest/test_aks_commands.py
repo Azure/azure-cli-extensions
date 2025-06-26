@@ -2998,14 +2998,14 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         create_cmd = (
             "aks create --resource-group={resource_group} --name={name} "
             "--node-count 1 --ssh-key-value={ssh_key_value} --generate-ssh-keys "
-            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/LocalDNSPreview"
         )
         self.cmd(create_cmd, checks=[self.check("provisioningState", "Succeeded")])
 
         # Add nodepool with localdns config file
         add_cmd = (
             "aks nodepool add --resource-group={resource_group} --cluster-name={name} "
-            "--name={nodepool_name} --node-count 1 --localdns-config={localdns_config}"
+            "--name={nodepool_name} --node-count 1 --localdns-config={localdns_config} "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/LocalDNSPreview"
         )
         self.cmd(add_cmd, checks=[self.check("provisioningState", "Succeeded")])
 
@@ -3079,7 +3079,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         create_cmd = (
             "aks create --resource-group={resource_group} --name={name} "
             "--node-count 1 --ssh-key-value={ssh_key_value} --generate-ssh-keys "
-            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/LocalDNSPreview"
         )
         self.cmd(create_cmd, checks=[self.check("provisioningState", "Succeeded")])
 
@@ -3093,7 +3092,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # Update nodepool with localdns config
         update_cmd = (
             "aks nodepool update --resource-group={resource_group} --cluster-name={name} "
-            "--name={nodepool_name} --localdns-config={localdns_config}"
+            "--name={nodepool_name} --localdns-config={localdns_config} "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/LocalDNSPreview "
         )
         self.cmd(update_cmd, checks=[self.check("provisioningState", "Succeeded")])
 
