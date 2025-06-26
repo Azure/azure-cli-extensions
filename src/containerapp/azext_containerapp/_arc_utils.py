@@ -548,21 +548,16 @@ def create_openshift_custom_coredns_resources(kube_client, namespace=OPENSHIFT_D
         raise CLIError(f"An error occurred while creating custom CoreDNS resources: {str(e)}")
 
 
-def patch_openshift_dns_operator(kube_client, domain):
+def patch_openshift_dns_operator(kube_client, domain, original_folder=None):
     try:
         logger.info("Patching OpenShift DNS operator to add custom resolver")
 
         # Fetch the existing DNS operator configuration
         custom_objects_api = client.CustomObjectsApi(kube_client)
 
-        dns_operator_config = custom_objects_api.get_cluster_custom_object(
-            group="operator.openshift.io",
-            version="v1",
-            plural="dnses",
-            name="default"
-        )
-        
-        coredns_service = client.CoreV1Api(kube_client).read_namespaced_service(name=CUSTOM_CORE_DNS, namespace=OPENSHIFT_DNS);
+        dns_operator_config = get_and_save_openshift_dns_operator_config(kube_client, original_folder)
+
+        coredns_service = client.CoreV1Api(kube_client).read_namespaced_service(name=CUSTOM_CORE_DNS, namespace=OPENSHIFT_DNS)
 
         # Add the custom resolver to the DNS operator configuration
         servers = dns_operator_config.get("spec", {}).get("servers", [])
@@ -620,3 +615,80 @@ def extract_domain_from_configmap(kube_client, resource_name=CUSTOM_CORE_DNS, na
     except Exception as e:
         logger.error(f"Failed to extract domain from configmap: {str(e)}")
         return None
+
+
+def get_and_save_openshift_dns_operator_config(kube_client, folder=None):
+    try:
+        custom_objects_api = client.CustomObjectsApi(kube_client)
+        dns_operator_config = custom_objects_api.get_cluster_custom_object(
+            group="operator.openshift.io",
+            version="v1",
+            plural="dnses",
+            name="default"
+        )
+
+        if folder is not None:
+            filepath = os.path.join(folder, "openshift-dns-operator-config.json")
+            with open(filepath, "w") as f:
+                f.write(json.dumps(dns_operator_config, indent=2))
+            logger.info(f"OpenShift DNS operator configuration saved to {filepath}")
+
+        return dns_operator_config
+    except Exception as e:
+        raise ValidationError(f"Failed to retrieve OpenShift DNS operator configuration: {str(e)}")
+
+
+def restart_openshift_dns_pods(kube_client):
+    try:
+        label_selector = "dns.operator.openshift.io/daemonset-dns=default"
+
+        # Get the list of pods first to show what will be deleted
+        core_v1_api = client.CoreV1Api(kube_client)
+        pods = core_v1_api.list_namespaced_pod(
+            namespace=OPENSHIFT_DNS,
+            label_selector=label_selector
+        )
+
+        if not pods.items:
+            logger.info(f"No DNS pods found in namespace '{OPENSHIFT_DNS}' with label '{label_selector}'")
+            return
+
+        # Show user what pods will be deleted
+        pod_names = [pod.metadata.name for pod in pods.items]
+        logger.info(f"Found {len(pod_names)} DNS pods to restart:")
+        for pod_name in pod_names:
+            logger.info(f"  - {pod_name}")
+
+        try:
+            response = input(f"The DNS pods in namespace '{OPENSHIFT_DNS}' needs to be restarted. Are you sure you want to proceed? (y/n): ")
+            confirmed = response.lower() in ['y', 'yes']
+        except (EOFError, KeyboardInterrupt):
+            logger.info("Operation cancelled by user")
+            return
+
+        if not confirmed:
+            logger.info("Operation cancelled by user")
+            return
+
+        # Delete the pods
+        logger.info(f"Deleting DNS pods in namespace '{OPENSHIFT_DNS}'...")
+        delete_options = client.V1DeleteOptions(
+            propagation_policy='Foreground',
+            grace_period_seconds=30
+        )
+
+        core_v1_api.delete_collection_namespaced_pod(
+            namespace=OPENSHIFT_DNS,
+            label_selector=label_selector,
+            body=delete_options
+        )
+
+        logger.info("Successfully initiated deletion of DNS pods. DaemonSet will recreate them automatically.")
+
+    except client.exceptions.ApiException as e:
+        if e.status == 404:
+            logger.warning(f"Namespace '{OPENSHIFT_DNS}' or pods with label '{label_selector}' not found")
+        else:
+            raise CLIError(f"Failed to restart DNS pods: {str(e)}")
+    except Exception as e:
+        raise CLIError(f"An error occurred while restarting DNS pods: {str(e)}")
