@@ -48,6 +48,11 @@ class ConvertConfigTests(unittest.TestCase):
                     "mountType": "azureFile",
                     "mountPath": "/mnt/af",
                     "readonly": true
+                },
+                {
+                    "mountType": "emptyDir",
+                    "mountPath": "/mnt/empty",
+                    "readOnly": false
                 }]
             }]
         }
@@ -105,6 +110,13 @@ class ConvertConfigTests(unittest.TestCase):
         self.assertEqual(vm[cfg.ACI_FIELD_TEMPLATE_MOUNTS_PATH], "/mnt/af")
         self.assertEqual(vm[cfg.ACI_FIELD_TEMPLATE_MOUNTS_TYPE], "azureFile")
         self.assertTrue(vm[cfg.ACI_FIELD_TEMPLATE_MOUNTS_READONLY])
+
+        vm = props[cfg.ACI_FIELD_TEMPLATE_VOLUME_MOUNTS][1]
+
+        self.assertEqual(vm[cfg.ACI_FIELD_CONTAINERS_ENVS_NAME], "emptydir")
+        self.assertEqual(vm[cfg.ACI_FIELD_TEMPLATE_MOUNTS_PATH], "/mnt/empty")
+        self.assertEqual(vm[cfg.ACI_FIELD_TEMPLATE_MOUNTS_TYPE], "emptyDir")
+        self.assertFalse(vm[cfg.ACI_FIELD_TEMPLATE_MOUNTS_READONLY])
 
     def test_workingdir_and_allow_elevated_migrated(self) -> None:
         props = self._new_cfg[cfg.ACI_FIELD_CONTAINERS][0][
