@@ -831,6 +831,7 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
             return profile
         return None
 
+
 class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
     def __init__(
         self,
