@@ -2997,7 +2997,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # Create AKS cluster
         create_cmd = (
             "aks create --resource-group={resource_group} --name={name} "
-            "--node-count 1 --ssh-key-value={ssh_key_value} --generate-ssh-keys"
+            "--node-count 1 --ssh-key-value={ssh_key_value} --generate-ssh-keys "
             "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/LocalDNSPreview"
         )
         self.cmd(create_cmd, checks=[self.check("provisioningState", "Succeeded")])
@@ -3078,8 +3078,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # Create AKS cluster
         create_cmd = (
             "aks create --resource-group={resource_group} --name={name} "
-            "--node-count 1 --ssh-key-value={ssh_key_value} --generate-ssh-keys"
-            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/LocalDNSPreview "
+            "--node-count 1 --ssh-key-value={ssh_key_value} --generate-ssh-keys "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/LocalDNSPreview"
         )
         self.cmd(create_cmd, checks=[self.check("provisioningState", "Succeeded")])
 
@@ -3156,9 +3156,9 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "ssh_key_value": self.generate_ssh_keys(),
         })
 
-        # Path to the localdns.json config file
+        # Path to the localdnsconfig.json config file
         localdns_config_path = os.path.join(
-            os.path.dirname(__file__), "data", "localdns.json"
+            os.path.dirname(__file__), "data", "localdnsconfig.json"
         )
 
         # Create the cluster

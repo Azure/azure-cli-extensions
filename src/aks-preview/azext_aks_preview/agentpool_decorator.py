@@ -1338,7 +1338,7 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
             agentpool.enable_fips = False
 
         return agentpool
-    
+
     def update_localdns_profile(self, agentpool: AgentPool) -> AgentPool:
         """Update local DNS profile for the AgentPool object if provided via --localdns-config."""
         self._ensure_agentpool(agentpool)
@@ -1475,3 +1475,4 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
             if_none_match=self.context.get_if_none_match(),
             headers=self.context.get_aks_custom_headers(),
         )
+    
