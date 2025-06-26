@@ -2977,6 +2977,216 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.cmd(
             "aks delete -g {resource_group} -n {name} --yes --no-wait",
             checks=[self.is_empty()],
+        ) 
+
+    @live_only()
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix="clitest", location="")
+    def test_aks_nodepool_add_with_localdns_config(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name("cliakstest", 16)
+        nodepool_name = self.create_random_name("np", 6)
+        localdns_config_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "data", "localdnsconfig.json")
+        self.kwargs.update({
+            "resource_group": resource_group,
+            "name": aks_name,
+            "nodepool_name": nodepool_name,
+            "ssh_key_value": self.generate_ssh_keys(),
+            "localdns_config": localdns_config_path
+        })
+
+        # Create AKS cluster
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} "
+            "--node-count 1 --ssh-key-value={ssh_key_value} --generate-ssh-keys"
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/LocalDNSPreview"
+        )
+        self.cmd(create_cmd, checks=[self.check("provisioningState", "Succeeded")])
+
+        # Add nodepool with localdns config
+        add_cmd = (
+            "aks nodepool add --resource-group={resource_group} --cluster-name={name} "
+            "--name={nodepool_name} --node-count 1 --localdns-config=@{localdns_config}"
+        )
+        self.cmd(add_cmd, checks=[self.check("provisioningState", "Succeeded")])
+
+        # Show nodepool and check localDNSProfile
+        show_cmd = (
+            "aks nodepool show --resource-group={resource_group} --cluster-name={name} --name={nodepool_name}"
+        )
+        result = self.cmd(show_cmd).get_output_in_json()
+        assert result["localDNSProfile"]["mode"] == "Required"
+        assert result["localDNSProfile"]["kubeDNSOverrides"] == {
+            ".": {
+                "cacheDurationInSeconds": 3600,
+                "forwardDestination": "ClusterCoreDNS",
+                "forwardPolicy": "Sequential",
+                "maxConcurrent": 1000,
+                "protocol": "PreferUDP",
+                "queryLogging": "Error",
+                "serveStale": "Verify",
+                "serveStaleDurationInSeconds": 3600
+            },
+            "cluster.local": {
+                "cacheDurationInSeconds": 3600,
+                "forwardDestination": "ClusterCoreDNS",
+                "forwardPolicy": "Sequential",
+                "maxConcurrent": 1000,
+                "protocol": "ForceTCP",
+                "queryLogging": "Error",
+                "serveStale": "Verify",
+                "serveStaleDurationInSeconds": 3600
+            }
+        }
+        assert result["localDNSProfile"]["vnetDNSOverrides"] == {
+            ".": {
+                "cacheDurationInSeconds": 3600,
+                "forwardDestination": "VnetDNS",
+                "forwardPolicy": "Sequential",
+                "maxConcurrent": 1000,
+                "protocol": "PreferUDP",
+                "queryLogging": "Error",
+                "serveStale": "Verify",
+                "serveStaleDurationInSeconds": 3600
+            },
+            "cluster.local": {
+                "cacheDurationInSeconds": 3600,
+                "forwardDestination": "ClusterCoreDNS",
+                "forwardPolicy": "Sequential",
+                "maxConcurrent": 1000,
+                "protocol": "ForceTCP",
+                "queryLogging": "Error",
+                "serveStale": "Verify",
+                "serveStaleDurationInSeconds": 3600
+            }
+        }
+
+    @live_only()
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix="clitest", location="westus2")
+    def test_aks_nodepool_update_with_localdns_config(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name("cliakstest", 16)
+        nodepool_name = self.create_random_name("np", 6)
+        localdns_config_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "data", "localdnsconfig.json")
+        self.kwargs.update({
+            "resource_group": resource_group,
+            "name": aks_name,
+            "nodepool_name": nodepool_name,
+            "ssh_key_value": self.generate_ssh_keys(),
+            "localdns_config": localdns_config_path
+        })
+
+        # Create AKS cluster
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} "
+            "--node-count 1 --ssh-key-value={ssh_key_value} --generate-ssh-keys"
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/LocalDNSPreview "
+        )
+        self.cmd(create_cmd, checks=[self.check("provisioningState", "Succeeded")])
+
+        # Add nodepool without localdns config
+        add_cmd = (
+            "aks nodepool add --resource-group={resource_group} --cluster-name={name} "
+            "--name={nodepool_name} --node-count 1"
+        )
+        self.cmd(add_cmd, checks=[self.check("provisioningState", "Succeeded")])
+
+        # Update nodepool with localdns config
+        update_cmd = (
+            "aks nodepool update --resource-group={resource_group} --cluster-name={name} "
+            "--name={nodepool_name} --localdns-config=@{localdns_config}"
+        )
+        self.cmd(update_cmd, checks=[self.check("provisioningState", "Succeeded")])
+
+        # Show nodepool and check localDNSProfile
+        show_cmd = (
+            "aks nodepool show --resource-group={resource_group} --cluster-name={name} --name={nodepool_name}"
+        )
+        result = self.cmd(show_cmd).get_output_in_json()
+        assert result["localDNSProfile"]["mode"] == "Required"
+        assert result["localDNSProfile"]["kubeDNSOverrides"] == {
+            ".": {
+                "cacheDurationInSeconds": 3600,
+                "forwardDestination": "ClusterCoreDNS",
+                "forwardPolicy": "Sequential",
+                "maxConcurrent": 1000,
+                "protocol": "PreferUDP",
+                "queryLogging": "Error",
+                "serveStale": "Verify",
+                "serveStaleDurationInSeconds": 3600
+            },
+            "cluster.local": {
+                "cacheDurationInSeconds": 3600,
+                "forwardDestination": "ClusterCoreDNS",
+                "forwardPolicy": "Sequential",
+                "maxConcurrent": 1000,
+                "protocol": "ForceTCP",
+                "queryLogging": "Error",
+                "serveStale": "Verify",
+                "serveStaleDurationInSeconds": 3600
+            }
+        }
+        assert result["localDNSProfile"]["vnetDNSOverrides"] == {
+            ".": {
+                "cacheDurationInSeconds": 3600,
+                "forwardDestination": "VnetDNS",
+                "forwardPolicy": "Sequential",
+                "maxConcurrent": 1000,
+                "protocol": "PreferUDP",
+                "queryLogging": "Error",
+                "serveStale": "Verify",
+                "serveStaleDurationInSeconds": 3600
+            },
+            "cluster.local": {
+                "cacheDurationInSeconds": 3600,
+                "forwardDestination": "ClusterCoreDNS",
+                "forwardPolicy": "Sequential",
+                "maxConcurrent": 1000,
+                "protocol": "ForceTCP",
+                "queryLogging": "Error",
+                "serveStale": "Verify",
+                "serveStaleDurationInSeconds": 3600
+            }
+        }
+        aks_name = self.create_random_name("cliakstest", 16)
+        node_pool_name = self.create_random_name("c", 6)
+        self.kwargs.update({
+            "resource_group": resource_group,
+            "name": aks_name,
+            "node_pool_name": node_pool_name,
+            "ssh_key_value": self.generate_ssh_keys(),
+        })
+
+        # Path to the localdns.json config file
+        localdns_config_path = os.path.join(
+            os.path.dirname(__file__), "data", "localdns.json"
+        )
+
+        # Create the cluster
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} "
+            "--ssh-key-value={ssh_key_value} --node-count 1"
+        )
+        self.cmd(create_cmd, checks=[self.check("provisioningState", "Succeeded")])
+
+        # Add a nodepool with --localdns-config
+        add_cmd = (
+            "aks nodepool add --resource-group={resource_group} --cluster-name={name} "
+            "--name={node_pool_name} --node-count 1 --localdns-config {localdns_config_path}"
+        ).format(localdns_config_path=localdns_config_path)
+        nodepool = self.cmd(add_cmd).get_output_in_json()
+
+        # Load the config for validation
+        with open(localdns_config_path, "r") as f:
+            expected_localdns = json.load(f)
+
+        # Validate the nodepool's localDnsProfile matches the config
+        actual_localdns = nodepool.get("localDnsProfile", {})
+        assert actual_localdns == expected_localdns, f"localDnsProfile mismatch: {actual_localdns} != {expected_localdns}"
+
+        # Clean up
+        self.cmd(
+            "aks delete --resource-group={resource_group} --name={name} --yes --no-wait",
+            checks=[self.is_empty()],
         )
 
     @AllowLargeResponse()

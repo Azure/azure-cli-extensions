@@ -811,7 +811,7 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
 
     def get_localdns_config(self):
         return self.raw_param.get("localdns_config")
-    
+
     def get_localdns_profile(self):
         """
         Returns the local DNS profile dict if set, or None.
@@ -830,7 +830,6 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
                 )
             return profile
         return None
-
 
 class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
     def __init__(
@@ -1339,7 +1338,7 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
             agentpool.enable_fips = False
 
         return agentpool
-
+    
     def update_localdns_profile(self, agentpool: AgentPool) -> AgentPool:
         """Update local DNS profile for the AgentPool object if provided via --localdns-config."""
         self._ensure_agentpool(agentpool)
@@ -1361,20 +1360,28 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
 
         # update custom ca trust
         agentpool = self.update_custom_ca_trust(agentpool)
+
         # update network profile
         agentpool = self.update_network_profile(agentpool)
+
         # update artifact streaming
         agentpool = self.update_artifact_streaming(agentpool)
-        # update os_sku
-        agentpool = self.update_os_sku(agentpool)
-        # update ssh access
-        agentpool = self.update_ssh_access(agentpool)
+
         # update secure boot
         agentpool = self.update_secure_boot(agentpool)
+
         # update vtpm
         agentpool = self.update_vtpm(agentpool)
+
+        # update os sku
+        agentpool = self.update_os_sku(agentpool)
+
         # update fips image
         agentpool = self.update_fips_image(agentpool)
+
+        # update ssh access
+        agentpool = self.update_ssh_access(agentpool)
+
         # update local DNS profile
         agentpool = self.update_localdns_profile(agentpool)
 
