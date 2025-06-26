@@ -1475,4 +1475,3 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
             if_none_match=self.context.get_if_none_match(),
             headers=self.context.get_aks_custom_headers(),
         )
-    
