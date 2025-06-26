@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.2.6
+++++++
+* bugfix making it so the fields in the --input format are case-insensitive
+
 1.2.5
 ++++++
 * consolidating functions for --input policygen
