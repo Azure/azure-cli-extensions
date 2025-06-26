@@ -92,6 +92,10 @@ def load_arguments(self, _):
             help='Extension types to be uninstalled.',
             arg_type=get_enum_type(IncludedExtensionTypes),
         )
+        c.argument(
+            'force',
+            help='Specify whether to force delete the extension from the cluster.',
+        )
 
     with self.argument_context('vme list') as c:
         c.argument(
