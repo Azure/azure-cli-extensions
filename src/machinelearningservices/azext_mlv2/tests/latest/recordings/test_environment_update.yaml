@@ -1,0 +1,134 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.8.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.10.11 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/environments/online-endpoint-mir-test/versions/3?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/amlsdkv2022304-ws/environments/online-endpoint-mir-test/versions/3",
+        "name": "3", "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
+        "properties": {"description": null, "tags": {"nn": "kkk"}, "properties": {},
+        "isArchived": false, "isAnonymous": false, "autoDeleteSetting": null, "environmentType":
+        "UserCreated", "image": "mcr.microsoft.com/azureml/openmpi3.1.2-ubuntu20.04:20210727.v1",
+        "condaFile": "{\n  \"channels\": [\n    \"conda-forge\"\n  ],\n  \"dependencies\":
+        [\n    \"python=3.6.1\",\n    \"numpy=1.19.4\",\n    \"pip=21.2.4\",\n    \"scikit-learn=0.19.1\",\n    \"scipy=1.5.1\",\n    {\n      \"pip\":
+        [\n        \"azureml-defaults==1.33.0\",\n        \"inference-schema[numpy-support]==1.3.0\",\n        \"joblib==1.0.1\",\n        \"numpy==1.19.4\",\n        \"scikit-learn==0.19.1\",\n        \"scipy==1.5.1\"\n      ]\n    }\n  ],\n  \"name\":
+        \"model-env\"\n}", "osType": "Linux", "autoRebuild": "Disabled", "provisioningState":
+        "Succeeded", "stage": "Development", "intellectualProperty": null}, "systemData":
+        {"createdAt": "2023-06-01T23:50:02.1651529+00:00", "createdBy": "Banibrata
+        De", "createdByType": "User", "lastModifiedAt": "2023-06-01T23:50:02.1651529+00:00",
+        "lastModifiedBy": "Banibrata De", "lastModifiedByType": "User"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1427'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 02 Jun 2023 18:27:55 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.033'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"tags": {"nn": "kkk"}, "isAnonymous": false, "isArchived":
+      false, "condaFile": "channels:\n- conda-forge\ndependencies:\n- python=3.6.1\n-
+      numpy=1.19.4\n- pip=21.2.4\n- scikit-learn=0.19.1\n- scipy=1.5.1\n- pip:\n  -
+      azureml-defaults==1.33.0\n  - inference-schema[numpy-support]==1.3.0\n  - joblib==1.0.1\n  -
+      numpy==1.19.4\n  - scikit-learn==0.19.1\n  - scipy==1.5.1\nname: model-env\n",
+      "image": "mcr.microsoft.com/azureml/openmpi3.1.2-ubuntu20.04:20210727.v1", "osType":
+      "linux"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '499'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.8.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.10.11 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/environments/online-endpoint-mir-test/versions/3?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/amlsdkv2022304-ws/environments/online-endpoint-mir-test/versions/3",
+        "name": "3", "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
+        "properties": {"description": null, "tags": {"nn": "kkk"}, "properties": {},
+        "isArchived": false, "isAnonymous": false, "autoDeleteSetting": null, "environmentType":
+        "UserCreated", "image": "mcr.microsoft.com/azureml/openmpi3.1.2-ubuntu20.04:20210727.v1",
+        "condaFile": "{\n  \"channels\": [\n    \"conda-forge\"\n  ],\n  \"dependencies\":
+        [\n    \"python=3.6.1\",\n    \"numpy=1.19.4\",\n    \"pip=21.2.4\",\n    \"scikit-learn=0.19.1\",\n    \"scipy=1.5.1\",\n    {\n      \"pip\":
+        [\n        \"azureml-defaults==1.33.0\",\n        \"inference-schema[numpy-support]==1.3.0\",\n        \"joblib==1.0.1\",\n        \"numpy==1.19.4\",\n        \"scikit-learn==0.19.1\",\n        \"scipy==1.5.1\"\n      ]\n    }\n  ],\n  \"name\":
+        \"model-env\"\n}", "osType": "Linux", "autoRebuild": "Disabled", "provisioningState":
+        "Succeeded", "stage": "Development", "intellectualProperty": null}, "systemData":
+        {"createdAt": "2023-06-01T23:50:02.1651529+00:00", "createdBy": "Banibrata
+        De", "createdByType": "User", "lastModifiedAt": "2023-06-01T23:50:02.1651529+00:00",
+        "lastModifiedBy": "Banibrata De", "lastModifiedByType": "User"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1427'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 02 Jun 2023 18:27:56 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/amlsdkv2022304/providers/Microsoft.MachineLearningServices/workspaces/amlsdkv2022304-ws/environments/online-endpoint-mir-test/versions/3?api-version=2023-04-01-preview
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aml-cluster:
+      - vienna-eastus-01
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.213'
+    status:
+      code: 201
+      message: Created
+version: 1

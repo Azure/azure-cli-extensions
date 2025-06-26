@@ -1,0 +1,130 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.4.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.11 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/nthandetest",
+        "name": "nthandetest", "type": "Microsoft.MachineLearningServices/workspaces",
+        "location": "eastus", "tags": {}, "etag": null, "properties": {"friendlyName":
+        "nthandetest", "description": "", "storageAccount": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.Storage/storageAccounts/nthandetest8920363208",
+        "keyVault": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.Keyvault/vaults/nthandetest0805776995",
+        "applicationInsights": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.insights/components/nthandetest3519596268",
+        "hbiWorkspace": false, "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47",
+        "imageBuildCompute": null, "provisioningState": "Succeeded", "v1LegacyMode":
+        false, "softDeleteEnabled": false, "containerRegistry": "", "notebookInfo":
+        {"resourceId": "e22f25f5396b42828c747e5272a417ee", "fqdn": "ml-nthandetest-eastus-429b3073-ea7c-435d-914a-9a2ffcb5b713.eastus.notebooks.azure.net",
+        "isPrivateLinkEnabled": false, "notebookPreparationError": null}, "storageHnsEnabled":
+        false, "workspaceId": "429b3073-ea7c-435d-914a-9a2ffcb5b713", "linkedModelInventoryArmId":
+        null, "privateLinkCount": 0, "publicNetworkAccess": "Enabled", "discoveryUrl":
+        "https://eastus.api.azureml.ms/discovery", "mlFlowTrackingUri": "azureml://eastus.api.azureml.ms/mlflow/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/nthandetest",
+        "sdkTelemetryAppInsightsKey": "71fa86c2-fe23-49db-bb2e-8537edfb6ead", "sasGetterUri":
+        "", "enableDataIsolation": false}, "identity": {"type": "SystemAssigned",
+        "principalId": "16b65b94-b9f2-4120-b0f1-598534df268b", "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47"},
+        "sku": {"name": "Basic", "tier": "Basic"}, "systemData": {"createdAt": "2022-08-11T16:20:09.2418482Z",
+        "createdBy": "nthande@microsoft.com", "createdByType": "User", "lastModifiedAt":
+        "2022-08-11T16:20:09.2418482Z", "lastModifiedBy": "nthande@microsoft.com",
+        "lastModifiedByType": "User"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2299'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 25 Jan 2023 22:56:51 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-96e55c8f0b708ce0448e66c461dfb1e1-a9041fc7d555fb8d-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.019'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"properties": {"vmSize": "STANDARD_DS3_V2", "applicationSharingPolicy":
+      "Shared", "computeInstanceAuthorizationType": "personal", "enableNodePublicIp":
+      false}, "computeType": "ComputeInstance"}, "location": "eastus"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '232'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.4.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.11 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/computes/testcomp007ci6?api-version=0000-00-00
+  response:
+    body:
+      string: '{"error": {"code": "UserError", "severity": null, "message": "Provided
+        EnableNodePublicIp ''False'' requires workspace private endpoint.", "messageFormat":
+        null, "messageParameters": null, "referenceCode": null, "detailsUri": null,
+        "target": null, "details": [], "innerError": null, "debugInfo": null, "additionalInfo":
+        null}, "correlation": {"operation": "87aaed28ce491b475ad2dea1030bc197", "request":
+        "e6294067b0d3ce57"}, "environment": "eastus", "location": "eastus", "time":
+        "2023-01-25T22:56:54.522081+00:00", "componentName": "machinelearningcompute"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '555'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 25 Jan 2023 22:56:54 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aml-cluster:
+      - vienna-eastus-02
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-ms-response-type:
+      - error
+      x-request-time:
+      - '0.079'
+    status:
+      code: 400
+      message: Provided EnableNodePublicIp 'False' requires workspace private endpoint.
+version: 1

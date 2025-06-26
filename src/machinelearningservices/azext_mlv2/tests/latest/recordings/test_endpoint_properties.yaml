@@ -1,0 +1,73 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.9.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.10.11 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/onlineEndpoints/bani-e2e-1/deployments/mock-deployment?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/amlsdkv2022304-ws/onlineEndpoints/bani-e2e-1/deployments/data-t-t",
+        "name": "data-t-t", "type": "Microsoft.MachineLearningServices/workspaces/onlineEndpoints/deployments",
+        "properties": {"description": "description for online deployment", "properties":
+        {"AzureAsyncOperationUri": "https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus/mfeOperationsStatus/od:a284c534-c8c0-41a0-8278-f5b0d68452a7:0052451f-276f-4fc1-9c9f-3e5f0e512ca0?api-version=2023-04-01-preview"},
+        "codeConfiguration": {"codeId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/amlsdkv2022304-ws/codes/15ed8f3d-78bb-42ce-ba25-06e6823ea531/versions/1",
+        "scoringScript": "score.py"}, "environmentId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/amlsdkv2022304-ws/environments/CliV2AnonymousEnvironment/versions/b9d38ac750c5ecd82e7b384c1aaed748",
+        "environmentVariables": {}, "scaleSettings": {"scaleType": "Default"}, "requestSettings":
+        {"maxQueueWait": "PT0S", "requestTimeout": "PT5S", "maxConcurrentRequestsPerInstance":
+        1}, "modelMountPath": null, "appInsightsEnabled": false, "livenessProbe":
+        {"failureThreshold": 30, "successThreshold": 1, "timeout": "PT2S", "period":
+        "PT10S", "initialDelay": "PT10S"}, "readinessProbe": {"failureThreshold":
+        30, "successThreshold": 1, "timeout": "PT2S", "period": "PT10S", "initialDelay":
+        "PT10S"}, "provisioningState": "Succeeded", "instanceType": "Standard_DS3_V2",
+        "model": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/amlsdkv2022304-ws/models/1498425f064ef007b4f000a85a5f4645/versions/1",
+        "egressPublicNetworkAccess": "Enabled", "dataCollector": {"collections": {"request":
+        {"samplingRate": 0.5, "dataCollectionMode": "Enabled", "dataId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/amlsdkv2022304-ws/data/bani-e2e-1-data-t-t-request/versions/1",
+        "clientId": null}, "response": {"samplingRate": 0.5, "dataCollectionMode":
+        "Enabled", "dataId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/amlsdkv2022304-ws/data/bani-e2e-1-data-t-t-response/versions/1",
+        "clientId": null}}, "rollingRate": "Hour", "requestLogging": null}, "endpointComputeType":
+        "Managed"}, "systemData": {"createdAt": "2023-05-18T23:36:05.6628257+00:00",
+        "createdBy": "Banibrata De", "lastModifiedAt": "2023-05-18T23:36:05.6628257+00:00"},
+        "tags": {}, "location": "eastus", "kind": "Managed", "sku": {"name": "Default",
+        "tier": "Standard", "capacity": 1}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '3033'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 06 Jun 2023 16:21:23 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.347'
+    status:
+      code: 200
+      message: OK
+version: 1

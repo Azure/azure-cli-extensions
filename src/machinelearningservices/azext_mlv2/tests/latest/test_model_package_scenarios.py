@@ -1,0 +1,24 @@
+# ---------------------------------------------------------
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# ---------------------------------------------------------
+
+import pytest
+import yaml
+from azext_mlv2.tests.scenario_test_helper import MLBaseScenarioTest
+
+
+class ModelPackageScenarioTest(MLBaseScenarioTest):
+    @pytest.mark.skip(reason="(2857265): az ml model package appears to be broken, and always fails with a key-error.")
+    def test_model_package_registry(self) -> None:
+
+        if self.is_live:
+            sub = "ea4faa5b-5e44-4236-91f6-5483d5b17d14"
+        else:
+            sub = "00000000-0000-0000-0000-000000000000"
+
+        model_obj = self.cmd(
+            f"az ml model package --name distilbert-base-uncased --version 5 --file \
+            ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/package/package_online_mlflow.yml \
+            --registry-name azureml -w dhmani-eastus2euap-ws2 -g dhmani-eastus2euap-rg2 --subscription {sub}"
+        )
+        assert model_obj != None

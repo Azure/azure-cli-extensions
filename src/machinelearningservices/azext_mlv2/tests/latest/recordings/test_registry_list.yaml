@@ -1,0 +1,208 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.1.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/registries?api-version=0000-00-00
+  response:
+    body:
+      string: '{"value": [{"tags": {}, "location": "eastus", "identity": {"type":
+        "SystemAssigned", "principalId": "53d39ba7-a6b5-44c7-ad6a-145745be6a2f", "tenantId":
+        "72f988bf-86f1-41af-91ab-2d7cd011db47"}, "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/registries/testregistry",
+        "name": "testregistry", "type": "Microsoft.MachineLearningServices/registries",
+        "properties": {"regionDetails": [{"location": "eastus", "storageAccountDetails":
+        [{"userCreatedStorageAccount": null, "systemCreatedStorageAccount": {"storageAccountName":
+        "testr23b03e27f86d4a19825", "storageAccountType": "Standard_GRS", "storageAccountHnsEnabled":
+        false, "armResourceId": {"resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.Storage/storageAccounts/testr23b03e27f86d4a19825"}}}],
+        "acrDetails": [{"userCreatedAcrAccount": null, "systemCreatedAcrAccount":
+        {"acrAccountName": "testr71f21c7d0c7e4d64974", "acrAccountSku": "Premium",
+        "armResourceId": {"resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.ContainerRegistry/registries/testr71f21c7d0c7e4d64974"}}}]},
+        {"location": "eastus2", "storageAccountDetails": [{"userCreatedStorageAccount":
+        null, "systemCreatedStorageAccount": {"storageAccountName": "testr89a0312f161c41c3b4a",
+        "storageAccountType": "Standard_GRS", "storageAccountHnsEnabled": false, "armResourceId":
+        {"resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.Storage/storageAccounts/testr89a0312f161c41c3b4a"}}}],
+        "acrDetails": [{"userCreatedAcrAccount": null, "systemCreatedAcrAccount":
+        {"acrAccountName": "testr2fbcb1d60407442d8ad", "acrAccountSku": "Premium",
+        "armResourceId": {"resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.ContainerRegistry/registries/testr2fbcb1d60407442d8ad"}}}]}],
+        "intellectualPropertyPublisher": null, "managedResourceGroupTags": {}, "publicNetworkAccess":
+        "Enabled", "discoveryUrl": "https://eastus.api.azureml.ms/registrymanagement/v1.0/registries/testregistry/discovery",
+        "managedResourceGroup": {"resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000"},
+        "mlFlowRegistryUri": "azureml://eastus.api.azureml.ms/mlflow/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/registries/testregistry"},
+        "systemData": null}, {"tags": {}, "location": "westcentralus", "identity":
+        {"type": "SystemAssigned", "principalId": "ced42b7b-12d8-4666-94ed-20fcb4220293",
+        "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47"}, "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/registries/registry_name",
+        "name": "registry_name", "type": "Microsoft.MachineLearningServices/registries",
+        "properties": {"regionDetails": [{"location": "westcentralus", "storageAccountDetails":
+        [{"userCreatedStorageAccount": null, "systemCreatedStorageAccount": {"storageAccountName":
+        "regis69509c00b92e44f99a3", "storageAccountType": "standard_lrs", "storageAccountHnsEnabled":
+        false, "armResourceId": {"resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.Storage/storageAccounts/regis69509c00b92e44f99a3"}}}],
+        "acrDetails": [{"userCreatedAcrAccount": null, "systemCreatedAcrAccount":
+        {"acrAccountName": "regis31171728c05e4a4aa65", "acrAccountSku": "Premium",
+        "armResourceId": {"resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.ContainerRegistry/registries/regis31171728c05e4a4aa65"}}}]}],
+        "intellectualPropertyPublisher": null, "managedResourceGroupTags": {}, "publicNetworkAccess":
+        "Enabled", "discoveryUrl": "https://westcentralus.api.azureml.ms/registrymanagement/v1.0/registries/registry_name/discovery",
+        "managedResourceGroup": {"resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000"},
+        "mlFlowRegistryUri": "azureml://westcentralus.api.azureml.ms/mlflow/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/registries/registry_name"},
+        "systemData": null}, {"tags": {}, "location": "westcentralus", "identity":
+        {"type": "SystemAssigned", "principalId": "1072fcf4-4c7a-49fb-baf6-dac5eb23dfbc",
+        "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47"}, "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/registries/registry579",
+        "name": "registry579", "type": "Microsoft.MachineLearningServices/registries",
+        "properties": {"regionDetails": [{"location": "westcentralus", "storageAccountDetails":
+        [{"userCreatedStorageAccount": null, "systemCreatedStorageAccount": {"storageAccountName":
+        "regis4b93e236fe3044c3b24", "storageAccountType": "standard_lrs", "storageAccountHnsEnabled":
+        false, "armResourceId": {"resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.Storage/storageAccounts/regis4b93e236fe3044c3b24"}}}],
+        "acrDetails": [{"userCreatedAcrAccount": null, "systemCreatedAcrAccount":
+        {"acrAccountName": "regis4906c2023cb842d4a7f", "acrAccountSku": "Premium",
+        "armResourceId": {"resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.ContainerRegistry/registries/regis4906c2023cb842d4a7f"}}}]}],
+        "intellectualPropertyPublisher": null, "managedResourceGroupTags": {}, "publicNetworkAccess":
+        "Enabled", "discoveryUrl": "https://westcentralus.api.azureml.ms/registrymanagement/v1.0/registries/registry579/discovery",
+        "managedResourceGroup": {"resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000"},
+        "mlFlowRegistryUri": "azureml://westcentralus.api.azureml.ms/mlflow/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/registries/registry579"},
+        "systemData": null}, {"tags": {"version": "updated6"}, "location": "westcentralus",
+        "identity": {"type": "SystemAssigned", "principalId": "9f1aa2af-32b4-4084-b94b-c2fa2bc962c7",
+        "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47"}, "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/registries/registry9022",
+        "name": "registry9022", "type": "Microsoft.MachineLearningServices/registries",
+        "properties": {"regionDetails": [{"location": "westcentralus", "storageAccountDetails":
+        [{"userCreatedStorageAccount": null, "systemCreatedStorageAccount": {"storageAccountName":
+        "regisc8c580e2d69c418c803", "storageAccountType": "standard_lrs", "storageAccountHnsEnabled":
+        false, "armResourceId": {"resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.Storage/storageAccounts/regisc8c580e2d69c418c803"}}}],
+        "acrDetails": [{"userCreatedAcrAccount": null, "systemCreatedAcrAccount":
+        {"acrAccountName": "regis93529dd350ff48c298b", "acrAccountSku": "Premium",
+        "armResourceId": {"resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.ContainerRegistry/registries/regis93529dd350ff48c298b"}}}]}],
+        "intellectualPropertyPublisher": null, "managedResourceGroupTags": {"version":
+        "updated6"}, "publicNetworkAccess": "Enabled", "discoveryUrl": "https://westcentralus.api.azureml.ms/registrymanagement/v1.0/registries/registry9022/discovery",
+        "managedResourceGroup": {"resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000"},
+        "mlFlowRegistryUri": "azureml://westcentralus.api.azureml.ms/mlflow/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/registries/registry9022"},
+        "systemData": null}, {"tags": {"version": "original"}, "location": "westcentralus",
+        "identity": {"type": "SystemAssigned", "principalId": "dfeda7fd-6291-43e1-9dce-34e003f33a9f",
+        "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47"}, "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/registries/registry432",
+        "name": "registry432", "type": "Microsoft.MachineLearningServices/registries",
+        "properties": {"regionDetails": [{"location": "westcentralus", "storageAccountDetails":
+        [{"userCreatedStorageAccount": null, "systemCreatedStorageAccount": {"storageAccountName":
+        "regisa479963602c947adb78", "storageAccountType": "standard_lrs", "storageAccountHnsEnabled":
+        false, "armResourceId": {"resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.Storage/storageAccounts/regisa479963602c947adb78"}}}],
+        "acrDetails": [{"userCreatedAcrAccount": null, "systemCreatedAcrAccount":
+        {"acrAccountName": "regisc0fea2b4b3b9495cae8", "acrAccountSku": "Premium",
+        "armResourceId": {"resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.ContainerRegistry/registries/regisc0fea2b4b3b9495cae8"}}}]}],
+        "intellectualPropertyPublisher": null, "managedResourceGroupTags": {"version":
+        "original"}, "publicNetworkAccess": "Enabled", "discoveryUrl": "https://westcentralus.api.azureml.ms/registrymanagement/v1.0/registries/registry432/discovery",
+        "managedResourceGroup": {"resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000"},
+        "mlFlowRegistryUri": "azureml://westcentralus.api.azureml.ms/mlflow/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/registries/registry432"},
+        "systemData": null}, {"tags": {}, "location": "eastus", "identity": {"type":
+        "SystemAssigned", "principalId": "53d39ba7-a6b5-44c7-ad6a-145745be6a2f", "tenantId":
+        "72f988bf-86f1-41af-91ab-2d7cd011db47"}, "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/registries/testregistry",
+        "name": "testregistry", "type": "Microsoft.MachineLearningServices/registries",
+        "properties": {"regionDetails": [{"location": "eastus", "storageAccountDetails":
+        [{"userCreatedStorageAccount": null, "systemCreatedStorageAccount": {"storageAccountName":
+        "testr23b03e27f86d4a19825", "storageAccountType": "Standard_GRS", "storageAccountHnsEnabled":
+        false, "armResourceId": {"resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.Storage/storageAccounts/testr23b03e27f86d4a19825"}}}],
+        "acrDetails": [{"userCreatedAcrAccount": null, "systemCreatedAcrAccount":
+        {"acrAccountName": "testr71f21c7d0c7e4d64974", "acrAccountSku": "Premium",
+        "armResourceId": {"resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.ContainerRegistry/registries/testr71f21c7d0c7e4d64974"}}}]},
+        {"location": "eastus2", "storageAccountDetails": [{"userCreatedStorageAccount":
+        null, "systemCreatedStorageAccount": {"storageAccountName": "testr89a0312f161c41c3b4a",
+        "storageAccountType": "Standard_GRS", "storageAccountHnsEnabled": false, "armResourceId":
+        {"resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.Storage/storageAccounts/testr89a0312f161c41c3b4a"}}}],
+        "acrDetails": [{"userCreatedAcrAccount": null, "systemCreatedAcrAccount":
+        {"acrAccountName": "testr2fbcb1d60407442d8ad", "acrAccountSku": "Premium",
+        "armResourceId": {"resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.ContainerRegistry/registries/testr2fbcb1d60407442d8ad"}}}]}],
+        "intellectualPropertyPublisher": null, "managedResourceGroupTags": {}, "publicNetworkAccess":
+        "Enabled", "discoveryUrl": "https://eastus.api.azureml.ms/registrymanagement/v1.0/registries/testregistry/discovery",
+        "managedResourceGroup": {"resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000"},
+        "mlFlowRegistryUri": "azureml://eastus.api.azureml.ms/mlflow/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/registries/testregistry"},
+        "systemData": null}, {"tags": {}, "location": "westcentralus", "identity":
+        {"type": "SystemAssigned", "principalId": "ced42b7b-12d8-4666-94ed-20fcb4220293",
+        "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47"}, "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/registries/registry_name",
+        "name": "registry_name", "type": "Microsoft.MachineLearningServices/registries",
+        "properties": {"regionDetails": [{"location": "westcentralus", "storageAccountDetails":
+        [{"userCreatedStorageAccount": null, "systemCreatedStorageAccount": {"storageAccountName":
+        "regis69509c00b92e44f99a3", "storageAccountType": "standard_lrs", "storageAccountHnsEnabled":
+        false, "armResourceId": {"resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.Storage/storageAccounts/regis69509c00b92e44f99a3"}}}],
+        "acrDetails": [{"userCreatedAcrAccount": null, "systemCreatedAcrAccount":
+        {"acrAccountName": "regis31171728c05e4a4aa65", "acrAccountSku": "Premium",
+        "armResourceId": {"resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.ContainerRegistry/registries/regis31171728c05e4a4aa65"}}}]}],
+        "intellectualPropertyPublisher": null, "managedResourceGroupTags": {}, "publicNetworkAccess":
+        "Enabled", "discoveryUrl": "https://westcentralus.api.azureml.ms/registrymanagement/v1.0/registries/registry_name/discovery",
+        "managedResourceGroup": {"resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000"},
+        "mlFlowRegistryUri": "azureml://westcentralus.api.azureml.ms/mlflow/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/registries/registry_name"},
+        "systemData": null}, {"tags": {}, "location": "westcentralus", "identity":
+        {"type": "SystemAssigned", "principalId": "1072fcf4-4c7a-49fb-baf6-dac5eb23dfbc",
+        "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47"}, "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/registries/registry579",
+        "name": "registry579", "type": "Microsoft.MachineLearningServices/registries",
+        "properties": {"regionDetails": [{"location": "westcentralus", "storageAccountDetails":
+        [{"userCreatedStorageAccount": null, "systemCreatedStorageAccount": {"storageAccountName":
+        "regis4b93e236fe3044c3b24", "storageAccountType": "standard_lrs", "storageAccountHnsEnabled":
+        false, "armResourceId": {"resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.Storage/storageAccounts/regis4b93e236fe3044c3b24"}}}],
+        "acrDetails": [{"userCreatedAcrAccount": null, "systemCreatedAcrAccount":
+        {"acrAccountName": "regis4906c2023cb842d4a7f", "acrAccountSku": "Premium",
+        "armResourceId": {"resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.ContainerRegistry/registries/regis4906c2023cb842d4a7f"}}}]}],
+        "intellectualPropertyPublisher": null, "managedResourceGroupTags": {}, "publicNetworkAccess":
+        "Enabled", "discoveryUrl": "https://westcentralus.api.azureml.ms/registrymanagement/v1.0/registries/registry579/discovery",
+        "managedResourceGroup": {"resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000"},
+        "mlFlowRegistryUri": "azureml://westcentralus.api.azureml.ms/mlflow/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/registries/registry579"},
+        "systemData": null}, {"tags": {"version": "updated6"}, "location": "westcentralus",
+        "identity": {"type": "SystemAssigned", "principalId": "9f1aa2af-32b4-4084-b94b-c2fa2bc962c7",
+        "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47"}, "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/registries/registry9022",
+        "name": "registry9022", "type": "Microsoft.MachineLearningServices/registries",
+        "properties": {"regionDetails": [{"location": "westcentralus", "storageAccountDetails":
+        [{"userCreatedStorageAccount": null, "systemCreatedStorageAccount": {"storageAccountName":
+        "regisc8c580e2d69c418c803", "storageAccountType": "standard_lrs", "storageAccountHnsEnabled":
+        false, "armResourceId": {"resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.Storage/storageAccounts/regisc8c580e2d69c418c803"}}}],
+        "acrDetails": [{"userCreatedAcrAccount": null, "systemCreatedAcrAccount":
+        {"acrAccountName": "regis93529dd350ff48c298b", "acrAccountSku": "Premium",
+        "armResourceId": {"resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.ContainerRegistry/registries/regis93529dd350ff48c298b"}}}]}],
+        "intellectualPropertyPublisher": null, "managedResourceGroupTags": {"version":
+        "updated6"}, "publicNetworkAccess": "Enabled", "discoveryUrl": "https://westcentralus.api.azureml.ms/registrymanagement/v1.0/registries/registry9022/discovery",
+        "managedResourceGroup": {"resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000"},
+        "mlFlowRegistryUri": "azureml://westcentralus.api.azureml.ms/mlflow/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/registries/registry9022"},
+        "systemData": null}, {"tags": {"version": "original"}, "location": "westcentralus",
+        "identity": {"type": "SystemAssigned", "principalId": "dfeda7fd-6291-43e1-9dce-34e003f33a9f",
+        "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47"}, "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/registries/registry432",
+        "name": "registry432", "type": "Microsoft.MachineLearningServices/registries",
+        "properties": {"regionDetails": [{"location": "westcentralus", "storageAccountDetails":
+        [{"userCreatedStorageAccount": null, "systemCreatedStorageAccount": {"storageAccountName":
+        "regisa479963602c947adb78", "storageAccountType": "standard_lrs", "storageAccountHnsEnabled":
+        false, "armResourceId": {"resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.Storage/storageAccounts/regisa479963602c947adb78"}}}],
+        "acrDetails": [{"userCreatedAcrAccount": null, "systemCreatedAcrAccount":
+        {"acrAccountName": "regisc0fea2b4b3b9495cae8", "acrAccountSku": "Premium",
+        "armResourceId": {"resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.ContainerRegistry/registries/regisc0fea2b4b3b9495cae8"}}}]}],
+        "intellectualPropertyPublisher": null, "managedResourceGroupTags": {"version":
+        "original"}, "publicNetworkAccess": "Enabled", "discoveryUrl": "https://westcentralus.api.azureml.ms/registrymanagement/v1.0/registries/registry432/discovery",
+        "managedResourceGroup": {"resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000"},
+        "mlFlowRegistryUri": "azureml://westcentralus.api.azureml.ms/mlflow/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/registries/registry432"},
+        "systemData": null}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '20061'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 07 Nov 2022 20:57:35 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-original-request-ids:
+      - ''
+      - ''
+    status:
+      code: 200
+      message: OK
+version: 1

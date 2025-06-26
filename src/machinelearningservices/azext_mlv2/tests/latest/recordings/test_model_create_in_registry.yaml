@@ -1,0 +1,565 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json, text/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0 Python/3.11.7
+        (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://eastus.api.azureml.ms/registrymanagement/v1.0/registries/testFeed/discovery
+  response:
+    body:
+      string: '{"registryId": "3b513a6b-f110-4e7f-9ce3-472b5aa28170", "registryName":
+        "testFeed", "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47", "primaryRegion":
+        "centraluseuap", "regions": ["centraluseuap"], "subscriptionId": "00000000-0000-0000-0000-000000000000",
+        "resourceGroup": "test-registries", "workspaceName": null, "primaryRegionResourceProviderUri":
+        "https://cert-int.experiments.azureml-test.net/", "registryFqdns": {"centraluseuap":
+        {"uri": "https://int.api.azureml-test.ms"}, "int": {"uri": "https://int.api.azureml-test.ms"}},
+        "intellectualPropertyPublisher": null}'
+    headers:
+      connection:
+      - keep-alive
+      content-length:
+      - '571'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 21 May 2024 20:42:56 GMT
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains; preload
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.033'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0 Python/3.11.7
+        (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://cert-int.experiments.azureml-test.net/mferp/managementfrontend/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/registries/testFeed/models/00000000-0000-0000-0000-000000000000/versions?api-version=0000-00-00&$orderBy=createdtime%20desc&$top=1
+  response:
+    body:
+      string: '{"value": [{"id": "azureml://registries/testfeed/models/model_version_e2e10/versions/13",
+        "name": "model_version_e2e10", "type": "models", "properties": {"description":
+        "this is my test model", "tags": {"foo": "bar", "abc": "123"}, "properties":
+        {}, "isArchived": false, "isAnonymous": false, "flavors": {}, "modelType":
+        "mlflow_model", "modelUri": "https://feedmaster.blob.core.windows.net/testfeed-d3f5087d-d745-54a0-bf85-5b44f9aa2b34/lightgbm_mlflow_model",
+        "originAssetId": null, "jobName": null, "intellectualProperty": null}, "systemData":
+        {"createdAt": "2024-05-21T19:09:29.8686522+00:00", "createdBy": "Nikolay Rovinskiy",
+        "createdByType": "User", "lastModifiedAt": "2024-05-21T20:42:57.7048475+00:00",
+        "lastModifiedBy": "Nikolay Rovinskiy", "lastModifiedByType": "User"}}, {"id":
+        "azureml://registries/testfeed/models/model_version_e2e10/versions/12", "name":
+        "model_version_e2e10", "type": "models", "properties": {"description": "this
+        is my test model", "tags": {"foo": "bar", "abc": "123"}, "properties": {},
+        "isArchived": false, "isAnonymous": false, "flavors": {}, "modelType": "mlflow_model",
+        "modelUri": "https://feedmaster1.blob.core.windows.net/testfeed-4901069a-47a2-53cf-9f4d-214593ede4eb/lightgbm_mlflow_model",
+        "originAssetId": null, "jobName": null, "intellectualProperty": null}, "systemData":
+        {"createdAt": "2024-05-21T17:07:50.2646037+00:00", "createdBy": "Nikolay Rovinskiy",
+        "createdByType": "User", "lastModifiedAt": "2024-05-21T20:42:57.7048507+00:00",
+        "lastModifiedBy": "Nikolay Rovinskiy", "lastModifiedByType": "User"}}, {"id":
+        "azureml://registries/testfeed/models/model_version_e2e10/versions/10", "name":
+        "model_version_e2e10", "type": "models", "properties": {"description": "this
+        is my test model", "tags": {"foo": "bar", "abc": "123"}, "properties": {},
+        "isArchived": false, "isAnonymous": false, "flavors": {}, "modelType": "mlflow_model",
+        "modelUri": "https://feedmaster1.blob.core.windows.net/testfeed-a30d97e1-ed73-59c3-8fc0-ae0a2660035e/lightgbm_mlflow_model",
+        "originAssetId": null, "jobName": null, "intellectualProperty": null}, "systemData":
+        {"createdAt": "2024-05-21T04:44:11.4491465+00:00", "createdBy": "Nikolay Rovinskiy",
+        "createdByType": "User", "lastModifiedAt": "2024-05-21T20:42:57.7048515+00:00",
+        "lastModifiedBy": "Nikolay Rovinskiy", "lastModifiedByType": "User"}}, {"id":
+        "azureml://registries/testfeed/models/model_version_e2e10/versions/9", "name":
+        "model_version_e2e10", "type": "models", "properties": {"description": "this
+        is my test model", "tags": {"foo": "bar", "abc": "123"}, "properties": {},
+        "isArchived": false, "isAnonymous": false, "flavors": {}, "modelType": "mlflow_model",
+        "modelUri": "https://feedmaster2.blob.core.windows.net/testfeed-a2c81af6-61a5-5c03-8c1c-b6c3a23525c5/lightgbm_mlflow_model",
+        "originAssetId": null, "jobName": null, "intellectualProperty": null}, "systemData":
+        {"createdAt": "2024-05-20T23:48:25.9223603+00:00", "createdBy": "Nikolay Rovinskiy",
+        "createdByType": "User", "lastModifiedAt": "2024-05-21T20:42:57.704852+00:00",
+        "lastModifiedBy": "Nikolay Rovinskiy", "lastModifiedByType": "User"}}, {"id":
+        "azureml://registries/testfeed/models/model_version_e2e10/versions/8", "name":
+        "model_version_e2e10", "type": "models", "properties": {"description": "this
+        is my test model", "tags": {"foo": "bar", "abc": "123"}, "properties": {},
+        "isArchived": false, "isAnonymous": false, "flavors": {}, "modelType": "mlflow_model",
+        "modelUri": "https://feedmaster.blob.core.windows.net/testfeed-50b307eb-d305-5651-9971-6e0058d6c246/lightgbm_mlflow_model",
+        "originAssetId": null, "jobName": null, "intellectualProperty": null}, "systemData":
+        {"createdAt": "2024-05-18T04:33:49.0689434+00:00", "createdBy": "Nikolay Rovinskiy",
+        "createdByType": "User", "lastModifiedAt": "2024-05-21T20:42:57.7048527+00:00",
+        "lastModifiedBy": "Nikolay Rovinskiy", "lastModifiedByType": "User"}}, {"id":
+        "azureml://registries/testfeed/models/model_version_e2e10/versions/6", "name":
+        "model_version_e2e10", "type": "models", "properties": {"description": "this
+        is my test model", "tags": {"foo": "bar", "abc": "123"}, "properties": {},
+        "isArchived": false, "isAnonymous": false, "flavors": {}, "modelType": "mlflow_model",
+        "modelUri": "https://feedmaster2.blob.core.windows.net/testfeed-8983f1bc-e723-57aa-84bb-000a98f612e0/lightgbm_mlflow_model",
+        "originAssetId": null, "jobName": null, "intellectualProperty": null}, "systemData":
+        {"createdAt": "2024-05-17T00:09:51.6624903+00:00", "createdBy": "Nikolay Rovinskiy",
+        "createdByType": "User", "lastModifiedAt": "2024-05-21T20:42:57.7048532+00:00",
+        "lastModifiedBy": "Nikolay Rovinskiy", "lastModifiedByType": "User"}}, {"id":
+        "azureml://registries/testfeed/models/model_version_e2e10/versions/5", "name":
+        "model_version_e2e10", "type": "models", "properties": {"description": "this
+        is my test model", "tags": {"foo": "bar", "abc": "123"}, "properties": {},
+        "isArchived": false, "isAnonymous": false, "flavors": {}, "modelType": "mlflow_model",
+        "modelUri": "https://feedmaster.blob.core.windows.net/testfeed-e7382fbb-3157-574c-a19a-8fceac9a7df0/lightgbm_mlflow_model",
+        "originAssetId": null, "jobName": null, "intellectualProperty": null}, "systemData":
+        {"createdAt": "2024-05-13T23:39:04.6506423+00:00", "createdBy": "Nikolay Rovinskiy",
+        "createdByType": "User", "lastModifiedAt": "2024-05-21T20:42:57.7048547+00:00",
+        "lastModifiedBy": "Nikolay Rovinskiy", "lastModifiedByType": "User"}}, {"id":
+        "azureml://registries/testfeed/models/model_version_e2e10/versions/4", "name":
+        "model_version_e2e10", "type": "models", "properties": {"description": "this
+        is my test model", "tags": {"foo": "bar", "abc": "123"}, "properties": {},
+        "isArchived": false, "isAnonymous": false, "flavors": {}, "modelType": "mlflow_model",
+        "modelUri": "https://feedmaster.blob.core.windows.net/testfeed-2e469066-345e-5a02-b52a-fc0a6d6343ba/lightgbm_mlflow_model",
+        "originAssetId": null, "jobName": null, "intellectualProperty": null}, "systemData":
+        {"createdAt": "2024-05-09T20:46:27.5842006+00:00", "createdBy": "Nikolay Rovinskiy",
+        "createdByType": "User", "lastModifiedAt": "2024-05-21T20:42:57.7048552+00:00",
+        "lastModifiedBy": "Nikolay Rovinskiy", "lastModifiedByType": "User"}}, {"id":
+        "azureml://registries/testfeed/models/model_version_e2e10/versions/3", "name":
+        "model_version_e2e10", "type": "models", "properties": {"description": "this
+        is my test model", "tags": {"foo": "bar", "abc": "123"}, "properties": {},
+        "isArchived": false, "isAnonymous": false, "flavors": {}, "modelType": "mlflow_model",
+        "modelUri": "https://feedmaster2.blob.core.windows.net/testfeed-3c3efa11-6b0e-58d0-8fb7-f4ec112ba205/lightgbm_mlflow_model",
+        "originAssetId": null, "jobName": null, "intellectualProperty": null}, "systemData":
+        {"createdAt": "2024-05-09T20:44:13.8717774+00:00", "createdBy": "Nikolay Rovinskiy",
+        "createdByType": "User", "lastModifiedAt": "2024-05-21T20:42:57.7048558+00:00",
+        "lastModifiedBy": "Nikolay Rovinskiy", "lastModifiedByType": "User"}}, {"id":
+        "azureml://registries/testfeed/models/model_version_e2e10/versions/2", "name":
+        "model_version_e2e10", "type": "models", "properties": {"description": "this
+        is my test model", "tags": {"foo": "bar", "abc": "123"}, "properties": {},
+        "isArchived": false, "isAnonymous": false, "flavors": {}, "modelType": "mlflow_model",
+        "modelUri": "https://feedmaster.blob.core.windows.net/testfeed-1c097492-b82b-5b89-b440-5426ae53830c/lightgbm_mlflow_model",
+        "originAssetId": null, "jobName": null, "intellectualProperty": null}, "systemData":
+        {"createdAt": "2024-05-09T19:29:09.002433+00:00", "createdBy": "Nikolay Rovinskiy",
+        "createdByType": "User", "lastModifiedAt": "2024-05-21T20:42:57.7048564+00:00",
+        "lastModifiedBy": "Nikolay Rovinskiy", "lastModifiedByType": "User"}}, {"id":
+        "azureml://registries/testfeed/models/model_version_e2e10/versions/1", "name":
+        "model_version_e2e10", "type": "models", "properties": {"description": "new_description",
+        "tags": {"foo": "bar", "abc": "123", "123": "abc", "bar": "foo"}, "properties":
+        {}, "isArchived": false, "isAnonymous": false, "flavors": {}, "modelType":
+        "mlflow_model", "modelUri": "https://feedmaster2.blob.core.windows.net/testfeed-84676f79-4953-58ef-85ae-b490d246ac21/lightgbm_mlflow_model",
+        "originAssetId": null, "jobName": null, "intellectualProperty": null}, "systemData":
+        {"createdAt": "2023-05-10T19:14:40.2062462+00:00", "createdBy": "Nancy Mejia
+        Juarez", "createdByType": "User", "lastModifiedAt": "2024-05-21T20:42:57.7048569+00:00",
+        "lastModifiedBy": "Nancy Mejia Juarez", "lastModifiedByType": "User"}}]}'
+    headers:
+      connection:
+      - keep-alive
+      content-length:
+      - '8512'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 21 May 2024 20:42:58 GMT
+      request-context:
+      - appId=
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains; preload
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aml-cluster:
+      - int-01
+      x-content-type-options:
+      - nosniff
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.701'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"assetId": "azureml://registries/testFeed/models/model_version_e2e10/versions/14",
+      "temporaryDataReferenceType": "TemporaryBlobReference"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '139'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0 Python/3.11.7
+        (Windows-10-10.0.22631-SP0)
+    method: PUT
+    uri: https://cert-int.experiments.azureml-test.net/mferp/managementfrontend/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/registries/testFeed/tempdatarefs/model_version_e2e10/versions/14?api-version=0000-00-00
+  response:
+    body:
+      string: '{"blobReferenceForConsumption": {"blobUri": "https://feedmaster.blob.core.windows.net:443/testfeed-64b78997-820c-515b-92e3-0129f1ddf7ec",
+        "storageAccountArmId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.Storage/storageAccounts/feedmaster",
+        "credential": {"credentialType": "SAS", "sasUri": "https://feedmaster.blob.core.windows.net/testfeed-0000000?skoid=0000000&sktid=0000000%3A44%3A30Z&ske=2024-05-22T19%3A54%3A30Z&sks=b&skv=2021-10-04&sv=2021-10-04&st=2024-05-21T20%3A32%3A59Z&se=2024-05-22T04%3A42%3A59Z&sr=c&sp=0000&sig=00000000000000000000%3D"}},
+        "imageReferenceForConsumption": null, "temporaryDataReferenceId": "a939d91a-0471-4eb2-ab49-8de767143f40",
+        "temporaryDataReferenceType": null}'
+    headers:
+      connection:
+      - keep-alive
+      content-length:
+      - '886'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 21 May 2024 20:42:59 GMT
+      request-context:
+      - appId=
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains; preload
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aml-cluster:
+      - int-01
+      x-content-type-options:
+      - nosniff
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.547'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/xml
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azsdk-python-storage-blob/12.20.0 Python/3.11.7 (Windows-10-10.0.22631-SP0)
+      x-ms-date:
+      - Tue, 21 May 2024 20:42:59 GMT
+      x-ms-version:
+      - '2024-05-04'
+    method: HEAD
+    uri: https://feedmaster.blob.core.windows.net/testfeed-0000000/model.pkl?skoid=0000000&sktid=0000000%3A44%3A30Z&ske=2024-05-22T19%3A54%3A30Z&sks=b&skv=2021-10-04&sv=2021-10-04&st=2024-05-21T20%3A32%3A59Z&se=2024-05-22T04%3A42%3A59Z&sr=c&sp=0000&sig=00000000000000000000%3D
+  response:
+    body:
+      string: ''
+    headers:
+      date:
+      - Tue, 21 May 2024 20:42:59 GMT
+      server:
+      - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
+      transfer-encoding:
+      - chunked
+      x-ms-error-code:
+      - BlobNotFound
+      x-ms-version:
+      - '2024-05-04'
+    status:
+      code: 404
+      message: The specified blob does not exist.
+- request:
+    body: 'hello
+
+      '
+    headers:
+      Accept:
+      - application/xml
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '6'
+      Content-Type:
+      - application/octet-stream
+      If-None-Match:
+      - '*'
+      User-Agent:
+      - azsdk-python-storage-blob/12.20.0 Python/3.11.7 (Windows-10-10.0.22631-SP0)
+      x-ms-blob-type:
+      - BlockBlob
+      x-ms-date:
+      - Tue, 21 May 2024 20:43:00 GMT
+      x-ms-version:
+      - '2024-05-04'
+    method: PUT
+    uri: https://feedmaster.blob.core.windows.net/testfeed-0000000/model.pkl?skoid=0000000&sktid=0000000%3A44%3A30Z&ske=2024-05-22T19%3A54%3A30Z&sks=b&skv=2021-10-04&sv=2021-10-04&st=2024-05-21T20%3A32%3A59Z&se=2024-05-22T04%3A42%3A59Z&sr=c&sp=0000&sig=00000000000000000000%3D
+  response:
+    body:
+      string: ''
+    headers:
+      content-length:
+      - '0'
+      date:
+      - Tue, 21 May 2024 20:43:00 GMT
+      etag:
+      - '"0x8DC79D69B013CAD"'
+      last-modified:
+      - Tue, 21 May 2024 20:43:01 GMT
+      server:
+      - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
+      x-ms-content-crc64:
+      - B1ZarUv7Q2o=
+      x-ms-request-server-encrypted:
+      - 'true'
+      x-ms-version:
+      - '2024-05-04'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/xml
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      User-Agent:
+      - azsdk-python-storage-blob/12.20.0 Python/3.11.7 (Windows-10-10.0.22631-SP0)
+      x-ms-date:
+      - Tue, 21 May 2024 20:43:01 GMT
+      x-ms-meta-name:
+      - model_version_e2e10
+      x-ms-meta-upload_status:
+      - completed
+      x-ms-meta-version:
+      - '14'
+      x-ms-version:
+      - '2024-05-04'
+    method: PUT
+    uri: https://feedmaster.blob.core.windows.net/testfeed-0000000/model.pkl?comp=metadata&skoid=0000000&sktid=0000000%3A44%3A30Z&ske=2024-05-22T19%3A54%3A30Z&sks=b&skv=2021-10-04&sv=2021-10-04&st=2024-05-21T20%3A32%3A59Z&se=2024-05-22T04%3A42%3A59Z&sr=c&sp=0000&sig=00000000000000000000%3D
+  response:
+    body:
+      string: ''
+    headers:
+      content-length:
+      - '0'
+      date:
+      - Tue, 21 May 2024 20:43:01 GMT
+      etag:
+      - '"0x8DC79D69B8C28F7"'
+      last-modified:
+      - Tue, 21 May 2024 20:43:01 GMT
+      server:
+      - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
+      x-ms-request-server-encrypted:
+      - 'true'
+      x-ms-version:
+      - '2024-05-04'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"properties": {}, "tags": {}, "isAnonymous": false, "isArchived":
+      false, "modelType": "custom_model", "modelUri": "https://feedmaster.blob.core.windows.net/testfeed-64b78997-820c-515b-92e3-0129f1ddf7ec/model.pkl"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '230'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0 Python/3.11.7
+        (Windows-10-10.0.22631-SP0)
+    method: PUT
+    uri: https://cert-int.experiments.azureml-test.net/mferp/managementfrontend/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/registries/testFeed/models/00000000-0000-0000-0000-000000000000/versions/14?api-version=0000-00-00
+  response:
+    body:
+      string: 'null'
+    headers:
+      connection:
+      - keep-alive
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 21 May 2024 20:43:05 GMT
+      location:
+      - https://int.api.azureml-test.ms/assetstore/v1.0/operations/VAf-TRjXAvMJkHjORxxKW2ZnH7qX4b8OLhsRD_daQxc
+      request-context:
+      - appId=
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains; preload
+      x-aml-cluster:
+      - int-01
+      x-content-type-options:
+      - nosniff
+      x-ms-async-operation-timeout:
+      - PT1H
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '2.751'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0 Python/3.11.7
+        (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://int.api.azureml-test.ms/assetstore/v1.0/operations/VAf-TRjXAvMJkHjORxxKW2ZnH7qX4b8OLhsRD_daQxc
+  response:
+    body:
+      string: ''
+    headers:
+      connection:
+      - keep-alive
+      content-length:
+      - '0'
+      date:
+      - Tue, 21 May 2024 20:43:06 GMT
+      request-context:
+      - appId=
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains; preload
+      x-aml-cluster:
+      - int-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.015'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0 Python/3.11.7
+        (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://int.api.azureml-test.ms/assetstore/v1.0/operations/VAf-TRjXAvMJkHjORxxKW2ZnH7qX4b8OLhsRD_daQxc
+  response:
+    body:
+      string: '{"assetId": "azureml://registries/testfeed/models/model_version_e2e10/versions/14"}'
+    headers:
+      connection:
+      - keep-alive
+      content-length:
+      - '83'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 21 May 2024 20:43:37 GMT
+      request-context:
+      - appId=
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains; preload
+      x-aml-cluster:
+      - int-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.018'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0 Python/3.11.7
+        (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://cert-int.experiments.azureml-test.net/mferp/managementfrontend/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/registries/testFeed/models/00000000-0000-0000-0000-000000000000/versions/14?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "azureml://registries/testfeed/models/model_version_e2e10/versions/14",
+        "name": "model_version_e2e10", "type": "models", "properties": {"description":
+        null, "tags": {}, "properties": {}, "isArchived": false, "isAnonymous": false,
+        "flavors": {}, "modelType": "custom_model", "modelUri": "https://feedmaster2.blob.core.windows.net/testfeed-64b78997-820c-515b-92e3-0129f1ddf7ec/model.pkl",
+        "originAssetId": null, "jobName": null, "intellectualProperty": null}, "systemData":
+        {"createdAt": "2024-05-21T20:43:05.2193012+00:00", "createdBy": "Nikolay Rovinskiy",
+        "createdByType": "User", "lastModifiedAt": "2024-05-21T20:43:03.238239+00:00",
+        "lastModifiedBy": "Nikolay Rovinskiy", "lastModifiedByType": "User"}}'
+    headers:
+      connection:
+      - keep-alive
+      content-length:
+      - '712'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 21 May 2024 20:43:38 GMT
+      request-context:
+      - appId=
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains; preload
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aml-cluster:
+      - int-01
+      x-content-type-options:
+      - nosniff
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.438'
+    status:
+      code: 200
+      message: OK
+version: 1

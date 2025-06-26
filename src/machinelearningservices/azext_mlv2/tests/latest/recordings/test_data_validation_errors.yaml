@@ -1,0 +1,186 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-core/1.24.2 Python/3.9.0
+        (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.23)
+    method: GET
+    uri: https://azuremlschemasprod.azureedge.net/latest/MLTable.schema.json
+  response:
+    body:
+      string: '{"$schema": "http://json-schema.org/draft-07/schema#", "$id": "http://azureml/sdk-2-0/MLTable.json",
+        "title": "MLTable specification", "description": "An MLTable defines a set
+        of instructions in order to build a table of data.", "type": "object", "properties":
+        {"$schema": {"type": "string"}, "paths": {"type": "array", "items": {"anyOf":
+        [{"type": "object", "properties": {"file": {"type": "string", "description":
+        "This specifies path of file containing data."}}, "additionalProperties":
+        false, "required": ["file"]}, {"type": "object", "properties": {"folder":
+        {"type": "string", "description": "This specifies path of folder containing
+        data."}}, "additionalProperties": false, "required": ["folder"]}, {"type":
+        "object", "properties": {"pattern": {"type": "string", "description": "This
+        specifies a search pattern to allow globbing of files and folders containing
+        data."}}, "additionalProperties": false, "required": ["pattern"]}]}}, "transformations":
+        {"description": "Defined sequence of transformations that are applied to data
+        loaded from defined paths.", "type": "array", "items": {"oneOf": [{"const":
+        "read_delimited"}, {"const": "read_parquet"}, {"const": "read_json_lines"},
+        {"type": "object", "properties": {"read_delimited": {"description": "Reads
+        delimited files from provided paths, splitting them into rows and columns
+        based on separator.", "type": "object", "properties": {"delimiter": {"type":
+        "string", "minLength": 1, "maxLength": 1, "default": ","}, "header": {"type":
+        "string", "enum": ["no_header", "from_first_file", "all_files_different_headers",
+        "all_files_same_headers"], "default": "all_files_same_headers"}, "support_multi_line":
+        {"type": "boolean", "default": false}, "empty_as_string": {"type": "boolean",
+        "default": false}, "encoding": {"type": "string", "enum": ["utf8", "iso88591",
+        "latin1", "ascii", "utf16", "utf32", "utf8bom", "windows1252"], "default":
+        "utf8"}, "include_path_column": {"type": "boolean", "default": false}}, "additionalProperties":
+        false}}, "additionalProperties": false}, {"type": "object", "properties":
+        {"read_parquet": {"description": "Reads parquet files from the provided paths
+        using the defined options.", "type": "object", "properties": {"include_path_column":
+        {"type": "boolean", "default": false}}, "additionalProperties": false}}, "additionalProperties":
+        false}, {"type": "object", "properties": {"read_json_lines": {"description":
+        "Reads JSON lines file from the provided paths using the defined options.",
+        "type": "object", "properties": {"invalid_lines": {"type": "string", "enum":
+        ["error", "drop"], "default": "error"}, "encoding": {"type": "string", "enum":
+        ["utf8", "iso88591", "latin1", "ascii", "utf16", "utf32", "utf8bom", "windows1252"],
+        "default": "utf8"}, "include_path_column": {"type": "boolean", "default":
+        false}}, "additionalProperties": false}}, "additionalProperties": false},
+        {"type": "object", "properties": {"take": {"description": "take the first
+        N rows from dataset", "type": "integer"}}, "additionalProperties": false},
+        {"type": "object", "properties": {"take_random_sample": {"description": "take
+        a random sample of records in the dataset approximately by the probability
+        specified", "type": "object", "properties": {"probability": {"type": "number",
+        "minimum": 0.0, "maximum": 1.0}, "seed": {"type": "integer"}}}}, "additionalProperties":
+        false}, {"type": "object", "properties": {"skip": {"description": "Skip the
+        first N records from top of the dataset", "type": "integer"}}, "additionalProperties":
+        false}, {"type": "object", "properties": {"drop_columns": {"description":
+        "Drop the specified columns from the dataset", "oneOf": [{"type": "string",
+        "description": "single column to be selected"}, {"type": "array", "description":
+        "list of columns to be selected", "items": {"type": "string"}}, {"type": "object",
+        "description": "pattern and properties defining columns to be selected", "properties":
+        {"pattern": {"type": "string"}, "ignore_case": {"type": "boolean", "default":
+        false}, "invert": {"type": "boolean", "default": false}}}]}}, "additionalProperties":
+        false}, {"type": "object", "properties": {"keep_columns": {"description":
+        "Keep only the specified columns from the dataset", "oneOf": [{"type": "string",
+        "description": "single column to be selected"}, {"type": "array", "description":
+        "list of columns to be selected", "items": {"type": "string"}}, {"type": "object",
+        "description": "pattern and properties defining columns to be selected", "properties":
+        {"pattern": {"type": "string"}, "ignore_case": {"type": "boolean", "default":
+        false}, "invert": {"type": "boolean", "default": false}}}]}}, "additionalProperties":
+        false}, {"type": "object", "properties": {"convert_column_types": {"type":
+        "array", "items": {"oneOf": [{"type": "object", "properties": {"columns":
+        {"oneOf": [{"type": "string", "description": "single column to be selected"},
+        {"type": "array", "description": "list of columns to be selected", "items":
+        {"type": "string"}}, {"type": "object", "description": "pattern and properties
+        defining columns to be selected", "properties": {"pattern": {"type": "string"},
+        "ignore_case": {"type": "boolean", "default": false}, "invert": {"type": "boolean",
+        "default": false}}}]}, "to_type": {"type": "string", "enum": ["boolean", "long",
+        "string"]}}, "additionalProperties": false}, {"type": "object", "properties":
+        {"columns": {"oneOf": [{"type": "string", "description": "single column to
+        be selected"}, {"type": "array", "description": "list of columns to be selected",
+        "items": {"type": "string"}}, {"type": "object", "description": "pattern and
+        properties defining columns to be selected", "properties": {"pattern": {"type":
+        "string"}, "ignore_case": {"type": "boolean", "default": false}, "invert":
+        {"type": "boolean", "default": false}}}]}, "to_type": {"type": "object", "properties":
+        {"datetime": {"type": "object", "properties": {"formats": {"type": "array",
+        "items": {"type": "string"}}}, "additionalProperties": false}}, "additionalProperties":
+        false}}, "additionalProperties": false}, {"type": "object", "properties":
+        {"columns": {"oneOf": [{"type": "string", "description": "single column to
+        be selected"}, {"type": "array", "description": "list of columns to be selected",
+        "items": {"type": "string"}}, {"type": "object", "description": "pattern and
+        properties defining columns to be selected", "properties": {"pattern": {"type":
+        "string"}, "ignore_case": {"type": "boolean", "default": false}, "invert":
+        {"type": "boolean", "default": false}}}]}, "to_type": {"type": "object", "properties":
+        {"float": {"type": "object", "properties": {"decimal_mark": {"type": "string",
+        "enum": [".", ","], "default": "."}}, "additionalProperties": false}}, "additionalProperties":
+        false}}, "additionalProperties": false}, {"type": "object", "properties":
+        {"columns": {"oneOf": [{"type": "string", "description": "single column to
+        be selected"}, {"type": "array", "description": "list of columns to be selected",
+        "items": {"type": "string"}}, {"type": "object", "description": "pattern and
+        properties defining columns to be selected", "properties": {"pattern": {"type":
+        "string"}, "ignore_case": {"type": "boolean", "default": false}, "invert":
+        {"type": "boolean", "default": false}}}]}, "column_type": {"type": "object",
+        "properties": {"stream_info": {"type": "object", "properties": {"escaped":
+        {"type": "boolean", "default": false}}, "additionalProperties": false}}, "additionalProperties":
+        false}}, "additionalProperties": false}]}}}, "additionalProperties": false},
+        {"type": "object", "properties": {"extract_partition_format_into_columns":
+        {"type": "string", "description": "The partition information of each path
+        will be extracted into columns based on the specified format"}}, "additionalProperties":
+        false}]}}}, "additionalProperties": false, "oneOf": [{"required": ["paths"]}],
+        "definitions": {"convert_column_types": {"type": "array", "items": {"oneOf":
+        [{"type": "object", "properties": {"columns": {"oneOf": [{"type": "string",
+        "description": "single column to be selected"}, {"type": "array", "description":
+        "list of columns to be selected", "items": {"type": "string"}}, {"type": "object",
+        "description": "pattern and properties defining columns to be selected", "properties":
+        {"pattern": {"type": "string"}, "ignore_case": {"type": "boolean", "default":
+        false}, "invert": {"type": "boolean", "default": false}}}]}, "to_type": {"type":
+        "string", "enum": ["boolean", "long", "string"]}}, "additionalProperties":
+        false}, {"type": "object", "properties": {"columns": {"oneOf": [{"type": "string",
+        "description": "single column to be selected"}, {"type": "array", "description":
+        "list of columns to be selected", "items": {"type": "string"}}, {"type": "object",
+        "description": "pattern and properties defining columns to be selected", "properties":
+        {"pattern": {"type": "string"}, "ignore_case": {"type": "boolean", "default":
+        false}, "invert": {"type": "boolean", "default": false}}}]}, "to_type": {"type":
+        "object", "properties": {"datetime": {"type": "object", "properties": {"formats":
+        {"type": "array", "items": {"type": "string"}}}, "additionalProperties": false}},
+        "additionalProperties": false}}, "additionalProperties": false}, {"type":
+        "object", "properties": {"columns": {"oneOf": [{"type": "string", "description":
+        "single column to be selected"}, {"type": "array", "description": "list of
+        columns to be selected", "items": {"type": "string"}}, {"type": "object",
+        "description": "pattern and properties defining columns to be selected", "properties":
+        {"pattern": {"type": "string"}, "ignore_case": {"type": "boolean", "default":
+        false}, "invert": {"type": "boolean", "default": false}}}]}, "to_type": {"type":
+        "object", "properties": {"float": {"type": "object", "properties": {"decimal_mark":
+        {"type": "string", "enum": [".", ","], "default": "."}}, "additionalProperties":
+        false}}, "additionalProperties": false}}, "additionalProperties": false},
+        {"type": "object", "properties": {"columns": {"oneOf": [{"type": "string",
+        "description": "single column to be selected"}, {"type": "array", "description":
+        "list of columns to be selected", "items": {"type": "string"}}, {"type": "object",
+        "description": "pattern and properties defining columns to be selected", "properties":
+        {"pattern": {"type": "string"}, "ignore_case": {"type": "boolean", "default":
+        false}, "invert": {"type": "boolean", "default": false}}}]}, "column_type":
+        {"type": "object", "properties": {"stream_info": {"type": "object", "properties":
+        {"escaped": {"type": "boolean", "default": false}}, "additionalProperties":
+        false}}, "additionalProperties": false}}, "additionalProperties": false}]}},
+        "column_selector": {"oneOf": [{"type": "string", "description": "single column
+        to be selected"}, {"type": "array", "description": "list of columns to be
+        selected", "items": {"type": "string"}}, {"type": "object", "description":
+        "pattern and properties defining columns to be selected", "properties": {"pattern":
+        {"type": "string"}, "ignore_case": {"type": "boolean", "default": false},
+        "invert": {"type": "boolean", "default": false}}}]}}}'
+    headers:
+      connection:
+      - keep-alive
+      content-length:
+      - '11045'
+      content-type:
+      - application/json
+      date:
+      - Thu, 04 Aug 2022 23:00:06 GMT
+      etag:
+      - W/"0x8DA2A0949C27014"
+      last-modified:
+      - Fri, 29 Apr 2022 17:54:20 GMT
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      - Accept-Encoding
+      - Accept-Encoding
+      - Accept-Encoding
+      x-azure-ref:
+      - 20220804T230006Z-tur6dybg817yr054hm9efewep800000001e000000001qb94
+      x-cache:
+      - TCP_HIT
+      x-ms-version:
+      - '2018-03-28'
+    status:
+      code: 200
+      message: OK
+version: 1

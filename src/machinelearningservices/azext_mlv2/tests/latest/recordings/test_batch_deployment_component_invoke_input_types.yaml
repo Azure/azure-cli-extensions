@@ -1,0 +1,1603 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.6.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.0 (Darwin-22.4.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/taji-canary-ws-v2",
+        "name": "taji-canary-ws-v2", "type": "Microsoft.MachineLearningServices/workspaces",
+        "location": "westus2", "tags": {}, "etag": null, "properties": {"friendlyName":
+        "taji-canary-ws-v2", "description": "", "storageAccount": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.Storage/storageAccounts/tajicanarywsv27329099476",
+        "keyVault": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.Keyvault/vaults/tajicanarywsv20900640871",
+        "applicationInsights": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.insights/components/tajicanarywsv22259932298",
+        "hbiWorkspace": false, "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47",
+        "imageBuildCompute": null, "provisioningState": "Succeeded", "v1LegacyMode":
+        false, "softDeleteEnabled": false, "containerRegistry": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.ContainerRegistry/registries/2783d428e8e148a5b26e5200245bf3cd",
+        "creationTime": "2023-02-23T23:41:47.1426977Z", "notebookInfo": {"resourceId":
+        "32abcbd93b5644a893098f0282e0d7df", "fqdn": "ml-taji-canary-ws--westus2-2783d428-e8e1-48a5-b26e-5200245bf3cd.westus2.notebooks.azure.net",
+        "isPrivateLinkEnabled": false, "notebookPreparationError": null}, "storageHnsEnabled":
+        false, "workspaceId": "2783d428-e8e1-48a5-b26e-5200245bf3cd", "linkedModelInventoryArmId":
+        null, "privateLinkCount": 0, "publicNetworkAccess": "Enabled", "discoveryUrl":
+        "https://westus2.api.azureml.ms/discovery", "mlFlowTrackingUri": "azureml://westus2.api.azureml.ms/mlflow/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/taji-canary-ws-v2",
+        "sdkTelemetryAppInsightsKey": "19f24253-9564-406c-9a1e-a48a21b145aa", "sasGetterUri":
+        "", "enableDataIsolation": false}, "identity": {"type": "SystemAssigned",
+        "principalId": "95df24b7-4a04-4cf5-8f0d-8c7e5a99730c", "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47"},
+        "kind": "Default", "sku": {"name": "Basic", "tier": "Basic"}, "systemData":
+        {"createdAt": "2023-02-23T23:41:47.1426977Z", "createdBy": "tajiharris@microsoft.com",
+        "createdByType": "User", "lastModifiedAt": "2023-02-23T23:41:47.1426977Z",
+        "lastModifiedBy": "tajiharris@microsoft.com", "lastModifiedByType": "User"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2578'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 14 Apr 2023 06:40:52 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-91c81f9e0143ac8de1c57a9d6c5e94bc-39202d4130018b3b-01"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-westus2-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.017'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"tags": {}, "location": "westus2", "properties": {"authMode": "aadToken",
+      "description": "my sample batch endpoint", "properties": {"ComponentDeployment.Enabled":
+      "True"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '173'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.6.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.0 (Darwin-22.4.0-x86_64-i386-64bit)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/batchEndpoints/test-batch-ept-1223423-19?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/taji-canary-ws-v2/batchEndpoints/test-batch-ept-1223423-19",
+        "name": "test-batch-ept-1223423-19", "type": "Microsoft.MachineLearningServices/workspaces/batchEndpoints",
+        "properties": {"description": "my sample batch endpoint", "properties": {"ComponentDeployment.Enabled":
+        "True", "BatchEndpointCreationApiVersion": "2022-05-01", "azureml.onlineendpointid":
+        "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/taji-canary-ws-v2/batchEndpoints/test-batch-ept-1223423-19"},
+        "scoringUri": null, "swaggerUri": null, "authMode": "AADToken", "defaults":
+        {"deploymentName": null}, "provisioningState": "Creating"}, "systemData":
+        {"createdAt": "2023-04-14T06:40:57.303468+00:00", "createdBy": "Taji Harris",
+        "lastModifiedAt": "2023-04-14T06:40:57.3034849+00:00"}, "tags": {}, "location":
+        "westus2"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/westus2/mfeOperationsStatus/bebes:2783d428-e8e1-48a5-b26e-5200245bf3cd:bfd74eba-bd63-45f8-bf29-6cafebe9fd86?api-version=2022-05-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '1023'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 14 Apr 2023 06:40:57 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/taji-canary-rg/providers/Microsoft.MachineLearningServices/workspaces/taji-canary-ws-v2/batchEndpoints/test-batch-ept-1223423-19?api-version=2022-05-01
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-12f0ac69dde7393e67515819778824a3-ab671b94218392a2-01"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aml-cluster:
+      - vienna-westus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-async-operation-timeout:
+      - PT30M
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.287'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.6.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.0 (Darwin-22.4.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/westus2/mfeOperationsStatus/bebes:2783d428-e8e1-48a5-b26e-5200245bf3cd:bfd74eba-bd63-45f8-bf29-6cafebe9fd86?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/westus2/mfeOperationsStatus/bebes:2783d428-e8e1-48a5-b26e-5200245bf3cd:bfd74eba-bd63-45f8-bf29-6cafebe9fd86",
+        "name": "bebes:2783d428-e8e1-48a5-b26e-5200245bf3cd:bfd74eba-bd63-45f8-bf29-6cafebe9fd86",
+        "status": "Updating"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '336'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 14 Apr 2023 06:40:57 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-28e1f97fbd27b0ec41c9dd42d82a178a-178519e2bc5d09f0-01"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-westus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.018'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.6.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.0 (Darwin-22.4.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/westus2/mfeOperationsStatus/bebes:2783d428-e8e1-48a5-b26e-5200245bf3cd:bfd74eba-bd63-45f8-bf29-6cafebe9fd86?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/westus2/mfeOperationsStatus/bebes:2783d428-e8e1-48a5-b26e-5200245bf3cd:bfd74eba-bd63-45f8-bf29-6cafebe9fd86",
+        "name": "bebes:2783d428-e8e1-48a5-b26e-5200245bf3cd:bfd74eba-bd63-45f8-bf29-6cafebe9fd86",
+        "status": "Succeeded"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '337'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 14 Apr 2023 06:41:27 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-93e49087d3afd64adb3f3b1fe55f09c7-fca2d0005699f6d6-01"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-westus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.019'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.6.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.0 (Darwin-22.4.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/batchEndpoints/test-batch-ept-1223423-19?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/taji-canary-ws-v2/batchEndpoints/test-batch-ept-1223423-19",
+        "name": "test-batch-ept-1223423-19", "type": "Microsoft.MachineLearningServices/workspaces/batchEndpoints",
+        "properties": {"description": "my sample batch endpoint", "properties": {"ComponentDeployment.Enabled":
+        "True", "BatchEndpointCreationApiVersion": "2022-05-01", "azureml.onlineendpointid":
+        "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/taji-canary-ws-v2/batchEndpoints/test-batch-ept-1223423-19"},
+        "scoringUri": "https://test-batch-ept-1223423-19.westus2.inference.ml.azure.com/jobs",
+        "swaggerUri": null, "authMode": "AADToken", "defaults": {"deploymentName":
+        null}, "provisioningState": "Succeeded"}, "systemData": {"createdAt": "2023-04-14T06:40:57.303468+00:00",
+        "createdBy": "Taji Harris", "lastModifiedAt": "2023-04-14T06:40:57.3034849+00:00"},
+        "tags": {}, "location": "westus2"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1091'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 14 Apr 2023 06:41:27 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-5b8591f2e8171dca8eda6b696ab43206-5630959cbef5d166-01"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-westus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.063'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.6.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.0 (Darwin-22.4.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/batchEndpoints/test-batch-ept-1223423-19?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/taji-canary-ws-v2/batchEndpoints/test-batch-ept-1223423-19",
+        "name": "test-batch-ept-1223423-19", "type": "Microsoft.MachineLearningServices/workspaces/batchEndpoints",
+        "properties": {"description": "my sample batch endpoint", "properties": {"ComponentDeployment.Enabled":
+        "True", "BatchEndpointCreationApiVersion": "2022-05-01", "azureml.onlineendpointid":
+        "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/taji-canary-ws-v2/batchEndpoints/test-batch-ept-1223423-19"},
+        "scoringUri": "https://test-batch-ept-1223423-19.westus2.inference.ml.azure.com/jobs",
+        "swaggerUri": null, "authMode": "AADToken", "defaults": {"deploymentName":
+        null}, "provisioningState": "Succeeded"}, "systemData": {"createdAt": "2023-04-14T06:40:57.303468+00:00",
+        "createdBy": "Taji Harris", "lastModifiedAt": "2023-04-14T06:40:57.3034849+00:00"},
+        "tags": {}, "location": "westus2"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1091'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 14 Apr 2023 06:41:29 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-0cd12f6a79966fbbbdee98029d5a59fd-12ffe35a0ab64ccd-01"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-westus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.062'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.6.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.0 (Darwin-22.4.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/taji-canary-ws-v2",
+        "name": "taji-canary-ws-v2", "type": "Microsoft.MachineLearningServices/workspaces",
+        "location": "westus2", "tags": {}, "etag": null, "properties": {"friendlyName":
+        "taji-canary-ws-v2", "description": "", "storageAccount": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.Storage/storageAccounts/tajicanarywsv27329099476",
+        "keyVault": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.Keyvault/vaults/tajicanarywsv20900640871",
+        "applicationInsights": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.insights/components/tajicanarywsv22259932298",
+        "hbiWorkspace": false, "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47",
+        "imageBuildCompute": null, "provisioningState": "Succeeded", "v1LegacyMode":
+        false, "softDeleteEnabled": false, "containerRegistry": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.ContainerRegistry/registries/2783d428e8e148a5b26e5200245bf3cd",
+        "creationTime": "2023-02-23T23:41:47.1426977Z", "notebookInfo": {"resourceId":
+        "32abcbd93b5644a893098f0282e0d7df", "fqdn": "ml-taji-canary-ws--westus2-2783d428-e8e1-48a5-b26e-5200245bf3cd.westus2.notebooks.azure.net",
+        "isPrivateLinkEnabled": false, "notebookPreparationError": null}, "storageHnsEnabled":
+        false, "workspaceId": "2783d428-e8e1-48a5-b26e-5200245bf3cd", "linkedModelInventoryArmId":
+        null, "privateLinkCount": 0, "publicNetworkAccess": "Enabled", "discoveryUrl":
+        "https://westus2.api.azureml.ms/discovery", "mlFlowTrackingUri": "azureml://westus2.api.azureml.ms/mlflow/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/taji-canary-ws-v2",
+        "sdkTelemetryAppInsightsKey": "19f24253-9564-406c-9a1e-a48a21b145aa", "sasGetterUri":
+        "", "enableDataIsolation": false}, "identity": {"type": "SystemAssigned",
+        "principalId": "95df24b7-4a04-4cf5-8f0d-8c7e5a99730c", "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47"},
+        "kind": "Default", "sku": {"name": "Basic", "tier": "Basic"}, "systemData":
+        {"createdAt": "2023-02-23T23:41:47.1426977Z", "createdBy": "tajiharris@microsoft.com",
+        "createdByType": "User", "lastModifiedAt": "2023-02-23T23:41:47.1426977Z",
+        "lastModifiedBy": "tajiharris@microsoft.com", "lastModifiedByType": "User"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2578'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 14 Apr 2023 06:41:29 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-df3eaf02338193235df3edc7dbab4217-61e0e15e3564d35c-01"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-westus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.028'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "westus2", "properties": {"deploymentConfiguration": {"deploymentConfigurationType":
+      "PipelineComponent", "componentId": {"referenceType": "Id", "assetId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/taji-canary-rg/providers/Microsoft.MachineLearningServices/workspaces/taji-canary-ws-v2/components/hello_batch/versions/1"},
+      "settings": {"continue_on_step_failure": "False", "default_compute": "cluster-cpu"}},
+      "errorThreshold": -1, "maxConcurrencyPerInstance": 1, "miniBatchSize": 10, "outputFileName":
+      "predictions.csv"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '560'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.6.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.0 (Darwin-22.4.0-x86_64-i386-64bit)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/batchEndpoints/test-batch-ept-1223423-19/deployments/deploy-0000000?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/taji-canary-ws-v2/batchEndpoints/test-batch-ept-1223423-19/deployments/test-batch-dep-000017-19",
+        "name": "test-batch-dep-000017-19", "type": "Microsoft.MachineLearningServices/workspaces/batchEndpoints/deployments",
+        "properties": {"description": null, "properties": null, "codeConfiguration":
+        null, "environmentId": null, "environmentVariables": null, "compute": null,
+        "deploymentConfiguration": {"componentId": {"referenceType": "Id", "assetId":
+        "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/taji-canary-ws-v2/components/hello_batch/versions/1"},
+        "deploymentConfigurationType": "PipelineComponent", "description": null, "settings":
+        null, "tags": null}, "errorThreshold": 0, "retrySettings": {"maxRetries":
+        0, "timeout": "PT0S"}, "miniBatchSize": 0, "loggingLevel": "Info", "model":
+        null, "maxConcurrencyPerInstance": 0, "outputAction": "SummaryOnly", "resources":
+        {"instanceCount": 1, "instanceType": null, "locations": null, "properties":
+        null}, "provisioningState": "Creating"}, "systemData": {"createdAt": "2023-04-14T06:41:31.3210563+00:00",
+        "createdBy": "Taji Harris", "lastModifiedAt": "2023-04-14T06:41:31.3210686+00:00"},
+        "tags": {"ComponentDeployment.ComponentId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/taji-canary-ws-v2/components/hello_batch/versions/1"},
+        "location": "westus2"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/westus2/mfeOperationsStatus/bdbes:2783d428-e8e1-48a5-b26e-5200245bf3cd:bef00e29-e594-4881-8eca-d672cc7b1e81?api-version=2023-02-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '1631'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 14 Apr 2023 06:41:31 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/taji-canary-rg/providers/Microsoft.MachineLearningServices/workspaces/taji-canary-ws-v2/batchEndpoints/test-batch-ept-1223423-19/deployments/test-batch-dep-000017-19?api-version=2023-02-01-preview
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-922130bfcb087b24344fb1263fd886af-bf342781e34e454e-01"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aml-cluster:
+      - vienna-westus2-01
+      x-content-type-options:
+      - nosniff
+      x-ms-async-operation-timeout:
+      - PT30M
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '24'
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.426'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.6.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.0 (Darwin-22.4.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/westus2/mfeOperationsStatus/bdbes:2783d428-e8e1-48a5-b26e-5200245bf3cd:bef00e29-e594-4881-8eca-d672cc7b1e81?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/westus2/mfeOperationsStatus/bdbes:2783d428-e8e1-48a5-b26e-5200245bf3cd:bef00e29-e594-4881-8eca-d672cc7b1e81",
+        "name": "bdbes:2783d428-e8e1-48a5-b26e-5200245bf3cd:bef00e29-e594-4881-8eca-d672cc7b1e81",
+        "status": "Updating"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '336'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 14 Apr 2023 06:41:31 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-09774b9d8ab52fba649b4629c2d14a65-9d29eeb156b08e9d-01"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-westus2-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.042'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.6.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.0 (Darwin-22.4.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/westus2/mfeOperationsStatus/bdbes:2783d428-e8e1-48a5-b26e-5200245bf3cd:bef00e29-e594-4881-8eca-d672cc7b1e81?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/westus2/mfeOperationsStatus/bdbes:2783d428-e8e1-48a5-b26e-5200245bf3cd:bef00e29-e594-4881-8eca-d672cc7b1e81",
+        "name": "bdbes:2783d428-e8e1-48a5-b26e-5200245bf3cd:bef00e29-e594-4881-8eca-d672cc7b1e81",
+        "status": "Succeeded"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '337'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 14 Apr 2023 06:42:02 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-02086c01ae25704f196050106cdf7bf8-5b51311ba566b037-01"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-westus2-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.022'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.6.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.0 (Darwin-22.4.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/batchEndpoints/test-batch-ept-1223423-19/deployments/deploy-0000000?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/taji-canary-ws-v2/batchEndpoints/test-batch-ept-1223423-19/deployments/test-batch-dep-000017-19",
+        "name": "test-batch-dep-000017-19", "type": "Microsoft.MachineLearningServices/workspaces/batchEndpoints/deployments",
+        "properties": {"description": null, "properties": null, "codeConfiguration":
+        null, "environmentId": null, "environmentVariables": null, "compute": null,
+        "deploymentConfiguration": {"componentId": {"referenceType": "Id", "assetId":
+        "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/taji-canary-ws-v2/components/hello_batch/versions/1"},
+        "deploymentConfigurationType": "PipelineComponent", "description": null, "settings":
+        null, "tags": null}, "errorThreshold": 0, "retrySettings": {"maxRetries":
+        0, "timeout": "PT0S"}, "miniBatchSize": 0, "loggingLevel": "Info", "model":
+        null, "maxConcurrencyPerInstance": 0, "outputAction": "SummaryOnly", "resources":
+        {"instanceCount": 1, "instanceType": null, "locations": null, "properties":
+        null}, "provisioningState": "Succeeded"}, "systemData": {"createdAt": "2023-04-14T06:41:31.3210563+00:00",
+        "createdBy": "Taji Harris", "lastModifiedAt": "2023-04-14T06:41:31.3210686+00:00"},
+        "tags": {"ComponentDeployment.ComponentId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/taji-canary-ws-v2/components/hello_batch/versions/1"},
+        "location": "westus2"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1632'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 14 Apr 2023 06:42:02 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-c31e6ee4a3b902d4d9fdc9e54f86141f-c9ff208dae9e4aa1-01"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-westus2-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.061'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.6.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.0 (Darwin-22.4.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/batchEndpoints/test-batch-ept-1223423-19/deployments/deploy-0000000?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/taji-canary-ws-v2/batchEndpoints/test-batch-ept-1223423-19/deployments/test-batch-dep-000017-19",
+        "name": "test-batch-dep-000017-19", "type": "Microsoft.MachineLearningServices/workspaces/batchEndpoints/deployments",
+        "properties": {"description": null, "properties": null, "codeConfiguration":
+        null, "environmentId": null, "environmentVariables": null, "compute": null,
+        "errorThreshold": 0, "retrySettings": {"maxRetries": 0, "timeout": "PT0S"},
+        "miniBatchSize": 0, "loggingLevel": "Info", "model": null, "maxConcurrencyPerInstance":
+        0, "outputAction": "SummaryOnly", "outputFileName": null, "resources": {"instanceCount":
+        1, "instanceType": null, "properties": null}, "provisioningState": "Succeeded"},
+        "systemData": {"createdAt": "2023-04-14T06:41:31.3210563+00:00", "createdBy":
+        "Taji Harris", "lastModifiedAt": "2023-04-14T06:41:31.3210686+00:00"}, "tags":
+        {"ComponentDeployment.ComponentId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/taji-canary-ws-v2/components/hello_batch/versions/1"},
+        "location": "westus2"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1259'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 14 Apr 2023 06:42:03 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-d85e044b08803eb8a7d72240ca76499a-abcfcf5d381a2a80-01"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-westus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.078'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.6.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.0 (Darwin-22.4.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/batchEndpoints/test-batch-ept-1223423-19/deployments?api-version=0000-00-00
+  response:
+    body:
+      string: '{"value": [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/taji-canary-ws-v2/batchEndpoints/test-batch-ept-1223423-19/deployments/test-batch-dep-000017-19",
+        "name": "test-batch-dep-000017-19", "type": "Microsoft.MachineLearningServices/workspaces/batchEndpoints/deployments",
+        "properties": {"description": null, "properties": null, "codeConfiguration":
+        null, "environmentId": null, "environmentVariables": null, "compute": null,
+        "errorThreshold": 0, "retrySettings": {"maxRetries": 0, "timeout": "PT0S"},
+        "miniBatchSize": 0, "loggingLevel": "Info", "model": null, "maxConcurrencyPerInstance":
+        0, "outputAction": "SummaryOnly", "outputFileName": null, "resources": {"instanceCount":
+        1, "instanceType": null, "properties": null}, "provisioningState": "Succeeded"},
+        "systemData": {"createdAt": "2023-04-14T06:41:31.3210563+00:00", "createdBy":
+        "Taji Harris", "lastModifiedAt": "2023-04-14T06:41:31.3210686+00:00"}, "tags":
+        {"ComponentDeployment.ComponentId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/taji-canary-ws-v2/components/hello_batch/versions/1"},
+        "location": "westus2"}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1272'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 14 Apr 2023 06:42:04 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-7a7d42325a4250cea51525cc4da69f9a-06ca67a9a892adbc-01"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-westus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.104'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.6.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.0 (Darwin-22.4.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/batchEndpoints/test-batch-ept-1223423-19/deployments?api-version=0000-00-00
+  response:
+    body:
+      string: '{"value": [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/taji-canary-ws-v2/batchEndpoints/test-batch-ept-1223423-19/deployments/test-batch-dep-000017-19",
+        "name": "test-batch-dep-000017-19", "type": "Microsoft.MachineLearningServices/workspaces/batchEndpoints/deployments",
+        "properties": {"description": null, "properties": null, "codeConfiguration":
+        null, "environmentId": null, "environmentVariables": null, "compute": null,
+        "errorThreshold": 0, "retrySettings": {"maxRetries": 0, "timeout": "PT0S"},
+        "miniBatchSize": 0, "loggingLevel": "Info", "model": null, "maxConcurrencyPerInstance":
+        0, "outputAction": "SummaryOnly", "outputFileName": null, "resources": {"instanceCount":
+        1, "instanceType": null, "properties": null}, "provisioningState": "Succeeded"},
+        "systemData": {"createdAt": "2023-04-14T06:41:31.3210563+00:00", "createdBy":
+        "Taji Harris", "lastModifiedAt": "2023-04-14T06:41:31.3210686+00:00"}, "tags":
+        {"ComponentDeployment.ComponentId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/taji-canary-ws-v2/components/hello_batch/versions/1"},
+        "location": "westus2"}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1272'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 14 Apr 2023 06:42:04 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-1c804a11786e392ff838630648cc0739-3bd11eb88f61d693-01"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-westus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.078'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.6.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.0 (Darwin-22.4.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/batchEndpoints/test-batch-ept-1223423-19?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/taji-canary-ws-v2/batchEndpoints/test-batch-ept-1223423-19",
+        "name": "test-batch-ept-1223423-19", "type": "Microsoft.MachineLearningServices/workspaces/batchEndpoints",
+        "properties": {"description": "my sample batch endpoint", "properties": {"ComponentDeployment.Enabled":
+        "True", "BatchEndpointCreationApiVersion": "2022-05-01", "azureml.onlineendpointid":
+        "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/taji-canary-ws-v2/batchEndpoints/test-batch-ept-1223423-19"},
+        "scoringUri": "https://test-batch-ept-1223423-19.westus2.inference.ml.azure.com/jobs",
+        "swaggerUri": null, "authMode": "AADToken", "defaults": {"deploymentName":
+        null}, "provisioningState": "Succeeded"}, "systemData": {"createdAt": "2023-04-14T06:40:57.303468+00:00",
+        "createdBy": "Taji Harris", "lastModifiedAt": "2023-04-14T06:40:57.3034849+00:00"},
+        "tags": {}, "location": "westus2"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1091'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 14 Apr 2023 06:42:05 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-ce265b2a2f37dc8bc9976c9c8c295b6f-ba00d33135b42238-01"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-westus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.060'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"inputData": {"my_folder": {"uri": "azureml:pipelinedata:1",
+      "jobInputType": "UriFolder"}, "my_file": {"uri": "azureml://datastores/workspaceblobstore/paths/LocalUpload/37f216301e97b1afe8175ae97fba2669/data/sample1.csv",
+      "jobInputType": "UriFile"}}}}'
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '266'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.6.0 azsdk-python-core/1.26.4 Python/3.7.0
+        (Darwin-22.4.0-x86_64-i386-64bit)
+      azureml-model-deployment:
+      - test-batch-dep-000017-19
+    method: POST
+    uri: https://test-batch-ept-1223423-19.westus2.inference.ml.azure.com/jobs
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/taji-canary-ws-v2/batchEndpoints//jobs/4a918646-ba74-4c3b-8acb-a241cf76df98",
+        "name": "4a918646-ba74-4c3b-8acb-a241cf76df98", "type": "Microsoft.MachineLearningServices/workspaces/batchEndpoints/jobs",
+        "properties": {"provisioningState": "Succeeded", "inputData": {"my_folder":
+        {"description": null, "uri": "azureml:pipelinedata:1", "mode": "ReadOnlyMount",
+        "jobInputType": "UriFolder"}, "my_file": {"description": null, "uri": "azureml://datastores/workspaceblobstore/paths/LocalUpload/37f216301e97b1afe8175ae97fba2669/data/sample1.csv",
+        "mode": "ReadOnlyMount", "jobInputType": "UriFile"}}, "compute": {"target":
+        null, "instanceCount": null, "isLocal": false, "location": null, "instanceType":
+        null, "properties": null}, "output": {"datastoreId": null, "path": null},
+        "status": "Preparing", "interactionEndpoints": {"Tracking": {"jobEndpointType":
+        "Tracking", "port": null, "endpoint": "azureml://westus2.api.azureml.ms/mlflow/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/taji-canary-ws-v2?",
+        "properties": null}, "Studio": {"jobEndpointType": "Studio", "port": null,
+        "endpoint": "https://ml.azure.com/runs/4a918646-ba74-4c3b-8acb-a241cf76df98?wsid=/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/taji-canary-rg/workspaces/taji-canary-ws-v2",
+        "properties": null}}, "tags": {"azureml.deploymentname": "test-batch-dep-000017-19",
+        "azureml.batchrun": "true", "azureml.jobtype": "azureml.pipelinejob"}, "properties":
+        {"azureml.runLineageType": "batchDeployment", "azureml.runsource": "azureml.PipelineRun",
+        "runSource": "BatchDeployment", "runType": "HTTP", "azureml.parameters": "{}",
+        "azureml.sourcepipelinerunid": "7378e9f2-060b-4c13-9c97-10a6870c17cf", "azureml.continue_on_step_failure":
+        "True", "azureml.continue_on_failed_optional_input": "True", "azureml.enforceRerun":
+        "False", "azureml.defaultComputeName": "cluster-cpu", "azureml.defaultDataStoreName":
+        "workspaceblobstore", "azureml.pipelineComponent": "pipelinerun"}, "name":
+        "funny_fowl_wp366glx"}, "systemData": {"createdAt": "2023-04-14T06:42:06.4927532+00:00",
+        "createdBy": "Taji Harris", "lastModifiedAt": "2023-04-14T06:42:06.4927532+00:00",
+        "lastModifiedBy": "Taji Harris"}}'
+    headers:
+      azureml-model-deployment:
+      - test-batch-dep-000017-19
+      content-length:
+      - '2404'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 14 Apr 2023 06:42:06 GMT
+      location:
+      - https://westus2.api.azureml.ms/mferp/managementfrontend/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/taji-canary-rg/providers/Microsoft.MachineLearningServices/workspaces/taji-canary-ws-v2/batchEndpoints/test-batch-ept-1223423-19/deployments/test-batch-dep-000017-19?api-version=2020-09-01-dataplanepreview
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server:
+      - azureml-frontdoor
+      server-timing:
+      - traceparent;desc="00-152effc970845d7491df813101e371a8-91b6ae56062efdd0-00"
+      strict-transport-security:
+      - max-age=15724800; includeSubDomains; preload
+      x-aml-cluster:
+      - vienna-westus2-01
+      x-content-type-options:
+      - nosniff
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '1068'
+      x-ms-response-type:
+      - standard
+      x-request-id:
+      - 0def3849-cec3-4918-84a4-3ce1040e8e99
+      x-request-time:
+      - '1.062'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.6.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.0 (Darwin-22.4.0-x86_64-i386-64bit)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/batchEndpoints/test-batch-ept-1223423-19?api-version=0000-00-00
+  response:
+    body:
+      string: 'null'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/westus2/mfeOperationsStatus/bebes:2783d428-e8e1-48a5-b26e-5200245bf3cd:3efcad98-5d6e-4ce3-a150-0b5ec75ac11f?api-version=2022-05-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 14 Apr 2023 06:42:07 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/westus2/mfeOperationResults/bebes:2783d428-e8e1-48a5-b26e-5200245bf3cd:3efcad98-5d6e-4ce3-a150-0b5ec75ac11f?api-version=2022-05-01
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aml-cluster:
+      - vienna-westus2-01
+      x-content-type-options:
+      - nosniff
+      x-ms-async-operation-timeout:
+      - PT30M
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.191'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.6.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.0 (Darwin-22.4.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/westus2/mfeOperationsStatus/bebes:2783d428-e8e1-48a5-b26e-5200245bf3cd:3efcad98-5d6e-4ce3-a150-0b5ec75ac11f?api-version=0000-00-00
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/westus2/mfeOperationsStatus/bebes:2783d428-e8e1-48a5-b26e-5200245bf3cd:3efcad98-5d6e-4ce3-a150-0b5ec75ac11f\",\n
+        \ \"name\": \"bebes:2783d428-e8e1-48a5-b26e-5200245bf3cd:3efcad98-5d6e-4ce3-a150-0b5ec75ac11f\",\n
+        \ \"status\": \"Updating\"\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '344'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 14 Apr 2023 06:42:08 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-252c68a2b12df029171973d4a3500140-e2a629e9c3046f0c-01"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-westus2-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.035'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.6.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.0 (Darwin-22.4.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/westus2/mfeOperationsStatus/bebes:2783d428-e8e1-48a5-b26e-5200245bf3cd:3efcad98-5d6e-4ce3-a150-0b5ec75ac11f?api-version=0000-00-00
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/westus2/mfeOperationsStatus/bebes:2783d428-e8e1-48a5-b26e-5200245bf3cd:3efcad98-5d6e-4ce3-a150-0b5ec75ac11f\",\n
+        \ \"name\": \"bebes:2783d428-e8e1-48a5-b26e-5200245bf3cd:3efcad98-5d6e-4ce3-a150-0b5ec75ac11f\",\n
+        \ \"status\": \"Updating\"\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '344'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 14 Apr 2023 06:42:13 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-524769cbe9d58fb2ac06d2033eee62da-2c81dfdd94cb979b-01"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-westus2-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.023'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.6.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.0 (Darwin-22.4.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/westus2/mfeOperationsStatus/bebes:2783d428-e8e1-48a5-b26e-5200245bf3cd:3efcad98-5d6e-4ce3-a150-0b5ec75ac11f?api-version=0000-00-00
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/westus2/mfeOperationsStatus/bebes:2783d428-e8e1-48a5-b26e-5200245bf3cd:3efcad98-5d6e-4ce3-a150-0b5ec75ac11f\",\n
+        \ \"name\": \"bebes:2783d428-e8e1-48a5-b26e-5200245bf3cd:3efcad98-5d6e-4ce3-a150-0b5ec75ac11f\",\n
+        \ \"status\": \"Updating\"\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '344'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 14 Apr 2023 06:42:18 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-a969989a5c5c379abaa37bb3e2b8958e-9cf84357b13903bc-01"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-westus2-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.017'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.6.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.0 (Darwin-22.4.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/westus2/mfeOperationsStatus/bebes:2783d428-e8e1-48a5-b26e-5200245bf3cd:3efcad98-5d6e-4ce3-a150-0b5ec75ac11f?api-version=0000-00-00
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/westus2/mfeOperationsStatus/bebes:2783d428-e8e1-48a5-b26e-5200245bf3cd:3efcad98-5d6e-4ce3-a150-0b5ec75ac11f\",\n
+        \ \"name\": \"bebes:2783d428-e8e1-48a5-b26e-5200245bf3cd:3efcad98-5d6e-4ce3-a150-0b5ec75ac11f\",\n
+        \ \"status\": \"Updating\"\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '344'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 14 Apr 2023 06:42:23 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-ebd55d871e99652b6297aa0d5746f7f6-c5c3ad95c71bdd77-01"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-westus2-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.018'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.6.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.0 (Darwin-22.4.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/westus2/mfeOperationsStatus/bebes:2783d428-e8e1-48a5-b26e-5200245bf3cd:3efcad98-5d6e-4ce3-a150-0b5ec75ac11f?api-version=0000-00-00
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/westus2/mfeOperationsStatus/bebes:2783d428-e8e1-48a5-b26e-5200245bf3cd:3efcad98-5d6e-4ce3-a150-0b5ec75ac11f\",\n
+        \ \"name\": \"bebes:2783d428-e8e1-48a5-b26e-5200245bf3cd:3efcad98-5d6e-4ce3-a150-0b5ec75ac11f\",\n
+        \ \"status\": \"Updating\"\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '344'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 14 Apr 2023 06:42:28 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-692df8c02b7b925b39a99e970e6214fb-38ec0e764ed85365-01"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-westus2-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.053'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.6.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.0 (Darwin-22.4.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/westus2/mfeOperationsStatus/bebes:2783d428-e8e1-48a5-b26e-5200245bf3cd:3efcad98-5d6e-4ce3-a150-0b5ec75ac11f?api-version=0000-00-00
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/westus2/mfeOperationsStatus/bebes:2783d428-e8e1-48a5-b26e-5200245bf3cd:3efcad98-5d6e-4ce3-a150-0b5ec75ac11f\",\n
+        \ \"name\": \"bebes:2783d428-e8e1-48a5-b26e-5200245bf3cd:3efcad98-5d6e-4ce3-a150-0b5ec75ac11f\",\n
+        \ \"status\": \"Updating\"\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '344'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 14 Apr 2023 06:42:33 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-00b05d3114e6edf99696cebd0c970ae3-3fc0f6500de85bdd-01"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-westus2-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.017'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.6.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.0 (Darwin-22.4.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/westus2/mfeOperationsStatus/bebes:2783d428-e8e1-48a5-b26e-5200245bf3cd:3efcad98-5d6e-4ce3-a150-0b5ec75ac11f?api-version=0000-00-00
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/westus2/mfeOperationsStatus/bebes:2783d428-e8e1-48a5-b26e-5200245bf3cd:3efcad98-5d6e-4ce3-a150-0b5ec75ac11f\",\n
+        \ \"name\": \"bebes:2783d428-e8e1-48a5-b26e-5200245bf3cd:3efcad98-5d6e-4ce3-a150-0b5ec75ac11f\",\n
+        \ \"status\": \"Updating\"\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '344'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 14 Apr 2023 06:42:38 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-ec0dd494116f142d0a9112f1ccc8bc7b-c56bcbf8259b93b1-01"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-westus2-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.016'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.6.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.0 (Darwin-22.4.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/westus2/mfeOperationsStatus/bebes:2783d428-e8e1-48a5-b26e-5200245bf3cd:3efcad98-5d6e-4ce3-a150-0b5ec75ac11f?api-version=0000-00-00
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/westus2/mfeOperationsStatus/bebes:2783d428-e8e1-48a5-b26e-5200245bf3cd:3efcad98-5d6e-4ce3-a150-0b5ec75ac11f\",\n
+        \ \"name\": \"bebes:2783d428-e8e1-48a5-b26e-5200245bf3cd:3efcad98-5d6e-4ce3-a150-0b5ec75ac11f\",\n
+        \ \"status\": \"Updating\"\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '344'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 14 Apr 2023 06:42:43 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-1d9383e67e646a14f6fc40bad871a295-bd5cf58d9ed4ced3-01"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-westus2-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.020'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.6.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.0 (Darwin-22.4.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/westus2/mfeOperationsStatus/bebes:2783d428-e8e1-48a5-b26e-5200245bf3cd:3efcad98-5d6e-4ce3-a150-0b5ec75ac11f?api-version=0000-00-00
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/westus2/mfeOperationsStatus/bebes:2783d428-e8e1-48a5-b26e-5200245bf3cd:3efcad98-5d6e-4ce3-a150-0b5ec75ac11f\",\n
+        \ \"name\": \"bebes:2783d428-e8e1-48a5-b26e-5200245bf3cd:3efcad98-5d6e-4ce3-a150-0b5ec75ac11f\",\n
+        \ \"status\": \"Updating\"\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '344'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 14 Apr 2023 06:42:49 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-52b2df707d5a59236b7dc867eb3e166b-071b6710b86a2562-01"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-westus2-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.017'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.6.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.0 (Darwin-22.4.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/westus2/mfeOperationsStatus/bebes:2783d428-e8e1-48a5-b26e-5200245bf3cd:3efcad98-5d6e-4ce3-a150-0b5ec75ac11f?api-version=0000-00-00
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/westus2/mfeOperationsStatus/bebes:2783d428-e8e1-48a5-b26e-5200245bf3cd:3efcad98-5d6e-4ce3-a150-0b5ec75ac11f\",\n
+        \ \"name\": \"bebes:2783d428-e8e1-48a5-b26e-5200245bf3cd:3efcad98-5d6e-4ce3-a150-0b5ec75ac11f\",\n
+        \ \"status\": \"Succeeded\"\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '345'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 14 Apr 2023 06:42:54 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-8bd4ed8f7a0b81693a5d4d8211771760-6fdeb8c37e61de82-01"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-westus2-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.019'
+    status:
+      code: 200
+      message: OK
+version: 1

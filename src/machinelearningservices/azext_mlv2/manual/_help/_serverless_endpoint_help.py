@@ -1,0 +1,56 @@
+# ---------------------------------------------------------
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# ---------------------------------------------------------
+
+from knack.help_files import helps
+
+
+def get_serverless_endpoint_help():
+    helps[
+        "ml serverless-endpoint"
+    ] = """
+        type: group
+        short-summary: Manage Azure ML serverless endpoints.
+    """
+    helps[
+        "ml serverless-endpoint list"
+    ] = """
+        type: command
+        short-summary: List serverless endpoints in a workspace.
+    """
+    helps[
+        "ml serverless-endpoint show"
+    ] = """
+        type: command
+        short-summary: Shows details for a serverless endpoint.
+    """
+    helps[
+        "ml serverless-endpoint create"
+    ] = """
+        type: command
+        short-summary: Create a serverless endpoint.
+    """
+    helps[
+        "ml serverless-endpoint update"
+    ] = """
+        type: command
+        short-summary: Update a serverlesss endpoint.
+    """
+    helps[
+        "ml serverless-endpoint delete"
+    ] = """
+        type: command
+        short-summary: Delete a serverless endpoint.
+    """
+    helps[
+        "ml serverless-endpoint get-credentials"
+    ] = """
+        type: command
+        short-summary: List the keys for a serverless endpoint.
+    """
+    helps[
+        "ml serverless-endpoint regenerate-keys"
+    ] = """
+        type: command
+        short-summary: Regenerate the keys for a serverless endpoint.
+    """

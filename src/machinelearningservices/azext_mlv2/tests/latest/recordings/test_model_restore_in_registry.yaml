@@ -1,0 +1,162 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json, text/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0 Python/3.10.8
+        (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://eastus.api.azureml.ms/registrymanagement/v1.0/registries/dsvm-test/discovery
+  response:
+    body:
+      string: '{"registryId": "0b6229f6-570d-4378-aa08-158500c5638b", "registryName":
+        "dsvm-test", "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47", "primaryRegion":
+        "eastus", "regions": ["eastus"], "subscriptionId": "b17253fa-f327-42d6-9686-f3e553e24763",
+        "resourceGroup": "dsvm_master", "workspaceName": null, "primaryRegionResourceProviderUri":
+        "https://cert-eastus.experiments.azureml.net/", "registryFqdns": {"eastus":
+        {"uri": "https://0b6229f6-570d-4378-aa08-158500c5638b.registry.eastus.privatelink.api.azureml.ms"}}}'
+    headers:
+      connection:
+      - keep-alive
+      content-length:
+      - '511'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 19 Jan 2023 20:10:44 GMT
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=15724800; includeSubDomains; preload
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.455'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0 Python/3.10.8
+        (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://cert-eastus.experiments.azureml.net/mferp/managementfrontend/subscriptions/b17253fa-f327-42d6-9686-f3e553e24763/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/registries/dsvm-test/models/b17253fa-f327-42d6-9686-f3e553e24763/versions/1?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "azureml://registries/dsvm-test/models/model_version_e2e/versions/1",
+        "name": "model_version_e2e", "type": "models", "properties": {"description":
+        "this is my test model", "tags": {"foo": "bar", "abc": "123"}, "properties":
+        {}, "isArchived": false, "isAnonymous": false, "flavors": {"sklearn": {"data":
+        {"sklearn_version": "0.23.2"}}, "python_function": {"data": {"loader_module":
+        "office.plrmodel", "python_version": "3.8.5"}}}, "modelType": "mlflow_model",
+        "modelUri": "https://dsvmt82c5603a18b5479cbe7.blob.core.windows.net/dsvm-test-daa68f65-8eb2-5f60-ae02-24f520981c7a/lightgbm_mlflow_model",
+        "originAssetId": null, "jobName": null}, "systemData": {"createdAt": "2022-10-19T23:31:15.1514204+00:00",
+        "createdBy": "Banibrata De", "createdByType": "User", "lastModifiedAt": "2022-10-19T23:31:14.6292742+00:00",
+        "lastModifiedBy": "Banibrata De", "lastModifiedByType": "User"}}'
+    headers:
+      connection:
+      - keep-alive
+      content-length:
+      - '884'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 19 Jan 2023 20:10:45 GMT
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-fd2870fc6f39b5a12b9f891864196686-7bc3eac2699cf12e-00"
+      strict-transport-security:
+      - max-age=15724800; includeSubDomains; preload
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus-02
+      x-content-type-options:
+      - nosniff
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.092'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"description": "this is my test model", "properties": {},
+      "tags": {"foo": "bar", "abc": "123"}, "isAnonymous": false, "isArchived": false,
+      "flavors": {"sklearn": {"data": {"sklearn_version": "0.23.2"}}, "python_function":
+      {"data": {"loader_module": "office.plrmodel", "python_version": "3.8.5"}}},
+      "modelType": "mlflow_model", "modelUri": "https://dsvmt82c5603a18b5479cbe7.blob.core.windows.net/dsvm-test-daa68f65-8eb2-5f60-ae02-24f520981c7a/lightgbm_mlflow_model"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '482'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0 Python/3.10.8
+        (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://cert-eastus.experiments.azureml.net/mferp/managementfrontend/subscriptions/b17253fa-f327-42d6-9686-f3e553e24763/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/registries/dsvm-test/models/b17253fa-f327-42d6-9686-f3e553e24763/versions/1?api-version=0000-00-00
+  response:
+    body:
+      string: 'null'
+    headers:
+      connection:
+      - keep-alive
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 19 Jan 2023 20:10:45 GMT
+      location:
+      - https://eastus.api.azureml.ms/assetstore/v1.0/operations/i3I_xeObAEBWXwGMxgflTJY0oxPP3TzNubj3LcUGvXk
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=15724800; includeSubDomains; preload
+      x-aml-cluster:
+      - vienna-eastus-02
+      x-content-type-options:
+      - nosniff
+      x-ms-async-operation-timeout:
+      - PT1H
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.312'
+    status:
+      code: 202
+      message: Accepted
+version: 1

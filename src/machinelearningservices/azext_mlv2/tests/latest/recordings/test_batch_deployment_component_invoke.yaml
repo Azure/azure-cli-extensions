@@ -1,0 +1,2161 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.2.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sunaggar-ws",
+        "name": "sunaggar-ws", "type": "Microsoft.MachineLearningServices/workspaces",
+        "location": "centraluseuap", "tags": {}, "etag": null, "properties": {"friendlyName":
+        "sunaggar-ws", "description": "", "storageAccount": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sunaggar-rg/providers/microsoft.storage/storageaccounts/sunaggarws8911615569",
+        "keyVault": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sunaggar-rg/providers/microsoft.keyvault/vaults/sunaggarws7866216272",
+        "applicationInsights": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sunaggar-rg/providers/microsoft.insights/components/sunaggarws3927716131",
+        "hbiWorkspace": false, "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47",
+        "imageBuildCompute": null, "provisioningState": "Succeeded", "softDeleteEnabled":
+        false, "containerRegistry": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.ContainerRegistry/registries/eb8861487bd3414598023fdebafd97d8",
+        "notebookInfo": {"resourceId": "5b6a1c0740554947972622d4df8c32ca", "fqdn":
+        "ml-sunaggar--centraluseuap-eb886148-7bd3-4145-9802-3fdebafd97d8.notebooks.azure.net",
+        "isPrivateLinkEnabled": false, "notebookPreparationError": null}, "storageHnsEnabled":
+        false, "workspaceId": "eb886148-7bd3-4145-9802-3fdebafd97d8", "linkedModelInventoryArmId":
+        null, "privateLinkCount": 0, "publicNetworkAccess": "Enabled", "discoveryUrl":
+        "https://master.api.azureml-test.ms/discovery", "mlFlowTrackingUri": "azureml://master.api.azureml-test.ms/mlflow/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sunaggar-ws",
+        "sdkTelemetryAppInsightsKey": "e31c22bb-e424-4992-a495-6519750e273a", "sasGetterUri":
+        null}, "identity": {"type": "SystemAssigned", "principalId": "45d05f3e-2cca-4df5-937e-2ffb8a49d70f",
+        "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47"}, "sku": {"name": "Basic",
+        "tier": "Basic"}, "systemData": {"createdAt": "2022-04-11T16:04:42.6608621Z",
+        "createdBy": "sunaggar@microsoft.com", "createdByType": "User", "lastModifiedAt":
+        "2022-04-11T16:04:42.6608621Z", "lastModifiedBy": "sunaggar@microsoft.com",
+        "lastModifiedByType": "User"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2414'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 07 Dec 2022 02:35:58 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:512cc15a-13b5-415b-bfd0-dce7accb6bb1
+      server-timing:
+      - traceparent;desc="00-fe1661fe99393af4ea633379dc38d4d5-8d8c44f0cbedaf40-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-test-westus2-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.024'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"tags": {}, "location": "centraluseuap", "properties": {"authMode": "aadToken",
+      "description": "my sample batch endpoint", "properties": {"ComponentDeployment.Enabled":
+      "True"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '179'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.2.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.9 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/batchEndpoints/test-batch-ept-1223423-17?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sunaggar-ws/batchEndpoints/test-batch-ept-1223423-17",
+        "name": "test-batch-ept-1223423-17", "type": "Microsoft.MachineLearningServices/workspaces/batchEndpoints",
+        "properties": {"description": "my sample batch endpoint", "properties": {"ComponentDeployment.Enabled":
+        "True", "BatchEndpointCreationApiVersion": "2022-05-01", "azureml.onlineendpointid":
+        "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sunaggar-ws/batchEndpoints/test-batch-ept-1223423-17"},
+        "scoringUri": null, "swaggerUri": null, "authMode": "AADToken", "defaults":
+        {"deploymentName": null}, "provisioningState": "Creating"}, "systemData":
+        {"createdAt": "2022-12-07T02:36:01.9992867+00:00", "createdBy": "Nancy Mejia
+        Juarez", "lastModifiedAt": "2022-12-07T02:36:01.9993446+00:00"}, "tags": {},
+        "location": "centraluseuap"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/centraluseuap/mfeOperationsStatus/bebes:eb886148-7bd3-4145-9802-3fdebafd97d8:070cc81f-8e2c-4ad5-bd46-1ab0d48e5150?api-version=2022-05-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '1025'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 07 Dec 2022 02:36:01 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sunaggar-rg/providers/Microsoft.MachineLearningServices/workspaces/sunaggar-ws/batchEndpoints/test-batch-ept-1223423-17?api-version=2022-05-01
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:512cc15a-13b5-415b-bfd0-dce7accb6bb1
+      server-timing:
+      - traceparent;desc="00-7c73696e1fe2e7c49506608c05b07c01-e58b815d3f46617b-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aml-cluster:
+      - vienna-test-westus2-01
+      x-content-type-options:
+      - nosniff
+      x-ms-async-operation-timeout:
+      - PT30M
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '1.197'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.2.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/centraluseuap/mfeOperationsStatus/bebes:eb886148-7bd3-4145-9802-3fdebafd97d8:070cc81f-8e2c-4ad5-bd46-1ab0d48e5150?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/centraluseuap/mfeOperationsStatus/bebes:eb886148-7bd3-4145-9802-3fdebafd97d8:070cc81f-8e2c-4ad5-bd46-1ab0d48e5150",
+        "name": "bebes:eb886148-7bd3-4145-9802-3fdebafd97d8:070cc81f-8e2c-4ad5-bd46-1ab0d48e5150",
+        "status": "Updating"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '342'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 07 Dec 2022 02:36:02 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:512cc15a-13b5-415b-bfd0-dce7accb6bb1
+      server-timing:
+      - traceparent;desc="00-1b30dab1503246af4c3394ae470c878c-606a48b4ccbaeed5-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-test-westus2-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.155'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.2.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/centraluseuap/mfeOperationsStatus/bebes:eb886148-7bd3-4145-9802-3fdebafd97d8:070cc81f-8e2c-4ad5-bd46-1ab0d48e5150?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/centraluseuap/mfeOperationsStatus/bebes:eb886148-7bd3-4145-9802-3fdebafd97d8:070cc81f-8e2c-4ad5-bd46-1ab0d48e5150",
+        "name": "bebes:eb886148-7bd3-4145-9802-3fdebafd97d8:070cc81f-8e2c-4ad5-bd46-1ab0d48e5150",
+        "status": "Succeeded"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '343'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 07 Dec 2022 02:36:33 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:512cc15a-13b5-415b-bfd0-dce7accb6bb1
+      server-timing:
+      - traceparent;desc="00-0f2d982c0999a542b2f5f3088c75fac8-82add5e0ff29f95c-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-test-westus2-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.054'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.2.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/batchEndpoints/test-batch-ept-1223423-17?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sunaggar-ws/batchEndpoints/test-batch-ept-1223423-17",
+        "name": "test-batch-ept-1223423-17", "type": "Microsoft.MachineLearningServices/workspaces/batchEndpoints",
+        "properties": {"description": "my sample batch endpoint", "properties": {"ComponentDeployment.Enabled":
+        "True", "BatchEndpointCreationApiVersion": "2022-05-01", "azureml.onlineendpointid":
+        "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sunaggar-ws/batchEndpoints/test-batch-ept-1223423-17"},
+        "scoringUri": "https://test-batch-ept-1223423-17.westus2-main.inference.ml.azure.com/jobs",
+        "swaggerUri": null, "authMode": "AADToken", "defaults": {"deploymentName":
+        null}, "provisioningState": "Succeeded"}, "systemData": {"createdAt": "2022-12-07T02:36:01.9992867+00:00",
+        "createdBy": "Nancy Mejia Juarez", "lastModifiedAt": "2022-12-07T02:36:01.9993446+00:00"},
+        "tags": {}, "location": "centraluseuap"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1098'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 07 Dec 2022 02:36:33 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:512cc15a-13b5-415b-bfd0-dce7accb6bb1
+      server-timing:
+      - traceparent;desc="00-336e8c67bcde7d6bd2e2d59e2d8f70c9-20937f6cebd13548-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-test-westus2-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.092'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.2.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/batchEndpoints/test-batch-ept-1223423-17?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sunaggar-ws/batchEndpoints/test-batch-ept-1223423-17",
+        "name": "test-batch-ept-1223423-17", "type": "Microsoft.MachineLearningServices/workspaces/batchEndpoints",
+        "properties": {"description": "my sample batch endpoint", "properties": {"ComponentDeployment.Enabled":
+        "True", "BatchEndpointCreationApiVersion": "2022-05-01", "azureml.onlineendpointid":
+        "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sunaggar-ws/batchEndpoints/test-batch-ept-1223423-17"},
+        "scoringUri": "https://test-batch-ept-1223423-17.westus2-main.inference.ml.azure.com/jobs",
+        "swaggerUri": null, "authMode": "AADToken", "defaults": {"deploymentName":
+        null}, "provisioningState": "Succeeded"}, "systemData": {"createdAt": "2022-12-07T02:36:01.9992867+00:00",
+        "createdBy": "Nancy Mejia Juarez", "lastModifiedAt": "2022-12-07T02:36:01.9993446+00:00"},
+        "tags": {}, "location": "centraluseuap"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1098'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 07 Dec 2022 02:36:34 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:512cc15a-13b5-415b-bfd0-dce7accb6bb1
+      server-timing:
+      - traceparent;desc="00-9fb2ea101b5d774dcd871c93c57795f1-22d4edcf8335dab3-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-test-westus2-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.073'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.2.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sunaggar-ws",
+        "name": "sunaggar-ws", "type": "Microsoft.MachineLearningServices/workspaces",
+        "location": "centraluseuap", "tags": {}, "etag": null, "properties": {"friendlyName":
+        "sunaggar-ws", "description": "", "storageAccount": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sunaggar-rg/providers/microsoft.storage/storageaccounts/sunaggarws8911615569",
+        "keyVault": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sunaggar-rg/providers/microsoft.keyvault/vaults/sunaggarws7866216272",
+        "applicationInsights": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sunaggar-rg/providers/microsoft.insights/components/sunaggarws3927716131",
+        "hbiWorkspace": false, "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47",
+        "imageBuildCompute": null, "provisioningState": "Succeeded", "softDeleteEnabled":
+        false, "containerRegistry": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.ContainerRegistry/registries/eb8861487bd3414598023fdebafd97d8",
+        "notebookInfo": {"resourceId": "5b6a1c0740554947972622d4df8c32ca", "fqdn":
+        "ml-sunaggar--centraluseuap-eb886148-7bd3-4145-9802-3fdebafd97d8.notebooks.azure.net",
+        "isPrivateLinkEnabled": false, "notebookPreparationError": null}, "storageHnsEnabled":
+        false, "workspaceId": "eb886148-7bd3-4145-9802-3fdebafd97d8", "linkedModelInventoryArmId":
+        null, "privateLinkCount": 0, "publicNetworkAccess": "Enabled", "discoveryUrl":
+        "https://master.api.azureml-test.ms/discovery", "mlFlowTrackingUri": "azureml://master.api.azureml-test.ms/mlflow/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sunaggar-ws",
+        "sdkTelemetryAppInsightsKey": "e31c22bb-e424-4992-a495-6519750e273a", "sasGetterUri":
+        null}, "identity": {"type": "SystemAssigned", "principalId": "45d05f3e-2cca-4df5-937e-2ffb8a49d70f",
+        "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47"}, "sku": {"name": "Basic",
+        "tier": "Basic"}, "systemData": {"createdAt": "2022-04-11T16:04:42.6608621Z",
+        "createdBy": "sunaggar@microsoft.com", "createdByType": "User", "lastModifiedAt":
+        "2022-04-11T16:04:42.6608621Z", "lastModifiedBy": "sunaggar@microsoft.com",
+        "lastModifiedByType": "User"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2414'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 07 Dec 2022 02:36:35 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:512cc15a-13b5-415b-bfd0-dce7accb6bb1
+      server-timing:
+      - traceparent;desc="00-7bba51bbf4acc95c3615df13d145bc39-dce108c8bcaf94ad-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-test-westus2-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.017'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"tags": {}, "location": "centraluseuap", "properties": {"description":
+      "A sample deployment with pre and post processing done before and after inference.",
+      "environmentVariables": {}, "properties": {"ComponentDeployment.ComponentId":
+      "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sunaggar-rg/providers/Microsoft.MachineLearningServices/workspaces/sunaggar-ws/components/helloworld_pipeline_component/versions/1",
+      "ComponentDeployment.Component": "azureml:helloworld_pipeline_component:1",
+      "ComponentDeployment.Type": "pipeline", "ComponentDeployment.Settings.continue_on_step_failure":
+      "False", "ComponentDeployment.Name": "helloworld_pipeline_component"}, "compute":
+      "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sunaggar-rg/providers/Microsoft.MachineLearningServices/workspaces/sunaggar-ws/computes/cpu-cluster"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '861'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.2.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.9 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/batchEndpoints/test-batch-ept-1223423-17/deployments/deploy-0000000?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sunaggar-ws/batchEndpoints/test-batch-ept-1223423-17/deployments/test-batch-dep-000017-17",
+        "name": "test-batch-dep-000017-17", "type": "Microsoft.MachineLearningServices/workspaces/batchEndpoints/deployments",
+        "properties": {"description": "A sample deployment with pre and post processing
+        done before and after inference.", "properties": {"ComponentDeployment.ComponentId":
+        "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sunaggar-ws/components/helloworld_pipeline_component/versions/1",
+        "ComponentDeployment.Component": "azureml:helloworld_pipeline_component:1",
+        "ComponentDeployment.Type": "pipeline", "ComponentDeployment.Settings.continue_on_step_failure":
+        "False", "ComponentDeployment.Name": "helloworld_pipeline_component"}, "codeConfiguration":
+        null, "environmentId": null, "environmentVariables": null, "compute": null,
+        "errorThreshold": 0, "retrySettings": {"maxRetries": 0, "timeout": "PT0S"},
+        "miniBatchSize": 0, "loggingLevel": "Info", "model": null, "maxConcurrencyPerInstance":
+        0, "outputAction": "SummaryOnly", "outputFileName": null, "resources": {"instanceCount":
+        1, "instanceType": null, "properties": null}, "provisioningState": "Creating"},
+        "systemData": {"createdAt": "2022-12-07T02:36:37.7384814+00:00", "createdBy":
+        "Nancy Mejia Juarez", "lastModifiedAt": "2022-12-07T02:36:37.7386874+00:00"},
+        "tags": {}, "location": "centraluseuap"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/centraluseuap/mfeOperationsStatus/bdbes:eb886148-7bd3-4145-9802-3fdebafd97d8:aafd2b20-af90-43b4-951c-a6a8ee4b998d?api-version=2022-05-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '1597'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 07 Dec 2022 02:36:37 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sunaggar-rg/providers/Microsoft.MachineLearningServices/workspaces/sunaggar-ws/batchEndpoints/test-batch-ept-1223423-17/deployments/test-batch-dep-000017-17?api-version=2022-05-01
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:512cc15a-13b5-415b-bfd0-dce7accb6bb1
+      server-timing:
+      - traceparent;desc="00-7346f0b9a4c020f1152dd6b066f3b7b4-39f2f00714b7eca3-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aml-cluster:
+      - vienna-test-westus2-01
+      x-content-type-options:
+      - nosniff
+      x-ms-async-operation-timeout:
+      - PT30M
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '24'
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.350'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.2.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/centraluseuap/mfeOperationsStatus/bdbes:eb886148-7bd3-4145-9802-3fdebafd97d8:aafd2b20-af90-43b4-951c-a6a8ee4b998d?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/centraluseuap/mfeOperationsStatus/bdbes:eb886148-7bd3-4145-9802-3fdebafd97d8:aafd2b20-af90-43b4-951c-a6a8ee4b998d",
+        "name": "bdbes:eb886148-7bd3-4145-9802-3fdebafd97d8:aafd2b20-af90-43b4-951c-a6a8ee4b998d",
+        "status": "Updating"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '342'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 07 Dec 2022 02:36:38 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:512cc15a-13b5-415b-bfd0-dce7accb6bb1
+      server-timing:
+      - traceparent;desc="00-ec4f5dabdb630441dadc2869617049e9-b58ff08898870867-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-test-westus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.147'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.2.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/centraluseuap/mfeOperationsStatus/bdbes:eb886148-7bd3-4145-9802-3fdebafd97d8:aafd2b20-af90-43b4-951c-a6a8ee4b998d?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/centraluseuap/mfeOperationsStatus/bdbes:eb886148-7bd3-4145-9802-3fdebafd97d8:aafd2b20-af90-43b4-951c-a6a8ee4b998d",
+        "name": "bdbes:eb886148-7bd3-4145-9802-3fdebafd97d8:aafd2b20-af90-43b4-951c-a6a8ee4b998d",
+        "status": "Succeeded"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '343'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 07 Dec 2022 02:37:08 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:512cc15a-13b5-415b-bfd0-dce7accb6bb1
+      server-timing:
+      - traceparent;desc="00-622227ced4cb238206722e9b1bac1c73-93ce9eecd97d9e5f-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-test-westus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.074'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.2.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/batchEndpoints/test-batch-ept-1223423-17/deployments/deploy-0000000?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sunaggar-ws/batchEndpoints/test-batch-ept-1223423-17/deployments/test-batch-dep-000017-17",
+        "name": "test-batch-dep-000017-17", "type": "Microsoft.MachineLearningServices/workspaces/batchEndpoints/deployments",
+        "properties": {"description": "A sample deployment with pre and post processing
+        done before and after inference.", "properties": {"ComponentDeployment.ComponentId":
+        "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sunaggar-ws/components/helloworld_pipeline_component/versions/1",
+        "ComponentDeployment.Component": "azureml:helloworld_pipeline_component:1",
+        "ComponentDeployment.Type": "pipeline", "ComponentDeployment.Settings.continue_on_step_failure":
+        "False", "ComponentDeployment.Name": "helloworld_pipeline_component"}, "codeConfiguration":
+        null, "environmentId": null, "environmentVariables": null, "compute": null,
+        "errorThreshold": 0, "retrySettings": {"maxRetries": 0, "timeout": "PT0S"},
+        "miniBatchSize": 0, "loggingLevel": "Info", "model": null, "maxConcurrencyPerInstance":
+        0, "outputAction": "SummaryOnly", "outputFileName": null, "resources": {"instanceCount":
+        1, "instanceType": null, "properties": null}, "provisioningState": "Succeeded"},
+        "systemData": {"createdAt": "2022-12-07T02:36:37.7384814+00:00", "createdBy":
+        "Nancy Mejia Juarez", "lastModifiedAt": "2022-12-07T02:36:37.7386874+00:00"},
+        "tags": {}, "location": "centraluseuap"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1598'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 07 Dec 2022 02:37:08 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:512cc15a-13b5-415b-bfd0-dce7accb6bb1
+      server-timing:
+      - traceparent;desc="00-8cf401f78bd183fe18040394953b6e82-13c21ee7b57bfba0-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-test-westus2-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.110'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.2.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/batchEndpoints/test-batch-ept-1223423-17/deployments/deploy-0000000?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sunaggar-ws/batchEndpoints/test-batch-ept-1223423-17/deployments/test-batch-dep-000017-17",
+        "name": "test-batch-dep-000017-17", "type": "Microsoft.MachineLearningServices/workspaces/batchEndpoints/deployments",
+        "properties": {"description": "A sample deployment with pre and post processing
+        done before and after inference.", "properties": {"ComponentDeployment.ComponentId":
+        "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sunaggar-ws/components/helloworld_pipeline_component/versions/1",
+        "ComponentDeployment.Component": "azureml:helloworld_pipeline_component:1",
+        "ComponentDeployment.Type": "pipeline", "ComponentDeployment.Settings.continue_on_step_failure":
+        "False", "ComponentDeployment.Name": "helloworld_pipeline_component"}, "codeConfiguration":
+        null, "environmentId": null, "environmentVariables": null, "compute": null,
+        "errorThreshold": 0, "retrySettings": {"maxRetries": 0, "timeout": "PT0S"},
+        "miniBatchSize": 0, "loggingLevel": "Info", "model": null, "maxConcurrencyPerInstance":
+        0, "outputAction": "SummaryOnly", "outputFileName": null, "resources": {"instanceCount":
+        1, "instanceType": null, "properties": null}, "provisioningState": "Succeeded"},
+        "systemData": {"createdAt": "2022-12-07T02:36:37.7384814+00:00", "createdBy":
+        "Nancy Mejia Juarez", "lastModifiedAt": "2022-12-07T02:36:37.7386874+00:00"},
+        "tags": {}, "location": "centraluseuap"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1598'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 07 Dec 2022 02:37:11 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:512cc15a-13b5-415b-bfd0-dce7accb6bb1
+      server-timing:
+      - traceparent;desc="00-e343d007d74d2d57c641135b7050e4cc-b3b184c7dab32f42-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-test-westus2-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.220'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.2.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/batchEndpoints/test-batch-ept-1223423-17/deployments?api-version=0000-00-00
+  response:
+    body:
+      string: '{"value": [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sunaggar-ws/batchEndpoints/test-batch-ept-1223423-17/deployments/test-batch-dep-000017-17",
+        "name": "test-batch-dep-000017-17", "type": "Microsoft.MachineLearningServices/workspaces/batchEndpoints/deployments",
+        "properties": {"description": "A sample deployment with pre and post processing
+        done before and after inference.", "properties": {"ComponentDeployment.ComponentId":
+        "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sunaggar-ws/components/helloworld_pipeline_component/versions/1",
+        "ComponentDeployment.Component": "azureml:helloworld_pipeline_component:1",
+        "ComponentDeployment.Type": "pipeline", "ComponentDeployment.Settings.continue_on_step_failure":
+        "False", "ComponentDeployment.Name": "helloworld_pipeline_component"}, "codeConfiguration":
+        null, "environmentId": null, "environmentVariables": null, "compute": null,
+        "errorThreshold": 0, "retrySettings": {"maxRetries": 0, "timeout": "PT0S"},
+        "miniBatchSize": 0, "loggingLevel": "Info", "model": null, "maxConcurrencyPerInstance":
+        0, "outputAction": "SummaryOnly", "outputFileName": null, "resources": {"instanceCount":
+        1, "instanceType": null, "properties": null}, "provisioningState": "Succeeded"},
+        "systemData": {"createdAt": "2022-12-07T02:36:37.7384814+00:00", "createdBy":
+        "Nancy Mejia Juarez", "lastModifiedAt": "2022-12-07T02:36:37.7386874+00:00"},
+        "tags": {}, "location": "centraluseuap"}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1611'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 07 Dec 2022 02:37:12 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:512cc15a-13b5-415b-bfd0-dce7accb6bb1
+      server-timing:
+      - traceparent;desc="00-a04a09bc79f27b6fede5c55993d9c018-0963fc722fa679d6-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-test-westus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.264'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.2.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/batchEndpoints/test-batch-ept-1223423-17/deployments?api-version=0000-00-00
+  response:
+    body:
+      string: '{"value": [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sunaggar-ws/batchEndpoints/test-batch-ept-1223423-17/deployments/test-batch-dep-000017-17",
+        "name": "test-batch-dep-000017-17", "type": "Microsoft.MachineLearningServices/workspaces/batchEndpoints/deployments",
+        "properties": {"description": "A sample deployment with pre and post processing
+        done before and after inference.", "properties": {"ComponentDeployment.ComponentId":
+        "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sunaggar-ws/components/helloworld_pipeline_component/versions/1",
+        "ComponentDeployment.Component": "azureml:helloworld_pipeline_component:1",
+        "ComponentDeployment.Type": "pipeline", "ComponentDeployment.Settings.continue_on_step_failure":
+        "False", "ComponentDeployment.Name": "helloworld_pipeline_component"}, "codeConfiguration":
+        null, "environmentId": null, "environmentVariables": null, "compute": null,
+        "errorThreshold": 0, "retrySettings": {"maxRetries": 0, "timeout": "PT0S"},
+        "miniBatchSize": 0, "loggingLevel": "Info", "model": null, "maxConcurrencyPerInstance":
+        0, "outputAction": "SummaryOnly", "outputFileName": null, "resources": {"instanceCount":
+        1, "instanceType": null, "properties": null}, "provisioningState": "Succeeded"},
+        "systemData": {"createdAt": "2022-12-07T02:36:37.7384814+00:00", "createdBy":
+        "Nancy Mejia Juarez", "lastModifiedAt": "2022-12-07T02:36:37.7386874+00:00"},
+        "tags": {}, "location": "centraluseuap"}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1611'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 07 Dec 2022 02:37:13 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:512cc15a-13b5-415b-bfd0-dce7accb6bb1
+      server-timing:
+      - traceparent;desc="00-99f401c95712252c46edd71aa430e66c-a6f332011ec46b68-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-test-westus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.208'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.2.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/batchEndpoints/test-batch-ept-1223423-17?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sunaggar-ws/batchEndpoints/test-batch-ept-1223423-17",
+        "name": "test-batch-ept-1223423-17", "type": "Microsoft.MachineLearningServices/workspaces/batchEndpoints",
+        "properties": {"description": "my sample batch endpoint", "properties": {"ComponentDeployment.Enabled":
+        "True", "BatchEndpointCreationApiVersion": "2022-05-01", "azureml.onlineendpointid":
+        "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sunaggar-ws/batchEndpoints/test-batch-ept-1223423-17"},
+        "scoringUri": "https://test-batch-ept-1223423-17.westus2-main.inference.ml.azure.com/jobs",
+        "swaggerUri": null, "authMode": "AADToken", "defaults": {"deploymentName":
+        null}, "provisioningState": "Succeeded"}, "systemData": {"createdAt": "2022-12-07T02:36:01.9992867+00:00",
+        "createdBy": "Nancy Mejia Juarez", "lastModifiedAt": "2022-12-07T02:36:01.9993446+00:00"},
+        "tags": {}, "location": "centraluseuap"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1098'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 07 Dec 2022 02:37:13 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:512cc15a-13b5-415b-bfd0-dce7accb6bb1
+      server-timing:
+      - traceparent;desc="00-b66810d897394d328838d1be64cfaa01-04cdfb89412a9cef-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-test-westus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.086'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"inputData": {"pipeline_job_training_data": {"uri": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sunaggar-rg/providers/Microsoft.MachineLearningServices/workspaces/sunaggar-ws/data/pipelinedata/versions/1",
+      "jobInputType": "UriFile"}, "pipeline_job_test_data": {"uri": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sunaggar-rg/providers/Microsoft.MachineLearningServices/workspaces/sunaggar-ws/data/pipelinedata/versions/1",
+      "jobInputType": "UriFile"}}}}'
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '515'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.2.0 azsdk-python-core/1.26.1 Python/3.7.9
+        (Windows-10-10.0.22621-SP0)
+      azureml-model-deployment:
+      - test-batch-dep-000017-17
+    method: POST
+    uri: https://test-batch-ept-1223423-17.westus2-main.inference.ml.azure.com/jobs
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sunaggar-ws/batchEndpoints//jobs/fe06f294-e5d2-42b5-ad20-edaa9999b500",
+        "name": "fe06f294-e5d2-42b5-ad20-edaa9999b500", "type": "Microsoft.MachineLearningServices/workspaces/batchEndpoints/jobs",
+        "properties": {"provisioningState": "Succeeded", "inputData": {"pipeline_job_training_data":
+        {"description": null, "uri": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sunaggar-ws/data/pipelinedata/versions/1",
+        "mode": "ReadOnlyMount", "jobInputType": "UriFile"}, "pipeline_job_test_data":
+        {"description": null, "uri": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sunaggar-ws/data/pipelinedata/versions/1",
+        "mode": "ReadOnlyMount", "jobInputType": "UriFile"}}, "compute": {"target":
+        null, "instanceCount": null, "isLocal": false, "location": null, "instanceType":
+        null, "properties": null}, "output": {"datastoreId": null, "path": null},
+        "status": "Preparing", "interactionEndpoints": {"Tracking": {"jobEndpointType":
+        "Tracking", "port": null, "endpoint": "azureml://master.api.azureml-test.ms/mlflow/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sunaggar-ws?",
+        "properties": null}, "Studio": {"jobEndpointType": "Studio", "port": null,
+        "endpoint": "https://ml.azure.com/runs/fe06f294-e5d2-42b5-ad20-edaa9999b500?wsid=/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sunaggar-rg/workspaces/sunaggar-ws",
+        "properties": null}}, "tags": {"azureml.deploymentname": "test-batch-dep-000017-17"},
+        "properties": {"azureml.runLineageType": "batchDeployment", "azureml.runsource":
+        "azureml.PipelineRun", "runSource": "BatchDeployment", "runType": "HTTP",
+        "azureml.parameters": "{\"component_in_number\":\"10.99\",\"node_compute\":\"sunaggar-ntbk-compute\"}",
+        "azureml.sourcepipelinerunid": "b7b3f941-dee6-4fd8-89a0-5f53d5972b2a", "azureml.continue_on_step_failure":
+        "False", "azureml.continue_on_failed_optional_input": "True", "azureml.defaultDataStoreName":
+        "workspaceblobstore", "azureml.pipelineComponent": "pipelinerun"}, "name":
+        "purple_gas_90mk3z6r"}, "systemData": {"createdAt": "2022-12-07T02:37:19.0189872+00:00",
+        "createdBy": "Nancy Mejia Juarez", "lastModifiedAt": "2022-12-07T02:37:19.0189872+00:00",
+        "lastModifiedBy": "Nancy Mejia Juarez"}}'
+    headers:
+      azureml-model-deployment:
+      - test-batch-dep-000017-17
+      content-length:
+      - '2587'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 07 Dec 2022 02:37:19 GMT
+      location:
+      - https://master.api.azureml-test.ms/mferp/managementfrontend/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sunaggar-rg/providers/Microsoft.MachineLearningServices/workspaces/sunaggar-ws/batchEndpoints/test-batch-ept-1223423-17/deployments/test-batch-dep-000017-17?api-version=2020-09-01-dataplanepreview
+      request-context:
+      - appId=cid-v1:512cc15a-13b5-415b-bfd0-dce7accb6bb1
+      server:
+      - azureml-frontdoor
+      server-timing:
+      - traceparent;desc="00-694ae0f15380ac6035c9eec9d9bf7eed-a596a34f9139d5aa-00"
+      strict-transport-security:
+      - max-age=15724800; includeSubDomains; preload
+      x-aml-cluster:
+      - vienna-test-westus2-01
+      x-content-type-options:
+      - nosniff
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '3671'
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '3.666'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.2.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/batchEndpoints/test-batch-ept-1223423-17/deployments?api-version=0000-00-00
+  response:
+    body:
+      string: '{"value": [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sunaggar-ws/batchEndpoints/test-batch-ept-1223423-17/deployments/test-batch-dep-000017-17",
+        "name": "test-batch-dep-000017-17", "type": "Microsoft.MachineLearningServices/workspaces/batchEndpoints/deployments",
+        "properties": {"description": "A sample deployment with pre and post processing
+        done before and after inference.", "properties": {"ComponentDeployment.ComponentId":
+        "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sunaggar-ws/components/helloworld_pipeline_component/versions/1",
+        "ComponentDeployment.Component": "azureml:helloworld_pipeline_component:1",
+        "ComponentDeployment.Type": "pipeline", "ComponentDeployment.Settings.continue_on_step_failure":
+        "False", "ComponentDeployment.Name": "helloworld_pipeline_component"}, "codeConfiguration":
+        null, "environmentId": null, "environmentVariables": null, "compute": null,
+        "errorThreshold": 0, "retrySettings": {"maxRetries": 0, "timeout": "PT0S"},
+        "miniBatchSize": 0, "loggingLevel": "Info", "model": null, "maxConcurrencyPerInstance":
+        0, "outputAction": "SummaryOnly", "outputFileName": null, "resources": {"instanceCount":
+        1, "instanceType": null, "properties": null}, "provisioningState": "Succeeded"},
+        "systemData": {"createdAt": "2022-12-07T02:36:37.7384814+00:00", "createdBy":
+        "Nancy Mejia Juarez", "lastModifiedAt": "2022-12-07T02:36:37.7386874+00:00"},
+        "tags": {}, "location": "centraluseuap"}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1611'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 07 Dec 2022 02:37:20 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:512cc15a-13b5-415b-bfd0-dce7accb6bb1
+      server-timing:
+      - traceparent;desc="00-f36a30e5682bb501d6f7af2ba0255552-4f51ad3c67995fee-01"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-test-westus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.084'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.2.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/batchEndpoints/test-batch-ept-1223423-17/deployments?api-version=0000-00-00
+  response:
+    body:
+      string: '{"value": [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sunaggar-ws/batchEndpoints/test-batch-ept-1223423-17/deployments/test-batch-dep-000017-17",
+        "name": "test-batch-dep-000017-17", "type": "Microsoft.MachineLearningServices/workspaces/batchEndpoints/deployments",
+        "properties": {"description": "A sample deployment with pre and post processing
+        done before and after inference.", "properties": {"ComponentDeployment.ComponentId":
+        "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sunaggar-ws/components/helloworld_pipeline_component/versions/1",
+        "ComponentDeployment.Component": "azureml:helloworld_pipeline_component:1",
+        "ComponentDeployment.Type": "pipeline", "ComponentDeployment.Settings.continue_on_step_failure":
+        "False", "ComponentDeployment.Name": "helloworld_pipeline_component"}, "codeConfiguration":
+        null, "environmentId": null, "environmentVariables": null, "compute": null,
+        "errorThreshold": 0, "retrySettings": {"maxRetries": 0, "timeout": "PT0S"},
+        "miniBatchSize": 0, "loggingLevel": "Info", "model": null, "maxConcurrencyPerInstance":
+        0, "outputAction": "SummaryOnly", "outputFileName": null, "resources": {"instanceCount":
+        1, "instanceType": null, "properties": null}, "provisioningState": "Succeeded"},
+        "systemData": {"createdAt": "2022-12-07T02:36:37.7384814+00:00", "createdBy":
+        "Nancy Mejia Juarez", "lastModifiedAt": "2022-12-07T02:36:37.7386874+00:00"},
+        "tags": {}, "location": "centraluseuap"}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1611'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 07 Dec 2022 02:37:21 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:512cc15a-13b5-415b-bfd0-dce7accb6bb1
+      server-timing:
+      - traceparent;desc="00-ac46373f83530628e7179ba182b54159-cda65ad858bbe7e0-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-test-westus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.089'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.2.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/batchEndpoints/test-batch-ept-1223423-17?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sunaggar-ws/batchEndpoints/test-batch-ept-1223423-17",
+        "name": "test-batch-ept-1223423-17", "type": "Microsoft.MachineLearningServices/workspaces/batchEndpoints",
+        "properties": {"description": "my sample batch endpoint", "properties": {"ComponentDeployment.Enabled":
+        "True", "BatchEndpointCreationApiVersion": "2022-05-01", "azureml.onlineendpointid":
+        "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sunaggar-ws/batchEndpoints/test-batch-ept-1223423-17"},
+        "scoringUri": "https://test-batch-ept-1223423-17.westus2-main.inference.ml.azure.com/jobs",
+        "swaggerUri": null, "authMode": "AADToken", "defaults": {"deploymentName":
+        null}, "provisioningState": "Succeeded"}, "systemData": {"createdAt": "2022-12-07T02:36:01.9992867+00:00",
+        "createdBy": "Nancy Mejia Juarez", "lastModifiedAt": "2022-12-07T02:36:01.9993446+00:00"},
+        "tags": {}, "location": "centraluseuap"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1098'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 07 Dec 2022 02:37:21 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:512cc15a-13b5-415b-bfd0-dce7accb6bb1
+      server-timing:
+      - traceparent;desc="00-632a21041c466bd564eda4be0311ea99-b0185710e38ae89d-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-test-westus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.084'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"inputData": {"pipeline_job_training_data": {"uri": "azureml://datastores/workspaceblobstore/paths/LocalUpload/37f216301e97b1afe8175ae97fba2669/data/sample1.csv",
+      "jobInputType": "UriFile"}, "pipeline_job_test_data": {"uri": "azureml://datastores/workspaceblobstore/paths/LocalUpload/37f216301e97b1afe8175ae97fba2669/data/sample1.csv",
+      "jobInputType": "UriFile"}}}}'
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '381'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.2.0 azsdk-python-core/1.26.1 Python/3.7.9
+        (Windows-10-10.0.22621-SP0)
+      azureml-model-deployment:
+      - test-batch-dep-000017-17
+    method: POST
+    uri: https://test-batch-ept-1223423-17.westus2-main.inference.ml.azure.com/jobs
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sunaggar-ws/batchEndpoints//jobs/c4c93df1-1083-4eb7-8684-31f496d2457c",
+        "name": "c4c93df1-1083-4eb7-8684-31f496d2457c", "type": "Microsoft.MachineLearningServices/workspaces/batchEndpoints/jobs",
+        "properties": {"provisioningState": "Succeeded", "inputData": {"pipeline_job_training_data":
+        {"description": null, "uri": "azureml://datastores/workspaceblobstore/paths/LocalUpload/37f216301e97b1afe8175ae97fba2669/data/sample1.csv",
+        "mode": "ReadOnlyMount", "jobInputType": "UriFile"}, "pipeline_job_test_data":
+        {"description": null, "uri": "azureml://datastores/workspaceblobstore/paths/LocalUpload/37f216301e97b1afe8175ae97fba2669/data/sample1.csv",
+        "mode": "ReadOnlyMount", "jobInputType": "UriFile"}}, "compute": {"target":
+        null, "instanceCount": null, "isLocal": false, "location": null, "instanceType":
+        null, "properties": null}, "output": {"datastoreId": null, "path": null},
+        "status": "Preparing", "interactionEndpoints": {"Tracking": {"jobEndpointType":
+        "Tracking", "port": null, "endpoint": "azureml://master.api.azureml-test.ms/mlflow/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sunaggar-ws?",
+        "properties": null}, "Studio": {"jobEndpointType": "Studio", "port": null,
+        "endpoint": "https://ml.azure.com/runs/c4c93df1-1083-4eb7-8684-31f496d2457c?wsid=/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sunaggar-rg/workspaces/sunaggar-ws",
+        "properties": null}}, "tags": {"azureml.deploymentname": "test-batch-dep-000017-17"},
+        "properties": {"azureml.runLineageType": "batchDeployment", "azureml.runsource":
+        "azureml.PipelineRun", "runSource": "BatchDeployment", "runType": "HTTP",
+        "azureml.parameters": "{\"component_in_number\":\"10.99\",\"node_compute\":\"sunaggar-ntbk-compute\"}",
+        "azureml.sourcepipelinerunid": "b7b3f941-dee6-4fd8-89a0-5f53d5972b2a", "azureml.continue_on_step_failure":
+        "False", "azureml.continue_on_failed_optional_input": "True", "azureml.defaultDataStoreName":
+        "workspaceblobstore", "azureml.pipelineComponent": "pipelinerun"}, "name":
+        "tender_balloon_4n6frlrz"}, "systemData": {"createdAt": "2022-12-07T02:37:24.978741+00:00",
+        "createdBy": "Nancy Mejia Juarez", "lastModifiedAt": "2022-12-07T02:37:24.978741+00:00",
+        "lastModifiedBy": "Nancy Mejia Juarez"}}'
+    headers:
+      azureml-model-deployment:
+      - test-batch-dep-000017-17
+      content-length:
+      - '2447'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 07 Dec 2022 02:37:26 GMT
+      location:
+      - https://master.api.azureml-test.ms/mferp/managementfrontend/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sunaggar-rg/providers/Microsoft.MachineLearningServices/workspaces/sunaggar-ws/batchEndpoints/test-batch-ept-1223423-17/deployments/test-batch-dep-000017-17?api-version=2020-09-01-dataplanepreview
+      request-context:
+      - appId=cid-v1:512cc15a-13b5-415b-bfd0-dce7accb6bb1
+      server:
+      - azureml-frontdoor
+      server-timing:
+      - traceparent;desc="00-d94342cfa13abb5fa54615863534c809-9a463967097766d0-00"
+      strict-transport-security:
+      - max-age=15724800; includeSubDomains; preload
+      x-aml-cluster:
+      - vienna-test-westus2-01
+      x-content-type-options:
+      - nosniff
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '2994'
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '2.989'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.2.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/batchEndpoints/test-batch-ept-1223423-17/deployments?api-version=0000-00-00
+  response:
+    body:
+      string: '{"value": [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sunaggar-ws/batchEndpoints/test-batch-ept-1223423-17/deployments/test-batch-dep-000017-17",
+        "name": "test-batch-dep-000017-17", "type": "Microsoft.MachineLearningServices/workspaces/batchEndpoints/deployments",
+        "properties": {"description": "A sample deployment with pre and post processing
+        done before and after inference.", "properties": {"ComponentDeployment.ComponentId":
+        "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sunaggar-ws/components/helloworld_pipeline_component/versions/1",
+        "ComponentDeployment.Component": "azureml:helloworld_pipeline_component:1",
+        "ComponentDeployment.Type": "pipeline", "ComponentDeployment.Settings.continue_on_step_failure":
+        "False", "ComponentDeployment.Name": "helloworld_pipeline_component"}, "codeConfiguration":
+        null, "environmentId": null, "environmentVariables": null, "compute": null,
+        "errorThreshold": 0, "retrySettings": {"maxRetries": 0, "timeout": "PT0S"},
+        "miniBatchSize": 0, "loggingLevel": "Info", "model": null, "maxConcurrencyPerInstance":
+        0, "outputAction": "SummaryOnly", "outputFileName": null, "resources": {"instanceCount":
+        1, "instanceType": null, "properties": null}, "provisioningState": "Succeeded"},
+        "systemData": {"createdAt": "2022-12-07T02:36:37.7384814+00:00", "createdBy":
+        "Nancy Mejia Juarez", "lastModifiedAt": "2022-12-07T02:36:37.7386874+00:00"},
+        "tags": {}, "location": "centraluseuap"}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1611'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 07 Dec 2022 02:37:26 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:512cc15a-13b5-415b-bfd0-dce7accb6bb1
+      server-timing:
+      - traceparent;desc="00-f51099171eb9366edf29a9014d193c51-3a1dcad1a07350ce-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-test-westus2-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.095'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.2.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/batchEndpoints/test-batch-ept-1223423-17/deployments?api-version=0000-00-00
+  response:
+    body:
+      string: '{"value": [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sunaggar-ws/batchEndpoints/test-batch-ept-1223423-17/deployments/test-batch-dep-000017-17",
+        "name": "test-batch-dep-000017-17", "type": "Microsoft.MachineLearningServices/workspaces/batchEndpoints/deployments",
+        "properties": {"description": "A sample deployment with pre and post processing
+        done before and after inference.", "properties": {"ComponentDeployment.ComponentId":
+        "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sunaggar-ws/components/helloworld_pipeline_component/versions/1",
+        "ComponentDeployment.Component": "azureml:helloworld_pipeline_component:1",
+        "ComponentDeployment.Type": "pipeline", "ComponentDeployment.Settings.continue_on_step_failure":
+        "False", "ComponentDeployment.Name": "helloworld_pipeline_component"}, "codeConfiguration":
+        null, "environmentId": null, "environmentVariables": null, "compute": null,
+        "errorThreshold": 0, "retrySettings": {"maxRetries": 0, "timeout": "PT0S"},
+        "miniBatchSize": 0, "loggingLevel": "Info", "model": null, "maxConcurrencyPerInstance":
+        0, "outputAction": "SummaryOnly", "outputFileName": null, "resources": {"instanceCount":
+        1, "instanceType": null, "properties": null}, "provisioningState": "Succeeded"},
+        "systemData": {"createdAt": "2022-12-07T02:36:37.7384814+00:00", "createdBy":
+        "Nancy Mejia Juarez", "lastModifiedAt": "2022-12-07T02:36:37.7386874+00:00"},
+        "tags": {}, "location": "centraluseuap"}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1611'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 07 Dec 2022 02:37:27 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:512cc15a-13b5-415b-bfd0-dce7accb6bb1
+      server-timing:
+      - traceparent;desc="00-8f63661885d6055dc91d8838bd5fca9a-7c6ea886c2e4ebe0-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-test-westus2-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.074'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.2.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/batchEndpoints/test-batch-ept-1223423-17?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sunaggar-ws/batchEndpoints/test-batch-ept-1223423-17",
+        "name": "test-batch-ept-1223423-17", "type": "Microsoft.MachineLearningServices/workspaces/batchEndpoints",
+        "properties": {"description": "my sample batch endpoint", "properties": {"ComponentDeployment.Enabled":
+        "True", "BatchEndpointCreationApiVersion": "2022-05-01", "azureml.onlineendpointid":
+        "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sunaggar-ws/batchEndpoints/test-batch-ept-1223423-17"},
+        "scoringUri": "https://test-batch-ept-1223423-17.westus2-main.inference.ml.azure.com/jobs",
+        "swaggerUri": null, "authMode": "AADToken", "defaults": {"deploymentName":
+        null}, "provisioningState": "Succeeded"}, "systemData": {"createdAt": "2022-12-07T02:36:01.9992867+00:00",
+        "createdBy": "Nancy Mejia Juarez", "lastModifiedAt": "2022-12-07T02:36:01.9993446+00:00"},
+        "tags": {}, "location": "centraluseuap"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1098'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 07 Dec 2022 02:37:27 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:512cc15a-13b5-415b-bfd0-dce7accb6bb1
+      server-timing:
+      - traceparent;desc="00-4a0dc585d97b551ff6f3052aab408d95-80be2e327e326072-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-test-westus2-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.088'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"inputData": {"pipeline_job_training_data": {"uri": "azureml:pipelinedata:1",
+      "jobInputType": "UriFolder"}, "pipeline_job_test_data": {"uri": "azureml:pipelinedata:1",
+      "jobInputType": "UriFolder"}}}}'
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '215'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.2.0 azsdk-python-core/1.26.1 Python/3.7.9
+        (Windows-10-10.0.22621-SP0)
+      azureml-model-deployment:
+      - test-batch-dep-000017-17
+    method: POST
+    uri: https://test-batch-ept-1223423-17.westus2-main.inference.ml.azure.com/jobs
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sunaggar-ws/batchEndpoints//jobs/2330447d-acf0-4702-9f21-6d3b9d9785e8",
+        "name": "2330447d-acf0-4702-9f21-6d3b9d9785e8", "type": "Microsoft.MachineLearningServices/workspaces/batchEndpoints/jobs",
+        "properties": {"provisioningState": "Succeeded", "inputData": {"pipeline_job_training_data":
+        {"description": null, "uri": "azureml:pipelinedata:1", "mode": "ReadOnlyMount",
+        "jobInputType": "UriFolder"}, "pipeline_job_test_data": {"description": null,
+        "uri": "azureml:pipelinedata:1", "mode": "ReadOnlyMount", "jobInputType":
+        "UriFolder"}}, "compute": {"target": null, "instanceCount": null, "isLocal":
+        false, "location": null, "instanceType": null, "properties": null}, "output":
+        {"datastoreId": null, "path": null}, "status": "Preparing", "interactionEndpoints":
+        {"Tracking": {"jobEndpointType": "Tracking", "port": null, "endpoint": "azureml://master.api.azureml-test.ms/mlflow/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sunaggar-ws?",
+        "properties": null}, "Studio": {"jobEndpointType": "Studio", "port": null,
+        "endpoint": "https://ml.azure.com/runs/2330447d-acf0-4702-9f21-6d3b9d9785e8?wsid=/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sunaggar-rg/workspaces/sunaggar-ws",
+        "properties": null}}, "tags": {"azureml.deploymentname": "test-batch-dep-000017-17"},
+        "properties": {"azureml.runLineageType": "batchDeployment", "azureml.runsource":
+        "azureml.PipelineRun", "runSource": "BatchDeployment", "runType": "HTTP",
+        "azureml.parameters": "{\"component_in_number\":\"10.99\",\"node_compute\":\"sunaggar-ntbk-compute\"}",
+        "azureml.sourcepipelinerunid": "b7b3f941-dee6-4fd8-89a0-5f53d5972b2a", "azureml.continue_on_step_failure":
+        "False", "azureml.continue_on_failed_optional_input": "True", "azureml.defaultDataStoreName":
+        "workspaceblobstore", "azureml.pipelineComponent": "pipelinerun"}, "name":
+        "neat_lizard_t7xqqm1g"}, "systemData": {"createdAt": "2022-12-07T02:37:30.085867+00:00",
+        "createdBy": "Nancy Mejia Juarez", "lastModifiedAt": "2022-12-07T02:37:30.085867+00:00",
+        "lastModifiedBy": "Nancy Mejia Juarez"}}'
+    headers:
+      azureml-model-deployment:
+      - test-batch-dep-000017-17
+      content-length:
+      - '2278'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 07 Dec 2022 02:37:30 GMT
+      location:
+      - https://master.api.azureml-test.ms/mferp/managementfrontend/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sunaggar-rg/providers/Microsoft.MachineLearningServices/workspaces/sunaggar-ws/batchEndpoints/test-batch-ept-1223423-17/deployments/test-batch-dep-000017-17?api-version=2020-09-01-dataplanepreview
+      request-context:
+      - appId=cid-v1:512cc15a-13b5-415b-bfd0-dce7accb6bb1
+      server:
+      - azureml-frontdoor
+      server-timing:
+      - traceparent;desc="00-e54a1821cb3d83541efbbbd0814fc2f2-fc689db1f72dda5d-00"
+      strict-transport-security:
+      - max-age=15724800; includeSubDomains; preload
+      x-aml-cluster:
+      - vienna-test-westus2-01
+      x-content-type-options:
+      - nosniff
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '1628'
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '1.618'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.2.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.9 (Windows-10-10.0.22621-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/batchEndpoints/test-batch-ept-1223423-17?api-version=0000-00-00
+  response:
+    body:
+      string: 'null'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/centraluseuap/mfeOperationsStatus/bebes:eb886148-7bd3-4145-9802-3fdebafd97d8:b47ec99a-552c-47f6-a5d0-6e91a3e4ca6e?api-version=2022-05-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 07 Dec 2022 02:37:32 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/centraluseuap/mfeOperationResults/bebes:eb886148-7bd3-4145-9802-3fdebafd97d8:b47ec99a-552c-47f6-a5d0-6e91a3e4ca6e?api-version=2022-05-01
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:512cc15a-13b5-415b-bfd0-dce7accb6bb1
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aml-cluster:
+      - vienna-test-westus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-async-operation-timeout:
+      - PT30M
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.170'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.2.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/centraluseuap/mfeOperationsStatus/bebes:eb886148-7bd3-4145-9802-3fdebafd97d8:b47ec99a-552c-47f6-a5d0-6e91a3e4ca6e?api-version=0000-00-00
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/centraluseuap/mfeOperationsStatus/bebes:eb886148-7bd3-4145-9802-3fdebafd97d8:b47ec99a-552c-47f6-a5d0-6e91a3e4ca6e\",\n
+        \ \"name\": \"bebes:eb886148-7bd3-4145-9802-3fdebafd97d8:b47ec99a-552c-47f6-a5d0-6e91a3e4ca6e\",\n
+        \ \"status\": \"Updating\"\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '350'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 07 Dec 2022 02:37:32 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:512cc15a-13b5-415b-bfd0-dce7accb6bb1
+      server-timing:
+      - traceparent;desc="00-d64040ddd9f7bb092a6d6e03bc133113-6fbc4708b0327cd2-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-test-westus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.150'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.2.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/centraluseuap/mfeOperationsStatus/bebes:eb886148-7bd3-4145-9802-3fdebafd97d8:b47ec99a-552c-47f6-a5d0-6e91a3e4ca6e?api-version=0000-00-00
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/centraluseuap/mfeOperationsStatus/bebes:eb886148-7bd3-4145-9802-3fdebafd97d8:b47ec99a-552c-47f6-a5d0-6e91a3e4ca6e\",\n
+        \ \"name\": \"bebes:eb886148-7bd3-4145-9802-3fdebafd97d8:b47ec99a-552c-47f6-a5d0-6e91a3e4ca6e\",\n
+        \ \"status\": \"Updating\"\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '350'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 07 Dec 2022 02:37:38 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:512cc15a-13b5-415b-bfd0-dce7accb6bb1
+      server-timing:
+      - traceparent;desc="00-5239facc25f5bc3d7ebb996fe0ca3e50-6795330dcf1717ed-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-test-westus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.054'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.2.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/centraluseuap/mfeOperationsStatus/bebes:eb886148-7bd3-4145-9802-3fdebafd97d8:b47ec99a-552c-47f6-a5d0-6e91a3e4ca6e?api-version=0000-00-00
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/centraluseuap/mfeOperationsStatus/bebes:eb886148-7bd3-4145-9802-3fdebafd97d8:b47ec99a-552c-47f6-a5d0-6e91a3e4ca6e\",\n
+        \ \"name\": \"bebes:eb886148-7bd3-4145-9802-3fdebafd97d8:b47ec99a-552c-47f6-a5d0-6e91a3e4ca6e\",\n
+        \ \"status\": \"Updating\"\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '350'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 07 Dec 2022 02:37:43 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:512cc15a-13b5-415b-bfd0-dce7accb6bb1
+      server-timing:
+      - traceparent;desc="00-74c1d4b2bcc8d5b5e3172541c6a667aa-b22b09bb5081eab3-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-test-westus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.038'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.2.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/centraluseuap/mfeOperationsStatus/bebes:eb886148-7bd3-4145-9802-3fdebafd97d8:b47ec99a-552c-47f6-a5d0-6e91a3e4ca6e?api-version=0000-00-00
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/centraluseuap/mfeOperationsStatus/bebes:eb886148-7bd3-4145-9802-3fdebafd97d8:b47ec99a-552c-47f6-a5d0-6e91a3e4ca6e\",\n
+        \ \"name\": \"bebes:eb886148-7bd3-4145-9802-3fdebafd97d8:b47ec99a-552c-47f6-a5d0-6e91a3e4ca6e\",\n
+        \ \"status\": \"Updating\"\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '350'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 07 Dec 2022 02:37:48 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:512cc15a-13b5-415b-bfd0-dce7accb6bb1
+      server-timing:
+      - traceparent;desc="00-6ac5bdf91dd343a0f9bb4d692e5cdb57-32f2af35921a106d-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-test-westus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.035'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.2.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/centraluseuap/mfeOperationsStatus/bebes:eb886148-7bd3-4145-9802-3fdebafd97d8:b47ec99a-552c-47f6-a5d0-6e91a3e4ca6e?api-version=0000-00-00
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/centraluseuap/mfeOperationsStatus/bebes:eb886148-7bd3-4145-9802-3fdebafd97d8:b47ec99a-552c-47f6-a5d0-6e91a3e4ca6e\",\n
+        \ \"name\": \"bebes:eb886148-7bd3-4145-9802-3fdebafd97d8:b47ec99a-552c-47f6-a5d0-6e91a3e4ca6e\",\n
+        \ \"status\": \"Updating\"\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '350'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 07 Dec 2022 02:37:53 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:512cc15a-13b5-415b-bfd0-dce7accb6bb1
+      server-timing:
+      - traceparent;desc="00-7f0a920f60de39cfb04ccef8e2ccf7f1-9ce7bc35697b7634-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-test-westus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.036'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.2.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/centraluseuap/mfeOperationsStatus/bebes:eb886148-7bd3-4145-9802-3fdebafd97d8:b47ec99a-552c-47f6-a5d0-6e91a3e4ca6e?api-version=0000-00-00
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/centraluseuap/mfeOperationsStatus/bebes:eb886148-7bd3-4145-9802-3fdebafd97d8:b47ec99a-552c-47f6-a5d0-6e91a3e4ca6e\",\n
+        \ \"name\": \"bebes:eb886148-7bd3-4145-9802-3fdebafd97d8:b47ec99a-552c-47f6-a5d0-6e91a3e4ca6e\",\n
+        \ \"status\": \"Updating\"\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '350'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 07 Dec 2022 02:37:59 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:512cc15a-13b5-415b-bfd0-dce7accb6bb1
+      server-timing:
+      - traceparent;desc="00-423cf3447d41a70d3b94ea89f9935ea7-b2f82df82d6ca97c-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-test-westus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.038'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.2.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/centraluseuap/mfeOperationsStatus/bebes:eb886148-7bd3-4145-9802-3fdebafd97d8:b47ec99a-552c-47f6-a5d0-6e91a3e4ca6e?api-version=0000-00-00
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/centraluseuap/mfeOperationsStatus/bebes:eb886148-7bd3-4145-9802-3fdebafd97d8:b47ec99a-552c-47f6-a5d0-6e91a3e4ca6e\",\n
+        \ \"name\": \"bebes:eb886148-7bd3-4145-9802-3fdebafd97d8:b47ec99a-552c-47f6-a5d0-6e91a3e4ca6e\",\n
+        \ \"status\": \"Updating\"\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '350'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 07 Dec 2022 02:38:04 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:512cc15a-13b5-415b-bfd0-dce7accb6bb1
+      server-timing:
+      - traceparent;desc="00-41fbb13f46d925d512cbecf559eb0444-3e6ed83f9a71e057-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-test-westus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.057'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.2.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/centraluseuap/mfeOperationsStatus/bebes:eb886148-7bd3-4145-9802-3fdebafd97d8:b47ec99a-552c-47f6-a5d0-6e91a3e4ca6e?api-version=0000-00-00
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/centraluseuap/mfeOperationsStatus/bebes:eb886148-7bd3-4145-9802-3fdebafd97d8:b47ec99a-552c-47f6-a5d0-6e91a3e4ca6e\",\n
+        \ \"name\": \"bebes:eb886148-7bd3-4145-9802-3fdebafd97d8:b47ec99a-552c-47f6-a5d0-6e91a3e4ca6e\",\n
+        \ \"status\": \"Updating\"\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '350'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 07 Dec 2022 02:38:10 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:512cc15a-13b5-415b-bfd0-dce7accb6bb1
+      server-timing:
+      - traceparent;desc="00-424afd3c9e55dc867f3fee4cb83cb04e-6c986a21fad10344-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-test-westus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.034'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.2.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/centraluseuap/mfeOperationsStatus/bebes:eb886148-7bd3-4145-9802-3fdebafd97d8:b47ec99a-552c-47f6-a5d0-6e91a3e4ca6e?api-version=0000-00-00
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/centraluseuap/mfeOperationsStatus/bebes:eb886148-7bd3-4145-9802-3fdebafd97d8:b47ec99a-552c-47f6-a5d0-6e91a3e4ca6e\",\n
+        \ \"name\": \"bebes:eb886148-7bd3-4145-9802-3fdebafd97d8:b47ec99a-552c-47f6-a5d0-6e91a3e4ca6e\",\n
+        \ \"status\": \"Updating\"\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '350'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 07 Dec 2022 02:38:15 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:512cc15a-13b5-415b-bfd0-dce7accb6bb1
+      server-timing:
+      - traceparent;desc="00-14f3c7a8fee53db7b6405b4c9d7c6e3a-9556e7c665bca939-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-test-westus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.036'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.2.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/centraluseuap/mfeOperationsStatus/bebes:eb886148-7bd3-4145-9802-3fdebafd97d8:b47ec99a-552c-47f6-a5d0-6e91a3e4ca6e?api-version=0000-00-00
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/centraluseuap/mfeOperationsStatus/bebes:eb886148-7bd3-4145-9802-3fdebafd97d8:b47ec99a-552c-47f6-a5d0-6e91a3e4ca6e\",\n
+        \ \"name\": \"bebes:eb886148-7bd3-4145-9802-3fdebafd97d8:b47ec99a-552c-47f6-a5d0-6e91a3e4ca6e\",\n
+        \ \"status\": \"Succeeded\"\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '351'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 07 Dec 2022 02:38:21 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:512cc15a-13b5-415b-bfd0-dce7accb6bb1
+      server-timing:
+      - traceparent;desc="00-b280fd2791e8688e056d4a3065d8c3fe-3d2aa1d6c67a6785-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-test-westus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.039'
+    status:
+      code: 200
+      message: OK
+version: 1

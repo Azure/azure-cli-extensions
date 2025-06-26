@@ -1,0 +1,152 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate, br
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.9.7 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/onlineEndpoints?api-version=0000-00-00
+  response:
+    body:
+      string: '{"value": [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli_wus2/onlineEndpoints/endpointtest",
+        "name": "endpointtest", "type": "Microsoft.MachineLearningServices/workspaces/onlineEndpoints",
+        "properties": {"description": "test descr", "properties": {"azureml.onlineendpointid":
+        "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sdk_vnext_cli_wus2/providers/microsoft.machinelearningservices/workspaces/sdk_vnext_cli_wus2/onlineendpoints/endpointtest",
+        "AzureAsyncOperationUri": "https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/westus2/mfeOperationsStatus/oe:46f868af-d844-4729-839e-cc290a66ebe9:59a256a6-0b43-413c-8c80-e0124a84671f?api-version=2021-10-01"},
+        "scoringUri": "https://endpointtest.westus2.inference.ml.azure.com/score",
+        "swaggerUri": "https://endpointtest.westus2.inference.ml.azure.com/swagger.json",
+        "authMode": "Key", "provisioningState": "Succeeded", "compute": null, "traffic":
+        {}}, "systemData": {"createdAt": "2022-03-16T15:43:08.351135Z", "createdBy":
+        "Hugo Aponte", "lastModifiedAt": "2022-03-16T15:43:28.7455055Z"}, "tags":
+        {}, "location": "westus2", "kind": "Managed", "identity": {"type": "SystemAssigned",
+        "principalId": "cd77317d-103e-4b84-831d-8d5bbb7cb5d6", "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47"}},
+        {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli_wus2/onlineEndpoints/automlendp",
+        "name": "automlendp", "type": "Microsoft.MachineLearningServices/workspaces/onlineEndpoints",
+        "properties": {"description": null, "properties": {"azureml.onlineendpointid":
+        "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sdk_vnext_cli_wus2/providers/microsoft.machinelearningservices/workspaces/sdk_vnext_cli_wus2/onlineendpoints/automlendp",
+        "AzureAsyncOperationUri": "https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/westus2/mfeOperationsStatus/oe:46f868af-d844-4729-839e-cc290a66ebe9:15624071-00f0-4b00-a2a4-42becb830983?api-version=2021-10-01"},
+        "scoringUri": "https://automlendp.westus2.inference.ml.azure.com/score", "swaggerUri":
+        "https://automlendp.westus2.inference.ml.azure.com/swagger.json", "authMode":
+        "Key", "provisioningState": "Succeeded", "compute": null, "traffic": {"default":
+        100}}, "systemData": {"createdAt": "2022-02-28T20:26:41.7918135Z", "createdBy":
+        "Hugo Aponte", "lastModifiedAt": "2022-02-28T20:33:08.7884525Z"}, "tags":
+        {}, "location": "westus2", "kind": "Managed", "identity": {"type": "SystemAssigned",
+        "principalId": "80034c06-b636-42b0-ad64-c4b523ad2e56", "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47"}},
+        {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli_wus2/onlineEndpoints/myendpoint2232",
+        "name": "myendpoint2232", "type": "Microsoft.MachineLearningServices/workspaces/onlineEndpoints",
+        "properties": {"description": null, "properties": {"azureml.onlineendpointid":
+        "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sdk_vnext_cli_wus2/providers/microsoft.machinelearningservices/workspaces/sdk_vnext_cli_wus2/onlineendpoints/myendpoint2232",
+        "AzureAsyncOperationUri": "https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/westus2/mfeOperationsStatus/oe:46f868af-d844-4729-839e-cc290a66ebe9:a4cbf539-776d-44c7-b54b-6ac6c42131d9?api-version=2021-10-01"},
+        "scoringUri": "https://myendpoint2232.westus2.inference.ml.azure.com/score",
+        "swaggerUri": "https://myendpoint2232.westus2.inference.ml.azure.com/swagger.json",
+        "authMode": "Key", "provisioningState": "Succeeded", "compute": null, "traffic":
+        {}}, "systemData": {"createdAt": "2022-02-24T01:16:31.8828606Z", "createdBy":
+        "Hugo Aponte", "lastModifiedAt": "2022-02-24T01:16:52.6868134Z"}, "tags":
+        {}, "location": "westus2", "kind": "Managed", "identity": {"type": "SystemAssigned",
+        "principalId": "6520d42c-f917-4b55-b00a-dae8cee8ef68", "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47"}},
+        {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli_wus2/onlineEndpoints/myendpoint223",
+        "name": "myendpoint223", "type": "Microsoft.MachineLearningServices/workspaces/onlineEndpoints",
+        "properties": {"description": null, "properties": {"azureml.onlineendpointid":
+        "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sdk_vnext_cli_wus2/providers/microsoft.machinelearningservices/workspaces/sdk_vnext_cli_wus2/onlineendpoints/myendpoint223",
+        "AzureAsyncOperationUri": "https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/westus2/mfeOperationsStatus/oe:46f868af-d844-4729-839e-cc290a66ebe9:de2576d8-09c2-428b-934c-3815058bb6ca?api-version=2021-10-01"},
+        "scoringUri": "https://myendpoint223.westus2.inference.ml.azure.com/score",
+        "swaggerUri": "https://myendpoint223.westus2.inference.ml.azure.com/swagger.json",
+        "authMode": "Key", "provisioningState": "Succeeded", "compute": null, "traffic":
+        {"blue": 100}}, "systemData": {"createdAt": "2022-02-23T19:52:58.2846316Z",
+        "createdBy": "Hugo Aponte", "lastModifiedAt": "2022-02-24T01:13:44.3066976Z"},
+        "tags": {}, "location": "westus2", "kind": "Managed"}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli_wus2/onlineEndpoints/mymlflowendp1",
+        "name": "mymlflowendp1", "type": "Microsoft.MachineLearningServices/workspaces/onlineEndpoints",
+        "properties": {"description": null, "properties": {"azureml.onlineendpointid":
+        "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sdk_vnext_cli_wus2/providers/microsoft.machinelearningservices/workspaces/sdk_vnext_cli_wus2/onlineendpoints/mymlflowendp1",
+        "AzureAsyncOperationUri": "https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/westus2/mfeOperationsStatus/oe:46f868af-d844-4729-839e-cc290a66ebe9:dc2a9248-3f2e-4a40-848d-209508a05166?api-version=2021-10-01"},
+        "scoringUri": "https://mymlflowendp1.westus2.inference.ml.azure.com/score",
+        "swaggerUri": "https://mymlflowendp1.westus2.inference.ml.azure.com/swagger.json",
+        "authMode": "AMLToken", "provisioningState": "Succeeded", "compute": null,
+        "traffic": {}}, "systemData": {"createdAt": "2022-02-23T02:41:46.4043782Z",
+        "createdBy": "Hugo Aponte", "lastModifiedAt": "2022-02-23T04:21:26.9445179Z"},
+        "tags": {}, "location": "westus2", "kind": "Managed"}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli_wus2/onlineEndpoints/asdasdas",
+        "name": "asdasdas", "type": "Microsoft.MachineLearningServices/workspaces/onlineEndpoints",
+        "properties": {"description": null, "properties": {"azureml.onlineendpointid":
+        "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sdk_vnext_cli_wus2/providers/microsoft.machinelearningservices/workspaces/sdk_vnext_cli_wus2/onlineendpoints/asdasdas",
+        "AzureAsyncOperationUri": "https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/westus2/mfeOperationsStatus/oe:46f868af-d844-4729-839e-cc290a66ebe9:25d0f079-2591-4609-8ba1-4b9f02a1cace?api-version=2021-10-01"},
+        "scoringUri": "https://asdasdas.westus2.inference.ml.azure.com/score", "swaggerUri":
+        "https://asdasdas.westus2.inference.ml.azure.com/swagger.json", "authMode":
+        "AMLToken", "provisioningState": "Succeeded", "compute": null, "traffic":
+        {}}, "systemData": {"createdAt": "2022-02-22T22:33:35.4832229Z", "createdBy":
+        "Hugo Aponte", "lastModifiedAt": "2022-02-22T22:33:46.7146851Z"}, "tags":
+        {}, "location": "westus2", "kind": "Managed", "identity": {"type": "SystemAssigned",
+        "principalId": "231b5e16-e411-4dbe-afdd-05fe01c672f9", "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47"}},
+        {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli_wus2/onlineEndpoints/march-1",
+        "name": "march-1", "type": "Microsoft.MachineLearningServices/workspaces/onlineEndpoints",
+        "properties": {"description": null, "properties": {"azureml.onlineendpointid":
+        "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sdk_vnext_cli_wus2/providers/microsoft.machinelearningservices/workspaces/sdk_vnext_cli_wus2/onlineendpoints/march-1",
+        "AzureAsyncOperationUri": "https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/westus2/mfeOperationsStatus/oe:46f868af-d844-4729-839e-cc290a66ebe9:1ba6e72b-02b6-4a1d-a4c5-30660d52e534?api-version=2021-10-01"},
+        "scoringUri": "https://40.70.171.239/api/v1/endpoint/march-1/score", "swaggerUri":
+        "https://40.70.171.239/api/v1/endpoint/march-1/swagger.json", "authMode":
+        "Key", "provisioningState": "Succeeded", "compute": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli_wus2/computes/amlarchugo",
+        "traffic": {}}, "systemData": {"createdAt": "2022-02-18T21:14:37.1704057Z",
+        "createdBy": "Hugo Aponte", "lastModifiedAt": "2022-02-18T21:15:02.9273392Z"},
+        "tags": {}, "location": "westus2", "kind": "K8S", "identity": {"type": "SystemAssigned",
+        "principalId": "0cf3a210-bdc3-4272-ba47-2be5cdcafa58", "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47"}},
+        {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli_wus2/onlineEndpoints/aksendp",
+        "name": "aksendp", "type": "Microsoft.MachineLearningServices/workspaces/onlineEndpoints",
+        "properties": {"description": null, "properties": {"azureml.onlineendpointid":
+        "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sdk_vnext_cli_wus2/providers/microsoft.machinelearningservices/workspaces/sdk_vnext_cli_wus2/onlineendpoints/aksendp",
+        "AzureAsyncOperationUri": "https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/westus2/mfeOperationsStatus/oe:46f868af-d844-4729-839e-cc290a66ebe9:25d4c5f6-52d1-4fb4-8b7b-e39f38d88396?api-version=2021-10-01"},
+        "scoringUri": "https://40.70.171.239/api/v1/endpoint/aksendp/score", "swaggerUri":
+        "https://40.70.171.239/api/v1/endpoint/aksendp/swagger.json", "authMode":
+        "Key", "provisioningState": "Succeeded", "compute": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli_wus2/computes/amlarchugo",
+        "traffic": {}}, "systemData": {"createdAt": "2022-02-18T18:18:27.7643157Z",
+        "createdBy": "Hugo Aponte", "lastModifiedAt": "2022-02-18T18:18:51.0473889Z"},
+        "tags": {}, "location": "westus2", "kind": "K8S", "identity": {"type": "SystemAssigned",
+        "principalId": "25a60932-e902-4382-90d0-59d5cca8443c", "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47"}},
+        {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli_wus2/onlineEndpoints/hugoarct",
+        "name": "hugoarct", "type": "Microsoft.MachineLearningServices/workspaces/onlineEndpoints",
+        "properties": {"description": null, "properties": {"azureml.onlineendpointid":
+        "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sdk_vnext_cli_wus2/providers/microsoft.machinelearningservices/workspaces/sdk_vnext_cli_wus2/onlineendpoints/hugoarct",
+        "AzureAsyncOperationUri": "https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/westus2/mfeOperationsStatus/oe:46f868af-d844-4729-839e-cc290a66ebe9:8174b708-3eed-4ffc-9a9c-6d92e01d1448?api-version=2021-10-01"},
+        "scoringUri": "http://20.47.138.175/api/v1/endpoint/hugoarct/score", "swaggerUri":
+        "http://20.47.138.175/api/v1/endpoint/hugoarct/swagger.json", "authMode":
+        "Key", "provisioningState": "Succeeded", "compute": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli_wus2/computes/testcompute",
+        "traffic": {}}, "systemData": {"createdAt": "2022-02-04T17:11:50.6440165Z",
+        "createdBy": "Hugo Aponte", "lastModifiedAt": "2022-02-04T17:12:12.4685978Z"},
+        "tags": {}, "location": "westus2", "kind": "K8S", "identity": {"type": "SystemAssigned",
+        "principalId": "bacfdc69-4db3-4523-a032-a253b2f7deac", "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '13133'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 05 Apr 2022 17:36:03 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.316'
+    status:
+      code: 200
+      message: OK
+version: 1

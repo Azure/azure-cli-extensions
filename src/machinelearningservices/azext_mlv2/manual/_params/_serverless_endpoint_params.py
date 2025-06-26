@@ -1,0 +1,53 @@
+from azext_mlv2.manual._params._common_params import (
+    add_common_params,
+    add_file_param,
+    add_lro_param,
+    add_max_results_params,
+    add_override_param,
+)
+from azure.ai.ml.constants._common import YAMLRefDocLinks
+
+
+def add_name_param(c):
+    c.argument("name", options_list=["--name", "-n"], type=str, help="Name of the serverless endpoint.")
+
+
+def load_serverless_endpoint_params(self):
+    with self.argument_context("ml serverless-endpoint list") as c:
+        add_common_params(c)
+        add_max_results_params(c)
+
+    with self.argument_context("ml serverless-endpoint show") as c:
+        add_common_params(c)
+        add_name_param(c)
+
+    with self.argument_context("ml serverless-endpoint create") as c:
+        add_override_param(c)
+        add_common_params(c)
+        add_name_param(c)
+        add_lro_param(c)
+        add_file_param(c, "serverless-endpoint", "")
+
+    with self.argument_context("ml serverless-endpoint update") as c:
+        add_common_params(c)
+        add_name_param(c)
+        add_lro_param(c)
+
+    with self.argument_context("ml serverless-endpoint delete") as c:
+        add_common_params(c)
+        add_name_param(c)
+        add_lro_param(c)
+
+    with self.argument_context("ml serverless-endpoint get-credentials") as c:
+        add_common_params(c)
+        add_name_param(c)
+
+    with self.argument_context("ml serverless-endpoint regenerate-keys") as c:
+        add_common_params(c)
+        add_name_param(c)
+        add_lro_param(c)
+        c.argument("key_type", type=str, help="The type of key to regenerate. Allowed values: primary, secondary.")
+
+    with self.argument_context("ml serverless-endpoint update") as c:
+        add_common_params(c)
+        add_name_param(c)

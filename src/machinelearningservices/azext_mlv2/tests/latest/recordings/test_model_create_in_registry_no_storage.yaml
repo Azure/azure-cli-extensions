@@ -1,0 +1,168 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json, text/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0 Python/3.11.7
+        (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://eastus.api.azureml.ms/registrymanagement/v1.0/registries/registry-nostore/discovery
+  response:
+    body:
+      string: '{"registryId": "8f4e4c11-14e8-426f-811c-272d1705dcb7", "registryName":
+        "registry-nostore", "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47", "primaryRegion":
+        "eastus", "regions": ["eastus", "westeurope", "centralus", "westus", "eastasia",
+        "southafricanorth", "northeurope", "brazilsouth", "canadacentral", "eastus2",
+        "westus2", "westus3", "westcentralus", "southcentralus", "northcentralus",
+        "francecentral", "germanywestcentral", "switzerlandnorth", "uksouth", "japanwest",
+        "japaneast", "southeastasia", "australiaeast", "uaenorth", "centralindia"],
+        "subscriptionId": "00000000-0000-0000-0000-000000000000", "resourceGroup":
+        "registry-nostorage", "workspaceName": null, "primaryRegionResourceProviderUri":
+        "https://cert-eastus.experiments.azureml.net/", "registryFqdns": {"eastus":
+        {"uri": "https://eastus.api.azureml.ms"}, "westeurope": {"uri": "https://westeurope.api.azureml.ms"},
+        "centralus": {"uri": "https://centralus.api.azureml.ms"}, "westus": {"uri":
+        "https://westus.api.azureml.ms"}, "eastasia": {"uri": "https://eastasia.api.azureml.ms"},
+        "southafricanorth": {"uri": "https://southafricanorth.api.azureml.ms"}, "northeurope":
+        {"uri": "https://northeurope.api.azureml.ms"}, "brazilsouth": {"uri": "https://brazilsouth.api.azureml.ms"},
+        "canadacentral": {"uri": "https://canadacentral.api.azureml.ms"}, "eastus2":
+        {"uri": "https://eastus2.api.azureml.ms"}, "westus2": {"uri": "https://westus2.api.azureml.ms"},
+        "westus3": {"uri": "https://westus3.api.azureml.ms"}, "westcentralus": {"uri":
+        "https://westcentralus.api.azureml.ms"}, "southcentralus": {"uri": "https://southcentralus.api.azureml.ms"},
+        "northcentralus": {"uri": "https://northcentralus.api.azureml.ms"}, "francecentral":
+        {"uri": "https://francecentral.api.azureml.ms"}, "germanywestcentral": {"uri":
+        "https://germanywestcentral.api.azureml.ms"}, "switzerlandnorth": {"uri":
+        "https://switzerlandnorth.api.azureml.ms"}, "uksouth": {"uri": "https://uksouth.api.azureml.ms"},
+        "japanwest": {"uri": "https://japanwest.api.azureml.ms"}, "japaneast": {"uri":
+        "https://japaneast.api.azureml.ms"}, "southeastasia": {"uri": "https://southeastasia.api.azureml.ms"},
+        "australiaeast": {"uri": "https://australiaeast.api.azureml.ms"}, "uaenorth":
+        {"uri": "https://uaenorth.api.azureml.ms"}, "centralindia": {"uri": "https://centralindia.api.azureml.ms"}},
+        "intellectualPropertyPublisher": null}'
+    headers:
+      connection:
+      - keep-alive
+      content-length:
+      - '2354'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 13 May 2024 23:39:38 GMT
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains; preload
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.274'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0 Python/3.11.7
+        (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://cert-eastus.experiments.azureml.net/mferp/managementfrontend/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/registries/registry-nostore/models/00000000-0000-0000-0000-000000000000/versions?api-version=0000-00-00&$orderBy=createdtime%20desc&$top=1
+  response:
+    body:
+      string: '{"value": []}'
+    headers:
+      connection:
+      - keep-alive
+      content-length:
+      - '13'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 13 May 2024 23:39:39 GMT
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains; preload
+      x-aml-cluster:
+      - vienna-eastus-02
+      x-content-type-options:
+      - nosniff
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.205'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"assetId": "azureml://registries/registry-nostore/models/model_version_e2e10/versions/2",
+      "temporaryDataReferenceType": "TemporaryBlobReference"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '146'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0 Python/3.11.7
+        (Windows-10-10.0.22631-SP0)
+    method: PUT
+    uri: https://cert-eastus.experiments.azureml.net/mferp/managementfrontend/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/registries/registry-nostore/tempdatarefs/model_version_e2e10/versions/2?api-version=0000-00-00
+  response:
+    body:
+      string: '{"error": {"code": "UserError", "message": "No storage account available
+        for asset azureml://registries/registry-nostore/models/model_version_e2e10/versions/2",
+        "details": [], "additionalInfo": [{"type": "ComponentName", "info": {"value":
+        "managementfrontend"}}, {"type": "Correlation", "info": {"value": {"operation":
+        "68c2d45a1dbab8783a3d7c9b7da5e831", "request": "f8beea883f6adef5"}}}, {"type":
+        "Environment", "info": {"value": "eastus"}}, {"type": "Location", "info":
+        {"value": "eastus"}}, {"type": "Time", "info": {"value": "2024-05-13T23:39:39.8037441+00:00"}}]}}'
+    headers:
+      connection:
+      - keep-alive
+      content-length:
+      - '569'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 13 May 2024 23:39:39 GMT
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains; preload
+      x-aml-cluster:
+      - vienna-eastus-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - error
+      x-request-time:
+      - '0.118'
+    status:
+      code: 400
+      message: No storage account available for asset azureml://registries/registry-nostore/models/model_version_e2
+version: 1

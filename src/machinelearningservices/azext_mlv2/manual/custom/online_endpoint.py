@@ -1,0 +1,315 @@
+# ---------------------------------------------------------
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# ---------------------------------------------------------
+
+
+import logging
+
+from azure.ai.ml.constants._endpoint import EndpointKeyType
+from azure.ai.ml.entities import OnlineEndpoint
+from azure.ai.ml.entities._load_functions import load_online_endpoint
+from azure.ai.ml.exceptions import ErrorCategory, ErrorTarget, UserErrorException, ValidationException
+from azure.cli.core.commands import LongRunningOperation
+
+from .raise_error import log_and_raise_error
+from .utils import (
+    _dump_entity_with_warnings,
+    convert_str_to_dict,
+    get_ml_client,
+    is_not_found_error,
+    open_online_endpoint_in_browser,
+    wrap_lro,
+)
+
+module_logger = logging.getLogger(__name__)
+module_logger.propagate = 0
+
+
+def ml_online_endpoint_show(cmd, resource_group_name, workspace_name, name, local: bool = False, web: bool = False):
+    ml_client, debug = get_ml_client(
+        cli_ctx=cmd.cli_ctx, resource_group_name=resource_group_name, workspace_name=workspace_name
+    )
+
+    try:
+        endpoint = ml_client.online_endpoints.get(name=name, local=local)
+        if web:
+            open_online_endpoint_in_browser(endpoint)
+        return endpoint.dump()
+    except Exception as err:
+        log_and_raise_error(err, debug)
+
+
+def _ml_online_endpoint_show(cmd, resource_group_name, workspace_name, name=None, file=None, local=False):
+    ml_client, debug = get_ml_client(
+        cli_ctx=cmd.cli_ctx, resource_group_name=resource_group_name, workspace_name=workspace_name
+    )
+
+    try:
+        if not name:
+            endpoint = load_online_endpoint(source=file)
+            name = endpoint.name
+        if file:
+            return load_online_endpoint(source=file, params_override=[{"name": name.lower()}])
+        try:
+            return ml_client.online_endpoints.get(name=name, local=local)
+        except Exception as err:
+            if is_not_found_error(err):
+                raise Exception("Endpoint does not exist.")
+            raise err
+    except Exception as err:
+        log_and_raise_error(err, debug)
+
+
+def ml_online_endpoint_create(
+    cmd,
+    resource_group_name,
+    workspace_name,
+    auth_mode=None,
+    file=None,
+    name=None,
+    local: bool = False,
+    no_wait=False,
+    params_override=None,
+    web: bool = False,
+    **kwargs,
+):
+    ml_client, debug = get_ml_client(
+        cli_ctx=cmd.cli_ctx, resource_group_name=resource_group_name, workspace_name=workspace_name
+    )
+    params_override = params_override or []
+    try:
+        if local and no_wait:
+            msg = '"no_wait" and "local" options are mutually exclusive. Set only one option and try again.'
+            raise UserErrorException(
+                message=msg,
+                no_personal_data_message=msg,
+                target=ErrorTarget.LOCAL_ENDPOINT,
+                error_category=ErrorCategory.USER_ERROR,
+            )
+        if name:
+            # MFE is case-insensitive for Name. So convert the name into lower case here.
+            params_override.append({"name": name.lower()})
+        if auth_mode:
+            params_override.append({"auth_mode": auth_mode.lower()})
+
+        endpoint = load_online_endpoint(source=file, params_override=params_override)
+        try:
+            ml_client.online_endpoints.get(name=endpoint.name, local=local)
+        except Exception as err:
+            if is_not_found_error(err):
+                pass
+            else:
+                msg = f"""Unexpected error verifying an endpoint with the provided name doesn't exist
+                        Full error can be found here:
+                        {err}
+                """
+                raise ValidationException(
+                    message=msg,
+                    no_personal_data_message=msg,
+                    error_target=ErrorTarget.ONLINE_ENDPOINT,
+                    error_category=ErrorCategory.USER_ERROR,
+                )
+        else:
+            msg = """(UserError) An endpoint with this name already exists. If you are trying to create a new endpoint, use a
+different name. If you are trying to update an existing endpoint, use `az ml online-endpoint update` instead."""
+            raise ValidationException(
+                message=msg,
+                no_personal_data_message=msg,
+                error_target=ErrorTarget.ONLINE_ENDPOINT,
+                error_category=ErrorCategory.USER_ERROR,
+            )
+        endpoint_name = endpoint.name
+        endpoint = ml_client.begin_create_or_update(endpoint, local=local)
+        if no_wait:
+            module_logger.warning(
+                "Endpoint create request initiated. "
+                f"Status can be checked using `az ml online-endpoint show -n {endpoint_name}`\n"
+            )
+        else:
+            endpoint = wrap_lro(cmd.cli_ctx, endpoint)
+        if isinstance(endpoint, OnlineEndpoint):
+            if web:
+                open_online_endpoint_in_browser(endpoint)
+            return endpoint.dump()
+    except Exception as err:
+        yaml_operation = True if file else False
+        log_and_raise_error(err, debug, yaml_operation=yaml_operation)
+
+
+def ml_online_endpoint_delete(
+    cmd,
+    resource_group_name,
+    workspace_name,
+    name,
+    local: bool = False,
+    no_wait=False,
+):
+    ml_client, debug = get_ml_client(
+        cli_ctx=cmd.cli_ctx, resource_group_name=resource_group_name, workspace_name=workspace_name
+    )
+    try:
+        ml_client.online_endpoints.get(name=name, local=local)
+    except Exception as err:
+        if is_not_found_error(err):
+            raise Exception(f"Online endpoint {name} does not exist.")
+
+    try:
+        if local and no_wait:
+            msg = '"no_wait" and "local" options are mutually exclusive. Set only one option and try again.'
+            raise UserErrorException(
+                message=msg,
+                no_personal_data_message=msg,
+                target=ErrorTarget.ONLINE_DEPLOYMENT,
+                error_category=ErrorCategory.USER_ERROR,
+            )
+        if no_wait:
+            module_logger.info(
+                f"Delete request initiated. Status can be checked using `az ml online-endpoint show -n {name}`\n"
+            )
+        else:
+            module_logger.warning(
+                f"Delete request initiated. If you interrupt this command or it times out while waiting for deletion to complete, status can be checked using `az ml online-endpoint show -n {name}`\n"
+            )
+        delete_result = ml_client.online_endpoints.begin_delete(name=name, local=local)
+        if not no_wait:
+            delete_result = wrap_lro(cmd.cli_ctx, delete_result)
+        return _dump_entity_with_warnings(delete_result)
+    except Exception as err:
+        log_and_raise_error(err, debug)
+
+
+def ml_online_endpoint_get_credentials(cmd, resource_group_name, workspace_name, name):
+    ml_client, debug = get_ml_client(
+        cli_ctx=cmd.cli_ctx, resource_group_name=resource_group_name, workspace_name=workspace_name
+    )
+    try:
+        return ml_client.online_endpoints.get_keys(name=name)
+    except Exception as err:
+        log_and_raise_error(err, debug)
+
+
+def ml_online_endpoint_list(cmd, resource_group_name, workspace_name, local: bool = False):
+    ml_client, debug = get_ml_client(
+        cli_ctx=cmd.cli_ctx, resource_group_name=resource_group_name, workspace_name=workspace_name
+    )
+    try:
+        results = ml_client.online_endpoints.list(local=local)
+        return list(map(lambda x: _dump_entity_with_warnings(x), results))
+    except Exception as err:
+        log_and_raise_error(err, debug)
+
+
+def ml_online_endpoint_update(
+    cmd,
+    resource_group_name,
+    workspace_name,
+    traffic=None,
+    name=None,
+    file=None,
+    parameters=None,
+    local=False,
+    no_wait=False,
+    mirror_traffic=None,
+    web: bool = False,
+    **kwargs,
+) -> None:
+    ml_client, debug = get_ml_client(
+        cli_ctx=cmd.cli_ctx, resource_group_name=resource_group_name, workspace_name=workspace_name
+    )
+    try:
+        if local and no_wait:
+            msg = '"no_wait" and "local" options are mutually exclusive. Set only one option and try again.'
+            raise UserErrorException(
+                message=msg,
+                no_personal_data_message=msg,
+                target=ErrorTarget.LOCAL_ENDPOINT,
+                error_category=ErrorCategory.USER_ERROR,
+            )
+        if file:
+            # Check if endpoint exists
+            try:
+                ml_client.online_endpoints.get(name=name, local=local)
+            except Exception as err:
+                if is_not_found_error(err):
+                    raise Exception("Endpoint does not exist")
+        if name:
+            parameters.name = name
+
+        if traffic and isinstance(traffic, str):
+            traffic = convert_str_to_dict(traffic)
+            for key in traffic:
+                if not traffic[key].isnumeric():
+                    raise Exception("Do not add a delimiter between traffic variables")
+            parameters.traffic = traffic
+        if mirror_traffic and isinstance(mirror_traffic, str):
+            mirror_traffic = convert_str_to_dict(mirror_traffic)
+            parameters.mirror_traffic = mirror_traffic
+
+        endpoint_return = ml_client.begin_create_or_update(
+            entity=parameters,
+            local=local,
+        )
+        if no_wait:
+            module_logger.warning(
+                "Endpoint create request initiated. "
+                f"Status can be checked using `az ml online-endpoint show -n {parameters.name}`\n"
+            )
+        else:
+            endpoint_return = wrap_lro(cmd.cli_ctx, endpoint_return)
+
+        if isinstance(endpoint_return, OnlineEndpoint):
+            if web:
+                open_online_endpoint_in_browser(endpoint_return)
+            return endpoint_return.dump()
+        else:
+            return endpoint_return
+
+    except Exception as err:
+        log_and_raise_error(err, debug)
+
+
+def ml_online_endpoint_invoke(
+    cmd,
+    resource_group_name,
+    workspace_name,
+    name,
+    request_file=None,
+    online_deployment_name=None,
+    local: bool = False,
+) -> str:
+    ml_client, debug = get_ml_client(
+        cli_ctx=cmd.cli_ctx, resource_group_name=resource_group_name, workspace_name=workspace_name
+    )
+    try:
+        input_data_asset = None
+
+        kwargs = {
+            "logging_enable": debug,
+        }
+
+        return ml_client.online_endpoints.invoke(
+            endpoint_name=name,
+            request_file=request_file,
+            input_data=input_data_asset,
+            deployment_name=online_deployment_name,
+            local=local,
+            **kwargs,
+        )
+    except Exception as err:
+        log_and_raise_error(err, debug)
+
+
+def ml_online_endpoint_regenerate_keys(
+    cmd, resource_group_name, workspace_name, name, key_type=EndpointKeyType.PRIMARY_KEY_TYPE, no_wait: bool = False
+):
+    ml_client, debug = get_ml_client(
+        cli_ctx=cmd.cli_ctx, resource_group_name=resource_group_name, workspace_name=workspace_name
+    )
+
+    try:
+        keys = ml_client.online_endpoints.begin_regenerate_keys(name=name, key_type=key_type)
+        if not no_wait:
+            keys = LongRunningOperation(cmd.cli_ctx)(keys)
+        return keys
+    except Exception as err:
+        log_and_raise_error(err, debug)

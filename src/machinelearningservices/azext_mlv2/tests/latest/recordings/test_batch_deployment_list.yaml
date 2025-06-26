@@ -1,0 +1,65 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate, br
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.9.7 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/batchEndpoints/batch-endpoint-test/deployments?api-version=0000-00-00
+  response:
+    body:
+      string: '{"value": [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/batchEndpoints/batch-endpoint-test/deployments/test-batch-deployment",
+        "name": "test-batch-deployment", "type": "Microsoft.MachineLearningServices/workspaces/batchEndpoints/deployments",
+        "properties": {"description": null, "properties": {"AzureAsyncOperationUri":
+        "https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2euap/mfeOperationsStatus/be:1566a5e8-e37d-4bfe-9fd5-a00fe0106555:f13b33db-9938-4a63-96f9-1058fc585a92?api-version=2022-02-01-preview"},
+        "codeConfiguration": {"codeId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/codes/5fac62f4-f0fb-4553-8860-635264bdc5d3/versions/1",
+        "scoringScript": "./main.py"}, "environmentId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/environments/AzureML-sklearn-0.24-ubuntu18.04-py37-cpu/versions/1",
+        "environmentVariables": {"AZUREML_BE": "bla"}, "compute": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/computes/cpu-cluster",
+        "errorThreshold": 10, "retrySettings": {"maxRetries": 3, "timeout": "PT30S"},
+        "miniBatchSize": 5, "loggingLevel": "Info", "model": {"referenceType": "Id",
+        "assetId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/models/model-1/versions/5"},
+        "maxConcurrencyPerInstance": 5, "outputAction": "AppendRow", "outputFileName":
+        "append_row.txt", "resources": {"instanceCount": 2, "instanceType": null,
+        "properties": null}, "provisioningState": "Succeeded"}, "systemData": {"createdAt":
+        "2022-04-04T23:34:54.8010348Z", "createdBy": "Nancy Mejia Juarez", "lastModifiedAt":
+        "2022-04-04T23:34:54.8010348Z"}, "tags": {}, "location": "eastus2euap"}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2200'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 04 Apr 2022 23:37:31 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:17d65b70-e9ce-4ed5-9347-1f660ec782e9
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2euap-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.386'
+    status:
+      code: 200
+      message: OK
+version: 1
