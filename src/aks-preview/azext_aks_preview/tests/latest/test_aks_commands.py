@@ -3023,7 +3023,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 "maxConcurrent": 1000,
                 "protocol": "PreferUDP",
                 "queryLogging": "Error",
-                "serveStale": "Verify",
+                "serveStale": "Immediate",
                 "serveStaleDurationInSeconds": 3600
             },
             "cluster.local": {
@@ -3033,7 +3033,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 "maxConcurrent": 1000,
                 "protocol": "ForceTCP",
                 "queryLogging": "Error",
-                "serveStale": "Verify",
+                "serveStale": "Immediate",
                 "serveStaleDurationInSeconds": 3600
             }
         }
@@ -3045,7 +3045,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 "maxConcurrent": 1000,
                 "protocol": "PreferUDP",
                 "queryLogging": "Error",
-                "serveStale": "Verify",
+                "serveStale": "Immediate",
                 "serveStaleDurationInSeconds": 3600
             },
             "cluster.local": {
@@ -3055,7 +3055,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 "maxConcurrent": 1000,
                 "protocol": "ForceTCP",
                 "queryLogging": "Error",
-                "serveStale": "Verify",
+                "serveStale": "Immediate",
                 "serveStaleDurationInSeconds": 3600
             }
         }
@@ -3079,7 +3079,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         create_cmd = (
             "aks create --resource-group={resource_group} --name={name} "
             "--node-count 1 --ssh-key-value={ssh_key_value} --generate-ssh-keys "
-            "--kubernetes-version 1.33.1" # k8s version > 1.33 to support localDNS
+            "--kubernetes-version 1.33.0" # k8s version > 1.33 to support localDNS
         )
         self.cmd(create_cmd, checks=[self.check("provisioningState", "Succeeded")])
 
@@ -3112,7 +3112,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 "maxConcurrent": 1000,
                 "protocol": "PreferUDP",
                 "queryLogging": "Error",
-                "serveStale": "Verify",
+                "serveStale": "Immediate",
                 "serveStaleDurationInSeconds": 3600
             },
             "cluster.local": {
@@ -3122,7 +3122,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 "maxConcurrent": 1000,
                 "protocol": "ForceTCP",
                 "queryLogging": "Error",
-                "serveStale": "Verify",
+                "serveStale": "Immediate",
                 "serveStaleDurationInSeconds": 3600
             }
         }
@@ -3134,7 +3134,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 "maxConcurrent": 1000,
                 "protocol": "PreferUDP",
                 "queryLogging": "Error",
-                "serveStale": "Verify",
+                "serveStale": "Immediate",
                 "serveStaleDurationInSeconds": 3600
             },
             "cluster.local": {
@@ -3144,7 +3144,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 "maxConcurrent": 1000,
                 "protocol": "ForceTCP",
                 "queryLogging": "Error",
-                "serveStale": "Verify",
+                "serveStale": "Immediate",
                 "serveStaleDurationInSeconds": 3600
             }
         }
@@ -3166,7 +3166,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         create_cmd = (
             "aks create --resource-group={resource_group} --name={name} "
             "--ssh-key-value={ssh_key_value} --node-count 1 "
-            "--kubernetes-version 1.33.1" # k8s version > 1.33 to support localDNS
+            "--kubernetes-version 1.33.0" # k8s version > 1.33 to support localDNS
         )
         self.cmd(create_cmd, checks=[self.check("provisioningState", "Succeeded")])
 
