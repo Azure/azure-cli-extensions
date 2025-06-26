@@ -15,3 +15,7 @@ Release History
 ++++++
 * Update 'az vme list --output table' to show correct versions.
 * Wait for the bundle feature flag to fully propagate after enabling it.
+
+1.0.0b4
+++++++
+* Add '--force' to 'az vme uninstall' to force delete extension.

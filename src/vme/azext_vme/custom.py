@@ -81,7 +81,8 @@ def uninstall_vme(
         cmd,
         resource_group_name: str,
         cluster_name: str,
-        include_extension_types: list[str]):
+        include_extension_types: list[str],
+        force=False):
     if 'all' in include_extension_types:
         include_extension_types = consts.BundleExtensionTypes
     subscription_id = get_subscription_id(cmd.cli_ctx)
@@ -108,8 +109,9 @@ def uninstall_vme(
                    "connectedClusters",
                    "--name",
                    consts.BundleExtensionTypeNames[extension_type],
-                   "--force",
                    "--yes"]
+        if force:
+            command.append("--force")
         utils.call_subprocess_raise_output(command)
         print(f"Uninstalled extension {extension_type} successfully.")
     if len(include_extension_types) > 1:
