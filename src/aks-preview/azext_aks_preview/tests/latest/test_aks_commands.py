@@ -3079,6 +3079,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         create_cmd = (
             "aks create --resource-group={resource_group} --name={name} "
             "--node-count 1 --ssh-key-value={ssh_key_value} --generate-ssh-keys "
+            "--kubernetes-version 1.33.1" # k8s version > 1.33 to support localDNS
         )
         self.cmd(create_cmd, checks=[self.check("provisioningState", "Succeeded")])
 
@@ -3164,7 +3165,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # Create the cluster
         create_cmd = (
             "aks create --resource-group={resource_group} --name={name} "
-            "--ssh-key-value={ssh_key_value} --node-count 1"
+            "--ssh-key-value={ssh_key_value} --node-count 1 "
+            "--kubernetes-version 1.33.1" # k8s version > 1.33 to support localDNS
         )
         self.cmd(create_cmd, checks=[self.check("provisioningState", "Succeeded")])
 
