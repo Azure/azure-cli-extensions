@@ -3002,10 +3002,10 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         )
         self.cmd(create_cmd, checks=[self.check("provisioningState", "Succeeded")])
 
-        # Add nodepool with localdns config
+        # Add nodepool with localdns config file
         add_cmd = (
             "aks nodepool add --resource-group={resource_group} --cluster-name={name} "
-            "--name={nodepool_name} --node-count 1 --localdns-config=@{localdns_config}"
+            "--name={nodepool_name} --node-count 1 --localdns-config={localdns_config}"
         )
         self.cmd(add_cmd, checks=[self.check("provisioningState", "Succeeded")])
 
@@ -3093,7 +3093,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # Update nodepool with localdns config
         update_cmd = (
             "aks nodepool update --resource-group={resource_group} --cluster-name={name} "
-            "--name={nodepool_name} --localdns-config=@{localdns_config}"
+            "--name={nodepool_name} --localdns-config={localdns_config}"
         )
         self.cmd(update_cmd, checks=[self.check("provisioningState", "Succeeded")])
 

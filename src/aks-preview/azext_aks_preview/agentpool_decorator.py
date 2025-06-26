@@ -816,6 +816,7 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
         """
         Returns the local DNS profile dict if set, or None.
         Only supports loading from --localdns-config (JSON file).
+        Assumes the input is always a string filename.
         """
         config = self.get_localdns_config()
         if config:
@@ -826,7 +827,8 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
             profile = get_file_json(config)
             if not isinstance(profile, dict):
                 raise InvalidArgumentValueError(
-                    f"Error reading local DNS config from {config}. Please provide a valid JSON file."
+                    f"Error reading local DNS config from {config}. "
+                    "Please provide a valid JSON file."
                 )
             return profile
         return None
