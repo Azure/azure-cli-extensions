@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "elastic monitor tag-rule list",
 )
 class List(AAZCommand):
-    """List the tag rules for a given monitor resource.
+    """List all tag rules for a given Elastic monitor resource, helping you manage fine-grained control over observability based on resource tags.
 
     :example: List monitor tag rule
         az elastic monitor tag-rule list -g rg --monitor-name name

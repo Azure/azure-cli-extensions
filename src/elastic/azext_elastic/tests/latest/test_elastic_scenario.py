@@ -132,8 +132,8 @@ class ElasticScenario(ScenarioTest):
             'email': email,
             'integration_name': 'default',
             'key':'9e1bac69b92242129ad1f2373dd06939',
-            'openAIResourceId': '/subscriptions/cff37b56-870a-448f-a2fb-1a89235d4d32/resourceGroups/utkarshjain-rg/providers/Microsoft.CognitiveServices/accounts/utkarshTestResource1',
-            'openAIResourceEndpoint': 'https://utkarshtestresource1.openai.azure.com/openai/deployments/test1/chat/completions?api-version=2024-06-15-preview',
+            'openAIResourceId': '/subscriptions/a81c0054-6c92-41aa-a235-4f9f98f917c6/resourceGroups/es-cloudtests-portal/providers/Microsoft.CognitiveServices/accounts/es-openAi-resource',
+            'openAIResourceEndpoint': 'https://es-openai-resource.openai.azure.com/openai/deployments/gpt-4o/chat/completions?api-version=2025-01-01-preview',
         })
 
         self.cmd('elastic monitor create '
@@ -188,8 +188,8 @@ class ElasticScenario(ScenarioTest):
             'monitor': self.create_random_name('monitor', 20),
             'rg': resource_group,
             'email': email,
-            'subscription_id': 'cff37b56-870a-448f-a2fb-1a89235d4d32',
-            'subs_id': 'CFF37B56-870A-448F-A2FB-1A89235D4D32',
+            'subscription_id': 'a81c0054-6c92-41aa-a235-4f9f98f917c6',
+            'subs_id': 'A81C0054-6C92-41AA-A235-4F9F98F917C6',
             'updated_status': 'InProgress'
         })
         self.cmd('elastic monitor create '
