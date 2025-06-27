@@ -167,6 +167,9 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         assert len(mesh_revisions["meshRevisions"]) > 0
         revisions = [r["revision"] for r in mesh_revisions["meshRevisions"]]
         sorted_revisons = self._sort_revisions(revisions)
+        lenRevisions := len(sorted_revisons)
+        if lenRevisions > 1:
+            return sorted_revisons[lenRevisions - 2]  # Return the second latest revision
         return sorted_revisons[0]
 
     def _get_asm_upgrade_version(self, resource_group, name):
@@ -12615,7 +12618,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 "name": aks_name,
                 "location": resource_group_location,
                 "ssh_key_value": self.generate_ssh_keys(),
-                "revision": self._get_asm_supported_revision("westus2"), # Temporarily set to prod region to avoid using unsupported ASM revision for centraluseap
+                "revision": self._get_asm_supported_revision(resource_group_location),
             }
         )
 
