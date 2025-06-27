@@ -1,0 +1,169 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --node-count --ssh-key-value --generate-ssh-keys
+      User-Agent:
+      - AZURECLI/2.74.0 azsdk-python-core/1.31.0 Python/3.10.12 (Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000002?api-version=2025-04-02-preview
+  response:
+    body:
+      string: '{"error":{"code":"ResourceNotFound","message":"The Resource ''Microsoft.ContainerService/managedClusters/cliakstest000002''
+        under resource group ''clitest000001'' was not found. For more details please
+        go to https://aka.ms/ARMResourceNotFoundFix"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '244'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 25 Jun 2025 22:37:33 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-failure-cause:
+      - gateway
+      x-msedge-ref:
+      - 'Ref A: 5ECF98D996214A5E9F52FF33B3F51980 Ref B: CO6AA3150219047 Ref C: 2025-06-25T22:37:33Z'
+    status:
+      code: 404
+      message: Not Found
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --node-count --ssh-key-value --generate-ssh-keys
+      User-Agent:
+      - AZURECLI/2.74.0 azsdk-python-core/1.31.0 Python/3.10.12 (Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001?api-version=2024-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001","name":"clitest000001","type":"Microsoft.Resources/resourceGroups","location":"eastus","tags":{"product":"azurecli","cause":"automation","date":"2025-06-25T22:37:31Z","SkipASB_Audit":"true"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '327'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 25 Jun 2025 22:37:33 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 8910BA6F2FD1489B912075A056A91CBA Ref B: CO6AA3150218011 Ref C: 2025-06-25T22:37:34Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus", "sku": {"name": "Base", "tier": "Free"}, "identity":
+      {"type": "SystemAssigned"}, "kind": "Base", "properties": {"kubernetesVersion":
+      "", "dnsPrefix": "cliakstest-clitestevccgcasn-26fe00", "agentPoolProfiles":
+      [{"count": 1, "vmSize": "", "osDiskSizeGB": 0, "workloadRuntime": "OCIContainer",
+      "osType": "Linux", "enableAutoScaling": false, "type": "VirtualMachineScaleSets",
+      "mode": "System", "orchestratorVersion": "", "upgradeSettings": {}, "enableNodePublicIP":
+      false, "enableCustomCATrust": false, "scaleSetPriority": "Regular", "scaleSetEvictionPolicy":
+      "Delete", "spotMaxPrice": -1.0, "nodeTaints": [], "nodeInitializationTaints":
+      [], "enableEncryptionAtHost": false, "enableUltraSSD": false, "enableFIPS":
+      false, "networkProfile": {}, "securityProfile": {"sshAccess": "localuser"},
+      "name": "nodepool1"}], "linuxProfile": {"adminUsername": "azureuser", "ssh":
+      {"publicKeys": [{"keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCbIg1guRHbI0lV11wWDt1r2cUdcNd27CJsg+SfgC7miZeubtwUhbsPdhMQsfDyhOWHq1+ZL0M+nJZV63d/1dhmhtgyOqejUwrPlzKhydsbrsdUor+JmNJDdW01v7BXHyuymT8G4s09jCasNOwiufbP/qp72ruu0bIA1nySsvlf9pCQAuFkAnVnf/rFhUlOkhtRpwcq8SUNY2zRHR/EKb/4NWY1JzR4sa3q2fWIJdrrX0DvLoa5g9bIEd4Df79ba7v+yiUBOS0zT2ll+z4g9izHK3EO5d8hL4jYxcjKs+wcslSYRWrascfscLgMlMGh0CdKeNTDjHpGPncaf3Z+FwwwjWeuiNBxv7bJo13/8B/098KlVDl4GZqsoBCEjPyJfV6hO0y/LkRGkk7oHWKgeWAfKtfLItRp00eZ4fcJNK9kCaSMmEugoZWcI7NGbZXzqFWqbpRI7NcDP9+WIQ+i9U5vqWsqd/zng4kbuAJ6UuKqIzB0upYrLShfQE3SAck8oaLhJqqq56VfDuASNpJKidV+zq27HfSBmbXnkR/5AK337dc3MXKJypoK/QPMLKUAP5XLPbs+NddJQV7EZXd29DLgp+fRIg3edpKdO7ZErWhv7d+3Kws+e1Y+ypmR2WIVSwVyBEUfgv2C8Ts9gnTF4pNcEY/S2aBicz5Ew2+jdyGNQQ==
+      test@example.com\n"}]}}, "addonProfiles": {}, "enableRBAC": true, "networkProfile":
+      {"podCidr": "10.244.0.0/16", "serviceCidr": "10.0.0.0/16", "dnsServiceIP": "10.0.0.10",
+      "outboundType": "loadBalancer", "loadBalancerSku": "standard"}, "disableLocalAccounts":
+      false, "storageProfile": {}, "bootstrapProfile": {"artifactSource": "Direct"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1980'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-group --name --node-count --ssh-key-value --generate-ssh-keys
+      User-Agent:
+      - AZURECLI/2.74.0 azsdk-python-core/1.31.0 Python/3.10.12 (Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000002?api-version=2025-04-02-preview
+  response:
+    body:
+      string: "{\n  \"code\": \"BadRequest\",\n  \"details\": null,\n  \"message\":
+        \"The VM size of Standard_D8plds_v5 is not allowed in your subscription in
+        location 'eastus'. The available VM sizes are 'standard_d11_v2,standard_d12_v2,standard_d13_v2,standard_d14_v2,standard_d15_v2,standard_d16darm_v3,standard_d2_v2,standard_d2darm_v3,standard_d32darm_v3,standard_d3_v2,standard_d48darm_v3,standard_d4_v2,standard_d4darm_v3,standard_d5_v2,standard_d8darm_v3,standard_dc16ads_cc_v5,standard_dc16as_cc_v5,standard_dc32ads_cc_v5,standard_dc32as_cc_v5,standard_dc48ads_cc_v5,standard_dc48as_cc_v5,standard_dc4ads_cc_v5,standard_dc4as_cc_v5,standard_dc64ads_cc_v5,standard_dc64as_cc_v5,standard_dc8ads_cc_v5,standard_dc8as_cc_v5,standard_dc96ads_cc_v5,standard_dc96as_cc_v5,standard_ds11-1_v2,standard_ds11_v2,standard_ds12-1_v2,standard_ds12-2_v2,standard_ds12_v2,standard_ds13-2_v2,standard_ds13-4_v2,standard_ds13_v2,standard_ds14-4_v2,standard_ds14-8_v2,standard_ds14_v2,standard_ds15_v2,standard_ds2_v2,standard_ds3_v2,standard_ds4_v2,standard_ds5_v2,standard_e16darm_v3,standard_e20darm_v3,standard_e2darm_v3,standard_e32darm_v3,standard_e48darm_v3,standard_e4darm_v3,standard_e8darm_v3,standard_ec16ads_cc_v5,standard_ec16as_cc_v5,standard_ec20ads_cc_v5,standard_ec20as_cc_v5,standard_ec32ads_cc_v5,standard_ec32as_cc_v5,standard_ec48ads_cc_v5,standard_ec48as_cc_v5,standard_ec4ads_cc_v5,standard_ec4as_cc_v5,standard_ec64ads_cc_v5,standard_ec64as_cc_v5,standard_ec8ads_cc_v5,standard_ec8as_cc_v5,standard_ec96ads_cc_v5,standard_ec96as_cc_v5'
+        For more details, please visit https://aka.ms/aks/quotas-skus-regions\",\n
+        \ \"subcode\": \"\"\n }"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1613'
+      content-type:
+      - application/json
+      date:
+      - Wed, 25 Jun 2025 22:37:43 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=144d42e0-4ad5-49ad-bd2a-f29a0cadf936/westus2/756d7d75-1b9a-467e-ab08-224bd6885b89
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '12000'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '800'
+      x-msedge-ref:
+      - 'Ref A: 6910D4656B114C719FB131D50DD38029 Ref B: MWH011020807040 Ref C: 2025-06-25T22:37:34Z'
+    status:
+      code: 400
+      message: Bad Request
+version: 1

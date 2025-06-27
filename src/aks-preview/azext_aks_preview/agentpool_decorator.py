@@ -5,6 +5,7 @@
 
 import base64
 import os
+from azure.cli.core.util import get_file_json
 from types import SimpleNamespace
 from typing import Dict, TypeVar, Union, List
 
@@ -808,6 +809,30 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
         # read the original value passed by the command
         return self.raw_param.get("disable_fips_image")
 
+    def get_localdns_config(self):
+        return self.raw_param.get("localdns_config")
+
+    def get_localdns_profile(self):
+        """
+        Returns the local DNS profile dict if set, or None.
+        Only supports loading from --localdns-config (JSON file).
+        Assumes the input is always a string filename.
+        """
+        config = self.get_localdns_config()
+        if config:
+            if not isinstance(config, str) or not os.path.isfile(config):
+                raise InvalidArgumentValueError(
+                    f"{config} is not a valid file, or not accessible."
+                )
+            profile = get_file_json(config)
+            if not isinstance(profile, dict):
+                raise InvalidArgumentValueError(
+                    f"Error reading local DNS config from {config}. "
+                    "Please provide a valid JSON file."
+                )
+            return profile
+        return None
+
 
 class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
     def __init__(
@@ -1070,6 +1095,14 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
 
         return agentpool
 
+    def set_up_localdns_profile(self, agentpool: AgentPool) -> AgentPool:
+        """Set up local DNS profile for the AgentPool object if provided via --localdns-config."""
+        self._ensure_agentpool(agentpool)
+        localdns_profile = self.context.get_localdns_profile()
+        if localdns_profile is not None:
+            agentpool.local_dns_profile = self.models.LocalDNSProfile(**localdns_profile)
+        return agentpool
+
     def construct_agentpool_profile_preview(self) -> AgentPool:
         """The overall controller used to construct the preview AgentPool profile.
 
@@ -1115,6 +1148,8 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         agentpool = self.set_up_agentpool_gateway_profile(agentpool)
         # set up virtual machines profile
         agentpool = self.set_up_virtual_machines_profile(agentpool)
+        # set up local DNS profile
+        agentpool = self.set_up_localdns_profile(agentpool)
         # DO NOT MOVE: keep this at the bottom, restore defaults
         agentpool = self._restore_defaults_in_agentpool(agentpool)
         return agentpool
@@ -1307,6 +1342,14 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
 
         return agentpool
 
+    def update_localdns_profile(self, agentpool: AgentPool) -> AgentPool:
+        """Update local DNS profile for the AgentPool object if provided via --localdns-config."""
+        self._ensure_agentpool(agentpool)
+        localdns_profile = self.context.get_localdns_profile()
+        if localdns_profile is not None:
+            agentpool.local_dns_profile = self.models.LocalDNSProfile(**localdns_profile)
+        return agentpool
+
     def update_agentpool_profile_preview(self, agentpools: List[AgentPool] = None) -> AgentPool:
         """The overall controller used to update the preview AgentPool profile.
 
@@ -1341,6 +1384,9 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
 
         # update ssh access
         agentpool = self.update_ssh_access(agentpool)
+
+        # update local DNS profile
+        agentpool = self.update_localdns_profile(agentpool)
 
         return agentpool
 
