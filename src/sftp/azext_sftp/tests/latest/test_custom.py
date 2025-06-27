@@ -247,20 +247,14 @@ class SftpCustomCommandTest(unittest.TestCase):
         mock_do_sftp.assert_called_once()
 
     @mock.patch('azext_sftp.custom._do_sftp_op')
-    @mock.patch('azext_sftp.sftp_utils.get_certificate_start_and_end_times')
     @mock.patch('azext_sftp.sftp_utils.get_ssh_cert_principals')
-    @mock.patch('azext_sftp.custom._get_and_write_certificate')
-    def test_sftp_connect_expired_cert_regenerate(self, mock_gen_cert, mock_get_principals, mock_get_times, mock_do_sftp):
-        """Test connect with expired certificate - should regenerate."""
+    def test_sftp_connect_with_existing_cert(self, mock_get_principals, mock_do_sftp):
+        """Test connect with existing certificate - should use it as-is."""
         cmd = mock.Mock()
         cmd.cli_ctx.cloud.name = "azurecloud"
         
-        # Mock expired certificate
-        from datetime import datetime, timedelta
-        expired_time = datetime.now() - timedelta(days=1)
-        mock_get_times.return_value = (datetime.now() - timedelta(days=2), expired_time)
+        # Mock certificate principals
         mock_get_principals.return_value = ["testuser@domain.com"]
-        mock_gen_cert.return_value = (self.mock_cert_file, "testuser")
         mock_do_sftp.return_value = None
         
         custom.sftp_connect(
@@ -272,8 +266,8 @@ class SftpCustomCommandTest(unittest.TestCase):
             sftp_batch_commands="ls\nexit\n"
         )
         
-        # Should regenerate certificate due to expiration
-        mock_gen_cert.assert_called_once()
+        # Should use existing certificate and let OpenSSH handle validation
+        mock_get_principals.assert_called_once()
         mock_do_sftp.assert_called_once()
 
     def test_sftp_connect_missing_storage_account(self):
@@ -307,7 +301,7 @@ class SftpCustomCommandTest(unittest.TestCase):
         # Verify the session was created with port None (lets OpenSSH use default)
         mock_do_sftp.assert_called_once()
         call_args = mock_do_sftp.call_args[0]
-        sftp_session = call_args[1]  # Second argument is the SFTP session
+        sftp_session = call_args[0]  # First argument is the SFTP session
         self.assertEqual(sftp_session.port, None)
 
     @mock.patch('azext_sftp.custom._do_sftp_op')
@@ -331,5 +325,5 @@ class SftpCustomCommandTest(unittest.TestCase):
         # Verify the session was created with custom port
         mock_do_sftp.assert_called_once()
         call_args = mock_do_sftp.call_args[0]
-        sftp_session = call_args[1]
+        sftp_session = call_args[0]
         self.assertEqual(sftp_session.port, 2222)

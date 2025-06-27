@@ -101,7 +101,7 @@ MOCK_PRIVATE_KEY_DATA
         # Assert
         mock_do_sftp.assert_called_once()
         call_args = mock_do_sftp.call_args[0]
-        sftp_session = call_args[1]
+        sftp_session = call_args[0]
         self.assertEqual(sftp_session.storage_account, "teststorage")
         self.assertEqual(sftp_session.username, "teststorage.testuser")
 
@@ -201,23 +201,13 @@ MOCK_PRIVATE_KEY_DATA
         mock_gen_cert.assert_called_once()
         mock_do_sftp.assert_called_once()
 
-    # Test Scenario 6: Expired certificate - regenerate
+    # Test Scenario 6: Existing certificate - use as-is (let OpenSSH handle validation)
     @mock.patch('azext_sftp.custom._cleanup_credentials')
     @mock.patch('azext_sftp.custom._do_sftp_op')
     @mock.patch('azext_sftp.sftp_utils.get_ssh_cert_principals')
-    @mock.patch('azext_sftp.custom._get_and_write_certificate')
-    @mock.patch('azext_sftp.sftp_utils.get_certificate_start_and_end_times')
-    @mock.patch('azext_sftp.sftp_utils.create_ssh_keyfile')
-    @mock.patch('tempfile.mkdtemp')
-    def test_expired_certificate_regenerate(self, mock_mkdtemp, mock_create_keyfile, 
-                                          mock_get_times, mock_gen_cert, mock_get_principals, 
-                                          mock_do_sftp, mock_cleanup):
-        """Test regeneration of expired certificate."""
+    def test_existing_certificate_use_as_is(self, mock_get_principals, mock_do_sftp, mock_cleanup):
+        """Test using existing certificate without validation - let OpenSSH handle it."""
         # Arrange
-        expired_time = datetime.datetime.now() - datetime.timedelta(days=1)
-        mock_get_times.return_value = (datetime.datetime.now() - timedelta(days=2), expired_time)
-        mock_mkdtemp.return_value = self.temp_dir
-        mock_gen_cert.return_value = (self.mock_cert_file, "testuser")
         mock_get_principals.return_value = ["testuser@domain.com"]
         mock_do_sftp.return_value = None
         
@@ -232,8 +222,9 @@ MOCK_PRIVATE_KEY_DATA
         )
         
         # Assert
-        mock_gen_cert.assert_called_once()  # Certificate should be regenerated
-        mock_do_sftp.assert_called_once()
+        mock_get_principals.assert_called_once()  # Should extract username from certificate
+        mock_do_sftp.assert_called_once()  # Should proceed with connection
+        # No certificate regeneration should occur - let OpenSSH validate
 
     # Test Scenario 7: Missing storage account
     def test_missing_storage_account(self):
@@ -271,7 +262,7 @@ MOCK_PRIVATE_KEY_DATA
         # Assert
         mock_do_sftp.assert_called_once()
         call_args = mock_do_sftp.call_args[0]
-        sftp_session = call_args[1]
+        sftp_session = call_args[0]
         self.assertEqual(sftp_session.port, 2222)
 
     # Test Scenario 9: Certificate validation errors
@@ -350,7 +341,7 @@ MOCK_PRIVATE_KEY_DATA
         # Assert
         mock_do_sftp.assert_called_once()
         call_args = mock_do_sftp.call_args[0]
-        sftp_session = call_args[1]
+        sftp_session = call_args[0]
         # Should use China cloud storage endpoint
         self.assertIn("chinacloudapi.cn", sftp_session.host)
 
@@ -379,7 +370,7 @@ MOCK_PRIVATE_KEY_DATA
         # Assert
         mock_do_sftp.assert_called_once()
         call_args = mock_do_sftp.call_args[0]
-        sftp_session = call_args[1]
+        sftp_session = call_args[0]
         # Should use Government cloud storage endpoint
         self.assertIn("usgovcloudapi.net", sftp_session.host)
 
@@ -408,7 +399,7 @@ MOCK_PRIVATE_KEY_DATA
         # Assert
         mock_do_sftp.assert_called_once()
         call_args = mock_do_sftp.call_args[0]
-        sftp_session = call_args[1]
+        sftp_session = call_args[0]
         # Should extract username part from UPN
         self.assertEqual(sftp_session.username, "teststorage.testuser")
 
@@ -497,7 +488,7 @@ MOCK_PRIVATE_KEY_DATA
         # Assert
         mock_do_sftp.assert_called_once()
         call_args = mock_do_sftp.call_args[0]
-        sftp_session = call_args[1]
+        sftp_session = call_args[0]
         # Should be None when not specified (SFTP session will handle default)
         self.assertIsNone(sftp_session.port)
 

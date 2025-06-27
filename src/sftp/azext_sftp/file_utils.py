@@ -9,9 +9,7 @@ import hashlib
 import json
 import tempfile
 import time
-import datetime
 import oschmod
-import shutil
 
 from azure.cli.core import azclierror
 from azure.cli.core import telemetry
@@ -236,18 +234,3 @@ def _get_modulus_exponent(public_key_file):
         raise azclierror.FileOperationError(f"Could not parse public key. Error: {str(e)}")
 
     return parser.modulus, parser.exponent
-
-
-def validate_certificate(cert_file, ssh_client_folder=None):
-    """Validate an SSH certificate and check its expiration."""
-    if not os.path.isfile(cert_file):
-        raise azclierror.FileOperationError(f"Certificate file {cert_file} not found.")
-
-    try:
-        times = sftp_utils.get_certificate_start_and_end_times(cert_file, ssh_client_folder)
-        if times and times[1] < datetime.datetime.now():
-            return False, "Certificate has expired"
-        return True, "Certificate is valid"
-    except Exception as e:
-        logger.warning("Could not validate certificate: %s", str(e))
-        return None, str(e)

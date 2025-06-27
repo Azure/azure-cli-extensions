@@ -4,8 +4,6 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long
 
-from knack.arguments import CLIArgumentType
-
 
 def load_arguments(self, _):
 

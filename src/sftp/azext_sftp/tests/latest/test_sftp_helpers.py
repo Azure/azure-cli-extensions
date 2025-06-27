@@ -230,12 +230,11 @@ class TestSftpHelperFunctions(unittest.TestCase):
     @mock.patch('azext_sftp.sftp_utils.start_sftp_connection')
     def test_do_sftp_op_success(self, mock_start_connection):
         """Test _do_sftp_op with successful operation."""
-        cmd = mock.Mock()
         sftp_session = mock.Mock()
         sftp_session.validate_session = mock.Mock()
         mock_start_connection.return_value = "success"
         
-        result = custom._do_sftp_op(cmd, sftp_session, mock_start_connection)
+        result = custom._do_sftp_op(sftp_session, mock_start_connection)
         
         sftp_session.validate_session.assert_called_once()
         mock_start_connection.assert_called_once_with(sftp_session)
@@ -244,12 +243,11 @@ class TestSftpHelperFunctions(unittest.TestCase):
     @mock.patch('azext_sftp.sftp_utils.start_sftp_connection')
     def test_do_sftp_op_validation_failure(self, mock_start_connection):
         """Test _do_sftp_op with session validation failure."""
-        cmd = mock.Mock()
         sftp_session = mock.Mock()
         sftp_session.validate_session.side_effect = Exception("Validation failed")
         
         with self.assertRaises(Exception):
-            custom._do_sftp_op(cmd, sftp_session, mock_start_connection)
+            custom._do_sftp_op(sftp_session, mock_start_connection)
         
         sftp_session.validate_session.assert_called_once()
         mock_start_connection.assert_not_called()
@@ -257,13 +255,12 @@ class TestSftpHelperFunctions(unittest.TestCase):
     @mock.patch('azext_sftp.sftp_utils.start_sftp_connection')
     def test_do_sftp_op_connection_failure(self, mock_start_connection):
         """Test _do_sftp_op with connection failure."""
-        cmd = mock.Mock()
         sftp_session = mock.Mock()
         sftp_session.validate_session = mock.Mock()
         mock_start_connection.side_effect = Exception("Connection failed")
         
         with self.assertRaises(Exception):
-            custom._do_sftp_op(cmd, sftp_session, mock_start_connection)
+            custom._do_sftp_op(sftp_session, mock_start_connection)
         
         sftp_session.validate_session.assert_called_once()
         mock_start_connection.assert_called_once_with(sftp_session)
