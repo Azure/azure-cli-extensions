@@ -76,10 +76,11 @@ jobs:
     displayName: 'Use Python 3.12'
     inputs:
       versionSpec: 3.12
+  - template: .azure-pipelines/templates/azdev_setup.yml
   - bash: |
       #!/usr/bin/env bash
       set -ev
-      pip install wheel==0.30.0 requests packaging setuptools
+      source ./env/bin/activate
       export CI="ADO"
       python ./scripts/ci/test_index.py -v
     displayName: "Verify Extensions Index"
@@ -104,8 +105,6 @@ jobs:
       inputs:
         versionSpec: '$(python.version)'
     - template: .azure-pipelines/templates/azdev_setup.yml
-    - bash: pip install wheel==0.30.0
-      displayName: 'Install wheel==0.30.0'
     - bash: |
         #!/usr/bin/env bash
         set -ev
@@ -254,5 +253,9 @@ jobs:
     displayName: 'Use Python 3.x'
     inputs:
       versionSpec: 3.x
+  - template: .azure-pipelines/templates/azdev_setup.yml
   - bash: |
+      #!/usr/bin/env bash
+      set -ev
+      source ./env/bin/activate
       python scripts/ci/test_init.py -v
