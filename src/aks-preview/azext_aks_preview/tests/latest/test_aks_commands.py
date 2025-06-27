@@ -3088,7 +3088,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # Add nodepool without localdns config
         add_cmd = (
             "aks nodepool add --resource-group={resource_group} --cluster-name={name} "
-            "--name={nodepool_name} --node-count 1"
+            "--name={nodepool_name} --node-count 1 "
             "--kubernetes-version 1.33.0"  # k8s version > 1.33 to support localDNS
         )
         self.cmd(add_cmd, checks=[self.check("provisioningState", "Succeeded")])
