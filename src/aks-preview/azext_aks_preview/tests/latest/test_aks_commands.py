@@ -167,7 +167,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         assert len(mesh_revisions["meshRevisions"]) > 0
         revisions = [r["revision"] for r in mesh_revisions["meshRevisions"]]
         sorted_revisons = self._sort_revisions(revisions)
-        lenRevisions := len(sorted_revisons)
+        lenRevisions = len(sorted_revisons)
         if lenRevisions > 1:
             return sorted_revisons[lenRevisions - 2]  # Return the second latest revision
         return sorted_revisons[0]
