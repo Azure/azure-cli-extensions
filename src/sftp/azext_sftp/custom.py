@@ -26,28 +26,29 @@ from . import constants as const
 
 logger = log.get_logger(__name__)
 
+
 def sftp_cert(cmd, cert_path=None, public_key_file=None, ssh_client_folder=None):
     """
     Generate SSH certificate for SFTP authentication using Azure AD.
-    
+
     Args:
         cmd: CLI command context
         cert_path: Path where the certificate should be written
         public_key_file: Path to existing RSA public key file
         ssh_client_folder: Path to SSH client executables directory
-        
+
     Returns:
         None
-        
+
     Raises:
         RequiredArgumentMissingError: When required arguments are missing
         InvalidArgumentValueError: When provided paths are invalid
     """
     logger.debug("Starting SFTP certificate generation")
-    
+
     if not cert_path and not public_key_file:
         raise azclierror.RequiredArgumentMissingError("--file or --public-key-file must be provided.")
-    
+
     if cert_path and not os.path.isdir(os.path.dirname(cert_path)):
         raise azclierror.InvalidArgumentValueError(f"{os.path.dirname(cert_path)} folder doesn't exist")
 
@@ -92,7 +93,7 @@ def sftp_cert(cmd, cert_path=None, public_key_file=None, ssh_client_folder=None)
 def sftp_connect(cmd, storage_account, port=None, cert_file=None, private_key_file=None, public_key_file=None, sftp_args=None, ssh_client_folder=None, sftp_batch_commands=None):
     """
     Connect to Azure Storage Account via SFTP with automatic certificate generation if needed.
-    
+
     Args:
         cmd: CLI command context
         storage_account: Azure Storage Account name or resource ID
@@ -103,24 +104,24 @@ def sftp_connect(cmd, storage_account, port=None, cert_file=None, private_key_fi
         sftp_args: Additional SFTP client arguments
         ssh_client_folder: Path to SSH client executables
         sftp_batch_commands: Non-interactive SFTP commands to execute
-        
+
     Returns:
         None
-        
+
     Raises:
         Various Azure CLI errors for validation and connection issues
     """
     logger.debug("Starting SFTP connection to storage account: %s", storage_account)
-    
+
     # Validate input parameters
     _assert_args(storage_account, cert_file, public_key_file, private_key_file)
-    
+
     # Allow connection with no credentials for fully managed experience
     auto_generate_cert = False
     delete_keys = False
     delete_cert = False
     credentials_folder = None
-    
+
     if not cert_file and not public_key_file and not private_key_file:
         logger.info("Fully managed mode: No credentials provided")
         print_styled_text((Style.ACTION, "Fully managed mode: No credentials provided."))
@@ -130,7 +131,7 @@ def sftp_connect(cmd, storage_account, port=None, cert_file=None, private_key_fi
         delete_cert = True
         delete_keys = True
         credentials_folder = tempfile.mkdtemp(prefix="aadsftp")
-    
+
     if cert_file and public_key_file:
         print_styled_text((Style.WARNING, "Both --certificate-file and --public-key-file provided. Using --certificate-file."))
         print_styled_text((Style.ACTION, "To use public key instead, omit --certificate-file parameter."))
@@ -149,7 +150,7 @@ def sftp_connect(cmd, storage_account, port=None, cert_file=None, private_key_fi
             logger.debug("Validating provided certificate file...")
             if not os.path.isfile(cert_file):
                 raise azclierror.FileOperationError(f"Certificate file {cert_file} not found.")
-            
+
             # Check certificate validity
             try:
                 logger.debug("Checking certificate validity...")
@@ -173,16 +174,16 @@ def sftp_connect(cmd, storage_account, port=None, cert_file=None, private_key_fi
         # Process username - extract username part if it's a UPN
         if '@' in user:
             user = user.split('@')[0]
-            
+
         # Build Azure Storage SFTP username format
         username = f"{storage_account}.{user}"
-        
+
         # Use cloud-aware hostname resolution
         storage_suffix = _get_storage_endpoint_suffix(cmd)
         hostname = f"{storage_account}.{storage_suffix}"
-        
+
         # Inform user about connection details
-        print_styled_text((Style.ACTION, f"Azure Storage SFTP Connection Details:"))
+        print_styled_text((Style.ACTION, "Azure Storage SFTP Connection Details:"))
         print_styled_text((Style.PRIMARY, f"  Storage Account: {storage_account}"))
         print_styled_text((Style.PRIMARY, f"  Username: {username}"))
         if port is not None:
@@ -190,10 +191,10 @@ def sftp_connect(cmd, storage_account, port=None, cert_file=None, private_key_fi
         else:
             print_styled_text((Style.PRIMARY, f"  Endpoint: {hostname} (default SSH port)"))
         print_styled_text((Style.PRIMARY, f"  Cloud Environment: {cmd.cli_ctx.cloud.name}"))
-        
+
         sftp_session = sftp_info.SFTPSession(
             storage_account=storage_account,
-            username=username, 
+            username=username,
             host=hostname,
             port=port,
             cert_file=cert_file,
@@ -205,14 +206,14 @@ def sftp_connect(cmd, storage_account, port=None, cert_file=None, private_key_fi
             yes_without_prompt=False,
             sftp_batch_commands=sftp_batch_commands
         )
-        
+
         # Set local user for username resolution
         sftp_session.local_user = user
         sftp_session.resolve_connection_info()
-        
-        print_styled_text((Style.SUCCESS, f"Establishing SFTP connection..."))
+
+        print_styled_text((Style.SUCCESS, "Establishing SFTP connection..."))
         _do_sftp_op(cmd, sftp_session, sftp_utils.start_sftp_connection)
-        
+
     except Exception as e:
         # Clean up generated credentials on error
         if delete_keys or delete_cert:
@@ -224,8 +225,9 @@ def sftp_connect(cmd, storage_account, port=None, cert_file=None, private_key_fi
         if delete_keys or delete_cert:
             _cleanup_credentials(delete_keys, delete_cert, credentials_folder, cert_file, private_key_file, public_key_file)
 
+# Helpers
 
-### Helpers ###
+
 def _check_or_create_public_private_files(public_key_file, private_key_file, credentials_folder,
                                           ssh_client_folder=None):
     delete_keys = False
@@ -267,6 +269,7 @@ def _check_or_create_public_private_files(public_key_file, private_key_file, cre
             private_key_file = public_key_file[:-4] if os.path.isfile(public_key_file[:-4]) else None
 
     return public_key_file, private_key_file, delete_keys
+
 
 def _get_and_write_certificate(cmd, public_key_file, cert_file, ssh_client_folder):
     # should this include agc URIs?
@@ -314,6 +317,7 @@ def _get_and_write_certificate(cmd, public_key_file, cert_file, ssh_client_folde
 
     return cert_file, username.lower()
 
+
 def _prepare_jwk_data(public_key_file):
     modulus, exponent = _get_modulus_exponent(public_key_file)
     key_hash = hashlib.sha256()
@@ -334,11 +338,13 @@ def _prepare_jwk_data(public_key_file):
     }
     return data
 
+
 def _write_cert_file(certificate_contents, cert_file):
     with open(cert_file, 'w', encoding='utf-8') as f:
         f.write(f"ssh-rsa-cert-v01@openssh.com {certificate_contents}")
     oschmod.set_mode(cert_file, 0o644)
     return cert_file
+
 
 def _get_modulus_exponent(public_key_file):
     if not os.path.isfile(public_key_file):
@@ -357,6 +363,7 @@ def _get_modulus_exponent(public_key_file):
 
     return modulus, exponent
 
+
 def _assert_args(storage_account, cert_file, public_key_file, private_key_file):
     """Validate SFTP connection arguments, following SSH extension patterns."""
     if not storage_account:
@@ -364,18 +371,19 @@ def _assert_args(storage_account, cert_file, public_key_file, private_key_file):
 
     if cert_file and not os.path.isfile(cert_file):
         raise azclierror.FileOperationError(f"Certificate file {cert_file} not found.")
-    
+
     if public_key_file and not os.path.isfile(public_key_file):
         raise azclierror.FileOperationError(f"Public key file {public_key_file} not found.")
-        
+
     if private_key_file and not os.path.isfile(private_key_file):
         raise azclierror.FileOperationError(f"Private key file {private_key_file} not found.")
+
 
 def _do_sftp_op(cmd, sftp_session, op_call):
     """Execute SFTP operation with session, similar to SSH extension's _do_ssh_op."""
     # Validate session before operation
     sftp_session.validate_session()
-    
+
     # Call the actual operation (connection, etc.)
     return op_call(sftp_session)
 
@@ -385,28 +393,29 @@ def _cleanup_credentials(delete_keys, delete_cert, credentials_folder, cert_file
     try:
         if delete_cert and cert_file and os.path.isfile(cert_file):
             file_utils.delete_file(cert_file, f"Deleting generated certificate {cert_file}", warning=False)
-            
+
         if delete_keys:
             if private_key_file and os.path.isfile(private_key_file):
                 file_utils.delete_file(private_key_file, f"Deleting generated private key {private_key_file}", warning=False)
             if public_key_file and os.path.isfile(public_key_file):
                 file_utils.delete_file(public_key_file, f"Deleting generated public key {public_key_file}", warning=False)
-                
+
         if credentials_folder and os.path.isdir(credentials_folder):
             logger.debug("Deleting credentials folder %s", credentials_folder)
             shutil.rmtree(credentials_folder)
-            
+
     except OSError as e:
         logger.warning("Failed to clean up credentials: %s", str(e))
 
+
 def _get_storage_endpoint_suffix(cmd):
     """Get the appropriate storage endpoint suffix based on Azure cloud environment.
-    
+
     This follows the same pattern as the SSH extension for cloud environment handling.
     """
     cloud_to_storage_suffix = {
         "azurecloud": "blob.core.windows.net",
-        "azurechinacloud": "blob.core.chinacloudapi.cn", 
+        "azurechinacloud": "blob.core.chinacloudapi.cn",
         "azureusgovernment": "blob.core.usgovcloudapi.net"
     }
     return cloud_to_storage_suffix.get(cmd.cli_ctx.cloud.name.lower(), "blob.core.windows.net")

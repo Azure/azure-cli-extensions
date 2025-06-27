@@ -102,7 +102,7 @@ def remove_invalid_characters_foldername(folder_name):
 def check_or_create_public_private_files(public_key_file, private_key_file, credentials_folder, ssh_client_folder=None):
     """Check for existing key files or create new ones if needed."""
     delete_keys = False
-    
+
     # If nothing is passed in create a temporary directory with a ephemeral keypair
     if not public_key_file and not private_key_file:
         # We only want to delete the keys if the user hasn't provided their own keys
@@ -160,7 +160,7 @@ def get_and_write_certificate(cmd, public_key_file, cert_file, ssh_client_folder
     profile = Profile(cli_ctx=cmd.cli_ctx)
 
     t0 = time.time()
-    
+
     # Get certificate using MSAL token
     if hasattr(profile, "get_msal_token"):
         # we used to use the username from the token but now we throw it away
@@ -178,13 +178,13 @@ def get_and_write_certificate(cmd, public_key_file, cert_file, ssh_client_folder
         cert_file = str(public_key_file) + "-aadcert.pub"
 
     logger.debug("Generating certificate %s", cert_file)
-    
+
     # Write certificate to file
     _write_cert_file(certificate, cert_file)
-    
+
     # Get username from certificate principals
     username = sftp_utils.get_ssh_cert_principals(cert_file, ssh_client_folder)[0]
-    
+
     # Set appropriate permissions
     oschmod.set_mode(cert_file, 0o600)
 
@@ -234,7 +234,7 @@ def _get_modulus_exponent(public_key_file):
         parser.parse(public_key_text)
     except Exception as e:
         raise azclierror.FileOperationError(f"Could not parse public key. Error: {str(e)}")
-    
+
     return parser.modulus, parser.exponent
 
 
@@ -242,7 +242,7 @@ def validate_certificate(cert_file, ssh_client_folder=None):
     """Validate an SSH certificate and check its expiration."""
     if not os.path.isfile(cert_file):
         raise azclierror.FileOperationError(f"Certificate file {cert_file} not found.")
-    
+
     try:
         times = sftp_utils.get_certificate_start_and_end_times(cert_file, ssh_client_folder)
         if times and times[1] < datetime.datetime.now():

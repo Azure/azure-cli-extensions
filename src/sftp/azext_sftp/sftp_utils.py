@@ -153,7 +153,7 @@ def get_ssh_cert_principals(cert_file, ssh_client_folder=None):
     return principals
 
 
-### Helpers ###
+# Helpers
 def get_ssh_cert_info(cert_file, ssh_client_folder=None):
     sshkeygen_path = get_ssh_client_path("ssh-keygen", ssh_client_folder)
     command = [sshkeygen_path, "-L", "-f", cert_file]
@@ -165,6 +165,7 @@ def get_ssh_cert_info(cert_file, ssh_client_folder=None):
         raise azclierror.BadRequestError(f"Failed to get certificate info with error: {str(e)}.",
                                          const.RECOMMENDATION_SSH_CLIENT_NOT_FOUND)
 
+
 def _get_ssh_cert_validity(cert_file, ssh_client_folder=None):
     if cert_file:
         info = get_ssh_cert_info(cert_file, ssh_client_folder)
@@ -172,6 +173,7 @@ def _get_ssh_cert_validity(cert_file, ssh_client_folder=None):
             if "Valid:" in line:
                 return line.strip()
     return None
+
 
 def get_ssh_client_path(ssh_command="ssh", ssh_client_folder=None):
     if ssh_client_folder:

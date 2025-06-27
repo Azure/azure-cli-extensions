@@ -25,9 +25,9 @@ SSH_CERT_SUFFIX = "-aadcert.pub"
 
 # Error messages and recommendations
 RECOMMENDATION_SSH_CLIENT_NOT_FOUND = (
-    Fore.YELLOW + 
+    Fore.YELLOW +
     "Ensure OpenSSH is installed correctly.\n"
-    "Alternatively, use --ssh-client-folder to provide OpenSSH folder path." + 
+    "Alternatively, use --ssh-client-folder to provide OpenSSH folder path." +
     Style.RESET_ALL
 )
 

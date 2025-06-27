@@ -22,8 +22,8 @@ def load_arguments(self, _):
     with self.argument_context('sftp connect') as c:
         c.argument('storage_account', options_list=['--storage-account', '-s'],
                    help='Azure Storage Account name for SFTP connection. Must have SFTP enabled.')
-        c.argument('port', options_list=['--port'], 
-                   help='SFTP port. If not specified, uses SSH default port (typically 22).', 
+        c.argument('port', options_list=['--port'],
+                   help='SFTP port. If not specified, uses SSH default port (typically 22).',
                    type=int)
         c.argument('cert_file', options_list=['--certificate-file', '-c'],
                    help='Path to SSH certificate file for authentication. '
@@ -32,7 +32,7 @@ def load_arguments(self, _):
         c.argument('private_key_file', options_list=['--private-key-file', '-i'],
                    help='Path to RSA private key file. If provided without certificate, '
                    'a certificate will be generated automatically from this key.')
-        c.argument('public_key_file', options_list=['--public-key-file', '-p'], 
+        c.argument('public_key_file', options_list=['--public-key-file', '-p'],
                    help='Path to RSA public key file. If provided without certificate, '
                    'a certificate will be generated automatically from this key.')
         c.argument('sftp_args', options_list=['--sftp-args'],

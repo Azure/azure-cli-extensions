@@ -12,22 +12,22 @@ helps['sftp'] = """
     short-summary: Commands to connect to Azure Storage Accounts via SFTP
     long-summary: |
         These commands allow you to generate certificates and connect to Azure Storage Accounts using SFTP.
-        
+
         PREREQUISITES:
         - Azure Storage Account with SFTP enabled
         - Appropriate RBAC permissions (Storage Blob Data Contributor or similar)
         - Azure CLI authentication (az login)
         - Network connectivity to Azure Storage endpoints
-        
+
         The SFTP extension provides two main capabilities:
         1. Certificate generation using Azure AD authentication (similar to 'az ssh cert')
         2. Fully managed SFTP connections to Azure Storage with automatic credential handling
-        
+
         AUTHENTICATION MODES:
         - Fully managed: No credentials needed - automatically generates SSH certificate
         - Certificate-based: Use existing SSH certificate file
         - Key-based: Use SSH public/private key pair (generates certificate automatically)
-        
+
         This extension closely follows the patterns established by the SSH extension.
 """
 
@@ -37,12 +37,12 @@ helps['sftp cert'] = """
     long-summary: |
         Generate an SSH certificate that can be used for authenticating to Azure Storage SFTP endpoints.
         This uses Azure AD authentication to generate a certificate similar to 'az ssh cert'.
-        
+
         CERTIFICATE NAMING:
         - Generated certificates have '-aadcert.pub' suffix (e.g., id_rsa-aadcert.pub)
         - Certificates are valid for a limited time (typically 1 hour)
         - Private keys are generated with 'id_rsa' name when key pair is created
-        
+
         The certificate can be used with 'az sftp connect' or with standard SFTP clients.
     examples:
         - name: Generate a certificate using an existing public key
@@ -57,17 +57,17 @@ helps['sftp connect'] = """
     type: command
     short-summary: Connect to Azure Storage Account via SFTP
     long-summary: |
-        Establish an SFTP connection to an Azure Storage Account. 
-        
+        Establish an SFTP connection to an Azure Storage Account.
+
         AUTHENTICATION MODES:
         1. Fully managed (RECOMMENDED): Run without credentials - automatically generates SSH certificate
            and establishes connection. Credentials are cleaned up after use.
-        
+
         2. Certificate-based: Use existing SSH certificate file. Certificate must be generated with
            'az sftp cert' or compatible with Azure AD authentication.
-        
+
         3. Key-based: Provide SSH keys - command will generate certificate automatically from your keys.
-        
+
         CONNECTION DETAILS:
         - Username format: {storage-account}.{azure-username}
         - Port: Uses SSH default (typically 22) unless specified with --port
@@ -75,7 +75,7 @@ helps['sftp connect'] = """
           * Azure Public: {storage-account}.blob.core.windows.net
           * Azure China: {storage-account}.blob.core.chinacloudapi.cn
           * Azure Government: {storage-account}.blob.core.usgovcloudapi.net
-        
+
         SECURITY:
         - Generated credentials are automatically cleaned up after connection
         - Temporary files stored in secure temporary directories

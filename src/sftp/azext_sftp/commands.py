@@ -14,7 +14,7 @@ to the appropriate custom functions.
 def load_command_table(self, _):
     """
     Load command table for SFTP extension.
-    
+
     Commands:
     - sftp cert: Generate SSH certificates for SFTP authentication
     - sftp connect: Connect to Azure Storage Account via SFTP

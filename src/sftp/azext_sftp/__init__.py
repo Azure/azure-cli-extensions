@@ -11,7 +11,7 @@ with automatic Azure AD authentication and certificate management.
 
 Key Features:
 - Fully managed SSH certificate generation using Azure AD
-- Support for existing SSH keys and certificates  
+- Support for existing SSH keys and certificates
 - Interactive and batch SFTP operations
 - Automatic credential cleanup for security
 - Integration with Azure Storage SFTP endpoints
@@ -32,11 +32,11 @@ class SftpCommandsLoader(AzCommandsLoader):
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
         from azext_sftp._client_factory import cf_sftp
-        
+
         sftp_custom = CliCommandType(
             operations_tmpl='azext_sftp.custom#{}',
             client_factory=cf_sftp)
-        
+
         super(SftpCommandsLoader, self).__init__(
             cli_ctx=cli_ctx,
             custom_command_type=sftp_custom)
