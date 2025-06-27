@@ -28,6 +28,8 @@ from azure.cli.testsdk import CliTestError, ScenarioTest, live_only
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from knack.util import CLIError
 
+from .test_localdns_profile import assert_dns_overrides_equal, vnetDnsOverridesExpected, kubeDnsOverridesExpected
+
 def _get_test_data_file(filename):
     curr_dir = os.path.dirname(os.path.realpath(__file__))
     return os.path.join(curr_dir, "data", filename)
@@ -3016,51 +3018,10 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "aks nodepool show --resource-group={resource_group} --cluster-name={name} --name={nodepool_name}"
         )
         result = self.cmd(show_cmd).get_output_in_json()
+        result = self.cmd(show_cmd).get_output_in_json()
         assert result["localDnsProfile"]["mode"] == "Required"
-        assert result["localDnsProfile"]["kubeDnsOverrides"] == {
-            ".": {
-                "cacheDurationInSeconds": 3600,
-                "forwardDestination": "ClusterCoreDNS",
-                "forwardPolicy": "Sequential",
-                "maxConcurrent": 1000,
-                "protocol": "PreferUDP",
-                "queryLogging": "Error",
-                "serveStale": "Immediate",
-                "serveStaleDurationInSeconds": 3600
-            },
-            "cluster.local": {
-                "cacheDurationInSeconds": 3600,
-                "forwardDestination": "ClusterCoreDNS",
-                "forwardPolicy": "Sequential",
-                "maxConcurrent": 1000,
-                "protocol": "ForceTCP",
-                "queryLogging": "Error",
-                "serveStale": "Immediate",
-                "serveStaleDurationInSeconds": 3600
-            }
-        }
-        assert result["localDnsProfile"]["vnetDnsOverrides"] == {
-            ".": {
-                "cacheDurationInSeconds": 3600,
-                "forwardDestination": "VnetDNS",
-                "forwardPolicy": "Sequential",
-                "maxConcurrent": 1000,
-                "protocol": "PreferUDP",
-                "queryLogging": "Error",
-                "serveStale": "Immediate",
-                "serveStaleDurationInSeconds": 3600
-            },
-            "cluster.local": {
-                "cacheDurationInSeconds": 3600,
-                "forwardDestination": "ClusterCoreDNS",
-                "forwardPolicy": "Sequential",
-                "maxConcurrent": 1000,
-                "protocol": "ForceTCP",
-                "queryLogging": "Error",
-                "serveStale": "Immediate",
-                "serveStaleDurationInSeconds": 3600
-            }
-        }
+        assert_dns_overrides_equal(result["localDnsProfile"]["kubeDnsOverrides"], kubeDnsOverridesExpected)
+        assert_dns_overrides_equal(result["localDnsProfile"]["vnetDnsOverrides"], vnetDnsOverridesExpected)
 
     @live_only()
     @AllowLargeResponse()
@@ -3107,50 +3068,9 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         )
         result = self.cmd(show_cmd).get_output_in_json()
         assert result["localDnsProfile"]["mode"] == "Required"
-        assert result["localDnsProfile"]["kubeDnsOverrides"] == {
-            ".": {
-                "cacheDurationInSeconds": 3600,
-                "forwardDestination": "ClusterCoreDNS",
-                "forwardPolicy": "Sequential",
-                "maxConcurrent": 1000,
-                "protocol": "PreferUDP",
-                "queryLogging": "Error",
-                "serveStale": "Immediate",
-                "serveStaleDurationInSeconds": 3600
-            },
-            "cluster.local": {
-                "cacheDurationInSeconds": 3600,
-                "forwardDestination": "ClusterCoreDNS",
-                "forwardPolicy": "Sequential",
-                "maxConcurrent": 1000,
-                "protocol": "ForceTCP",
-                "queryLogging": "Error",
-                "serveStale": "Immediate",
-                "serveStaleDurationInSeconds": 3600
-            }
-        }
-        assert result["localDnsProfile"]["vnetDnsOverrides"] == {
-            ".": {
-                "cacheDurationInSeconds": 3600,
-                "forwardDestination": "VnetDNS",
-                "forwardPolicy": "Sequential",
-                "maxConcurrent": 1000,
-                "protocol": "PreferUDP",
-                "queryLogging": "Error",
-                "serveStale": "Immediate",
-                "serveStaleDurationInSeconds": 3600
-            },
-            "cluster.local": {
-                "cacheDurationInSeconds": 3600,
-                "forwardDestination": "ClusterCoreDNS",
-                "forwardPolicy": "Sequential",
-                "maxConcurrent": 1000,
-                "protocol": "ForceTCP",
-                "queryLogging": "Error",
-                "serveStale": "Immediate",
-                "serveStaleDurationInSeconds": 3600
-            }
-        }
+        assert_dns_overrides_equal(result["localDnsProfile"]["kubeDnsOverrides"], kubeDnsOverridesExpected)
+        assert_dns_overrides_equal(result["localDnsProfile"]["vnetDnsOverrides"], vnetDnsOverridesExpected)
+
         aks_name = self.create_random_name("cliakstest", 16)
         node_pool_name = self.create_random_name("c", 6)
         self.kwargs.update({
@@ -11107,8 +11027,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
     @live_only()  # this test requires live_only because a binary is downloaded
     def test_aks_draft_with_manifest(self):
-        import os
-        import tempfile
 
         script_dir = os.path.dirname(__file__)
         create_config = "aks_draft_config/manifest.yaml"
