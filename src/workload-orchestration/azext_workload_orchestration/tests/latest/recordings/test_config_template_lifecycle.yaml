@@ -1,0 +1,523 @@
+interactions:
+- request:
+    body: '{"location": "eastus2euap", "properties": {"description": "Common configuration
+      settings"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - workload-orchestration config-template create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '91'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-group --config-template-name -l --description --config-template-file
+        --version
+      User-Agent:
+      - AZURECLI/2.68.0 azsdk-python-core/1.31.0 Python/3.12.10 (Windows-11-10.0.26100-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ConfigManager-CloudTest-Playground-Portal/providers/Microsoft.Edge/configTemplates/CommonConfig000002?api-version=2025-06-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ConfigManager-CloudTest-Playground-Portal/providers/Microsoft.Edge/configTemplates/CommonConfig000002","name":"CommonConfig000002","type":"microsoft.edge/configtemplates","location":"eastus2euap","systemData":{"createdBy":"audapure@microsoft.com","createdByType":"User","createdAt":"2025-06-23T07:52:53.0355526Z","lastModifiedBy":"audapure@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-06-23T07:52:53.0355526Z"},"properties":{"description":"Common
+        configuration settings","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '599'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Jun 2025 07:52:54 GMT
+      etag:
+      - '"26003b5f-0000-3300-0000-685907d50000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=b12b2079-2031-4146-9a67-f7637e660a5a/westindia/3bf33062-fe4b-4077-af09-a97fd9610751
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 8B4ED849443D4DEBB6B2715D9A11A988 Ref B: PNQ231110908025 Ref C: 2025-06-23T07:52:50Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"configTemplateVersion": {"properties": {"configurations": "configs:\n  AppName:
+      Hotmelt"}}, "version": "1.0.0"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - workload-orchestration config-template create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '113'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-group --config-template-name -l --description --config-template-file
+        --version
+      User-Agent:
+      - AZURECLI/2.68.0 azsdk-python-core/1.31.0 Python/3.12.10 (Windows-11-10.0.26100-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ConfigManager-CloudTest-Playground-Portal/providers/Microsoft.Edge/configTemplates/CommonConfig000002/createVersion?api-version=2025-06-01
+  response:
+    body:
+      string: 'null'
+    headers:
+      api-supported-versions:
+      - 2025-01-01-preview, 2025-06-01
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Edge/locations/EASTUS2EUAP/operationStatuses/77174ff0-85c5-48f6-aa71-28b973e5dd58*57FB47D9715FF00F276FBEA9234C966140E3EDA35A3C52E58276925E72973BA7?api-version=2023-07-01-preview&t=638862619765291046&c=MIIHhzCCBm-gAwIBAgITHgbO7uoaMgs7D03eGwAABs7u6jANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjUwNDIxMTk0NzU4WhcNMjUxMDE4MTk0NzU4WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANbMTIfsosr-e2nhsYNc2S0BYTm_Z7GagFw0ZlQEJG5FsiXVrA_5xrkW-roFwVxI7Ywu8tA1XPPFxJkRGt5GehtEtKB37IgztbtYsIjtoNU40Xc1bQhz7nvp-X2X4tbm7hl6ESrMeP5FWuWU8Z7MWm2Gcps1d1Cs5LO7Uk1ADbfJkV_9YdyIhP0FOhfTSiPvPY57EOh5ULUAhNTf82udNEtKlDgfMYVLXXIcqTbK7JWz3_UjBtNGSVFPABuNjfUAOYaG9USwE098YJAIP2w85Rxm1FUEaDsF3Omqkph3OvEpY_65DAhz12_07hxuc2wM2AzA3AgdbUF8Qo6b7teNMf0CAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBT5JDf47TxYPD9hhG08aVfLa6AK2jAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAJLaq4Zr75ddZokhkTocSjBLgmkkDJoMYWmwgDsEUyVKlJh4NIHCdpqWe1D1fZA9Bzygrcl2xG3JW3y8_tM05nYAPZl5nmrQMbLynhZKhBEx2FeToUtzwl8aV1ghjTcHxwQPOpCDVbzSqFEWHN3M8u5Lnq07vLSyuKea1SvsIdgtjBJ6IUPa0-5L1gGL9dSPw9FKwVvQa4hGVExiSyj3LDUqlEBADVvmtMJ0uW9A5WYI4SHZ-36KJu5igoF8yTMACt4G2ZSPZTFySV9T_lrNhXahU6X2qrKR7Z9drL_wT5IecO-3Ib6jbSkCb3TGdL-tsQNvYUOF2_MnQN63BWbmFkM&s=dGov5jECTs7RoopqKjuHhfaJXX8YtpSI_7mpQY-bEUBsUp310Hi_r9-4E2O6Tq26vT6l1djRYQyTpCoiNUkjAcjbVIIcMo_r5pKLY74nojHgBIHN0kvx9_Z5VRd5nAVOqgE5VWfKL0Tc6w2f6ODQDlYzmQj12JzIXpZVa7VekdN3dRonpOE4RL8kpslttohTCi4mXFYp9dG5FW55QWfXAfRwOI2lOcIJ1lmRutKR0W7lliMGkT_UkRrG_-iNd7kjZwGSnzEtQZrsV63vTeYNf4QJAh2MEDIOVwAPGJ_QCBtkhmHQ_lJqkElRXAPZcBk4XSPxjBBkHdxmxAtzidOBHw&h=9VRXZCJ6JnJKFokE4vm22-AdwquklgF7sdUBaVKz7N4
+      cache-control:
+      - no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Jun 2025 07:52:56 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Edge/locations/EASTUS2EUAP/operationStatuses/77174ff0-85c5-48f6-aa71-28b973e5dd58*57FB47D9715FF00F276FBEA9234C966140E3EDA35A3C52E58276925E72973BA7?api-version=2023-07-01-preview&t=638862619765447297&c=MIIHhzCCBm-gAwIBAgITHgbO7uoaMgs7D03eGwAABs7u6jANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjUwNDIxMTk0NzU4WhcNMjUxMDE4MTk0NzU4WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANbMTIfsosr-e2nhsYNc2S0BYTm_Z7GagFw0ZlQEJG5FsiXVrA_5xrkW-roFwVxI7Ywu8tA1XPPFxJkRGt5GehtEtKB37IgztbtYsIjtoNU40Xc1bQhz7nvp-X2X4tbm7hl6ESrMeP5FWuWU8Z7MWm2Gcps1d1Cs5LO7Uk1ADbfJkV_9YdyIhP0FOhfTSiPvPY57EOh5ULUAhNTf82udNEtKlDgfMYVLXXIcqTbK7JWz3_UjBtNGSVFPABuNjfUAOYaG9USwE098YJAIP2w85Rxm1FUEaDsF3Omqkph3OvEpY_65DAhz12_07hxuc2wM2AzA3AgdbUF8Qo6b7teNMf0CAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBT5JDf47TxYPD9hhG08aVfLa6AK2jAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAJLaq4Zr75ddZokhkTocSjBLgmkkDJoMYWmwgDsEUyVKlJh4NIHCdpqWe1D1fZA9Bzygrcl2xG3JW3y8_tM05nYAPZl5nmrQMbLynhZKhBEx2FeToUtzwl8aV1ghjTcHxwQPOpCDVbzSqFEWHN3M8u5Lnq07vLSyuKea1SvsIdgtjBJ6IUPa0-5L1gGL9dSPw9FKwVvQa4hGVExiSyj3LDUqlEBADVvmtMJ0uW9A5WYI4SHZ-36KJu5igoF8yTMACt4G2ZSPZTFySV9T_lrNhXahU6X2qrKR7Z9drL_wT5IecO-3Ib6jbSkCb3TGdL-tsQNvYUOF2_MnQN63BWbmFkM&s=q8U78tKmTmVFBb21XSKXa3Qq6ZpOJF65oVQehCUcH5VzVpdtmQfKzOOm9UDMVut20s96nu0W5C6I_iAMeuAzwCczYZLiqMzS0KpF1DBRuzz8crNAfBu_o9KKldvNpoe7V8ZYVOI9bwvdok9GmBIHRckfIrus_DJB5CwWHmjcyatZpDU3rHd1zk7-ODGRVQ40mDtO9Sgq-oFa449zU89RYI0cu0Gw_nztxqvku8opOHsWJgvsLwQOv9mafaN-auTpRf3hvTsO_79ckK7C6RNdEQQXGTIibP221TN4hvTvl0d83uU-C31UMmzHl94_Sq2aemXJB790FTLp3vbA1eExWg&h=KnD3S4RPCztjSCVzVlp20MXM2c50jbC1qdGLouV41SI
+      mise-correlation-id:
+      - 0ce89f98-79e3-49a4-9c9b-6e6eb8492dec
+      pragma:
+      - no-cache
+      servertime:
+      - 973 ms
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=b12b2079-2031-4146-9a67-f7637e660a5a/westindia/208b184e-a5d8-4a2e-8055-f3582c2bf70d
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 3B92C73CF0E6448F8CD6110A517227A3 Ref B: PNQ231110908025 Ref C: 2025-06-23T07:52:54Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - workload-orchestration config-template create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --config-template-name -l --description --config-template-file
+        --version
+      User-Agent:
+      - AZURECLI/2.68.0 azsdk-python-core/1.31.0 Python/3.12.10 (Windows-11-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Edge/locations/EASTUS2EUAP/operationStatuses/77174ff0-85c5-48f6-aa71-28b973e5dd58*57FB47D9715FF00F276FBEA9234C966140E3EDA35A3C52E58276925E72973BA7?api-version=2023-07-01-preview&t=638862619765291046&c=MIIHhzCCBm-gAwIBAgITHgbO7uoaMgs7D03eGwAABs7u6jANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjUwNDIxMTk0NzU4WhcNMjUxMDE4MTk0NzU4WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANbMTIfsosr-e2nhsYNc2S0BYTm_Z7GagFw0ZlQEJG5FsiXVrA_5xrkW-roFwVxI7Ywu8tA1XPPFxJkRGt5GehtEtKB37IgztbtYsIjtoNU40Xc1bQhz7nvp-X2X4tbm7hl6ESrMeP5FWuWU8Z7MWm2Gcps1d1Cs5LO7Uk1ADbfJkV_9YdyIhP0FOhfTSiPvPY57EOh5ULUAhNTf82udNEtKlDgfMYVLXXIcqTbK7JWz3_UjBtNGSVFPABuNjfUAOYaG9USwE098YJAIP2w85Rxm1FUEaDsF3Omqkph3OvEpY_65DAhz12_07hxuc2wM2AzA3AgdbUF8Qo6b7teNMf0CAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBT5JDf47TxYPD9hhG08aVfLa6AK2jAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAJLaq4Zr75ddZokhkTocSjBLgmkkDJoMYWmwgDsEUyVKlJh4NIHCdpqWe1D1fZA9Bzygrcl2xG3JW3y8_tM05nYAPZl5nmrQMbLynhZKhBEx2FeToUtzwl8aV1ghjTcHxwQPOpCDVbzSqFEWHN3M8u5Lnq07vLSyuKea1SvsIdgtjBJ6IUPa0-5L1gGL9dSPw9FKwVvQa4hGVExiSyj3LDUqlEBADVvmtMJ0uW9A5WYI4SHZ-36KJu5igoF8yTMACt4G2ZSPZTFySV9T_lrNhXahU6X2qrKR7Z9drL_wT5IecO-3Ib6jbSkCb3TGdL-tsQNvYUOF2_MnQN63BWbmFkM&s=dGov5jECTs7RoopqKjuHhfaJXX8YtpSI_7mpQY-bEUBsUp310Hi_r9-4E2O6Tq26vT6l1djRYQyTpCoiNUkjAcjbVIIcMo_r5pKLY74nojHgBIHN0kvx9_Z5VRd5nAVOqgE5VWfKL0Tc6w2f6ODQDlYzmQj12JzIXpZVa7VekdN3dRonpOE4RL8kpslttohTCi4mXFYp9dG5FW55QWfXAfRwOI2lOcIJ1lmRutKR0W7lliMGkT_UkRrG_-iNd7kjZwGSnzEtQZrsV63vTeYNf4QJAh2MEDIOVwAPGJ_QCBtkhmHQ_lJqkElRXAPZcBk4XSPxjBBkHdxmxAtzidOBHw&h=9VRXZCJ6JnJKFokE4vm22-AdwquklgF7sdUBaVKz7N4
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Edge/locations/EASTUS2EUAP/operationStatuses/77174ff0-85c5-48f6-aa71-28b973e5dd58*57FB47D9715FF00F276FBEA9234C966140E3EDA35A3C52E58276925E72973BA7","name":"77174ff0-85c5-48f6-aa71-28b973e5dd58*57FB47D9715FF00F276FBEA9234C966140E3EDA35A3C52E58276925E72973BA7","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ConfigManager-CloudTest-Playground-Portal/providers/Microsoft.Edge/configTemplates/CommonConfig000002","status":"InProgress","startTime":"2025-06-23T07:52:55.3833058Z"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Edge/locations/eastus2euap/operationStatuses/77174ff0-85c5-48f6-aa71-28b973e5dd58*57FB47D9715FF00F276FBEA9234C966140E3EDA35A3C52E58276925E72973BA7?api-version=2023-07-01-preview&t=638862619772393722&c=MIIHhzCCBm-gAwIBAgITHgbO7uoaMgs7D03eGwAABs7u6jANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjUwNDIxMTk0NzU4WhcNMjUxMDE4MTk0NzU4WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANbMTIfsosr-e2nhsYNc2S0BYTm_Z7GagFw0ZlQEJG5FsiXVrA_5xrkW-roFwVxI7Ywu8tA1XPPFxJkRGt5GehtEtKB37IgztbtYsIjtoNU40Xc1bQhz7nvp-X2X4tbm7hl6ESrMeP5FWuWU8Z7MWm2Gcps1d1Cs5LO7Uk1ADbfJkV_9YdyIhP0FOhfTSiPvPY57EOh5ULUAhNTf82udNEtKlDgfMYVLXXIcqTbK7JWz3_UjBtNGSVFPABuNjfUAOYaG9USwE098YJAIP2w85Rxm1FUEaDsF3Omqkph3OvEpY_65DAhz12_07hxuc2wM2AzA3AgdbUF8Qo6b7teNMf0CAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBT5JDf47TxYPD9hhG08aVfLa6AK2jAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAJLaq4Zr75ddZokhkTocSjBLgmkkDJoMYWmwgDsEUyVKlJh4NIHCdpqWe1D1fZA9Bzygrcl2xG3JW3y8_tM05nYAPZl5nmrQMbLynhZKhBEx2FeToUtzwl8aV1ghjTcHxwQPOpCDVbzSqFEWHN3M8u5Lnq07vLSyuKea1SvsIdgtjBJ6IUPa0-5L1gGL9dSPw9FKwVvQa4hGVExiSyj3LDUqlEBADVvmtMJ0uW9A5WYI4SHZ-36KJu5igoF8yTMACt4G2ZSPZTFySV9T_lrNhXahU6X2qrKR7Z9drL_wT5IecO-3Ib6jbSkCb3TGdL-tsQNvYUOF2_MnQN63BWbmFkM&s=GadukocPVTJEhnoI8p39xeErgN31xON9Ifgun6IgU-TIP51JbMxSXwOlc3FP1N-ha1URNDA2w7ZZbsSSJyMsDBrLlOlpMxDhSUu-YjBDkGyYik86RIUm8ZBU2dZOQ2gA7GzcAN0s3AuE478N3ZR8P6aUT3fgOT9Y6RFU436xWGPn0e9IpolmNtqbhJ9N8dQ2A0BRAfaXU5Wy-eaK0Q8uxw4cjLd0Vq5xKQztQMVqAiXIVJUw4Axayitz5MjDsvBNEgpKCPP_nknJLuIhQRK0nG5Fx2YSVgU1ol-eYgxmSf0Om8NAYhU4yDRxxli-52RadlhJSbwyJiDNOMBaMXmktQ&h=8oqqApglFgng86dvXcN0rOtlUM5XMJBlVicdYZrJLq4
+      cache-control:
+      - no-cache
+      content-length:
+      - '587'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Jun 2025 07:52:56 GMT
+      etag:
+      - '"0b00d225-0000-3300-0000-685907d80000"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Edge/locations/eastus2euap/operationStatuses/77174ff0-85c5-48f6-aa71-28b973e5dd58*57FB47D9715FF00F276FBEA9234C966140E3EDA35A3C52E58276925E72973BA7?api-version=2023-07-01-preview&t=638862619772549986&c=MIIHhzCCBm-gAwIBAgITHgbO7uoaMgs7D03eGwAABs7u6jANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjUwNDIxMTk0NzU4WhcNMjUxMDE4MTk0NzU4WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANbMTIfsosr-e2nhsYNc2S0BYTm_Z7GagFw0ZlQEJG5FsiXVrA_5xrkW-roFwVxI7Ywu8tA1XPPFxJkRGt5GehtEtKB37IgztbtYsIjtoNU40Xc1bQhz7nvp-X2X4tbm7hl6ESrMeP5FWuWU8Z7MWm2Gcps1d1Cs5LO7Uk1ADbfJkV_9YdyIhP0FOhfTSiPvPY57EOh5ULUAhNTf82udNEtKlDgfMYVLXXIcqTbK7JWz3_UjBtNGSVFPABuNjfUAOYaG9USwE098YJAIP2w85Rxm1FUEaDsF3Omqkph3OvEpY_65DAhz12_07hxuc2wM2AzA3AgdbUF8Qo6b7teNMf0CAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBT5JDf47TxYPD9hhG08aVfLa6AK2jAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAJLaq4Zr75ddZokhkTocSjBLgmkkDJoMYWmwgDsEUyVKlJh4NIHCdpqWe1D1fZA9Bzygrcl2xG3JW3y8_tM05nYAPZl5nmrQMbLynhZKhBEx2FeToUtzwl8aV1ghjTcHxwQPOpCDVbzSqFEWHN3M8u5Lnq07vLSyuKea1SvsIdgtjBJ6IUPa0-5L1gGL9dSPw9FKwVvQa4hGVExiSyj3LDUqlEBADVvmtMJ0uW9A5WYI4SHZ-36KJu5igoF8yTMACt4G2ZSPZTFySV9T_lrNhXahU6X2qrKR7Z9drL_wT5IecO-3Ib6jbSkCb3TGdL-tsQNvYUOF2_MnQN63BWbmFkM&s=DsVnV2OUfxRxHHuPKEkgOHhKLvzv5WOE1pFbMxIMxC6VnPKEtpO8OL8OUUPBA-YWPYoRGA2RIG5j8af7F7ghVjwIQYvp8oESmbAguFXTC9ul6vbiBQL_z84kr2Smx_j-t0lnoyOwJPEEqlb6YX-qr1o79WcQF4TPLEjzTeJuq-2E-dLb515IpJMSFS7-GbtVX6SZqCyqSCCZ3hwGDXdqfWi1ikqnMBIXi5egJDZDlk1kqSwjLfxwD34V0uDDfCN6CPI7By8h4veMdvxX0G2x3zLU50aenUR15FV32YTqFRG8XBNwI69GhVmAuwCdAg8cRGVV1ZX3WdlDsZfLL62emg&h=_OsaFKGuB5u7RcNRzzmA-QTVnJKyNsi-uz2Srn1Ymms
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=b12b2079-2031-4146-9a67-f7637e660a5a/westindia/d3291b21-a60c-42f8-b059-aaf90c853ae4
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 878C0EFC5AFD49CD800989D1A7DFB0DD Ref B: PNQ231110908025 Ref C: 2025-06-23T07:52:56Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - workload-orchestration config-template create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --config-template-name -l --description --config-template-file
+        --version
+      User-Agent:
+      - AZURECLI/2.68.0 azsdk-python-core/1.31.0 Python/3.12.10 (Windows-11-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Edge/locations/EASTUS2EUAP/operationStatuses/77174ff0-85c5-48f6-aa71-28b973e5dd58*57FB47D9715FF00F276FBEA9234C966140E3EDA35A3C52E58276925E72973BA7?api-version=2023-07-01-preview&t=638862619765291046&c=MIIHhzCCBm-gAwIBAgITHgbO7uoaMgs7D03eGwAABs7u6jANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjUwNDIxMTk0NzU4WhcNMjUxMDE4MTk0NzU4WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANbMTIfsosr-e2nhsYNc2S0BYTm_Z7GagFw0ZlQEJG5FsiXVrA_5xrkW-roFwVxI7Ywu8tA1XPPFxJkRGt5GehtEtKB37IgztbtYsIjtoNU40Xc1bQhz7nvp-X2X4tbm7hl6ESrMeP5FWuWU8Z7MWm2Gcps1d1Cs5LO7Uk1ADbfJkV_9YdyIhP0FOhfTSiPvPY57EOh5ULUAhNTf82udNEtKlDgfMYVLXXIcqTbK7JWz3_UjBtNGSVFPABuNjfUAOYaG9USwE098YJAIP2w85Rxm1FUEaDsF3Omqkph3OvEpY_65DAhz12_07hxuc2wM2AzA3AgdbUF8Qo6b7teNMf0CAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBT5JDf47TxYPD9hhG08aVfLa6AK2jAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAJLaq4Zr75ddZokhkTocSjBLgmkkDJoMYWmwgDsEUyVKlJh4NIHCdpqWe1D1fZA9Bzygrcl2xG3JW3y8_tM05nYAPZl5nmrQMbLynhZKhBEx2FeToUtzwl8aV1ghjTcHxwQPOpCDVbzSqFEWHN3M8u5Lnq07vLSyuKea1SvsIdgtjBJ6IUPa0-5L1gGL9dSPw9FKwVvQa4hGVExiSyj3LDUqlEBADVvmtMJ0uW9A5WYI4SHZ-36KJu5igoF8yTMACt4G2ZSPZTFySV9T_lrNhXahU6X2qrKR7Z9drL_wT5IecO-3Ib6jbSkCb3TGdL-tsQNvYUOF2_MnQN63BWbmFkM&s=dGov5jECTs7RoopqKjuHhfaJXX8YtpSI_7mpQY-bEUBsUp310Hi_r9-4E2O6Tq26vT6l1djRYQyTpCoiNUkjAcjbVIIcMo_r5pKLY74nojHgBIHN0kvx9_Z5VRd5nAVOqgE5VWfKL0Tc6w2f6ODQDlYzmQj12JzIXpZVa7VekdN3dRonpOE4RL8kpslttohTCi4mXFYp9dG5FW55QWfXAfRwOI2lOcIJ1lmRutKR0W7lliMGkT_UkRrG_-iNd7kjZwGSnzEtQZrsV63vTeYNf4QJAh2MEDIOVwAPGJ_QCBtkhmHQ_lJqkElRXAPZcBk4XSPxjBBkHdxmxAtzidOBHw&h=9VRXZCJ6JnJKFokE4vm22-AdwquklgF7sdUBaVKz7N4
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Edge/locations/EASTUS2EUAP/operationStatuses/77174ff0-85c5-48f6-aa71-28b973e5dd58*57FB47D9715FF00F276FBEA9234C966140E3EDA35A3C52E58276925E72973BA7","name":"77174ff0-85c5-48f6-aa71-28b973e5dd58*57FB47D9715FF00F276FBEA9234C966140E3EDA35A3C52E58276925E72973BA7","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ConfigManager-CloudTest-Playground-Portal/providers/Microsoft.Edge/configTemplates/CommonConfig000002","status":"Succeeded","startTime":"2025-06-23T07:52:55.3833058Z","endTime":"2025-06-23T07:52:57.5944021Z","properties":{"properties":{"configurations":"configs:\n  AppName:
+        Hotmelt","provisioningState":"Succeeded"},"eTag":"\"280045f0-0000-3300-0000-685907d80000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ConfigManager-CloudTest-Playground-Portal/providers/Microsoft.Edge/configTemplates/CommonConfig000002/versions/1.0.0","name":"1.0.0","type":"microsoft.edge/configtemplates/versions"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1042'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Jun 2025 07:53:27 GMT
+      etag:
+      - '"0b00dc25-0000-3300-0000-685907d90000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=b12b2079-2031-4146-9a67-f7637e660a5a/westindia/0549ed30-2cd6-4553-b1d3-f03f9a2c0827
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: FB0B9FAAB7C94AF1952309B281FE5845 Ref B: PNQ231110908025 Ref C: 2025-06-23T07:53:27Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - workload-orchestration config-template create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --config-template-name -l --description --config-template-file
+        --version
+      User-Agent:
+      - AZURECLI/2.68.0 azsdk-python-core/1.31.0 Python/3.12.10 (Windows-11-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Edge/locations/EASTUS2EUAP/operationStatuses/77174ff0-85c5-48f6-aa71-28b973e5dd58*57FB47D9715FF00F276FBEA9234C966140E3EDA35A3C52E58276925E72973BA7?api-version=2023-07-01-preview&t=638862619765447297&c=MIIHhzCCBm-gAwIBAgITHgbO7uoaMgs7D03eGwAABs7u6jANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjUwNDIxMTk0NzU4WhcNMjUxMDE4MTk0NzU4WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANbMTIfsosr-e2nhsYNc2S0BYTm_Z7GagFw0ZlQEJG5FsiXVrA_5xrkW-roFwVxI7Ywu8tA1XPPFxJkRGt5GehtEtKB37IgztbtYsIjtoNU40Xc1bQhz7nvp-X2X4tbm7hl6ESrMeP5FWuWU8Z7MWm2Gcps1d1Cs5LO7Uk1ADbfJkV_9YdyIhP0FOhfTSiPvPY57EOh5ULUAhNTf82udNEtKlDgfMYVLXXIcqTbK7JWz3_UjBtNGSVFPABuNjfUAOYaG9USwE098YJAIP2w85Rxm1FUEaDsF3Omqkph3OvEpY_65DAhz12_07hxuc2wM2AzA3AgdbUF8Qo6b7teNMf0CAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBT5JDf47TxYPD9hhG08aVfLa6AK2jAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAJLaq4Zr75ddZokhkTocSjBLgmkkDJoMYWmwgDsEUyVKlJh4NIHCdpqWe1D1fZA9Bzygrcl2xG3JW3y8_tM05nYAPZl5nmrQMbLynhZKhBEx2FeToUtzwl8aV1ghjTcHxwQPOpCDVbzSqFEWHN3M8u5Lnq07vLSyuKea1SvsIdgtjBJ6IUPa0-5L1gGL9dSPw9FKwVvQa4hGVExiSyj3LDUqlEBADVvmtMJ0uW9A5WYI4SHZ-36KJu5igoF8yTMACt4G2ZSPZTFySV9T_lrNhXahU6X2qrKR7Z9drL_wT5IecO-3Ib6jbSkCb3TGdL-tsQNvYUOF2_MnQN63BWbmFkM&s=q8U78tKmTmVFBb21XSKXa3Qq6ZpOJF65oVQehCUcH5VzVpdtmQfKzOOm9UDMVut20s96nu0W5C6I_iAMeuAzwCczYZLiqMzS0KpF1DBRuzz8crNAfBu_o9KKldvNpoe7V8ZYVOI9bwvdok9GmBIHRckfIrus_DJB5CwWHmjcyatZpDU3rHd1zk7-ODGRVQ40mDtO9Sgq-oFa449zU89RYI0cu0Gw_nztxqvku8opOHsWJgvsLwQOv9mafaN-auTpRf3hvTsO_79ckK7C6RNdEQQXGTIibP221TN4hvTvl0d83uU-C31UMmzHl94_Sq2aemXJB790FTLp3vbA1eExWg&h=KnD3S4RPCztjSCVzVlp20MXM2c50jbC1qdGLouV41SI
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Edge/locations/EASTUS2EUAP/operationStatuses/77174ff0-85c5-48f6-aa71-28b973e5dd58*57FB47D9715FF00F276FBEA9234C966140E3EDA35A3C52E58276925E72973BA7","name":"77174ff0-85c5-48f6-aa71-28b973e5dd58*57FB47D9715FF00F276FBEA9234C966140E3EDA35A3C52E58276925E72973BA7","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ConfigManager-CloudTest-Playground-Portal/providers/Microsoft.Edge/configTemplates/CommonConfig000002","status":"Succeeded","startTime":"2025-06-23T07:52:55.3833058Z","endTime":"2025-06-23T07:52:57.5944021Z","properties":{"properties":{"configurations":"configs:\n  AppName:
+        Hotmelt","provisioningState":"Succeeded"},"eTag":"\"280045f0-0000-3300-0000-685907d80000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ConfigManager-CloudTest-Playground-Portal/providers/Microsoft.Edge/configTemplates/CommonConfig000002/versions/1.0.0","name":"1.0.0","type":"microsoft.edge/configtemplates/versions"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1042'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Jun 2025 07:53:27 GMT
+      etag:
+      - '"0b00dc25-0000-3300-0000-685907d90000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=b12b2079-2031-4146-9a67-f7637e660a5a/westindia/cc39ad1f-290a-4044-8ee9-e3cabc4149c8
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16498'
+      x-msedge-ref:
+      - 'Ref A: 6182EE2391514AFC8ECBC6FEE96F335A Ref B: PNQ231110908025 Ref C: 2025-06-23T07:53:27Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - workload-orchestration config-template show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --config-template-name
+      User-Agent:
+      - AZURECLI/2.68.0 azsdk-python-core/1.31.0 Python/3.12.10 (Windows-11-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ConfigManager-CloudTest-Playground-Portal/providers/Microsoft.Edge/configTemplates/CommonConfig000002?api-version=2025-06-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ConfigManager-CloudTest-Playground-Portal/providers/Microsoft.Edge/configTemplates/CommonConfig000002","name":"CommonConfig000002","type":"microsoft.edge/configtemplates","location":"eastus2euap","systemData":{"createdBy":"audapure@microsoft.com","createdByType":"User","createdAt":"2025-06-23T07:52:53.0355526Z","lastModifiedBy":"audapure@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-06-23T07:52:53.0355526Z"},"properties":{"description":"Common
+        configuration settings","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '599'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Jun 2025 07:53:28 GMT
+      etag:
+      - '"26003b5f-0000-3300-0000-685907d50000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 9D219CFFAA7948E89933709C0FDA4C06 Ref B: PNQ231110907062 Ref C: 2025-06-23T07:53:28Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - workload-orchestration config-template list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group
+      User-Agent:
+      - AZURECLI/2.68.0 azsdk-python-core/1.31.0 Python/3.12.10 (Windows-11-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ConfigManager-CloudTest-Playground-Portal/providers/Microsoft.Edge/configTemplates?api-version=2025-06-01
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ConfigManager-CloudTest-Playground-Portal/providers/Microsoft.Edge/configTemplates/CommonConfig","name":"CommonConfig","type":"microsoft.edge/configtemplates","location":"eastus2","systemData":{"createdBy":"audapure@microsoft.com","createdByType":"User","createdAt":"2025-04-10T10:22:29.122759Z","lastModifiedBy":"audapure@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-05-15T07:23:57.1376598Z"},"properties":{"provisioningState":"Succeeded","description":"Common
+        configuration settings"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ConfigManager-CloudTest-Playground-Portal/providers/Microsoft.Edge/configTemplates/configtemplyuate","name":"configtemplyuate","type":"microsoft.edge/configtemplates","location":"eastus2","systemData":{"lastModifiedBy":"audapure@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-04-11T06:39:57.9855159Z"},"properties":{"provisioningState":"Succeeded","description":"A"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ConfigManager-CloudTest-Playground-Portal/providers/Microsoft.Edge/configTemplates/configtemplate","name":"configtemplate","type":"microsoft.edge/configtemplates","location":"eastus2","systemData":{"lastModifiedBy":"audapure@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-04-11T07:00:35.5631496Z"},"properties":{"provisioningState":"Succeeded","description":"A"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ConfigManager-CloudTest-Playground-Portal/providers/Microsoft.Edge/configTemplates/UIRstCommonConfig","name":"UIRstCommonConfig","type":"microsoft.edge/configtemplates","location":"eastus2","systemData":{"createdBy":"audapure@microsoft.com","createdByType":"User","createdAt":"2025-06-18T09:20:03.6055777Z","lastModifiedBy":"audapure@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-06-18T09:20:03.6055777Z"},"properties":{"description":"Common
+        configuration settings","provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ConfigManager-CloudTest-Playground-Portal/providers/Microsoft.Edge/configTemplates/sstCommonConfig","name":"sstCommonConfig","type":"microsoft.edge/configtemplates","location":"eastus2","systemData":{"createdBy":"audapure@microsoft.com","createdByType":"User","createdAt":"2025-06-19T06:56:25.5093482Z","lastModifiedBy":"audapure@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-06-19T06:56:25.5093482Z"},"properties":{"description":"Common
+        configuration settings","provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ConfigManager-CloudTest-Playground-Portal/providers/Microsoft.Edge/configTemplates/Portal-Test-config","name":"Portal-Test-config","type":"microsoft.edge/configtemplates","location":"eastus2euap","tags":{},"systemData":{"createdBy":"audapure@microsoft.com","createdByType":"User","createdAt":"2025-03-12T04:43:27.1632631Z","lastModifiedBy":"cba491bc-48c0-44a6-a6c7-23362a7f54a9","lastModifiedByType":"Application","lastModifiedAt":"2025-03-12T04:45:12.4303883Z"},"properties":{"description":"This
+        is Holtmelt Solution","latestVersion":"2.0.0","provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ConfigManager-CloudTest-Playground-Portal/providers/Microsoft.Edge/configTemplates/configtemplate1234","name":"configtemplate1234","type":"microsoft.edge/configtemplates","location":"eastus2euap","systemData":{"createdBy":"audapure@microsoft.com","createdByType":"User","createdAt":"2025-04-11T07:02:03.7977147Z","lastModifiedBy":"audapure@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-04-11T08:17:07.0413237Z"},"properties":{"provisioningState":"Succeeded","description":"A"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ConfigManager-CloudTest-Playground-Portal/providers/Microsoft.Edge/configTemplates/CommonConfig2","name":"CommonConfig2","type":"microsoft.edge/configtemplates","location":"eastus2euap","systemData":{"createdBy":"audapure@microsoft.com","createdByType":"User","createdAt":"2025-05-15T07:24:57.7906561Z","lastModifiedBy":"audapure@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-05-28T09:04:02.1055214Z"},"properties":{"provisioningState":"Succeeded","description":"Common
+        configuration settings"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ConfigManager-CloudTest-Playground-Portal/providers/Microsoft.Edge/configTemplates/flag-config","name":"flag-config","type":"microsoft.edge/configtemplates","location":"eastus2euap","systemData":{"createdBy":"audapure@microsoft.com","createdByType":"User","createdAt":"2025-05-16T05:42:21.7450374Z","lastModifiedBy":"audapure@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-05-16T05:42:21.7450374Z"},"properties":{"description":"This
+        is Holtmelt Solution","provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ConfigManager-CloudTest-Playground-Portal/providers/Microsoft.Edge/configTemplates/UIRestCommonConfig","name":"UIRestCommonConfig","type":"microsoft.edge/configtemplates","location":"eastus2euap","systemData":{"createdBy":"audapure@microsoft.com","createdByType":"User","createdAt":"2025-05-16T06:00:24.2788275Z","lastModifiedBy":"audapure@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-05-16T06:00:24.2788275Z"},"properties":{"description":"Common
+        configuration settings","provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ConfigManager-CloudTest-Playground-Portal/providers/Microsoft.Edge/configTemplates/CommonConfigahmbakav","name":"CommonConfigahmbakav","type":"microsoft.edge/configtemplates","location":"eastus2euap","systemData":{"createdBy":"audapure@microsoft.com","createdByType":"User","createdAt":"2025-05-28T09:13:06.8395347Z","lastModifiedBy":"audapure@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-05-28T09:13:06.8395347Z"},"properties":{"description":"Common
+        configuration settings","provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ConfigManager-CloudTest-Playground-Portal/providers/Microsoft.Edge/configTemplates/CommonConfigjlbwdtiz","name":"CommonConfigjlbwdtiz","type":"microsoft.edge/configtemplates","location":"eastus2euap","systemData":{"createdBy":"audapure@microsoft.com","createdByType":"User","createdAt":"2025-05-30T07:06:39.8574748Z","lastModifiedBy":"audapure@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-05-30T07:06:39.8574748Z"},"properties":{"description":"Common
+        configuration settings","provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ConfigManager-CloudTest-Playground-Portal/providers/Microsoft.Edge/configTemplates/stableCommonConfig","name":"stableCommonConfig","type":"microsoft.edge/configtemplates","location":"eastus2euap","systemData":{"createdBy":"audapure@microsoft.com","createdByType":"User","createdAt":"2025-06-23T04:56:06.262838Z","lastModifiedBy":"audapure@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-06-23T04:56:06.262838Z"},"properties":{"description":"Common
+        configuration settings","provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ConfigManager-CloudTest-Playground-Portal/providers/Microsoft.Edge/configTemplates/ustableCommonConfig","name":"ustableCommonConfig","type":"microsoft.edge/configtemplates","location":"eastus2euap","systemData":{"createdBy":"audapure@microsoft.com","createdByType":"User","createdAt":"2025-06-23T05:17:25.2838504Z","lastModifiedBy":"audapure@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-06-23T05:17:25.2838504Z"},"properties":{"description":"Common
+        configuration settings","provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ConfigManager-CloudTest-Playground-Portal/providers/Microsoft.Edge/configTemplates/CommonConfigndud7uc3","name":"CommonConfigndud7uc3","type":"microsoft.edge/configtemplates","location":"eastus2euap","systemData":{"createdBy":"audapure@microsoft.com","createdByType":"User","createdAt":"2025-06-23T06:57:23.3166008Z","lastModifiedBy":"audapure@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-06-23T06:57:23.3166008Z"},"properties":{"description":"Common
+        configuration settings","provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ConfigManager-CloudTest-Playground-Portal/providers/Microsoft.Edge/configTemplates/CommonConfig000002","name":"CommonConfig000002","type":"microsoft.edge/configtemplates","location":"eastus2euap","systemData":{"createdBy":"audapure@microsoft.com","createdByType":"User","createdAt":"2025-06-23T07:52:53.0355526Z","lastModifiedBy":"audapure@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-06-23T07:52:53.0355526Z"},"properties":{"description":"Common
+        configuration settings","provisioningState":"Succeeded"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '9303'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Jun 2025 07:53:29 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-original-request-ids:
+      - adfd3782-abff-463e-927e-b6463388c2e4
+      - c35ec09e-489b-43a2-8d41-bc60a603a069
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 96B85EF70467495CA16D54CCBD1F407C Ref B: PNQ231110909054 Ref C: 2025-06-23T07:53:28Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"version": "1.0.0"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - workload-orchestration config-template remove-version
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '20'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-group --config-template-name --version
+      User-Agent:
+      - AZURECLI/2.68.0 azsdk-python-core/1.31.0 Python/3.12.10 (Windows-11-10.0.26100-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ConfigManager-CloudTest-Playground-Portal/providers/Microsoft.Edge/configTemplates/CommonConfig000002/removeVersion?api-version=2025-06-01
+  response:
+    body:
+      string: '{"status":"Deletion Succeeded"}'
+    headers:
+      api-supported-versions:
+      - 2025-01-01-preview, 2025-06-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '31'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Jun 2025 07:53:31 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 5a3a791d-759a-48d8-867d-6ce4810aa721
+      pragma:
+      - no-cache
+      servertime:
+      - 521 ms
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=b12b2079-2031-4146-9a67-f7637e660a5a/centralindia/4e86065b-57c7-475d-a333-31c51799c445
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: CF2437EC1AF346838E8C600E81498AE3 Ref B: PNQ231110906042 Ref C: 2025-06-23T07:53:30Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - workload-orchestration config-template delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --resource-group --config-template-name --yes
+      User-Agent:
+      - AZURECLI/2.68.0 azsdk-python-core/1.31.0 Python/3.12.10 (Windows-11-10.0.26100-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ConfigManager-CloudTest-Playground-Portal/providers/microsoft.edge/configTemplates/CommonConfig000002?api-version=2025-06-01
+  response:
+    body:
+      string: ''
+    headers:
+      api-supported-versions:
+      - 2025-01-01-preview, 2025-06-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Mon, 23 Jun 2025 07:53:36 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 588482fc-e86a-49d8-b3a1-bad9e87f1a22
+      pragma:
+      - no-cache
+      servertime:
+      - 406 ms
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=b12b2079-2031-4146-9a67-f7637e660a5a/centralindia/585f8df0-83d8-4681-946f-a65ff8d0d0ee
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '799'
+      x-ms-ratelimit-remaining-subscription-global-deletes:
+      - '11999'
+      x-msedge-ref:
+      - 'Ref A: CEAA5FEE3BB447E987DC4A320A736B64 Ref B: PNQ231110906062 Ref C: 2025-06-23T07:53:32Z'
+    status:
+      code: 200
+      message: OK
+version: 1
