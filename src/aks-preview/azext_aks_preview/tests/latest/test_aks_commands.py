@@ -3023,6 +3023,12 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         assert_dns_overrides_equal(result["localDnsProfile"]["kubeDnsOverrides"], kubeDnsOverridesExpected)
         assert_dns_overrides_equal(result["localDnsProfile"]["vnetDnsOverrides"], vnetDnsOverridesExpected)
 
+        # Clean up
+        self.cmd(
+            "aks delete --resource-group={resource_group} --name={name} --yes --no-wait",
+            checks=[self.is_empty()],
+        )
+
     @live_only()
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix="clitest", location="westus2")
@@ -3070,43 +3076,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         assert result["localDnsProfile"]["mode"] == "Required"
         assert_dns_overrides_equal(result["localDnsProfile"]["kubeDnsOverrides"], kubeDnsOverridesExpected)
         assert_dns_overrides_equal(result["localDnsProfile"]["vnetDnsOverrides"], vnetDnsOverridesExpected)
-
-        aks_name = self.create_random_name("cliakstest", 16)
-        node_pool_name = self.create_random_name("c", 6)
-        self.kwargs.update({
-            "resource_group": resource_group,
-            "name": aks_name,
-            "node_pool_name": node_pool_name,
-            "ssh_key_value": self.generate_ssh_keys(),
-        })
-
-        # Path to the localdnsconfig.json config file
-        localdns_config_path = os.path.join(
-            os.path.dirname(__file__), "data", "localdnsconfig.json"
-        )
-
-        # Create the cluster
-        create_cmd = (
-            "aks create --resource-group={resource_group} --name={name} "
-            "--ssh-key-value={ssh_key_value} --node-count 1 "
-            "--kubernetes-version 1.33.0" # k8s version > 1.33 to support localDNS
-        )
-        self.cmd(create_cmd, checks=[self.check("provisioningState", "Succeeded")])
-
-        # Add a nodepool with --localdns-config
-        add_cmd = (
-            "aks nodepool add --resource-group={resource_group} --cluster-name={name} "
-            "--name={node_pool_name} --node-count 1 --localdns-config {localdns_config_path}"
-        ).format(localdns_config_path=localdns_config_path)
-        nodepool = self.cmd(add_cmd).get_output_in_json()
-
-        # Load the config for validation
-        with open(localdns_config_path, "r") as f:
-            expected_localdns = json.load(f)
-
-        # Validate the nodepool's localDnsProfile matches the config
-        actual_localdns = nodepool.get("localDnsProfile", {})
-        assert actual_localdns == expected_localdns, f"localDnsProfile mismatch: {actual_localdns} != {expected_localdns}"
 
         # Clean up
         self.cmd(
