@@ -21,7 +21,7 @@ kubeDnsOverridesExpected = {
             "maxConcurrent": 1000,
             "protocol": "PreferUDP",
             "queryLogging": "Error",
-            "serveStale": "Immediate",
+            "serveStale": "Verify",
             "serveStaleDurationInSeconds": 3600
         },
         "cluster.local": {
@@ -31,7 +31,7 @@ kubeDnsOverridesExpected = {
             "maxConcurrent": 1000,
             "protocol": "ForceTCP",
             "queryLogging": "Error",
-            "serveStale": "Immediate",
+            "serveStale": "Verify",
             "serveStaleDurationInSeconds": 3600
         }
     }
@@ -44,7 +44,7 @@ vnetDnsOverridesExpected = {
             "maxConcurrent": 1000,
             "protocol": "PreferUDP",
             "queryLogging": "Error",
-            "serveStale": "Immediate",
+            "serveStale": "Verify",
             "serveStaleDurationInSeconds": 3600
         },
         "cluster.local": {
@@ -54,7 +54,7 @@ vnetDnsOverridesExpected = {
             "maxConcurrent": 1000,
             "protocol": "ForceTCP",
             "queryLogging": "Error",
-            "serveStale": "Immediate",
+            "serveStale": "Verify",
             "serveStaleDurationInSeconds": 3600
         }
     }
