@@ -161,14 +161,14 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         sorted_revisions = sorted(revisions, key=_convert_revision_to_semver)
         return sorted_revisions
 
-    def _get_asm_supported_revision(self, location):
+    def _get_asm_supported_revision(self, location, secondLatest=False):
         mesh_revisions_cmd = f"aks mesh get-revisions -l {location}"
         mesh_revisions = self.cmd(mesh_revisions_cmd).get_output_in_json()
         assert len(mesh_revisions["meshRevisions"]) > 0
         revisions = [r["revision"] for r in mesh_revisions["meshRevisions"]]
         sorted_revisons = self._sort_revisions(revisions)
         lenRevisions = len(sorted_revisons)
-        if lenRevisions > 1:
+        if secondLatest and lenRevisions > 1:
             return sorted_revisons[lenRevisions - 2]  # Return the second latest revision
         return sorted_revisons[0]
 
@@ -12544,7 +12544,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 "name": aks_name,
                 "location": resource_group_location,
                 "ssh_key_value": self.generate_ssh_keys(),
-                "revision": self._get_asm_supported_revision(resource_group_location),
+                "revision": self._get_asm_supported_revision(resource_group_location, False),
             }
         )
 
@@ -12618,7 +12618,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 "name": aks_name,
                 "location": resource_group_location,
                 "ssh_key_value": self.generate_ssh_keys(),
-                "revision": self._get_asm_supported_revision(resource_group_location),
+                "revision": self._get_asm_supported_revision(resource_group_location, True),
             }
         )
 
@@ -12826,7 +12826,7 @@ spec:
                 "name": aks_name,
                 "location": resource_group_location,
                 "ssh_key_value": self.generate_ssh_keys(),
-                "revision": self._get_asm_supported_revision(resource_group_location),
+                "revision": self._get_asm_supported_revision(resource_group_location, False),
             }
         )
 
@@ -12912,7 +12912,7 @@ spec:
         self.test_resources_count = 0
         # kwargs for string formatting
         aks_name = self.create_random_name("cliakstest", 16)
-        installed_revision = self._get_asm_supported_revision(resource_group_location)
+        installed_revision = self._get_asm_supported_revision(resource_group_location, False)
         self.kwargs.update(
             {
                 "resource_group": resource_group,
@@ -13039,7 +13039,7 @@ spec:
                 "location": resource_group_location,
                 "ssh_key_value": self.generate_ssh_keys(),
                 "akv_resource_id": akv_resource_id,
-                "revision": self._get_asm_supported_revision(resource_group_location),
+                "revision": self._get_asm_supported_revision(resource_group_location, False),
             }
         )
 
@@ -13147,7 +13147,7 @@ spec:
                 "name": aks_name,
                 "location": resource_group_location,
                 "ssh_key_value": self.generate_ssh_keys(),
-                "revision": self._get_asm_supported_revision(resource_group_location),
+                "revision": self._get_asm_supported_revision(resource_group_location, False),
             }
         )
 
