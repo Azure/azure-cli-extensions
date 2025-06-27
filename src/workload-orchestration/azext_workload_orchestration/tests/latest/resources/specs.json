@@ -1,0 +1,23 @@
+{
+    "specification": {
+    "metadata": {
+        "deployment.replicas": "#1",
+        "service.ports": "[{\"name\":\"port9090\",\"port\": 9090}]",
+        "service.type": "ClusterIP"
+    },
+    "components": [
+        {
+            "name": "helmcomponent",
+            "type": "helm.v3",
+            "properties": {
+                "chart": {
+                    "repo": "ghcr.io/eclipse-symphony/tests/helm/simple-chart",
+                    "version": "0.3.0",
+                    "wait": true,
+                    "timeout": "5m"
+                }
+            }
+        }
+    ]
+}
+}

@@ -1,0 +1,39 @@
+rules:
+  configs:
+    TemperatureThreshold:
+      type: float
+      required: true
+      editableAt:
+        - line
+      editableBy:
+        - OT
+      defaultValue: 80
+    PressureThreshold:
+      type: float
+      required: true
+      editableAt:
+        - line
+      editableBy:
+        - OT
+      defaultValue: 8
+    ViscosityThreshold:
+      type: float
+      required: true
+      editableAt:
+        - line
+      editableBy:
+        - IT
+    ErrorThreshold:
+      type: float
+      required: true
+      editableAt:
+        - line
+      editableBy:
+        - IT
+    EnableDebug:
+      type: boolean
+      required: false
+      editableAt:
+        - factory
+      editableBy:
+        - IT
