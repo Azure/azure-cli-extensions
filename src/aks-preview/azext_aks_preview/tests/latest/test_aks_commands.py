@@ -3017,7 +3017,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         )
         result = self.cmd(show_cmd).get_output_in_json()
         assert result["localDnsProfile"]["mode"] == "Required"
-        assert result["localDnsProfile"]["kubeDNSOverrides"] == {
+        assert result["localDnsProfile"]["kubeDnsOverrides"] == {
             ".": {
                 "cacheDurationInSeconds": 3600,
                 "forwardDestination": "ClusterCoreDNS",
@@ -3039,7 +3039,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 "serveStaleDurationInSeconds": 3600
             }
         }
-        assert result["localDnsProfile"]["vnetDNSOverrides"] == {
+        assert result["localDnsProfile"]["vnetDnsOverrides"] == {
             ".": {
                 "cacheDurationInSeconds": 3600,
                 "forwardDestination": "VnetDNS",
@@ -3107,7 +3107,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         )
         result = self.cmd(show_cmd).get_output_in_json()
         assert result["localDnsProfile"]["mode"] == "Required"
-        assert result["localDnsProfile"]["kubeDNSOverrides"] == {
+        assert result["localDnsProfile"]["kubeDnsOverrides"] == {
             ".": {
                 "cacheDurationInSeconds": 3600,
                 "forwardDestination": "ClusterCoreDNS",
@@ -3129,7 +3129,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 "serveStaleDurationInSeconds": 3600
             }
         }
-        assert result["localDnsProfile"]["vnetDNSOverrides"] == {
+        assert result["localDnsProfile"]["vnetDnsOverrides"] == {
             ".": {
                 "cacheDurationInSeconds": 3600,
                 "forwardDestination": "VnetDNS",
