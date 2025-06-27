@@ -1,0 +1,23 @@
+type: pipeline
+
+name: simplePipelineJobWithNoComps
+description: The hello world pipeline job with no component
+tags:
+  tag: tagvalue
+  owner: sdkteam
+
+compute: azureml:cpu-cluster
+
+jobs:
+  hello_world_component_inline:
+    command: echo Hello World & sleep 1h
+    environment: azureml:AzureML-sklearn-0.24-ubuntu18.04-py37-cpu:1
+    services:
+      "my_jupyter":
+        type: "Jupyter" # Jupyter Notebook
+      "my_tensorboard":
+        type: "TensorBoard"
+        properties:
+          logDir: "~/tblog" # where you want to store the TensorBoard output
+      "my_jupyterlab":
+        type: "JupyterLab"

@@ -1,0 +1,16 @@
+# ---------------------------------------------------------
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# ---------------------------------------------------------
+
+from azure.cli.core.commands.parameters import resource_group_name_type
+
+def load_virtual_cluster_params(self):        
+
+    with self.argument_context("ml virtualcluster show") as c:
+        c.argument(
+            "name",
+            options_list=["--name", "-n"],
+            type=str,
+            help="Name of the Azure ML virtual cluster.")
+
+        c.argument("resource_group_name", resource_group_name_type)

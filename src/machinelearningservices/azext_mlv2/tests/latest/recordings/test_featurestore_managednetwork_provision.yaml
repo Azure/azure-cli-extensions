@@ -1,0 +1,2622 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.10.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.17 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000?api-version=0000-00-00
+  response:
+    body:
+      string: '{"error": {"code": "ResourceNotFound", "message": "The Resource ''Microsoft.MachineLearningServices/workspaces/test-ws-000006_mvnetprov''
+        under resource group ''alanpoblette'' was not found. For more details please
+        go to https://aka.ms/ARMResourceNotFoundFix"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '257'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 15 Sep 2023 21:25:32 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-failure-cause:
+      - gateway
+      x-msedge-ref:
+      - 'Ref A: 96BE7F4AD86E42CA9B8E6474656BDFFE Ref B: CO6AA3150220047 Ref C: 2023-09-15T21:25:33Z'
+    status:
+      code: 404
+      message: Not Found
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.10.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.17 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000?api-version=0000-00-00
+  response:
+    body:
+      string: '{"error": {"code": "ResourceNotFound", "message": "The Resource ''Microsoft.MachineLearningServices/workspaces/test-ws-000006_mvnetprov''
+        under resource group ''alanpoblette'' was not found. For more details please
+        go to https://aka.ms/ARMResourceNotFoundFix"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '257'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 15 Sep 2023 21:25:32 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-failure-cause:
+      - gateway
+      x-msedge-ref:
+      - 'Ref A: 30FACF4A04A14BD9B24D8736F5372CEC Ref B: CO6AA3150220047 Ref C: 2023-09-15T21:25:33Z'
+    status:
+      code: 404
+      message: Not Found
+- request:
+    body: '{"properties": {"template": {"$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+      "contentVersion": "1.0.0.0", "parameters": {"workspaceName": {"type": "string",
+      "metadata": {"description": "Specifies the name of the Azure Machine Learning
+      workspace."}}, "description": {"type": "string", "metadata": {"description":
+      "Description string."}}, "friendlyName": {"type": "string", "metadata": {"description":
+      "Friendly name."}}, "kind": {"type": "string", "defaultValue": "Default", "metadata":
+      {"description": "Specifies the Kind of the workspace."}}, "location": {"type":
+      "string", "metadata": {"description": "Specifies the location for all resources."}},
+      "resourceGroupName": {"type": "string", "metadata": {"description": "Specifies
+      the resource group name of the Azure Machine Learning workspace."}}, "storageAccountOption":
+      {"type": "string", "defaultValue": "new", "allowedValues": ["new", "existing"],
+      "metadata": {"description": "Determines whether or not a new storage should
+      be provisioned."}}, "storageAccountName": {"type": "string", "defaultValue":
+      "[concat(''sa'', uniqueString(parameters(''resourceGroupName''), parameters(''workspaceName'')))]",
+      "metadata": {"description": "Name of the storage account."}}, "storageAccountType":
+      {"type": "string", "defaultValue": "Standard_LRS"}, "storageAccountBehindVNet":
+      {"type": "string", "defaultValue": "false", "allowedValues": ["true", "false"],
+      "metadata": {"description": "Determines whether or not to put the storage account
+      behind VNet"}}, "storageAccountResourceGroupName": {"type": "string", "defaultValue":
+      "[parameters(''resourceGroupName'')]"}, "storageAccountLocation": {"type": "string",
+      "defaultValue": "[parameters(''location'')]"}, "keyVaultOption": {"type": "string",
+      "defaultValue": "new", "allowedValues": ["new", "existing"], "metadata": {"description":
+      "Determines whether or not a new key vault should be provisioned."}}, "keyVaultName":
+      {"type": "string", "defaultValue": "[concat(''kv'', uniqueString(parameters(''resourceGroupName''),
+      parameters(''workspaceName'')))]", "metadata": {"description": "Name of the
+      key vault."}}, "keyVaultBehindVNet": {"type": "string", "defaultValue": "false",
+      "allowedValues": ["true", "false"], "metadata": {"description": "Determines
+      whether or not to put the storage account behind VNet"}}, "keyVaultResourceGroupName":
+      {"type": "string", "defaultValue": "[parameters(''resourceGroupName'')]"}, "keyVaultLocation":
+      {"type": "string", "defaultValue": "[parameters(''location'')]"}, "applicationInsightsOption":
+      {"type": "string", "defaultValue": "new", "allowedValues": ["new", "existing"],
+      "metadata": {"description": "Determines whether or not new ApplicationInsights
+      should be provisioned."}}, "logAnalyticsName": {"type": "string", "defaultValue":
+      "[concat(''la'', uniqueString(parameters(''resourceGroupName''), parameters(''workspaceName'')))]",
+      "metadata": {"description": "Name of LogAnalytics to be used by ApplicationInsights
+      resource."}}, "logAnalyticsArmId": {"type": "string", "defaultValue": "", "metadata":
+      {"description": "ARM Id of LogAnalytics to be used by ApplicationInsights resource."}},
+      "applicationInsightsName": {"type": "string", "defaultValue": "[concat(''ai'',
+      uniqueString(parameters(''resourceGroupName''), parameters(''workspaceName'')))]",
+      "metadata": {"description": "Name of ApplicationInsights."}}, "applicationInsightsResourceGroupName":
+      {"type": "string", "defaultValue": "[parameters(''resourceGroupName'')]"}, "applicationInsightsLocation":
+      {"type": "string", "defaultValue": "[parameters(''location'')]"}, "containerRegistryOption":
+      {"type": "string", "defaultValue": "none", "allowedValues": ["new", "existing",
+      "none"], "metadata": {"description": "Determines whether or not a new container
+      registry should be provisioned."}}, "containerRegistryName": {"type": "string",
+      "defaultValue": "[concat(''cr'', uniqueString(parameters(''resourceGroupName''),
+      parameters(''workspaceName'')))]", "metadata": {"description": "The container
+      registry bind to the workspace."}}, "containerRegistrySku": {"type": "string",
+      "defaultValue": "Standard", "allowedValues": ["Basic", "Standard", "Premium"]},
+      "containerRegistryResourceGroupName": {"type": "string", "defaultValue": "[parameters(''resourceGroupName'')]"},
+      "containerRegistryBehindVNet": {"type": "string", "defaultValue": "false", "allowedValues":
+      ["true", "false"], "metadata": {"description": "Determines whether or not to
+      put container registry behind VNet."}}, "containerRegistryLocation": {"type":
+      "string", "defaultValue": "[parameters(''location'')]"}, "vnetOption": {"type":
+      "string", "defaultValue": "[if(equals(parameters(''privateEndpointType''), ''none''),
+      ''none'', ''new'')]", "allowedValues": ["new", "existing", "none"], "metadata":
+      {"description": "Determines whether or not a new VNet should be provisioned."}},
+      "vnetName": {"type": "string", "defaultValue": "[concat(''vn'',uniqueString(parameters(''resourceGroupName''),
+      parameters(''workspaceName'')))]", "metadata": {"description": "Name of the
+      VNet"}}, "vnetResourceGroupName": {"type": "string", "defaultValue": "[parameters(''resourceGroupName'')]"},
+      "addressPrefixes": {"type": "array", "defaultValue": ["10.0.0.0/16"], "metadata":
+      {"description": "Address prefix of the virtual network"}}, "subnetOption": {"type":
+      "string", "defaultValue": "[if(or(not(equals(parameters(''privateEndpointType''),
+      ''none'')), equals(parameters(''vnetOption''), ''new'')), ''new'', ''none'')]",
+      "allowedValues": ["new", "existing", "none"], "metadata": {"description": "Determines
+      whether or not a new subnet should be provisioned."}}, "subnetName": {"type":
+      "string", "defaultValue": "[concat(''sn'',uniqueString(parameters(''resourceGroupName''),
+      parameters(''workspaceName'')))]", "metadata": {"description": "Name of the
+      subnet"}}, "subnetPrefix": {"type": "string", "defaultValue": "10.0.0.0/24",
+      "metadata": {"description": "Subnet prefix of the virtual network"}}, "adbWorkspace":
+      {"type": "string", "defaultValue": "", "metadata": {"description": "Azure Databrick
+      workspace to be linked to the workspace"}}, "confidential_data": {"type": "string",
+      "defaultValue": "false", "allowedValues": ["false", "true"], "metadata": {"description":
+      "Specifies that the Azure Machine Learning workspace holds highly confidential
+      data."}}, "encryption_status": {"type": "string", "defaultValue": "Disabled",
+      "allowedValues": ["Enabled", "Disabled"], "metadata": {"description": "Specifies
+      if the Azure Machine Learning workspace should be encrypted with customer managed
+      key."}}, "cmk_keyvault": {"type": "string", "defaultValue": "", "metadata":
+      {"description": "Specifies the customer managed keyVault arm id."}}, "resource_cmk_uri":
+      {"type": "string", "defaultValue": "", "metadata": {"description": "Specifies
+      if the customer managed keyvault key uri."}}, "privateEndpointType": {"type":
+      "string", "defaultValue": "none", "allowedValues": ["AutoApproval", "ManualApproval",
+      "none"]}, "tagValues": {"type": "object"}, "privateEndpointName": {"type": "string",
+      "defaultValue": "pe", "metadata": {"description": "Name of the private end point
+      added to the workspace"}}, "privateEndpointResourceGroupName": {"type": "string",
+      "defaultValue": "[parameters(''resourceGroupName'')]", "metadata": {"description":
+      "Name of the resource group where the private end point is added to"}}, "imageBuildCompute":
+      {"type": "string", "defaultValue": "", "metadata": {"description": "The name
+      of the compute target to use for building environment Docker images with the
+      container registry is behind a VNet."}}, "publicNetworkAccess": {"type": "string",
+      "defaultValue": "Enabled", "allowedValues": ["Disabled", "Enabled"], "metadata":
+      {"description": "Whether to allow public endpoint connectivity when a workspace
+      is private link enabled."}}, "soft_delete_enabled": {"type": "string", "defaultValue":
+      "false", "allowedValues": ["false", "true"], "metadata": {"description": "Whether
+      to create a workspace with soft delete capability"}}, "allow_recover_softdeleted_workspace":
+      {"type": "string", "defaultValue": "false", "allowedValues": ["false", "true"],
+      "metadata": {"description": "Whether to allow an existing soft-deleted workspace
+      to be recovered"}}, "encryption_cosmosdb_resourceid": {"type": "string", "defaultValue":
+      "", "metadata": {"description": "The Bring-Your-Own cosmosdb account that customer
+      brings to store data"}}, "encryption_storage_resourceid": {"type": "string",
+      "defaultValue": "", "metadata": {"description": "The Bring-Your-Own storage
+      account that customer brings to store data"}}, "encryption_search_resourceid":
+      {"type": "string", "defaultValue": "", "metadata": {"description": "The Bring-Your-Own
+      search account that customer brings to store data"}}, "identity": {"type": "object",
+      "defaultValue": {"type": "systemAssigned"}, "metadata": {"description": "Managed
+      identities assigned to workspace. If not specificed, SystemAssigned managed
+      identity is the default."}}, "primaryUserAssignedIdentity": {"type": "string",
+      "defaultValue": "", "metadata": {"description": "ARM identifier of primary user
+      assigned managed identity, in case multiple ones are specified. Also the default
+      managed identity for clusterless compute."}}, "managedNetwork": {"type": "object",
+      "defaultValue": {"isolationMode": "Disabled"}, "metadata": {"description": "Managed
+      network settings to be used for the workspace. If not specified, isolation mode
+      Disabled is the default"}}, "spark_runtime_version": {"type": "string", "metadata":
+      {"description": "spark version to be used by all feature sets"}}, "offline_store_connection_name":
+      {"type": "string", "defaultValue": "", "metadata": {"description": "Feature
+      store offline store config"}}, "online_store_connection_name": {"type": "string",
+      "defaultValue": "", "metadata": {"description": "Feature store online store
+      config"}}, "offline_store_target": {"type": "string", "defaultValue": "", "metadata":
+      {"description": "Feature store offline store connection target"}}, "offline_store_resource_group_name":
+      {"type": "string", "defaultValue": "", "metadata": {"description": "Feature
+      store offline store resource group"}}, "offline_store_subscription_id": {"type":
+      "string", "defaultValue": "", "metadata": {"description": "Feature store offline
+      store subscription id"}}, "online_store_target": {"type": "string", "defaultValue":
+      "", "metadata": {"description": "Feature store online store connection target"}},
+      "online_store_resource_group_name": {"type": "string", "defaultValue": "", "metadata":
+      {"description": "Feature store online store resource group"}}, "online_store_subscription_id":
+      {"type": "string", "defaultValue": "", "metadata": {"description": "Feature
+      store online store subscription id"}}, "materialization_identity_resource_id":
+      {"type": "string", "defaultValue": "", "metadata": {"description": "Feature
+      store materialization identity resource id"}}, "grant_materialization_permissions":
+      {"type": "string", "defaultValue": "false", "allowedValues": ["false", "true"],
+      "metadata": {"description": "Whether to grant materialization identity permissions"}},
+      "materialization_identity_name": {"defaultValue": "empty", "type": "string",
+      "metadata": {"description": "Feature store materialization identity name"}},
+      "enable_data_isolation": {"type": "string", "defaultValue": "false", "allowedValues":
+      ["false", "true"], "metadata": {"description": "A flag to determine if workspace
+      has data isolation enabled. The flag can only be set at the creation phase,
+      it can''t be updated."}}, "workspace_hub_config": {"type": "object", "defaultValue":
+      {}, "metadata": {"description": "Additional configuration for WorkspaceHub."}},
+      "existing_workspaces": {"type": "array", "defaultValue": [], "metadata": {"description":
+      "A list of existing workspaces used by Hub to perform convert."}}, "workspace_hub":
+      {"type": "string", "defaultValue": "", "metadata": {"description": "Resource
+      Id of Hub used for lean workspace."}}, "set_up_feature_store": {"type": "string",
+      "defaultValue": "false", "allowedValues": ["false", "true"], "metadata": {"description":
+      "A flag to determine whether to set up feature store"}}, "byo_open_ai_resource_id":
+      {"type": "string", "defaultValue": "", "metadata": {"description": "Resource
+      Id of BYO open ai resource."}}}, "variables": {"tenantId": "[subscription().tenantId]",
+      "storageAccount": "[resourceId(parameters(''storageAccountResourceGroupName''),
+      ''Microsoft.Storage/storageAccounts'', parameters(''storageAccountName''))]",
+      "keyVault": "[resourceId(parameters(''keyVaultResourceGroupName''), ''Microsoft.KeyVault/vaults'',
+      parameters(''keyVaultName''))]", "containerRegistry": "[resourceId(parameters(''containerRegistryResourceGroupName''),
+      ''Microsoft.ContainerRegistry/registries'', parameters(''containerRegistryName''))]",
+      "applicationInsights": "[resourceId(parameters(''applicationInsightsResourceGroupName''),
+      ''Microsoft.Insights/components'', parameters(''applicationInsightsName''))]",
+      "vnet": "[resourceId(parameters(''vnetResourceGroupName''), ''Microsoft.Network/virtualNetworks'',
+      parameters(''vnetName''))]", "subnet": "[resourceId(parameters(''vnetResourceGroupName''),
+      ''Microsoft.Network/virtualNetworks/subnets'', parameters(''vnetName''), parameters(''subnetName''))]",
+      "enablePE": true, "networkRuleSetBehindVNet": {"defaultAction": "deny", "virtualNetworkRules":
+      [{"action": "Allow", "id": "[variables(''subnet'')]"}]}, "privateEndpointSettings":
+      {"name": "[concat(parameters(''workspaceName''), ''-PrivateEndpoint'')]", "properties":
+      {"privateLinkServiceId": "[resourceId(''Microsoft.MachineLearningServices/workspaces'',
+      parameters(''workspaceName''))]", "groupIds": ["amlworkspace"]}}, "defaultPEConnections":
+      "[array(variables(''privateEndpointSettings''))]", "privateEndpointDeploymentName":
+      "[concat(''DeployPrivateEndpoint-'', uniqueString(parameters(''privateEndpointName'')))]",
+      "materialization_identity_resource_id": "[if(not(equals(parameters(''materialization_identity_name''),
+      ''empty'')), resourceId(parameters(''storageAccountResourceGroupName''), ''Microsoft.ManagedIdentity/userAssignedIdentities'',
+      parameters(''materialization_identity_name'')),  parameters(''materialization_identity_resource_id''))]",
+      "offlineStoreContainerName": "[concat(''offlinestore'', guid(variables(''storageAccount'')))]",
+      "offlineStoreConnectionName": "[if(empty(parameters(''offline_store_connection_name'')),
+      ''OfflineStoreConnectionName'', parameters(''offline_store_connection_name''))]",
+      "onlineStoreConnectionName": "[if(empty(parameters(''online_store_connection_name'')),
+      ''OnlineStoreConnectionName'', parameters(''online_store_connection_name''))]",
+      "offlineStoreConnectionTarget": "[if(empty(parameters(''offline_store_target'')),
+      resourceId(''Microsoft.Storage/storageAccounts/blobServices/containers'', parameters(''storageAccountName''),
+      ''default'', variables(''offlineStoreContainerName'')), parameters(''offline_store_target''))]",
+      "isWorkspaceHub": "[equals(parameters(''kind''), ''hub'')]"}, "resources": [{"condition":
+      "[and(variables(''enablePE''), equals(parameters(''vnetOption''), ''new''))]",
+      "type": "Microsoft.Network/virtualNetworks", "apiVersion": "2019-09-01", "name":
+      "[parameters(''vnetName'')]", "location": "[parameters(''location'')]", "tags":
+      "[parameters(''tagValues'')]", "properties": {"addressSpace": {"addressPrefixes":
+      "[parameters(''addressPrefixes'')]"}, "enableDdosProtection": false, "enableVmProtection":
+      false}}, {"condition": "[and(variables(''enablePE''), equals(parameters(''subnetOption''),
+      ''new''))]", "type": "Microsoft.Network/virtualNetworks/subnets", "apiVersion":
+      "2019-09-01", "name": "[concat(parameters(''vnetName''), ''/'', parameters(''subnetName''))]",
+      "dependsOn": ["[resourceId(''Microsoft.Network/virtualNetworks'', parameters(''vnetName''))]"],
+      "properties": {"addressPrefix": "[parameters(''subnetPrefix'')]", "privateEndpointNetworkPolicies":
+      "Disabled", "privateLinkServiceNetworkPolicies": "Enabled", "serviceEndpoints":
+      [{"service": "Microsoft.Storage"}, {"service": "Microsoft.KeyVault"}, {"service":
+      "Microsoft.ContainerRegistry"}]}}, {"condition": "[and(equals(parameters(''set_up_feature_store''),
+      ''true''), not(equals(parameters(''materialization_identity_name''), ''empty'')))]",
+      "type": "Microsoft.ManagedIdentity/userAssignedIdentities", "apiVersion": "2018-11-30",
+      "name": "[parameters(''materialization_identity_name'')]", "location": "[parameters(''location'')]"},
+      {"condition": "[and(variables(''enablePE''), equals(parameters(''storageAccountOption''),
+      ''new''))]", "type": "Microsoft.Storage/storageAccounts", "apiVersion": "2019-04-01",
+      "name": "[parameters(''storageAccountName'')]", "tags": "[parameters(''tagValues'')]",
+      "dependsOn": ["[resourceId(''Microsoft.Network/virtualNetworks/subnets'', parameters(''vnetName''),
+      parameters(''subnetName''))]"], "location": "[parameters(''storageAccountLocation'')]",
+      "sku": {"name": "[parameters(''storageAccountType'')]"}, "kind": "StorageV2",
+      "properties": {"encryption": {"services": {"blob": {"enabled": true}, "file":
+      {"enabled": true}}, "keySource": "Microsoft.Storage"}, "supportsHttpsTrafficOnly":
+      true, "allowBlobPublicAccess": false, "networkAcls": "[if(equals(parameters(''storageAccountBehindVNet''),
+      ''true''), variables(''networkRuleSetBehindVNet''), json(''null''))]", "isHnsEnabled":
+      "[equals(parameters(''set_up_feature_store''), ''true'')]"}}, {"condition":
+      "[and(variables(''enablePE''), equals(parameters(''set_up_feature_store''),
+      ''true''), empty(parameters(''offline_store_target'')), equals(parameters(''storageAccountOption''),
+      ''new''))]", "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
+      "apiVersion": "2021-04-01", "name": "[concat(parameters(''storageAccountName''),
+      ''/default/'', variables(''offlineStoreContainerName''))]", "dependsOn": ["[resourceId(''Microsoft.Storage/storageAccounts'',
+      parameters(''storageAccountName''))]"]}, {"condition": "[and(variables(''enablePE''),
+      equals(parameters(''keyVaultOption''), ''new''))]", "type": "Microsoft.KeyVault/vaults",
+      "apiVersion": "2019-09-01", "tags": "[parameters(''tagValues'')]", "dependsOn":
+      ["[resourceId(''Microsoft.Network/virtualNetworks/subnets'', parameters(''vnetName''),
+      parameters(''subnetName''))]"], "name": "[parameters(''keyVaultName'')]", "location":
+      "[parameters(''keyVaultLocation'')]", "properties": {"tenantId": "[variables(''tenantId'')]",
+      "sku": {"name": "standard", "family": "A"}, "accessPolicies": [], "enableRbacAuthorization":
+      true, "networkAcls": "[if(equals(parameters(''keyVaultBehindVNet''), ''true''),
+      variables(''networkRuleSetBehindVNet''), json(''null''))]"}}, {"condition":
+      "[and(variables(''enablePE''), equals(parameters(''containerRegistryOption''),
+      ''new''))]", "type": "Microsoft.ContainerRegistry/registries", "apiVersion":
+      "2019-05-01", "tags": "[parameters(''tagValues'')]", "name": "[parameters(''containerRegistryName'')]",
+      "dependsOn": ["[resourceId(''Microsoft.Network/virtualNetworks/subnets'', parameters(''vnetName''),
+      parameters(''subnetName''))]"], "location": "[parameters(''containerRegistryLocation'')]",
+      "sku": {"name": "[parameters(''containerRegistrySku'')]"}, "properties": {"adminUserEnabled":
+      true, "networkRuleSet": "[if(equals(parameters(''containerRegistryBehindVNet''),
+      ''true''), variables(''networkRuleSetBehindVNet''), json(''null''))]"}}, {"condition":
+      "[and(variables(''enablePE''), equals(parameters(''applicationInsightsOption''),
+      ''new''), not(variables(''isWorkspaceHub'')))]", "type": "Microsoft.OperationalInsights/workspaces",
+      "tags": "[parameters(''tagValues'')]", "apiVersion": "2020-08-01", "name": "[parameters(''logAnalyticsName'')]",
+      "location": "[if(or(equals(toLower(parameters(''applicationInsightsLocation'')),''westcentralus''),
+      equals(toLower(parameters(''applicationInsightsLocation'')),''eastus2euap''),
+      equals(toLower(parameters(''applicationInsightsLocation'')),''centraluseuap'')),''southcentralus'',
+      parameters(''applicationInsightsLocation''))]", "kind": "web", "properties":
+      {"Application_Type": "web"}}, {"condition": "[and(variables(''enablePE''), equals(parameters(''applicationInsightsOption''),
+      ''new''), not(variables(''isWorkspaceHub'')))]", "type": "Microsoft.Insights/components",
+      "tags": "[parameters(''tagValues'')]", "apiVersion": "2020-02-02-preview", "name":
+      "[parameters(''applicationInsightsName'')]", "location": "[if(or(equals(toLower(parameters(''applicationInsightsLocation'')),''westcentralus''),
+      equals(toLower(parameters(''applicationInsightsLocation'')),''eastus2euap''),
+      equals(toLower(parameters(''applicationInsightsLocation'')),''centraluseuap'')),''southcentralus'',
+      parameters(''applicationInsightsLocation''))]", "kind": "web", "dependsOn":
+      ["[resourceId(''Microsoft.OperationalInsights/workspaces'', parameters(''logAnalyticsName''))]"],
+      "properties": {"Application_Type": "web", "WorkspaceResourceId": "[parameters(''logAnalyticsArmId'')]"}},
+      {"condition": "[variables(''enablePE'')]", "type": "Microsoft.MachineLearningServices/workspaces",
+      "apiVersion": "2023-04-01-preview", "tags": "[parameters(''tagValues'')]", "name":
+      "[parameters(''workspaceName'')]", "kind": "[parameters(''kind'')]", "location":
+      "[parameters(''location'')]", "dependsOn": ["[resourceId(''Microsoft.Storage/storageAccounts'',
+      parameters(''storageAccountName''))]", "[resourceId(''Microsoft.KeyVault/vaults'',
+      parameters(''keyVaultName''))]", "[resourceId(''Microsoft.Insights/components'',
+      parameters(''applicationInsightsName''))]", "[resourceId(''Microsoft.ContainerRegistry/registries'',
+      parameters(''containerRegistryName''))]"], "identity": "[parameters(''identity'')]",
+      "properties": {"friendlyName": "[parameters(''friendlyName'')]", "description":
+      "[parameters(''description'')]", "storageAccount": "[variables(''storageAccount'')]",
+      "keyVault": "[variables(''keyVault'')]", "applicationInsights": "[if(variables(''isWorkspaceHub''),
+      json(''null''), variables(''applicationInsights''))]", "containerRegistry":
+      "[if(not(equals(parameters(''containerRegistryOption''), ''none'')), variables(''containerRegistry''),
+      json(''null''))]", "hbiWorkspace": "[parameters(''confidential_data'')]", "imageBuildCompute":
+      "[parameters(''imageBuildCompute'')]", "publicNetworkAccess": "[parameters(''publicNetworkAccess'')]",
+      "softDeleteEnabled": "[parameters(''soft_delete_enabled'')]", "allowRecoverSoftDeletedWorkspace":
+      "[parameters(''allow_recover_softdeleted_workspace'')]", "encryption": {"status":
+      "[parameters(''encryption_status'')]", "keyVaultProperties": {"keyVaultArmId":
+      "[parameters(''cmk_keyvault'')]", "keyIdentifier": "[parameters(''resource_cmk_uri'')]"},
+      "cosmosDbArmId": "[parameters(''encryption_cosmosdb_resourceid'')]", "storageAccountArmId":
+      "[parameters(''encryption_storage_resourceid'')]", "SearchAccountArmId": "[parameters(''encryption_search_resourceid'')]"},
+      "primaryUserAssignedIdentity": "[parameters(''primaryUserAssignedIdentity'')]",
+      "managedNetwork": "[parameters(''managedNetwork'')]", "featureStoreSettings":
+      {"computeruntime": {"SparkRuntimeVersion": "[parameters(''spark_runtime_version'')]"},
+      "offlinestoreconnectionname": "[parameters(''offline_store_connection_name'')]",
+      "onlinestoreconnectionname": "[parameters(''online_store_connection_name'')]"},
+      "enableDataIsolation": "[parameters(''enable_data_isolation'')]", "workspaceHubConfig":
+      "[parameters(''workspace_hub_config'')]", "existingWorkspaces": "[parameters(''existing_workspaces'')]",
+      "azureOpenAI": {"resourceId": "[parameters(''byo_open_ai_resource_id'')]"}}},
+      {"condition": "[equals(parameters(''set_up_feature_store''), ''true'')]", "type":
+      "Microsoft.Resources/deployments", "apiVersion": "2022-05-01", "name": "[concat(parameters(''workspaceName''),
+      ''-deploy-feature-store'')]", "dependsOn": ["[resourceId(''Microsoft.MachineLearningServices/workspaces'',
+      parameters(''workspaceName''))]", "[resourceId(''Microsoft.Storage/storageAccounts/blobServices/containers'',
+      parameters(''storageAccountName''), ''default'', variables(''offlineStoreContainerName''))]",
+      "[resourceId(''Microsoft.ManagedIdentity/userAssignedIdentities'', parameters(''materialization_identity_name''))]"],
+      "properties": {"mode": "Incremental", "parameters": {}, "template": {"$schema":
+      "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+      "contentVersion": "1.0.0.1", "resources": [{"apiVersion": "2022-12-01-preview",
+      "name": "[parameters(''workspaceName'')]", "location": "[parameters(''location'')]",
+      "kind": "featurestore", "type": "Microsoft.MachineLearningServices/workspaces",
+      "identity": {"type": "SystemAssigned,UserAssigned", "userAssignedIdentities":
+      {"[variables(''materialization_identity_resource_id'')]": {}}}, "properties":
+      {"friendlyName": "[parameters(''friendlyName'')]", "description": "[parameters(''description'')]",
+      "storageAccount": "[variables(''storageAccount'')]", "keyVault": "[variables(''keyVault'')]",
+      "applicationInsights": "[variables(''applicationInsights'')]", "containerRegistry":
+      "[if(not(equals(parameters(''containerRegistryOption''), ''none'')), variables(''containerRegistry''),
+      json(''null''))]", "hbiWorkspace": "[parameters(''confidential_data'')]", "imageBuildCompute":
+      "[parameters(''imageBuildCompute'')]", "publicNetworkAccess": "[parameters(''publicNetworkAccess'')]",
+      "softDeleteEnabled": "[parameters(''soft_delete_enabled'')]", "allowRecoverSoftDeletedWorkspace":
+      "[parameters(''allow_recover_softdeleted_workspace'')]", "encryption": {"status":
+      "[parameters(''encryption_status'')]", "keyVaultProperties": {"keyVaultArmId":
+      "[parameters(''cmk_keyvault'')]", "keyIdentifier": "[parameters(''resource_cmk_uri'')]"},
+      "cosmosDbArmId": "[parameters(''encryption_cosmosdb_resourceid'')]", "storageAccountArmId":
+      "[parameters(''encryption_storage_resourceid'')]", "SearchAccountArmId": "[parameters(''encryption_search_resourceid'')]"},
+      "primaryUserAssignedIdentity": "[parameters(''primaryUserAssignedIdentity'')]",
+      "managedNetwork": "[parameters(''managedNetwork'')]", "featureStoreSettings":
+      {"computeruntime": {"SparkRuntimeVersion": "[parameters(''spark_runtime_version'')]"},
+      "offlinestoreconnectionname": "[variables(''offlineStoreConnectionName'')]",
+      "onlinestoreconnectionname": "[if(not(empty(parameters(''online_store_target''))),
+      variables(''onlineStoreConnectionName''), '''')]"}, "enableDataIsolation": "[parameters(''enable_data_isolation'')]"},
+      "resources": [{"condition": "[and(equals(parameters(''set_up_feature_store''),
+      ''true''), not(empty(parameters(''online_store_target''))))]", "type": "connections",
+      "apiVersion": "2022-05-01", "name": "[variables(''onlineStoreConnectionName'')]",
+      "location": "[parameters(''location'')]", "dependsOn": ["[resourceId(''Microsoft.MachineLearningServices/workspaces'',
+      parameters(''workspaceName''))]", "[resourceId(''Microsoft.MachineLearningServices/workspaces/connections'',
+      parameters(''workspaceName''), variables(''offlineStoreConnectionName''))]"],
+      "identity": {"type": "SystemAssigned"}, "properties": {"category": "Redis",
+      "target": "[parameters(''online_store_target'')]", "authType": "ManagedIdentity",
+      "credentials": {"clientid": "[if(empty(variables(''materialization_identity_resource_id'')),
+      '''', reference(variables(''materialization_identity_resource_id''), ''2018-11-30'').clientId)]",
+      "resourceid": "[variables(''materialization_identity_resource_id'')]"}}}, {"condition":
+      "[and(equals(parameters(''set_up_feature_store''), ''true''), not(empty(variables(''offlineStoreConnectionName''))))]",
+      "type": "connections", "apiVersion": "2022-05-01", "name": "[variables(''offlineStoreConnectionName'')]",
+      "location": "[parameters(''location'')]", "dependsOn": ["[resourceId(''Microsoft.MachineLearningServices/workspaces'',
+      parameters(''workspaceName''))]"], "identity": {"type": "SystemAssigned"}, "properties":
+      {"category": "AzureDataLakeGen2", "target": "[variables(''offlineStoreConnectionTarget'')]",
+      "authType": "ManagedIdentity", "credentials": {"clientid": "[if(empty(variables(''materialization_identity_resource_id'')),
+      '''', reference(variables(''materialization_identity_resource_id''), ''2018-11-30'').clientId)]",
+      "resourceid": "[variables(''materialization_identity_resource_id'')]"}}}, {"condition":
+      "[and(equals(parameters(''set_up_feature_store''), ''true''), equals(parameters(''grant_materialization_permissions''),
+      ''true''))]", "type": "Microsoft.MachineLearningServices/workspaces/providers/roleAssignments",
+      "apiVersion": "2019-04-01-preview", "name": "[concat(parameters(''workspaceName''),
+      ''/Microsoft.Authorization/'', guid(variables(''materialization_identity_resource_id''),
+      parameters(''workspaceName''), ''azureml ds role''))]", "dependsOn": ["[resourceId(''Microsoft.MachineLearningServices/workspaces'',
+      parameters(''workspaceName''))]"], "properties": {"roleDefinitionId": "[subscriptionResourceId(''Microsoft.Authorization/roleDefinitions'',
+      ''f6c7c914-8db3-469d-8ca1-694a8f32e121'')]", "principalId": "[if(empty(variables(''materialization_identity_resource_id'')),
+      '''', reference(variables(''materialization_identity_resource_id''), ''2018-11-30'').principalId)]",
+      "principalType": "ServicePrincipal"}}]}]}}}, {"condition": "[and(equals(parameters(''set_up_feature_store''),
+      ''true''), equals(parameters(''grant_materialization_permissions''), ''true''))]",
+      "type": "Microsoft.Resources/deployments", "name": "offline-store-role-assignment",
+      "apiVersion": "2020-06-01", "dependsOn": ["[resourceId(''Microsoft.Storage/storageAccounts/blobServices/containers'',
+      parameters(''storageAccountName''), ''default'', variables(''offlineStoreContainerName''))]",
+      "[resourceId(''Microsoft.ManagedIdentity/userAssignedIdentities'', parameters(''materialization_identity_name''))]"],
+      "resourceGroup": "[If(empty(parameters(''offline_store_resource_group_name'')),
+      resourceGroup().name, parameters(''offline_store_resource_group_name''))]",
+      "subscriptionId": "[If(empty(parameters(''offline_store_subscription_id'')),
+      subscription().subscriptionId, parameters(''offline_store_subscription_id''))]",
+      "properties": {"mode": "Incremental", "template": {"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+      "contentVersion": "1.0.0.0", "resources": [{"type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2022-04-01", "name": "[guid(variables(''materialization_identity_resource_id''),
+      variables(''offlineStoreConnectionTarget''), ''storage blob data contributor'')]",
+      "scope": "[variables(''offlineStoreConnectionTarget'')]", "properties": {"roleDefinitionId":
+      "[subscriptionResourceId(''Microsoft.Authorization/roleDefinitions'', ''ba92f5b4-2d11-453d-a403-e96b0029c9fe'')]",
+      "principalId": "[if(empty(variables(''materialization_identity_resource_id'')),
+      '''', reference(variables(''materialization_identity_resource_id''), ''2023-01-31'').principalId)]",
+      "principalType": "ServicePrincipal"}}]}}}, {"condition": "[and(equals(parameters(''set_up_feature_store''),
+      ''true''), equals(parameters(''grant_materialization_permissions''), ''true''),
+      not(empty(parameters(''online_store_target''))))]", "type": "Microsoft.Resources/deployments",
+      "name": "online-store-role-assignment", "apiVersion": "2020-06-01", "dependsOn":
+      ["[resourceId(''Microsoft.ManagedIdentity/userAssignedIdentities'', parameters(''materialization_identity_name''))]"],
+      "resourceGroup": "[If(empty(parameters(''online_store_resource_group_name'')),
+      resourceGroup().name, parameters(''online_store_resource_group_name''))]", "subscriptionId":
+      "[If(empty(parameters(''online_store_subscription_id'')), subscription().subscriptionId,
+      parameters(''online_store_subscription_id''))]", "properties": {"mode": "Incremental",
+      "template": {"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+      "contentVersion": "1.0.0.0", "resources": [{"type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2022-04-01", "name": "[guid(variables(''materialization_identity_resource_id''),
+      parameters(''online_store_target''), ''contributor'')]", "scope": "[parameters(''online_store_target'')]",
+      "properties": {"roleDefinitionId": "[subscriptionResourceId(''Microsoft.Authorization/roleDefinitions'',
+      ''b24988ac-6180-42a0-ab88-20f7382dd24c'')]", "principalId": "[if(empty(variables(''materialization_identity_resource_id'')),
+      '''', reference(variables(''materialization_identity_resource_id''), ''2023-01-31'').principalId)]",
+      "principalType": "ServicePrincipal"}}]}}}, {"condition": "[and(variables(''enablePE''),
+      not(equals(parameters(''privateEndpointType''), ''none'')))]", "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2020-06-01", "name": "[variables(''privateEndpointDeploymentName'')]",
+      "resourceGroup": "[parameters(''privateEndpointResourceGroupName'')]", "dependsOn":
+      ["[resourceId(''Microsoft.MachineLearningServices/workspaces'', parameters(''workspaceName''))]",
+      "[resourceId(''Microsoft.Network/virtualNetworks/subnets'', parameters(''vnetName''),
+      parameters(''subnetName''))]"], "properties": {"mode": "Incremental", "template":
+      {"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+      "contentVersion": "1.0.0.0", "resources": [{"apiVersion": "2020-06-01", "name":
+      "[parameters(''privateEndpointName'')]", "type": "Microsoft.Network/privateEndpoints",
+      "location": "[parameters(''location'')]", "tags": "[parameters(''tagValues'')]",
+      "properties": {"privateLinkServiceConnections": "[if(equals(parameters(''privateEndpointType''),
+      ''AutoApproval''), variables(''defaultPEConnections''), json(''null''))]", "manualPrivateLinkServiceConnections":
+      "[if(equals(parameters(''privateEndpointType''), ''ManualApproval''), variables(''defaultPEConnections''),
+      json(''null''))]", "subnet": {"id": "[variables(''subnet'')]"}}}]}}}]}, "parameters":
+      {"location": {"value": "centraluseuap"}, "workspaceName": {"value": "test-ws-000006_mvnetprov"},
+      "resourceGroupName": {"value": "alanpoblette"}, "description": {"value": "test-ws-000006_mvnetprov"},
+      "kind": {"value": "featurestore"}, "friendlyName": {"value": "test-ws-000006_mvnetprov"},
+      "tagValues": {"value": {"createdByToolkit": "cli-v2-1.10.0"}}, "keyVaultOption":
+      {"value": "new"}, "keyVaultName": {"value": "testws00keyvaultf86e1b32"}, "keyVaultResourceGroupName":
+      {"value": "alanpoblette"}, "storageAccountOption": {"value": "new"}, "storageAccountName":
+      {"value": "testws00storagea84e4213c"}, "storageAccountResourceGroupName": {"value":
+      "alanpoblette"}, "applicationInsightsOption": {"value": "new"}, "applicationInsightsName":
+      {"value": "testws00insightsefc7a4ed"}, "logAnalyticsName": {"value": "testws00logalyti8bf41baf"},
+      "logAnalyticsArmId": {"value": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/alanpoblette/providers/Microsoft.OperationalInsights/workspaces/testws00logalyti8bf41baf"},
+      "applicationInsightsResourceGroupName": {"value": "alanpoblette"}, "containerRegistryOption":
+      {"value": "none"}, "containerRegistryName": {"value": "name"}, "containerRegistryResourceGroupName":
+      {"value": ""}, "encryption_status": {"value": "Disabled"}, "cmk_keyvault": {"value":
+      ""}, "resource_cmk_uri": {"value": ""}, "privateEndpointName": {"value": "name"},
+      "subnetOption": {"value": "existing"}, "subnetName": {"value": "default"}, "vnetOption":
+      {"value": "existing"}, "vnetName": {"value": "name"}, "vnetResourceGroupName":
+      {"value": "name"}, "privateEndpointType": {"value": "none"}, "privateEndpointResourceGroupName":
+      {"value": "name"}, "confidential_data": {"value": "false"}, "imageBuildCompute":
+      {"value": ""}, "publicNetworkAccess": {"value": "Enabled"}, "soft_delete_enabled":
+      {"value": "false"}, "allow_recover_softdeleted_workspace": {"value": "false"},
+      "encryption_cosmosdb_resourceid": {"value": ""}, "encryption_storage_resourceid":
+      {"value": ""}, "encryption_search_resourceid": {"value": ""}, "identity": {"value":
+      {"type": "SystemAssigned"}}, "primaryUserAssignedIdentity": {"value": ""}, "managedNetwork":
+      {"value": {"isolationMode": "AllowInternetOutbound"}}, "spark_runtime_version":
+      {"value": "3.2.0"}, "offline_store_connection_name": {"value": ""}, "offline_store_target":
+      {"value": ""}, "offline_store_resource_group_name": {"value": ""}, "offline_store_subscription_id":
+      {"value": ""}, "materialization_identity_name": {"value": "materialization-uai-alanpoblette-test-ws-000006_mvnetprov"},
+      "materialization_identity_resource_id": {"value": ""}, "grant_materialization_permissions":
+      {"value": "true"}, "online_store_connection_name": {"value": ""}, "online_store_target":
+      {"value": ""}, "online_store_resource_group_name": {"value": ""}, "online_store_subscription_id":
+      {"value": ""}, "workspace_hub_config": {"value": {}}, "existing_workspaces":
+      {"value": []}, "workspace_hub": {"value": ""}, "enable_data_isolation": {"value":
+      "false"}, "set_up_feature_store": {"value": "true"}, "byo_open_ai_resource_id":
+      {"value": ""}}, "mode": "incremental"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '36055'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azsdk-python-mgmt-resource/15.0.0 Python/3.8.17 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/000000000000000/providers/Microsoft.Resources/deployments/mock-deployment?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.Resources/deployments/test-ws-000006_mvnetprov-1596316",
+        "name": "test-ws-000006_mvnetprov-1596316", "type": "Microsoft.Resources/deployments",
+        "properties": {"templateHash": "15348233961721282704", "parameters": {"workspaceName":
+        {"type": "String", "value": "test-ws-000006_mvnetprov"}, "description": {"type":
+        "String", "value": "test-ws-000006_mvnetprov"}, "friendlyName": {"type": "String",
+        "value": "test-ws-000006_mvnetprov"}, "kind": {"type": "String", "value":
+        "featurestore"}, "location": {"type": "String", "value": "centraluseuap"},
+        "resourceGroupName": {"type": "String", "value": "alanpoblette"}, "storageAccountOption":
+        {"type": "String", "value": "new"}, "storageAccountName": {"type": "String",
+        "value": "testws00storagea84e4213c"}, "storageAccountType": {"type": "String",
+        "value": "Standard_LRS"}, "storageAccountBehindVNet": {"type": "String", "value":
+        "false"}, "storageAccountResourceGroupName": {"type": "String", "value": "alanpoblette"},
+        "storageAccountLocation": {"type": "String", "value": "centraluseuap"}, "keyVaultOption":
+        {"type": "String", "value": "new"}, "keyVaultName": {"type": "String", "value":
+        "testws00keyvaultf86e1b32"}, "keyVaultBehindVNet": {"type": "String", "value":
+        "false"}, "keyVaultResourceGroupName": {"type": "String", "value": "alanpoblette"},
+        "keyVaultLocation": {"type": "String", "value": "centraluseuap"}, "applicationInsightsOption":
+        {"type": "String", "value": "new"}, "logAnalyticsName": {"type": "String",
+        "value": "testws00logalyti8bf41baf"}, "logAnalyticsArmId": {"type": "String",
+        "value": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.OperationalInsights/workspaces/testws00logalyti8bf41baf"},
+        "applicationInsightsName": {"type": "String", "value": "testws00insightsefc7a4ed"},
+        "applicationInsightsResourceGroupName": {"type": "String", "value": "alanpoblette"},
+        "applicationInsightsLocation": {"type": "String", "value": "centraluseuap"},
+        "containerRegistryOption": {"type": "String", "value": "none"}, "containerRegistryName":
+        {"type": "String", "value": "name"}, "containerRegistrySku": {"type": "String",
+        "value": "Standard"}, "containerRegistryResourceGroupName": {"type": "String",
+        "value": ""}, "containerRegistryBehindVNet": {"type": "String", "value": "false"},
+        "containerRegistryLocation": {"type": "String", "value": "centraluseuap"},
+        "vnetOption": {"type": "String", "value": "existing"}, "vnetName": {"type":
+        "String", "value": "name"}, "vnetResourceGroupName": {"type": "String", "value":
+        "name"}, "addressPrefixes": {"type": "Array", "value": ["10.0.0.0/16"]}, "subnetOption":
+        {"type": "String", "value": "existing"}, "subnetName": {"type": "String",
+        "value": "default"}, "subnetPrefix": {"type": "String", "value": "10.0.0.0/24"},
+        "adbWorkspace": {"type": "String", "value": ""}, "confidential_data": {"type":
+        "String", "value": "false"}, "encryption_status": {"type": "String", "value":
+        "Disabled"}, "cmk_keyvault": {"type": "String", "value": ""}, "resource_cmk_uri":
+        {"type": "String", "value": ""}, "privateEndpointType": {"type": "String",
+        "value": "none"}, "tagValues": {"type": "Object", "value": {"createdByToolkit":
+        "cli-v2-1.10.0"}}, "privateEndpointName": {"type": "String", "value": "name"},
+        "privateEndpointResourceGroupName": {"type": "String", "value": "name"}, "imageBuildCompute":
+        {"type": "String", "value": ""}, "publicNetworkAccess": {"type": "String",
+        "value": "Enabled"}, "soft_delete_enabled": {"type": "String", "value": "false"},
+        "allow_recover_softdeleted_workspace": {"type": "String", "value": "false"},
+        "encryption_cosmosdb_resourceid": {"type": "String", "value": ""}, "encryption_storage_resourceid":
+        {"type": "String", "value": ""}, "encryption_search_resourceid": {"type":
+        "String", "value": ""}, "identity": {"type": "Object", "value": {"type": "SystemAssigned"}},
+        "primaryUserAssignedIdentity": {"type": "String", "value": ""}, "managedNetwork":
+        {"type": "Object", "value": {"isolationMode": "AllowInternetOutbound"}}, "spark_runtime_version":
+        {"type": "String", "value": "3.2.0"}, "offline_store_connection_name": {"type":
+        "String", "value": ""}, "online_store_connection_name": {"type": "String",
+        "value": ""}, "offline_store_target": {"type": "String", "value": ""}, "offline_store_resource_group_name":
+        {"type": "String", "value": ""}, "offline_store_subscription_id": {"type":
+        "String", "value": ""}, "online_store_target": {"type": "String", "value":
+        ""}, "online_store_resource_group_name": {"type": "String", "value": ""},
+        "online_store_subscription_id": {"type": "String", "value": ""}, "materialization_identity_resource_id":
+        {"type": "String", "value": ""}, "grant_materialization_permissions": {"type":
+        "String", "value": "true"}, "materialization_identity_name": {"type": "String",
+        "value": "materialization-uai-alanpoblette-test-ws-000006_mvnetprov"}, "enable_data_isolation":
+        {"type": "String", "value": "false"}, "workspace_hub_config": {"type": "Object",
+        "value": {}}, "existing_workspaces": {"type": "Array", "value": []}, "workspace_hub":
+        {"type": "String", "value": ""}, "set_up_feature_store": {"type": "String",
+        "value": "true"}, "byo_open_ai_resource_id": {"type": "String", "value": ""}},
+        "mode": "Incremental", "provisioningState": "Accepted", "timestamp": "2023-09-15T21:25:35.9549169Z",
+        "duration": "PT0.0001468S", "correlationId": "e3376dd0-83a9-42c3-afa6-a0f8c0a9d555",
+        "providers": [{"namespace": "Microsoft.ManagedIdentity", "resourceTypes":
+        [{"resourceType": "userAssignedIdentities", "locations": ["centraluseuap"]}]},
+        {"namespace": "Microsoft.Storage", "resourceTypes": [{"resourceType": "storageAccounts",
+        "locations": ["centraluseuap"]}, {"resourceType": "storageAccounts/blobServices/containers",
+        "locations": [null]}]}, {"namespace": "Microsoft.KeyVault", "resourceTypes":
+        [{"resourceType": "vaults", "locations": ["centraluseuap"]}]}, {"namespace":
+        "Microsoft.OperationalInsights", "resourceTypes": [{"resourceType": "workspaces",
+        "locations": ["southcentralus"]}]}, {"namespace": "Microsoft.Insights", "resourceTypes":
+        [{"resourceType": "components", "locations": ["southcentralus"]}]}, {"namespace":
+        "Microsoft.MachineLearningServices", "resourceTypes": [{"resourceType": "workspaces",
+        "locations": ["centraluseuap"]}]}, {"namespace": "Microsoft.Resources", "resourceTypes":
+        [{"resourceType": "deployments", "locations": [null]}]}], "dependencies":
+        [{"dependsOn": [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.Storage/storageAccounts/testws00storagea84e4213c",
+        "resourceType": "Microsoft.Storage/storageAccounts", "resourceName": "testws00storagea84e4213c"}],
+        "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.Storage/storageAccounts/testws00storagea84e4213c/blobServices/default/containers/offlinestorec0d4d782-ec22-5821-9e31-29e7646cc958",
+        "resourceType": "Microsoft.Storage/storageAccounts/blobServices/containers",
+        "resourceName": "testws00storagea84e4213c/default/offlinestorec0d4d782-ec22-5821-9e31-29e7646cc958"},
+        {"dependsOn": [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.OperationalInsights/workspaces/testws00logalyti8bf41baf",
+        "resourceType": "Microsoft.OperationalInsights/workspaces", "resourceName":
+        "testws00logalyti8bf41baf"}], "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.Insights/components/testws00insightsefc7a4ed",
+        "resourceType": "Microsoft.Insights/components", "resourceName": "testws00insightsefc7a4ed"},
+        {"dependsOn": [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.Storage/storageAccounts/testws00storagea84e4213c",
+        "resourceType": "Microsoft.Storage/storageAccounts", "resourceName": "testws00storagea84e4213c"},
+        {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.KeyVault/vaults/testws00keyvaultf86e1b32",
+        "resourceType": "Microsoft.KeyVault/vaults", "resourceName": "testws00keyvaultf86e1b32"},
+        {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.Insights/components/testws00insightsefc7a4ed",
+        "resourceType": "Microsoft.Insights/components", "resourceName": "testws00insightsefc7a4ed"}],
+        "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/test-ws-000006_mvnetprov",
+        "resourceType": "Microsoft.MachineLearningServices/workspaces", "resourceName":
+        "test-ws-000006_mvnetprov"}, {"dependsOn": [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/test-ws-000006_mvnetprov",
+        "resourceType": "Microsoft.MachineLearningServices/workspaces", "resourceName":
+        "test-ws-000006_mvnetprov"}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.Storage/storageAccounts/testws00storagea84e4213c/blobServices/default/containers/offlinestorec0d4d782-ec22-5821-9e31-29e7646cc958",
+        "resourceType": "Microsoft.Storage/storageAccounts/blobServices/containers",
+        "resourceName": "testws00storagea84e4213c/default/offlinestorec0d4d782-ec22-5821-9e31-29e7646cc958"},
+        {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.ManagedIdentity/userAssignedIdentities/materialization-uai-alanpoblette-test-ws-000006_mvnetprov",
+        "resourceType": "Microsoft.ManagedIdentity/userAssignedIdentities", "resourceName":
+        "materialization-uai-alanpoblette-test-ws-000006_mvnetprov"}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.ManagedIdentity/userAssignedIdentities/materialization-uai-alanpoblette-test-ws-000006_mvnetprov",
+        "resourceType": "Microsoft.ManagedIdentity/userAssignedIdentities", "resourceName":
+        "materialization-uai-alanpoblette-test-ws-000006_mvnetprov", "apiVersion":
+        "2018-11-30"}], "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.Resources/deployments/test-ws-000006_mvnetprov-deploy-feature-store",
+        "resourceType": "Microsoft.Resources/deployments", "resourceName": "test-ws-000006_mvnetprov-deploy-feature-store"},
+        {"dependsOn": [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.Storage/storageAccounts/testws00storagea84e4213c/blobServices/default/containers/offlinestorec0d4d782-ec22-5821-9e31-29e7646cc958",
+        "resourceType": "Microsoft.Storage/storageAccounts/blobServices/containers",
+        "resourceName": "testws00storagea84e4213c/default/offlinestorec0d4d782-ec22-5821-9e31-29e7646cc958"},
+        {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.ManagedIdentity/userAssignedIdentities/materialization-uai-alanpoblette-test-ws-000006_mvnetprov",
+        "resourceType": "Microsoft.ManagedIdentity/userAssignedIdentities", "resourceName":
+        "materialization-uai-alanpoblette-test-ws-000006_mvnetprov"}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.ManagedIdentity/userAssignedIdentities/materialization-uai-alanpoblette-test-ws-000006_mvnetprov",
+        "resourceType": "Microsoft.ManagedIdentity/userAssignedIdentities", "resourceName":
+        "materialization-uai-alanpoblette-test-ws-000006_mvnetprov", "apiVersion":
+        "2023-01-31"}], "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.Resources/deployments/offline-store-role-assignment",
+        "resourceType": "Microsoft.Resources/deployments", "resourceName": "offline-store-role-assignment"}]}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/alanpoblette/providers/Microsoft.Resources/deployments/test-ws-000006_mvnetprov-1596316/operationStatuses/08585067937512677903?api-version=2020-06-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '11966'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 15 Sep 2023 21:25:35 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-msedge-ref:
+      - 'Ref A: 0EE1917596E248D9AB1F1F168B7907CE Ref B: CO6AA3150219017 Ref C: 2023-09-15T21:25:33Z'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azsdk-python-mgmt-resource/15.0.0 Python/3.8.17 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/000000000000000/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/000000000000000?api-version=0000-00-00
+  response:
+    body:
+      string: '{"status": "Accepted"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '22'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 15 Sep 2023 21:25:35 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 33CAFD607E364E6E94EAD99CA0FDFDFA Ref B: CO6AA3150219017 Ref C: 2023-09-15T21:25:36Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azsdk-python-mgmt-resource/15.0.0 Python/3.8.17 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/000000000000000/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/000000000000000?api-version=0000-00-00
+  response:
+    body:
+      string: '{"status": "Running"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '21'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 15 Sep 2023 21:25:40 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 3AFFD752B0034C3089C72C345A1C188C Ref B: CO6AA3150219017 Ref C: 2023-09-15T21:25:41Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azsdk-python-mgmt-resource/15.0.0 Python/3.8.17 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/000000000000000/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/000000000000000?api-version=0000-00-00
+  response:
+    body:
+      string: '{"status": "Running"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '21'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 15 Sep 2023 21:25:45 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 52EE8C59EF874CBE8863AE99FC049FE0 Ref B: CO6AA3150219017 Ref C: 2023-09-15T21:25:46Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azsdk-python-mgmt-resource/15.0.0 Python/3.8.17 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/000000000000000/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/000000000000000?api-version=0000-00-00
+  response:
+    body:
+      string: '{"status": "Running"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '21'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 15 Sep 2023 21:25:50 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 60162833E8B9495FA02739C3B2A0F79D Ref B: CO6AA3150219017 Ref C: 2023-09-15T21:25:51Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azsdk-python-mgmt-resource/15.0.0 Python/3.8.17 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/000000000000000/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/000000000000000?api-version=0000-00-00
+  response:
+    body:
+      string: '{"status": "Running"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '21'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 15 Sep 2023 21:25:55 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 71DD2274A68A43C190112EB03C783D0D Ref B: CO6AA3150219017 Ref C: 2023-09-15T21:25:56Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azsdk-python-mgmt-resource/15.0.0 Python/3.8.17 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/000000000000000/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/000000000000000?api-version=0000-00-00
+  response:
+    body:
+      string: '{"status": "Running"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '21'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 15 Sep 2023 21:26:01 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: C87375312D1C4176A4C89C0A085877B4 Ref B: CO6AA3150219017 Ref C: 2023-09-15T21:26:01Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.10.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.17 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/westus/workspaceOperationsStatus/4eda9dbd-fd0c-4439-a804-94354808a0a4?api-version=0000-00-00&type=async
+  response:
+    body:
+      string: '{"status": "InProgress"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '24'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 15 Sep 2023 21:26:02 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aml-cluster:
+      - vienna-westus-01
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-msedge-ref:
+      - 'Ref A: 3AEDCF734907437AAFCF643A8471EF1E Ref B: CO6AA3150219033 Ref C: 2023-09-15T21:26:03Z'
+      x-request-time:
+      - '0.016'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azsdk-python-mgmt-resource/15.0.0 Python/3.8.17 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/000000000000000/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/000000000000000?api-version=0000-00-00
+  response:
+    body:
+      string: '{"status": "Running"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '21'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 15 Sep 2023 21:26:06 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 24BA90D08A87406CB36A623B0B66627A Ref B: CO6AA3150219017 Ref C: 2023-09-15T21:26:07Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azsdk-python-mgmt-resource/15.0.0 Python/3.8.17 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/000000000000000/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/000000000000000?api-version=0000-00-00
+  response:
+    body:
+      string: '{"status": "Running"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '21'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 15 Sep 2023 21:26:12 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 3716E8EE5919421D8FE3EAB4E4959D7F Ref B: CO6AA3150219017 Ref C: 2023-09-15T21:26:12Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azsdk-python-mgmt-resource/15.0.0 Python/3.8.17 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/000000000000000/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/000000000000000?api-version=0000-00-00
+  response:
+    body:
+      string: '{"status": "Running"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '21'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 15 Sep 2023 21:26:17 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: A063FA0C377A4EA3B2977489ABCA0D75 Ref B: CO6AA3150219017 Ref C: 2023-09-15T21:26:17Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azsdk-python-mgmt-resource/15.0.0 Python/3.8.17 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/000000000000000/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/000000000000000?api-version=0000-00-00
+  response:
+    body:
+      string: '{"status": "Running"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '21'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 15 Sep 2023 21:26:22 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 8FCC1A94ED6F42D686060F28D1981AA9 Ref B: CO6AA3150219017 Ref C: 2023-09-15T21:26:22Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azsdk-python-mgmt-resource/15.0.0 Python/3.8.17 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/000000000000000/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/000000000000000?api-version=0000-00-00
+  response:
+    body:
+      string: '{"status": "Running"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '21'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 15 Sep 2023 21:26:27 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: B5B1CD252FAB4C9F98BB664B7FE2039C Ref B: CO6AA3150219017 Ref C: 2023-09-15T21:26:27Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azsdk-python-mgmt-resource/15.0.0 Python/3.8.17 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/000000000000000/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/000000000000000?api-version=0000-00-00
+  response:
+    body:
+      string: '{"status": "Running"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '21'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 15 Sep 2023 21:26:32 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 0F0B05CE71CB48FCBE47DCFF8F595263 Ref B: CO6AA3150219017 Ref C: 2023-09-15T21:26:32Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.10.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.17 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/westus/workspaceOperationsStatus/4eda9dbd-fd0c-4439-a804-94354808a0a4?api-version=0000-00-00&type=async
+  response:
+    body:
+      string: '{"status": "InProgress"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '24'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 15 Sep 2023 21:26:32 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aml-cluster:
+      - vienna-westus-01
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-msedge-ref:
+      - 'Ref A: 31728BD51B5941FC8FA01D53DC8E34FB Ref B: CO6AA3150219033 Ref C: 2023-09-15T21:26:33Z'
+      x-request-time:
+      - '0.018'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azsdk-python-mgmt-resource/15.0.0 Python/3.8.17 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/000000000000000/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/000000000000000?api-version=0000-00-00
+  response:
+    body:
+      string: '{"status": "Running"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '21'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 15 Sep 2023 21:26:37 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 4875DCD14EF04848956A35E772499A93 Ref B: CO6AA3150219017 Ref C: 2023-09-15T21:26:37Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azsdk-python-mgmt-resource/15.0.0 Python/3.8.17 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/000000000000000/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/000000000000000?api-version=0000-00-00
+  response:
+    body:
+      string: '{"status": "Running"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '21'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 15 Sep 2023 21:26:43 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: B1512E5E361A4A7396BAB70DE0C0B8FD Ref B: CO6AA3150219017 Ref C: 2023-09-15T21:26:43Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azsdk-python-mgmt-resource/15.0.0 Python/3.8.17 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/000000000000000/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/000000000000000?api-version=0000-00-00
+  response:
+    body:
+      string: '{"status": "Running"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '21'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 15 Sep 2023 21:26:48 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 9C55B83709A04D43BC61042DA6FF14CB Ref B: CO6AA3150219017 Ref C: 2023-09-15T21:26:48Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azsdk-python-mgmt-resource/15.0.0 Python/3.8.17 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/000000000000000/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/000000000000000?api-version=0000-00-00
+  response:
+    body:
+      string: '{"status": "Running"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '21'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 15 Sep 2023 21:26:53 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: B62CFC4683534244AD4AA8A27A869F84 Ref B: CO6AA3150219017 Ref C: 2023-09-15T21:26:53Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azsdk-python-mgmt-resource/15.0.0 Python/3.8.17 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/000000000000000/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/000000000000000?api-version=0000-00-00
+  response:
+    body:
+      string: '{"status": "Succeeded"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '23'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 15 Sep 2023 21:26:58 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 6A6BAD56D8F2431F899EB2FB2029F789 Ref B: CO6AA3150219017 Ref C: 2023-09-15T21:26:58Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azsdk-python-mgmt-resource/15.0.0 Python/3.8.17 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/000000000000000/providers/Microsoft.Resources/deployments/mock-deployment?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.Resources/deployments/test-ws-000006_mvnetprov-1596316",
+        "name": "test-ws-000006_mvnetprov-1596316", "type": "Microsoft.Resources/deployments",
+        "properties": {"templateHash": "15348233961721282704", "parameters": {"workspaceName":
+        {"type": "String", "value": "test-ws-000006_mvnetprov"}, "description": {"type":
+        "String", "value": "test-ws-000006_mvnetprov"}, "friendlyName": {"type": "String",
+        "value": "test-ws-000006_mvnetprov"}, "kind": {"type": "String", "value":
+        "featurestore"}, "location": {"type": "String", "value": "centraluseuap"},
+        "resourceGroupName": {"type": "String", "value": "alanpoblette"}, "storageAccountOption":
+        {"type": "String", "value": "new"}, "storageAccountName": {"type": "String",
+        "value": "testws00storagea84e4213c"}, "storageAccountType": {"type": "String",
+        "value": "Standard_LRS"}, "storageAccountBehindVNet": {"type": "String", "value":
+        "false"}, "storageAccountResourceGroupName": {"type": "String", "value": "alanpoblette"},
+        "storageAccountLocation": {"type": "String", "value": "centraluseuap"}, "keyVaultOption":
+        {"type": "String", "value": "new"}, "keyVaultName": {"type": "String", "value":
+        "testws00keyvaultf86e1b32"}, "keyVaultBehindVNet": {"type": "String", "value":
+        "false"}, "keyVaultResourceGroupName": {"type": "String", "value": "alanpoblette"},
+        "keyVaultLocation": {"type": "String", "value": "centraluseuap"}, "applicationInsightsOption":
+        {"type": "String", "value": "new"}, "logAnalyticsName": {"type": "String",
+        "value": "testws00logalyti8bf41baf"}, "logAnalyticsArmId": {"type": "String",
+        "value": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.OperationalInsights/workspaces/testws00logalyti8bf41baf"},
+        "applicationInsightsName": {"type": "String", "value": "testws00insightsefc7a4ed"},
+        "applicationInsightsResourceGroupName": {"type": "String", "value": "alanpoblette"},
+        "applicationInsightsLocation": {"type": "String", "value": "centraluseuap"},
+        "containerRegistryOption": {"type": "String", "value": "none"}, "containerRegistryName":
+        {"type": "String", "value": "name"}, "containerRegistrySku": {"type": "String",
+        "value": "Standard"}, "containerRegistryResourceGroupName": {"type": "String",
+        "value": ""}, "containerRegistryBehindVNet": {"type": "String", "value": "false"},
+        "containerRegistryLocation": {"type": "String", "value": "centraluseuap"},
+        "vnetOption": {"type": "String", "value": "existing"}, "vnetName": {"type":
+        "String", "value": "name"}, "vnetResourceGroupName": {"type": "String", "value":
+        "name"}, "addressPrefixes": {"type": "Array", "value": ["10.0.0.0/16"]}, "subnetOption":
+        {"type": "String", "value": "existing"}, "subnetName": {"type": "String",
+        "value": "default"}, "subnetPrefix": {"type": "String", "value": "10.0.0.0/24"},
+        "adbWorkspace": {"type": "String", "value": ""}, "confidential_data": {"type":
+        "String", "value": "false"}, "encryption_status": {"type": "String", "value":
+        "Disabled"}, "cmk_keyvault": {"type": "String", "value": ""}, "resource_cmk_uri":
+        {"type": "String", "value": ""}, "privateEndpointType": {"type": "String",
+        "value": "none"}, "tagValues": {"type": "Object", "value": {"createdByToolkit":
+        "cli-v2-1.10.0"}}, "privateEndpointName": {"type": "String", "value": "name"},
+        "privateEndpointResourceGroupName": {"type": "String", "value": "name"}, "imageBuildCompute":
+        {"type": "String", "value": ""}, "publicNetworkAccess": {"type": "String",
+        "value": "Enabled"}, "soft_delete_enabled": {"type": "String", "value": "false"},
+        "allow_recover_softdeleted_workspace": {"type": "String", "value": "false"},
+        "encryption_cosmosdb_resourceid": {"type": "String", "value": ""}, "encryption_storage_resourceid":
+        {"type": "String", "value": ""}, "encryption_search_resourceid": {"type":
+        "String", "value": ""}, "identity": {"type": "Object", "value": {"type": "SystemAssigned"}},
+        "primaryUserAssignedIdentity": {"type": "String", "value": ""}, "managedNetwork":
+        {"type": "Object", "value": {"isolationMode": "AllowInternetOutbound"}}, "spark_runtime_version":
+        {"type": "String", "value": "3.2.0"}, "offline_store_connection_name": {"type":
+        "String", "value": ""}, "online_store_connection_name": {"type": "String",
+        "value": ""}, "offline_store_target": {"type": "String", "value": ""}, "offline_store_resource_group_name":
+        {"type": "String", "value": ""}, "offline_store_subscription_id": {"type":
+        "String", "value": ""}, "online_store_target": {"type": "String", "value":
+        ""}, "online_store_resource_group_name": {"type": "String", "value": ""},
+        "online_store_subscription_id": {"type": "String", "value": ""}, "materialization_identity_resource_id":
+        {"type": "String", "value": ""}, "grant_materialization_permissions": {"type":
+        "String", "value": "true"}, "materialization_identity_name": {"type": "String",
+        "value": "materialization-uai-alanpoblette-test-ws-000006_mvnetprov"}, "enable_data_isolation":
+        {"type": "String", "value": "false"}, "workspace_hub_config": {"type": "Object",
+        "value": {}}, "existing_workspaces": {"type": "Array", "value": []}, "workspace_hub":
+        {"type": "String", "value": ""}, "set_up_feature_store": {"type": "String",
+        "value": "true"}, "byo_open_ai_resource_id": {"type": "String", "value": ""}},
+        "mode": "Incremental", "provisioningState": "Succeeded", "timestamp": "2023-09-15T21:26:57.5065373Z",
+        "duration": "PT1M21.5517672S", "correlationId": "e3376dd0-83a9-42c3-afa6-a0f8c0a9d555",
+        "providers": [{"namespace": "Microsoft.ManagedIdentity", "resourceTypes":
+        [{"resourceType": "userAssignedIdentities", "locations": ["centraluseuap"]}]},
+        {"namespace": "Microsoft.Storage", "resourceTypes": [{"resourceType": "storageAccounts",
+        "locations": ["centraluseuap"]}, {"resourceType": "storageAccounts/blobServices/containers",
+        "locations": [null]}]}, {"namespace": "Microsoft.KeyVault", "resourceTypes":
+        [{"resourceType": "vaults", "locations": ["centraluseuap"]}]}, {"namespace":
+        "Microsoft.OperationalInsights", "resourceTypes": [{"resourceType": "workspaces",
+        "locations": ["southcentralus"]}]}, {"namespace": "Microsoft.Insights", "resourceTypes":
+        [{"resourceType": "components", "locations": ["southcentralus"]}]}, {"namespace":
+        "Microsoft.MachineLearningServices", "resourceTypes": [{"resourceType": "workspaces",
+        "locations": ["centraluseuap"]}]}, {"namespace": "Microsoft.Resources", "resourceTypes":
+        [{"resourceType": "deployments", "locations": [null]}]}], "dependencies":
+        [{"dependsOn": [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.Storage/storageAccounts/testws00storagea84e4213c",
+        "resourceType": "Microsoft.Storage/storageAccounts", "resourceName": "testws00storagea84e4213c"}],
+        "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.Storage/storageAccounts/testws00storagea84e4213c/blobServices/default/containers/offlinestorec0d4d782-ec22-5821-9e31-29e7646cc958",
+        "resourceType": "Microsoft.Storage/storageAccounts/blobServices/containers",
+        "resourceName": "testws00storagea84e4213c/default/offlinestorec0d4d782-ec22-5821-9e31-29e7646cc958"},
+        {"dependsOn": [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.OperationalInsights/workspaces/testws00logalyti8bf41baf",
+        "resourceType": "Microsoft.OperationalInsights/workspaces", "resourceName":
+        "testws00logalyti8bf41baf"}], "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.Insights/components/testws00insightsefc7a4ed",
+        "resourceType": "Microsoft.Insights/components", "resourceName": "testws00insightsefc7a4ed"},
+        {"dependsOn": [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.Storage/storageAccounts/testws00storagea84e4213c",
+        "resourceType": "Microsoft.Storage/storageAccounts", "resourceName": "testws00storagea84e4213c"},
+        {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.KeyVault/vaults/testws00keyvaultf86e1b32",
+        "resourceType": "Microsoft.KeyVault/vaults", "resourceName": "testws00keyvaultf86e1b32"},
+        {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.Insights/components/testws00insightsefc7a4ed",
+        "resourceType": "Microsoft.Insights/components", "resourceName": "testws00insightsefc7a4ed"}],
+        "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/test-ws-000006_mvnetprov",
+        "resourceType": "Microsoft.MachineLearningServices/workspaces", "resourceName":
+        "test-ws-000006_mvnetprov"}, {"dependsOn": [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/test-ws-000006_mvnetprov",
+        "resourceType": "Microsoft.MachineLearningServices/workspaces", "resourceName":
+        "test-ws-000006_mvnetprov"}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.Storage/storageAccounts/testws00storagea84e4213c/blobServices/default/containers/offlinestorec0d4d782-ec22-5821-9e31-29e7646cc958",
+        "resourceType": "Microsoft.Storage/storageAccounts/blobServices/containers",
+        "resourceName": "testws00storagea84e4213c/default/offlinestorec0d4d782-ec22-5821-9e31-29e7646cc958"},
+        {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.ManagedIdentity/userAssignedIdentities/materialization-uai-alanpoblette-test-ws-000006_mvnetprov",
+        "resourceType": "Microsoft.ManagedIdentity/userAssignedIdentities", "resourceName":
+        "materialization-uai-alanpoblette-test-ws-000006_mvnetprov"}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.ManagedIdentity/userAssignedIdentities/materialization-uai-alanpoblette-test-ws-000006_mvnetprov",
+        "resourceType": "Microsoft.ManagedIdentity/userAssignedIdentities", "resourceName":
+        "materialization-uai-alanpoblette-test-ws-000006_mvnetprov", "apiVersion":
+        "2018-11-30"}], "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.Resources/deployments/test-ws-000006_mvnetprov-deploy-feature-store",
+        "resourceType": "Microsoft.Resources/deployments", "resourceName": "test-ws-000006_mvnetprov-deploy-feature-store"},
+        {"dependsOn": [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.Storage/storageAccounts/testws00storagea84e4213c/blobServices/default/containers/offlinestorec0d4d782-ec22-5821-9e31-29e7646cc958",
+        "resourceType": "Microsoft.Storage/storageAccounts/blobServices/containers",
+        "resourceName": "testws00storagea84e4213c/default/offlinestorec0d4d782-ec22-5821-9e31-29e7646cc958"},
+        {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.ManagedIdentity/userAssignedIdentities/materialization-uai-alanpoblette-test-ws-000006_mvnetprov",
+        "resourceType": "Microsoft.ManagedIdentity/userAssignedIdentities", "resourceName":
+        "materialization-uai-alanpoblette-test-ws-000006_mvnetprov"}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.ManagedIdentity/userAssignedIdentities/materialization-uai-alanpoblette-test-ws-000006_mvnetprov",
+        "resourceType": "Microsoft.ManagedIdentity/userAssignedIdentities", "resourceName":
+        "materialization-uai-alanpoblette-test-ws-000006_mvnetprov", "apiVersion":
+        "2023-01-31"}], "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.Resources/deployments/offline-store-role-assignment",
+        "resourceType": "Microsoft.Resources/deployments", "resourceName": "offline-store-role-assignment"}],
+        "outputResources": [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.Insights/components/testws00insightsefc7a4ed"},
+        {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.KeyVault/vaults/testws00keyvaultf86e1b32"},
+        {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/test-ws-000006_mvnetprov"},
+        {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/test-ws-000006_mvnetprov/connections/OfflineStoreConnectionName"},
+        {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/test-ws-000006_mvnetprov/providers/Microsoft.Authorization/roleAssignments/c221746e-0217-57d1-a06c-05cadc063c16"},
+        {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.ManagedIdentity/userAssignedIdentities/materialization-uai-alanpoblette-test-ws-000006_mvnetprov"},
+        {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.OperationalInsights/workspaces/testws00logalyti8bf41baf"},
+        {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.Storage/storageAccounts/testws00storagea84e4213c"},
+        {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.Storage/storageAccounts/testws00storagea84e4213c/blobServices/default/containers/offlinestorec0d4d782-ec22-5821-9e31-29e7646cc958"},
+        {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.Storage/storageAccounts/testws00storagea84e4213c/blobServices/default/containers/offlinestorec0d4d782-ec22-5821-9e31-29e7646cc958/providers/Microsoft.Authorization/roleAssignments/15fc3e55-a17a-5f3e-9744-4fbf3f97a8af"}]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '14072'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 15 Sep 2023 21:26:58 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: F118C06643B64C5F9DB94E2D23149503 Ref B: CO6AA3150219017 Ref C: 2023-09-15T21:26:58Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.10.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.17 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/westus/workspaceOperationsStatus/4eda9dbd-fd0c-4439-a804-94354808a0a4?api-version=0000-00-00&type=async
+  response:
+    body:
+      string: '{"status": "Succeeded", "percentComplete": 100.0}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '49'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 15 Sep 2023 21:27:03 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aml-cluster:
+      - vienna-westus-01
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-msedge-ref:
+      - 'Ref A: 31FC8379AD094BFC9DCDF340B25A7B16 Ref B: CO6AA3150219033 Ref C: 2023-09-15T21:27:03Z'
+      x-request-time:
+      - '0.015'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.10.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.17 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/test-ws-000006_mvnetprov",
+        "name": "test-ws-000006_mvnetprov", "type": "Microsoft.MachineLearningServices/workspaces",
+        "location": "centraluseuap", "tags": {}, "etag": null, "properties": {"friendlyName":
+        "test-ws-000006_mvnetprov", "description": "test-ws-000006_mvnetprov", "storageAccount":
+        "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.Storage/storageAccounts/testws00storagea84e4213c",
+        "keyVault": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.Keyvault/vaults/testws00keyvaultf86e1b32",
+        "applicationInsights": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.insights/components/testws00insightsefc7a4ed",
+        "hbiWorkspace": false, "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47",
+        "imageBuildCompute": null, "provisioningState": "Succeeded", "managedNetwork":
+        {"changeableIsolationModes": ["AllowOnlyApprovedOutbound"], "isolationMode":
+        "AllowInternetOutbound", "networkId": "dd4e68c1-8825-4eac-8f3d-221b44af1bf6",
+        "status": {"status": "Inactive", "sparkReady": false}}, "v1LegacyMode": false,
+        "softDeleteEnabled": false, "creationTime": "2023-09-15T21:26:02.8991167Z",
+        "notebookInfo": {"resourceId": "4735b24f6fd14f498caefbd9ff094609", "fqdn":
+        "ml-test-ws-0-centraluseuap-dd4e68c1-8825-4eac-8f3d-221b44af1bf6.centraluseuap.notebooks.azure.net",
+        "isPrivateLinkEnabled": false, "notebookPreparationError": null}, "storageHnsEnabled":
+        true, "workspaceId": "dd4e68c1-8825-4eac-8f3d-221b44af1bf6", "linkedModelInventoryArmId":
+        null, "privateLinkCount": 0, "publicNetworkAccess": "Enabled", "ipAllowlist":
+        [], "discoveryUrl": "https://int.api.azureml-test.ms/discovery", "mlFlowTrackingUri":
+        "azureml://int.api.azureml-test.ms/mlflow/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/test-ws-000006_mvnetprov",
+        "sdkTelemetryAppInsightsKey": "a26ef680-7601-4ee3-8c7f-03880f835d7e", "featureStoreSettings":
+        {"computeRuntime": {"sparkRuntimeVersion": "3.2.0"}, "offlineStoreConnectionName":
+        "OfflineStoreConnectionName", "onlineStoreConnectionName": ""}, "sasGetterUri":
+        "", "enableDataIsolation": false, "azureOpenAI": {"provisioningState": "NotStarted",
+        "resourceId": null, "endpoint": null, "proxyResourceId": null, "failureReason":
+        null, "deployedModels": []}, "azureCognitiveSearch": {"provisioningState":
+        "NotStarted", "resourceId": null, "endpoint": null, "failureReason": null},
+        "azureAIContentSafety": {"provisioningState": "NotStarted", "resourceId":
+        null, "endpoint": null, "failureReason": null}}, "identity": {"type": "SystemAssigned,UserAssigned",
+        "principalId": "f32635cc-ff12-4f6f-b486-c4e4994aab26", "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47",
+        "userAssignedIdentities": {"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.ManagedIdentity/userAssignedIdentities/materialization-uai-alanpoblette-test-ws-000006_mvnetprov":
+        {"principalId": null, "clientId": null}}}, "kind": "FeatureStore", "sku":
+        {"name": "Basic", "tier": "Basic"}, "systemData": {"createdAt": "2023-09-15T21:26:02.8991167Z",
+        "createdBy": "alanpoblette@microsoft.com", "createdByType": "User", "lastModifiedAt":
+        "2023-09-15T21:26:24.4995119Z", "lastModifiedBy": "alanpoblette@microsoft.com",
+        "lastModifiedByType": "User"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '3571'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 15 Sep 2023 21:27:36 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-aml-cluster:
+      - int-02
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-msedge-ref:
+      - 'Ref A: 74B914543D4C46B6A57EA24DC2E224EC Ref B: CO6AA3150217023 Ref C: 2023-09-15T21:27:36Z'
+      x-request-time:
+      - '0.369'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.10.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.17 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/connections/OfflineStoreConnectionName?api-version=0000-00-00
+  response:
+    body:
+      string: '{"tags": null, "location": null, "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/test-ws-000006_mvnetprov/connections/OfflineStoreConnectionName",
+        "name": "OfflineStoreConnectionName", "type": "Microsoft.MachineLearningServices/workspaces/connections",
+        "properties": {"authType": "ManagedIdentity", "credentials": null, "category":
+        "ADLSGen2", "expiryTime": null, "target": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.Storage/storageAccounts/testws00storagea84e4213c/blobServices/default/containers/offlinestorec0d4d782-ec22-5821-9e31-29e7646cc958",
+        "createdByWorkspaceArmId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/test-ws-000006_mvnetprov",
+        "isSharedToAll": false, "sharedUserList": [], "metadata": {}}, "systemData":
+        {"createdAt": "2023-09-15T21:26:41.3212457Z", "createdBy": "alanpoblette@microsoft.com",
+        "createdByType": "User", "lastModifiedAt": "2023-09-15T21:26:41.3212457Z",
+        "lastModifiedBy": "alanpoblette@microsoft.com", "lastModifiedByType": "User"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1219'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 15 Sep 2023 21:27:37 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-aml-cluster:
+      - int-01
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-msedge-ref:
+      - 'Ref A: 190F7658B15449A5A9FE758C33314601 Ref B: CO6AA3150217023 Ref C: 2023-09-15T21:27:37Z'
+      x-request-time:
+      - '0.012'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"includeSpark": false}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '23'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.10.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.17 (Windows-10-10.0.22621-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/provisionManagedNetwork?api-version=0000-00-00
+  response:
+    body:
+      string: ''
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/centraluseuap/workspaceOperationsStatus/919b3758-561a-4513-9a45-f7ed935eb9a7?api-version=2023-06-01-preview&type=async
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Fri, 15 Sep 2023 21:27:38 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/centraluseuap/workspaceOperationsStatus/919b3758-561a-4513-9a45-f7ed935eb9a7?api-version=2023-06-01-preview&type=location
+      pragma:
+      - no-cache
+      request-context:
+      - appId=
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aml-cluster:
+      - int-01
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-ms-response-type:
+      - standard
+      x-msedge-ref:
+      - 'Ref A: 8F50C7EFF9C54D32BF93F6FE16CAE937 Ref B: CO6AA3150217045 Ref C: 2023-09-15T21:27:38Z'
+      x-request-time:
+      - '0.070'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.10.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.17 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/centraluseuap/workspaceOperationsStatus/919b3758-561a-4513-9a45-f7ed935eb9a7?api-version=0000-00-00&type=async
+  response:
+    body:
+      string: '{"status": "InProgress"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '24'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 15 Sep 2023 21:27:38 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aml-cluster:
+      - int-02
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-msedge-ref:
+      - 'Ref A: 035EBCDF48614245ABFE92F4E73BF1E2 Ref B: CO6AA3150217045 Ref C: 2023-09-15T21:27:38Z'
+      x-request-time:
+      - '0.008'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.10.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.17 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/centraluseuap/workspaceOperationsStatus/919b3758-561a-4513-9a45-f7ed935eb9a7?api-version=0000-00-00&type=async
+  response:
+    body:
+      string: '{"status": "InProgress"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '24'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 15 Sep 2023 21:28:09 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aml-cluster:
+      - int-01
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-msedge-ref:
+      - 'Ref A: 125C30D2178C46FAB5C829146D8900AA Ref B: CO6AA3150217045 Ref C: 2023-09-15T21:28:09Z'
+      x-request-time:
+      - '0.011'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.10.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.17 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/centraluseuap/workspaceOperationsStatus/919b3758-561a-4513-9a45-f7ed935eb9a7?api-version=0000-00-00&type=async
+  response:
+    body:
+      string: '{"status": "Succeeded", "percentComplete": 100.0}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '49'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 15 Sep 2023 21:28:39 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aml-cluster:
+      - int-01
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-msedge-ref:
+      - 'Ref A: 3E98369D9EA646F598CEB3F5B6DF6512 Ref B: CO6AA3150217045 Ref C: 2023-09-15T21:28:39Z'
+      x-request-time:
+      - '0.010'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.10.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.17 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/centraluseuap/workspaceOperationsStatus/919b3758-561a-4513-9a45-f7ed935eb9a7?api-version=0000-00-00&type=location
+  response:
+    body:
+      string: '{"status": "Active", "sparkReady": false}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '41'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 15 Sep 2023 21:28:39 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aml-cluster:
+      - int-02
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-msedge-ref:
+      - 'Ref A: 6AF94336F95F475DB9488F2FC096B509 Ref B: CO6AA3150217045 Ref C: 2023-09-15T21:28:39Z'
+      x-request-time:
+      - '0.012'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.10.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.17 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/test-ws-000006_mvnetprov",
+        "name": "test-ws-000006_mvnetprov", "type": "Microsoft.MachineLearningServices/workspaces",
+        "location": "centraluseuap", "tags": {}, "etag": null, "properties": {"friendlyName":
+        "test-ws-000006_mvnetprov", "description": "test-ws-000006_mvnetprov", "storageAccount":
+        "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.Storage/storageAccounts/testws00storagea84e4213c",
+        "keyVault": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.Keyvault/vaults/testws00keyvaultf86e1b32",
+        "applicationInsights": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.insights/components/testws00insightsefc7a4ed",
+        "hbiWorkspace": false, "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47",
+        "imageBuildCompute": null, "provisioningState": "Succeeded", "managedNetwork":
+        {"changeableIsolationModes": ["AllowOnlyApprovedOutbound"], "isolationMode":
+        "AllowInternetOutbound", "networkId": "dd4e68c1-8825-4eac-8f3d-221b44af1bf6",
+        "status": {"status": "Active", "sparkReady": false}}, "v1LegacyMode": false,
+        "softDeleteEnabled": false, "creationTime": "2023-09-15T21:26:02.8991167Z",
+        "notebookInfo": {"resourceId": "4735b24f6fd14f498caefbd9ff094609", "fqdn":
+        "ml-test-ws-0-centraluseuap-dd4e68c1-8825-4eac-8f3d-221b44af1bf6.centraluseuap.notebooks.azure.net",
+        "isPrivateLinkEnabled": false, "notebookPreparationError": null}, "storageHnsEnabled":
+        true, "workspaceId": "dd4e68c1-8825-4eac-8f3d-221b44af1bf6", "linkedModelInventoryArmId":
+        null, "privateLinkCount": 0, "publicNetworkAccess": "Enabled", "ipAllowlist":
+        [], "discoveryUrl": "https://int.api.azureml-test.ms/discovery", "mlFlowTrackingUri":
+        "azureml://int.api.azureml-test.ms/mlflow/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/test-ws-000006_mvnetprov",
+        "sdkTelemetryAppInsightsKey": "a26ef680-7601-4ee3-8c7f-03880f835d7e", "featureStoreSettings":
+        {"computeRuntime": {"sparkRuntimeVersion": "3.2.0"}, "offlineStoreConnectionName":
+        "OfflineStoreConnectionName", "onlineStoreConnectionName": ""}, "sasGetterUri":
+        "", "enableDataIsolation": false, "azureOpenAI": {"provisioningState": "NotStarted",
+        "resourceId": null, "endpoint": null, "proxyResourceId": null, "failureReason":
+        null, "deployedModels": []}, "azureCognitiveSearch": {"provisioningState":
+        "NotStarted", "resourceId": null, "endpoint": null, "failureReason": null},
+        "azureAIContentSafety": {"provisioningState": "NotStarted", "resourceId":
+        null, "endpoint": null, "failureReason": null}}, "identity": {"type": "SystemAssigned,UserAssigned",
+        "principalId": "f32635cc-ff12-4f6f-b486-c4e4994aab26", "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47",
+        "userAssignedIdentities": {"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.ManagedIdentity/userAssignedIdentities/materialization-uai-alanpoblette-test-ws-000006_mvnetprov":
+        {"principalId": null, "clientId": null}}}, "kind": "FeatureStore", "sku":
+        {"name": "Basic", "tier": "Basic"}, "systemData": {"createdAt": "2023-09-15T21:26:02.8991167Z",
+        "createdBy": "alanpoblette@microsoft.com", "createdByType": "User", "lastModifiedAt":
+        "2023-09-15T21:26:24.4995119Z", "lastModifiedBy": "alanpoblette@microsoft.com",
+        "lastModifiedByType": "User"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '3569'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 15 Sep 2023 21:28:40 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-aml-cluster:
+      - int-01
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-msedge-ref:
+      - 'Ref A: 56FE989CF86545E481827535D8CA779C Ref B: CO6AA3150218027 Ref C: 2023-09-15T21:28:40Z'
+      x-request-time:
+      - '0.374'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.10.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.17 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/connections/OfflineStoreConnectionName?api-version=0000-00-00
+  response:
+    body:
+      string: '{"tags": null, "location": null, "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/test-ws-000006_mvnetprov/connections/OfflineStoreConnectionName",
+        "name": "OfflineStoreConnectionName", "type": "Microsoft.MachineLearningServices/workspaces/connections",
+        "properties": {"authType": "ManagedIdentity", "credentials": null, "category":
+        "ADLSGen2", "expiryTime": null, "target": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.Storage/storageAccounts/testws00storagea84e4213c/blobServices/default/containers/offlinestorec0d4d782-ec22-5821-9e31-29e7646cc958",
+        "createdByWorkspaceArmId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/test-ws-000006_mvnetprov",
+        "isSharedToAll": false, "sharedUserList": [], "metadata": {}}, "systemData":
+        {"createdAt": "2023-09-15T21:26:41.3212457Z", "createdBy": "alanpoblette@microsoft.com",
+        "createdByType": "User", "lastModifiedAt": "2023-09-15T21:26:41.3212457Z",
+        "lastModifiedBy": "alanpoblette@microsoft.com", "lastModifiedByType": "User"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1219'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 15 Sep 2023 21:28:42 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-aml-cluster:
+      - int-02
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-msedge-ref:
+      - 'Ref A: 83600EDAF50944F486C6D88362C7D7CD Ref B: CO6AA3150218027 Ref C: 2023-09-15T21:28:41Z'
+      x-request-time:
+      - '0.012'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.10.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.17 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/test-ws-000006_mvnetprov",
+        "name": "test-ws-000006_mvnetprov", "type": "Microsoft.MachineLearningServices/workspaces",
+        "location": "centraluseuap", "tags": {}, "etag": null, "properties": {"friendlyName":
+        "test-ws-000006_mvnetprov", "description": "test-ws-000006_mvnetprov", "storageAccount":
+        "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.Storage/storageAccounts/testws00storagea84e4213c",
+        "keyVault": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.Keyvault/vaults/testws00keyvaultf86e1b32",
+        "applicationInsights": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.insights/components/testws00insightsefc7a4ed",
+        "hbiWorkspace": false, "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47",
+        "imageBuildCompute": null, "provisioningState": "Succeeded", "managedNetwork":
+        {"changeableIsolationModes": ["AllowOnlyApprovedOutbound"], "isolationMode":
+        "AllowInternetOutbound", "networkId": "dd4e68c1-8825-4eac-8f3d-221b44af1bf6",
+        "status": {"status": "Active", "sparkReady": false}}, "v1LegacyMode": false,
+        "softDeleteEnabled": false, "creationTime": "2023-09-15T21:26:02.8991167Z",
+        "notebookInfo": {"resourceId": "4735b24f6fd14f498caefbd9ff094609", "fqdn":
+        "ml-test-ws-0-centraluseuap-dd4e68c1-8825-4eac-8f3d-221b44af1bf6.centraluseuap.notebooks.azure.net",
+        "isPrivateLinkEnabled": false, "notebookPreparationError": null}, "storageHnsEnabled":
+        true, "workspaceId": "dd4e68c1-8825-4eac-8f3d-221b44af1bf6", "linkedModelInventoryArmId":
+        null, "privateLinkCount": 0, "publicNetworkAccess": "Enabled", "ipAllowlist":
+        [], "discoveryUrl": "https://int.api.azureml-test.ms/discovery", "mlFlowTrackingUri":
+        "azureml://int.api.azureml-test.ms/mlflow/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/test-ws-000006_mvnetprov",
+        "sdkTelemetryAppInsightsKey": "a26ef680-7601-4ee3-8c7f-03880f835d7e", "featureStoreSettings":
+        {"computeRuntime": {"sparkRuntimeVersion": "3.2.0"}, "offlineStoreConnectionName":
+        "OfflineStoreConnectionName", "onlineStoreConnectionName": ""}, "sasGetterUri":
+        "", "enableDataIsolation": false, "azureOpenAI": {"provisioningState": "NotStarted",
+        "resourceId": null, "endpoint": null, "proxyResourceId": null, "failureReason":
+        null, "deployedModels": []}, "azureCognitiveSearch": {"provisioningState":
+        "NotStarted", "resourceId": null, "endpoint": null, "failureReason": null},
+        "azureAIContentSafety": {"provisioningState": "NotStarted", "resourceId":
+        null, "endpoint": null, "failureReason": null}}, "identity": {"type": "SystemAssigned,UserAssigned",
+        "principalId": "f32635cc-ff12-4f6f-b486-c4e4994aab26", "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47",
+        "userAssignedIdentities": {"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.ManagedIdentity/userAssignedIdentities/materialization-uai-alanpoblette-test-ws-000006_mvnetprov":
+        {"principalId": null, "clientId": null}}}, "kind": "FeatureStore", "sku":
+        {"name": "Basic", "tier": "Basic"}, "systemData": {"createdAt": "2023-09-15T21:26:02.8991167Z",
+        "createdBy": "alanpoblette@microsoft.com", "createdByType": "User", "lastModifiedAt":
+        "2023-09-15T21:26:24.4995119Z", "lastModifiedBy": "alanpoblette@microsoft.com",
+        "lastModifiedByType": "User"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '3569'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 15 Sep 2023 21:28:47 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-aml-cluster:
+      - int-01
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-msedge-ref:
+      - 'Ref A: 1B48F57A16474FF49E918CDED40BFB30 Ref B: CO6AA3150219023 Ref C: 2023-09-15T21:28:43Z'
+      x-request-time:
+      - '4.828'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.10.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.17 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/test-ws-000006_mvnetprov",
+        "name": "test-ws-000006_mvnetprov", "type": "Microsoft.MachineLearningServices/workspaces",
+        "location": "centraluseuap", "tags": {}, "etag": null, "properties": {"friendlyName":
+        "test-ws-000006_mvnetprov", "description": "test-ws-000006_mvnetprov", "storageAccount":
+        "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.Storage/storageAccounts/testws00storagea84e4213c",
+        "keyVault": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.Keyvault/vaults/testws00keyvaultf86e1b32",
+        "applicationInsights": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.insights/components/testws00insightsefc7a4ed",
+        "hbiWorkspace": false, "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47",
+        "imageBuildCompute": null, "provisioningState": "Succeeded", "managedNetwork":
+        {"changeableIsolationModes": ["AllowOnlyApprovedOutbound"], "isolationMode":
+        "AllowInternetOutbound", "networkId": "dd4e68c1-8825-4eac-8f3d-221b44af1bf6",
+        "status": {"status": "Active", "sparkReady": false}}, "v1LegacyMode": false,
+        "softDeleteEnabled": false, "creationTime": "2023-09-15T21:26:02.8991167Z",
+        "notebookInfo": {"resourceId": "4735b24f6fd14f498caefbd9ff094609", "fqdn":
+        "ml-test-ws-0-centraluseuap-dd4e68c1-8825-4eac-8f3d-221b44af1bf6.centraluseuap.notebooks.azure.net",
+        "isPrivateLinkEnabled": false, "notebookPreparationError": null}, "storageHnsEnabled":
+        true, "workspaceId": "dd4e68c1-8825-4eac-8f3d-221b44af1bf6", "linkedModelInventoryArmId":
+        null, "privateLinkCount": 0, "publicNetworkAccess": "Enabled", "ipAllowlist":
+        [], "discoveryUrl": "https://int.api.azureml-test.ms/discovery", "mlFlowTrackingUri":
+        "azureml://int.api.azureml-test.ms/mlflow/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/test-ws-000006_mvnetprov",
+        "sdkTelemetryAppInsightsKey": "a26ef680-7601-4ee3-8c7f-03880f835d7e", "featureStoreSettings":
+        {"computeRuntime": {"sparkRuntimeVersion": "3.2.0"}, "offlineStoreConnectionName":
+        "OfflineStoreConnectionName", "onlineStoreConnectionName": ""}, "sasGetterUri":
+        "", "enableDataIsolation": false, "azureOpenAI": {"provisioningState": "NotStarted",
+        "resourceId": null, "endpoint": null, "proxyResourceId": null, "failureReason":
+        null, "deployedModels": []}, "azureCognitiveSearch": {"provisioningState":
+        "NotStarted", "resourceId": null, "endpoint": null, "failureReason": null},
+        "azureAIContentSafety": {"provisioningState": "NotStarted", "resourceId":
+        null, "endpoint": null, "failureReason": null}}, "identity": {"type": "SystemAssigned,UserAssigned",
+        "principalId": "f32635cc-ff12-4f6f-b486-c4e4994aab26", "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47",
+        "userAssignedIdentities": {"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.ManagedIdentity/userAssignedIdentities/materialization-uai-alanpoblette-test-ws-000006_mvnetprov":
+        {"principalId": null, "clientId": null}}}, "kind": "FeatureStore", "sku":
+        {"name": "Basic", "tier": "Basic"}, "systemData": {"createdAt": "2023-09-15T21:26:02.8991167Z",
+        "createdBy": "alanpoblette@microsoft.com", "createdByType": "User", "lastModifiedAt":
+        "2023-09-15T21:26:24.4995119Z", "lastModifiedBy": "alanpoblette@microsoft.com",
+        "lastModifiedByType": "User"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '3569'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 15 Sep 2023 21:28:53 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-aml-cluster:
+      - int-02
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-msedge-ref:
+      - 'Ref A: 10F547257E934AE2B9EC383BA7977A53 Ref B: CO6AA3150219023 Ref C: 2023-09-15T21:28:48Z'
+      x-request-time:
+      - '5.293'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.10.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.17 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/connections/OfflineStoreConnectionName?api-version=0000-00-00
+  response:
+    body:
+      string: '{"tags": null, "location": null, "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/test-ws-000006_mvnetprov/connections/OfflineStoreConnectionName",
+        "name": "OfflineStoreConnectionName", "type": "Microsoft.MachineLearningServices/workspaces/connections",
+        "properties": {"authType": "ManagedIdentity", "credentials": null, "category":
+        "ADLSGen2", "expiryTime": null, "target": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.Storage/storageAccounts/testws00storagea84e4213c/blobServices/default/containers/offlinestorec0d4d782-ec22-5821-9e31-29e7646cc958",
+        "createdByWorkspaceArmId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/test-ws-000006_mvnetprov",
+        "isSharedToAll": false, "sharedUserList": [], "metadata": {}}, "systemData":
+        {"createdAt": "2023-09-15T21:26:41.3212457Z", "createdBy": "alanpoblette@microsoft.com",
+        "createdByType": "User", "lastModifiedAt": "2023-09-15T21:26:41.3212457Z",
+        "lastModifiedBy": "alanpoblette@microsoft.com", "lastModifiedByType": "User"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1219'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 15 Sep 2023 21:28:53 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-aml-cluster:
+      - int-02
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-msedge-ref:
+      - 'Ref A: 2EEF7A1759A147468FD7A1BA7726E503 Ref B: CO6AA3150219023 Ref C: 2023-09-15T21:28:54Z'
+      x-request-time:
+      - '0.011'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      User-Agent:
+      - azsdk-python-mgmt-resource/15.0.0 Python/3.8.17 (Windows-10-10.0.22621-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.insights/components/000000000000000?api-version=0000-00-00
+  response:
+    body:
+      string: ''
+    headers:
+      access-control-expose-headers:
+      - Request-Context
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Fri, 15 Sep 2023 21:28:57 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:60b64f55-e716-48c8-8b96-83eb9c6a7a9b
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+      x-msedge-ref:
+      - 'Ref A: CDCC30102E6E4F23928A5A734F2B0CF1 Ref B: CO6AA3150217023 Ref C: 2023-09-15T21:28:54Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      User-Agent:
+      - azsdk-python-mgmt-resource/15.0.0 Python/3.8.17 (Windows-10-10.0.22621-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.Storage/storageAccounts/testws00storagea84e4213c?api-version=0000-00-00
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      content-type:
+      - text/plain; charset=utf-8
+      date:
+      - Fri, 15 Sep 2023 21:29:02 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+      x-msedge-ref:
+      - 'Ref A: 8D0581BD2AD64F23B255D11013AB2EE1 Ref B: CO6AA3150220021 Ref C: 2023-09-15T21:28:58Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      User-Agent:
+      - azsdk-python-mgmt-resource/15.0.0 Python/3.8.17 (Windows-10-10.0.22621-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.Keyvault/vaults/testws00keyvaultf86e1b32?api-version=0000-00-00
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Fri, 15 Sep 2023 21:29:06 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aspnet-version:
+      - 4.0.30319
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-keyvault-service-version:
+      - 1.5.914.0
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+      x-msedge-ref:
+      - 'Ref A: BD6E566767554D8CA58AB385EFD8262E Ref B: CO6AA3150220017 Ref C: 2023-09-15T21:29:03Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.10.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.17 (Windows-10-10.0.22621-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000?api-version=0000-00-00&forceToPurge=false
+  response:
+    body:
+      string: ''
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/centraluseuap/workspaceOperationsStatus/1fdeca56-737c-4a5a-ba2d-674e133ddbbb?api-version=2023-06-01-preview&type=async
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Fri, 15 Sep 2023 21:29:07 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/centraluseuap/workspaceOperationsStatus/1fdeca56-737c-4a5a-ba2d-674e133ddbbb?api-version=2023-06-01-preview&type=location
+      pragma:
+      - no-cache
+      request-context:
+      - appId=
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aml-cluster:
+      - int-01
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+      x-ms-response-type:
+      - standard
+      x-msedge-ref:
+      - 'Ref A: C73A694E829E450F920DE4B10F387CFD Ref B: CO6AA3150219023 Ref C: 2023-09-15T21:29:07Z'
+      x-request-time:
+      - '0.083'
+    status:
+      code: 202
+      message: Accepted
+version: 1
