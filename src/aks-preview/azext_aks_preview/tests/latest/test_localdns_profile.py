@@ -31,7 +31,7 @@ kubeDnsOverridesExpected = {
             "maxConcurrent": 1000,
             "protocol": "ForceTCP",
             "queryLogging": "Error",
-            "serveStale": "Verify",
+            "serveStale": "Immediate",
             "serveStaleDurationInSeconds": 3600
         }
     }
@@ -54,7 +54,7 @@ vnetDnsOverridesExpected = {
             "maxConcurrent": 1000,
             "protocol": "ForceTCP",
             "queryLogging": "Error",
-            "serveStale": "Verify",
+            "serveStale": "Immediate",
             "serveStaleDurationInSeconds": 3600
         }
     }
