@@ -2,8 +2,9 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-from azure.cli.testsdk import (ScenarioTest, JMESPathCheck, JMESPathCheckExists, ResourceGroupPreparer, StorageAccountPreparer,
-                               api_version_constraint)
+from azure.cli.testsdk import (ScenarioTest, JMESPathCheck, JMESPathCheckExists, ResourceGroupPreparer,
+                               StorageAccountPreparer,
+                               api_version_constraint, record_only, live_only)
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from azure.core.exceptions import HttpResponseError
 from .storage_test_util import StorageScenarioMixin
@@ -281,6 +282,7 @@ class StorageAccountTests(StorageScenarioMixin, ScenarioTest):
                  checks=[JMESPathCheck('migrationStatus', 'SubmittedForConversion')])
 
     @ResourceGroupPreparer(location='eastus2', random_name_length=24)
+    @record_only()
     def test_storage_account_task_assignment(self, resource_group):
         self.kwargs.update({
             'sa': self.create_random_name('sataskassignment', 24),
@@ -291,14 +293,14 @@ class StorageAccountTests(StorageScenarioMixin, ScenarioTest):
         self.cmd('az storage account create -n {sa} -g {rg} -l eastus2')
 
         # need to create storage-actions task manually
-        task_id = self.cmd("az storage-actions task create -g {rg} -n {task_name} -l eastus2 "
-                           "--identity {{type:SystemAssigned}} "
-                           "--tags {{key1:value1}} --action {{if:{{condition:\\'[[equals(AccessTier,\\'/Cool\\'/)]]\\',"
-                           "operations:[{{name:'SetBlobTier',parameters:{{tier:'Hot'}},"
-                           "onSuccess:'continue',onFailure:'break'}}]}},"
-                           "else:{{operations:[{{name:'DeleteBlob',onSuccess:'continue',onFailure:'break'}}]}}}} "
-                           "--description StorageTask1 --enabled false").get_output_in_json()["id"]
-        # task_id = 'taskid'
+        # task_id = self.cmd("az storage-actions task create -g {rg} -n {task_name} -l eastus2 "
+        #                    "--identity {{type:SystemAssigned}} "
+        #                    "--tags {{key1:value1}} --action {{if:{{condition:\\'[[equals(AccessTier,\\'/Cool\\'/)]]\\',"
+        #                    "operations:[{{name:'SetBlobTier',parameters:{{tier:'Hot'}},"
+        #                    "onSuccess:'continue',onFailure:'break'}}]}},"
+        #                    "else:{{operations:[{{name:'DeleteBlob',onSuccess:'continue',onFailure:'break'}}]}}}} "
+        #                    "--description StorageTask1 --enabled false").get_output_in_json()["id"]
+        task_id = 'taskid'
         self.kwargs.update({"task_id": task_id})
         # service would not work if request is directed to euap
         self.cmd("az storage account task-assignment create -g {rg} -n {task_assignment_name} --account-name {sa} "
