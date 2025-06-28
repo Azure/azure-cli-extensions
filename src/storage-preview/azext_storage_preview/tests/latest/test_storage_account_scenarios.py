@@ -475,8 +475,9 @@ class StorageAccountLocalUserTests(StorageScenarioMixin, ScenarioTest):
             JMESPathCheck('sshAuthorizedKeys', None)
         )
 
-        self.cmd('{cmd} update --account-name {sa} -g {rg} -n {username} '
-                 '--ssh-authorized-key key="ssh-rsa a2V5" ')
+        # getting service error Cannot provide sshAuthorizedKeys for NFSv3 user.
+        # self.cmd('{cmd} update --account-name {sa} -g {rg} -n {username} '
+        #          '--ssh-authorized-key key="ssh-rsa a2V5" ')
 
         self.cmd('{cmd} list-keys --account-name {sa} -g {rg} -n {username}').assert_with_checks(
             JMESPathCheck('sshAuthorizedKeys', None)
