@@ -2,7 +2,7 @@
 
 Release History
 ===============
-1.3.1
+1.3.1b1
 ++++++
 * `az elastic-san volume-group create/update`: Add warning for CRC data integration check
 
