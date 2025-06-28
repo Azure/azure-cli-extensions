@@ -17,10 +17,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.74.0 azsdk-python-core/1.31.0 Python/3.12.10 (Windows-10-10.0.19045-SP0)
     method: POST
-    uri: https://eastus2.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002/listKeys?api-version=2024-01-01&$expand=kerb
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002/listKeys?api-version=2024-01-01&$expand=kerb
   response:
     body:
-      string: '{"keys":[{"creationTime":"2025-06-28T02:27:52.9281065Z","keyName":"key1","value":"veryFakedStorageAccountKey==","permissions":"FULL"},{"creationTime":"2025-06-28T02:27:52.9281065Z","keyName":"key2","value":"veryFakedStorageAccountKey==","permissions":"FULL"}]}'
+      string: '{"keys":[{"creationTime":"2025-06-28T04:00:57.8251631Z","keyName":"key1","value":"veryFakedStorageAccountKey==","permissions":"FULL"},{"creationTime":"2025-06-28T04:00:57.8251631Z","keyName":"key2","value":"veryFakedStorageAccountKey==","permissions":"FULL"}]}'
     headers:
       cache-control:
       - no-cache
@@ -29,23 +29,21 @@ interactions:
       content-type:
       - application/json
       date:
-      - Sat, 28 Jun 2025 02:29:01 GMT
+      - Sat, 28 Jun 2025 04:01:24 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
+      server:
+      - Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0 Microsoft-HTTPAPI/2.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      x-cache:
-      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a,objectId=a7250e3a-0e5e-48e2-9a34-45f1f5e1a91e/eastus2/f2ecd8a5-0489-4c4d-9956-d7277a095d77
+      - tenantId=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a,objectId=a7250e3a-0e5e-48e2-9a34-45f1f5e1a91e/eastus2euap/5c2fe0ad-34c6-43c5-9b7c-6483a0e3c595
       x-ms-ratelimit-remaining-subscription-resource-requests:
       - '799'
-      x-msedge-ref:
-      - 'Ref A: DCF13E0B0AA046D29D7B9CF81620D067 Ref B: MAA201060516031 Ref C: 2025-06-28T02:29:01Z'
     status:
       code: 200
       message: OK
@@ -67,7 +65,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.74.0 azsdk-python-storage-file-share/12.21.0 Python/3.12.10 (Windows-10-10.0.19045-SP0)
       x-ms-date:
-      - Sat, 28 Jun 2025 02:29:02 GMT
+      - Sat, 28 Jun 2025 04:01:24 GMT
       x-ms-version:
       - '2025-05-05'
     method: PUT
@@ -79,11 +77,11 @@ interactions:
       content-length:
       - '0'
       date:
-      - Sat, 28 Jun 2025 02:29:03 GMT
+      - Sat, 28 Jun 2025 04:01:25 GMT
       etag:
-      - '"0x8DDB5EB8C6A9CA2"'
+      - '"0x8DDB5F8741ABBA3"'
       last-modified:
-      - Sat, 28 Jun 2025 02:29:03 GMT
+      - Sat, 28 Jun 2025 04:01:26 GMT
       server:
       - Windows-Azure-File/1.0 Microsoft-HTTPAPI/2.0
       x-ms-version:
@@ -113,7 +111,7 @@ interactions:
       x-ms-content-length:
       - '131072'
       x-ms-date:
-      - Sat, 28 Jun 2025 02:29:04 GMT
+      - Sat, 28 Jun 2025 04:01:26 GMT
       x-ms-file-attributes:
       - none
       x-ms-file-creation-time:
@@ -135,27 +133,27 @@ interactions:
       content-length:
       - '0'
       date:
-      - Sat, 28 Jun 2025 02:29:04 GMT
+      - Sat, 28 Jun 2025 04:01:27 GMT
       etag:
-      - '"0x8DDB5EB8D857AD0"'
+      - '"0x8DDB5F8751FA75B"'
       last-modified:
-      - Sat, 28 Jun 2025 02:29:05 GMT
+      - Sat, 28 Jun 2025 04:01:27 GMT
       server:
       - Windows-Azure-File/1.0 Microsoft-HTTPAPI/2.0
       x-ms-file-attributes:
       - Archive
       x-ms-file-change-time:
-      - '2025-06-28T02:29:05.2755664Z'
+      - '2025-06-28T04:01:27.8004059Z'
       x-ms-file-creation-time:
-      - '2025-06-28T02:29:05.2755664Z'
+      - '2025-06-28T04:01:27.8004059Z'
       x-ms-file-id:
       - '13835128424026341376'
       x-ms-file-last-write-time:
-      - '2025-06-28T02:29:05.2755664Z'
+      - '2025-06-28T04:01:27.8004059Z'
       x-ms-file-parent-id:
       - '0'
       x-ms-file-permission-key:
-      - 6368592225210111038*17348183126120823984
+      - 16310248256023707271*5402432920119399945
       x-ms-request-server-encrypted:
       - 'true'
       x-ms-version:
@@ -185,7 +183,7 @@ interactions:
       x-ms-allow-trailing-dot:
       - 'true'
       x-ms-date:
-      - Sat, 28 Jun 2025 02:29:05 GMT
+      - Sat, 28 Jun 2025 04:01:28 GMT
       x-ms-range:
       - bytes=0-131071
       x-ms-version:
@@ -203,15 +201,15 @@ interactions:
       content-md5:
       - DfvoqkwgtS4bi/PLbL3xkw==
       date:
-      - Sat, 28 Jun 2025 02:29:06 GMT
+      - Sat, 28 Jun 2025 04:01:29 GMT
       etag:
-      - '"0x8DDB5EB8ED2F35B"'
+      - '"0x8DDB5F8767ACC00"'
       last-modified:
-      - Sat, 28 Jun 2025 02:29:07 GMT
+      - Sat, 28 Jun 2025 04:01:30 GMT
       server:
       - Windows-Azure-File/1.0 Microsoft-HTTPAPI/2.0
       x-ms-file-last-write-time:
-      - '2025-06-28T02:29:07.4610011Z'
+      - '2025-06-28T04:01:30.0754432Z'
       x-ms-request-server-encrypted:
       - 'true'
       x-ms-version:
@@ -237,7 +235,7 @@ interactions:
       x-ms-allow-trailing-dot:
       - 'true'
       x-ms-date:
-      - Sat, 28 Jun 2025 02:29:07 GMT
+      - Sat, 28 Jun 2025 04:01:30 GMT
       x-ms-version:
       - '2022-11-02'
     method: HEAD
@@ -251,27 +249,27 @@ interactions:
       content-type:
       - application/octet-stream
       date:
-      - Sat, 28 Jun 2025 02:29:08 GMT
+      - Sat, 28 Jun 2025 04:01:30 GMT
       etag:
-      - '"0x8DDB5EB8ED2F35B"'
+      - '"0x8DDB5F8767ACC00"'
       last-modified:
-      - Sat, 28 Jun 2025 02:29:07 GMT
+      - Sat, 28 Jun 2025 04:01:30 GMT
       server:
       - Windows-Azure-File/1.0 Microsoft-HTTPAPI/2.0
       x-ms-file-attributes:
       - Archive
       x-ms-file-change-time:
-      - '2025-06-28T02:29:07.4610011Z'
+      - '2025-06-28T04:01:30.0754432Z'
       x-ms-file-creation-time:
-      - '2025-06-28T02:29:05.2755664Z'
+      - '2025-06-28T04:01:27.8004059Z'
       x-ms-file-id:
       - '13835128424026341376'
       x-ms-file-last-write-time:
-      - '2025-06-28T02:29:07.4610011Z'
+      - '2025-06-28T04:01:30.0754432Z'
       x-ms-file-parent-id:
       - '0'
       x-ms-file-permission-key:
-      - 6368592225210111038*17348183126120823984
+      - 16310248256023707271*5402432920119399945
       x-ms-lease-state:
       - available
       x-ms-lease-status:
@@ -303,7 +301,7 @@ interactions:
       x-ms-allow-trailing-dot:
       - 'true'
       x-ms-date:
-      - Sat, 28 Jun 2025 02:29:09 GMT
+      - Sat, 28 Jun 2025 04:01:32 GMT
       x-ms-range:
       - bytes=0-33554431
       x-ms-version:
@@ -323,27 +321,27 @@ interactions:
       content-type:
       - application/octet-stream
       date:
-      - Sat, 28 Jun 2025 02:29:09 GMT
+      - Sat, 28 Jun 2025 04:01:32 GMT
       etag:
-      - '"0x8DDB5EB8ED2F35B"'
+      - '"0x8DDB5F8767ACC00"'
       last-modified:
-      - Sat, 28 Jun 2025 02:29:07 GMT
+      - Sat, 28 Jun 2025 04:01:30 GMT
       server:
       - Windows-Azure-File/1.0 Microsoft-HTTPAPI/2.0
       x-ms-file-attributes:
       - Archive
       x-ms-file-change-time:
-      - '2025-06-28T02:29:07.4610011Z'
+      - '2025-06-28T04:01:30.0754432Z'
       x-ms-file-creation-time:
-      - '2025-06-28T02:29:05.2755664Z'
+      - '2025-06-28T04:01:27.8004059Z'
       x-ms-file-id:
       - '13835128424026341376'
       x-ms-file-last-write-time:
-      - '2025-06-28T02:29:07.4610011Z'
+      - '2025-06-28T04:01:30.0754432Z'
       x-ms-file-parent-id:
       - '0'
       x-ms-file-permission-key:
-      - 6368592225210111038*17348183126120823984
+      - 16310248256023707271*5402432920119399945
       x-ms-lease-state:
       - available
       x-ms-lease-status:
@@ -375,7 +373,7 @@ interactions:
       x-ms-allow-trailing-dot:
       - 'true'
       x-ms-date:
-      - Sat, 28 Jun 2025 02:29:11 GMT
+      - Sat, 28 Jun 2025 04:01:34 GMT
       x-ms-version:
       - '2022-11-02'
     method: HEAD
@@ -389,27 +387,27 @@ interactions:
       content-type:
       - application/octet-stream
       date:
-      - Sat, 28 Jun 2025 02:29:11 GMT
+      - Sat, 28 Jun 2025 04:01:34 GMT
       etag:
-      - '"0x8DDB5EB8ED2F35B"'
+      - '"0x8DDB5F8767ACC00"'
       last-modified:
-      - Sat, 28 Jun 2025 02:29:07 GMT
+      - Sat, 28 Jun 2025 04:01:30 GMT
       server:
       - Windows-Azure-File/1.0 Microsoft-HTTPAPI/2.0
       x-ms-file-attributes:
       - Archive
       x-ms-file-change-time:
-      - '2025-06-28T02:29:07.4610011Z'
+      - '2025-06-28T04:01:30.0754432Z'
       x-ms-file-creation-time:
-      - '2025-06-28T02:29:05.2755664Z'
+      - '2025-06-28T04:01:27.8004059Z'
       x-ms-file-id:
       - '13835128424026341376'
       x-ms-file-last-write-time:
-      - '2025-06-28T02:29:07.4610011Z'
+      - '2025-06-28T04:01:30.0754432Z'
       x-ms-file-parent-id:
       - '0'
       x-ms-file-permission-key:
-      - 6368592225210111038*17348183126120823984
+      - 16310248256023707271*5402432920119399945
       x-ms-lease-state:
       - available
       x-ms-lease-status:
@@ -441,7 +439,7 @@ interactions:
       x-ms-allow-trailing-dot:
       - 'false'
       x-ms-date:
-      - Sat, 28 Jun 2025 02:29:13 GMT
+      - Sat, 28 Jun 2025 04:01:36 GMT
       x-ms-range:
       - bytes=0-33554431
       x-ms-version:
@@ -451,14 +449,14 @@ interactions:
   response:
     body:
       string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?><Error><Code>ResourceNotFound</Code><Message>The
-        specified resource does not exist.\nRequestId:13c1f2bc-601a-001a-3ad4-e70414000000\nTime:2025-06-28T02:29:14.2894494Z</Message></Error>"
+        specified resource does not exist.\nRequestId:f74d3390-001a-00fb-64e1-e7d82d000000\nTime:2025-06-28T04:01:37.3342408Z</Message></Error>"
     headers:
       content-length:
       - '221'
       content-type:
       - application/xml
       date:
-      - Sat, 28 Jun 2025 02:29:14 GMT
+      - Sat, 28 Jun 2025 04:01:36 GMT
       server:
       - Windows-Azure-File/1.0 Microsoft-HTTPAPI/2.0
       x-ms-error-code:
@@ -489,9 +487,9 @@ interactions:
       x-ms-allow-trailing-dot:
       - 'true'
       x-ms-copy-source:
-      - https://clitestwbvodq4hswps6nsdr.file.core.windows.net/shareeosqnp7lw6iymk2khf7/sample_file.bin...
+      - https://clitest6tx2cwtzsbgu5t2do.file.core.windows.net/sharemgscrevbmga3dgu2gha/sample_file.bin...
       x-ms-date:
-      - Sat, 28 Jun 2025 02:29:14 GMT
+      - Sat, 28 Jun 2025 04:01:37 GMT
       x-ms-source-allow-trailing-dot:
       - 'true'
       x-ms-version:
@@ -505,15 +503,15 @@ interactions:
       content-length:
       - '0'
       date:
-      - Sat, 28 Jun 2025 02:29:16 GMT
+      - Sat, 28 Jun 2025 04:01:38 GMT
       etag:
-      - '"0x8DDB5EB93FBEB96"'
+      - '"0x8DDB5F87BBB4FA2"'
       last-modified:
-      - Sat, 28 Jun 2025 02:29:16 GMT
+      - Sat, 28 Jun 2025 04:01:38 GMT
       server:
       - Windows-Azure-File/1.0 Microsoft-HTTPAPI/2.0
       x-ms-copy-id:
-      - dfa6c603-0241-487f-97bc-1515b7103c22
+      - ca4fb996-5d26-44f0-b220-4a3989a0496c
       x-ms-copy-status:
       - success
       x-ms-version:
@@ -539,7 +537,7 @@ interactions:
       x-ms-allow-trailing-dot:
       - 'true'
       x-ms-date:
-      - Sat, 28 Jun 2025 02:29:16 GMT
+      - Sat, 28 Jun 2025 04:01:39 GMT
       x-ms-version:
       - '2022-11-02'
     method: HEAD
@@ -553,37 +551,37 @@ interactions:
       content-type:
       - application/octet-stream
       date:
-      - Sat, 28 Jun 2025 02:29:17 GMT
+      - Sat, 28 Jun 2025 04:01:39 GMT
       etag:
-      - '"0x8DDB5EB93FBEB96"'
+      - '"0x8DDB5F87BBB4FA2"'
       last-modified:
-      - Sat, 28 Jun 2025 02:29:16 GMT
+      - Sat, 28 Jun 2025 04:01:38 GMT
       server:
       - Windows-Azure-File/1.0 Microsoft-HTTPAPI/2.0
       x-ms-copy-completion-time:
-      - Sat, 28 Jun 2025 02:29:16 GMT
+      - Sat, 28 Jun 2025 04:01:38 GMT
       x-ms-copy-id:
-      - dfa6c603-0241-487f-97bc-1515b7103c22
+      - ca4fb996-5d26-44f0-b220-4a3989a0496c
       x-ms-copy-progress:
       - 131072/131072
       x-ms-copy-source:
-      - https://clitestwbvodq4hswps6nsdr.file.core.windows.net/shareeosqnp7lw6iymk2khf7/sample_file.bin...
+      - https://clitest6tx2cwtzsbgu5t2do.file.core.windows.net/sharemgscrevbmga3dgu2gha/sample_file.bin...
       x-ms-copy-status:
       - success
       x-ms-file-attributes:
       - Archive
       x-ms-file-change-time:
-      - '2025-06-28T02:29:16.1181078Z'
+      - '2025-06-28T04:01:38.8868514Z'
       x-ms-file-creation-time:
-      - '2025-06-28T02:29:16.1181078Z'
+      - '2025-06-28T04:01:38.8868514Z'
       x-ms-file-id:
       - '13835093239654252544'
       x-ms-file-last-write-time:
-      - '2025-06-28T02:29:16.1181078Z'
+      - '2025-06-28T04:01:38.8868514Z'
       x-ms-file-parent-id:
       - '0'
       x-ms-file-permission-key:
-      - 6368592225210111038*17348183126120823984
+      - 16310248256023707271*5402432920119399945
       x-ms-lease-state:
       - available
       x-ms-lease-status:
@@ -618,9 +616,9 @@ interactions:
       x-ms-allow-trailing-dot:
       - 'false'
       x-ms-copy-source:
-      - https://clitestwbvodq4hswps6nsdr.file.core.windows.net/shareeosqnp7lw6iymk2khf7/sample_file.bin...
+      - https://clitest6tx2cwtzsbgu5t2do.file.core.windows.net/sharemgscrevbmga3dgu2gha/sample_file.bin...
       x-ms-date:
-      - Sat, 28 Jun 2025 02:29:18 GMT
+      - Sat, 28 Jun 2025 04:01:40 GMT
       x-ms-source-allow-trailing-dot:
       - 'true'
       x-ms-version:
@@ -634,15 +632,15 @@ interactions:
       content-length:
       - '0'
       date:
-      - Sat, 28 Jun 2025 02:29:18 GMT
+      - Sat, 28 Jun 2025 04:01:42 GMT
       etag:
-      - '"0x8DDB5EB95E4F5AC"'
+      - '"0x8DDB5F87DA87381"'
       last-modified:
-      - Sat, 28 Jun 2025 02:29:19 GMT
+      - Sat, 28 Jun 2025 04:01:42 GMT
       server:
       - Windows-Azure-File/1.0 Microsoft-HTTPAPI/2.0
       x-ms-copy-id:
-      - adbcd73a-f846-4787-b095-48e6129a091d
+      - 83205715-9e95-44eb-bc7f-8730cf0f255e
       x-ms-copy-status:
       - success
       x-ms-version:
@@ -668,7 +666,7 @@ interactions:
       x-ms-allow-trailing-dot:
       - 'false'
       x-ms-date:
-      - Sat, 28 Jun 2025 02:29:19 GMT
+      - Sat, 28 Jun 2025 04:01:42 GMT
       x-ms-version:
       - '2022-11-02'
     method: HEAD
@@ -682,37 +680,37 @@ interactions:
       content-type:
       - application/octet-stream
       date:
-      - Sat, 28 Jun 2025 02:29:19 GMT
+      - Sat, 28 Jun 2025 04:01:43 GMT
       etag:
-      - '"0x8DDB5EB95E4F5AC"'
+      - '"0x8DDB5F87DA87381"'
       last-modified:
-      - Sat, 28 Jun 2025 02:29:19 GMT
+      - Sat, 28 Jun 2025 04:01:42 GMT
       server:
       - Windows-Azure-File/1.0 Microsoft-HTTPAPI/2.0
       x-ms-copy-completion-time:
-      - Sat, 28 Jun 2025 02:29:19 GMT
+      - Sat, 28 Jun 2025 04:01:42 GMT
       x-ms-copy-id:
-      - adbcd73a-f846-4787-b095-48e6129a091d
+      - 83205715-9e95-44eb-bc7f-8730cf0f255e
       x-ms-copy-progress:
       - 131072/131072
       x-ms-copy-source:
-      - https://clitestwbvodq4hswps6nsdr.file.core.windows.net/shareeosqnp7lw6iymk2khf7/sample_file.bin...
+      - https://clitest6tx2cwtzsbgu5t2do.file.core.windows.net/sharemgscrevbmga3dgu2gha/sample_file.bin...
       x-ms-copy-status:
       - success
       x-ms-file-attributes:
       - Archive
       x-ms-file-change-time:
-      - '2025-06-28T02:29:19.3230764Z'
+      - '2025-06-28T04:01:42.1186945Z'
       x-ms-file-creation-time:
-      - '2025-06-28T02:29:19.3230764Z'
+      - '2025-06-28T04:01:42.1186945Z'
       x-ms-file-id:
       - '13835163608398430208'
       x-ms-file-last-write-time:
-      - '2025-06-28T02:29:19.3230764Z'
+      - '2025-06-28T04:01:42.1186945Z'
       x-ms-file-parent-id:
       - '0'
       x-ms-file-permission-key:
-      - 6368592225210111038*17348183126120823984
+      - 16310248256023707271*5402432920119399945
       x-ms-lease-state:
       - available
       x-ms-lease-status:
@@ -747,9 +745,9 @@ interactions:
       x-ms-allow-trailing-dot:
       - 'true'
       x-ms-copy-source:
-      - https://clitestwbvodq4hswps6nsdr.file.core.windows.net/shareeosqnp7lw6iymk2khf7/sample_file.bin...
+      - https://clitest6tx2cwtzsbgu5t2do.file.core.windows.net/sharemgscrevbmga3dgu2gha/sample_file.bin...
       x-ms-date:
-      - Sat, 28 Jun 2025 02:29:21 GMT
+      - Sat, 28 Jun 2025 04:01:44 GMT
       x-ms-source-allow-trailing-dot:
       - 'false'
       x-ms-version:
@@ -759,14 +757,14 @@ interactions:
   response:
     body:
       string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?><Error><Code>ResourceNotFound</Code><Message>The
-        specified resource does not exist.\nRequestId:b3757eee-301a-0017-06d4-e7ccc0000000\nTime:2025-06-28T02:29:22.4245176Z</Message></Error>"
+        specified resource does not exist.\nRequestId:8b2bd2f6-a01a-00cd-3ae1-e7555d000000\nTime:2025-06-28T04:01:45.2179228Z</Message></Error>"
     headers:
       content-length:
       - '221'
       content-type:
       - application/xml
       date:
-      - Sat, 28 Jun 2025 02:29:21 GMT
+      - Sat, 28 Jun 2025 04:01:44 GMT
       server:
       - Windows-Azure-File/1.0 Microsoft-HTTPAPI/2.0
       x-ms-error-code:
@@ -796,7 +794,7 @@ interactions:
       x-ms-allow-trailing-dot:
       - 'true'
       x-ms-date:
-      - Sat, 28 Jun 2025 02:29:23 GMT
+      - Sat, 28 Jun 2025 04:01:45 GMT
       x-ms-version:
       - '2022-11-02'
     method: DELETE
@@ -808,7 +806,7 @@ interactions:
       content-length:
       - '0'
       date:
-      - Sat, 28 Jun 2025 02:29:23 GMT
+      - Sat, 28 Jun 2025 04:01:46 GMT
       server:
       - Windows-Azure-File/1.0 Microsoft-HTTPAPI/2.0
       x-ms-version:
@@ -834,7 +832,7 @@ interactions:
       x-ms-allow-trailing-dot:
       - 'true'
       x-ms-date:
-      - Sat, 28 Jun 2025 02:29:24 GMT
+      - Sat, 28 Jun 2025 04:01:47 GMT
       x-ms-version:
       - '2022-11-02'
     method: HEAD
@@ -844,7 +842,7 @@ interactions:
       string: ''
     headers:
       date:
-      - Sat, 28 Jun 2025 02:29:25 GMT
+      - Sat, 28 Jun 2025 04:01:47 GMT
       server:
       - Windows-Azure-File/1.0 Microsoft-HTTPAPI/2.0
       transfer-encoding:
@@ -878,7 +876,7 @@ interactions:
       x-ms-content-length:
       - '131072'
       x-ms-date:
-      - Sat, 28 Jun 2025 02:29:26 GMT
+      - Sat, 28 Jun 2025 04:01:49 GMT
       x-ms-file-attributes:
       - none
       x-ms-file-creation-time:
@@ -900,27 +898,27 @@ interactions:
       content-length:
       - '0'
       date:
-      - Sat, 28 Jun 2025 02:29:26 GMT
+      - Sat, 28 Jun 2025 04:01:50 GMT
       etag:
-      - '"0x8DDB5EB9A94D881"'
+      - '"0x8DDB5F8829C1763"'
       last-modified:
-      - Sat, 28 Jun 2025 02:29:27 GMT
+      - Sat, 28 Jun 2025 04:01:50 GMT
       server:
       - Windows-Azure-File/1.0 Microsoft-HTTPAPI/2.0
       x-ms-file-attributes:
       - Archive
       x-ms-file-change-time:
-      - '2025-06-28T02:29:27.1866497Z'
+      - '2025-06-28T04:01:50.4263011Z'
       x-ms-file-creation-time:
-      - '2025-06-28T02:29:27.1866497Z'
+      - '2025-06-28T04:01:50.4263011Z'
       x-ms-file-id:
       - '13835146016212385792'
       x-ms-file-last-write-time:
-      - '2025-06-28T02:29:27.1866497Z'
+      - '2025-06-28T04:01:50.4263011Z'
       x-ms-file-parent-id:
       - '0'
       x-ms-file-permission-key:
-      - 6368592225210111038*17348183126120823984
+      - 16310248256023707271*5402432920119399945
       x-ms-request-server-encrypted:
       - 'true'
       x-ms-version:
@@ -950,7 +948,7 @@ interactions:
       x-ms-allow-trailing-dot:
       - 'false'
       x-ms-date:
-      - Sat, 28 Jun 2025 02:29:27 GMT
+      - Sat, 28 Jun 2025 04:01:50 GMT
       x-ms-range:
       - bytes=0-131071
       x-ms-version:
@@ -968,15 +966,15 @@ interactions:
       content-md5:
       - DfvoqkwgtS4bi/PLbL3xkw==
       date:
-      - Sat, 28 Jun 2025 02:29:28 GMT
+      - Sat, 28 Jun 2025 04:01:51 GMT
       etag:
-      - '"0x8DDB5EB9BDA9166"'
+      - '"0x8DDB5F883E87F48"'
       last-modified:
-      - Sat, 28 Jun 2025 02:29:29 GMT
+      - Sat, 28 Jun 2025 04:01:52 GMT
       server:
       - Windows-Azure-File/1.0 Microsoft-HTTPAPI/2.0
       x-ms-file-last-write-time:
-      - '2025-06-28T02:29:29.3213030Z'
+      - '2025-06-28T04:01:52.6047560Z'
       x-ms-request-server-encrypted:
       - 'true'
       x-ms-version:
@@ -1002,7 +1000,7 @@ interactions:
       x-ms-allow-trailing-dot:
       - 'false'
       x-ms-date:
-      - Sat, 28 Jun 2025 02:29:29 GMT
+      - Sat, 28 Jun 2025 04:01:53 GMT
       x-ms-version:
       - '2022-11-02'
     method: HEAD
@@ -1016,27 +1014,27 @@ interactions:
       content-type:
       - application/octet-stream
       date:
-      - Sat, 28 Jun 2025 02:29:30 GMT
+      - Sat, 28 Jun 2025 04:01:53 GMT
       etag:
-      - '"0x8DDB5EB9BDA9166"'
+      - '"0x8DDB5F883E87F48"'
       last-modified:
-      - Sat, 28 Jun 2025 02:29:29 GMT
+      - Sat, 28 Jun 2025 04:01:52 GMT
       server:
       - Windows-Azure-File/1.0 Microsoft-HTTPAPI/2.0
       x-ms-file-attributes:
       - Archive
       x-ms-file-change-time:
-      - '2025-06-28T02:29:29.3213030Z'
+      - '2025-06-28T04:01:52.6047560Z'
       x-ms-file-creation-time:
-      - '2025-06-28T02:29:27.1866497Z'
+      - '2025-06-28T04:01:50.4263011Z'
       x-ms-file-id:
       - '13835146016212385792'
       x-ms-file-last-write-time:
-      - '2025-06-28T02:29:29.3213030Z'
+      - '2025-06-28T04:01:52.6047560Z'
       x-ms-file-parent-id:
       - '0'
       x-ms-file-permission-key:
-      - 6368592225210111038*17348183126120823984
+      - 16310248256023707271*5402432920119399945
       x-ms-lease-state:
       - available
       x-ms-lease-status:
@@ -1070,7 +1068,7 @@ interactions:
       x-ms-allow-trailing-dot:
       - 'true'
       x-ms-date:
-      - Sat, 28 Jun 2025 02:29:31 GMT
+      - Sat, 28 Jun 2025 04:01:54 GMT
       x-ms-file-attributes:
       - none
       x-ms-file-creation-time:
@@ -1090,27 +1088,27 @@ interactions:
       content-length:
       - '0'
       date:
-      - Sat, 28 Jun 2025 02:29:31 GMT
+      - Sat, 28 Jun 2025 04:01:55 GMT
       etag:
-      - '"0x8DDB5EB9DB6FF4C"'
+      - '"0x8DDB5F885C6BF96"'
       last-modified:
-      - Sat, 28 Jun 2025 02:29:32 GMT
+      - Sat, 28 Jun 2025 04:01:55 GMT
       server:
       - Windows-Azure-File/1.0 Microsoft-HTTPAPI/2.0
       x-ms-file-attributes:
       - Directory
       x-ms-file-change-time:
-      - '2025-06-28T02:29:32.4436300Z'
+      - '2025-06-28T04:01:55.7390230Z'
       x-ms-file-creation-time:
-      - '2025-06-28T02:29:32.4436300Z'
+      - '2025-06-28T04:01:55.7390230Z'
       x-ms-file-id:
       - '13835110831840296960'
       x-ms-file-last-write-time:
-      - '2025-06-28T02:29:32.4436300Z'
+      - '2025-06-28T04:01:55.7390230Z'
       x-ms-file-parent-id:
       - '0'
       x-ms-file-permission-key:
-      - 10960079999008303929*17348183126120823984
+      - 2459644953895911808*5402432920119399945
       x-ms-request-server-encrypted:
       - 'true'
       x-ms-version:
@@ -1136,7 +1134,7 @@ interactions:
       x-ms-allow-trailing-dot:
       - 'true'
       x-ms-date:
-      - Sat, 28 Jun 2025 02:29:32 GMT
+      - Sat, 28 Jun 2025 04:01:56 GMT
       x-ms-version:
       - '2022-11-02'
     method: GET
@@ -1145,17 +1143,17 @@ interactions:
     body:
       string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?><EnumerationResults
         ServiceEndpoint=\"https://clitest000002.file.core.windows.net/\" ShareName=\"share000003\"
-        DirectoryPath=\"\"><DirectoryId>0</DirectoryId><Entries><Directory><Name>dir000004..</Name><FileId>13835110831840296960</FileId><Properties><CreationTime>2025-06-28T02:29:32.4436300Z</CreationTime><LastAccessTime>2025-06-28T02:29:32.4436300Z</LastAccessTime><LastWriteTime>2025-06-28T02:29:32.4436300Z</LastWriteTime><ChangeTime>2025-06-28T02:29:32.4436300Z</ChangeTime><Last-Modified>Sat,
-        28 Jun 2025 02:29:32 GMT</Last-Modified><Etag>\"0x8DDB5EB9DB6FF4C\"</Etag></Properties><Attributes>Directory</Attributes><PermissionKey>10960079999008303929*17348183126120823984</PermissionKey></Directory><File><Name>sample_file.bin</Name><FileId>13835146016212385792</FileId><Properties><Content-Length>131072</Content-Length><CreationTime>2025-06-28T02:29:27.1866497Z</CreationTime><LastAccessTime>2025-06-28T02:29:27.1866497Z</LastAccessTime><LastWriteTime>2025-06-28T02:29:29.3213030Z</LastWriteTime><ChangeTime>2025-06-28T02:29:29.3213030Z</ChangeTime><Last-Modified>Sat,
-        28 Jun 2025 02:29:29 GMT</Last-Modified><Etag>\"0x8DDB5EB9BDA9166\"</Etag></Properties><Attributes>Archive</Attributes><PermissionKey>6368592225210111038*17348183126120823984</PermissionKey></File><File><Name>sample_file_dst.bin</Name><FileId>13835163608398430208</FileId><Properties><Content-Length>131072</Content-Length><CreationTime>2025-06-28T02:29:19.3230764Z</CreationTime><LastAccessTime>2025-06-28T02:29:19.3230764Z</LastAccessTime><LastWriteTime>2025-06-28T02:29:19.3230764Z</LastWriteTime><ChangeTime>2025-06-28T02:29:19.3230764Z</ChangeTime><Last-Modified>Sat,
-        28 Jun 2025 02:29:19 GMT</Last-Modified><Etag>\"0x8DDB5EB95E4F5AC\"</Etag></Properties><Attributes>Archive</Attributes><PermissionKey>6368592225210111038*17348183126120823984</PermissionKey></File><File><Name>sample_file_dst.bin...</Name><FileId>13835093239654252544</FileId><Properties><Content-Length>131072</Content-Length><CreationTime>2025-06-28T02:29:16.1181078Z</CreationTime><LastAccessTime>2025-06-28T02:29:16.1181078Z</LastAccessTime><LastWriteTime>2025-06-28T02:29:16.1181078Z</LastWriteTime><ChangeTime>2025-06-28T02:29:16.1181078Z</ChangeTime><Last-Modified>Sat,
-        28 Jun 2025 02:29:16 GMT</Last-Modified><Etag>\"0x8DDB5EB93FBEB96\"</Etag></Properties><Attributes>Archive</Attributes><PermissionKey>6368592225210111038*17348183126120823984</PermissionKey></File></Entries><NextMarker
+        DirectoryPath=\"\"><DirectoryId>0</DirectoryId><Entries><Directory><Name>dir000004..</Name><FileId>13835110831840296960</FileId><Properties><CreationTime>2025-06-28T04:01:55.7390230Z</CreationTime><LastAccessTime>2025-06-28T04:01:55.7390230Z</LastAccessTime><LastWriteTime>2025-06-28T04:01:55.7390230Z</LastWriteTime><ChangeTime>2025-06-28T04:01:55.7390230Z</ChangeTime><Last-Modified>Sat,
+        28 Jun 2025 04:01:55 GMT</Last-Modified><Etag>\"0x8DDB5F885C6BF96\"</Etag></Properties><Attributes>Directory</Attributes><PermissionKey>2459644953895911808*5402432920119399945</PermissionKey></Directory><File><Name>sample_file.bin</Name><FileId>13835146016212385792</FileId><Properties><Content-Length>131072</Content-Length><CreationTime>2025-06-28T04:01:50.4263011Z</CreationTime><LastAccessTime>2025-06-28T04:01:50.4263011Z</LastAccessTime><LastWriteTime>2025-06-28T04:01:52.6047560Z</LastWriteTime><ChangeTime>2025-06-28T04:01:52.6047560Z</ChangeTime><Last-Modified>Sat,
+        28 Jun 2025 04:01:52 GMT</Last-Modified><Etag>\"0x8DDB5F883E87F48\"</Etag></Properties><Attributes>Archive</Attributes><PermissionKey>16310248256023707271*5402432920119399945</PermissionKey></File><File><Name>sample_file_dst.bin</Name><FileId>13835163608398430208</FileId><Properties><Content-Length>131072</Content-Length><CreationTime>2025-06-28T04:01:42.1186945Z</CreationTime><LastAccessTime>2025-06-28T04:01:42.1186945Z</LastAccessTime><LastWriteTime>2025-06-28T04:01:42.1186945Z</LastWriteTime><ChangeTime>2025-06-28T04:01:42.1186945Z</ChangeTime><Last-Modified>Sat,
+        28 Jun 2025 04:01:42 GMT</Last-Modified><Etag>\"0x8DDB5F87DA87381\"</Etag></Properties><Attributes>Archive</Attributes><PermissionKey>16310248256023707271*5402432920119399945</PermissionKey></File><File><Name>sample_file_dst.bin...</Name><FileId>13835093239654252544</FileId><Properties><Content-Length>131072</Content-Length><CreationTime>2025-06-28T04:01:38.8868514Z</CreationTime><LastAccessTime>2025-06-28T04:01:38.8868514Z</LastAccessTime><LastWriteTime>2025-06-28T04:01:38.8868514Z</LastWriteTime><ChangeTime>2025-06-28T04:01:38.8868514Z</ChangeTime><Last-Modified>Sat,
+        28 Jun 2025 04:01:38 GMT</Last-Modified><Etag>\"0x8DDB5F87BBB4FA2\"</Etag></Properties><Attributes>Archive</Attributes><PermissionKey>16310248256023707271*5402432920119399945</PermissionKey></File></Entries><NextMarker
         /></EnumerationResults>"
     headers:
       content-type:
       - application/xml
       date:
-      - Sat, 28 Jun 2025 02:29:33 GMT
+      - Sat, 28 Jun 2025 04:01:56 GMT
       server:
       - Windows-Azure-File/1.0 Microsoft-HTTPAPI/2.0
       transfer-encoding:
@@ -1183,7 +1181,7 @@ interactions:
       x-ms-allow-trailing-dot:
       - 'true'
       x-ms-date:
-      - Sat, 28 Jun 2025 02:29:34 GMT
+      - Sat, 28 Jun 2025 04:01:58 GMT
       x-ms-version:
       - '2022-11-02'
     method: GET
@@ -1195,27 +1193,27 @@ interactions:
       content-length:
       - '0'
       date:
-      - Sat, 28 Jun 2025 02:29:35 GMT
+      - Sat, 28 Jun 2025 04:01:58 GMT
       etag:
-      - '"0x8DDB5EB9DB6FF4C"'
+      - '"0x8DDB5F885C6BF96"'
       last-modified:
-      - Sat, 28 Jun 2025 02:29:32 GMT
+      - Sat, 28 Jun 2025 04:01:55 GMT
       server:
       - Windows-Azure-File/1.0 Microsoft-HTTPAPI/2.0
       x-ms-file-attributes:
       - Directory
       x-ms-file-change-time:
-      - '2025-06-28T02:29:32.4436300Z'
+      - '2025-06-28T04:01:55.7390230Z'
       x-ms-file-creation-time:
-      - '2025-06-28T02:29:32.4436300Z'
+      - '2025-06-28T04:01:55.7390230Z'
       x-ms-file-id:
       - '13835110831840296960'
       x-ms-file-last-write-time:
-      - '2025-06-28T02:29:32.4436300Z'
+      - '2025-06-28T04:01:55.7390230Z'
       x-ms-file-parent-id:
       - '0'
       x-ms-file-permission-key:
-      - 10960079999008303929*17348183126120823984
+      - 2459644953895911808*5402432920119399945
       x-ms-server-encrypted:
       - 'true'
       x-ms-version:
@@ -1244,7 +1242,7 @@ interactions:
       x-ms-allow-trailing-dot:
       - 'false'
       x-ms-date:
-      - Sat, 28 Jun 2025 02:29:36 GMT
+      - Sat, 28 Jun 2025 04:01:59 GMT
       x-ms-file-attributes:
       - none
       x-ms-file-creation-time:
@@ -1264,27 +1262,27 @@ interactions:
       content-length:
       - '0'
       date:
-      - Sat, 28 Jun 2025 02:29:37 GMT
+      - Sat, 28 Jun 2025 04:02:00 GMT
       etag:
-      - '"0x8DDB5EBA0B60DFC"'
+      - '"0x8DDB5F888D1CE2C"'
       last-modified:
-      - Sat, 28 Jun 2025 02:29:37 GMT
+      - Sat, 28 Jun 2025 04:02:00 GMT
       server:
       - Windows-Azure-File/1.0 Microsoft-HTTPAPI/2.0
       x-ms-file-attributes:
       - Directory
       x-ms-file-change-time:
-      - '2025-06-28T02:29:37.4706172Z'
+      - '2025-06-28T04:02:00.8446508Z'
       x-ms-file-creation-time:
-      - '2025-06-28T02:29:37.4706172Z'
+      - '2025-06-28T04:02:00.8446508Z'
       x-ms-file-id:
       - '13835181200584474624'
       x-ms-file-last-write-time:
-      - '2025-06-28T02:29:37.4706172Z'
+      - '2025-06-28T04:02:00.8446508Z'
       x-ms-file-parent-id:
       - '0'
       x-ms-file-permission-key:
-      - 10960079999008303929*17348183126120823984
+      - 2459644953895911808*5402432920119399945
       x-ms-request-server-encrypted:
       - 'true'
       x-ms-version:
@@ -1310,7 +1308,7 @@ interactions:
       x-ms-allow-trailing-dot:
       - 'true'
       x-ms-date:
-      - Sat, 28 Jun 2025 02:29:37 GMT
+      - Sat, 28 Jun 2025 04:02:01 GMT
       x-ms-version:
       - '2022-11-02'
     method: GET
@@ -1319,18 +1317,18 @@ interactions:
     body:
       string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?><EnumerationResults
         ServiceEndpoint=\"https://clitest000002.file.core.windows.net/\" ShareName=\"share000003\"
-        DirectoryPath=\"\"><DirectoryId>0</DirectoryId><Entries><Directory><Name>dir000004</Name><FileId>13835181200584474624</FileId><Properties><CreationTime>2025-06-28T02:29:37.4706172Z</CreationTime><LastAccessTime>2025-06-28T02:29:37.4706172Z</LastAccessTime><LastWriteTime>2025-06-28T02:29:37.4706172Z</LastWriteTime><ChangeTime>2025-06-28T02:29:37.4706172Z</ChangeTime><Last-Modified>Sat,
-        28 Jun 2025 02:29:37 GMT</Last-Modified><Etag>\"0x8DDB5EBA0B60DFC\"</Etag></Properties><Attributes>Directory</Attributes><PermissionKey>10960079999008303929*17348183126120823984</PermissionKey></Directory><Directory><Name>dir000004..</Name><FileId>13835110831840296960</FileId><Properties><CreationTime>2025-06-28T02:29:32.4436300Z</CreationTime><LastAccessTime>2025-06-28T02:29:32.4436300Z</LastAccessTime><LastWriteTime>2025-06-28T02:29:32.4436300Z</LastWriteTime><ChangeTime>2025-06-28T02:29:32.4436300Z</ChangeTime><Last-Modified>Sat,
-        28 Jun 2025 02:29:32 GMT</Last-Modified><Etag>\"0x8DDB5EB9DB6FF4C\"</Etag></Properties><Attributes>Directory</Attributes><PermissionKey>10960079999008303929*17348183126120823984</PermissionKey></Directory><File><Name>sample_file.bin</Name><FileId>13835146016212385792</FileId><Properties><Content-Length>131072</Content-Length><CreationTime>2025-06-28T02:29:27.1866497Z</CreationTime><LastAccessTime>2025-06-28T02:29:27.1866497Z</LastAccessTime><LastWriteTime>2025-06-28T02:29:29.3213030Z</LastWriteTime><ChangeTime>2025-06-28T02:29:29.3213030Z</ChangeTime><Last-Modified>Sat,
-        28 Jun 2025 02:29:29 GMT</Last-Modified><Etag>\"0x8DDB5EB9BDA9166\"</Etag></Properties><Attributes>Archive</Attributes><PermissionKey>6368592225210111038*17348183126120823984</PermissionKey></File><File><Name>sample_file_dst.bin</Name><FileId>13835163608398430208</FileId><Properties><Content-Length>131072</Content-Length><CreationTime>2025-06-28T02:29:19.3230764Z</CreationTime><LastAccessTime>2025-06-28T02:29:19.3230764Z</LastAccessTime><LastWriteTime>2025-06-28T02:29:19.3230764Z</LastWriteTime><ChangeTime>2025-06-28T02:29:19.3230764Z</ChangeTime><Last-Modified>Sat,
-        28 Jun 2025 02:29:19 GMT</Last-Modified><Etag>\"0x8DDB5EB95E4F5AC\"</Etag></Properties><Attributes>Archive</Attributes><PermissionKey>6368592225210111038*17348183126120823984</PermissionKey></File><File><Name>sample_file_dst.bin...</Name><FileId>13835093239654252544</FileId><Properties><Content-Length>131072</Content-Length><CreationTime>2025-06-28T02:29:16.1181078Z</CreationTime><LastAccessTime>2025-06-28T02:29:16.1181078Z</LastAccessTime><LastWriteTime>2025-06-28T02:29:16.1181078Z</LastWriteTime><ChangeTime>2025-06-28T02:29:16.1181078Z</ChangeTime><Last-Modified>Sat,
-        28 Jun 2025 02:29:16 GMT</Last-Modified><Etag>\"0x8DDB5EB93FBEB96\"</Etag></Properties><Attributes>Archive</Attributes><PermissionKey>6368592225210111038*17348183126120823984</PermissionKey></File></Entries><NextMarker
+        DirectoryPath=\"\"><DirectoryId>0</DirectoryId><Entries><Directory><Name>dir000004</Name><FileId>13835181200584474624</FileId><Properties><CreationTime>2025-06-28T04:02:00.8446508Z</CreationTime><LastAccessTime>2025-06-28T04:02:00.8446508Z</LastAccessTime><LastWriteTime>2025-06-28T04:02:00.8446508Z</LastWriteTime><ChangeTime>2025-06-28T04:02:00.8446508Z</ChangeTime><Last-Modified>Sat,
+        28 Jun 2025 04:02:00 GMT</Last-Modified><Etag>\"0x8DDB5F888D1CE2C\"</Etag></Properties><Attributes>Directory</Attributes><PermissionKey>2459644953895911808*5402432920119399945</PermissionKey></Directory><Directory><Name>dir000004..</Name><FileId>13835110831840296960</FileId><Properties><CreationTime>2025-06-28T04:01:55.7390230Z</CreationTime><LastAccessTime>2025-06-28T04:01:55.7390230Z</LastAccessTime><LastWriteTime>2025-06-28T04:01:55.7390230Z</LastWriteTime><ChangeTime>2025-06-28T04:01:55.7390230Z</ChangeTime><Last-Modified>Sat,
+        28 Jun 2025 04:01:55 GMT</Last-Modified><Etag>\"0x8DDB5F885C6BF96\"</Etag></Properties><Attributes>Directory</Attributes><PermissionKey>2459644953895911808*5402432920119399945</PermissionKey></Directory><File><Name>sample_file.bin</Name><FileId>13835146016212385792</FileId><Properties><Content-Length>131072</Content-Length><CreationTime>2025-06-28T04:01:50.4263011Z</CreationTime><LastAccessTime>2025-06-28T04:01:50.4263011Z</LastAccessTime><LastWriteTime>2025-06-28T04:01:52.6047560Z</LastWriteTime><ChangeTime>2025-06-28T04:01:52.6047560Z</ChangeTime><Last-Modified>Sat,
+        28 Jun 2025 04:01:52 GMT</Last-Modified><Etag>\"0x8DDB5F883E87F48\"</Etag></Properties><Attributes>Archive</Attributes><PermissionKey>16310248256023707271*5402432920119399945</PermissionKey></File><File><Name>sample_file_dst.bin</Name><FileId>13835163608398430208</FileId><Properties><Content-Length>131072</Content-Length><CreationTime>2025-06-28T04:01:42.1186945Z</CreationTime><LastAccessTime>2025-06-28T04:01:42.1186945Z</LastAccessTime><LastWriteTime>2025-06-28T04:01:42.1186945Z</LastWriteTime><ChangeTime>2025-06-28T04:01:42.1186945Z</ChangeTime><Last-Modified>Sat,
+        28 Jun 2025 04:01:42 GMT</Last-Modified><Etag>\"0x8DDB5F87DA87381\"</Etag></Properties><Attributes>Archive</Attributes><PermissionKey>16310248256023707271*5402432920119399945</PermissionKey></File><File><Name>sample_file_dst.bin...</Name><FileId>13835093239654252544</FileId><Properties><Content-Length>131072</Content-Length><CreationTime>2025-06-28T04:01:38.8868514Z</CreationTime><LastAccessTime>2025-06-28T04:01:38.8868514Z</LastAccessTime><LastWriteTime>2025-06-28T04:01:38.8868514Z</LastWriteTime><ChangeTime>2025-06-28T04:01:38.8868514Z</ChangeTime><Last-Modified>Sat,
+        28 Jun 2025 04:01:38 GMT</Last-Modified><Etag>\"0x8DDB5F87BBB4FA2\"</Etag></Properties><Attributes>Archive</Attributes><PermissionKey>16310248256023707271*5402432920119399945</PermissionKey></File></Entries><NextMarker
         /></EnumerationResults>"
     headers:
       content-type:
       - application/xml
       date:
-      - Sat, 28 Jun 2025 02:29:38 GMT
+      - Sat, 28 Jun 2025 04:02:01 GMT
       server:
       - Windows-Azure-File/1.0 Microsoft-HTTPAPI/2.0
       transfer-encoding:
@@ -1358,7 +1356,7 @@ interactions:
       x-ms-allow-trailing-dot:
       - 'false'
       x-ms-date:
-      - Sat, 28 Jun 2025 02:29:39 GMT
+      - Sat, 28 Jun 2025 04:02:03 GMT
       x-ms-version:
       - '2022-11-02'
     method: GET
@@ -1370,27 +1368,27 @@ interactions:
       content-length:
       - '0'
       date:
-      - Sat, 28 Jun 2025 02:29:39 GMT
+      - Sat, 28 Jun 2025 04:02:04 GMT
       etag:
-      - '"0x8DDB5EBA0B60DFC"'
+      - '"0x8DDB5F888D1CE2C"'
       last-modified:
-      - Sat, 28 Jun 2025 02:29:37 GMT
+      - Sat, 28 Jun 2025 04:02:00 GMT
       server:
       - Windows-Azure-File/1.0 Microsoft-HTTPAPI/2.0
       x-ms-file-attributes:
       - Directory
       x-ms-file-change-time:
-      - '2025-06-28T02:29:37.4706172Z'
+      - '2025-06-28T04:02:00.8446508Z'
       x-ms-file-creation-time:
-      - '2025-06-28T02:29:37.4706172Z'
+      - '2025-06-28T04:02:00.8446508Z'
       x-ms-file-id:
       - '13835181200584474624'
       x-ms-file-last-write-time:
-      - '2025-06-28T02:29:37.4706172Z'
+      - '2025-06-28T04:02:00.8446508Z'
       x-ms-file-parent-id:
       - '0'
       x-ms-file-permission-key:
-      - 10960079999008303929*17348183126120823984
+      - 2459644953895911808*5402432920119399945
       x-ms-server-encrypted:
       - 'true'
       x-ms-version:
@@ -1416,7 +1414,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.74.0 azsdk-python-storage-file-share/12.21.0 Python/3.12.10 (Windows-10-10.0.19045-SP0)
       x-ms-date:
-      - Sat, 28 Jun 2025 02:29:41 GMT
+      - Sat, 28 Jun 2025 04:02:04 GMT
       x-ms-version:
       - '2025-05-05'
     method: DELETE
@@ -1428,7 +1426,7 @@ interactions:
       content-length:
       - '0'
       date:
-      - Sat, 28 Jun 2025 02:29:41 GMT
+      - Sat, 28 Jun 2025 04:02:05 GMT
       server:
       - Windows-Azure-File/1.0 Microsoft-HTTPAPI/2.0
       x-ms-version:
