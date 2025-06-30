@@ -2761,6 +2761,17 @@ def load_arguments(self, _):
                 help="Name of the load balancer configuration. Required.",
             )
 
+    with self.argument_context("aks bastion") as c:
+        c.argument("bastion")
+        c.argument("port", type=int)
+        c.argument("admin", action="store_true")
+        c.argument(
+            "yes",
+            options_list=["--yes", "-y"],
+            help="Do not prompt for confirmation.",
+            action="store_true",
+        )
+
 
 def _get_default_install_location(exe_name):
     system = platform.system()
