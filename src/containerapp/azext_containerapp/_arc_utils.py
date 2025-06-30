@@ -638,57 +638,67 @@ def get_and_save_openshift_dns_operator_config(kube_client, folder=None):
         raise ValidationError(f"Failed to retrieve OpenShift DNS operator configuration: {str(e)}")
 
 
-def restart_openshift_dns_pods(kube_client):
+def restart_openshift_dns_daemonset(kube_client):
     try:
-        label_selector = "dns.operator.openshift.io/daemonset-dns=default"
-
-        # Get the list of pods first to show what will be deleted
-        core_v1_api = client.CoreV1Api(kube_client)
-        pods = core_v1_api.list_namespaced_pod(
-            namespace=OPENSHIFT_DNS,
-            label_selector=label_selector
-        )
-
-        if not pods.items:
-            logger.info(f"No DNS pods found in namespace '{OPENSHIFT_DNS}' with label '{label_selector}'")
-            return
-
-        # Show user what pods will be deleted
-        pod_names = [pod.metadata.name for pod in pods.items]
-        logger.info(f"Found {len(pod_names)} DNS pods to restart:")
-        for pod_name in pod_names:
-            logger.info(f"  - {pod_name}")
+        # Get the DaemonSet
+        apps_v1_api = client.AppsV1Api(kube_client)
+        daemonset_name = "dns-default"
 
         try:
-            response = input(f"The DNS pods in namespace '{OPENSHIFT_DNS}' needs to be restarted. Are you sure you want to proceed? (y/n): ")
+            apps_v1_api.read_namespaced_daemon_set(
+                name=daemonset_name,
+                namespace=OPENSHIFT_DNS
+            )
+        except client.exceptions.ApiException as e:
+            if e.status == 404:
+                logger.warning(f"DaemonSet '{daemonset_name}' not found in namespace '{OPENSHIFT_DNS}'")
+                return
+            else:
+                raise
+
+        logger.info(f"Restarting DaemonSet '{daemonset_name}' in namespace '{OPENSHIFT_DNS}'...")
+
+        try:
+            response = input(f"The DNS DaemonSet in namespace '{OPENSHIFT_DNS}' needs to be restarted. Are you sure you want to proceed? (y/n): ")
             confirmed = response.lower() in ['y', 'yes']
         except (EOFError, KeyboardInterrupt):
-            logger.info("Operation cancelled by user")
-            return
+            confirmed = False
 
         if not confirmed:
-            logger.info("Operation cancelled by user")
+            logger.info(f"The restart of daemonset was cancelled by the user. Please manually restart the daemonset by running 'kubectl rollout restart daemonset {daemonset_name} -n {OPENSHIFT_DNS}'")
             return
 
-        # Delete the pods
-        logger.info(f"Deleting DNS pods in namespace '{OPENSHIFT_DNS}'...")
-        delete_options = client.V1DeleteOptions(
-            propagation_policy='Foreground',
-            grace_period_seconds=30
-        )
+        # Rollout restart - this is exactly what kubectl rollout restart does
+        import datetime
 
-        core_v1_api.delete_collection_namespaced_pod(
+        restart_time = datetime.datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ')
+
+        # The kubectl rollout restart command internally does this exact patch
+        patch_body = {
+            "spec": {
+                "template": {
+                    "metadata": {
+                        "annotations": {
+                            "kubectl.kubernetes.io/restartedAt": restart_time
+                        }
+                    }
+                }
+            }
+        }
+
+        # Patch the daemon set to trigger a restart
+        apps_v1_api.patch_namespaced_daemon_set(
+            name=daemonset_name,
             namespace=OPENSHIFT_DNS,
-            label_selector=label_selector,
-            body=delete_options
+            body=patch_body
         )
 
-        logger.info("Successfully initiated deletion of DNS pods. DaemonSet will recreate them automatically.")
+        logger.info(f"Successfully initiated restart of DaemonSet '{daemonset_name}'. Pods will be recreated automatically.")
 
     except client.exceptions.ApiException as e:
         if e.status == 404:
-            logger.warning(f"Namespace '{OPENSHIFT_DNS}' or pods with label '{label_selector}' not found")
+            logger.warning(f"DaemonSet '{daemonset_name}' not found in namespace '{OPENSHIFT_DNS}'")
         else:
-            raise CLIError(f"Failed to restart DNS pods: {str(e)}")
+            raise CLIError(f"Failed to restart DaemonSet: {str(e)}")
     except Exception as e:
-        raise CLIError(f"An error occurred while restarting DNS pods: {str(e)}")
+        raise CLIError(f"An error occurred while restarting DaemonSet: {str(e)}")

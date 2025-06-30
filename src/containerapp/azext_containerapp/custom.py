@@ -134,7 +134,7 @@ from ._utils import (connected_env_check_cert_name_availability, get_oryx_run_im
 from ._arc_utils import (extract_domain_from_configmap, get_core_dns_deployment, get_core_dns_configmap, backup_custom_core_dns_configmap,
                          replace_configmap, replace_deployment, delete_configmap, patch_coredns,
                          create_folder, create_sub_folder,
-                         check_kube_connection, create_kube_client, restart_openshift_dns_pods)
+                         check_kube_connection, create_kube_client, restart_openshift_dns_daemonset)
 
 from ._constants import (AKS_AZURE_LOCAL_DISTRO, CONTAINER_APPS_RP,
                          NAME_INVALID, NAME_ALREADY_EXISTS, ACR_IMAGE_SUFFIX, DEV_POSTGRES_IMAGE, DEV_POSTGRES_SERVICE_TYPE,
@@ -2278,7 +2278,7 @@ def setup_core_dns(cmd, distro=None, kube_config=None, kube_context=None, skip_s
             # Patch the OpenShift DNS operator to use the custom CoreDNS service
             patch_openshift_dns_operator(kube_client, domain, original_folder)
 
-            restart_openshift_dns_pods(kube_client)
+            restart_openshift_dns_daemonset(kube_client)
 
             logger.info("Successfully set up CoreDNS for OpenShift")
         except Exception as e:
