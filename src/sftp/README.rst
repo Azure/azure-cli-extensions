@@ -1,5 +1,6 @@
-Microsoft Azure CLI 'sftp' Extension
-==========================================
+Azure CLI SFTP Commands
+========================
 
-This package is for the 'sftp' extension.
-i.e. 'az sftp'
+Secure connections to Azure Storage via SFTP with SSH certificates.
+
+Commands include certificate generation and SFTP connection management.

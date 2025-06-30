@@ -3,6 +3,6 @@
 Release History
 ===============
 
-0.1.0
-++++++
-* Initial release.
+1.0.0b1
++++++++
+* Initial preview release with SFTP connection and certificate generation support.
