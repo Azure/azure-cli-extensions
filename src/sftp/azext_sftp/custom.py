@@ -79,14 +79,8 @@ def sftp_cert(cmd, cert_path=None, public_key_file=None, ssh_client_folder=None)
     if keys_folder:
         logger.warning("%s contains sensitive information (id_rsa, id_rsa.pub). "
                        "Please delete once this certificate is no longer being used.", keys_folder)
-    # pylint: disable=broad-except
-    try:
-        cert_expiration = sftp_utils.get_certificate_start_and_end_times(cert_file, ssh_client_folder)[1]
-        print_styled_text((Style.SUCCESS,
-                           f"Generated SSH certificate {cert_file} is valid until {cert_expiration} in local time."))
-    except Exception as e:
-        logger.warning("Couldn't determine certificate validity. Error: %s", str(e))
-        print_styled_text((Style.SUCCESS, f"Generated SSH certificate {cert_file}."))
+    
+    print_styled_text((Style.SUCCESS, f"Certificate saved: {cert_file}"))
 
 
 def sftp_connect(cmd, storage_account, port=None, cert_file=None, private_key_file=None,
@@ -124,19 +118,14 @@ def sftp_connect(cmd, storage_account, port=None, cert_file=None, private_key_fi
 
     if not cert_file and not public_key_file and not private_key_file:
         logger.info("Fully managed mode: No credentials provided")
-        print_styled_text((Style.ACTION, "Fully managed mode: No credentials provided."))
-        print_styled_text((Style.ACTION, "Generating SSH key pair and certificate automatically..."))
-        print_styled_text((Style.WARNING, "Note: Generated credentials will be cleaned up after connection."))
+        print_styled_text((Style.ACTION, "Generating temporary credentials..."))
         auto_generate_cert = True
         delete_cert = True
         delete_keys = True
         credentials_folder = tempfile.mkdtemp(prefix="aadsftp")
 
     if cert_file and public_key_file:
-        print_styled_text((Style.WARNING,
-                           "Both --certificate-file and --public-key-file provided. Using --certificate-file."))
-        print_styled_text((Style.ACTION,
-                           "To use public key instead, omit --certificate-file parameter."))
+        print_styled_text((Style.WARNING, "Using certificate file (ignoring public key)."))
 
     try:        # Get or create keys/certificate
         if auto_generate_cert:
@@ -146,7 +135,7 @@ def sftp_connect(cmd, storage_account, port=None, cert_file=None, private_key_fi
         elif not cert_file:
             public_key_file, private_key_file, _ = _check_or_create_public_private_files(
                 public_key_file, private_key_file, None, ssh_client_folder)
-            print_styled_text((Style.ACTION, "Generating SSH certificate..."))
+            print_styled_text((Style.ACTION, "Generating certificate..."))
             cert_file, user = _get_and_write_certificate(cmd, public_key_file, None, ssh_client_folder)
             delete_cert = True
         else:
@@ -168,16 +157,6 @@ def sftp_connect(cmd, storage_account, port=None, cert_file=None, private_key_fi
         storage_suffix = _get_storage_endpoint_suffix(cmd)
         hostname = f"{storage_account}.{storage_suffix}"
 
-        # Inform user about connection details
-        print_styled_text((Style.ACTION, "Azure Storage SFTP Connection Details:"))
-        print_styled_text((Style.PRIMARY, f"  Storage Account: {storage_account}"))
-        print_styled_text((Style.PRIMARY, f"  Username: {username}"))
-        if port is not None:
-            print_styled_text((Style.PRIMARY, f"  Endpoint: {hostname}:{port}"))
-        else:
-            print_styled_text((Style.PRIMARY, f"  Endpoint: {hostname} (default SSH port)"))
-        print_styled_text((Style.PRIMARY, f"  Cloud Environment: {cmd.cli_ctx.cloud.name}"))
-
         sftp_session = sftp_info.SFTPSession(
             storage_account=storage_account,
             username=username,
@@ -197,7 +176,12 @@ def sftp_connect(cmd, storage_account, port=None, cert_file=None, private_key_fi
         sftp_session.local_user = user
         sftp_session.resolve_connection_info()
 
-        print_styled_text((Style.SUCCESS, "Establishing SFTP connection..."))
+        # Inform user about connection
+        if port is not None:
+            print_styled_text((Style.PRIMARY, f"Connecting to {username}@{hostname}:{port}"))
+        else:
+            print_styled_text((Style.PRIMARY, f"Connecting to {username}@{hostname}"))
+
         _do_sftp_op(sftp_session, sftp_utils.start_sftp_connection)
 
     except Exception as e:

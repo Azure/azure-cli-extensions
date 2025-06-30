@@ -79,7 +79,7 @@ helps['sftp connect'] = """
         SECURITY:
         - Generated credentials are automatically cleaned up after connection
         - Temporary files stored in secure temporary directories
-        - Certificate validity is checked and renewed if expired
+        - OpenSSH handles certificate validation during connection
     examples:
         - name: Connect with automatic certificate generation (fully managed - RECOMMENDED)
           text: az sftp connect --storage-account mystorageaccount

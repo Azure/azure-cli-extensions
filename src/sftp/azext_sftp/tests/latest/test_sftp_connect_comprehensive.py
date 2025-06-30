@@ -12,8 +12,6 @@ from unittest import mock
 import tempfile
 import os
 import shutil
-import datetime
-from datetime import timedelta
 from azext_sftp import custom
 from azure.cli.core import azclierror
 
@@ -79,12 +77,9 @@ MOCK_PRIVATE_KEY_DATA
     # Test Scenario 1: Valid certificate provided
     @mock.patch('azext_sftp.custom._do_sftp_op')
     @mock.patch('azext_sftp.sftp_utils.get_ssh_cert_principals')
-    @mock.patch('azext_sftp.sftp_utils.get_certificate_start_and_end_times')
-    def test_valid_certificate_provided(self, mock_get_times, mock_get_principals, mock_do_sftp):
+    def test_valid_certificate_provided(self, mock_get_principals, mock_do_sftp):
         """Test successful connection with valid certificate file."""
         # Arrange
-        future_time = datetime.datetime.now() + datetime.timedelta(days=1)
-        mock_get_times.return_value = (datetime.datetime.now(), future_time)
         mock_get_principals.return_value = ["testuser@domain.com"]
         mock_do_sftp.return_value = None
         
@@ -240,12 +235,9 @@ MOCK_PRIVATE_KEY_DATA
     # Test Scenario 8: Port variations
     @mock.patch('azext_sftp.custom._do_sftp_op')
     @mock.patch('azext_sftp.sftp_utils.get_ssh_cert_principals')
-    @mock.patch('azext_sftp.sftp_utils.get_certificate_start_and_end_times')
-    def test_custom_port(self, mock_get_times, mock_get_principals, mock_do_sftp):
+    def test_custom_port(self, mock_get_principals, mock_do_sftp):
         """Test connection with custom port number."""
         # Arrange
-        future_time = datetime.datetime.now() + datetime.timedelta(days=1)
-        mock_get_times.return_value = (datetime.datetime.now(), future_time)
         mock_get_principals.return_value = ["testuser@domain.com"]
         mock_do_sftp.return_value = None
         
@@ -265,39 +257,12 @@ MOCK_PRIVATE_KEY_DATA
         sftp_session = call_args[0]
         self.assertEqual(sftp_session.port, 2222)
 
-    # Test Scenario 9: Certificate validation errors
+    # Test Scenario 9: Both certificate and public key provided
     @mock.patch('azext_sftp.custom._do_sftp_op')
     @mock.patch('azext_sftp.sftp_utils.get_ssh_cert_principals')
-    @mock.patch('azext_sftp.sftp_utils.get_certificate_start_and_end_times')
-    def test_certificate_validation_error(self, mock_get_times, mock_get_principals, mock_do_sftp):
-        """Test handling of certificate validation errors."""
-        # Arrange
-        mock_get_times.side_effect = Exception("Certificate validation failed")
-        mock_get_principals.return_value = ["testuser@domain.com"]
-        mock_do_sftp.return_value = None
-        
-        # Act - Should proceed despite validation error
-        custom.sftp_connect(
-            cmd=self.mock_cmd,
-            storage_account="teststorage",
-            port=22,
-            cert_file=self.mock_cert_file,
-            private_key_file=self.mock_private_key,
-            sftp_batch_commands="ls\nexit\n"
-        )
-        
-        # Assert
-        mock_do_sftp.assert_called_once()  # Should still proceed
-
-    # Test Scenario 10: Both certificate and public key provided
-    @mock.patch('azext_sftp.custom._do_sftp_op')
-    @mock.patch('azext_sftp.sftp_utils.get_ssh_cert_principals')
-    @mock.patch('azext_sftp.sftp_utils.get_certificate_start_and_end_times')
-    def test_cert_and_public_key_both_provided(self, mock_get_times, mock_get_principals, mock_do_sftp):
+    def test_cert_and_public_key_both_provided(self, mock_get_principals, mock_do_sftp):
         """Test preference for certificate when both cert and public key provided."""
         # Arrange
-        future_time = datetime.datetime.now() + datetime.timedelta(days=1)
-        mock_get_times.return_value = (datetime.datetime.now(), future_time)
         mock_get_principals.return_value = ["testuser@domain.com"]
         mock_do_sftp.return_value = None
         
@@ -318,13 +283,10 @@ MOCK_PRIVATE_KEY_DATA
     # Test Scenario 11: Different Azure cloud environments
     @mock.patch('azext_sftp.custom._do_sftp_op')
     @mock.patch('azext_sftp.sftp_utils.get_ssh_cert_principals')
-    @mock.patch('azext_sftp.sftp_utils.get_certificate_start_and_end_times')
-    def test_azure_china_cloud_environment(self, mock_get_times, mock_get_principals, mock_do_sftp):
+    def test_azure_china_cloud_environment(self, mock_get_principals, mock_do_sftp):
         """Test connection in Azure China Cloud environment."""
         # Arrange
         china_cmd = self._create_mock_cmd_context("azurechinacloud")
-        future_time = datetime.datetime.now() + datetime.timedelta(days=1)
-        mock_get_times.return_value = (datetime.datetime.now(), future_time)
         mock_get_principals.return_value = ["testuser@domain.com"]
         mock_do_sftp.return_value = None
         
@@ -347,13 +309,10 @@ MOCK_PRIVATE_KEY_DATA
 
     @mock.patch('azext_sftp.custom._do_sftp_op')
     @mock.patch('azext_sftp.sftp_utils.get_ssh_cert_principals')
-    @mock.patch('azext_sftp.sftp_utils.get_certificate_start_and_end_times')
-    def test_azure_government_cloud_environment(self, mock_get_times, mock_get_principals, mock_do_sftp):
+    def test_azure_government_cloud_environment(self, mock_get_principals, mock_do_sftp):
         """Test connection in Azure Government Cloud environment."""
         # Arrange
         gov_cmd = self._create_mock_cmd_context("azureusgovernment")
-        future_time = datetime.datetime.now() + datetime.timedelta(days=1)
-        mock_get_times.return_value = (datetime.datetime.now(), future_time)
         mock_get_principals.return_value = ["testuser@domain.com"]
         mock_do_sftp.return_value = None
         
@@ -377,12 +336,9 @@ MOCK_PRIVATE_KEY_DATA
     # Test Scenario 12: Username processing (UPN vs simple username)
     @mock.patch('azext_sftp.custom._do_sftp_op')
     @mock.patch('azext_sftp.sftp_utils.get_ssh_cert_principals')
-    @mock.patch('azext_sftp.sftp_utils.get_certificate_start_and_end_times')
-    def test_upn_username_processing(self, mock_get_times, mock_get_principals, mock_do_sftp):
+    def test_upn_username_processing(self, mock_get_principals, mock_do_sftp):
         """Test proper handling of UPN usernames (extracting username part)."""
         # Arrange
-        future_time = datetime.datetime.now() + datetime.timedelta(days=1)
-        mock_get_times.return_value = (datetime.datetime.now(), future_time)
         mock_get_principals.return_value = ["testuser@contoso.com"]  # UPN format
         mock_do_sftp.return_value = None
         
@@ -467,12 +423,9 @@ MOCK_PRIVATE_KEY_DATA
     # Test Scenario 17: Default port behavior
     @mock.patch('azext_sftp.custom._do_sftp_op')
     @mock.patch('azext_sftp.sftp_utils.get_ssh_cert_principals')  
-    @mock.patch('azext_sftp.sftp_utils.get_certificate_start_and_end_times')
-    def test_default_port_22(self, mock_get_times, mock_get_principals, mock_do_sftp):
+    def test_default_port_22(self, mock_get_principals, mock_do_sftp):
         """Test that default port is None when not specified (SFTP session handles default)."""
         # Arrange
-        future_time = datetime.datetime.now() + datetime.timedelta(days=1)
-        mock_get_times.return_value = (datetime.datetime.now(), future_time)
         mock_get_principals.return_value = ["testuser@domain.com"]
         mock_do_sftp.return_value = None
         

@@ -3,7 +3,6 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 import colorama
-import datetime
 import os
 import platform
 import subprocess
@@ -82,8 +81,7 @@ def _attempt_connection(command, env, creationflags, op_info, attempt_num):
     """Attempt a single SFTP connection."""
     connection_start_time = time.time()
     try:
-        print(f"Connecting to SFTP server (attempt {attempt_num})...")
-        logger.debug("Running SFTP command: %s", ' '.join(command))
+        logger.debug("Running SFTP command (attempt %d): %s", attempt_num, ' '.join(command))
 
         batch_input = getattr(op_info, 'sftp_batch_commands', None)
         _, return_code = _execute_sftp_process(command, env, creationflags, batch_input)
@@ -157,17 +155,6 @@ def create_ssh_keyfile(private_key_file, ssh_client_folder=None):
                                          const.RECOMMENDATION_SSH_CLIENT_NOT_FOUND)
 
 
-def get_certificate_start_and_end_times(cert_file, ssh_client_folder=None):
-    validity_str = _get_ssh_cert_validity(cert_file, ssh_client_folder)
-    times = None
-    if validity_str and "Valid: from " in validity_str and " to " in validity_str:
-        times = validity_str.replace("Valid: from ", "").split(" to ")
-        t0 = datetime.datetime.strptime(times[0], '%Y-%m-%dT%X')
-        t1 = datetime.datetime.strptime(times[1], '%Y-%m-%dT%X')
-        times = (t0, t1)
-    return times
-
-
 def get_ssh_cert_principals(cert_file, ssh_client_folder=None):
     info = get_ssh_cert_info(cert_file, ssh_client_folder)
     principals = []
@@ -195,15 +182,6 @@ def get_ssh_cert_info(cert_file, ssh_client_folder=None):
         colorama.init()
         raise azclierror.BadRequestError(f"Failed to get certificate info with error: {str(e)}.",
                                          const.RECOMMENDATION_SSH_CLIENT_NOT_FOUND)
-
-
-def _get_ssh_cert_validity(cert_file, ssh_client_folder=None):
-    if cert_file:
-        info = get_ssh_cert_info(cert_file, ssh_client_folder)
-        for line in info:
-            if "Valid:" in line:
-                return line.strip()
-    return None
 
 
 def get_ssh_client_path(ssh_command="ssh", ssh_client_folder=None):

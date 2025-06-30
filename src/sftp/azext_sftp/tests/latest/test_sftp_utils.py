@@ -56,12 +56,9 @@ class SftpUtilsTests(unittest.TestCase):
     def test_certificate_functions_exist(self):
         """Test that certificate functions exist and can be called."""
         # Simple test to ensure functions exist
-        self.assertTrue(hasattr(sftp_utils, 'get_certificate_start_and_end_times'))
         self.assertTrue(hasattr(sftp_utils, 'get_ssh_cert_principals'))
         
-        # Test with None values (should return None gracefully)
-        result = sftp_utils.get_certificate_start_and_end_times(None, None)
-        self.assertIsNone(result)
+        # Note: get_certificate_start_and_end_times was removed as unnecessary validation
 
 
 if __name__ == '__main__':
