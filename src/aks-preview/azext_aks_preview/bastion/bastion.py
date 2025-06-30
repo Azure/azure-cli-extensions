@@ -43,7 +43,7 @@ def aks_bastion_get_bastion_name(bastion, nrg):
     # find bastion from the node resource group
     result = subprocess.run(
         [
-            "az",
+            _aks_bastion_get_az_cmd_name(),
             "network",
             "bastion",
             "list",
@@ -52,6 +52,7 @@ def aks_bastion_get_bastion_name(bastion, nrg):
             "--output",
             "json",
         ],
+        shell=False,
         capture_output=True,
         text=True,
     )
@@ -98,8 +99,8 @@ def aks_bastion_extension(yes):
 
     logger.debug("Checking if the bastion extension is installed...")
     result = subprocess.run(
-        ["az", "extension", "list", "--output", "json"],
-        check=True,
+        [_aks_bastion_get_az_cmd_name(), "extension", "list", "--output", "json"],
+        shell=False,
         capture_output=True,
         text=True,
     )
@@ -117,8 +118,8 @@ def aks_bastion_extension(yes):
         )
     logger.debug("Installing bastion extension...")
     result = subprocess.run(
-        ["az", "extension", "add", "--name", "bastion"],
-        check=True,
+        [_aks_bastion_get_az_cmd_name(), "extension", "add", "--name", "bastion"],
+        shell=False,
         capture_output=True,
         text=True,
     )
@@ -164,6 +165,14 @@ async def aks_bastion_runner(nrg, bastion, port, mc_id, kubeconfig_path):
 
 def aks_batsion_clean_up():
     pass
+
+
+def _aks_bastion_get_az_cmd_name():
+    """Get the name of the az command based on system platform."""
+
+    if sys.platform.startswith("win"):
+        return "az.cmd"
+    return "az"
 
 
 def _aks_bastion_get_current_shell_cmd():
