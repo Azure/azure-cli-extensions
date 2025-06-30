@@ -17,7 +17,7 @@ class StorageCommandsLoader(AzCommandsLoader):
         from azure.cli.core.commands import CliCommandType
 
         register_resource_type('latest', CUSTOM_DATA_STORAGE, '2018-03-28')
-        register_resource_type('latest', CUSTOM_MGMT_STORAGE, '2023-05-01')
+        register_resource_type('latest', CUSTOM_MGMT_STORAGE, '2024-01-01')
         register_resource_type('latest', CUSTOM_DATA_STORAGE_FILESHARE, '2022-11-02')
         register_resource_type('latest', CUSTOM_DATA_STORAGE_BLOB, '2022-11-02')
         register_resource_type('latest', CUSTOM_DATA_STORAGE_FILEDATALAKE, '2020-06-12')

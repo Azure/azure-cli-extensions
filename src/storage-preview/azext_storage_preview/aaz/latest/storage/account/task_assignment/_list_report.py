@@ -13,16 +13,18 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "storage account task-assignment list-report",
-    is_preview=True,
 )
 class ListReport(AAZCommand):
     """List the report summary of a single storage task assignment's instances
+
+    :example: List Storage TaskAssignment InstancesReportSummary
+        az storage account task-assignment list-report --resource-group res4228 --account-name sto4445 --storage-task-assignment-name myassignment1
     """
 
     _aaz_info = {
-        "version": "2023-05-01",
+        "version": "2024-01-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storage/storageaccounts/{}/storagetaskassignments/{}/reports", "2023-05-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storage/storageaccounts/{}/storagetaskassignments/{}/reports", "2024-01-01"],
         ]
     }
 
@@ -152,7 +154,7 @@ class ListReport(AAZCommand):
                     "$maxpagesize", self.ctx.args.maxpagesize,
                 ),
                 **self.serialize_query_param(
-                    "api-version", "2023-05-01",
+                    "api-version", "2024-01-01",
                     required=True,
                 ),
             }

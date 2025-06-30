@@ -13,16 +13,18 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "storage account task-assignment update",
-    is_preview=True,
 )
 class Update(AAZCommand):
-    """Update creates a new storage task assignment sub-resource with the specified parameters. If a storage task assignment is already created and a subsequent create request is issued with different properties, the storage task assignment properties will be updated. If a storage task assignment is already created and a subsequent create or update request is issued with the exact same set of properties, the request will succeed.
+    """Update a new storage task assignment sub-resource with the specified parameters. If a storage task assignment is already created and a subsequent create request is issued with different properties, the storage task assignment properties will be updated. If a storage task assignment is already created and a subsequent create or update request is issued with the exact same set of properties, the request will succeed.
+
+    :example: Update Storage TaskAssignment
+        az storage account task-assignment update -g rg_name -n task_assignment_name --account-name storage_account_name --description 'My Storage task assignment' --enabled true --task-id 'task_id' --report '{prefix:container1}' --execution-context '{trigger:{type:OnSchedule,parameters:{start-from:'2024-08-15T21:52:47Z',end-by:'2024-09-05T21:52:47.203074Z',interval:10,interval-unit:Days}},target:{prefix:[prefix1,prefix2],exclude-prefix:[prefix3]}}'
     """
 
     _aaz_info = {
-        "version": "2023-05-01",
+        "version": "2024-01-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storage/storageaccounts/{}/storagetaskassignments/{}", "2023-05-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storage/storageaccounts/{}/storagetaskassignments/{}", "2024-01-01"],
         ]
     }
 
@@ -264,7 +266,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-05-01",
+                    "api-version", "2024-01-01",
                     required=True,
                 ),
             }
@@ -311,7 +313,7 @@ class Update(AAZCommand):
                     session,
                     self.on_200_201,
                     self.on_error,
-                    lro_options={"final-state-via": "location"},
+                    lro_options={"final-state-via": "azure-async-operation"},
                     path_format_arguments=self.url_parameters,
                 )
             if session.http_response.status_code in [200, 201]:
@@ -320,7 +322,7 @@ class Update(AAZCommand):
                     session,
                     self.on_200_201,
                     self.on_error,
-                    lro_options={"final-state-via": "location"},
+                    lro_options={"final-state-via": "azure-async-operation"},
                     path_format_arguments=self.url_parameters,
                 )
 
@@ -367,7 +369,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-05-01",
+                    "api-version", "2024-01-01",
                     required=True,
                 ),
             }
