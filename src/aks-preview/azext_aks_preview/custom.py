@@ -93,6 +93,14 @@ from azext_aks_preview.aks_draft.commands import (
     aks_draft_cmd_up,
     aks_draft_cmd_update,
 )
+from azext_aks_preview.bastion.bastion import (
+    aks_bastion_get_bastion_name,
+    aks_bastion_get_local_port,
+    aks_bastion_extension,
+    aks_bastion_set_kubeconfig,
+    aks_bastion_runner,
+    aks_batsion_clean_up
+)
 from azext_aks_preview.maintenanceconfiguration import (
     aks_maintenanceconfiguration_update_internal,
 )
@@ -118,6 +126,7 @@ from azure.cli.core.azclierror import (
     InvalidArgumentValueError,
     MutuallyExclusiveArgumentError,
     RequiredArgumentMissingError,
+    ResourceNotFoundError as AZResourceNotFoundError,
     ValidationError,
 )
 from azure.cli.core.commands import LongRunningOperation
@@ -4333,3 +4342,34 @@ def aks_loadbalancer_rebalance_nodes(
     }
 
     return aks_loadbalancer_rebalance_internal(managed_clusters_client, parameters)
+
+
+def aks_bastion(cmd, client, resource_group_name, name, bastion=None, port=None, admin=False, yes=False):
+    import asyncio
+    import tempfile
+
+    from azure.cli.command_modules.acs._consts import DecoratorEarlyExitException
+
+    try:
+        aks_bastion_extension(yes)
+    except DecoratorEarlyExitException as ex:
+        logger.error(ex)
+        return
+
+    with tempfile.TemporaryDirectory() as temp_dir:
+        logger.info("creating temporary directory: %s", temp_dir)
+        try:
+            kubeconfig_path = os.path.join(temp_dir, ".kube", "config")
+            mc = client.get(resource_group_name, name)
+            mc_id = mc.id
+            nrg = mc.node_resource_group
+            bastion = aks_bastion_get_bastion_name(bastion, nrg)
+            port = aks_bastion_get_local_port(port)
+            aks_get_credentials(cmd, client, resource_group_name, name, admin=admin, path=kubeconfig_path)
+            aks_bastion_set_kubeconfig(kubeconfig_path, port)
+            asyncio.run(aks_bastion_runner(nrg, bastion, port, mc_id, kubeconfig_path))
+        except Exception as e:
+            logger.error("An error occurred while running the bastion command: %s", e)
+            raise
+        finally:
+            aks_batsion_clean_up()
