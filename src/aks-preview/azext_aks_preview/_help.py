@@ -240,8 +240,8 @@ helps['aks create'] = f"""
           long-summary: To access nodes after creating a cluster with this option, use the Azure Portal.
         - name: --pod-cidr
           type: string
-          short-summary: A CIDR notation IP range from which to assign pod IPs when kubenet is used.
-          long-summary: This range must not overlap with any Subnet IP ranges. For example, 172.244.0.0/16.
+          short-summary: A CIDR notation IP range from which to assign pod IPs when Azure CNI Overlay or Kubenet is used (On 31 March 2028, Kubenet will be retired).
+          long-summary: This range must not overlap with any Subnet IP ranges. For example, 172.244.0.0/16. See https://aka.ms/aks/azure-cni-overlay.
         - name: --service-cidr
           type: string
           short-summary: A CIDR notation IP range from which to assign service cluster IPs.
@@ -252,8 +252,8 @@ helps['aks create'] = f"""
           long-summary: Each range must not overlap with any Subnet IP ranges. For example, 10.0.0.0/16.
         - name: --pod-cidrs
           type: string
-          short-summary: A comma separated list of CIDR notation IP ranges from which to assign pod IPs when kubenet is used.
-          long-summary: Each range must not overlap with any Subnet IP ranges. For example, 172.244.0.0/16.
+          short-summary: A comma-separated list of CIDR notation IP ranges from which to assign pod IPs when Azure CNI Overlay or Kubenet is used (On 31 March 2028, Kubenet will be retired).
+          long-summary: Each range must not overlap with any Subnet IP ranges. For example, 172.244.0.0/16. See https://aka.ms/aks/azure-cni-overlay.
         - name: --ip-families
           type: string
           short-summary: A comma separated list of IP versions to use for cluster networking.
