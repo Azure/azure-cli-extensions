@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "storage-actions task list-report",
-    is_preview=True,
 )
 class ListReport(AAZCommand):
     """List the storage tasks run report summary for each assignment.
@@ -63,7 +62,7 @@ class ListReport(AAZCommand):
             options=["--filter"],
             help="Optional. When specified, it can be used to query using reporting properties.",
         )
-        _args_schema.maxpagesize = AAZStrArg(
+        _args_schema.maxpagesize = AAZIntArg(
             options=["--maxpagesize"],
             help="Optional, specifies the maximum number of storage task assignment Ids to be included in the list response.",
         )

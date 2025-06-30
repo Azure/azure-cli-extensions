@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "storage-actions task list-assignment",
-    is_preview=True,
 )
 class ListAssignment(AAZCommand):
     """List all the storage task assignments available under the given resource group.
@@ -59,7 +58,7 @@ class ListAssignment(AAZCommand):
                 min_length=3,
             ),
         )
-        _args_schema.maxpagesize = AAZStrArg(
+        _args_schema.maxpagesize = AAZIntArg(
             options=["--maxpagesize"],
             help="Optional, specifies the maximum number of storage task assignment Ids to be included in the list response.",
         )
