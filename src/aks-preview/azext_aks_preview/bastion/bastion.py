@@ -171,7 +171,7 @@ def _aks_bastion_get_current_shell_cmd():
 
     ppid = os.getppid()
     parent = psutil.Process(ppid)
-    return parent.cmdline()[0]
+    return parent.name()
 
 
 def _aks_bastion_prepare_shell_cmd(kubeconfig_path):
