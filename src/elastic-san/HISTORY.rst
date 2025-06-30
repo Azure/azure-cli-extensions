@@ -2,6 +2,10 @@
 
 Release History
 ===============
+1.3.1b1
+++++++
+* `az elastic-san volume-group create/update`: Add warning for CRC data integration check
+
 1.3.0
 ++++++
 * `az elastic-san create`: Make `--base-size-tib` and `--extended-capacity-size-tib` optional with default value of 20 and 0
