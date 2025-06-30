@@ -40,6 +40,21 @@ class AzureFirewallScenario(ScenarioTest):
         self.cmd('network firewall list -g {rg}')
         self.cmd('network firewall delete -g {rg} -n {af}')
 
+    @ResourceGroupPreparer(name_prefix='cli_test_az_firewall_extended_location')
+    def test_azure_firewall_extended_location(self, resource_group):
+        self.kwargs.update({
+            'pubip': 'pubip',
+            'vnet': 'vnet',
+            'firewall': 'firewall'
+        })
+
+        self.cmd('network public-ip create -g {rg} -n {pubip} --allocation-method Static --sku Standard --edge-zone losangeles')
+        self.cmd('network vnet create -g {rg} -n {vnet} --address-prefix 10.0.0.0/16 --subnet-name AzureFirewallSubnet --subnet-prefix 10.0.1.0/26 --edge-zone losangeles')
+        self.cmd('network firewall create -g {rg} -n {firewall} --vnet-name {vnet} --public-ip {pubip} --enable-dns-proxy true --edge-zone losangeles', checks=[
+            self.check('extendedLocation.type', 'EdgeZone'),
+            self.check('extendedLocation.name', 'losangeles')
+        ])
+
     @ResourceGroupPreparer(name_prefix="cli_test_firewall_with_additional_log_", location="westus")
     def test_firewall_with_additional_log(self):
         self.kwargs.update({
@@ -912,7 +927,7 @@ class AzureFirewallScenario(ScenarioTest):
     def test_azure_firewall_policy_explicit_proxy(self, resource_group):
         self.kwargs.update({
             'policy_name': 'testFirewallPolicy',
-            'sas_url': "https://clitestatorageaccount.blob.core.windows.net/explicitproxycontainer/pacfile.pac?sp=r&st=2024-01-09T08:48:06Z&se=2024-01-09T16:48:06Z&spr=https&sv=2022-11-02&sr=b&sig=5B0q%2B90BH0fkPZK6G6LHKRIGMY%2FljNOfsSQ8xaQB6mw%3D"
+            'sas_url': "https://clitestatorageaccount.blob.core.windows.net/explicitproxycontainer/pacfile.pac?sp=r&st=2024-01-09T08:48:06Z&se=2024-01-09T16:48:06Z&spr=https&sv=2022-11-02&sr=b&sig=***"
         })
         self.cmd('network firewall policy create -g {rg} -n {policy_name} --sku Premium --explicit-proxy enable-explicit-proxy=true http-port=85 https-port=121 enable-pac-file=true pac-file-port=122 pac-file="{sas_url}"',
                  checks=[

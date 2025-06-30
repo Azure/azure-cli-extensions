@@ -31,9 +31,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-01-01",
+        "version": "2024-10-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/azurefirewalls/{}", "2022-01-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/azurefirewalls/{}", "2024-10-01"],
         ]
     }
 
@@ -65,6 +65,10 @@ class Create(AAZCommand):
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
+        )
+        _args_schema.extended_location = AAZObjectArg(
+            options=["--extended-location"],
+            help="The extended location of type local virtual network gateway.",
         )
         _args_schema.location = AAZResourceLocationArg(
             help="Resource location.",
@@ -103,6 +107,17 @@ class Create(AAZCommand):
         _args_schema.zones = AAZListArg(
             options=["-z", "--zones"],
             help="Space-separated list of availability zones into which to provision the resource. Allowed values: 1, 2, 3.",
+        )
+
+        extended_location = cls._args_schema.extended_location
+        extended_location.name = AAZStrArg(
+            options=["name"],
+            help="The name of the extended location.",
+        )
+        extended_location.type = AAZStrArg(
+            options=["type"],
+            help="The type of the extended location.",
+            enum={"EdgeZone": "EdgeZone"},
         )
 
         tags = cls._args_schema.tags
@@ -297,7 +312,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-01-01",
+                    "api-version", "2024-10-01",
                     required=True,
                 ),
             }
@@ -322,10 +337,16 @@ class Create(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
+            _builder.set_prop("extendedLocation", AAZObjectType, ".extended_location")
             _builder.set_prop("location", AAZStrType, ".location")
             _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
             _builder.set_prop("zones", AAZListType, ".zones")
+
+            extended_location = _builder.get(".extendedLocation")
+            if extended_location is not None:
+                extended_location.set_prop("name", AAZStrType, ".name")
+                extended_location.set_prop("type", AAZStrType, ".type")
 
             properties = _builder.get(".properties")
             if properties is not None:
@@ -416,6 +437,9 @@ class Create(AAZCommand):
             _schema_on_200_201.etag = AAZStrType(
                 flags={"read_only": True},
             )
+            _schema_on_200_201.extended_location = AAZObjectType(
+                serialized_name="extendedLocation",
+            )
             _schema_on_200_201.id = AAZStrType()
             _schema_on_200_201.location = AAZStrType()
             _schema_on_200_201.name = AAZStrType(
@@ -430,12 +454,19 @@ class Create(AAZCommand):
             )
             _schema_on_200_201.zones = AAZListType()
 
+            extended_location = cls._schema_on_200_201.extended_location
+            extended_location.name = AAZStrType()
+            extended_location.type = AAZStrType()
+
             properties = cls._schema_on_200_201.properties
             properties.additional_properties = AAZDictType(
                 serialized_name="additionalProperties",
             )
             properties.application_rule_collections = AAZListType(
                 serialized_name="applicationRuleCollections",
+            )
+            properties.autoscale_configuration = AAZObjectType(
+                serialized_name="autoscaleConfiguration",
             )
             properties.firewall_policy = AAZObjectType(
                 serialized_name="firewallPolicy",
@@ -449,6 +480,7 @@ class Create(AAZCommand):
             )
             properties.ip_groups = AAZListType(
                 serialized_name="ipGroups",
+                flags={"read_only": True},
             )
             properties.management_ip_configuration = AAZObjectType(
                 serialized_name="managementIpConfiguration",
@@ -539,6 +571,16 @@ class Create(AAZCommand):
 
             target_fqdns = cls._schema_on_200_201.properties.application_rule_collections.Element.properties.rules.Element.target_fqdns
             target_fqdns.Element = AAZStrType()
+
+            autoscale_configuration = cls._schema_on_200_201.properties.autoscale_configuration
+            autoscale_configuration.max_capacity = AAZIntType(
+                serialized_name="maxCapacity",
+                nullable=True,
+            )
+            autoscale_configuration.min_capacity = AAZIntType(
+                serialized_name="minCapacity",
+                nullable=True,
+            )
 
             hub_ip_addresses = cls._schema_on_200_201.properties.hub_ip_addresses
             hub_ip_addresses.private_ip_address = AAZStrType(

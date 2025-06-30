@@ -183,6 +183,11 @@ class AzureFirewallCreate(_AzureFirewallCreate):
             template="/subscriptions/{subscription}/resourceGroups/{resource_group}/providers/Microsoft.Network"
                      "/virtualHubs/{}",
         )
+        args_schema.edge_zone = AAZStrArg(
+            options=["--edge-zone"],
+            help="The name of edge zone.",
+        )
+        args_schema.extended_location._registered = False
         args_schema.additional_properties._registered = False
         args_schema.ip_configurations._registered = False
         args_schema.mgmt_ip_conf_subnet._registered = False
@@ -191,6 +196,9 @@ class AzureFirewallCreate(_AzureFirewallCreate):
 
     def pre_operations(self):
         args = self.ctx.args
+        if has_value(args.edge_zone):
+            args.extended_location.name = args.edge_zone
+            args.extended_location.type = "EdgeZone"
         if has_value(args.public_ip_count) and has_value(args.public_ip):
             raise CLIError(
                 'usage error: Cannot add both --public-ip-count and --public-ip at the same time.')
@@ -344,6 +352,7 @@ class AzureFirewallUpdate(_AzureFirewallUpdate):
             template="/subscriptions/{subscription}/resourceGroups/{resource_group}/providers/Microsoft.Network"
                      "/virtualHubs/{}",
         )
+        args_schema.extended_location._registered = False
         args_schema.addresses._registered = False
         args_schema.additional_properties._registered = False
 
