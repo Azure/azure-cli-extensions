@@ -19,6 +19,10 @@ Pending
 
 
 
+18.0.0b18
++++++++
+* Add command `az aks bastion` to enable connections to managed Kubernetes clusters via Azure Bastion.
+
 18.0.0b17
 +++++++
 * Remove `__import__('pkg_resources').declare_namespace(__name__)` from `vendored_sdks/__init__.py`` to fix the namespace package issue.
