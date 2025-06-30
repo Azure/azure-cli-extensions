@@ -214,6 +214,10 @@ async def _aks_bastion_launch_subshell(kubeconfig_path, port):
     )
     subshell_process = await asyncio.subprocess.create_subprocess_shell(
         cmd=updated_shell_cmd,
+        stdin=None,
+        stdout=None,
+        stderr=None,
+        shell=True,
         env=env,
     )
     logger.info("Subshell launched with PID: %s", subshell_process.pid)
@@ -247,30 +251,29 @@ async def _aks_bastion_launch_tunnel(nrg, bastion, port, mc_id):
     logger.debug("Creating bastion tunnel with command: %s", cmd)
     tunnel_proces = await asyncio.create_subprocess_shell(
         cmd,
+        stdin=asyncio.subprocess.DEVNULL,
+        stdout=asyncio.subprocess.DEVNULL,
+        stderr=asyncio.subprocess.DEVNULL,
         shell=True,
-        stdout=asyncio.subprocess.PIPE,
-        stderr=asyncio.subprocess.PIPE,
     )
     logger.info("Tunnel launched with PID: %s", tunnel_proces.pid)
 
     try:
-        stdout, stderr = await tunnel_proces.communicate()
-        output = ""
-        if stdout:
-            output = "stdout: " + stdout.decode()
-        if stderr:
-            output += " stderr: " + stderr.decode()
-        logger.debug("Tunnel process completed with output: %s", output)
+        await tunnel_proces.wait()
+        logger.debug("Tunnel process completed with return code: %s", tunnel_proces.returncode)
     except asyncio.CancelledError:
         logger.info("Tunnel process was cancelled. Terminating...")
         tunnel_proces.terminate()
-        stdout, stderr = await tunnel_proces.communicate()
-        output = ""
-        if stdout:
-            output = "stdout: " + stdout.decode()
-        if stderr:
-            output += " stderr: " + stderr.decode()
-        logger.info("Tunnel process exited with output: %s", output)
+        try:
+            await asyncio.wait_for(tunnel_proces.wait(), timeout=5)
+            logger.info("Tunnel process exited cleanly after termination.")
+        except asyncio.TimeoutError:
+            logger.warning("Tunnel process did not exit after SIGTERM. Sending SIGKILL...")
+            tunnel_proces.kill()
+            await tunnel_proces.wait()
+            logger.warning(
+                "Subshell forcefully killed with code %s", tunnel_proces.returncode
+            )
 
 
 def _aks_bastion_validate_tunnel(port):
