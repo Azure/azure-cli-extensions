@@ -222,12 +222,14 @@ def _get_and_write_certificate(cmd, public_key_file, cert_file, ssh_client_folde
     profile = Profile(cli_ctx=cmd.cli_ctx)
 
     t0 = time.time()
-    # We currently are using the presence of get_msal_token to detect if we are running on an older azure cli client
-    # TODO: Remove when adal has been deprecated for a while
+    # Azure CLI 2.76 brought back get_msal_token as the official interface for getting certificate:
+    # https://github.com/Azure/azure-cli/pull/31082
     if hasattr(profile, "get_msal_token"):
         # we used to use the username from the token but now we throw it away
         _, certificate = profile.get_msal_token(scopes, data)
     else:
+        # Azure CLI 2.76 dropped `data` from get_token: https://github.com/Azure/azure-cli/pull/31723
+        # TODO: Remove when Azure CLI <= 2.75 has been deprecated for a while
         credential, _, _ = profile.get_login_credentials(subscription_id=profile.get_subscription()["id"])
         certificatedata = credential.get_token(*scopes, data=data)
         certificate = certificatedata.token
