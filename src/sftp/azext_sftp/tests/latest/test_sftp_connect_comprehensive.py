@@ -196,6 +196,40 @@ MOCK_PRIVATE_KEY_DATA
         mock_gen_cert.assert_called_once()
         mock_do_sftp.assert_called_once()
 
+    # Test Scenario 5.5: Both public and private key provided - generate certificate
+    @mock.patch('azext_sftp.custom._cleanup_credentials')
+    @mock.patch('azext_sftp.custom._do_sftp_op')
+    @mock.patch('azext_sftp.custom._get_and_write_certificate')
+    @mock.patch('azext_sftp.custom._check_or_create_public_private_files')
+    def test_both_public_and_private_key_generate_cert(self, mock_create_keys, mock_gen_cert, 
+                                                      mock_do_sftp, mock_cleanup):
+        """Test certificate generation when both public and private key provided.
+        
+        This scenario follows SSH extension pattern: when both keys are provided,
+        system uses them to generate certificate and connects.
+        Owner: johnli1
+        """
+        # Arrange
+        mock_create_keys.return_value = (self.mock_public_key, self.mock_private_key, False)
+        mock_gen_cert.return_value = (self.mock_cert_file, "testuser")
+        mock_do_sftp.return_value = None
+        
+        # Act
+        custom.sftp_connect(
+            cmd=self.mock_cmd,
+            storage_account="teststorage",
+            port=22,
+            public_key_file=self.mock_public_key,
+            private_key_file=self.mock_private_key,
+            sftp_batch_commands="ls\nexit\n"
+        )
+        
+        # Assert
+        mock_create_keys.assert_called_once_with(self.mock_public_key, self.mock_private_key, None, None)
+        mock_gen_cert.assert_called_once_with(self.mock_cmd, self.mock_public_key, None, None)
+        mock_do_sftp.assert_called_once()
+        mock_cleanup.assert_called_once()
+
     # Test Scenario 6: Existing certificate - use as-is (let OpenSSH handle validation)
     @mock.patch('azext_sftp.custom._cleanup_credentials')
     @mock.patch('azext_sftp.custom._do_sftp_op')
