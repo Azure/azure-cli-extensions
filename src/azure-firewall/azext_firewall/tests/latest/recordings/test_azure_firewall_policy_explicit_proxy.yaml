@@ -15,7 +15,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.56.0 azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.9.5 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/test_azure_firewall_policy_explicit_proxy000001?api-version=2022-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/test_azure_firewall_policy_explicit_proxy000001?api-version=2024-11-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_explicit_proxy000001","name":"test_azure_firewall_policy_explicit_proxy000001","type":"Microsoft.Resources/resourceGroups","location":"westus2","tags":{"product":"azurecli","cause":"automation","test":"test_azure_firewall_policy_explicit_proxy","date":"2024-01-09T08:50:09Z","module":"azure-firewall"},"properties":{"provisioningState":"Succeeded"}}'
@@ -45,7 +45,7 @@ interactions:
       message: OK
 - request:
     body: '{"location": "westus2", "properties": {"explicitProxy": {"enableExplicitProxy":
-      true, "enablePacFile": true, "httpPort": 85, "httpsPort": 121, "pacFile": "https://clitestatorageaccount.blob.core.windows.net/explicitproxycontainer/pacfile.pac?sp=r&st=2024-01-09T08:48:06Z&se=2024-01-09T16:48:06Z&spr=https&sv=2022-11-02&sr=b&sig=5B0q%2B90BH0fkPZK6G6LHKRIGMY%2FljNOfsSQ8xaQB6mw%3D",
+      true, "enablePacFile": true, "httpPort": 85, "httpsPort": 121, "pacFile": "https://clitestatorageaccount.blob.core.windows.net/explicitproxycontainer/pacfile.pac?sp=r&st=2024-01-09T08:48:06Z&se=2024-01-09T16:48:06Z&spr=https&sv=2022-11-02&sr=b&sig=***",
       "pacFilePort": 122}, "sku": {"tier": "Premium"}}}'
     headers:
       Accept:
@@ -73,7 +73,7 @@ interactions:
         \   \"ruleCollectionGroups\": [],\r\n    \"firewalls\": [],\r\n    \"threatIntelMode\":
         \"Alert\",\r\n    \"explicitProxy\": {\r\n      \"enableExplicitProxy\": true,\r\n
         \     \"httpPort\": 85,\r\n      \"httpsPort\": 121,\r\n      \"enablePacFile\":
-        true,\r\n      \"pacFilePort\": 122,\r\n      \"pacFile\": \"https://clitestatorageaccount.blob.core.windows.net/explicitproxycontainer/pacfile.pac?sp=r&st=2024-01-09T08:48:06Z&se=2024-01-09T16:48:06Z&spr=https&sv=2022-11-02&sr=b&sig=5B0q%2B90BH0fkPZK6G6LHKRIGMY%2FljNOfsSQ8xaQB6mw%3D\"\r\n
+        true,\r\n      \"pacFilePort\": 122,\r\n      \"pacFile\": \"https://clitestatorageaccount.blob.core.windows.net/explicitproxycontainer/pacfile.pac?sp=r&st=2024-01-09T08:48:06Z&se=2024-01-09T16:48:06Z&spr=https&sv=2022-11-02&sr=b&sig=***\"\r\n
         \   },\r\n    \"provisioningState\": \"Updating\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_explicit_proxy000001/providers/Microsoft.Network/firewallPolicies/testFirewallPolicy\",\r\n
         \ \"name\": \"testFirewallPolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
         \ \"etag\": \"ef353abc-6b62-4dd0-b60e-ec8d6f7877eb\",\r\n  \"location\": \"westus2\"\r\n}"
@@ -219,7 +219,7 @@ interactions:
         \   \"ruleCollectionGroups\": [],\r\n    \"firewalls\": [],\r\n    \"threatIntelMode\":
         \"Alert\",\r\n    \"explicitProxy\": {\r\n      \"enableExplicitProxy\": true,\r\n
         \     \"httpPort\": 85,\r\n      \"httpsPort\": 121,\r\n      \"enablePacFile\":
-        true,\r\n      \"pacFilePort\": 122,\r\n      \"pacFile\": \"https://clitestatorageaccount.blob.core.windows.net/explicitproxycontainer/pacfile.pac?sp=r&st=2024-01-09T08:48:06Z&se=2024-01-09T16:48:06Z&spr=https&sv=2022-11-02&sr=b&sig=5B0q%2B90BH0fkPZK6G6LHKRIGMY%2FljNOfsSQ8xaQB6mw%3D\"\r\n
+        true,\r\n      \"pacFilePort\": 122,\r\n      \"pacFile\": \"https://clitestatorageaccount.blob.core.windows.net/explicitproxycontainer/pacfile.pac?sp=r&st=2024-01-09T08:48:06Z&se=2024-01-09T16:48:06Z&spr=https&sv=2022-11-02&sr=b&sig=***\"\r\n
         \   },\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_explicit_proxy000001/providers/Microsoft.Network/firewallPolicies/testFirewallPolicy\",\r\n
         \ \"name\": \"testFirewallPolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
         \ \"etag\": \"ef353abc-6b62-4dd0-b60e-ec8d6f7877eb\",\r\n  \"location\": \"westus2\"\r\n}"
@@ -275,7 +275,7 @@ interactions:
         \   \"ruleCollectionGroups\": [],\r\n    \"firewalls\": [],\r\n    \"threatIntelMode\":
         \"Alert\",\r\n    \"explicitProxy\": {\r\n      \"enableExplicitProxy\": true,\r\n
         \     \"httpPort\": 85,\r\n      \"httpsPort\": 121,\r\n      \"enablePacFile\":
-        true,\r\n      \"pacFilePort\": 122,\r\n      \"pacFile\": \"https://clitestatorageaccount.blob.core.windows.net/explicitproxycontainer/pacfile.pac?sp=r&st=2024-01-09T08:48:06Z&se=2024-01-09T16:48:06Z&spr=https&sv=2022-11-02&sr=b&sig=5B0q%2B90BH0fkPZK6G6LHKRIGMY%2FljNOfsSQ8xaQB6mw%3D\"\r\n
+        true,\r\n      \"pacFilePort\": 122,\r\n      \"pacFile\": \"https://clitestatorageaccount.blob.core.windows.net/explicitproxycontainer/pacfile.pac?sp=r&st=2024-01-09T08:48:06Z&se=2024-01-09T16:48:06Z&spr=https&sv=2022-11-02&sr=b&sig=***\"\r\n
         \   },\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_explicit_proxy000001/providers/Microsoft.Network/firewallPolicies/testFirewallPolicy\",\r\n
         \ \"name\": \"testFirewallPolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
         \ \"etag\": \"ef353abc-6b62-4dd0-b60e-ec8d6f7877eb\",\r\n  \"location\": \"westus2\"\r\n}"
@@ -310,7 +310,7 @@ interactions:
 - request:
     body: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_explicit_proxy000001/providers/Microsoft.Network/firewallPolicies/testFirewallPolicy",
       "location": "westus2", "properties": {"explicitProxy": {"enableExplicitProxy":
-      true, "enablePacFile": true, "httpPort": 86, "httpsPort": 123, "pacFile": "https://clitestatorageaccount.blob.core.windows.net/explicitproxycontainer/pacfile.pac?sp=r&st=2024-01-09T08:48:06Z&se=2024-01-09T16:48:06Z&spr=https&sv=2022-11-02&sr=b&sig=5B0q%2B90BH0fkPZK6G6LHKRIGMY%2FljNOfsSQ8xaQB6mw%3D",
+      true, "enablePacFile": true, "httpPort": 86, "httpsPort": 123, "pacFile": "https://clitestatorageaccount.blob.core.windows.net/explicitproxycontainer/pacfile.pac?sp=r&st=2024-01-09T08:48:06Z&se=2024-01-09T16:48:06Z&spr=https&sv=2022-11-02&sr=b&sig=***",
       "pacFilePort": 124}, "sku": {"tier": "Premium"}, "threatIntelMode": "Alert"}}'
     headers:
       Accept:
@@ -338,7 +338,7 @@ interactions:
         \   \"ruleCollectionGroups\": [],\r\n    \"firewalls\": [],\r\n    \"threatIntelMode\":
         \"Alert\",\r\n    \"explicitProxy\": {\r\n      \"enableExplicitProxy\": true,\r\n
         \     \"httpPort\": 86,\r\n      \"httpsPort\": 123,\r\n      \"enablePacFile\":
-        true,\r\n      \"pacFilePort\": 124,\r\n      \"pacFile\": \"https://clitestatorageaccount.blob.core.windows.net/explicitproxycontainer/pacfile.pac?sp=r&st=2024-01-09T08:48:06Z&se=2024-01-09T16:48:06Z&spr=https&sv=2022-11-02&sr=b&sig=5B0q%2B90BH0fkPZK6G6LHKRIGMY%2FljNOfsSQ8xaQB6mw%3D\"\r\n
+        true,\r\n      \"pacFilePort\": 124,\r\n      \"pacFile\": \"https://clitestatorageaccount.blob.core.windows.net/explicitproxycontainer/pacfile.pac?sp=r&st=2024-01-09T08:48:06Z&se=2024-01-09T16:48:06Z&spr=https&sv=2022-11-02&sr=b&sig=***\"\r\n
         \   },\r\n    \"provisioningState\": \"Updating\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_explicit_proxy000001/providers/Microsoft.Network/firewallPolicies/testFirewallPolicy\",\r\n
         \ \"name\": \"testFirewallPolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
         \ \"etag\": \"a8b2013c-5313-408a-a3d8-8e4673120fa6\",\r\n  \"location\": \"westus2\"\r\n}"
@@ -488,7 +488,7 @@ interactions:
         \   \"ruleCollectionGroups\": [],\r\n    \"firewalls\": [],\r\n    \"threatIntelMode\":
         \"Alert\",\r\n    \"explicitProxy\": {\r\n      \"enableExplicitProxy\": true,\r\n
         \     \"httpPort\": 86,\r\n      \"httpsPort\": 123,\r\n      \"enablePacFile\":
-        true,\r\n      \"pacFilePort\": 124,\r\n      \"pacFile\": \"https://clitestatorageaccount.blob.core.windows.net/explicitproxycontainer/pacfile.pac?sp=r&st=2024-01-09T08:48:06Z&se=2024-01-09T16:48:06Z&spr=https&sv=2022-11-02&sr=b&sig=5B0q%2B90BH0fkPZK6G6LHKRIGMY%2FljNOfsSQ8xaQB6mw%3D\"\r\n
+        true,\r\n      \"pacFilePort\": 124,\r\n      \"pacFile\": \"https://clitestatorageaccount.blob.core.windows.net/explicitproxycontainer/pacfile.pac?sp=r&st=2024-01-09T08:48:06Z&se=2024-01-09T16:48:06Z&spr=https&sv=2022-11-02&sr=b&sig=***\"\r\n
         \   },\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_explicit_proxy000001/providers/Microsoft.Network/firewallPolicies/testFirewallPolicy\",\r\n
         \ \"name\": \"testFirewallPolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
         \ \"etag\": \"a8b2013c-5313-408a-a3d8-8e4673120fa6\",\r\n  \"location\": \"westus2\"\r\n}"
