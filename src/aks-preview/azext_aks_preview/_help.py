@@ -3864,3 +3864,24 @@ helps['aks loadbalancer show'] = """
         - name: Show details of a load balancer configuration in table format
           text: az aks loadbalancer show -g MyResourceGroup -n kubernetes --cluster-name MyManagedCluster -o table
 """
+
+helps['aks bastion'] = """
+    type: command
+    short-summary: Connect to a managed Kubernetes cluster using Azure Bastion.
+    long-summary: The command will launch a subshell with the kubeconfig set to connect to the cluster via Bastion. Use exit or Ctrl-D (i.e. EOF) to exit the subshell.
+    parameters:
+        - name: --bastion
+          type: string
+          short-summary: The name or resource ID of a pre-deployed Bastion resource configured to connect to the current AKS cluster.
+          long-summary: If not specified, the command will try to identify an existing Bastion resource within the cluster's node resource group.
+        - name: --port
+          type: int
+          short-summary: The local port number used for the bastion connection.
+          long-summary: If not provided, a random port will be used.
+        - name: --admin
+          type: bool
+          short-summary: Use the cluster admin credentials to connect to the bastion.
+    examples:
+        - name: Connect to a managed Kubernetes cluster using Azure Bastion with custom port and admin credentials.
+          text: az aks bastion -g MyResourceGroup --name MyManagedCluster --bastion MyBastionResource --port 50001 --admin
+"""
