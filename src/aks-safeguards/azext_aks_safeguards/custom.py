@@ -11,6 +11,7 @@
 from knack.log import get_logger
 from .aaz.latest.aks.safeguards._create import Create
 from azure.cli.core.aaz import *
+from azure.cli.core.azclierror import ArgumentUsageError
 
 logger = get_logger(__name__)
 
@@ -19,8 +20,8 @@ class AKSSafeguardsCreateCustom(Create):
 
     def pre_operations(self):
         args = self.ctx.args
-        if not args.managed_cluster and not (args.resource_group and args.cluster_name):
-            raise AAZValueError(
+        if not has_value(args.managed_cluster) and not (has_value(args.resource_group) and has_value(args.cluster_name)):
+            raise ArgumentUsageError(
                 "Either 'managed_cluster' or both 'resource_group' and 'cluster_name' must be provided.")
 
         if not args.managed_cluster:
@@ -32,7 +33,7 @@ class AKSSafeguardsCreateCustom(Create):
 
         # Customer should have the ability to specify the managed cluster using either the `managed_cluster` argument or both `resource_group` and `cluster_name`.
         # If `managed_cluster` is not provided, it will be constructed from `resource_group` and `cluster_name` along with the `subscription_id`.
-        _args_schema.resource_group = AAZStrArg(
+        _args_schema.resource_group = AAZResourceGroupNameArg(
             options=["-g", "--resource-group"],
             help="The name of the resource group. You can configure the default group using az configure --defaults group=<name>.",
             required=False,
@@ -42,7 +43,7 @@ class AKSSafeguardsCreateCustom(Create):
             help="The name of the Managed Cluster.",
             required=False,
         )
-        _args_schema.subscription_id = AAZStrArg(
+        _args_schema.subscription_id = AAZSubscriptionIdArg(
             options=["--subscription"],
             help="The ID of the target subscription. You can configure the default subscription using az account set --subscription NAME_OR_ID.",
             required=False,
