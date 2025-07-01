@@ -49,7 +49,7 @@ class Create(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.managed_cluster = AAZStrArg(
+        _args_schema.managed_cluster = AAZResourceIdArg(
             options=["-c", "--cluster", "--managed-cluster"],
             help="The fully qualified Azure Resource manager identifier of the Managed Cluster.",
             required=False,
