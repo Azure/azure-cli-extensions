@@ -10,43 +10,87 @@
 
 from knack.log import get_logger
 from .aaz.latest.aks.safeguards._create import Create
+from .aaz.latest.aks.safeguards._update import Update
+from .aaz.latest.aks.safeguards._show import Show
+from .aaz.latest.aks.safeguards._delete import Delete
 from azure.cli.core.aaz import *
 from azure.cli.core.azclierror import ArgumentUsageError
 
 logger = get_logger(__name__)
 
 
-class AKSSafeguardsCreateCustom(Create):
+def _validate_and_set_managed_cluster_argument(args):
+    has_managed_cluster = has_value(args.managed_cluster)
+    has_rg_and_cluster = has_value(
+        args.resource_group) and has_value(args.cluster_name)
+
+    # Ensure exactly one of the two conditions is true
+    if has_managed_cluster == has_rg_and_cluster:
+        raise ArgumentUsageError(
+            "You must provide either 'managed_cluster' or both 'resource_group' and 'cluster_name', but not both.")
+
+    if not has_managed_cluster:
+        args.managed_cluster = f"/subscriptions/{args.subscription_id}/resourceGroups/{args.resource_group}/providers/Microsoft.ContainerService/managedClusters/{args.cluster_name}"
+
+
+def _add_resource_group_cluster_name_subscription_id_args(_args_schema):
+    _args_schema.resource_group = AAZResourceGroupNameArg(
+        options=["-g", "--resource-group"],
+        help="The name of the resource group. You can configure the default group using az configure --defaults group=<name>.",
+        required=False,
+    )
+    _args_schema.cluster_name = AAZStrArg(
+        options=["--name", "-n"],
+        help="The name of the Managed Cluster.",
+        required=False,
+    )
+    _args_schema.subscription_id = AAZSubscriptionIdArg(
+        options=["--subscription"],
+        help="The ID of the target subscription. You can configure the default subscription using az account set --subscription NAME_OR_ID.",
+        required=False,
+    )
+    return _args_schema
+
+
+class AKSSafeguardsShowCustom(Show):
 
     def pre_operations(self):
-        args = self.ctx.args
-        if not has_value(args.managed_cluster) and not (has_value(args.resource_group) and has_value(args.cluster_name)):
-            raise ArgumentUsageError(
-                "Either 'managed_cluster' or both 'resource_group' and 'cluster_name' must be provided.")
-
-        if not args.managed_cluster:
-            args.managed_cluster = f"/subscriptions/{args.subscription_id}/resourceGroups/{args.resource_group}/providers/Microsoft.ContainerService/managedClusters/{args.cluster_name}"
+        _validate_and_set_managed_cluster_argument(self.ctx.args)
 
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
         _args_schema = super()._build_arguments_schema(*args, **kwargs)
+        return _add_resource_group_cluster_name_subscription_id_args(_args_schema)
 
-        # Customer should have the ability to specify the managed cluster using either the `managed_cluster` argument or both `resource_group` and `cluster_name`.
-        # If `managed_cluster` is not provided, it will be constructed from `resource_group` and `cluster_name` along with the `subscription_id`.
-        _args_schema.resource_group = AAZResourceGroupNameArg(
-            options=["-g", "--resource-group"],
-            help="The name of the resource group. You can configure the default group using az configure --defaults group=<name>.",
-            required=False,
-        )
-        _args_schema.cluster_name = AAZStrArg(
-            options=["--name", "-n"],
-            help="The name of the Managed Cluster.",
-            required=False,
-        )
-        _args_schema.subscription_id = AAZSubscriptionIdArg(
-            options=["--subscription"],
-            help="The ID of the target subscription. You can configure the default subscription using az account set --subscription NAME_OR_ID.",
-            required=False,
-        )
 
-        return _args_schema
+class AKSSafeguardsDeleteCustom(Delete):
+
+    def pre_operations(self):
+        _validate_and_set_managed_cluster_argument(self.ctx.args)
+
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        _args_schema = super()._build_arguments_schema(*args, **kwargs)
+        return _add_resource_group_cluster_name_subscription_id_args(_args_schema)
+
+
+class AKSSafeguardsUpdateCustom(Update):
+
+    def pre_operations(self):
+        _validate_and_set_managed_cluster_argument(self.ctx.args)
+
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        _args_schema = super()._build_arguments_schema(*args, **kwargs)
+        return _add_resource_group_cluster_name_subscription_id_args(_args_schema)
+
+
+class AKSSafeguardsCreateCustom(Create):
+
+    def pre_operations(self):
+        _validate_and_set_managed_cluster_argument(self.ctx.args)
+
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        _args_schema = super()._build_arguments_schema(*args, **kwargs)
+        return _add_resource_group_cluster_name_subscription_id_args(_args_schema)
