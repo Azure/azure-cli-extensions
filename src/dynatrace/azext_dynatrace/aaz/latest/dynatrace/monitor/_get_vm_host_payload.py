@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "dynatrace monitor get-vm-host-payload",
 )
 class GetVmHostPayload(AAZCommand):
-    """Return the payload that need to be passed in the request body for installing Dynatrace agent on a VM
+    """Return payload to be included in API request body when installing Dynatrace agent on a Virtual Machine. Use this command to facilitate automated deployment of monitoring agents across VMs.
 
     :example: Get-vm-host-payload
         az dynatrace monitor get-vm-host-payload -g rg --monitor-name monitor
@@ -160,6 +160,10 @@ class GetVmHostPayload(AAZCommand):
             )
 
             return cls._schema_on_200
+
+
+class _GetVmHostPayloadHelper:
+    """Helper class for GetVmHostPayload"""
 
 
 __all__ = ["GetVmHostPayload"]

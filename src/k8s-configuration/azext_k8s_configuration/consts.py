@@ -8,7 +8,7 @@
 # API VERSIONS -----------------------------------------
 
 SOURCE_CONTROL_API_VERSION = "2022-03-01"
-FLUXCONFIG_API_VERSION = "2022-07-01"
+FLUXCONFIG_API_VERSION = "2024-11-01"
 EXTENSION_API_VERSION = "2022-07-01"
 
 # ERROR/HELP TEXT DEFINITIONS -----------------------------------------
@@ -222,6 +222,7 @@ GIT_REPO_VALID_PARAMS = {
     "known_hosts",
     "known_hosts_file",
     "local_auth_ref",
+    "provider",
 }
 
 BUCKET_REQUIRED_PARAMS = {"url", "bucket_name"}
@@ -259,6 +260,7 @@ SYNC_INTERVAL_KEYS = ["interval", "sync_interval", "syncInterval"]
 RETRY_INTERVAL_KEYS = ["retryInterval", "retry_interval"]
 TIMEOUT_KEYS = ["timeout"]
 REQUIRED_KUSTOMIZATION_KEYS = {"name"}
+WAIT_KUSTOMIZATION_KEYS = ["disable-health-check"]
 
 VALID_DURATION_REGEX = r"((?P<hours>\d+?)h)?((?P<minutes>\d+?)m)?((?P<seconds>\d+?)s)?"
 VALID_GIT_URL_REGEX = r"^(((http|https|ssh)://)|(git@))"

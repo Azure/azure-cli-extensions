@@ -13,13 +13,13 @@ interactions:
       ParameterSetName:
       - -g -n --deployment-id --title --api-id
       User-Agent:
-      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.63.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/apis/clitest000004/deployments/mock-deployment?api-version=2024-03-01
   response:
     body:
       string: '{"type":"Microsoft.ApiCenter/services/workspaces/apis/deployments","properties":{"title":"test
-        deployment","environmentId":"/workspaces/default/environments/clitest000003","definitionId":"/workspaces/default/apis/clitest000004/versions/clitest000005/definitions/clitest000006","server":{"runtimeUri":["https://example.com"]},"customProperties":{},"recommended":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/apis/clitest000004/deployments/clitest000007","name":"clitest000007","systemData":{"createdAt":"2024-06-17T06:05:03.2174422Z","lastModifiedAt":"2024-06-17T06:05:03.2174413Z"}}'
+        deployment","environmentId":"/workspaces/default/environments/clitest000003","definitionId":"/workspaces/default/apis/clitest000004/versions/clitest000005/definitions/clitest000006","server":{"runtimeUri":["https://example.com"]},"customProperties":{},"recommended":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/apis/clitest000004/deployments/clitest000007","name":"clitest000007","systemData":{"createdAt":"2024-10-09T08:19:04.6066365Z","lastModifiedAt":"2024-10-09T08:19:04.6066357Z"}}'
     headers:
       api-supported-versions:
       - 2023-07-01-preview, 2024-03-01, 2024-03-15-preview
@@ -30,9 +30,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 17 Jun 2024 06:05:05 GMT
+      - Wed, 09 Oct 2024 08:19:06 GMT
       etag:
-      - 85012c09-0000-0100-0000-666fd20f0000
+      - 0e001213-0000-0100-0000-67063c780000
       expires:
       - '-1'
       pragma:
@@ -48,7 +48,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '3749'
       x-msedge-ref:
-      - 'Ref A: 64D808906E64452EA88E58105C27FB63 Ref B: MAA201060513011 Ref C: 2024-06-17T06:05:04Z'
+      - 'Ref A: DB5D7A984269450AB96B66419E74366E Ref B: MAA201060515019 Ref C: 2024-10-09T08:19:05Z'
       x-powered-by:
       - ASP.NET
     status:
@@ -74,13 +74,13 @@ interactions:
       ParameterSetName:
       - -g -n --deployment-id --title --api-id
       User-Agent:
-      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.63.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/apis/clitest000004/deployments/mock-deployment?api-version=2024-03-01
   response:
     body:
       string: '{"type":"Microsoft.ApiCenter/services/workspaces/apis/deployments","properties":{"title":"Production
-        deployment","environmentId":"/workspaces/default/environments/clitest000003","definitionId":"/workspaces/default/apis/clitest000004/versions/clitest000005/definitions/clitest000006","server":{"runtimeUri":["https://example.com"]},"customProperties":{},"recommended":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/apis/clitest000004/deployments/clitest000007","name":"clitest000007","systemData":{"lastModifiedAt":"2024-06-17T06:05:07.2940903Z"}}'
+        deployment","environmentId":"/workspaces/default/environments/clitest000003","definitionId":"/workspaces/default/apis/clitest000004/versions/clitest000005/definitions/clitest000006","server":{"runtimeUri":["https://example.com"]},"customProperties":{},"recommended":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/apis/clitest000004/deployments/clitest000007","name":"clitest000007","systemData":{"lastModifiedAt":"2024-10-09T08:19:07.9364892Z"}}'
     headers:
       api-supported-versions:
       - 2023-07-01-preview, 2024-03-01, 2024-03-15-preview
@@ -91,9 +91,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 17 Jun 2024 06:05:07 GMT
+      - Wed, 09 Oct 2024 08:19:08 GMT
       etag:
-      - 8501ba09-0000-0100-0000-666fd2130000
+      - 0e001613-0000-0100-0000-67063c7b0000
       expires:
       - '-1'
       pragma:
@@ -111,7 +111,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-writes:
       - '199'
       x-msedge-ref:
-      - 'Ref A: 953F367BF10D44459A489F768A393CFC Ref B: MAA201060513011 Ref C: 2024-06-17T06:05:06Z'
+      - 'Ref A: 76B1DA8CA8A345978C058701DD4119F6 Ref B: MAA201060515019 Ref C: 2024-10-09T08:19:06Z'
       x-powered-by:
       - ASP.NET
     status:

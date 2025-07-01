@@ -15,7 +15,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2022-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2024-11-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App","namespace":"Microsoft.App","authorizations":[{"applicationId":"7e3bc4fd-85a3-4192-b177-5b8bfc87f42c","roleDefinitionId":"39a74f72-b40f-4bdc-b639-562fe2260bf0"},{"applicationId":"3734c1a4-2bed-4998-a37a-ff1a9e7bf019","roleDefinitionId":"5c779a4f-5cb2-4547-8c41-478d9be8ba90"},{"applicationId":"55ebbb62-3b9c-49fd-9b87-9595226dd4ac","roleDefinitionId":"e49ca620-7992-4561-a7df-4ed67dad77b5","managedByRoleDefinitionId":"9e3af657-a8ff-583c-a75c-2fe7c4bcb635"},{"applicationId":"1459b1f6-7a5b-4300-93a2-44b4a651759f","roleDefinitionId":"3c5f1b29-9e3d-4a22-b5d6-9ff4e5a37974"}],"resourceTypes":[{"resourceType":"operations","locations":["North
@@ -293,7 +293,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2022-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2024-11-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App","namespace":"Microsoft.App","authorizations":[{"applicationId":"7e3bc4fd-85a3-4192-b177-5b8bfc87f42c","roleDefinitionId":"39a74f72-b40f-4bdc-b639-562fe2260bf0"},{"applicationId":"3734c1a4-2bed-4998-a37a-ff1a9e7bf019","roleDefinitionId":"5c779a4f-5cb2-4547-8c41-478d9be8ba90"},{"applicationId":"55ebbb62-3b9c-49fd-9b87-9595226dd4ac","roleDefinitionId":"e49ca620-7992-4561-a7df-4ed67dad77b5","managedByRoleDefinitionId":"9e3af657-a8ff-583c-a75c-2fe7c4bcb635"},{"applicationId":"1459b1f6-7a5b-4300-93a2-44b4a651759f","roleDefinitionId":"3c5f1b29-9e3d-4a22-b5d6-9ff4e5a37974"}],"resourceTypes":[{"resourceType":"operations","locations":["North
@@ -571,7 +571,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2022-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2024-11-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App","namespace":"Microsoft.App","authorizations":[{"applicationId":"7e3bc4fd-85a3-4192-b177-5b8bfc87f42c","roleDefinitionId":"39a74f72-b40f-4bdc-b639-562fe2260bf0"},{"applicationId":"3734c1a4-2bed-4998-a37a-ff1a9e7bf019","roleDefinitionId":"5c779a4f-5cb2-4547-8c41-478d9be8ba90"},{"applicationId":"55ebbb62-3b9c-49fd-9b87-9595226dd4ac","roleDefinitionId":"e49ca620-7992-4561-a7df-4ed67dad77b5","managedByRoleDefinitionId":"9e3af657-a8ff-583c-a75c-2fe7c4bcb635"},{"applicationId":"1459b1f6-7a5b-4300-93a2-44b4a651759f","roleDefinitionId":"3c5f1b29-9e3d-4a22-b5d6-9ff4e5a37974"}],"resourceTypes":[{"resourceType":"operations","locations":["North
@@ -1485,7 +1485,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.OperationalInsights/workspaces/workspace-clitestrgrvrkkmjjkyhgfiprrmswt/sharedKeys?api-version=2020-08-01
   response:
     body:
-      string: '{"primarySharedKey":"L2ukiyw56MFjaGHyGNvHE1tl6KC7Dqsf4VCOjXvy7iDgmLAVnVKMYhRVI/U6hpmT1sUUMtFMsA0wdA+w9GrpPA==","secondarySharedKey":"gcWs5d2EHg3dAthSDoVeDxxyClLkLepkzB03Oq6oIWmsCZU9ZnxgDvaJwRiB7a16lHryVTyPQNsuPmd/8Blghw=="}'
+      string: '{"primarySharedKey":"abc123","secondarySharedKey":"abc123"}'
     headers:
       access-control-allow-origin:
       - '*'
@@ -1569,8 +1569,8 @@ interactions:
 - request:
     body: '{"location": "centraluseuap", "tags": null, "properties": {"daprAIInstrumentationKey":
       null, "vnetConfiguration": null, "appLogsConfiguration": {"destination": "log-analytics",
-      "logAnalyticsConfiguration": {"customerId": "55dea475-1b11-42c1-b083-3a81a43ff459",
-      "sharedKey": "L2ukiyw56MFjaGHyGNvHE1tl6KC7Dqsf4VCOjXvy7iDgmLAVnVKMYhRVI/U6hpmT1sUUMtFMsA0wdA+w9GrpPA==",
+      "logAnalyticsConfiguration": {"customerId": "veryFakedCustomerId==",
+      "sharedKey":"abc123",
       "dynamicJsonColumns": false}}, "customDomainConfiguration": null, "workloadProfiles":
       [{"workloadProfileType": "Consumption", "Name": "Consumption"}], "zoneRedundant":
       false}, "identity": {"type": "None", "userAssignedIdentities": null}}'
@@ -3142,7 +3142,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ContainerRegistry/registries/containerapp000004/listCredentials?api-version=2023-11-01-preview
   response:
     body:
-      string: '{"username":"containerapp000004","passwords":[{"name":"password","value":"H7V8BxLat6C4m6qRwj1Ca+7MVwWdPFC0sdorUUTg5n+ACRAl3NfS"},{"name":"password2","value":"T/iCyHqgYa14+mtrGbAxDii1RxOE5uN+9jU9AcRCue+ACRCOCvQd"}]}'
+      string: '{"username":"containerapp000004","passwords":[{"name":"password","value":"abc123"},{"name":"password2","value":"abc123"}]}'
     headers:
       api-supported-versions:
       - 2023-11-01-preview
@@ -3188,7 +3188,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2022-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2024-11-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App","namespace":"Microsoft.App","authorizations":[{"applicationId":"7e3bc4fd-85a3-4192-b177-5b8bfc87f42c","roleDefinitionId":"39a74f72-b40f-4bdc-b639-562fe2260bf0"},{"applicationId":"3734c1a4-2bed-4998-a37a-ff1a9e7bf019","roleDefinitionId":"5c779a4f-5cb2-4547-8c41-478d9be8ba90"},{"applicationId":"55ebbb62-3b9c-49fd-9b87-9595226dd4ac","roleDefinitionId":"e49ca620-7992-4561-a7df-4ed67dad77b5","managedByRoleDefinitionId":"9e3af657-a8ff-583c-a75c-2fe7c4bcb635"},{"applicationId":"1459b1f6-7a5b-4300-93a2-44b4a651759f","roleDefinitionId":"3c5f1b29-9e3d-4a22-b5d6-9ff4e5a37974"}],"resourceTypes":[{"resourceType":"operations","locations":["North
@@ -3521,7 +3521,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2022-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2024-11-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App","namespace":"Microsoft.App","authorizations":[{"applicationId":"7e3bc4fd-85a3-4192-b177-5b8bfc87f42c","roleDefinitionId":"39a74f72-b40f-4bdc-b639-562fe2260bf0"},{"applicationId":"3734c1a4-2bed-4998-a37a-ff1a9e7bf019","roleDefinitionId":"5c779a4f-5cb2-4547-8c41-478d9be8ba90"},{"applicationId":"55ebbb62-3b9c-49fd-9b87-9595226dd4ac","roleDefinitionId":"e49ca620-7992-4561-a7df-4ed67dad77b5","managedByRoleDefinitionId":"9e3af657-a8ff-583c-a75c-2fe7c4bcb635"},{"applicationId":"1459b1f6-7a5b-4300-93a2-44b4a651759f","roleDefinitionId":"3c5f1b29-9e3d-4a22-b5d6-9ff4e5a37974"}],"resourceTypes":[{"resourceType":"operations","locations":["North
@@ -3843,7 +3843,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2022-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2024-11-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App","namespace":"Microsoft.App","authorizations":[{"applicationId":"7e3bc4fd-85a3-4192-b177-5b8bfc87f42c","roleDefinitionId":"39a74f72-b40f-4bdc-b639-562fe2260bf0"},{"applicationId":"3734c1a4-2bed-4998-a37a-ff1a9e7bf019","roleDefinitionId":"5c779a4f-5cb2-4547-8c41-478d9be8ba90"},{"applicationId":"55ebbb62-3b9c-49fd-9b87-9595226dd4ac","roleDefinitionId":"e49ca620-7992-4561-a7df-4ed67dad77b5","managedByRoleDefinitionId":"9e3af657-a8ff-583c-a75c-2fe7c4bcb635"},{"applicationId":"1459b1f6-7a5b-4300-93a2-44b4a651759f","roleDefinitionId":"3c5f1b29-9e3d-4a22-b5d6-9ff4e5a37974"}],"resourceTypes":[{"resourceType":"operations","locations":["North
@@ -4268,7 +4268,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2022-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2024-11-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App","namespace":"Microsoft.App","authorizations":[{"applicationId":"7e3bc4fd-85a3-4192-b177-5b8bfc87f42c","roleDefinitionId":"39a74f72-b40f-4bdc-b639-562fe2260bf0"},{"applicationId":"3734c1a4-2bed-4998-a37a-ff1a9e7bf019","roleDefinitionId":"5c779a4f-5cb2-4547-8c41-478d9be8ba90"},{"applicationId":"55ebbb62-3b9c-49fd-9b87-9595226dd4ac","roleDefinitionId":"e49ca620-7992-4561-a7df-4ed67dad77b5","managedByRoleDefinitionId":"9e3af657-a8ff-583c-a75c-2fe7c4bcb635"},{"applicationId":"1459b1f6-7a5b-4300-93a2-44b4a651759f","roleDefinitionId":"3c5f1b29-9e3d-4a22-b5d6-9ff4e5a37974"}],"resourceTypes":[{"resourceType":"operations","locations":["North
@@ -4592,7 +4592,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2022-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2024-11-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App","namespace":"Microsoft.App","authorizations":[{"applicationId":"7e3bc4fd-85a3-4192-b177-5b8bfc87f42c","roleDefinitionId":"39a74f72-b40f-4bdc-b639-562fe2260bf0"},{"applicationId":"3734c1a4-2bed-4998-a37a-ff1a9e7bf019","roleDefinitionId":"5c779a4f-5cb2-4547-8c41-478d9be8ba90"},{"applicationId":"55ebbb62-3b9c-49fd-9b87-9595226dd4ac","roleDefinitionId":"e49ca620-7992-4561-a7df-4ed67dad77b5","managedByRoleDefinitionId":"9e3af657-a8ff-583c-a75c-2fe7c4bcb635"},{"applicationId":"1459b1f6-7a5b-4300-93a2-44b4a651759f","roleDefinitionId":"3c5f1b29-9e3d-4a22-b5d6-9ff4e5a37974"}],"resourceTypes":[{"resourceType":"operations","locations":["North
@@ -5154,7 +5154,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2022-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2024-11-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App","namespace":"Microsoft.App","authorizations":[{"applicationId":"7e3bc4fd-85a3-4192-b177-5b8bfc87f42c","roleDefinitionId":"39a74f72-b40f-4bdc-b639-562fe2260bf0"},{"applicationId":"3734c1a4-2bed-4998-a37a-ff1a9e7bf019","roleDefinitionId":"5c779a4f-5cb2-4547-8c41-478d9be8ba90"},{"applicationId":"55ebbb62-3b9c-49fd-9b87-9595226dd4ac","roleDefinitionId":"e49ca620-7992-4561-a7df-4ed67dad77b5","managedByRoleDefinitionId":"9e3af657-a8ff-583c-a75c-2fe7c4bcb635"},{"applicationId":"1459b1f6-7a5b-4300-93a2-44b4a651759f","roleDefinitionId":"3c5f1b29-9e3d-4a22-b5d6-9ff4e5a37974"}],"resourceTypes":[{"resourceType":"operations","locations":["North
@@ -5807,7 +5807,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2022-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2024-11-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App","namespace":"Microsoft.App","authorizations":[{"applicationId":"7e3bc4fd-85a3-4192-b177-5b8bfc87f42c","roleDefinitionId":"39a74f72-b40f-4bdc-b639-562fe2260bf0"},{"applicationId":"3734c1a4-2bed-4998-a37a-ff1a9e7bf019","roleDefinitionId":"5c779a4f-5cb2-4547-8c41-478d9be8ba90"},{"applicationId":"55ebbb62-3b9c-49fd-9b87-9595226dd4ac","roleDefinitionId":"e49ca620-7992-4561-a7df-4ed67dad77b5","managedByRoleDefinitionId":"9e3af657-a8ff-583c-a75c-2fe7c4bcb635"},{"applicationId":"1459b1f6-7a5b-4300-93a2-44b4a651759f","roleDefinitionId":"3c5f1b29-9e3d-4a22-b5d6-9ff4e5a37974"}],"resourceTypes":[{"resourceType":"operations","locations":["North
@@ -6140,7 +6140,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2022-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2024-11-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App","namespace":"Microsoft.App","authorizations":[{"applicationId":"7e3bc4fd-85a3-4192-b177-5b8bfc87f42c","roleDefinitionId":"39a74f72-b40f-4bdc-b639-562fe2260bf0"},{"applicationId":"3734c1a4-2bed-4998-a37a-ff1a9e7bf019","roleDefinitionId":"5c779a4f-5cb2-4547-8c41-478d9be8ba90"},{"applicationId":"55ebbb62-3b9c-49fd-9b87-9595226dd4ac","roleDefinitionId":"e49ca620-7992-4561-a7df-4ed67dad77b5","managedByRoleDefinitionId":"9e3af657-a8ff-583c-a75c-2fe7c4bcb635"},{"applicationId":"1459b1f6-7a5b-4300-93a2-44b4a651759f","roleDefinitionId":"3c5f1b29-9e3d-4a22-b5d6-9ff4e5a37974"}],"resourceTypes":[{"resourceType":"operations","locations":["North
@@ -6406,7 +6406,7 @@ interactions:
     body: '{"location": "Central US EUAP", "identity": {"type": "None", "userAssignedIdentities":
       null}, "properties": {"environmentId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/env000003",
       "configuration": {"secrets": [{"name": "containerapp000004azurecrio-containerapp000004",
-      "value": "H7V8BxLat6C4m6qRwj1Ca+7MVwWdPFC0sdorUUTg5n+ACRAl3NfS"}], "activeRevisionsMode":
+      "value": "***"}], "activeRevisionsMode":
       "single", "ingress": {"fqdn": null, "external": true, "targetPort": 8080, "transport":
       "auto", "exposedPort": null, "allowInsecure": false, "traffic": null, "customDomains":
       null, "ipSecurityRestrictions": null, "stickySessions": null}, "dapr": null,
@@ -6865,7 +6865,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2022-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2024-11-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App","namespace":"Microsoft.App","authorizations":[{"applicationId":"7e3bc4fd-85a3-4192-b177-5b8bfc87f42c","roleDefinitionId":"39a74f72-b40f-4bdc-b639-562fe2260bf0"},{"applicationId":"3734c1a4-2bed-4998-a37a-ff1a9e7bf019","roleDefinitionId":"5c779a4f-5cb2-4547-8c41-478d9be8ba90"},{"applicationId":"55ebbb62-3b9c-49fd-9b87-9595226dd4ac","roleDefinitionId":"e49ca620-7992-4561-a7df-4ed67dad77b5","managedByRoleDefinitionId":"9e3af657-a8ff-583c-a75c-2fe7c4bcb635"},{"applicationId":"1459b1f6-7a5b-4300-93a2-44b4a651759f","roleDefinitionId":"3c5f1b29-9e3d-4a22-b5d6-9ff4e5a37974"}],"resourceTypes":[{"resourceType":"operations","locations":["North
@@ -7253,7 +7253,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2022-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2024-11-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App","namespace":"Microsoft.App","authorizations":[{"applicationId":"7e3bc4fd-85a3-4192-b177-5b8bfc87f42c","roleDefinitionId":"39a74f72-b40f-4bdc-b639-562fe2260bf0"},{"applicationId":"3734c1a4-2bed-4998-a37a-ff1a9e7bf019","roleDefinitionId":"5c779a4f-5cb2-4547-8c41-478d9be8ba90"},{"applicationId":"55ebbb62-3b9c-49fd-9b87-9595226dd4ac","roleDefinitionId":"e49ca620-7992-4561-a7df-4ed67dad77b5","managedByRoleDefinitionId":"9e3af657-a8ff-583c-a75c-2fe7c4bcb635"},{"applicationId":"1459b1f6-7a5b-4300-93a2-44b4a651759f","roleDefinitionId":"3c5f1b29-9e3d-4a22-b5d6-9ff4e5a37974"}],"resourceTypes":[{"resourceType":"operations","locations":["North
@@ -12772,7 +12772,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2022-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2024-11-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App","namespace":"Microsoft.App","authorizations":[{"applicationId":"7e3bc4fd-85a3-4192-b177-5b8bfc87f42c","roleDefinitionId":"39a74f72-b40f-4bdc-b639-562fe2260bf0"},{"applicationId":"3734c1a4-2bed-4998-a37a-ff1a9e7bf019","roleDefinitionId":"5c779a4f-5cb2-4547-8c41-478d9be8ba90"},{"applicationId":"55ebbb62-3b9c-49fd-9b87-9595226dd4ac","roleDefinitionId":"e49ca620-7992-4561-a7df-4ed67dad77b5","managedByRoleDefinitionId":"9e3af657-a8ff-583c-a75c-2fe7c4bcb635"},{"applicationId":"1459b1f6-7a5b-4300-93a2-44b4a651759f","roleDefinitionId":"3c5f1b29-9e3d-4a22-b5d6-9ff4e5a37974"}],"resourceTypes":[{"resourceType":"operations","locations":["North
@@ -18291,7 +18291,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2022-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2024-11-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App","namespace":"Microsoft.App","authorizations":[{"applicationId":"7e3bc4fd-85a3-4192-b177-5b8bfc87f42c","roleDefinitionId":"39a74f72-b40f-4bdc-b639-562fe2260bf0"},{"applicationId":"3734c1a4-2bed-4998-a37a-ff1a9e7bf019","roleDefinitionId":"5c779a4f-5cb2-4547-8c41-478d9be8ba90"},{"applicationId":"55ebbb62-3b9c-49fd-9b87-9595226dd4ac","roleDefinitionId":"e49ca620-7992-4561-a7df-4ed67dad77b5","managedByRoleDefinitionId":"9e3af657-a8ff-583c-a75c-2fe7c4bcb635"},{"applicationId":"1459b1f6-7a5b-4300-93a2-44b4a651759f","roleDefinitionId":"3c5f1b29-9e3d-4a22-b5d6-9ff4e5a37974"}],"resourceTypes":[{"resourceType":"operations","locations":["North
@@ -18567,7 +18567,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2022-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2024-11-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App","namespace":"Microsoft.App","authorizations":[{"applicationId":"7e3bc4fd-85a3-4192-b177-5b8bfc87f42c","roleDefinitionId":"39a74f72-b40f-4bdc-b639-562fe2260bf0"},{"applicationId":"3734c1a4-2bed-4998-a37a-ff1a9e7bf019","roleDefinitionId":"5c779a4f-5cb2-4547-8c41-478d9be8ba90"},{"applicationId":"55ebbb62-3b9c-49fd-9b87-9595226dd4ac","roleDefinitionId":"e49ca620-7992-4561-a7df-4ed67dad77b5","managedByRoleDefinitionId":"9e3af657-a8ff-583c-a75c-2fe7c4bcb635"},{"applicationId":"1459b1f6-7a5b-4300-93a2-44b4a651759f","roleDefinitionId":"3c5f1b29-9e3d-4a22-b5d6-9ff4e5a37974"}],"resourceTypes":[{"resourceType":"operations","locations":["North
@@ -19097,7 +19097,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2022-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2024-11-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App","namespace":"Microsoft.App","authorizations":[{"applicationId":"7e3bc4fd-85a3-4192-b177-5b8bfc87f42c","roleDefinitionId":"39a74f72-b40f-4bdc-b639-562fe2260bf0"},{"applicationId":"3734c1a4-2bed-4998-a37a-ff1a9e7bf019","roleDefinitionId":"5c779a4f-5cb2-4547-8c41-478d9be8ba90"},{"applicationId":"55ebbb62-3b9c-49fd-9b87-9595226dd4ac","roleDefinitionId":"e49ca620-7992-4561-a7df-4ed67dad77b5","managedByRoleDefinitionId":"9e3af657-a8ff-583c-a75c-2fe7c4bcb635"},{"applicationId":"1459b1f6-7a5b-4300-93a2-44b4a651759f","roleDefinitionId":"3c5f1b29-9e3d-4a22-b5d6-9ff4e5a37974"}],"resourceTypes":[{"resourceType":"operations","locations":["North

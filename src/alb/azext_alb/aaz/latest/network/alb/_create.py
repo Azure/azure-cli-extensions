@@ -18,13 +18,13 @@ class Create(AAZCommand):
     """Create an Application Gateway for Containers resource
 
     :example: Create an Application Gateway for Containers resource
-        az network alb create -g test-rg -n test-alb
+        az network alb create -g test-rg -n test-alb --waf-policy-id /subscriptions/subid/resourcegroups/rg1/providers/Microsoft.Networking/securityPolicies/test-wp
     """
 
     _aaz_info = {
-        "version": "2023-11-01",
+        "version": "2025-01-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.servicenetworking/trafficcontrollers/{}", "2023-11-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.servicenetworking/trafficcontrollers/{}", "2025-01-01"],
         ]
     }
 
@@ -76,6 +76,15 @@ class Create(AAZCommand):
 
         tags = cls._args_schema.tags
         tags.Element = AAZStrArg()
+
+        # define Arg Group "SecurityPolicyConfigurations"
+
+        _args_schema = cls._args_schema
+        _args_schema.waf_policy_id = AAZStrArg(
+            options=["--waf-policy-id"],
+            arg_group="SecurityPolicyConfigurations",
+            help="Resource ID of the Waf Security Policy",
+        )
         return cls._args_schema
 
     def _execute_operations(self):
@@ -159,7 +168,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-11-01",
+                    "api-version", "2025-01-01",
                     required=True,
                 ),
             }
@@ -185,7 +194,20 @@ class Create(AAZCommand):
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
             _builder.set_prop("location", AAZStrType, ".location", typ_kwargs={"flags": {"required": True}})
+            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
+
+            properties = _builder.get(".properties")
+            if properties is not None:
+                properties.set_prop("securityPolicyConfigurations", AAZObjectType)
+
+            security_policy_configurations = _builder.get(".properties.securityPolicyConfigurations")
+            if security_policy_configurations is not None:
+                security_policy_configurations.set_prop("wafSecurityPolicy", AAZObjectType)
+
+            waf_security_policy = _builder.get(".properties.securityPolicyConfigurations.wafSecurityPolicy")
+            if waf_security_policy is not None:
+                waf_security_policy.set_prop("id", AAZStrType, ".waf_policy_id", typ_kwargs={"flags": {"required": True}})
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -245,6 +267,14 @@ class Create(AAZCommand):
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+            properties.security_policies = AAZListType(
+                serialized_name="securityPolicies",
+                flags={"read_only": True},
+            )
+            properties.security_policy_configurations = AAZObjectType(
+                serialized_name="securityPolicyConfigurations",
             )
 
             associations = cls._schema_on_200_201.properties.associations
@@ -257,6 +287,20 @@ class Create(AAZCommand):
             frontends = cls._schema_on_200_201.properties.frontends
             frontends.Element = AAZObjectType()
             _CreateHelper._build_schema_resource_id_read(frontends.Element)
+
+            security_policies = cls._schema_on_200_201.properties.security_policies
+            security_policies.Element = AAZObjectType()
+            _CreateHelper._build_schema_resource_id_read(security_policies.Element)
+
+            security_policy_configurations = cls._schema_on_200_201.properties.security_policy_configurations
+            security_policy_configurations.waf_security_policy = AAZObjectType(
+                serialized_name="wafSecurityPolicy",
+            )
+
+            waf_security_policy = cls._schema_on_200_201.properties.security_policy_configurations.waf_security_policy
+            waf_security_policy.id = AAZStrType(
+                flags={"required": True},
+            )
 
             system_data = cls._schema_on_200_201.system_data
             system_data.created_at = AAZStrType(

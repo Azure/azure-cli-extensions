@@ -18,8 +18,8 @@ from azure.mgmt.resource.resources.models import DeploymentMode
 from azure.cli.core.azclierror import (InvalidArgumentValueError, AzureInternalError,
                                        RequiredArgumentMissingError, ResourceNotFoundError)
 
-from msrestazure.azure_exceptions import CloudError
 from .._client_factory import cf_workspaces, cf_quotas, cf_workspace, cf_offerings, _get_data_credentials
+from .._list_helper import repack_response_json
 from ..vendored_sdks.azure_mgmt_quantum.models import QuantumWorkspace
 from ..vendored_sdks.azure_mgmt_quantum.models import QuantumWorkspaceIdentity
 from ..vendored_sdks.azure_mgmt_quantum.models import Provider, APIKeys, WorkspaceResourceProperties
@@ -174,31 +174,6 @@ def _add_quantum_providers(cmd, workspace, providers, auto_accept, skip_autoadd)
         p.provider_id = provider['provider_id']
         p.provider_sku = provider['sku']
         workspace.providers.append(p)
-
-
-def _create_role_assignment(cmd, quantum_workspace):
-    from azure.cli.command_modules.role.custom import create_role_assignment
-    retry_attempts = 0
-    while retry_attempts < MAX_RETRIES_ROLE_ASSIGNMENT:
-        try:
-            create_role_assignment(cmd, role="Contributor", scope=quantum_workspace.storage_account, assignee=quantum_workspace.identity.principal_id)
-            break
-        except (CloudError, AzureInternalError) as e:
-            error = str(e.args).lower()
-            if (("does not exist" in error) or ("cannot find" in error)):
-                print('.', end='', flush=True)
-                time.sleep(POLLING_TIME_DURATION)
-                retry_attempts += 1
-                continue
-            raise e
-        except Exception as x:
-            raise AzureInternalError(f"Role assignment encountered exception ({type(x).__name__}): {x}") from x
-    if retry_attempts > 0:
-        print()  # To end the line of the waiting indicators.
-    if retry_attempts == MAX_RETRIES_ROLE_ASSIGNMENT:
-        max_time_in_seconds = MAX_RETRIES_ROLE_ASSIGNMENT * POLLING_TIME_DURATION
-        raise AzureInternalError(f"Role assignment could not be added to storage account {quantum_workspace.storage_account} within {max_time_in_seconds} seconds.")
-    return quantum_workspace
 
 
 def _validate_storage_account(tier_or_kind_msg_text, tier_or_kind, supported_tiers_or_kinds):
@@ -362,8 +337,9 @@ def quotas(cmd, resource_group_name, workspace_name, location):
     List the quotas for the given (or current) Azure Quantum workspace.
     """
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
-    client = cf_quotas(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.location)
-    return client.list()
+    client = cf_quotas(cmd.cli_ctx, info.subscription, info.location)
+    response = client.list(info.subscription, info.resource_group, info.name)
+    return repack_response_json(response)
 
 
 def set(cmd, workspace_name, resource_group_name, location):

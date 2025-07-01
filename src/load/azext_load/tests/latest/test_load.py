@@ -21,7 +21,7 @@ class LoadScenario(ScenarioTest):
     cmk_key2_name = "testkey2"
 
     @ResourceGroupPreparer(name_prefix="cli_test_azure_load_testing", location=location)
-    @KeyVaultPreparer(location=location)
+    @KeyVaultPreparer(location=location, additional_params='--enable-rbac-authorization False')
     def test_load_scenarios(self, resource_group, key_vault):
         # Set-up variables
         loadtest_resource_name = self.create_random_name("load-test", 24)

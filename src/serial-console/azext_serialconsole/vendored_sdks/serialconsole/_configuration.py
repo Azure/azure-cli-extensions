@@ -47,7 +47,7 @@ class MicrosoftSerialConsoleClientConfiguration(Configuration):
 
         self.credential = credential
         self.subscription_id = subscription_id
-        self.api_version = "2018-05-01"
+        self.api_version = "2024-07-01"
         self.credential_scopes = kwargs.pop('credential_scopes', ['https://management.azure.com/.default'])
         kwargs.setdefault('sdk_moniker', 'microsoftserialconsoleclient/{}'.format(VERSION))
         self._configure(**kwargs)

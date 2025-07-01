@@ -21,12 +21,11 @@ from azure.cli.core.azclierror import (
     ForbiddenError,
     UnauthorizedError
 )
-# from azure.cli.core.aaz import has_value
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.command_modules.role.custom import list_role_assignments, create_role_assignment
+from azure.mgmt.core.tools import is_valid_resource_id, parse_resource_id
 from knack.log import get_logger
 from knack.prompting import prompt_y_n
-from msrestazure.tools import is_valid_resource_id, parse_resource_id
 from azext_dataprotection.vendored_sdks.resourcegraph.models import \
     QueryRequest, QueryRequestOptions
 from azext_dataprotection.manual import backupcenter_helper, helpers as helper
@@ -127,7 +126,8 @@ def dataprotection_backup_instance_initialize_backupconfig(cmd, client, datasour
 def dataprotection_backup_instance_initialize(datasource_type, datasource_id, datasource_location, policy_id,
                                               friendly_name=None, backup_configuration=None,
                                               secret_store_type=None, secret_store_uri=None,
-                                              snapshot_resource_group_name=None, tags=None):
+                                              snapshot_resource_group_name=None, tags=None,
+                                              use_system_assigned_identity=None, user_assigned_identity_arm_url=None):
     manifest = helper.load_manifest(datasource_type)
 
     datasource_info = helper.get_datasource_info(datasource_type, datasource_id, datasource_location)
@@ -181,7 +181,7 @@ def dataprotection_backup_instance_initialize(datasource_type, datasource_id, da
         if backup_configuration is not None:
             logger.warning("--backup-configuration is not required for the given DatasourceType, and will not be used")
 
-    return {
+    backup_instance = {
         "backup_instance_name": backup_instance_name,
         "properties": {
             "data_source_info": datasource_info,
@@ -194,9 +194,22 @@ def dataprotection_backup_instance_initialize(datasource_type, datasource_id, da
         "tags": tags
     }
 
+    if use_system_assigned_identity is not None or user_assigned_identity_arm_url is not None:
+        if user_assigned_identity_arm_url is None and not use_system_assigned_identity:
+            # so the UAMI was not passed and either system identity is not passed, or it is false. The former is not
+            # possible as that scenario is eliminated by the first check. So UAMI not passed, but system assigned is
+            # False. Not valid input, so we don't populate identity Details
+            pass
+        else:
+            identity_details = helper.get_identity_details(use_system_assigned_identity, user_assigned_identity_arm_url)
+            backup_instance["properties"]["identity_details"] = identity_details
 
-def dataprotection_backup_instance_update(cmd, resource_group_name, vault_name, backup_instance_name,
-                                          vaulted_blob_container_list=None, no_wait=False):
+    return backup_instance
+
+
+def dataprotection_backup_instance_validate_for_update(cmd, resource_group_name, vault_name, backup_instance_name,
+                                                       vaulted_blob_container_list=None, no_wait=False,
+                                                       use_system_assigned_identity=None, user_assigned_identity_arm_url=None):
     from azext_dataprotection.aaz.latest.dataprotection.backup_instance import Show as BackupInstanceShow
     backup_instance = BackupInstanceShow(cli_ctx=cmd.cli_ctx)(command_args={
         "resource_group": resource_group_name,
@@ -204,8 +217,59 @@ def dataprotection_backup_instance_update(cmd, resource_group_name, vault_name, 
         "backup_instance_name": backup_instance_name
     })
 
-    backup_instance['properties']['policyInfo']['policyParameters']['backupDatasourceParametersList'] = \
-        [vaulted_blob_container_list,]
+    # UAMI for a backup instance
+    if use_system_assigned_identity is not None or user_assigned_identity_arm_url is not None:
+        if user_assigned_identity_arm_url is None and not use_system_assigned_identity:
+            # so the UAMI was not passed and either system identity is not passed, or it is false. The former is not
+            # possible as that scenario is eliminated by the first check. So UAMI not passed, but system assigned is
+            # False. Not valid input, so we don't populate identity Details
+            pass
+        else:
+            identity_details = helper.get_identity_details(use_system_assigned_identity, user_assigned_identity_arm_url)
+            backup_instance["properties"]["identityDetails"] = identity_details
+
+    # Policy changes - updating the vaulted blob container list for vaulted blob backups
+    if vaulted_blob_container_list is not None:
+        backup_instance['properties']['policyInfo']['policyParameters']['backupDatasourceParametersList'] = \
+            [vaulted_blob_container_list,]
+
+    backup_instance = helper.convert_backup_instance_show_to_input(backup_instance)
+
+    from azext_dataprotection.manual.aaz_operations.backup_instance import ValidateForUpdateBI
+    return ValidateForUpdateBI(cli_ctx=cmd.cli_ctx)(command_args={
+        "no_wait": no_wait,
+        "backup_instance_name": backup_instance_name,
+        "backup_instance": backup_instance["properties"],
+        "resource_group": resource_group_name,
+        "vault_name": vault_name,
+    })
+
+
+def dataprotection_backup_instance_update(cmd, resource_group_name, vault_name, backup_instance_name,
+                                          vaulted_blob_container_list=None, no_wait=False,
+                                          use_system_assigned_identity=None, user_assigned_identity_arm_url=None):
+    from azext_dataprotection.aaz.latest.dataprotection.backup_instance import Show as BackupInstanceShow
+    backup_instance = BackupInstanceShow(cli_ctx=cmd.cli_ctx)(command_args={
+        "resource_group": resource_group_name,
+        "vault_name": vault_name,
+        "backup_instance_name": backup_instance_name
+    })
+
+    # UAMI for a backup instance
+    if use_system_assigned_identity is not None or user_assigned_identity_arm_url is not None:
+        if user_assigned_identity_arm_url is None and not use_system_assigned_identity:
+            # so the UAMI was not passed and either system identity is not passed, or it is false. The former is not
+            # possible as that scenario is eliminated by the first check. So UAMI not passed, but system assigned is
+            # False. Not valid input, so we don't populate identity Details
+            pass
+        else:
+            identity_details = helper.get_identity_details(use_system_assigned_identity, user_assigned_identity_arm_url)
+            backup_instance["properties"]["identityDetails"] = identity_details
+
+    # Policy changes - updating the vaulted blob container list for vaulted blob backups
+    if vaulted_blob_container_list is not None:
+        backup_instance['properties']['policyInfo']['policyParameters']['backupDatasourceParametersList'] = \
+            [vaulted_blob_container_list,]
 
     backup_instance = helper.convert_backup_instance_show_to_input(backup_instance)
 
@@ -283,6 +347,7 @@ def dataprotection_backup_vault_list_from_resourcegraph(client, resource_groups=
 def dataprotection_backup_instance_update_msi_permissions(cmd, resource_group_name, datasource_type, vault_name, operation,
                                                           permissions_scope, backup_instance=None, restore_request_object=None,
                                                           keyvault_id=None, snapshot_resource_group_id=None,
+                                                          user_assigned_identity_arm_url=None,
                                                           target_storage_account_id=None, yes=False):
     if operation == 'Backup' and backup_instance is None:
         raise RequiredArgumentMissingError("--backup-instance needs to be given when --operation is given as Backup")
@@ -306,7 +371,7 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, resource_group_na
         "resource_group": resource_group_name,
         "vault_name": vault_name
     })
-    vault_principal_id = backup_vault['identity']['principalId']
+    vault_principal_id = helper.get_vault_identity(backup_vault, user_assigned_identity_arm_url)
 
     role_assignments_arr = []
 
@@ -867,7 +932,13 @@ def dataprotection_backup_instance_initialize_restoreconfig(datasource_type, exc
     if datasource_type != "AzureKubernetesService":
         raise InvalidArgumentValueError("This command is currently not supported for datasource types other than AzureKubernetesService")
 
-    object_type = "KubernetesClusterRestoreCriteria"
+    if staging_resource_group_id is None and staging_storage_account_id is None:
+        object_type = "KubernetesClusterRestoreCriteria"
+    elif staging_storage_account_id is not None and staging_resource_group_id is not None:
+        object_type = "KubernetesClusterVaultTierRestoreCriteria"
+    else:
+        raise InvalidArgumentValueError("Both --staging-resource-group-id and --staging-storage-account-id are manadatory for vaulted tier restore "
+                                        "for AzureKubernetesService. Please either provide or remove both of them.")
 
     if persistent_volume_restore_mode is None:
         persistent_volume_restore_mode = "RestoreWithVolumeData"
@@ -897,7 +968,8 @@ def dataprotection_backup_instance_initialize_restoreconfig(datasource_type, exc
 def restore_initialize_for_data_recovery(cmd, datasource_type, source_datastore, restore_location, target_resource_id=None,
                                          recovery_point_id=None, point_in_time=None, secret_store_type=None,
                                          secret_store_uri=None, rehydration_priority=None, rehydration_duration=15,
-                                         restore_configuration=None, backup_instance_id=None):
+                                         restore_configuration=None, backup_instance_id=None,
+                                         use_system_assigned_identity=None, user_assigned_identity_arm_url=None):
     restore_request = {}
     restore_mode = None
     manifest = helper.load_manifest(datasource_type)
@@ -933,13 +1005,25 @@ def restore_initialize_for_data_recovery(cmd, datasource_type, source_datastore,
         restore_request["restore_target_info"]["restore_criteria"] = helper.get_resource_criteria_list(datasource_type, restore_configuration,
                                                                                                        None, None, None, None, None)
 
+    # UAMI for a restore request object
+    if use_system_assigned_identity is not None or user_assigned_identity_arm_url is not None:
+        if user_assigned_identity_arm_url is None and not use_system_assigned_identity:
+            # so the UAMI was not passed and either system identity is not passed, or it is false. The former is not
+            # possible as that scenario is eliminated by the first check. So UAMI not passed, but system assigned is
+            # False. Not valid input, so we don't populate identity Details
+            pass
+        else:
+            identity_details = helper.get_identity_details(use_system_assigned_identity, user_assigned_identity_arm_url)
+            restore_request["identity_details"] = identity_details
+
     return restore_request
 
 
 def restore_initialize_for_data_recovery_as_files(target_blob_container_url, target_file_name, datasource_type, source_datastore,
                                                   restore_location, target_resource_id=None,
                                                   recovery_point_id=None, point_in_time=None,
-                                                  rehydration_priority=None, rehydration_duration=15):
+                                                  rehydration_priority=None, rehydration_duration=15,
+                                                  use_system_assigned_identity=None, user_assigned_identity_arm_url=None):
     restore_request = {}
     restore_mode = None
     manifest = helper.load_manifest(datasource_type)
@@ -974,13 +1058,25 @@ def restore_initialize_for_data_recovery_as_files(target_blob_container_url, tar
     if target_resource_id is not None:
         restore_request["restore_target_info"]["target_details"]["target_resource_arm_id"] = target_resource_id
 
+    # UAMI for a restore request object
+    if use_system_assigned_identity is not None or user_assigned_identity_arm_url is not None:
+        if user_assigned_identity_arm_url is None and not use_system_assigned_identity:
+            # so the UAMI was not passed and either system identity is not passed, or it is false. The former is not
+            # possible as that scenario is eliminated by the first check. So UAMI not passed, but system assigned is
+            # False. Not valid input, so we don't populate identity Details
+            pass
+        else:
+            identity_details = helper.get_identity_details(use_system_assigned_identity, user_assigned_identity_arm_url)
+            restore_request["identity_details"] = identity_details
+
     return restore_request
 
 
 def restore_initialize_for_item_recovery(cmd, datasource_type, source_datastore, restore_location, backup_instance_id=None,
                                          target_resource_id=None, recovery_point_id=None, point_in_time=None, container_list=None,
                                          from_prefix_pattern=None, to_prefix_pattern=None, restore_configuration=None,
-                                         vaulted_blob_prefix_pattern=None):
+                                         vaulted_blob_prefix_pattern=None, use_system_assigned_identity=None,
+                                         user_assigned_identity_arm_url=None):
     restore_request = {}
     restore_mode = None
     manifest = helper.load_manifest(datasource_type)
@@ -1008,6 +1104,17 @@ def restore_initialize_for_item_recovery(cmd, datasource_type, source_datastore,
 
     if manifest["isProxyResource"]:
         restore_request["restore_target_info"]["datasource_set_info"] = helper.get_datasourceset_info(datasource_type, datasource_id, restore_location)
+
+    # UAMI for a restore request object
+    if use_system_assigned_identity is not None or user_assigned_identity_arm_url is not None:
+        if user_assigned_identity_arm_url is None and not use_system_assigned_identity:
+            # so the UAMI was not passed and either system identity is not passed, or it is false. The former is not
+            # possible as that scenario is eliminated by the first check. So UAMI not passed, but system assigned is
+            # False. Not valid input, so we don't populate identity Details
+            pass
+        else:
+            identity_details = helper.get_identity_details(use_system_assigned_identity, user_assigned_identity_arm_url)
+            restore_request["identity_details"] = identity_details
 
     restore_request["restore_target_info"]["restore_criteria"] = helper.get_resource_criteria_list(datasource_type, restore_configuration,
                                                                                                    container_list, from_prefix_pattern,

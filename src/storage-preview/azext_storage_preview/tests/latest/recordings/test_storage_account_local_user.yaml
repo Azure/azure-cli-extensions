@@ -1,41 +1,142 @@
 interactions:
 - request:
-    body: '{"properties": {"permissionScopes": [{"permissions": "r", "service": "blob",
-      "resourceName": "container1"}, {"permissions": "rw", "service": "file", "resourceName":
-      "share2"}], "homeDirectory": "home", "hasSharedKey": false, "hasSshKey": false,
-      "groupId": 1, "allowAclAuthorization": true}}'
+    body: '{"sku": {"name": "Standard_LRS"}, "kind": "StorageV2", "location": "eastus2euap",
+      "properties": {"encryption": {"services": {"blob": {}}, "keySource": "Microsoft.Storage"},
+      "networkAcls": {"defaultAction": "Deny"}, "isSftpEnabled": true, "isLocalUserEnabled":
+      true, "enableExtendedGroups": true, "isHnsEnabled": true, "isNfsV3Enabled":
+      true}}'
     headers:
       Accept:
       - application/json
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - storage account local-user create
+      - storage account create
       Connection:
       - keep-alive
       Content-Length:
-      - '290'
+      - '342'
       Content-Type:
       - application/json
       ParameterSetName:
-      - --account-name -g -n --home-directory --permission-scope --permission-scope
-        --has-ssh-key --has-shared-key --group-id --allow-acl-authorization
+      - -n -g -l --sku --hns --enable-nfs-v3 --default-action --enable-extended-groups
+        --enable-local-user --enable-sftp
       User-Agent:
-      - AZURECLI/2.62.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.74.0 azsdk-python-core/1.31.0 Python/3.12.10 (Windows-10-10.0.19045-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000002/localUsers/cli000003?api-version=2023-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000003?api-version=2024-01-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000002/localusers/cli000003","name":"cli000003","type":"Microsoft.Storage/storageAccounts/localUsers","properties":{"userId":1000,"groupId":1,"allowAclAuthorization":true,"permissionScopes":[{"permissions":"r","service":"blob","resourceName":"container1"},{"permissions":"rw","service":"file","resourceName":"share2"}],"homeDirectory":"home","sid":"S-1-2-0-259443223-4290653894-1569446496-1000","hasSharedKey":false,"hasSshKey":false}}'
+      string: ''
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '606'
+      - '0'
+      content-type:
+      - text/plain; charset=utf-8
+      date:
+      - Sat, 28 Jun 2025 04:03:41 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Storage/locations/eastus2euap/asyncoperations/46086bb9-f474-4793-8c9f-1218b0227224?monitor=true&api-version=2024-01-01&t=638866802211427008&c=MIIIpDCCBoygAwIBAgITFgGcwZB9TpnDMDJVwQABAZzBkDANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDMwHhcNMjUwNjIyMTE1NTIwWhcNMjUwOTIwMTE1NTIwWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALQiVh1k45AFgCvy3vilred_rLiXSfr9Z7nDRZA1sl5V6fDjnXBTeJZBEyJR4TE_Z31KMKkKne_rM0G-23-wwp-MJd4bGnxHu-EWVwFNIOxIMyv7hL4Dk0XEgT-4QJxGBm-18QkqY2hXlAw8jK6MwH35MH-S-UpU5ZgQsGy5IiTOZE_6SgUACt1UhW-rWdcMesm5yN_QO7MSbEsXU29lvxRzF-3F5jYxregldY1Q2gI7K9HIfLhI1a-sSXVxy_9Lvbq5ZJVlfBJgNfgTCqu7_zhI2i6eqVRqaHm5FF_C4Xhz8M8zUPrRXZuRjY9lS3gT7VtsJfbZSbT3UzexIpcXkKkCAwEAAaOCBJEwggSNMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwIwCgYIKwYBBQUHAwEwPAYJKwYBBAGCNxUHBC8wLQYlKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFgh8fIENbYcQIBZAIBBjCCAdoGCCsGAQUFBwEBBIIBzDCCAcgwZgYIKwYBBQUHMAKGWmh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9wa2lpbmZyYS9DZXJ0cy9BTTNQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDAzKDEpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDEuYW1lLmdibC9haWEvQU0zUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMygxKS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwyLmFtZS5nYmwvYWlhL0FNM1BLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDMoMSkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMy5hbWUuZ2JsL2FpYS9BTTNQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDAzKDEpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDQuYW1lLmdibC9haWEvQU0zUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMygxKS5jcnQwHQYDVR0OBBYEFFqtGfFIolCAmZrPHacpGD9iMuUYMA4GA1UdDwEB_wQEAwIFoDCCATUGA1UdHwSCASwwggEoMIIBJKCCASCgggEchkJodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ1JML0FNRSUyMEluZnJhJTIwQ0ElMjAwMygxKS5jcmyGNGh0dHA6Ly9jcmwxLmFtZS5nYmwvY3JsL0FNRSUyMEluZnJhJTIwQ0ElMjAwMygxKS5jcmyGNGh0dHA6Ly9jcmwyLmFtZS5nYmwvY3JsL0FNRSUyMEluZnJhJTIwQ0ElMjAwMygxKS5jcmyGNGh0dHA6Ly9jcmwzLmFtZS5nYmwvY3JsL0FNRSUyMEluZnJhJTIwQ0ElMjAwMygxKS5jcmyGNGh0dHA6Ly9jcmw0LmFtZS5nYmwvY3JsL0FNRSUyMEluZnJhJTIwQ0ElMjAwMygxKS5jcmwwgZ0GA1UdIASBlTCBkjAMBgorBgEEAYI3ewEBMGYGCisGAQQBgjd7AgIwWDBWBggrBgEFBQcCAjBKHkgAMwAzAGUAMAAxADkAMgAxAC0ANABkADYANAAtADQAZgA4AGMALQBhADAANQA1AC0ANQBiAGQAYQBmAGYAZAA1AGUAMwAzAGQwDAYKKwYBBAGCN3sDAjAMBgorBgEEAYI3ewQCMB8GA1UdIwQYMBaAFEijrWB1am_sYPNpVdEAsTJX_GzkMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEFBQcDATANBgkqhkiG9w0BAQsFAAOCAgEAQim2jWxcA_UAePUNie40rkvXomRcowu2bm3zqqZlA6gvWitFyQOlqVjqAdFuahGCnpWVU5fIbwSMZZD_koN41BUCPcFln6-j1B9fhApTKqmHfUJpRolHGXm1svwB8fFbR_H720Lcui5lnZSigKlXmQVMK9XjFxvP8nFEEhWW_-b-R3W6SxOiSfcysX4k00IfnxDs2BC5rP_DlR06-XR9gPGqqnEzivX0r-vNHH4jb5OvNYst2IU2pMlmIEhBxEfF75L_fkxblQo5fAxdTtGZaswzz9qixtteZz_MWXHQs3ORpAHYtxp6DRQ4Ka-GZiUIeT4RkcKLzFostql-HLXc3iNKGucpn3-riWdLuEwfEgnYGdytoIGVYfCK8QPQ2PmvD9cekPsq8f-ZGvnXEZoCvEh2snVMurmkwXJpe_v-Kllf1k3-Qx-URdS04gMHagI0VKY7Omc96KMNnEFGUFbJ2KCYXYTdxDfFXGRv5iY_VcZwyGah8migNGdiLWgL2voL1sH8TRSAHf1yS6Qf0QbFT8x50jlN45iqMjX5e0vSvKxD6xV0HLkRHOd81BMI4qFgOhxJyzTcm-hJbMquKmpkv-Ie6zt6iguWBEVoTb7sJ2HrB4VWJFyfYPFj9nbooC1pwYvw2XkUG-m0p2JDrNm6SLHn1Bf375cUSDdBBjRXBgQ&s=oNLEduyzSn4ErEJ77vUral2GyFA_Y-yrxJfjmOvTOP6p2UkiyMumXbEqOMKrmkHOKslLOF-EesESV_4QIut70TvCXM5pUEN-fijrwUwz8tx4sTOApAMHpkza2D0I43P88HkEnbVN7hAGEh9MKGXIRXZJ8220w1ovSZCUuo87caRUisGRMlRQpTe_Z9ZuAF4ojO4BybJbm5A6VRm_8j-k4FpsFXCwHCUWwGyWcjpr7SRlwPIbXo2UQ2NUnM-3X2Nfme1YI0A3FywbKQElt7IWfaq-RMuHP6k5ataZkecarS5Qp4HTk564puPknR6mdQVQniJhxTkhH860TNRccLY_LQ&h=bd3UDMu-I3RVDYZ7eqnSWJyD2oyAgjq6x5FSoiE4Jpo
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0 Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a,objectId=a7250e3a-0e5e-48e2-9a34-45f1f5e1a91e/eastus2euap/f56a09c8-4d71-4351-898e-1a630ff9ea71
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage account create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g -l --sku --hns --enable-nfs-v3 --default-action --enable-extended-groups
+        --enable-local-user --enable-sftp
+      User-Agent:
+      - AZURECLI/2.74.0 azsdk-python-core/1.31.0 Python/3.12.10 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Storage/locations/eastus2euap/asyncoperations/46086bb9-f474-4793-8c9f-1218b0227224?monitor=true&api-version=2024-01-01&t=638866802211427008&c=MIIIpDCCBoygAwIBAgITFgGcwZB9TpnDMDJVwQABAZzBkDANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDMwHhcNMjUwNjIyMTE1NTIwWhcNMjUwOTIwMTE1NTIwWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALQiVh1k45AFgCvy3vilred_rLiXSfr9Z7nDRZA1sl5V6fDjnXBTeJZBEyJR4TE_Z31KMKkKne_rM0G-23-wwp-MJd4bGnxHu-EWVwFNIOxIMyv7hL4Dk0XEgT-4QJxGBm-18QkqY2hXlAw8jK6MwH35MH-S-UpU5ZgQsGy5IiTOZE_6SgUACt1UhW-rWdcMesm5yN_QO7MSbEsXU29lvxRzF-3F5jYxregldY1Q2gI7K9HIfLhI1a-sSXVxy_9Lvbq5ZJVlfBJgNfgTCqu7_zhI2i6eqVRqaHm5FF_C4Xhz8M8zUPrRXZuRjY9lS3gT7VtsJfbZSbT3UzexIpcXkKkCAwEAAaOCBJEwggSNMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwIwCgYIKwYBBQUHAwEwPAYJKwYBBAGCNxUHBC8wLQYlKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFgh8fIENbYcQIBZAIBBjCCAdoGCCsGAQUFBwEBBIIBzDCCAcgwZgYIKwYBBQUHMAKGWmh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9wa2lpbmZyYS9DZXJ0cy9BTTNQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDAzKDEpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDEuYW1lLmdibC9haWEvQU0zUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMygxKS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwyLmFtZS5nYmwvYWlhL0FNM1BLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDMoMSkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMy5hbWUuZ2JsL2FpYS9BTTNQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDAzKDEpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDQuYW1lLmdibC9haWEvQU0zUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMygxKS5jcnQwHQYDVR0OBBYEFFqtGfFIolCAmZrPHacpGD9iMuUYMA4GA1UdDwEB_wQEAwIFoDCCATUGA1UdHwSCASwwggEoMIIBJKCCASCgggEchkJodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ1JML0FNRSUyMEluZnJhJTIwQ0ElMjAwMygxKS5jcmyGNGh0dHA6Ly9jcmwxLmFtZS5nYmwvY3JsL0FNRSUyMEluZnJhJTIwQ0ElMjAwMygxKS5jcmyGNGh0dHA6Ly9jcmwyLmFtZS5nYmwvY3JsL0FNRSUyMEluZnJhJTIwQ0ElMjAwMygxKS5jcmyGNGh0dHA6Ly9jcmwzLmFtZS5nYmwvY3JsL0FNRSUyMEluZnJhJTIwQ0ElMjAwMygxKS5jcmyGNGh0dHA6Ly9jcmw0LmFtZS5nYmwvY3JsL0FNRSUyMEluZnJhJTIwQ0ElMjAwMygxKS5jcmwwgZ0GA1UdIASBlTCBkjAMBgorBgEEAYI3ewEBMGYGCisGAQQBgjd7AgIwWDBWBggrBgEFBQcCAjBKHkgAMwAzAGUAMAAxADkAMgAxAC0ANABkADYANAAtADQAZgA4AGMALQBhADAANQA1AC0ANQBiAGQAYQBmAGYAZAA1AGUAMwAzAGQwDAYKKwYBBAGCN3sDAjAMBgorBgEEAYI3ewQCMB8GA1UdIwQYMBaAFEijrWB1am_sYPNpVdEAsTJX_GzkMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEFBQcDATANBgkqhkiG9w0BAQsFAAOCAgEAQim2jWxcA_UAePUNie40rkvXomRcowu2bm3zqqZlA6gvWitFyQOlqVjqAdFuahGCnpWVU5fIbwSMZZD_koN41BUCPcFln6-j1B9fhApTKqmHfUJpRolHGXm1svwB8fFbR_H720Lcui5lnZSigKlXmQVMK9XjFxvP8nFEEhWW_-b-R3W6SxOiSfcysX4k00IfnxDs2BC5rP_DlR06-XR9gPGqqnEzivX0r-vNHH4jb5OvNYst2IU2pMlmIEhBxEfF75L_fkxblQo5fAxdTtGZaswzz9qixtteZz_MWXHQs3ORpAHYtxp6DRQ4Ka-GZiUIeT4RkcKLzFostql-HLXc3iNKGucpn3-riWdLuEwfEgnYGdytoIGVYfCK8QPQ2PmvD9cekPsq8f-ZGvnXEZoCvEh2snVMurmkwXJpe_v-Kllf1k3-Qx-URdS04gMHagI0VKY7Omc96KMNnEFGUFbJ2KCYXYTdxDfFXGRv5iY_VcZwyGah8migNGdiLWgL2voL1sH8TRSAHf1yS6Qf0QbFT8x50jlN45iqMjX5e0vSvKxD6xV0HLkRHOd81BMI4qFgOhxJyzTcm-hJbMquKmpkv-Ie6zt6iguWBEVoTb7sJ2HrB4VWJFyfYPFj9nbooC1pwYvw2XkUG-m0p2JDrNm6SLHn1Bf375cUSDdBBjRXBgQ&s=oNLEduyzSn4ErEJ77vUral2GyFA_Y-yrxJfjmOvTOP6p2UkiyMumXbEqOMKrmkHOKslLOF-EesESV_4QIut70TvCXM5pUEN-fijrwUwz8tx4sTOApAMHpkza2D0I43P88HkEnbVN7hAGEh9MKGXIRXZJ8220w1ovSZCUuo87caRUisGRMlRQpTe_Z9ZuAF4ojO4BybJbm5A6VRm_8j-k4FpsFXCwHCUWwGyWcjpr7SRlwPIbXo2UQ2NUnM-3X2Nfme1YI0A3FywbKQElt7IWfaq-RMuHP6k5ataZkecarS5Qp4HTk564puPknR6mdQVQniJhxTkhH860TNRccLY_LQ&h=bd3UDMu-I3RVDYZ7eqnSWJyD2oyAgjq6x5FSoiE4Jpo
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      content-type:
+      - text/plain; charset=utf-8
+      date:
+      - Sat, 28 Jun 2025 04:03:42 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Storage/locations/eastus2euap/asyncoperations/46086bb9-f474-4793-8c9f-1218b0227224?monitor=true&api-version=2024-01-01&t=638866802226487362&c=MIIIpDCCBoygAwIBAgITFgGcwZB9TpnDMDJVwQABAZzBkDANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDMwHhcNMjUwNjIyMTE1NTIwWhcNMjUwOTIwMTE1NTIwWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALQiVh1k45AFgCvy3vilred_rLiXSfr9Z7nDRZA1sl5V6fDjnXBTeJZBEyJR4TE_Z31KMKkKne_rM0G-23-wwp-MJd4bGnxHu-EWVwFNIOxIMyv7hL4Dk0XEgT-4QJxGBm-18QkqY2hXlAw8jK6MwH35MH-S-UpU5ZgQsGy5IiTOZE_6SgUACt1UhW-rWdcMesm5yN_QO7MSbEsXU29lvxRzF-3F5jYxregldY1Q2gI7K9HIfLhI1a-sSXVxy_9Lvbq5ZJVlfBJgNfgTCqu7_zhI2i6eqVRqaHm5FF_C4Xhz8M8zUPrRXZuRjY9lS3gT7VtsJfbZSbT3UzexIpcXkKkCAwEAAaOCBJEwggSNMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwIwCgYIKwYBBQUHAwEwPAYJKwYBBAGCNxUHBC8wLQYlKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFgh8fIENbYcQIBZAIBBjCCAdoGCCsGAQUFBwEBBIIBzDCCAcgwZgYIKwYBBQUHMAKGWmh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9wa2lpbmZyYS9DZXJ0cy9BTTNQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDAzKDEpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDEuYW1lLmdibC9haWEvQU0zUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMygxKS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwyLmFtZS5nYmwvYWlhL0FNM1BLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDMoMSkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMy5hbWUuZ2JsL2FpYS9BTTNQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDAzKDEpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDQuYW1lLmdibC9haWEvQU0zUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMygxKS5jcnQwHQYDVR0OBBYEFFqtGfFIolCAmZrPHacpGD9iMuUYMA4GA1UdDwEB_wQEAwIFoDCCATUGA1UdHwSCASwwggEoMIIBJKCCASCgggEchkJodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ1JML0FNRSUyMEluZnJhJTIwQ0ElMjAwMygxKS5jcmyGNGh0dHA6Ly9jcmwxLmFtZS5nYmwvY3JsL0FNRSUyMEluZnJhJTIwQ0ElMjAwMygxKS5jcmyGNGh0dHA6Ly9jcmwyLmFtZS5nYmwvY3JsL0FNRSUyMEluZnJhJTIwQ0ElMjAwMygxKS5jcmyGNGh0dHA6Ly9jcmwzLmFtZS5nYmwvY3JsL0FNRSUyMEluZnJhJTIwQ0ElMjAwMygxKS5jcmyGNGh0dHA6Ly9jcmw0LmFtZS5nYmwvY3JsL0FNRSUyMEluZnJhJTIwQ0ElMjAwMygxKS5jcmwwgZ0GA1UdIASBlTCBkjAMBgorBgEEAYI3ewEBMGYGCisGAQQBgjd7AgIwWDBWBggrBgEFBQcCAjBKHkgAMwAzAGUAMAAxADkAMgAxAC0ANABkADYANAAtADQAZgA4AGMALQBhADAANQA1AC0ANQBiAGQAYQBmAGYAZAA1AGUAMwAzAGQwDAYKKwYBBAGCN3sDAjAMBgorBgEEAYI3ewQCMB8GA1UdIwQYMBaAFEijrWB1am_sYPNpVdEAsTJX_GzkMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEFBQcDATANBgkqhkiG9w0BAQsFAAOCAgEAQim2jWxcA_UAePUNie40rkvXomRcowu2bm3zqqZlA6gvWitFyQOlqVjqAdFuahGCnpWVU5fIbwSMZZD_koN41BUCPcFln6-j1B9fhApTKqmHfUJpRolHGXm1svwB8fFbR_H720Lcui5lnZSigKlXmQVMK9XjFxvP8nFEEhWW_-b-R3W6SxOiSfcysX4k00IfnxDs2BC5rP_DlR06-XR9gPGqqnEzivX0r-vNHH4jb5OvNYst2IU2pMlmIEhBxEfF75L_fkxblQo5fAxdTtGZaswzz9qixtteZz_MWXHQs3ORpAHYtxp6DRQ4Ka-GZiUIeT4RkcKLzFostql-HLXc3iNKGucpn3-riWdLuEwfEgnYGdytoIGVYfCK8QPQ2PmvD9cekPsq8f-ZGvnXEZoCvEh2snVMurmkwXJpe_v-Kllf1k3-Qx-URdS04gMHagI0VKY7Omc96KMNnEFGUFbJ2KCYXYTdxDfFXGRv5iY_VcZwyGah8migNGdiLWgL2voL1sH8TRSAHf1yS6Qf0QbFT8x50jlN45iqMjX5e0vSvKxD6xV0HLkRHOd81BMI4qFgOhxJyzTcm-hJbMquKmpkv-Ie6zt6iguWBEVoTb7sJ2HrB4VWJFyfYPFj9nbooC1pwYvw2XkUG-m0p2JDrNm6SLHn1Bf375cUSDdBBjRXBgQ&s=Wu82Jkjh8htO_9aXd3EZwN5dD7p0NJ2-VvqfgtjQwQCxqtQp1Yz8c5OIUC5VdA1mdBUVqzaqR8BaAgRMi8xwgsdtwXB2NrIU42tEyrgKmj78L-Y4PdX3umZJrl-LvO8BvLv4r27bdtgxDX9sk-8Pzy1n0QQzSZMvFfUtbXBeD-ZO00MxNI5oJX-nM5-60WpL0YRUvemmV7aKHGasF298axwDd7vugKTavu0Tx9pNeg3IOM-JD_xw7RhXPeOtcqwEbhLe-Txeb1ATIxBtMyJiXXn4W9jQhJT2gkEmU--cL1TTjd1d8a4uYaEHKz1tF9TQXE65b5MeqxXA5bL8y-vTGA&h=RC_DZQIBPrGBsE3EVo9JqnSGAcYKAzvFpQ3kUqhJ2kE
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0 Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a,objectId=a7250e3a-0e5e-48e2-9a34-45f1f5e1a91e/eastus2euap/e9be75b6-a4df-4450-85bb-c3bd718d860b
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage account create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g -l --sku --hns --enable-nfs-v3 --default-action --enable-extended-groups
+        --enable-local-user --enable-sftp
+      User-Agent:
+      - AZURECLI/2.74.0 azsdk-python-core/1.31.0 Python/3.12.10 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Storage/locations/eastus2euap/asyncoperations/46086bb9-f474-4793-8c9f-1218b0227224?monitor=true&api-version=2024-01-01&t=638866802226487362&c=MIIIpDCCBoygAwIBAgITFgGcwZB9TpnDMDJVwQABAZzBkDANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDMwHhcNMjUwNjIyMTE1NTIwWhcNMjUwOTIwMTE1NTIwWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALQiVh1k45AFgCvy3vilred_rLiXSfr9Z7nDRZA1sl5V6fDjnXBTeJZBEyJR4TE_Z31KMKkKne_rM0G-23-wwp-MJd4bGnxHu-EWVwFNIOxIMyv7hL4Dk0XEgT-4QJxGBm-18QkqY2hXlAw8jK6MwH35MH-S-UpU5ZgQsGy5IiTOZE_6SgUACt1UhW-rWdcMesm5yN_QO7MSbEsXU29lvxRzF-3F5jYxregldY1Q2gI7K9HIfLhI1a-sSXVxy_9Lvbq5ZJVlfBJgNfgTCqu7_zhI2i6eqVRqaHm5FF_C4Xhz8M8zUPrRXZuRjY9lS3gT7VtsJfbZSbT3UzexIpcXkKkCAwEAAaOCBJEwggSNMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwIwCgYIKwYBBQUHAwEwPAYJKwYBBAGCNxUHBC8wLQYlKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFgh8fIENbYcQIBZAIBBjCCAdoGCCsGAQUFBwEBBIIBzDCCAcgwZgYIKwYBBQUHMAKGWmh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9wa2lpbmZyYS9DZXJ0cy9BTTNQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDAzKDEpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDEuYW1lLmdibC9haWEvQU0zUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMygxKS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwyLmFtZS5nYmwvYWlhL0FNM1BLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDMoMSkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMy5hbWUuZ2JsL2FpYS9BTTNQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDAzKDEpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDQuYW1lLmdibC9haWEvQU0zUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMygxKS5jcnQwHQYDVR0OBBYEFFqtGfFIolCAmZrPHacpGD9iMuUYMA4GA1UdDwEB_wQEAwIFoDCCATUGA1UdHwSCASwwggEoMIIBJKCCASCgggEchkJodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ1JML0FNRSUyMEluZnJhJTIwQ0ElMjAwMygxKS5jcmyGNGh0dHA6Ly9jcmwxLmFtZS5nYmwvY3JsL0FNRSUyMEluZnJhJTIwQ0ElMjAwMygxKS5jcmyGNGh0dHA6Ly9jcmwyLmFtZS5nYmwvY3JsL0FNRSUyMEluZnJhJTIwQ0ElMjAwMygxKS5jcmyGNGh0dHA6Ly9jcmwzLmFtZS5nYmwvY3JsL0FNRSUyMEluZnJhJTIwQ0ElMjAwMygxKS5jcmyGNGh0dHA6Ly9jcmw0LmFtZS5nYmwvY3JsL0FNRSUyMEluZnJhJTIwQ0ElMjAwMygxKS5jcmwwgZ0GA1UdIASBlTCBkjAMBgorBgEEAYI3ewEBMGYGCisGAQQBgjd7AgIwWDBWBggrBgEFBQcCAjBKHkgAMwAzAGUAMAAxADkAMgAxAC0ANABkADYANAAtADQAZgA4AGMALQBhADAANQA1AC0ANQBiAGQAYQBmAGYAZAA1AGUAMwAzAGQwDAYKKwYBBAGCN3sDAjAMBgorBgEEAYI3ewQCMB8GA1UdIwQYMBaAFEijrWB1am_sYPNpVdEAsTJX_GzkMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEFBQcDATANBgkqhkiG9w0BAQsFAAOCAgEAQim2jWxcA_UAePUNie40rkvXomRcowu2bm3zqqZlA6gvWitFyQOlqVjqAdFuahGCnpWVU5fIbwSMZZD_koN41BUCPcFln6-j1B9fhApTKqmHfUJpRolHGXm1svwB8fFbR_H720Lcui5lnZSigKlXmQVMK9XjFxvP8nFEEhWW_-b-R3W6SxOiSfcysX4k00IfnxDs2BC5rP_DlR06-XR9gPGqqnEzivX0r-vNHH4jb5OvNYst2IU2pMlmIEhBxEfF75L_fkxblQo5fAxdTtGZaswzz9qixtteZz_MWXHQs3ORpAHYtxp6DRQ4Ka-GZiUIeT4RkcKLzFostql-HLXc3iNKGucpn3-riWdLuEwfEgnYGdytoIGVYfCK8QPQ2PmvD9cekPsq8f-ZGvnXEZoCvEh2snVMurmkwXJpe_v-Kllf1k3-Qx-URdS04gMHagI0VKY7Omc96KMNnEFGUFbJ2KCYXYTdxDfFXGRv5iY_VcZwyGah8migNGdiLWgL2voL1sH8TRSAHf1yS6Qf0QbFT8x50jlN45iqMjX5e0vSvKxD6xV0HLkRHOd81BMI4qFgOhxJyzTcm-hJbMquKmpkv-Ie6zt6iguWBEVoTb7sJ2HrB4VWJFyfYPFj9nbooC1pwYvw2XkUG-m0p2JDrNm6SLHn1Bf375cUSDdBBjRXBgQ&s=Wu82Jkjh8htO_9aXd3EZwN5dD7p0NJ2-VvqfgtjQwQCxqtQp1Yz8c5OIUC5VdA1mdBUVqzaqR8BaAgRMi8xwgsdtwXB2NrIU42tEyrgKmj78L-Y4PdX3umZJrl-LvO8BvLv4r27bdtgxDX9sk-8Pzy1n0QQzSZMvFfUtbXBeD-ZO00MxNI5oJX-nM5-60WpL0YRUvemmV7aKHGasF298axwDd7vugKTavu0Tx9pNeg3IOM-JD_xw7RhXPeOtcqwEbhLe-Txeb1ATIxBtMyJiXXn4W9jQhJT2gkEmU--cL1TTjd1d8a4uYaEHKz1tF9TQXE65b5MeqxXA5bL8y-vTGA&h=RC_DZQIBPrGBsE3EVo9JqnSGAcYKAzvFpQ3kUqhJ2kE
+  response:
+    body:
+      string: '{"sku":{"name":"Standard_LRS","tier":"Standard"},"kind":"StorageV2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000003","name":"storagelocaluser000003","type":"Microsoft.Storage/storageAccounts","location":"eastus2euap","tags":{},"properties":{"enableExtendedGroups":true,"keyCreationTime":{"key1":"2025-06-28T04:03:39.6026784Z","key2":"2025-06-28T04:03:39.6026784Z"},"privateEndpointConnections":[],"isNfsV3Enabled":true,"isLocalUserEnabled":true,"isSftpEnabled":true,"minimumTlsVersion":"TLS1_0","allowBlobPublicAccess":false,"isHnsEnabled":true,"networkAcls":{"ipv6Rules":[],"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Deny"},"supportsHttpsTrafficOnly":true,"encryption":{"services":{"file":{"keyType":"Account","enabled":true,"lastEnabledTime":"2025-06-28T04:03:39.6026784Z"},"blob":{"keyType":"Account","enabled":true,"lastEnabledTime":"2025-06-28T04:03:39.6026784Z"}},"keySource":"Microsoft.Storage"},"accessTier":"Hot","provisioningState":"Succeeded","creationTime":"2025-06-28T04:03:39.5089302Z","primaryEndpoints":{"dfs":"https://storagelocaluser000003.dfs.core.windows.net/","web":"https://storagelocaluser000003.z3.web.core.windows.net/","blob":"https://storagelocaluser000003.blob.core.windows.net/","queue":"https://storagelocaluser000003.queue.core.windows.net/","table":"https://storagelocaluser000003.table.core.windows.net/","file":"https://storagelocaluser000003.file.core.windows.net/"},"primaryLocation":"eastus2euap","statusOfPrimary":"available"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1631'
       content-type:
       - application/json
       date:
-      - Mon, 15 Jul 2024 07:50:44 GMT
+      - Sat, 28 Jun 2025 04:04:00 GMT
       expires:
       - '-1'
       pragma:
@@ -47,7 +148,265 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a,objectId=a7250e3a-0e5e-48e2-9a34-45f1f5e1a91e/eastus2euap/a87f6641-199e-45c5-bcb1-4517a8a822f0
+      - tenantId=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a,objectId=a7250e3a-0e5e-48e2-9a34-45f1f5e1a91e/eastus2euap/ff1d153b-71d3-49c7-9fd9-da1ae26475c2
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage account update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --enable-extended-groups
+      User-Agent:
+      - AZURECLI/2.74.0 azsdk-python-core/1.31.0 Python/3.12.10 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000003?api-version=2024-01-01
+  response:
+    body:
+      string: '{"sku":{"name":"Standard_LRS","tier":"Standard"},"kind":"StorageV2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000003","name":"storagelocaluser000003","type":"Microsoft.Storage/storageAccounts","location":"eastus2euap","tags":{},"properties":{"enableExtendedGroups":true,"keyCreationTime":{"key1":"2025-06-28T04:03:39.6026784Z","key2":"2025-06-28T04:03:39.6026784Z"},"privateEndpointConnections":[],"isNfsV3Enabled":true,"isLocalUserEnabled":true,"isSftpEnabled":true,"minimumTlsVersion":"TLS1_0","allowBlobPublicAccess":false,"isHnsEnabled":true,"networkAcls":{"ipv6Rules":[],"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Deny"},"supportsHttpsTrafficOnly":true,"encryption":{"services":{"file":{"keyType":"Account","enabled":true,"lastEnabledTime":"2025-06-28T04:03:39.6026784Z"},"blob":{"keyType":"Account","enabled":true,"lastEnabledTime":"2025-06-28T04:03:39.6026784Z"}},"keySource":"Microsoft.Storage"},"accessTier":"Hot","provisioningState":"Succeeded","creationTime":"2025-06-28T04:03:39.5089302Z","primaryEndpoints":{"dfs":"https://storagelocaluser000003.dfs.core.windows.net/","web":"https://storagelocaluser000003.z3.web.core.windows.net/","blob":"https://storagelocaluser000003.blob.core.windows.net/","queue":"https://storagelocaluser000003.queue.core.windows.net/","table":"https://storagelocaluser000003.table.core.windows.net/","file":"https://storagelocaluser000003.file.core.windows.net/"},"primaryLocation":"eastus2euap","statusOfPrimary":"available"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1631'
+      content-type:
+      - application/json
+      date:
+      - Sat, 28 Jun 2025 04:04:01 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0 Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3748'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"sku": {"name": "Standard_LRS"}, "tags": {}, "properties": {"encryption":
+      {"services": {"blob": {"enabled": true, "keyType": "Account"}, "file": {"enabled":
+      true, "keyType": "Account"}}, "keySource": "Microsoft.Storage"}, "accessTier":
+      "Hot", "supportsHttpsTrafficOnly": true, "enableExtendedGroups": false, "networkAcls":
+      {"bypass": "AzureServices", "virtualNetworkRules": [], "ipRules": [], "defaultAction":
+      "Deny"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage account update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '420'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -n -g --enable-extended-groups
+      User-Agent:
+      - AZURECLI/2.74.0 azsdk-python-core/1.31.0 Python/3.12.10 (Windows-10-10.0.19045-SP0)
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000003?api-version=2024-01-01
+  response:
+    body:
+      string: '{"sku":{"name":"Standard_LRS","tier":"Standard"},"kind":"StorageV2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000003","name":"storagelocaluser000003","type":"Microsoft.Storage/storageAccounts","location":"eastus2euap","tags":{},"properties":{"enableExtendedGroups":false,"keyCreationTime":{"key1":"2025-06-28T04:03:39.6026784Z","key2":"2025-06-28T04:03:39.6026784Z"},"privateEndpointConnections":[],"isNfsV3Enabled":true,"isLocalUserEnabled":true,"isSftpEnabled":true,"minimumTlsVersion":"TLS1_0","allowBlobPublicAccess":false,"isHnsEnabled":true,"networkAcls":{"ipv6Rules":[],"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Deny"},"supportsHttpsTrafficOnly":true,"encryption":{"services":{"file":{"keyType":"Account","enabled":true,"lastEnabledTime":"2025-06-28T04:03:39.6026784Z"},"blob":{"keyType":"Account","enabled":true,"lastEnabledTime":"2025-06-28T04:03:39.6026784Z"}},"keySource":"Microsoft.Storage"},"accessTier":"Hot","provisioningState":"Succeeded","creationTime":"2025-06-28T04:03:39.5089302Z","primaryEndpoints":{"dfs":"https://storagelocaluser000003.dfs.core.windows.net/","web":"https://storagelocaluser000003.z3.web.core.windows.net/","blob":"https://storagelocaluser000003.blob.core.windows.net/","queue":"https://storagelocaluser000003.queue.core.windows.net/","table":"https://storagelocaluser000003.table.core.windows.net/","file":"https://storagelocaluser000003.file.core.windows.net/"},"primaryLocation":"eastus2euap","statusOfPrimary":"available"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1632'
+      content-type:
+      - application/json
+      date:
+      - Sat, 28 Jun 2025 04:04:04 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0 Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a,objectId=a7250e3a-0e5e-48e2-9a34-45f1f5e1a91e/eastus2euap/68918f36-9057-45af-a199-2a7b1e444624
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage account update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --enable-extended-groups
+      User-Agent:
+      - AZURECLI/2.74.0 azsdk-python-core/1.31.0 Python/3.12.10 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000003?api-version=2024-01-01
+  response:
+    body:
+      string: '{"sku":{"name":"Standard_LRS","tier":"Standard"},"kind":"StorageV2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000003","name":"storagelocaluser000003","type":"Microsoft.Storage/storageAccounts","location":"eastus2euap","tags":{},"properties":{"enableExtendedGroups":false,"keyCreationTime":{"key1":"2025-06-28T04:03:39.6026784Z","key2":"2025-06-28T04:03:39.6026784Z"},"privateEndpointConnections":[],"isNfsV3Enabled":true,"isLocalUserEnabled":true,"isSftpEnabled":true,"minimumTlsVersion":"TLS1_0","allowBlobPublicAccess":false,"isHnsEnabled":true,"networkAcls":{"ipv6Rules":[],"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Deny"},"supportsHttpsTrafficOnly":true,"encryption":{"services":{"file":{"keyType":"Account","enabled":true,"lastEnabledTime":"2025-06-28T04:03:39.6026784Z"},"blob":{"keyType":"Account","enabled":true,"lastEnabledTime":"2025-06-28T04:03:39.6026784Z"}},"keySource":"Microsoft.Storage"},"accessTier":"Hot","provisioningState":"Succeeded","creationTime":"2025-06-28T04:03:39.5089302Z","primaryEndpoints":{"dfs":"https://storagelocaluser000003.dfs.core.windows.net/","web":"https://storagelocaluser000003.z3.web.core.windows.net/","blob":"https://storagelocaluser000003.blob.core.windows.net/","queue":"https://storagelocaluser000003.queue.core.windows.net/","table":"https://storagelocaluser000003.table.core.windows.net/","file":"https://storagelocaluser000003.file.core.windows.net/"},"primaryLocation":"eastus2euap","statusOfPrimary":"available"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1632'
+      content-type:
+      - application/json
+      date:
+      - Sat, 28 Jun 2025 04:04:06 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0 Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"sku": {"name": "Standard_LRS"}, "tags": {}, "properties": {"encryption":
+      {"services": {"blob": {"enabled": true, "keyType": "Account"}, "file": {"enabled":
+      true, "keyType": "Account"}}, "keySource": "Microsoft.Storage"}, "accessTier":
+      "Hot", "supportsHttpsTrafficOnly": true, "enableExtendedGroups": true, "networkAcls":
+      {"bypass": "AzureServices", "virtualNetworkRules": [], "ipRules": [], "defaultAction":
+      "Deny"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage account update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '419'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -n -g --enable-extended-groups
+      User-Agent:
+      - AZURECLI/2.74.0 azsdk-python-core/1.31.0 Python/3.12.10 (Windows-10-10.0.19045-SP0)
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000003?api-version=2024-01-01
+  response:
+    body:
+      string: '{"sku":{"name":"Standard_LRS","tier":"Standard"},"kind":"StorageV2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000003","name":"storagelocaluser000003","type":"Microsoft.Storage/storageAccounts","location":"eastus2euap","tags":{},"properties":{"enableExtendedGroups":true,"keyCreationTime":{"key1":"2025-06-28T04:03:39.6026784Z","key2":"2025-06-28T04:03:39.6026784Z"},"privateEndpointConnections":[],"isNfsV3Enabled":true,"isLocalUserEnabled":true,"isSftpEnabled":true,"minimumTlsVersion":"TLS1_0","allowBlobPublicAccess":false,"isHnsEnabled":true,"networkAcls":{"ipv6Rules":[],"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Deny"},"supportsHttpsTrafficOnly":true,"encryption":{"services":{"file":{"keyType":"Account","enabled":true,"lastEnabledTime":"2025-06-28T04:03:39.6026784Z"},"blob":{"keyType":"Account","enabled":true,"lastEnabledTime":"2025-06-28T04:03:39.6026784Z"}},"keySource":"Microsoft.Storage"},"accessTier":"Hot","provisioningState":"Succeeded","creationTime":"2025-06-28T04:03:39.5089302Z","primaryEndpoints":{"dfs":"https://storagelocaluser000003.dfs.core.windows.net/","web":"https://storagelocaluser000003.z3.web.core.windows.net/","blob":"https://storagelocaluser000003.blob.core.windows.net/","queue":"https://storagelocaluser000003.queue.core.windows.net/","table":"https://storagelocaluser000003.table.core.windows.net/","file":"https://storagelocaluser000003.file.core.windows.net/"},"primaryLocation":"eastus2euap","statusOfPrimary":"available"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1631'
+      content-type:
+      - application/json
+      date:
+      - Sat, 28 Jun 2025 04:04:09 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0 Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a,objectId=a7250e3a-0e5e-48e2-9a34-45f1f5e1a91e/eastus2euap/cc477285-68b6-4f2b-8d58-99d689c07aff
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"permissionScopes": [{"permissions": "r", "service": "blob",
+      "resourceName": "container1"}, {"permissions": "rw", "service": "file", "resourceName":
+      "share2"}], "homeDirectory": "home", "hasSharedKey": false, "hasSshKey": false,
+      "groupId": 1, "allowAclAuthorization": true, "extendedGroups": [3, 4], "isNFSv3Enabled":
+      true}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage account local-user create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '340'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --account-name -g -n --home-directory --permission-scope --permission-scope
+        --has-ssh-key --has-shared-key --group-id --allow-acl-authorization --extended-groups
+        --is-nfsv3-enabled
+      User-Agent:
+      - AZURECLI/2.74.0 azsdk-python-core/1.31.0 Python/3.12.10 (Windows-10-10.0.19045-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000003/localUsers/nfsv3_100?api-version=2024-01-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000003/localusers/nfsv3_100","name":"nfsv3_100","type":"Microsoft.Storage/storageAccounts/localUsers","properties":{"extendedGroups":[3,4],"isNFSv3Enabled":true,"userId":1000,"groupId":1,"allowAclAuthorization":true,"permissionScopes":[{"permissions":"r","service":"blob","resourceName":"container1"},{"permissions":"rw","service":"file","resourceName":"share2"}],"homeDirectory":"home","sid":"S-1-2-0-2864339680-2977357077-3209070155-1000","hasSharedKey":false,"hasSshKey":false}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '652'
+      content-type:
+      - application/json
+      date:
+      - Sat, 28 Jun 2025 04:04:11 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0 Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a,objectId=a7250e3a-0e5e-48e2-9a34-45f1f5e1a91e/eastus2euap/96b47871-10f2-433e-ae41-bbd697b434d7
       x-ms-ratelimit-remaining-subscription-global-writes:
       - '2999'
       x-ms-ratelimit-remaining-subscription-writes:
@@ -68,22 +427,23 @@ interactions:
       - keep-alive
       ParameterSetName:
       - --account-name -g -n --home-directory --permission-scope --group-id --allow-acl-authorization
+        --extended-groups
       User-Agent:
-      - AZURECLI/2.62.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.74.0 azsdk-python-core/1.31.0 Python/3.12.10 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000002/localUsers/cli000003?api-version=2023-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000003/localUsers/nfsv3_100?api-version=2024-01-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000002/localusers/cli000003","name":"cli000003","type":"Microsoft.Storage/storageAccounts/localUsers","properties":{"userId":1000,"groupId":1,"allowAclAuthorization":true,"hasSshPassword":false,"permissionScopes":[{"permissions":"r","service":"blob","resourceName":"container1"},{"permissions":"rw","service":"file","resourceName":"share2"}],"homeDirectory":"home","sid":"S-1-2-0-259443223-4290653894-1569446496-1000","hasSharedKey":false,"hasSshKey":false}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000003/localusers/nfsv3_100","name":"nfsv3_100","type":"Microsoft.Storage/storageAccounts/localUsers","properties":{"extendedGroups":[3,4],"isNFSv3Enabled":true,"userId":1000,"groupId":1,"allowAclAuthorization":true,"hasSshPassword":false,"permissionScopes":[{"permissions":"r","service":"blob","resourceName":"container1"},{"permissions":"rw","service":"file","resourceName":"share2"}],"homeDirectory":"home","sid":"S-1-2-0-2864339680-2977357077-3209070155-1000","hasSharedKey":false,"hasSshKey":false}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '629'
+      - '675'
       content-type:
       - application/json
       date:
-      - Mon, 15 Jul 2024 07:50:46 GMT
+      - Sat, 28 Jun 2025 04:04:13 GMT
       expires:
       - '-1'
       pragma:
@@ -95,7 +455,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a,objectId=a7250e3a-0e5e-48e2-9a34-45f1f5e1a91e/eastus2euap/bc350454-9aaa-4be0-b81c-d27033b7ea3b
+      - tenantId=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a,objectId=a7250e3a-0e5e-48e2-9a34-45f1f5e1a91e/eastus2euap/7b3895ab-01dd-49e5-86bc-f11d2f1c3b66
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '3749'
     status:
@@ -105,7 +465,7 @@ interactions:
     body: '{"properties": {"permissionScopes": [{"permissions": "rw", "service": "file",
       "resourceName": "share2"}], "homeDirectory": "home2", "hasSharedKey": false,
       "hasSshKey": false, "hasSshPassword": false, "groupId": 2, "allowAclAuthorization":
-      false}}'
+      false, "extendedGroups": [5, 6], "isNFSv3Enabled": true}}'
     headers:
       Accept:
       - application/json
@@ -116,27 +476,28 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '246'
+      - '296'
       Content-Type:
       - application/json
       ParameterSetName:
       - --account-name -g -n --home-directory --permission-scope --group-id --allow-acl-authorization
+        --extended-groups
       User-Agent:
-      - AZURECLI/2.62.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.74.0 azsdk-python-core/1.31.0 Python/3.12.10 (Windows-10-10.0.19045-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000002/localUsers/cli000003?api-version=2023-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000003/localUsers/nfsv3_100?api-version=2024-01-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000002/localusers/cli000003","name":"cli000003","type":"Microsoft.Storage/storageAccounts/localUsers","properties":{"userId":1000,"groupId":2,"allowAclAuthorization":false,"hasSshPassword":false,"permissionScopes":[{"permissions":"rw","service":"file","resourceName":"share2"}],"homeDirectory":"home2","sid":"S-1-2-0-259443223-4290653894-1569446496-1000","hasSharedKey":false,"hasSshKey":false}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000003/localusers/nfsv3_100","name":"nfsv3_100","type":"Microsoft.Storage/storageAccounts/localUsers","properties":{"extendedGroups":[5,6],"isNFSv3Enabled":true,"userId":1000,"groupId":2,"allowAclAuthorization":false,"hasSshPassword":false,"permissionScopes":[{"permissions":"rw","service":"file","resourceName":"share2"}],"homeDirectory":"home2","sid":"S-1-2-0-2864339680-2977357077-3209070155-1000","hasSharedKey":false,"hasSshKey":false}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '566'
+      - '612'
       content-type:
       - application/json
       date:
-      - Mon, 15 Jul 2024 07:50:46 GMT
+      - Sat, 28 Jun 2025 04:04:15 GMT
       expires:
       - '-1'
       pragma:
@@ -148,11 +509,11 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a,objectId=a7250e3a-0e5e-48e2-9a34-45f1f5e1a91e/eastus2euap/34d0b92b-127e-4450-b190-ff804c7158bd
+      - tenantId=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a,objectId=a7250e3a-0e5e-48e2-9a34-45f1f5e1a91e/eastus2euap/daea10a7-25ae-406e-ab26-a09290a656f8
       x-ms-ratelimit-remaining-subscription-global-writes:
-      - '2999'
+      - '2998'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '199'
+      - '198'
     status:
       code: 200
       message: OK
@@ -168,23 +529,23 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --account-name -g
+      - --account-name -g --include
       User-Agent:
-      - AZURECLI/2.62.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.74.0 azsdk-python-core/1.31.0 Python/3.12.10 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000002/localUsers?api-version=2023-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000003/localUsers?api-version=2024-01-01&$include=nfsv3
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000002/localusers/cli000003","name":"cli000003","type":"Microsoft.Storage/storageAccounts/localUsers","properties":{"userId":1000,"groupId":2,"allowAclAuthorization":false,"hasSshPassword":false,"permissionScopes":[{"permissions":"rw","service":"file","resourceName":"share2"}],"homeDirectory":"home2","sid":"S-1-2-0-259443223-4290653894-1569446496-1000","hasSharedKey":false,"hasSshKey":false}}]}'
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000003/localusers/nfsv3_100","name":"nfsv3_100","type":"Microsoft.Storage/storageAccounts/localUsers","properties":{"extendedGroups":[5,6],"isNFSv3Enabled":true,"userId":1000,"groupId":2,"allowAclAuthorization":false,"hasSshPassword":false,"permissionScopes":[{"permissions":"rw","service":"file","resourceName":"share2"}],"homeDirectory":"home2","sid":"S-1-2-0-2864339680-2977357077-3209070155-1000","hasSharedKey":false,"hasSshKey":false}}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '578'
+      - '624'
       content-type:
       - application/json
       date:
-      - Mon, 15 Jul 2024 07:50:48 GMT
+      - Sat, 28 Jun 2025 04:04:16 GMT
       expires:
       - '-1'
       pragma:
@@ -196,9 +557,9 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a,objectId=a7250e3a-0e5e-48e2-9a34-45f1f5e1a91e/eastus2euap/9eba88ee-102a-4791-b45f-f1252fe2d125
+      - tenantId=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a,objectId=a7250e3a-0e5e-48e2-9a34-45f1f5e1a91e/eastus2euap/ce9f444a-f0f8-4bcc-8e08-0b4a6887b563
       x-ms-ratelimit-remaining-subscription-global-reads:
-      - '3749'
+      - '3748'
     status:
       code: 200
       message: OK
@@ -224,12 +585,12 @@ interactions:
       - --account-name -g -n --home-directory --permission-scope --permission-scope
         --has-ssh-key --has-shared-key --group-id --allow-acl-authorization
       User-Agent:
-      - AZURECLI/2.62.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.74.0 azsdk-python-core/1.31.0 Python/3.12.10 (Windows-10-10.0.19045-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000002/localUsers/notcli000004?api-version=2023-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000003/localUsers/notcli000002?api-version=2024-01-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000002/localusers/notcli000004","name":"notcli000004","type":"Microsoft.Storage/storageAccounts/localUsers","properties":{"userId":1001,"groupId":2,"allowAclAuthorization":true,"permissionScopes":[{"permissions":"r","service":"blob","resourceName":"container1"},{"permissions":"rw","service":"file","resourceName":"share2"}],"homeDirectory":"home","sid":"S-1-2-0-2655997081-2556675870-3568867302-1001","hasSharedKey":false,"hasSshKey":false}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000003/localusers/notcli000002","name":"notcli000002","type":"Microsoft.Storage/storageAccounts/localUsers","properties":{"userId":1001,"groupId":2,"allowAclAuthorization":true,"permissionScopes":[{"permissions":"r","service":"blob","resourceName":"container1"},{"permissions":"rw","service":"file","resourceName":"share2"}],"homeDirectory":"home","sid":"S-1-2-0-1000029093-2821292628-2884945347-1001","hasSharedKey":false,"hasSshKey":false}}'
     headers:
       cache-control:
       - no-cache
@@ -238,7 +599,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Mon, 15 Jul 2024 07:50:49 GMT
+      - Sat, 28 Jun 2025 04:04:19 GMT
       expires:
       - '-1'
       pragma:
@@ -250,7 +611,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a,objectId=a7250e3a-0e5e-48e2-9a34-45f1f5e1a91e/eastus2euap/5db753d1-300d-492f-8ed3-c04e74611853
+      - tenantId=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a,objectId=a7250e3a-0e5e-48e2-9a34-45f1f5e1a91e/eastus2euap/6f42c715-35cc-4357-88c7-160471ea792b
       x-ms-ratelimit-remaining-subscription-global-writes:
       - '2999'
       x-ms-ratelimit-remaining-subscription-writes:
@@ -272,21 +633,21 @@ interactions:
       ParameterSetName:
       - --account-name -g
       User-Agent:
-      - AZURECLI/2.62.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.74.0 azsdk-python-core/1.31.0 Python/3.12.10 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000002/localUsers?api-version=2023-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000003/localUsers?api-version=2024-01-01
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000002/localusers/cli000003","name":"cli000003","type":"Microsoft.Storage/storageAccounts/localUsers","properties":{"userId":1000,"groupId":2,"allowAclAuthorization":false,"hasSshPassword":false,"permissionScopes":[{"permissions":"rw","service":"file","resourceName":"share2"}],"homeDirectory":"home2","sid":"S-1-2-0-259443223-4290653894-1569446496-1000","hasSharedKey":false,"hasSshKey":false}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000002/localusers/notcli000004","name":"notcli000004","type":"Microsoft.Storage/storageAccounts/localUsers","properties":{"userId":1001,"groupId":2,"allowAclAuthorization":true,"hasSshPassword":false,"permissionScopes":[{"permissions":"r","service":"blob","resourceName":"container1"},{"permissions":"rw","service":"file","resourceName":"share2"}],"homeDirectory":"home","sid":"S-1-2-0-2655997081-2556675870-3568867302-1001","hasSharedKey":false,"hasSshKey":false}}]}'
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000003/localusers/notcli000002","name":"notcli000002","type":"Microsoft.Storage/storageAccounts/localUsers","properties":{"userId":1001,"groupId":2,"allowAclAuthorization":true,"hasSshPassword":false,"permissionScopes":[{"permissions":"r","service":"blob","resourceName":"container1"},{"permissions":"rw","service":"file","resourceName":"share2"}],"homeDirectory":"home","sid":"S-1-2-0-1000029093-2821292628-2884945347-1001","hasSharedKey":false,"hasSshKey":false}}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1215'
+      - '648'
       content-type:
       - application/json
       date:
-      - Mon, 15 Jul 2024 07:50:51 GMT
+      - Sat, 28 Jun 2025 04:04:21 GMT
       expires:
       - '-1'
       pragma:
@@ -298,7 +659,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a,objectId=a7250e3a-0e5e-48e2-9a34-45f1f5e1a91e/eastus2euap/7a75c2ed-1290-4c1f-b060-f7dac359ae49
+      - tenantId=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a,objectId=a7250e3a-0e5e-48e2-9a34-45f1f5e1a91e/eastus2euap/c3e0039a-1702-45a4-b9f8-dbe6f8faef41
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '3749'
     status:
@@ -316,23 +677,23 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --account-name -g --filter
+      - --account-name -g --filter --include
       User-Agent:
-      - AZURECLI/2.62.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.74.0 azsdk-python-core/1.31.0 Python/3.12.10 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000002/localUsers?api-version=2023-05-01&$filter=startswith%28name%2C%20cli%29
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000003/localUsers?api-version=2024-01-01&$filter=startswith%28name%2C%20nfsv3%29&$include=nfsv3
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000002/localusers/cli000003","name":"cli000003","type":"Microsoft.Storage/storageAccounts/localUsers","properties":{"userId":1000,"groupId":2,"allowAclAuthorization":false,"hasSshPassword":false,"permissionScopes":[{"permissions":"rw","service":"file","resourceName":"share2"}],"homeDirectory":"home2","sid":"S-1-2-0-259443223-4290653894-1569446496-1000","hasSharedKey":false,"hasSshKey":false}}]}'
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000003/localusers/nfsv3_100","name":"nfsv3_100","type":"Microsoft.Storage/storageAccounts/localUsers","properties":{"extendedGroups":[5,6],"isNFSv3Enabled":true,"userId":1000,"groupId":2,"allowAclAuthorization":false,"hasSshPassword":false,"permissionScopes":[{"permissions":"rw","service":"file","resourceName":"share2"}],"homeDirectory":"home2","sid":"S-1-2-0-2864339680-2977357077-3209070155-1000","hasSharedKey":false,"hasSshKey":false}}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '578'
+      - '624'
       content-type:
       - application/json
       date:
-      - Mon, 15 Jul 2024 07:50:52 GMT
+      - Sat, 28 Jun 2025 04:04:22 GMT
       expires:
       - '-1'
       pragma:
@@ -344,7 +705,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a,objectId=a7250e3a-0e5e-48e2-9a34-45f1f5e1a91e/eastus2euap/e33e23a1-e0ff-4e95-9b8b-4d8a56d13b47
+      - tenantId=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a,objectId=a7250e3a-0e5e-48e2-9a34-45f1f5e1a91e/eastus2euap/203d11fa-3e81-4951-a1b0-0792cee76b2e
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '3749'
     status:
@@ -364,21 +725,21 @@ interactions:
       ParameterSetName:
       - --account-name -g -n
       User-Agent:
-      - AZURECLI/2.62.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.74.0 azsdk-python-core/1.31.0 Python/3.12.10 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000002/localUsers/cli000003?api-version=2023-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000003/localUsers/nfsv3_100?api-version=2024-01-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000002/localusers/cli000003","name":"cli000003","type":"Microsoft.Storage/storageAccounts/localUsers","properties":{"userId":1000,"groupId":2,"allowAclAuthorization":false,"hasSshPassword":false,"permissionScopes":[{"permissions":"rw","service":"file","resourceName":"share2"}],"homeDirectory":"home2","sid":"S-1-2-0-259443223-4290653894-1569446496-1000","hasSharedKey":false,"hasSshKey":false}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000003/localusers/nfsv3_100","name":"nfsv3_100","type":"Microsoft.Storage/storageAccounts/localUsers","properties":{"extendedGroups":[5,6],"isNFSv3Enabled":true,"userId":1000,"groupId":2,"allowAclAuthorization":false,"hasSshPassword":false,"permissionScopes":[{"permissions":"rw","service":"file","resourceName":"share2"}],"homeDirectory":"home2","sid":"S-1-2-0-2864339680-2977357077-3209070155-1000","hasSharedKey":false,"hasSshKey":false}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '566'
+      - '612'
       content-type:
       - application/json
       date:
-      - Mon, 15 Jul 2024 07:50:54 GMT
+      - Sat, 28 Jun 2025 04:04:24 GMT
       expires:
       - '-1'
       pragma:
@@ -390,111 +751,9 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a,objectId=a7250e3a-0e5e-48e2-9a34-45f1f5e1a91e/eastus2euap/0a6db3a8-8aa9-4657-b3b8-1409361f700d
+      - tenantId=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a,objectId=a7250e3a-0e5e-48e2-9a34-45f1f5e1a91e/eastus2euap/062b8b1f-2e04-4e00-bcf9-b0c2c9b86d91
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '3748'
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - storage account local-user update
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --account-name -g -n --ssh-authorized-key
-      User-Agent:
-      - AZURECLI/2.62.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000002/localUsers/cli000003?api-version=2023-05-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000002/localusers/cli000003","name":"cli000003","type":"Microsoft.Storage/storageAccounts/localUsers","properties":{"userId":1000,"groupId":2,"allowAclAuthorization":false,"hasSshPassword":false,"permissionScopes":[{"permissions":"rw","service":"file","resourceName":"share2"}],"homeDirectory":"home2","sid":"S-1-2-0-259443223-4290653894-1569446496-1000","hasSharedKey":false,"hasSshKey":false}}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '566'
-      content-type:
-      - application/json
-      date:
-      - Mon, 15 Jul 2024 07:50:56 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0 Microsoft-HTTPAPI/2.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-operation-identifier:
-      - tenantId=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a,objectId=a7250e3a-0e5e-48e2-9a34-45f1f5e1a91e/eastus2euap/4dba298c-b430-48ba-8b4e-e040e1ac5e4d
-      x-ms-ratelimit-remaining-subscription-global-reads:
-      - '3749'
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '{"properties": {"permissionScopes": [{"permissions": "rw", "service": "file",
-      "resourceName": "share2"}], "homeDirectory": "home2", "sshAuthorizedKeys": [{"description":
-      "", "key": "ssh-rsa a2V5"}], "hasSharedKey": false, "hasSshKey": false, "hasSshPassword":
-      false, "groupId": 2, "allowAclAuthorization": false}}'
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - storage account local-user update
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '313'
-      Content-Type:
-      - application/json
-      ParameterSetName:
-      - --account-name -g -n --ssh-authorized-key
-      User-Agent:
-      - AZURECLI/2.62.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
-    method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000002/localUsers/cli000003?api-version=2023-05-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000002/localusers/cli000003","name":"cli000003","type":"Microsoft.Storage/storageAccounts/localUsers","properties":{"userId":1000,"groupId":2,"allowAclAuthorization":false,"hasSshPassword":false,"permissionScopes":[{"permissions":"rw","service":"file","resourceName":"share2"}],"homeDirectory":"home2","sshAuthorizedKeys":[{"description":"","key":"ssh-rsa
-        a2V5"}],"sid":"S-1-2-0-259443223-4290653894-1569446496-1000","hasSharedKey":false,"hasSshKey":false}}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '628'
-      content-type:
-      - application/json
-      date:
-      - Mon, 15 Jul 2024 07:50:56 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0 Microsoft-HTTPAPI/2.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-operation-identifier:
-      - tenantId=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a,objectId=a7250e3a-0e5e-48e2-9a34-45f1f5e1a91e/eastus2euap/bb19b722-629f-4f44-b32c-58bf51fc2509
-      x-ms-ratelimit-remaining-subscription-global-writes:
-      - '2999'
-      x-ms-ratelimit-remaining-subscription-writes:
-      - '199'
     status:
       code: 200
       message: OK
@@ -514,9 +773,9 @@ interactions:
       ParameterSetName:
       - --account-name -g -n
       User-Agent:
-      - AZURECLI/2.62.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.74.0 azsdk-python-core/1.31.0 Python/3.12.10 (Windows-10-10.0.19045-SP0)
     method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000002/localUsers/cli000003/listKeys?api-version=2023-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000003/localUsers/nfsv3_100/listKeys?api-version=2024-01-01
   response:
     body:
       string: '{}'
@@ -528,7 +787,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Mon, 15 Jul 2024 07:50:58 GMT
+      - Sat, 28 Jun 2025 04:04:25 GMT
       expires:
       - '-1'
       pragma:
@@ -540,7 +799,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a,objectId=a7250e3a-0e5e-48e2-9a34-45f1f5e1a91e/eastus2euap/47b1e8fc-273b-491a-b8d5-209f798d1336
+      - tenantId=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a,objectId=a7250e3a-0e5e-48e2-9a34-45f1f5e1a91e/eastus2euap/96d90def-0b64-4a57-b0d7-6684fe011461
       x-ms-ratelimit-remaining-subscription-global-writes:
       - '2999'
       x-ms-ratelimit-remaining-subscription-writes:
@@ -564,12 +823,12 @@ interactions:
       ParameterSetName:
       - --account-name -g -n
       User-Agent:
-      - AZURECLI/2.62.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.74.0 azsdk-python-core/1.31.0 Python/3.12.10 (Windows-10-10.0.19045-SP0)
     method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000002/localUsers/cli000003/regeneratePassword?api-version=2023-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000003/localUsers/notcli000002/regeneratePassword?api-version=2024-01-01
   response:
     body:
-      string: '{"sshPassword":"WI4JD9UlOZ9GfvL/nBgI9lzKlv0n9SGV"}'
+      string: '{"sshPassword":"Ui+06SmqkP0Fwre9TnSyKsncwyBq2cdd"}'
     headers:
       cache-control:
       - no-cache
@@ -578,7 +837,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Mon, 15 Jul 2024 07:51:00 GMT
+      - Sat, 28 Jun 2025 04:04:27 GMT
       expires:
       - '-1'
       pragma:
@@ -590,7 +849,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a,objectId=a7250e3a-0e5e-48e2-9a34-45f1f5e1a91e/eastus2euap/89aae28d-0c7c-4a87-81b1-ed010ddacd84
+      - tenantId=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a,objectId=a7250e3a-0e5e-48e2-9a34-45f1f5e1a91e/eastus2euap/6af40020-c43a-41c0-b402-311307d130dc
       x-ms-ratelimit-remaining-subscription-global-writes:
       - '2999'
       x-ms-ratelimit-remaining-subscription-writes:
@@ -614,21 +873,23 @@ interactions:
       ParameterSetName:
       - --account-name -g -n
       User-Agent:
-      - AZURECLI/2.62.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.74.0 azsdk-python-core/1.31.0 Python/3.12.10 (Windows-10-10.0.19045-SP0)
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000002/localUsers/cli000003?api-version=2023-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000003/localUsers/nfsv3_100?api-version=2024-01-01
   response:
     body:
       string: ''
     headers:
       cache-control:
       - no-cache
+      connection:
+      - close
       content-length:
       - '0'
       content-type:
       - text/plain; charset=utf-8
       date:
-      - Mon, 15 Jul 2024 07:51:01 GMT
+      - Sat, 28 Jun 2025 04:04:29 GMT
       expires:
       - '-1'
       pragma:
@@ -640,7 +901,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a,objectId=a7250e3a-0e5e-48e2-9a34-45f1f5e1a91e/eastus2euap/1997e4a6-7c05-417f-a2a0-6f9ef7ed34b7
+      - tenantId=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a,objectId=a7250e3a-0e5e-48e2-9a34-45f1f5e1a91e/eastus2euap/3fe25319-3e70-4fcc-b185-1c084e047a81
       x-ms-ratelimit-remaining-subscription-deletes:
       - '199'
       x-ms-ratelimit-remaining-subscription-global-deletes:
@@ -670,21 +931,21 @@ interactions:
       - --account-name -g -n --home-directory --permission-scope --permission-scope
         --has-ssh-key --has-shared-key --group-id --allow-acl-authorization
       User-Agent:
-      - AZURECLI/2.62.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.74.0 azsdk-python-core/1.31.0 Python/3.12.10 (Windows-10-10.0.19045-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000002/localUsers/cli000005?api-version=2023-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000003/localUsers/cli000004?api-version=2024-01-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000002/localusers/cli000005","name":"cli000005","type":"Microsoft.Storage/storageAccounts/localUsers","properties":{"userId":1002,"groupId":1,"allowAclAuthorization":true,"permissionScopes":[{"permissions":"r","service":"blob","resourceName":"container1"},{"permissions":"rw","service":"file","resourceName":"share2"}],"homeDirectory":"home","sid":"S-1-2-0-3936518271-2781779176-4176656412-1002","hasSharedKey":false,"hasSshKey":false}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000003/localusers/cli000004","name":"cli000004","type":"Microsoft.Storage/storageAccounts/localUsers","properties":{"userId":1002,"groupId":1,"allowAclAuthorization":true,"permissionScopes":[{"permissions":"r","service":"blob","resourceName":"container1"},{"permissions":"rw","service":"file","resourceName":"share2"}],"homeDirectory":"home","sid":"S-1-2-0-1679551683-4217412614-490355778-1002","hasSharedKey":false,"hasSshKey":false}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '607'
+      - '606'
       content-type:
       - application/json
       date:
-      - Mon, 15 Jul 2024 07:51:03 GMT
+      - Sat, 28 Jun 2025 04:04:32 GMT
       expires:
       - '-1'
       pragma:
@@ -696,7 +957,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a,objectId=a7250e3a-0e5e-48e2-9a34-45f1f5e1a91e/eastus2euap/887fc38c-c734-4101-b706-032f6e3d1be1
+      - tenantId=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a,objectId=a7250e3a-0e5e-48e2-9a34-45f1f5e1a91e/eastus2euap/4d4753de-6079-4f9a-9b96-01f41d636bca
       x-ms-ratelimit-remaining-subscription-global-writes:
       - '2998'
       x-ms-ratelimit-remaining-subscription-writes:
@@ -726,12 +987,12 @@ interactions:
       - --account-name -g -n --home-directory --permission-scope --permission-scope
         --has-ssh-key --has-shared-key --group-id --allow-acl-authorization
       User-Agent:
-      - AZURECLI/2.62.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.74.0 azsdk-python-core/1.31.0 Python/3.12.10 (Windows-10-10.0.19045-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000002/localUsers/cli000006?api-version=2023-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000003/localUsers/cli000005?api-version=2024-01-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000002/localusers/cli000006","name":"cli000006","type":"Microsoft.Storage/storageAccounts/localUsers","properties":{"userId":1003,"groupId":1,"allowAclAuthorization":true,"permissionScopes":[{"permissions":"r","service":"blob","resourceName":"container1"},{"permissions":"rw","service":"file","resourceName":"share2"}],"homeDirectory":"home","sid":"S-1-2-0-1114963197-2923825689-1277316669-1003","hasSharedKey":false,"hasSshKey":false}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000003/localusers/cli000005","name":"cli000005","type":"Microsoft.Storage/storageAccounts/localUsers","properties":{"userId":1003,"groupId":1,"allowAclAuthorization":true,"permissionScopes":[{"permissions":"r","service":"blob","resourceName":"container1"},{"permissions":"rw","service":"file","resourceName":"share2"}],"homeDirectory":"home","sid":"S-1-2-0-3587229045-1371375234-1640896041-1003","hasSharedKey":false,"hasSshKey":false}}'
     headers:
       cache-control:
       - no-cache
@@ -740,7 +1001,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Mon, 15 Jul 2024 07:51:05 GMT
+      - Sat, 28 Jun 2025 04:04:33 GMT
       expires:
       - '-1'
       pragma:
@@ -752,7 +1013,121 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a,objectId=a7250e3a-0e5e-48e2-9a34-45f1f5e1a91e/eastus2euap/3e1e5d28-38bc-4969-b4e7-bfc81db62629
+      - tenantId=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a,objectId=a7250e3a-0e5e-48e2-9a34-45f1f5e1a91e/eastus2euap/c7ea810b-d708-46a4-b22d-f252e79ff85b
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"permissionScopes": [{"permissions": "r", "service": "blob",
+      "resourceName": "container1"}, {"permissions": "rw", "service": "file", "resourceName":
+      "share2"}], "homeDirectory": "home", "hasSharedKey": false, "hasSshKey": false,
+      "groupId": 1, "allowAclAuthorization": true}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage account local-user create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '290'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --account-name -g -n --home-directory --permission-scope --permission-scope
+        --has-ssh-key --has-shared-key --group-id --allow-acl-authorization
+      User-Agent:
+      - AZURECLI/2.74.0 azsdk-python-core/1.31.0 Python/3.12.10 (Windows-10-10.0.19045-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000003/localUsers/cli000006?api-version=2024-01-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000003/localusers/cli000006","name":"cli000006","type":"Microsoft.Storage/storageAccounts/localUsers","properties":{"userId":1004,"groupId":1,"allowAclAuthorization":true,"permissionScopes":[{"permissions":"r","service":"blob","resourceName":"container1"},{"permissions":"rw","service":"file","resourceName":"share2"}],"homeDirectory":"home","sid":"S-1-2-0-806121170-3686789150-1571183275-1004","hasSharedKey":false,"hasSshKey":false}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '606'
+      content-type:
+      - application/json
+      date:
+      - Sat, 28 Jun 2025 04:04:35 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0 Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a,objectId=a7250e3a-0e5e-48e2-9a34-45f1f5e1a91e/eastus2euap/cb83ece8-1f6f-46b7-ba08-3d8db5599662
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"permissionScopes": [{"permissions": "r", "service": "blob",
+      "resourceName": "container1"}, {"permissions": "rw", "service": "file", "resourceName":
+      "share2"}], "homeDirectory": "home", "hasSharedKey": false, "hasSshKey": false,
+      "groupId": 1, "allowAclAuthorization": true}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage account local-user create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '290'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --account-name -g -n --home-directory --permission-scope --permission-scope
+        --has-ssh-key --has-shared-key --group-id --allow-acl-authorization
+      User-Agent:
+      - AZURECLI/2.74.0 azsdk-python-core/1.31.0 Python/3.12.10 (Windows-10-10.0.19045-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000003/localUsers/cli000007?api-version=2024-01-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000003/localusers/cli000007","name":"cli000007","type":"Microsoft.Storage/storageAccounts/localUsers","properties":{"userId":1005,"groupId":1,"allowAclAuthorization":true,"permissionScopes":[{"permissions":"r","service":"blob","resourceName":"container1"},{"permissions":"rw","service":"file","resourceName":"share2"}],"homeDirectory":"home","sid":"S-1-2-0-2200779236-1675572461-1973551343-1005","hasSharedKey":false,"hasSshKey":false}}'
+    headers:
+      cache-control:
+      - no-cache
+      connection:
+      - close
+      content-length:
+      - '607'
+      content-type:
+      - application/json
+      date:
+      - Sat, 28 Jun 2025 04:04:38 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0 Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a,objectId=a7250e3a-0e5e-48e2-9a34-45f1f5e1a91e/eastus2euap/453101b0-96e5-44f5-90d8-327a729d6859
       x-ms-ratelimit-remaining-subscription-global-writes:
       - '2998'
       x-ms-ratelimit-remaining-subscription-writes:
@@ -782,124 +1157,12 @@ interactions:
       - --account-name -g -n --home-directory --permission-scope --permission-scope
         --has-ssh-key --has-shared-key --group-id --allow-acl-authorization
       User-Agent:
-      - AZURECLI/2.62.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.74.0 azsdk-python-core/1.31.0 Python/3.12.10 (Windows-10-10.0.19045-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000002/localUsers/cli000007?api-version=2023-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000003/localUsers/cli000008?api-version=2024-01-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000002/localusers/cli000007","name":"cli000007","type":"Microsoft.Storage/storageAccounts/localUsers","properties":{"userId":1004,"groupId":1,"allowAclAuthorization":true,"permissionScopes":[{"permissions":"r","service":"blob","resourceName":"container1"},{"permissions":"rw","service":"file","resourceName":"share2"}],"homeDirectory":"home","sid":"S-1-2-0-2058749126-1151262988-2811272029-1004","hasSharedKey":false,"hasSshKey":false}}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '607'
-      content-type:
-      - application/json
-      date:
-      - Mon, 15 Jul 2024 07:51:06 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0 Microsoft-HTTPAPI/2.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-operation-identifier:
-      - tenantId=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a,objectId=a7250e3a-0e5e-48e2-9a34-45f1f5e1a91e/eastus2euap/8319d791-84c8-40a4-9b0a-f0e2ed6ec508
-      x-ms-ratelimit-remaining-subscription-global-writes:
-      - '2999'
-      x-ms-ratelimit-remaining-subscription-writes:
-      - '199'
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '{"properties": {"permissionScopes": [{"permissions": "r", "service": "blob",
-      "resourceName": "container1"}, {"permissions": "rw", "service": "file", "resourceName":
-      "share2"}], "homeDirectory": "home", "hasSharedKey": false, "hasSshKey": false,
-      "groupId": 1, "allowAclAuthorization": true}}'
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - storage account local-user create
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '290'
-      Content-Type:
-      - application/json
-      ParameterSetName:
-      - --account-name -g -n --home-directory --permission-scope --permission-scope
-        --has-ssh-key --has-shared-key --group-id --allow-acl-authorization
-      User-Agent:
-      - AZURECLI/2.62.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
-    method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000002/localUsers/cli000008?api-version=2023-05-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000002/localusers/cli000008","name":"cli000008","type":"Microsoft.Storage/storageAccounts/localUsers","properties":{"userId":1005,"groupId":1,"allowAclAuthorization":true,"permissionScopes":[{"permissions":"r","service":"blob","resourceName":"container1"},{"permissions":"rw","service":"file","resourceName":"share2"}],"homeDirectory":"home","sid":"S-1-2-0-3020759848-4075199506-2613358959-1005","hasSharedKey":false,"hasSshKey":false}}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '607'
-      content-type:
-      - application/json
-      date:
-      - Mon, 15 Jul 2024 07:51:09 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0 Microsoft-HTTPAPI/2.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-operation-identifier:
-      - tenantId=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a,objectId=a7250e3a-0e5e-48e2-9a34-45f1f5e1a91e/eastus2euap/6bddea7c-0719-4b4b-823b-717e8a4404b9
-      x-ms-ratelimit-remaining-subscription-global-writes:
-      - '2999'
-      x-ms-ratelimit-remaining-subscription-writes:
-      - '199'
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '{"properties": {"permissionScopes": [{"permissions": "r", "service": "blob",
-      "resourceName": "container1"}, {"permissions": "rw", "service": "file", "resourceName":
-      "share2"}], "homeDirectory": "home", "hasSharedKey": false, "hasSshKey": false,
-      "groupId": 1, "allowAclAuthorization": true}}'
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - storage account local-user create
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '290'
-      Content-Type:
-      - application/json
-      ParameterSetName:
-      - --account-name -g -n --home-directory --permission-scope --permission-scope
-        --has-ssh-key --has-shared-key --group-id --allow-acl-authorization
-      User-Agent:
-      - AZURECLI/2.62.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
-    method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000002/localUsers/cli000009?api-version=2023-05-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000002/localusers/cli000009","name":"cli000009","type":"Microsoft.Storage/storageAccounts/localUsers","properties":{"userId":1006,"groupId":1,"allowAclAuthorization":true,"permissionScopes":[{"permissions":"r","service":"blob","resourceName":"container1"},{"permissions":"rw","service":"file","resourceName":"share2"}],"homeDirectory":"home","sid":"S-1-2-0-302394010-1513588342-684664950-1006","hasSharedKey":false,"hasSshKey":false}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000003/localusers/cli000008","name":"cli000008","type":"Microsoft.Storage/storageAccounts/localUsers","properties":{"userId":1006,"groupId":1,"allowAclAuthorization":true,"permissionScopes":[{"permissions":"r","service":"blob","resourceName":"container1"},{"permissions":"rw","service":"file","resourceName":"share2"}],"homeDirectory":"home","sid":"S-1-2-0-935102868-899741484-2365732141-1006","hasSharedKey":false,"hasSshKey":false}}'
     headers:
       cache-control:
       - no-cache
@@ -908,7 +1171,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Mon, 15 Jul 2024 07:51:10 GMT
+      - Sat, 28 Jun 2025 04:04:39 GMT
       expires:
       - '-1'
       pragma:
@@ -920,11 +1183,11 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a,objectId=a7250e3a-0e5e-48e2-9a34-45f1f5e1a91e/eastus2euap/c4a83a4b-c140-4973-a9a7-af2f7cdc1613
+      - tenantId=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a,objectId=a7250e3a-0e5e-48e2-9a34-45f1f5e1a91e/eastus2euap/049b296f-6761-4b0d-941a-fdd3294f3655
       x-ms-ratelimit-remaining-subscription-global-writes:
-      - '2999'
+      - '2998'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '199'
+      - '198'
     status:
       code: 200
       message: OK
@@ -942,21 +1205,21 @@ interactions:
       ParameterSetName:
       - --account-name -g --maxpagesize
       User-Agent:
-      - AZURECLI/2.62.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.74.0 azsdk-python-core/1.31.0 Python/3.12.10 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000002/localUsers?api-version=2023-05-01&$maxpagesize=3
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000003/localUsers?api-version=2024-01-01&$maxpagesize=3
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000002/localusers/cli000007","name":"cli000007","type":"Microsoft.Storage/storageAccounts/localUsers","properties":{"userId":1004,"groupId":1,"allowAclAuthorization":true,"hasSshPassword":false,"permissionScopes":[{"permissions":"r","service":"blob","resourceName":"container1"},{"permissions":"rw","service":"file","resourceName":"share2"}],"homeDirectory":"home","sid":"S-1-2-0-2058749126-1151262988-2811272029-1004","hasSharedKey":false,"hasSshKey":false}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000002/localusers/cli000006","name":"cli000006","type":"Microsoft.Storage/storageAccounts/localUsers","properties":{"userId":1003,"groupId":1,"allowAclAuthorization":true,"hasSshPassword":false,"permissionScopes":[{"permissions":"r","service":"blob","resourceName":"container1"},{"permissions":"rw","service":"file","resourceName":"share2"}],"homeDirectory":"home","sid":"S-1-2-0-1114963197-2923825689-1277316669-1003","hasSharedKey":false,"hasSshKey":false}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000002/localusers/cli000008","name":"cli000008","type":"Microsoft.Storage/storageAccounts/localUsers","properties":{"userId":1005,"groupId":1,"allowAclAuthorization":true,"hasSshPassword":false,"permissionScopes":[{"permissions":"r","service":"blob","resourceName":"container1"},{"permissions":"rw","service":"file","resourceName":"share2"}],"homeDirectory":"home","sid":"S-1-2-0-3020759848-4075199506-2613358959-1005","hasSharedKey":false,"hasSshKey":false}}],"nextLink":"https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000002/localusers?api-version=2023-05-01&$maxpagesize=3&$skipToken=2!104!MDAwMDM0IWxvY2FsdXNlci9jbGlsaGl0bmtzaWxicGRrYmRucTZxc2ghMDAwMDI4ITk5OTktMTItMzFUMjM6NTk6NTkuOTk5OTk5OVoh"}'
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000003/localusers/cli000008","name":"cli000008","type":"Microsoft.Storage/storageAccounts/localUsers","properties":{"userId":1006,"groupId":1,"allowAclAuthorization":true,"hasSshPassword":false,"permissionScopes":[{"permissions":"r","service":"blob","resourceName":"container1"},{"permissions":"rw","service":"file","resourceName":"share2"}],"homeDirectory":"home","sid":"S-1-2-0-935102868-899741484-2365732141-1006","hasSharedKey":false,"hasSshKey":false}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000003/localusers/cli000005","name":"cli000005","type":"Microsoft.Storage/storageAccounts/localUsers","properties":{"userId":1003,"groupId":1,"allowAclAuthorization":true,"hasSshPassword":false,"permissionScopes":[{"permissions":"r","service":"blob","resourceName":"container1"},{"permissions":"rw","service":"file","resourceName":"share2"}],"homeDirectory":"home","sid":"S-1-2-0-3587229045-1371375234-1640896041-1003","hasSharedKey":false,"hasSshKey":false}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000003/localusers/cli000006","name":"cli000006","type":"Microsoft.Storage/storageAccounts/localUsers","properties":{"userId":1004,"groupId":1,"allowAclAuthorization":true,"hasSshPassword":false,"permissionScopes":[{"permissions":"r","service":"blob","resourceName":"container1"},{"permissions":"rw","service":"file","resourceName":"share2"}],"homeDirectory":"home","sid":"S-1-2-0-806121170-3686789150-1571183275-1004","hasSharedKey":false,"hasSshKey":false}}],"nextLink":"https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000003/localusers?api-version=2024-01-01&$maxpagesize=3&$skipToken=2!300!MDAwMTgwIVZCYW8ycVAxMk1uZi9HNFllUmh2TDNOMGIzSmhaMlZzYjJOaGJIVnpaWEpoYm0xbU5EZHVhd0V3TVVSQ1JUZEZNVUV4TXpNMU1FVXdMeVJoWTJOdmRXNTBiV1YwWVdSaGRHRUJNREZFUWtVM1JURkNORUUyUlVFM015OXNiMk5oYkhWelpYSXZZMnhwYjJwNGVXWXlOV3h0Y0hKdWFuVjRlSFp4ZFRKd0ZnQjFBQ1hJQVFBQSEwMDAwMjghMjAyNS0wNi0yOFQwNDowNDo0MS45MDEyMDc1WiE-"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '2287'
+      - '2480'
       content-type:
       - application/json
       date:
-      - Mon, 15 Jul 2024 07:51:12 GMT
+      - Sat, 28 Jun 2025 04:04:41 GMT
       expires:
       - '-1'
       pragma:
@@ -968,7 +1231,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a,objectId=a7250e3a-0e5e-48e2-9a34-45f1f5e1a91e/eastus2euap/ff71e9de-9843-4864-b64d-8a3c0d841624
+      - tenantId=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a,objectId=a7250e3a-0e5e-48e2-9a34-45f1f5e1a91e/eastus2euap/cf1dc71c-5d97-4059-a3bf-403a05b63236
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '3749'
     status:

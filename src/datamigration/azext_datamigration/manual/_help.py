@@ -75,7 +75,7 @@ helps['datamigration tde-migration'] = """
     examples:
       - name: Migrate TDE certificate from source SQL Server to the target Azure SQL Server.
         text: |-
-               az datamigration tde-migration --source-sql-connection-string "data source=servername;user id=userid;password=;initial catalog=master;TrustServerCertificate=True" --target-subscription-id "00000000-0000-0000-0000-000000000000" --target-resource-group-name "ResourceGroupName" --target-managed-instance-name "TargetManagedInstanceName" --network-share-path "\\NetworkShare\Folder" --network-share-domain "NetworkShare" --network-share-user-name "NetworkShareUserName" --network-share-password "" --database-name "TdeDb_0" "TdeDb_1" "TdeDb_2"
+               az datamigration tde-migration --source-sql-connection-string "data source=servername;user id=userid;password=;initial catalog=master;TrustServerCertificate=True" --target-subscription-id "00000000-0000-0000-0000-000000000000" --target-resource-group-name "ResourceGroupName" --target-managed-instance-name "TargetManagedInstanceName" --network-share-path "\\NetworkShare\\Folder" --network-share-domain "NetworkShare" --network-share-user-name "NetworkShareUserName" --network-share-password "" --database-name "TdeDb_0" "TdeDb_1" "TdeDb_2"
 """
 
 helps['datamigration sql-server-schema'] = """
@@ -87,13 +87,13 @@ helps['datamigration sql-server-schema'] = """
                az datamigration sql-server-schema --action "MigrateSchema" --src-sql-connection-str "Server=;Initial Catalog=;User ID=;Password=" --tgt-sql-connection-str "Server=;Initial Catalog=;User ID=;Password="
       - name: Run Generate TSQL schema script from the source SQL Server using Parameters.
         text: |-
-               az datamigration sql-server-schema --action "GenerateScript" --src-sql-connection-str "Server=;Initial Catalog=;User ID=;Password=" --tgt-sql-connection-str "Server=;Initial Catalog=;User ID=;Password="  --output-folder "C:\OutputFolder"
+               az datamigration sql-server-schema --action "GenerateScript" --src-sql-connection-str "Server=;Initial Catalog=;User ID=;Password=" --tgt-sql-connection-str "Server=;Initial Catalog=;User ID=;Password="  --output-folder "C:\\OutputFolder"
       - name: Run Deploy TSQL script to the target Azure SQL Database using Parameters.
         text: |-
-               az datamigration sql-server-schema --action "GenerateScript" --src-sql-connection-str "Server=;Initial Catalog=;User ID=;Password=" --tgt-sql-connection-str "Server=;Initial Catalog=;User ID=;Password="  --input-script-file-path "C:\OutputFolder\script.sql"
+               az datamigration sql-server-schema --action "GenerateScript" --src-sql-connection-str "Server=;Initial Catalog=;User ID=;Password=" --tgt-sql-connection-str "Server=;Initial Catalog=;User ID=;Password="  --input-script-file-path "C:\\OutputFolder\\script.sql"
       - name: Run Migrate database objects from the source SQL Server to the target Azure SQL Database using ConfigFile.
         text: |-
-               az datamigration sql-server-schema --config-file-path "C:\configfile.json"
+               az datamigration sql-server-schema --config-file-path "C:\\configfile.json"
 """
 
 helps['datamigration register-integration-runtime'] = """
@@ -160,6 +160,28 @@ offline=true --scope "/subscriptions/00000000-1111-2222-3333-444444444444/resour
                az datamigration sql-managed-instance create --managed-instance-name "managedInstance1" \
 --source-location '{\\"AzureBlob\\":{\\"storageAccountResourceId\\":\\"/subscriptions/1111-2222-3333-4444/resourceGroups/RG/prooviders\
 /Microsoft.Storage/storageAccounts/MyStorage\\",\\"accountKey\\":\\"======AccountKey====\\",\\"blobContainerName\\":\\"ContainerName\
+-X\\"}}' --migration-service "/subscriptions/00000000-1111-2222-3333-444444444444/resourceGroups/testrg/providers/Micr\
+osoft.DataMigration/sqlMigrationServices/testagent" --offline-configuration last-backup-name="last_backup_file_name" \
+offline=true --scope "/subscriptions/00000000-1111-2222-3333-444444444444/resourceGroups/testrg/providers/Microsoft.Sql\
+/managedInstances/instance" --source-database-name "aaa" --source-sql-connection authentication="WindowsAuthentication"\
+ data-source="aaa" encrypt-connection=true password="placeholder" trust-server-certificate=true user-name="bbb" \
+--resource-group "testrg" --target-db-name "db1"
+      - name: Create or update a Database Migration resource using Azure Blob storage (via System-Assigned Managed Identity) as the backup source.
+        text: |-
+               az datamigration sql-managed-instance create --managed-instance-name "managedInstance1" \
+--source-location '{\\"AzureBlob\\":{\\"storageAccountResourceId\\":\\"/subscriptions/1111-2222-3333-4444/resourceGroups/RG/prooviders\
+/Microsoft.Storage/storageAccounts/MyStorage\\",\\"authType\\":\\"ManagedIdentity\\",\\"identity\\":{\\"type\\":\\"SystemAssigned\\"},\\"blobContainerName\\":\\"ContainerName\
+-X\\"}}' --migration-service "/subscriptions/00000000-1111-2222-3333-444444444444/resourceGroups/testrg/providers/Micr\
+osoft.DataMigration/sqlMigrationServices/testagent" --offline-configuration last-backup-name="last_backup_file_name" \
+offline=true --scope "/subscriptions/00000000-1111-2222-3333-444444444444/resourceGroups/testrg/providers/Microsoft.Sql\
+/managedInstances/instance" --source-database-name "aaa" --source-sql-connection authentication="WindowsAuthentication"\
+ data-source="aaa" encrypt-connection=true password="placeholder" trust-server-certificate=true user-name="bbb" \
+--resource-group "testrg" --target-db-name "db1"
+      - name: Create or update a Database Migration resource using Azure Blob storage (via User-Assigned Managed Identity) as the backup source.
+        text: |-
+               az datamigration sql-managed-instance create --managed-instance-name "managedInstance1" \
+--source-location '{\\"AzureBlob\\":{\\"storageAccountResourceId\\":\\"/subscriptions/1111-2222-3333-4444/resourceGroups/RG/prooviders\
+/Microsoft.Storage/storageAccounts/MyStorage\\",\\"authType\\":\\"ManagedIdentity\\",\\"identity\\":{\\"type\\":\\"UserAssigned\\",\\"userAssignedIdentities\\":{\\"/subscriptions/00000000-1111-2222-3333-444444444444/resourcegroups/testrg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/test-uami\":{}}},\\"blobContainerName\\":\\"ContainerName\
 -X\\"}}' --migration-service "/subscriptions/00000000-1111-2222-3333-444444444444/resourceGroups/testrg/providers/Micr\
 osoft.DataMigration/sqlMigrationServices/testagent" --offline-configuration last-backup-name="last_backup_file_name" \
 offline=true --scope "/subscriptions/00000000-1111-2222-3333-444444444444/resourceGroups/testrg/providers/Microsoft.Sql\

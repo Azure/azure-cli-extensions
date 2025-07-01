@@ -350,7 +350,7 @@ LmZyYW1ld29yay5lcnJvcnN9Cg=="""
             "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
             "contentVersion": "1.0.0.0",
             "variables": {
-                "image": "mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot"
+                "image": "mcr.microsoft.com/azurelinux/base/python:3.12"
             },
 
 
@@ -490,10 +490,7 @@ LmZyYW1ld29yay5lcnJvcnN9Cg=="""
         with open(filename, "w") as f:
             f.write(template)
 
-        with self.assertRaises(SystemExit) as exc_info:
-            acipolicygen_confcom(None, filename, None, None, None, None)
-
-        self.assertEqual(exc_info.exception.code, 0)
+        acipolicygen_confcom(None, filename, None, None, None, None, None)
 
         with open(filename, "r") as f:
             template_with_policy = load_json_from_str(f.read())

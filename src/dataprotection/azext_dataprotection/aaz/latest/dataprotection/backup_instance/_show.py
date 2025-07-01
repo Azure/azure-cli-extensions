@@ -210,6 +210,7 @@ class Show(AAZCommand):
             )
             properties.protection_error_details = AAZObjectType(
                 serialized_name="protectionErrorDetails",
+                flags={"read_only": True},
             )
             _ShowHelper._build_schema_user_facing_error_read(properties.protection_error_details)
             properties.protection_status = AAZObjectType(

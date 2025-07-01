@@ -22,9 +22,9 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-03-01",
+        "version": "2024-08-01",
         "resources": [
-            ["mgmt-plane", "/{resourceuri}/providers/microsoft.kubernetesruntime/bgppeers/{}", "2024-03-01"],
+            ["mgmt-plane", "/{resourceuri}/providers/microsoft.kubernetesruntime/bgppeers/{}", "2024-08-01"],
         ]
     }
 
@@ -121,7 +121,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-03-01",
+                    "api-version", "2024-08-01",
                     required=True,
                 ),
             }
@@ -160,9 +160,7 @@ class Show(AAZCommand):
             _schema_on_200.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.properties = AAZObjectType(
-                flags={"client_flatten": True},
-            )
+            _schema_on_200.properties = AAZObjectType()
             _schema_on_200.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
@@ -172,9 +170,24 @@ class Show(AAZCommand):
             )
 
             properties = cls._schema_on_200.properties
+            properties.bfd_profile = AAZStrType(
+                serialized_name="bfdProfile",
+            )
+            properties.bgp_multi_hop = AAZStrType(
+                serialized_name="bgpMultiHop",
+            )
+            properties.hold_time = AAZStrType(
+                serialized_name="holdTime",
+            )
+            properties.keep_alive_time = AAZStrType(
+                serialized_name="keepAliveTime",
+            )
             properties.my_asn = AAZIntType(
                 serialized_name="myAsn",
                 flags={"required": True},
+            )
+            properties.node_selector = AAZListType(
+                serialized_name="nodeSelector",
             )
             properties.peer_address = AAZStrType(
                 serialized_name="peerAddress",
@@ -184,9 +197,23 @@ class Show(AAZCommand):
                 serialized_name="peerAsn",
                 flags={"required": True},
             )
+            properties.peer_port = AAZIntType(
+                serialized_name="peerPort",
+            )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
+            )
+
+            node_selector = cls._schema_on_200.properties.node_selector
+            node_selector.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.node_selector.Element
+            _element.name = AAZStrType(
+                flags={"required": True},
+            )
+            _element.value = AAZStrType(
+                flags={"required": True},
             )
 
             system_data = cls._schema_on_200.system_data

@@ -1,9 +1,9 @@
 interactions:
 - request:
-    body: '{"extendedLocation": {"name": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/simulator-hostedresources-4ae3464d/providers/microsoft.extendedlocation/customlocations/simulator-cstm-loc",
-      "type": "CustomLocation"}, "location": "eastus", "properties": {"interfaceName":
-      "eth0", "isolationDomainIds": ["/subscriptions/fabricsubs/resourceGroups/fabric-rg/providers/Microsoft.NetworkFabric/L3IsolationDomains/l3isolationdomain2"],
-      "vlans": [1004]}, "tags": {"tag1": "tag1"}}'
+    body: '{"extendedLocation": {"name": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simdev-2411923-cluster-HostedResources-2621465F/providers/Microsoft.ExtendedLocation/customLocations/simdev-2411923-cluster-cstm-loc",
+      "type": "CustomLocation"}, "location": "uksouth", "properties": {"interfaceName":
+      "eth0", "isolationDomainIds": ["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nccli-testing_id-simdev-2411923/providers/Microsoft.ManagedNetworkFabric/l2IsolationDomains/l2isolationdomain1"],
+      "vlans": [550]}, "tags": {"tag1": "tag1"}}'
     headers:
       Accept:
       - application/json
@@ -14,46 +14,54 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '489'
+      - '570'
       Content-Type:
       - application/json
       ParameterSetName:
       - --name --extended-location --location --interface-name --isolation-domain-ids
         --vlans --tags --resource-group --debug
       User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.27.0 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+      - AZURECLI/2.62.0 azsdk-python-core/1.30.2 Python/3.10.12 (Linux-5.15.153.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/trunkedNetworks/cli-test-trunkednw-000001?api-version=2023-10-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/trunkedNetworks/cli-test-trunkednw-000001?api-version=2025-02-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/trunkedNetworks/cli-test-trunkednw-000001","name":"cli-test-trunkednw-000001","type":"microsoft.networkcloud/trunkednetworks","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/simulator-hostedresources-4ae3464d/providers/microsoft.extendedlocation/customlocations/simulator-cstm-loc","type":"CustomLocation"},"tags":{"tag1":"tag1"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-06-21T20:52:32.6304464Z","lastModifiedBy":"REDACTED","lastModifiedByType":"User","lastModifiedAt":"2023-06-21T20:52:32.6304464Z"},"properties":{"provisioningState":"Accepted","interfaceName":"eth0","isolationDomainIds":["/subscriptions/fabricsubs/resourceGroups/fabric-rg/providers/Microsoft.NetworkFabric/L3IsolationDomains/l3isolationdomain2"],"vlans":[1004]}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/trunkedNetworks/cli-test-trunkednw-000001","name":"cli-test-trunkednw-000001","type":"microsoft.networkcloud/trunkednetworks","location":"uksouth","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simdev-2411923-cluster-HostedResources-2621465F/providers/Microsoft.ExtendedLocation/customLocations/simdev-2411923-cluster-cstm-loc","type":"CustomLocation"},"tags":{"tag1":"tag1"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2024-08-06T02:53:22.3828616Z","lastModifiedBy":"REDACTED","lastModifiedByType":"User","lastModifiedAt":"2024-08-06T02:53:22.3828616Z"},"properties":{"provisioningState":"Accepted","interfaceName":"eth0","isolationDomainIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nccli-testing_id-simdev-2411923/providers/Microsoft.ManagedNetworkFabric/l2IsolationDomains/l2isolationdomain1"],"vlans":[550]}}'
     headers:
+      accept-ranges:
+      - bytes
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/a4a97291-355c-4ce2-9403-cf3d79beb170*AB4291D250BFE2EFE39FFEB82CC12D5ECA6F94E11D681A9E56A1F86A425DEAAC?api-version=2023-10-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/UKSOUTH/operationStatuses/af9d7524-d831-4b75-9d88-bbf402d35453*C25097BF5AD6B349C53D9299B9E7A502FF73AA1895C935A410D1ABB9A2C717B0?api-version=2025-02-01&t=638585096029453553&c=MIIHhzCCBm-gAwIBAgITHgTUi-YoGm7h4w8LxwAABNSL5jANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwNjI5MDUyNzU1WhcNMjUwNjI0MDUyNzU1WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKqa-o2nwKMzJEIE6FZ2V6i4GGS9o93h1xHXSm2oi9nD-fbVt-ZRw1l8fOboa6IQ2FdnyFqjewcjPHkSci_Gee-sIV8KB5WkFHD9nzC0noH1j2urJ5W9BVchuQcIXsK2MrgCqCraJF9iF0GSlLIAnczo285IgwsRAfeCHaSY9Tm-NmPSSimsypvJoQtsIynUSlP9P2UvkWMgUIZRGimW6pLaarTJ8nPx_wnVEHcLn9yMcsvWmRuQ5-Fe7dg_RiVsxYZh1TC-9uPBI_DpFltpbMGDD_Ih4p4KqFdHKrK1-jEUElrhl8tn7oxM6O-r4fyDv_IVsIUSChYt_4TIAqmnsxkCAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBSRezOUQ8wGzKalFJaBlWrn6zQzWzAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEATAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBACclc5SLvJ88TNJkcauzpJfrhdIP-4gC2VrqqV69ABXh7v33kGEEc0GlWSGMiKaizRDp5NECa1xJefoWM7lzugfh8YRr7pmbDSZ3VQMEk6gumUXnzytcEep7rHkWwJVlZ9HHgSUqu3hlrBir3tH0LIFSf9_FYPtj1adFwGy7cvWtHCseux-cYDTRsLz6iLPvq5HSp5Fwf9q_47vxfL1wXVcFUmI05n-P9txOk_Rnd5qlKyCA-iajxESe7xPLnKMrXWXPl1oAieFtLonYvc1DaI-Jv-956-RANKSeDGO9PvP-GPZzGUdxZ7IFRp6Q8D-5FvheU1qv8ZcWslQtHG0ixC8&s=pxLJM2saQgQutfyOxBwNTfEQeWhPVQPetnH6RQe6jOKcQM4WSUu5K0k0dN0MtXGpsfu6N92xHQzPFOhUhADwx8uSiQrqJTeNQi2PC6rqc4OzO5p0LOjKW0HfsaEszfFy3PXrpHPtZXHz7njjO5PO2x1LsqQ3ThnPLfx05bKrBNnQU_baLw-YVCCYUsVkjtj80-XWDdgn5KOr456afgETp_goPszSyyOujQDqOeSioawhRlyjI32V3lYyBFVrTMur-rUNOLFKkRM3wAYaDCpU_c0eK-fF67nk0N2cq-jY-Olmz12XNFAsmavc5iyVUwzp9f11c5DvToF0mpoxTq7dSA&h=8Fa_He6ptm3mxIOva5vgdRDPmT2C4qJ7LXwZTxqfa-c
       cache-control:
       - no-cache
       content-length:
-      - '992'
+      - '1069'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 21 Jun 2023 20:52:33 GMT
+      - Tue, 06 Aug 2024 02:53:22 GMT
       etag:
-      - '"3b041e44-0000-0100-0000-649363110000"'
+      - '"290089d4-0000-1000-0000-66b190220000"'
       expires:
       - '-1'
       mise-correlation-id:
-      - 076f17cd-a2c3-450f-9218-63e9e5d689b6
+      - 8add9ac4-1a4f-436c-96f8-80019763231f
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      x-azure-ref:
+      - 20240806T025322Z-175d6466c79gsvc2ynyv7rq2r40000000me000000000c309
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-providerhub-traffic:
       - 'True'
       x-ms-ratelimit-remaining-subscription-writes:
       - '1199'
+      x-msedge-ref:
+      - 'Ref A: 6AA9E8349EA649D08789FB2C3E43B98F Ref B: SN4AA2022303051 Ref C: 2024-08-06T02:53:21Z'
     status:
       code: 201
       message: Created
@@ -72,35 +80,35 @@ interactions:
       - --name --extended-location --location --interface-name --isolation-domain-ids
         --vlans --tags --resource-group --debug
       User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.27.0 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+      - AZURECLI/2.62.0 azsdk-python-core/1.30.2 Python/3.10.12 (Linux-5.15.153.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/a4a97291-355c-4ce2-9403-cf3d79beb170*AB4291D250BFE2EFE39FFEB82CC12D5ECA6F94E11D681A9E56A1F86A425DEAAC?api-version=2023-10-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/UKSOUTH/operationStatuses/af9d7524-d831-4b75-9d88-bbf402d35453*C25097BF5AD6B349C53D9299B9E7A502FF73AA1895C935A410D1ABB9A2C717B0?api-version=2025-02-01&t=638585096029453553&c=MIIHhzCCBm-gAwIBAgITHgTUi-YoGm7h4w8LxwAABNSL5jANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwNjI5MDUyNzU1WhcNMjUwNjI0MDUyNzU1WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKqa-o2nwKMzJEIE6FZ2V6i4GGS9o93h1xHXSm2oi9nD-fbVt-ZRw1l8fOboa6IQ2FdnyFqjewcjPHkSci_Gee-sIV8KB5WkFHD9nzC0noH1j2urJ5W9BVchuQcIXsK2MrgCqCraJF9iF0GSlLIAnczo285IgwsRAfeCHaSY9Tm-NmPSSimsypvJoQtsIynUSlP9P2UvkWMgUIZRGimW6pLaarTJ8nPx_wnVEHcLn9yMcsvWmRuQ5-Fe7dg_RiVsxYZh1TC-9uPBI_DpFltpbMGDD_Ih4p4KqFdHKrK1-jEUElrhl8tn7oxM6O-r4fyDv_IVsIUSChYt_4TIAqmnsxkCAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBSRezOUQ8wGzKalFJaBlWrn6zQzWzAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEATAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBACclc5SLvJ88TNJkcauzpJfrhdIP-4gC2VrqqV69ABXh7v33kGEEc0GlWSGMiKaizRDp5NECa1xJefoWM7lzugfh8YRr7pmbDSZ3VQMEk6gumUXnzytcEep7rHkWwJVlZ9HHgSUqu3hlrBir3tH0LIFSf9_FYPtj1adFwGy7cvWtHCseux-cYDTRsLz6iLPvq5HSp5Fwf9q_47vxfL1wXVcFUmI05n-P9txOk_Rnd5qlKyCA-iajxESe7xPLnKMrXWXPl1oAieFtLonYvc1DaI-Jv-956-RANKSeDGO9PvP-GPZzGUdxZ7IFRp6Q8D-5FvheU1qv8ZcWslQtHG0ixC8&s=pxLJM2saQgQutfyOxBwNTfEQeWhPVQPetnH6RQe6jOKcQM4WSUu5K0k0dN0MtXGpsfu6N92xHQzPFOhUhADwx8uSiQrqJTeNQi2PC6rqc4OzO5p0LOjKW0HfsaEszfFy3PXrpHPtZXHz7njjO5PO2x1LsqQ3ThnPLfx05bKrBNnQU_baLw-YVCCYUsVkjtj80-XWDdgn5KOr456afgETp_goPszSyyOujQDqOeSioawhRlyjI32V3lYyBFVrTMur-rUNOLFKkRM3wAYaDCpU_c0eK-fF67nk0N2cq-jY-Olmz12XNFAsmavc5iyVUwzp9f11c5DvToF0mpoxTq7dSA&h=8Fa_He6ptm3mxIOva5vgdRDPmT2C4qJ7LXwZTxqfa-c
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/a4a97291-355c-4ce2-9403-cf3d79beb170*AB4291D250BFE2EFE39FFEB82CC12D5ECA6F94E11D681A9E56A1F86A425DEAAC","name":"a4a97291-355c-4ce2-9403-cf3d79beb170*AB4291D250BFE2EFE39FFEB82CC12D5ECA6F94E11D681A9E56A1F86A425DEAAC","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/trunkedNetworks/cli-test-trunkednw-000001","status":"Accepted","startTime":"2023-06-21T20:52:32.858661Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/UKSOUTH/operationStatuses/af9d7524-d831-4b75-9d88-bbf402d35453*C25097BF5AD6B349C53D9299B9E7A502FF73AA1895C935A410D1ABB9A2C717B0","name":"af9d7524-d831-4b75-9d88-bbf402d35453*C25097BF5AD6B349C53D9299B9E7A502FF73AA1895C935A410D1ABB9A2C717B0","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/trunkedNetworks/cli-test-trunkednw-000001","status":"Accepted","startTime":"2024-08-06T02:53:22.5537362Z"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '574'
+      - '576'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 21 Jun 2023 20:52:34 GMT
+      - Tue, 06 Aug 2024 02:53:23 GMT
       etag:
-      - '"e1025079-0000-0100-0000-649363100000"'
+      - '"0800f7c6-0000-1000-0000-66b190220000"'
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-msedge-ref:
+      - 'Ref A: 1DF8F55A49B34C8DB76F1B0001AE537A Ref B: SN4AA2022304031 Ref C: 2024-08-06T02:53:23Z'
     status:
       code: 200
       message: OK
@@ -119,35 +127,35 @@ interactions:
       - --name --extended-location --location --interface-name --isolation-domain-ids
         --vlans --tags --resource-group --debug
       User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.27.0 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+      - AZURECLI/2.62.0 azsdk-python-core/1.30.2 Python/3.10.12 (Linux-5.15.153.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/a4a97291-355c-4ce2-9403-cf3d79beb170*AB4291D250BFE2EFE39FFEB82CC12D5ECA6F94E11D681A9E56A1F86A425DEAAC?api-version=2023-10-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/UKSOUTH/operationStatuses/af9d7524-d831-4b75-9d88-bbf402d35453*C25097BF5AD6B349C53D9299B9E7A502FF73AA1895C935A410D1ABB9A2C717B0?api-version=2025-02-01&t=638585096029453553&c=MIIHhzCCBm-gAwIBAgITHgTUi-YoGm7h4w8LxwAABNSL5jANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwNjI5MDUyNzU1WhcNMjUwNjI0MDUyNzU1WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKqa-o2nwKMzJEIE6FZ2V6i4GGS9o93h1xHXSm2oi9nD-fbVt-ZRw1l8fOboa6IQ2FdnyFqjewcjPHkSci_Gee-sIV8KB5WkFHD9nzC0noH1j2urJ5W9BVchuQcIXsK2MrgCqCraJF9iF0GSlLIAnczo285IgwsRAfeCHaSY9Tm-NmPSSimsypvJoQtsIynUSlP9P2UvkWMgUIZRGimW6pLaarTJ8nPx_wnVEHcLn9yMcsvWmRuQ5-Fe7dg_RiVsxYZh1TC-9uPBI_DpFltpbMGDD_Ih4p4KqFdHKrK1-jEUElrhl8tn7oxM6O-r4fyDv_IVsIUSChYt_4TIAqmnsxkCAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBSRezOUQ8wGzKalFJaBlWrn6zQzWzAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEATAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBACclc5SLvJ88TNJkcauzpJfrhdIP-4gC2VrqqV69ABXh7v33kGEEc0GlWSGMiKaizRDp5NECa1xJefoWM7lzugfh8YRr7pmbDSZ3VQMEk6gumUXnzytcEep7rHkWwJVlZ9HHgSUqu3hlrBir3tH0LIFSf9_FYPtj1adFwGy7cvWtHCseux-cYDTRsLz6iLPvq5HSp5Fwf9q_47vxfL1wXVcFUmI05n-P9txOk_Rnd5qlKyCA-iajxESe7xPLnKMrXWXPl1oAieFtLonYvc1DaI-Jv-956-RANKSeDGO9PvP-GPZzGUdxZ7IFRp6Q8D-5FvheU1qv8ZcWslQtHG0ixC8&s=pxLJM2saQgQutfyOxBwNTfEQeWhPVQPetnH6RQe6jOKcQM4WSUu5K0k0dN0MtXGpsfu6N92xHQzPFOhUhADwx8uSiQrqJTeNQi2PC6rqc4OzO5p0LOjKW0HfsaEszfFy3PXrpHPtZXHz7njjO5PO2x1LsqQ3ThnPLfx05bKrBNnQU_baLw-YVCCYUsVkjtj80-XWDdgn5KOr456afgETp_goPszSyyOujQDqOeSioawhRlyjI32V3lYyBFVrTMur-rUNOLFKkRM3wAYaDCpU_c0eK-fF67nk0N2cq-jY-Olmz12XNFAsmavc5iyVUwzp9f11c5DvToF0mpoxTq7dSA&h=8Fa_He6ptm3mxIOva5vgdRDPmT2C4qJ7LXwZTxqfa-c
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/a4a97291-355c-4ce2-9403-cf3d79beb170*AB4291D250BFE2EFE39FFEB82CC12D5ECA6F94E11D681A9E56A1F86A425DEAAC","name":"a4a97291-355c-4ce2-9403-cf3d79beb170*AB4291D250BFE2EFE39FFEB82CC12D5ECA6F94E11D681A9E56A1F86A425DEAAC","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/trunkedNetworks/cli-test-trunkednw-000001","status":"Succeeded","startTime":"2023-06-21T20:52:32.858661Z","endTime":"2023-06-21T20:52:40.0698771Z","error":{},"properties":null}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/UKSOUTH/operationStatuses/af9d7524-d831-4b75-9d88-bbf402d35453*C25097BF5AD6B349C53D9299B9E7A502FF73AA1895C935A410D1ABB9A2C717B0","name":"af9d7524-d831-4b75-9d88-bbf402d35453*C25097BF5AD6B349C53D9299B9E7A502FF73AA1895C935A410D1ABB9A2C717B0","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/trunkedNetworks/cli-test-trunkednw-000001","status":"Succeeded","startTime":"2024-08-06T02:53:22.5537362Z","endTime":"2024-08-06T02:53:27.8417167Z","error":{},"properties":null}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '645'
+      - '647'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 21 Jun 2023 20:53:03 GMT
+      - Tue, 06 Aug 2024 02:53:53 GMT
       etag:
-      - '"e1025579-0000-0100-0000-649363180000"'
+      - '"0800fac6-0000-1000-0000-66b190270000"'
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-msedge-ref:
+      - 'Ref A: FEC7DCF7ADCC4901A924D06C14A50456 Ref B: SN4AA2022304011 Ref C: 2024-08-06T02:53:53Z'
     status:
       code: 200
       message: OK
@@ -166,38 +174,38 @@ interactions:
       - --name --extended-location --location --interface-name --isolation-domain-ids
         --vlans --tags --resource-group --debug
       User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.27.0 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+      - AZURECLI/2.62.0 azsdk-python-core/1.30.2 Python/3.10.12 (Linux-5.15.153.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/trunkedNetworks/cli-test-trunkednw-000001?api-version=2023-10-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/trunkedNetworks/cli-test-trunkednw-000001?api-version=2025-02-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/trunkedNetworks/cli-test-trunkednw-000001","name":"cli-test-trunkednw-000001","type":"microsoft.networkcloud/trunkednetworks","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/simulator-hostedresources-4ae3464d/providers/microsoft.extendedlocation/customlocations/simulator-cstm-loc","type":"CustomLocation"},"tags":{"tag1":"tag1"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-06-21T20:52:32.6304464Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-06-21T20:52:41.7742206Z"},"properties":{"provisioningState":"Succeeded","interfaceName":"eth0","isolationDomainIds":["/subscriptions/fabricsubs/resourceGroups/fabric-rg/providers/Microsoft.NetworkFabric/L3IsolationDomains/l3isolationdomain2"],"vlans":[1004],"hybridAksPluginType":"SRIOV","clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/anpankie-sim/providers/Microsoft.NetworkCloud/clusters/simulator","associatedResourceIds":[],"hybridAksClustersAssociatedIds":[],"virtualMachinesAssociatedIds":[],"detailedStatus":"Available","detailedStatusMessage":"all
-        resource creation succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/trunkedNetworks/cli-test-trunkednw-000001","name":"cli-test-trunkednw-000001","type":"microsoft.networkcloud/trunkednetworks","location":"uksouth","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simdev-2411923-cluster-HostedResources-2621465F/providers/Microsoft.ExtendedLocation/customLocations/simdev-2411923-cluster-cstm-loc","type":"CustomLocation"},"tags":{"tag1":"tag1"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2024-08-06T02:53:22.3828616Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2024-08-06T02:53:28.7457586Z"},"properties":{"provisioningState":"Succeeded","interfaceName":"eth0","isolationDomainIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nccli-testing_id-simdev-2411923/providers/Microsoft.ManagedNetworkFabric/l2IsolationDomains/l2isolationdomain1"],"vlans":[550],"associatedResourceIds":[],"virtualMachinesAssociatedIds":[],"detailedStatus":"Available","detailedStatusMessage":"all
+        resource creation succeeded","clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nccli-testing_id-simdev-2411923/providers/Microsoft.NetworkCloud/clusters/simdev-2411923-cluster"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1371'
+      - '1416'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 21 Jun 2023 20:53:04 GMT
+      - Tue, 06 Aug 2024 02:53:53 GMT
       etag:
-      - '"3b042744-0000-0100-0000-649363190000"'
+      - '"2900a0d4-0000-1000-0000-66b190280000"'
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-providerhub-traffic:
       - 'True'
+      x-msedge-ref:
+      - 'Ref A: 3DE0B31149D94F70810AF931104592EB Ref B: SN4AA2022305035 Ref C: 2024-08-06T02:53:53Z'
     status:
       code: 200
       message: OK
@@ -219,40 +227,40 @@ interactions:
       ParameterSetName:
       - --name --tags --resource-group
       User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.27.0 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+      - AZURECLI/2.62.0 azsdk-python-core/1.30.2 Python/3.10.12 (Linux-5.15.153.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: PATCH
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/trunkedNetworks/cli-test-trunkednw-000001?api-version=2023-10-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/trunkedNetworks/cli-test-trunkednw-000001?api-version=2025-02-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/trunkedNetworks/cli-test-trunkednw-000001","name":"cli-test-trunkednw-000001","type":"microsoft.networkcloud/trunkednetworks","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/simulator-hostedresources-4ae3464d/providers/microsoft.extendedlocation/customlocations/simulator-cstm-loc","type":"CustomLocation"},"tags":{"tag1":"tag1","tag2":"tag2update"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-06-21T20:52:32.6304464Z","lastModifiedBy":"REDACTED","lastModifiedByType":"User","lastModifiedAt":"2023-06-21T20:53:06.2648017Z"},"properties":{"provisioningState":"Succeeded","interfaceName":"eth0","isolationDomainIds":["/subscriptions/fabricsubs/resourceGroups/fabric-rg/providers/Microsoft.NetworkFabric/L3IsolationDomains/l3isolationdomain2"],"vlans":[1004],"hybridAksPluginType":"SRIOV","clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/anpankie-sim/providers/Microsoft.NetworkCloud/clusters/simulator","associatedResourceIds":[],"hybridAksClustersAssociatedIds":[],"virtualMachinesAssociatedIds":[],"detailedStatus":"Available","detailedStatusMessage":"all
-        resource creation succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/trunkedNetworks/cli-test-trunkednw-000001","name":"cli-test-trunkednw-000001","type":"microsoft.networkcloud/trunkednetworks","location":"uksouth","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simdev-2411923-cluster-HostedResources-2621465F/providers/Microsoft.ExtendedLocation/customLocations/simdev-2411923-cluster-cstm-loc","type":"CustomLocation"},"tags":{"tag1":"tag1","tag2":"tag2update"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2024-08-06T02:53:22.3828616Z","lastModifiedBy":"REDACTED","lastModifiedByType":"User","lastModifiedAt":"2024-08-06T02:53:55.0461463Z"},"properties":{"provisioningState":"Succeeded","interfaceName":"eth0","isolationDomainIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nccli-testing_id-simdev-2411923/providers/Microsoft.ManagedNetworkFabric/l2IsolationDomains/l2isolationdomain1"],"vlans":[550],"associatedResourceIds":[],"virtualMachinesAssociatedIds":[],"detailedStatus":"Available","detailedStatusMessage":"all
+        resource creation succeeded","clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nccli-testing_id-simdev-2411923/providers/Microsoft.NetworkCloud/clusters/simdev-2411923-cluster"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1373'
+      - '1416'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 21 Jun 2023 20:53:06 GMT
+      - Tue, 06 Aug 2024 02:53:55 GMT
       etag:
-      - '"3b043b44-0000-0100-0000-649363320000"'
+      - '"290001d5-0000-1000-0000-66b190430000"'
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-providerhub-traffic:
       - 'True'
       x-ms-ratelimit-remaining-subscription-writes:
       - '1199'
+      x-msedge-ref:
+      - 'Ref A: 8A6DAF36BDF14453A85C9B902B14B651 Ref B: SN4AA2022303017 Ref C: 2024-08-06T02:53:54Z'
     status:
       code: 200
       message: OK
@@ -270,38 +278,38 @@ interactions:
       ParameterSetName:
       - --name --resource-group
       User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.27.0 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+      - AZURECLI/2.62.0 azsdk-python-core/1.30.2 Python/3.10.12 (Linux-5.15.153.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/trunkedNetworks/cli-test-trunkednw-000001?api-version=2023-10-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/trunkedNetworks/cli-test-trunkednw-000001?api-version=2025-02-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/trunkedNetworks/cli-test-trunkednw-000001","name":"cli-test-trunkednw-000001","type":"microsoft.networkcloud/trunkednetworks","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/simulator-hostedresources-4ae3464d/providers/microsoft.extendedlocation/customlocations/simulator-cstm-loc","type":"CustomLocation"},"tags":{"tag1":"tag1","tag2":"tag2update"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-06-21T20:52:32.6304464Z","lastModifiedBy":"REDACTED","lastModifiedByType":"User","lastModifiedAt":"2023-06-21T20:53:06.2648017Z"},"properties":{"provisioningState":"Succeeded","interfaceName":"eth0","isolationDomainIds":["/subscriptions/fabricsubs/resourceGroups/fabric-rg/providers/Microsoft.NetworkFabric/L3IsolationDomains/l3isolationdomain2"],"vlans":[1004],"hybridAksPluginType":"SRIOV","clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/anpankie-sim/providers/Microsoft.NetworkCloud/clusters/simulator","associatedResourceIds":[],"hybridAksClustersAssociatedIds":[],"virtualMachinesAssociatedIds":[],"detailedStatus":"Available","detailedStatusMessage":"all
-        resource creation succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/trunkedNetworks/cli-test-trunkednw-000001","name":"cli-test-trunkednw-000001","type":"microsoft.networkcloud/trunkednetworks","location":"uksouth","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simdev-2411923-cluster-HostedResources-2621465F/providers/Microsoft.ExtendedLocation/customLocations/simdev-2411923-cluster-cstm-loc","type":"CustomLocation"},"tags":{"tag1":"tag1","tag2":"tag2update"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2024-08-06T02:53:22.3828616Z","lastModifiedBy":"REDACTED","lastModifiedByType":"User","lastModifiedAt":"2024-08-06T02:53:55.0461463Z"},"properties":{"provisioningState":"Succeeded","interfaceName":"eth0","isolationDomainIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nccli-testing_id-simdev-2411923/providers/Microsoft.ManagedNetworkFabric/l2IsolationDomains/l2isolationdomain1"],"vlans":[550],"associatedResourceIds":[],"virtualMachinesAssociatedIds":[],"detailedStatus":"Available","detailedStatusMessage":"all
+        resource creation succeeded","clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nccli-testing_id-simdev-2411923/providers/Microsoft.NetworkCloud/clusters/simdev-2411923-cluster"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1373'
+      - '1416'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 21 Jun 2023 20:53:07 GMT
+      - Tue, 06 Aug 2024 02:53:55 GMT
       etag:
-      - '"3b043b44-0000-0100-0000-649363320000"'
+      - '"290001d5-0000-1000-0000-66b190430000"'
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-providerhub-traffic:
       - 'True'
+      x-msedge-ref:
+      - 'Ref A: C6B245CD2A41487DBBEC237758BBAFBD Ref B: SN4AA2022302053 Ref C: 2024-08-06T02:53:55Z'
     status:
       code: 200
       message: OK
@@ -317,42 +325,39 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.27.0 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+      - AZURECLI/2.62.0 azsdk-python-core/1.30.2 Python/3.10.12 (Linux-5.15.153.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/trunkedNetworks?api-version=2023-10-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/trunkedNetworks?api-version=2025-02-01
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mbashtovaya-sim2-rg/providers/Microsoft.NetworkCloud/trunkedNetworks/trunkedNetworkName","name":"trunkedNetworkName","type":"microsoft.networkcloud/trunkednetworks","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/simulator-hostedresources-106b4111/providers/microsoft.extendedlocation/customlocations/simulator-cstm-loc","type":"CustomLocation"},"tags":{"tag1":"tag1","tag2":"tag2update"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-05-15T20:43:42.0125373Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-05-15T20:43:48.9668812Z"},"properties":{"provisioningState":"Failed","hybridAksPluginType":"DPDK","interfaceName":"eth0","isolationDomainIds":["/subscriptions/fabricsubs/resourceGroups/fabric-rg/providers/Microsoft.NetworkFabric/L3IsolationDomains/l3isolationdomain2"],"vlans":[1004],"clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mbashtovaya-sim2-rg/providers/Microsoft.NetworkCloud/clusters/simulator","associatedResourceIds":[],"hybridAksClustersAssociatedIds":[],"virtualMachinesAssociatedIds":[],"detailedStatus":"Available","detailedStatusMessage":"all
-        resource creation succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/j25-cluster/providers/Microsoft.NetworkCloud/trunkedNetworks/trunk-530-535","name":"trunk-530-535","type":"microsoft.networkcloud/trunkednetworks","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/j25-77c882e61c36-hostedresources-516cffcc/providers/microsoft.extendedlocation/customlocations/j25-77c882e61c36-cstm-loc","type":"CustomLocation"},"tags":{"ResourceType":"trunkednetwork","ManagedBy":"nc-labs","LabEnvironment":"j25","ResourceTest":"deployment"},"systemData":{"createdBy":"de975306-d24e-4dec-9d3b-ef05c66f0075","createdByType":"Application","createdAt":"2023-06-18T20:42:02.7125551Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-06-18T20:42:11.6163832Z"},"properties":{"provisioningState":"Succeeded","isolationDomainIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/j25-cluster/providers/Microsoft.ManagedNetworkFabric/l3IsolationDomains/j25-l3domain-2"],"interfaceName":"trunk--d766a","hybridAksPluginType":"DPDK","vlans":[530,531,532,533,534,535],"clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/j25-cluster/providers/Microsoft.NetworkCloud/clusters/j25-77c882e61c36","associatedResourceIds":[],"hybridAksClustersAssociatedIds":[],"virtualMachinesAssociatedIds":[],"detailedStatus":"Available","detailedStatusMessage":"all
-        resource creation succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/j17-cluster/providers/Microsoft.NetworkCloud/trunkedNetworks/trunk-530-535","name":"trunk-530-535","type":"microsoft.networkcloud/trunkednetworks","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/j17-f96136f77dcb-hostedresources-299d1cbf/providers/microsoft.extendedlocation/customlocations/j17-f96136f77dcb-cstm-loc","type":"CustomLocation"},"tags":{"ResourceType":"trunkednetwork","ManagedBy":"nc-labs","LabEnvironment":"j17","ResourceTest":"deployment"},"systemData":{"createdBy":"de975306-d24e-4dec-9d3b-ef05c66f0075","createdByType":"Application","createdAt":"2023-06-19T15:33:22.5148814Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-06-19T15:33:30.0157024Z"},"properties":{"provisioningState":"Succeeded","isolationDomainIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/j17-cluster/providers/Microsoft.ManagedNetworkFabric/l3IsolationDomains/j17-l3domain-2"],"interfaceName":"trunk--3651b","hybridAksPluginType":"DPDK","vlans":[530,531,532,533,534,535],"clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/j17-cluster/providers/Microsoft.NetworkCloud/clusters/j17-f96136f77dcb","associatedResourceIds":[],"hybridAksClustersAssociatedIds":[],"virtualMachinesAssociatedIds":[],"detailedStatus":"Available","detailedStatusMessage":"all
-        resource creation succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/m16-1-cluster/providers/Microsoft.NetworkCloud/trunkedNetworks/trunk-530-535","name":"trunk-530-535","type":"microsoft.networkcloud/trunkednetworks","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/m16-1-487bb720ddfb-hostedresources-25e56565/providers/microsoft.extendedlocation/customlocations/m16-1-487bb720ddfb-cstm-loc","type":"CustomLocation"},"tags":{"ResourceType":"trunkednetwork","ManagedBy":"nc-labs","LabEnvironment":"m16-1","ResourceTest":"deployment"},"systemData":{"createdBy":"de975306-d24e-4dec-9d3b-ef05c66f0075","createdByType":"Application","createdAt":"2023-06-20T09:11:02.9148273Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-06-20T09:11:41.6057177Z"},"properties":{"provisioningState":"Succeeded","isolationDomainIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/m16-1-cluster/providers/Microsoft.ManagedNetworkFabric/l3IsolationDomains/m16-1-l3domain-2"],"hybridAksPluginType":"DPDK","vlans":[530,531,532,533,534,535],"associatedResourceIds":[],"hybridAksClustersAssociatedIds":[],"virtualMachinesAssociatedIds":[],"detailedStatus":"Available","detailedStatusMessage":"all
-        resource creation succeeded","interfaceName":"trunk--8f23d","clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/m16-1-cluster/providers/Microsoft.NetworkCloud/clusters/m16-1-487bb720ddfb"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/trunkedNetworks/cli-test-trunkednw-000001","name":"cli-test-trunkednw-000001","type":"microsoft.networkcloud/trunkednetworks","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/simulator-hostedresources-4ae3464d/providers/microsoft.extendedlocation/customlocations/simulator-cstm-loc","type":"CustomLocation"},"tags":{"tag1":"tag1","tag2":"tag2update"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-06-21T20:52:32.6304464Z","lastModifiedBy":"REDACTED","lastModifiedByType":"User","lastModifiedAt":"2023-06-21T20:53:06.2648017Z"},"properties":{"provisioningState":"Succeeded","interfaceName":"eth0","isolationDomainIds":["/subscriptions/fabricsubs/resourceGroups/fabric-rg/providers/Microsoft.NetworkFabric/L3IsolationDomains/l3isolationdomain2"],"vlans":[1004],"hybridAksPluginType":"SRIOV","clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/anpankie-sim/providers/Microsoft.NetworkCloud/clusters/simulator","associatedResourceIds":[],"hybridAksClustersAssociatedIds":[],"virtualMachinesAssociatedIds":[],"detailedStatus":"Available","detailedStatusMessage":"all
-        resource creation succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rajeshwari-preflight/providers/Microsoft.NetworkCloud/trunkedNetworks/rg5trunk1","name":"rg5trunk1","type":"microsoft.networkcloud/trunkednetworks","location":"eastus2euap","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/simulator-hostedresources-427177bf/providers/microsoft.extendedlocation/customlocations/simulator-cstm-loc","type":"CustomLocation"},"tags":{},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-04-21T17:21:19.9896443Z","lastModifiedBy":"REDACTED","lastModifiedByType":"User","lastModifiedAt":"2023-04-21T17:22:56.1359986Z"},"properties":{"provisioningState":"Failed","isolationDomainIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rajeshwari-preflight/providers/Microsoft.NetworkFabric/IsolationDomains/isodomain-55"],"interfaceName":"rg3trunk528","hybridAksPluginType":"DPDK","vlans":[544]}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/j18-cluster/providers/Microsoft.NetworkCloud/trunkedNetworks/trunk-530-535","name":"trunk-530-535","type":"microsoft.networkcloud/trunkednetworks","location":"eastus2euap","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/j18-c0d28c8f7cd3-hostedresources-3781ac00/providers/microsoft.extendedlocation/customlocations/j18-c0d28c8f7cd3-cstm-loc","type":"CustomLocation"},"tags":{"ResourceType":"trunkednetwork","ManagedBy":"nc-labs","LabEnvironment":"j18","ResourceTest":"deployment"},"systemData":{"createdBy":"de975306-d24e-4dec-9d3b-ef05c66f0075","createdByType":"Application","createdAt":"2023-05-02T06:59:33.928901Z","lastModifiedBy":"de975306-d24e-4dec-9d3b-ef05c66f0075","lastModifiedByType":"Application","lastModifiedAt":"2023-05-22T16:24:47.2099445Z"},"properties":{"provisioningState":"Failed","hybridAksClustersAssociatedIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/j18-cluster/providers/Microsoft.HybridContainerService/provisionedClusters/mm2-test-haks","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/j18-cluster/providers/Microsoft.HybridContainerService/provisionedClusters/mm6-test-haks"],"virtualMachinesAssociatedIds":[],"detailedStatus":"Available","detailedStatusMessage":"all
-        resource creation succeeded","clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/j18-cluster/providers/Microsoft.NetworkCloud/clusters/j18-c0d28c8f7cd3","isolationDomainIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/j18-cluster/providers/Microsoft.ManagedNetworkFabric/l3IsolationDomains/j18-l3domain-2"],"hybridAksPluginType":"DPDK","vlans":[530,531,532,533,534,535],"associatedResourceIds":[]}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/j18-cluster/providers/Microsoft.NetworkCloud/trunkedNetworks/trunk-502-507","name":"trunk-502-507","type":"microsoft.networkcloud/trunkednetworks","location":"eastus2euap","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/j18-c0d28c8f7cd3-hostedresources-3781ac00/providers/microsoft.extendedlocation/customlocations/j18-c0d28c8f7cd3-cstm-loc","type":"CustomLocation"},"tags":{"ManagedBy":"nc-labs","LabEnvironment":"j18","ResourceType":"trunkedNetwork"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-05-02T17:29:17.3884708Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-05-02T22:34:44.3180865Z"},"properties":{"provisioningState":"Succeeded","interfaceName":"trunk-502-5","isolationDomainIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/j18-cluster/providers/Microsoft.ManagedNetworkFabric/l3IsolationDomains/j18-l3domain-1"],"vlans":[502,503,504,505,506,507],"hybridAksPluginType":"SRIOV","associatedResourceIds":[],"hybridAksClustersAssociatedIds":[],"virtualMachinesAssociatedIds":[],"detailedStatus":"Available","clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/j18-cluster/providers/Microsoft.NetworkCloud/clusters/j18-c0d28c8f7cd3","detailedStatusMessage":"all
-        resource creation succeeded"}}]}'
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dev02-1-cluster/providers/Microsoft.NetworkCloud/trunkedNetworks/trunk-537-542","name":"trunk-537-542","type":"microsoft.networkcloud/trunkednetworks","location":"eastus2euap","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dev02-1-c5f76b5dfdf5-HostedResources-4425D396/providers/Microsoft.ExtendedLocation/customLocations/dev02-1-c5f76b5dfdf5-cstm-loc","type":"CustomLocation"},"tags":{"ResourceType":"trunkednetwork","ManagedBy":"nc-labs","LabEnvironment":"dev02-1","ResourceTest":"deployment"},"systemData":{"createdBy":"241b58c0-92c3-4757-82a2-c1066d9bd3c9","createdByType":"Application","createdAt":"2024-07-09T05:33:55.3648723Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2024-07-24T13:28:44.688748Z"},"properties":{"provisioningState":"Succeeded","isolationDomainIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dev02-1-cluster/providers/Microsoft.ManagedNetworkFabric/l3IsolationDomains/dev02-1-l3domain-2"],"interfaceName":"trunk--cbc6a","vlans":[537,538,539,540,541,542],"clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dev02-1-cluster/providers/Microsoft.NetworkCloud/clusters/dev02-1-c5f76b5dfdf5","associatedResourceIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dev02-1-cluster/providers/Microsoft.NetworkCloud/kubernetesClusters/pipelinenaks-unKzUoJgzlLiXA","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dev02-1-cluster/providers/Microsoft.NetworkCloud/kubernetesClusters/pipelinenaks-unKzUoJgzlLiXA/agentPools/systemagentpool","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dev02-1-cluster/providers/Microsoft.NetworkCloud/kubernetesClusters/pipelinenaks-unKzUoJgzlLiXA/agentPools/workerAgentpool1"],"virtualMachinesAssociatedIds":[],"detailedStatus":"Available","detailedStatusMessage":"all
+        resource creation succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aep01-cluster/providers/Microsoft.NetworkCloud/trunkedNetworks/trunk-537-542","name":"trunk-537-542","type":"microsoft.networkcloud/trunkednetworks","location":"uksouth","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aep01-e25039e41f6e-HostedResources-58660E8F/providers/Microsoft.ExtendedLocation/customLocations/aep01-e25039e41f6e-cstm-loc","type":"CustomLocation"},"tags":{"ResourceType":"trunkednetwork","ManagedBy":"nc-labs","LabEnvironment":"aep01","ResourceTest":"deployment"},"systemData":{"createdBy":"241b58c0-92c3-4757-82a2-c1066d9bd3c9","createdByType":"Application","createdAt":"2024-07-30T03:53:55.117919Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2024-07-30T04:05:50.6034472Z"},"properties":{"provisioningState":"Succeeded","isolationDomainIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aep01-cluster/providers/Microsoft.ManagedNetworkFabric/l3IsolationDomains/aep01-l3domain-2"],"vlans":[537,538,539,540,541,542],"associatedResourceIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aep01-cluster/providers/Microsoft.NetworkCloud/kubernetesClusters/pipelinenaks-BCa3XjiIxhxeg","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aep01-cluster/providers/Microsoft.NetworkCloud/kubernetesClusters/pipelinenaks-BCa3XjiIxhxeg/agentPools/systemagentpool","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aep01-cluster/providers/Microsoft.NetworkCloud/kubernetesClusters/pipelinenaks-BCa3XjiIxhxeg/agentPools/workerAgentpool1"],"virtualMachinesAssociatedIds":[],"interfaceName":"trunk--6767f","clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aep01-cluster/providers/Microsoft.NetworkCloud/clusters/aep01-e25039e41f6e","detailedStatus":"Available","detailedStatusMessage":"all
+        resource creation succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/trunkedNetworks/cli-test-trunkednw-000001","name":"cli-test-trunkednw-000001","type":"microsoft.networkcloud/trunkednetworks","location":"uksouth","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simdev-2411923-cluster-HostedResources-2621465F/providers/Microsoft.ExtendedLocation/customLocations/simdev-2411923-cluster-cstm-loc","type":"CustomLocation"},"tags":{"tag1":"tag1","tag2":"tag2update"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2024-08-06T02:53:22.3828616Z","lastModifiedBy":"REDACTED","lastModifiedByType":"User","lastModifiedAt":"2024-08-06T02:53:55.0461463Z"},"properties":{"provisioningState":"Succeeded","interfaceName":"eth0","isolationDomainIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nccli-testing_id-simdev-2411923/providers/Microsoft.ManagedNetworkFabric/l2IsolationDomains/l2isolationdomain1"],"vlans":[550],"associatedResourceIds":[],"virtualMachinesAssociatedIds":[],"detailedStatus":"Available","detailedStatusMessage":"all
+        resource creation succeeded","clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nccli-testing_id-simdev-2411923/providers/Microsoft.NetworkCloud/clusters/simdev-2411923-cluster"}}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '12730'
+      - '5503'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 21 Jun 2023 20:53:08 GMT
+      - Tue, 06 Aug 2024 02:53:57 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-original-request-ids:
-      - 93c6e42a-ca66-4152-83da-39846639a150
-      - da2194b5-4fd9-497e-beca-f0d4dc7f5af5
-      - 7629d87e-bb10-4794-a202-5a83be27f696
+      - 68215800-b1ee-414e-aab7-bcea9c3708d2
+      - 37c8b97b-de4f-4e13-84b6-0876a1abc8e2
+      x-msedge-ref:
+      - 'Ref A: 81A29BAAA5684498B423ECC58397CFAD Ref B: SN4AA2022302053 Ref C: 2024-08-06T02:53:56Z'
     status:
       code: 200
       message: OK
@@ -370,36 +375,36 @@ interactions:
       ParameterSetName:
       - --resource-group
       User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.27.0 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+      - AZURECLI/2.62.0 azsdk-python-core/1.30.2 Python/3.10.12 (Linux-5.15.153.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/trunkedNetworks?api-version=2023-10-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/trunkedNetworks?api-version=2025-02-01
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/trunkedNetworks/cli-test-trunkednw-000001","name":"cli-test-trunkednw-000001","type":"microsoft.networkcloud/trunkednetworks","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/simulator-hostedresources-4ae3464d/providers/microsoft.extendedlocation/customlocations/simulator-cstm-loc","type":"CustomLocation"},"tags":{"tag1":"tag1","tag2":"tag2update"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-06-21T20:52:32.6304464Z","lastModifiedBy":"REDACTED","lastModifiedByType":"User","lastModifiedAt":"2023-06-21T20:53:06.2648017Z"},"properties":{"provisioningState":"Succeeded","interfaceName":"eth0","isolationDomainIds":["/subscriptions/fabricsubs/resourceGroups/fabric-rg/providers/Microsoft.NetworkFabric/L3IsolationDomains/l3isolationdomain2"],"vlans":[1004],"hybridAksPluginType":"SRIOV","clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/anpankie-sim/providers/Microsoft.NetworkCloud/clusters/simulator","associatedResourceIds":[],"hybridAksClustersAssociatedIds":[],"virtualMachinesAssociatedIds":[],"detailedStatus":"Available","detailedStatusMessage":"all
-        resource creation succeeded"}}]}'
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/trunkedNetworks/cli-test-trunkednw-000001","name":"cli-test-trunkednw-000001","type":"microsoft.networkcloud/trunkednetworks","location":"uksouth","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simdev-2411923-cluster-HostedResources-2621465F/providers/Microsoft.ExtendedLocation/customLocations/simdev-2411923-cluster-cstm-loc","type":"CustomLocation"},"tags":{"tag1":"tag1","tag2":"tag2update"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2024-08-06T02:53:22.3828616Z","lastModifiedBy":"REDACTED","lastModifiedByType":"User","lastModifiedAt":"2024-08-06T02:53:55.0461463Z"},"properties":{"provisioningState":"Succeeded","interfaceName":"eth0","isolationDomainIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nccli-testing_id-simdev-2411923/providers/Microsoft.ManagedNetworkFabric/l2IsolationDomains/l2isolationdomain1"],"vlans":[550],"associatedResourceIds":[],"virtualMachinesAssociatedIds":[],"detailedStatus":"Available","detailedStatusMessage":"all
+        resource creation succeeded","clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nccli-testing_id-simdev-2411923/providers/Microsoft.NetworkCloud/clusters/simdev-2411923-cluster"}}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1385'
+      - '1428'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 21 Jun 2023 20:53:09 GMT
+      - Tue, 06 Aug 2024 02:53:57 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
-      x-ms-original-request-ids:
-      - 746a3359-55b1-436d-a333-68d82a0d8db1
-      - e5065e9f-32a7-461e-8382-46ebe4e6b299
-      - 3dafff3f-0336-484c-9ee6-05f7b2a3a3e6
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-msedge-ref:
+      - 'Ref A: 8E7F4456F4F94872B3CA45FEFD79D817 Ref B: SN4AA2022302045 Ref C: 2024-08-06T02:53:57Z'
     status:
       code: 200
       message: OK
@@ -407,7 +412,7 @@ interactions:
     body: null
     headers:
       Accept:
-      - '*/*'
+      - application/json
       Accept-Encoding:
       - gzip, deflate
       CommandName:
@@ -419,15 +424,15 @@ interactions:
       ParameterSetName:
       - --name --resource-group -y
       User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.27.0 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+      - AZURECLI/2.62.0 azsdk-python-core/1.30.2 Python/3.10.12 (Linux-5.15.153.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/trunkedNetworks/cli-test-trunkednw-000001?api-version=2023-10-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/trunkedNetworks/cli-test-trunkednw-000001?api-version=2025-02-01
   response:
     body:
       string: 'null'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/3e1a427c-82c3-46ee-97f5-9caab0cf0abd*AB4291D250BFE2EFE39FFEB82CC12D5ECA6F94E11D681A9E56A1F86A425DEAAC?api-version=2023-10-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/UKSOUTH/operationStatuses/e01b9e35-24e8-4e25-9e34-af8ff99acce0*C25097BF5AD6B349C53D9299B9E7A502FF73AA1895C935A410D1ABB9A2C717B0?api-version=2025-02-01&t=638585096393844001&c=MIIHhzCCBm-gAwIBAgITHgTUi-YoGm7h4w8LxwAABNSL5jANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwNjI5MDUyNzU1WhcNMjUwNjI0MDUyNzU1WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKqa-o2nwKMzJEIE6FZ2V6i4GGS9o93h1xHXSm2oi9nD-fbVt-ZRw1l8fOboa6IQ2FdnyFqjewcjPHkSci_Gee-sIV8KB5WkFHD9nzC0noH1j2urJ5W9BVchuQcIXsK2MrgCqCraJF9iF0GSlLIAnczo285IgwsRAfeCHaSY9Tm-NmPSSimsypvJoQtsIynUSlP9P2UvkWMgUIZRGimW6pLaarTJ8nPx_wnVEHcLn9yMcsvWmRuQ5-Fe7dg_RiVsxYZh1TC-9uPBI_DpFltpbMGDD_Ih4p4KqFdHKrK1-jEUElrhl8tn7oxM6O-r4fyDv_IVsIUSChYt_4TIAqmnsxkCAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBSRezOUQ8wGzKalFJaBlWrn6zQzWzAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEATAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBACclc5SLvJ88TNJkcauzpJfrhdIP-4gC2VrqqV69ABXh7v33kGEEc0GlWSGMiKaizRDp5NECa1xJefoWM7lzugfh8YRr7pmbDSZ3VQMEk6gumUXnzytcEep7rHkWwJVlZ9HHgSUqu3hlrBir3tH0LIFSf9_FYPtj1adFwGy7cvWtHCseux-cYDTRsLz6iLPvq5HSp5Fwf9q_47vxfL1wXVcFUmI05n-P9txOk_Rnd5qlKyCA-iajxESe7xPLnKMrXWXPl1oAieFtLonYvc1DaI-Jv-956-RANKSeDGO9PvP-GPZzGUdxZ7IFRp6Q8D-5FvheU1qv8ZcWslQtHG0ixC8&s=T4Py0opbnEiB9iJzZX6ofyzp4Dw56t71tLCVVUZYNzsS3dY2gQ2XdwbaWNvKHQm2FD6e-bBz1AOmsJb9AgkLgUMRLsLv-aPZD7ek2kRplWFVaj6Dbh6BkqZf--52xJ7X-iW-XZi7mJ-_JpcfYqqLlyljFN4ZAzNqiW1zx2bRMtHPVD_Ej8rKUu7QdKBN_AwrE12ZEqbPkpVrJ82C3I1i-QwCYv8iPJSE1vmmJoG306HDGpPp8zVKUq11ekkqgBi3DD_K8CTphk1S1do0DzMkb7ZHEhdkXTZQ7OeSDWDJk56jP4H5UBIHehbnFHnFM-ScOGT1Dad4jLxKm4mocsw3hg&h=o6b6sx74VjVtHhtd5onOpFqzpwnZGSjmHowAUzCpHFU
       cache-control:
       - no-cache
       content-length:
@@ -435,25 +440,31 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 21 Jun 2023 20:53:10 GMT
+      - Tue, 06 Aug 2024 02:53:58 GMT
       etag:
-      - '"3b043f44-0000-0100-0000-649363370000"'
+      - '"29000ed5-0000-1000-0000-66b190470000"'
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/3e1a427c-82c3-46ee-97f5-9caab0cf0abd*AB4291D250BFE2EFE39FFEB82CC12D5ECA6F94E11D681A9E56A1F86A425DEAAC?api-version=2023-10-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/UKSOUTH/operationStatuses/e01b9e35-24e8-4e25-9e34-af8ff99acce0*C25097BF5AD6B349C53D9299B9E7A502FF73AA1895C935A410D1ABB9A2C717B0?api-version=2025-02-01&t=638585096393844001&c=MIIHhzCCBm-gAwIBAgITHgTUi-YoGm7h4w8LxwAABNSL5jANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwNjI5MDUyNzU1WhcNMjUwNjI0MDUyNzU1WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKqa-o2nwKMzJEIE6FZ2V6i4GGS9o93h1xHXSm2oi9nD-fbVt-ZRw1l8fOboa6IQ2FdnyFqjewcjPHkSci_Gee-sIV8KB5WkFHD9nzC0noH1j2urJ5W9BVchuQcIXsK2MrgCqCraJF9iF0GSlLIAnczo285IgwsRAfeCHaSY9Tm-NmPSSimsypvJoQtsIynUSlP9P2UvkWMgUIZRGimW6pLaarTJ8nPx_wnVEHcLn9yMcsvWmRuQ5-Fe7dg_RiVsxYZh1TC-9uPBI_DpFltpbMGDD_Ih4p4KqFdHKrK1-jEUElrhl8tn7oxM6O-r4fyDv_IVsIUSChYt_4TIAqmnsxkCAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBSRezOUQ8wGzKalFJaBlWrn6zQzWzAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEATAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBACclc5SLvJ88TNJkcauzpJfrhdIP-4gC2VrqqV69ABXh7v33kGEEc0GlWSGMiKaizRDp5NECa1xJefoWM7lzugfh8YRr7pmbDSZ3VQMEk6gumUXnzytcEep7rHkWwJVlZ9HHgSUqu3hlrBir3tH0LIFSf9_FYPtj1adFwGy7cvWtHCseux-cYDTRsLz6iLPvq5HSp5Fwf9q_47vxfL1wXVcFUmI05n-P9txOk_Rnd5qlKyCA-iajxESe7xPLnKMrXWXPl1oAieFtLonYvc1DaI-Jv-956-RANKSeDGO9PvP-GPZzGUdxZ7IFRp6Q8D-5FvheU1qv8ZcWslQtHG0ixC8&s=T4Py0opbnEiB9iJzZX6ofyzp4Dw56t71tLCVVUZYNzsS3dY2gQ2XdwbaWNvKHQm2FD6e-bBz1AOmsJb9AgkLgUMRLsLv-aPZD7ek2kRplWFVaj6Dbh6BkqZf--52xJ7X-iW-XZi7mJ-_JpcfYqqLlyljFN4ZAzNqiW1zx2bRMtHPVD_Ej8rKUu7QdKBN_AwrE12ZEqbPkpVrJ82C3I1i-QwCYv8iPJSE1vmmJoG306HDGpPp8zVKUq11ekkqgBi3DD_K8CTphk1S1do0DzMkb7ZHEhdkXTZQ7OeSDWDJk56jP4H5UBIHehbnFHnFM-ScOGT1Dad4jLxKm4mocsw3hg&h=o6b6sx74VjVtHhtd5onOpFqzpwnZGSjmHowAUzCpHFU
       mise-correlation-id:
-      - e886ab4d-8959-41cc-b1b8-f3969b7b213b
+      - ff9d0f7f-147f-45ca-add2-6d909c63292c
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      x-azure-ref:
+      - 20240806T025359Z-16794ff854dgnqfr2ypqduqyv8000000066g000000000g87
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-providerhub-traffic:
       - 'True'
       x-ms-ratelimit-remaining-subscription-deletes:
       - '14999'
+      x-msedge-ref:
+      - 'Ref A: A5B7CE5C544B4BD9B7DB225DF22CA4BB Ref B: SN4AA2022303047 Ref C: 2024-08-06T02:53:58Z'
     status:
       code: 202
       message: Accepted
@@ -471,31 +482,39 @@ interactions:
       ParameterSetName:
       - --name --resource-group -y
       User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.27.0 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+      - AZURECLI/2.62.0 azsdk-python-core/1.30.2 Python/3.10.12 (Linux-5.15.153.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/3e1a427c-82c3-46ee-97f5-9caab0cf0abd*AB4291D250BFE2EFE39FFEB82CC12D5ECA6F94E11D681A9E56A1F86A425DEAAC?api-version=2023-10-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/UKSOUTH/operationStatuses/e01b9e35-24e8-4e25-9e34-af8ff99acce0*C25097BF5AD6B349C53D9299B9E7A502FF73AA1895C935A410D1ABB9A2C717B0?api-version=2025-02-01&t=638585096393844001&c=MIIHhzCCBm-gAwIBAgITHgTUi-YoGm7h4w8LxwAABNSL5jANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwNjI5MDUyNzU1WhcNMjUwNjI0MDUyNzU1WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKqa-o2nwKMzJEIE6FZ2V6i4GGS9o93h1xHXSm2oi9nD-fbVt-ZRw1l8fOboa6IQ2FdnyFqjewcjPHkSci_Gee-sIV8KB5WkFHD9nzC0noH1j2urJ5W9BVchuQcIXsK2MrgCqCraJF9iF0GSlLIAnczo285IgwsRAfeCHaSY9Tm-NmPSSimsypvJoQtsIynUSlP9P2UvkWMgUIZRGimW6pLaarTJ8nPx_wnVEHcLn9yMcsvWmRuQ5-Fe7dg_RiVsxYZh1TC-9uPBI_DpFltpbMGDD_Ih4p4KqFdHKrK1-jEUElrhl8tn7oxM6O-r4fyDv_IVsIUSChYt_4TIAqmnsxkCAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBSRezOUQ8wGzKalFJaBlWrn6zQzWzAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEATAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBACclc5SLvJ88TNJkcauzpJfrhdIP-4gC2VrqqV69ABXh7v33kGEEc0GlWSGMiKaizRDp5NECa1xJefoWM7lzugfh8YRr7pmbDSZ3VQMEk6gumUXnzytcEep7rHkWwJVlZ9HHgSUqu3hlrBir3tH0LIFSf9_FYPtj1adFwGy7cvWtHCseux-cYDTRsLz6iLPvq5HSp5Fwf9q_47vxfL1wXVcFUmI05n-P9txOk_Rnd5qlKyCA-iajxESe7xPLnKMrXWXPl1oAieFtLonYvc1DaI-Jv-956-RANKSeDGO9PvP-GPZzGUdxZ7IFRp6Q8D-5FvheU1qv8ZcWslQtHG0ixC8&s=T4Py0opbnEiB9iJzZX6ofyzp4Dw56t71tLCVVUZYNzsS3dY2gQ2XdwbaWNvKHQm2FD6e-bBz1AOmsJb9AgkLgUMRLsLv-aPZD7ek2kRplWFVaj6Dbh6BkqZf--52xJ7X-iW-XZi7mJ-_JpcfYqqLlyljFN4ZAzNqiW1zx2bRMtHPVD_Ej8rKUu7QdKBN_AwrE12ZEqbPkpVrJ82C3I1i-QwCYv8iPJSE1vmmJoG306HDGpPp8zVKUq11ekkqgBi3DD_K8CTphk1S1do0DzMkb7ZHEhdkXTZQ7OeSDWDJk56jP4H5UBIHehbnFHnFM-ScOGT1Dad4jLxKm4mocsw3hg&h=o6b6sx74VjVtHhtd5onOpFqzpwnZGSjmHowAUzCpHFU
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/3e1a427c-82c3-46ee-97f5-9caab0cf0abd*AB4291D250BFE2EFE39FFEB82CC12D5ECA6F94E11D681A9E56A1F86A425DEAAC","name":"3e1a427c-82c3-46ee-97f5-9caab0cf0abd*AB4291D250BFE2EFE39FFEB82CC12D5ECA6F94E11D681A9E56A1F86A425DEAAC","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/trunkedNetworks/cli-test-trunkednw-000001","status":"Deleting","startTime":"2023-06-21T20:53:10.8863968Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/UKSOUTH/operationStatuses/e01b9e35-24e8-4e25-9e34-af8ff99acce0*C25097BF5AD6B349C53D9299B9E7A502FF73AA1895C935A410D1ABB9A2C717B0","name":"e01b9e35-24e8-4e25-9e34-af8ff99acce0*C25097BF5AD6B349C53D9299B9E7A502FF73AA1895C935A410D1ABB9A2C717B0","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/trunkedNetworks/cli-test-trunkednw-000001","status":"Deleting","startTime":"2024-08-06T02:53:59.0289054Z"}'
     headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/uksouth/operationStatuses/e01b9e35-24e8-4e25-9e34-af8ff99acce0*C25097BF5AD6B349C53D9299B9E7A502FF73AA1895C935A410D1ABB9A2C717B0?api-version=2025-02-01&t=638585096398049232&c=MIIHhzCCBm-gAwIBAgITHgTUi-YoGm7h4w8LxwAABNSL5jANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwNjI5MDUyNzU1WhcNMjUwNjI0MDUyNzU1WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKqa-o2nwKMzJEIE6FZ2V6i4GGS9o93h1xHXSm2oi9nD-fbVt-ZRw1l8fOboa6IQ2FdnyFqjewcjPHkSci_Gee-sIV8KB5WkFHD9nzC0noH1j2urJ5W9BVchuQcIXsK2MrgCqCraJF9iF0GSlLIAnczo285IgwsRAfeCHaSY9Tm-NmPSSimsypvJoQtsIynUSlP9P2UvkWMgUIZRGimW6pLaarTJ8nPx_wnVEHcLn9yMcsvWmRuQ5-Fe7dg_RiVsxYZh1TC-9uPBI_DpFltpbMGDD_Ih4p4KqFdHKrK1-jEUElrhl8tn7oxM6O-r4fyDv_IVsIUSChYt_4TIAqmnsxkCAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBSRezOUQ8wGzKalFJaBlWrn6zQzWzAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEATAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBACclc5SLvJ88TNJkcauzpJfrhdIP-4gC2VrqqV69ABXh7v33kGEEc0GlWSGMiKaizRDp5NECa1xJefoWM7lzugfh8YRr7pmbDSZ3VQMEk6gumUXnzytcEep7rHkWwJVlZ9HHgSUqu3hlrBir3tH0LIFSf9_FYPtj1adFwGy7cvWtHCseux-cYDTRsLz6iLPvq5HSp5Fwf9q_47vxfL1wXVcFUmI05n-P9txOk_Rnd5qlKyCA-iajxESe7xPLnKMrXWXPl1oAieFtLonYvc1DaI-Jv-956-RANKSeDGO9PvP-GPZzGUdxZ7IFRp6Q8D-5FvheU1qv8ZcWslQtHG0ixC8&s=ZIWiWzXMiHaWzivR4tVs-H49fMphA1PTL0GnttRIOX2ZRbcUrhEYao0QyKvZ6FkkuoswPYDsIEKHwUaNkgEK1mcZwTs9AMaCmeAAFj6t2RZ13309SdPf6JTodIWocTFdnzCGIMaA9fbM_upxFa-9McpSS-LDFPpYTZp1OOH7G1uupEjH25tF0vFnAjDSqEq-HxPbd4lidghZBb1izwi-Cgscnz2yXErQHPeCcIxR8xgNObRijkYo0JoYNBO_viMlhKDMKTzEpKScJAOg7yNT1jZ6uYwuKkVdpyA3zSpaZwPXTAjCnCO9wqqwSSKgA64hlTkDq1B6kzFhLM6y9Sef0w&h=j_row_RtXTKLHmnXwWkQWdMwszX3q9s-jQGNxwIEJJA
       cache-control:
       - no-cache
       content-length:
-      - '575'
+      - '576'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 21 Jun 2023 20:53:10 GMT
+      - Tue, 06 Aug 2024 02:53:59 GMT
       etag:
-      - '"e1026079-0000-0100-0000-649363360000"'
+      - '"0800fec6-0000-1000-0000-66b190470000"'
       expires:
       - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/uksouth/operationStatuses/e01b9e35-24e8-4e25-9e34-af8ff99acce0*C25097BF5AD6B349C53D9299B9E7A502FF73AA1895C935A410D1ABB9A2C717B0?api-version=2025-02-01&t=638585096398049232&c=MIIHhzCCBm-gAwIBAgITHgTUi-YoGm7h4w8LxwAABNSL5jANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwNjI5MDUyNzU1WhcNMjUwNjI0MDUyNzU1WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKqa-o2nwKMzJEIE6FZ2V6i4GGS9o93h1xHXSm2oi9nD-fbVt-ZRw1l8fOboa6IQ2FdnyFqjewcjPHkSci_Gee-sIV8KB5WkFHD9nzC0noH1j2urJ5W9BVchuQcIXsK2MrgCqCraJF9iF0GSlLIAnczo285IgwsRAfeCHaSY9Tm-NmPSSimsypvJoQtsIynUSlP9P2UvkWMgUIZRGimW6pLaarTJ8nPx_wnVEHcLn9yMcsvWmRuQ5-Fe7dg_RiVsxYZh1TC-9uPBI_DpFltpbMGDD_Ih4p4KqFdHKrK1-jEUElrhl8tn7oxM6O-r4fyDv_IVsIUSChYt_4TIAqmnsxkCAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBSRezOUQ8wGzKalFJaBlWrn6zQzWzAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEATAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBACclc5SLvJ88TNJkcauzpJfrhdIP-4gC2VrqqV69ABXh7v33kGEEc0GlWSGMiKaizRDp5NECa1xJefoWM7lzugfh8YRr7pmbDSZ3VQMEk6gumUXnzytcEep7rHkWwJVlZ9HHgSUqu3hlrBir3tH0LIFSf9_FYPtj1adFwGy7cvWtHCseux-cYDTRsLz6iLPvq5HSp5Fwf9q_47vxfL1wXVcFUmI05n-P9txOk_Rnd5qlKyCA-iajxESe7xPLnKMrXWXPl1oAieFtLonYvc1DaI-Jv-956-RANKSeDGO9PvP-GPZzGUdxZ7IFRp6Q8D-5FvheU1qv8ZcWslQtHG0ixC8&s=ZIWiWzXMiHaWzivR4tVs-H49fMphA1PTL0GnttRIOX2ZRbcUrhEYao0QyKvZ6FkkuoswPYDsIEKHwUaNkgEK1mcZwTs9AMaCmeAAFj6t2RZ13309SdPf6JTodIWocTFdnzCGIMaA9fbM_upxFa-9McpSS-LDFPpYTZp1OOH7G1uupEjH25tF0vFnAjDSqEq-HxPbd4lidghZBb1izwi-Cgscnz2yXErQHPeCcIxR8xgNObRijkYo0JoYNBO_viMlhKDMKTzEpKScJAOg7yNT1jZ6uYwuKkVdpyA3zSpaZwPXTAjCnCO9wqqwSSKgA64hlTkDq1B6kzFhLM6y9Sef0w&h=j_row_RtXTKLHmnXwWkQWdMwszX3q9s-jQGNxwIEJJA
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-msedge-ref:
+      - 'Ref A: D3EF24205F964698B412AFFE9FBCDD7C Ref B: SN4AA2022303011 Ref C: 2024-08-06T02:53:59Z'
     status:
       code: 202
       message: Accepted
@@ -513,35 +532,35 @@ interactions:
       ParameterSetName:
       - --name --resource-group -y
       User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.27.0 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+      - AZURECLI/2.62.0 azsdk-python-core/1.30.2 Python/3.10.12 (Linux-5.15.153.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/3e1a427c-82c3-46ee-97f5-9caab0cf0abd*AB4291D250BFE2EFE39FFEB82CC12D5ECA6F94E11D681A9E56A1F86A425DEAAC?api-version=2023-10-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/UKSOUTH/operationStatuses/e01b9e35-24e8-4e25-9e34-af8ff99acce0*C25097BF5AD6B349C53D9299B9E7A502FF73AA1895C935A410D1ABB9A2C717B0?api-version=2025-02-01&t=638585096393844001&c=MIIHhzCCBm-gAwIBAgITHgTUi-YoGm7h4w8LxwAABNSL5jANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwNjI5MDUyNzU1WhcNMjUwNjI0MDUyNzU1WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKqa-o2nwKMzJEIE6FZ2V6i4GGS9o93h1xHXSm2oi9nD-fbVt-ZRw1l8fOboa6IQ2FdnyFqjewcjPHkSci_Gee-sIV8KB5WkFHD9nzC0noH1j2urJ5W9BVchuQcIXsK2MrgCqCraJF9iF0GSlLIAnczo285IgwsRAfeCHaSY9Tm-NmPSSimsypvJoQtsIynUSlP9P2UvkWMgUIZRGimW6pLaarTJ8nPx_wnVEHcLn9yMcsvWmRuQ5-Fe7dg_RiVsxYZh1TC-9uPBI_DpFltpbMGDD_Ih4p4KqFdHKrK1-jEUElrhl8tn7oxM6O-r4fyDv_IVsIUSChYt_4TIAqmnsxkCAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBSRezOUQ8wGzKalFJaBlWrn6zQzWzAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEATAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBACclc5SLvJ88TNJkcauzpJfrhdIP-4gC2VrqqV69ABXh7v33kGEEc0GlWSGMiKaizRDp5NECa1xJefoWM7lzugfh8YRr7pmbDSZ3VQMEk6gumUXnzytcEep7rHkWwJVlZ9HHgSUqu3hlrBir3tH0LIFSf9_FYPtj1adFwGy7cvWtHCseux-cYDTRsLz6iLPvq5HSp5Fwf9q_47vxfL1wXVcFUmI05n-P9txOk_Rnd5qlKyCA-iajxESe7xPLnKMrXWXPl1oAieFtLonYvc1DaI-Jv-956-RANKSeDGO9PvP-GPZzGUdxZ7IFRp6Q8D-5FvheU1qv8ZcWslQtHG0ixC8&s=T4Py0opbnEiB9iJzZX6ofyzp4Dw56t71tLCVVUZYNzsS3dY2gQ2XdwbaWNvKHQm2FD6e-bBz1AOmsJb9AgkLgUMRLsLv-aPZD7ek2kRplWFVaj6Dbh6BkqZf--52xJ7X-iW-XZi7mJ-_JpcfYqqLlyljFN4ZAzNqiW1zx2bRMtHPVD_Ej8rKUu7QdKBN_AwrE12ZEqbPkpVrJ82C3I1i-QwCYv8iPJSE1vmmJoG306HDGpPp8zVKUq11ekkqgBi3DD_K8CTphk1S1do0DzMkb7ZHEhdkXTZQ7OeSDWDJk56jP4H5UBIHehbnFHnFM-ScOGT1Dad4jLxKm4mocsw3hg&h=o6b6sx74VjVtHhtd5onOpFqzpwnZGSjmHowAUzCpHFU
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/3e1a427c-82c3-46ee-97f5-9caab0cf0abd*AB4291D250BFE2EFE39FFEB82CC12D5ECA6F94E11D681A9E56A1F86A425DEAAC","name":"3e1a427c-82c3-46ee-97f5-9caab0cf0abd*AB4291D250BFE2EFE39FFEB82CC12D5ECA6F94E11D681A9E56A1F86A425DEAAC","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/trunkedNetworks/cli-test-trunkednw-000001","status":"Succeeded","startTime":"2023-06-21T20:53:10.8863968Z","endTime":"2023-06-21T20:53:17.6600691Z","properties":null}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/UKSOUTH/operationStatuses/e01b9e35-24e8-4e25-9e34-af8ff99acce0*C25097BF5AD6B349C53D9299B9E7A502FF73AA1895C935A410D1ABB9A2C717B0","name":"e01b9e35-24e8-4e25-9e34-af8ff99acce0*C25097BF5AD6B349C53D9299B9E7A502FF73AA1895C935A410D1ABB9A2C717B0","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/trunkedNetworks/cli-test-trunkednw-000001","status":"Succeeded","startTime":"2024-08-06T02:53:59.0289054Z","endTime":"2024-08-06T02:54:03.3902802Z","properties":null}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '635'
+      - '636'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 21 Jun 2023 20:53:41 GMT
+      - Tue, 06 Aug 2024 02:54:30 GMT
       etag:
-      - '"e1026679-0000-0100-0000-6493633d0000"'
+      - '"080000c7-0000-1000-0000-66b1904b0000"'
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-msedge-ref:
+      - 'Ref A: 67EE8BDEFEB74C89BF66473D41531EB3 Ref B: SN4AA2022303011 Ref C: 2024-08-06T02:54:30Z'
     status:
       code: 200
       message: OK
@@ -559,35 +578,35 @@ interactions:
       ParameterSetName:
       - --name --resource-group -y
       User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.27.0 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+      - AZURECLI/2.62.0 azsdk-python-core/1.30.2 Python/3.10.12 (Linux-5.15.153.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/3e1a427c-82c3-46ee-97f5-9caab0cf0abd*AB4291D250BFE2EFE39FFEB82CC12D5ECA6F94E11D681A9E56A1F86A425DEAAC?api-version=2023-10-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/UKSOUTH/operationStatuses/e01b9e35-24e8-4e25-9e34-af8ff99acce0*C25097BF5AD6B349C53D9299B9E7A502FF73AA1895C935A410D1ABB9A2C717B0?api-version=2025-02-01&t=638585096393844001&c=MIIHhzCCBm-gAwIBAgITHgTUi-YoGm7h4w8LxwAABNSL5jANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwNjI5MDUyNzU1WhcNMjUwNjI0MDUyNzU1WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKqa-o2nwKMzJEIE6FZ2V6i4GGS9o93h1xHXSm2oi9nD-fbVt-ZRw1l8fOboa6IQ2FdnyFqjewcjPHkSci_Gee-sIV8KB5WkFHD9nzC0noH1j2urJ5W9BVchuQcIXsK2MrgCqCraJF9iF0GSlLIAnczo285IgwsRAfeCHaSY9Tm-NmPSSimsypvJoQtsIynUSlP9P2UvkWMgUIZRGimW6pLaarTJ8nPx_wnVEHcLn9yMcsvWmRuQ5-Fe7dg_RiVsxYZh1TC-9uPBI_DpFltpbMGDD_Ih4p4KqFdHKrK1-jEUElrhl8tn7oxM6O-r4fyDv_IVsIUSChYt_4TIAqmnsxkCAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBSRezOUQ8wGzKalFJaBlWrn6zQzWzAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEATAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBACclc5SLvJ88TNJkcauzpJfrhdIP-4gC2VrqqV69ABXh7v33kGEEc0GlWSGMiKaizRDp5NECa1xJefoWM7lzugfh8YRr7pmbDSZ3VQMEk6gumUXnzytcEep7rHkWwJVlZ9HHgSUqu3hlrBir3tH0LIFSf9_FYPtj1adFwGy7cvWtHCseux-cYDTRsLz6iLPvq5HSp5Fwf9q_47vxfL1wXVcFUmI05n-P9txOk_Rnd5qlKyCA-iajxESe7xPLnKMrXWXPl1oAieFtLonYvc1DaI-Jv-956-RANKSeDGO9PvP-GPZzGUdxZ7IFRp6Q8D-5FvheU1qv8ZcWslQtHG0ixC8&s=T4Py0opbnEiB9iJzZX6ofyzp4Dw56t71tLCVVUZYNzsS3dY2gQ2XdwbaWNvKHQm2FD6e-bBz1AOmsJb9AgkLgUMRLsLv-aPZD7ek2kRplWFVaj6Dbh6BkqZf--52xJ7X-iW-XZi7mJ-_JpcfYqqLlyljFN4ZAzNqiW1zx2bRMtHPVD_Ej8rKUu7QdKBN_AwrE12ZEqbPkpVrJ82C3I1i-QwCYv8iPJSE1vmmJoG306HDGpPp8zVKUq11ekkqgBi3DD_K8CTphk1S1do0DzMkb7ZHEhdkXTZQ7OeSDWDJk56jP4H5UBIHehbnFHnFM-ScOGT1Dad4jLxKm4mocsw3hg&h=o6b6sx74VjVtHhtd5onOpFqzpwnZGSjmHowAUzCpHFU
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/3e1a427c-82c3-46ee-97f5-9caab0cf0abd*AB4291D250BFE2EFE39FFEB82CC12D5ECA6F94E11D681A9E56A1F86A425DEAAC","name":"3e1a427c-82c3-46ee-97f5-9caab0cf0abd*AB4291D250BFE2EFE39FFEB82CC12D5ECA6F94E11D681A9E56A1F86A425DEAAC","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/trunkedNetworks/cli-test-trunkednw-000001","status":"Succeeded","startTime":"2023-06-21T20:53:10.8863968Z","endTime":"2023-06-21T20:53:17.6600691Z","properties":null}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/UKSOUTH/operationStatuses/e01b9e35-24e8-4e25-9e34-af8ff99acce0*C25097BF5AD6B349C53D9299B9E7A502FF73AA1895C935A410D1ABB9A2C717B0","name":"e01b9e35-24e8-4e25-9e34-af8ff99acce0*C25097BF5AD6B349C53D9299B9E7A502FF73AA1895C935A410D1ABB9A2C717B0","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/trunkedNetworks/cli-test-trunkednw-000001","status":"Succeeded","startTime":"2024-08-06T02:53:59.0289054Z","endTime":"2024-08-06T02:54:03.3902802Z","properties":null}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '635'
+      - '636'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 21 Jun 2023 20:53:41 GMT
+      - Tue, 06 Aug 2024 02:54:30 GMT
       etag:
-      - '"e1026679-0000-0100-0000-6493633d0000"'
+      - '"080000c7-0000-1000-0000-66b1904b0000"'
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-msedge-ref:
+      - 'Ref A: B90D036406DC49EDA16ECA758C704C88 Ref B: SN4AA2022305009 Ref C: 2024-08-06T02:54:30Z'
     status:
       code: 200
       message: OK

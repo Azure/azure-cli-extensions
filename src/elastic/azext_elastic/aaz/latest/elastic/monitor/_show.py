@@ -22,9 +22,9 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-02-01-preview",
+        "version": "2024-06-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elastic/monitors/{}", "2023-02-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elastic/monitors/{}", "2024-06-15-preview"],
         ]
     }
 
@@ -49,6 +49,9 @@ class Show(AAZCommand):
             help="Monitor resource name",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^.*$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -120,7 +123,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-02-01-preview",
+                    "api-version", "2024-06-15-preview",
                     required=True,
                 ),
             }
@@ -203,8 +206,24 @@ class Show(AAZCommand):
             properties.monitoring_status = AAZStrType(
                 serialized_name="monitoringStatus",
             )
+            properties.plan_details = AAZObjectType(
+                serialized_name="planDetails",
+            )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+            properties.saa_s_azure_subscription_status = AAZStrType(
+                serialized_name="saaSAzureSubscriptionStatus",
+            )
+            properties.source_campaign_id = AAZStrType(
+                serialized_name="sourceCampaignId",
+            )
+            properties.source_campaign_name = AAZStrType(
+                serialized_name="sourceCampaignName",
+            )
+            properties.subscription_state = AAZStrType(
+                serialized_name="subscriptionState",
             )
             properties.version = AAZStrType()
 
@@ -256,6 +275,23 @@ class Show(AAZCommand):
             )
             elastic_cloud_user.id = AAZStrType(
                 flags={"read_only": True},
+            )
+
+            plan_details = cls._schema_on_200.properties.plan_details
+            plan_details.offer_id = AAZStrType(
+                serialized_name="offerID",
+            )
+            plan_details.plan_id = AAZStrType(
+                serialized_name="planID",
+            )
+            plan_details.plan_name = AAZStrType(
+                serialized_name="planName",
+            )
+            plan_details.publisher_id = AAZStrType(
+                serialized_name="publisherID",
+            )
+            plan_details.term_id = AAZStrType(
+                serialized_name="termID",
             )
 
             sku = cls._schema_on_200.sku

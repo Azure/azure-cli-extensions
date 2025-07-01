@@ -13,6 +13,7 @@ from azure.cli.core.util import sdk_no_wait
 
 from azext_fleet._client_factory import CUSTOM_MGMT_FLEET
 from azext_fleet._helpers import print_or_merge_credentials
+from azext_fleet._helpers import assign_network_contributor_role_to_subnet
 from azext_fleet.constants import UPGRADE_TYPE_CONTROLPLANEONLY
 from azext_fleet.constants import UPGRADE_TYPE_FULL
 from azext_fleet.constants import UPGRADE_TYPE_NODEIMAGEONLY
@@ -108,6 +109,9 @@ def create_fleet(cmd,
         hub_profile=fleet_hub_profile,
         identity=managed_service_identity
     )
+
+    if enable_private_cluster:
+        assign_network_contributor_role_to_subnet(cmd, agent_subnet_id)
 
     return sdk_no_wait(no_wait,
                        client.begin_create_or_update,
@@ -529,3 +533,92 @@ def delete_fleet_update_strategy(cmd,  # pylint: disable=unused-argument
                                  name,
                                  no_wait=False):
     return sdk_no_wait(no_wait, client.begin_delete, resource_group_name, fleet_name, name)
+
+
+def create_auto_upgrade_profile(cmd,  # pylint: disable=unused-argument
+                                client,
+                                resource_group_name,
+                                fleet_name,
+                                name,
+                                channel,
+                                update_strategy_id=None,
+                                node_image_selection=None,
+                                disabled=False,
+                                no_wait=False):
+
+    if channel == "NodeImage" and node_image_selection is not None:
+        raise CLIError("node_image_selection must NOT be populated when channel type `NodeImage` is selected")
+
+    upgrade_channel_model = cmd.get_models(
+        "UpgradeChannel",
+        resource_type=CUSTOM_MGMT_FLEET,
+        operation_group="auto_upgrade_profiles",
+    )
+    upgrade_channel = upgrade_channel_model(channel)
+
+    auto_upgrade_node_image_selection = None
+    if node_image_selection:
+        auto_upgrade_node_image_selection_model = cmd.get_models(
+            "AutoUpgradeNodeImageSelection",
+            resource_type=CUSTOM_MGMT_FLEET,
+            operation_group="auto_upgrade_profiles",
+        )
+        auto_upgrade_node_image_selection = auto_upgrade_node_image_selection_model(type=node_image_selection)
+
+    auto_upgrade_profile_model = cmd.get_models(
+        "AutoUpgradeProfile",
+        resource_type=CUSTOM_MGMT_FLEET,
+        operation_group="auto_upgrade_profiles",
+    )
+    auto_upgrade_profile = auto_upgrade_profile_model(
+        update_strategy_id=update_strategy_id,
+        channel=upgrade_channel,
+        node_image_selection=auto_upgrade_node_image_selection,
+        disabled=disabled
+    )
+
+    return sdk_no_wait(no_wait,
+                       client.begin_create_or_update,
+                       resource_group_name,
+                       fleet_name,
+                       name,
+                       auto_upgrade_profile)
+
+
+def show_auto_upgrade_profile(cmd,  # pylint: disable=unused-argument
+                              client,
+                              resource_group_name,
+                              fleet_name,
+                              name):
+    return client.get(resource_group_name, fleet_name, name)
+
+
+def list_auto_upgrade_profiles(cmd,  # pylint: disable=unused-argument
+                               client,
+                               resource_group_name,
+                               fleet_name):
+    return client.list_by_fleet(resource_group_name, fleet_name)
+
+
+def delete_auto_upgrade_profile(cmd,  # pylint: disable=unused-argument
+                                client,
+                                resource_group_name,
+                                fleet_name,
+                                name,
+                                no_wait=False):
+    return sdk_no_wait(no_wait, client.begin_delete, resource_group_name, fleet_name, name)
+
+
+def generate_update_run(cmd,  # pylint: disable=unused-argument
+                        client,
+                        resource_group_name,
+                        fleet_name,
+                        auto_upgrade_profile_name,
+                        no_wait=False):
+    return sdk_no_wait(
+        no_wait,
+        client.begin_generate_update_run,
+        resource_group_name,
+        fleet_name,
+        auto_upgrade_profile_name
+    )

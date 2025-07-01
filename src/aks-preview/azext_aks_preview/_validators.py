@@ -20,6 +20,7 @@ from azure.cli.core.azclierror import (
 )
 from azure.cli.core.commands.validators import validate_tag
 from azure.cli.core.util import CLIError
+from azure.mgmt.core.tools import is_valid_resource_id
 from azext_aks_preview._consts import (
     ADDONS,
     CONST_LOAD_BALANCER_BACKEND_POOL_TYPE_NODE_IP,
@@ -33,6 +34,7 @@ from azext_aks_preview._consts import (
     CONST_NETWORK_POD_IP_ALLOCATION_MODE_DYNAMIC_INDIVIDUAL,
     CONST_NETWORK_POD_IP_ALLOCATION_MODE_STATIC_BLOCK,
     CONST_NODEPOOL_MODE_GATEWAY,
+    CONST_AZURE_SERVICE_MESH_MAX_EGRESS_NAME_LENGTH,
 )
 from azext_aks_preview._helpers import _fuzzy_match
 from knack.log import get_logger
@@ -162,6 +164,44 @@ def validate_ip_ranges(namespace):
                     "--api-server-authorized-ip-ranges cannot be IPv6 addresses")
         except ValueError:
             pass
+
+
+def validate_namespace_name(namespace):
+    _validate_namespace_name(namespace.name)
+
+
+def _validate_namespace_name(name):
+    """
+    Validates a Kubernetes namespace name.
+    Raises ValueError if the name is invalid.
+    """
+    if name != "":
+        if len(name) < 1 or len(name) > 63:
+            raise ValueError("Namespace name must be between 1 and 63 characters.")
+        pattern = r'^[a-z0-9]([-a-z0-9]*[a-z0-9])?$'
+        if not re.match(pattern, name):
+            raise ValueError(
+                f"Invalid namespace '{name}'. Must consist of lower case alphanumeric characters or '-', "
+                "and must start and end with an alphanumeric character."
+            )
+
+
+def validate_resource_quota(namespace):
+    if namespace.cpu_request is not None:
+        if not namespace.cpu_request.endswith("m"):
+            raise ValueError("--cpu-request must be specified in millicores, like 200m")
+    if namespace.cpu_limit is not None:
+        if not namespace.cpu_limit.endswith("m"):
+            raise ValueError("--cpu-limit must be specified in millicores, like 200m")
+    pattern = r"^\d+(Ki|Mi|Gi|Ti|Pi|Ei)$"
+    if namespace.memory_request is not None:
+        if not re.match(pattern, namespace.memory_request):
+            raise ValueError("--memory-request must be specified in the power-of-two equivalents form:"
+                             "Ei, Pi, Ti, Gi, Mi, Ki.")
+    if namespace.memory_limit is not None:
+        if not re.match(pattern, namespace.memory_limit):
+            raise ValueError("--memory-limit must be specified in the power-of-two equivalents form:"
+                             "Ei, Pi, Ti, Gi, Mi, Ki.")
 
 
 def _validate_nodepool_name(nodepool_name):
@@ -323,7 +363,6 @@ def validate_apiserver_subnet_id(namespace):
 def _validate_subnet_id(subnet_id, name):
     if subnet_id is None or subnet_id == '':
         return
-    from msrestazure.tools import is_valid_resource_id
     if not is_valid_resource_id(subnet_id):
         raise CLIError(name + " is not a valid Azure resource ID.")
 
@@ -464,11 +503,42 @@ def validate_max_surge(namespace):
         raise CLIError("--max-surge should be an int or percentage")
 
 
+def validate_max_unavailable(namespace):
+    """validates parameters max unavailable are positive integers or percents."""
+    if namespace.max_unavailable is None:
+        return
+    int_or_percent = namespace.max_unavailable
+    if int_or_percent.endswith('%'):
+        int_or_percent = int_or_percent.rstrip('%')
+
+    try:
+        if int(int_or_percent) < 0:
+            raise CLIError("--max-unavailable must be positive")
+    except ValueError:
+        # pylint: disable=raise-missing-from
+        raise CLIError("--max-unavailable should be an int or percentage")
+
+
+def validate_max_blocked_nodes(namespace):
+    """validates parameters max blocked nodes is positive integers or percents."""
+    if namespace.max_blocked_nodes is None:
+        return
+    int_or_percent = namespace.max_blocked_nodes
+    if int_or_percent.endswith('%'):
+        int_or_percent = int_or_percent.rstrip('%s')
+
+    try:
+        if int(int_or_percent) < 0:
+            raise InvalidArgumentValueError('--max-blocked-nodes must be be positive')
+    except ValueError:
+        # pylint: disable=raise-missing-from
+        raise InvalidArgumentValueError('--max-blocked-nodes should be an int or percentage')
+
+
 def validate_assign_identity(namespace):
     if namespace.assign_identity is not None:
         if namespace.assign_identity == '':
             return
-        from msrestazure.tools import is_valid_resource_id
         if not is_valid_resource_id(namespace.assign_identity):
             raise CLIError(
                 "--assign-identity is not a valid Azure resource ID.")
@@ -561,7 +631,6 @@ def validate_assign_kubelet_identity(namespace):
     if namespace.assign_kubelet_identity is not None:
         if namespace.assign_kubelet_identity == '':
             return
-        from msrestazure.tools import is_valid_resource_id
         if not is_valid_resource_id(namespace.assign_kubelet_identity):
             raise CLIError(
                 "--assign-kubelet-identity is not a valid Azure resource ID.")
@@ -578,14 +647,12 @@ def validate_snapshot_name(namespace):
 
 
 def validate_nodepool_id(namespace):
-    from msrestazure.tools import is_valid_resource_id
     if not is_valid_resource_id(namespace.nodepool_id):
         raise InvalidArgumentValueError(
             "--nodepool-id is not a valid Azure resource ID.")
 
 
 def validate_cluster_id(namespace):
-    from msrestazure.tools import is_valid_resource_id
     if not is_valid_resource_id(namespace.cluster_id):
         raise InvalidArgumentValueError(
             "--cluster-id is not a valid Azure resource ID.")
@@ -593,7 +660,6 @@ def validate_cluster_id(namespace):
 
 def validate_snapshot_id(namespace):
     if namespace.snapshot_id:
-        from msrestazure.tools import is_valid_resource_id
         if not is_valid_resource_id(namespace.snapshot_id):
             raise InvalidArgumentValueError(
                 "--snapshot-id is not a valid Azure resource ID.")
@@ -601,7 +667,6 @@ def validate_snapshot_id(namespace):
 
 def validate_cluster_snapshot_id(namespace):
     if namespace.cluster_snapshot_id:
-        from msrestazure.tools import is_valid_resource_id
         if not is_valid_resource_id(namespace.cluster_snapshot_id):
             raise InvalidArgumentValueError(
                 "--cluster-snapshot-id is not a valid Azure resource ID.")
@@ -609,7 +674,6 @@ def validate_cluster_snapshot_id(namespace):
 
 def validate_host_group_id(namespace):
     if namespace.host_group_id:
-        from msrestazure.tools import is_valid_resource_id
         if not is_valid_resource_id(namespace.host_group_id):
             raise InvalidArgumentValueError(
                 "--host-group-id is not a valid Azure resource ID.")
@@ -617,7 +681,6 @@ def validate_host_group_id(namespace):
 
 def validate_crg_id(namespace):
     if namespace.crg_id:
-        from msrestazure.tools import is_valid_resource_id
         if not is_valid_resource_id(namespace.crg_id):
             raise InvalidArgumentValueError(
                 "--crg-id is not a valid Azure resource ID.")
@@ -644,7 +707,6 @@ def validate_azure_keyvault_kms_key_vault_resource_id(namespace):
     key_vault_resource_id = namespace.azure_keyvault_kms_key_vault_resource_id
     if key_vault_resource_id is None or key_vault_resource_id == '':
         return
-    from msrestazure.tools import is_valid_resource_id
     if not is_valid_resource_id(key_vault_resource_id):
         raise InvalidArgumentValueError("--azure-keyvault-kms-key-vault-resource-id is not a valid Azure resource ID.")
 
@@ -653,7 +715,6 @@ def validate_bootstrap_container_registry_resource_id(namespace):
     container_registry_resource_id = namespace.bootstrap_container_registry_resource_id
     if container_registry_resource_id is None or container_registry_resource_id == '':
         return
-    from msrestazure.tools import is_valid_resource_id
     if not is_valid_resource_id(container_registry_resource_id):
         raise InvalidArgumentValueError("--bootstrap-container-registry-resource-id is not a valid Azure resource ID.")
 
@@ -766,14 +827,27 @@ def validate_allowed_host_ports(namespace):
 
 
 def validate_application_security_groups(namespace):
+    is_nodepool_operation = False
     if hasattr((namespace), "nodepool_asg_ids"):
+        is_nodepool_operation = True
         asg_ids = namespace.nodepool_asg_ids
+        host_ports = namespace.nodepool_allowed_host_ports
     else:
         asg_ids = namespace.asg_ids
+        host_ports = namespace.allowed_host_ports
+
     if not asg_ids:
         return
 
-    from msrestazure.tools import is_valid_resource_id
+    if not host_ports:
+        if is_nodepool_operation:
+            raise ArgumentUsageError(
+                '--nodepool-asg-ids must be used with --nodepool-allowed-host-ports'
+            )
+        raise ArgumentUsageError(
+            '--asg-ids must be used with --allowed-host-ports'
+        )
+
     for asg in asg_ids.split(","):
         if not is_valid_resource_id(asg):
             raise InvalidArgumentValueError(asg + " is not a valid Azure resource ID.")
@@ -836,6 +910,20 @@ def validate_azure_service_mesh_revision(namespace):
         raise InvalidArgumentValueError(f"Revision {revision} is not supported by the service mesh add-on.")
 
 
+def validate_asm_egress_name(namespace):
+    if namespace.istio_egressgateway_name is None:
+        return
+    name = namespace.istio_egressgateway_name
+    asm_egress_name_regex = re.compile(r'^[a-z0-9]([-a-z0-9]*[a-z0-9])?(.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$')
+    match = asm_egress_name_regex.match(name)
+    if not match or len(name) > CONST_AZURE_SERVICE_MESH_MAX_EGRESS_NAME_LENGTH:
+        raise InvalidArgumentValueError(
+            f"Istio egress name {name} is invalid. Name must be between 1 and "
+            f"{CONST_AZURE_SERVICE_MESH_MAX_EGRESS_NAME_LENGTH} characters, must consist of lower case alphanumeric "
+            "characters, '-' or '.', and must start and end with an alphanumeric character."
+        )
+
+
 def validate_artifact_streaming(namespace):
     """Validates that artifact streaming enablement can only be used on Linux."""
     if namespace.enable_artifact_streaming:
@@ -861,3 +949,27 @@ def validate_gateway_prefix_size(namespace):
             raise ArgumentUsageError("--gateway-prefix-size can only be set for Gateway-mode nodepools")
         if namespace.gateway_prefix_size < 28 or namespace.gateway_prefix_size > 31:
             raise CLIError("--gateway-prefix-size must be in the range [28, 31]")
+
+
+def validate_resource_group_parameter(namespace):
+    """Validates that if the user specified the cluster name, resource group name is also specified and vice versa"""
+    if namespace.resource_group_name and not namespace.cluster_name:
+        raise RequiredArgumentMissingError("Please specify --cluster")
+    if not namespace.resource_group_name and namespace.cluster_name:
+        raise RequiredArgumentMissingError("Please specify --resource-group")
+
+
+def validate_location_resource_group_cluster_parameters(namespace):
+    """Validates location or cluster details are specified and not mutually exclusive"""
+    location = namespace.location
+    resource_group_name = namespace.resource_group_name
+    cluster_name = namespace.cluster_name
+    if location and (resource_group_name or cluster_name):
+        raise RequiredArgumentMissingError(
+            "You must specify --location or --resource-group and --cluster."
+        )
+
+    if location and resource_group_name and cluster_name:
+        raise MutuallyExclusiveArgumentError(
+            "Cannot specify --location and --resource-group and --cluster at the same time."
+        )

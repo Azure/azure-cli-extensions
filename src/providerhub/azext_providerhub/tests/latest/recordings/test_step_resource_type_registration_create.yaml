@@ -1,7 +1,8 @@
 interactions:
 - request:
     body: '{"kind": "Managed", "properties": {"endpoints": [{"apiVersions": ["2019-01-01"],
-      "locations": ["WestUS"]}], "regionality": "Regional"}}'
+      "locations": ["WestUS"]}], "regionality": "Regional", "routingType": "ProxyOnly,
+      Extension"}}'
     headers:
       Accept:
       - application/json
@@ -12,27 +13,28 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '135'
+      - '174'
       Content-Type:
       - application/json
       ParameterSetName:
-      - --endpoints --regionality --provider-namespace --resource-type
+      - --endpoints --regionality --provider-namespace --resource-type --routing-type
       User-Agent:
-      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.0 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.12.0 (Windows-11-10.0.26100-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Private.VPTest/resourcetypeRegistrations/extensionresourcetype?api-version=2024-04-01-preview
   response:
     body:
-      string: '{"properties":{"name":"extensionresourcetype","routingType":"Default","regionality":"Regional","endpoints":[{"kind":"Managed","apiVersions":["2019-01-01"],"locations":["WestUS"]}],"defaultApiVersion":"2019-01-01","enableAsyncOperation":false,"provisioningState":"Succeeded","enableThirdPartyS2S":false,"templateDeploymentOptions":{"preflightSupported":true,"preflightOptions":["DefaultValidationOnly"]}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Private.VPTest/resourceTypeRegistrations/extensionresourcetype","type":"Microsoft.ProviderHub/providerRegistrations/resourceTypeRegistrations","name":"extensionresourcetype","kind":"Managed","systemData":{"createdBy":"gaurimadhok@microsoft.com","createdByType":"User","createdAt":"2024-05-31T03:23:33.5645757Z","lastModifiedBy":"gaurimadhok@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-06-04T23:30:16.4751488Z"}}'
+      string: '{"properties":{"name":"extensionresourcetype","routingType":"ProxyOnly,
+        Extension","regionality":"Regional","endpoints":[{"kind":"Managed","apiVersions":["2019-01-01"],"locations":["WestUS"]}],"defaultApiVersion":"2019-01-01","throttlingRules":[{"action":"Private.VPTest/extensionresourcetype/write","metrics":[{"type":"NumberOfRequests","limit":400,"interval":"PT1H"}]},{"action":"Private.VPTest/extensionresourcetype/read","metrics":[{"type":"NumberOfRequests","limit":4000,"interval":"PT1H"}]},{"action":"Private.VPTest/extensionresourcetype/delete","metrics":[{"type":"NumberOfRequests","limit":5000,"interval":"PT1H"}]}],"enableAsyncOperation":false,"provisioningState":"Succeeded","enableThirdPartyS2S":false,"templateDeploymentOptions":{"preflightSupported":true,"preflightOptions":["DefaultValidationOnly"]}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Private.VPTest/resourceTypeRegistrations/extensionresourcetype","type":"Microsoft.ProviderHub/providerRegistrations/resourceTypeRegistrations","name":"extensionresourcetype","kind":"Managed","systemData":{"createdBy":"nataliezoz@microsoft.com","createdByType":"User","createdAt":"2025-02-07T22:56:55.0029838Z","lastModifiedBy":"nataliezoz@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-02-25T01:02:30.5754252Z"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '949'
+      - '1360'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Jun 2024 23:30:21 GMT
+      - Tue, 25 Feb 2025 01:02:31 GMT
       expires:
       - '-1'
       pragma:
@@ -43,12 +45,12 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
-      x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=9506e7c0-c569-479f-9940-1f63cb8ce817/centraluseuap/c2af90b9-43e4-42e1-89aa-e6284ab27de0
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1197'
+      - '799'
       x-msedge-ref:
-      - 'Ref A: 8C557624C4F54E8380FDDB445379C9FA Ref B: DM2AA1091214017 Ref C: 2024-06-04T23:30:16Z'
+      - 'Ref A: AC2A6F18AFAB4779B32457B8672752C0 Ref B: CO6AA3150217031 Ref C: 2025-02-25T01:02:30Z'
     status:
       code: 200
       message: OK

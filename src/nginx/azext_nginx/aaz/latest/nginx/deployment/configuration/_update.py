@@ -22,9 +22,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-01-01-preview",
+        "version": "2024-11-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/nginx.nginxplus/nginxdeployments/{}/configurations/{}", "2024-01-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/nginx.nginxplus/nginxdeployments/{}/configurations/{}", "2024-11-01-preview"],
         ]
     }
 
@@ -66,17 +66,6 @@ class Update(AAZCommand):
             required=True,
         )
 
-        # define Arg Group "Body"
-
-        _args_schema = cls._args_schema
-        _args_schema.location = AAZResourceLocationArg(
-            arg_group="Body",
-            nullable=True,
-            fmt=AAZResourceLocationArgFormat(
-                resource_group_arg="resource_group",
-            ),
-        )
-
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
@@ -101,7 +90,7 @@ class Update(AAZCommand):
         _args_schema.root_file = AAZStrArg(
             options=["--root-file"],
             arg_group="Properties",
-            help="Required. The root file that should align with your Nginx configuration structure",
+            help="root file",
             nullable=True,
         )
 
@@ -109,7 +98,16 @@ class Update(AAZCommand):
         files.Element = AAZObjectArg(
             nullable=True,
         )
-        cls._build_args_nginx_configuration_file_update(files.Element)
+
+        _element = cls._args_schema.files.Element
+        _element.content = AAZStrArg(
+            options=["content"],
+            nullable=True,
+        )
+        _element.virtual_path = AAZStrArg(
+            options=["virtual-path"],
+            nullable=True,
+        )
 
         package = cls._args_schema.package
         package.data = AAZStrArg(
@@ -130,34 +128,24 @@ class Update(AAZCommand):
         protected_files.Element = AAZObjectArg(
             nullable=True,
         )
-        cls._build_args_nginx_configuration_file_update(protected_files.Element)
-        return cls._args_schema
 
-    _args_nginx_configuration_file_update = None
-
-    @classmethod
-    def _build_args_nginx_configuration_file_update(cls, _schema):
-        if cls._args_nginx_configuration_file_update is not None:
-            _schema.content = cls._args_nginx_configuration_file_update.content
-            _schema.virtual_path = cls._args_nginx_configuration_file_update.virtual_path
-            return
-
-        cls._args_nginx_configuration_file_update = AAZObjectArg(
-            nullable=True,
-        )
-
-        nginx_configuration_file_update = cls._args_nginx_configuration_file_update
-        nginx_configuration_file_update.content = AAZStrArg(
+        _element = cls._args_schema.protected_files.Element
+        _element.content = AAZStrArg(
             options=["content"],
+            help="The content of the protected file. This value is a PUT only value. If you perform a GET request on this value, it will be empty because it is a protected file.",
             nullable=True,
         )
-        nginx_configuration_file_update.virtual_path = AAZStrArg(
+        _element.content_hash = AAZStrArg(
+            options=["content-hash"],
+            help="The hash of the content of the file. This value is used to determine if the file has changed.",
+            nullable=True,
+        )
+        _element.virtual_path = AAZStrArg(
             options=["virtual-path"],
+            help="The virtual path of the protected file.",
             nullable=True,
         )
-
-        _schema.content = cls._args_nginx_configuration_file_update.content
-        _schema.virtual_path = cls._args_nginx_configuration_file_update.virtual_path
+        return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
@@ -241,7 +229,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-01-01-preview",
+                    "api-version", "2024-11-01-preview",
                     required=True,
                 ),
             }
@@ -272,7 +260,7 @@ class Update(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _UpdateHelper._build_schema_nginx_configuration_read(cls._schema_on_200)
+            _UpdateHelper._build_schema_nginx_configuration_response_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
@@ -344,7 +332,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-01-01-preview",
+                    "api-version", "2024-11-01-preview",
                     required=True,
                 ),
             }
@@ -387,7 +375,7 @@ class Update(AAZCommand):
                 return cls._schema_on_200_201
 
             cls._schema_on_200_201 = AAZObjectType()
-            _UpdateHelper._build_schema_nginx_configuration_read(cls._schema_on_200_201)
+            _UpdateHelper._build_schema_nginx_configuration_response_read(cls._schema_on_200_201)
 
             return cls._schema_on_200_201
 
@@ -402,7 +390,6 @@ class Update(AAZCommand):
                 value=instance,
                 typ=AAZObjectType
             )
-            _builder.set_prop("location", AAZStrType, ".location")
             _builder.set_prop("properties", AAZObjectType)
 
             properties = _builder.get(".properties")
@@ -414,7 +401,12 @@ class Update(AAZCommand):
 
             files = _builder.get(".properties.files")
             if files is not None:
-                _UpdateHelper._build_schema_nginx_configuration_file_update(files.set_elements(AAZObjectType, "."))
+                files.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".properties.files[]")
+            if _elements is not None:
+                _elements.set_prop("content", AAZStrType, ".content")
+                _elements.set_prop("virtualPath", AAZStrType, ".virtual_path")
 
             package = _builder.get(".properties.package")
             if package is not None:
@@ -427,7 +419,13 @@ class Update(AAZCommand):
 
             protected_files = _builder.get(".properties.protectedFiles")
             if protected_files is not None:
-                _UpdateHelper._build_schema_nginx_configuration_file_update(protected_files.set_elements(AAZObjectType, "."))
+                protected_files.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".properties.protectedFiles[]")
+            if _elements is not None:
+                _elements.set_prop("content", AAZStrType, ".content", typ_kwargs={"flags": {"secret": True}})
+                _elements.set_prop("contentHash", AAZStrType, ".content_hash")
+                _elements.set_prop("virtualPath", AAZStrType, ".virtual_path")
 
             return _instance_value
 
@@ -443,66 +441,37 @@ class Update(AAZCommand):
 class _UpdateHelper:
     """Helper class for Update"""
 
-    @classmethod
-    def _build_schema_nginx_configuration_file_update(cls, _builder):
-        if _builder is None:
-            return
-        _builder.set_prop("content", AAZStrType, ".content")
-        _builder.set_prop("virtualPath", AAZStrType, ".virtual_path")
-
-    _schema_nginx_configuration_file_read = None
+    _schema_nginx_configuration_response_read = None
 
     @classmethod
-    def _build_schema_nginx_configuration_file_read(cls, _schema):
-        if cls._schema_nginx_configuration_file_read is not None:
-            _schema.content = cls._schema_nginx_configuration_file_read.content
-            _schema.virtual_path = cls._schema_nginx_configuration_file_read.virtual_path
+    def _build_schema_nginx_configuration_response_read(cls, _schema):
+        if cls._schema_nginx_configuration_response_read is not None:
+            _schema.id = cls._schema_nginx_configuration_response_read.id
+            _schema.name = cls._schema_nginx_configuration_response_read.name
+            _schema.properties = cls._schema_nginx_configuration_response_read.properties
+            _schema.system_data = cls._schema_nginx_configuration_response_read.system_data
+            _schema.type = cls._schema_nginx_configuration_response_read.type
             return
 
-        cls._schema_nginx_configuration_file_read = _schema_nginx_configuration_file_read = AAZObjectType()
+        cls._schema_nginx_configuration_response_read = _schema_nginx_configuration_response_read = AAZObjectType()
 
-        nginx_configuration_file_read = _schema_nginx_configuration_file_read
-        nginx_configuration_file_read.content = AAZStrType()
-        nginx_configuration_file_read.virtual_path = AAZStrType(
-            serialized_name="virtualPath",
-        )
-
-        _schema.content = cls._schema_nginx_configuration_file_read.content
-        _schema.virtual_path = cls._schema_nginx_configuration_file_read.virtual_path
-
-    _schema_nginx_configuration_read = None
-
-    @classmethod
-    def _build_schema_nginx_configuration_read(cls, _schema):
-        if cls._schema_nginx_configuration_read is not None:
-            _schema.id = cls._schema_nginx_configuration_read.id
-            _schema.location = cls._schema_nginx_configuration_read.location
-            _schema.name = cls._schema_nginx_configuration_read.name
-            _schema.properties = cls._schema_nginx_configuration_read.properties
-            _schema.system_data = cls._schema_nginx_configuration_read.system_data
-            _schema.type = cls._schema_nginx_configuration_read.type
-            return
-
-        cls._schema_nginx_configuration_read = _schema_nginx_configuration_read = AAZObjectType()
-
-        nginx_configuration_read = _schema_nginx_configuration_read
-        nginx_configuration_read.id = AAZStrType(
+        nginx_configuration_response_read = _schema_nginx_configuration_response_read
+        nginx_configuration_response_read.id = AAZStrType(
             flags={"read_only": True},
         )
-        nginx_configuration_read.location = AAZStrType()
-        nginx_configuration_read.name = AAZStrType(
+        nginx_configuration_response_read.name = AAZStrType(
             flags={"read_only": True},
         )
-        nginx_configuration_read.properties = AAZObjectType()
-        nginx_configuration_read.system_data = AAZObjectType(
+        nginx_configuration_response_read.properties = AAZObjectType()
+        nginx_configuration_response_read.system_data = AAZObjectType(
             serialized_name="systemData",
             flags={"read_only": True},
         )
-        nginx_configuration_read.type = AAZStrType(
+        nginx_configuration_response_read.type = AAZStrType(
             flags={"read_only": True},
         )
 
-        properties = _schema_nginx_configuration_read.properties
+        properties = _schema_nginx_configuration_response_read.properties
         properties.files = AAZListType()
         properties.package = AAZObjectType()
         properties.protected_files = AAZListType(
@@ -516,24 +485,36 @@ class _UpdateHelper:
             serialized_name="rootFile",
         )
 
-        files = _schema_nginx_configuration_read.properties.files
+        files = _schema_nginx_configuration_response_read.properties.files
         files.Element = AAZObjectType()
-        cls._build_schema_nginx_configuration_file_read(files.Element)
 
-        package = _schema_nginx_configuration_read.properties.package
+        _element = _schema_nginx_configuration_response_read.properties.files.Element
+        _element.content = AAZStrType()
+        _element.virtual_path = AAZStrType(
+            serialized_name="virtualPath",
+        )
+
+        package = _schema_nginx_configuration_response_read.properties.package
         package.data = AAZStrType()
         package.protected_files = AAZListType(
             serialized_name="protectedFiles",
         )
 
-        protected_files = _schema_nginx_configuration_read.properties.package.protected_files
+        protected_files = _schema_nginx_configuration_response_read.properties.package.protected_files
         protected_files.Element = AAZStrType()
 
-        protected_files = _schema_nginx_configuration_read.properties.protected_files
+        protected_files = _schema_nginx_configuration_response_read.properties.protected_files
         protected_files.Element = AAZObjectType()
-        cls._build_schema_nginx_configuration_file_read(protected_files.Element)
 
-        system_data = _schema_nginx_configuration_read.system_data
+        _element = _schema_nginx_configuration_response_read.properties.protected_files.Element
+        _element.content_hash = AAZStrType(
+            serialized_name="contentHash",
+        )
+        _element.virtual_path = AAZStrType(
+            serialized_name="virtualPath",
+        )
+
+        system_data = _schema_nginx_configuration_response_read.system_data
         system_data.created_at = AAZStrType(
             serialized_name="createdAt",
         )
@@ -553,12 +534,11 @@ class _UpdateHelper:
             serialized_name="lastModifiedByType",
         )
 
-        _schema.id = cls._schema_nginx_configuration_read.id
-        _schema.location = cls._schema_nginx_configuration_read.location
-        _schema.name = cls._schema_nginx_configuration_read.name
-        _schema.properties = cls._schema_nginx_configuration_read.properties
-        _schema.system_data = cls._schema_nginx_configuration_read.system_data
-        _schema.type = cls._schema_nginx_configuration_read.type
+        _schema.id = cls._schema_nginx_configuration_response_read.id
+        _schema.name = cls._schema_nginx_configuration_response_read.name
+        _schema.properties = cls._schema_nginx_configuration_response_read.properties
+        _schema.system_data = cls._schema_nginx_configuration_response_read.system_data
+        _schema.type = cls._schema_nginx_configuration_response_read.type
 
 
 __all__ = ["Update"]

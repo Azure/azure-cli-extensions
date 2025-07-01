@@ -152,7 +152,7 @@ class Wait(AAZWaitCommand):
             _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.identity = AAZObjectType()
+            _schema_on_200.identity = AAZIdentityObjectType()
             _schema_on_200.location = AAZStrType(
                 flags={"required": True},
             )
@@ -336,6 +336,10 @@ class Wait(AAZWaitCommand):
             tags.Element = AAZStrType()
 
             return cls._schema_on_200
+
+
+class _WaitHelper:
+    """Helper class for Wait"""
 
 
 __all__ = ["Wait"]

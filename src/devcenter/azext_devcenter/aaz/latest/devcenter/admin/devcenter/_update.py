@@ -22,9 +22,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-05-01-preview",
+        "version": "2025-04-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}", "2024-05-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}", "2025-04-01-preview"],
         ]
     }
 
@@ -81,7 +81,7 @@ class Update(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.install_azure_monitor_agent_enable_status = AAZStrArg(
-            options=["--install-azure-monitor-agent-enable-status", "-a"],
+            options=["-i", "--install-azure-monitor-agent-enable-status"],
             arg_group="DevBoxProvisioningSettings",
             help="Whether project catalogs associated with projects in this dev center can be configured to sync catalog items.",
             nullable=True,
@@ -114,7 +114,7 @@ class Update(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.microsoft_hosted_network_enable_status = AAZStrArg(
-            options=["--microsoft-hosted-network-enable-status", "-m"],
+            options=["-m", "--microsoft-hosted-network-enable-status"],
             arg_group="NetworkSettings",
             help="Indicates whether pools in this Dev Center can use Microsoft Hosted Networks. Defaults to Enabled if not set.",
             nullable=True,
@@ -125,7 +125,7 @@ class Update(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.project_catalog_item_sync_enable_status = AAZStrArg(
-            options=["--project-catalog-item-sync-enable-status", "-c"],
+            options=["-p", "--project-catalog-item-sync-enable-status"],
             arg_group="ProjectCatalogSettings",
             help="Whether project catalogs associated with projects in this dev center can be configured to sync catalog items.",
             nullable=True,
@@ -139,13 +139,6 @@ class Update(AAZCommand):
             options=["--display-name"],
             arg_group="Properties",
             help="The display name of the devcenter.",
-            nullable=True,
-        )
-        _args_schema.plan_id = AAZStrArg(
-            options=["--plan-id"],
-            arg_group="Properties",
-            help="Resource Id of an associated Plan",
-            is_preview=True,
             nullable=True,
         )
         return cls._args_schema
@@ -228,7 +221,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-05-01-preview",
+                    "api-version", "2025-04-01-preview",
                     required=True,
                 ),
             }
@@ -327,7 +320,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-05-01-preview",
+                    "api-version", "2025-04-01-preview",
                     required=True,
                 ),
             }
@@ -385,7 +378,7 @@ class Update(AAZCommand):
                 value=instance,
                 typ=AAZObjectType
             )
-            _builder.set_prop("identity", AAZObjectType)
+            _builder.set_prop("identity", AAZIdentityObjectType)
             _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
 
@@ -403,7 +396,6 @@ class Update(AAZCommand):
                 properties.set_prop("devBoxProvisioningSettings", AAZObjectType)
                 properties.set_prop("displayName", AAZStrType, ".display_name")
                 properties.set_prop("networkSettings", AAZObjectType)
-                properties.set_prop("planId", AAZStrType, ".plan_id")
                 properties.set_prop("projectCatalogSettings", AAZObjectType)
 
             dev_box_provisioning_settings = _builder.get(".properties.devBoxProvisioningSettings")
@@ -457,7 +449,7 @@ class _UpdateHelper:
         dev_center_read.id = AAZStrType(
             flags={"read_only": True},
         )
-        dev_center_read.identity = AAZObjectType()
+        dev_center_read.identity = AAZIdentityObjectType()
         dev_center_read.location = AAZStrType(
             flags={"required": True},
         )
@@ -519,9 +511,6 @@ class _UpdateHelper:
         properties.encryption = AAZObjectType()
         properties.network_settings = AAZObjectType(
             serialized_name="networkSettings",
-        )
-        properties.plan_id = AAZStrType(
-            serialized_name="planId",
         )
         properties.project_catalog_settings = AAZObjectType(
             serialized_name="projectCatalogSettings",

@@ -2,6 +2,19 @@
 
 Release History
 ===============
+
+1.0.2
+++++++
+* Create temporary storage account with minimum TLS version set to `TLS1_2`
+
+1.0.1
+++++++
+* Fix issue related to apiVersion update in azurecli for image-copy-extention
+
+1.0.0
+++++++
+* Remove direct call to `msrestazure`
+
 0.2.13
 ++++++
 * [BREAKING CHANGE] Deprecated non-compliant parameter name '--temporary_resource_group_name'.

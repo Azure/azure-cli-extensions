@@ -8,7 +8,7 @@ from azure.cli.core.azclierror import (
     ValidationError
 )
 from azure.cli.core.commands.client_factory import get_subscription_id
-from msrestazure.tools import is_valid_resource_id
+from azure.mgmt.core.tools import is_valid_resource_id
 
 
 def process_missing_vm_resource_parameters(cmd, namespace):

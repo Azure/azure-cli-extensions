@@ -13,19 +13,18 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud cluster bmckeyset create",
-    is_preview=True,
 )
 class Create(AAZCommand):
     """Create a new baseboard management controller key set or update the existing one for the provided cluster.
 
     :example: Create or update baseboard management controller key set of cluster
-        az networkcloud cluster bmckeyset create --name "bmcKeySetName" --extended-location name="/subscriptions/subscriptionId/resourceGroups/resourceGroupName/providers/Microsoft.ExtendedLocation/customLocations/clusterExtendedLocationName" type="CustomLocation" --location "location" --azure-group-id "f110271b-XXXX-4163-9b99-214d91660f0e" --expiration "2022-12-31T23:59:59.008Z" --privilege-level "Administrator" --user-list "[{description:'User description',azureUserName:userABC,userPrincipalName:'userABC@myorg.com',sshPublicKey:{keyData:'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDWtG2RiEGfXs+RK19HU/G8EdEnbTlkl8Kkb5xv6nm+ttTb9FrW/dc9RQvai24VEFJmG4Fmi6Ow/yjxq+jTDuWOSs+Lo= admin@vm'}}]" --tags key1="myvalue1" key2="myvalue2" --cluster-name "clusterName" --resource-group "resourceGroupName"
+        az networkcloud cluster bmckeyset create --name "bmcKeySetName" --extended-location name="/subscriptions/subscriptionId/resourceGroups/resourceGroupName/providers/Microsoft.ExtendedLocation/customLocations/clusterExtendedLocationName" type="CustomLocation" --location "location" --azure-group-id "MicrosoftEntraGroupObjectId" --expiration "2022-12-31T23:59:59.008Z" --privilege-level "Administrator" --user-list "[{description:'User description',azureUserName:userABC,userPrincipalName:'userABC@myorg.com',sshPublicKey:{keyData:'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDWtG2RiEGfXs+RK19HU/G8EdEnbTlkl8Kkb5xv6nm+ttTb9FrW/dc9RQvai24VEFJmG4Fmi6Ow/yjxq+jTDuWOSs+Lo= admin@vm'}}]" --tags key1="myvalue1" key2="myvalue2" --cluster-name "clusterName" --resource-group "resourceGroupName"
     """
 
     _aaz_info = {
-        "version": "2023-10-01-preview",
+        "version": "2025-02-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clusters/{}/bmckeysets/{}", "2023-10-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clusters/{}/bmckeysets/{}", "2025-02-01"],
         ]
     }
 
@@ -46,6 +45,14 @@ class Create(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
+        _args_schema.if_match = AAZStrArg(
+            options=["--if-match"],
+            help="The ETag of the transformation. Omit this value to always overwrite the current resource. Specify the last-seen ETag value to prevent accidentally overwriting concurrent changes.",
+        )
+        _args_schema.if_none_match = AAZStrArg(
+            options=["--if-none-match"],
+            help="Set to '*' to allow a new record set to be created, but to prevent updating an existing resource. Other values will result in error from server as they are not supported.",
+        )
         _args_schema.bmc_key_set_name = AAZStrArg(
             options=["-n", "--name", "--bmc-key-set-name"],
             help="The name of the baseboard management controller key set.",
@@ -255,7 +262,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-10-01-preview",
+                    "api-version", "2025-02-01",
                     required=True,
                 ),
             }
@@ -264,6 +271,12 @@ class Create(AAZCommand):
         @property
         def header_parameters(self):
             parameters = {
+                **self.serialize_header_param(
+                    "If-Match", self.ctx.args.if_match,
+                ),
+                **self.serialize_header_param(
+                    "If-None-Match", self.ctx.args.if_none_match,
+                ),
                 **self.serialize_header_param(
                     "Content-Type", "application/json",
                 ),
@@ -336,6 +349,9 @@ class Create(AAZCommand):
             cls._schema_on_200_201 = AAZObjectType()
 
             _schema_on_200_201 = cls._schema_on_200_201
+            _schema_on_200_201.etag = AAZStrType(
+                flags={"read_only": True},
+            )
             _schema_on_200_201.extended_location = AAZObjectType(
                 serialized_name="extendedLocation",
                 flags={"required": True},

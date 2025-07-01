@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "confluent organization show",
 )
 class Show(AAZCommand):
-    """Get the properties of a specific Organization resource.
+    """Retrieve properties of a specific Confluent organization resource.
     """
 
     _aaz_info = {
@@ -48,8 +48,6 @@ class Show(AAZCommand):
             id_part="name",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            options=["--resource-group"],
-            help="Resource Group Name",
             required=True,
         )
         return cls._args_schema
@@ -186,6 +184,7 @@ class Show(AAZCommand):
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
+                flags={"read_only": True},
             )
             properties.sso_url = AAZStrType(
                 serialized_name="ssoUrl",

@@ -12,8 +12,7 @@ import uuid
 import re
 import json
 from importlib import import_module
-from msrestazure.tools import is_valid_resource_id, parse_resource_id
-from knack.log import get_logger
+from azure.mgmt.core.tools import is_valid_resource_id, parse_resource_id
 from azure.cli.core.azclierror import (
     RequiredArgumentMissingError,
     InvalidArgumentValueError,
@@ -23,6 +22,7 @@ from azure.cli.core.azclierror import (
 )
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.command_modules.role.custom import list_role_assignments, create_role_assignment
+from knack.log import get_logger
 from azext_dataprotection.manual import backupcenter_helper
 from azext_dataprotection.manual.custom import (
     dataprotection_backup_instance_list_from_resourcegraph,
@@ -104,6 +104,7 @@ secondary_region_map = {
     "southafricawest": "southafricanorth",
     "southcentralus": "northcentralus",
     "southeastasia": "eastasia",
+    "southeastus": "westus3",
     "southindia": "centralindia",
     "swedencentral": "swedensouth",
     "swedensouth": "swedencentral",
@@ -231,6 +232,60 @@ def get_friendly_name(datasource_type, friendly_name, datasourceset_info, dataso
         friendly_name = datasource_info["resource_name"]
 
     return friendly_name
+
+
+def get_vault_identity(backup_vault, user_assigned_identity_arm_url):
+    # Tries to fetch the user-assigned identity if provided, if supported, and if it is associated with the vault.
+    # Else, it tries to fetch the system-assigned identity - if supported.
+
+    principalId = None
+
+    # Ensure that the vault has an identity associated with it at all
+    if "identity" in backup_vault and backup_vault["identity"]["type"] != "None":
+
+        # If the user-assigned identity is provided, we prioritize fetching that
+        if user_assigned_identity_arm_url is not None:
+
+            # Basic checks - make sure the vault supports user-assigned identities, and that the provided URL is correct
+            if "UserAssigned" not in backup_vault["identity"]["type"]:
+                raise InvalidArgumentValueError("There is no User-Assigned Managed Identity associated with the backup "
+                                                "vault.")
+            if user_assigned_identity_arm_url not in backup_vault["identity"]["userAssignedIdentities"]:
+                raise CLIError("Incorrect User-Assigned Managed Identity URL provided. Please check your inputs and retry.")
+
+            principalId = backup_vault["identity"]["userAssignedIdentities"][user_assigned_identity_arm_url]["principalId"]
+
+        # Else, we fetch the default System Assigned Identity if it is supported
+        else:
+            if "SystemAssigned" not in backup_vault["identity"]["type"]:
+                raise InvalidArgumentValueError("There is no System Assigned Identity associated with the backup vault. ")
+
+            principalId = backup_vault['identity']['principalId']
+    else:
+        raise CLIError("The Backup vault does not have a System or User-Managed Identity associated with it. "
+                       "Please update the vault with a System Assigned Identity, a User-Assigned Managed Identity, "
+                       "or both, and then retry the command.")
+    return principalId
+
+
+def get_identity_details(use_system_assigned_identity, user_assigned_identity_arm_url):
+    identity_details = {}
+
+    if user_assigned_identity_arm_url is None and use_system_assigned_identity is None:
+        raise RequiredArgumentMissingError("Please provide at least one of --use-system-assigned-identity or --uuser-assigned-identity-arm-url")
+
+    if user_assigned_identity_arm_url is not None:
+        if use_system_assigned_identity:
+            raise MutuallyExclusiveArgumentError("Cannot provide --use-system-assigned-identity as true when specifying --user-assigned-identity-arm-url."
+                                                 " Please omit --use-system-assigned-identity, or pass False")
+        identity_details = {
+            "useSystemAssignedIdentity": False,
+            "userAssignedIdentityArmUrl": user_assigned_identity_arm_url
+        }
+    elif use_system_assigned_identity:
+        identity_details["useSystemAssignedIdentity"] = True
+
+    return identity_details
 
 
 def get_blob_backupconfig(cmd, client, vaulted_backup_containers, include_all_containers, storage_account_name, storage_account_resource_group):

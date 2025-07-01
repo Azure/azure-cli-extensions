@@ -29,11 +29,14 @@ def load_arguments(self, _):
         c.argument('copy_disk_name', help='Name of OS disk copy.')
         c.argument('repair_group_name', help='Name for new or existing resource group that will contain repair VM.')
         c.argument('unlock_encrypted_vm', help='Option to auto-unlock encrypted VMs using current subscription auth.')
+        c.argument('encrypt_recovery_key', help='Option to auto-unlock encrypted VMs using provided recovery password. The \'--unlock-encrypted-vm\' parameter must be used to use this parameter.')
         c.argument('enable_nested', help='enable nested hyperv.')
-        c.argument('associate_public_ip', help='Option to create repair vm with public ip')
-        c.argument('distro', help='Option to create repair vm from a specific linux distro (rhel7|rhel8|suse12|ubuntu20|centos7|oracle7)')
-        c.argument('yes', help='Option to skip prompt for associating public ip and confirm yes to it in no Tty mode')
-
+        c.argument('associate_public_ip', help='Option to create a repair vm with a public ip. If this parameter is not used, a private ip will be made.')
+        c.argument('distro', help='Option to create repair vm from a specific linux distro (rhel7|rhel8|sles12|sles15|ubuntu20|centos7|centos8|oracle7)')
+        c.argument('yes', help='Option to skip prompt for associating public ip in no Tty mode')
+        c.argument('disable_trusted_launch', help='Option to disable Trusted Launch security type on the repair vm by setting the security type to Standard.')
+        c.argument('os_disk_type', help='Change the OS Disk storage type from the default of PremiumSSD_LRS to the given value.')
+        
     with self.argument_context('vm repair restore') as c:
         c.argument('repair_vm_id', help='Repair VM resource id.')
         c.argument('disk_name', help='Name of fixed data disk. Defaults to the first data disk in the repair VM.')
@@ -43,7 +46,7 @@ def load_arguments(self, _):
         c.argument('repair_vm_id', help='Repair VM resource id.')
         c.argument('run_id', help='Unique run id for run scripts.')
         c.argument('custom_script_file', help='Custom script file to run on VM. Script should be PowerShell for windows, Bash for Linux.')
-        c.argument('parameters', nargs='+', help="Space-separated parameters in the format of '[name=]value'. Positional for bash scripts.")
+        c.argument('parameters', nargs='+', help="Space-separated parameters in the format of '[name=]value'. Positional for bash scripts. To avoid splitting on =, use the prefix \'++\' to send the entire string.")
         c.argument('run_on_repair', help="Script will be run on the linked repair VM.")
         c.argument('preview', help="URL of forked repair script library's map.json https://github.com/{user}/repair-script-library/blob/master/map.json")
 
@@ -55,6 +58,15 @@ def load_arguments(self, _):
         c.argument('yes', help='Do not prompt for confirmation to start VM if it is not running.')
 
     with self.argument_context('vm repair repair-and-restore') as c:
+        c.argument('repair_username', help='Admin username for repair VM.')
+        c.argument('repair_password', help='Admin password for the repair VM.')
+        c.argument('copy_disk_name', help='Name of OS disk copy.')
+        c.argument('repair_vm_name', help='Name of repair VM.')
+        c.argument('copy_disk_name', help='Name of OS disk copy.')
+        c.argument('repair_group_name', help='Name for new or existing resource group that will contain repair VM.')
+    
+    with self.argument_context('vm repair repair-button') as c:
+        c.argument('button_command', help='Button_command for repair VM.')
         c.argument('repair_username', help='Admin username for repair VM.')
         c.argument('repair_password', help='Admin password for the repair VM.')
         c.argument('copy_disk_name', help='Name of OS disk copy.')

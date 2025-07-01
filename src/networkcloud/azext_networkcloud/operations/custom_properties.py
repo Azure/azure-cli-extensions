@@ -11,16 +11,12 @@
 Helper class for all POST commands that return extra properties back to the customer
 """
 
+import os
+import subprocess
 import tarfile
 import urllib
 
-from azure.cli.core.aaz import (
-    AAZFloatType,
-    AAZListType,
-    AAZObjectType,
-    AAZStrType,
-    has_value,
-)
+from azure.cli.core.aaz import has_value
 from azure.cli.core.azclierror import AzureInternalError
 from knack.log import get_logger
 
@@ -30,150 +26,7 @@ logger = get_logger(__name__)
 class CustomActionProperties:
     """Helper class for all POST commands that return extra properties back to the customer"""
 
-    _schema_error_detail_read = None
-    _schema_properties_read = None
-
-    @classmethod
-    def _build_schema_error_detail_read(cls, _schema):
-        if cls._schema_error_detail_read is not None:
-            _schema.additional_info = cls._schema_error_detail_read.additional_info
-            _schema.code = cls._schema_error_detail_read.code
-            _schema.details = cls._schema_error_detail_read.details
-            _schema.message = cls._schema_error_detail_read.message
-            _schema.target = cls._schema_error_detail_read.target
-            return
-
-        cls._schema_error_detail_read = _schema_error_detail_read = AAZObjectType()
-
-        error_detail_read = _schema_error_detail_read
-        error_detail_read.additional_info = AAZListType(
-            serialized_name="additionalInfo",
-            flags={"read_only": True},
-        )
-        error_detail_read.code = AAZStrType(
-            flags={"read_only": True},
-        )
-        error_detail_read.details = AAZListType(
-            flags={"read_only": True},
-        )
-        error_detail_read.message = AAZStrType(
-            flags={"read_only": True},
-        )
-        error_detail_read.target = AAZStrType(
-            flags={"read_only": True},
-        )
-
-        additional_info = _schema_error_detail_read.additional_info
-        additional_info.Element = AAZObjectType()
-
-        _element = _schema_error_detail_read.additional_info.Element
-        _element.type = AAZStrType(
-            flags={"read_only": True},
-        )
-
-        details = _schema_error_detail_read.details
-        details.Element = AAZObjectType()
-        cls._build_schema_error_detail_read(details.Element)
-
-        _schema.additional_info = cls._schema_error_detail_read.additional_info
-        _schema.code = cls._schema_error_detail_read.code
-        _schema.details = cls._schema_error_detail_read.details
-        _schema.message = cls._schema_error_detail_read.message
-        _schema.target = cls._schema_error_detail_read.target
-
-    @classmethod
-    def _build_schema_properties_read(cls, _schema):
-        if cls._schema_properties_read is not None:
-            _schema.exit_code = cls._schema_properties_read.exit_code
-            _schema.output_head = cls._schema_properties_read.output_head
-            _schema.result_url = cls._schema_properties_read.result_url
-            return
-
-        cls._schema_properties_read = _schema_properties_read = AAZObjectType()
-
-        properties_read = _schema_properties_read
-        properties_read.exit_code = AAZStrType(
-            flags={"read_only": True},
-        )
-        properties_read.output_head = AAZStrType(
-            flags={"read_only": True},
-        )
-        properties_read.result_url = AAZStrType(
-            flags={"read_only": True},
-        )
-
-        _schema.exit_code = cls._schema_properties_read.exit_code
-        _schema.output_head = cls._schema_properties_read.output_head
-        _schema.result_url = cls._schema_properties_read.result_url
-
-    _schema_operation_status_result_read = None
-
-    @classmethod
-    def _build_schema_operation_status_result_read(cls, _schema):
-        if cls._schema_operation_status_result_read is not None:
-            _schema.end_time = cls._schema_operation_status_result_read.end_time
-            _schema.error = cls._schema_operation_status_result_read.error
-            _schema.properties = cls._schema_operation_status_result_read.properties
-            _schema.id = cls._schema_operation_status_result_read.id
-            _schema.name = cls._schema_operation_status_result_read.name
-            _schema.operations = cls._schema_operation_status_result_read.operations
-            _schema.percent_complete = (
-                cls._schema_operation_status_result_read.percent_complete
-            )
-            _schema.resource_id = cls._schema_operation_status_result_read.resource_id
-            _schema.start_time = cls._schema_operation_status_result_read.start_time
-            _schema.status = cls._schema_operation_status_result_read.status
-            return
-
-        cls._schema_operation_status_result_read = (
-            _schema_operation_status_result_read
-        ) = AAZObjectType()
-
-        operation_status_result_read = _schema_operation_status_result_read
-        operation_status_result_read.end_time = AAZStrType(
-            serialized_name="endTime",
-        )
-        operation_status_result_read.error = AAZObjectType()
-        cls._build_schema_error_detail_read(operation_status_result_read.error)
-
-        operation_status_result_read.properties = AAZObjectType()
-        cls._build_schema_properties_read(operation_status_result_read.properties)
-
-        operation_status_result_read.id = AAZStrType()
-        operation_status_result_read.name = AAZStrType()
-        operation_status_result_read.operations = AAZListType()
-        operation_status_result_read.percent_complete = AAZFloatType(
-            serialized_name="percentComplete",
-        )
-        operation_status_result_read.resource_id = AAZStrType(
-            serialized_name="resourceId",
-            flags={"read_only": True},
-        )
-        operation_status_result_read.start_time = AAZStrType(
-            serialized_name="startTime",
-        )
-        operation_status_result_read.status = AAZStrType(
-            flags={"required": True},
-        )
-
-        operations = _schema_operation_status_result_read.operations
-        operations.Element = AAZObjectType()
-        cls._build_schema_operation_status_result_read(operations.Element)
-
-        _schema.end_time = cls._schema_operation_status_result_read.end_time
-        _schema.error = cls._schema_operation_status_result_read.error
-        _schema.properties = cls._schema_operation_status_result_read.properties
-        _schema.id = cls._schema_operation_status_result_read.id
-        _schema.name = cls._schema_operation_status_result_read.name
-        _schema.operations = cls._schema_operation_status_result_read.operations
-        _schema.percent_complete = (
-            cls._schema_operation_status_result_read.percent_complete
-        )
-        _schema.resource_id = cls._schema_operation_status_result_read.resource_id
-        _schema.start_time = cls._schema_operation_status_result_read.start_time
-        _schema.status = cls._schema_operation_status_result_read.status
-
-    # Custom handling of response will display the output head and the result URL
+    # Custom handling of response will display the output head and the result_URL/result_ref
     # it will also save files into output directory if provided
     @staticmethod
     def _output(parent_cmd, *args, **kwargs):  # pylint: disable=unused-argument
@@ -186,15 +39,22 @@ class CustomActionProperties:
             logger.warning("\n================================")
 
         # Display the result URL
-        if has_value(properties.result_url):
-            result_url = properties.result_url.to_serialized_data()
+        if (
+            has_value(properties.resultUrl)
+            and properties.resultUrl.to_serialized_data() != ""
+        ):
+            result_url = properties.resultUrl.to_serialized_data()
             logger.warning(
                 "Script execution result can be found in storage account: \n %s \n",
                 result_url,
             )
             # extract result to the provided directory
             if has_value(args.output):
-                output_directory = args.output.to_serialized_data()
+                output_directory = (
+                    args.output
+                    if isinstance(args.output, str)
+                    else args.output.to_serialized_data()
+                )
 
                 try:
                     with urllib.request.urlopen(result_url) as result:
@@ -208,6 +68,74 @@ class CustomActionProperties:
                     raise AzureInternalError(
                         f"failed to retrieve output, error {excep}"
                     ) from excep
+        elif (
+            has_value(properties.resultRef)
+            and properties.resultRef.to_serialized_data() != ""
+        ):
+            result_ref = properties.resultRef.to_serialized_data()
+            # parse the resultRef to get .gz filename
+            try:
+                parsed_url = urllib.parse.urlparse(result_ref)
+                path = parsed_url.path
+                downloaded_blob_name = path.split("/")[-1]
+            except Exception as ex:
+                error_message = (
+                    f"failed to parse resultRef URL for download. Error: {str(ex)}"
+                )
+                logger.error(error_message)
+                raise AzureInternalError(error_message) from ex
+
+            logger.warning(
+                "Script execution result can be downloaded from storage account using the "
+                "command: \n az storage blob download --blob-url %s --file %s --auth-mode login  > /dev/null 2>&1 \n",
+                result_ref,
+                downloaded_blob_name,
+            )
+            # extract result to the provided directory
+            if has_value(args.output):
+                output_directory = (
+                    args.output
+                    if isinstance(args.output, str)
+                    else args.output.to_serialized_data()
+                )
+                # download the blob using "az storage blob download --blob-url %s --auth-mode login"
+                download_command = [
+                    "az",
+                    "storage",
+                    "blob",
+                    "download",
+                    "--blob-url",
+                    result_ref,
+                    "--file",
+                    downloaded_blob_name,
+                    "--auth-mode",
+                    "login",
+                ]
+                try:
+                    result = subprocess.run(
+                        download_command, check=True, capture_output=True, text=True
+                    )
+                    logger.info("Blob downloaded successfully.")
+                except subprocess.CalledProcessError as e:
+                    error_message = (
+                        f"Failed to download blob. Error: {e.stderr.strip()}"
+                    )
+                    logger.error(error_message)
+                    raise AzureInternalError(error_message) from e
+
+                try:
+                    # Extract the downloaded blob
+                    with tarfile.open(downloaded_blob_name, mode="r:gz") as tar:
+                        tar.extractall(path=output_directory)
+                        logger.warning(
+                            "Extracted results are available in directory: %s",
+                            output_directory,
+                        )
+                        os.remove(downloaded_blob_name)
+                except tarfile.TarError as e:
+                    error_message = f"Failed to extract blob. Error: {str(e)}"
+                    logger.error(error_message)
+                    raise AzureInternalError(error_message) from e
         else:
             result = parent_cmd.deserialize_output(
                 parent_cmd.ctx.vars.instance, client_flatten=True

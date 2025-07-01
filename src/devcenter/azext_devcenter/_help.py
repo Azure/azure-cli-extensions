@@ -50,6 +50,38 @@ helps[
 """
 
 helps[
+    "devcenter dev project list-abilities"
+] = """
+    type: command
+    short-summary: "List the signed-in user's permitted abilities in a project."
+    examples:
+      - name: List using dev center
+        text: |-
+               az devcenter dev project list-abilities --dev-center-name "ContosoDevCenter" --user-id "00000000-0000-0000-0000-000000000000" \
+--name "DevProject"
+      - name: List using endpoint
+        text: |-
+               az devcenter dev project list-abilities --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" --user-id "00000000-0000-0000-0000-000000000000" \
+--name "DevProject"
+"""
+
+helps[
+    "devcenter dev project show-operation"
+] = """
+    type: command
+    short-summary: "Get the status of an operation."
+    examples:
+      - name: Get using dev center
+        text: |-
+               az devcenter dev project show-operation --dev-center-name "ContosoDevCenter" \
+--name "DevProject" --operation-id "f5dbdfab-fa0e-4831-8d13-25359aa5e680"
+      - name: Get using endpoint
+        text: |-
+               az devcenter dev project show-operation --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
+--name "DevProject" --operation-id "f5dbdfab-fa0e-4831-8d13-25359aa5e680"
+"""
+
+helps[
     "devcenter dev pool"
 ] = """
     type: group
@@ -136,6 +168,132 @@ helps[
 """
 
 helps[
+    "devcenter dev approval"
+] = """
+    type: group
+    short-summary: Manage approvals.
+"""
+
+helps[
+    "devcenter dev approval list"
+] = """
+    type: command
+    short-summary: "List Dev Box creations that are pending approval."
+    examples:
+      - name: List using dev center
+        text: |-
+               az devcenter dev approval list --dev-center-name "ContosoDevCenter" \
+--project-name "DevProject"
+      - name: List using endpoint
+        text: |-
+               az devcenter dev approval list --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
+--project-name "DevProject"
+"""
+
+helps[
+    "devcenter dev add-on"
+] = """
+    type: group
+    short-summary: Manage dev box add ons.
+"""
+
+helps[
+    "devcenter dev add-on create"
+] = """
+    type: command
+    short-summary: "Create a dev box add on."
+    examples:
+      - name: Create using dev center
+        text: |-
+               az devcenter dev add-on create --dev-box-name "myDevBox" --dev-center-name "ContosoDevCenter" \
+--project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000" --add-on-name "devboxtunnel-sys-default"
+      - name: Create using endpoint
+        text: |-
+               az devcenter dev add-on create --dev-box-name "myDevBox" --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
+--project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000" --add-on-name "devboxtunnel-sys-default"
+"""
+
+helps[
+    "devcenter dev add-on delete"
+] = """
+    type: command
+    short-summary: "Delete a dev box add on."
+    examples:
+      - name: Delete using dev center
+        text: |-
+               az devcenter dev add-on delete --dev-box-name "myDevBox" --dev-center-name "ContosoDevCenter" \
+--project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000" --add-on-name "devboxtunnel-sys-default"
+      - name: Delete using endpoint
+        text: |-
+               az devcenter dev add-on delete --dev-box-name "myDevBox" --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
+--project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000" --add-on-name "devboxtunnel-sys-default"
+"""
+
+helps[
+    "devcenter dev add-on disable"
+] = """
+    type: command
+    short-summary: "Disable a dev box add on."
+    examples:
+      - name: Disable using dev center
+        text: |-
+               az devcenter dev add-on disable --dev-box-name "myDevBox" --dev-center-name "ContosoDevCenter" \
+--project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000" --add-on-name "devboxtunnel-sys-default"
+      - name: Disable using endpoint
+        text: |-
+               az devcenter dev add-on disable --dev-box-name "myDevBox" --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
+--project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000" --add-on-name "devboxtunnel-sys-default"
+"""
+
+helps[
+    "devcenter dev add-on enable"
+] = """
+    type: command
+    short-summary: "Enable a dev box add on."
+    examples:
+      - name: Enable using dev center
+        text: |-
+               az devcenter dev add-on enable --dev-box-name "myDevBox" --dev-center-name "ContosoDevCenter" \
+--project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000" --add-on-name "devboxtunnel-sys-default"
+      - name: Enable using endpoint
+        text: |-
+               az devcenter dev add-on enable --dev-box-name "myDevBox" --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
+--project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000" --add-on-name "devboxtunnel-sys-default"
+"""
+
+helps[
+    "devcenter dev add-on list"
+] = """
+    type: command
+    short-summary: "List add ons for a dev box"
+    examples:
+      - name: List using dev center
+        text: |-
+               az devcenter dev add-on list --dev-box-name "myDevBox" --dev-center-name "ContosoDevCenter" \
+--project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
+      - name: List using endpoint
+        text: |-
+               az devcenter dev add-on list --dev-box-name "myDevBox" --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
+--project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
+"""
+
+helps[
+    "devcenter dev add-on show"
+] = """
+    type: command
+    short-summary: "Get a dev box add on."
+    examples:
+      - name: Get using dev center
+        text: |-
+               az devcenter dev add-on show --dev-box-name "myDevBox" --dev-center-name "ContosoDevCenter" \
+--project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000" --add-on-name "devboxtunnel-sys-default"
+      - name: Get using endpoint
+        text: |-
+               az devcenter dev add-on show --dev-box-name "myDevBox" --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
+--project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000" --add-on-name "devboxtunnel-sys-default"
+"""
+
+helps[
     "devcenter dev dev-box"
 ] = """
     type: group
@@ -182,12 +340,13 @@ helps[
       - name: Get using dev center
         text: |-
                az devcenter dev dev-box show --name "MyDevBox" --dev-center-name "ContosoDevCenter" \
-               --project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
+--project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
       - name: Get using endpoint
         text: |-
                az devcenter dev dev-box show --name "MyDevBox" --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
 --project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
 """
+
 
 helps[
     "devcenter dev dev-box create"
@@ -214,7 +373,7 @@ helps[
       - name: Delete using dev center
         text: |-
                az devcenter dev dev-box delete --name "MyDevBox" --dev-center-name "ContosoDevCenter" \
-               --project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
+--project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
       - name: Delete using endpoint
         text: |-
                az devcenter dev dev-box delete --name "MyDevBox" --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
@@ -246,11 +405,59 @@ helps[
       - name: Start using dev center
         text: |-
                az devcenter dev dev-box start --name "MyDevBox" --dev-center-name "ContosoDevCenter" \
-               --project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
+--project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
       - name: Start using endpoint
         text: |-
                az devcenter dev dev-box start --name "MyDevBox" --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
 --project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
+"""
+
+helps[
+    "devcenter dev dev-box align"
+] = """
+    type: command
+    short-summary: "Align a dev box to the pools current pool configuration."
+    examples:
+      - name: Align using dev center
+        text: |-
+               az devcenter dev dev-box align --name "MyDevBox" --dev-center-name "ContosoDevCenter" \
+--project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
+      - name: Align using endpoint
+        text: |-
+               az devcenter dev dev-box align --name "MyDevBox" --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
+--project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
+"""
+
+helps[
+    "devcenter dev dev-box approve"
+] = """
+    type: command
+    short-summary: "Approve the creation of a dev box."
+    examples:
+      - name: Approve using dev center
+        text: |-
+               az devcenter dev dev-box approve --name "MyDevBox" --dev-center-name "ContosoDevCenter" \
+--project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
+      - name: Approve using endpoint
+        text: |-
+               az devcenter dev dev-box approve --name "MyDevBox" --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
+--project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
+"""
+
+helps[
+    "devcenter dev dev-box set-active-hours"
+] = """
+    type: command
+    short-summary: "Lets a user set their own active hours for their Dev Box, overriding the defaults set at the pool level."
+    examples:
+      - name: Set active hours using dev center
+        text: |-
+               az devcenter dev dev-box set-active-hours --name "MyDevBox" --dev-center-name "ContosoDevCenter" \
+--project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000" --time-zone "America/Los_Angeles" --start-time-hour "9" --end-time-hour "17"
+      - name: Set active hours using endpoint
+        text: |-
+               az devcenter dev dev-box set-active-hours --name "MyDevBox" --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
+--project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000" --time-zone "America/Los_Angeles" --start-time-hour "9" --end-time-hour "17"
 """
 
 helps[
@@ -262,7 +469,7 @@ helps[
       - name: Restart using dev center
         text: |-
                az devcenter dev dev-box restart --name "MyDevBox" --dev-center-name "ContosoDevCenter" \
-               --project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
+--project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
       - name: Restart using endpoint
         text: |-
                az devcenter dev dev-box restart --name "MyDevBox" --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
@@ -278,7 +485,7 @@ helps[
       - name: Repair using dev center
         text: |-
                az devcenter dev dev-box repair --name "MyDevBox" --dev-center-name "ContosoDevCenter" \
-               --project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
+--project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
       - name: Repair using endpoint
         text: |-
                az devcenter dev dev-box repair --name "MyDevBox" --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
@@ -294,7 +501,7 @@ helps[
       - name: Stop using dev center
         text: |-
                az devcenter dev dev-box stop --name "MyDevBox" --dev-center-name "ContosoDevCenter" \
-               --project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
+--project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
       - name: Stop using endpoint
         text: |-
                az devcenter dev dev-box stop --name "MyDevBox" --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
@@ -424,6 +631,70 @@ helps[
 """
 
 helps[
+    "devcenter dev dev-box capture-snapshot"
+] = """
+    type: command
+    short-summary: "Captures a manual snapshot of the dev box."
+    examples:
+      - name: Capture snapshot using dev center
+        text: |-
+               az devcenter dev dev-box capture-snapshot --name "MyDevBox" --dev-center-name "ContosoDevCenter" \
+--project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
+      - name: Capture snapshot using endpoint
+        text: |-
+               az devcenter dev dev-box capture-snapshot --name "MyDevBox" --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
+--project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
+"""
+
+helps[
+    "devcenter dev dev-box restore-snapshot"
+] = """
+    type: command
+    short-summary: "Restores a dev box to a specified snapshot."
+    examples:
+      - name: Restore snapshot using dev center
+        text: |-
+               az devcenter dev dev-box restore-snapshot --name "MyDevBox" --dev-center-name "ContosoDevCenter" \
+--project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000" --snapshot-id "CPC_f5dbdfab-fa0e-4831-8d13-25359aa5e680"
+      - name: Restore snapshot using endpoint
+        text: |-
+               az devcenter dev dev-box restore-snapshot --name "MyDevBox" --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
+--project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000" --snapshot-id "CPC_f5dbdfab-fa0e-4831-8d13-25359aa5e680"
+"""
+
+helps[
+    "devcenter dev dev-box show-snapshot"
+] = """
+    type: command
+    short-summary: "Get a snapshot by snapshot id."
+    examples:
+      - name: Get snapshot using dev center
+        text: |-
+               az devcenter dev dev-box show-snapshot --name "MyDevBox" --dev-center-name "ContosoDevCenter" \
+--project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000" --snapshot-id "CPC_f5dbdfab-fa0e-4831-8d13-25359aa5e680"
+      - name: Get snapshot using endpoint
+        text: |-
+               az devcenter dev dev-box show-snapshot --name "MyDevBox" --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
+--project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000" --snapshot-id "CPC_f5dbdfab-fa0e-4831-8d13-25359aa5e680"
+"""
+
+helps[
+    "devcenter dev dev-box list-snapshot"
+] = """
+    type: command
+    short-summary: "List snapshots for a dev box"
+    examples:
+      - name: List snapshots using dev center
+        text: |-
+               az devcenter dev dev-box list-snapshot --name "MyDevBox" --dev-center-name "ContosoDevCenter" \
+--project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
+      - name: List snapshots using endpoint
+        text: |-
+               az devcenter dev dev-box list-snapshot --name "MyDevBox" --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
+--project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
+"""
+
+helps[
     "devcenter dev environment"
 ] = """
     type: group
@@ -464,12 +735,12 @@ helps[
         text: |-
               az devcenter dev environment show --dev-center-name "ContosoDevCenter" \
 --name "mydevenv" --project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
-    examples:
       - name: Get using endpoint
         text: |-
               az devcenter dev environment show --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
 --name "mydevenv" --project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
 """
+
 
 helps[
     "devcenter dev environment create"
@@ -604,6 +875,61 @@ helps[
 """
 
 helps[
+    "devcenter dev environment-type show"
+] = """
+    type: command
+    short-summary: "Get an environment type configured for a project."
+    examples:
+      - name: Get using dev center
+        text: |-
+               az devcenter dev environment-type show --dev-center-name "ContosoDevCenter" \
+--project-name "DevProject" --environment-type-name "foo"
+      - name: Get using endpoint
+        text: |-
+               az devcenter dev environment-type show --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
+--project-name "DevProject" --environment-type-name "foo"
+"""
+
+helps[
+    "devcenter dev environment-type list-abilities"
+] = """
+    type: command
+    short-summary: "List the signed-in user's permitted abilities in an environment type."
+    examples:
+      - name: List using dev center
+        text: |-
+               az devcenter dev environment-type list-abilities --dev-center-name "ContosoDevCenter" \
+--project-name "DevProject" --environment-type-name "foo" --user-id "00000000-0000-0000-0000-000000000000"
+      - name: List using endpoint
+        text: |-
+               az devcenter dev environment-type list-abilities --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
+--project-name "DevProject" --environment-type-name "foo" --user-id "00000000-0000-0000-0000-000000000000"
+"""
+
+helps[
+    "devcenter dev image-build"
+] = """
+    type: group
+    short-summary: Manage image builds.
+"""
+
+helps[
+    "devcenter dev image-build show-log"
+] = """
+    type: command
+    short-summary: "Get the log for an imaging build task."
+    examples:
+      - name: Get using dev center
+        text: |-
+               az devcenter dev image-build show-log --dev-center-name "ContosoDevCenter" \
+--project-name "DevProject" --image-build-log-id "f5dbdfab-fa0e-4831-8d13-25359aa5e680"
+      - name: Get using endpoint
+        text: |-
+               az devcenter dev image-build show-log --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
+--project-name "DevProject" --image-build-log-id "f5dbdfab-fa0e-4831-8d13-25359aa5e680"
+"""
+
+helps[
     "devcenter dev environment-definition"
 ] = """
     type: group
@@ -661,7 +987,6 @@ helps[
         text: |-
               az devcenter dev environment list-operation --dev-center-name "ContosoDevCenter" \
 --name "mydevenv" --project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
-    examples:
       - name: List using endpoint
         text: |-
               az devcenter dev environment list-operation --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
@@ -679,7 +1004,6 @@ helps[
               az devcenter dev environment show-operation --dev-center-name "ContosoDevCenter" \
 --name "mydevenv" --project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000" --operation-id \
 "f5dbdfab-fa0e-4831-8d13-25359aa5e680"
-    examples:
       - name: Get using endpoint
         text: |-
               az devcenter dev environment show-operation --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
@@ -697,7 +1021,6 @@ helps[
               az devcenter dev environment show-logs-by-operation --dev-center-name "ContosoDevCenter" \
 --name "mydevenv" --project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000" --operation-id \
 "f5dbdfab-fa0e-4831-8d13-25359aa5e680"
-    examples:
       - name: Get using endpoint
         text: |-
               az devcenter dev environment show-logs-by-operation --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
@@ -715,7 +1038,6 @@ helps[
               az devcenter dev environment show-action --dev-center-name "ContosoDevCenter" \
 --name "mydevenv" --project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000" --action-name \
 "myEnv-Delete"
-    examples:
       - name: Get using endpoint
         text: |-
               az devcenter dev environment show-action --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
@@ -732,7 +1054,6 @@ helps[
         text: |-
               az devcenter dev environment list-action --dev-center-name "ContosoDevCenter" \
 --name "mydevenv" --project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
-    examples:
       - name: List using endpoint
         text: |-
               az devcenter dev environment list-action --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
@@ -750,7 +1071,6 @@ helps[
               az devcenter dev environment delay-action --dev-center-name "ContosoDevCenter" \
 --name "mydevenv" --project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000" --action-name \
 "myEnv-Delete" --delay-time "04:30"
-    examples:
       - name: Delay using endpoint
         text: |-
               az devcenter dev environment delay-action --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
@@ -768,7 +1088,6 @@ helps[
               az devcenter dev environment skip-action --dev-center-name "ContosoDevCenter" \
 --name "mydevenv" --project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000" --action-name \
 "myEnv-Delete"
-    examples:
       - name: Skip using endpoint
         text: |-
               az devcenter dev environment skip-action --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
@@ -785,7 +1104,6 @@ helps[
         text: |-
               az devcenter dev environment show-outputs --dev-center-name "ContosoDevCenter" \
 --name "mydevenv" --project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
-    examples:
       - name: Get using endpoint
         text: |-
               az devcenter dev environment show-outputs --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
@@ -801,12 +1119,11 @@ helps[
       - name: Get using dev center
         text: |-
               az devcenter dev environment update-expiration-date --dev-center-name "ContosoDevCenter" \
---name "mydevenv" --project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000" --expiration "2025-11-30T22:35:00+00:00"
-    examples:
+--name "mydevenv" --project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000" --expiration "2026-11-30T22:35:00+00:00"
       - name: Get using endpoint
         text: |-
               az devcenter dev environment update-expiration-date --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
---name "mydevenv" --project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000" --expiration "2025-11-30T22:35:00+00:00"
+--name "mydevenv" --project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000" --expiration "2026-11-30T22:35:00+00:00"
 
 """
 

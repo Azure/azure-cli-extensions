@@ -22,9 +22,9 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-01-01-preview",
+        "version": "2024-11-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/nginx.nginxplus/nginxdeployments/{}/configurations/{}", "2024-01-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/nginx.nginxplus/nginxdeployments/{}/configurations/{}", "2024-11-01-preview"],
         ]
     }
 
@@ -133,7 +133,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-01-01-preview",
+                    "api-version", "2024-11-01-preview",
                     required=True,
                 ),
             }
@@ -169,7 +169,6 @@ class Show(AAZCommand):
             _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.location = AAZStrType()
             _schema_on_200.name = AAZStrType(
                 flags={"read_only": True},
             )
@@ -198,7 +197,12 @@ class Show(AAZCommand):
 
             files = cls._schema_on_200.properties.files
             files.Element = AAZObjectType()
-            _ShowHelper._build_schema_nginx_configuration_file_read(files.Element)
+
+            _element = cls._schema_on_200.properties.files.Element
+            _element.content = AAZStrType()
+            _element.virtual_path = AAZStrType(
+                serialized_name="virtualPath",
+            )
 
             package = cls._schema_on_200.properties.package
             package.data = AAZStrType()
@@ -211,7 +215,14 @@ class Show(AAZCommand):
 
             protected_files = cls._schema_on_200.properties.protected_files
             protected_files.Element = AAZObjectType()
-            _ShowHelper._build_schema_nginx_configuration_file_read(protected_files.Element)
+
+            _element = cls._schema_on_200.properties.protected_files.Element
+            _element.content_hash = AAZStrType(
+                serialized_name="contentHash",
+            )
+            _element.virtual_path = AAZStrType(
+                serialized_name="virtualPath",
+            )
 
             system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(
@@ -238,26 +249,6 @@ class Show(AAZCommand):
 
 class _ShowHelper:
     """Helper class for Show"""
-
-    _schema_nginx_configuration_file_read = None
-
-    @classmethod
-    def _build_schema_nginx_configuration_file_read(cls, _schema):
-        if cls._schema_nginx_configuration_file_read is not None:
-            _schema.content = cls._schema_nginx_configuration_file_read.content
-            _schema.virtual_path = cls._schema_nginx_configuration_file_read.virtual_path
-            return
-
-        cls._schema_nginx_configuration_file_read = _schema_nginx_configuration_file_read = AAZObjectType()
-
-        nginx_configuration_file_read = _schema_nginx_configuration_file_read
-        nginx_configuration_file_read.content = AAZStrType()
-        nginx_configuration_file_read.virtual_path = AAZStrType(
-            serialized_name="virtualPath",
-        )
-
-        _schema.content = cls._schema_nginx_configuration_file_read.content
-        _schema.virtual_path = cls._schema_nginx_configuration_file_read.virtual_path
 
 
 __all__ = ["Show"]

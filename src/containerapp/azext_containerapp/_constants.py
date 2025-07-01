@@ -133,9 +133,30 @@ JAVA_COMPONENT_CONFIG = "SpringCloudConfig"
 JAVA_COMPONENT_EUREKA = "SpringCloudEureka"
 JAVA_COMPONENT_NACOS = "Nacos"
 JAVA_COMPONENT_ADMIN = "SpringBootAdmin"
+JAVA_COMPONENT_GATEWAY = "SpringCloudGateway"
 
 DOTNET_COMPONENT_RESOURCE_TYPE = "AspireDashboard"
 
 RUNTIME_GENERIC = "generic"
 RUNTIME_JAVA = "java"
 SUPPORTED_RUNTIME_LIST = [RUNTIME_GENERIC, RUNTIME_JAVA]
+
+AKS_AZURE_LOCAL_DISTRO = "AksAzureLocal"
+SETUP_CORE_DNS_SUPPORTED_DISTRO = [AKS_AZURE_LOCAL_DISTRO]
+CUSTOM_CORE_DNS_VOLUME_NAME = 'custom-config-volume'
+CUSTOM_CORE_DNS_VOLUME_MOUNT_PATH = '/etc/coredns/custom'
+CUSTOM_CORE_DNS = 'coredns-custom'
+CORE_DNS = 'coredns'
+KUBE_SYSTEM = 'kube-system'
+EMPTY_CUSTOM_CORE_DNS = """
+apiVersion: v1
+data:
+kind: ConfigMap
+metadata:
+  labels:
+    addonmanager.kubernetes.io/mode: EnsureExists
+    k8s-app: kube-dns
+    kubernetes.io/cluster-service: "true"
+  name: coredns-custom
+  namespace: kube-system
+"""

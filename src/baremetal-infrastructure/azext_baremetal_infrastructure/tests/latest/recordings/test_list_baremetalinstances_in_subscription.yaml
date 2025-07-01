@@ -1,0 +1,69 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - baremetalinstance list
+      Connection:
+      - keep-alive
+      User-Agent:
+      - AZURECLI/2.61.0 azsdk-python-core/1.30.1 Python/3.10.11 (macOS-14.6.1-arm64-arm-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.BareMetalInfrastructure/bareMetalInstances?api-version=2024-08-01-preview
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MWH02B-T040/providers/Microsoft.BareMetalInfrastructure/bareMetalInstances/wus2odb01","location":"westus2","name":"wus2odb01","tags":{},"type":"Microsoft.BareMetalInfrastructure/bareMetalInstances","systemData":{},"properties":{"azureBareMetalInstanceId":"558396e6-ec32-4309-9b50-6fbc2a3e9014","powerState":"started","proximityPlacementGroup":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/MWH02B-T040/providers/Microsoft.Compute/proximityPlacementGroups/wus2odb01-ppg","hwRevision":"Rev
+        4.5","hardwareProfile":{"hardwareType":"SDFLEX","azureBareMetalInstanceSize":"S448SE"},"networkProfile":{"networkInterfaces":[{"ipAddress":"10.40.0.17"}],"circuitId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/T040_Epic-MWH02B-Circuits/providers/Microsoft.Network/expressRouteCircuits/T040_Epic-MWH02B-10Gb"},"storageProfile":{"nfsIpAddress":"10.21.41.51","osDisks":[{"name":"t040_rhel_epic_boot_wus2odb01_lun","diskSizeGB":50}]},"osProfile":{"computerName":"wus2odb01","osType":"RHEL
+        8.4","version":"RHEL 8.4"}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MWH02B-T040/providers/Microsoft.BareMetalInfrastructure/bareMetalInstances/wus2odb02","location":"westus2","name":"wus2odb02","tags":{},"type":"Microsoft.BareMetalInfrastructure/bareMetalInstances","systemData":{"lastModifiedBy":"aavendano@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-07-15T21:15:08.0892859Z"},"properties":{"azureBareMetalInstanceId":"10d4e3d2-c1cc-400f-a70e-19336bd1ff08","powerState":"started","proximityPlacementGroup":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/MWH02B-T040/providers/Microsoft.Compute/proximityPlacementGroups/wus2odb02-ppg","hwRevision":"Rev
+        4.5","hardwareProfile":{"hardwareType":"SDFLEX","azureBareMetalInstanceSize":"S448SE"},"networkProfile":{"networkInterfaces":[{"ipAddress":"10.40.0.18"}],"circuitId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/T040_Epic-MWH02B-Circuits/providers/Microsoft.Network/expressRouteCircuits/T040_Epic-MWH02B-10Gb"},"storageProfile":{"nfsIpAddress":"10.21.41.52","osDisks":[{"name":"t040_rhel_epic_boot_wus2odb02_lun","diskSizeGB":50}]},"osProfile":{"computerName":"wus2odb02","osType":"RHEL
+        RHEL 8.4","version":"RHEL 8.4"}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MWH02B-T060/providers/Microsoft.BareMetalInfrastructure/bareMetalInstances/EpicVmwaretest3","location":"westus2","name":"EpicVmwaretest3","tags":{},"type":"Microsoft.BareMetalInfrastructure/bareMetalInstances","systemData":{},"properties":{"azureBareMetalInstanceId":"7c4e6352-7bf4-4025-991e-73490d1cb93f","powerState":"started","proximityPlacementGroup":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/MWH02B-T060/providers/Microsoft.Compute/proximityPlacementGroups/EpicVmwaretest3-ppg","hwRevision":"Rev
+        4.5","hardwareProfile":{"hardwareType":"SDFLEX","azureBareMetalInstanceSize":"S448SE"},"networkProfile":{"networkInterfaces":[{"ipAddress":"10.10.10.21"}],"circuitId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/TNT60-CUST_EPIC-MWH02B-Circuits/providers/Microsoft.Network/expressRouteCircuits/TNT60-CUST_EPIC-MWH02B-10Gb"},"storageProfile":{"osDisks":[{"diskSizeGB":1}]},"osProfile":{"computerName":"EpicVmwaretest3","osType":"RHEL
+        8.4"}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MWH02B-T060/providers/Microsoft.BareMetalInfrastructure/bareMetalInstances/NA","location":"westus2","name":"NA","tags":{},"type":"Microsoft.BareMetalInfrastructure/bareMetalInstances","systemData":{"lastModifiedBy":"aditioak@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-04-02T12:16:31.2242965Z"},"properties":{"azureBareMetalInstanceId":"f9d39845-5afa-4d37-9cb8-ccc82e870ac9","powerState":"started","proximityPlacementGroup":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/MWH02B-T060/providers/Microsoft.Compute/proximityPlacementGroups/NA-ppg","hwRevision":"Rev
+        4.5","hardwareProfile":{"hardwareType":"SDFLEX","azureBareMetalInstanceSize":"S224SE"},"networkProfile":{"networkInterfaces":[{}],"circuitId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/TNT60-CUST_EPIC-MWH02B-Circuits/providers/Microsoft.Network/expressRouteCircuits/TNT60-CUST_EPIC-MWH02B-10Gb"},"storageProfile":{"osDisks":[{"name":"t060_os_epicprimary_01_lun","diskSizeGB":250}]},"osProfile":{"computerName":"NA","osType":"RHEL
+        8.4","version":"NA"}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/BL20-T070/providers/Microsoft.BareMetalInfrastructure/bareMetalInstances/epic-syn-bl01","location":"eastus","name":"epic-syn-bl01","tags":{},"type":"Microsoft.BareMetalInfrastructure/bareMetalInstances","systemData":{},"properties":{"azureBareMetalInstanceId":"257a1b8f-add8-4e6f-a106-5676052a0205","powerState":"started","proximityPlacementGroup":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/BL20-T070/providers/Microsoft.Compute/proximityPlacementGroups/epic-syn-bl01-ppg","hwRevision":"Rev
+        4.2","hardwareProfile":{"hardwareType":"SDFLEX","azureBareMetalInstanceSize":"S448SE"},"networkProfile":{"networkInterfaces":[{"ipAddress":"10.70.0.15"}],"circuitId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/T070_epic-synthetic-BL20-Circuits/providers/Microsoft.Network/expressRouteCircuits/T070_epic-synthetic-BL20-10GB"},"storageProfile":{"nfsIpAddress":"10.25.71.15","osDisks":[{"name":"t070_rhel_epic_boot_epic_syn_bl_rhel8.4_lun_new","diskSizeGB":50}]},"osProfile":{"computerName":"epic-syn-bl01","osType":"RHEL
+        8.4","version":"RHEL8.4"}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/SAT09-T070/providers/Microsoft.BareMetalInfrastructure/bareMetalInstances/epic-syn-sat01","location":"southcentralus","name":"epic-syn-sat01","tags":{},"type":"Microsoft.BareMetalInfrastructure/bareMetalInstances","systemData":{},"properties":{"azureBareMetalInstanceId":"0bacf94c-0571-4f67-ba35-e709701ae651","powerState":"started","proximityPlacementGroup":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/SAT09-T070/providers/Microsoft.Compute/proximityPlacementGroups/epic-syn-sat01-ppg","hwRevision":"Rev
+        4.2","hardwareProfile":{"hardwareType":"SDFLEX","azureBareMetalInstanceSize":"S448SE"},"networkProfile":{"networkInterfaces":[{"ipAddress":"10.70.0.10"}],"circuitId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/T070_epic-synthetic-SAT09-Circuits/providers/Microsoft.Network/expressRouteCircuits/T070_epic-synthetic-SAT09-10GB"},"storageProfile":{"nfsIpAddress":"10.26.71.10","osDisks":[{"name":"t070_rhel_epic_boot_epic_syn_sat01_lun","diskSizeGB":50}]},"osProfile":{"computerName":"epic-syn-sat01","osType":"RHEL
+        8.4","version":"RHEL 8.4"}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DSM05-T210/providers/Microsoft.BareMetalInfrastructure/bareMetalInstances/hanadsmpoc01","location":"centraluseuap","name":"hanadsmpoc01","tags":{},"type":"Microsoft.BareMetalInfrastructure/bareMetalInstances","systemData":{"lastModifiedBy":"pratikkaria@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-05-20T09:57:15.5903666Z"},"properties":{"azureBareMetalInstanceId":"15c0a6a4-c67d-4ffa-a65f-918b0d2db40b","powerState":"started","proximityPlacementGroup":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/DSM05-T210/providers/Microsoft.Compute/proximityPlacementGroups/hanadsmpoc01-ppg","hwRevision":"Rev
+        4.2","hardwareProfile":{"hardwareType":"SDFLEX","azureBareMetalInstanceSize":"S448"},"networkProfile":{"networkInterfaces":[{"ipAddress":"10.100.0.61"}],"circuitId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/T210_DSM05-Circuits/providers/Microsoft.Network/expressRouteCircuits/T210_DSM05-10Gb"},"storageProfile":{"nfsIpAddress":"10.20.211.52","osDisks":[{"name":"t210_sles_boot_hanadsmpoc01_lun","diskSizeGB":50}]},"osProfile":{"computerName":"hanadsmpoc01","osType":"SLES
+        15 SP1","version":"SLES15SP1"},"provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DSM05A-T080/providers/Microsoft.BareMetalInfrastructure/bareMetalInstances/epic-syn-dsm01","location":"centraluseuap","name":"epic-syn-dsm01","tags":{},"type":"Microsoft.BareMetalInfrastructure/bareMetalInstances","systemData":{},"properties":{"azureBareMetalInstanceId":"98e9c384-858a-45b2-8fc2-bc6400f7b711","powerState":"started","proximityPlacementGroup":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/DSM05A-T080/providers/Microsoft.Compute/proximityPlacementGroups/epic-syn-dsm01-ppg","hwRevision":"Rev
+        4.2","hardwareProfile":{"hardwareType":"SDFLEX","azureBareMetalInstanceSize":"S448SE"},"networkProfile":{"networkInterfaces":[{"ipAddress":"10.70.0.5"}],"circuitId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/T080_421542814_DSM05-Circuits/providers/Microsoft.Network/expressRouteCircuits/T080_421542814_DSM05-10Gb"},"storageProfile":{"nfsIpAddress":"10.20.81.15","osDisks":[{"name":"t080_rhel_epic_boot_syn_dsm01_vol_lun","diskSizeGB":50}]},"osProfile":{"computerName":"epic-syn-dsm01","osType":"RHEL
+        8.4","version":"RHEL8.4"}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DSM05A-T210/providers/Microsoft.BareMetalInfrastructure/bareMetalInstances/epicdsmpoc01","location":"centraluseuap","name":"epicdsmpoc01","tags":{},"type":"Microsoft.BareMetalInfrastructure/bareMetalInstances","systemData":{"lastModifiedBy":"aditioak@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-04-01T10:44:22.9419344Z"},"properties":{"azureBareMetalInstanceId":"b4791126-6c7f-46c5-83e3-b8531db5b3da","powerState":"started","proximityPlacementGroup":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/DSM05A-T210/providers/Microsoft.Compute/proximityPlacementGroups/epicdsmpoc01-ppg","hwRevision":"Rev
+        4.2","hardwareProfile":{"hardwareType":"SDFLEX","azureBareMetalInstanceSize":"S448SE"},"networkProfile":{"networkInterfaces":[{"ipAddress":"10.100.0.41"}],"circuitId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/T210_DSM05-Circuits/providers/Microsoft.Network/expressRouteCircuits/T210_DSM05-10Gb"},"storageProfile":{"nfsIpAddress":"10.20.211.41","osDisks":[{"name":"t210_rhel_boot_epic_epicdsmpoc01_lun","diskSizeGB":50}]},"osProfile":{"computerName":"epicdsmpoc01","osType":"ESXi
+        7.0","version":"RHEL 8.4"},"provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DSM05A-T250/providers/Microsoft.BareMetalInfrastructure/bareMetalInstances/sollabatos91","location":"centraluseuap","name":"sollabatos91","tags":{},"type":"Microsoft.BareMetalInfrastructure/bareMetalInstances","systemData":{"lastModifiedBy":"pratikkaria@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-05-20T10:51:18.0731454Z"},"properties":{"azureBareMetalInstanceId":"45a346bd-eb16-454f-a967-7e0075feb134","powerState":"stopped","proximityPlacementGroup":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/DSM05A-T250/providers/Microsoft.Compute/proximityPlacementGroups/sollabatos91-ppg","hwRevision":"Rev
+        4.2","hardwareProfile":{"hardwareType":"ATOS","azureBareMetalInstanceSize":"S448oo"},"networkProfile":{"networkInterfaces":[{"ipAddress":"10.60.0.91"}],"circuitId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/T250_SOLLAB-DSM05-Circuits/providers/Microsoft.Network/expressRouteCircuits/T250_SOLLAB-DSM05-5Gb"},"storageProfile":{"nfsIpAddress":"10.20.251.211","osDisks":[{"name":"t250_sles_boot_sollabatos91_lun","diskSizeGB":50}]},"osProfile":{"computerName":"sollabatos91","osType":"SLES
+        15 SP1","version":"SLES 15 SP1"},"provisioningState":"Succeeded"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '11940'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 06 Sep 2024 05:31:38 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-original-request-ids:
+      - 5ea75037-e56d-4a73-97c1-1163913db0b9
+      - 6b4d51c5-75cc-4348-bac3-aa2c5b0e3d94
+      - 816a1b95-d7e4-4fdf-8d30-f70271f14149
+      - 76cc8363-c790-407d-9edc-6510f449014c
+      x-msedge-ref:
+      - 'Ref A: 04F81B8798A343BFBA997C51C8391E7A Ref B: CO6AA3150219017 Ref C: 2024-09-06T05:31:38Z'
+    status:
+      code: 200
+      message: OK
+version: 1

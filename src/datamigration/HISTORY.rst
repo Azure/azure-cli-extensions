@@ -4,6 +4,25 @@ Release History
 ===============
 
 =======
+1.0.0b5
+++++++
+* [PARAMETER UPDATE] `az datamigration sql-managed-instance create`: `--source-location` now supports Managed Identity for accessing Azure Blob.
+
+=======
+1.0.0b4
+++++++
+* Updated the URL to download the SQL Server schema Zip to `https://aka.ms/sqlschemamigrationpackage`
+
+1.0.0b3
+++++++
+* Updated the URL to download the SQL Assessment Zip to `https://aka.ms/sqlassessmentpackage`
+
+=======
+1.0.0b2
+++++++
+* Minor bug fixes and improvements.
+
+=======
 1.0.0b1
 ++++++
 * Added support for version update in command `az datamigration login-migration`.

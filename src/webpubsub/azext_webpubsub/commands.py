@@ -6,7 +6,8 @@
 # pylint: disable=line-too-long
 from azure.cli.core.commands import CliCommandType
 from azure.cli.core.util import empty_on_404
-from ._client_factory import (cf_webpubsub, cf_webpubsubhub, cf_webpubsubhub_usage, cf_webpubsub_replicas)
+from ._client_factory import (cf_webpubsub, cf_webpubsubhub, cf_webpubsubhub_usage,
+                              cf_webpubsub_replicas, cf_webpubsub_custom_certificates, cf_webpubsub_custom_domains)
 from ._exception_handler import exception_handler
 
 
@@ -52,11 +53,28 @@ def load_command_table(self, _):
         client_factory=cf_webpubsub_replicas
     )
 
+    webpubsub_custom_certificate_utils = CliCommandType(
+        operations_tmpl='azext_webpubsub.customcertificate#{}',
+        client_factory=cf_webpubsub_custom_certificates
+    )
+
+    webpubsub_custom_domain_utils = CliCommandType(
+        operations_tmpl='azext_webpubsub.customdomain#{}',
+        client_factory=cf_webpubsub_custom_domains
+    )
+
+    webpubsub_msi_utils = CliCommandType(
+        operations_tmpl='azext_webpubsub.msi#{}',
+        client_factory=cf_webpubsub
+    )
+
     with self.command_group('webpubsub', webpubsub_general_utils) as g:
         g.command('create', 'webpubsub_create', exception_handler=exception_handler)
         g.command('delete', 'webpubsub_delete')
         g.command('list', 'webpubsub_list')
         g.show_command('show', 'webpubsub_show', exception_handler=empty_on_404)
+        g.command('start', 'webpubsub_start', exception_handler=empty_on_404)
+        g.command('stop', 'webpubsub_stop', exception_handler=empty_on_404)
         g.command('restart', 'webpubsub_restart', exception_handler=empty_on_404)
         g.generic_update_command('update', getter_name='webpubsub_get',
                                  setter_name='webpubsub_set',
@@ -72,9 +90,14 @@ def load_command_table(self, _):
         g.show_command('show', 'list_network_rules')
         g.command('update', 'update_network_rules')
 
+    with self.command_group('webpubsub network-rule ip-rule', webpubsub_network_utils) as g:
+        g.command('add', 'add_ip_rule')
+        g.command('remove', 'remove_ip_rule')
+
     with self.command_group('webpubsub hub', webpubsub_hub_utils) as g:
         g.command('delete', 'hub_delete')
-        g.generic_update_command('update', getter_name='get_hub', setter_name='set_hub', custom_func_name='update', custom_func_type=webpubsub_hub_utils, exception_handler=exception_handler)
+        g.generic_update_command('update', getter_name='get_hub', setter_name='set_hub', custom_func_name='update',
+                                 custom_func_type=webpubsub_hub_utils, exception_handler=exception_handler)
         g.command('create', 'hub_create', exception_handler=exception_handler)
         g.show_command('show', 'hub_show', exception_handler=empty_on_404)
         g.command('list', 'hub_list')
@@ -110,4 +133,26 @@ def load_command_table(self, _):
         g.command('create', 'webpubsub_replica_create')
         g.command('list', 'webpubsub_replica_list')
         g.show_command('show', 'webpubsub_replica_show', exception_handler=empty_on_404)
+        g.command('start', 'webpubsub_replica_start', exception_handler=empty_on_404)
+        g.command('stop', 'webpubsub_replica_stop', exception_handler=empty_on_404)
+        g.command('restart', 'webpubsub_replica_restart', exception_handler=empty_on_404)
         g.show_command('delete', 'webpubsub_replica_delete')
+        g.generic_update_command('update', getter_name='webpubsub_replica_get', setter_name='webpubsub_replica_set', custom_func_name='webpubsub_replica_update',
+                                 custom_func_type=webpubsub_replica_utils, exception_handler=exception_handler)
+
+    with self.command_group('webpubsub custom-certificate', webpubsub_custom_certificate_utils) as g:
+        g.show_command('show', 'custom_certificate_show', exception_handler=empty_on_404)
+        g.command('create', 'custom_certificate_create')
+        g.command('delete', 'custom_certificate_delete')
+        g.command('list', 'custom_certificate_list')
+
+    with self.command_group('webpubsub custom-domain', webpubsub_custom_domain_utils) as g:
+        g.command('create', 'custom_domain_create')
+        g.command('delete', 'custom_domain_delete')
+        g.command('list', 'custom_domain_list')
+        g.show_command('show', 'custom_domain_show', exception_handler=empty_on_404)
+
+    with self.command_group('webpubsub identity', webpubsub_msi_utils) as g:
+        g.command('assign', 'webpubsub_msi_assign')
+        g.command('remove', 'webpubsub_msi_remove')
+        g.show_command('show', 'webpubsub_msi_show')

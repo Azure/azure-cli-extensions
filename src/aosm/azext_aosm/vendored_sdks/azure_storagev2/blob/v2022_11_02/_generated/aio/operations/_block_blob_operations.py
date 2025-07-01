@@ -90,7 +90,7 @@ class BlockBlobOperations:
         :type body: IO
         :param timeout: The timeout parameter is expressed in seconds. For more information, see
          :code:`<a
-         href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations">Setting
+         href="https://learn.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations">Setting
          Timeouts for Blob Service Operations.</a>`. Default value is None.
         :type timeout: int
         :param transactional_content_md5: Specify the transactional md5 for the body, to be validated
@@ -309,7 +309,7 @@ class BlockBlobOperations:
         :type copy_source: str
         :param timeout: The timeout parameter is expressed in seconds. For more information, see
          :code:`<a
-         href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations">Setting
+         href="https://learn.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations">Setting
          Timeouts for Blob Service Operations.</a>`. Default value is None.
         :type timeout: int
         :param transactional_content_md5: Specify the transactional md5 for the body, to be validated
@@ -541,7 +541,7 @@ class BlockBlobOperations:
         :type transactional_content_crc64: bytes
         :param timeout: The timeout parameter is expressed in seconds. For more information, see
          :code:`<a
-         href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations">Setting
+         href="https://learn.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations">Setting
          Timeouts for Blob Service Operations.</a>`. Default value is None.
         :type timeout: int
         :param request_id_parameter: Provides a client-generated, opaque value with a 1 KB character
@@ -687,7 +687,7 @@ class BlockBlobOperations:
         :type source_contentcrc64: bytes
         :param timeout: The timeout parameter is expressed in seconds. For more information, see
          :code:`<a
-         href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations">Setting
+         href="https://learn.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations">Setting
          Timeouts for Blob Service Operations.</a>`. Default value is None.
         :type timeout: int
         :param request_id_parameter: Provides a client-generated, opaque value with a 1 KB character
@@ -845,7 +845,7 @@ class BlockBlobOperations:
         :type blocks: ~azure.storage.blob.models.BlockLookupList
         :param timeout: The timeout parameter is expressed in seconds. For more information, see
          :code:`<a
-         href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations">Setting
+         href="https://learn.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations">Setting
          Timeouts for Blob Service Operations.</a>`. Default value is None.
         :type timeout: int
         :param transactional_content_md5: Specify the transactional md5 for the body, to be validated
@@ -1044,7 +1044,7 @@ class BlockBlobOperations:
         :param snapshot: The snapshot parameter is an opaque DateTime value that, when present,
          specifies the blob snapshot to retrieve. For more information on working with blob snapshots,
          see :code:`<a
-         href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/creating-a-snapshot-of-a-blob">Creating
+         href="https://learn.microsoft.com/en-us/rest/api/storageservices/fileservices/creating-a-snapshot-of-a-blob">Creating
          a Snapshot of a Blob.</a>`. Default value is None.
         :type snapshot: str
         :param list_type: Specifies whether to return the list of committed blocks, the list of
@@ -1053,7 +1053,7 @@ class BlockBlobOperations:
         :type list_type: str or ~azure.storage.blob.models.BlockListType
         :param timeout: The timeout parameter is expressed in seconds. For more information, see
          :code:`<a
-         href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations">Setting
+         href="https://learn.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations">Setting
          Timeouts for Blob Service Operations.</a>`. Default value is None.
         :type timeout: int
         :param request_id_parameter: Provides a client-generated, opaque value with a 1 KB character

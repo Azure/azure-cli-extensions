@@ -34,7 +34,7 @@ def load_command_table(self, _):
         g.custom_command('query', 'query_data_source')
         g.custom_command('update', 'update_data_source')
 
-    with self.command_group('grafana notification-channel') as g:
+    with self.command_group('grafana notification-channel', deprecate_info=self.deprecate()) as g:
         g.custom_command('list', 'list_notification_channels')
         g.custom_show_command('show', 'show_notification_channel')
         g.custom_command('create', 'create_notification_channel')
@@ -70,3 +70,8 @@ def load_command_table(self, _):
         g.custom_command('create', 'create_service_account_token')
         g.custom_command('list', 'list_service_account_tokens')
         g.custom_command('delete', 'delete_service_account_token')
+
+    with self.command_group('grafana integrations monitor') as g:
+        g.custom_command('add', 'link_monitor', is_preview=True)
+        g.custom_command('list', 'list_monitors', is_preview=True)
+        g.custom_command('delete', 'unlink_monitor', is_preview=True)

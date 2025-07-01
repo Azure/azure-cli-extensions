@@ -19,6 +19,9 @@ class Update(AAZCommand):
 
     :example: Update service details
         az apic update -g contoso-resources -n contoso
+
+    :example: Update Service With System Assigned Identity Example
+        az apic update -g contoso-resources -n contoso --identity '{type:systemassigned}'
     """
 
     _aaz_info = {

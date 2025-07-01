@@ -146,9 +146,9 @@ class AddServicePrincipalAuthInfo(argparse.Action):
             raise ValidationError('Required keys missing for parameter --service-principal. '
                                   'Required keys are: client-id, secret')
         if 'principal_id' not in d:
-            from azure.cli.command_modules.serviceconnector._utils import run_cli_cmd
+            from ._utils import run_cli_cmd
             output = run_cli_cmd(
-                'az ad sp show --id {}'.format(d['client_id']))
+                'az ad sp show --id "{}"'.format(d['client_id']))
             if output:
                 d['principal_id'] = output.get('id')
             else:
@@ -158,4 +158,48 @@ class AddServicePrincipalAuthInfo(argparse.Action):
                                       'object-id=XX secret=XX'.format(d['client_id']))
 
         d['auth_type'] = 'servicePrincipalSecret'
+        return d
+
+
+class AddWorkloadIdentityAuthInfo(argparse.Action):
+    def __call__(self, parser, namespace, values, option_string=None):
+        action = self.get_action(values, option_string, namespace.command)
+        # convert into user identity
+        namespace.user_identity_auth_info = action
+
+    def get_action(self, values, option_string, command_name):  # pylint: disable=no-self-use
+        try:
+            # --workload-identity <user-identity-resource-id>
+            properties = defaultdict(list)
+            if is_mysql_target(command_name):
+                for val in values:
+                    if '=' in val:
+                        k, v = val.split('=', 1)
+                        properties[k] = v
+                    else:
+                        properties['user-identity-resource-id'] = val
+            else:
+                if len(values) != 1:
+                    raise ValidationError(
+                        'Invalid number of values for --workload-identity <USER-IDENTITY-RESOURCE-ID>')
+                properties['user-identity-resource-id'] = values[0]
+        except ValueError:
+            raise ValidationError('Usage error: {} [VALUE]'.format(option_string))
+
+        d = {}
+        if is_mysql_target(command_name) and 'mysql-identity-id' in properties:
+            d['mysql-identity-id'] = properties['mysql-identity-id']
+        if 'user-identity-resource-id' in properties:
+            from ._utils import run_cli_cmd
+            output = run_cli_cmd('az identity show --ids "{}"'.format(properties['user-identity-resource-id']))
+            if output:
+                d['client_id'] = output.get('clientId')
+                d['subscription_id'] = properties['user-identity-resource-id'].split('/')[2]
+            else:
+                raise ValidationError('Invalid user identity resource ID.')
+        else:
+            raise ValidationError('Required values missing for parameter --workload-identity: \
+                                  user-identity-resource-id')
+
+        d['auth_type'] = 'userAssignedIdentity'
         return d

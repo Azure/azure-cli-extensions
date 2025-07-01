@@ -13,22 +13,24 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud cluster create",
-    is_preview=True,
 )
 class Create(AAZCommand):
     """Create a new cluster or update the properties of the cluster if it exists.
 
     :example: Create or update single rack cluster
-        az networkcloud cluster create --name "clusterName" -g "resourceGroupName" --extended-location name="/subscriptions/subscriptionId/resourceGroups/resourceGroupName/providers/Microsoft.ExtendedLocation/customLocations/clusterManagerExtendedLocationName" type="CustomLocation" --location "eastus" --analytics-workspace-id "/subscriptions/subscriptionId/resourceGroups/resourceGroupName/providers/microsoft.operationalInsights/workspaces/logAnalyticsWorkspaceName" --cluster-location "Foo Street, 3rd Floor, row 9" --cluster-service-principal application-id="12345678-1234-1234-1234-123456789012" password="password" principal-id="00000008-0004-0004-0004-000000000012" tenant-id="80000000-4000-4000-4000-120000000000" --cluster-type "SingleRack" --cluster-version "3.0.0" --compute-deployment-threshold type="PercentSuccess" grouping="PerCluster" value=90  --network-fabric-id "/subscriptions/subscriptionId/resourceGroups/resourceGroupName/providers/Microsoft.Network/virtualNetworks/test-vnet/subnets/default" --aggregator-or-single-rack-definition network-rack-id="/subscriptions/subscriptionId/resourceGroups/rgName/providers/Microsoft.Network/virtualNetworks/cmName/subnets/ClusterManagerSubnet" rack-sku-id="/subscriptions/subscriptionId/providers/Microsoft.NetworkCloud/rackSkus/VLab_Single_DellR750_8C2M_x70r3_9" rack-serial-number=b99m99r1 rack-location='b99m99r1' availability-zone=1 storage-appliance-configuration-data="[{rackSlot:1,adminCredentials:{username:'adminuser',password:'password'},storageApplianceName:name,serialNumber:serial}]" bare-metal-machine-configuration-data="[{bmcCredentials:{password:'bmcPassword',username:'root'},bmcMacAddress:'AA:BB:CC:DD:E7:08',bootMacAddress:'AA:BB:CC:F8:71:2E',machineName:lab00r750wkr1,rackSlot:2,serialNumber:5HS7PK3},{bmcCredentials:{password:'bmcPassword',username:'root'},bmcMacAddress:'AA:BB:CC:FD:DC:76',bootMacAddress:'AA:BB:CC:F8:50:CA',machineName:lab00r750wkr8,rackSlot:11,serialNumber:9M56PK3}]" --tags key1="myvalue1" key2="myvalue2"
+        az networkcloud cluster create --name "clusterName" -g "resourceGroupName" --extended-location name="/subscriptions/subscriptionId/resourceGroups/resourceGroupName/providers/Microsoft.ExtendedLocation/customLocations/clusterManagerExtendedLocationName" type="CustomLocation" --location "eastus" --cluster-location "Foo Street, 3rd Floor, row 9" --cluster-service-principal application-id="12345678-1234-1234-1234-123456789012" password="password" principal-id="00000008-0004-0004-0004-000000000012" tenant-id="80000000-4000-4000-4000-120000000000" --cluster-type "SingleRack" --cluster-version "3.0.0" --compute-deployment-threshold type="PercentSuccess" grouping="PerCluster" value=90  --network-fabric-id "/subscriptions/subscriptionId/resourceGroups/resourceGroupName/providers/Microsoft.Network/virtualNetworks/test-vnet/subnets/default" --aggregator-or-single-rack-definition network-rack-id="/subscriptions/subscriptionId/resourceGroups/rgName/providers/Microsoft.Network/virtualNetworks/cmName/subnets/ClusterManagerSubnet" rack-sku-id="/subscriptions/subscriptionId/providers/Microsoft.NetworkCloud/rackSkus/VLab_Single_DellR750_8C2M_x70r3_9" rack-serial-number=b99m99r1 rack-location='b99m99r1' availability-zone=1 storage-appliance-configuration-data="[{rackSlot:1,adminCredentials:{username:'adminuser',password:'password'},storageApplianceName:name,serialNumber:serial}]" bare-metal-machine-configuration-data="[{bmcCredentials:{password:'bmcPassword',username:'root'},bmcMacAddress:'AA:BB:CC:DD:E7:08',bootMacAddress:'AA:BB:CC:F8:71:2E',machineName:lab00r750wkr1,rackSlot:2,serialNumber:5HS7PK3},{bmcCredentials:{password:'bmcPassword',username:'root'},bmcMacAddress:'AA:BB:CC:FD:DC:76',bootMacAddress:'AA:BB:CC:F8:50:CA',machineName:lab00r750wkr8,rackSlot:11,serialNumber:9M56PK3}]" --tags key1="myvalue1" key2="myvalue2" --mi-user-assigned "/subscriptions/subscriptionId/resourceGroups/resourceGroupName/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myUAI" --command-output-settings identity-type="UserAssignedIdentity" identity-resource-id="/subscriptions/subscriptionId/resourceGroups/resourceGroupName/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myUAI" container-url="https://myaccount.blob.core.windows.net/mycontainer?restype=container"
 
     :example: Create or update single rack cluster using json file input
-        az networkcloud cluster create --name "clusterName" -g "resourceGroupName" --extended-location name="/subscriptions/subscriptionId/resourceGroups/resourceGroupName/providers/Microsoft.ExtendedLocation/customLocations/clusterManagerExtendedLocationName" type="CustomLocation" --location "eastus" --analytics-workspace-id "/subscriptions/subscriptionId/resourceGroups/resourceGroupName/providers/microsoft.operationalInsights/workspaces/logAnalyticsWorkspaceName" --cluster-location "Foo Street, 3rd Floor, row 9" --cluster-service-principal application-id="12345678-1234-1234-1234-123456789012" password="password" principal-id="00000008-0004-0004-0004-000000000012" tenant-id="80000000-4000-4000-4000-120000000000" --cluster-type "SingleRack" --cluster-version "3.0.0" --compute-deployment-threshold type="PercentSuccess" grouping="PerCluster" value=90  --network-fabric-id "/subscriptions/subscriptionId/resourceGroups/resourceGroupName/providers/Microsoft.Network/virtualNetworks/test-vnet/subnets/default" --aggregator-or-single-rack-definition ./aggregator-or-single-rack-definition.json --tags key1="myvalue1" key2="myvalue2
+        az networkcloud cluster create --name "clusterName" -g "resourceGroupName" --extended-location name="/subscriptions/subscriptionId/resourceGroups/resourceGroupName/providers/Microsoft.ExtendedLocation/customLocations/clusterManagerExtendedLocationName" type="CustomLocation" --location "eastus" --cluster-location "Foo Street, 3rd Floor, row 9" --cluster-service-principal application-id="12345678-1234-1234-1234-123456789012" password="password" principal-id="00000008-0004-0004-0004-000000000012" tenant-id="80000000-4000-4000-4000-120000000000" --cluster-type "SingleRack" --cluster-version "3.0.0" --compute-deployment-threshold type="PercentSuccess" grouping="PerCluster" value=90  --network-fabric-id "/subscriptions/subscriptionId/resourceGroups/resourceGroupName/providers/Microsoft.Network/virtualNetworks/test-vnet/subnets/default" --aggregator-or-single-rack-definition ./aggregator-or-single-rack-definition.json --tags key1="myvalue1" key2="myvalue2
+
+    :example: Create or update single rack cluster with user assigned identity, command output settings, and analytics output settings
+        az networkcloud cluster create --name "clusterName" -g "resourceGroupName" --extended-location name="/subscriptions/subscriptionId/resourceGroups/resourceGroupName/providers/Microsoft.ExtendedLocation/customLocations/clusterManagerExtendedLocationName" type="CustomLocation" --location "eastus" --cluster-location "Foo Street, 2nd Floor, row 9" --cluster-service-principal application-id="0000-000-0000-0000-0000-00000000" password="password" principal-id="00000000-0000-0000-0000-000000000000" tenant-id="00000000-0000-0000-0000-000000000000" --cluster-type "SingleRack" --cluster-version "3.0.0" --compute-deployment-threshold type="PercentSuccess" grouping="PerCluster" value=90 --network-fabric-id "/subscriptions/subscriptionId/resourceGroups/resourceGroupName/providers/Microsoft.Network/virtualNetworks/test-vnet/subnets/default" --aggregator-or-single-rack-definition ./aggregator-or-single-rack-definition.json --tags key1="myvalue1" key2="myvalue2" --mi-user-assigned "/subscriptions/subscriptionId/resourceGroups/resourceGroupName/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myUAI" --command-output-settings identity-type="UserAssignedIdentity" identity-resource-id="/subscriptions/subscriptionId/resourceGroups/resourceGroupName/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myUAI" container-url="https://myaccount.blob.core.windows.net/mycontainer?restype=container" --analytics-output-settings analytics-workspace-id="/subscriptions/subscriptionId/resourceGroups/resourceGroupName/providers/microsoft.operationalInsights/workspaces/logAnalyticsWorkspaceName" identity-type="UserAssignedIdentity" identity-resource-id="/subscriptions/subscriptionId/resourceGroups/resourceGroupName/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myUAI"
     """
 
     _aaz_info = {
-        "version": "2023-10-01-preview",
+        "version": "2025-02-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clusters/{}", "2023-10-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clusters/{}", "2025-02-01"],
         ]
     }
 
@@ -49,6 +51,14 @@ class Create(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
+        _args_schema.if_match = AAZStrArg(
+            options=["--if-match"],
+            help="The ETag of the transformation. Omit this value to always overwrite the current resource. Specify the last-seen ETag value to prevent accidentally overwriting concurrent changes.",
+        )
+        _args_schema.if_none_match = AAZStrArg(
+            options=["--if-none-match"],
+            help="Set to '*' to allow a new record set to be created, but to prevent updating an existing resource. Other values will result in error from server as they are not supported.",
+        )
         _args_schema.cluster_name = AAZStrArg(
             options=["-n", "--name", "--cluster-name"],
             help="The name of the cluster.",
@@ -69,6 +79,11 @@ class Create(AAZCommand):
             arg_group="ClusterParameters",
             help="The extended location of the cluster manager associated with the cluster.",
             required=True,
+        )
+        _args_schema.identity = AAZObjectArg(
+            options=["--identity"],
+            arg_group="ClusterParameters",
+            help="The identity for the resource.",
         )
         _args_schema.location = AAZResourceLocationArg(
             arg_group="ClusterParameters",
@@ -96,6 +111,37 @@ class Create(AAZCommand):
             required=True,
         )
 
+        identity = cls._args_schema.identity
+        identity.mi_system_assigned = AAZStrArg(
+            options=["system-assigned", "mi-system-assigned"],
+            help="Set the system managed identity.",
+            blank="True",
+        )
+        identity.type = AAZStrArg(
+            options=["type"],
+            help="Type of managed service identity (where both SystemAssigned and UserAssigned types are allowed).",
+            required=True,
+            enum={"None": "None", "SystemAssigned": "SystemAssigned", "SystemAssigned,UserAssigned": "SystemAssigned,UserAssigned", "UserAssigned": "UserAssigned"},
+        )
+        identity.mi_user_assigned = AAZListArg(
+            options=["user-assigned", "mi-user-assigned"],
+            help="Set the user managed identities.",
+            blank=[],
+        )
+        identity.user_assigned_identities = AAZDictArg(
+            options=["user-assigned-identities"],
+            help="The set of user assigned identities associated with the resource. The userAssignedIdentities dictionary keys will be ARM resource ids in the form: '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}. The dictionary values can be empty objects ({}) in requests.",
+        )
+
+        mi_user_assigned = cls._args_schema.identity.mi_user_assigned
+        mi_user_assigned.Element = AAZStrArg()
+
+        user_assigned_identities = cls._args_schema.identity.user_assigned_identities
+        user_assigned_identities.Element = AAZObjectArg(
+            nullable=True,
+            blank={},
+        )
+
         tags = cls._args_schema.tags
         tags.Element = AAZStrArg()
 
@@ -109,10 +155,10 @@ class Create(AAZCommand):
             required=True,
         )
         cls._build_args_rack_definition_create(_args_schema.aggregator_or_single_rack_definition)
-        _args_schema.analytics_workspace_id = AAZStrArg(
-            options=["--analytics-workspace-id"],
+        _args_schema.analytics_output_settings = AAZObjectArg(
+            options=["--ao-settings", "--analytics-output-settings"],
             arg_group="Properties",
-            help="The resource ID of the Log Analytics Workspace that will be used for storing relevant logs.",
+            help="The settings for the log analytics workspace used for output of logs from this cluster.",
         )
         _args_schema.cluster_location = AAZStrArg(
             options=["--cluster-location"],
@@ -140,6 +186,11 @@ class Create(AAZCommand):
             help="The current runtime version of the cluster.",
             required=True,
         )
+        _args_schema.command_output_settings = AAZObjectArg(
+            options=["--co-settings", "--command-output-settings"],
+            arg_group="Properties",
+            help="The settings for commands run in this cluster, such as bare metal machine run read only commands and data extracts.",
+        )
         _args_schema.compute_deployment_threshold = AAZObjectArg(
             options=["--compute-deployment-threshold"],
             arg_group="Properties",
@@ -151,7 +202,7 @@ class Create(AAZCommand):
             help="The list of rack definitions for the compute racks in a multi-rack cluster, or an empty list in a single-rack cluster.",
         )
         _args_schema.managed_resource_group_configuration = AAZObjectArg(
-            options=["--managed-resource-group-configuration"],
+            options=["--mrg", "--managed-resource-group-configuration"],
             arg_group="Properties",
             help="The configuration of the managed resource group associated with the resource.",
         )
@@ -166,15 +217,36 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="The settings for cluster runtime protection.",
         )
-        _args_schema.secret_archive = AAZObjectArg(
-            options=["--secret-archive"],
+        _args_schema.secret_archive_settings = AAZObjectArg(
+            options=["--sa-settings", "--secret-archive-settings"],
             arg_group="Properties",
-            help="The configuration for use of a key vault to store secrets for later retrieval by the operator.",
+            help="The settings for the secret archive used to hold credentials for the cluster.",
         )
         _args_schema.update_strategy = AAZObjectArg(
             options=["--update-strategy"],
             arg_group="Properties",
             help="The strategy for updating the cluster.",
+        )
+        _args_schema.vulnerability_scanning_settings = AAZObjectArg(
+            options=["--vs-settings", "--vulnerability-scanning-settings"],
+            arg_group="Properties",
+            help="The settings for how security vulnerability scanning is applied to the cluster.",
+        )
+
+        analytics_output_settings = cls._args_schema.analytics_output_settings
+        analytics_output_settings.analytics_workspace_id = AAZResourceIdArg(
+            options=["analytics-workspace-id"],
+            help="The resource ID of the analytics workspace that is to be used by the specified identity.",
+        )
+        analytics_output_settings.identity_type = AAZStrArg(
+            options=["identity-type"],
+            help="The type of managed identity that is being selected.",
+            enum={"SystemAssignedIdentity": "SystemAssignedIdentity", "UserAssignedIdentity": "UserAssignedIdentity"},
+        )
+        analytics_output_settings.identity_resource_id = AAZResourceIdArg(
+            options=["identity-resource-id"],
+            help="The user assigned managed identity resource ID to use. Mutually exclusive with a system assigned identity type.",
+            nullable=True,
         )
 
         cluster_service_principal = cls._args_schema.cluster_service_principal
@@ -197,6 +269,22 @@ class Create(AAZCommand):
             options=["tenant-id"],
             help="The tenant ID, also known as the directory ID, of the tenant in which the service principal is created.",
             required=True,
+        )
+
+        command_output_settings = cls._args_schema.command_output_settings
+        command_output_settings.identity_type = AAZStrArg(
+            options=["identity-type"],
+            help="The type of managed identity that is being selected.",
+            enum={"SystemAssignedIdentity": "SystemAssignedIdentity", "UserAssignedIdentity": "UserAssignedIdentity"},
+        )
+        command_output_settings.identity_resource_id = AAZResourceIdArg(
+            options=["identity-resource-id"],
+            help="The user assigned managed identity resource ID to use. Mutually exclusive with a system assigned identity type.",
+            nullable=True,
+        )
+        command_output_settings.container_url = AAZStrArg(
+            options=["container-url"],
+            help="The URL of the storage account container that is to be used by the specified identities.",
         )
 
         compute_deployment_threshold = cls._args_schema.compute_deployment_threshold
@@ -246,17 +334,20 @@ class Create(AAZCommand):
             enum={"Audit": "Audit", "Disabled": "Disabled", "OnDemand": "OnDemand", "Passive": "Passive", "RealTime": "RealTime"},
         )
 
-        secret_archive = cls._args_schema.secret_archive
-        secret_archive.key_vault_id = AAZResourceIdArg(
-            options=["key-vault-id"],
-            help="The resource ID of the key vault to archive the secrets of the cluster.",
-            required=True,
+        secret_archive_settings = cls._args_schema.secret_archive_settings
+        secret_archive_settings.identity_type = AAZStrArg(
+            options=["identity-type"],
+            help="The type of managed identity that is being selected.",
+            enum={"SystemAssignedIdentity": "SystemAssignedIdentity", "UserAssignedIdentity": "UserAssignedIdentity"},
         )
-        secret_archive.use_key_vault = AAZStrArg(
-            options=["use-key-vault"],
-            help="The indicator if the specified key vault should be used to archive the secrets of the cluster.",
-            default="False",
-            enum={"False": "False", "True": "True"},
+        secret_archive_settings.identity_resource_id = AAZResourceIdArg(
+            options=["identity-resource-id"],
+            help="The user assigned managed identity resource ID to use. Mutually exclusive with a system assigned identity type.",
+            nullable=True,
+        )
+        secret_archive_settings.vault_uri = AAZStrArg(
+            options=["vault-uri"],
+            help="The URI for the key vault used as the secret archive.",
         )
 
         update_strategy = cls._args_schema.update_strategy
@@ -271,7 +362,7 @@ class Create(AAZCommand):
             options=["strategy-type"],
             help="The mode of operation for runtime protection.",
             required=True,
-            enum={"Rack": "Rack"},
+            enum={"PauseAfterRack": "PauseAfterRack", "Rack": "Rack"},
         )
         update_strategy.threshold_type = AAZStrArg(
             options=["threshold-type"],
@@ -295,6 +386,14 @@ class Create(AAZCommand):
                 maximum=60,
                 minimum=0,
             ),
+        )
+
+        vulnerability_scanning_settings = cls._args_schema.vulnerability_scanning_settings
+        vulnerability_scanning_settings.container_scan = AAZStrArg(
+            options=["container-scan"],
+            help="The mode selection for container vulnerability scanning.",
+            default="Enabled",
+            enum={"Disabled": "Disabled", "Enabled": "Enabled"},
         )
         return cls._args_schema
 
@@ -395,7 +494,7 @@ class Create(AAZCommand):
         _element = cls._args_rack_definition_create.bare_metal_machine_configuration_data.Element
         _element.bmc_credentials = AAZObjectArg(
             options=["bmc-credentials"],
-            help="The credentials of the baseboard management controller on this bare metal machine.",
+            help="The credentials of the baseboard management controller on this bare metal machine. The password field is expected to be an Azure Key Vault key URL. Until the cluster is converted to utilize managed identity by setting the secret archive settings, the actual password value should be provided instead.",
             required=True,
         )
         cls._build_args_administrative_credentials_create(_element.bmc_credentials)
@@ -568,7 +667,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-10-01-preview",
+                    "api-version", "2025-02-01",
                     required=True,
                 ),
             }
@@ -577,6 +676,12 @@ class Create(AAZCommand):
         @property
         def header_parameters(self):
             parameters = {
+                **self.serialize_header_param(
+                    "If-Match", self.ctx.args.if_match,
+                ),
+                **self.serialize_header_param(
+                    "If-None-Match", self.ctx.args.if_none_match,
+                ),
                 **self.serialize_header_param(
                     "Content-Type", "application/json",
                 ),
@@ -594,6 +699,7 @@ class Create(AAZCommand):
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
             _builder.set_prop("extendedLocation", AAZObjectType, ".extended_location", typ_kwargs={"flags": {"required": True}})
+            _builder.set_prop("identity", AAZIdentityObjectType, ".identity")
             _builder.set_prop("location", AAZStrType, ".location", typ_kwargs={"flags": {"required": True}})
             _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True, "client_flatten": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
@@ -603,21 +709,48 @@ class Create(AAZCommand):
                 extended_location.set_prop("name", AAZStrType, ".name", typ_kwargs={"flags": {"required": True}})
                 extended_location.set_prop("type", AAZStrType, ".type", typ_kwargs={"flags": {"required": True}})
 
+            identity = _builder.get(".identity")
+            if identity is not None:
+                identity.set_prop("type", AAZStrType, ".type", typ_kwargs={"flags": {"required": True}})
+                identity.set_prop("userAssignedIdentities", AAZDictType, ".user_assigned_identities")
+                identity.set_prop("userAssigned", AAZListType, ".mi_user_assigned", typ_kwargs={"flags": {"action": "create"}})
+                identity.set_prop("systemAssigned", AAZStrType, ".mi_system_assigned", typ_kwargs={"flags": {"action": "create"}})
+
+            user_assigned_identities = _builder.get(".identity.userAssignedIdentities")
+            if user_assigned_identities is not None:
+                user_assigned_identities.set_elements(AAZObjectType, ".", typ_kwargs={"nullable": True})
+
+            user_assigned = _builder.get(".identity.userAssigned")
+            if user_assigned is not None:
+                user_assigned.set_elements(AAZStrType, ".")
+
             properties = _builder.get(".properties")
             if properties is not None:
                 _CreateHelper._build_schema_rack_definition_create(properties.set_prop("aggregatorOrSingleRackDefinition", AAZObjectType, ".aggregator_or_single_rack_definition", typ_kwargs={"flags": {"required": True}}))
-                properties.set_prop("analyticsWorkspaceId", AAZStrType, ".analytics_workspace_id")
+                properties.set_prop("analyticsOutputSettings", AAZObjectType, ".analytics_output_settings")
                 properties.set_prop("clusterLocation", AAZStrType, ".cluster_location")
                 properties.set_prop("clusterServicePrincipal", AAZObjectType, ".cluster_service_principal")
                 properties.set_prop("clusterType", AAZStrType, ".cluster_type", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("clusterVersion", AAZStrType, ".cluster_version", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("commandOutputSettings", AAZObjectType, ".command_output_settings")
                 properties.set_prop("computeDeploymentThreshold", AAZObjectType, ".compute_deployment_threshold")
                 properties.set_prop("computeRackDefinitions", AAZListType, ".compute_rack_definitions")
                 properties.set_prop("managedResourceGroupConfiguration", AAZObjectType, ".managed_resource_group_configuration")
                 properties.set_prop("networkFabricId", AAZStrType, ".network_fabric_id", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("runtimeProtectionConfiguration", AAZObjectType, ".runtime_protection")
-                properties.set_prop("secretArchive", AAZObjectType, ".secret_archive")
+                properties.set_prop("secretArchiveSettings", AAZObjectType, ".secret_archive_settings")
                 properties.set_prop("updateStrategy", AAZObjectType, ".update_strategy")
+                properties.set_prop("vulnerabilityScanningSettings", AAZObjectType, ".vulnerability_scanning_settings")
+
+            analytics_output_settings = _builder.get(".properties.analyticsOutputSettings")
+            if analytics_output_settings is not None:
+                analytics_output_settings.set_prop("analyticsWorkspaceId", AAZStrType, ".analytics_workspace_id")
+                analytics_output_settings.set_prop("associatedIdentity", AAZObjectType)
+
+            associated_identity = _builder.get(".properties.analyticsOutputSettings.associatedIdentity")
+            if associated_identity is not None:
+                associated_identity.set_prop("identityType", AAZStrType, ".identity_type")
+                associated_identity.set_prop("userAssignedIdentityResourceId", AAZStrType, ".identity_resource_id", typ_kwargs={"nullable": True})
 
             cluster_service_principal = _builder.get(".properties.clusterServicePrincipal")
             if cluster_service_principal is not None:
@@ -625,6 +758,16 @@ class Create(AAZCommand):
                 cluster_service_principal.set_prop("password", AAZStrType, ".password", typ_kwargs={"flags": {"secret": True}})
                 cluster_service_principal.set_prop("principalId", AAZStrType, ".principal_id", typ_kwargs={"flags": {"required": True}})
                 cluster_service_principal.set_prop("tenantId", AAZStrType, ".tenant_id", typ_kwargs={"flags": {"required": True}})
+
+            command_output_settings = _builder.get(".properties.commandOutputSettings")
+            if command_output_settings is not None:
+                command_output_settings.set_prop("associatedIdentity", AAZObjectType)
+                command_output_settings.set_prop("containerUrl", AAZStrType, ".container_url")
+
+            associated_identity = _builder.get(".properties.commandOutputSettings.associatedIdentity")
+            if associated_identity is not None:
+                associated_identity.set_prop("identityType", AAZStrType, ".identity_type")
+                associated_identity.set_prop("userAssignedIdentityResourceId", AAZStrType, ".identity_resource_id", typ_kwargs={"nullable": True})
 
             compute_deployment_threshold = _builder.get(".properties.computeDeploymentThreshold")
             if compute_deployment_threshold is not None:
@@ -645,10 +788,15 @@ class Create(AAZCommand):
             if runtime_protection_configuration is not None:
                 runtime_protection_configuration.set_prop("enforcementLevel", AAZStrType, ".enforcement_level")
 
-            secret_archive = _builder.get(".properties.secretArchive")
-            if secret_archive is not None:
-                secret_archive.set_prop("keyVaultId", AAZStrType, ".key_vault_id", typ_kwargs={"flags": {"required": True}})
-                secret_archive.set_prop("useKeyVault", AAZStrType, ".use_key_vault")
+            secret_archive_settings = _builder.get(".properties.secretArchiveSettings")
+            if secret_archive_settings is not None:
+                secret_archive_settings.set_prop("associatedIdentity", AAZObjectType)
+                secret_archive_settings.set_prop("vaultUri", AAZStrType, ".vault_uri")
+
+            associated_identity = _builder.get(".properties.secretArchiveSettings.associatedIdentity")
+            if associated_identity is not None:
+                associated_identity.set_prop("identityType", AAZStrType, ".identity_type")
+                associated_identity.set_prop("userAssignedIdentityResourceId", AAZStrType, ".identity_resource_id", typ_kwargs={"nullable": True})
 
             update_strategy = _builder.get(".properties.updateStrategy")
             if update_strategy is not None:
@@ -657,6 +805,10 @@ class Create(AAZCommand):
                 update_strategy.set_prop("thresholdType", AAZStrType, ".threshold_type", typ_kwargs={"flags": {"required": True}})
                 update_strategy.set_prop("thresholdValue", AAZIntType, ".threshold_value", typ_kwargs={"flags": {"required": True}})
                 update_strategy.set_prop("waitTimeMinutes", AAZIntType, ".wait_time_minutes")
+
+            vulnerability_scanning_settings = _builder.get(".properties.vulnerabilityScanningSettings")
+            if vulnerability_scanning_settings is not None:
+                vulnerability_scanning_settings.set_prop("containerScan", AAZStrType, ".container_scan")
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -682,6 +834,9 @@ class Create(AAZCommand):
             cls._schema_on_200_201 = AAZObjectType()
 
             _schema_on_200_201 = cls._schema_on_200_201
+            _schema_on_200_201.etag = AAZStrType(
+                flags={"read_only": True},
+            )
             _schema_on_200_201.extended_location = AAZObjectType(
                 serialized_name="extendedLocation",
                 flags={"required": True},
@@ -690,6 +845,7 @@ class Create(AAZCommand):
             _schema_on_200_201.id = AAZStrType(
                 flags={"read_only": True},
             )
+            _schema_on_200_201.identity = AAZIdentityObjectType()
             _schema_on_200_201.location = AAZStrType(
                 flags={"required": True},
             )
@@ -708,12 +864,46 @@ class Create(AAZCommand):
                 flags={"read_only": True},
             )
 
+            identity = cls._schema_on_200_201.identity
+            identity.principal_id = AAZStrType(
+                serialized_name="principalId",
+                flags={"read_only": True},
+            )
+            identity.tenant_id = AAZStrType(
+                serialized_name="tenantId",
+                flags={"read_only": True},
+            )
+            identity.type = AAZStrType(
+                flags={"required": True},
+            )
+            identity.user_assigned_identities = AAZDictType(
+                serialized_name="userAssignedIdentities",
+            )
+
+            user_assigned_identities = cls._schema_on_200_201.identity.user_assigned_identities
+            user_assigned_identities.Element = AAZObjectType(
+                nullable=True,
+            )
+
+            _element = cls._schema_on_200_201.identity.user_assigned_identities.Element
+            _element.client_id = AAZStrType(
+                serialized_name="clientId",
+                flags={"read_only": True},
+            )
+            _element.principal_id = AAZStrType(
+                serialized_name="principalId",
+                flags={"read_only": True},
+            )
+
             properties = cls._schema_on_200_201.properties
             properties.aggregator_or_single_rack_definition = AAZObjectType(
                 serialized_name="aggregatorOrSingleRackDefinition",
                 flags={"required": True},
             )
             _CreateHelper._build_schema_rack_definition_read(properties.aggregator_or_single_rack_definition)
+            properties.analytics_output_settings = AAZObjectType(
+                serialized_name="analyticsOutputSettings",
+            )
             properties.analytics_workspace_id = AAZStrType(
                 serialized_name="analyticsWorkspaceId",
             )
@@ -723,6 +913,7 @@ class Create(AAZCommand):
             )
             properties.cluster_capacity = AAZObjectType(
                 serialized_name="clusterCapacity",
+                flags={"read_only": True},
             )
             properties.cluster_connection_status = AAZStrType(
                 serialized_name="clusterConnectionStatus",
@@ -730,6 +921,7 @@ class Create(AAZCommand):
             )
             properties.cluster_extended_location = AAZObjectType(
                 serialized_name="clusterExtendedLocation",
+                flags={"read_only": True},
             )
             _CreateHelper._build_schema_extended_location_read(properties.cluster_extended_location)
             properties.cluster_location = AAZStrType(
@@ -754,6 +946,9 @@ class Create(AAZCommand):
                 serialized_name="clusterVersion",
                 flags={"required": True},
             )
+            properties.command_output_settings = AAZObjectType(
+                serialized_name="commandOutputSettings",
+            )
             properties.compute_deployment_threshold = AAZObjectType(
                 serialized_name="computeDeploymentThreshold",
             )
@@ -770,6 +965,7 @@ class Create(AAZCommand):
             )
             properties.hybrid_aks_extended_location = AAZObjectType(
                 serialized_name="hybridAksExtendedLocation",
+                flags={"read_only": True},
             )
             _CreateHelper._build_schema_extended_location_read(properties.hybrid_aks_extended_location)
             properties.managed_resource_group_configuration = AAZObjectType(
@@ -793,6 +989,9 @@ class Create(AAZCommand):
             properties.secret_archive = AAZObjectType(
                 serialized_name="secretArchive",
             )
+            properties.secret_archive_settings = AAZObjectType(
+                serialized_name="secretArchiveSettings",
+            )
             properties.support_expiry_date = AAZStrType(
                 serialized_name="supportExpiryDate",
                 flags={"read_only": True},
@@ -800,10 +999,22 @@ class Create(AAZCommand):
             properties.update_strategy = AAZObjectType(
                 serialized_name="updateStrategy",
             )
+            properties.vulnerability_scanning_settings = AAZObjectType(
+                serialized_name="vulnerabilityScanningSettings",
+            )
             properties.workload_resource_ids = AAZListType(
                 serialized_name="workloadResourceIds",
                 flags={"read_only": True},
             )
+
+            analytics_output_settings = cls._schema_on_200_201.properties.analytics_output_settings
+            analytics_output_settings.analytics_workspace_id = AAZStrType(
+                serialized_name="analyticsWorkspaceId",
+            )
+            analytics_output_settings.associated_identity = AAZObjectType(
+                serialized_name="associatedIdentity",
+            )
+            _CreateHelper._build_schema_identity_selector_read(analytics_output_settings.associated_identity)
 
             available_upgrade_versions = cls._schema_on_200_201.properties.available_upgrade_versions
             available_upgrade_versions.Element = AAZObjectType()
@@ -877,6 +1088,15 @@ class Create(AAZCommand):
                 flags={"required": True},
             )
 
+            command_output_settings = cls._schema_on_200_201.properties.command_output_settings
+            command_output_settings.associated_identity = AAZObjectType(
+                serialized_name="associatedIdentity",
+            )
+            _CreateHelper._build_schema_identity_selector_read(command_output_settings.associated_identity)
+            command_output_settings.container_url = AAZStrType(
+                serialized_name="containerUrl",
+            )
+
             compute_deployment_threshold = cls._schema_on_200_201.properties.compute_deployment_threshold
             compute_deployment_threshold.grouping = AAZStrType(
                 flags={"required": True},
@@ -910,6 +1130,15 @@ class Create(AAZCommand):
                 serialized_name="useKeyVault",
             )
 
+            secret_archive_settings = cls._schema_on_200_201.properties.secret_archive_settings
+            secret_archive_settings.associated_identity = AAZObjectType(
+                serialized_name="associatedIdentity",
+            )
+            _CreateHelper._build_schema_identity_selector_read(secret_archive_settings.associated_identity)
+            secret_archive_settings.vault_uri = AAZStrType(
+                serialized_name="vaultUri",
+            )
+
             update_strategy = cls._schema_on_200_201.properties.update_strategy
             update_strategy.max_unavailable = AAZIntType(
                 serialized_name="maxUnavailable",
@@ -928,6 +1157,11 @@ class Create(AAZCommand):
             )
             update_strategy.wait_time_minutes = AAZIntType(
                 serialized_name="waitTimeMinutes",
+            )
+
+            vulnerability_scanning_settings = cls._schema_on_200_201.properties.vulnerability_scanning_settings
+            vulnerability_scanning_settings.container_scan = AAZStrType(
+                serialized_name="containerScan",
             )
 
             workload_resource_ids = cls._schema_on_200_201.properties.workload_resource_ids
@@ -1049,6 +1283,29 @@ class _CreateHelper:
 
         _schema.name = cls._schema_extended_location_read.name
         _schema.type = cls._schema_extended_location_read.type
+
+    _schema_identity_selector_read = None
+
+    @classmethod
+    def _build_schema_identity_selector_read(cls, _schema):
+        if cls._schema_identity_selector_read is not None:
+            _schema.identity_type = cls._schema_identity_selector_read.identity_type
+            _schema.user_assigned_identity_resource_id = cls._schema_identity_selector_read.user_assigned_identity_resource_id
+            return
+
+        cls._schema_identity_selector_read = _schema_identity_selector_read = AAZObjectType()
+
+        identity_selector_read = _schema_identity_selector_read
+        identity_selector_read.identity_type = AAZStrType(
+            serialized_name="identityType",
+        )
+        identity_selector_read.user_assigned_identity_resource_id = AAZStrType(
+            serialized_name="userAssignedIdentityResourceId",
+            nullable=True,
+        )
+
+        _schema.identity_type = cls._schema_identity_selector_read.identity_type
+        _schema.user_assigned_identity_resource_id = cls._schema_identity_selector_read.user_assigned_identity_resource_id
 
     _schema_rack_definition_read = None
 

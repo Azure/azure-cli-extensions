@@ -12,10 +12,10 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "dynatrace monitor update"
+    "dynatrace monitor update",
 )
 class Update(AAZCommand):
-    """Update a monitor resource
+    """Update a Dynatrace resource on Azure for monitoring and observability needs.
 
     :example: Update monitor
         az dynatrace monitor update -g {rg} -n {monitor} --tags {{env:dev}}
@@ -186,7 +186,7 @@ class Update(AAZCommand):
             _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.identity = AAZObjectType()
+            _schema_on_200.identity = AAZIdentityObjectType()
             _schema_on_200.location = AAZStrType(
                 flags={"required": True},
             )
@@ -370,6 +370,10 @@ class Update(AAZCommand):
             tags.Element = AAZStrType()
 
             return cls._schema_on_200
+
+
+class _UpdateHelper:
+    """Helper class for Update"""
 
 
 __all__ = ["Update"]

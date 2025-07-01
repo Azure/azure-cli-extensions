@@ -233,9 +233,9 @@ for source in SOURCE_RESOURCES:
                        --secret name=XX secret-name=XX
 
                 name    : Required. Username or account name for secret auth.
-                secret  : One of <secret, secret-uri, secret-name> is required. Password or account key for secret auth.
-                secret-uri  : One of <secret, secret-uri, secret-name> is required. Keyvault secret uri which stores password.
-                secret-name : One of <secret, secret-uri, secret-name> is required. Keyvault secret name which stores password. It's for AKS only.
+                secret  : One of secret, secret-uri, secret-name is required. Password or account key for secret auth.
+                secret-uri  : One of secret, secret-uri, secret-name is required. Keyvault secret uri which stores password.
+                secret-name : One of secret, secret-uri, secret-name is required. Keyvault secret name which stores password. It's for AKS only.
         ''' if AUTH_TYPE.Secret in auth_types else ''
         secret_auto_param = '''
             - name: --secret
@@ -286,6 +286,28 @@ for source in SOURCE_RESOURCES:
                 client-id      : Required. Client id of the user assigned identity.
                 subs-id        : Required. Subscription id of the user assigned identity.
         '''
+        workload_identity_param = ''
+        if AUTH_TYPE.WorkloadIdentity in auth_types:
+            if target in {RESOURCE.MysqlFlexible}:
+                workload_identity_param = '''
+            - name: --workload-identity
+              short-summary: The user-assigned managed identity used to create workload identity federation.
+              long-summary: |
+                Usage: `--workload-identity <user-identity-resource-id> mysql-identity-id=<mysql-identity-id>`
+
+                user-identity-resource-id: Required. The resource id of the user assigned identity. Please DO NOT use AKS control plane identity and kubelet identity which is not supported by federated identity credential.
+                mysql-identity-id    : Optional. ID of identity used for MySQL flexible server Microsoft Entra Authentication. Ignore it if you are the server Microsoft Entra administrator.
+        '''
+            else:
+                workload_identity_param = '''
+            - name: --workload-identity
+              short-summary: The user-assigned managed identity used to create workload identity federation.
+              long-summary: |
+                Usage: `--workload-identity <user-identity-resource-id>`
+
+                user-identity-resource-id: Required. The resource id of the user assigned identity.
+                Please DO NOT use AKS control plane identity and kubelet identity which is not supported by federated identity credential.
+        '''
         service_principal_param = ''
         if AUTH_TYPE.ServicePrincipalSecret in auth_types:
             if target in {RESOURCE.MysqlFlexible}:
@@ -334,6 +356,7 @@ for source in SOURCE_RESOURCES:
             {secret_auto_param}
             {system_identity_param}
             {user_identity_param}
+            {workload_identity_param}
             {service_principal_param}
           examples:
             - name: Create a connection between {source_display_name} and {target} interactively
@@ -355,6 +378,7 @@ for source in SOURCE_RESOURCES:
             secret_auto_param=secret_auto_param,
             system_identity_param=system_identity_param,
             user_identity_param=user_identity_param,
+            workload_identity_param=workload_identity_param,
             service_principal_param=service_principal_param,
             source_params=source_params,
             target_params=target_params,
@@ -370,6 +394,7 @@ for source in SOURCE_RESOURCES:
             {secret_auto_param}
             {system_identity_param}
             {user_identity_param}
+            {workload_identity_param}
             {service_principal_param}
           examples:
             - name: Update the client type of a connection with resource name
@@ -385,6 +410,7 @@ for source in SOURCE_RESOURCES:
             secret_auto_param=secret_auto_param,
             system_identity_param=system_identity_param,
             user_identity_param=user_identity_param,
+            workload_identity_param=workload_identity_param,
             service_principal_param=service_principal_param,
             source_params=source_params,
             connection_id=connection_id,

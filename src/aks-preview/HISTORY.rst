@@ -9,6 +9,235 @@ If there is no rush to release a new version, please just add a description of t
 
 To release a new version, please select a new version number (usually plus 1 to last patch version, X.Y.Z -> Major.Minor.Patch, more details in `\doc <https://semver.org/>`_), and then add a new section named as the new version number in this file, the content should include the new modifications and everything from the *Pending* section. Finally, update the `VERSION` variable in `setup.py` with this new version number.
 
+Pending
++++++++
+
+18.0.0b15
++++++++
+* Fixed NPE issue for `--acns-transit-encryption-type`.
+
+18.0.0b14
++++++++
+* Add preview flag for `az aks namespace`.
+* Add `--node-provisioning-default-pools` to the `az aks update` command.
+* Add `--node-provisioning-default-pools` to the `az aks create` command.
+
+18.0.0b13
++++++++
+* Add option `--enable-http-proxy` to `az aks update`.
+
+18.0.0b12
++++++++
+* Add option `--acns-transit-encryption-type <None|WireGuard>` to `az aks create/update`
+
+18.0.0b11
++++++++
+* Vendor new SDK and bump API version to 2025-04-02-preview.
+
+18.0.0b10
++++++++
+* Wrap the ARG call in the managed namespace list command
+
+18.0.0b9
++++++++
+* Add `--max-blocked-nodes` to the `az aks nodepool add/update/upgrade` commands.
+
+18.0.0b8
++++++++
+* Populate location of managed namespaces using managed cluster's location
+
+18.0.0b7
++++++++
+* Add option `--disable-http-proxy` to `az aks update`.
+
+18.0.0b6
++++++++
+* Quality improvements for `az aks extension` and `az aks extension type` command groups
+
+18.0.0b5
++++++++
+* Add option `Ubuntu2204` and `Ubuntu2404` to `--os-sku` for `az aks nodepool add` and `az aks nodepool update`.
+
+18.0.0b4
++++++++
+* Add managed namespace commands `az aks namespace add/update/show/list/delete/get-credentials`
+
+18.0.0b3
++++++++
+* Add basic lb sku migration support `az aks update --load-balancer-sku standard`
+
+18.0.0b2
++++++++
+* Vendor new SDK and bump API version to 2025-03-02-preview.
+
+18.0.0b1
++++++++
+* [BREAKING CHANGE] Remove `--enable-pod-security-policy` and `--disable-pod-security-policy` as it's deprecated.
+
+17.0.0b4
+++++++++
+* Reset vm_size and count to None for `az aks update --migrate-vmas-to-vms`
+
+17.0.0b3
+++++++++
+* Add default value of option `--vm-sizes` for `az aks create` and `az aks nodepool add`.
+
+17.0.0b2
+++++++++
+* Add option `--migrate-vmas-to-vms` to `az aks update`
+
+17.0.0b1
++++++++
+* [BREAKING CHANGE]: `az aks create`: Change default value of option `--node-vm-size` to ""
+* [BREAKING CHANGE]: `az aks nodepool add`: Change default value of option `--node-vm-size` to ""
+
+16.0.0b1
++++++++
+* [BREAKING CHANGE] Remove flux extension from the list of supported core extensions
+
+15.0.0b2
++++++++
+* Add aks extension and aks extension-type command groups
+* Remove TrustedAccess commands from aks-preview extension as it is GA and exists in azure-cli for long time.
+
+15.0.0b1
+++++++++
+* [BREAKING CHANGE] Change `--vm-sizes` for VirtualMachines manual profile to awalys support single SKU size.
+
+14.0.0b7
+++++++++
+* Add `az aks create/update --enable-retina-flow-logs` and `az aks update --disable-retina-flow-logs` commands.
+
+14.0.0b6
++++++++
+* Add option `--acns-advanced-networkpolicies <None|FQDN|L7>` to `az aks create/update`
+
+14.0.0b5
+++++++++
+* Re-generate the SDK for API version 2025-02-02-preview with @autorest/python@6.32.3 to fix `\#31345 <https://github.com/Azure/azure-cli/issues/31345>`_.
+
+14.0.0b4
+++++++++
+* Vendor new SDK and bump API version to 2025-02-02-preview.
+
+14.0.0b3
++++++++
+* Support `az aks loadbalancer show/list/add/update/delete/rebalance` commands.
+
+14.0.0b2
++++++++
+* Update the `disable-egress-gateway` subcommand to fix `--help` output for the `az aks mesh` command.
+* Modify behavior for `--nodepool-initialization-taints` to ignore taints with hard effects on node pools with system mode when creating or updating a cluster.
+
+14.0.0b1
++++++++
+* Vendor new SDK and bump API version to 2025-01-02-preview.
+* [BREAKING CHANGE] Rename `--enable-addon-autoscaling` to `--enable-optimized-addon-scaling` to `az aks create` commands.
+* [BREAKING CHANGE] Rename `--enable-addon-autoscaling` to `--enable-optimized-addon-scaling` and `--disable-addon-autoscaling` to `--disable-optimized-addon-scaling` to `az aks update` commands.
+
+13.0.0b9
++++++++
+* Vendor new SDK and bump API version to 2024-10-02-preview.
+* Add `enable-egress-gateway` and `disable-egress-gateway` subcommands to the `az aks mesh` command.
+
+13.0.0b8
++++++++
+* `az aks create/update``: Update recording rule group create logic for managed prometheus addon
+
+13.0.0b7
++++++++
+* Add `--max-unavailable` to the `az aks nodepool add/update/upgrade` commands.
+
+13.0.0b6
++++++++
+* `az aks create/update`: Update parameter description of `--custom-ca-certificates`.
+
+13.0.0b5
++++++++
+* `az aks create/az aks nodepool add`: Emit error message when using `--asg-ids` alone without `--allowed-host-ports`.
+
+13.0.0b4
++++++++
+* `az aks nodepool upgrade`: Fix `--node-soak-duration` cannot be specified as 0
+
+13.0.0b3
++++++++
+* `az aks create`: Update outbound type selection logic for automatic cluster when customer brings BYO Vnet.
+
+13.0.0b2
++++++++
+* `az aks create/update`: Update advanced container networking service (acns) with 2024-09-02-preview API version enablement.
+* Vendor new SDK and bump API version to 2024-09-02-preview.
+
+13.0.0b1
++++++++
+* [BREAKING CHANGE]: `az aks trustedaccess rolebinding create`: Remove deprecated `-r` and `-s` options.
+
+12.0.0b2
+++++++++
+* `az aks create/update`: Fix storage pool name validation for Azure Container Storage.
+
+12.0.0b1
++++++++
+* [BREAKING CHANGE]: Remove advanced container networking service (acns) enablement preview parameters `--enable-advanced-network-observability`, `--disable-advanced-network-observability`, `--enable-fqdn-policy`, `--disable-fqdn-policy`, and `--advanced-networking-observability-tls-management` from `az aks create/update` command.
+* Add advanced container networking service (acns) enablement GA parameters `--disable-acns-observability` and `--disable-acns-security` to `az aks create/update` command.
+
+11.0.0b1
++++++++
+* [BREAKING CHANGE]: `az aks create`: Remove AAD-legacy properties `--aad-client-app-id`, `--aad-server-app-id` and `--aad-server-app-secret` when creating cluster.
+
+10.0.0b1
+++++++++
+* [BREAKING CHANGE]: `az aks create/update`: Remove `--uptime-sla` and `--no-uptime-sla` options.
+
+9.0.0b8
++++++++
+* Update VM SKU validations to get values from backend API for Azure Container Storage.
+
+9.0.0b7
++++++++
+* Fix bug related to updating the monitoring addon DCR when the non monitoring addon enabled through `az aks enable-addons`.
+
+9.0.0b6
++++++++
+* Print warning message when new node pool is created with SSH enabled, suggest to create SSH disabled node pool.
+
+9.0.0b5
++++++++
+* Add `--driver-type` to the `az aks nodepool add` command.
+
+9.0.0b4
++++++++
+* Set the --node-vm-size to empty string when the cluster sku name is automatic. The node vm size will pick from the candidate toggle based on the logic in automatic vm selection.
+* Removed some features preview flag that automatic depends on in the test_aks_commands.py
+
+9.0.0b3
++++++++
+* Add `--undrainable-node-behavior` to the `az aks nodepool add/update/upgrade` commands.
+
+9.0.0b2
++++++++
+* Add block to supported outbound type
+* Vendor new SDK and bump API version to 2024-07-02-preview.
+
+9.0.0b1
++++++++
+* [BREAKING CHANGE]: Remove support for `az aks update --ssh-access` command to avoid misleading. To update existing cluster's SSH access, please use `az aks nodepool update --ssh-access` to update node pool's SSH access one by one.
+* Remove dependency on `msrestazure.azure_exceptions` and `msrestazure.tools`.
+
+8.0.0b1
++++++++
+* [BREAKING CHANGE]: Remove enable/disable node restriction feature, since it is always enabled and not changeable since k8s version 1.24.0
+* new supportPlan column on `az aks get-versions -o table`, to tell if the version is supported by KubernetesOfficial or AKSLongTermSupport.
+
+7.0.0b8
++++++++
+* Update validations to enable Azure Container Storage to install on a larger set of nodepool skus.
+
+7.0.0b7
++++++++
+* [AKS] `az aks create/update`: Support UserAssigned Managed Identity for grafana linking in managed prometheus
+
 7.0.0b6
 +++++++
 * Add `--advanced-networking-observability-tls-management` to `az aks create/update` command.

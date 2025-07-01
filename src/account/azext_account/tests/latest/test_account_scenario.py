@@ -60,7 +60,7 @@ class SubscriptionClientScenarioTest(ScenarioTest):
                                    self.check('subscriptionId', sub_id)]).get_output_in_json()
             if sub['state'] != 'Warned':
                 time.sleep(180)
-        self.assertEquals(sub['state'], 'Warned')
+        self.assertEqual(sub['state'], 'Warned')
 
         self.cmd('az account subscription enable --subscription-id {subscription_id}',
                  checks=[self.check('subscriptionId', '{subscription_id}')])
@@ -71,7 +71,7 @@ class SubscriptionClientScenarioTest(ScenarioTest):
                                    self.check('subscriptionId', sub_id)]).get_output_in_json()
             if sub['state'] != 'Enabled':
                 time.sleep(180)
-        self.assertEquals(sub['state'], 'Enabled')
+        self.assertEqual(sub['state'], 'Enabled')
 
         self.cmd('az account subscription rename --subscription-id {subscription_id} --name "{new_display_name}"',
                  checks=[self.check('subscriptionId', '{subscription_id}')])

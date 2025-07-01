@@ -13,26 +13,26 @@ interactions:
       ParameterSetName:
       - --resource-group --service-name --metadata-name --schema
       User-Agent:
-      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.63.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/metadataSchemas/clitest000003?api-version=2024-03-01
   response:
     body:
-      string: '{"type":"Microsoft.ApiCenter/services/metadataSchemas","properties":{"assignedTo":[{"entity":"api","required":true,"deprecated":false},{"entity":"environment","required":true,"deprecated":false},{"entity":"deployment","required":true,"deprecated":false}],"schema":"{\"type\":\"boolean\",
-        \"title\":\"Public Facing\"}"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/metadataSchemas/clitest000003","name":"clitest000003","systemData":{"createdAt":"2024-06-17T06:08:01.2493855Z","lastModifiedAt":"2024-06-17T06:08:01.2493846Z"}}'
+      string: '{"type":"Microsoft.ApiCenter/services/metadataSchemas","properties":{"assignedTo":[{"entity":"api","required":true,"deprecated":false},{"entity":"environment","required":false,"deprecated":false},{"entity":"deployment","required":true,"deprecated":false}],"schema":"{\"type\":\"boolean\",
+        \"title\":\"Public Facing\"}"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/metadataSchemas/clitest000003","name":"clitest000003","systemData":{"createdAt":"2024-10-09T08:19:33.5389298Z","lastModifiedAt":"2024-10-09T08:19:33.5389286Z"}}'
     headers:
       api-supported-versions:
       - 2023-07-01-preview, 2024-03-01, 2024-03-15-preview
       cache-control:
       - no-cache
       content-length:
-      - '617'
+      - '618'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 17 Jun 2024 06:08:04 GMT
+      - Wed, 09 Oct 2024 08:19:34 GMT
       etag:
-      - 66022daa-0000-0100-0000-666fd2c10000
+      - 2a0206da-0000-0100-0000-67063c950000
       expires:
       - '-1'
       pragma:
@@ -48,7 +48,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '3749'
       x-msedge-ref:
-      - 'Ref A: E429D9C923F74789AD640192BE58456A Ref B: MAA201060513009 Ref C: 2024-06-17T06:08:03Z'
+      - 'Ref A: C58C1E9C7CB44263AB5144E805FF67B0 Ref B: MAA201060516029 Ref C: 2024-10-09T08:19:34Z'
       x-powered-by:
       - ASP.NET
     status:
@@ -56,7 +56,7 @@ interactions:
       message: OK
 - request:
     body: '{"properties": {"assignedTo": [{"deprecated": false, "entity": "api", "required":
-      true}, {"deprecated": false, "entity": "environment", "required": true}, {"deprecated":
+      true}, {"deprecated": false, "entity": "environment", "required": false}, {"deprecated":
       false, "entity": "deployment", "required": true}], "schema": "{\"type\": \"string\",
       \"title\":\"Last name\", \"pattern\": \"^[a-zA-Z0-9]+$\"}"}}'
     headers:
@@ -69,32 +69,32 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '315'
+      - '316'
       Content-Type:
       - application/json
       ParameterSetName:
       - --resource-group --service-name --metadata-name --schema
       User-Agent:
-      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.63.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/metadataSchemas/clitest000003?api-version=2024-03-01
   response:
     body:
-      string: '{"type":"Microsoft.ApiCenter/services/metadataSchemas","properties":{"assignedTo":[{"entity":"api","required":true,"deprecated":false},{"entity":"environment","required":true,"deprecated":false},{"entity":"deployment","required":true,"deprecated":false}],"schema":"{\"type\":
-        \"string\", \"title\":\"Last name\", \"pattern\": \"^[a-zA-Z0-9]+$\"}"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/metadataSchemas/clitest000003","name":"clitest000003","systemData":{"lastModifiedAt":"2024-06-17T06:08:05.6760041Z"}}'
+      string: '{"type":"Microsoft.ApiCenter/services/metadataSchemas","properties":{"assignedTo":[{"entity":"api","required":true,"deprecated":false},{"entity":"environment","required":false,"deprecated":false},{"entity":"deployment","required":true,"deprecated":false}],"schema":"{\"type\":
+        \"string\", \"title\":\"Last name\", \"pattern\": \"^[a-zA-Z0-9]+$\"}"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/metadataSchemas/clitest000003","name":"clitest000003","systemData":{"lastModifiedAt":"2024-10-09T08:19:36.2396301Z"}}'
     headers:
       api-supported-versions:
       - 2023-07-01-preview, 2024-03-01, 2024-03-15-preview
       cache-control:
       - no-cache
       content-length:
-      - '603'
+      - '604'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 17 Jun 2024 06:08:05 GMT
+      - Wed, 09 Oct 2024 08:19:36 GMT
       etag:
-      - 6602beaa-0000-0100-0000-666fd2c50000
+      - 2a029adb-0000-0100-0000-67063c980000
       expires:
       - '-1'
       pragma:
@@ -108,11 +108,11 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-global-writes:
-      - '2999'
+      - '2998'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '199'
+      - '198'
       x-msedge-ref:
-      - 'Ref A: BC878E519675422B9E27E67AF32A7BFE Ref B: MAA201060513009 Ref C: 2024-06-17T06:08:04Z'
+      - 'Ref A: 69924B4247DE4E2D82B12BF2EA0A9BC3 Ref B: MAA201060516029 Ref C: 2024-10-09T08:19:35Z'
       x-powered-by:
       - ASP.NET
     status:

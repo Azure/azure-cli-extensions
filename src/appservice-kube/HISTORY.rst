@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.1.11
+++++++
+* Remove msrestazure dependency
+
 0.1.10
 ++++++
 * Add command `az webapp list-runtimes --is-kube` for arc enabled app service

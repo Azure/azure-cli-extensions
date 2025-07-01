@@ -1,0 +1,55 @@
+version: v1.1.0
+alias:
+  values:
+    patchimagetask: cssc-patch-image
+    DATE: $(date "+%Y-%m-%d")
+    cssc : mcr.microsoft.com/acr/cssc:cbcf692
+steps:
+  - id: print-inputs
+    cmd: |
+        bash -c 'echo "Scanning image for vulnerability {{.Values.SOURCE_REPOSITORY}}:{{.Values.SOURCE_IMAGE_TAG}} for tag {{.Values.SOURCE_IMAGE_ORIGINAL_TAG}}"'
+        bash -c 'echo "Scanning repo: {{.Values.SOURCE_REPOSITORY}}, Tag:{{.Values.SOURCE_IMAGE_TAG}}, OriginalTag:{{.Values.SOURCE_IMAGE_ORIGINAL_TAG}}"'
+  - id: setup-data-dir
+    cmd: bash mkdir ./data
+
+  - id: generate-trivy-report
+    retries: 3
+    retryDelay: 5
+    timeout: 1800
+    cmd: |
+      cssc trivy image \
+      {{.Run.Registry}}/{{.Values.SOURCE_REPOSITORY}}:{{.Values.SOURCE_IMAGE_TAG}} \
+      --pkg-types os \
+      --ignore-unfixed \
+      --format json \
+      --timeout 30m \
+      --scanners vuln \
+      --db-repository "ghcr.io/aquasecurity/trivy-db:2","public.ecr.aws/aquasecurity/trivy-db" \
+      --output /workspace/data/vulnerability-report_trivy_$DATE.json
+
+  - cmd: cssc jq 'if .Results == null or (.Results | length) == 0 then 0 else [.Results[] | select(.Vulnerabilities != null) | .Vulnerabilities | length] | add end' /workspace/data/vulnerability-report_trivy_$DATE.json > /workspace/data/vulCount.txt
+  - cmd: cssc jq 'if .Metadata.OS.EOSL == null then false else .Metadata.OS.EOSL end' /workspace/data/vulnerability-report_trivy_$DATE.json > /workspace/data/eosl.txt
+  - cmd: |        
+        bash -c 'echo "Vulnerabilities found for image {{.Values.SOURCE_REPOSITORY}}:{{.Values.SOURCE_IMAGE_TAG}} -> $(cat /workspace/data/vulCount.txt)"'
+        bash -c 'echo "EOSL for the image {{.Values.SOURCE_REPOSITORY}}:{{.Values.SOURCE_IMAGE_TAG}} -> $(cat /workspace/data/eosl.txt)"'
+
+  - id: trigger-patch-task
+    retries: 3
+    retryDelay: 10
+    timeout: 1800
+    cmd: |
+      az -c '
+      vulCount=$(cat /workspace/data/vulCount.txt) && \
+      eoslValue=$(cat /workspace/data/eosl.txt) && \
+      if ! [[ "$vulCount" =~ ^[0-9]+$ ]]; then vulCount=0; fi && \
+      if [ "$eoslValue" = "true" ]; then \
+        echo "PATCHING will be skipped as EOSL is $eoslValue for image {{.Values.SOURCE_REPOSITORY}}:{{.Values.SOURCE_IMAGE_TAG}}"; \
+      elif [ $vulCount -gt 0 ]; then \
+          az login --identity --allow-no-subscriptions; \
+          echo "Total OS vulnerabilities found -> $vulCount"; \
+          echo "PATCHING task scheduled for image {{.Values.SOURCE_REPOSITORY}}:{{.Values.SOURCE_IMAGE_TAG}}, new patch tag will be {{.Values.SOURCE_IMAGE_ORIGINAL_TAG}}-{{.Values.SOURCE_IMAGE_NEWPATCH_TAG}}"; \
+          az acr task run --name $patchimagetask --registry $RegistryName --set SOURCE_REPOSITORY={{.Values.SOURCE_REPOSITORY}} --set SOURCE_IMAGE_TAG={{.Values.SOURCE_IMAGE_ORIGINAL_TAG}} --set SOURCE_IMAGE_NEWPATCH_TAG={{.Values.SOURCE_IMAGE_NEWPATCH_TAG}} --no-wait; \
+        else \
+          echo "PATCHING will be skipped as no vulnerability found in the image {{.Values.SOURCE_REPOSITORY}}:{{.Values.SOURCE_IMAGE_TAG}}"; \
+      fi'
+    entryPoint: /bin/bash

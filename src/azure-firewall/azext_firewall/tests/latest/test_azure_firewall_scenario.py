@@ -6,7 +6,7 @@
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, StorageAccountPreparer, JMESPathCheck, NoneCheck,
                                api_version_constraint)
 from azure.cli.testsdk.scenario_tests.decorators import AllowLargeResponse
-from azure.cli.core.azclierror import ValidationError
+from azure.cli.core.azclierror import ValidationError, CLIError
 
 
 class AzureFirewallScenario(ScenarioTest):
@@ -39,6 +39,21 @@ class AzureFirewallScenario(ScenarioTest):
         self.cmd('network firewall show -g {rg} -n {af}')
         self.cmd('network firewall list -g {rg}')
         self.cmd('network firewall delete -g {rg} -n {af}')
+
+    @ResourceGroupPreparer(name_prefix='cli_test_az_firewall_extended_location')
+    def test_azure_firewall_extended_location(self, resource_group):
+        self.kwargs.update({
+            'pubip': 'pubip',
+            'vnet': 'vnet',
+            'firewall': 'firewall'
+        })
+
+        self.cmd('network public-ip create -g {rg} -n {pubip} --allocation-method Static --sku Standard --edge-zone losangeles')
+        self.cmd('network vnet create -g {rg} -n {vnet} --address-prefix 10.0.0.0/16 --subnet-name AzureFirewallSubnet --subnet-prefix 10.0.1.0/26 --edge-zone losangeles')
+        self.cmd('network firewall create -g {rg} -n {firewall} --vnet-name {vnet} --public-ip {pubip} --enable-dns-proxy true --edge-zone losangeles', checks=[
+            self.check('extendedLocation.type', 'EdgeZone'),
+            self.check('extendedLocation.name', 'losangeles')
+        ])
 
     @ResourceGroupPreparer(name_prefix="cli_test_firewall_with_additional_log_", location="westus")
     def test_firewall_with_additional_log(self):
@@ -274,7 +289,7 @@ class AzureFirewallScenario(ScenarioTest):
         # self.cmd('network firewall create -g {rg} -n {af} --sku AZFW_Hub --count 1 --vhub {vhub}')
         # self.cmd('network firewall update -g {rg} -n {af} --vhub ""')
 
-        # with self.assertRaisesRegexp(CLIError, "allow active ftp is not allowed for azure firewall on virtual hub."):
+        # with self.assertRaisesRegex(CLIError, "allow active ftp is not allowed for azure firewall on virtual hub."):
         #     self.cmd('network firewall create -g {rg} -n {af} --sku AZFW_Hub --count 1 --vhub {vhub} --allow-active-ftp')
 
         self.cmd('network vwan create -n {vwan2} -g {rg} --type Standard')
@@ -912,7 +927,7 @@ class AzureFirewallScenario(ScenarioTest):
     def test_azure_firewall_policy_explicit_proxy(self, resource_group):
         self.kwargs.update({
             'policy_name': 'testFirewallPolicy',
-            'sas_url': "https://clitestatorageaccount.blob.core.windows.net/explicitproxycontainer/pacfile.pac?sp=r&st=2024-01-09T08:48:06Z&se=2024-01-09T16:48:06Z&spr=https&sv=2022-11-02&sr=b&sig=5B0q%2B90BH0fkPZK6G6LHKRIGMY%2FljNOfsSQ8xaQB6mw%3D"
+            'sas_url': "https://clitestatorageaccount.blob.core.windows.net/explicitproxycontainer/pacfile.pac?sp=r&st=2024-01-09T08:48:06Z&se=2024-01-09T16:48:06Z&spr=https&sv=2022-11-02&sr=b&sig=***"
         })
         self.cmd('network firewall policy create -g {rg} -n {policy_name} --sku Premium --explicit-proxy enable-explicit-proxy=true http-port=85 https-port=121 enable-pac-file=true pac-file-port=122 pac-file="{sas_url}"',
                  checks=[
@@ -1042,6 +1057,50 @@ class AzureFirewallScenario(ScenarioTest):
             checks=[
                 self.check("name", "{firewall_name}"),
                 self.check("sku.name", "AZFW_Hub")
+            ]
+        )
+
+    @AllowLargeResponse(size_kb=10240)
+    @ResourceGroupPreparer(name_prefix="cli_test_firewall_vhub_create_with_public_ip", location="westus")
+    def test_firewall_vhub_create_with_public_ip(self):
+        self.kwargs.update({
+            "firewall_name": self.create_random_name("firewall-", 16),
+            "conf_name": self.create_random_name("ipconfig-", 16),
+            "public_ip_name": self.create_random_name("public-ip-", 16),
+            "vwan": self.create_random_name("vwan-", 12),
+            "vhub": self.create_random_name("vhub-", 12),
+        })
+
+        self.cmd("extension add -n virtual-wan")
+        self.cmd("network vwan create -n {vwan} -g {rg} --type Standard")
+        self.cmd('network vhub create -n {vhub} -g {rg} --vwan {vwan}  --address-prefix 10.0.0.0/24 -l westus --sku Standard')
+        self.cmd("network public-ip create -n {public_ip_name} -g {rg} --sku Standard")
+
+        with self.assertRaisesRegex(CLIError, "usage error: Cannot add both --public-ip-count and --public-ip at the same time."):
+            self.cmd("network firewall create -n {firewall_name} -g {rg} --vhub {vhub} --sku AZFW_Hub --tier Basic --public-ip {public_ip_name} --public-ip-count 2")
+
+        with self.assertRaisesRegex(CLIError, "usage error: One of public-ip or public-ip-count should be provided for azure firewall on virtual hub."):
+            self.cmd("network firewall create -n {firewall_name} -g {rg} --vhub {vhub} --sku AZFW_Hub --tier Basic")
+
+        self.cmd(
+            "network firewall create -n {firewall_name} -g {rg} --vhub {vhub} --sku AZFW_Hub --tier Basic --public-ip {public_ip_name}",
+            checks=[
+                self.check("name", "{firewall_name}"),
+                self.check("sku.name", "AZFW_Hub"),
+                self.exists("ipConfigurations[0].publicIPAddress.id"),
+                self.check("ipConfigurations[0].name","AzureFirewallIpConfiguration0"),
+            ]
+        )
+
+        self.cmd("network firewall delete -n {firewall_name} -g {rg}")
+
+        self.cmd(
+            "network firewall create -n {firewall_name} -g {rg} --vhub {vhub} --sku AZFW_Hub --tier Basic --public-ip {public_ip_name} --conf-name {conf_name}",
+            checks=[
+                self.check("name", "{firewall_name}"),
+                self.check("sku.name", "AZFW_Hub"),
+                self.exists("ipConfigurations[0].publicIPAddress.id"),
+                self.check("ipConfigurations[0].name", "{conf_name}"),
             ]
         )
 

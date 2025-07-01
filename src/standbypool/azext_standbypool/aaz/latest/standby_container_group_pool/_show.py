@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "standby-container-group-pool show",
 )
 class Show(AAZCommand):
-    """Get a standby container pool
+    """Get a StandbyContainerGroupPoolResource
 
-    :example: Show a standby container group pool
-        az standby-container-pool show --subscription 461fa159-654a-415f-853a-40b801021944 --resource-group myrg --name mypool
+    :example: StandbyContainerGroupPools_Get
+        az standby-container-group-pool show --resource-group rgstandbypool --name pool --subscription 00000000-0000-0000-0000-000000000009
     """
 
     _aaz_info = {
-        "version": "2023-12-01-preview",
+        "version": "2025-03-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.standbypool/standbycontainergrouppools/{}", "2023-12-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.standbypool/standbycontainergrouppools/{}", "2025-03-01"],
         ]
     }
 
@@ -45,6 +45,7 @@ class Show(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.resource_group = AAZResourceGroupNameArg(
+            help="The resource group",
             required=True,
         )
         _args_schema.name = AAZStrArg(
@@ -123,7 +124,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-12-01-preview",
+                    "api-version", "2025-03-01",
                     required=True,
                 ),
             }
@@ -190,6 +191,7 @@ class Show(AAZCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+            properties.zones = AAZListType()
 
             container_group_properties = cls._schema_on_200.properties.container_group_properties
             container_group_properties.container_group_profile = AAZObjectType(
@@ -222,6 +224,9 @@ class Show(AAZCommand):
             elasticity_profile.refill_policy = AAZStrType(
                 serialized_name="refillPolicy",
             )
+
+            zones = cls._schema_on_200.properties.zones
+            zones.Element = AAZStrType()
 
             system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(

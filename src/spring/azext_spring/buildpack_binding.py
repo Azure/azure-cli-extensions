@@ -8,7 +8,7 @@ from .vendored_sdks.appplatform.v2024_05_01_preview import models
 from azure.cli.core.util import sdk_no_wait
 from ._utils import get_portal_uri
 from .custom import try_create_application_insights
-from msrestazure.tools import parse_resource_id, is_valid_resource_id
+from azure.mgmt.core.tools import parse_resource_id, is_valid_resource_id
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core.azclierror import InvalidArgumentValueError
 from azure.mgmt.applicationinsights import ApplicationInsightsManagementClient

@@ -24,7 +24,7 @@ def load_arguments(self, _):
         options_list=['--gallery-image-version', '-e'],
         help='The name of the gallery image version to be created. Needs to follow semantic version name pattern: '
              'The allowed characters are digit and period. Digits must be within the range of a 32-bit integer. '
-             'Format: <MajorVersion>.<MinorVersion>.<Patch>', id_part='child_name_3'
+             'Format: `<MajorVersion>.<MinorVersion>.<Patch>`', id_part='child_name_3'
     )
 
     marker_type = CLIArgumentType(

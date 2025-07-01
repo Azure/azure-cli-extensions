@@ -47,7 +47,7 @@ from ..validators import (
     validate_url_with_params,
 )
 from .. import consts
-from ..vendored_sdks.v2022_07_01.models import (
+from ..vendored_sdks.v2024_11_01.models import (
     FluxConfiguration,
     FluxConfigurationPatch,
     GitRepositoryDefinition,
@@ -149,6 +149,7 @@ def create_config(
     https_ca_cert_file=None,
     known_hosts=None,
     known_hosts_file=None,
+    provider=None,
     bucket_access_key=None,
     bucket_secret_key=None,
     bucket_insecure=False,
@@ -191,6 +192,7 @@ def create_config(
         https_ca_cert_file=https_ca_cert_file,
         known_hosts=known_hosts,
         known_hosts_file=known_hosts_file,
+        provider=provider,
         bucket_access_key=bucket_access_key,
         bucket_secret_key=bucket_secret_key,
         bucket_insecure=bucket_insecure,
@@ -282,6 +284,7 @@ def update_config(
     https_ca_cert_file=None,
     known_hosts=None,
     known_hosts_file=None,
+    provider=None,
     bucket_access_key=None,
     bucket_secret_key=None,
     bucket_insecure=None,
@@ -330,6 +333,7 @@ def update_config(
         https_ca_cert_file=https_ca_cert_file,
         known_hosts=known_hosts,
         known_hosts_file=known_hosts_file,
+        provider=provider,
         bucket_access_key=bucket_access_key,
         bucket_secret_key=bucket_secret_key,
         bucket_insecure=bucket_insecure,
@@ -410,6 +414,7 @@ def create_kustomization(
     path="",
     prune=None,
     force=None,
+    disable_health_check=None,
     no_wait=False,
     cluster_resource_provider=None,
 ):
@@ -441,6 +446,7 @@ def create_kustomization(
             retry_interval_in_seconds=parse_duration(retry_interval),
             prune=prune,
             force=force,
+            wait=disable_health_check!=True,
         )
     }
     flux_configuration_patch = FluxConfigurationPatch(kustomizations=kustomization)
@@ -471,6 +477,7 @@ def update_kustomization(
     path=None,
     prune=None,
     force=None,
+    disable_health_check=None,
     no_wait=False,
     cluster_resource_provider=None,
 ):
@@ -502,6 +509,7 @@ def update_kustomization(
             retry_interval_in_seconds=parse_duration(retry_interval),
             prune=prune,
             force=force,
+            wait=disable_health_check!=True,
         )
     }
     flux_configuration_patch = FluxConfigurationPatch(kustomizations=kustomization)
@@ -894,6 +902,7 @@ class GitRepositoryGenerator(SourceKindGenerator):
         self.ssh_private_key_file = kwargs.get("ssh_private_key_file")
         self.https_user = kwargs.get("https_user")
         self.https_key = kwargs.get("https_key")
+        self.provider = kwargs.get("provider")
 
         # Get the known hosts data and validate it
         self.knownhost_data = get_data_from_key_or_file(
@@ -956,6 +965,7 @@ class GitRepositoryGenerator(SourceKindGenerator):
                 https_user=self.https_user,
                 local_auth_ref=self.local_auth_ref,
                 https_ca_cert=self.https_ca_data,
+                provider=self.provider,
             )
             config.source_kind = SourceKindType.GIT_REPOSITORY
             return config
@@ -980,6 +990,7 @@ class GitRepositoryGenerator(SourceKindGenerator):
                     https_user=self.https_user,
                     local_auth_ref=self.local_auth_ref,
                     https_ca_cert=self.https_ca_data,
+                    provider=self.provider,
                 )
             if swapped_kind:
                 self.validate()

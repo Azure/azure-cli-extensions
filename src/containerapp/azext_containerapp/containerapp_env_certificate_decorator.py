@@ -9,7 +9,7 @@ from typing import Any, Dict
 from knack.log import get_logger
 from knack.prompting import prompt_y_n
 from knack.util import CLIError
-from msrestazure.tools import is_valid_resource_id, parse_resource_id
+from azure.mgmt.core.tools import is_valid_resource_id, parse_resource_id
 
 from azure.cli.command_modules.containerapp._utils import certificate_matches, certificate_location_matches, \
     load_cert_file, generate_randomized_cert_name, _ensure_identity_resource_id

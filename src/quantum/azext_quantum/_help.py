@@ -13,36 +13,47 @@ helps['quantum'] = """
 
 helps['quantum execute'] = """
     type: command
-    short-summary: Submit a job to run on Azure Quantum, and waits for the result.
+    short-summary: Submit a job to run on Azure Quantum, and wait for the result. Equivalent to `az quantum run`.
     examples:
-      - name: Submit a Q# program from the current folder and wait for the result.
-        text: |-
-            az quantum execute -g MyResourceGroup -w MyWorkspace -l MyLocation -t MyTarget
-      - name: Submit and wait for a Q# program from the current folder with job and program parameters.
+      - name: Run QIR bitcode from a file in the current folder and wait for the result.
         text: |-
             az quantum execute -g MyResourceGroup -w MyWorkspace -l MyLocation -t MyTarget \\
-                --job-params key1=value1 key2=value2 -- --n-qubits=3
-      - name: Submit and wait for a Q# program from the current folder with a target-capability parameter.
+                --job-name MyJob --job-input-format qir.v1 --job-input-file MyQirBitcode.bc \\
+                --entry-point MyQirEntryPoint
+      - name: Run a Quil pass-through job on the Rigetti simulator and wait for the result.
         text: |-
-            az quantum execute -g MyResourceGroup -w MyWorkspace -l MyLocation -t MyTarget \\
-                --target-capability MyTargetCapability
+            az quantum execute -g MyResourceGroup -w MyWorkspace -l MyLocation \\
+               -t rigetti.sim.qvm --job-name MyJob --job-input-file MyProgram.quil \\
+               --job-input-format rigetti.quil.v1 --job-output-format rigetti.quil-results.v1
+      - name: Submit a Qiskit circuit to the IonQ simulator with job params and wait for the results.
+        text: |-
+            az quantum execute -g MyResourceGroup -w MyWorkspace -l MyLocation \\
+               -t ionq.simulator --job-name MyJobName --job-input-file MyCircuit.json \\
+               --job-input-format ionq.circuit.v1 --job-output-format ionq.quantum-results.v1 \\
+               --job-params count=100 content-type=application/json
+
 """
 
 helps['quantum run'] = """
     type: command
-    short-summary: Equivalent to `az quantum execute`
+    short-summary: Submit a job to run on Azure Quantum, and wait for the result. Equivalent to `az quantum execute`
     examples:
-      - name: Submit a Q# program from the current folder and wait for the result.
-        text: |-
-            az quantum run -g MyResourceGroup -w MyWorkspace -l MyLocation -t MyTarget
-      - name: Submit and wait for a Q# program from the current folder with job and program parameters.
+      - name: Run QIR bitcode from a file in the current folder and wait for the result.
         text: |-
             az quantum run -g MyResourceGroup -w MyWorkspace -l MyLocation -t MyTarget \\
-                --job-params key1=value1 key2=value2 -- --n-qubits=3
-      - name: Submit and wait for a Q# program from the current folder with a target-capability parameter.
+                --job-name MyJob --job-input-format qir.v1 --job-input-file MyQirBitcode.bc \\
+                --entry-point MyQirEntryPoint
+      - name: Run a Quil pass-through job on the Rigetti simulator and wait for the result.
         text: |-
-            az quantum run -g MyResourceGroup -w MyWorkspace -l MyLocation -t MyTarget \\
-                --target-capability MyTargetCapability
+            az quantum run -g MyResourceGroup -w MyWorkspace -l MyLocation \\
+               -t rigetti.sim.qvm --job-name MyJob --job-input-file MyProgram.quil \\
+               --job-input-format rigetti.quil.v1 --job-output-format rigetti.quil-results.v1
+      - name: Submit a Qiskit circuit to the IonQ simulator with job params and wait for the results.
+        text: |-
+            az quantum run -g MyResourceGroup -w MyWorkspace -l MyLocation \\
+               -t ionq.simulator --job-name MyJobName --job-input-file MyCircuit.json \\
+               --job-input-format ionq.circuit.v1 --job-output-format ionq.quantum-results.v1 \\
+               --job-params count=100 content-type=application/json
 """
 
 helps['quantum job'] = """
@@ -57,6 +68,30 @@ helps['quantum job list'] = """
       - name: Get the list of jobs from an Azure Quantum workspace.
         text: |-
             az quantum job list -g MyResourceGroup -w MyWorkspace -l MyLocation
+      - name: List jobs that used the microsoft-elements provider.
+        text: |-
+            az quantum job list -g MyResourceGroup -w MyWorkspace -l MyLocation --provider-id microsoft-elements
+      - name: List jobs that ran on the microsoft.dft target.
+        text: |-
+            az quantum job list -g MyResourceGroup -w MyWorkspace -l MyLocation --target-id microsoft.dft
+      - name: List jobs that completed successfully.
+        text: |-
+            az quantum job list -g MyResourceGroup -w MyWorkspace -l MyLocation --status Succeeded
+      - name: List jobs created after January 15th, 2025.
+        text: |-
+            az quantum job list -g MyResourceGroup -w MyWorkspace -l MyLocation --created-after 2025-01-15
+      - name: List jobs whose names start with "Generate...".
+        text: |-
+            az quantum job list -g MyResourceGroup -w MyWorkspace -l MyLocation --job-name Generate
+      - name: Skip the first 50 jobs, start listing at the 51st job and list 10 jobs.
+        text: |-
+            az quantum job list -g MyResourceGroup -w MyWorkspace -l MyLocation --skip 50 --top 10
+      - name: Sort the job list by Target ID and display in tabular format.
+        text: |-
+            az quantum job list -g MyResourceGroup -w MyWorkspace -l MyLocation --orderby Target -o table
+      - name: Sort the job list by Job Name in descending order, display in tabular format.
+        text: |-
+            az quantum job list -g MyResourceGroup -w MyWorkspace -l MyLocation --orderby Name --order desc -o table
 """
 
 helps['quantum job output'] = """
@@ -83,27 +118,22 @@ helps['quantum job submit'] = """
     type: command
     short-summary: Submit a program or circuit to run on Azure Quantum.
     examples:
-      - name: Submit a Q# program from the current folder.
-        text: |-
-            az quantum job submit -g MyResourceGroup -w MyWorkspace -l MyLocation \\
-               -t MyTarget --job-name MyJob
-      - name: Submit a Q# program from the current folder with job parameters for a target.
-        text: |-
-            az quantum job submit -g MyResourceGroup -w MyWorkspace -l MyLocation \\
-               -t MyTarget --job-name MyJob --job-params param1=value1 param2=value2
-      - name: Submit a Q# program with program parameters (e.g. n-qubits = 2).
-        text: |-
-            az quantum job submit -g MyResourceGroup -w MyWorkspace -l MyLocation \\
-               -t MyTarget --job-name MyJob -- --n-qubits=2
-      - name: Submit a Q# program from the current folder with a target-capability parameter.
-        text: |-
-            az quantum job submit -g MyResourceGroup -w MyWorkspace -l MyLocation -t MyTarget \\
-                --target-capability MyTargetCapability
-      - name: Submit QIR bitcode or human-readable LLVM code from a file in the current folder.
+      - name: Submit QIR bitcode from a file in the current folder.
         text: |-
             az quantum job submit -g MyResourceGroup -w MyWorkspace -l MyLocation -t MyTarget \\
                 --job-name MyJob --job-input-format qir.v1 --job-input-file MyQirBitcode.bc \\
                 --entry-point MyQirEntryPoint
+      - name: Submit a Quil pass-through job to the Rigetti simulator.
+        text: |-
+            az quantum job submit -g MyResourceGroup -w MyWorkspace -l MyLocation \\
+               -t rigetti.sim.qvm --job-name MyJob --job-input-file MyProgram.quil \\
+               --job-input-format rigetti.quil.v1 --job-output-format rigetti.quil-results.v1
+      - name: Submit a Qiskit circuit to the IonQ simulator with job params.
+        text: |-
+            az quantum job submit -g MyResourceGroup -w MyWorkspace -l MyLocation \\
+               -t ionq.simulator --job-name MyJobName --job-input-file MyCircuit.json \\
+               --job-input-format ionq.circuit.v1 --job-output-format ionq.quantum-results.v1 \\
+               --job-params count=100 content-type=application/json
 """
 
 helps['quantum job wait'] = """

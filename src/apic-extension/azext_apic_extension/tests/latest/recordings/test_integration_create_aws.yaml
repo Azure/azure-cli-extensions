@@ -1,0 +1,118 @@
+interactions:
+- request:
+    body: '{"properties": {"amazonApiGatewaySource": {"accessKey": "https://kv-canary-franktest.vault.azure.net/secrets/AccessKey",
+      "regionName": "us-west-2", "secretAccessKey": "https://kv-canary-franktest.vault.azure.net/secrets/SecretAccessKey"},
+      "apiSourceType": "AmazonApiGateway", "importSpecification": "always"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - apic integration create aws
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '309'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n -i --aws-access-key-reference --aws-region --aws-secret-access-key-reference
+      User-Agent:
+      - AZURECLI/2.67.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/apiSources/cli000003?api-version=2024-06-01-preview
+  response:
+    body:
+      string: '{"type":"Microsoft.ApiCenter/services/workspaces/apiSources","properties":{"apiSourceType":"AmazonApiGateway","amazonApiGatewaySource":{"accessKey":"https://kv-canary-franktest.vault.azure.net/secrets/AccessKey","secretAccessKey":"https://kv-canary-franktest.vault.azure.net/secrets/SecretAccessKey","regionName":"us-west-2","msiResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-apic-extension-cli-test/providers/Microsoft.ManagedIdentity/userAssignedIdentities/apic-extension-cli-test"},"sourceLifecycleStage":"design","targetEnvironmentId":"/workspaces/default/environments/amazon-api-gateway","targetLifecycleStage":"design","importSpecification":"always","linkState":{"state":"initializing","lastUpdatedOn":"2025-01-15T01:16:34.4881503Z"}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/apiSources/cli000003","name":"cli000003","systemData":{"createdAt":"2025-01-15T01:16:34.4881477Z","lastModifiedAt":"2025-01-15T01:16:34.488146Z"}}'
+    headers:
+      api-supported-versions:
+      - 2023-07-01-preview, 2024-03-01, 2024-03-15-preview, 2024-06-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '1080'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 15 Jan 2025 01:16:34 GMT
+      etag:
+      - d91457da-0000-2000-0000-67870c720000
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: E68490A6C8504981A44DF6F018E193E5 Ref B: MAA201060516017 Ref C: 2025-01-15T01:16:29Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - apic integration show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -i
+      User-Agent:
+      - AZURECLI/2.67.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/apiSources/cli000003?api-version=2024-06-01-preview
+  response:
+    body:
+      string: '{"type":"Microsoft.ApiCenter/services/workspaces/apiSources","properties":{"apiSourceType":"AmazonApiGateway","amazonApiGatewaySource":{"accessKey":"https://kv-canary-franktest.vault.azure.net/secrets/AccessKey","secretAccessKey":"https://kv-canary-franktest.vault.azure.net/secrets/SecretAccessKey","regionName":"us-west-2","msiResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-apic-extension-cli-test/providers/Microsoft.ManagedIdentity/userAssignedIdentities/apic-extension-cli-test"},"sourceLifecycleStage":"design","targetEnvironmentId":"/workspaces/default/environments/amazon-api-gateway","targetLifecycleStage":"design","importSpecification":"always","linkState":{"state":"initializing","lastUpdatedOn":"2025-01-15T01:16:34.4881503Z"}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/apiSources/cli000003","name":"cli000003","systemData":{"createdAt":"2025-01-15T01:16:34.4881477Z","lastModifiedAt":"2025-01-15T01:16:34.488146Z"}}'
+    headers:
+      api-supported-versions:
+      - 2023-07-01-preview, 2024-03-01, 2024-03-15-preview, 2024-06-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '1080'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 15 Jan 2025 01:16:35 GMT
+      etag:
+      - d91457da-0000-2000-0000-67870c720000
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 8B711BC3F9014326B9A1E12B4D969D88 Ref B: MAA201060515051 Ref C: 2025-01-15T01:16:35Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+version: 1

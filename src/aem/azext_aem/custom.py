@@ -10,9 +10,9 @@ import os
 from azure.cli.core.util import sdk_no_wait
 from azure.cli.core.profiles import ResourceType, get_sdk
 from azure.cli.core.commands.client_factory import get_mgmt_service_client, get_data_service_client
+from azure.core.exceptions import HttpResponseError
 from azure.mgmt.compute.models import ResourceIdentityType
-from msrestazure.tools import parse_resource_id
-from msrestazure.azure_exceptions import CloudError
+from azure.mgmt.core.tools import parse_resource_id
 
 from knack.util import CLIError
 from knack.log import get_logger
@@ -82,7 +82,7 @@ def verify_aem(cmd, resource_group_name, vm_name, wait_time_in_minutes=15, skip_
     aem.verify(skip_storage_check, wait_time_in_minutes)
 
 
-class EnhancedMonitoring(object):
+class EnhancedMonitoring:  # pylint: disable=too-many-instance-attributes
     def __init__(self, cmd, resource_group, vm_name, vm_client,
                  storage_client, roles_client=None, skip_storage_analytics=None,
                  install_new_extension=None,
@@ -265,10 +265,10 @@ class EnhancedMonitoring(object):
 
                     self._roles_client.role_assignments.create(scope, assignment_name, params_role_assignment)
                     created = True
-                except CloudError as cex:
+                except HttpResponseError as cex:
                     logger.info("Error during role assignment %s", cex)
-                    if ((not cex.error) or (not cex.error.error) or
-                            (PRINCIPAL_NOT_FOUND_ERROR != cex.error.error.lower())):
+                    if ((not cex.error) or (not cex.error.code) or
+                            (PRINCIPAL_NOT_FOUND_ERROR != cex.error.code.lower())):
                         raise
 
                 if (not created) and ((datetime.now() - start_time).total_seconds() < MAX_WAIT_TIME_FOR_SP_SECONDS):

@@ -18,20 +18,23 @@ class Create(AAZCommand):
     """Create an NGINX for Azure resource
 
     :example: Deployment Create with PublicIP
-        az nginx deployment create --name myDeployment --resource-group myResourceGroup --location eastus2 --sku name="standard_Monthly" --network-profile front-end-ip-configuration="{public-ip-addresses:[{id:/subscriptions/mySubscription/resourceGroups/myResourceGroup/providers/Microsoft.Network/publicIPAddresses/myPublicIP}]}" network-interface-configuration="{subnet-id:/subscriptions/mySubscription/resourceGroups/myResourceGroup/providers/Microsoft.Network/virtualNetworks/myVNet/subnets/mySubnet}"
+        az nginx deployment create --name myDeployment --resource-group myResourceGroup --location eastus2 --sku name="standard_Monthly_gmz7xq9ge3py" --network-profile front-end-ip-configuration="{public-ip-addresses:[{id:/subscriptions/mySubscription/resourceGroups/myResourceGroup/providers/Microsoft.Network/publicIPAddresses/myPublicIP}]}" network-interface-configuration="{subnet-id:/subscriptions/mySubscription/resourceGroups/myResourceGroup/providers/Microsoft.Network/virtualNetworks/myVNet/subnets/mySubnet}"
 
     :example: Deployment Create with PrivateIP
-        az nginx deployment create --name myDeployment --resource-group myResourceGroup --location eastus2 --sku name="standard_Monthly" --network-profile front-end-ip-configuration="{private-ip-addresses:[{private-ip-allocation-method:Static,subnet-id:/subscriptions/mySubscription/resourceGroups/myResourceGroup/providers/Microsoft.Network/virtualNetworks/myVNet/subnets/mySubnet,private-ip-address:10.0.0.2}]}" network-interface-configuration="{subnet-id:/subscriptions/mySubscription/resourceGroups/myResourceGroup/providers/Microsoft.Network/virtualNetworks/myVNet/subnets/mySubnet}"
-        az nginx deployment create --name myDeployment --resource-group myResourceGroup --location eastus2 --sku name="standard_Monthly" --network-profile front-end-ip-configuration="{private-ip-addresses:[{private-ip-allocation-method:Dynamic,subnet-id:/subscriptions/mySubscription/resourceGroups/myResourceGroup/providers/Microsoft.Network/virtualNetworks/myVNet/subnets/mySubnet,private-ip-address:10.0.0.2}]}" network-interface-configuration="{subnet-id:/subscriptions/mySubscription/resourceGroups/myResourceGroup/providers/Microsoft.Network/virtualNetworks/myVNet/subnets/mySubnet}"
+        az nginx deployment create --name myDeployment --resource-group myResourceGroup --location eastus2 --sku name="standard_Monthly_gmz7xq9ge3py" --network-profile front-end-ip-configuration="{private-ip-addresses:[{private-ip-allocation-method:Static,subnet-id:/subscriptions/mySubscription/resourceGroups/myResourceGroup/providers/Microsoft.Network/virtualNetworks/myVNet/subnets/mySubnet,private-ip-address:10.0.0.2}]}" network-interface-configuration="{subnet-id:/subscriptions/mySubscription/resourceGroups/myResourceGroup/providers/Microsoft.Network/virtualNetworks/myVNet/subnets/mySubnet}"
+        az nginx deployment create --name myDeployment --resource-group myResourceGroup --location eastus2 --sku name="standard_Monthly_gmz7xq9ge3py" --network-profile front-end-ip-configuration="{private-ip-addresses:[{private-ip-allocation-method:Dynamic,subnet-id:/subscriptions/mySubscription/resourceGroups/myResourceGroup/providers/Microsoft.Network/virtualNetworks/myVNet/subnets/mySubnet,private-ip-address:10.0.0.2}]}" network-interface-configuration="{subnet-id:/subscriptions/mySubscription/resourceGroups/myResourceGroup/providers/Microsoft.Network/virtualNetworks/myVNet/subnets/mySubnet}"
 
     :example: Deployment with managed identity, storage account and scaling
-        az nginx deployment  create --deployment-name myDeployment --myResourceGroup azclitest-geo --location eastus --sku name="standard_Monthly" --network-profile network-interface-configuration='{subnet-id:/subscriptions/subscriptionId/resourcegroups/myResourceGroup/providers/Microsoft.Network/virtualNetworks/vnet-azclitest/subnets/mySubnet}' front-end-ip-configuration='{public-ip-addresses:[{id:/subscriptions/subscriptionId/resourceGroups/myResourceGroup/providers/Microsoft.Network/publicIPAddresses/myPublicIP}]}' --identity '{"type":"UserAssigned","userAssignedIdentities":{"/subscriptions/subscriptionId/resourcegroups/myResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myManagedIdentity":{}}}' --logging storage-account='{"account-name":"myStorageAccount","container-name":"myContainer"}' --scaling-properties capacity=10
+        az anginx deployment  create --deployment-name myDeployment --myResourceGroup azclitest-geo --location eastus --sku name=standard_Monthly_gmz7xq9ge3py --network-profile network-interface-configuration='{subnet-id:/subscriptions/subscriptionId/resourcegroups/myResourceGroup/providers/Microsoft.Network/virtualNetworks/vnet-azclitest/subnets/mySubnet}' front-end-ip-configuration='{public-ip-addresses:[{id:/subscriptions/subscriptionId/resourceGroups/myResourceGroup/providers/Microsoft.Network/publicIPAddresses/myPublicIP}]}' --identity '{"type":"UserAssigned","userAssignedIdentities":{"/subscriptions/subscriptionId/resourcegroups/myResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myManagedIdentity":{}}}' --logging storage-account='{"account-name":"myStorageAccount","container-name":"myContainer"}' --scaling-properties capacity=10
+
+    :example: Deployment with managed identity, storage account, and system assigned managed identity
+        az az anginx deployment create --deployment-name myDeployment --myResourceGroup azclitest-geo --location eastus --sku name=standard_Monthly_gmz7xq9ge3py --network-profile network-interface-configuration='{subnet-id:/subscriptions/subscriptionId/resourcegroups/myResourceGroup/providers/Microsoft.Network/virtualNetworks/vnet-azclitest/subnets/mySubnet}' front-end-ip-configuration='{public-ip-addresses:[{id:/subscriptions/subscriptionId/resourceGroups/myResourceGroup/providers/Microsoft.Network/publicIPAddresses/myPublicIP}]}' --identity '{"type":"SystemAssigned"}' --logging storage-account='{"account-name":"myStorageAccount","container-name":"myContainer"}' --scaling-properties capacity=10
     """
 
     _aaz_info = {
-        "version": "2024-01-01-preview",
+        "version": "2024-11-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/nginx.nginxplus/nginxdeployments/{}", "2024-01-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/nginx.nginxplus/nginxdeployments/{}", "2024-11-01-preview"],
         ]
     }
 
@@ -90,14 +93,27 @@ class Create(AAZCommand):
         )
 
         identity = cls._args_schema.identity
+        identity.mi_system_assigned = AAZStrArg(
+            options=["system-assigned", "mi-system-assigned"],
+            help="Set the system managed identity.",
+            blank="True",
+        )
         identity.type = AAZStrArg(
             options=["type"],
             help="Type of managed identity to use",
             enum={"None": "None", "SystemAssigned": "SystemAssigned", "SystemAssigned, UserAssigned": "SystemAssigned, UserAssigned", "UserAssigned": "UserAssigned"},
         )
+        identity.mi_user_assigned = AAZListArg(
+            options=["user-assigned", "mi-user-assigned"],
+            help="Set the user managed identities.",
+            blank=[],
+        )
         identity.user_assigned_identities = AAZDictArg(
             options=["user-assigned-identities"],
         )
+
+        mi_user_assigned = cls._args_schema.identity.mi_user_assigned
+        mi_user_assigned.Element = AAZStrArg()
 
         user_assigned_identities = cls._args_schema.identity.user_assigned_identities
         user_assigned_identities.Element = AAZObjectArg(
@@ -136,6 +152,11 @@ class Create(AAZCommand):
             options=["--network-profile"],
             arg_group="Properties",
             help={"short-summary": "IP address and VNet + subnet information", "long-summary": "Usage: --network-profile front-end-ip-configuration=\"<private or public IP address information>\" network-interface-configuration=\"<subnet information>\"\nfront-end-ip-configuration: IP information, public or private IP addresses.\nnetwork-interface-configuration: A subnet within your virtual network. This subnet should be delegated to NGINX.NGINXPLUS/nginxDeployments"},
+        )
+        _args_schema.nginx_app_protect = AAZObjectArg(
+            options=["--nginx-app-protect"],
+            arg_group="Properties",
+            help="Settings for NGINX App Protect (NAP)",
         )
         _args_schema.scaling_properties = AAZObjectArg(
             options=["--scaling-properties"],
@@ -212,6 +233,20 @@ class Create(AAZCommand):
             options=["subnet-id"],
         )
 
+        nginx_app_protect = cls._args_schema.nginx_app_protect
+        nginx_app_protect.web_application_firewall_settings = AAZObjectArg(
+            options=["web-application-firewall-settings"],
+            help="Settings for the NGINX App Protect Web Application Firewall (WAF)",
+            required=True,
+        )
+
+        web_application_firewall_settings = cls._args_schema.nginx_app_protect.web_application_firewall_settings
+        web_application_firewall_settings.activation_state = AAZStrArg(
+            options=["activation-state"],
+            help="The activation state of the WAF. Use 'Enabled' to enable the WAF and 'Disabled' to disable it.",
+            enum={"Disabled": "Disabled", "Enabled": "Enabled"},
+        )
+
         scaling_properties = cls._args_schema.scaling_properties
         scaling_properties.profiles = AAZListArg(
             options=["profiles"],
@@ -257,7 +292,7 @@ class Create(AAZCommand):
             options=["preferred-email"],
             help="The preferred support contact email address of the user used for sending alerts and notification. Can be an empty string or a valid email address.",
             fmt=AAZStrArgFormat(
-                pattern="^$|^[A-Za-z0-9._%+-]+@(?:[A-Za-z0-9-]+\.)+[A-Za-z]{2,}$",
+                pattern="^$|^[A-Za-z0-9._%+-]+@(?:[A-Za-z0-9-]+\\.)+[A-Za-z]{2,}$",
             ),
         )
         return cls._args_schema
@@ -343,7 +378,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-01-01-preview",
+                    "api-version", "2024-11-01-preview",
                     required=True,
                 ),
             }
@@ -368,7 +403,7 @@ class Create(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"client_flatten": True}}
             )
-            _builder.set_prop("identity", AAZObjectType, ".identity")
+            _builder.set_prop("identity", AAZIdentityObjectType, ".identity")
             _builder.set_prop("location", AAZStrType, ".location")
             _builder.set_prop("properties", AAZObjectType)
             _builder.set_prop("sku", AAZObjectType, ".sku")
@@ -378,10 +413,16 @@ class Create(AAZCommand):
             if identity is not None:
                 identity.set_prop("type", AAZStrType, ".type")
                 identity.set_prop("userAssignedIdentities", AAZDictType, ".user_assigned_identities")
+                identity.set_prop("userAssigned", AAZListType, ".mi_user_assigned", typ_kwargs={"flags": {"action": "create"}})
+                identity.set_prop("systemAssigned", AAZStrType, ".mi_system_assigned", typ_kwargs={"flags": {"action": "create"}})
 
             user_assigned_identities = _builder.get(".identity.userAssignedIdentities")
             if user_assigned_identities is not None:
                 user_assigned_identities.set_elements(AAZObjectType, ".")
+
+            user_assigned = _builder.get(".identity.userAssigned")
+            if user_assigned is not None:
+                user_assigned.set_elements(AAZStrType, ".")
 
             properties = _builder.get(".properties")
             if properties is not None:
@@ -389,6 +430,7 @@ class Create(AAZCommand):
                 properties.set_prop("enableDiagnosticsSupport", AAZBoolType, ".enable_diagnostics")
                 properties.set_prop("logging", AAZObjectType, ".logging")
                 properties.set_prop("networkProfile", AAZObjectType, ".network_profile")
+                properties.set_prop("nginxAppProtect", AAZObjectType, ".nginx_app_protect")
                 properties.set_prop("scalingProperties", AAZObjectType, ".scaling_properties")
                 properties.set_prop("userProfile", AAZObjectType, ".user_profile")
 
@@ -436,6 +478,14 @@ class Create(AAZCommand):
             network_interface_configuration = _builder.get(".properties.networkProfile.networkInterfaceConfiguration")
             if network_interface_configuration is not None:
                 network_interface_configuration.set_prop("subnetId", AAZStrType, ".subnet_id")
+
+            nginx_app_protect = _builder.get(".properties.nginxAppProtect")
+            if nginx_app_protect is not None:
+                nginx_app_protect.set_prop("webApplicationFirewallSettings", AAZObjectType, ".web_application_firewall_settings", typ_kwargs={"flags": {"required": True}})
+
+            web_application_firewall_settings = _builder.get(".properties.nginxAppProtect.webApplicationFirewallSettings")
+            if web_application_firewall_settings is not None:
+                web_application_firewall_settings.set_prop("activationState", AAZStrType, ".activation_state")
 
             scaling_properties = _builder.get(".properties.scalingProperties")
             if scaling_properties is not None:
@@ -495,7 +545,7 @@ class Create(AAZCommand):
             _schema_on_200_201.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200_201.identity = AAZObjectType()
+            _schema_on_200_201.identity = AAZIdentityObjectType()
             _schema_on_200_201.location = AAZStrType()
             _schema_on_200_201.name = AAZStrType(
                 flags={"read_only": True},
@@ -542,6 +592,10 @@ class Create(AAZCommand):
             properties.auto_upgrade_profile = AAZObjectType(
                 serialized_name="autoUpgradeProfile",
             )
+            properties.dataplane_api_endpoint = AAZStrType(
+                serialized_name="dataplaneApiEndpoint",
+                flags={"read_only": True},
+            )
             properties.enable_diagnostics_support = AAZBoolType(
                 serialized_name="enableDiagnosticsSupport",
             )
@@ -550,11 +604,11 @@ class Create(AAZCommand):
                 flags={"read_only": True},
             )
             properties.logging = AAZObjectType()
-            properties.managed_resource_group = AAZStrType(
-                serialized_name="managedResourceGroup",
-            )
             properties.network_profile = AAZObjectType(
                 serialized_name="networkProfile",
+            )
+            properties.nginx_app_protect = AAZObjectType(
+                serialized_name="nginxAppProtect",
             )
             properties.nginx_version = AAZStrType(
                 serialized_name="nginxVersion",
@@ -631,6 +685,52 @@ class Create(AAZCommand):
                 serialized_name="subnetId",
             )
 
+            nginx_app_protect = cls._schema_on_200_201.properties.nginx_app_protect
+            nginx_app_protect.web_application_firewall_settings = AAZObjectType(
+                serialized_name="webApplicationFirewallSettings",
+                flags={"required": True},
+            )
+            nginx_app_protect.web_application_firewall_status = AAZObjectType(
+                serialized_name="webApplicationFirewallStatus",
+                flags={"read_only": True},
+            )
+
+            web_application_firewall_settings = cls._schema_on_200_201.properties.nginx_app_protect.web_application_firewall_settings
+            web_application_firewall_settings.activation_state = AAZStrType(
+                serialized_name="activationState",
+            )
+
+            web_application_firewall_status = cls._schema_on_200_201.properties.nginx_app_protect.web_application_firewall_status
+            web_application_firewall_status.attack_signatures_package = AAZObjectType(
+                serialized_name="attackSignaturesPackage",
+                flags={"read_only": True},
+            )
+            _CreateHelper._build_schema_web_application_firewall_package_read(web_application_firewall_status.attack_signatures_package)
+            web_application_firewall_status.bot_signatures_package = AAZObjectType(
+                serialized_name="botSignaturesPackage",
+                flags={"read_only": True},
+            )
+            _CreateHelper._build_schema_web_application_firewall_package_read(web_application_firewall_status.bot_signatures_package)
+            web_application_firewall_status.component_versions = AAZObjectType(
+                serialized_name="componentVersions",
+                flags={"read_only": True},
+            )
+            web_application_firewall_status.threat_campaigns_package = AAZObjectType(
+                serialized_name="threatCampaignsPackage",
+                flags={"read_only": True},
+            )
+            _CreateHelper._build_schema_web_application_firewall_package_read(web_application_firewall_status.threat_campaigns_package)
+
+            component_versions = cls._schema_on_200_201.properties.nginx_app_protect.web_application_firewall_status.component_versions
+            component_versions.waf_engine_version = AAZStrType(
+                serialized_name="wafEngineVersion",
+                flags={"required": True},
+            )
+            component_versions.waf_nginx_version = AAZStrType(
+                serialized_name="wafNginxVersion",
+                flags={"required": True},
+            )
+
             scaling_properties = cls._schema_on_200_201.properties.scaling_properties
             scaling_properties.auto_scale_settings = AAZObjectType(
                 serialized_name="autoScaleSettings",
@@ -700,6 +800,31 @@ class Create(AAZCommand):
 
 class _CreateHelper:
     """Helper class for Create"""
+
+    _schema_web_application_firewall_package_read = None
+
+    @classmethod
+    def _build_schema_web_application_firewall_package_read(cls, _schema):
+        if cls._schema_web_application_firewall_package_read is not None:
+            _schema.revision_datetime = cls._schema_web_application_firewall_package_read.revision_datetime
+            _schema.version = cls._schema_web_application_firewall_package_read.version
+            return
+
+        cls._schema_web_application_firewall_package_read = _schema_web_application_firewall_package_read = AAZObjectType(
+            flags={"read_only": True}
+        )
+
+        web_application_firewall_package_read = _schema_web_application_firewall_package_read
+        web_application_firewall_package_read.revision_datetime = AAZStrType(
+            serialized_name="revisionDatetime",
+            flags={"required": True},
+        )
+        web_application_firewall_package_read.version = AAZStrType(
+            flags={"required": True},
+        )
+
+        _schema.revision_datetime = cls._schema_web_application_firewall_package_read.revision_datetime
+        _schema.version = cls._schema_web_application_firewall_package_read.version
 
 
 __all__ = ["Create"]

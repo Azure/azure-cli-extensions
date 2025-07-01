@@ -2,6 +2,51 @@
 
 Release History
 ===============
+3.3.4
+++++++
+* Some improvements and issue fixes.
+
+3.3.3
+++++++
+* Add documentation explaining manual steps required for connecting to SQL database in Fabric.
+* Fix PostgreSQL flexible server connection not working due to deprecation of `ad-admin` command.
+
+3.3.1
+++++++
+* Change Fabric SQL token endpoint for Cloud Shell compatibility.
+
+3.3.0
+++++++
+* Fix issue with params to support interactive mode for Fabric SQL
+
+3.2.0
+++++++
+* Introduce support for Fabric SQL as a target service. Introduce new `connstr_props` argument to configure Fabric SQL.
+
+3.1.3
+++++++
+* Fix argument missing
+
+3.1.2
+++++++
+* Update dependencies
+
+3.1.1
+++++++
+* Fix issue
+
+3.1.0
+++++++
+* Add `az aks connection create`
+
+3.0.2
+++++++
+* Some improvements and security issue fixes.
+
+3.0.1
+++++++
+* Some improvements and security issue fixes.
+
 3.0.0
 ++++++
 * Add new param --new to override the existing database user and deprecate Postgres single server

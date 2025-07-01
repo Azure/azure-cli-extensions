@@ -12,10 +12,10 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "dynatrace monitor list-host"
+    "dynatrace monitor list-host",
 )
 class ListHost(AAZCommand):
-    """List the compute resources currently being monitored by the dynatrace resource
+    """Displays compute resources (VMs, VMSS) that are currently being monitored by the specified Dynatrace resource.
 
     :example: List-host
         az dynatrace monitor list-host -g rg --monitor-name monitor
@@ -27,6 +27,8 @@ class ListHost(AAZCommand):
             ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/dynatrace.observability/monitors/{}/listhosts", "2021-09-01"],
         ]
     }
+
+    AZ_SUPPORT_PAGINATION = True
 
     def _handler(self, command_args):
         super()._handler(command_args)
@@ -188,6 +190,10 @@ class ListHost(AAZCommand):
             _element.version = AAZStrType()
 
             return cls._schema_on_200
+
+
+class _ListHostHelper:
+    """Helper class for ListHost"""
 
 
 __all__ = ["ListHost"]

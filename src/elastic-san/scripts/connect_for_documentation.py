@@ -158,7 +158,14 @@ def connect_volume(volume_name, target_iqn, target_portal_hostname, target_porta
         p.communicate()
             
     # maintain persistent connection
-    command = "sudo iscsiadm -m node --targetname {} --portal {}:{} --op update -n node.session.nr_sessions -v {}".format(target_iqn, target_portal_hostname, target_portal_port, number_of_sessions).split(' ')
+    command = "sudo iscsiadm -m node --targetname {} --portal {}:{} --op update -n node.session.nr_sessions " \
+              "-v {}".format(target_iqn, target_portal_hostname, target_portal_port, number_of_sessions).split(' ')
+    p = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    p.communicate()
+
+    # automatic startup
+    command = "sudo iscsiadm -m node --targetname {} --portal {}:{} --op update -n node.startup -v automatic".format(
+        target_iqn, target_portal_hostname, target_portal_port).split(' ')
     p = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     p.communicate()
 

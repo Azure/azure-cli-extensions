@@ -3,6 +3,30 @@
 Release History
 ===============
 
+1.7.0
++++++
+* Add `az webpubsub update --client-cert-enable/--disable-local-auth/--region-endpoint-enabled` support
+* Add `az webpubsub replica update -region-endpoint-enabled/--unit-count` support
+* Add `az webpubsub custom-certificate list/show/create/delete` support
+* Add `az webpubsub custom-domain list/show/create/delete` support
+* Add `az webpubsub identity assign/remove/show` support
+
+1.6.0
++++++
+* Add `az webpubsub start/stop` support
+* Add `az webpubsub replica start/stop/restart` support
+* Add `az webpubsub network-rule ip-rule add/remove` support
+* Update `az webpubsub hub create/update` to support `webSocketKeepAliveIntervalInSeconds`
+
+
+1.5.1
++++++
+* Update the min core version to `2.56.0`
+
+1.5.0
++++++
+* Add `service-mode` for Web PubSub for Socket.IO
+
 1.4.0
 +++++
 * Add `az webpubsub replica create/delete/list/show` support for replica

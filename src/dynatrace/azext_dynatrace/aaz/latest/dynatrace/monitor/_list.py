@@ -12,10 +12,10 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "dynatrace monitor list"
+    "dynatrace monitor list",
 )
 class List(AAZCommand):
-    """List all monitor resource by monitor name in a resource group
+    """List all MonitorResource by subscriptionId.
 
     :example: List monitor
         az dynatrace monitor list -g rg --monitor-name monitor
@@ -27,6 +27,8 @@ class List(AAZCommand):
             ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/dynatrace.observability/monitors", "2021-09-01"],
         ]
     }
+
+    AZ_SUPPORT_PAGINATION = True
 
     def _handler(self, command_args):
         super()._handler(command_args)
@@ -157,7 +159,7 @@ class List(AAZCommand):
             _element.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.identity = AAZObjectType()
+            _element.identity = AAZIdentityObjectType()
             _element.location = AAZStrType(
                 flags={"required": True},
             )
@@ -341,6 +343,10 @@ class List(AAZCommand):
             tags.Element = AAZStrType()
 
             return cls._schema_on_200
+
+
+class _ListHelper:
+    """Helper class for List"""
 
 
 __all__ = ["List"]

@@ -492,6 +492,9 @@ helps['communication rooms create'] = """
       - name: Create a room with a list of participants with presenter and consumer roles
         text: |-
                az communication rooms create --presenter-participants "8:acs:xxxxxx" "8:acs:xxxxxx" --consumer-participants "8:acs:xxxxxx" "8:acs:xxxxxx"
+      - name: Create a room with a list of participants with attendee and collaborator roles
+        text: |-
+               az communication rooms create --attendee-participants "8:acs:xxxxxx" "8:acs:xxxxxx" --collaborator-participants "8:acs:xxxxxx" "8:acs:xxxxxx"
 """
 
 helps['communication rooms get'] = """
@@ -574,4 +577,18 @@ helps['communication email send'] = """
       - name: Send an email from an existing domain
         text: |-
                az communication email send --sender "NoReply@contoso.com" --subject "Contoso Update" --to "user1@user1-domain.com" "user2@user2-domain.com" --text "Hello valued client. There is an update."
+"""
+
+helps['communication email status'] = """
+    type: group
+    short-summary: Commands to get the status of emails previously sent using Azure Communication Services Email service.
+"""
+
+helps['communication email status get'] = """
+    type: command
+    short-summary: "Get status of an email previously sent."
+    examples:
+      - name: Get status of an email
+        text: |-
+              az communication email status get --operation-id "01234567-89ab-cdef-0123-012345678901" --connection-string "endpoint=XXXXXXXXXXXXXXXX;accesskey=XXXXXXXXXXXXXXXXXXXXXX"
 """

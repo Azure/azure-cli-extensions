@@ -17,9 +17,9 @@ interactions:
       ParameterSetName:
       - --name --location --resource-group
       User-Agent:
-      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.11.0 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.65.0 azsdk-python-core/1.31.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_mdp000001/providers/Microsoft.DevOpsInfrastructure/pools/cli000002?api-version=2024-04-04-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_mdp000001/providers/Microsoft.DevOpsInfrastructure/pools/cli000002?api-version=2024-10-19
   response:
     body:
       string: '{"error":{"code":"ResourceCreationValidateFailed","message":"The resource
@@ -32,11 +32,11 @@ interactions:
       content-type:
       - application/json
       date:
-      - Mon, 01 Jul 2024 06:15:35 GMT
+      - Thu, 24 Oct 2024 02:02:24 GMT
       expires:
       - '-1'
       mise-correlation-id:
-      - 2a2ad1c2-c681-4234-b354-90c901a9e1b2
+      - 5787561f-6065-4fa2-ab7d-c6d239c57f26
       pragma:
       - no-cache
       strict-transport-security:
@@ -49,10 +49,12 @@ interactions:
       - service
       x-ms-providerhub-traffic:
       - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '799'
       x-msedge-ref:
-      - 'Ref A: 8D8A500629544401AA9F0F874F69103A Ref B: SEL221051504047 Ref C: 2024-07-01T06:15:30Z'
+      - 'Ref A: 38244301F0DD48E0B5971DA3136739A0 Ref B: SEL221051504029 Ref C: 2024-10-24T02:02:22Z'
     status:
       code: 400
       message: Bad Request

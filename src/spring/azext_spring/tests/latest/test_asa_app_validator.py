@@ -5,8 +5,7 @@
 import unittest
 from argparse import Namespace
 from azure.cli.core.azclierror import InvalidArgumentValueError
-from msrestazure.azure_exceptions import CloudError
-from azure.core.exceptions import ResourceNotFoundError
+from azure.core.exceptions import ResourceNotFoundError, HttpResponseError
 from .common.test_utils import get_test_cmd
 from ..._app_validator import (fulfill_deployment_param, active_deployment_exist,
                                validate_cpu, validate_memory, validate_deloyment_create_path, validate_deloy_path)
@@ -178,7 +177,7 @@ class TestFulfillDeploymentParameter(unittest.TestCase):
         resp = mock.MagicMock()
         resp.status_code = 404
         resp.text = '{"Message": "Not Found"}'
-        client.deployments.get.side_effect = CloudError(resp, error='deployment not found.')
+        client.deployments.get.side_effect = HttpResponseError(resp, error='deployment not found.')
         client_factory_mock.return_value = client
 
         ns = Namespace(name='app1', service='asc1', resource_group='rg1', deployment='green1')

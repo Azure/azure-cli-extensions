@@ -20,6 +20,7 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 class QuantumTargetsScenarioTest(ScenarioTest):
 
+    @live_only()
     def test_targets(self):
         # set current workspace:
         self.cmd(f'az quantum workspace set -g {get_test_resource_group()} -w {get_test_workspace()} -l {get_test_workspace_location()}')
@@ -32,21 +33,21 @@ class QuantumTargetsScenarioTest(ScenarioTest):
         assert len(targets) > 0
 
         # set
-        self.cmd('az quantum target set -t microsoft.estimator -o json', checks=[
-            self.check("targetId", "microsoft.estimator")
+        self.cmd('az quantum target set -t microsoft.dft -o json', checks=[
+            self.check("targetId", "microsoft.dft")
         ])
 
         # show
         self.cmd('az quantum target show -o json', checks=[
-            self.check("targetId", "microsoft.estimator")
+            self.check("targetId", "microsoft.dft")
         ])
 
         # clear
         self.cmd('az quantum target clear')
 
         # show
-        self.cmd('az quantum target show -t microsoft.estimator -o json', checks=[
-            self.check("targetId", "microsoft.estimator")
+        self.cmd('az quantum target show -t microsoft.dft -o json', checks=[
+            self.check("targetId", "microsoft.dft")
         ])
 
     def test_target_errors(self):
@@ -61,7 +62,7 @@ class QuantumTargetsScenarioTest(ScenarioTest):
         test_target_provider_sku_list = get_test_target_provider_sku_list()
         test_workspace_temp = get_test_workspace_random_name()
 
-        self.cmd(f'az quantum workspace create -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage} -r "{test_target_provider_sku_list}"')
+        self.cmd(f'az quantum workspace create --auto-accept -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage} -r "{test_target_provider_sku_list}"')
 
         test_target = get_test_target_target()
         test_expected_provider = get_test_target_provider()

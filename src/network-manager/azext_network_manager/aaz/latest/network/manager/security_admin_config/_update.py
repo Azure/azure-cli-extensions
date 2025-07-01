@@ -18,13 +18,13 @@ class Update(AAZCommand):
     """Update a network manager security admin configuration.
 
     :example: Update a network manager security admin configuration.
-        az network manager security-admin-config update --configuration-name "myTestSecurityConfig" --network-manager-name "testNetworkManager" --resource-group "rg1" --description "A sample policy" --apply-on None
+        az network manager security-admin-config update --configuration-name "myTestSecurityConfig" --network-manager-name "TestNetworkManager" --resource-group "rg1" --description "A sample policy" --apply-on None
     """
 
     _aaz_info = {
-        "version": "2022-05-01",
+        "version": "2024-05-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networkmanagers/{}/securityadminconfigurations/{}", "2022-05-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networkmanagers/{}/securityadminconfigurations/{}", "2024-05-01"],
         ]
     }
 
@@ -47,16 +47,19 @@ class Update(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.configuration_name = AAZStrArg(
-            options=["--configuration-name"],
+            options=["--config", "--config-name", "--configuration-name"],
             help="Name of the network manager security configuration.",
             required=True,
             id_part="child_name_1",
         )
         _args_schema.network_manager_name = AAZStrArg(
-            options=["-n", "--name", "--network-manager-name"],
-            help="Name of the network manager.",
+            options=["-n", "--name", "--manager-name", "--network-manager-name"],
+            help="The name of the network manager.",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^[0-9a-zA-Z]([0-9a-zA-Z_.-]{0,62}[0-9a-zA-Z_])?$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -76,6 +79,17 @@ class Update(AAZCommand):
         apply_on_network_intent_policy.Element = AAZStrArg(
             nullable=True,
             enum={"All": "All", "AllowRulesOnly": "AllowRulesOnly", "None": "None"},
+        )
+
+        # define Arg Group "Properties"
+
+        _args_schema = cls._args_schema
+        _args_schema.network_group_address_space_aggregation_option = AAZStrArg(
+            options=["--aggregation", "--network-group-address-space-aggregation-option"],
+            arg_group="Properties",
+            help="Determine update behavior for changes to network groups referenced within the rules in this configuration.",
+            nullable=True,
+            enum={"Manual": "Manual", "None": "None"},
         )
         return cls._args_schema
 
@@ -133,7 +147,7 @@ class Update(AAZCommand):
 
         @property
         def error_format(self):
-            return "ODataV4Format"
+            return "MgmtErrorFormat"
 
         @property
         def url_parameters(self):
@@ -161,7 +175,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-05-01",
+                    "api-version", "2024-05-01",
                     required=True,
                 ),
             }
@@ -220,7 +234,7 @@ class Update(AAZCommand):
 
         @property
         def error_format(self):
-            return "ODataV4Format"
+            return "MgmtErrorFormat"
 
         @property
         def url_parameters(self):
@@ -248,7 +262,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-05-01",
+                    "api-version", "2024-05-01",
                     required=True,
                 ),
             }
@@ -312,6 +326,7 @@ class Update(AAZCommand):
             if properties is not None:
                 properties.set_prop("applyOnNetworkIntentPolicyBasedServices", AAZListType, ".apply_on_network_intent_policy")
                 properties.set_prop("description", AAZStrType, ".description")
+                properties.set_prop("networkGroupAddressSpaceAggregationOption", AAZStrType, ".network_group_address_space_aggregation_option")
 
             apply_on_network_intent_policy_based_services = _builder.get(".properties.applyOnNetworkIntentPolicyBasedServices")
             if apply_on_network_intent_policy_based_services is not None:
@@ -336,7 +351,6 @@ class _UpdateHelper:
     @classmethod
     def _build_schema_security_admin_configuration_read(cls, _schema):
         if cls._schema_security_admin_configuration_read is not None:
-            _schema.etag = cls._schema_security_admin_configuration_read.etag
             _schema.id = cls._schema_security_admin_configuration_read.id
             _schema.name = cls._schema_security_admin_configuration_read.name
             _schema.properties = cls._schema_security_admin_configuration_read.properties
@@ -347,9 +361,6 @@ class _UpdateHelper:
         cls._schema_security_admin_configuration_read = _schema_security_admin_configuration_read = AAZObjectType()
 
         security_admin_configuration_read = _schema_security_admin_configuration_read
-        security_admin_configuration_read.etag = AAZStrType(
-            flags={"read_only": True},
-        )
         security_admin_configuration_read.id = AAZStrType(
             flags={"read_only": True},
         )
@@ -372,8 +383,15 @@ class _UpdateHelper:
             serialized_name="applyOnNetworkIntentPolicyBasedServices",
         )
         properties.description = AAZStrType()
+        properties.network_group_address_space_aggregation_option = AAZStrType(
+            serialized_name="networkGroupAddressSpaceAggregationOption",
+        )
         properties.provisioning_state = AAZStrType(
             serialized_name="provisioningState",
+            flags={"read_only": True},
+        )
+        properties.resource_guid = AAZStrType(
+            serialized_name="resourceGuid",
             flags={"read_only": True},
         )
 
@@ -400,7 +418,6 @@ class _UpdateHelper:
             serialized_name="lastModifiedByType",
         )
 
-        _schema.etag = cls._schema_security_admin_configuration_read.etag
         _schema.id = cls._schema_security_admin_configuration_read.id
         _schema.name = cls._schema_security_admin_configuration_read.name
         _schema.properties = cls._schema_security_admin_configuration_read.properties

@@ -3,6 +3,7 @@
 - [Microsoft Azure CLI 'confcom acipolicygen' Extension Examples and Security Policy Rules Documentation](#microsoft-azure-cli-confcom-acipolicygen-extension-examples-and-security-policy-rules-documentation)
   - [Microsoft Azure CLI 'confcom acipolicygen' Extension Examples](#microsoft-azure-cli-confcom-extension-examples)
   - [dmverity Layer Hashing](#dmverity-layer-hashing)
+  - [AKS Virtual Node](#aks-virtual-node)
   - [Security Policy Information Sources](#security-policy-information-sources)
   - [Security Policy Rules Documentation](#security-policy-rules-documentation)
     - [mount_device](#mount_device)
@@ -28,8 +29,10 @@
     - [allow_environment_variable_dropping](#allow_environment_variable_dropping)
     - [allow_unencrypted_scratch](#allow_unencrypted_scratch)
     - [allow_capabilities_dropping](#allow_capabilities_dropping)
+- [Microsoft Azure CLI 'confcom acifragmentgen' Extension Examples](#microsoft-azure-cli-confcom-acifragmentgen-extension-examples)
+  - [Types of Policy Fragments](#types-of-policy-fragments)
+  - [Examples](#examples)
 - [Microsoft Azure CLI 'confcom katapolicygen' Extension Examples](#microsoft-azure-cli-confcom-katapolicygen-extension-examples)
-  - [Microsoft Azure CLI 'confcom katapolicygen' Extension Examples]
 
 ## Microsoft Azure CLI 'confcom acipolicygen' Extension Examples
 
@@ -178,20 +181,7 @@ Users just need to make a tar file by using the `docker save` command above, inc
 When generating security policy without using `--tar` argument, the confcom extension CLI tool attemps to fetch the image remotely if it is not locally available.
 However, the CLI tool does not attempt to fetch remotely if `--tar` argument is used.
 
-Example 11: The process used in example 10 can also be used to save multiple images into the same tar file. See the following example:
-
-```bash
-docker save ImageTag1 ImageTag2 ImageTag3 -o file.tar
-```
-
-Disconnect from network and delete the local image from the docker daemon.
-Use the following command to generate CCE policy for the image.
-
-```bash
-az confcom acipolicygen -a .\sample-template-input.json --tar .\file.tar
-```
-
-Example 12: If it is necessary to put images in their own tarballs, an external file can be used that maps images to their respective tarball paths. See the following example:
+Example 11: If it is necessary to put images in their own tarballs, an external file can be used that maps images to their respective tarball paths. See the following example:
 
 ```bash
 docker save image:tag1 -o file1.tar
@@ -216,7 +206,7 @@ Use the following command to generate CCE policy for the image.
 az confcom acipolicygen -a .\sample-template-input.json --tar .\tar_mappings.json
 ```
 
-Example 13: Some use cases necessitate the use of regular expressions to allow for environment variables where either their values are secret, or unknown at policy-generation time. For these cases, the workflow below can be used:
+Example 12: Some use cases necessitate the use of regular expressions to allow for environment variables where either their values are secret, or unknown at policy-generation time. For these cases, the workflow below can be used:
 
 Create parameters in the ARM Template for each environment variable that has an unknown or secret value such as:
 
@@ -262,6 +252,69 @@ Because the ARM Template does not have a value defined for the "placeholderValue
 az deployment group create --template-file "template.json" --parameters "parameters.json"
 ```
 
+Example 13: Another way to add additional flexibility to a security policy is by using a "pure json" approach to the config file.
+This gives the flexibility of using regular expressions for environment variables and including fragments without the need for the `--fragments-json` flag.
+It uses the same format as `acifragmentgen` such that if there needs to be different deployments with similar configs, very few changes are needed.
+Note that a name for each container is required.
+
+```json
+{
+    "fragments": [
+        {
+            "feed": "contoso.azurecr.io/example",
+            "includes": [
+                "containers",
+                "fragments"
+            ],
+            "issuer": "did:x509:0:sha256:mLzv0uyBNQvC6hi4y9qy8hr6NSZuYFv6gfCwAEWBNqc::subject:CN:Contoso",
+            "minimum_svn": "1"
+        }
+    ],
+    "containers": [
+        {
+            "name": "my-image",
+            "properties": {
+                "image": "mcr.microsoft.com/acc/samples/aci/helloworld:2.9",
+                "environmentVariables": [
+                    {
+                        "name": "PATH",
+                        "value": "/customized/path/value"
+                    },
+                    {
+                        "name": "TEST_REGEXP_ENV",
+                        "value": "test_regexp_env(.*)",
+                        "regex": true
+                    }
+                ],
+                "execProcesses": [
+                    {
+                        "command": [
+                            "ls"
+                        ]
+                    }
+                ],
+                "volumeMounts": [
+                    {
+                        "name": "mymount",
+                        "mountPath": "/mount/mymount",
+                        "mountType": "emptyDir",
+                        "readOnly": false
+                    }
+                ],
+                "command": [
+                    "python3",
+                    "main.py"
+                ]
+            }
+        }
+    ]
+}
+```
+
+```bash
+az confcom acipolicygen -i config.json
+```
+
 ## dmverity Layer Hashing
 
 To ensure the container that is being deployed is the intended container, the `confcom` tooling uses [dmverity hashing](https://www.kernel.org/doc/html/latest/admin-guide/device-mapper/verity.html). This is done by downloading the container locally with the Docker Daemon (or using a pre-downloaded tar file of the OCI image) and performing the dmverity hashing using the [dmverity-vhd tool](https://github.com/microsoft/hcsshim/tree/main/cmd/dmverity-vhd). These layer hashes are placed into the Rego security policy in the "layers" field of their respective container. Note that these dmverity layer hashes are different than the layer hashes reported by `docker image inspect`.
@@ -275,6 +328,57 @@ An OCI image can be made available for policy generation in three ways:
 3. The image is locally saved as a tar file in the form specified by `docker save`.
 
 Mixed-mode policy generation is available in the `confcom` tooling, meaning images within the same security policy can be in any of these three locations with no issues.
+
+## AKS Virtual Node
+
+Azure Kubernetes Service (AKS) allows pods to be scheduled on Azure Container Instances (ACI)
+using the [AKS Virtual Node](https://learn.microsoft.com/en-us/azure/aks/virtual-nodes) feature. The `confcom` tooling can generate security policies for these ACI-based pods in the same way as for standalone ACI container groups. The key difference is that the `confcom` tooling will ingest an AKS pod specification (`pod.yaml`) instead of an ARM Template.
+
+Use the following command to generate and print a security policy for an AKS pod running on ACI:
+
+```bash
+az confcom acipolicygen --virtual-node-yaml ./pod.yaml --print-policy
+```
+
+To generate a security policy using a policy config file for Virtual Node, the `scenario` field must be equal to `"vn2"`. This looks like:
+
+```json
+{
+    "version": "1.0",
+    "scenario": "vn2",
+    "containers": [
+        {
+            "name": "my-image",
+            "properties": {
+                "image": "mcr.microsoft.com/acc/samples/aci/helloworld:2.9"
+            }
+        }
+    ]
+}
+```
+
+This `scenario` field adds the necessary environment variables and mount values to containers in the config file. Currently `vn2` and `aci` are the only supported values for `scenario`, but others may be added in the future as more products onboard to the `confcom` extension. `aci` is the default value.
+
+### Workload Identity
+
+To use workload identities with VN2, the associated label [described here](https://learn.microsoft.com/en-us/azure/aks/workload-identity-overview?tabs=dotnet#pod-labels) must be present. Having this will add the requisite environment variables and mounts to each container's policy.
+To generate a policy with workload identity capabilities for VN2 using the JSON format, the following `labels` key and nested values must be present:
+
+```json
+{
+    "version": "1.0",
+    "scenario": "vn2",
+    "labels": {
+        "azure.workload.identity/use": true
+    },
+    "containers": [
+        ...
+    ]
+}
+```
+
+> [!NOTE]
+> The `acipolicygen` command is specific to generating policies for ACI-based containers. For generating security policies for the [Confidential Containers on AKS](https://learn.microsoft.com/en-us/azure/aks/confidential-containers-overview) feature, use the `katapolicygen` command.
 
 ## Security Policy Information Sources
 
@@ -644,6 +748,124 @@ This rule determines whether unencrypted writable storage from the UVM to the co
 
 Whether to allow capabilities to be dropped in the same manner as allow_environment_variable_dropping.
 
+## Microsoft Azure CLI 'confcom acifragmentgen' Extension Examples
+
+Run `az confcom acifragmentgen --help` to see a list of supported arguments along with explanations. The following commands demonstrate the usage of different arguments to generate confidential computing security fragments.
+
+For information on what a policy fragment is, see [policy fragments](#policy-fragments). For a full walkthrough on how to generate a policy fragment and use it in a policy, see [Create a Key and Cert for Signing](../samples/certs/README.md).
+
+### Types of Policy Fragments
+
+There are two types of policy fragments:
+
+1. Image-attached fragments: These are fragments that are attached to an image in an ORAS-compliant registry. They are used to provide additional security information about the image and are to be used for a single image. Image-attached fragments are currently in development. Note that nested image-attached fragments are *not* supported.
+2. Standalone fragments: These are fragments that are uploaded to an ORAS-compliant registry independent of a specific image and can be used for multiple images. Standalone fragments are currently not supported. Once implemented, nested standalone fragments will be supported.
+
+### Examples
+
+**Examples:**
+
+Example 1: The following command creates a security fragment and prints it to stdout as well as saving it to a file `contoso.rego`:
+
+```bash
+az confcom acifragmentgen --input ./fragment_config.json --svn 1 --namespace contoso
+```
+
+The config file is a JSON file that contains the following information:
+
+```json
+{
+    "containers": [
+        {
+            "name": "my-image",
+            "properties": {
+                "image": "mcr.microsoft.com/acc/samples/aci/helloworld:2.9",
+                "environmentVariables": [
+                    {
+                        "name": "PATH",
+                        "value": "/customized/path/value"
+                    },
+                    {
+                        "name": "TEST_REGEXP_ENV",
+                        "value": "test_regexp_env(.*)",
+                        "regex": true
+                    }
+                ],
+                "command": [
+                    "python3",
+                    "main.py"
+                ]
+            }
+        }
+    ]
+}
+```
+
+The `--svn` argument is used to specify the security version number of the fragment and should be an integer. The `--namespace` argument is used to specify the namespace of the fragment and cannot conflict with some built-in names. If a conflicting name occurs, there will be an error message. [This list of reserved names can be found here under 'reserved_fragment_namespaces'](./data/internal_config.json). The format of the config file generally follows that of the [ACI resource in an ARM template](https://learn.microsoft.com/en-us/azure/templates/microsoft.containerinstance/containergroups?pivots=deployment-language-arm-template).
+
+Example 2: This command creates a signed security fragment and attaches it to a container image in an ORAS-compliant registry:
+
+```bash
+az confcom acifragmentgen --chain ./samples/certs/intermediateCA/certs/www.contoso.com.chain.cert.pem --key ./samples/certs/intermediateCA/private/ec_p384_private.pem --svn 1 --namespace contoso --input ./samples/config.json --upload-fragment
+```
+
+Example 3: This command creates a file to be used by `acipolicygen` that says which fragments should be included in the policy. Note that the policy must be [COSE](https://www.iana.org/assignments/cose/cose.xhtml) signed:
+
+```bash
+az confcom acifragmentgen --generate-import -p ./contoso.rego.cose --minimum-svn 1 --fragments-json fragments.json
+```
+
+This outputs a file `fragments.json` that contains the following information:
+
+```json
+{
+    "fragments": [
+        {
+            "feed": "contoso.azurecr.io/example",
+            "includes": [
+            "containers",
+            "fragments"
+            ],
+            "issuer": "did:x509:0:sha256:mLzv0uyBNQvC6hi4y9qy8hr6NSZuYFv6gfCwAEWBNqc::subject:CN:Contoso",
+            "minimum_svn": "1"
+        }
+    ]
+}
+```
+
+This file is then used by `acipolicygen` to generate a policy that includes custom fragments.
+
+Example 4: The command creates a signed policy fragment and attaches it to a specified image in an ORAS-compliant registry:
+
+```bash
+az confcom acifragmentgen --chain ./samples/certs/intermediateCA/certs/www.contoso.com.chain.cert.pem --key ./samples/certs/intermediateCA/private/ec_p384_private.pem --svn 1 --namespace contoso --input ./samples/<my-config>.json --upload-fragment --image-target contoso.azurecr.io/<my-image>:latest --feed contoso.azurecr.io/<my-feed>
+```
+
+This could be useful in scenarios where an image-attached fragment is required but the fragment's feed is different from the image's location.
+
+Example 5: This format can also be used to generate fragments used for VN2. Adding the `scenario` key with the value `vn2` tells confcom which default values need to be added. Save this file as `fragment_config.json`:
+
+```json
+{
+    "version": "1.0",
+    "scenario": "vn2",
+    "containers": [
+        {
+            "name": "my-image",
+            "properties": {
+                "image": "mcr.microsoft.com/acc/samples/aci/helloworld:2.9"
+            }
+        }
+    ]
+}
+```
+
+Using the same command, the default mounts and environment variables used by VN2 will be added to the policy fragment.
+
+```bash
+az confcom acifragmentgen --input ./fragment_config.json --svn 1 --namespace contoso
+```
+
 ## Microsoft Azure CLI 'confcom katapolicygen' Extension Examples
 
 Run `az confcom katapolicygen --help` to see a list of supported arguments along with explanations. The following commands demonstrate the usage of different arguments to generate confidential computing security policies.
@@ -687,11 +909,11 @@ The `--print-policy` argument is included to display the policy on the command l
 Example 2: This command injects a security policy into the pod spec based on input from a config map so that there is no need to change the pod spec to pass variables into the security policy:
 
 ```bash
-az confcom katapolicygen -y .\\pod.yaml -c .\\config-map.yaml
+az confcom katapolicygen -y ./pod.yaml -c ./config-map.yaml
 ```
 
 Example 3: This command caches the layer hashes and stores them locally on your computer to make future computations faster if the same images are used:
 
 ```bash
-az confcom katapolicygen -y .\\pod.yaml -u
+az confcom katapolicygen -y ./pod.yaml -u
 ```

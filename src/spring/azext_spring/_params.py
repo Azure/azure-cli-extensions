@@ -60,7 +60,7 @@ env_type = CLIArgumentType(
     validator=validate_env, help="Space-separated environment variables in 'key[=value]' format.", nargs='*')
 build_env_type = CLIArgumentType(
     validator=validate_build_env, help="Space-separated environment variables in 'key[=value]' format.", nargs='*')
-service_name_type = CLIArgumentType(options_list=['--service', '-s'], help='The name of Azure Spring Apps instance, you can configure the default service using az configure --defaults spring=<name>.', configured_default='spring')
+service_name_type = CLIArgumentType(options_list=['--service', '-s'], help='The name of Azure Spring Apps instance, you can configure the default service using `az configure --defaults spring=<name>`.', configured_default='spring')
 app_name_type = CLIArgumentType(help='App name, you can configure the default app using az configure --defaults spring-cloud-app=<name>.', validator=validate_app_name, configured_default='spring-app')
 sku_type = CLIArgumentType(arg_type=get_enum_type(['Basic', 'Standard', 'Enterprise', 'StandardGen2']), help='Name of SKU.')
 source_path_type = CLIArgumentType(nargs='?', const='.',
@@ -186,7 +186,6 @@ def load_arguments(self, _):
         c.argument('enable_config_server',
                    action='store_true',
                    options_list=['--enable-config-server', '--enable-cs'],
-                   is_preview=True,
                    arg_group="Config Server",
                    help='(Enterprise Tier Only) Enable Config Server.')
         c.argument('enable_application_live_view',
@@ -377,7 +376,6 @@ def load_arguments(self, _):
         c.argument('bind_config_server',
                    action='store_true',
                    options_list=['--bind-config-server', '--bind-cs'],
-                   is_preview=True,
                    validator=validate_create_app_binding_default_config_server,
                    help='Bind the app to the default Config Server automatically.')
         c.argument('cpu', arg_type=cpu_type)
@@ -644,7 +642,7 @@ def load_arguments(self, _):
             c.argument('scale_rule_metadata', nargs="+", options_list=['--scale-rule-metadata', '--srm'],
                        help='Scale rule metadata. Format "key[=value]" and separated by space.')
             c.argument('scale_rule_auth', nargs="+", options_list=['--scale-rule-auth', '--sra'],
-                       help='Scale rule auth parameters. Format "<triggerParameter>=<secretRef>" and separated by space.')
+                       help='Scale rule auth parameters. Format `<triggerParameter>=<secretRef>` and separated by space.')
 
     with self.argument_context('spring app deployment') as c:
         c.argument('app', app_name_type, help='Name of app.',
@@ -1309,3 +1307,8 @@ def load_arguments(self, _):
         c.argument('zone_id', help='The resource id of the private DNS zone which you would like to configure with the service instance.')
     with self.argument_context('spring private-dns-zone clean') as c:
         c.argument('service', service_name_type)
+
+    with self.argument_context('spring export') as c:
+        c.argument('service', service_name_type)
+        c.argument('target', arg_type=get_enum_type(["aca", "azure-container-apps"]), help='The target Azure service to migrate to.')
+        c.argument('output_folder', help='The output folder for the generated Bicep files.')

@@ -22,9 +22,9 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-09-01",
+        "version": "2024-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}/clusters/{}/placementpolicies", "2023-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}/clusters/{}/placementpolicies", "2024-09-01"],
         ]
     }
 
@@ -50,7 +50,7 @@ class List(AAZCommand):
             help="Name of the cluster in the private cloud",
             required=True,
             fmt=AAZStrArgFormat(
-                pattern="^[-\w\._]+$",
+                pattern="^[-\\w\\._]+$",
             ),
         )
         _args_schema.private_cloud = AAZStrArg(
@@ -58,7 +58,7 @@ class List(AAZCommand):
             help="Name of the private cloud",
             required=True,
             fmt=AAZStrArgFormat(
-                pattern="^[-\w\._]+$",
+                pattern="^[-\\w\\._]+$",
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
@@ -80,7 +80,7 @@ class List(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
+        result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=False)
         next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
         return result, next_link
 
@@ -136,7 +136,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-09-01",
+                    "api-version", "2024-09-01",
                     required=True,
                 ),
             }
@@ -186,7 +186,9 @@ class List(AAZCommand):
             _element.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.properties = AAZObjectType()
+            _element.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
             _element.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},

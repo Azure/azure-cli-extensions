@@ -13,11 +13,13 @@ from azure.cli.core.commands.validators import (
     get_default_location_from_resource_group,
     validate_file_or_dict
 )
+
+from . import ConnectedvmwareCommandsLoader
 from ._validators import process_missing_vm_resource_parameters
 from ._actions import VmNicAddAction, VmDiskAddAction
 
 
-def load_arguments(self, _):
+def load_arguments(self: ConnectedvmwareCommandsLoader, _):
     resource_name = CLIArgumentType(
         options_list='--resource-name', help='Name of the resource.', id_part='name'
     )
@@ -37,6 +39,11 @@ def load_arguments(self, _):
         help='Name or ID of the inventory item.',
     )
 
+    mo_name = CLIArgumentType(
+        options_list=["--mo-name"],
+        help="Name of the resource in the VCenter.",
+    )
+
     with self.argument_context('connectedvmware') as c:
         c.argument('tags', tags_type)
         c.argument('location', validator=get_default_location_from_resource_group)
@@ -51,6 +58,9 @@ def load_arguments(self, _):
         )
         c.argument(
             'inventory_item', inventory_item, options_list=['--inventory-item', '-i']
+        )
+        c.argument(
+            'mo_name', mo_name, options_list=['--mo-name']
         )
 
     with self.argument_context('connectedvmware vcenter connect') as c:
@@ -113,7 +123,7 @@ def load_arguments(self, _):
             'rg_name', options_list=['--resource-group', '-g'],
             help=(
                 "Name of the resource group which will be scanned for HCRP machines. "
-                "NOTE: The default group configured using 'az configure --defaults group=<name>' "
+                "NOTE: The default group configured using `az configure --defaults group=<name>` "
                 "is not used, and it must be specified explicitly."
             )
         )
@@ -194,9 +204,9 @@ def load_arguments(self, _):
             action=VmNicAddAction,
             nargs='+',
             help="Network overrides for the vm. "
-            "Usage: --nic name=<> network=<> nic-type=<> power-on-boot=<> "
+            "Usage: `--nic name=<> network=<> nic-type=<> power-on-boot=<> "
             "allocation-method=<> ip-address=<> subnet-mask=<> device-key=<> "
-            "gateway=<command separated list of gateways>.",
+            "gateway=<command separated list of gateways>`.",
         )
         c.argument(
             'disks',

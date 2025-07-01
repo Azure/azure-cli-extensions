@@ -15,13 +15,12 @@ def ex_handler_factory(no_throw=False):
         import json
         try:
             content = json.loads(ex.response.content)
-            detail = None
             if 'message' in content:
                 detail = content['message']
+                ex = CLIInternalError(detail)
             elif 'Message' in content:
                 detail = content['Message']
-
-            ex = CLIInternalError(detail)
+                ex = CLIInternalError(detail)
         except Exception:  # pylint: disable=broad-except
             pass
         if no_throw:
@@ -153,3 +152,9 @@ def connected_k8s_client_factory(cli_ctx, subscription_id=None):
 
     r = get_mgmt_service_client(cli_ctx, ConnectedKubernetesClient, subscription_id=subscription_id)
     return r.connected_cluster
+
+
+def get_linker_client(cmd):
+    from azure.mgmt.servicelinker import ServiceLinkerManagementClient
+    linker_client = get_mgmt_service_client(cmd.cli_ctx, ServiceLinkerManagementClient, subscription_bound=False)
+    return linker_client

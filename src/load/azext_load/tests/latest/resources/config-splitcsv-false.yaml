@@ -1,0 +1,18 @@
+# Valid split csv false configuration
+testPlan: sample-JMX-file.jmx
+engineInstances: 1
+configurationFiles:
+  - additional-data.csv
+zipArtifacts:
+   - sample-ZIP-artifact.zip
+failureCriteria:
+  - avg(requests_per_sec) > 78
+  - percentage(error) > 50
+  - GetCustomerDetails: avg(latency) > 200
+env:
+  - name: 'rps'
+    value: 1
+splitAllCSVs: false
+autoStop:
+  errorPercentage: 90
+  timeWindow: 60

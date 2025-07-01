@@ -4,6 +4,24 @@ Release History
 ===============
 ===============
 
+##### 1.0.0
+++++++
+New commands added:
+* perimeter associable-resource-type: list
+* perimeter logging-configuration: list
+
+Existing commands updated:
+* perimeter delete: added --force-deletion parameter.
+* Flattened output reponse for all commands.
+
+Removed commands:
+* perimeter onboarded-resources: list
+
+##### 1.0.0b3
+++++++
+New commands added:
+* perimeter logging-configuration: create, delete, show, update
+
 ##### 1.0.0b2
 ++++++
 No new commands added. Flatten false the properties of the command output.

@@ -13,11 +13,13 @@ import zipfile
 import hashlib
 import re
 import requests
+import shutil
 import packaging.version as SemVer
 
 from enum import Enum
 from urllib.request import urlopen
 
+from azure.cli.command_modules.acr.custom import acr_show
 from azure.cli.command_modules.containerapp._utils import safe_get, _ensure_location_allowed, \
     _generate_log_analytics_if_not_provided
 from azure.cli.command_modules.containerapp._client_factory import handle_raw_exception
@@ -25,13 +27,12 @@ from azure.cli.core._profile import Profile
 from azure.cli.core.azclierror import (ValidationError, ResourceNotFoundError, CLIError, InvalidArgumentValueError)
 from azure.cli.core.commands.client_factory import get_mgmt_service_client, get_subscription_id
 from azure.cli.command_modules.containerapp._utils import is_registry_msi_system
+from azure.mgmt.core.tools import parse_resource_id, is_valid_resource_id
 
 from azure.mgmt.resource import ResourceManagementClient
 from azure.mgmt.servicelinker import ServiceLinkerManagementClient
 
 from knack.log import get_logger
-from msrestazure.tools import parse_resource_id, is_valid_resource_id
-
 from ._managed_service_utils import ManagedRedisUtils, ManagedCosmosDBUtils, ManagedPostgreSQLFlexibleUtils, ManagedMySQLFlexibleUtils
 from ._clients import ConnectedEnvCertificateClient, ContainerAppPreviewClient, JavaComponentPreviewClient, ManagedEnvironmentPreviewClient
 from ._client_factory import custom_location_client_factory, k8s_extension_client_factory, providers_client_factory, \
@@ -40,7 +41,7 @@ from ._models import OryxRunImageTagProperty
 from ._constants import (CONTAINER_APP_EXTENSION_TYPE,
                          CONNECTED_ENV_CHECK_CERTIFICATE_NAME_AVAILABILITY_TYPE, DEV_SERVICE_LIST,
                          MANAGED_ENVIRONMENT_RESOURCE_TYPE, CONTAINER_APPS_RP, CONNECTED_CLUSTER_TYPE,
-                         DEFAULT_CONNECTED_CLUSTER_EXTENSION_NAMESPACE)
+                         DEFAULT_CONNECTED_CLUSTER_EXTENSION_NAMESPACE, ACR_IMAGE_SUFFIX)
 
 logger = get_logger(__name__)
 
@@ -102,21 +103,14 @@ def process_service(cmd, resource_list, service_name, arg_dict, subscription_id,
         raise ResourceNotFoundError("Service with the given name does not exist")
 
 
-def get_linker_client(cmd):
-    resource = cmd.cli_ctx.cloud.endpoints.active_directory_resource_id
-    profile = Profile(cli_ctx=cmd.cli_ctx)
-    credential, subscription_id, _ = profile.get_login_credentials(
-        subscription_id=get_subscription_id(cmd.cli_ctx), resource=resource)
-    linker_client = ServiceLinkerManagementClient(credential)
-    return linker_client
-
-
 def validate_binding_name(binding_name):
     pattern = r'^(?=.{1,60}$)[a-zA-Z0-9._]+$'
     return bool(re.match(pattern, binding_name))
 
 
 def check_unique_bindings(cmd, service_connectors_def_list, service_bindings_def_list, resource_group_name, name):
+    from ._client_factory import get_linker_client
+
     linker_client = get_linker_client(cmd)
     containerapp_def = None
 
@@ -127,7 +121,10 @@ def check_unique_bindings(cmd, service_connectors_def_list, service_bindings_def
     all_bindings = []
 
     if containerapp_def:
-        managed_bindings = linker_client.linker.list(resource_uri=containerapp_def["id"])
+        if is_cloud_supported_by_service_connector(cmd.cli_ctx):
+            managed_bindings = linker_client.linker.list(resource_uri=containerapp_def["id"])
+        else:
+            managed_bindings = []
         service_binds = containerapp_def["properties"].get("template", {}).get("serviceBinds", [])
 
         if managed_bindings:
@@ -735,6 +732,12 @@ def is_cloud_supported_by_connected_env(cli_ctx):
     return False
 
 
+def is_cloud_supported_by_service_connector(cli_ctx):
+    if cli_ctx.cloud.name == 'AzureCloud':
+        return True
+    return False
+
+
 class AppType(Enum):
     ContainerApp = 1
     ContainerAppJob = 2
@@ -749,14 +752,82 @@ def is_registry_msi_system_environment(identity):
 
 def env_has_managed_identity(cmd, resource_group_name, env_name, identity):
     identity = identity.lower()
-    # caller should handle exception
-    managed_env_info = ManagedEnvironmentPreviewClient.show(cmd=cmd, resource_group_name=resource_group_name, name=env_name)
-    if is_registry_msi_system(identity) and managed_env_info["identity"]["type"].__contains__("SystemAssigned"):
+
+    managed_env_info = None
+    try:
+        managed_env_info = ManagedEnvironmentPreviewClient.show(cmd=cmd, resource_group_name=resource_group_name, name=env_name)
+    except Exception as e:
+        handle_non_404_status_code_exception(e)
+
+    if not managed_env_info:
+        raise ValidationError("The managed environment '{}' does not exist. Please specify a valid environment.".format(env_name))
+
+    if safe_get(managed_env_info, "identity") is None:
+        return False
+
+    identity_type = safe_get(managed_env_info, "identity", "type")
+    if is_registry_msi_system(identity) and identity_type and identity_type.__contains__("SystemAssigned"):
         return True
 
+    user_assigned_identities = safe_get(managed_env_info, "identity", "userAssignedIdentities")
+    if user_assigned_identities is None:
+        return False
+
     result = False
-    for msi in managed_env_info["identity"]["userAssignedIdentities"]:
+    for msi in user_assigned_identities:
         if msi.lower() == identity:
             result = True
             break
     return result
+
+
+def create_acrpull_role_assignment_if_needed(cmd, registry_server, registry_identity=None, service_principal=None, skip_error=False):
+    import time
+    from azure.cli.command_modules.acr._utils import ResourceNotFound
+    from azure.cli.core.profiles import ResourceType
+    from azure.mgmt.containerregistry import ContainerRegistryManagementClient
+    from azure.cli.command_modules.role.custom import list_role_assignments, create_role_assignment
+    from azure.cli.core.azclierror import UnauthorizedError
+
+    if registry_identity:
+        registry_identity_parsed = parse_resource_id(registry_identity)
+        registry_identity_name, registry_identity_rg, registry_identity_sub = registry_identity_parsed.get("name"), registry_identity_parsed.get("resource_group"), registry_identity_parsed.get("subscription")
+        sp_id = get_mgmt_service_client(cmd.cli_ctx, ResourceType.MGMT_MSI, subscription_id=registry_identity_sub).user_assigned_identities.get(resource_name=registry_identity_name, resource_group_name=registry_identity_rg).principal_id
+    else:
+        sp_id = service_principal
+
+    client = get_mgmt_service_client(cmd.cli_ctx, ContainerRegistryManagementClient).registries
+    try:
+        acr_id = acr_show(cmd, client, registry_server[: registry_server.rindex(ACR_IMAGE_SUFFIX)]).id
+    except ResourceNotFound as e:
+        message = (f"Role assignment failed with error message: \"{' '.join(e.args)}\". \n"
+                   f"To add the role assignment manually, please run 'az role assignment create --assignee {sp_id} --scope <container-registry-resource-id> --role acrpull'. \n"
+                   "You may have to restart the containerapp with 'az containerapp revision restart'.")
+        logger.warning(message)
+        return
+
+    role_assignments = None
+    # Always assign role assignment even if list role assignments throw error
+    try:
+        role_assignments = list_role_assignments(cmd, assignee=sp_id, role="acrpull", scope=acr_id)
+    except:  # pylint: disable=bare-except
+        pass
+    if not role_assignments:
+        logger.warning("Creating an acrpull role assignment for the registry identity")
+        retries = 10
+        while retries > 0:
+            try:
+                create_role_assignment(cmd, role="acrpull", assignee=sp_id, scope=acr_id)
+                return
+            except Exception as e:
+                retries -= 1
+                if retries <= 0:
+                    message = (f"Role assignment failed with error message: \"{' '.join(e.args)}\". \n"
+                               f"To add the role assignment manually, please run 'az role assignment create --assignee {sp_id} --scope {acr_id} --role acrpull'. \n"
+                               "You may have to restart the containerapp with 'az containerapp revision restart'.")
+                    if skip_error:
+                        logger.error(message)
+                    else:
+                        raise UnauthorizedError(message) from e
+                else:
+                    time.sleep(5)

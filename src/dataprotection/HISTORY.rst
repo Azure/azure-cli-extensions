@@ -2,6 +2,32 @@
 
 Release History
 ===============
+
+1.6.0
++++++
+* Added support for User-Assigned Managed Identities for Backup Instances.
+* Fixed a bug with Backup Vault update where a vault with UserAssigned or SystemAssigned,UserAssigned could not be switched to SystemAssigned or None.
+* `az dataprotection backup-instance validate-for-update`: New command, can be used to verify if a backup instance update will be successful or not. Supports all the parameters `az dataprotection backup-instance update` does.
+* `az dataprotection backup-instance initialize`: New parameters: `--use-system-identity` and `--uami`, which allow users to set a backup instance's Identity details for backup instance creation and validation.
+* `az dataprotection backup-instance update`: New parameters: `--use-system-identity` and `--uami`, which allow users to update a backup instance's Identity details.
+* `az dataprotection backup-instance restore initialize-for-data-recovery`: New parameters: `--use-system-identity` and `--uami`, which allow users to set a backup instance's Identity details for a restore operation.
+* `az dataprotection backup-instance restore initialize-for-data-recovery-as-files`: New parameters: `--use-system-identity` and `--uami`, which allow users to set a backup instance's Identity details for a restore operation.
+* `az dataprotection backup-instance restore initialize-for-item-recovery`: New parameters: `--use-system-identity` and `--uami`, which allow users to set a backup instance's Identity details for a restore operation.
+* `az dataprotection backup-instance update-msi-permissions`: New parameter `--uami` allows us to set permissions on a user-managed identity associated with a Backup Vault.
+
+1.5.6
++++++
+* Updated the packaged AKS-preview SDK.
+
+1.5.5
++++++
+* `az dataprotection backup-vault initialize-restoreconfig:` Fixed a bug when initializing a restore object for Vaulted AKS Backups.
+* Added CRR support for southeastus, westus3 region.
+
+1.5.4
++++++
+* Removed dependency on `msrestazure.tools`
+
 1.5.3
 +++++
 * `az dataprotection backup-instance initialize-for-data-recovery`: Fixed a bug when trying to initialize AKS restore.

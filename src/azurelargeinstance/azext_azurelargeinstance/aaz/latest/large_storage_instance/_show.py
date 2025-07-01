@@ -23,9 +23,9 @@ group, and instance name.
     """
 
     _aaz_info = {
-        "version": "2024-04-10",
+        "version": "2024-08-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.azurelargeinstance/azurelargestorageinstances/{}", "2024-04-10"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.azurelargeinstance/azurelargestorageinstances/{}", "2024-08-01-preview"],
         ]
     }
 
@@ -124,7 +124,7 @@ group, and instance name.
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-04-10",
+                    "api-version", "2024-08-01-preview",
                     required=True,
                 ),
             }
@@ -160,6 +160,7 @@ group, and instance name.
             _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
+            _schema_on_200.identity = AAZObjectType()
             _schema_on_200.location = AAZStrType(
                 flags={"required": True},
             )
@@ -175,6 +176,37 @@ group, and instance name.
             )
             _schema_on_200.tags = AAZDictType()
             _schema_on_200.type = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            identity = cls._schema_on_200.identity
+            identity.principal_id = AAZStrType(
+                serialized_name="principalId",
+                flags={"read_only": True},
+            )
+            identity.tenant_id = AAZStrType(
+                serialized_name="tenantId",
+                flags={"read_only": True},
+            )
+            identity.type = AAZStrType(
+                flags={"required": True},
+            )
+            identity.user_assigned_identities = AAZDictType(
+                serialized_name="userAssignedIdentities",
+            )
+
+            user_assigned_identities = cls._schema_on_200.identity.user_assigned_identities
+            user_assigned_identities.Element = AAZObjectType(
+                nullable=True,
+            )
+
+            _element = cls._schema_on_200.identity.user_assigned_identities.Element
+            _element.client_id = AAZStrType(
+                serialized_name="clientId",
+                flags={"read_only": True},
+            )
+            _element.principal_id = AAZStrType(
+                serialized_name="principalId",
                 flags={"read_only": True},
             )
 

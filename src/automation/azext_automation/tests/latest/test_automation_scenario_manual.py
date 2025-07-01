@@ -156,7 +156,7 @@ class AutomationScenarioTest(ScenarioTest):
         self.cmd('automation account delete --resource-group {rg} --name {account_name} -y')
 
     @ResourceGroupPreparer(name_prefix='cli_test_automation_hrw', key='rg', location='westus2')
-    @AllowLargeResponse()
+    @AllowLargeResponse(size_kb=9999)
     def test_automation_hrw(self, resource_group):
         self.kwargs.update({
             'account': self.create_random_name(prefix='test-account-', length=24),
@@ -164,6 +164,8 @@ class AutomationScenarioTest(ScenarioTest):
             'hrwg': self.create_random_name(prefix='hrwg-', length=10),
             'hrwg2': self.create_random_name(prefix='hrwg2-', length=10),
             'hrw': 'c010ad12-ef14-4a2a-aa9e-ef22c4745ddd',
+            'vnet': 'vnet',
+            'subnet': 'subnet'
         })
         self.cmd('automation account create --resource-group {rg} --name {account} --location "West US 2"',
                  checks=[self.check('name', '{account}')])
@@ -180,7 +182,8 @@ class AutomationScenarioTest(ScenarioTest):
         self.cmd('automation hrwg hrw list --automation-account-name {account} --hybrid-runbook-worker-group-name {hrwg} -g {rg}',
                  checks=[self.check('length(@)', 0)])
 
-        self.kwargs['vm_id'] = self.cmd('vm create -g {rg} -n {vm} --image Ubuntu2204 --generate-ssh-key').get_output_in_json()['id']
+        self.kwargs['vm_id'] = self.cmd('vm create -g {rg} -n {vm} --image Ubuntu2204 --generate-ssh-key --subnet {subnet} --vnet-name {vnet} --nsg-rule NONE').get_output_in_json()['id']
+        self.cmd('network vnet subnet update -g {rg} --vnet-name {vnet} -n {subnet} --default-outbound-access false')
 
         self.cmd('automation hrwg hrw create -g {rg} --automation-account-name {account} --hybrid-runbook-worker-group-name {hrwg} -n {hrw} --vm-resource-id {vm_id}', checks=[
             self.check('vmResourceId', '{vm_id}'),
@@ -208,14 +211,14 @@ class AutomationScenarioTest(ScenarioTest):
         self.kwargs.update({
             'account_name': self.create_random_name('account-', 15),
             'schedule_name': self.create_random_name('schedule-', 15),
-            'start_time': '2023-03-01 15:38:00',
+            'start_time': '2025-03-01 15:38:00',
         })
 
         self.cmd('automation account create -n {account_name} -g {rg} --location "West US 2"')
         self.cmd('automation schedule create -n {schedule_name} -g {rg} --automation-account-name {account_name} --description test --frequency Hour --interval 1 --start-time {start_time} --time-zone UTC+08:00', checks=[
             self.check('frequency', 'Hour'),
             self.check('interval', '1'),
-            self.check('startTime', '2023-03-01T15:38:00+08:00'),
+            self.check('startTime', '2025-03-01T15:38:00+08:00'),
             self.check('timeZone', 'UTC+08:00'),
             self.check('description', 'test'),
             self.check('isEnabled', True)
@@ -223,7 +226,7 @@ class AutomationScenarioTest(ScenarioTest):
         self.cmd('automation schedule update -n {schedule_name} -g {rg} --automation-account-name {account_name} --description test1 --is-enabled false', checks=[
             self.check('frequency', 'Hour'),
             self.check('interval', '1'),
-            self.check('startTime', '2023-03-01T15:38:00+08:00'),
+            self.check('startTime', '2025-03-01T15:38:00+08:00'),
             self.check('timeZone', 'UTC+08:00'),
             self.check('description', 'test1'),
             self.check('isEnabled', False)
@@ -231,7 +234,7 @@ class AutomationScenarioTest(ScenarioTest):
         self.cmd('automation schedule list -g {rg} --automation-account-name {account_name} ', checks=[
             self.check('[0].frequency', 'Hour'),
             self.check('[0].interval', '1'),
-            self.check('[0].startTime', '2023-03-01T15:38:00+08:00'),
+            self.check('[0].startTime', '2025-03-01T15:38:00+08:00'),
             self.check('[0].timeZone', 'UTC+08:00'),
             self.check('[0].description', 'test1'),
             self.check('[0].isEnabled', False)
@@ -239,7 +242,7 @@ class AutomationScenarioTest(ScenarioTest):
         self.cmd('automation schedule show -n {schedule_name} -g {rg} --automation-account-name {account_name} ', checks=[
             self.check('frequency', 'Hour'),
             self.check('interval', '1'),
-            self.check('startTime', '2023-03-01T15:38:00+08:00'),
+            self.check('startTime', '2025-03-01T15:38:00+08:00'),
             self.check('timeZone', 'UTC+08:00'),
             self.check('description', 'test1'),
             self.check('isEnabled', False),
@@ -247,22 +250,25 @@ class AutomationScenarioTest(ScenarioTest):
         self.cmd('automation schedule delete -n {schedule_name} -g {rg} --automation-account-name {account_name} -y')
 
     @ResourceGroupPreparer(name_prefix='cli_test_automation_software_update_configuration', key='rg', location='westus2')
-    @AllowLargeResponse()
+    @AllowLargeResponse(size_kb=9999)
     def test_automation_software_update_configuration(self, resource_group):
         self.kwargs.update({
             'account_name': self.create_random_name('account-', 15),
             'conf_name': self.create_random_name('conf-', 15),
             'vm_name': self.create_random_name('vm-', 15),
+            'vnet': 'vnet',
+            'subnet': 'subnet'
         })
 
         sub = '/subscriptions/' + self.get_subscription_id()
-        vm_id = self.cmd('vm create -n {vm_name} -g {rg} --image Canonical:UbuntuServer:18.04-LTS:latest --generate-ssh-key --nsg-rule NONE --location "West US 2"').get_output_in_json()['id']
+        vm_id = self.cmd('vm create -n {vm_name} -g {rg} --image Canonical:UbuntuServer:18.04-LTS:latest --generate-ssh-key --nsg-rule NONE --location "West US 2" --subnet {subnet} --vnet-name {vnet}').get_output_in_json()['id']
+        self.cmd('network vnet subnet update -g {rg} --vnet-name {vnet} -n {subnet} --default-outbound-access false')
         self.kwargs.update({
             'vm_id': vm_id,
             'sub': sub,
-            'start_time': '2023-03-22 18:00:00',
-            'expiry_time': '2023-03-29 18:00:00',
-            'next_run': '2023-03-25 18:00:00',
+            'start_time': '2025-03-22 18:00:00',
+            'expiry_time': '2025-03-29 18:00:00',
+            'next_run': '2025-03-25 18:00:00',
         })
         self.cmd('automation account create -n {account_name} -g {rg} --location "West US 2"')
         self.cmd('automation software-update-configuration create -n {conf_name} -g {rg} --automation-account-name {account_name} --description test --frequency Hour --interval 1 --operating-system windows --excluded-kb-numbers 16800 16800 --included-kb-numbers 15000 15000 --included-update-classifications Critical --duration pT2H0M --azure-virtual-machines {vm_id} --time-zone UTC+08:00 --start-time {start_time} --expiry-time {expiry_time} --next-run {expiry_time} --non-azure-computer-names nonvm1 nonvm2 --reboot-setting IfRequired --azure-queries-scope {sub} --azure-queries-location eastus westus --azure-queries-tags tag1 tag2', checks=[
@@ -270,7 +276,7 @@ class AutomationScenarioTest(ScenarioTest):
             self.check('scheduleInfo.description', 'test'),
             self.check('scheduleInfo.frequency', 'Hour'),
             self.check('scheduleInfo.interval', '1'),
-            self.check('scheduleInfo.startTime', '2023-03-22T10:00:00+08:00'),
+            self.check('scheduleInfo.startTime', '2025-03-22T10:00:00+08:00'),
             self.check('scheduleInfo.timeZone', 'UTC+08:00'),
             self.check('scheduleInfo.description', 'test'),
             self.check('scheduleInfo.isEnabled', True),
@@ -305,7 +311,7 @@ class AutomationScenarioTest(ScenarioTest):
             self.check('scheduleInfo.description', 'test'),
             self.check('scheduleInfo.frequency', 'Hour'),
             self.check('scheduleInfo.interval', '1'),
-            self.check('scheduleInfo.startTime', '2023-03-22T10:00:00+08:00'),
+            self.check('scheduleInfo.startTime', '2025-03-22T10:00:00+08:00'),
             self.check('scheduleInfo.timeZone', 'UTC+08:00'),
             self.check('scheduleInfo.description', 'test'),
             self.check('scheduleInfo.isEnabled', True),
@@ -357,13 +363,13 @@ class AutomationScenarioTest(ScenarioTest):
         ])
 
         config_content = self.cmd('automation configuration show-content -g {rg} --automation-account-name {account} -n {config}')
-        self.assertEquals(self.kwargs['source_content_retrieved'], config_content.output)
+        self.assertEqual(self.kwargs['source_content_retrieved'], config_content.output)
 
         self.cmd('automation configuration update -g {rg} --automation-account-name {account} -n {config} --location {location} '
                  '--source-type embeddedContent --source {source_content2}')
 
         config_content = self.cmd('automation configuration show-content -g {rg} --automation-account-name {account} -n {config}')
-        self.assertEquals(self.kwargs['source_content2_retrieved'], config_content.output)
+        self.assertEqual(self.kwargs['source_content2_retrieved'], config_content.output)
 
         self.cmd('automation configuration delete -g {rg} --automation-account-name {account} -n {config} -y')
         self.cmd('automation configuration list -g {rg} --automation-account-name {account}', checks=[

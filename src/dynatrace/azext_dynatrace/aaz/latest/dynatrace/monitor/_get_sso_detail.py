@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "dynatrace monitor get-sso-detail",
 )
 class GetSsoDetail(AAZCommand):
-    """Get the SSO configuration details from the partner
+    """Get the SSO configuration details for Dynatrace resource.
 
     :example: Get-sso-detail
         az dynatrace monitor get-sso-detail -g rg --monitor-name monitor  --user-principal Alice@microsoft.com
@@ -198,6 +198,10 @@ class GetSsoDetail(AAZCommand):
             admin_users.Element = AAZStrType()
 
             return cls._schema_on_200
+
+
+class _GetSsoDetailHelper:
+    """Helper class for GetSsoDetail"""
 
 
 __all__ = ["GetSsoDetail"]

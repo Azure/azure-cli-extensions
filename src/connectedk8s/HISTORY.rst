@@ -3,6 +3,57 @@
 Release History
 ===============
 
+1.10.7
+++++++
+* Added support for discovering additional k8s distributions and Infrastructure.
+* Updated Connect command help to indicate the kubeconfig prerequisite.
+* Fixed the issue where the 'connectedk8s proxy' command would fail with newer versions of the Azure CLI.
+
+1.10.6
+++++++
+* Added support for downloading helm binaries from MCR.
+* Added warnings for custom location feature based on Service Principal Name or User permissions to retrieve OID.
+
+1.10.5
+++++++
+* Fixed bug impacting long-running operations of the az connectedk8s proxy command.
+* Refactored code to reduce proxy command startup time.
+* Added support for downloading proxy binaries from MCR, including more architecture-specific versions.
+* Enhanced telemetry to capture detailed error information during Helm installation failures.
+
+1.10.4
+++++++
+* Fixed the issue where the 'connectedk8s proxy' command would fail if the kubeconfig file was empty.
+
+1.10.3
+++++++
+* Fixed linting and styling issues, and added type annotations.
+* Fixed the issue where the 'connectedk8s troubleshoot' command did not work when workload identity was not enabled on the cluster.
+* Fixed an issue where ArcAgentryConfigurations were unintentionally altered during updates that did not modify proxy settings
+
+1.10.2
+++++++
+* Update for disconnected environment scenario.
+
+1.10.1
+++++++
+* Fixed an issue where the proxy settings were not disabled when the 'disable_proxy' parameter was provided in the update command.
+
+1.10.0
+++++++
+* Add support for Arc Gateway feature using '--gateway-resource-id' and '--disable-gateway' parameters.
+* Bug fix for Workload Identity poll or agent state.
+* Bug fix for connectedk8s update with workload identity enabled.
+* Update pycryptodome to 3.20.0.
+
+1.9.3
+++++++
+* Removed a workaround that is no longer needed after updating to MSAL 1.30.0+
+
+1.9.2
+++++++
+* Fixed the issue where pre-onboarding diagnostic checks failed for clusters running Kubernetes v1.31.0.
+
 1.9.1
 ++++++
 * Fixed the issue where executing a second `connectedk8s connect` command would inadvertently delete the "azure-arc-release" namespace.

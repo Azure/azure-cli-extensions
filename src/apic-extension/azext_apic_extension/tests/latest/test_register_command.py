@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 import os
+from azext_apic_extension.custom import logger
 
 from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
 from .utils import ApicServicePreparer, ApicEnvironmentPreparer
@@ -25,7 +26,7 @@ class RegisterCommandTests(ScenarioTest):
         # verify command results
         self.cmd('az apic api show -g {rg} -n {s} --api-id swaggerpetstore', checks=[
             self.check('description', 'API Description'), # default value when spec does not have description
-            self.check('summary', 'API Description'), # default value when spec does not have summary
+            self.check('summary', None), # default value when spec does not have summary
             self.check('kind', 'rest'),
             self.check('contacts', []),
             self.check('customProperties', {}),
@@ -82,8 +83,9 @@ class RegisterCommandTests(ScenarioTest):
             self.check('license.url', 'http://www.apache.org/licenses/LICENSE-2.0.html'),
             self.check('lifecycleStage', 'design'),
             self.check('name', 'swaggerpetstore-openapi30'),
-            self.check('summary', 'This is a sample Pet Store Server based on the OpenAPI 3.0 specification.  You can find out more about\nSwagger at [http://swagger.io](http://swagger.io). In the third iteration of the pet store, we\'ve'),
+            self.check('summary', None),
             self.check('title', 'Swagger Petstore - OpenAPI 3.0'),
+            self.check('externalDocumentation', [{'description': 'Find out more about Swagger', 'title': 'Title', 'url': 'http://swagger.io'}])
         ])
 
         self.cmd('az apic api version show -g {rg} -n {s} --api-id swaggerpetstore-openapi30 --version-id 1-0-19', checks=[
@@ -114,6 +116,104 @@ class RegisterCommandTests(ScenarioTest):
             assert exported_content == input_content, "The exported content is not the same as the input file."
         finally:
             os.remove(exported_file_path)
+
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
+    @ApicServicePreparer()
+    def test_register_with_json_spec_from_url(self):
+        self.kwargs.update({
+          'spec_url': 'https://petstore.swagger.io/v2/swagger.json'
+        })
+        self.cmd('az apic api register -g {rg} -n {s} -l "{spec_url}"')
+
+        # verify command results
+        self.cmd('az apic api show -g {rg} -n {s} --api-id swaggerpetstore', checks=[
+            self.check('contacts[0].email', 'apiteam@swagger.io'),
+            self.check('description', 'This is a sample server Petstore server.  You can find out more about Swagger at [http://swagger.io](http://swagger.io) or on [irc.freenode.net, #swagger](http://swagger.io/irc/).  For this sample, you can use the api key `special-key` to test the authorization filters.'),
+            self.check('kind', 'rest'),
+            self.check('license.name', 'Apache 2.0'),
+            self.check('license.url', 'http://www.apache.org/licenses/LICENSE-2.0.html'),
+            self.check('lifecycleStage', 'design'),
+            self.check('name', 'swaggerpetstore'),
+            self.check('summary', None),
+            self.check('title', 'Swagger Petstore'),
+            self.check('externalDocumentation', [{'description': 'Find out more about Swagger', 'title': 'Title', 'url': 'http://swagger.io'}])
+        ])
+
+        self.cmd('az apic api version show -g {rg} -n {s} --api-id swaggerpetstore --version-id 1-0-7', checks=[
+            self.check('lifecycleStage', 'design'),
+            self.check('name', '1-0-7'),
+            self.check('title', '1-0-7'),
+        ])
+
+        self.cmd('az apic api definition show -g {rg} -n {s} --api-id swaggerpetstore --version-id 1-0-7 --definition-id openapi', checks=[
+            self.check('description', 'This is a sample server Petstore server.  You can find out more about Swagger at [http://swagger.io](http://swagger.io) or on [irc.freenode.net, #swagger](http://swagger.io/irc/).  For this sample, you can use the api key `special-key` to test the authorization filters.'),
+            self.check('name', 'openapi'),
+            self.check('specification.name', 'openapi'),
+            self.check('specification.version', '2-0'),
+            self.check('title', 'openapi'),
+        ])
+
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
+    @ApicServicePreparer()
+    def test_register_with_yaml_spec_from_url(self):
+        self.kwargs.update({
+          'spec_url': 'https://petstore.swagger.io/v2/swagger.yaml'
+        })
+        self.cmd('az apic api register -g {rg} -n {s} -l "{spec_url}"')
+
+        # verify command results
+        self.cmd('az apic api show -g {rg} -n {s} --api-id swaggerpetstore', checks=[
+            self.check('contacts[0].email', 'apiteam@swagger.io'),
+            self.check('description', 'This is a sample server Petstore server.  You can find out more about Swagger at [http://swagger.io](http://swagger.io) or on [irc.freenode.net, #swagger](http://swagger.io/irc/).  For this sample, you can use the api key `special-key` to test the authorization filters.'),
+            self.check('kind', 'rest'),
+            self.check('license.name', 'Apache 2.0'),
+            self.check('license.url', 'http://www.apache.org/licenses/LICENSE-2.0.html'),
+            self.check('lifecycleStage', 'design'),
+            self.check('name', 'swaggerpetstore'),
+            self.check('summary', None),
+            self.check('title', 'Swagger Petstore'),
+            self.check('externalDocumentation', [{'description': 'Find out more about Swagger', 'title': 'Title', 'url': 'http://swagger.io'}])
+        ])
+
+        self.cmd('az apic api version show -g {rg} -n {s} --api-id swaggerpetstore --version-id 1-0-7', checks=[
+            self.check('lifecycleStage', 'design'),
+            self.check('name', '1-0-7'),
+            self.check('title', '1-0-7'),
+        ])
+
+        self.cmd('az apic api definition show -g {rg} -n {s} --api-id swaggerpetstore --version-id 1-0-7 --definition-id openapi', checks=[
+            self.check('description', 'This is a sample server Petstore server.  You can find out more about Swagger at [http://swagger.io](http://swagger.io) or on [irc.freenode.net, #swagger](http://swagger.io/irc/).  For this sample, you can use the api key `special-key` to test the authorization filters.'),
+            self.check('name', 'openapi'),
+            self.check('specification.name', 'openapi'),
+            self.check('specification.version', '2-0'),
+            self.check('title', 'openapi'),
+        ])
+
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
+    @ApicServicePreparer()
+    def test_register_with_invalid_spec_url(self):
+        # Set up an invalid URL
+        self.kwargs.update({
+            'spec_url': 'https://github.com/invalidrepo'
+        })
+        # TODO: no other command check the error message, so we can't check the error message here
+        self.cmd('az apic api register -g {rg} -n {s} -l "{spec_url}"', expect_failure=True)
+        
+        # Verify the API is not registered
+        self.cmd('az apic api show -g {rg} -n {s} --api-id swaggerpetstore', expect_failure=True)
+
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
+    @ApicServicePreparer()
+    def test_register_using_spec_url_with_invalid_content(self):
+        # Set up an URL with invalid spec
+        self.kwargs.update({
+            'spec_url': 'https://github.com/'
+        })
+        # TODO: no other command check the error message, so we can't check the error message here
+        self.cmd('az apic api register -g {rg} -n {s} -l "{spec_url}"', expect_failure=True)
+
+        # Verify the API is not registered
+        self.cmd('az apic api show -g {rg} -n {s} --api-id swaggerpetstore', expect_failure=True)
 
     @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()

@@ -2,6 +2,9 @@
 
 Release History
 ===============
+2.0.0b2
+++++++++
+* Remove msrestazure dependency
 
 2.0.0b1
 ++++++++

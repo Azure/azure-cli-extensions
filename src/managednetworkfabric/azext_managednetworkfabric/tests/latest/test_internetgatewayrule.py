@@ -9,22 +9,23 @@
 Internet Gateway Rule tests scenarios
 """
 
-from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
+from azure.cli.testsdk import ScenarioTest
+
 from .config import CONFIG
 
 
 def setup_scenario1(test):
-    ''' Env setup_scenario1 '''
+    """Env setup_scenario1"""
     pass
 
 
 def cleanup_scenario1(test):
-    '''Env cleanup_scenario1 '''
+    """Env cleanup_scenario1"""
     pass
 
 
 def call_scenario1(test):
-    ''' # Testcase: scenario1'''
+    """# Testcase: scenario1"""
     setup_scenario1(test)
     step_create(test, checks=[])
     step_show(test, checks=[])
@@ -35,57 +36,74 @@ def call_scenario1(test):
 
 
 def step_create(test, checks=None):
-    '''Internet Gateway Rule create operation'''
+    """Internet Gateway Rule create operation"""
     if checks is None:
         checks = []
     test.cmd(
-        'az networkfabric internetgatewayrule create --resource-group {rg} --location {location} --resource-name {name} --rule-properties {ruleProperties}', checks=checks)
+        "az networkfabric internetgatewayrule create --resource-group {rg} --location {location} --resource-name {name} --rule-properties {ruleProperties}",
+        checks=checks,
+    )
 
 
 def step_show(test, checks=None):
-    '''Internet Gateway Rule show operation'''
+    """Internet Gateway Rule show operation"""
     if checks is None:
         checks = []
     test.cmd(
-        'az networkfabric internetgatewayrule show --resource-name {name} --resource-group {rg}')
+        "az networkfabric internetgatewayrule show --resource-name {name} --resource-group {rg}"
+    )
 
 
 def step_list_resource_group(test, checks=None):
-    '''Internet Gateway Rule list by resource group operation'''
+    """Internet Gateway Rule list by resource group operation"""
     if checks is None:
         checks = []
-    test.cmd(
-        'az networkfabric internetgatewayrule list --resource-group {rg}')
+    test.cmd("az networkfabric internetgatewayrule list --resource-group {rg}")
 
 
 def step_list_subscription(test, checks=None):
-    '''Internet Gateway Rule list by subscription operation'''
+    """Internet Gateway Rule list by subscription operation"""
     if checks is None:
         checks = []
-    test.cmd(
-        'az networkfabric internetgatewayrule list')
+    test.cmd("az networkfabric internetgatewayrule list")
 
 
 def step_delete(test, checks=None):
-    '''Internet Gateway Rule delete operation'''
+    """Internet Gateway Rule delete operation"""
     if checks is None:
         checks = []
     test.cmd(
-        'az networkfabric internetgatewayrule delete --resource-name {name} --resource-group {rg}')
+        "az networkfabric internetgatewayrule delete --resource-name {name} --resource-group {rg}"
+    )
+
+
+def step_update(test, checks=None):
+    """Internet Gateway Rule update operation"""
+    if checks is None:
+        checks = []
+    test.cmd(
+        "az networkfabric internetgatewayrule update --resource-group {rg} --resource-name {name} --tags {tag}",
+        checks=checks,
+    )
 
 
 class GA_InternetGatewayRuleScenarioTest1(ScenarioTest):
-    ''' Internet Gateway Rule Scenario test'''
+    """Internet Gateway Rule Scenario test"""
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.kwargs.update({
-            'name': CONFIG.get('INTERNET_GATEWAY_RULE', 'name'),
-            'rg': CONFIG.get('INTERNET_GATEWAY_RULE', 'resource_group'),
-            'location': CONFIG.get('INTERNET_GATEWAY_RULE', 'location'),
-            'ruleProperties': CONFIG.get('INTERNET_GATEWAY_RULE', 'rule_properties')
-        })
+        self.kwargs.update(
+            {
+                "name": CONFIG.get("INTERNET_GATEWAY_RULE", "name"),
+                "rg": CONFIG.get("INTERNET_GATEWAY_RULE", "resource_group"),
+                "location": CONFIG.get("INTERNET_GATEWAY_RULE", "location"),
+                "ruleProperties": CONFIG.get(
+                    "INTERNET_GATEWAY_RULE", "rule_properties"
+                ),
+                "tag": CONFIG.get("INTERNET_GATEWAY_RULE", "tag"),
+            }
+        )
 
     def test_GA_internetgatewayrule_scenario1(self):
-        ''' test scenario for Internet Gateway Rule CRUD operations'''
+        """test scenario for Internet Gateway Rule CRUD operations"""
         call_scenario1(self)

@@ -32,7 +32,7 @@ from azure.cli.core.commands.client_factory import get_mgmt_service_client, get_
 from azure.cli.core.util import sdk_no_wait
 from azure.mgmt.applicationinsights import ApplicationInsightsManagementClient
 from azure.cli.core.commands import cached_put
-from msrestazure.tools import resource_id
+from azure.mgmt.core.tools import resource_id
 from ._resource_quantity import validate_cpu, validate_memory
 from six.moves.urllib import parse
 from threading import Thread
@@ -717,7 +717,7 @@ def validate_config_server_settings(client, resource_group, name, config_server_
     try:
         result = sdk_no_wait(False, client.config_servers.begin_validate, resource_group, name, config_server_settings).result()
     except Exception as err:  # pylint: disable=broad-except
-        raise CLIError("{0}. You may raise a support ticket if needed by the following link: https://docs.microsoft.com/azure/spring-cloud/spring-cloud-faq?pivots=programming-language-java#how-can-i-provide-feedback-and-report-issues".format(err))
+        raise CLIError("{0}. You may raise a support ticket if needed by the following link: https://learn.microsoft.com/azure/spring-cloud/spring-cloud-faq?pivots=programming-language-java#how-can-i-provide-feedback-and-report-issues".format(err))
 
     if not result.is_valid:
         for item in result.details or []:

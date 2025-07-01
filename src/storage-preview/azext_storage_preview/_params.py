@@ -84,11 +84,10 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                                              help="Specify the security identifier (SID) for Azure Storage. "
                                                   "Required when --enable-files-adds is set to True")
     sam_account_name_type = CLIArgumentType(min_api='2021-08-01', arg_group="Azure Active Directory Properties",
-                                            help="Specify the Active Directory SAMAccountName for Azure Storage.",
-                                            is_preview=True)
+                                            help="Specify the Active Directory SAMAccountName for Azure Storage.")
     t_account_type = self.get_models('ActiveDirectoryPropertiesAccountType', resource_type=CUSTOM_MGMT_STORAGE)
     account_type_type = CLIArgumentType(min_api='2021-08-01', arg_group="Azure Active Directory Properties",
-                                        arg_type=get_enum_type(t_account_type), is_preview=True,
+                                        arg_type=get_enum_type(t_account_type),
                                         help="Specify the Active Directory account type for Azure Storage.")
     t_routing_choice = self.get_models('RoutingChoice', resource_type=CUSTOM_MGMT_STORAGE)
     routing_choice_type = CLIArgumentType(
@@ -159,7 +158,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         resource_type=CUSTOM_MGMT_STORAGE
     )
     dns_endpoint_type_type = CLIArgumentType(
-        arg_type=get_enum_type(dns_endpoint_type_enum), is_preview=True,
+        arg_type=get_enum_type(dns_endpoint_type_enum),
         options_list=['--dns-endpoint-type', '--endpoint'], min_api='2021-09-01',
         help='Allow you to specify the type of endpoint. Set this to AzureDNSZone to create a large number of '
              'accounts in a single subscription, which creates accounts in an Azure DNS Zone and the endpoint URL '
@@ -228,9 +227,9 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         c.argument('custom_domain', help='User domain assigned to the storage account. Name is the CNAME source.')
         c.argument('sku', help='The storage account SKU.', arg_type=get_enum_type(t_sku_name, default='standard_ragrs'))
         c.argument('enable_sftp', arg_type=get_three_state_flag(), min_api='2021-08-01',
-                   is_preview=True, help='Enable Secure File Transfer Protocol.')
+                   help='Enable Secure File Transfer Protocol.')
         c.argument('enable_local_user', arg_type=get_three_state_flag(), min_api='2021-08-01',
-                   is_preview=True, help='Enable local user features.')
+                   help='Enable local user features.')
         c.argument('enable_files_aadds', aadds_type)
         c.argument('enable_files_adds', adds_type)
         c.argument('enable_files_aadkerb', aadkerb_type)
@@ -286,7 +285,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         c.argument('sas_expiration_period', sas_expiration_period_type, is_preview=True)
         c.argument('allow_cross_tenant_replication', allow_cross_tenant_replication_type)
         c.argument('default_share_permission', default_share_permission_type)
-        c.argument('enable_nfs_v3', arg_type=get_three_state_flag(), is_preview=True, min_api='2021-01-01',
+        c.argument('enable_nfs_v3', arg_type=get_three_state_flag(), min_api='2021-01-01',
                    help='NFS 3.0 protocol support enabled if sets to true.')
         c.argument('enable_alw', arg_type=get_three_state_flag(), min_api='2021-06-01',
                    help='The account level immutability property. The property is immutable and can only be set to true'
@@ -315,6 +314,8 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         c.argument('public_network_access', arg_type=get_enum_type(public_network_access_enum), min_api='2021-06-01',
                    help='Enable or disable public network access to the storage account. '
                         'Possible values include: `Enabled` or `Disabled`.')
+        c.argument('enable_extended_groups', arg_type=get_three_state_flag(), is_preview=True,
+                   help='Enable extended group support with local users feature, if set to true.')
 
     with self.argument_context('storage account update', resource_type=CUSTOM_MGMT_STORAGE) as c:
         t_tls_version = self.get_models('MinimumTlsVersion', resource_type=CUSTOM_MGMT_STORAGE)
@@ -331,9 +332,9 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                    arg_type=get_enum_type(['true', 'false']))
         c.argument('tags', tags_type, default=None)
         c.argument('enable_sftp', arg_type=get_three_state_flag(), min_api='2021-08-01',
-                   is_preview=True, help='Enable Secure File Transfer Protocol.')
+                   help='Enable Secure File Transfer Protocol.')
         c.argument('enable_local_user', arg_type=get_three_state_flag(), min_api='2021-08-01',
-                   is_preview=True, help='Enable local user features.')
+                   help='Enable local user features.')
         c.argument('enable_files_aadds', aadds_type)
         c.argument('enable_files_adds', adds_type)
         c.argument('enable_files_aadkerb', aadkerb_type)
@@ -387,6 +388,8 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                         'Possible values include: `Enabled` or `Disabled`.')
         c.argument('account_name', acct_name_type, options_list=['--name', '-n'])
         c.argument('resource_group_name', required=False, validator=process_resource_group)
+        c.argument('enable_extended_groups', arg_type=get_three_state_flag(),
+                   help='Enable extended group support with local users feature, if set to true.')
 
     for scope in ['storage account create', 'storage account update']:
         with self.argument_context(scope, arg_group='Customer managed key', min_api='2017-06-01',
@@ -890,24 +893,24 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
 
     for cmd in ['list-handle', 'close-handle']:
         with self.argument_context('storage share ' + cmd) as c:
-            c.extra('disallow_trailing_dot', arg_type=get_three_state_flag(), default=False, is_preview=True,
+            c.extra('disallow_trailing_dot', arg_type=get_three_state_flag(), default=False,
                     help="If true, the trailing dot will be trimmed from the target URI. Default to False")
 
     for cmd in ['create', 'delete', 'show', 'exists', 'metadata show', 'metadata update', 'list']:
         with self.argument_context('storage directory ' + cmd) as c:
-            c.extra('disallow_trailing_dot', arg_type=get_three_state_flag(), default=False, is_preview=True,
+            c.extra('disallow_trailing_dot', arg_type=get_three_state_flag(), default=False,
                     help="If true, the trailing dot will be trimmed from the target URI. Default to False")
 
     for cmd in ['list', 'delete', 'delete-batch', 'resize', 'url', 'generate-sas', 'show', 'update',
                 'exists', 'metadata show', 'metadata update', 'copy start', 'copy cancel', 'copy start-batch',
                 'upload', 'upload-batch', 'download', 'download-batch']:
         with self.argument_context('storage file ' + cmd) as c:
-            c.extra('disallow_trailing_dot', arg_type=get_three_state_flag(), default=False, is_preview=True,
+            c.extra('disallow_trailing_dot', arg_type=get_three_state_flag(), default=False,
                     help="If true, the trailing dot will be trimmed from the target URI. Default to False")
 
     for cmd in ['start', 'start-batch']:
         with self.argument_context('storage file copy ' + cmd) as c:
-            c.extra('disallow_source_trailing_dot', arg_type=get_three_state_flag(), default=False, is_preview=True,
+            c.extra('disallow_source_trailing_dot', arg_type=get_three_state_flag(), default=False,
                     options_list=["--disallow-source-trailing-dot", "--disallow-src-trailing"],
                     help="If true, the trailing dot will be trimmed from the source URI. Default to False")
 
@@ -934,7 +937,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
             c.argument('ssh_authorized_key', nargs='+', action=SshPublicKeyAddAction,
                        help='SSH authorized keys for SFTP. Includes an optional description and key. '
                             'The key is the base64 encoded SSH public key , with format: '
-                            '<keyType> <keyData> e.g. ssh-rsa AAAABBBB.'
+                            '`<keyType> <keyData>` e.g. ssh-rsa AAAABBBB.'
                             'Example: --ssh_authorized_key description=description key="ssh-rsa AAAABBBB"'
                             'or --ssh_authorized_key key="ssh-rsa AAAABBBB"')
             c.argument('has_shared_key', arg_type=get_three_state_flag(),
@@ -943,9 +946,15 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                        help='Indicates whether ssh key exists. Set it to false to remove existing SSH key.')
             c.argument('has_ssh_password', arg_type=get_three_state_flag(),
                        help='Indicates whether ssh password exists. Set it to false to remove existing SSH password.')
-            c.argument('group_id',
+            c.argument('group_id', is_preview=True,
                        help='An identifier for associating a group of users.')
             c.argument('allow_acl_authorization', options_list=['--allow-acl-authorization', '--allow-acl-auth'],
-                       arg_type=get_three_state_flag(),
-                       help='Indicates whether ACL authorization is allowed for this user. '
+                       arg_type=get_three_state_flag(), is_preview=True,
+                       help='Indicate whether ACL authorization is allowed for this user. '
                             'Set it to false to disallow using ACL authorization.')
+            c.argument('extended_groups', nargs='+', is_preview=True,
+                       help='Supplementary group membership. Only applicable for local users enabled for NFSv3 access.')
+
+    with self.argument_context('storage account local-user create') as c:
+        c.argument('is_nfsv3_enabled', arg_type=get_three_state_flag(), is_preview=True,
+                   help='Indicate if the local user is enabled for access with NFSv3 protocol.')

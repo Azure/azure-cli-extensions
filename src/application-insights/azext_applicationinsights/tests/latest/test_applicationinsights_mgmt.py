@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 # pylint: disable=line-too-long
+import unittest
 from azure.cli.testsdk import ResourceGroupPreparer, ScenarioTest, StorageAccountPreparer
 from .recording_processors import StorageAccountSASReplacer
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
@@ -346,9 +347,10 @@ class ApplicationInsightsManagementClientTests(ScenarioTest):
         output_json = self.cmd('monitor app-insights component linked-storage update --app {name_a} -g {resource_group} -s {storage_account_2}').get_output_in_json()
         assert self.kwargs['storage_account_2'] in output_json['linkedStorageAccount']
         self.cmd('monitor app-insights component linked-storage unlink --app {name_a} -g {resource_group} -y')
-        with self.assertRaisesRegexp(ResourceNotFoundError, "Operation returned an invalid status 'Not Found'"):
+        with self.assertRaisesRegex(ResourceNotFoundError, "Operation returned an invalid status 'Not Found'"):
             self.cmd('monitor app-insights component linked-storage show --app {name_a} -g {resource_group}')
 
+    @unittest.skip("The operation 'action' on resource type 'components' is disallowed for cmd 'monitor app-insights component continues-export create'.")
     @AllowLargeResponse()
     @ResourceGroupPreparer(parameter_name_for_location='location')
     @StorageAccountPreparer(kind='StorageV2')
@@ -596,7 +598,7 @@ class ApplicationInsightsManagementClientTests(ScenarioTest):
     @ResourceGroupPreparer(name_prefix="cli_test_appinsights_my_workbook")
     def test_appinsights_my_workbook(self, resource_group):
         from azure.core.exceptions import ResourceNotFoundError
-        message = "Resource type 'myWorkbooks' of provider namespace 'Microsoft.Insights' was not found in global location for api version '2021-03-08'."
+        message = "The resource type could not be found in the namespace 'Microsoft.Insights' for api version '2021-03-08'."
         with self.assertRaisesRegex(ResourceNotFoundError, message):
             self.cmd('monitor app-insights my-workbook list -g {rg} --category performance')
 

@@ -4,6 +4,79 @@ Release History
 ===============
 upcoming
 ++++++
+* 'az containerapp session code-interpreter execute': Extend maximum supported value of `--timeout-in-seconds` from 60 to 220.
+* 'az containerapp job create': Fix message with `--help`
+
+1.2.0b1
+++++++
+* 'az containerapp env premium-ingress': New environment level ingress configuration.
+* 'az containerapp sessionpool update': Support `--mi-system-assigned`, `--mi-user-assigned` and `--registry-identity`
+*  Upgrade api-version to 2025-02-02-preview
+
+1.1.0b5
+++++++
+* 'az containerapp auth update': Support authenticating blob storage token store using managed identity with `--blob-container-uri` and `--blob-container-identity`.
+* 'az containerapp env create': Set identity only when `--mi-system-assigned` or `--mi-user-assigned` is specified.
+* 'az containerapp env create': Set identity only when `--system-assigned` or `--user-assigned` is specified.
+* 'az containerapp up': Support deploying Azure AI Foundry model to Container App with `--model-registry`, `--model-name`, `--model-version`.
+
+1.1.0b4
+++++++
+* 'az containerapp create': Support --kind {functionapp}
+* Removed preview tag for command groups 'az containerapp sessionpool' and 'az containerapp session code-interpreter'
+
+1.1.0b3
+++++++
+* 'az containerapp sessionpool update': Fix updating registry credentials with `--registry-username` and `--registry-password` when existing registry credentials are empty
+* 'az containerapp env create': Update minimumCount from 0 to 1 for `--enable-dedicated-gpu`
+
+1.1.0b2
+++++++
+* 'az containerapp create/update': Fix an issue about `--bind`/`--unbind` when the cloud is not AzureCloud.
+* 'az containerapp debug': Open an SSH-like interactive shell within a container app debug console.
+* 'az containerapp create': New target-label option for Labels revision mode.
+* 'az containerapp up/update': New revisions-mode and target-label options for Labels revision mode.
+* 'az containerapp label-history': New list and show commands to see label revision assignment history.
+* 'az containerapp revision set-mode': New target-label option for Labels revision mode.
+* 'az containerapp connected-env certificate upload/remove': Support `--no-wait`.
+* 'az containerapp connected-env dapr-component set/remove': Support `--no-wait`.
+* 'az containerapp connected-env storage set/remove': Support `--no-wait`.
+* 'az containerapp env http-route-config': Add commands for the http-route-config feature area.
+* 'az containerapp env java-component': Support more flexible configuration updates with new parameters `--set-configurations`, `--replace-configurations`, `--remove-configurations` and `--remove-all-configurations`.
+* 'az containerapp env java-component gateway-for-spring create/update': Support `--bind` and `--unbind`
+* 'az containerapp arc': Enable setup custom core dns for Aks AzureCore on Arc.
+
+1.1.0b1
+++++++
+* 'az containerapp create': Fix Role assignment error when the default Azure Container Registry could not be found
+*  Upgrade api-version to 2024-10-02-preview
+* 'az containerapp create/update': `--yaml` support property pollingInterval and cooldownPeriod
+* 'az containerapp session code-interpreter upload-file/list-files/show-file-content/show-file-metadata/delete-file': Support `--path` to specify the path of code interpreter session file resource
+* 'az containerapp session code-interpreter': Update response payload format for api-version 2024-10-02-preview
+* 'az containerapp env maintenance-config add/update/list/remove': Support environment maintenance config management
+* 'az containerapp sessionpool create': Support managed identity when create session pool with --mi-system-assigned --mi-user-assigned
+
+1.0.0b4
+++++++
+* 'az containerapp up': Support `--registry-identity`, `--system-assigned`, `--user-assigned`
+* 'az containerapp containerapp create/up': `--registry-server` and `--source` use managed identity for image pull by default
+* 'az containerapp containerapp create': `--registry-server` use managed identity for image pull by default. `--no-wait` will not take effect with system registry identity.
+* 'az containerapp env java-component gateway-for-spring': Support create/update/show/delete Gateway for spring.
+
+1.0.0b3
+++++++
+* Update models to support new properties with --yaml for api-version 2024-02-02-preview
+
+1.0.0b2
+++++++
+* 'az containerapp create': Fix container app create with registry msi
+* 'az containerapp job create': Fix container app job create with registry msi
+
+1.0.0b1
+++++++
+* 'az containerapp sessionpool create': Add NodeLTS container-type.
+* 'az containerapp env java-component': Support --min-replicas and --max-replicas for Java components
+* 'az containerapp env create': Support `--dapr-connection-string` to set application insight connection string
 
 0.3.55
 ++++++

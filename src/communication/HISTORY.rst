@@ -2,6 +2,36 @@
 
 Release History
 ===============
+1.13.0
+++++++
+* Add SMTP Username CRUD operations.
+
+1.12.0
+++++++
+* Update azure-rooms-communication to 1.2.0 (collaborator role)
+* Add new argument "collaborator-participants" to support collaborator role
+* Add abbreviations for role-based participant arguments
+* Update azure-core to 1.32.0
+* Update azure-identity to 1.5.0
+
+1.11.2
+++++++
+* Adding an error message for incorrect formats of inline attachments in Email communication send mail.
+
+1.11.1
+++++++
+* Fix bug in Email services - send email with attachments.
+
+1.11.0
+++++++
+* Update to email SDK version to 1.0.1b1.
+* Adding new feature inline attachments to Email communication send mail.
+
+1.10.0
+++++++
+* Adding new parameter waituntil to Email communication send mail.
+* Adding new command get send status to Email communication.
+
 1.9.3
 ++++++
 * Update Email service create - Global as the default value for Location 

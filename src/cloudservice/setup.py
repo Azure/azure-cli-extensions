@@ -10,11 +10,7 @@ from codecs import open
 from setuptools import setup, find_packages
 
 # HISTORY.rst entry.
-VERSION = '1.0.0'
-try:
-    from azext_cloudservice.manual.version import VERSION
-except ImportError:
-    pass
+VERSION = '1.0.1'
 
 # The full list of classifiers is available at
 # https://pypi.python.org/pypi?%3Aaction=list_classifiers
@@ -31,7 +27,7 @@ CLASSIFIERS = [
 ]
 
 DEPENDENCIES = [
-    'azure-mgmt-compute~=30.4.0'
+    'azure-mgmt-compute~=33.0.0'
 ]
 
 try:

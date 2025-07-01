@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud cloudservicesnetwork list",
-    is_preview=True,
 )
 class List(AAZCommand):
     """List cloud services networks in the provided resource group or subscription.
@@ -26,10 +25,10 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-10-01-preview",
+        "version": "2025-02-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.networkcloud/cloudservicesnetworks", "2023-10-01-preview"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/cloudservicesnetworks", "2023-10-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.networkcloud/cloudservicesnetworks", "2025-02-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/cloudservicesnetworks", "2025-02-01"],
         ]
     }
 
@@ -55,12 +54,12 @@ class List(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        condition_0 = has_value(self.ctx.args.resource_group) and has_value(self.ctx.subscription_id)
-        condition_1 = has_value(self.ctx.subscription_id) and has_value(self.ctx.args.resource_group) is not True
+        condition_0 = has_value(self.ctx.subscription_id) and has_value(self.ctx.args.resource_group) is not True
+        condition_1 = has_value(self.ctx.args.resource_group) and has_value(self.ctx.subscription_id)
         if condition_0:
-            self.CloudServicesNetworksListByResourceGroup(ctx=self.ctx)()
-        if condition_1:
             self.CloudServicesNetworksListBySubscription(ctx=self.ctx)()
+        if condition_1:
+            self.CloudServicesNetworksListByResourceGroup(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -76,7 +75,7 @@ class List(AAZCommand):
         next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
         return result, next_link
 
-    class CloudServicesNetworksListByResourceGroup(AAZHttpOperation):
+    class CloudServicesNetworksListBySubscription(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -90,7 +89,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.NetworkCloud/cloudServicesNetworks",
+                "/subscriptions/{subscriptionId}/providers/Microsoft.NetworkCloud/cloudServicesNetworks",
                 **self.url_parameters
             )
 
@@ -106,10 +105,6 @@ class List(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "resourceGroupName", self.ctx.args.resource_group,
-                    required=True,
-                ),
-                **self.serialize_url_param(
                     "subscriptionId", self.ctx.subscription_id,
                     required=True,
                 ),
@@ -120,7 +115,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-10-01-preview",
+                    "api-version", "2025-02-01",
                     required=True,
                 ),
             }
@@ -162,6 +157,9 @@ class List(AAZCommand):
             value.Element = AAZObjectType()
 
             _element = cls._schema_on_200.value.Element
+            _element.etag = AAZStrType(
+                flags={"read_only": True},
+            )
             _element.extended_location = AAZObjectType(
                 serialized_name="extendedLocation",
                 flags={"required": True},
@@ -281,7 +279,7 @@ class List(AAZCommand):
 
             return cls._schema_on_200
 
-    class CloudServicesNetworksListBySubscription(AAZHttpOperation):
+    class CloudServicesNetworksListByResourceGroup(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -295,7 +293,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/providers/Microsoft.NetworkCloud/cloudServicesNetworks",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.NetworkCloud/cloudServicesNetworks",
                 **self.url_parameters
             )
 
@@ -311,6 +309,10 @@ class List(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
+                    "resourceGroupName", self.ctx.args.resource_group,
+                    required=True,
+                ),
+                **self.serialize_url_param(
                     "subscriptionId", self.ctx.subscription_id,
                     required=True,
                 ),
@@ -321,7 +323,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-10-01-preview",
+                    "api-version", "2025-02-01",
                     required=True,
                 ),
             }
@@ -363,6 +365,9 @@ class List(AAZCommand):
             value.Element = AAZObjectType()
 
             _element = cls._schema_on_200.value.Element
+            _element.etag = AAZStrType(
+                flags={"read_only": True},
+            )
             _element.extended_location = AAZObjectType(
                 serialized_name="extendedLocation",
                 flags={"required": True},

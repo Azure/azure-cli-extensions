@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud l2network show",
-    is_preview=True,
 )
 class Show(AAZCommand):
     """Get properties of the provided layer 2 (L2) network.
@@ -23,9 +22,9 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-10-01-preview",
+        "version": "2025-02-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/l2networks/{}", "2023-10-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/l2networks/{}", "2025-02-01"],
         ]
     }
 
@@ -124,7 +123,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-10-01-preview",
+                    "api-version", "2025-02-01",
                     required=True,
                 ),
             }
@@ -157,6 +156,9 @@ class Show(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
+            _schema_on_200.etag = AAZStrType(
+                flags={"read_only": True},
+            )
             _schema_on_200.extended_location = AAZObjectType(
                 serialized_name="extendedLocation",
                 flags={"required": True},

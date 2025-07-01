@@ -3,6 +3,18 @@
 Release History
 ===============
 
+2.0.0b8
+++++++
+* Added support for updating subnet.
+
+2.0.0b7
+++++++
+* Added support for API key and protected files. Remove location for configuration create and update. 
+
+2.0.0b6
+++++++
+* Added support for Web Application Firewall.
+
 2.0.0b5
 ++++++
 * Fix configuration

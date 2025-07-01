@@ -4,13 +4,16 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long, unused-argument, logging-fstring-interpolation, logging-not-lazy, consider-using-f-string, logging-format-interpolation, inconsistent-return-statements, broad-except, bare-except, too-many-statements, too-many-locals, too-many-boolean-expressions, too-many-branches, too-many-nested-blocks, pointless-statement, expression-not-assigned, unbalanced-tuple-unpacking, unsupported-assignment-operation
 
+import threading
 import time
 from urllib.parse import urlparse
 import json
 import requests
+import copy
 import subprocess
 from concurrent.futures import ThreadPoolExecutor
 
+from azure.cli.command_modules.containerapp._ssh_utils import SSH_BACKUP_ENCODING, SSH_CTRL_C_MSG, get_stdin_writer
 from azure.cli.core import telemetry as telemetry_core
 
 from azure.cli.core.azclierror import (
@@ -23,7 +26,7 @@ from azure.cli.core.azclierror import (
     ArgumentUsageError,
     MutuallyExclusiveArgumentError)
 from azure.cli.core.commands.client_factory import get_subscription_id
-from azure.cli.command_modules.containerapp.custom import set_secrets, open_containerapp_in_browser, create_deserializer
+from azure.cli.command_modules.containerapp.custom import set_secrets, open_containerapp_in_browser
 from azure.cli.command_modules.containerapp.containerapp_job_decorator import ContainerAppJobDecorator
 from azure.cli.command_modules.containerapp.containerapp_decorator import BaseContainerAppDecorator
 from azure.cli.command_modules.containerapp.containerapp_env_decorator import ContainerAppEnvDecorator
@@ -40,17 +43,20 @@ from azure.cli.command_modules.containerapp._utils import (safe_set,
                                                            generate_randomized_cert_name, load_cert_file,
                                                            trigger_workflow, _ensure_identity_resource_id,
                                                            AppType, _get_existing_secrets, store_as_secret_and_return_secret_ref,
-                                                           set_managed_identity, is_registry_msi_system)
+                                                           set_managed_identity, is_registry_msi_system, _get_app_from_revision,
+                                                           _validate_revision_name)
 from azure.cli.command_modules.containerapp._models import (
     RegistryCredentials as RegistryCredentialsModel,
 )
+from azure.mgmt.core.tools import parse_resource_id, is_valid_resource_id
 
 from knack.log import get_logger
 from knack.prompting import prompt_y_n
 
-from msrestazure.tools import parse_resource_id, is_valid_resource_id
 from msrest.exceptions import DeserializationError
 
+from ._decorator_utils import create_deserializer
+from ._validators import validate_create
 from .containerapp_env_certificate_decorator import ContainerappPreviewEnvCertificateListDecorator, \
     ContainerappEnvCertificatePreviweUploadDecorator
 from .connected_env_decorator import ConnectedEnvironmentDecorator, ConnectedEnvironmentCreateDecorator
@@ -78,10 +84,15 @@ from .containerapp_env_telemetry_decorator import (
 from .containerapp_auth_decorator import ContainerAppPreviewAuthDecorator
 from .containerapp_decorator import ContainerAppPreviewCreateDecorator, ContainerAppPreviewListDecorator, ContainerAppPreviewUpdateDecorator
 from .containerapp_env_storage_decorator import ContainerappEnvStorageDecorator
-from .java_component_decorator import JavaComponentDecorator
+from .java_component_decorator import (
+    BaseJavaComponentDecorator,
+    JavaComponentCreateDecorator,
+    JavaComponentUpdateDecorator
+)
 from .containerapp_sessionpool_decorator import SessionPoolPreviewDecorator, SessionPoolCreateDecorator, SessionPoolUpdateDecorator
 from .containerapp_session_code_interpreter_decorator import SessionCodeInterpreterCommandsPreviewDecorator
 from .containerapp_job_registry_decorator import ContainerAppJobRegistryPreviewSetDecorator
+from .containerapp_env_maintenance_config_decorator import ContainerAppEnvMaintenanceConfigPreviewDecorator
 from .dotnet_component_decorator import DotNetComponentDecorator
 from ._client_factory import handle_raw_exception, handle_non_404_status_code_exception
 from ._clients import (
@@ -100,7 +111,10 @@ from ._clients import (
     JavaComponentPreviewClient,
     SessionPoolPreviewClient,
     SessionCodeInterpreterPreviewClient,
-    DotNetComponentPreviewClient
+    DotNetComponentPreviewClient,
+    MaintenanceConfigPreviewClient,
+    HttpRouteConfigPreviewClient,
+    LabelHistoryPreviewClient
 )
 from ._dev_service_utils import DevServiceUtils
 from ._models import (
@@ -112,7 +126,15 @@ from ._models import (
     AzureFileProperties as AzureFilePropertiesModel
 )
 
-from ._utils import connected_env_check_cert_name_availability, get_oryx_run_image_tags, patchable_check, get_pack_exec_path, is_docker_running, parse_build_env_vars, env_has_managed_identity
+from ._ssh_utils import (SSH_DEFAULT_ENCODING, DebugWebSocketConnection, read_debug_ssh)
+
+from ._utils import (connected_env_check_cert_name_availability, get_oryx_run_image_tags, patchable_check,
+                     get_pack_exec_path, is_docker_running, parse_build_env_vars, env_has_managed_identity)
+
+from ._arc_utils import (get_core_dns_deployment, get_core_dns_configmap, backup_custom_core_dns_configmap,
+                         replace_configmap, replace_deployment, delete_configmap, patch_coredns,
+                         create_folder, create_sub_folder,
+                         check_kube_connection, create_kube_client)
 
 from ._constants import (CONTAINER_APPS_RP,
                          NAME_INVALID, NAME_ALREADY_EXISTS, ACR_IMAGE_SUFFIX, DEV_POSTGRES_IMAGE, DEV_POSTGRES_SERVICE_TYPE,
@@ -121,7 +143,8 @@ from ._constants import (CONTAINER_APPS_RP,
                          DEV_QDRANT_CONTAINER_NAME, DEV_QDRANT_SERVICE_TYPE, DEV_WEAVIATE_IMAGE, DEV_WEAVIATE_CONTAINER_NAME, DEV_WEAVIATE_SERVICE_TYPE,
                          DEV_MILVUS_IMAGE, DEV_MILVUS_CONTAINER_NAME, DEV_MILVUS_SERVICE_TYPE, DEV_SERVICE_LIST, CONTAINER_APPS_SDK_MODELS, BLOB_STORAGE_TOKEN_STORE_SECRET_SETTING_NAME,
                          DAPR_SUPPORTED_STATESTORE_DEV_SERVICE_LIST, DAPR_SUPPORTED_PUBSUB_DEV_SERVICE_LIST,
-                         JAVA_COMPONENT_CONFIG, JAVA_COMPONENT_EUREKA, JAVA_COMPONENT_ADMIN, JAVA_COMPONENT_NACOS, DOTNET_COMPONENT_RESOURCE_TYPE)
+                         JAVA_COMPONENT_CONFIG, JAVA_COMPONENT_EUREKA, JAVA_COMPONENT_ADMIN, JAVA_COMPONENT_NACOS, JAVA_COMPONENT_GATEWAY, DOTNET_COMPONENT_RESOURCE_TYPE,
+                         CUSTOM_CORE_DNS, CORE_DNS, KUBE_SYSTEM)
 
 
 logger = get_logger(__name__)
@@ -438,6 +461,7 @@ def create_containerapp(cmd,
                         ingress=None,
                         allow_insecure=False,
                         revisions_mode="single",
+                        target_label=None,
                         secrets=None,
                         env_vars=None,
                         cpu=None,
@@ -482,7 +506,8 @@ def create_containerapp(cmd,
                         max_inactive_revisions=None,
                         runtime=None,
                         enable_java_metrics=None,
-                        enable_java_agent=None):
+                        enable_java_agent=None,
+                        kind=None):
     raw_parameters = locals()
 
     containerapp_create_decorator = ContainerAppPreviewCreateDecorator(
@@ -522,6 +547,8 @@ def update_containerapp_logic(cmd,
                               remove_env_vars=None,
                               replace_env_vars=None,
                               remove_all_env_vars=False,
+                              revisions_mode=None,
+                              target_label=None,
                               cpu=None,
                               memory=None,
                               revision_suffix=None,
@@ -545,7 +572,10 @@ def update_containerapp_logic(cmd,
                               force_single_container_updates=False,
                               runtime=None,
                               enable_java_metrics=None,
-                              enable_java_agent=None):
+                              enable_java_agent=None,
+                              user_assigned=None,
+                              registry_identity=None,
+                              system_assigned=None):
     raw_parameters = locals()
 
     containerapp_update_decorator = ContainerAppPreviewUpdateDecorator(
@@ -556,7 +586,8 @@ def update_containerapp_logic(cmd,
     )
     containerapp_update_decorator.register_provider(CONTAINER_APPS_RP)
     containerapp_update_decorator.validate_arguments()
-
+    containerapp_update_decorator.construct_for_pre_process()
+    containerapp_update_decorator.pre_process()
     containerapp_update_decorator.construct_payload()
     r = containerapp_update_decorator.update()
     r = containerapp_update_decorator.post_process(r)
@@ -584,6 +615,8 @@ def update_containerapp(cmd,
                         remove_env_vars=None,
                         replace_env_vars=None,
                         remove_all_env_vars=False,
+                        revisions_mode=None,
+                        target_label=None,
                         cpu=None,
                         memory=None,
                         revision_suffix=None,
@@ -624,6 +657,8 @@ def update_containerapp(cmd,
                                      remove_env_vars=remove_env_vars,
                                      replace_env_vars=replace_env_vars,
                                      remove_all_env_vars=remove_all_env_vars,
+                                     revisions_mode=revisions_mode,
+                                     target_label=target_label,
                                      cpu=cpu,
                                      memory=memory,
                                      revision_suffix=revision_suffix,
@@ -691,6 +726,7 @@ def create_managed_environment(cmd,
                                logs_key=None,
                                location=None,
                                instrumentation_key=None,
+                               dapr_connection_string=None,
                                infrastructure_subnet_resource_id=None,
                                infrastructure_resource_group=None,
                                docker_bridge_cidr=None,
@@ -714,6 +750,79 @@ def create_managed_environment(cmd,
                                system_assigned=False,
                                user_assigned=None,
                                public_network_access=None):
+    return create_managed_environment_logic(
+        cmd=cmd,
+        name=name,
+        resource_group_name=resource_group_name,
+        logs_destination=logs_destination,
+        storage_account=storage_account,
+        logs_customer_id=logs_customer_id,
+        logs_key=logs_key,
+        location=location,
+        instrumentation_key=instrumentation_key,
+        dapr_connection_string=dapr_connection_string,
+        infrastructure_subnet_resource_id=infrastructure_subnet_resource_id,
+        infrastructure_resource_group=infrastructure_resource_group,
+        docker_bridge_cidr=docker_bridge_cidr,
+        platform_reserved_cidr=platform_reserved_cidr,
+        platform_reserved_dns_ip=platform_reserved_dns_ip,
+        internal_only=internal_only,
+        tags=tags,
+        disable_warnings=disable_warnings,
+        zone_redundant=zone_redundant,
+        hostname=hostname,
+        certificate_file=certificate_file,
+        certificate_password=certificate_password,
+        certificate_identity=certificate_identity,
+        certificate_key_vault_url=certificate_key_vault_url,
+        enable_workload_profiles=enable_workload_profiles,
+        mtls_enabled=mtls_enabled,
+        p2p_encryption_enabled=p2p_encryption_enabled,
+        enable_dedicated_gpu=enable_dedicated_gpu,
+        no_wait=no_wait,
+        logs_dynamic_json_columns=logs_dynamic_json_columns,
+        system_assigned=system_assigned,
+        user_assigned=user_assigned,
+        public_network_access=public_network_access
+    )
+
+
+def create_managed_environment_logic(cmd,
+                                     name,
+                                     resource_group_name,
+                                     logs_destination="log-analytics",
+                                     storage_account=None,
+                                     logs_customer_id=None,
+                                     logs_key=None,
+                                     location=None,
+                                     instrumentation_key=None,
+                                     dapr_connection_string=None,
+                                     infrastructure_subnet_resource_id=None,
+                                     infrastructure_resource_group=None,
+                                     docker_bridge_cidr=None,
+                                     platform_reserved_cidr=None,
+                                     platform_reserved_dns_ip=None,
+                                     internal_only=False,
+                                     tags=None,
+                                     disable_warnings=False,
+                                     zone_redundant=False,
+                                     hostname=None,
+                                     certificate_file=None,
+                                     certificate_password=None,
+                                     certificate_identity=None,
+                                     certificate_key_vault_url=None,
+                                     enable_workload_profiles=True,
+                                     mtls_enabled=None,
+                                     p2p_encryption_enabled=None,
+                                     enable_dedicated_gpu=False,
+                                     no_wait=False,
+                                     logs_dynamic_json_columns=False,
+                                     system_assigned=False,
+                                     user_assigned=None,
+                                     public_network_access=None,
+                                     workload_profile_type=None,
+                                     workload_profile_name=None,
+                                     is_env_for_azml_app=False):
     raw_parameters = locals()
     containerapp_env_create_decorator = ContainerappEnvPreviewCreateDecorator(
         cmd=cmd,
@@ -1188,6 +1297,8 @@ def containerapp_up(cmd,
                     build_env_vars=None,
                     ingress=None,
                     target_port=None,
+                    revisions_mode=None,
+                    target_label=None,
                     registry_user=None,
                     registry_pass=None,
                     env_vars=None,
@@ -1202,18 +1313,37 @@ def containerapp_up(cmd,
                     service_principal_client_id=None,
                     service_principal_client_secret=None,
                     service_principal_tenant_id=None,
+                    registry_identity=None,
+                    user_assigned=None,
+                    system_assigned=None,
                     custom_location_id=None,
-                    connected_cluster_id=None):
+                    connected_cluster_id=None,
+                    model_registry=None,
+                    model_name=None,
+                    model_version=None):
     from ._up_utils import (_validate_up_args, _validate_custom_location_connected_cluster_args, _reformat_image, _get_dockerfile_content, _get_ingress_and_target_port,
                             ResourceGroup, Extension, CustomLocation, ContainerAppEnvironment, ContainerApp, _get_registry_from_app,
-                            _get_registry_details, _create_github_action, _set_up_defaults, up_output,
-                            check_env_name_on_rg, get_token, _has_dockerfile)
+                            _get_registry_details, _get_registry_details_without_get_creds, _create_github_action, _set_up_defaults, up_output,
+                            check_env_name_on_rg, get_token, _has_dockerfile, _validate_azml_args, _is_azml_app, _validate_azml_env_and_create_if_needed, _set_azml_env_vars)
     from azure.cli.command_modules.containerapp._github_oauth import cache_github_token
     HELLOWORLD = "mcr.microsoft.com/k8se/quickstart"
+    ACA_AZML_MCR = "mcr.microsoft.com/k8se/aca-foundry-model-host"
     dockerfile = "Dockerfile"  # for now the dockerfile name must be "Dockerfile" (until GH actions API is updated)
 
     register_provider_if_needed(cmd, CONTAINER_APPS_RP)
+    is_azureml_app = _is_azml_app(model_registry, model_name, model_version)
+    model_asset_id = None
+    model_reference_endpoint = None
+    if is_azureml_app:
+        model_asset_id, model_reference_endpoint, model_type, model_load_class, image = _validate_azml_args(cmd, ACA_AZML_MCR, image, model_registry, model_name, model_version)
+        env_vars = _set_azml_env_vars(cmd, env_vars, model_asset_id, model_reference_endpoint, model_type, model_load_class, is_azml_mcr_app=image.lower() == ACA_AZML_MCR.lower())
+
     _validate_up_args(cmd, source, artifact, build_env_vars, image, repo, registry_server)
+    validate_create(registry_identity=registry_identity,
+                    registry_pass=registry_pass,
+                    registry_user=registry_user,
+                    registry_server=registry_server,
+                    no_wait=False)
     _validate_custom_location_connected_cluster_args(cmd,
                                                      env=environment,
                                                      resource_group_name=resource_group_name,
@@ -1234,10 +1364,14 @@ def containerapp_up(cmd,
         ingress = "external" if not ingress else ingress
         target_port = 80 if not target_port else target_port
 
+    if image and ACA_AZML_MCR in image.lower():
+        ingress = "external" if not ingress else ingress
+        target_port = 8000 if not target_port else target_port
+
     if image:
-        if ingress and not target_port:
-            target_port = 80
-            logger.warning("No ingress provided, defaulting to port 80. Try `az containerapp up --ingress %s --target-port <port>` to set a custom port.", ingress)
+        if ingress and not target_port and target_port != 0:
+            target_port = 0
+            logger.warning("No target-port provided, defaulting to auto-detect. Try `az containerapp up --ingress %s --target-port <port>` to set a custom port.", ingress)
 
     # Check if source contains a Dockerfile
     # and ignore checking if Dockerfile exists in repo since GitHub action inherently checks for it.
@@ -1248,29 +1382,38 @@ def containerapp_up(cmd,
     resource_group = ResourceGroup(cmd, name=resource_group_name, location=location)
     custom_location = CustomLocation(cmd, name=custom_location_id, resource_group_name=resource_group_name, connected_cluster_id=connected_cluster_id)
     extension = Extension(cmd, logs_rg=resource_group_name, logs_location=location, logs_share_key=logs_key, logs_customer_id=logs_customer_id, connected_cluster_id=connected_cluster_id)
-    env = ContainerAppEnvironment(cmd, environment, resource_group, location=location, logs_key=logs_key, logs_customer_id=logs_customer_id, custom_location_id=custom_location_id, connected_cluster_id=connected_cluster_id)
-    app = ContainerApp(cmd, name, resource_group, None, image, env, target_port, registry_server, registry_user, registry_pass, env_vars, workload_profile_name, ingress)
+    env = ContainerAppEnvironment(cmd, environment, resource_group, location=location, logs_key=logs_key, logs_customer_id=logs_customer_id, custom_location_id=custom_location_id, connected_cluster_id=connected_cluster_id, is_env_for_azml_app=is_azureml_app)
+    app = ContainerApp(cmd, name, resource_group, None, image, env, target_port, registry_server, registry_user, registry_pass, env_vars, workload_profile_name, ingress, registry_identity=registry_identity, user_assigned=user_assigned, system_assigned=system_assigned, revisions_mode=revisions_mode, target_label=target_label)
 
-    # Check and see if registry username and passwords are specified. If so, set is_registry_server_params_set to True to use those creds.
-    is_registry_server_params_set = bool(registry_server and registry_user and registry_pass)
+    # Check and see if registry (username and passwords) or registry-identity are specified. If so, set is_registry_server_params_set to True to use those creds.
+    is_registry_server_params_set = bool(registry_server and ((registry_user and registry_pass) or registry_identity))
     _set_up_defaults(cmd, name, resource_group_name, logs_customer_id, location, resource_group, env, app, custom_location, extension, is_registry_server_params_set)
 
     if app.check_exists():
         if app.get()["properties"]["provisioningState"] == "InProgress":
             raise ValidationError("Containerapp has an existing provisioning in progress. Please wait until provisioning has completed and rerun the command.")
 
+    if is_azureml_app:
+        env, workload_profile_name, app_cpu_limit, app_memory_limit = _validate_azml_env_and_create_if_needed(cmd, app, env, environment, resource_group, resource_group_name, workload_profile_name)
+        app.workload_profile_name = workload_profile_name
+        app.cpu = app_cpu_limit
+        app.memory = app_memory_limit
+
     resource_group.create_if_needed()
     extension.create_if_needed()
     custom_location.create_if_needed()
     env.create_if_needed(name)
-
     if source or repo:
         if not registry_server:
             _get_registry_from_app(app, source)  # if the app exists, get the registry
-        _get_registry_details(cmd, app, source)  # fetch ACR creds from arguments registry arguments
+        if source:
+            _get_registry_details_without_get_creds(cmd, app, source)
+        if repo:
+            _get_registry_details(cmd, app, source)  # fetch ACR creds from arguments registry arguments, --repo will create Github Actions, which requires ACR registry's creds
 
     force_single_container_updates = False
     if source:
+        app.get_acr_creds = False
         force_single_container_updates = app.run_source_to_cloud_flow(source, dockerfile, build_env_vars, can_create_acr_if_needed=True, registry_server=registry_server)
         app.set_force_single_container_updates(force_single_container_updates)
     else:
@@ -1288,7 +1431,7 @@ def containerapp_up(cmd,
     up_output(app, no_dockerfile=(source and not _has_dockerfile(source, dockerfile)))
 
 
-def containerapp_up_logic(cmd, resource_group_name, name, managed_env, image, env_vars, ingress, target_port, registry_server, registry_user, workload_profile_name, registry_pass, environment_type=None, force_single_container_updates=False):
+def containerapp_up_logic(cmd, resource_group_name, name, managed_env, image, env_vars, ingress, target_port, registry_server, registry_user, workload_profile_name, registry_pass, environment_type=None, force_single_container_updates=False, registry_identity=None, system_assigned=None, user_assigned=None, revisions_mode=None, target_label=None, cpu=None, memory=None):
     containerapp_def = None
     try:
         containerapp_def = ContainerAppPreviewClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
@@ -1297,8 +1440,10 @@ def containerapp_up_logic(cmd, resource_group_name, name, managed_env, image, en
 
     if containerapp_def:
         return update_containerapp_logic(cmd=cmd, name=name, resource_group_name=resource_group_name, image=image, replace_env_vars=env_vars, ingress=ingress, target_port=target_port,
-                                         registry_server=registry_server, registry_user=registry_user, registry_pass=registry_pass, workload_profile_name=workload_profile_name, container_name=name, force_single_container_updates=force_single_container_updates)
-    return create_containerapp(cmd=cmd, name=name, resource_group_name=resource_group_name, managed_env=managed_env, image=image, env_vars=env_vars, ingress=ingress, target_port=target_port, registry_server=registry_server, registry_user=registry_user, registry_pass=registry_pass, workload_profile_name=workload_profile_name, environment_type=environment_type)
+                                         registry_server=registry_server, registry_user=registry_user, registry_pass=registry_pass, workload_profile_name=workload_profile_name, container_name=name, force_single_container_updates=force_single_container_updates,
+                                         registry_identity=registry_identity, system_assigned=system_assigned, user_assigned=user_assigned, revisions_mode=revisions_mode, target_label=target_label)
+    return create_containerapp(cmd=cmd, name=name, resource_group_name=resource_group_name, managed_env=managed_env, image=image, env_vars=env_vars, ingress=ingress, target_port=target_port, registry_server=registry_server, registry_user=registry_user, registry_pass=registry_pass, workload_profile_name=workload_profile_name, environment_type=environment_type,
+                               registry_identity=registry_identity, system_assigned=system_assigned, user_assigned=user_assigned, revisions_mode=revisions_mode, target_label=target_label, cpu=cpu, memory=memory)
 
 
 def list_certificates(cmd, name, resource_group_name, location=None, certificate=None, thumbprint=None, managed_certificates_only=False, private_key_certificates_only=False):
@@ -1350,6 +1495,7 @@ def update_auth_config(cmd, resource_group_name, name, set_string=None, enabled=
                        proxy_convention=None, proxy_custom_host_header=None,
                        proxy_custom_proto_header=None, excluded_paths=None,
                        token_store=None, sas_url_secret=None, sas_url_secret_name=None,
+                       blob_container_uri=None, blob_container_identity=None,
                        yes=False):
     raw_parameters = locals()
     containerapp_auth_decorator = ContainerAppPreviewAuthDecorator(
@@ -1827,18 +1973,18 @@ def connected_env_show_dapr_component(cmd, resource_group_name, dapr_component_n
     return ConnectedEnvDaprComponentClient.show(cmd, resource_group_name, environment_name, name=dapr_component_name)
 
 
-def connected_env_remove_dapr_component(cmd, resource_group_name, dapr_component_name, environment_name):
+def connected_env_remove_dapr_component(cmd, resource_group_name, dapr_component_name, environment_name, no_wait=False):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     try:
-        r = ConnectedEnvDaprComponentClient.delete(cmd, resource_group_name, environment_name, name=dapr_component_name)
+        r = ConnectedEnvDaprComponentClient.delete(cmd, resource_group_name, environment_name, name=dapr_component_name, no_wait=no_wait)
         logger.warning("Dapr componenet successfully deleted.")
         return r
     except Exception as e:
         handle_raw_exception(e)
 
 
-def connected_env_create_or_update_dapr_component(cmd, resource_group_name, environment_name, dapr_component_name, yaml):
+def connected_env_create_or_update_dapr_component(cmd, resource_group_name, environment_name, dapr_component_name, yaml, no_wait=False):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     yaml_dapr_component = load_yaml_file(yaml)
@@ -1847,8 +1993,8 @@ def connected_env_create_or_update_dapr_component(cmd, resource_group_name, envi
 
     # Deserialize the yaml into a DaprComponent object. Need this since we're not using SDK
     try:
-        deserializer = create_deserializer()
-        daprcomponent_def = deserializer('DaprComponent', yaml_dapr_component)
+        deserializer = create_deserializer(CONTAINER_APPS_SDK_MODELS)
+        daprcomponent_def = deserializer('ConnectedEnvironmentDaprComponent', yaml_dapr_component)
     except DeserializationError as ex:
         raise ValidationError('Invalid YAML provided. Please see https://learn.microsoft.com/en-us/azure/container-apps/dapr-overview?tabs=bicep1%2Cyaml#component-schema for a valid Dapr Component YAML spec.') from ex
 
@@ -1867,7 +2013,8 @@ def connected_env_create_or_update_dapr_component(cmd, resource_group_name, envi
         r = ConnectedEnvDaprComponentClient.create_or_update(cmd, resource_group_name=resource_group_name,
                                                              environment_name=environment_name,
                                                              dapr_component_envelope=dapr_component_envelope,
-                                                             name=dapr_component_name)
+                                                             name=dapr_component_name,
+                                                             no_wait=no_wait)
         return r
     except Exception as e:
         handle_raw_exception(e)
@@ -1903,7 +2050,7 @@ def connected_env_list_certificates(cmd, name, resource_group_name, location=Non
             handle_raw_exception(e)
 
 
-def connected_env_upload_certificate(cmd, name, resource_group_name, certificate_file, certificate_name=None, certificate_password=None, location=None, prompt=False):
+def connected_env_upload_certificate(cmd, name, resource_group_name, certificate_file, certificate_name=None, certificate_password=None, location=None, prompt=False, no_wait=False):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     blob, thumbprint = load_cert_file(certificate_file, certificate_password)
@@ -1946,7 +2093,7 @@ def connected_env_upload_certificate(cmd, name, resource_group_name, certificate
             handle_raw_exception(e)
 
     try:
-        r = ConnectedEnvCertificateClient.create_or_update_certificate(cmd, resource_group_name, name, cert_name, certificate)
+        r = ConnectedEnvCertificateClient.create_or_update_certificate(cmd, resource_group_name, name, cert_name, certificate, no_wait)
         return r
     except Exception as e:
         handle_raw_exception(e)
@@ -1984,7 +2131,7 @@ def connected_env_list_storages(cmd, name, resource_group_name):
         handle_raw_exception(e)
 
 
-def connected_env_create_or_update_storage(cmd, storage_name, resource_group_name, name, azure_file_account_name=None, azure_file_share_name=None, azure_file_account_key=None, access_mode=None):  # pylint: disable=redefined-builtin
+def connected_env_create_or_update_storage(cmd, storage_name, resource_group_name, name, azure_file_account_name=None, azure_file_share_name=None, azure_file_account_key=None, access_mode=None, no_wait=False):  # pylint: disable=redefined-builtin
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     r = None
@@ -2007,18 +2154,117 @@ def connected_env_create_or_update_storage(cmd, storage_name, resource_group_nam
     storage_envelope["properties"]["azureFile"] = storage_def
 
     try:
-        return ConnectedEnvStorageClient.create_or_update(cmd, resource_group_name, name, storage_name, storage_envelope)
+        return ConnectedEnvStorageClient.create_or_update(cmd, resource_group_name, name, storage_name, storage_envelope, no_wait)
     except CLIError as e:
         handle_raw_exception(e)
 
 
-def connected_env_remove_storage(cmd, storage_name, name, resource_group_name):
+def connected_env_remove_storage(cmd, storage_name, name, resource_group_name, no_wait=False):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     try:
-        return ConnectedEnvStorageClient.delete(cmd, resource_group_name, name, storage_name)
+        return ConnectedEnvStorageClient.delete(cmd, resource_group_name, name, storage_name, no_wait)
     except CLIError as e:
         handle_raw_exception(e)
+
+
+def setup_core_dns(cmd, distro=None, kube_config=None, kube_context=None, skip_ssl_verification=False):
+    # Checking the connection to kubernetes cluster.
+    check_kube_connection(kube_config, kube_context, skip_ssl_verification)
+
+    # create a local path to store the original and the changed deployment and core dns configmap.
+    time_stamp = time.strftime("%Y-%m-%d-%H.%M.%S")
+
+    parent_folder, folder_status, error = create_folder("setup-core-dns", time_stamp)
+    if not folder_status:
+        raise ValidationError(error)
+
+    original_folder, folder_status, error = create_sub_folder(parent_folder, "original")
+    if not folder_status:
+        raise ValidationError(error)
+
+    kube_client = create_kube_client(kube_config, kube_context, skip_ssl_verification)
+
+    # backup original deployment and configmap
+    logger.info("Backup existing coredns deployment and configmap")
+    original_coredns_deployment = get_core_dns_deployment(kube_client, original_folder)
+    coredns_deployment = copy.deepcopy(original_coredns_deployment)
+
+    original_coredns_configmap = get_core_dns_configmap(kube_client, original_folder)
+    coredns_configmap = copy.deepcopy(original_coredns_configmap)
+
+    volumes = coredns_deployment.spec.template.spec.volumes
+    if volumes is None:
+        raise ValidationError('Unexpected Volumes in coredns deployment, Volumes not found')
+
+    volume_mounts = coredns_deployment.spec.template.spec.containers[0].volume_mounts
+    if volume_mounts is None:
+        raise ValidationError('Unexpected Volume mounts in coredns deployment, VolumeMounts not found')
+
+    coredns_configmap_volume_set = False
+    custom_coredns_configmap_volume_set = False
+    custom_coredns_configmap_volume_mounted = False
+
+    for volume in volumes:
+        if volume.config_map is not None:
+            if volume.config_map.name == CORE_DNS:
+                for mount in volume_mounts:
+                    if mount.name is not None and mount.name == volume.name:
+                        coredns_configmap_volume_set = True
+                        break
+            elif volume.config_map.name == CUSTOM_CORE_DNS:
+                custom_coredns_configmap_volume_set = True
+                for mount in volume_mounts:
+                    if mount.name is not None and mount.name == volume.name:
+                        custom_coredns_configmap_volume_mounted = True
+                        break
+
+    if not coredns_configmap_volume_set:
+        raise ValidationError("Cannot find volume and volume mounts for core dns config map")
+
+    original_custom_core_dns_configmap = backup_custom_core_dns_configmap(kube_client, original_folder)
+
+    new_filepath_with_timestamp, folder_status, error = create_sub_folder(parent_folder, "new")
+    if not folder_status:
+        raise ValidationError(error)
+
+    try:
+        patch_coredns(kube_client, coredns_configmap, coredns_deployment, new_filepath_with_timestamp,
+                      original_custom_core_dns_configmap is not None, not custom_coredns_configmap_volume_set, not custom_coredns_configmap_volume_mounted)
+    except Exception as e:
+        logger.error(f"Failed to setup custom coredns. {e}")
+        logger.info("Start to reverted coredns")
+        replace_succeeded = False
+        retry_count = 0
+        while not replace_succeeded and retry_count < 10:
+            logger.info(f"Retry the revert operation with retry count {retry_count}")
+
+            try:
+                logger.info("Start to reverted coredns configmap")
+                latest_core_dns_configmap = get_core_dns_configmap(kube_client)
+                latest_core_dns_configmap.data = original_coredns_configmap.data
+
+                replace_configmap(CORE_DNS, KUBE_SYSTEM, kube_client, latest_core_dns_configmap)
+                logger.info("Reverted coredns configmap successfully")
+
+                logger.info("Start to reverted coredns deployment")
+                latest_core_dns_deployment = get_core_dns_deployment(kube_client)
+                latest_core_dns_deployment.spec.template.spec = original_coredns_deployment.spec.template.spec
+
+                replace_deployment(CORE_DNS, KUBE_SYSTEM, kube_client, latest_core_dns_deployment)
+                logger.info("Reverted coredns deployment successfully")
+
+                if original_custom_core_dns_configmap is None:
+                    delete_configmap(CUSTOM_CORE_DNS, KUBE_SYSTEM, kube_client)
+                replace_succeeded = True
+            except Exception as revertEx:
+                logger.warning(f"Failed to revert coredns configmap or deployment {revertEx}")
+                retry_count = retry_count + 1
+                time.sleep(2)
+
+        if not replace_succeeded:
+            logger.error(f"Failed to revert the deployment and configuration. "
+                         f"You can get the original coredns config and deployment from {original_folder}")
 
 
 def init_dapr_components(cmd, resource_group_name, environment_name, statestore="redis", pubsub="redis"):
@@ -2261,7 +2507,7 @@ def show_env_managed_identity(cmd, name, resource_group_name):
 
 def list_java_components(cmd, environment_name, resource_group_name):
     raw_parameters = locals()
-    java_component_decorator = JavaComponentDecorator(
+    java_component_decorator = BaseJavaComponentDecorator(
         cmd=cmd,
         client=JavaComponentPreviewClient,
         raw_parameters=raw_parameters,
@@ -2272,7 +2518,7 @@ def list_java_components(cmd, environment_name, resource_group_name):
 
 def show_java_component(cmd, java_component_name, environment_name, resource_group_name, target_java_component_type):
     raw_parameters = locals()
-    java_component_decorator = JavaComponentDecorator(
+    java_component_decorator = BaseJavaComponentDecorator(
         cmd=cmd,
         client=JavaComponentPreviewClient,
         raw_parameters=raw_parameters,
@@ -2289,7 +2535,7 @@ def show_java_component(cmd, java_component_name, environment_name, resource_gro
 
 def delete_java_component(cmd, java_component_name, environment_name, resource_group_name, target_java_component_type, no_wait):
     raw_parameters = locals()
-    java_component_decorator = JavaComponentDecorator(
+    java_component_decorator = BaseJavaComponentDecorator(
         cmd=cmd,
         client=JavaComponentPreviewClient,
         raw_parameters=raw_parameters,
@@ -2309,9 +2555,9 @@ def delete_java_component(cmd, java_component_name, environment_name, resource_g
     return java_component_decorator.delete()
 
 
-def create_java_component(cmd, java_component_name, environment_name, resource_group_name, target_java_component_type, configuration, service_bindings, unbind_service_bindings, no_wait):
+def create_java_component(cmd, java_component_name, environment_name, resource_group_name, target_java_component_type, configuration, set_configurations, service_bindings, unbind_service_bindings, min_replicas, max_replicas, no_wait, route_yaml=None):
     raw_parameters = locals()
-    java_component_decorator = JavaComponentDecorator(
+    java_component_decorator = JavaComponentCreateDecorator(
         cmd=cmd,
         client=JavaComponentPreviewClient,
         raw_parameters=raw_parameters,
@@ -2321,9 +2567,9 @@ def create_java_component(cmd, java_component_name, environment_name, resource_g
     return java_component_decorator.create()
 
 
-def update_java_component(cmd, java_component_name, environment_name, resource_group_name, target_java_component_type, configuration, service_bindings, unbind_service_bindings, no_wait):
+def update_java_component(cmd, java_component_name, environment_name, resource_group_name, target_java_component_type, configuration, set_configurations, replace_configurations, remove_configurations, remove_all_configurations, service_bindings, unbind_service_bindings, min_replicas, max_replicas, no_wait, route_yaml=None):
     raw_parameters = locals()
-    java_component_decorator = JavaComponentDecorator(
+    java_component_decorator = JavaComponentUpdateDecorator(
         cmd=cmd,
         client=JavaComponentPreviewClient,
         raw_parameters=raw_parameters,
@@ -2333,12 +2579,12 @@ def update_java_component(cmd, java_component_name, environment_name, resource_g
     return java_component_decorator.update()
 
 
-def create_config_server_for_spring(cmd, java_component_name, environment_name, resource_group_name, configuration=None, unbind_service_bindings=None, service_bindings=None, no_wait=False):
-    return create_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_CONFIG, configuration, service_bindings, unbind_service_bindings, no_wait)
+def create_config_server_for_spring(cmd, java_component_name, environment_name, resource_group_name, configuration=None, set_configurations=None, unbind_service_bindings=None, service_bindings=None, min_replicas=1, max_replicas=1, no_wait=False):
+    return create_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_CONFIG, configuration, set_configurations, service_bindings, unbind_service_bindings, min_replicas, max_replicas, no_wait)
 
 
-def update_config_server_for_spring(cmd, java_component_name, environment_name, resource_group_name, configuration=None, unbind_service_bindings=None, service_bindings=None, no_wait=False):
-    return update_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_CONFIG, configuration, service_bindings, unbind_service_bindings, no_wait)
+def update_config_server_for_spring(cmd, java_component_name, environment_name, resource_group_name, configuration=None, set_configurations=None, replace_configurations=None, remove_configurations=None, remove_all_configurations=None, unbind_service_bindings=None, service_bindings=None, min_replicas=None, max_replicas=None, no_wait=False):
+    return update_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_CONFIG, configuration, set_configurations, replace_configurations, remove_configurations, remove_all_configurations, service_bindings, unbind_service_bindings, min_replicas, max_replicas, no_wait)
 
 
 def show_config_server_for_spring(cmd, java_component_name, environment_name, resource_group_name):
@@ -2349,12 +2595,12 @@ def delete_config_server_for_spring(cmd, java_component_name, environment_name, 
     return delete_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_CONFIG, no_wait)
 
 
-def create_eureka_server_for_spring(cmd, java_component_name, environment_name, resource_group_name, configuration=None, unbind_service_bindings=None, service_bindings=None, no_wait=False):
-    return create_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_EUREKA, configuration, service_bindings, unbind_service_bindings, no_wait)
+def create_eureka_server_for_spring(cmd, java_component_name, environment_name, resource_group_name, configuration=None, set_configurations=None, service_bindings=None, unbind_service_bindings=None, min_replicas=1, max_replicas=1, no_wait=False):
+    return create_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_EUREKA, configuration, set_configurations, service_bindings, unbind_service_bindings, min_replicas, max_replicas, no_wait)
 
 
-def update_eureka_server_for_spring(cmd, java_component_name, environment_name, resource_group_name, configuration=None, unbind_service_bindings=None, service_bindings=None, no_wait=False):
-    return update_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_EUREKA, configuration, service_bindings, unbind_service_bindings, no_wait)
+def update_eureka_server_for_spring(cmd, java_component_name, environment_name, resource_group_name, configuration=None, set_configurations=None, replace_configurations=None, remove_configurations=None, remove_all_configurations=None, service_bindings=None, unbind_service_bindings=None, min_replicas=None, max_replicas=None, no_wait=False):
+    return update_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_EUREKA, configuration, set_configurations, replace_configurations, remove_configurations, remove_all_configurations, service_bindings, unbind_service_bindings, min_replicas, max_replicas, no_wait)
 
 
 def show_eureka_server_for_spring(cmd, java_component_name, environment_name, resource_group_name):
@@ -2365,12 +2611,12 @@ def delete_eureka_server_for_spring(cmd, java_component_name, environment_name, 
     return delete_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_EUREKA, no_wait)
 
 
-def create_nacos(cmd, java_component_name, environment_name, resource_group_name, configuration=None, service_bindings=None, unbind_service_bindings=None, no_wait=False):
-    return create_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_NACOS, configuration, service_bindings, unbind_service_bindings, no_wait)
+def create_nacos(cmd, java_component_name, environment_name, resource_group_name, configuration=None, set_configurations=None, service_bindings=None, unbind_service_bindings=None, min_replicas=1, max_replicas=1, no_wait=False):
+    return create_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_NACOS, configuration, set_configurations, service_bindings, unbind_service_bindings, min_replicas, max_replicas, no_wait)
 
 
-def update_nacos(cmd, java_component_name, environment_name, resource_group_name, configuration=None, service_bindings=None, unbind_service_bindings=None, no_wait=False):
-    return update_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_NACOS, configuration, service_bindings, unbind_service_bindings, no_wait)
+def update_nacos(cmd, java_component_name, environment_name, resource_group_name, configuration=None, set_configurations=None, replace_configurations=None, remove_configurations=None, remove_all_configurations=None, service_bindings=None, unbind_service_bindings=None, min_replicas=None, max_replicas=None, no_wait=False):
+    return update_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_NACOS, configuration, set_configurations, replace_configurations, remove_configurations, remove_all_configurations, service_bindings, unbind_service_bindings, min_replicas, max_replicas, no_wait)
 
 
 def show_nacos(cmd, java_component_name, environment_name, resource_group_name):
@@ -2381,12 +2627,12 @@ def delete_nacos(cmd, java_component_name, environment_name, resource_group_name
     return delete_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_NACOS, no_wait)
 
 
-def create_admin_for_spring(cmd, java_component_name, environment_name, resource_group_name, configuration=None, service_bindings=None, unbind_service_bindings=None, no_wait=False):
-    return create_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_ADMIN, configuration, service_bindings, unbind_service_bindings, no_wait)
+def create_admin_for_spring(cmd, java_component_name, environment_name, resource_group_name, configuration=None, set_configurations=None, service_bindings=None, unbind_service_bindings=None, min_replicas=1, max_replicas=1, no_wait=False):
+    return create_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_ADMIN, configuration, set_configurations, service_bindings, unbind_service_bindings, min_replicas, max_replicas, no_wait)
 
 
-def update_admin_for_spring(cmd, java_component_name, environment_name, resource_group_name, configuration=None, service_bindings=None, unbind_service_bindings=None, no_wait=False):
-    return update_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_ADMIN, configuration, service_bindings, unbind_service_bindings, no_wait)
+def update_admin_for_spring(cmd, java_component_name, environment_name, resource_group_name, configuration=None, set_configurations=None, replace_configurations=None, remove_configurations=None, remove_all_configurations=None, service_bindings=None, unbind_service_bindings=None, min_replicas=None, max_replicas=None, no_wait=False):
+    return update_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_ADMIN, configuration, set_configurations, replace_configurations, remove_configurations, remove_all_configurations, service_bindings, unbind_service_bindings, min_replicas, max_replicas, no_wait)
 
 
 def show_admin_for_spring(cmd, java_component_name, environment_name, resource_group_name):
@@ -2395,6 +2641,22 @@ def show_admin_for_spring(cmd, java_component_name, environment_name, resource_g
 
 def delete_admin_for_spring(cmd, java_component_name, environment_name, resource_group_name, no_wait=False):
     return delete_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_ADMIN, no_wait)
+
+
+def create_gateway_for_spring(cmd, java_component_name, environment_name, resource_group_name, configuration=None, set_configurations=None, service_bindings=None, unbind_service_bindings=None, min_replicas=1, max_replicas=1, no_wait=False, route_yaml=None):
+    return create_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_GATEWAY, configuration, set_configurations, service_bindings, unbind_service_bindings, min_replicas, max_replicas, no_wait, route_yaml)
+
+
+def update_gateway_for_spring(cmd, java_component_name, environment_name, resource_group_name, configuration=None, set_configurations=None, replace_configurations=None, remove_configurations=None, remove_all_configurations=None, service_bindings=None, unbind_service_bindings=None, min_replicas=None, max_replicas=None, no_wait=False, route_yaml=None):
+    return update_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_GATEWAY, configuration, set_configurations, replace_configurations, remove_configurations, remove_all_configurations, service_bindings, unbind_service_bindings, min_replicas, max_replicas, no_wait, route_yaml)
+
+
+def show_gateway_for_spring(cmd, java_component_name, environment_name, resource_group_name):
+    return show_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_GATEWAY)
+
+
+def delete_gateway_for_spring(cmd, java_component_name, environment_name, resource_group_name, no_wait=False):
+    return delete_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_GATEWAY, no_wait)
 
 
 def set_environment_telemetry_data_dog(cmd,
@@ -2828,7 +3090,10 @@ def create_session_pool(cmd,
                         target_port=None,
                         registry_server=None,
                         registry_pass=None,
-                        registry_user=None):
+                        registry_user=None,
+                        mi_user_assigned=None,
+                        registry_identity=None,
+                        mi_system_assigned=False):
     raw_parameters = locals()
     session_pool_decorator = SessionPoolCreateDecorator(
         cmd=cmd,
@@ -2864,7 +3129,10 @@ def update_session_pool(cmd,
                         target_port=None,
                         registry_server=None,
                         registry_pass=None,
-                        registry_user=None):
+                        registry_user=None,
+                        mi_user_assigned=None,
+                        registry_identity=None,
+                        mi_system_assigned=False):
     raw_parameters = locals()
     session_pool_decorator = SessionPoolUpdateDecorator(
         cmd=cmd,
@@ -2953,6 +3221,7 @@ def upload_session_code_interpreter(cmd,
                                     resource_group_name,
                                     identifier,
                                     filepath,
+                                    path=None,
                                     session_pool_location=None):
     raw_parameters = locals()
     session_code_interpreter_decorator = SessionCodeInterpreterCommandsPreviewDecorator(
@@ -2973,6 +3242,7 @@ def show_file_content_session_code_interpreter(cmd,
                                                resource_group_name,
                                                identifier,
                                                filename,
+                                               path=None,
                                                session_pool_location=None):
     raw_parameters = locals()
     session_code_interpreter_decorator = SessionCodeInterpreterCommandsPreviewDecorator(
@@ -2993,6 +3263,7 @@ def show_file_metadata_session_code_interpreter(cmd,
                                                 resource_group_name,
                                                 identifier,
                                                 filename,
+                                                path=None,
                                                 session_pool_location=None):
     raw_parameters = locals()
     session_code_interpreter_decorator = SessionCodeInterpreterCommandsPreviewDecorator(
@@ -3033,6 +3304,7 @@ def delete_file_session_code_interpreter(cmd,
                                          resource_group_name,
                                          identifier,
                                          filename,
+                                         path=None,
                                          session_pool_location=None):
     raw_parameters = locals()
     session_code_interpreter_decorator = SessionCodeInterpreterCommandsPreviewDecorator(
@@ -3223,3 +3495,429 @@ def set_registry_job(cmd, name, resource_group_name, server, username=None, pass
     containerapp_job_registry_set_decorator.construct_payload()
     r = containerapp_job_registry_set_decorator.set()
     return r
+
+
+# maintenance config
+def add_maintenance_config(cmd, resource_group_name, env_name, duration, start_hour_utc, weekday):
+    raw_parameters = locals()
+    maintenance_config_decorator = ContainerAppEnvMaintenanceConfigPreviewDecorator(
+        cmd=cmd,
+        client=MaintenanceConfigPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    maintenance_config_decorator.construct_payload()
+    maintenance_config_decorator.validate_arguments()
+    r = maintenance_config_decorator.create_or_update()
+    return r
+
+
+def update_maintenance_config(cmd, resource_group_name, env_name, duration=None, start_hour_utc=None, weekday=None):
+    raw_parameters = locals()
+    maintenance_config_decorator = ContainerAppEnvMaintenanceConfigPreviewDecorator(
+        cmd=cmd,
+        client=MaintenanceConfigPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    forUpdate = True
+    maintenance_config_decorator.construct_payload(forUpdate)
+    maintenance_config_decorator.validate_arguments()
+    r = maintenance_config_decorator.create_or_update()
+    return r
+
+
+def remove_maintenance_config(cmd, resource_group_name, env_name):
+    raw_parameters = locals()
+    maintenance_config_decorator = ContainerAppEnvMaintenanceConfigPreviewDecorator(
+        cmd=cmd,
+        client=MaintenanceConfigPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    r = maintenance_config_decorator.remove()
+    return r
+
+
+def list_maintenance_config(cmd, resource_group_name, env_name):
+    raw_parameters = locals()
+    maintenance_config_decorator = ContainerAppEnvMaintenanceConfigPreviewDecorator(
+        cmd=cmd,
+        client=MaintenanceConfigPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    r = maintenance_config_decorator.list()
+    return r
+
+
+def containerapp_debug(cmd, resource_group_name, name, container=None, revision=None, replica=None):
+    logger.warning("Connecting...")
+    conn = DebugWebSocketConnection(
+        cmd=cmd,
+        resource_group_name=resource_group_name,
+        name=name,
+        revision=revision,
+        replica=replica,
+        container=container
+    )
+
+    encodings = [SSH_DEFAULT_ENCODING, SSH_BACKUP_ENCODING]
+    reader = threading.Thread(target=read_debug_ssh, args=(conn, encodings))
+    reader.daemon = True
+    reader.start()
+
+    writer = get_stdin_writer(conn)
+    writer.daemon = True
+    writer.start()
+
+    while conn.is_connected:
+        if not reader.is_alive() or not writer.is_alive():
+            logger.warning("Reader or Writer for WebSocket is not alive. Closing the connection.")
+            conn.disconnect()
+
+        try:
+            time.sleep(0.1)
+        except KeyboardInterrupt:
+            if conn.is_connected:
+                logger.info("Caught KeyboardInterrupt. Sending ctrl+c to server")
+                conn.send(SSH_CTRL_C_MSG)
+
+
+def create_http_route_config(cmd, resource_group_name, name, http_route_config_name, yaml):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+    yaml_http_route_config = load_yaml_file(yaml)
+    # check if the type is dict
+    if not isinstance(yaml_http_route_config, dict):
+        raise ValidationError('Invalid YAML provided. Please see https://aka.ms/azure-container-apps-yaml for a valid YAML spec.')
+
+    http_route_config_envelope = {"properties": yaml_http_route_config}
+
+    try:
+        return HttpRouteConfigPreviewClient.create(cmd, resource_group_name, name, http_route_config_name, http_route_config_envelope)
+    except Exception as e:
+        handle_raw_exception(e)
+
+
+def update_http_route_config(cmd, resource_group_name, name, http_route_config_name, yaml):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+    yaml_http_route_config = load_yaml_file(yaml)
+    # check if the type is dict
+    if not isinstance(yaml_http_route_config, dict):
+        raise ValidationError('Invalid YAML provided. Please see https://aka.ms/azure-container-apps-yaml for a valid YAML spec.')
+
+    http_route_config_envelope = {"properties": yaml_http_route_config}
+
+    try:
+        return HttpRouteConfigPreviewClient.update(cmd, resource_group_name, name, http_route_config_name, http_route_config_envelope)
+    except Exception as e:
+        handle_raw_exception(e)
+
+
+def list_http_route_configs(cmd, resource_group_name, name):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+    try:
+        return HttpRouteConfigPreviewClient.list(cmd, resource_group_name, name)
+    except Exception as e:
+        handle_raw_exception(e)
+
+
+def show_http_route_config(cmd, resource_group_name, name, http_route_config_name):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+    try:
+        return HttpRouteConfigPreviewClient.show(cmd, resource_group_name, name, http_route_config_name)
+    except Exception as e:
+        handle_raw_exception(e)
+
+
+def delete_http_route_config(cmd, resource_group_name, name, http_route_config_name):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+    try:
+        return HttpRouteConfigPreviewClient.delete(cmd, resource_group_name, name, http_route_config_name)
+    except Exception as e:
+        handle_raw_exception(e)
+
+
+def list_label_history(cmd, resource_group_name, name):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+    try:
+        return LabelHistoryPreviewClient.list(cmd, resource_group_name, name)
+    except Exception as e:
+        handle_raw_exception(e)
+
+
+def show_label_history(cmd, resource_group_name, name, label):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+    try:
+        return LabelHistoryPreviewClient.show(cmd, resource_group_name, name, label)
+    except Exception as e:
+        handle_raw_exception(e)
+
+
+def set_revision_mode(cmd, resource_group_name, name, mode, target_label=None, no_wait=False):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    containerapp_def = None
+    try:
+        containerapp_def = ContainerAppPreviewClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+    except Exception as e:
+        handle_raw_exception(e)
+
+    if not containerapp_def:
+        raise ResourceNotFoundError("The containerapp '{}' does not exist".format(name))
+
+    # Mode unchanged, no-op
+    if containerapp_def["properties"]["configuration"]["activeRevisionsMode"].lower() == mode.lower():
+        return containerapp_def["properties"]["configuration"]["activeRevisionsMode"]
+
+    if mode.lower() == "labels" and "ingress" not in containerapp_def['properties']['configuration']:
+        raise ValidationError("Ingress is requried for labels mode.")
+
+    containerapp_patch_def = {}
+    safe_set(containerapp_patch_def, "properties", "configuration", "activeRevisionsMode", value=mode)
+    safe_set(containerapp_patch_def, "properties", "configuration", "targetLabel", value=target_label)
+
+    # If we're going into labels mode, replace the default traffic config with the target label and latest revision.
+    # Otherwise all revisions will be deactivated.
+    traffic = safe_get(containerapp_def, "properties", "configuration", "ingress", "traffic")
+    if mode.lower() == "labels" and len(traffic) == 1 and safe_get(traffic[0], "latestRevision") is True:
+        safe_set(containerapp_patch_def, "properties", "configuration", "ingress", "traffic", value=[{
+            "revisionName": containerapp_def["properties"]["latestRevisionName"],
+            "weight": 100,
+            "label": target_label
+        }])
+    try:
+        r = ContainerAppPreviewClient.update(
+            cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=containerapp_patch_def, no_wait=no_wait)
+        return r["properties"]["configuration"]["activeRevisionsMode"]
+    except Exception as e:
+        handle_raw_exception(e)
+
+
+def add_revision_label(cmd, resource_group_name, revision, label, name=None, no_wait=False, yes=False):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    if not name:
+        name = _get_app_from_revision(revision)
+
+    containerapp_def = None
+    try:
+        containerapp_def = ContainerAppPreviewClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+    except Exception as e:
+        handle_raw_exception(e)
+
+    if not containerapp_def:
+        raise ResourceNotFoundError(f"The containerapp '{name}' does not exist in group '{resource_group_name}'")
+
+    if "ingress" not in containerapp_def['properties']['configuration'] or "traffic" not in containerapp_def['properties']['configuration']['ingress']:
+        raise ValidationError("Ingress and traffic weights are required to add labels.")
+
+    traffic_weight = safe_get(containerapp_def, 'properties', 'configuration', 'ingress', 'traffic')
+
+    _validate_revision_name(cmd, revision, resource_group_name, name)
+
+    is_labels_mode = safe_get(containerapp_def, 'properties', 'configuration', 'activeRevisionsMode', default='single').lower() == 'labels'
+
+    label_added = False
+    for weight in traffic_weight:
+        if "label" in weight and weight["label"].lower() == label.lower():
+            r_name = "latest" if "latestRevision" in weight and weight["latestRevision"] else weight["revisionName"]
+            if not yes and r_name.lower() != revision.lower():
+                msg = f"A weight with the label '{label}' already exists. Remove existing label '{label}' from '{r_name}' and add to '{revision}'?"
+                if is_labels_mode:
+                    msg = f"Label '{label}' already exists with revision '{r_name}'. Replace '{r_name}' with '{revision}'?"
+                if not prompt_y_n(msg, default="n"):
+                    raise ArgumentUsageError("Usage Error: cannot specify existing label without agreeing to update values.")
+
+            # in labels mode we update the revision assigned to the label, not the label assigned to the revision
+            if is_labels_mode:
+                weight["revisionName"] = revision
+                label_added = True
+            else:
+                weight["label"] = None
+
+        if "latestRevision" in weight:
+            if revision.lower() == "latest" and weight["latestRevision"]:
+                label_added = True
+                weight["label"] = label
+        elif not is_labels_mode:
+            if revision.lower() == weight["revisionName"].lower():
+                label_added = True
+                weight["label"] = label
+
+    if not label_added:
+        traffic_weight.append({
+            "revisionName": revision if revision.lower() != "latest" else None,
+            "weight": 0,
+            "latestRevision": revision.lower() == "latest",
+            "label": label
+        })
+
+    containerapp_patch_def = {}
+    safe_set(containerapp_patch_def, 'properties', 'configuration', 'ingress', 'traffic', value=traffic_weight)
+
+    try:
+        r = ContainerAppPreviewClient.update(
+            cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=containerapp_patch_def, no_wait=no_wait)
+        return r['properties']['configuration']['ingress']['traffic']
+    except Exception as e:
+        handle_raw_exception(e)
+
+
+def remove_revision_label(cmd, resource_group_name, name, label, no_wait=False):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    containerapp_def = None
+    try:
+        containerapp_def = ContainerAppPreviewClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+    except Exception as e:
+        handle_raw_exception(e)
+
+    if not containerapp_def:
+        raise ResourceNotFoundError(f"The containerapp '{name}' does not exist in group '{resource_group_name}'")
+
+    if "ingress" not in containerapp_def['properties']['configuration'] or "traffic" not in containerapp_def['properties']['configuration']['ingress']:
+        raise ValidationError("Ingress and traffic weights are required to remove labels.")
+
+    traffic_list = safe_get(containerapp_def, 'properties', 'configuration', 'ingress', 'traffic')
+
+    label_removed = False
+    is_labels_mode = safe_get(containerapp_def, 'properties', 'configuration', 'activeRevisionsMode', default='single').lower() == 'labels'
+
+    new_traffic_list = []
+    for traffic in traffic_list:
+        if "label" in traffic and traffic["label"].lower() == label.lower():
+            label_removed = True
+            # in labels mode we remove the whole entry, otherwise just clear the label.
+            if not is_labels_mode:
+                traffic["label"] = None
+                new_traffic_list.append(traffic)
+        else:
+            new_traffic_list.append(traffic)
+
+    if not label_removed:
+        raise ValidationError("Please specify a label name with an associated traffic weight.")
+
+    containerapp_patch_def = {}
+    safe_set(containerapp_patch_def, 'properties', 'configuration', 'ingress', 'traffic', value=new_traffic_list)
+
+    try:
+        r = ContainerAppPreviewClient.update(
+            cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=containerapp_patch_def, no_wait=no_wait)
+        return r['properties']['configuration']['ingress']['traffic']
+    except Exception as e:
+        handle_raw_exception(e)
+
+
+def show_environment_premium_ingress(cmd, name, resource_group_name):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    try:
+        env = ManagedEnvironmentPreviewClient.show(cmd, resource_group_name, name)
+        ingress_config = safe_get(env, "properties", "ingressConfiguration")
+        if not ingress_config:
+            return {"message": "No premium ingress configuration found for this environment, using default values."}
+
+        return ingress_config
+    except Exception as e:
+        handle_raw_exception(e)
+
+
+def add_environment_premium_ingress(cmd, name, resource_group_name, workload_profile_name, min_replicas, max_replicas, termination_grace_period=None, request_idle_timeout=None, header_count_limit=None, no_wait=False):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    try:
+        ManagedEnvironmentPreviewClient.show(cmd, resource_group_name, name)
+        env_patch = {}
+        ingress_config = {}
+        safe_set(env_patch, "properties", "ingressConfiguration", value=ingress_config)
+        scale = {}
+        ingress_config["scale"] = scale
+
+        # Required
+        ingress_config["workloadProfileName"] = workload_profile_name
+        scale["minReplicas"] = min_replicas
+        scale["maxReplicas"] = max_replicas
+        # Optional, remove if None
+        ingress_config["terminationGracePeriodSeconds"] = termination_grace_period
+        ingress_config["requestIdleTimeout"] = request_idle_timeout
+        ingress_config["headerCountLimit"] = header_count_limit
+
+        result = ManagedEnvironmentPreviewClient.update(
+            cmd=cmd,
+            resource_group_name=resource_group_name,
+            name=name,
+            managed_environment_envelope=env_patch,
+            no_wait=no_wait
+        )
+
+        return safe_get(result, "properties", "ingressConfiguration")
+
+    except Exception as e:
+        handle_raw_exception(e)
+
+
+def update_environment_premium_ingress(cmd, name, resource_group_name, workload_profile_name=None, min_replicas=None, max_replicas=None, termination_grace_period=None, request_idle_timeout=None, header_count_limit=None, no_wait=False):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    try:
+        ManagedEnvironmentPreviewClient.show(cmd, resource_group_name, name)
+        env_patch = {}
+        ingress_config = {}
+        scale = {}
+
+        if workload_profile_name is not None:
+            ingress_config["workloadProfileName"] = workload_profile_name
+        if min_replicas is not None:
+            ingress_config["scale"] = scale
+            scale["minReplicas"] = min_replicas
+        if max_replicas is not None:
+            ingress_config["scale"] = scale
+            scale["maxReplicas"] = max_replicas
+        if termination_grace_period is not None:
+            ingress_config["terminationGracePeriodSeconds"] = termination_grace_period
+        if request_idle_timeout is not None:
+            ingress_config["requestIdleTimeout"] = request_idle_timeout
+        if header_count_limit is not None:
+            ingress_config["headerCountLimit"] = header_count_limit
+
+        # Only add ingressConfiguration to the patch if any values were specified
+        if ingress_config:
+            safe_set(env_patch, "properties", "ingressConfiguration", value=ingress_config)
+        else:
+            return {"message": "No changes specified for premium ingress configuration"}
+
+        # Update the environment with the patched ingress configuration
+        result = ManagedEnvironmentPreviewClient.update(
+            cmd=cmd,
+            resource_group_name=resource_group_name,
+            name=name,
+            managed_environment_envelope=env_patch,
+            no_wait=no_wait
+        )
+
+        return safe_get(result, "properties", "ingressConfiguration")
+
+    except Exception as e:
+        handle_raw_exception(e)
+
+
+def remove_environment_premium_ingress(cmd, name, resource_group_name, no_wait=False):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    try:
+        ManagedEnvironmentPreviewClient.show(cmd, resource_group_name, name)
+        env_patch = {}
+        # Remove the whole section to restore defaults
+        safe_set(env_patch, "properties", "ingressConfiguration", value=None)
+
+        ManagedEnvironmentPreviewClient.update(
+            cmd=cmd,
+            resource_group_name=resource_group_name,
+            name=name,
+            managed_environment_envelope=env_patch,
+            no_wait=no_wait
+        )
+
+    except Exception as e:
+        handle_raw_exception(e)

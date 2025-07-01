@@ -14,6 +14,11 @@ from azure.cli.command_modules.acs.addonconfiguration import (
     sanitize_loganalytics_ws_resource_id,
     ensure_default_log_analytics_workspace_for_monitoring
 )
+import azure.cli.command_modules.acs.addonconfiguration
+from azext_aks_preview._helpers import (
+    check_is_monitoring_addon_enabled,
+)
+
 from azext_aks_preview._client_factory import CUSTOM_MGMT_AKS_PREVIEW
 from azext_aks_preview._roleassignments import add_role_assignment
 from azext_aks_preview._consts import (
@@ -39,6 +44,22 @@ from azext_aks_preview._consts import (
 )
 
 logger = get_logger(__name__)
+
+azure.cli.command_modules.acs.addonconfiguration.ContainerInsightsStreams = [
+    "Microsoft-ContainerLog",
+    "Microsoft-ContainerLogV2-HighScale",
+    "Microsoft-KubeEvents",
+    "Microsoft-KubePodInventory",
+    "Microsoft-KubeNodeInventory",
+    "Microsoft-KubePVInventory",
+    "Microsoft-KubeServices",
+    "Microsoft-KubeMonAgentEvents",
+    "Microsoft-InsightsMetrics",
+    "Microsoft-ContainerInventory",
+    "Microsoft-ContainerNodeInventory",
+    "Microsoft-Perf",
+    "Microsoft-RetinaNetworkFlowLogs",
+]
 
 
 # pylint: disable=too-many-locals
@@ -108,8 +129,9 @@ def enable_addons(
         dns_zone_resource_ids=dns_zone_resource_ids
     )
 
-    if CONST_MONITORING_ADDON_NAME in instance.addon_profiles and instance.addon_profiles[
-       CONST_MONITORING_ADDON_NAME].enabled:
+    monitoring_addon_enabled = check_is_monitoring_addon_enabled(addons, instance)
+
+    if monitoring_addon_enabled:
         if CONST_MONITORING_USING_AAD_MSI_AUTH in instance.addon_profiles[CONST_MONITORING_ADDON_NAME].config and \
                 str(instance.addon_profiles[CONST_MONITORING_ADDON_NAME].config[
                     CONST_MONITORING_USING_AAD_MSI_AUTH]).lower() == 'true':
@@ -152,8 +174,6 @@ def enable_addons(
                 data_collection_settings=data_collection_settings
             )
 
-    monitoring_addon_enabled = CONST_MONITORING_ADDON_NAME in instance.addon_profiles and instance.addon_profiles[
-        CONST_MONITORING_ADDON_NAME].enabled
     ingress_appgw_addon_enabled = CONST_INGRESS_APPGW_ADDON_NAME in instance.addon_profiles and instance.addon_profiles[
         CONST_INGRESS_APPGW_ADDON_NAME].enabled
 
@@ -424,7 +444,7 @@ def add_ingress_appgw_addon_role_assignment(result, cmd):
 
     if service_principal_msi_id is not None:
         config = result.addon_profiles[CONST_INGRESS_APPGW_ADDON_NAME].config
-        from msrestazure.tools import parse_resource_id, resource_id
+        from azure.mgmt.core.tools import parse_resource_id, resource_id
         if CONST_INGRESS_APPGW_APPLICATION_GATEWAY_ID in config:
             appgw_id = config[CONST_INGRESS_APPGW_APPLICATION_GATEWAY_ID]
             parsed_appgw_id = parse_resource_id(appgw_id)

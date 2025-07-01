@@ -13,19 +13,18 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud kubernetescluster create",
-    is_preview=True,
 )
 class Create(AAZCommand):
     """Create a new Kubernetes cluster or update the properties of the existing one.
 
     :example: Create or update Kubernetes cluster
-        az networkcloud kubernetescluster create --name "kubernetesClusterName" --resource-group "resourceGroupName" --location "location" --kubernetes-version "1.XX.Y" --extended-location name="/subscriptions/123e4567-e89b-12d3-a456-426655440000/resourceGroups/resourceGroupName/providers/Microsoft.ExtendedLocation/customLocations/clusterExtendedLocationName" type=CustomLocation --aad-configuration admin-group-object-ids=["f110271b-XXXX-4163-9b99-214d91660f0e"] --admin-username "azureuser" --ssh-key-values "ssh-rsa AAAAB3NzaC1yc2EAAAADAQAt5SjWU= admin@vm" --initial-agent-pool-configurations "[{count:1,mode:'System',name:'systemPool-1',vmSkuName:'NC-XXXXX',agentOptions:{hugepagesCount:96,hugepagesSize:1G},upgradeSettings:{maxSurge:'10%'},adminUsername:'azureuser',ssh-key-values:['ssh-rsa AAAAB3NzaC1yc2EAAAADAQAt5SjWU= admin@vm']}]" --control-plane-node-configuration count=1 vmSkuName='NC-YYYYY' adminUsername='azureuser' ssh-key-values="['ssh-rsa AAAAB3NzaC1yc2EAAAADAQAt5SjWU= admin@vm']" --network-configuration cloud-services-network-id="/subscriptions/123e4567-e89b-12d3-a456-426655440000/resourceGroups/resourceGroupName/providers/Microsoft.NetworkCloud/cloudServicesNetworks/cloudServicesNetworkName" cni-network-id="/subscriptions/123e4567-e89b-12d3-a456-426655440000/resourceGroups/resourceGroupName/providers/Microsoft.NetworkCloud/l3Networks/l3NetworkName" pod-cidrs=["10.244.0.0/16"] service-cidrs=["10.96.0.0/16"] dns-service-ip="10.96.0.10" attached-network-configuration.l2-networks="[{networkId:'/subscriptions/123e4567-e89b-12d3-a456-426655440000/resourceGroups/resourceGroupName/providers/Microsoft.NetworkCloud/l2Networks/l2NetworkName',pluginType:'DPDK'}]" attached-network-configuration.l3-networks="[{networkId:'/subscriptions/123e4567-e89b-12d3-a456-426655440000/resourceGroups/resourceGroupName/providers/Microsoft.NetworkCloud/l3Networks/l3NetworkName',pluginType:'SRIOV',ipamEnabled:'False'}]" attached-network-configuration.trunked-networks="[{networkId:'/subscriptions/123e4567-e89b-12d3-a456-426655440000/resourceGroups/resourceGroupName/providers/Microsoft.NetworkCloud/trunkedNetworks/trunkedNetworkName',pluginType:'MACVLAN'}]" bgp-service-load-balancer-configuration.bgp-advertisements="[{advertiseToFabric:'True',communities:['64512:100'],ipAddressPools:['pool1'],peers:['peer1']}]" bgp-service-load-balancer-configuration.fabric-peering-enabled="True" bgp-service-load-balancer-configuration.bgp-peers="[{bfdEnabled:'False',bgpMultiHop:'False',holdTime:'P300s',keepAliveTime:'P300s',myAsn:64512,name:'peer1',peerAddress:'203.0.113.254',peerAsn:64497,peerPort:179}]" bgp-service-load-balancer-configuration.ip-address-pools="[{addresses:['198.51.102.0/24'],autoAssign:'True',name:'pool1',onlyUseHostIps:'True'}]"
+        az networkcloud kubernetescluster create --name "kubernetesClusterName" --resource-group "resourceGroupName" --location "location" --kubernetes-version "1.XX.Y" --extended-location name="/subscriptions/123e4567-e89b-12d3-a456-426655440000/resourceGroups/resourceGroupName/providers/Microsoft.ExtendedLocation/customLocations/clusterExtendedLocationName" type=CustomLocation --aad-configuration admin-group-object-ids=["MicrosoftEntraGroupObjectId"] --admin-username "azureuser" --ssh-key-values "ssh-rsa AAAAB3NzaC1yc2EAAAADAQAt5SjWU= admin@vm" --initial-agent-pool-configurations "[{count:1,mode:'System',name:'systemPool-1',vmSkuName:'NC-XXXXX',agentOptions:{hugepagesCount:96,hugepagesSize:1G},upgradeSettings:{maxSurge:'10%'},adminUsername:'azureuser',ssh-key-values:['ssh-rsa AAAAB3NzaC1yc2EAAAADAQAt5SjWU= admin@vm']}]" --control-plane-node-configuration count=1 vmSkuName='NC-YYYYY' adminUsername='azureuser' ssh-key-values="['ssh-rsa AAAAB3NzaC1yc2EAAAADAQAt5SjWU= admin@vm']" --network-configuration cloud-services-network-id="/subscriptions/123e4567-e89b-12d3-a456-426655440000/resourceGroups/resourceGroupName/providers/Microsoft.NetworkCloud/cloudServicesNetworks/cloudServicesNetworkName" cni-network-id="/subscriptions/123e4567-e89b-12d3-a456-426655440000/resourceGroups/resourceGroupName/providers/Microsoft.NetworkCloud/l3Networks/l3NetworkName" pod-cidrs=["10.244.0.0/16"] service-cidrs=["10.96.0.0/16"] dns-service-ip="10.96.0.10" attached-network-configuration.l2-networks="[{networkId:'/subscriptions/123e4567-e89b-12d3-a456-426655440000/resourceGroups/resourceGroupName/providers/Microsoft.NetworkCloud/l2Networks/l2NetworkName',pluginType:'DPDK'}]" attached-network-configuration.l3-networks="[{networkId:'/subscriptions/123e4567-e89b-12d3-a456-426655440000/resourceGroups/resourceGroupName/providers/Microsoft.NetworkCloud/l3Networks/l3NetworkName',pluginType:'SRIOV',ipamEnabled:'False'}]" attached-network-configuration.trunked-networks="[{networkId:'/subscriptions/123e4567-e89b-12d3-a456-426655440000/resourceGroups/resourceGroupName/providers/Microsoft.NetworkCloud/trunkedNetworks/trunkedNetworkName',pluginType:'MACVLAN'}]" bgp-service-load-balancer-configuration.bgp-advertisements="[{advertiseToFabric:'True',communities:['64512:100'],ipAddressPools:['pool1'],peers:['peer1']}]" bgp-service-load-balancer-configuration.fabric-peering-enabled="True" bgp-service-load-balancer-configuration.bgp-peers="[{bfdEnabled:'False',bgpMultiHop:'False',holdTime:'P300s',keepAliveTime:'P300s',myAsn:64512,name:'peer1',peerAddress:'203.0.113.254',peerAsn:64497,peerPort:179}]" bgp-service-load-balancer-configuration.ip-address-pools="[{addresses:['198.51.102.0/24'],autoAssign:'True',name:'pool1',onlyUseHostIps:'True'}]"
     """
 
     _aaz_info = {
-        "version": "2023-10-01-preview",
+        "version": "2025-02-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/kubernetesclusters/{}", "2023-10-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/kubernetesclusters/{}", "2025-02-01"],
         ]
     }
 
@@ -46,6 +45,14 @@ class Create(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
+        _args_schema.if_match = AAZStrArg(
+            options=["--if-match"],
+            help="The ETag of the transformation. Omit this value to always overwrite the current resource. Specify the last-seen ETag value to prevent accidentally overwriting concurrent changes.",
+        )
+        _args_schema.if_none_match = AAZStrArg(
+            options=["--if-none-match"],
+            help="Set to '*' to allow a new record set to be created, but to prevent updating an existing resource. Other values will result in error from server as they are not supported.",
+        )
         _args_schema.kubernetes_cluster_name = AAZStrArg(
             options=["-n", "--name", "--kubernetes-cluster-name"],
             help="The name of the Kubernetes cluster.",
@@ -133,6 +140,9 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="The agent pools that are created with this Kubernetes cluster for running critical system services and workloads. This data in this field is only used during creation, and the field will be empty following the creation of the Kubernetes Cluster. After creation, the management of agent pools is done using the agentPools sub-resource.",
             required=True,
+            fmt=AAZListArgFormat(
+                min_length=1,
+            ),
         )
         _args_schema.kubernetes_version = AAZStrArg(
             options=["--kubernetes-version"],
@@ -141,7 +151,7 @@ class Create(AAZCommand):
             required=True,
         )
         _args_schema.managed_resource_group_configuration = AAZObjectArg(
-            options=["--managed-resource-group-configuration"],
+            options=["--mrg", "--managed-resource-group-configuration"],
             arg_group="Properties",
             help="The configuration of the managed resource group associated with the resource.",
         )
@@ -157,6 +167,9 @@ class Create(AAZCommand):
             options=["admin-group-object-ids"],
             help="The list of Azure Active Directory group object IDs that will have an administrative role on the Kubernetes cluster.",
             required=True,
+            fmt=AAZListArgFormat(
+                min_length=1,
+            ),
         )
 
         admin_group_object_ids = cls._args_schema.aad_configuration.admin_group_object_ids
@@ -312,10 +325,22 @@ class Create(AAZCommand):
         cls._build_args_kubernetes_label_create(taints.Element)
 
         upgrade_settings = cls._args_schema.initial_agent_pool_configurations.Element.upgrade_settings
+        upgrade_settings.drain_timeout = AAZIntArg(
+            options=["drain-timeout"],
+            help="The maximum time in seconds that is allowed for a node drain to complete before proceeding with the upgrade of the agent pool. If not specified during creation, a value of 1800 seconds is used.",
+            fmt=AAZIntArgFormat(
+                maximum=86400,
+                minimum=60,
+            ),
+        )
         upgrade_settings.max_surge = AAZStrArg(
             options=["max-surge"],
             help="The maximum number or percentage of nodes that are surged during upgrade. This can either be set to an integer (e.g. '5') or a percentage (e.g. '50%'). If a percentage is specified, it is the percentage of the total agent pool size at the time of the upgrade. For percentages, fractional nodes are rounded up. If not specified, the default is 1.",
             default="1",
+        )
+        upgrade_settings.max_unavailable = AAZStrArg(
+            options=["max-unavailable"],
+            help="The maximum number or percentage of nodes that can be unavailable during upgrade. This can either be set to an integer (e.g. '5') or a percentage (e.g. '50%'). If a percentage is specified, it is the percentage of the total agent pool size at the time of the upgrade. For percentages, fractional nodes are rounded up. If not specified during creation, a value of 0 is used. One of MaxSurge and MaxUnavailable must be greater than 0.",
         )
 
         managed_resource_group_configuration = cls._args_schema.managed_resource_group_configuration
@@ -353,6 +378,10 @@ class Create(AAZCommand):
         network_configuration.dns_service_ip = AAZStrArg(
             options=["dns-service-ip"],
             help="The IP address assigned to the Kubernetes DNS service. It must be within the Kubernetes service address range specified in service CIDR.",
+        )
+        network_configuration.l2_service_load_balancer_configuration = AAZObjectArg(
+            options=["l2-service-load-balancer-configuration"],
+            help="The configuration of the Layer 2 service load balancer for this Kubernetes cluster. A maximum of one service load balancer may be specified, either Layer 2 or BGP.",
         )
         network_configuration.pod_cidrs = AAZListArg(
             options=["pod-cidrs"],
@@ -543,12 +572,70 @@ class Create(AAZCommand):
         addresses = cls._args_schema.network_configuration.bgp_service_load_balancer_configuration.ip_address_pools.Element.addresses
         addresses.Element = AAZStrArg()
 
+        l2_service_load_balancer_configuration = cls._args_schema.network_configuration.l2_service_load_balancer_configuration
+        l2_service_load_balancer_configuration.ip_address_pools = AAZListArg(
+            options=["ip-address-pools"],
+            help="The list of pools of IP addresses that can be allocated to load balancer services.",
+        )
+
+        ip_address_pools = cls._args_schema.network_configuration.l2_service_load_balancer_configuration.ip_address_pools
+        ip_address_pools.Element = AAZObjectArg()
+        cls._build_args_ip_address_pool_create(ip_address_pools.Element)
+
         pod_cidrs = cls._args_schema.network_configuration.pod_cidrs
         pod_cidrs.Element = AAZStrArg()
 
         service_cidrs = cls._args_schema.network_configuration.service_cidrs
         service_cidrs.Element = AAZStrArg()
         return cls._args_schema
+
+    _args_ip_address_pool_create = None
+
+    @classmethod
+    def _build_args_ip_address_pool_create(cls, _schema):
+        if cls._args_ip_address_pool_create is not None:
+            _schema.addresses = cls._args_ip_address_pool_create.addresses
+            _schema.auto_assign = cls._args_ip_address_pool_create.auto_assign
+            _schema.name = cls._args_ip_address_pool_create.name
+            _schema.only_use_host_ips = cls._args_ip_address_pool_create.only_use_host_ips
+            return
+
+        cls._args_ip_address_pool_create = AAZObjectArg()
+
+        ip_address_pool_create = cls._args_ip_address_pool_create
+        ip_address_pool_create.addresses = AAZListArg(
+            options=["addresses"],
+            help="The list of IP address ranges. Each range can be a either a subnet in CIDR format or an explicit start-end range of IP addresses. For a BGP service load balancer configuration, only CIDR format is supported and excludes /32 (IPv4) and /128 (IPv6) prefixes.",
+            required=True,
+        )
+        ip_address_pool_create.auto_assign = AAZStrArg(
+            options=["auto-assign"],
+            help="The indicator to determine if automatic allocation from the pool should occur.",
+            default="True",
+            enum={"False": "False", "True": "True"},
+        )
+        ip_address_pool_create.name = AAZStrArg(
+            options=["name"],
+            help="The name used to identify this IP address pool for association with a BGP advertisement.",
+            required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^[a-z0-9]([a-z0-9.-]{0,61}[a-z0-9]){0,1}$",
+            ),
+        )
+        ip_address_pool_create.only_use_host_ips = AAZStrArg(
+            options=["only-use-host-ips"],
+            help="The indicator to prevent the use of IP addresses ending with .0 and .255 for this pool. Enabling this option will only use IP addresses between .1 and .254 inclusive.",
+            default="True",
+            enum={"False": "False", "True": "True"},
+        )
+
+        addresses = cls._args_ip_address_pool_create.addresses
+        addresses.Element = AAZStrArg()
+
+        _schema.addresses = cls._args_ip_address_pool_create.addresses
+        _schema.auto_assign = cls._args_ip_address_pool_create.auto_assign
+        _schema.name = cls._args_ip_address_pool_create.name
+        _schema.only_use_host_ips = cls._args_ip_address_pool_create.only_use_host_ips
 
     _args_kubernetes_label_create = None
 
@@ -768,7 +855,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-10-01-preview",
+                    "api-version", "2025-02-01",
                     required=True,
                 ),
             }
@@ -777,6 +864,12 @@ class Create(AAZCommand):
         @property
         def header_parameters(self):
             parameters = {
+                **self.serialize_header_param(
+                    "If-Match", self.ctx.args.if_match,
+                ),
+                **self.serialize_header_param(
+                    "If-None-Match", self.ctx.args.if_none_match,
+                ),
                 **self.serialize_header_param(
                     "Content-Type", "application/json",
                 ),
@@ -914,7 +1007,9 @@ class Create(AAZCommand):
 
             upgrade_settings = _builder.get(".properties.initialAgentPoolConfigurations[].upgradeSettings")
             if upgrade_settings is not None:
+                upgrade_settings.set_prop("drainTimeout", AAZIntType, ".drain_timeout")
                 upgrade_settings.set_prop("maxSurge", AAZStrType, ".max_surge")
+                upgrade_settings.set_prop("maxUnavailable", AAZStrType, ".max_unavailable")
 
             managed_resource_group_configuration = _builder.get(".properties.managedResourceGroupConfiguration")
             if managed_resource_group_configuration is not None:
@@ -928,6 +1023,7 @@ class Create(AAZCommand):
                 network_configuration.set_prop("cloudServicesNetworkId", AAZStrType, ".cloud_services_network_id", typ_kwargs={"flags": {"required": True}})
                 network_configuration.set_prop("cniNetworkId", AAZStrType, ".cni_network_id", typ_kwargs={"flags": {"required": True}})
                 network_configuration.set_prop("dnsServiceIp", AAZStrType, ".dns_service_ip")
+                network_configuration.set_prop("l2ServiceLoadBalancerConfiguration", AAZObjectType, ".l2_service_load_balancer_configuration")
                 network_configuration.set_prop("podCidrs", AAZListType, ".pod_cidrs")
                 network_configuration.set_prop("serviceCidrs", AAZListType, ".service_cidrs")
 
@@ -1011,6 +1107,14 @@ class Create(AAZCommand):
             if addresses is not None:
                 addresses.set_elements(AAZStrType, ".")
 
+            l2_service_load_balancer_configuration = _builder.get(".properties.networkConfiguration.l2ServiceLoadBalancerConfiguration")
+            if l2_service_load_balancer_configuration is not None:
+                l2_service_load_balancer_configuration.set_prop("ipAddressPools", AAZListType, ".ip_address_pools")
+
+            ip_address_pools = _builder.get(".properties.networkConfiguration.l2ServiceLoadBalancerConfiguration.ipAddressPools")
+            if ip_address_pools is not None:
+                _CreateHelper._build_schema_ip_address_pool_create(ip_address_pools.set_elements(AAZObjectType, "."))
+
             pod_cidrs = _builder.get(".properties.networkConfiguration.podCidrs")
             if pod_cidrs is not None:
                 pod_cidrs.set_elements(AAZStrType, ".")
@@ -1043,6 +1147,9 @@ class Create(AAZCommand):
             cls._schema_on_200_201 = AAZObjectType()
 
             _schema_on_200_201 = cls._schema_on_200_201
+            _schema_on_200_201.etag = AAZStrType(
+                flags={"read_only": True},
+            )
             _schema_on_200_201.extended_location = AAZObjectType(
                 serialized_name="extendedLocation",
                 flags={"required": True},
@@ -1318,8 +1425,14 @@ class Create(AAZCommand):
             _CreateHelper._build_schema_kubernetes_label_read(taints.Element)
 
             upgrade_settings = cls._schema_on_200_201.properties.initial_agent_pool_configurations.Element.upgrade_settings
+            upgrade_settings.drain_timeout = AAZIntType(
+                serialized_name="drainTimeout",
+            )
             upgrade_settings.max_surge = AAZStrType(
                 serialized_name="maxSurge",
+            )
+            upgrade_settings.max_unavailable = AAZStrType(
+                serialized_name="maxUnavailable",
             )
 
             managed_resource_group_configuration = cls._schema_on_200_201.properties.managed_resource_group_configuration
@@ -1343,6 +1456,9 @@ class Create(AAZCommand):
             )
             network_configuration.dns_service_ip = AAZStrType(
                 serialized_name="dnsServiceIp",
+            )
+            network_configuration.l2_service_load_balancer_configuration = AAZObjectType(
+                serialized_name="l2ServiceLoadBalancerConfiguration",
             )
             network_configuration.pod_cidrs = AAZListType(
                 serialized_name="podCidrs",
@@ -1447,23 +1563,16 @@ class Create(AAZCommand):
 
             ip_address_pools = cls._schema_on_200_201.properties.network_configuration.bgp_service_load_balancer_configuration.ip_address_pools
             ip_address_pools.Element = AAZObjectType()
+            _CreateHelper._build_schema_ip_address_pool_read(ip_address_pools.Element)
 
-            _element = cls._schema_on_200_201.properties.network_configuration.bgp_service_load_balancer_configuration.ip_address_pools.Element
-            _element.addresses = AAZListType(
-                flags={"required": True},
-            )
-            _element.auto_assign = AAZStrType(
-                serialized_name="autoAssign",
-            )
-            _element.name = AAZStrType(
-                flags={"required": True},
-            )
-            _element.only_use_host_ips = AAZStrType(
-                serialized_name="onlyUseHostIps",
+            l2_service_load_balancer_configuration = cls._schema_on_200_201.properties.network_configuration.l2_service_load_balancer_configuration
+            l2_service_load_balancer_configuration.ip_address_pools = AAZListType(
+                serialized_name="ipAddressPools",
             )
 
-            addresses = cls._schema_on_200_201.properties.network_configuration.bgp_service_load_balancer_configuration.ip_address_pools.Element.addresses
-            addresses.Element = AAZStrType()
+            ip_address_pools = cls._schema_on_200_201.properties.network_configuration.l2_service_load_balancer_configuration.ip_address_pools
+            ip_address_pools.Element = AAZObjectType()
+            _CreateHelper._build_schema_ip_address_pool_read(ip_address_pools.Element)
 
             pod_cidrs = cls._schema_on_200_201.properties.network_configuration.pod_cidrs
             pod_cidrs.Element = AAZStrType()
@@ -1609,6 +1718,19 @@ class _CreateHelper:
     """Helper class for Create"""
 
     @classmethod
+    def _build_schema_ip_address_pool_create(cls, _builder):
+        if _builder is None:
+            return
+        _builder.set_prop("addresses", AAZListType, ".addresses", typ_kwargs={"flags": {"required": True}})
+        _builder.set_prop("autoAssign", AAZStrType, ".auto_assign")
+        _builder.set_prop("name", AAZStrType, ".name", typ_kwargs={"flags": {"required": True}})
+        _builder.set_prop("onlyUseHostIps", AAZStrType, ".only_use_host_ips")
+
+        addresses = _builder.get(".addresses")
+        if addresses is not None:
+            addresses.set_elements(AAZStrType, ".")
+
+    @classmethod
     def _build_schema_kubernetes_label_create(cls, _builder):
         if _builder is None:
             return
@@ -1642,6 +1764,41 @@ class _CreateHelper:
             return
         _builder.set_prop("networkId", AAZStrType, ".network_id", typ_kwargs={"flags": {"required": True}})
         _builder.set_prop("pluginType", AAZStrType, ".plugin_type")
+
+    _schema_ip_address_pool_read = None
+
+    @classmethod
+    def _build_schema_ip_address_pool_read(cls, _schema):
+        if cls._schema_ip_address_pool_read is not None:
+            _schema.addresses = cls._schema_ip_address_pool_read.addresses
+            _schema.auto_assign = cls._schema_ip_address_pool_read.auto_assign
+            _schema.name = cls._schema_ip_address_pool_read.name
+            _schema.only_use_host_ips = cls._schema_ip_address_pool_read.only_use_host_ips
+            return
+
+        cls._schema_ip_address_pool_read = _schema_ip_address_pool_read = AAZObjectType()
+
+        ip_address_pool_read = _schema_ip_address_pool_read
+        ip_address_pool_read.addresses = AAZListType(
+            flags={"required": True},
+        )
+        ip_address_pool_read.auto_assign = AAZStrType(
+            serialized_name="autoAssign",
+        )
+        ip_address_pool_read.name = AAZStrType(
+            flags={"required": True},
+        )
+        ip_address_pool_read.only_use_host_ips = AAZStrType(
+            serialized_name="onlyUseHostIps",
+        )
+
+        addresses = _schema_ip_address_pool_read.addresses
+        addresses.Element = AAZStrType()
+
+        _schema.addresses = cls._schema_ip_address_pool_read.addresses
+        _schema.auto_assign = cls._schema_ip_address_pool_read.auto_assign
+        _schema.name = cls._schema_ip_address_pool_read.name
+        _schema.only_use_host_ips = cls._schema_ip_address_pool_read.only_use_host_ips
 
     _schema_kubernetes_label_read = None
 

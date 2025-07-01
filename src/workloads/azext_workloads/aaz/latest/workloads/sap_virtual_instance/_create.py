@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "workloads sap-virtual-instance create",
-    is_preview=True,
 )
 class Create(AAZCommand):
     """Create a Virtual Instance for SAP solutions (VIS) resource
@@ -41,9 +40,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-10-01-preview",
+        "version": "2024-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.workloads/sapvirtualinstances/{}", "2023-10-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.workloads/sapvirtualinstances/{}", "2024-09-01"],
         ]
     }
 
@@ -75,48 +74,6 @@ class Create(AAZCommand):
                 pattern="^[a-zA-Z][a-zA-Z0-9]{2}$",
             ),
         )
-
-        # define Arg Group "Body"
-
-        _args_schema = cls._args_schema
-        _args_schema.identity = AAZObjectArg(
-            options=["--identity"],
-            arg_group="Body",
-            help="A pre-created user assigned identity with appropriate roles assigned. To learn more on identity and roles required, visit the ACSS how-to-guide.",
-        )
-        _args_schema.location = AAZResourceLocationArg(
-            arg_group="Body",
-            help="The geo-location where the resource lives",
-            fmt=AAZResourceLocationArgFormat(
-                resource_group_arg="resource_group",
-            ),
-        )
-        _args_schema.tags = AAZDictArg(
-            options=["--tags"],
-            arg_group="Body",
-            help="Resource tags.",
-        )
-
-        identity = cls._args_schema.identity
-        identity.type = AAZStrArg(
-            options=["type"],
-            help="Type of manage identity",
-            required=True,
-            enum={"None": "None", "UserAssigned": "UserAssigned"},
-        )
-        identity.user_assigned_identities = AAZDictArg(
-            options=["user-assigned-identities"],
-            help="User assigned identities dictionary",
-        )
-
-        user_assigned_identities = cls._args_schema.identity.user_assigned_identities
-        user_assigned_identities.Element = AAZObjectArg(
-            nullable=True,
-            blank={},
-        )
-
-        tags = cls._args_schema.tags
-        tags.Element = AAZStrArg()
 
         # define Arg Group "Configuration"
 
@@ -153,8 +110,8 @@ class Create(AAZCommand):
             options=["central-server-vm-id"],
             help="The virtual machine ID of the Central Server.",
         )
-        discovery_org.managed_rg_sa_name = AAZStrArg(
-            options=["managed-rg-sa-name"],
+        discovery_org.managed_rg_storage_account_name = AAZStrArg(
+            options=["managed-rg-storage-account-name"],
             help="The custom storage account name for the storage account created by the service in the managed resource group created as part of VIS deployment.<br><br>Refer to the storage account naming rules [here](https://learn.microsoft.com/azure/azure-resource-manager/management/resource-name-rules#microsoftstorage).<br><br>If not provided, the service will create the storage account with a random name.",
             fmt=AAZStrArgFormat(
                 max_length=24,
@@ -184,7 +141,6 @@ class Create(AAZCommand):
             options=["--mrg-network-access-typ", "--managed-resources-network-access-type"],
             arg_group="Properties",
             help="Specifies the network access configuration for the resources that will be deployed in the Managed Resource Group. The options to choose from are Public and Private. If 'Private' is chosen, the Storage Account service tag should be enabled on the subnets in which the SAP VMs exist. This is required for establishing connectivity between VM extensions and the managed resource group storage account. This setting is currently applicable only to Storage Account. Learn more here https://go.microsoft.com/fwlink/?linkid=2247228",
-            default="Public",
             enum={"Private": "Private", "Public": "Public"},
         )
         _args_schema.sap_product = AAZStrArg(
@@ -193,6 +149,49 @@ class Create(AAZCommand):
             help="Defines the SAP Product type.",
             enum={"ECC": "ECC", "Other": "Other", "S4HANA": "S4HANA"},
         )
+
+        # define Arg Group "Resource"
+
+        _args_schema = cls._args_schema
+        _args_schema.identity = AAZObjectArg(
+            options=["--identity"],
+            arg_group="Resource",
+            help="The managed service identities assigned to this resource.",
+        )
+        _args_schema.location = AAZResourceLocationArg(
+            arg_group="Resource",
+            help="The geo-location where the resource lives",
+            required=True,
+            fmt=AAZResourceLocationArgFormat(
+                resource_group_arg="resource_group",
+            ),
+        )
+        _args_schema.tags = AAZDictArg(
+            options=["--tags"],
+            arg_group="Resource",
+            help="Resource tags.",
+        )
+
+        identity = cls._args_schema.identity
+        identity.type = AAZStrArg(
+            options=["type"],
+            help="Type of managed service identity (where both SystemAssigned and UserAssigned types are allowed).",
+            required=True,
+            enum={"None": "None", "UserAssigned": "UserAssigned"},
+        )
+        identity.user_assigned_identities = AAZDictArg(
+            options=["user-assigned-identities"],
+            help="The set of user assigned identities associated with the resource. The userAssignedIdentities dictionary keys will be ARM resource ids in the form: '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}. The dictionary values can be empty objects ({}) in requests.",
+        )
+
+        user_assigned_identities = cls._args_schema.identity.user_assigned_identities
+        user_assigned_identities.Element = AAZObjectArg(
+            nullable=True,
+            blank={},
+        )
+
+        tags = cls._args_schema.tags
+        tags.Element = AAZStrArg()
         return cls._args_schema
 
     _args_disk_configuration_create = None
@@ -254,10 +253,11 @@ class Create(AAZCommand):
             help="The fencing client id.",
             required=True,
         )
-        high_availability_software_configuration_create.fencing_client_password = AAZStrArg(
+        high_availability_software_configuration_create.fencing_client_password = AAZPasswordArg(
             options=["fencing-client-password"],
             help="The fencing client id secret/password. The secret should never expire. This will be used pacemaker to start/stop the cluster VMs.",
             required=True,
+            prompt={"cls": "AAZPromptPasswordInput", "kwargs": {"msg": "Password:"}},
         )
 
         _schema.fencing_client_id = cls._args_high_availability_software_configuration_create.fencing_client_id
@@ -465,6 +465,7 @@ class Create(AAZCommand):
         )
         database_server.load_balancer = AAZObjectArg(
             options=["load-balancer"],
+            help="The resource names object for load balancer and related resources.",
         )
         cls._build_args_load_balancer_resource_names_create(database_server.load_balancer)
         database_server.virtual_machines = AAZListArg(
@@ -667,6 +668,7 @@ class Create(AAZCommand):
         )
         sap_install_without_os_config.high_availability_software_configuration = AAZObjectArg(
             options=["high-availability-software-configuration"],
+            help="Gets or sets the HA software configuration.",
         )
         cls._build_args_high_availability_software_configuration_create(sap_install_without_os_config.high_availability_software_configuration)
         sap_install_without_os_config.sap_bits_storage_account_id = AAZStrArg(
@@ -706,10 +708,11 @@ class Create(AAZCommand):
             help="The software version to install.",
             required=True,
         )
-        service_initiated.ssh_private_key = AAZStrArg(
+        service_initiated.ssh_private_key = AAZPasswordArg(
             options=["ssh-private-key"],
             help="The SSH private key.",
             required=True,
+            prompt={"cls": "AAZPromptPasswordInput", "kwargs": {"msg": "Password:"}},
         )
 
         _schema.external = cls._args_software_configuration_create.external
@@ -768,9 +771,10 @@ class Create(AAZCommand):
         )
 
         os_profile = cls._args_virtual_machine_configuration_create.os_profile
-        os_profile.admin_password = AAZStrArg(
+        os_profile.admin_password = AAZPasswordArg(
             options=["admin-password"],
-            help="Specifies the password of the administrator account. <br><br> **Minimum-length (Windows):** 8 characters <br><br> **Minimum-length (Linux):** 6 characters <br><br> **Max-length (Windows):** 123 characters <br><br> **Max-length (Linux):** 72 characters <br><br> **Complexity requirements:** 3 out of 4 conditions below need to be fulfilled <br> Has lower characters <br>Has upper characters <br> Has a digit <br> Has a special character (Regex match [\W_]) <br><br> **Disallowed values:** \"abc@123\", \"P@$$w0rd\", \"P@ssw0rd\", \"P@ssword123\", \"Pa$$word\", \"pass@word1\", \"Password!\", \"Password1\", \"Password22\", \"iloveyou!\" <br><br> For resetting the password, see [How to reset the Remote Desktop service or its login password in a Windows VM](https://docs.microsoft.com/troubleshoot/azure/virtual-machines/reset-rdp) <br><br> For resetting root password, see [Manage users, SSH, and check or repair disks on Azure Linux VMs using the VMAccess Extension](https://docs.microsoft.com/troubleshoot/azure/virtual-machines/troubleshoot-ssh-connection)",
+            help="Specifies the password of the administrator account. <br><br> **Minimum-length (Windows):** 8 characters <br><br> **Minimum-length (Linux):** 6 characters <br><br> **Max-length (Windows):** 123 characters <br><br> **Max-length (Linux):** 72 characters <br><br> **Complexity requirements:** 3 out of 4 conditions below need to be fulfilled <br> Has lower characters <br>Has upper characters <br> Has a digit <br> Has a special character (Regex match [\\W_]) <br><br> **Disallowed values:** \"abc@123\", \"P@$$w0rd\", \"P@ssw0rd\", \"P@ssword123\", \"Pa$$word\", \"pass@word1\", \"Password!\", \"Password1\", \"Password22\", \"iloveyou!\" <br><br> For resetting the password, see [How to reset the Remote Desktop service or its login password in a Windows VM](https://docs.microsoft.com/troubleshoot/azure/virtual-machines/reset-rdp) <br><br> For resetting root password, see [Manage users, SSH, and check or repair disks on Azure Linux VMs using the VMAccess Extension](https://docs.microsoft.com/troubleshoot/azure/virtual-machines/troubleshoot-ssh-connection)",
+            prompt={"cls": "AAZPromptPasswordInput", "kwargs": {"msg": "Password:"}},
         )
         os_profile.admin_username = AAZStrArg(
             options=["admin-username"],
@@ -816,13 +820,14 @@ class Create(AAZCommand):
         _element = cls._args_virtual_machine_configuration_create.os_profile.os_configuration.linux.ssh.public_keys.Element
         _element.key_data = AAZStrArg(
             options=["key-data"],
-            help="SSH public key certificate used to authenticate with the VM through ssh. The key needs to be at least 2048-bit and in ssh-rsa format. <br><br> For creating ssh keys, see [Create SSH keys on Linux and Mac for Linux VMs in Azure](https://docs.microsoft.com/azure/virtual-machines/linux/create-ssh-keys-detailed).",
+            help="SSH public key certificate used to authenticate with the VM through ssh. The key needs to be at least 2048-bit and in ssh-rsa format. <br><br> For creating ssh keys, see [Create SSH keys on Linux and Mac for Linux VMs in Azure](https://learn.microsoft.com/azure/virtual-machines/linux/create-ssh-keys-detailed).",
         )
 
         ssh_key_pair = cls._args_virtual_machine_configuration_create.os_profile.os_configuration.linux.ssh_key_pair
-        ssh_key_pair.private_key = AAZStrArg(
+        ssh_key_pair.private_key = AAZPasswordArg(
             options=["private-key"],
             help="SSH private key.",
+            prompt={"cls": "AAZPromptPasswordInput", "kwargs": {"msg": "Password:"}},
         )
         ssh_key_pair.public_key = AAZStrArg(
             options=["public-key"],
@@ -892,7 +897,7 @@ class Create(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.SAPVirtualInstancesCreate(ctx=self.ctx)()
+        yield self.SapVirtualInstancesCreate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -907,7 +912,7 @@ class Create(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class SAPVirtualInstancesCreate(AAZHttpOperation):
+    class SapVirtualInstancesCreate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -971,7 +976,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-10-01-preview",
+                    "api-version", "2024-09-01",
                     required=True,
                 ),
             }
@@ -994,11 +999,11 @@ class Create(AAZCommand):
             _content_value, _builder = self.new_content_builder(
                 self.ctx.args,
                 typ=AAZObjectType,
-                typ_kwargs={"flags": {"client_flatten": True}}
+                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
             _builder.set_prop("identity", AAZObjectType, ".identity")
             _builder.set_prop("location", AAZStrType, ".location", typ_kwargs={"flags": {"required": True}})
-            _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True, "client_flatten": True}})
+            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
 
             identity = _builder.get(".identity")
@@ -1052,7 +1057,7 @@ class Create(AAZCommand):
             disc_discovery = _builder.get(".properties.configuration{configurationType:Discovery}")
             if disc_discovery is not None:
                 disc_discovery.set_prop("centralServerVmId", AAZStrType, ".discovery_org.central_server_vm_id")
-                disc_discovery.set_prop("managedRgStorageAccountName", AAZStrType, ".discovery_org.managed_rg_sa_name")
+                disc_discovery.set_prop("managedRgStorageAccountName", AAZStrType, ".discovery_org.managed_rg_storage_account_name")
 
             managed_resource_group_configuration = _builder.get(".properties.managedResourceGroupConfiguration")
             if managed_resource_group_configuration is not None:
@@ -1093,7 +1098,7 @@ class Create(AAZCommand):
                 flags={"read_only": True},
             )
             _schema_on_200_201.properties = AAZObjectType(
-                flags={"required": True, "client_flatten": True},
+                flags={"client_flatten": True},
             )
             _schema_on_200_201.system_data = AAZObjectType(
                 serialized_name="systemData",
@@ -1134,8 +1139,12 @@ class Create(AAZCommand):
             properties.environment = AAZStrType(
                 flags={"required": True},
             )
-            properties.errors = AAZObjectType()
-            properties.health = AAZStrType()
+            properties.errors = AAZObjectType(
+                flags={"read_only": True},
+            )
+            properties.health = AAZStrType(
+                flags={"read_only": True},
+            )
             properties.managed_resource_group_configuration = AAZObjectType(
                 serialized_name="managedResourceGroupConfiguration",
             )
@@ -1150,8 +1159,12 @@ class Create(AAZCommand):
                 serialized_name="sapProduct",
                 flags={"required": True},
             )
-            properties.state = AAZStrType()
-            properties.status = AAZStrType()
+            properties.state = AAZStrType(
+                flags={"read_only": True},
+            )
+            properties.status = AAZStrType(
+                flags={"read_only": True},
+            )
 
             configuration = cls._schema_on_200_201.properties.configuration
             configuration.configuration_type = AAZStrType(

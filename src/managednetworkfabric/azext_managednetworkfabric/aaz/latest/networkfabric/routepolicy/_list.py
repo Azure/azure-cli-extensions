@@ -25,12 +25,14 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-02-15-preview",
+        "version": "2024-06-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.managednetworkfabric/routepolicies", "2024-02-15-preview"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/routepolicies", "2024-02-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.managednetworkfabric/routepolicies", "2024-06-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/routepolicies", "2024-06-15-preview"],
         ]
     }
+
+    AZ_SUPPORT_PAGINATION = True
 
     def _handler(self, command_args):
         super()._handler(command_args)
@@ -52,12 +54,12 @@ class List(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        condition_0 = has_value(self.ctx.args.resource_group) and has_value(self.ctx.subscription_id)
-        condition_1 = has_value(self.ctx.subscription_id) and has_value(self.ctx.args.resource_group) is not True
+        condition_0 = has_value(self.ctx.subscription_id) and has_value(self.ctx.args.resource_group) is not True
+        condition_1 = has_value(self.ctx.args.resource_group) and has_value(self.ctx.subscription_id)
         if condition_0:
-            self.RoutePoliciesListByResourceGroup(ctx=self.ctx)()
-        if condition_1:
             self.RoutePoliciesListBySubscription(ctx=self.ctx)()
+        if condition_1:
+            self.RoutePoliciesListByResourceGroup(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -73,7 +75,7 @@ class List(AAZCommand):
         next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
         return result, next_link
 
-    class RoutePoliciesListByResourceGroup(AAZHttpOperation):
+    class RoutePoliciesListBySubscription(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -87,7 +89,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedNetworkFabric/routePolicies",
+                "/subscriptions/{subscriptionId}/providers/Microsoft.ManagedNetworkFabric/routePolicies",
                 **self.url_parameters
             )
 
@@ -103,10 +105,6 @@ class List(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "resourceGroupName", self.ctx.args.resource_group,
-                    required=True,
-                ),
-                **self.serialize_url_param(
                     "subscriptionId", self.ctx.subscription_id,
                     required=True,
                 ),
@@ -117,7 +115,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-02-15-preview",
+                    "api-version", "2024-06-15-preview",
                     required=True,
                 ),
             }
@@ -153,7 +151,9 @@ class List(AAZCommand):
             _schema_on_200.next_link = AAZStrType(
                 serialized_name="nextLink",
             )
-            _schema_on_200.value = AAZListType()
+            _schema_on_200.value = AAZListType(
+                flags={"required": True},
+            )
 
             value = cls._schema_on_200.value
             value.Element = AAZObjectType()
@@ -196,6 +196,10 @@ class List(AAZCommand):
             properties.default_action = AAZStrType(
                 serialized_name="defaultAction",
             )
+            properties.last_operation = AAZObjectType(
+                serialized_name="lastOperation",
+                flags={"read_only": True},
+            )
             properties.network_fabric_id = AAZStrType(
                 serialized_name="networkFabricId",
                 flags={"required": True},
@@ -206,6 +210,11 @@ class List(AAZCommand):
             )
             properties.statements = AAZListType(
                 flags={"required": True},
+            )
+
+            last_operation = cls._schema_on_200.value.Element.properties.last_operation
+            last_operation.details = AAZStrType(
+                flags={"read_only": True},
             )
 
             statements = cls._schema_on_200.value.Element.properties.statements
@@ -298,7 +307,7 @@ class List(AAZCommand):
 
             return cls._schema_on_200
 
-    class RoutePoliciesListBySubscription(AAZHttpOperation):
+    class RoutePoliciesListByResourceGroup(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -312,7 +321,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/providers/Microsoft.ManagedNetworkFabric/routePolicies",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedNetworkFabric/routePolicies",
                 **self.url_parameters
             )
 
@@ -328,6 +337,10 @@ class List(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
+                    "resourceGroupName", self.ctx.args.resource_group,
+                    required=True,
+                ),
+                **self.serialize_url_param(
                     "subscriptionId", self.ctx.subscription_id,
                     required=True,
                 ),
@@ -338,7 +351,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-02-15-preview",
+                    "api-version", "2024-06-15-preview",
                     required=True,
                 ),
             }
@@ -374,7 +387,9 @@ class List(AAZCommand):
             _schema_on_200.next_link = AAZStrType(
                 serialized_name="nextLink",
             )
-            _schema_on_200.value = AAZListType()
+            _schema_on_200.value = AAZListType(
+                flags={"required": True},
+            )
 
             value = cls._schema_on_200.value
             value.Element = AAZObjectType()
@@ -417,6 +432,10 @@ class List(AAZCommand):
             properties.default_action = AAZStrType(
                 serialized_name="defaultAction",
             )
+            properties.last_operation = AAZObjectType(
+                serialized_name="lastOperation",
+                flags={"read_only": True},
+            )
             properties.network_fabric_id = AAZStrType(
                 serialized_name="networkFabricId",
                 flags={"required": True},
@@ -427,6 +446,11 @@ class List(AAZCommand):
             )
             properties.statements = AAZListType(
                 flags={"required": True},
+            )
+
+            last_operation = cls._schema_on_200.value.Element.properties.last_operation
+            last_operation.details = AAZStrType(
+                flags={"read_only": True},
             )
 
             statements = cls._schema_on_200.value.Element.properties.statements

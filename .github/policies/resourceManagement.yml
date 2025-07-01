@@ -1,10 +1,10 @@
-id: 
+id:
 name: GitOps.PullRequestIssueManagement
 description: GitOps.PullRequestIssueManagement primitive
-owner: 
+owner:
 resource: repository
 disabled: false
-where: 
+where:
 configuration:
   resourceManagementConfiguration:
     scheduledSearches:
@@ -241,6 +241,7 @@ configuration:
             mentionees:
             - mojayara
             - jportugal0
+            - pkrishnanms
             replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
             assignMentionees: False
       - if:
@@ -251,7 +252,7 @@ configuration:
         then:
         - mentionUsers:
             mentionees:
-            - dyu1208
+            - mbifeld
             - FumingZhang
             - andyliuliming
             replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
@@ -272,12 +273,22 @@ configuration:
         - hasLabel:
             label: Service Attention
         - hasLabel:
+            label: Amg
+        then:
+        - mentionUsers:
+            mentionees:
+            - ABZhang0
+            replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
+            assignMentionees: False
+      - if:
+        - hasLabel:
+            label: Service Attention
+        - hasLabel:
             label: Analysis Services
         then:
         - mentionUsers:
             mentionees:
             - athipp
-            - taiwu
             - minghan
             replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
             assignMentionees: False
@@ -334,6 +345,30 @@ configuration:
         - hasLabel:
             label: Service Attention
         - hasLabel:
+            label: Appservice-kube
+        then:
+        - mentionUsers:
+            mentionees:
+            - Juliehzl
+            replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
+            assignMentionees: False
+      - if:
+        - hasLabel:
+            label: Service Attention
+        - hasLabel:
+            label: Arc enabled servers
+        then:
+        - mentionUsers:
+            mentionees:
+            - rpsqrd
+            - edyoung
+            - vedkale
+            replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
+            assignMentionees: False
+      - if:
+        - hasLabel:
+            label: Service Attention
+        - hasLabel:
             label: ArcResourceBridge
         then:
         - mentionUsers:
@@ -375,6 +410,18 @@ configuration:
         - mentionUsers:
             mentionees:
             - MSEvanhi
+            replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
+            assignMentionees: False
+      - if:
+        - hasLabel:
+            label: Service Attention
+        - hasLabel:
+            label: ARM - Management Group
+        then:
+        - mentionUsers:
+            mentionees:
+            - rthorn17
+            - daxfohl
             replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
             assignMentionees: False
       - if:
@@ -426,6 +473,17 @@ configuration:
         - hasLabel:
             label: Service Attention
         - hasLabel:
+            label: arm-bicep
+        then:
+        - mentionUsers:
+            mentionees:
+            - Azure/deployments-owners
+            replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
+            assignMentionees: False
+      - if:
+        - hasLabel:
+            label: Service Attention
+        - hasLabel:
             label: ARO
         then:
         - mentionUsers:
@@ -434,6 +492,19 @@ configuration:
             - jim-minter
             - julienstroheker
             - amanohar
+            replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
+            assignMentionees: False
+      - if:
+        - hasLabel:
+            label: Service Attention
+        - hasLabel:
+            label: ASTRO
+        then:
+        - mentionUsers:
+            mentionees:
+            - Reshmi-Sriram
+            - banggaurav
+            - charanjeet2008
             replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
             assignMentionees: False
       - if:
@@ -488,18 +559,6 @@ configuration:
         - hasLabel:
             label: Service Attention
         - hasLabel:
-            label: Azure Arc enabled servers
-        then:
-        - mentionUsers:
-            mentionees:
-            - rpsqrd
-            - edyoung
-            replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
-            assignMentionees: False
-      - if:
-        - hasLabel:
-            label: Service Attention
-        - hasLabel:
             label: Azure Data Explorer
         then:
         - mentionUsers:
@@ -509,6 +568,17 @@ configuration:
             - zoharHenMicrosoft
             - sagivf
             - Aviv-Yaniv
+            replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
+            assignMentionees: False
+      - if:
+        - hasLabel:
+            label: Service Attention
+        - hasLabel:
+            label: Azure Deployments
+        then:
+        - mentionUsers:
+            mentionees:
+            - Azure/deployments-owners
             replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
             assignMentionees: False
       - if:
@@ -561,7 +631,7 @@ configuration:
         then:
         - mentionUsers:
             mentionees:
-            - matthchr
+            - pradeepgunda
             replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
             assignMentionees: False
       - if:
@@ -573,6 +643,7 @@ configuration:
         - mentionUsers:
             mentionees:
             - cabbpt
+            - theelderwand
             replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
             assignMentionees: False
       - if:
@@ -591,6 +662,17 @@ configuration:
         - hasLabel:
             label: Service Attention
         - hasLabel:
+            label: Bootstrapper
+        then:
+        - mentionUsers:
+            mentionees:
+            - bganapa
+            replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
+            assignMentionees: False
+      - if:
+        - hasLabel:
+            label: Service Attention
+        - hasLabel:
             label: Bot Service
         then:
         - mentionUsers:
@@ -602,11 +684,45 @@ configuration:
         - hasLabel:
             label: Service Attention
         - hasLabel:
+            label: Cloud Service (Ext)
+        then:
+        - mentionUsers:
+            mentionees:
+            - hirenshah1
+            replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
+            assignMentionees: False
+      - if:
+        - hasLabel:
+            label: Service Attention
+        - hasLabel:
             label: Cloud Shell
         then:
         - mentionUsers:
             mentionees:
-            - maertendMSFT
+            - mbifeld
+            replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
+            assignMentionees: False
+      - if:
+        - hasLabel:
+            label: Service Attention
+        - hasLabel:
+            label: CloudService
+        then:
+        - mentionUsers:
+            mentionees:
+            - bberera
+            replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
+            assignMentionees: False
+      - if:
+        - hasLabel:
+            label: Service Attention
+        - hasLabel:
+            label: CodeSigning
+        then:
+        - mentionUsers:
+            mentionees:
+            - Jaxelr
+            - DawnWang17
             replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
             assignMentionees: False
       - if:
@@ -692,6 +808,7 @@ configuration:
             mentionees:
             - ctstone
             - anrothMSFT
+            - yungshinlintw
             replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
             assignMentionees: False
       - if:
@@ -794,6 +911,20 @@ configuration:
         - mentionUsers:
             mentionees:
             - swmachan
+            replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
+            assignMentionees: False
+      - if:
+        - hasLabel:
+            label: Service Attention
+        - hasLabel:
+            label: Cognitive Services
+        then:
+        - mentionUsers:
+            mentionees:
+            - gxy001
+            - yangyuan
+            - tianxin-ms
+            - xiaomin-ms
             replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
             assignMentionees: False
       - if:
@@ -918,6 +1049,17 @@ configuration:
         - hasLabel:
             label: Service Attention
         - hasLabel:
+            label: confcom
+        then:
+        - mentionUsers:
+            mentionees:
+            - SethHollandsworth
+            replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
+            assignMentionees: False
+      - if:
+        - hasLabel:
+            label: Service Attention
+        - hasLabel:
             label: Confidential Ledger
         then:
         - mentionUsers:
@@ -934,6 +1076,28 @@ configuration:
         - mentionUsers:
             mentionees:
             - akashkeshari
+            replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
+            assignMentionees: False
+      - if:
+        - hasLabel:
+            label: Service Attention
+        - hasLabel:
+            label: ConnectedMachine
+        then:
+        - mentionUsers:
+            mentionees:
+            - raghushantha
+            replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
+            assignMentionees: False
+      - if:
+        - hasLabel:
+            label: Service Attention
+        - hasLabel:
+            label: connectedvmware
+        then:
+        - mentionUsers:
+            mentionees:
+            - nascarsayan
             replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
             assignMentionees: False
       - if:
@@ -1033,8 +1197,11 @@ configuration:
         - mentionUsers:
             mentionees:
             - toddysm
-            - luisdlp
             - northtyphoon
+            - luisdlp
+            - terencet-dev
+            - shizhMSFT
+            - JXavierMSFT
             replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
             assignMentionees: False
       - if:
@@ -1059,7 +1226,8 @@ configuration:
         then:
         - mentionUsers:
             mentionees:
-            - calvinsID
+            - howang-ms
+            - Greedygre
             replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
             assignMentionees: False
       - if:
@@ -1184,7 +1352,8 @@ configuration:
         then:
         - mentionUsers:
             mentionees:
-            - arindamc
+            - edwinc
+            - mvvsubbu
             replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
             assignMentionees: False
       - if:
@@ -1230,7 +1399,7 @@ configuration:
         then:
         - mentionUsers:
             mentionees:
-            - idear1203
+            - MikeRys
             replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
             assignMentionees: False
       - if:
@@ -1285,8 +1454,8 @@ configuration:
         then:
         - mentionUsers:
             mentionees:
-            - raedJarrar
-            - jifems
+            - dlacy7
+            - NateB2
             replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
             assignMentionees: False
       - if:
@@ -1326,6 +1495,17 @@ configuration:
             mentionees:
             - Daya-Patil
             - hiaga
+            replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
+            assignMentionees: False
+      - if:
+        - hasLabel:
+            label: Service Attention
+        - hasLabel:
+            label: DesktopVirtualization
+        then:
+        - mentionUsers:
+            mentionees:
+            - MichaelWu
             replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
             assignMentionees: False
       - if:
@@ -1383,7 +1563,8 @@ configuration:
         then:
         - mentionUsers:
             mentionees:
-            - Tanmayeekamath
+            - anishtrakru
+            - derekbekoe
             replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
             assignMentionees: False
       - if:
@@ -1402,11 +1583,36 @@ configuration:
         - hasLabel:
             label: Service Attention
         - hasLabel:
+            label: DnsResolver
+        then:
+        - mentionUsers:
+            mentionees:
+            - arpit-gagneja
+            - jotrivet
+            replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
+            assignMentionees: False
+      - if:
+        - hasLabel:
+            label: Service Attention
+        - hasLabel:
+            label: ElasticSan
+        then:
+        - mentionUsers:
+            mentionees:
+            - blueww
+            replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
+            assignMentionees: False
+      - if:
+        - hasLabel:
+            label: Service Attention
+        - hasLabel:
             label: Event Grid
         then:
         - mentionUsers:
             mentionees:
-            - jfggdl
+            - Kishp01
+            - veyaddan
+            - santoshallumicrosoft
             replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
             assignMentionees: False
       - if:
@@ -1418,6 +1624,17 @@ configuration:
         - mentionUsers:
             mentionees:
             - Saglodha
+            replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
+            assignMentionees: False
+      - if:
+        - hasLabel:
+            label: Service Attention
+        - hasLabel:
+            label: fleet
+        then:
+        - mentionUsers:
+            mentionees:
+            - Ealianis
             replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
             assignMentionees: False
       - if:
@@ -1443,6 +1660,7 @@ configuration:
             mentionees:
             - dkershaw10
             - baywet
+            - SteveMutungi254
             replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
             assignMentionees: False
       - if:
@@ -1466,7 +1684,6 @@ configuration:
         - mentionUsers:
             mentionees:
             - aim-for-better
-            - idear1203
             - deshriva
             replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
             assignMentionees: False
@@ -1480,6 +1697,19 @@ configuration:
             mentionees:
             - romahamu
             - omzevall
+            replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
+            assignMentionees: False
+      - if:
+        - hasLabel:
+            label: Service Attention
+        - hasLabel:
+            label: ImageBuilder
+        then:
+        - mentionUsers:
+            mentionees:
+            - adana-popescu
+            - KalpeshChavan12
+            - ralucaminea
             replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
             assignMentionees: False
       - if:
@@ -1536,8 +1766,7 @@ configuration:
         then:
         - mentionUsers:
             mentionees:
-            - rkmanda
-            - chieftn
+            - Elsie4ever，MohinderAtwal
             replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
             assignMentionees: False
       - if:
@@ -1550,7 +1779,9 @@ configuration:
             mentionees:
             - RandalliLama
             - schaabs
-            - jlichwa
+            - chen-karen
+            - chandanrr
+            - cheathamb36
             replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
             assignMentionees: False
       - if:
@@ -1561,7 +1792,8 @@ configuration:
         then:
         - mentionUsers:
             mentionees:
-            - NarayanThiru
+            - bavneetsingh16
+            - ramyasreechakka
             replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
             assignMentionees: False
       - if:
@@ -1573,6 +1805,17 @@ configuration:
         - mentionUsers:
             mentionees:
             - Tanmayeekamath
+            replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
+            assignMentionees: False
+      - if:
+        - hasLabel:
+            label: Service Attention
+        - hasLabel:
+            label: load
+        then:
+        - mentionUsers:
+            mentionees:
+            - Himanshu49
             replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
             assignMentionees: False
       - if:
@@ -1634,11 +1877,36 @@ configuration:
         - hasLabel:
             label: Service Attention
         - hasLabel:
+            label: Machine Learning Services
+        then:
+        - mentionUsers:
+            mentionees:
+            - paulshealy1
+            - seanyao1
+            replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
+            assignMentionees: False
+      - if:
+        - hasLabel:
+            label: Service Attention
+        - hasLabel:
+            label: Maintenance
+        then:
+        - mentionUsers:
+            mentionees:
+            - adana-popescu
+            - KalpeshChavan12
+            - ralucaminea
+            replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
+            assignMentionees: False
+      - if:
+        - hasLabel:
+            label: Service Attention
+        - hasLabel:
             label: Managed Identity
         then:
         - mentionUsers:
             mentionees:
-            - varunkch
+            - RamyaElangovanP
             replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
             assignMentionees: False
       - if:
@@ -1650,6 +1918,18 @@ configuration:
         - mentionUsers:
             mentionees:
             - Lighthouse-Azure
+            replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
+            assignMentionees: False
+      - if:
+        - hasLabel:
+            label: Service Attention
+        - hasLabel:
+            label: Management Groups
+        then:
+        - mentionUsers:
+            mentionees:
+            - rthorn17
+            - cemheren
             replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
             assignMentionees: False
       - if:
@@ -1673,6 +1953,19 @@ configuration:
             mentionees:
             - ambhatna
             - savjani
+            replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
+            assignMentionees: False
+      - if:
+        - hasLabel:
+            label: Service Attention
+        - hasLabel:
+            label: Marketplace
+        then:
+        - mentionUsers:
+            mentionees:
+            - saviesacov
+            - gupele
+            - mikamine
             replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
             assignMentionees: False
       - if:
@@ -1866,22 +2159,10 @@ configuration:
         - hasLabel:
             label: Service Attention
         - hasLabel:
-            label: Mobile Engagement
-        then:
-        - mentionUsers:
-            mentionees:
-            - kpiteira
-            replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
-            assignMentionees: False
-      - if:
-        - hasLabel:
-            label: Service Attention
-        - hasLabel:
             label: Monitor
         then:
         - mentionUsers:
             mentionees:
-            - SameergMS
             - yairgil
             replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
             assignMentionees: False
@@ -2016,6 +2297,28 @@ configuration:
         - hasLabel:
             label: Service Attention
         - hasLabel:
+            label: Neon Postgre
+        then:
+        - mentionUsers:
+            mentionees:
+            - alluri02
+            replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
+            assignMentionees: False
+      - if:
+        - hasLabel:
+            label: Service Attention
+        - hasLabel:
+            label: NetApp Files
+        then:
+        - mentionUsers:
+            mentionees:
+            - audunn
+            replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
+            assignMentionees: False
+      - if:
+        - hasLabel:
+            label: Service Attention
+        - hasLabel:
             label: Network
         then:
         - mentionUsers:
@@ -2042,6 +2345,7 @@ configuration:
         then:
         - mentionUsers:
             mentionees:
+            - isamorris
             - bastionsuppgithub
             replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
             assignMentionees: False
@@ -2099,7 +2403,8 @@ configuration:
         then:
         - mentionUsers:
             mentionees:
-            - fwsuppgithub
+            - gopimsft
+            - Azure/azure-firewall
             replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
             assignMentionees: False
       - if:
@@ -2220,12 +2525,23 @@ configuration:
         - hasLabel:
             label: Service Attention
         - hasLabel:
+            label: Nginx
+        then:
+        - mentionUsers:
+            mentionees:
+            - limingu
+            replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
+            assignMentionees: False
+      - if:
+        - hasLabel:
+            label: Service Attention
+        - hasLabel:
             label: Notification Hub
         then:
         - mentionUsers:
             mentionees:
-            - tjsomasundaram
-            - aimankhan
+            - sreehari-ms
+            - vivekkhare31
             replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
             assignMentionees: False
       - if:
@@ -2237,6 +2553,20 @@ configuration:
         - mentionUsers:
             mentionees:
             - AzmonLogA
+            replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
+            assignMentionees: False
+      - if:
+        - hasLabel:
+            label: Service Attention
+        - hasLabel:
+            label: Oracle
+        then:
+        - mentionUsers:
+            mentionees:
+            - v-rvilathurs
+            - v-jamcheung
+            - v-eelhomsi
+            - v-adhenry
             replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
             assignMentionees: False
       - if:
@@ -2260,6 +2590,9 @@ configuration:
         - mentionUsers:
             mentionees:
             - kenieva
+            - shanhix1
+            - calecarter
+            - mentat9
             replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
             assignMentionees: False
       - if:
@@ -2270,9 +2603,9 @@ configuration:
         then:
         - mentionUsers:
             mentionees:
-            - sunilagarwal
-            - sr-msft
-            - niklarin
+            - gbowerman
+            - jasomaning
+            - nachoalonsoportillo
             replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
             assignMentionees: False
       - if:
@@ -2283,8 +2616,9 @@ configuration:
         then:
         - mentionUsers:
             mentionees:
-            - daeunyim
-            - rajsell
+            - gbowerman
+            - jasomaning
+            - nachoalonsoportillo
             replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
             assignMentionees: False
       - if:
@@ -2314,12 +2648,24 @@ configuration:
         - hasLabel:
             label: Service Attention
         - hasLabel:
+            label: Quota
+        then:
+        - mentionUsers:
+            mentionees:
+            - gyprakas
+            - rahuls-microsoft
+            - devatula
+            replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
+            assignMentionees: False
+      - if:
+        - hasLabel:
+            label: Service Attention
+        - hasLabel:
             label: Recovery Services Backup
         then:
         - mentionUsers:
             mentionees:
-            - pvrk
-            - adityabalaji-msft
+            - Daya-Patil
             replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
             assignMentionees: False
       - if:
@@ -2387,7 +2733,7 @@ configuration:
         then:
         - mentionUsers:
             mentionees:
-            - chiragg4u
+            - venu-l
             replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
             assignMentionees: False
       - if:
@@ -2428,11 +2774,21 @@ configuration:
         - hasLabel:
             label: Service Attention
         - hasLabel:
+            label: scvmm
+        then:
+        - mentionUsers:
+            mentionees:
+            - hsurana06
+            replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
+            assignMentionees: False
+      - if:
+        - hasLabel:
+            label: Service Attention
+        - hasLabel:
             label: Search
         then:
         - mentionUsers:
             mentionees:
-            - brjohnstmsft
             - bleroy
             - tjacobhi
             - markheff
@@ -2447,7 +2803,7 @@ configuration:
         then:
         - mentionUsers:
             mentionees:
-            - zivraf
+            - keren-shani
             replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
             assignMentionees: False
       - if:
@@ -2459,6 +2815,17 @@ configuration:
         - mentionUsers:
             mentionees:
             - nazang
+            replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
+            assignMentionees: False
+      - if:
+        - hasLabel:
+            label: Service Attention
+        - hasLabel:
+            label: SelfHelp
+        then:
+        - mentionUsers:
+            mentionees:
+            - kenabd
             replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
             assignMentionees: False
       - if:
@@ -2487,14 +2854,26 @@ configuration:
         - hasLabel:
             label: Service Attention
         - hasLabel:
+            label: Service Connector
+        then:
+        - mentionUsers:
+            mentionees:
+            - yungezz
+            - houk-ms
+            replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
+            assignMentionees: False
+      - if:
+        - hasLabel:
+            label: Service Attention
+        - hasLabel:
             label: Service Fabric
         then:
         - mentionUsers:
             mentionees:
-            - mwesigwaguma
-            - a-Santamaria
+            - iliu816
+            - a-santamaria
             - LukeSlev
-            - jkochhar
+            - Jkochhar
             replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
             assignMentionees: False
       - if:
@@ -2603,11 +2982,45 @@ configuration:
         - hasLabel:
             label: Service Attention
         - hasLabel:
+            label: SSH
+        then:
+        - mentionUsers:
+            mentionees:
+            - vthiebaut10
+            replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
+            assignMentionees: False
+      - if:
+        - hasLabel:
+            label: Service Attention
+        - hasLabel:
+            label: StackHCIVM
+        then:
+        - mentionUsers:
+            mentionees:
+            - arc-enabled-vms-on-hci Team
+            replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
+            assignMentionees: False
+      - if:
+        - hasLabel:
+            label: Service Attention
+        - hasLabel:
             label: Storage
         then:
         - mentionUsers:
             mentionees:
             - xgithubtriage
+            replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
+            assignMentionees: False
+      - if:
+        - hasLabel:
+            label: Service Attention
+        - hasLabel:
+            label: StorageSync
+        then:
+        - mentionUsers:
+            mentionees:
+            - ankushbindlish2
+            - afedyashov
             replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
             assignMentionees: False
       - if:
@@ -2670,7 +3083,7 @@ configuration:
         then:
         - mentionUsers:
             mentionees:
-            - wonner
+            - wanyang7
             - v-yanjungao
             replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
             assignMentionees: False
@@ -2682,7 +3095,7 @@ configuration:
         then:
         - mentionUsers:
             mentionees:
-            - klaaslanghout
+            - bberera
             replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
             assignMentionees: False
       - if:
@@ -2694,6 +3107,17 @@ configuration:
         - mentionUsers:
             mentionees:
             - Shipra1Mishra
+            replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
+            assignMentionees: False
+      - if:
+        - hasLabel:
+            label: Service Attention
+        - hasLabel:
+            label: Traffic Collector
+        then:
+        - mentionUsers:
+            mentionees:
+            - rmodh
             replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
             assignMentionees: False
       - if:
@@ -2717,6 +3141,7 @@ configuration:
             mentionees:
             - AzureAppServiceCLI
             - antcp
+            - yutanglin16
             replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
             assignMentionees: False
       - if:
@@ -2729,6 +3154,19 @@ configuration:
             mentionees:
             - JialinXin
             - vicancy
+            replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
+            assignMentionees: False
+      - if:
+        - hasLabel:
+            label: Service Attention
+        - hasLabel:
+            label: Workloads
+        then:
+        - mentionUsers:
+            mentionees:
+            - jaskisin
+            - ajaygit158
+            - praveennet
             replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
             assignMentionees: False
       description: Triage issues to the service team
@@ -2907,12 +3345,12 @@ configuration:
       - addLabel:
           label: Auto-Assign
       - requestReview:
-          reviewer: kairu-ms
+          reviewer: wangzelin007
       - requestReview:
           reviewer: yonzhan
       - assignTo:
           users:
-          - kairu-ms
+          - wangzelin007
       description: '[machine learning] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
@@ -3263,14 +3701,13 @@ configuration:
       - addLabel:
           label: Auto-Assign
       - requestReview:
-          reviewer: kairu-ms
+          reviewer: evelyn-ys
       - requestReview:
           reviewer: jsntcy
       - requestReview:
           reviewer: yonzhan
       - assignTo:
           users:
-          - kairu-ms
           - evelyn-ys
       description: '[kusto] Auto assign labels and reviewers based on PR title/description.'
     - if:
@@ -3697,8 +4134,6 @@ configuration:
       - assignTo:
           users:
           - necusjz
-          - AllyW
-          - kairu-ms
       description: '[ stream-analytics ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
@@ -3714,12 +4149,12 @@ configuration:
       then:
       - addReply:
           reply: >-
-            Hi @kairu-ms,
+            Hi @AllyW,
 
             Please review the pull request.
       - assignTo:
           users:
-          - kairu-ms
+          - AllyW
       description: '[ confidentialledger ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
@@ -3756,12 +4191,12 @@ configuration:
       then:
       - addReply:
           reply: >-
-            Hi @kairu-ms,
+            Hi @AllyW,
 
             Please review the pull request.
       - assignTo:
           users:
-          - kairu-ms
+          - AllyW
       description: '[ alertsmanagement ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
@@ -3819,12 +4254,12 @@ configuration:
       then:
       - addReply:
           reply: >-
-            Hi @kairu-ms,
+            Hi @necusjz,
 
             Please review the pull request.
       - assignTo:
           users:
-          - kairu-ms
+          - necusjz
       description: '[ quantum ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
@@ -3890,51 +4325,51 @@ configuration:
           - jsntcy
       description: '[ logic ] Notify to review Update index.json PR'
     - if:
-        - payloadType: Issues
-        - or:
-            - titleContains:
-                pattern: az \b(logic)\b
-                isRegex: True
-            - bodyContains:
-                pattern: az \b(logic)\b
-                isRegex: True
-        - or:
-            - isAction:
-                action: Opened
-      then:
-        - addLabel:
-            label: Logic App
-        - addLabel:
-            label: Auto-Assign
-        - assignTo:
-            users:
-            - ReaNAiveD
-            - zhoxing-ms
-      description: '[Logic] auto assign labels and users based on issue description.'
-    - if:
-        - payloadType: Pull_Request
+      - payloadType: Issues
+      - or:
+        - titleContains:
+            pattern: az \b(logic)\b
+            isRegex: True
+        - bodyContains:
+            pattern: az \b(logic)\b
+            isRegex: True
+      - or:
         - isAction:
             action: Opened
-        - or:
-            - titleContains:
-                pattern: '\b(logic|LOGIC)\b'
-                isRegex: True
-            - bodyContains:
-                pattern: az \b(logic)\b
-                isRegex: True
       then:
-        - addLabel:
-            label: Auto-Assign
-        - addLabel:
-            label: Logic App
-        - requestReview:
-            reviewer: zhoxing-ms
-        - requestReview:
-            reviewer: ReaNAiveD
-        - assignTo:
-            users:
-            - zhoxing-ms
-            - ReaNAiveD
+      - addLabel:
+          label: Logic App
+      - addLabel:
+          label: Auto-Assign
+      - assignTo:
+          users:
+          - ReaNAiveD
+          - zhoxing-ms
+      description: '[Logic] auto assign labels and users based on issue description.'
+    - if:
+      - payloadType: Pull_Request
+      - isAction:
+          action: Opened
+      - or:
+        - titleContains:
+            pattern: '\b(logic|LOGIC)\b'
+            isRegex: True
+        - bodyContains:
+            pattern: az \b(logic)\b
+            isRegex: True
+      then:
+      - addLabel:
+          label: Auto-Assign
+      - addLabel:
+          label: Logic App
+      - requestReview:
+          reviewer: zhoxing-ms
+      - requestReview:
+          reviewer: ReaNAiveD
+      - assignTo:
+          users:
+          - zhoxing-ms
+          - ReaNAiveD
       description: '[logic] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Pull_Request
@@ -3971,12 +4406,12 @@ configuration:
       then:
       - addReply:
           reply: >-
-            Hi @kairu-ms,
+            Hi @necusjz,
 
             Please review the pull request.
       - assignTo:
           users:
-          - kairu-ms
+          - necusjz
       description: '[ resource-mover ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
@@ -4118,12 +4553,12 @@ configuration:
       then:
       - addReply:
           reply: >-
-            Hi @kairu-ms,
+            Hi @necusjz,
 
             Please review the pull request.
       - assignTo:
           users:
-          - kairu-ms
+          - necusjz
       description: '[ scheduled-query ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
@@ -4166,7 +4601,6 @@ configuration:
       - assignTo:
           users:
           - necusjz
-          - kairu-ms
       description: '[ network-manager ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
@@ -4182,12 +4616,12 @@ configuration:
       then:
       - addReply:
           reply: >-
-            Hi @kairu-ms,
+            Hi @AllyW,
 
             Please review the pull request.
       - assignTo:
           users:
-          - kairu-ms
+          - AllyW
       description: '[ azure-firewall ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
@@ -4224,12 +4658,12 @@ configuration:
       then:
       - addReply:
           reply: >-
-            Hi @kairu-ms,
+            Hi @necusjz,
 
             Please review the pull request.
       - assignTo:
           users:
-          - kairu-ms
+          - necusjz
       description: '[ virtual-wan ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
@@ -4287,12 +4721,12 @@ configuration:
       then:
       - addReply:
           reply: >-
-            Hi @kairu-ms,
+            Hi @necusjz,
 
             Please review the pull request.
       - assignTo:
           users:
-          - kairu-ms
+          - necusjz
       description: '[ webpubsub ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
@@ -4308,12 +4742,12 @@ configuration:
       then:
       - addReply:
           reply: >-
-            Hi @kairu-ms,
+            Hi @necusjz,
 
             Please review the pull request.
       - assignTo:
           users:
-          - kairu-ms
+          - necusjz
       description: '[ support ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
@@ -4329,12 +4763,12 @@ configuration:
       then:
       - addReply:
           reply: >-
-            Hi @kairu-ms,
+            Hi @AllyW,
 
             Please review the pull request.
       - assignTo:
           users:
-          - kairu-ms
+          - AllyW
       description: '[ logz ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
@@ -4456,12 +4890,12 @@ configuration:
       - addLabel:
           label: Auto-Assign
       - requestReview:
-          reviewer: kairu-ms
+          reviewer: AllyW
       - requestReview:
           reviewer: yonzhan
       - assignTo:
           users:
-          - kairu-ms
+          - AllyW
       description: '[arcdata] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Pull_Request
@@ -4478,12 +4912,12 @@ configuration:
       - addLabel:
           label: Auto-Assign
       - requestReview:
-          reviewer: kairu-ms
+          reviewer: AllyW
       - requestReview:
           reviewer: necusjz
       - assignTo:
           users:
-          - kairu-ms
+          - necusjz
       - requestReview:
           reviewer: yonzhan
       description: '[quota] Auto assign labels and reviewers based on PR title/description.'
@@ -4506,7 +4940,7 @@ configuration:
           label: Code Gen
       - assignTo:
           users:
-          - kairu-ms
+          - AllyW
       - assignTo:
           users:
           - necusjz
@@ -4526,12 +4960,13 @@ configuration:
       - addLabel:
           label: Auto-Assign
       - requestReview:
-          reviewer: kairu-ms
+          reviewer: AllyW
       - requestReview:
           reviewer: necusjz
       - assignTo:
           users:
-          - kairu-ms
+          - necusjz
+          - AllyW
       - requestReview:
           reviewer: yonzhan
       - addLabel:
@@ -4552,12 +4987,12 @@ configuration:
       - addLabel:
           label: Auto-Assign
       - requestReview:
-          reviewer: kairu-ms
+          reviewer: AllyW
       - requestReview:
           reviewer: necusjz
       - assignTo:
           users:
-          - kairu-ms
+          - necusjz
       - requestReview:
           reviewer: yonzhan
       - addLabel:
@@ -4746,7 +5181,6 @@ configuration:
       - assignTo:
           users:
           - AllyW
-          - kairu-ms
       description: '[grafana] auto assign labels and users based on issue description.'
     - if:
       - payloadType: Pull_Request
@@ -4768,12 +5202,11 @@ configuration:
           reviewer: wangzelin007
       - assignTo:
           users:
-          - kairu-ms
           - AllyW
       - addLabel:
           label: extension/grafana
       - requestReview:
-          reviewer: kairu-ms
+          reviewer: AllyW
       - requestReview:
           reviewer: jsntcy
       description: '[grafana] Auto assign labels and reviewers based on PR title/description.'
@@ -4896,7 +5329,7 @@ configuration:
       - requestReview:
           reviewer: jsntcy
       - requestReview:
-          reviewer: kairu-ms
+          reviewer: AllyW
       description: '[desktopvirtualization] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
@@ -5018,7 +5451,7 @@ configuration:
       - addLabel:
           label: Alerts Management
       - requestReview:
-          reviewer: 'kairu-ms '
+          reviewer: kairu-ms
       - requestReview:
           reviewer: zhoxing-ms
       description: '[Alerts Management] Auto assign labels and reviewers based on PR title/description.'
@@ -5148,7 +5581,6 @@ configuration:
       - assignTo:
           users:
           - necusjz
-          - kairu-ms
       description: '[NetworkManager] auto assign labels and users based on issue description.'
     - if:
       - payloadType: Pull_Request
@@ -5177,11 +5609,10 @@ configuration:
       - addLabel:
           label: Network - Network Manager
       - requestReview:
-          reviewer: kairu-ms
+          reviewer: necusjz
       - assignTo:
           users:
           - necusjz
-          - kairu-ms
       - requestReview:
           reviewer: jsntcy
       description: '[NetworkManager] Auto assign labels and reviewers based on PR title/description.'
@@ -5542,8 +5973,7 @@ configuration:
           label: Stream Analytics
       - assignTo:
           users:
-          - AllyW
-          - kairu-ms
+          - necusjz
       description: '[stream-analytics] auto assign labels and users based on issue description.'
     - if:
       - payloadType: Pull_Request
@@ -5566,12 +5996,12 @@ configuration:
       - assignTo:
           users:
           - necusjz
-          - AllyW
-          - kairu-ms
       - addLabel:
           label: Stream Analytics
       - requestReview:
-          reviewer: kairu-ms
+          reviewer: necusjz
+      - requestReview:
+          reviewer: AllyW
       description: '[stream-analytics] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Pull_Request
@@ -5766,12 +6196,12 @@ configuration:
             isRegex: True
       then:
       - requestReview:
-          reviewer: kairu-ms
+          reviewer: necusjz
       - addLabel:
           label: Auto-Assign
       - assignTo:
           users:
-          - kairu-ms
+          - necusjz
       - addLabel:
           label: Serial Console
       description: '[Serial-Console] Auto assign labels and reviewers based on PR title/description.'
@@ -5835,12 +6265,12 @@ configuration:
       - requestReview:
           reviewer: jsntcy
       - requestReview:
-          reviewer: kairu-ms
+          reviewer: AllyW
       - addLabel:
           label: Auto-Assign
       - assignTo:
           users:
-          - kairu-ms
+          - AllyW
       description: '[Fleet] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Pull_Request
@@ -5931,8 +6361,7 @@ configuration:
           label: Internet Analyzer
       - assignTo:
           users:
-          - necusjz
-          - kairu-ms
+          - AllyW
       description: '[Internet Analyzer] auto assign labels and users based on issue description.'
     - if:
       - payloadType: Pull_Request
@@ -5961,11 +6390,11 @@ configuration:
       - requestReview:
           reviewer: necusjz
       - requestReview:
-          reviewer: kairu-ms
+          reviewer: AllyW
       - assignTo:
           users:
+          - AllyW
           - necusjz
-          - kairu-ms
       description: '[Internet Analyzer] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Pull_Request
@@ -5980,7 +6409,7 @@ configuration:
             isRegex: True
       then:
       - requestReview:
-          reviewer: kairu-ms
+          reviewer: AllyW
       - requestReview:
           reviewer: jsntcy
       - requestReview:
@@ -5989,7 +6418,7 @@ configuration:
           label: Auto-Assign
       - assignTo:
           users:
-          - kairu-ms
+          - AllyW
       description: '[load] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
@@ -6024,14 +6453,14 @@ configuration:
             isRegex: True
       then:
       - requestReview:
-          reviewer: kairu-ms
+          reviewer: AllyW
       - requestReview:
           reviewer: jsntcy
       - addLabel:
           label: Auto-Assign
       - assignTo:
           users:
-          - kairu-ms
+          - AllyW
       description: '[devcenter] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Pull_Request
@@ -6046,12 +6475,12 @@ configuration:
             isRegex: True
       then:
       - requestReview:
-          reviewer: kairu-ms
+          reviewer: AllyW
       - addLabel:
           label: Auto-Assign
       - assignTo:
           users:
-          - kairu-ms
+          - AllyW
       description: '[Arc Appliance] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Pull_Request
@@ -6066,14 +6495,14 @@ configuration:
             isRegex: True
       then:
       - requestReview:
-          reviewer: kairu-ms
+          reviewer: necusjz
       - requestReview:
           reviewer: jsntcy
       - addLabel:
           label: Auto-Assign
       - assignTo:
           users:
-          - kairu-ms
+          - necusjz
       description: '[Service Connector] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Pull_Request
@@ -6088,14 +6517,14 @@ configuration:
             isRegex: True
       then:
       - requestReview:
-          reviewer: kairu-ms
+          reviewer: AllyW
       - requestReview:
           reviewer: jsntcy
       - addLabel:
           label: Auto-Assign
       - assignTo:
           users:
-          - kairu-ms
+          - AllyW
       description: '[Connected Vmware] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
@@ -6143,7 +6572,6 @@ configuration:
       - assignTo:
           users:
           - necusjz
-          - kairu-ms
       description: '[Peering] auto assign labels and users based on issue description.'
     - if:
       - payloadType: Pull_Request
@@ -6173,12 +6601,9 @@ configuration:
           reviewer: jsntcy
       - requestReview:
           reviewer: necusjz
-      - requestReview:
-          reviewer: kairu-ms
       - assignTo:
           users:
           - necusjz
-          - kairu-ms
       description: '[Peering] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
@@ -6264,7 +6689,6 @@ configuration:
           label: Network - Network Watcher
       - assignTo:
           users:
-          - kairu-ms
           - AllyW
           - necusjz
       description: '[Network Watcher] auto assign labels and users based on issue description.'
@@ -6295,14 +6719,13 @@ configuration:
       - requestReview:
           reviewer: jsntcy
       - requestReview:
-          reviewer: kairu-ms
+          reviewer: AllyW
       - requestReview:
           reviewer: necusjz
       - assignTo:
           users:
-          - necusjz
-          - kairu-ms
           - AllyW
+          - necusjz
       description: '[Network Watcher] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
@@ -6329,8 +6752,7 @@ configuration:
           label: PowerBI
       - assignTo:
           users:
-          - kairu-ms
-          - AllyW
+          - necusjz
       description: '[PowerBI] auto assign labels and users based on issue description.'
     - if:
       - payloadType: Pull_Request
@@ -6359,13 +6781,12 @@ configuration:
       - requestReview:
           reviewer: jsntcy
       - requestReview:
-          reviewer: kairu-ms
+          reviewer: necusjz
       - requestReview:
           reviewer: AllyW
       - assignTo:
           users:
-          - kairu-ms
-          - AllyW
+          - necusjz
       description: '[PowerBI] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Pull_Request
@@ -6373,10 +6794,10 @@ configuration:
           action: Opened
       - or:
         - titleContains:
-            pattern: 'k8s-runtime'
+            pattern: k8s-runtime
             isRegex: True
         - bodyContains:
-            pattern: 'k8s-runtime'
+            pattern: k8s-runtime
             isRegex: True
       then:
       - addLabel:
@@ -6389,5 +6810,35 @@ configuration:
           users:
           - ReaNAiveD
       description: '[k8s-runtime] Auto assign labels and reviewers based on PR title/description.'
-onFailure: 
-onSuccess: 
+    - if:
+      - payloadType: Issues
+      - or:
+        - titleContains:
+            pattern: '[Aa]z acat'
+            isRegex: True
+        - bodyContains:
+            pattern: '[Aa]z acat'
+            isRegex: True
+        - titleContains:
+            pattern: '\b([Aa]cat)\b'
+            isRegex: True
+        - bodyContains:
+            pattern: '\b([Aa]cat)\b'
+            isRegex: True
+      - or:
+        - isAction:
+            action: Opened
+      then:
+      - addLabel:
+          label: Auto-Assign
+      - addLabel:
+          label: Acat
+      - assignTo:
+          users:
+          - qinqingxu
+          - Sherylueen
+          - yongxin-ms
+          - wh-alice
+      description: '[Acat] auto assign labels and users based on issue description.'
+onFailure:
+onSuccess:

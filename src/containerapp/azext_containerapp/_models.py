@@ -278,7 +278,8 @@ ContainerApp = {
         "template": None,  # Template
         "workloadProfileName": None
     },
-    "tags": None
+    "tags": None,
+    "kind": None
 }
 
 ContainerAppsJob = {
@@ -291,6 +292,19 @@ ContainerAppsJob = {
         "workloadProfileName": None
     },
     "tags": None
+}
+
+MaintenanceConfiguration = {
+    "name": "default",
+    "properties": {
+        "scheduledEntries": [
+            {
+                "weekDay": None,
+                "startHourUtc": None,
+                "durationHours": None
+            }
+        ]
+    }
 }
 
 SessionPool = {
@@ -307,14 +321,11 @@ SessionPool = {
     }
 }
 
-SessionCodeInterpreterPythonExecution = {
-    "properties": {
-        "identifier": None,
-        "codeInputType": None,
-        "executionType": None,
-        "code": None,
-        "timeoutInSeconds": None
-    }
+SessionCodeInterpreterExecution = {
+    "codeInputType": None,
+    "executionType": None,
+    "code": None,
+    "timeoutInSeconds": None
 }
 
 DaprComponentResiliency = {

@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}", "2024-05-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}", "2025-04-01-preview"],
         ]
     }
 
@@ -121,7 +121,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-05-01-preview",
+                    "api-version", "2025-04-01-preview",
                     required=True,
                 ),
             }
@@ -157,7 +157,7 @@ class Wait(AAZWaitCommand):
             _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.identity = AAZObjectType()
+            _schema_on_200.identity = AAZIdentityObjectType()
             _schema_on_200.location = AAZStrType(
                 flags={"required": True},
             )
@@ -219,9 +219,6 @@ class Wait(AAZWaitCommand):
             properties.encryption = AAZObjectType()
             properties.network_settings = AAZObjectType(
                 serialized_name="networkSettings",
-            )
-            properties.plan_id = AAZStrType(
-                serialized_name="planId",
             )
             properties.project_catalog_settings = AAZObjectType(
                 serialized_name="projectCatalogSettings",

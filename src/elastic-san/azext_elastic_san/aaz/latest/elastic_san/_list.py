@@ -22,10 +22,10 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-01-01",
+        "version": "2024-07-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.elasticsan/elasticsans", "2023-01-01"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elasticsan/elasticsans", "2023-01-01"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.elasticsan/elasticsans", "2024-07-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elasticsan/elasticsans", "2024-07-01-preview"],
         ]
     }
 
@@ -51,12 +51,12 @@ class List(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        condition_0 = has_value(self.ctx.args.resource_group) and has_value(self.ctx.subscription_id)
-        condition_1 = has_value(self.ctx.subscription_id) and has_value(self.ctx.args.resource_group) is not True
+        condition_0 = has_value(self.ctx.subscription_id) and has_value(self.ctx.args.resource_group) is not True
+        condition_1 = has_value(self.ctx.args.resource_group) and has_value(self.ctx.subscription_id)
         if condition_0:
-            self.ElasticSansListByResourceGroup(ctx=self.ctx)()
-        if condition_1:
             self.ElasticSansListBySubscription(ctx=self.ctx)()
+        if condition_1:
+            self.ElasticSansListByResourceGroup(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -72,7 +72,7 @@ class List(AAZCommand):
         next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
         return result, next_link
 
-    class ElasticSansListByResourceGroup(AAZHttpOperation):
+    class ElasticSansListBySubscription(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -86,7 +86,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ElasticSan/elasticSans",
+                "/subscriptions/{subscriptionId}/providers/Microsoft.ElasticSan/elasticSans",
                 **self.url_parameters
             )
 
@@ -102,10 +102,6 @@ class List(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "resourceGroupName", self.ctx.args.resource_group,
-                    required=True,
-                ),
-                **self.serialize_url_param(
                     "subscriptionId", self.ctx.subscription_id,
                     required=True,
                 ),
@@ -116,7 +112,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-01-01",
+                    "api-version", "2024-07-01-preview",
                     required=True,
                 ),
             }
@@ -182,6 +178,9 @@ class List(AAZCommand):
             )
 
             properties = cls._schema_on_200.value.Element.properties
+            properties.auto_scale_properties = AAZObjectType(
+                serialized_name="autoScaleProperties",
+            )
             properties.availability_zones = AAZListType(
                 serialized_name="availabilityZones",
             )
@@ -226,6 +225,25 @@ class List(AAZCommand):
             properties.volume_group_count = AAZIntType(
                 serialized_name="volumeGroupCount",
                 flags={"read_only": True},
+            )
+
+            auto_scale_properties = cls._schema_on_200.value.Element.properties.auto_scale_properties
+            auto_scale_properties.scale_up_properties = AAZObjectType(
+                serialized_name="scaleUpProperties",
+            )
+
+            scale_up_properties = cls._schema_on_200.value.Element.properties.auto_scale_properties.scale_up_properties
+            scale_up_properties.auto_scale_policy_enforcement = AAZStrType(
+                serialized_name="autoScalePolicyEnforcement",
+            )
+            scale_up_properties.capacity_unit_scale_up_limit_ti_b = AAZIntType(
+                serialized_name="capacityUnitScaleUpLimitTiB",
+            )
+            scale_up_properties.increase_capacity_unit_by_ti_b = AAZIntType(
+                serialized_name="increaseCapacityUnitByTiB",
+            )
+            scale_up_properties.unused_size_ti_b = AAZIntType(
+                serialized_name="unusedSizeTiB",
             )
 
             availability_zones = cls._schema_on_200.value.Element.properties.availability_zones
@@ -295,7 +313,7 @@ class List(AAZCommand):
 
             return cls._schema_on_200
 
-    class ElasticSansListBySubscription(AAZHttpOperation):
+    class ElasticSansListByResourceGroup(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -309,7 +327,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/providers/Microsoft.ElasticSan/elasticSans",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ElasticSan/elasticSans",
                 **self.url_parameters
             )
 
@@ -325,6 +343,10 @@ class List(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
+                    "resourceGroupName", self.ctx.args.resource_group,
+                    required=True,
+                ),
+                **self.serialize_url_param(
                     "subscriptionId", self.ctx.subscription_id,
                     required=True,
                 ),
@@ -335,7 +357,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-01-01",
+                    "api-version", "2024-07-01-preview",
                     required=True,
                 ),
             }
@@ -401,6 +423,9 @@ class List(AAZCommand):
             )
 
             properties = cls._schema_on_200.value.Element.properties
+            properties.auto_scale_properties = AAZObjectType(
+                serialized_name="autoScaleProperties",
+            )
             properties.availability_zones = AAZListType(
                 serialized_name="availabilityZones",
             )
@@ -445,6 +470,25 @@ class List(AAZCommand):
             properties.volume_group_count = AAZIntType(
                 serialized_name="volumeGroupCount",
                 flags={"read_only": True},
+            )
+
+            auto_scale_properties = cls._schema_on_200.value.Element.properties.auto_scale_properties
+            auto_scale_properties.scale_up_properties = AAZObjectType(
+                serialized_name="scaleUpProperties",
+            )
+
+            scale_up_properties = cls._schema_on_200.value.Element.properties.auto_scale_properties.scale_up_properties
+            scale_up_properties.auto_scale_policy_enforcement = AAZStrType(
+                serialized_name="autoScalePolicyEnforcement",
+            )
+            scale_up_properties.capacity_unit_scale_up_limit_ti_b = AAZIntType(
+                serialized_name="capacityUnitScaleUpLimitTiB",
+            )
+            scale_up_properties.increase_capacity_unit_by_ti_b = AAZIntType(
+                serialized_name="increaseCapacityUnitByTiB",
+            )
+            scale_up_properties.unused_size_ti_b = AAZIntType(
+                serialized_name="unusedSizeTiB",
             )
 
             availability_zones = cls._schema_on_200.value.Element.properties.availability_zones

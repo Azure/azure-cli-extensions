@@ -1,0 +1,22 @@
+{
+  "name": "Azure CLI Dev Container",
+  "image": "mcr.microsoft.com/devcontainers/python:3.12",
+  "features": {
+    "ghcr.io/devcontainers/features/github-cli:1": {}
+  },
+  "workspaceFolder": "/workspaces",
+  "onCreateCommand": "python -m venv venv",
+  "postCreateCommand": "REPO_NAME=$(basename $GITHUB_REPOSITORY) && cat $REPO_NAME/.devcontainer/login.sh >> ~/.bashrc && cp $REPO_NAME/.devcontainer/setup.sh easy_setup.sh && chmod +x easy_setup.sh",
+  "hostRequirements": {
+    "cpus": 16,
+    "memory": "64gb",
+    "storage": "128gb"
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python"
+      ]
+    }
+  }
+}

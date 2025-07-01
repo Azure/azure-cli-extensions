@@ -3,6 +3,25 @@
 Release History
 ===============
 
+1.0.0b6
++++++++
+* `az storage account task-assignment`: Task-Assignment GA for Storage Action
+
+1.0.0b5
++++++++
+* `az storage blob access/directory/move`: Remove deprecated command groups since `az storage fs` command group has been GA since 2021
+* `az storage account local-user` only mark some params in `create/update` as preview as the rest have been GA in main rep
+
+1.0.0b4
++++++++
+* `az storage account create/update`: Support `--enable-extended-groups`
+* `az storage account local-user create/update`: Support `--extended-group`
+* `az storage account local-user create`: Support `--is-nfsv3-enabled`
+
+1.0.0b3
++++++++
+* Remove ADAL dependencies
+
 1.0.0b2(2024-07-15)
 ++++++++++++++++++
 * `az storage account local-user`: Support `--group-id` and `--allow-acl-authorization`. Support list paging and filtering

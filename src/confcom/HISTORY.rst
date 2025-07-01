@@ -2,6 +2,76 @@
 
 Release History
 ===============
+
+1.2.6
+++++++
+* bugfix making it so the fields in the --input format are case-insensitive
+
+1.2.5
+++++++
+* consolidating functions for --input policygen
+* bugfix for "scenario" field in json input
+* updating tests and examples to use azurelinux
+* "name" field is required when using --input
+
+1.2.4
+++++++
+* rolling back genpolicy version for Azure Linux V2 support instead of V3
+
+1.2.3
+++++++
+* adding fragment support for VN2
+* bugfix for vn2 workload identities
+* no longer encouraged to have multiple images in the same tar file
+
+1.2.2
+++++++
+* support for pure OCI v1 schema 2 formatted images
+* adding debug logging
+* changing where parameters and variables are filled in for arm templates
+* updating documentation about fragments
+* bugfix for exec processes in fragment generation
+* bugfix for custom mount options in fragment generation
+
+1.2.1
+++++++
+* updating genpolicy to version 3.2.0.azl3.genpolicy3
+
+1.2.0
+++++++
+* fixing metadata for uploaded fragments
+* fixing support for non-image feed names and attaching fragments to an image
+* bug fixes for image-attached fragments
+* adding ability to generate a fragment import from an image name using the remote attached fragments
+* updating stdout import statement to look more like the file output
+* adding `--omit-id` to the `acifragmentgen` command
+* updating genpolicy to version 3.2.0.azl3.genpolicy2
+
+1.1.1
+++++++
+* updating dmverity-vhd version with bugfix for empty image layers
+
+1.1.0
+++++++
+* adding support for image-attached fragments via `acifragmentgen`
+* adding workload identity support for VN2
+* adding `--exclude-default-fragments` to disallow sidecars from policy
+* adding `--omit-id` for policy stability across multiple image registries
+* better handle broken base64 policies in templates
+* improve error handling structure
+* make some mount types in VN2 required readonly
+* prompt users if they want to overwrite their policy in VN2
+* changing where dmverity-vhd and sign1util binaries are fetched from. This includes a significant speedup in dmverity-vhd hashing
+
+1.0.1
+++++++
+* getting rid of msrestazure dependency in _validators.py
+
+1.0.0
+++++++
+* adding support for Virtual Node
+* updating genpolicy version up through 3.2.0.azl1.genpolicy1
+
 0.3.6
 ++++++
 * updating genpolicy version up through 3.2.0.azl1.genpolicy0. Please note that this is a breaking change for deploying older policies. With the new node image, 0.3.6 or newer will be required.

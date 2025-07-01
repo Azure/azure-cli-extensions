@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command_group(
     "mdp pool agent",
-    is_preview=True,
 )
 class __CMDGroup(AAZCommandGroup):
     """Manage pool resource agents

@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "mdp pool create",
-    is_preview=True,
 )
 class Create(AAZCommand):
     """Create a pool
@@ -26,12 +25,20 @@ class Create(AAZCommand):
         --organization-profile "azure-dev-ops={organizations:[{url:'https://dev.azure.com/test-org',parallelism:2}],permissionProfile:{kind:'CreatorOnly'}}" 
         --devcenter-project-resource-id "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/example/providers/Microsoft.DevCenter/projects/contoso-proj"
         --fabric-profile "vmss={sku:{name:Standard_D2ads_v5},storageProfile:{osDiskStorageAccountType:Standard},images:[{resourceId:'/Subscriptions/00000000-0000-0000-0000-000000000000/Providers/Microsoft.Compute/Locations/eastus2/Publishers/canonical/ArtifactTypes/VMImage/Offers/0001-com-ubuntu-server-focal/Skus/20_04-lts-gen2/versions/latest',buffer:*}],osProfile:{secretsManagementSettings:{observedCertificates:[],keyExportable:false},logonType:Service}}"
+
+    :example: Create with agent profile resource predictions
+        az mdp pool create --location "eastus" --name "cli-contoso-pool" --resource-group "rg1" 
+        --maximum-concurrency 3 
+        --agent-profile "{Stateless:{},resourcePredictionsProfile:{Manual:{}},resourcePredictions:{timezone:'UTC',daysData:[{},{},{},{'09:00:00':2,'11:00:00':0},{},{},{}]}}"
+        --organization-profile "azure-dev-ops={organizations:[{url:'https://dev.azure.com/test-org',parallelism:2}],permissionProfile:{kind:'CreatorOnly'}}" 
+        --devcenter-project-resource-id "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/example/providers/Microsoft.DevCenter/projects/contoso-proj"
+        --fabric-profile "vmss={sku:{name:Standard_D2ads_v5},storageProfile:{osDiskStorageAccountType:Standard},images:[{resourceId:'/Subscriptions/00000000-0000-0000-0000-000000000000/Providers/Microsoft.Compute/Locations/eastus2/Publishers/canonical/ArtifactTypes/VMImage/Offers/0001-com-ubuntu-server-focal/Skus/20_04-lts-gen2/versions/latest',buffer:*}],osProfile:{secretsManagementSettings:{observedCertificates:[],keyExportable:false},logonType:Service}}"
     """
 
     _aaz_info = {
-        "version": "2024-04-04-preview",
+        "version": "2024-10-19",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devopsinfrastructure/pools/{}", "2024-04-04-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devopsinfrastructure/pools/{}", "2024-10-19"],
         ]
     }
 
@@ -140,6 +147,25 @@ class Create(AAZCommand):
             help="Determines the balance between cost and performance.",
             enum={"Balanced": "Balanced", "BestPerformance": "BestPerformance", "MoreCostEffective": "MoreCostEffective", "MorePerformance": "MorePerformance", "MostCostEffective": "MostCostEffective"},
         )
+
+        resource_predictions = cls._args_schema.agent_profile.resource_predictions
+        resource_predictions.timezone = AAZStrArg(
+            options=["timezone", "timeZone"],
+            help="Time zone of the predictive pool provisioning.",
+        )
+
+        resource_predictions.days_data = AAZListArg(
+            options=["days-data"],
+            help="Resource predictions data per every day in a week.",
+        )
+
+        days_data = cls._args_schema.agent_profile.resource_predictions.days_data
+        days_data.Element = AAZDictArg(
+            help="key value pairs with time and predicted count"
+        )
+
+        _element = cls._args_schema.agent_profile.resource_predictions.days_data.Element
+        _element.Element = AAZIntArg()
 
         fabric_profile = cls._args_schema.fabric_profile
         fabric_profile.vmss = AAZObjectArg(
@@ -457,7 +483,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-04-04-preview",
+                    "api-version", "2024-10-19",
                     required=True,
                 ),
             }
@@ -519,6 +545,19 @@ class Create(AAZCommand):
                 resource_predictions_profile.set_const("kind", "Manual", AAZStrType, ".manual", typ_kwargs={"flags": {"required": True}})
                 resource_predictions_profile.discriminate_by("kind", "Automatic")
                 resource_predictions_profile.discriminate_by("kind", "Manual")
+
+            resource_predictions = _builder.get(".properties.agentProfile.resourcePredictions")
+            if resource_predictions is not None:
+                resource_predictions.set_prop("timeZone", AAZStrType, ".timezone")
+                resource_predictions.set_prop("daysData", AAZListType, ".days_data")
+           
+            days_data = _builder.get(".properties.agentProfile.resourcePredictions.daysData")
+            if days_data is not None:
+                days_data.set_elements(AAZDictType, ".")
+
+            _elements = _builder.get(".properties.agentProfile.resourcePredictions.daysData[]")
+            if _elements is not None:
+                _elements.set_elements(AAZIntType, ".")
 
             disc_automatic = _builder.get(".properties.agentProfile.resourcePredictionsProfile{kind:Automatic}")
             if disc_automatic is not None:
@@ -782,6 +821,21 @@ class Create(AAZCommand):
             disc_stateful.max_agent_lifetime = AAZStrType(
                 serialized_name="maxAgentLifetime",
             )
+
+            resource_predictions = cls._schema_on_200_201.properties.agent_profile.resource_predictions
+            resource_predictions.timezone = AAZStrType(
+                serialized_name="timeZone",
+            )
+
+            resource_predictions.days_data = AAZListType(
+                serialized_name="daysData",
+            )
+
+            days_data = cls._schema_on_200_201.properties.agent_profile.resource_predictions.days_data
+            days_data.Element = AAZDictType()
+
+            _element = cls._schema_on_200_201.properties.agent_profile.resource_predictions.days_data.Element
+            _element.Element = AAZIntType()
 
             fabric_profile = cls._schema_on_200_201.properties.fabric_profile
             fabric_profile.kind = AAZStrType(

@@ -22,7 +22,7 @@ def validate_application_rule_protocols(namespace):
 
 
 def validate_ip_groups(cmd, namespace):
-    from msrestazure.tools import is_valid_resource_id, resource_id
+    from azure.mgmt.core.tools import is_valid_resource_id, resource_id
 
     def _validate_name_or_id(ip_group, subscription):
         # determine if public_ip_address is name or ID
@@ -46,7 +46,7 @@ def validate_ip_groups(cmd, namespace):
 def get_public_ip_validator():
     """ Retrieves a validator for public IP address. Accepting all defaults will perform a check
     for an existing name or ID with no ARM-required -type parameter. """
-    from msrestazure.tools import is_valid_resource_id, resource_id
+    from azure.mgmt.core.tools import is_valid_resource_id, resource_id
 
     def simple_validator(cmd, namespace):
         if namespace.public_ip_address:
@@ -72,7 +72,7 @@ def get_public_ip_validator():
 
 
 def get_subnet_validator():
-    from msrestazure.tools import is_valid_resource_id, resource_id
+    from azure.mgmt.core.tools import is_valid_resource_id, resource_id
 
     def simple_validator(cmd, namespace):
         if namespace.virtual_network_name is None:
@@ -96,7 +96,7 @@ def get_subnet_validator():
 
 
 def get_management_subnet_validator():
-    from msrestazure.tools import is_valid_resource_id, resource_id
+    from azure.mgmt.core.tools import is_valid_resource_id, resource_id
     from knack.util import CLIError
 
     def simple_validator(cmd, namespace):
@@ -130,7 +130,7 @@ def get_management_subnet_validator():
 def get_management_public_ip_validator():
     """ Retrieves a validator for public IP address. Accepting all defaults will perform a check
     for an existing name or ID with no ARM-required -type parameter. """
-    from msrestazure.tools import is_valid_resource_id, resource_id
+    from azure.mgmt.core.tools import is_valid_resource_id, resource_id
 
     def simple_validator(cmd, namespace):
         if namespace.management_public_ip_address:
@@ -156,7 +156,7 @@ def get_management_public_ip_validator():
 
 
 def validate_firewall_policy(cmd, namespace):
-    from msrestazure.tools import is_valid_resource_id, resource_id
+    from azure.mgmt.core.tools import is_valid_resource_id, resource_id
 
     if hasattr(namespace, 'base_policy') and namespace.base_policy is not None:
         if not is_valid_resource_id(namespace.base_policy):
@@ -178,7 +178,7 @@ def validate_firewall_policy(cmd, namespace):
 
 
 def validate_virtual_hub(cmd, namespace):
-    from msrestazure.tools import is_valid_resource_id, resource_id
+    from azure.mgmt.core.tools import is_valid_resource_id, resource_id
 
     if hasattr(namespace, 'virtual_hub') and namespace.virtual_hub is not None:
 

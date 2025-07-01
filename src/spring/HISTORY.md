@@ -1,5 +1,33 @@
 Release History
 ===============
+1.28.1
+---
+* Fix clean up config file patterns of Application Configuration Service.
+
+1.28.0
+---
+* Add Azure Spring Apps retirement information. See https://aka.ms/asaretirement. 
+
+1.27.1
+---
+* Support scenario of bringing your own container image for command `az spring export`.
+
+1.27.0
+---
+* Add command `az spring export` which is used to generate target resources definitions to help customer migrating from Azure Spring Apps to other Azure services, such as Azure Container Apps.
+
+1.26.1
+---
+* Fix command `az spring app update`, so that it can detect update failure and return error message.
+
+1.26.0
+---
+* Remove `Preview` tag for config server features in Enterprise tier.
+
+1.25.1
+---
+* Drop `msrestazure` dependency.
+
 1.25.0
 ---
 * Add arguments `--disable-test-endpoint-auth` in `spring app create` and `spring app update`.
@@ -22,7 +50,7 @@ Release History
 
 1.24.1
 ---
-* Add command group `az spring private-dns-zone` to configure constumer private DNS zone with Azure Spring Apps.
+* Add command group `az spring private-dns-zone` to configure customer private DNS zone with Azure Spring Apps.
 * Add new command `az spring private-dns-zone add`,  `az spring private-dns-zone update` and `az spring private-dns-zone clean`
 
 1.24.0

@@ -31,9 +31,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-01-01-preview",
+        "version": "2024-11-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/nginx.nginxplus/nginxdeployments/{}/configurations/{}", "2024-01-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/nginx.nginxplus/nginxdeployments/{}/configurations/{}", "2024-11-01-preview"],
         ]
     }
 
@@ -71,16 +71,6 @@ class Create(AAZCommand):
             required=True,
         )
 
-        # define Arg Group "Body"
-
-        _args_schema = cls._args_schema
-        _args_schema.location = AAZResourceLocationArg(
-            arg_group="Body",
-            fmt=AAZResourceLocationArgFormat(
-                resource_group_arg="resource_group",
-            ),
-        )
-
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
@@ -107,7 +97,14 @@ class Create(AAZCommand):
 
         files = cls._args_schema.files
         files.Element = AAZObjectArg()
-        cls._build_args_nginx_configuration_file_create(files.Element)
+
+        _element = cls._args_schema.files.Element
+        _element.content = AAZStrArg(
+            options=["content"],
+        )
+        _element.virtual_path = AAZStrArg(
+            options=["virtual-path"],
+        )
 
         package = cls._args_schema.package
         package.data = AAZStrArg(
@@ -122,30 +119,21 @@ class Create(AAZCommand):
 
         protected_files = cls._args_schema.protected_files
         protected_files.Element = AAZObjectArg()
-        cls._build_args_nginx_configuration_file_create(protected_files.Element)
-        return cls._args_schema
 
-    _args_nginx_configuration_file_create = None
-
-    @classmethod
-    def _build_args_nginx_configuration_file_create(cls, _schema):
-        if cls._args_nginx_configuration_file_create is not None:
-            _schema.content = cls._args_nginx_configuration_file_create.content
-            _schema.virtual_path = cls._args_nginx_configuration_file_create.virtual_path
-            return
-
-        cls._args_nginx_configuration_file_create = AAZObjectArg()
-
-        nginx_configuration_file_create = cls._args_nginx_configuration_file_create
-        nginx_configuration_file_create.content = AAZStrArg(
+        _element = cls._args_schema.protected_files.Element
+        _element.content = AAZStrArg(
             options=["content"],
+            help="The content of the protected file. This value is a PUT only value. If you perform a GET request on this value, it will be empty because it is a protected file.",
         )
-        nginx_configuration_file_create.virtual_path = AAZStrArg(
+        _element.content_hash = AAZStrArg(
+            options=["content-hash"],
+            help="The hash of the content of the file. This value is used to determine if the file has changed.",
+        )
+        _element.virtual_path = AAZStrArg(
             options=["virtual-path"],
+            help="The virtual path of the protected file.",
         )
-
-        _schema.content = cls._args_nginx_configuration_file_create.content
-        _schema.virtual_path = cls._args_nginx_configuration_file_create.virtual_path
+        return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
@@ -232,7 +220,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-01-01-preview",
+                    "api-version", "2024-11-01-preview",
                     required=True,
                 ),
             }
@@ -257,7 +245,6 @@ class Create(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"client_flatten": True}}
             )
-            _builder.set_prop("location", AAZStrType, ".location")
             _builder.set_prop("properties", AAZObjectType)
 
             properties = _builder.get(".properties")
@@ -269,7 +256,12 @@ class Create(AAZCommand):
 
             files = _builder.get(".properties.files")
             if files is not None:
-                _CreateHelper._build_schema_nginx_configuration_file_create(files.set_elements(AAZObjectType, "."))
+                files.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".properties.files[]")
+            if _elements is not None:
+                _elements.set_prop("content", AAZStrType, ".content")
+                _elements.set_prop("virtualPath", AAZStrType, ".virtual_path")
 
             package = _builder.get(".properties.package")
             if package is not None:
@@ -282,7 +274,13 @@ class Create(AAZCommand):
 
             protected_files = _builder.get(".properties.protectedFiles")
             if protected_files is not None:
-                _CreateHelper._build_schema_nginx_configuration_file_create(protected_files.set_elements(AAZObjectType, "."))
+                protected_files.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".properties.protectedFiles[]")
+            if _elements is not None:
+                _elements.set_prop("content", AAZStrType, ".content", typ_kwargs={"flags": {"secret": True}})
+                _elements.set_prop("contentHash", AAZStrType, ".content_hash")
+                _elements.set_prop("virtualPath", AAZStrType, ".virtual_path")
 
             return self.serialize_content(_content_value)
 
@@ -307,7 +305,6 @@ class Create(AAZCommand):
             _schema_on_200_201.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200_201.location = AAZStrType()
             _schema_on_200_201.name = AAZStrType(
                 flags={"read_only": True},
             )
@@ -336,7 +333,12 @@ class Create(AAZCommand):
 
             files = cls._schema_on_200_201.properties.files
             files.Element = AAZObjectType()
-            _CreateHelper._build_schema_nginx_configuration_file_read(files.Element)
+
+            _element = cls._schema_on_200_201.properties.files.Element
+            _element.content = AAZStrType()
+            _element.virtual_path = AAZStrType(
+                serialized_name="virtualPath",
+            )
 
             package = cls._schema_on_200_201.properties.package
             package.data = AAZStrType()
@@ -349,7 +351,14 @@ class Create(AAZCommand):
 
             protected_files = cls._schema_on_200_201.properties.protected_files
             protected_files.Element = AAZObjectType()
-            _CreateHelper._build_schema_nginx_configuration_file_read(protected_files.Element)
+
+            _element = cls._schema_on_200_201.properties.protected_files.Element
+            _element.content_hash = AAZStrType(
+                serialized_name="contentHash",
+            )
+            _element.virtual_path = AAZStrType(
+                serialized_name="virtualPath",
+            )
 
             system_data = cls._schema_on_200_201.system_data
             system_data.created_at = AAZStrType(
@@ -376,33 +385,6 @@ class Create(AAZCommand):
 
 class _CreateHelper:
     """Helper class for Create"""
-
-    @classmethod
-    def _build_schema_nginx_configuration_file_create(cls, _builder):
-        if _builder is None:
-            return
-        _builder.set_prop("content", AAZStrType, ".content")
-        _builder.set_prop("virtualPath", AAZStrType, ".virtual_path")
-
-    _schema_nginx_configuration_file_read = None
-
-    @classmethod
-    def _build_schema_nginx_configuration_file_read(cls, _schema):
-        if cls._schema_nginx_configuration_file_read is not None:
-            _schema.content = cls._schema_nginx_configuration_file_read.content
-            _schema.virtual_path = cls._schema_nginx_configuration_file_read.virtual_path
-            return
-
-        cls._schema_nginx_configuration_file_read = _schema_nginx_configuration_file_read = AAZObjectType()
-
-        nginx_configuration_file_read = _schema_nginx_configuration_file_read
-        nginx_configuration_file_read.content = AAZStrType()
-        nginx_configuration_file_read.virtual_path = AAZStrType(
-            serialized_name="virtualPath",
-        )
-
-        _schema.content = cls._schema_nginx_configuration_file_read.content
-        _schema.virtual_path = cls._schema_nginx_configuration_file_read.virtual_path
 
 
 __all__ = ["Create"]

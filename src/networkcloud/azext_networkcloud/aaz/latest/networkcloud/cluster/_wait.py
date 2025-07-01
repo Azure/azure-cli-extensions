@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clusters/{}", "2023-10-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clusters/{}", "2025-02-01"],
         ]
     }
 
@@ -119,7 +119,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-10-01-preview",
+                    "api-version", "2025-02-01",
                     required=True,
                 ),
             }
@@ -152,6 +152,9 @@ class Wait(AAZWaitCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
+            _schema_on_200.etag = AAZStrType(
+                flags={"read_only": True},
+            )
             _schema_on_200.extended_location = AAZObjectType(
                 serialized_name="extendedLocation",
                 flags={"required": True},
@@ -160,6 +163,7 @@ class Wait(AAZWaitCommand):
             _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
+            _schema_on_200.identity = AAZIdentityObjectType()
             _schema_on_200.location = AAZStrType(
                 flags={"required": True},
             )
@@ -178,12 +182,46 @@ class Wait(AAZWaitCommand):
                 flags={"read_only": True},
             )
 
+            identity = cls._schema_on_200.identity
+            identity.principal_id = AAZStrType(
+                serialized_name="principalId",
+                flags={"read_only": True},
+            )
+            identity.tenant_id = AAZStrType(
+                serialized_name="tenantId",
+                flags={"read_only": True},
+            )
+            identity.type = AAZStrType(
+                flags={"required": True},
+            )
+            identity.user_assigned_identities = AAZDictType(
+                serialized_name="userAssignedIdentities",
+            )
+
+            user_assigned_identities = cls._schema_on_200.identity.user_assigned_identities
+            user_assigned_identities.Element = AAZObjectType(
+                nullable=True,
+            )
+
+            _element = cls._schema_on_200.identity.user_assigned_identities.Element
+            _element.client_id = AAZStrType(
+                serialized_name="clientId",
+                flags={"read_only": True},
+            )
+            _element.principal_id = AAZStrType(
+                serialized_name="principalId",
+                flags={"read_only": True},
+            )
+
             properties = cls._schema_on_200.properties
             properties.aggregator_or_single_rack_definition = AAZObjectType(
                 serialized_name="aggregatorOrSingleRackDefinition",
                 flags={"required": True},
             )
             _WaitHelper._build_schema_rack_definition_read(properties.aggregator_or_single_rack_definition)
+            properties.analytics_output_settings = AAZObjectType(
+                serialized_name="analyticsOutputSettings",
+            )
             properties.analytics_workspace_id = AAZStrType(
                 serialized_name="analyticsWorkspaceId",
             )
@@ -193,6 +231,7 @@ class Wait(AAZWaitCommand):
             )
             properties.cluster_capacity = AAZObjectType(
                 serialized_name="clusterCapacity",
+                flags={"read_only": True},
             )
             properties.cluster_connection_status = AAZStrType(
                 serialized_name="clusterConnectionStatus",
@@ -200,6 +239,7 @@ class Wait(AAZWaitCommand):
             )
             properties.cluster_extended_location = AAZObjectType(
                 serialized_name="clusterExtendedLocation",
+                flags={"read_only": True},
             )
             _WaitHelper._build_schema_extended_location_read(properties.cluster_extended_location)
             properties.cluster_location = AAZStrType(
@@ -224,6 +264,9 @@ class Wait(AAZWaitCommand):
                 serialized_name="clusterVersion",
                 flags={"required": True},
             )
+            properties.command_output_settings = AAZObjectType(
+                serialized_name="commandOutputSettings",
+            )
             properties.compute_deployment_threshold = AAZObjectType(
                 serialized_name="computeDeploymentThreshold",
             )
@@ -240,6 +283,7 @@ class Wait(AAZWaitCommand):
             )
             properties.hybrid_aks_extended_location = AAZObjectType(
                 serialized_name="hybridAksExtendedLocation",
+                flags={"read_only": True},
             )
             _WaitHelper._build_schema_extended_location_read(properties.hybrid_aks_extended_location)
             properties.managed_resource_group_configuration = AAZObjectType(
@@ -263,6 +307,9 @@ class Wait(AAZWaitCommand):
             properties.secret_archive = AAZObjectType(
                 serialized_name="secretArchive",
             )
+            properties.secret_archive_settings = AAZObjectType(
+                serialized_name="secretArchiveSettings",
+            )
             properties.support_expiry_date = AAZStrType(
                 serialized_name="supportExpiryDate",
                 flags={"read_only": True},
@@ -270,10 +317,22 @@ class Wait(AAZWaitCommand):
             properties.update_strategy = AAZObjectType(
                 serialized_name="updateStrategy",
             )
+            properties.vulnerability_scanning_settings = AAZObjectType(
+                serialized_name="vulnerabilityScanningSettings",
+            )
             properties.workload_resource_ids = AAZListType(
                 serialized_name="workloadResourceIds",
                 flags={"read_only": True},
             )
+
+            analytics_output_settings = cls._schema_on_200.properties.analytics_output_settings
+            analytics_output_settings.analytics_workspace_id = AAZStrType(
+                serialized_name="analyticsWorkspaceId",
+            )
+            analytics_output_settings.associated_identity = AAZObjectType(
+                serialized_name="associatedIdentity",
+            )
+            _WaitHelper._build_schema_identity_selector_read(analytics_output_settings.associated_identity)
 
             available_upgrade_versions = cls._schema_on_200.properties.available_upgrade_versions
             available_upgrade_versions.Element = AAZObjectType()
@@ -347,6 +406,15 @@ class Wait(AAZWaitCommand):
                 flags={"required": True},
             )
 
+            command_output_settings = cls._schema_on_200.properties.command_output_settings
+            command_output_settings.associated_identity = AAZObjectType(
+                serialized_name="associatedIdentity",
+            )
+            _WaitHelper._build_schema_identity_selector_read(command_output_settings.associated_identity)
+            command_output_settings.container_url = AAZStrType(
+                serialized_name="containerUrl",
+            )
+
             compute_deployment_threshold = cls._schema_on_200.properties.compute_deployment_threshold
             compute_deployment_threshold.grouping = AAZStrType(
                 flags={"required": True},
@@ -380,6 +448,15 @@ class Wait(AAZWaitCommand):
                 serialized_name="useKeyVault",
             )
 
+            secret_archive_settings = cls._schema_on_200.properties.secret_archive_settings
+            secret_archive_settings.associated_identity = AAZObjectType(
+                serialized_name="associatedIdentity",
+            )
+            _WaitHelper._build_schema_identity_selector_read(secret_archive_settings.associated_identity)
+            secret_archive_settings.vault_uri = AAZStrType(
+                serialized_name="vaultUri",
+            )
+
             update_strategy = cls._schema_on_200.properties.update_strategy
             update_strategy.max_unavailable = AAZIntType(
                 serialized_name="maxUnavailable",
@@ -398,6 +475,11 @@ class Wait(AAZWaitCommand):
             )
             update_strategy.wait_time_minutes = AAZIntType(
                 serialized_name="waitTimeMinutes",
+            )
+
+            vulnerability_scanning_settings = cls._schema_on_200.properties.vulnerability_scanning_settings
+            vulnerability_scanning_settings.container_scan = AAZStrType(
+                serialized_name="containerScan",
             )
 
             workload_resource_ids = cls._schema_on_200.properties.workload_resource_ids
@@ -475,6 +557,29 @@ class _WaitHelper:
 
         _schema.name = cls._schema_extended_location_read.name
         _schema.type = cls._schema_extended_location_read.type
+
+    _schema_identity_selector_read = None
+
+    @classmethod
+    def _build_schema_identity_selector_read(cls, _schema):
+        if cls._schema_identity_selector_read is not None:
+            _schema.identity_type = cls._schema_identity_selector_read.identity_type
+            _schema.user_assigned_identity_resource_id = cls._schema_identity_selector_read.user_assigned_identity_resource_id
+            return
+
+        cls._schema_identity_selector_read = _schema_identity_selector_read = AAZObjectType()
+
+        identity_selector_read = _schema_identity_selector_read
+        identity_selector_read.identity_type = AAZStrType(
+            serialized_name="identityType",
+        )
+        identity_selector_read.user_assigned_identity_resource_id = AAZStrType(
+            serialized_name="userAssignedIdentityResourceId",
+            nullable=True,
+        )
+
+        _schema.identity_type = cls._schema_identity_selector_read.identity_type
+        _schema.user_assigned_identity_resource_id = cls._schema_identity_selector_read.user_assigned_identity_resource_id
 
     _schema_rack_definition_read = None
 

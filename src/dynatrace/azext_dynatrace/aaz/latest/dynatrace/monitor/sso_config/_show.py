@@ -12,10 +12,10 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "dynatrace monitor sso-config show"
+    "dynatrace monitor sso-config show",
 )
 class Show(AAZCommand):
-    """Show a dynatrace sso-config
+    """Get information about a specific Dynatrace SSO configuration including SSO state and URL.
 
     :example: Show sso-config
         az dynatrace monitor sso-config show -g rg --monitor-name monitor -n default
@@ -221,6 +221,10 @@ class Show(AAZCommand):
             )
 
             return cls._schema_on_200
+
+
+class _ShowHelper:
+    """Helper class for Show"""
 
 
 __all__ = ["Show"]

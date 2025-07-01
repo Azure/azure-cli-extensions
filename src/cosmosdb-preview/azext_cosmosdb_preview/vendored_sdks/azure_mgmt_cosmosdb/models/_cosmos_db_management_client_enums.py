@@ -170,6 +170,36 @@ class ContinuousTier(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     CONTINUOUS30_DAYS = "Continuous30Days"
 
 
+class CopyJobMode(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """Mode of job execution."""
+
+    OFFLINE = "Offline"
+    ONLINE = "Online"
+
+
+class CopyJobStatus(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """Job Status."""
+
+    PENDING = "Pending"
+    PARTITIONING = "Partitioning"
+    RUNNING = "Running"
+    PAUSED = "Paused"
+    COMPLETED = "Completed"
+    FAULTED = "Faulted"
+    CANCELLED = "Cancelled"
+
+
+class CopyJobType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """Copy Job Type."""
+
+    CASSANDRA_RU_TO_CASSANDRA_RU = "CassandraRUToCassandraRU"
+    CASSANDRA_RU_TO_AZURE_BLOB_STORAGE = "CassandraRUToAzureBlobStorage"
+    AZURE_BLOB_STORAGE_TO_CASSANDRA_RU = "AzureBlobStorageToCassandraRU"
+    MONGO_RU_TO_MONGO_RU = "MongoRUToMongoRU"
+    MONGO_RU_TO_MONGO_V_CORE = "MongoRUToMongoVCore"
+    NO_SQL_RU_TO_NO_SQL_RU = "NoSqlRUToNoSqlRU"
+
+
 class CreatedByType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """The type of identity that created the resource."""
 
@@ -199,6 +229,7 @@ class DataTransferComponent(str, Enum, metaclass=CaseInsensitiveEnumMeta):
 
     COSMOS_DB_CASSANDRA = "CosmosDBCassandra"
     COSMOS_DB_MONGO = "CosmosDBMongo"
+    COSMOS_DB_MONGO_V_CORE = "CosmosDBMongoVCore"
     COSMOS_DB_SQL = "CosmosDBSql"
     AZURE_BLOB_STORAGE = "AzureBlobStorage"
 
@@ -245,12 +276,42 @@ class DefaultPriorityLevel(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     LOW = "Low"
 
 
+class DistanceFunction(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """The distance function to use for distance calculation in between vectors."""
+
+    EUCLIDEAN = "euclidean"
+    COSINE = "cosine"
+    DOTPRODUCT = "dotproduct"
+
+
 class EnableFullTextQuery(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """Describe the level of detail with which queries are to be logged."""
 
     NONE = "None"
     TRUE = "True"
     FALSE = "False"
+
+
+class FleetAnalyticsPropertiesStorageLocationType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """The type of the fleet analytics resource."""
+
+    STORAGE_ACCOUNT = "StorageAccount"
+    FABRIC_LAKEHOUSE = "FabricLakehouse"
+
+
+class FleetspacePropertiesFleetspaceApiKind(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """The kind of API this fleetspace belongs to. Acceptable values: 'NoSQL'."""
+
+    NO_SQL = "NoSQL"
+
+
+class FleetspacePropertiesThroughputPoolConfigurationServiceTier(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """Service Tier for the fleetspace. GeneralPurpose types refers to single write region accounts
+    that can be added to this fleetspace, whereas BusinessCritical refers to multi write region.
+    """
+
+    GENERAL_PURPOSE = "GeneralPurpose"
+    BUSINESS_CRITICAL = "BusinessCritical"
 
 
 class IndexingMode(str, Enum, metaclass=CaseInsensitiveEnumMeta):
@@ -466,7 +527,7 @@ class ScheduledEventStrategy(str, Enum, metaclass=CaseInsensitiveEnumMeta):
 
 
 class ServerVersion(str, Enum, metaclass=CaseInsensitiveEnumMeta):
-    """Describes the ServerVersion of an a MongoDB account."""
+    """Describes the version of the MongoDB account."""
 
     THREE2 = "3.2"
     THREE6 = "3.6"
@@ -474,6 +535,7 @@ class ServerVersion(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     FOUR2 = "4.2"
     FIVE0 = "5.0"
     SIX0 = "6.0"
+    SEVEN0 = "7.0"
 
 
 class ServiceSize(str, Enum, metaclass=CaseInsensitiveEnumMeta):
@@ -532,6 +594,14 @@ class Status(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     FAILED = "Failed"
     CANCELED = "Canceled"
     UPDATING = "Updating"
+    CREATING = "Creating"
+
+
+class SupportedActions(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """Indicates whether what action to take for the Chaos Fault."""
+
+    ENABLE = "Enable"
+    DISABLE = "Disable"
 
 
 class ThroughputPolicyType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
@@ -583,3 +653,19 @@ class UnitType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     COUNT_PER_SECOND = "CountPerSecond"
     BYTES_PER_SECOND = "BytesPerSecond"
     MILLISECONDS = "Milliseconds"
+
+
+class VectorDataType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """Indicates the data type of vector."""
+
+    FLOAT32 = "float32"
+    UINT8 = "uint8"
+    INT8 = "int8"
+
+
+class VectorIndexType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """The index type of the vector. Currently, flat, diskANN, and quantizedFlat are supported."""
+
+    FLAT = "flat"
+    DISK_ANN = "diskANN"
+    QUANTIZED_FLAT = "quantizedFlat"

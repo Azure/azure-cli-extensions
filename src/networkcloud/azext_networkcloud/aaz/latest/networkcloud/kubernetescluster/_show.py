@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud kubernetescluster show",
-    is_preview=True,
 )
 class Show(AAZCommand):
     """Get properties of the provided the Kubernetes cluster.
@@ -23,9 +22,9 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-10-01-preview",
+        "version": "2025-02-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/kubernetesclusters/{}", "2023-10-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/kubernetesclusters/{}", "2025-02-01"],
         ]
     }
 
@@ -124,7 +123,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-10-01-preview",
+                    "api-version", "2025-02-01",
                     required=True,
                 ),
             }
@@ -157,6 +156,9 @@ class Show(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
+            _schema_on_200.etag = AAZStrType(
+                flags={"read_only": True},
+            )
             _schema_on_200.extended_location = AAZObjectType(
                 serialized_name="extendedLocation",
                 flags={"required": True},
@@ -432,8 +434,14 @@ class Show(AAZCommand):
             _ShowHelper._build_schema_kubernetes_label_read(taints.Element)
 
             upgrade_settings = cls._schema_on_200.properties.initial_agent_pool_configurations.Element.upgrade_settings
+            upgrade_settings.drain_timeout = AAZIntType(
+                serialized_name="drainTimeout",
+            )
             upgrade_settings.max_surge = AAZStrType(
                 serialized_name="maxSurge",
+            )
+            upgrade_settings.max_unavailable = AAZStrType(
+                serialized_name="maxUnavailable",
             )
 
             managed_resource_group_configuration = cls._schema_on_200.properties.managed_resource_group_configuration
@@ -457,6 +465,9 @@ class Show(AAZCommand):
             )
             network_configuration.dns_service_ip = AAZStrType(
                 serialized_name="dnsServiceIp",
+            )
+            network_configuration.l2_service_load_balancer_configuration = AAZObjectType(
+                serialized_name="l2ServiceLoadBalancerConfiguration",
             )
             network_configuration.pod_cidrs = AAZListType(
                 serialized_name="podCidrs",
@@ -561,23 +572,16 @@ class Show(AAZCommand):
 
             ip_address_pools = cls._schema_on_200.properties.network_configuration.bgp_service_load_balancer_configuration.ip_address_pools
             ip_address_pools.Element = AAZObjectType()
+            _ShowHelper._build_schema_ip_address_pool_read(ip_address_pools.Element)
 
-            _element = cls._schema_on_200.properties.network_configuration.bgp_service_load_balancer_configuration.ip_address_pools.Element
-            _element.addresses = AAZListType(
-                flags={"required": True},
-            )
-            _element.auto_assign = AAZStrType(
-                serialized_name="autoAssign",
-            )
-            _element.name = AAZStrType(
-                flags={"required": True},
-            )
-            _element.only_use_host_ips = AAZStrType(
-                serialized_name="onlyUseHostIps",
+            l2_service_load_balancer_configuration = cls._schema_on_200.properties.network_configuration.l2_service_load_balancer_configuration
+            l2_service_load_balancer_configuration.ip_address_pools = AAZListType(
+                serialized_name="ipAddressPools",
             )
 
-            addresses = cls._schema_on_200.properties.network_configuration.bgp_service_load_balancer_configuration.ip_address_pools.Element.addresses
-            addresses.Element = AAZStrType()
+            ip_address_pools = cls._schema_on_200.properties.network_configuration.l2_service_load_balancer_configuration.ip_address_pools
+            ip_address_pools.Element = AAZObjectType()
+            _ShowHelper._build_schema_ip_address_pool_read(ip_address_pools.Element)
 
             pod_cidrs = cls._schema_on_200.properties.network_configuration.pod_cidrs
             pod_cidrs.Element = AAZStrType()
@@ -721,6 +725,41 @@ class Show(AAZCommand):
 
 class _ShowHelper:
     """Helper class for Show"""
+
+    _schema_ip_address_pool_read = None
+
+    @classmethod
+    def _build_schema_ip_address_pool_read(cls, _schema):
+        if cls._schema_ip_address_pool_read is not None:
+            _schema.addresses = cls._schema_ip_address_pool_read.addresses
+            _schema.auto_assign = cls._schema_ip_address_pool_read.auto_assign
+            _schema.name = cls._schema_ip_address_pool_read.name
+            _schema.only_use_host_ips = cls._schema_ip_address_pool_read.only_use_host_ips
+            return
+
+        cls._schema_ip_address_pool_read = _schema_ip_address_pool_read = AAZObjectType()
+
+        ip_address_pool_read = _schema_ip_address_pool_read
+        ip_address_pool_read.addresses = AAZListType(
+            flags={"required": True},
+        )
+        ip_address_pool_read.auto_assign = AAZStrType(
+            serialized_name="autoAssign",
+        )
+        ip_address_pool_read.name = AAZStrType(
+            flags={"required": True},
+        )
+        ip_address_pool_read.only_use_host_ips = AAZStrType(
+            serialized_name="onlyUseHostIps",
+        )
+
+        addresses = _schema_ip_address_pool_read.addresses
+        addresses.Element = AAZStrType()
+
+        _schema.addresses = cls._schema_ip_address_pool_read.addresses
+        _schema.auto_assign = cls._schema_ip_address_pool_read.auto_assign
+        _schema.name = cls._schema_ip_address_pool_read.name
+        _schema.only_use_host_ips = cls._schema_ip_address_pool_read.only_use_host_ips
 
     _schema_kubernetes_label_read = None
 

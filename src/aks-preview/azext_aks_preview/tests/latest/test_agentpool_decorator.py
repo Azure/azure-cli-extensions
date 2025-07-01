@@ -29,8 +29,11 @@ from azure.cli.command_modules.acs._consts import (
     CONST_DEFAULT_NODE_VM_SIZE,
 )
 from azext_aks_preview._consts import (
-    CONST_DEFAULT_AUTOMATIC_SKU_NODE_VM_SIZE,
     CONST_DEFAULT_WINDOWS_NODE_VM_SIZE,
+    CONST_DEFAULT_VMS_VM_SIZE,
+    CONST_DEFAULT_WINDOWS_VMS_VM_SIZE,
+    CONST_GPU_DRIVER_INSTALL,
+    CONST_GPU_DRIVER_NONE,
 )
 from azure.cli.command_modules.acs.agentpool_decorator import AKSAgentPoolParamDict
 from azure.cli.command_modules.acs.tests.latest.mocks import (
@@ -43,6 +46,7 @@ from azure.cli.core.azclierror import (
     InvalidArgumentValueError,
     MutuallyExclusiveArgumentError,
 )
+from deepdiff import DeepDiff
 
 
 class AKSPreviewAgentPoolContextCommonTestCase(unittest.TestCase):
@@ -364,8 +368,8 @@ class AKSPreviewAgentPoolContextCommonTestCase(unittest.TestCase):
         )
         self.assertEqual(ctx_1.get_skip_gpu_driver_install(), None)
         agentpool_1 = self.create_initialized_agentpool_instance(
-            gpu_profile=self.models.AgentPoolGPUProfile(
-                install_gpu_driver=False
+            gpu_profile=self.models.GPUProfile(
+                driver=CONST_GPU_DRIVER_NONE
             )
         )
         ctx_1.attach_agentpool(agentpool_1)
@@ -381,12 +385,83 @@ class AKSPreviewAgentPoolContextCommonTestCase(unittest.TestCase):
         )
         self.assertEqual(ctx_2.get_skip_gpu_driver_install(), None)
         agentpool_2 = self.create_initialized_agentpool_instance(
-            artifact_streaming_profile=self.models.AgentPoolGPUProfile(
-                install_gpu_driver=True
+            artifact_streaming_profile=self.models.GPUProfile(
+                driver=CONST_GPU_DRIVER_INSTALL
             )
         )
         ctx_2.attach_agentpool(agentpool_2)
         self.assertEqual(ctx_2.get_skip_gpu_driver_install(), None)
+
+    def common_get_gpu_driver(self):
+        ctx_1 = AKSPreviewAgentPoolContext(
+            self.cmd,
+            AKSAgentPoolParamDict({"gpu_driver": None}),
+            self.models,
+            DecoratorMode.CREATE,
+            self.agentpool_decorator_mode,
+        )
+        self.assertEqual(ctx_1.get_gpu_driver(), None)
+        agentpool = self.create_initialized_agentpool_instance(
+            gpu_profile=self.models.GPUProfile(
+                driver=CONST_GPU_DRIVER_INSTALL
+            )
+        )
+        ctx_1.attach_agentpool(agentpool)
+        self.assertEqual(ctx_1.get_gpu_driver(), CONST_GPU_DRIVER_INSTALL)
+
+    def common_get_driver_type(self):
+        # default
+        ctx_1 = AKSPreviewAgentPoolContext(
+            self.cmd,
+            AKSAgentPoolParamDict({"driver_type": None}),
+            self.models,
+            DecoratorMode.CREATE,
+            self.agentpool_decorator_mode,
+        )
+        self.assertEqual(ctx_1.get_driver_type(), None)
+        agentpool_1 = self.create_initialized_agentpool_instance(
+            gpu_profile=self.models.GPUProfile(
+                driver_type="CUDA"
+            )
+        )
+        
+        ctx_1.attach_agentpool(agentpool_1)
+        self.assertEqual(ctx_1.get_driver_type(), "CUDA")
+
+        # default
+        ctx_2 = AKSPreviewAgentPoolContext(
+            self.cmd,
+            AKSAgentPoolParamDict({"driver_type": None}),
+            self.models,
+            DecoratorMode.CREATE,
+            self.agentpool_decorator_mode,
+        )
+        self.assertEqual(ctx_2.get_driver_type(), None)
+        agentpool_2 = self.create_initialized_agentpool_instance(
+            gpu_profile=self.models.GPUProfile(
+                driver_type="GRID"
+            )
+        )
+        ctx_2.attach_agentpool(agentpool_2)
+        self.assertEqual(ctx_2.get_driver_type(), "GRID")
+
+        # custom
+        ctx_0 = AKSPreviewAgentPoolContext(
+            self.cmd,
+            AKSAgentPoolParamDict({"driver_type": "CUDA"}),
+            self.models,
+            DecoratorMode.CREATE,
+            self.agentpool_decorator_mode,
+        )
+        self.assertEqual(ctx_0.get_driver_type(), "CUDA")
+        agentpool_0 = self.create_initialized_agentpool_instance(
+            gpu_profile=self.models.GPUProfile(
+                driver_type=None
+            )
+        )
+
+        ctx_0.attach_agentpool(agentpool_0)
+        self.assertEqual(ctx_0.get_driver_type(), "CUDA")
 
     def common_get_os_sku(self):
         # default
@@ -716,7 +791,7 @@ class AKSPreviewAgentPoolContextCommonTestCase(unittest.TestCase):
             DecoratorMode.CREATE,
             self.agentpool_decorator_mode,
         )
-        self.assertEqual(ctx_5.get_node_vm_size(), CONST_DEFAULT_AUTOMATIC_SKU_NODE_VM_SIZE)
+        self.assertEqual(ctx_5.get_node_vm_size(), "")
 
     def common_get_gateway_prefix_size(self):
         # default
@@ -750,7 +825,7 @@ class AKSPreviewAgentPoolContextCommonTestCase(unittest.TestCase):
         )
         agentpool_1 = self.create_initialized_agentpool_instance(os_type="windows")
         ctx_1.attach_agentpool(agentpool_1)
-        self.assertEqual(ctx_1.get_vm_sizes(), [CONST_DEFAULT_WINDOWS_NODE_VM_SIZE])
+        self.assertEqual(ctx_1.get_vm_sizes(), [CONST_DEFAULT_WINDOWS_VMS_VM_SIZE])
 
         # default
         ctx_2 = AKSPreviewAgentPoolContext(
@@ -762,7 +837,7 @@ class AKSPreviewAgentPoolContextCommonTestCase(unittest.TestCase):
         )
         agentpool_2 = self.create_initialized_agentpool_instance(os_type="linux")
         ctx_2.attach_agentpool(agentpool_2)
-        self.assertEqual(ctx_2.get_vm_sizes(), [CONST_DEFAULT_NODE_VM_SIZE])
+        self.assertEqual(ctx_2.get_vm_sizes(), [CONST_DEFAULT_VMS_VM_SIZE], DeepDiff(ctx_2.get_vm_sizes(), [CONST_DEFAULT_VMS_VM_SIZE]))
 
         # custom
         ctx_3 = AKSPreviewAgentPoolContext(
@@ -835,6 +910,12 @@ class AKSPreviewAgentPoolContextStandaloneModeTestCase(
 
     def test_get_skip_gpu_driver_install(self):
         self.common_get_skip_gpu_driver_install()
+
+    def test_get_gpu_driver(self):
+        self.common_get_gpu_driver()
+
+    def test_get_driver_type(self):
+        self.common_get_driver_type()
 
     def test_get_enable_secure_boot(self):
         self.common_get_enable_secure_boot()
@@ -1104,8 +1185,30 @@ class AKSPreviewAgentPoolAddDecoratorCommonTestCase(unittest.TestCase):
         dec_agentpool_1 = dec_1.set_up_skip_gpu_driver_install(agentpool_1)
         dec_agentpool_1 = self._restore_defaults_in_agentpool(dec_agentpool_1)
         ground_truth_agentpool_1 = self.create_initialized_agentpool_instance(
-            gpu_profile=self.models.AgentPoolGPUProfile(
-                install_gpu_driver=False
+            gpu_profile=self.models.GPUProfile(
+                driver=CONST_GPU_DRIVER_NONE,
+            )
+        )
+        self.assertEqual(dec_agentpool_1, ground_truth_agentpool_1)
+
+    def common_set_up_gpu_profile(self):
+        dec_1 = AKSPreviewAgentPoolAddDecorator(
+            self.cmd,
+            self.client,
+            {"gpu_driver": "Install"},
+            self.resource_type,
+            self.agentpool_decorator_mode,
+        )
+        # fail on passing the wrong agentpool object
+        with self.assertRaises(CLIInternalError):
+            dec_1.set_up_gpu_profile(None)
+        agentpool_1 = self.create_initialized_agentpool_instance(restore_defaults=False)
+        dec_1.context.attach_agentpool(agentpool_1)
+        dec_agentpool_1 = dec_1.set_up_gpu_profile(agentpool_1)
+        dec_agentpool_1 = self._restore_defaults_in_agentpool(dec_agentpool_1)
+        ground_truth_agentpool_1 = self.create_initialized_agentpool_instance(
+            gpu_profile=self.models.GPUProfile(
+                driver="Install",
             )
         )
         self.assertEqual(dec_agentpool_1, ground_truth_agentpool_1)
@@ -1203,26 +1306,26 @@ class AKSPreviewAgentPoolAddDecoratorCommonTestCase(unittest.TestCase):
         dec_1 = AKSPreviewAgentPoolAddDecorator(
             self.cmd,
             self.client,
-            {"vm_sizes": "Standard_D4s_v3,Standard_D8s_v3", "node-count": 5},
+            {"vm_sizes": "Standard_D4s_v3", "node_count": 5},
             self.resource_type,
             self.agentpool_decorator_mode,
         )
         # fail on passing the wrong agentpool object
         with self.assertRaises(CLIInternalError):
             dec_1.set_up_virtual_machines_profile(None)
-        agentpool_1 = self.create_initialized_agentpool_instance(restore_defaults=False)
+        agentpool_1 = self.create_initialized_agentpool_instance(type=CONST_VIRTUAL_MACHINES, restore_defaults=False)
         dec_1.context.attach_agentpool(agentpool_1)
         dec_agentpool_1 = dec_1.set_up_virtual_machines_profile(agentpool_1)
         dec_agentpool_1 = self._restore_defaults_in_agentpool(dec_agentpool_1)
         ground_truth_agentpool_1 = self.create_initialized_agentpool_instance(
             type=CONST_VIRTUAL_MACHINES,
             count=None,
-            sizes=None,
+            vm_size=None,
             virtual_machines_profile=self.models.VirtualMachinesProfile(
                 scale=self.models.ScaleProfile(
                     manual=[
                         self.models.ManualScaleProfile(
-                            sizes=["Standard_D4s_v3", "Standard_D8s_v3"],
+                            size="Standard_D4s_v3",
                             count=5,
                         )
                     ]
@@ -1230,6 +1333,19 @@ class AKSPreviewAgentPoolAddDecoratorCommonTestCase(unittest.TestCase):
             )
         )
         self.assertEqual(dec_agentpool_1, ground_truth_agentpool_1)
+        
+        dec_2 = AKSPreviewAgentPoolAddDecorator(
+            self.cmd,
+            self.client,
+            {"vm_sizes": "Standard_D4s_v3, Standard_D2s_v3", "node-count": 5},
+            self.resource_type,
+            self.agentpool_decorator_mode,
+        )
+        agentpool_2 = self.create_initialized_agentpool_instance(restore_defaults=False)
+        dec_2.context.attach_agentpool(agentpool_2)
+        # fail if passing more than 1 vm_sizes
+        with self.assertRaises(InvalidArgumentValueError):
+            dec_2.set_up_virtual_machines_profile(agentpool_2)
 
 
 class AKSPreviewAgentPoolAddDecoratorStandaloneModeTestCase(
@@ -1265,6 +1381,9 @@ class AKSPreviewAgentPoolAddDecoratorStandaloneModeTestCase(
     def test_set_up_skip_gpu_driver_install(self):
         self.common_set_up_skip_gpu_driver_install()
 
+    def test_set_up_gpu_profile(self):
+        self.common_set_up_gpu_profile()
+
     def test_set_up_secure_boot(self):
         self.common_set_up_secure_boot()
 
@@ -1276,6 +1395,9 @@ class AKSPreviewAgentPoolAddDecoratorStandaloneModeTestCase(
 
     def test_set_up_agentpool_gateway_profile(self):
         self.common_set_up_agentpool_gateway_profile()
+
+    def test_set_up_virtual_machines_profile(self):
+        self.common_set_up_virtual_machines_profile()
 
     def test_construct_agentpool_profile_preview(self):
         import inspect
@@ -1396,6 +1518,9 @@ class AKSPreviewAgentPoolAddDecoratorManagedClusterModeTestCase(
 
     def test_set_up_agentpool_gateway_profile(self):
         self.common_set_up_agentpool_gateway_profile()
+    
+    def test_set_up_virtual_machines_profile(self):
+        self.common_set_up_virtual_machines_profile()
 
     def test_construct_agentpool_profile_preview(self):
         import inspect

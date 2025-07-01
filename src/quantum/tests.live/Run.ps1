@@ -21,7 +21,7 @@ function Invoke-SASTokenObfuscation {
         $PathToRecording = "$RecordingsFolderPath\$RecordingFileName"
         Write-Verbose -Message "Searching for SAS Tokens in ""$PathToRecording"" and obfuscating it..."
         # Signature "sig=" query parameter consists of URL-encoded Base64 characters, so [\w%] should suffice
-        (Get-Content $PathToRecording) -replace 'sig=[\w%]+(&|$)','sig=REDACTED$1' | Set-Content $PathToRecording
+        (Get-Content $PathToRecording) -replace 'sig=[\w%]+','sig=REDACTED' | Set-Content $PathToRecording
     }
 }
 

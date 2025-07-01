@@ -25,9 +25,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-02-15-preview",
+        "version": "2024-06-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/ipprefixes/{}", "2024-02-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/ipprefixes/{}", "2024-06-15-preview"],
         ]
     }
 
@@ -52,30 +52,13 @@ class Create(AAZCommand):
             options=["--resource-name"],
             help="Name of the IP Prefix.",
             required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z]{1}[a-zA-Z0-9-_]{2,127}$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
-
-        # define Arg Group "Body"
-
-        _args_schema = cls._args_schema
-        _args_schema.location = AAZResourceLocationArg(
-            arg_group="Body",
-            help="Location of Azure region",
-            required=True,
-            fmt=AAZResourceLocationArgFormat(
-                resource_group_arg="resource_group",
-            ),
-        )
-        _args_schema.tags = AAZDictArg(
-            options=["--tags"],
-            arg_group="Body",
-            help="Resource tags.",
-        )
-
-        tags = cls._args_schema.tags
-        tags.Element = AAZStrArg()
 
         # define Arg Group "Properties"
 
@@ -83,7 +66,7 @@ class Create(AAZCommand):
         _args_schema.annotation = AAZStrArg(
             options=["--annotation"],
             arg_group="Properties",
-            help="Description for underlying resource.",
+            help="Switch configuration description.",
         )
         _args_schema.ip_prefix_rules = AAZListArg(
             options=["--ip-prefix-rules"],
@@ -98,7 +81,7 @@ class Create(AAZCommand):
         _element = cls._args_schema.ip_prefix_rules.Element
         _element.action = AAZStrArg(
             options=["action"],
-            help="Action to be taken on the configuration. Example: Permit.",
+            help="Action to be taken on the configuration. Example: Permit | Deny.",
             required=True,
             enum={"Deny": "Deny", "Permit": "Permit"},
         )
@@ -109,7 +92,7 @@ class Create(AAZCommand):
         )
         _element.network_prefix = AAZStrArg(
             options=["network-prefix"],
-            help="Network Prefix specifying IPv4/IPv6 packets to be permitted or denied. Example: 1.1.1.0/24.",
+            help="Network Prefix specifying IPv4/IPv6 packets to be permitted or denied. Example: 1.1.1.0/24 | 3FFE:FFFF:0:CD30::/126",
             required=True,
         )
         _element.sequence_number = AAZIntArg(
@@ -125,6 +108,26 @@ class Create(AAZCommand):
             options=["subnet-mask-length"],
             help="SubnetMaskLength gives the minimum NetworkPrefix length to be matched. Possible values for IPv4 are 1 - 32 . Possible values of IPv6 are 1 - 128.",
         )
+
+        # define Arg Group "Resource"
+
+        _args_schema = cls._args_schema
+        _args_schema.location = AAZResourceLocationArg(
+            arg_group="Resource",
+            help="The geo-location where the resource lives",
+            required=True,
+            fmt=AAZResourceLocationArgFormat(
+                resource_group_arg="resource_group",
+            ),
+        )
+        _args_schema.tags = AAZDictArg(
+            options=["--tags"],
+            arg_group="Resource",
+            help="Resource tags.",
+        )
+
+        tags = cls._args_schema.tags
+        tags.Element = AAZStrArg()
         return cls._args_schema
 
     def _execute_operations(self):
@@ -208,7 +211,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-02-15-preview",
+                    "api-version", "2024-06-15-preview",
                     required=True,
                 ),
             }
@@ -313,6 +316,14 @@ class Create(AAZCommand):
                 serialized_name="ipPrefixRules",
                 flags={"required": True},
             )
+            properties.last_operation = AAZObjectType(
+                serialized_name="lastOperation",
+                flags={"read_only": True},
+            )
+            properties.network_fabric_id = AAZStrType(
+                serialized_name="networkFabricId",
+                flags={"read_only": True},
+            )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
@@ -336,6 +347,11 @@ class Create(AAZCommand):
             )
             _element.subnet_mask_length = AAZStrType(
                 serialized_name="subnetMaskLength",
+            )
+
+            last_operation = cls._schema_on_200_201.properties.last_operation
+            last_operation.details = AAZStrType(
+                flags={"read_only": True},
             )
 
             system_data = cls._schema_on_200_201.system_data

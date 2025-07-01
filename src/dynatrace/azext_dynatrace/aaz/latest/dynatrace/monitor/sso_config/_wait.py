@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "dynatrace monitor sso-config wait",
 )
 class Wait(AAZWaitCommand):
-    """Place the CLI in a waiting state until a condition is met.
+    """Pauses CLI execution until the specified SSO configuration reaches a defined state or condition.
     """
 
     _aaz_info = {
@@ -217,6 +217,10 @@ class Wait(AAZWaitCommand):
             )
 
             return cls._schema_on_200
+
+
+class _WaitHelper:
+    """Helper class for Wait"""
 
 
 __all__ = ["Wait"]

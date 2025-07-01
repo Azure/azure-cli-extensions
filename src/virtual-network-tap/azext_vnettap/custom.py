@@ -3,50 +3,73 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from ._client_factory import network_client_factory
+# pylint: disable=protected-access
+
+from .aaz.latest.network.vnet.tap import Create as _CreateVnetTap
+from .aaz.latest.network.nic.vtap_config import Create as _CreateVtapConfig
+from azure.cli.core.util import parse_proxy_resource_id
+from azure.cli.core.azclierror import InvalidArgumentValueError
 
 
-def create_vnet_tap(cmd, resource_group_name, tap_name, destination, port=None, tags=None, location=None):
-    from msrestazure.tools import parse_resource_id
-    supported_types = ['loadBalancers', 'networkInterfaces']
-    client = network_client_factory(cmd.cli_ctx).virtual_network_taps
-    SubResource, VTAP = cmd.get_models('SubResource', 'VirtualNetworkTap')
-    dest_type = parse_resource_id(destination).get('type', None)
-    if not dest_type or dest_type not in supported_types:
-        from knack.util import CLIError
-        raise CLIError('Unable to parse destination resource ID. Supply an IP configuration ID '
-                       'for one of the following resource types: {}'.format(supported_types))
-    vtap = VTAP(
-        tags=tags,
-        location=location,
-        destination_port=port,
-        destination_load_balancer_front_end_ip_configuration=SubResource(id=destination)
-        if dest_type == 'loadBalancers' else None,
-        destination_network_interface_ip_configuration=SubResource(id=destination)
-        if dest_type == 'networkInterfaces' else None
-    )
-    return client.create_or_update(resource_group_name, tap_name, vtap)
+class CreateVnetTap(_CreateVnetTap):
+
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        from azure.cli.core.aaz import AAZStrArg
+
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.destination = AAZStrArg(
+            options=["--destination"],
+            help="Resource ID of the destination resource",
+            required=True,
+            arg_group="Destination"
+        )
+        args_schema.lb_id._registered = False
+        args_schema.nic_id._registered = False
+
+        return args_schema
+
+    def pre_operations(self):
+        args = self.ctx.args
+
+        dest_err = 'Unable to parse --destination resource ID. Supply an IP configuration ID ' \
+                   'for one of the following resource types: loadBalancers, networkInterfaces'
+        destination = parse_proxy_resource_id(args.destination.to_serialized_data())
+        if not destination:
+            raise InvalidArgumentValueError(dest_err)
+
+        dest_type = destination.get('type').lower()
+        dest_args = {
+            'loadbalancers': 'lb_id',
+            'networkinterfaces': 'nic_id'
+        }
+        if dest_type in dest_args:
+            setattr(args, dest_args[dest_type], args.destination)
+        else:
+            raise InvalidArgumentValueError(dest_err)
 
 
-def list_vnet_taps(cmd, resource_group_name=None):
-    client = network_client_factory(cmd.cli_ctx).virtual_network_taps
-    if resource_group_name:
-        return client.list_by_resource_group(resource_group_name)
-    return client.list_all()
+class CreateVtapConfig(_CreateVtapConfig):
 
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        from azure.cli.core.aaz import AAZStrArg
 
-def create_vtap_config(cmd, resource_group_name, network_interface_name, vtap_config_name, vnet_tap):
-    client = network_client_factory(cmd.cli_ctx).network_interface_tap_configurations
-    SubResource, NetworkInterfaceTapConfiguration = cmd.get_models(
-        'SubResource', 'NetworkInterfaceTapConfiguration')
-    vtap_config = NetworkInterfaceTapConfiguration(
-        virtual_network_tap=SubResource(id=vnet_tap)
-    )
-    return client.create_or_update(resource_group_name, network_interface_name, vtap_config_name, vtap_config)
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.vnet_tap = AAZStrArg(
+            options=["--vnet-tap"],
+            help="Name or ID of the virtual network tap.",
+            required=True,
+        )
+        args_schema.vtap_id._required = False
+        args_schema.vtap_id._registered = False
 
+        return args_schema
 
-def list_nics(cmd, resource_group_name=None):
-    client = network_client_factory(cmd.cli_ctx).network_interfaces
-    if resource_group_name:
-        return client.list(resource_group_name)
-    return client.list_all()
+    def pre_operations(self):
+        args = self.ctx.args
+        template = "/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Network/virtualNetworkTaps/{}"
+        if not parse_proxy_resource_id(args.vnet_tap.to_serialized_data()):
+            args.vtap_id = template.format(self.ctx.subscription_id, args.resource_group, args.vnet_tap)
+        else:
+            args.vtap_id = args.vnet_tap

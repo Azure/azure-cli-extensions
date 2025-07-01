@@ -22,9 +22,9 @@ class RunRo(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-02-15-preview",
+        "version": "2024-06-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkdevices/{}/runrocommand", "2024-02-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkdevices/{}/runrocommand", "2024-06-15-preview"],
         ]
     }
 
@@ -50,6 +50,9 @@ class RunRo(AAZCommand):
             help="Name of the Network Device.",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z]{1}[a-zA-Z0-9-_]{2,127}$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -146,7 +149,7 @@ class RunRo(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-02-15-preview",
+                    "api-version", "2024-06-15-preview",
                     required=True,
                 ),
             }
@@ -193,13 +196,40 @@ class RunRo(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.configuration_state = AAZStrType(
-                serialized_name="configurationState",
+            _schema_on_200.end_time = AAZStrType(
+                serialized_name="endTime",
                 flags={"read_only": True},
             )
             _schema_on_200.error = AAZObjectType()
             _RunRoHelper._build_schema_error_detail_read(_schema_on_200.error)
-            _schema_on_200.output_url = AAZStrType(
+            _schema_on_200.id = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200.name = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200.properties = AAZObjectType()
+            _schema_on_200.resource_id = AAZStrType(
+                serialized_name="resourceId",
+                flags={"read_only": True},
+            )
+            _schema_on_200.start_time = AAZStrType(
+                serialized_name="startTime",
+                flags={"read_only": True},
+            )
+            _schema_on_200.status = AAZStrType(
+                flags={"required": True},
+            )
+
+            properties = cls._schema_on_200.properties
+            properties.configuration_state = AAZStrType(
+                serialized_name="configurationState",
+                flags={"read_only": True},
+            )
+            properties.device_configuration_preview = AAZStrType(
+                serialized_name="deviceConfigurationPreview",
+            )
+            properties.output_url = AAZStrType(
                 serialized_name="outputUrl",
             )
 
@@ -245,6 +275,9 @@ class _RunRoHelper:
         additional_info.Element = AAZObjectType()
 
         _element = _schema_error_detail_read.additional_info.Element
+        _element.info = AAZFreeFormDictType(
+            flags={"read_only": True},
+        )
         _element.type = AAZStrType(
             flags={"read_only": True},
         )

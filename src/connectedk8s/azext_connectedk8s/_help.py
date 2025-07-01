@@ -1,20 +1,22 @@
-# coding=utf-8
 # --------------------------------------------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+from __future__ import annotations
 
-from knack.help_files import helps  # pylint: disable=unused-import
+from knack.help_files import helps
 
+__all__ = ["helps"]
 
-helps['connectedk8s'] = """
+helps["connectedk8s"] = """
     type: group
     short-summary: Commands to manage connected kubernetes clusters.
 """
 
-helps['connectedk8s connect'] = """
+helps["connectedk8s connect"] = """
     type: command
     short-summary: Onboard a connected kubernetes cluster to azure.
+    long-summary: The Kubernetes cluster to be onboarded as a connected cluster must be the default cluster in kubeconfig. Run kubectl config get-contexts to confirm the target context name. Then set the default context to the right cluster by running kubectl config use-context target-cluster-name.
     examples:
     - name: Onboard a connected kubernetes cluster with default kube config and kube context.
       text: az connectedk8s connect -g resourceGroupName -n connectedClusterName
@@ -34,10 +36,12 @@ helps['connectedk8s connect'] = """
       text: az connectedk8s connect -g resourceGroupName -n connectedClusterName --enable-oidc-issuer --enable-workload-identity
     - name: Onboard a connected kubernetes cluster with oidc issuer enabled using a self hosted issuer url for public cloud cluster.
       text: az connectedk8s connect -g resourceGroupName -n connectedClusterName --enable-oidc-issuer --self-hosted-issuer aksissuerurl
+    - name: Onboard a connected kubernetes cluster with azure gateway feature enabled.
+      text: az connectedk8s connect -g resourceGroupName -n connectedClusterName --gateway-resource-id gatewayResourceId
 
 """
 
-helps['connectedk8s update'] = """
+helps["connectedk8s update"] = """
     type: command
     short-summary: Update properties of the arc onboarded kubernetes cluster.
     examples:
@@ -53,9 +57,13 @@ helps['connectedk8s update'] = """
       text: az connectedk8s update -g resourceGroupName -n connectedClusterName --enable-oidc-issuer --self-hosted-issuer aksissuerurl
     - name: Disable the workload identity webhook on a connected kubernetes cluster.
       text: az connectedk8s update -g resourceGroupName -n connectedClusterName --disable-workload-identity
+    - name: Update a connected kubernetes cluster with azure gateway feature enabled.
+      text: az connectedk8s update -g resourceGroupName -n connectedClusterName --gateway-resource-id gatewayResourceId
+    - name: Disable the azure gateway feature on a connected kubernetes cluster.
+      text: az connectedk8s update -g resourceGroupName -n connectedClusterName --disable-gateway
 """
 
-helps['connectedk8s upgrade'] = """
+helps["connectedk8s upgrade"] = """
     type: command
     short-summary: Atomically upgrade onboarded agents to the specific version or default to the latest version.
     examples:
@@ -67,7 +75,7 @@ helps['connectedk8s upgrade'] = """
       text: az connectedk8s upgrade -g resourceGroupName -n connectedClusterName --upgrade-timeout 600
 """
 
-helps['connectedk8s list'] = """
+helps["connectedk8s list"] = """
     type: command
     short-summary: List connected kubernetes clusters.
     examples:
@@ -78,7 +86,7 @@ helps['connectedk8s list'] = """
 
 """
 
-helps['connectedk8s delete'] = """
+helps["connectedk8s delete"] = """
     type: command
     short-summary: Delete a connected kubernetes cluster along with connected cluster agents.
     examples:
@@ -88,7 +96,7 @@ helps['connectedk8s delete'] = """
       text: az connectedk8s delete -g resourceGroupName -n connectedClusterName --kube-config /path/to/kubeconfig --kube-context kubeContextName
 """
 
-helps['connectedk8s show'] = """
+helps["connectedk8s show"] = """
     type: command
     short-summary: Show details of a connected kubernetes cluster.
     examples:
@@ -96,7 +104,7 @@ helps['connectedk8s show'] = """
       text: az connectedk8s show -g resourceGroupName -n connectedClusterName
 """
 
-helps['connectedk8s proxy'] = """
+helps["connectedk8s proxy"] = """
   type: command
   short-summary: Get access to a connected kubernetes cluster.
   examples:
@@ -112,7 +120,7 @@ helps['connectedk8s proxy'] = """
     text: az connectedk8s proxy -n clusterName -g resourceGroupName --kube-context contextName
 """
 
-helps['connectedk8s enable-features'] = """
+helps["connectedk8s enable-features"] = """
   type: command
   short-summary: Enables the selective features on the connected cluster.
   examples:
@@ -124,7 +132,7 @@ helps['connectedk8s enable-features'] = """
     text: az connectedk8s enable-features -n clusterName -g resourceGroupName --features cluster-connect custom-locations
 """
 
-helps['connectedk8s disable-features'] = """
+helps["connectedk8s disable-features"] = """
   type: command
   short-summary: Disables the selective features on the connected cluster.
   examples:
@@ -134,7 +142,7 @@ helps['connectedk8s disable-features'] = """
     text: az connectedk8s disable-features -n clusterName -g resourceGroupName --features custom-locations azure-rbac
 """
 
-helps['connectedk8s troubleshoot'] = """
+helps["connectedk8s troubleshoot"] = """
   type: command
   short-summary: Perform diagnostic checks on an Arc enabled Kubernetes cluster.
   examples:

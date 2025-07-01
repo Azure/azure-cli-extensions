@@ -204,7 +204,7 @@ class DefinitionCommandsTests(ScenarioTest):
             with open(self.kwargs['file_name'], 'w') as file:
                 file.write('a' * 4 * 1024 * 1024) # generate a 4MB file
 
-            with self.assertRaisesRegexp(CLIError, 'The size of "value" is greater than 3 MB. Please use --format "link" to import the specification from a URL for size greater than 3 mb.') as cm:
+            with self.assertRaisesRegex(CLIError, 'The size of "value" is greater than 3 MB. Please use --format "link" to import the specification from a URL for size greater than 3 mb.') as cm:
                 self.cmd('az apic api definition import-specification -g {rg} -n {s} --api-id {api} --version-id {v} --definition-id {d} --format "inline" --specification \'{specification}\' --value "@{file_name}"')
         finally:
             os.remove(self.kwargs['file_name'])
@@ -285,7 +285,7 @@ class DefinitionCommandsTests(ScenarioTest):
     @ApicDefinitionPreparer()
     def test_examples_import_specification_example_2(self):
         self.kwargs.update({
-          'value': 'https://raw.githubusercontent.com/OAI/OpenAPI-Specification/main/examples/v3.0/petstore.json',
+          'value': 'https://petstore3.swagger.io/api/v3/openapi.json',
           'specification': '{"name":"openapi","version":"3.0.0"}'
         })
         self.cmd('az apic api definition import-specification -g {rg} -n {s} --api-id {api} --version-id {v} --definition-id {d} --format "link" --value \'{value}\' --specification \'{specification}\'')
@@ -297,7 +297,7 @@ class DefinitionCommandsTests(ScenarioTest):
     @ApicDefinitionPreparer()
     def test_examples_export_specification(self):
         self.kwargs.update({
-          'value': 'https://raw.githubusercontent.com/OAI/OpenAPI-Specification/main/examples/v3.0/petstore.json',
+          'value': 'https://petstore3.swagger.io/api/v3/openapi.json',
           'specification': '{"name":"openapi","version":"3.0.0"}',
           'filename': "test_examples_export_specification.json"
         })

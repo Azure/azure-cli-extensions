@@ -2,6 +2,18 @@
 
 Release History
 ===============
+
+1.1.0
++++++
+* az databricks workspace create/update: Add --enable-compliance-security-profile to enable the Enhanced Security and Compliance on workspace.
+* az databricks workspace create/update: Add --compliance-standards to set compliance standards on workspace.
+* az databricks workspace create/update: Add --enable-automatic-cluster-update to enable automatic cluster update feature.
+* az databricks workspace create/update: Add --enable-enhanced-security-monitoring to enable enhanced security monitoring feature.
+
+1.0.1
++++++
+* Replace msrestazure with azure.core
+
 1.0.0
 +++++
 az databricks workspace create/update: Add --access-connector to associate an Access Connector Resource with workspace.

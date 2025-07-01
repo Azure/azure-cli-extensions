@@ -16,7 +16,7 @@ class MdpScenario(ScenarioTest):
         self.kwargs.update(
             {
                 "subscriptionId": self.get_subscription_id(),
-                "location": "eastus2",
+                "location": "eastus",
             }
         )
 
@@ -132,11 +132,15 @@ class MdpScenario(ScenarioTest):
             --name \"{poolName}\" \
             --resource-group \"{rg}\" \
             --tags CostCode=234 \
+            --agent-profile \"{{Stateless:{{}},resourcePredictionsProfile:{{Manual:{{}}}},resourcePredictions:{{timezone:'UTC',daysData:[{{}},{{}},{{}},{{'09:00:00':2,'11:00:00':0}},{{}},{{}},{{}}]}}}}\" \
             ",
             checks=[
                 self.check("name", "{poolName}"),
                 self.check("resourceGroup", "{rg}"),
-                self.check("tags.CostCode", "234")
+                self.check("tags.CostCode", "234"),
+                self.check("agentProfile.resourcePredictions.timeZone", "UTC"),
+                self.check("length(agentProfile.resourcePredictions.daysData)", 7),
+                self.check("length(agentProfile.resourcePredictions.daysData[3])", 2),
             ],
         )
 

@@ -12,10 +12,10 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "dynatrace monitor sso-config create"
+    "dynatrace monitor sso-config create",
 )
 class Create(AAZCommand):
-    """Create a dynatrace sso-config resource
+    """Create a new SSO configuration for seamless authentication between Azure and the Dynatrace platform.
 
     :example: Create a sso-config
         az dynatrace monitor sso-config create -g rg --monitor-name monitor -n default --aad-domains "['mpliftrdt20210811outlook.onmicrosoft.com']" --single-sign-on-url "https://www.dynatrace.io"
@@ -49,13 +49,11 @@ class Create(AAZCommand):
             options=["-n", "--name", "--configuration-name"],
             help="Single Sign On Configuration Name",
             required=True,
-            id_part="child_name_1",
         )
         _args_schema.monitor_name = AAZStrArg(
             options=["--monitor-name"],
             help="Monitor resource name",
             required=True,
-            id_part="name",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -291,6 +289,10 @@ class Create(AAZCommand):
             )
 
             return cls._schema_on_200_201
+
+
+class _CreateHelper:
+    """Helper class for Create"""
 
 
 __all__ = ["Create"]

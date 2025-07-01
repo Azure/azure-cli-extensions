@@ -7,7 +7,7 @@
 
 from azure.cli.core.commands.client_factory import get_subscription_id
 from knack.log import get_logger
-from msrestazure.tools import resource_id
+from azure.mgmt.core.tools import resource_id
 from .application_live_view import create as application_live_view_create
 from .dev_tool_portal import create_or_update as dev_tool_portal_create
 from .vendored_sdks.appplatform.v2024_05_01_preview.models._app_platform_management_client_enums import ConfigurationServiceGeneration
