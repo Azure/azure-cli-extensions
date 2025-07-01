@@ -47,6 +47,14 @@ def sftp_cert(cmd, cert_path=None, public_key_file=None, ssh_client_folder=None)
     if not cert_path and not public_key_file:
         raise azclierror.RequiredArgumentMissingError("--file or --public-key-file must be provided.")
 
+    # Expand file paths to handle tilde (~) notation
+    if cert_path:
+        cert_path = os.path.expanduser(cert_path)
+    if public_key_file:
+        public_key_file = os.path.expanduser(public_key_file)
+    if ssh_client_folder:
+        ssh_client_folder = os.path.expanduser(ssh_client_folder)
+
     if cert_path and not os.path.isdir(os.path.dirname(cert_path)):
         raise azclierror.InvalidArgumentValueError(f"{os.path.dirname(cert_path)} folder doesn't exist")
 
@@ -79,7 +87,7 @@ def sftp_cert(cmd, cert_path=None, public_key_file=None, ssh_client_folder=None)
     if keys_folder:
         logger.warning("%s contains sensitive information (id_rsa, id_rsa.pub). "
                        "Please delete once this certificate is no longer being used.", keys_folder)
-    
+
     print_styled_text((Style.SUCCESS, f"Certificate saved: {cert_file}"))
 
 
@@ -106,6 +114,14 @@ def sftp_connect(cmd, storage_account, port=None, cert_file=None, private_key_fi
         Various Azure CLI errors for validation and connection issues
     """
     logger.debug("Starting SFTP connection to storage account: %s", storage_account)
+
+    # Expand file paths to handle tilde (~) notation
+    if cert_file:
+        cert_file = os.path.expanduser(cert_file)
+    if private_key_file:
+        private_key_file = os.path.expanduser(private_key_file)
+    if public_key_file:
+        public_key_file = os.path.expanduser(public_key_file)
 
     # Validate input parameters
     _assert_args(storage_account, cert_file, public_key_file, private_key_file)
@@ -341,14 +357,20 @@ def _assert_args(storage_account, cert_file, public_key_file, private_key_file):
     if not storage_account:
         raise azclierror.RequiredArgumentMissingError("Storage account name is required.")
 
-    if cert_file and not os.path.isfile(cert_file):
-        raise azclierror.FileOperationError(f"Certificate file {cert_file} not found.")
+    if cert_file:
+        expanded_cert_file = os.path.expanduser(cert_file)
+        if not os.path.isfile(expanded_cert_file):
+            raise azclierror.FileOperationError(f"Certificate file {cert_file} not found.")
 
-    if public_key_file and not os.path.isfile(public_key_file):
-        raise azclierror.FileOperationError(f"Public key file {public_key_file} not found.")
+    if public_key_file:
+        expanded_public_key_file = os.path.expanduser(public_key_file)
+        if not os.path.isfile(expanded_public_key_file):
+            raise azclierror.FileOperationError(f"Public key file {public_key_file} not found.")
 
-    if private_key_file and not os.path.isfile(private_key_file):
-        raise azclierror.FileOperationError(f"Private key file {private_key_file} not found.")
+    if private_key_file:
+        expanded_private_key_file = os.path.expanduser(private_key_file)
+        if not os.path.isfile(expanded_private_key_file):
+            raise azclierror.FileOperationError(f"Private key file {private_key_file} not found.")
 
 
 def _do_sftp_op(sftp_session, op_call):

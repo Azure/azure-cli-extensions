@@ -14,6 +14,55 @@ from azext_sftp import sftp_info
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
+class SftpPathExpansionTest(unittest.TestCase):
+    """Test cases for proper handling of tilde paths in SFTP extension.
+    
+    These tests ensure that the SFTP extension properly expands tilde (~) paths
+    to full absolute paths, similar to how the SSH extension should handle them.
+    Owner: johnli1
+    """
+
+    def test_authentication_files_tilde_expansion(self):
+        """Test that AuthenticationFiles correctly expands tilde paths."""
+        auth_files = sftp_info.AuthenticationFiles(
+            cert_file="~/.ssh/id_rsa-aadcert.pub",
+            private_key_file="~/.ssh/id_rsa",
+            public_key_file="~/.ssh/id_rsa.pub"
+        )
+        
+        # Verify tilde was expanded
+        self.assertFalse(auth_files.cert_file.startswith('~'))
+        self.assertFalse(auth_files.private_key_file.startswith('~'))
+        self.assertFalse(auth_files.public_key_file.startswith('~'))
+        
+        # Verify paths are absolute
+        self.assertTrue(os.path.isabs(auth_files.cert_file))
+        self.assertTrue(os.path.isabs(auth_files.private_key_file))
+        self.assertTrue(os.path.isabs(auth_files.public_key_file))
+        
+        # Verify paths contain the expected file names
+        self.assertTrue(auth_files.cert_file.endswith('id_rsa-aadcert.pub'))
+        self.assertTrue(auth_files.private_key_file.endswith('id_rsa'))
+        self.assertTrue(auth_files.public_key_file.endswith('id_rsa.pub'))
+
+    def test_authentication_files_absolute_paths_unchanged(self):
+        """Test that absolute paths are not modified by AuthenticationFiles."""
+        abs_cert = "/absolute/path/cert.pub"
+        abs_private = "/absolute/path/private"
+        abs_public = "/absolute/path/public.pub"
+        
+        auth_files = sftp_info.AuthenticationFiles(
+            cert_file=abs_cert,
+            private_key_file=abs_private,
+            public_key_file=abs_public
+        )
+        
+        # On Windows, paths get normalized but should still be absolute
+        self.assertTrue(os.path.isabs(auth_files.cert_file))
+        self.assertTrue(os.path.isabs(auth_files.private_key_file))
+        self.assertTrue(os.path.isabs(auth_files.public_key_file))
+
+
 class SftpScenarioTest(unittest.TestCase):
     """Integration tests for SFTP extension scenarios.
     

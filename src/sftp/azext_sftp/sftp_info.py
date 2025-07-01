@@ -24,9 +24,9 @@ class AuthenticationFiles:  # pylint: disable=too-few-public-methods
     """Encapsulates authentication file paths."""
 
     def __init__(self, public_key_file=None, private_key_file=None, cert_file=None):
-        self.public_key_file = os.path.abspath(public_key_file) if public_key_file else None
-        self.private_key_file = os.path.abspath(private_key_file) if private_key_file else None
-        self.cert_file = os.path.abspath(cert_file) if cert_file else None
+        self.public_key_file = os.path.abspath(os.path.expanduser(public_key_file)) if public_key_file else None
+        self.private_key_file = os.path.abspath(os.path.expanduser(private_key_file)) if private_key_file else None
+        self.cert_file = os.path.abspath(os.path.expanduser(cert_file)) if cert_file else None
 
 
 class SessionConfiguration:  # pylint: disable=too-few-public-methods
