@@ -126,7 +126,6 @@ from azure.cli.core.azclierror import (
     InvalidArgumentValueError,
     MutuallyExclusiveArgumentError,
     RequiredArgumentMissingError,
-    ResourceNotFoundError as AZResourceNotFoundError,
     ValidationError,
 )
 from azure.cli.core.commands import LongRunningOperation
