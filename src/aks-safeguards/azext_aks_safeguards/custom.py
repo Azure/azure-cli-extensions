@@ -9,6 +9,43 @@
 # pylint: disable=too-many-statements
 
 from knack.log import get_logger
-
+from .aaz.latest.aks.safeguards._create import Create
+from azure.cli.core.aaz import *
 
 logger = get_logger(__name__)
+
+
+class AKSSafeguardsCreateCustom(Create):
+
+    def pre_operations(self):
+        args = self.ctx.args
+        if not args.managed_cluster and not (args.resource_group and args.cluster_name):
+            raise AAZValueError(
+                "Either 'managed_cluster' or both 'resource_group' and 'cluster_name' must be provided.")
+
+        if not args.managed_cluster:
+            args.managed_cluster = f"/subscriptions/{args.subscription_id}/resourceGroups/{args.resource_group}/providers/Microsoft.ContainerService/managedClusters/{args.cluster_name}"
+
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        _args_schema = super()._build_arguments_schema(*args, **kwargs)
+
+        # Customer should have the ability to specify the managed cluster using either the `managed_cluster` argument or both `resource_group` and `cluster_name`.
+        # If `managed_cluster` is not provided, it will be constructed from `resource_group` and `cluster_name` along with the `subscription_id`.
+        _args_schema.resource_group = AAZStrArg(
+            options=["-g", "--resource-group"],
+            help="The name of the resource group. You can configure the default group using az configure --defaults group=<name>.",
+            required=False,
+        )
+        _args_schema.cluster_name = AAZStrArg(
+            options=["--name", "-n"],
+            help="The name of the Managed Cluster.",
+            required=False,
+        )
+        _args_schema.subscription_id = AAZStrArg(
+            options=["--subscription"],
+            help="The ID of the target subscription. You can configure the default subscription using az account set --subscription NAME_OR_ID.",
+            required=False,
+        )
+
+        return _args_schema
