@@ -4366,9 +4366,13 @@ def aks_bastion(cmd, client, resource_group_name, name, bastion=None, port=None,
             port = aks_bastion_get_local_port(port)
             aks_get_credentials(cmd, client, resource_group_name, name, admin=admin, path=kubeconfig_path)
             aks_bastion_set_kubeconfig(kubeconfig_path, port)
-            asyncio.run(aks_bastion_runner(nrg, bastion, port, mc_id, kubeconfig_path))
-        except Exception as e:
-            logger.error("An error occurred while running the bastion command: %s", e)
-            raise
+            aks_bastion_runner(
+                    nrg,
+                    bastion,
+                    port,
+                    mc_id,
+                    kubeconfig_path,
+                    test_hook=os.getenv("AKS_BASTION_TEST_HOOK"),
+                )
         finally:
             aks_batsion_clean_up()

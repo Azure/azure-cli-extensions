@@ -16328,6 +16328,71 @@ spec:
         # delete the extension
         self.cmd('aks extension delete -g {rg} -c {cluster_name} -n {name}  --force -y')
 
+    # live only, otherwise the current recording mechanism will also record the binary files of
+    # kubectl and kubelogin resulting in the cassette file size exceeding 100MB
+    @live_only()
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17, name_prefix="clitest", location="eastus"
+    )
+    def test_aks_bastion(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name("cliakstest", 16)
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "location": resource_group_location,
+                "ssh_key_value": self.generate_ssh_keys(),
+            }
+        )
+
+        # create private cluster
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} "
+            "--node-count=1 --enable-private-cluster "
+            "--ssh-key-value={ssh_key_value}"
+        )
+        mc = self.cmd(
+            create_cmd,
+            checks=[
+                self.exists("privateFqdn"),
+                self.check("provisioningState", "Succeeded"),
+            ],
+        ).get_output_in_json()
+        nrg = mc.node_resource_group
+
+        # create bastion
+        list_vnet_cmd = f"network vnet list -g {nrg} -o json"
+        vnets = self.cmd(list_vnet_cmd).get_output_in_json()
+        vnet_name = vnets[0]["name"]
+
+        create_subnet_cmd = f"network vnet subnet create --resource-group {nrg} " \
+                            f"--vnet-name {vnet_name} --name AzureBastionSubnet " \
+                            f"--address-prefixes 10.238.0.0/16"
+        self.cmd(create_subnet_cmd, checks=[self.check("provisioningState", "Succeeded")])
+
+        create_pip_cmd = f"network public-ip create -g {nrg} -n aks-bastion-pip --sku Standard"
+        self.cmd(create_pip_cmd, checks=[self.check("provisioningState", "Succeeded")])
+
+        subprocess.run(["az", "extension", "add", "--name", "bastion", "--yes"], check=True)
+
+        create_bastion_cmd = f"network bastion create -g {nrg} -n aks-bastion " \
+                              f"--public-ip-address aks-bastion-pip " \
+                              f"--vnet-name {vnet_name} --enable-tunneling"
+        self.cmd(create_bastion_cmd, checks=[self.check("provisioningState", "Succeeded")])
+
+        # install kubectl
+        _, ctl_temp_file = tempfile.mkstemp()
+        _, login_temp_file = tempfile.mkstemp()
+        version = "latest"
+        install_cmd = 'aks install-cli --client-version={} --install-location={} --base-src-url={} ' \
+                    '--kubelogin-version={} --kubelogin-install-location={} --kubelogin-base-src-url={}'.format(version, ctl_temp_file, "", version, login_temp_file, "")
+        self.cmd(install_cmd, checks=[self.is_empty()])
+
+        # test bastion connectivity
+        os.environ["AKS_BASTION_TEST_HOOK"] = ctl_temp_file
+        bastion_cmd = f"aks bastion -g {resource_group} -n {aks_name}"
+        self.cmd(bastion_cmd, checks=[self.is_empty()])
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
