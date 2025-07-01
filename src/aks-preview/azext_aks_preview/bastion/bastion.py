@@ -152,12 +152,14 @@ def aks_bastion_set_kubeconfig(kubeconfig_path, port):
         yaml.dump(data, f)
 
 
-async def aks_bastion_runner(nrg, bastion, port, mc_id, kubeconfig_path):
+async def aks_bastion_runner(nrg, bastion, port, mc_id, kubeconfig_path, test_hook=None):
     """Run the bastion tunnel and subshell in parallel, cancelling the other if one completes."""
 
     task1 = asyncio.create_task(_aks_bastion_launch_tunnel(nrg, bastion, port, mc_id))
-    await asyncio.sleep(5)  # give the tunnel some time to establish before launching the subshell
-    task2 = asyncio.create_task(_aks_bastion_launch_subshell(kubeconfig_path, port))
+    if test_hook:
+        task2 = asyncio.create_task(_aks_bastion_test_hook(kubeconfig_path, port, kubectl_path=test_hook))
+    else:
+        task2 = asyncio.create_task(_aks_bastion_launch_subshell(kubeconfig_path, port))
 
     _, pending = await asyncio.wait([task1, task2], return_when=asyncio.FIRST_COMPLETED)
 
@@ -210,88 +212,103 @@ def _aks_bastion_restore_shell(shell_cmd):
 
 async def _aks_bastion_launch_subshell(kubeconfig_path, port):
     """Launch a subshell with the KUBECONFIG environment variable set to the provided path."""
-
-    if _aks_bastion_validate_tunnel(port):
-        logger.debug("Bastion tunnel is set up successfully.")
-    else:
-        raise CLIInternalError(
-            f"Bastion tunnel failed to set up on port {port}. Please check the logs for more details."
-        )
-
-    env = os.environ.copy()
-    env.update({"KUBECONFIG": kubeconfig_path})
-    shell_cmd, updated_shell_cmd = _aks_bastion_prepare_shell_cmd(kubeconfig_path)
-    logger.info(
-        "Launching subshell '%s' with KUBECONFIG set to '%s'",
-        updated_shell_cmd,
-        kubeconfig_path,
-    )
-    subshell_process = await asyncio.subprocess.create_subprocess_shell(
-        cmd=updated_shell_cmd,
-        stdin=None,
-        stdout=None,
-        stderr=None,
-        shell=True,
-        env=env,
-    )
-    logger.info("Subshell launched with PID: %s", subshell_process.pid)
-
     try:
+        if await _aks_bastion_validate_tunnel(port):
+            logger.debug("Bastion tunnel is set up successfully.")
+        else:
+            raise CLIInternalError(
+                f"Bastion tunnel failed to set up on port {port}. Please check the logs for more details."
+            )
+
+        env = os.environ.copy()
+        env.update({"KUBECONFIG": kubeconfig_path})
+        shell_cmd, updated_shell_cmd = _aks_bastion_prepare_shell_cmd(kubeconfig_path)
+        logger.info(
+            "Launching subshell '%s' with KUBECONFIG set to '%s'",
+            updated_shell_cmd,
+            kubeconfig_path,
+        )
+        subshell_process = await asyncio.subprocess.create_subprocess_shell(
+            cmd=updated_shell_cmd,
+            stdin=None,
+            stdout=None,
+            stderr=None,
+            shell=True,
+            env=env,
+        )
+        logger.info("Subshell launched with PID: %s", subshell_process.pid)
+
+        # subshell process must not exit unless it encounters a failure or is deliberately shut down
         await subshell_process.wait()
         logger.debug("Subshell exited with code: %s", subshell_process.returncode)
     except asyncio.CancelledError:
-        logger.info("Subshell was cancelled. Terminating...")
-        subshell_process.terminate()
-        try:
-            await asyncio.wait_for(subshell_process.wait(), timeout=5)
-            logger.info("Subshell exited cleanly after termination.")
-        except asyncio.TimeoutError:
-            logger.warning("Subshell did not exit after SIGTERM. Sending SIGKILL...")
-            subshell_process.kill()
-            await subshell_process.wait()
-            logger.warning(
-                "Subshell forcefully killed with code %s", subshell_process.returncode
-            )
-            _aks_bastion_restore_shell(shell_cmd)
+        # attempt to terminate the subshell process gracefully
+        if "subshell_process" in locals():
+            logger.info("Subshell was cancelled. Terminating...")
+            subshell_process.terminate()
+            try:
+                await asyncio.wait_for(subshell_process.wait(), timeout=5)
+                logger.info("Subshell exited cleanly after termination.")
+            except asyncio.TimeoutError:
+                logger.warning("Subshell did not exit after SIGTERM. Sending SIGKILL...")
+                subshell_process.kill()
+                await subshell_process.wait()
+                logger.warning(
+                    "Subshell forcefully killed with code %s", subshell_process.returncode
+                )
+                _aks_bastion_restore_shell(shell_cmd)
+        else:
+            logger.warning("Subshell was cancelled before it could be launched.")
 
 
 async def _aks_bastion_launch_tunnel(nrg, bastion, port, mc_id):
     """Launch the bastion tunnel using the provided parameters."""
 
-    cmd = (
-        f"az network bastion tunnel --resource-group {nrg} "
-        f"--name {bastion} --port {port} --target-resource-id {mc_id} --resource-port 443"
-    )
-    logger.debug("Creating bastion tunnel with command: %s", cmd)
-    tunnel_proces = await asyncio.create_subprocess_shell(
-        cmd,
-        stdin=asyncio.subprocess.DEVNULL,
-        stdout=asyncio.subprocess.DEVNULL,
-        stderr=asyncio.subprocess.DEVNULL,
-        shell=True,
-    )
-    logger.info("Tunnel launched with PID: %s", tunnel_proces.pid)
-
     try:
-        await tunnel_proces.wait()
-        logger.debug("Tunnel process completed with return code: %s", tunnel_proces.returncode)
+        cmd = (
+            f"az network bastion tunnel --resource-group {nrg} "
+            f"--name {bastion} --port {port} --target-resource-id {mc_id} --resource-port 443"
+        )
+        logger.debug("Creating bastion tunnel with command: %s", cmd)
+        tunnel_proces = await asyncio.create_subprocess_shell(
+            cmd,
+            stdin=asyncio.subprocess.DEVNULL,
+            stdout=asyncio.subprocess.PIPE,
+            stderr=asyncio.subprocess.PIPE,
+            shell=True,
+        )
+        logger.info("Tunnel launched with PID: %s", tunnel_proces.pid)
+
+        # tunnel process must not exit unless it encounters a failure or is deliberately shut down
+        stdout, stderr = await tunnel_proces.communicate()
+        logger.error("Bastion tunnel exited with code %s", tunnel_proces.returncode)
+        if stdout:
+            logger.warning("Tunnel process stdout: %s", stdout.decode("utf-8"))
+        if stderr:
+            logger.error("Tunnel process stderr: %s", stderr.decode("utf-8"))
     except asyncio.CancelledError:
-        logger.info("Tunnel process was cancelled. Terminating...")
-        tunnel_proces.terminate()
-        try:
-            await asyncio.wait_for(tunnel_proces.wait(), timeout=5)
-            logger.info("Tunnel process exited cleanly after termination.")
-        except asyncio.TimeoutError:
-            logger.warning("Tunnel process did not exit after SIGTERM. Sending SIGKILL...")
-            tunnel_proces.kill()
-            await tunnel_proces.wait()
-            logger.warning(
-                "Subshell forcefully killed with code %s", tunnel_proces.returncode
-            )
+        # attempt to terminate the tunnel process gracefully
+        if "tunnel_proces" in locals():
+            logger.info("Tunnel process was cancelled. Terminating...")
+            tunnel_proces.terminate()
+            try:
+                await asyncio.wait_for(tunnel_proces.wait(), timeout=5)
+                logger.info("Tunnel process exited cleanly after termination.")
+            except asyncio.TimeoutError:
+                logger.warning("Tunnel process did not exit after SIGTERM. Sending SIGKILL...")
+                tunnel_proces.kill()
+                await tunnel_proces.wait()
+                logger.warning(
+                    "Subshell forcefully killed with code %s", tunnel_proces.returncode
+                )
+        else:
+            logger.warning("Tunnel process was cancelled before it could be launched.")
 
 
-def _aks_bastion_validate_tunnel(port):
+async def _aks_bastion_validate_tunnel(port):
     """Check if the bastion tunnel is active on the specified port."""
+    # give the tunnel some time to establish before checking the port
+    await asyncio.sleep(5)
 
     # retry for up to 5 times to check if the port is open
     for attempt in range(5):
@@ -299,7 +316,7 @@ def _aks_bastion_validate_tunnel(port):
             "Checking if tunnel is active on port %s (attempt %d)...", port, attempt + 1
         )
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-            s.settimeout(15)
+            s.settimeout(5)
             try:
                 s.connect(("localhost", port))
                 logger.info("Tunnel is active on port %s", port)
@@ -311,6 +328,26 @@ def _aks_bastion_validate_tunnel(port):
                     port,
                     e,
                 )
-                time.sleep(1)
+                await asyncio.sleep(5)
     logger.error("Tunnel failed to become active on port %s after 5 attempts.", port)
     return False
+
+
+async def _aks_bastion_test_hook(kubeconfig_path, port, kubectl_path):
+    """Test hook to validate the bastion tunnel and run a kubectl command."""
+    if not await _aks_bastion_validate_tunnel(port):
+        raise CLIInternalError(
+            f"Bastion tunnel failed to set up on port {port}."
+        )
+    kubectl_process = await asyncio.create_subprocess_shell(
+        f"{kubectl_path} --kubeconfig {kubeconfig_path} get nodes",
+        stdin=asyncio.subprocess.DEVNULL,
+        stdout=asyncio.subprocess.DEVNULL,
+        stderr=asyncio.subprocess.DEVNULL,
+        shell=True,
+    )
+    await asyncio.wait_for(kubectl_process.wait(), timeout=10)
+    if kubectl_process.returncode != 0:
+        raise CLIInternalError(
+            f"Command kubectl failed with return code {kubectl_process.returncode}. "
+        )
