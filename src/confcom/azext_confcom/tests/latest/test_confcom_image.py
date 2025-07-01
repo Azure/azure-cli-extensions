@@ -11,7 +11,7 @@ import deepdiff
 from azext_confcom.security_policy import (
     OutputType,
     load_policy_from_image_name,
-    load_policy_from_str,
+    load_policy_from_json,
 )
 from  azext_confcom.template_util import DockerClient
 import azext_confcom.config as config
@@ -25,7 +25,8 @@ class PolicyGeneratingImage(unittest.TestCase):
             "version": "1.0",
             "containers": [
                 {
-                    "containerImage": "mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot",
+                    "name": "mcr.microsoft.com/azurelinux/base/python:3.12",
+                    "containerImage": "mcr.microsoft.com/azurelinux/base/python:3.12",
                     "environmentVariables": [
 
                     ],
@@ -38,10 +39,10 @@ class PolicyGeneratingImage(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        with load_policy_from_image_name("mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot") as aci_policy:
+        with load_policy_from_image_name("mcr.microsoft.com/azurelinux/base/python:3.12") as aci_policy:
             aci_policy.populate_policy_content_for_all_images(individual_image=True)
             cls.aci_policy = aci_policy
-        with load_policy_from_str(cls.custom_json) as custom_policy:
+        with load_policy_from_json(cls.custom_json) as custom_policy:
             custom_policy.populate_policy_content_for_all_images()
             cls.custom_policy = custom_policy
 
@@ -56,6 +57,7 @@ class PolicyGeneratingImageSidecar(unittest.TestCase):
             "version": "1.0",
             "containers": [
                 {
+                    "name": "mcr.microsoft.com/aci/atlas-mount-azure-file-volume:master_20201210.2",
                     "containerImage": "mcr.microsoft.com/aci/atlas-mount-azure-file-volume:master_20201210.2",
                     "environmentVariables": [
 
@@ -76,7 +78,7 @@ class PolicyGeneratingImageSidecar(unittest.TestCase):
         ) as aci_policy:
             aci_policy.populate_policy_content_for_all_images(individual_image=True)
             cls.aci_policy = aci_policy
-        with load_policy_from_str(cls.custom_json) as custom_policy:
+        with load_policy_from_json(cls.custom_json) as custom_policy:
             custom_policy.populate_policy_content_for_all_images(individual_image=True)
             cls.custom_policy = custom_policy
 

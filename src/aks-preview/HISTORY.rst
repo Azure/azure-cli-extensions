@@ -12,6 +12,52 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+18.0.0b15
++++++++
+* Fixed NPE issue for `--acns-transit-encryption-type`.
+
+18.0.0b14
++++++++
+* Add preview flag for `az aks namespace`.
+* Add `--node-provisioning-default-pools` to the `az aks update` command.
+* Add `--node-provisioning-default-pools` to the `az aks create` command.
+
+18.0.0b13
++++++++
+* Add option `--enable-http-proxy` to `az aks update`.
+
+18.0.0b12
++++++++
+* Add option `--acns-transit-encryption-type <None|WireGuard>` to `az aks create/update`
+
+18.0.0b11
++++++++
+* Vendor new SDK and bump API version to 2025-04-02-preview.
+
+18.0.0b10
++++++++
+* Wrap the ARG call in the managed namespace list command
+
+18.0.0b9
++++++++
+* Add `--max-blocked-nodes` to the `az aks nodepool add/update/upgrade` commands.
+
+18.0.0b8
++++++++
+* Populate location of managed namespaces using managed cluster's location
+
+18.0.0b7
++++++++
+* Add option `--disable-http-proxy` to `az aks update`.
+
+18.0.0b6
++++++++
+* Quality improvements for `az aks extension` and `az aks extension type` command groups
+
+18.0.0b5
++++++++
+* Add option `Ubuntu2204` and `Ubuntu2404` to `--os-sku` for `az aks nodepool add` and `az aks nodepool update`.
+
 18.0.0b4
 +++++++
 * Add managed namespace commands `az aks namespace add/update/show/list/delete/get-credentials`

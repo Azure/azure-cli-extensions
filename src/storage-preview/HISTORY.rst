@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.0.0b6
++++++++
+* `az storage account task-assignment`: Task-Assignment GA for Storage Action
+
 1.0.0b5
 +++++++
 * `az storage blob access/directory/move`: Remove deprecated command groups since `az storage fs` command group has been GA since 2021

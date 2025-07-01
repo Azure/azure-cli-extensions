@@ -38,7 +38,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         super(AzureKubernetesServiceScenarioTest, self).__init__(
             method_name, recording_processors=[KeyReplacer()]
         )
-        self.cmd('extension add -n k8s-extension')
 
     def _get_versions(self, location):
         """Return the previous and current Kubernetes minor release versions, such as ("1.11.6", "1.12.4")."""
@@ -784,7 +783,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         create_cmd = (
             "aks create --resource-group={resource_group} --name={name} --enable-managed-identity "
-            "-a ingress-appgw --appgw-subnet-cidr 10.232.0.0/16 "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AppGatewayWithOverlayPreview "
+            "-a ingress-appgw --appgw-subnet-cidr 10.232.0.0/26 "
             "--ssh-key-value={ssh_key_value} -o json"
         )
         self.cmd(
@@ -794,7 +794,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 self.check("addonProfiles.ingressApplicationGateway.enabled", True),
                 self.check(
                     "addonProfiles.ingressApplicationGateway.config.subnetCIDR",
-                    "10.232.0.0/16",
+                    "10.232.0.0/26",
                 ),
             ],
         )
@@ -848,6 +848,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "aks create --resource-group={resource_group} --name={aks_name} --enable-managed-identity "
             "--vnet-subnet-id {vnet_id}/subnets/aks-subnet -a ingress-appgw "
             "--appgw-name gateway --appgw-subnet-id {vnet_id}/subnets/appgw-subnet "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AppGatewayWithOverlayPreview "
             "--yes --ssh-key-value={ssh_key_value} -o json"
         )
         aks_cluster = self.cmd(
@@ -968,6 +969,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "aks create -n {aks_name} -g {resource_group} --enable-managed-identity "
             "--vnet-subnet-id {vnet_id}/subnets/aks-subnet "
             "-a ingress-appgw --appgw-id {appgw_id} --yes "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AppGatewayWithOverlayPreview "
             "--ssh-key-value={ssh_key_value} -o json"
         )
         aks_cluster = self.cmd(
@@ -2266,58 +2268,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     @AKSCustomResourceGroupPreparer(
         random_name_length=17, name_prefix="clitest", location="westus2"
     )
-    def test_aks_nodepool_abort(self, resource_group, resource_group_location):
-        aks_name = self.create_random_name("cliakstest", 16)
-        node_pool_name = self.create_random_name("c", 6)
-        self.kwargs.update(
-            {
-                "resource_group": resource_group,
-                "name": aks_name,
-                "node_pool_name": node_pool_name,
-                "ssh_key_value": self.generate_ssh_keys(),
-            }
-        )
-
-        create_cmd = (
-            "aks create --resource-group={resource_group} --name={name} "
-            "--vm-set-type VirtualMachineScaleSets --node-count=1 "
-            "--ssh-key-value={ssh_key_value} "
-            "-o json"
-        )
-        self.cmd(create_cmd, checks=[self.check("provisioningState", "Succeeded")])
-
-        # add nodepool
-        self.cmd(
-            "aks nodepool add --resource-group={resource_group} --cluster-name={name} --name={node_pool_name} --node-count=2",
-            checks=[self.check("provisioningState", "Succeeded")],
-        )
-        # stop nodepool
-        self.cmd(
-            "aks nodepool stop --no-wait --resource-group={resource_group} --cluster-name={name} --nodepool-name={node_pool_name} --aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/PreviewStartStopAgentPool"
-        )
-
-        abort_cmd = "aks nodepool operation-abort --resource-group={resource_group} --cluster-name={name} --nodepool-name={node_pool_name}"
-        self.cmd(abort_cmd, checks=[self.is_empty()])
-
-        time.sleep(10)
-        get_nodepool_cmd = (
-            "aks nodepool show "
-            "--resource-group={resource_group} "
-            "--cluster-name={name} "
-            "-n {node_pool_name} "
-        )
-        self.cmd(
-            get_nodepool_cmd,
-            checks=[
-                self.check("provisioningState", "Canceled"),
-                self.check("powerState.code", "Running"),
-            ],
-        )
-
-    @AllowLargeResponse()
-    @AKSCustomResourceGroupPreparer(
-        random_name_length=17, name_prefix="clitest", location="westus2"
-    )
     def test_aks_machine_cmds(self, resource_group, resource_group_location):
         aks_name = self.create_random_name("cliakstest", 16)
         self.kwargs.update(
@@ -2438,72 +2388,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         assert operation_show["status"] == "Succeeded"
         assert operation_show["error"] is None
         assert operation_show["name"] == operation_id
-
-    @AllowLargeResponse()
-    @AKSCustomResourceGroupPreparer(
-        random_name_length=17, name_prefix="clitest", location="westcentralus"
-    )
-    def test_aks_create_with_safeguards(self, resource_group, resource_group_location):
-        aks_name = self.create_random_name("cliakstest", 16)
-        self.kwargs.update(
-            {
-                "resource_group": resource_group,
-                "name": aks_name,
-                "ssh_key_value": self.generate_ssh_keys(),
-            }
-        )
-
-        create_cmd = (
-            "aks create --resource-group={resource_group} --name={name} "
-            '--safeguards-level Warning --safeguards-version "v1.0.0" '
-            "--enable-addons azure-policy --ssh-key-value={ssh_key_value} "
-            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/SafeguardsPreview"
-        )
-        self.cmd(
-            create_cmd,
-            checks=[
-                self.check("provisioningState", "Succeeded"),
-                self.check("safeguardsProfile.level", "Warning"),
-                self.check("safeguardsProfile.version", "v1.0.0"),
-            ],
-        )
-
-    @AllowLargeResponse()
-    @AKSCustomResourceGroupPreparer(
-        random_name_length=17, name_prefix="clitest", location="westcentralus"
-    )
-    def test_aks_update_with_safeguards(self, resource_group, resource_group_location):
-        aks_name = self.create_random_name("cliakstest", 16)
-        self.kwargs.update(
-            {
-                "resource_group": resource_group,
-                "name": aks_name,
-                "ssh_key_value": self.generate_ssh_keys(),
-            }
-        )
-
-        create_cmd = (
-            "aks create --resource-group={resource_group} --name={name} --ssh-key-value={ssh_key_value} "
-            "--enable-addons azure-policy "
-        )
-        self.cmd(create_cmd, checks=[self.check("provisioningState", "Succeeded")])
-
-        update_cmd = (
-            "aks update --resource-group={resource_group} --name={name} "
-            '--safeguards-level Warning --safeguards-version "v1.0.0" '
-            "--safeguards-excluded-ns test-ns1 "
-            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/SafeguardsPreview"
-        )
-
-        self.cmd(
-            update_cmd,
-            checks=[
-                self.check("provisioningState", "Succeeded"),
-                self.check("safeguardsProfile.level", "Warning"),
-                self.check("safeguardsProfile.version", "v1.0.0"),
-                self.check("safeguardsProfile.excludedNamespaces[0]", "test-ns1"),
-            ],
-        )
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
@@ -2712,6 +2596,42 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "aks delete -g {resource_group} -n {name} --yes --no-wait",
             checks=[self.is_empty()],
         )
+        
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus')
+    def test_aks_nodepool_add_with_ossku_ubuntu2204(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name('cliakstest', 16)
+        node_pool_name = self.create_random_name('c', 6)
+        node_pool_name_second = self.create_random_name('c', 6)
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+            'node_pool_name': node_pool_name,
+            'node_pool_name_second': node_pool_name_second,
+            'ssh_key_value': self.generate_ssh_keys()
+        })
+
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} ' \
+                     '--nodepool-name {node_pool_name} -c 1 ' \
+                     '--ssh-key-value={ssh_key_value}'
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+        ])
+
+        # nodepool get-upgrades
+        self.cmd('aks nodepool add '
+                 '--resource-group={resource_group} '
+                 '--cluster-name={name} '
+                 '--name={node_pool_name_second} '
+                 '--os-sku Ubuntu2204',
+                 checks=[
+                    self.check('provisioningState', 'Succeeded'),
+                    self.check('osSku', 'Ubuntu2204'),
+                 ])
+
+        # delete
+        self.cmd(
+            'aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
@@ -3248,6 +3168,70 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 self.check("provisioningState", "Succeeded"),
                 self.check("upgradeSettings.maxSurge", "0"),
                 self.check("upgradeSettings.maxUnavailable", "5%"),
+            ],
+        )
+
+        # actually running an upgrade is too expensive for these tests.
+
+        # delete
+        self.cmd(
+            "aks delete -g {resource_group} -n {name} --yes --no-wait",
+            checks=[self.is_empty()],
+        )
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17, name_prefix="clitest", location="westus2"
+    )
+    def test_aks_nodepool_max_blocked_nodes(
+        self, resource_group, resource_group_location
+    ):
+        aks_name = self.create_random_name("cliakstest", 16)
+        np_name = self.create_random_name("clinp", 12)
+        self.kwargs.update(
+            {
+                "name": aks_name,
+                "resource_group": resource_group,
+                "nodepool_name": np_name,
+                "ssh_key_value": self.generate_ssh_keys(),
+            }
+        )
+
+        # create
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} "
+            "--ssh-key-value={ssh_key_value} -c 1"
+        )
+        self.cmd(
+            create_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+            ],
+        )
+
+        add_nodepool_cmd = (
+            "aks nodepool add -g {resource_group} --cluster-name {name} -n {nodepool_name} --node-count 2 --undrainable-node-behavior Cordon "
+            "--mode user --max-surge 1 --max-blocked-nodes 2"
+        )
+        self.cmd(
+            add_nodepool_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("upgradeSettings.undrainableNodeBehavior", "Cordon"),
+                self.check("upgradeSettings.maxBlockedNodes", "2"),
+            ],
+        )
+
+        update_nodepool_cmd = (
+            "aks nodepool update -g {resource_group} --cluster-name {name} -n {nodepool_name} "
+            "--max-blocked-nodes 2"
+        )
+        self.cmd(
+            update_nodepool_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("upgradeSettings.undrainableNodeBehavior", "Cordon"),
+                self.check("upgradeSettings.maxBlockedNodes", "2"),
             ],
         )
 
@@ -5987,7 +5971,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     # In any case, AKS clirunner will execute this case in live mode every day to ensure that there are no problems,
     # so mark this case as live_only.
     @live_only()
-    @AllowLargeResponse()
+    @AllowLargeResponse(99999)
     @AKSCustomResourceGroupPreparer(
         random_name_length=17, name_prefix="clitest", location="westus2"
     )
@@ -6092,6 +6076,44 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 self.check("httpProxyConfig.httpsProxy", "https://cli-proxy-vm:3129/"),
                 self.exists("httpProxyConfig.trustedCa"),
             ],
+        )
+
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+            }
+        )
+
+        disable_cmd = "aks update --resource-group={resource_group} --name={name} --disable-http-proxy --aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/DisableHTTPProxyPreview"
+
+        self.cmd(
+            disable_cmd,
+            checks=[
+                self.check("httpProxyConfig.enabled", False),
+            ],
+        )
+
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+            }
+        )
+
+        reenable_cmd = "aks update --resource-group={resource_group} --name={name} --enable-http-proxy"
+
+        self.cmd(
+            reenable_cmd,
+            checks=[
+                self.check("httpProxyConfig.enabled", True),
+            ],
+        )
+
+        # delete
+        self.cmd(
+            "aks delete -g {resource_group} -n {name} --yes --no-wait",
+            checks=[self.is_empty()],
         )
 
     @AllowLargeResponse()
@@ -7170,9 +7192,9 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         )
     
     @AllowLargeResponse()
-    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='eastus2')
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='uksouth')
     def test_aks_managed_namespace(self, resource_group, resource_group_location):
-        # reset the count so in replay mode the random names will start with 0
+        # reset the count so that in replay mode the random names will start with 0
         self.test_resources_count = 0
         # kwargs for string formatting
         resource_name = self.create_random_name('cliakstest', 16)
@@ -7186,10 +7208,11 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             'ssh_key_value': self.generate_ssh_keys(),
         })
 
-        create_cmd = ' '.join([
-            'aks', 'create', '--resource-group={resource_group}', '--name={resource_name}', '--location={location}',
-            '--ssh-key-value={ssh_key_value}'
-        ])
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={resource_name} --location={location} "
+            "--enable-aad --aad-admin-group-object-ids 00000000-0000-0000-0000-000000000001 "
+            "--ssh-key-value={ssh_key_value}"
+        )
 
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
@@ -7217,11 +7240,25 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             ],
         )
 
-        list_namespace_cmd = (
+        list_namespace_full_cmd = (
             "aks namespace list --resource-group={resource_group} --cluster-name={resource_name} -o json"
         )
         
-        namespace_list = self.cmd(list_namespace_cmd).get_output_in_json()
+        namespace_list = self.cmd(list_namespace_full_cmd).get_output_in_json()
+        assert len(namespace_list) > 0
+
+        list_namespace_with_resource_group_cmd = (
+            "aks namespace list --resource-group={resource_group} -o json"
+        )
+        
+        namespace_list = self.cmd(list_namespace_with_resource_group_cmd).get_output_in_json()
+        assert len(namespace_list) > 0
+
+        list_namespace_subscription_level_cmd = (
+            "aks namespace list -o json"
+        )
+        
+        namespace_list = self.cmd(list_namespace_subscription_level_cmd).get_output_in_json()
         assert len(namespace_list) > 0
 
         fd, temp_path = tempfile.mkstemp()
@@ -7256,6 +7293,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             delete_namespace_cmd,
             checks=[self.is_empty()],
         )
+
+        time.sleep(2*60)
 
         self.cmd(
             "aks delete -g {resource_group} -n {resource_name} --yes --no-wait",
@@ -13530,6 +13569,7 @@ spec:
         create_cmd = (
             "aks create --resource-group={resource_group} --name={name} --location={location} "
             "--ssh-key-value={ssh_key_value} --node-count=1 --tier standard "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AdvancedNetworkingL7PolicyPreview "
             "--network-plugin azure --network-dataplane=cilium --network-plugin-mode overlay --enable-acns --acns-advanced-networkpolicies L7"
         )
         self.cmd(
@@ -13556,6 +13596,226 @@ spec:
                 self.check("networkProfile.advancedNetworking.observability.enabled", True),
                 self.check("networkProfile.advancedNetworking.security.enabled", True),
                 self.check("networkProfile.advancedNetworking.security.advancedNetworkPolicies", "FQDN"),
+            ],
+        )
+
+        # delete
+        self.cmd(
+            "aks delete -g {resource_group} -n {name} --yes --no-wait",
+            checks=[self.is_empty()],
+        )
+    
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17,
+        name_prefix="clitest",
+        location="eastus2euap",
+    )
+    def test_aks_create_with_transit_encryption_type(
+        self, resource_group, resource_group_location
+    ):
+        # reset the count so in replay mode the random names will start with 0
+        self.test_resources_count = 0
+        # kwargs for string formatting
+
+        aks_name = self.create_random_name("cliakstest", 16)
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "ssh_key_value": self.generate_ssh_keys(),
+                "location": resource_group_location,
+            }
+        )
+        # Cilium Cluster with ACNS enabled and transit encryption type to WireGuard
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} --location={location} "
+            "--ssh-key-value={ssh_key_value} --node-count=1 --tier standard "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AdvancedNetworkingWireGuardPreview "
+            "--network-plugin azure --network-dataplane=cilium --network-plugin-mode overlay --enable-acns --acns-transit-encryption-type WireGuard"
+        )
+        self.cmd(
+            create_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("networkProfile.advancedNetworking.enabled", True),
+                self.check("networkProfile.advancedNetworking.observability.enabled", True),
+                self.check("networkProfile.advancedNetworking.security.enabled", True),
+                self.check("networkProfile.advancedNetworking.security.transitEncryption.type", "WireGuard"),
+            ],
+        )
+
+        # delete
+        self.cmd(
+            "aks delete -g {resource_group} -n {name} --yes --no-wait",
+            checks=[self.is_empty()],
+        )
+    
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17,
+        name_prefix="clitest",
+        location="eastus2euap",
+    )
+    def test_aks_update_with_transit_encryption_type(
+        self, resource_group, resource_group_location
+    ):
+        # reset the count so in replay mode the random names will start with 0
+        self.test_resources_count = 0
+        # kwargs for string formatting
+
+        aks_name = self.create_random_name("cliakstest", 16)
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "ssh_key_value": self.generate_ssh_keys(),
+                "location": resource_group_location,
+            }
+        )
+        # Cilium Cluster with ACNS enabled and transit encryption type to None
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} --location={location} "
+            "--ssh-key-value={ssh_key_value} --node-count=1 --tier standard "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AdvancedNetworkingWireGuardPreview "
+            "--network-plugin azure --network-dataplane=cilium --network-plugin-mode overlay --enable-acns --acns-transit-encryption-type None"
+        )
+        self.cmd(
+            create_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("networkProfile.advancedNetworking.enabled", True),
+                self.check("networkProfile.advancedNetworking.observability.enabled", True),
+                self.check("networkProfile.advancedNetworking.security.enabled", True),
+                self.check("networkProfile.advancedNetworking.security.transitEncryption.type", "None"),
+            ],
+        )
+
+        # Update transit encryption type to WireGuard
+        update_cmd = (
+            "aks update --resource-group={resource_group} --name={name} "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AdvancedNetworkingWireGuardPreview "
+            "--enable-acns --acns-transit-encryption-type WireGuard"
+        )
+
+        self.cmd(
+            update_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("networkProfile.advancedNetworking.enabled", True),
+                self.check("networkProfile.advancedNetworking.observability.enabled", True),
+                self.check("networkProfile.advancedNetworking.security.enabled", True),
+                self.check("networkProfile.advancedNetworking.security.transitEncryption.type", "WireGuard"),
+            ],
+        )
+
+        # delete
+        self.cmd(
+            "aks delete -g {resource_group} -n {name} --yes --no-wait",
+            checks=[self.is_empty()],
+        )
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17,
+        name_prefix="clitest",
+        location="eastus2euap",
+    )
+    def test_aks_create_with_transit_encryption_type_and_advanced_networkpolicies(
+        self, resource_group, resource_group_location
+    ):
+        # reset the count so in replay mode the random names will start with 0
+        self.test_resources_count = 0
+        # kwargs for string formatting
+
+        aks_name = self.create_random_name("cliakstest", 16)
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "ssh_key_value": self.generate_ssh_keys(),
+                "location": resource_group_location,
+            }
+        )
+        # Cilium Cluster with ACNS enabled and transit encryption type to WireGuard
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} --location={location} "
+            "--ssh-key-value={ssh_key_value} --node-count=1 --tier standard "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AdvancedNetworkingWireGuardPreview,AKSHTTPCustomFeatures=Microsoft.ContainerService/AdvancedNetworkingL7PolicyPreview "
+            "--network-plugin azure --network-dataplane=cilium --network-plugin-mode overlay --enable-acns --acns-transit-encryption-type WireGuard --acns-advanced-networkpolicies L7"
+        )
+        self.cmd(
+            create_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("networkProfile.advancedNetworking.enabled", True),
+                self.check("networkProfile.advancedNetworking.observability.enabled", True),
+                self.check("networkProfile.advancedNetworking.security.enabled", True),
+                self.check("networkProfile.advancedNetworking.security.advancedNetworkPolicies", "L7"),
+                self.check("networkProfile.advancedNetworking.security.transitEncryption.type", "WireGuard"),
+            ],
+        )
+
+        # delete
+        self.cmd(
+            "aks delete -g {resource_group} -n {name} --yes --no-wait",
+            checks=[self.is_empty()],
+        )
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17,
+        name_prefix="clitest",
+        location="eastus2euap",
+    )
+    def test_aks_update_with_transit_encryption_type_and_advanced_networkpolicies(
+        self, resource_group, resource_group_location
+    ):
+        # reset the count so in replay mode the random names will start with 0
+        self.test_resources_count = 0
+        # kwargs for string formatting
+
+        aks_name = self.create_random_name("cliakstest", 16)
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "ssh_key_value": self.generate_ssh_keys(),
+                "location": resource_group_location,
+            }
+        )
+        # Cilium Cluster with ACNS enabled and transit encryption type to None
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} --location={location} "
+            "--ssh-key-value={ssh_key_value} --node-count=1 --tier standard "
+            "--network-plugin azure --network-dataplane=cilium --network-plugin-mode overlay --enable-acns"
+        )
+        self.cmd(
+            create_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("networkProfile.advancedNetworking.enabled", True),
+                self.check("networkProfile.advancedNetworking.observability.enabled", True),
+                self.check("networkProfile.advancedNetworking.security.enabled", True),
+            ],
+        )
+
+        # Update transit encryption type to WireGuard and advanced network policies to L7
+        update_cmd = (
+            "aks update --resource-group={resource_group} --name={name} "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AdvancedNetworkingWireGuardPreview,AKSHTTPCustomFeatures=Microsoft.ContainerService/AdvancedNetworkingL7PolicyPreview "
+            "--enable-acns --acns-transit-encryption-type WireGuard --acns-advanced-networkpolicies L7"
+        )
+
+        self.cmd(
+            update_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("networkProfile.advancedNetworking.enabled", True),
+                self.check("networkProfile.advancedNetworking.observability.enabled", True),
+                self.check("networkProfile.advancedNetworking.security.enabled", True),
+                self.check("networkProfile.advancedNetworking.security.advancedNetworkPolicies", "L7"),
+                self.check("networkProfile.advancedNetworking.security.transitEncryption.type", "WireGuard"),
             ],
         )
 
@@ -14003,7 +14263,7 @@ spec:
         name_prefix="clitest",
         location="westcentralus",
     )
-    def test_aks_create_node_provisioning_mode_manual(
+    def test_aks_create_node_provisioning_profile(
         self, resource_group, resource_group_location
     ):
         # reset the count so in replay mode the random names will start with 0
@@ -14021,16 +14281,17 @@ spec:
         )
 
         # create
-        # TODO: Use mode Auto instead?
         create_cmd = (
             "aks create --resource-group={resource_group} --name={name} --location={location} "
-            "--ssh-key-value={ssh_key_value} --node-count=1 --enable-managed-identity --node-provisioning-mode=Manual"
+            "--ssh-key-value={ssh_key_value} --node-count=1 --enable-managed-identity --network-plugin azure "
+            "--network-plugin-mode overlay --network-dataplane cilium --node-provisioning-mode=Auto "
+            "--node-provisioning-default-pools=Auto"
         )
         self.cmd(
             create_cmd,
             checks=[
                 self.check("provisioningState", "Succeeded"),
-                self.check("nodeProvisioningProfile.mode", "Manual"),
+                self.check("nodeProvisioningProfile.mode", "Auto"),
             ],
         )
 
@@ -14046,7 +14307,7 @@ spec:
         name_prefix="clitest",
         location="westcentralus",
     )
-    def test_aks_update_node_provisioning_mode_manual(
+    def test_aks_update_node_provisioning_profile(
         self, resource_group, resource_group_location
     ):
         # reset the count so in replay mode the random names will start with 0
@@ -14066,7 +14327,8 @@ spec:
         # create
         create_cmd = (
             "aks create --resource-group={resource_group} --name={name} --location={location} "
-            "--ssh-key-value={ssh_key_value} --node-count=1 --enable-managed-identity"
+            "--ssh-key-value={ssh_key_value} --node-count=1 --enable-managed-identity "
+            "--network-plugin azure --network-plugin-mode overlay --network-dataplane cilium"
         )
         self.cmd(
             create_cmd,
@@ -14076,12 +14338,12 @@ spec:
         )
 
         # update
-        update_cmd = "aks update --resource-group={resource_group} --name={name} --node-provisioning-mode=Manual"
+        update_cmd = "aks update --resource-group={resource_group} --name={name} --node-provisioning-mode=Auto"
         self.cmd(
             update_cmd,
             checks=[
                 self.check("provisioningState", "Succeeded"),
-                self.check("nodeProvisioningProfile.mode", "Manual"),
+                self.check("nodeProvisioningProfile.mode", "Auto"),
             ],
         )
 
@@ -15441,17 +15703,11 @@ spec:
                 "acr_id": acr_id,
             }
         )
-        # enable anonymous pull for ACR
-        update_acr_cmd = (
-            "acr update --resource-group {resource_group} --name {acr_name} "
-            "--anonymous-pull-enabled true -o json"
-        )
-        self.cmd(update_acr_cmd, checks=[self.check("provisioningState", "Succeeded")])
 
         # enable acr artifact cache
         enable_acr_artifact_cache_cmd = (
-            "acr cache create -n aks-mcr -r {acr_name} "
-            "--source-repo \"mcr.microsoft.com/*\" --target-repo \"*\" -o json"
+            "acr cache create -n aks-managed-mcr -r {acr_name} "
+            "--source-repo \"mcr.microsoft.com/*\" --target-repo \"aks-managed-repository/*\" -o json"
         )
         self.cmd(enable_acr_artifact_cache_cmd, checks=[self.check("provisioningState", "Succeeded")])
 
@@ -15864,7 +16120,8 @@ spec:
         )
 
 
-    @AllowLargeResponse()
+    @live_only()
+    @AllowLargeResponse(99999)
     @AKSCustomResourceGroupPreparer(
         random_name_length=17,
         name_prefix="clitest",
@@ -15888,6 +16145,8 @@ spec:
             'ssh_key_value': self.generate_ssh_keys(),
             'location': resource_group_location,
         })
+
+        self.cmd('extension add -n k8s-extension')
 
         # create storage account
         self.cmd('storage account create --name {storageAccount} --resource-group {rg} '
@@ -15949,7 +16208,8 @@ spec:
         self.assertFalse(found_extension)
 
 
-    @AllowLargeResponse()
+    @live_only()
+    @AllowLargeResponse(99999)
     @AKSCustomResourceGroupPreparer(
         random_name_length=17,
         name_prefix="clitest",
@@ -15973,6 +16233,8 @@ spec:
             'ssh_key_value': self.generate_ssh_keys(),
             'location': resource_group_location,
         })
+
+        self.cmd('extension add -n k8s-extension')
         self.cmd('feature register --namespace Microsoft.KubernetesConfiguration --name ExtensionTypes')
 
         is_extension_types_feature_registered = False

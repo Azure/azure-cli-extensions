@@ -93,6 +93,8 @@ from azext_aks_preview._consts import (
     CONST_OS_SKU_CBLMARINER,
     CONST_OS_SKU_MARINER,
     CONST_OS_SKU_UBUNTU,
+    CONST_OS_SKU_UBUNTU2204,
+    CONST_OS_SKU_UBUNTU2404,
     CONST_OS_SKU_WINDOWS2019,
     CONST_OS_SKU_WINDOWS2022,
     CONST_OS_SKU_WINDOWSANNUAL,
@@ -124,6 +126,8 @@ from azext_aks_preview._consts import (
     CONST_WORKLOAD_RUNTIME_WASM_WASI,
     CONST_NODE_PROVISIONING_MODE_MANUAL,
     CONST_NODE_PROVISIONING_MODE_AUTO,
+    CONST_NODE_PROVISIONING_DEFAULT_POOLS_AUTO,
+    CONST_NODE_PROVISIONING_DEFAULT_POOLS_NONE,
     CONST_MANAGED_CLUSTER_SKU_NAME_BASE,
     CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC,
     CONST_SSH_ACCESS_LOCALUSER,
@@ -143,6 +147,8 @@ from azext_aks_preview._consts import (
     CONST_ADVANCED_NETWORKPOLICIES_NONE,
     CONST_ADVANCED_NETWORKPOLICIES_FQDN,
     CONST_ADVANCED_NETWORKPOLICIES_L7,
+    CONST_TRANSIT_ENCRYPTION_TYPE_NONE,
+    CONST_TRANSIT_ENCRYPTION_TYPE_WIREGUARD
 )
 
 from azext_aks_preview._validators import (
@@ -213,8 +219,9 @@ from azext_aks_preview._validators import (
     validate_bootstrap_container_registry_resource_id,
     validate_gateway_prefix_size,
     validate_max_unavailable,
-    validate_location_cluster_name_resource_group_mutually_exclusive,
+    validate_max_blocked_nodes,
     validate_resource_group_parameter,
+    validate_location_resource_group_cluster_parameters,
 )
 from azext_aks_preview.azurecontainerstorage._consts import (
     CONST_ACSTOR_ALL,
@@ -258,13 +265,20 @@ node_os_skus_create = [
     CONST_OS_SKU_UBUNTU,
     CONST_OS_SKU_CBLMARINER,
     CONST_OS_SKU_MARINER,
+    CONST_OS_SKU_UBUNTU2204,
+    CONST_OS_SKU_UBUNTU2404,
 ]
 node_os_skus = node_os_skus_create + [
     CONST_OS_SKU_WINDOWS2019,
     CONST_OS_SKU_WINDOWS2022,
     CONST_OS_SKU_WINDOWSANNUAL,
 ]
-node_os_skus_update = [CONST_OS_SKU_AZURELINUX, CONST_OS_SKU_UBUNTU]
+node_os_skus_update = [
+    CONST_OS_SKU_AZURELINUX,
+    CONST_OS_SKU_UBUNTU,
+    CONST_OS_SKU_UBUNTU2204,
+    CONST_OS_SKU_UBUNTU2404,
+]
 scale_down_modes = [CONST_SCALE_DOWN_MODE_DELETE, CONST_SCALE_DOWN_MODE_DEALLOCATE]
 workload_runtimes = [
     CONST_WORKLOAD_RUNTIME_OCI_CONTAINER,
@@ -309,6 +323,10 @@ advanced_networkpolicies = [
     CONST_ADVANCED_NETWORKPOLICIES_NONE,
     CONST_ADVANCED_NETWORKPOLICIES_FQDN,
     CONST_ADVANCED_NETWORKPOLICIES_L7,
+]
+transit_encryption_types = [
+    CONST_TRANSIT_ENCRYPTION_TYPE_NONE,
+    CONST_TRANSIT_ENCRYPTION_TYPE_WIREGUARD,
 ]
 network_dataplanes = [CONST_NETWORK_DATAPLANE_AZURE, CONST_NETWORK_DATAPLANE_CILIUM]
 disk_driver_versions = [CONST_DISK_DRIVER_V1, CONST_DISK_DRIVER_V2]
@@ -440,10 +458,14 @@ ephemeral_disk_nvme_perf_tiers = [
     CONST_EPHEMERAL_NVME_PERF_TIER_STANDARD,
 ]
 
-# consts for guardrails level
 node_provisioning_modes = [
     CONST_NODE_PROVISIONING_MODE_MANUAL,
     CONST_NODE_PROVISIONING_MODE_AUTO,
+]
+
+node_provisioning_default_pools = [
+    CONST_NODE_PROVISIONING_DEFAULT_POOLS_AUTO,
+    CONST_NODE_PROVISIONING_DEFAULT_POOLS_NONE,
 ]
 
 ssh_accesses = [
@@ -875,6 +897,12 @@ def load_arguments(self, _):
             arg_type=get_enum_type(advanced_networkpolicies),
         )
         c.argument(
+            "acns_transit_encryption_type",
+            is_preview=True,
+            arg_type=get_enum_type(transit_encryption_types),
+            help="Specify the transit encryption type for ACNS. Available values are 'None' and 'WireGuard'.",
+        )
+        c.argument(
             "enable_retina_flow_logs",
             action="store_true",
         )
@@ -924,7 +952,11 @@ def load_arguments(self, _):
             help="The deployment safeguards version",
             is_preview=True,
         )
-        c.argument("safeguards_excluded_ns", type=str, is_preview=True)
+        c.argument(
+            "safeguards_excluded_ns",
+            type=str,
+            is_preview=True
+        )
         # azure monitor profile
         c.argument(
             "enable_azuremonitormetrics",
@@ -988,6 +1020,20 @@ def load_arguments(self, _):
             help=(
                 'Set the node provisioning mode of the cluster. Valid values are "Auto" and "Manual". '
                 'For more information on "Auto" mode see aka.ms/aks/nap.'
+            )
+        )
+        c.argument(
+            "node_provisioning_default_pools",
+            is_preview=True,
+            arg_type=get_enum_type(node_provisioning_default_pools),
+            help=(
+                'The set of default Karpenter NodePools configured for node provisioning. '
+                'Valid values are "Auto" and "None". Auto: A standard set of Karpenter NodePools are provisioned. '
+                'None: No Karpenter NodePools are provisioned. '
+                'WARNING: Changing this from Auto to None on an existing cluster will cause the default Karpenter '
+                'NodePools to be deleted, which will in turn drain and delete the nodes associated with those pools. '
+                'It is strongly recommended to not do this unless there are idle nodes ready to take the pods evicted '
+                'by that action.'
             )
         )
         # in creation scenario, use "localuser" as default
@@ -1335,8 +1381,15 @@ def load_arguments(self, _):
             arg_type=get_enum_type(safeguards_levels),
             is_preview=True,
         )
-        c.argument("safeguards_version", help="The deployment safeguards version", is_preview=True)
-        c.argument("safeguards_excluded_ns", is_preview=True)
+        c.argument(
+            "safeguards_version",
+            help="The deployment safeguards version",
+            is_preview=True
+        )
+        c.argument(
+            "safeguards_excluded_ns",
+            is_preview=True
+        )
         c.argument(
             "enable_acns",
             action="store_true",
@@ -1357,6 +1410,12 @@ def load_arguments(self, _):
             "acns_advanced_networkpolicies",
             is_preview=True,
             arg_type=get_enum_type(advanced_networkpolicies),
+        )
+        c.argument(
+            "acns_transit_encryption_type",
+            is_preview=True,
+            arg_type=get_enum_type(transit_encryption_types),
+            help="Specify the transit encryption type for ACNS. Available values are 'None' and 'WireGuard'.",
         )
         c.argument(
             "enable_retina_flow_logs",
@@ -1422,6 +1481,20 @@ def load_arguments(self, _):
                 'For more information on "Auto" mode see aka.ms/aks/nap.'
             )
         )
+        c.argument(
+            "node_provisioning_default_pools",
+            is_preview=True,
+            arg_type=get_enum_type(node_provisioning_default_pools),
+            help=(
+                'The set of default Karpenter NodePools configured for node provisioning. '
+                'Valid values are "Auto" and "None". Auto: A standard set of Karpenter NodePools are provisioned. '
+                'None: No Karpenter NodePools are provisioned. '
+                'WARNING: Changing this from Auto to None on an existing cluster will cause the default Karpenter '
+                'NodePools to be deleted, which will in turn drain and delete the nodes associated with those pools. '
+                'It is strongly recommended to not do this unless there are idle nodes ready to take the pods evicted '
+                'by that action.'
+            )
+        )
         c.argument('enable_static_egress_gateway', is_preview=True, action='store_true')
         c.argument('disable_static_egress_gateway', is_preview=True, action='store_true')
         c.argument("enable_imds_restriction", action="store_true", is_preview=True)
@@ -1434,6 +1507,8 @@ def load_arguments(self, _):
         )
 
         c.argument('migrate_vmas_to_vms', is_preview=True, action='store_true')
+        c.argument("disable_http_proxy", action="store_true", is_preview=True)
+        c.argument("enable_http_proxy", action="store_true", is_preview=True)
 
     with self.argument_context("aks upgrade") as c:
         c.argument("kubernetes_version", completer=get_k8s_upgrades_completion_list)
@@ -1584,6 +1659,7 @@ def load_arguments(self, _):
         c.argument("node_soak_duration", type=int)
         c.argument("undrainable_node_behavior")
         c.argument("max_unavailable", validator=validate_max_unavailable)
+        c.argument("max_blocked_nodes", validator=validate_max_blocked_nodes)
         c.argument("mode", arg_type=get_enum_type(node_mode_types))
         c.argument("scale_down_mode", arg_type=get_enum_type(scale_down_modes))
         c.argument("max_pods", type=int, options_list=["--max-pods", "-m"])
@@ -1716,6 +1792,7 @@ def load_arguments(self, _):
         c.argument("node_soak_duration", type=int)
         c.argument("undrainable_node_behavior")
         c.argument("max_unavailable", validator=validate_max_unavailable)
+        c.argument("max_blocked_nodes", validator=validate_max_blocked_nodes)
         c.argument("mode", arg_type=get_enum_type(node_mode_types))
         c.argument("scale_down_mode", arg_type=get_enum_type(scale_down_modes))
         # extensions
@@ -1787,6 +1864,7 @@ def load_arguments(self, _):
         c.argument("node_soak_duration", type=int)
         c.argument("undrainable_node_behavior")
         c.argument("max_unavailable", validator=validate_max_unavailable)
+        c.argument("max_blocked_nodes", validator=validate_max_blocked_nodes)
         c.argument("snapshot_id", validator=validate_snapshot_id)
         c.argument(
             "yes",
@@ -2482,14 +2560,14 @@ def load_arguments(self, _):
                    help='Name of resource group.')
         c.argument('cluster_name',
                    options_list=['--cluster-name', '-c'],
-                   validator=validate_location_cluster_name_resource_group_mutually_exclusive,
+                   validator=validate_location_resource_group_cluster_parameters,
                    help='Name of the Kubernetes cluster')
         c.argument('extension_type',
                    options_list=['--extension-type', '-t'],
                    help='Name of the extension type.')
         c.argument('location',
                    options_list=['--location', '-l'],
-                   validator=validate_location_cluster_name_resource_group_mutually_exclusive,
+                   validator=validate_location_resource_group_cluster_parameters,
                    help='Name of the location. Values from: `az account list-locations`')
 
     # Reference: https://learn.microsoft.com/en-us/cli/azure/k8s-extension/extension-types?view=azure-cli-latest
@@ -2500,14 +2578,14 @@ def load_arguments(self, _):
                    help='Name of resource group.')
         c.argument('cluster_name',
                    options_list=['--cluster-name', '-c'],
-                   validator=validate_location_cluster_name_resource_group_mutually_exclusive,
+                   validator=validate_location_resource_group_cluster_parameters,
                    help='Name of the Kubernetes cluster')
         c.argument('extension_type',
                    options_list=['--extension-type', '-t'],
                    help='Name of the extension type.')
         c.argument('location',
                    options_list=['--location', '-l'],
-                   validator=validate_location_cluster_name_resource_group_mutually_exclusive,
+                   validator=validate_location_resource_group_cluster_parameters,
                    help='Name of the location. Values from: `az account list-locations`')
         c.argument('version',
                    help='Version for the extension type.')

@@ -519,6 +519,22 @@ def validate_max_unavailable(namespace):
         raise CLIError("--max-unavailable should be an int or percentage")
 
 
+def validate_max_blocked_nodes(namespace):
+    """validates parameters max blocked nodes is positive integers or percents."""
+    if namespace.max_blocked_nodes is None:
+        return
+    int_or_percent = namespace.max_blocked_nodes
+    if int_or_percent.endswith('%'):
+        int_or_percent = int_or_percent.rstrip('%s')
+
+    try:
+        if int(int_or_percent) < 0:
+            raise InvalidArgumentValueError('--max-blocked-nodes must be be positive')
+    except ValueError:
+        # pylint: disable=raise-missing-from
+        raise InvalidArgumentValueError('--max-blocked-nodes should be an int or percentage')
+
+
 def validate_assign_identity(namespace):
     if namespace.assign_identity is not None:
         if namespace.assign_identity == '':
@@ -935,19 +951,25 @@ def validate_gateway_prefix_size(namespace):
             raise CLIError("--gateway-prefix-size must be in the range [28, 31]")
 
 
-def validate_location_cluster_name_resource_group_mutually_exclusive(namespace):
-    """Validates that location, cluster name, and resource group name are not specified at the same time"""
-    location = namespace.location
-    resource_group_name = namespace.resource_group_name
-    cluster_name = namespace.cluster_name
-    if location and resource_group_name and cluster_name:
-        raise MutuallyExclusiveArgumentError(
-            "Cannot specify --location and --resource-group and --cluster at the same time."
-        )
-
-
 def validate_resource_group_parameter(namespace):
+    """Validates that if the user specified the cluster name, resource group name is also specified and vice versa"""
     if namespace.resource_group_name and not namespace.cluster_name:
         raise RequiredArgumentMissingError("Please specify --cluster")
     if not namespace.resource_group_name and namespace.cluster_name:
         raise RequiredArgumentMissingError("Please specify --resource-group")
+
+
+def validate_location_resource_group_cluster_parameters(namespace):
+    """Validates location or cluster details are specified and not mutually exclusive"""
+    location = namespace.location
+    resource_group_name = namespace.resource_group_name
+    cluster_name = namespace.cluster_name
+    if location and (resource_group_name or cluster_name):
+        raise RequiredArgumentMissingError(
+            "You must specify --location or --resource-group and --cluster."
+        )
+
+    if location and resource_group_name and cluster_name:
+        raise MutuallyExclusiveArgumentError(
+            "Cannot specify --location and --resource-group and --cluster at the same time."
+        )

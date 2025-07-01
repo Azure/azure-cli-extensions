@@ -16,9 +16,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-09-01",
+        "version": "2024-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}/clusters/{}/datastores/{}", "2023-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}/clusters/{}/datastores/{}", "2024-09-01"],
         ]
     }
 
@@ -104,6 +104,20 @@ class Create(AAZCommand):
             options=["--volume-id", "--net-app-volume"],
             arg_group="NetAppVolume",
             help="Azure resource ID of the NetApp volume",
+        )
+
+        # define Arg Group "PureStorageVolume"
+
+        _args_schema = cls._args_schema
+        _args_schema.size_gb = AAZIntArg(
+            options=["--size-gb"],
+            arg_group="PureStorageVolume",
+            help="Volume size to be used to create a Virtual Volumes (vVols) datastore",
+        )
+        _args_schema.storage_pool_id = AAZResourceIdArg(
+            options=["--storage-pool-id"],
+            arg_group="PureStorageVolume",
+            help="Azure resource ID of the Pure Storage Pool",
         )
         return cls._args_schema
 
@@ -196,7 +210,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-09-01",
+                    "api-version", "2024-09-01",
                     required=True,
                 ),
             }
@@ -228,6 +242,7 @@ class Create(AAZCommand):
                 properties.set_prop("diskPoolVolume", AAZObjectType)
                 properties.set_prop("elasticSanVolume", AAZObjectType)
                 properties.set_prop("netAppVolume", AAZObjectType)
+                properties.set_prop("pureStorageVolume", AAZObjectType)
 
             disk_pool_volume = _builder.get(".properties.diskPoolVolume")
             if disk_pool_volume is not None:
@@ -242,6 +257,11 @@ class Create(AAZCommand):
             net_app_volume = _builder.get(".properties.netAppVolume")
             if net_app_volume is not None:
                 net_app_volume.set_prop("id", AAZStrType, ".net_app_volume", typ_kwargs={"flags": {"required": True}})
+
+            pure_storage_volume = _builder.get(".properties.pureStorageVolume")
+            if pure_storage_volume is not None:
+                pure_storage_volume.set_prop("sizeGb", AAZIntType, ".size_gb", typ_kwargs={"flags": {"required": True}})
+                pure_storage_volume.set_prop("storagePoolId", AAZStrType, ".storage_pool_id", typ_kwargs={"flags": {"required": True}})
 
             return self.serialize_content(_content_value)
 
@@ -294,6 +314,9 @@ class Create(AAZCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+            properties.pure_storage_volume = AAZObjectType(
+                serialized_name="pureStorageVolume",
+            )
             properties.status = AAZStrType(
                 flags={"read_only": True},
             )
@@ -322,6 +345,16 @@ class Create(AAZCommand):
 
             net_app_volume = cls._schema_on_200_201.properties.net_app_volume
             net_app_volume.id = AAZStrType(
+                flags={"required": True},
+            )
+
+            pure_storage_volume = cls._schema_on_200_201.properties.pure_storage_volume
+            pure_storage_volume.size_gb = AAZIntType(
+                serialized_name="sizeGb",
+                flags={"required": True},
+            )
+            pure_storage_volume.storage_pool_id = AAZStrType(
+                serialized_name="storagePoolId",
                 flags={"required": True},
             )
 

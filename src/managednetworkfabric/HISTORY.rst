@@ -3,6 +3,15 @@
 Release History
 ===============
 
+8.0.0b5
+* Fixes 'taprule create' command as the API cannot support float values for 'polling-interval-in-seconds' option, i.e. - '30.0'.
+* Fixes the response object model for validate-configuration operations that cause response of the operation to not show any output.
+* az core cli updated to version 2.70, aaz_dev updated to version 4.2.0, and azdev to version 0.2.4.
+
+8.0.0b4
+++++++
+* Fixes 'device run-ro' command for missing fields in the response.
+
 8.0.0b3
 ++++++
 * Adding custom output formatting for 'device' run-ro command
@@ -25,7 +34,7 @@ Release History
 
 7.0.0
 ++++++
-* This version requires a minimum of 2.66 Azure core CLI. See release notes for more details: https://github.com/MicrosoftDocs/azure-docs-cli/blob/main/docs-ref-conceptual/Latest-version/release-notes-azure-cli.md
+* This version requires a minimum of 2.66 Azure core CLI. See release notes for more details: https://github.com/MicrosoftDocs/azure-docs-cli/blob/main/docs-ref-conceptual/release-notes-azure-cli.md
 * This version upgrades the internal generation tool aaz-dev-tools to 3.1.0. Refer to the release notes for more details: https://github.com/Azure/aaz-dev-tools/releases/tag/v3.1.0.
 
 6.4.0

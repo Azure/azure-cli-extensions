@@ -3,6 +3,17 @@
 Release History
 ===============
 
+1.2.6
+++++++
+* bugfix making it so the fields in the --input format are case-insensitive
+
+1.2.5
+++++++
+* consolidating functions for --input policygen
+* bugfix for "scenario" field in json input
+* updating tests and examples to use azurelinux
+* "name" field is required when using --input
+
 1.2.4
 ++++++
 * rolling back genpolicy version for Azure Linux V2 support instead of V3

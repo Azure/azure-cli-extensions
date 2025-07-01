@@ -92,3 +92,19 @@ def load_arguments(self, _):
             help='Extension types to be uninstalled.',
             arg_type=get_enum_type(IncludedExtensionTypes),
         )
+        c.argument(
+            'force',
+            help='Specify whether to force delete the extension from the cluster.',
+        )
+
+    with self.argument_context('vme list') as c:
+        c.argument(
+            'resource_group',
+            options_list=['--resource-group', '-g'],
+            help='Name of the resource group'
+        )
+        c.argument(
+            'cluster_name',
+            options_list=['--cluster-name', '-c'],
+            help='Name of the Kubernetes cluster'
+        )
