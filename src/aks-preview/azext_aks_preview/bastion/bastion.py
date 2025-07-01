@@ -1,3 +1,8 @@
+# --------------------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License. See License.txt in the project root for license information.
+# --------------------------------------------------------------------------------------------
+
 import asyncio
 import json
 import os
@@ -294,7 +299,7 @@ def _aks_bastion_validate_tunnel(port):
             "Checking if tunnel is active on port %s (attempt %d)...", port, attempt + 1
         )
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-            s.settimeout(5)
+            s.settimeout(15)
             try:
                 s.connect(("localhost", port))
                 logger.info("Tunnel is active on port %s", port)
