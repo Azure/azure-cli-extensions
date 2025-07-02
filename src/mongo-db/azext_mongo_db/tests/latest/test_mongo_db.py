@@ -10,24 +10,24 @@ from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
 class MongoDBScenario(ScenarioTest):
     @AllowLargeResponse(size_kb=10240)
-    @ResourceGroupPreparer(name_prefix='cli_test_mongodb', location="centraluseuap")
+    @ResourceGroupPreparer(name_prefix='cli_test_mongodb', location="eastus2euap")
     def test_mongo_db(self, resource_group):
         self.kwargs.update({
             'name': 'MongoDBCLITestOrg1',
             'location': 'eastus2euap',
-            'subscription': '00000000-0000-0000-0000-000000000000',
-            'marketplace_subscription_id': '00000000-0000-0000-0000-000000000000',
+            'subscription': '911e07bd-f921-4b16-a206-6af36bfb7fbc',
+            'marketplace_subscription_id': '911e07bd-f921-4b16-a206-6af36bfb7fbc',
             'publisher_id': 'mongodb',
             'offer_id': 'mongodb_atlas_azure_native_prod',
             'plan_id': 'private_plan',
             'plan_name': 'Pay as You Go (Free) (Private)',
             'term_unit': 'P1M',
             'term_id': 'gmz7xq9ge3py',
-            'user_first_name': 'Gaurav',
-            'user_last_name': 'Bang',
-            'user_email': 'gauravbang@example.com',
-            'organization-name': 'PartnerOrgForCLITest1',
-            'resource_group': 'gaurav-test-rg'
+            'user_first_name': 'Ajay',
+            'user_last_name': 'Kumar',
+            'user_email': 'ajaykumar@microsoft.com',
+            'organization-name': 'MongoDBCLITestOrg1',
+            'resource_group': 'cli-test-rg'
         })
 
         # Create MongoDB Atlas Organization
