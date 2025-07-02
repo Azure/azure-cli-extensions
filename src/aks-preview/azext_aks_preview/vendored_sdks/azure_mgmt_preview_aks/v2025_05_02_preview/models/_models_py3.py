@@ -3667,7 +3667,7 @@ class LoadBalancerListResult(_serialization.Model):
         self.next_link: Optional[str] = None
 
 
-class LocalDNSOverrides(_serialization.Model):
+class LocalDNSOverride(_serialization.Model):
     """Overrides for localDNS profile.
 
     :ivar query_logging: Log level for DNS queries in localDNS. Known values are: "Error" and
@@ -3724,7 +3724,7 @@ class LocalDNSOverrides(_serialization.Model):
         max_concurrent: int = 1000,
         cache_duration_in_seconds: int = 3600,
         serve_stale_duration_in_seconds: int = 3600,
-        serve_stale: Union[str, "_models.LocalDNSServeStale"] = "Verify",
+        serve_stale: Union[str, "_models.LocalDNSServeStale"] = "Immediate",
         **kwargs: Any
     ) -> None:
         """
@@ -3785,12 +3785,12 @@ class LocalDNSProfile(_serialization.Model):
     :vartype state: str or ~azure.mgmt.containerservice.v2025_05_02_preview.models.LocalDNSState
     :ivar vnet_dns_overrides: VnetDNS overrides apply to DNS traffic from pods with
      dnsPolicy:default or kubelet (referred to as VnetDNS traffic).
-    :vartype vnet_dns_overrides:
-     ~azure.mgmt.containerservice.v2025_05_02_preview.models.LocalDNSOverrides
+    :vartype vnet_dns_overrides: dict[str,
+     ~azure.mgmt.containerservice.v2025_05_02_preview.models.LocalDNSOverride]
     :ivar kube_dns_overrides: KubeDNS overrides apply to DNS traffic from pods with
      dnsPolicy:ClusterFirst (referred to as KubeDNS traffic).
-    :vartype kube_dns_overrides:
-     ~azure.mgmt.containerservice.v2025_05_02_preview.models.LocalDNSOverrides
+    :vartype kube_dns_overrides: dict[str,
+     ~azure.mgmt.containerservice.v2025_05_02_preview.models.LocalDNSOverride]
     """
 
     _validation = {
@@ -3800,16 +3800,16 @@ class LocalDNSProfile(_serialization.Model):
     _attribute_map = {
         "mode": {"key": "mode", "type": "str"},
         "state": {"key": "state", "type": "str"},
-        "vnet_dns_overrides": {"key": "vnetDNSOverrides", "type": "LocalDNSOverrides"},
-        "kube_dns_overrides": {"key": "kubeDNSOverrides", "type": "LocalDNSOverrides"},
+        "vnet_dns_overrides": {"key": "vnetDNSOverrides", "type": "{LocalDNSOverride}"},
+        "kube_dns_overrides": {"key": "kubeDNSOverrides", "type": "{LocalDNSOverride}"},
     }
 
     def __init__(
         self,
         *,
         mode: Union[str, "_models.LocalDNSMode"] = "Preferred",
-        vnet_dns_overrides: Optional["_models.LocalDNSOverrides"] = None,
-        kube_dns_overrides: Optional["_models.LocalDNSOverrides"] = None,
+        vnet_dns_overrides: Optional[Dict[str, "_models.LocalDNSOverride"]] = None,
+        kube_dns_overrides: Optional[Dict[str, "_models.LocalDNSOverride"]] = None,
         **kwargs: Any
     ) -> None:
         """
@@ -3818,12 +3818,12 @@ class LocalDNSProfile(_serialization.Model):
         :paramtype mode: str or ~azure.mgmt.containerservice.v2025_05_02_preview.models.LocalDNSMode
         :keyword vnet_dns_overrides: VnetDNS overrides apply to DNS traffic from pods with
          dnsPolicy:default or kubelet (referred to as VnetDNS traffic).
-        :paramtype vnet_dns_overrides:
-         ~azure.mgmt.containerservice.v2025_05_02_preview.models.LocalDNSOverrides
+        :paramtype vnet_dns_overrides: dict[str,
+         ~azure.mgmt.containerservice.v2025_05_02_preview.models.LocalDNSOverride]
         :keyword kube_dns_overrides: KubeDNS overrides apply to DNS traffic from pods with
          dnsPolicy:ClusterFirst (referred to as KubeDNS traffic).
-        :paramtype kube_dns_overrides:
-         ~azure.mgmt.containerservice.v2025_05_02_preview.models.LocalDNSOverrides
+        :paramtype kube_dns_overrides: dict[str,
+         ~azure.mgmt.containerservice.v2025_05_02_preview.models.LocalDNSOverride]
         """
         super().__init__(**kwargs)
         self.mode = mode
