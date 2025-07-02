@@ -15,10 +15,17 @@ helps['vm repair'] = """
 helps['vm repair create'] = """
     type: command
     short-summary: Create a new repair VM and attach the source VM's copied OS disk as a data disk.
+    parameters:
+        - name: --tags
+          type: string
+          short-summary: Space-separated tags in 'key[=value]' format. Use '' to clear existing tags.
     examples:
         - name: Create a repair VM
           text: >
             az vm repair create -g MyResourceGroup -n myVM --verbose
+        - name: Create a repair VM with tags
+          text: >
+            az vm repair create -g MyResourceGroup -n myVM --tags env=dev owner=alice --verbose
         - name: Create a repair VM and set the VM authentication
           text: >
             az vm repair create -g MyResourceGroup -n myVM --repair-username username --repair-password password!234 --verbose
@@ -114,15 +121,30 @@ helps['vm repair reset-nic'] = """
 helps['vm repair repair-and-restore'] = """
     type: command
     short-summary: Repair and restore the VM.
+    parameters:
+        - name: --tags
+          type: string
+          short-summary: Space-separated tags in 'key[=value]' format. Use '' to clear existing tags.
     examples:
+        - name: Repair and restore a VM with tags.
+          text: >
+            az vm repair repair-and-restore --name vmrepairtest --resource-group MyResourceGroup --tags env=prod owner=bob --verbose
         - name: Repair and restore a VM.
           text: >
             az vm repair repair-and-restore --name vmrepairtest --resource-group MyResourceGroup --verbose
 """
+
 helps['vm repair repair-button'] = """
     type: command
     short-summary: repair button script.
+    parameters:
+        - name: --tags
+          type: string
+          short-summary: Space-separated tags in 'key[=value]' format. Use '' to clear existing tags.
     examples:
+        - name: repair-button with tags.
+          text: >
+            az vm repair repair-button --name vmrepairtest --resource-group MyResourceGroup --button-command fstab --tags env=test --verbose
         - name: repair-button.
           text: >
             az vm repair repair-button --name vmrepairtest --resource-group MyResourceGroup --button-command fstab --verbose

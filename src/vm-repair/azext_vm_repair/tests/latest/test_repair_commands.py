@@ -49,6 +49,26 @@ class WindowsManagedDiskCreateRestoreTest(LiveScenarioTest):
         source_vm = vms[0]
         assert source_vm['storageProfile']['osDisk']['name'] == result['copied_disk_name']
 
+        # Test create with tags
+        result = self.cmd('vm repair create -g {rg} -n {vm} --repair-username azureadmin --repair-password !Passw0rd2018 --tags env=test owner=alice -o json --yes').get_output_in_json()
+        assert result['status'] == STATUS_SUCCESS, result['error_message']
+
+        # Check repair VM and tags
+        repair_vms = self.cmd('vm list -g {} -o json'.format(result['repair_resource_group'])).get_output_in_json()
+        assert len(repair_vms) == 1
+        repair_vm = repair_vms[0]
+        assert repair_vm['storageProfile']['dataDisks'][0]['name'] == result['copied_disk_name']
+        assert repair_vm['tags']['env'] == 'test'
+        assert repair_vm['tags']['owner'] == 'alice'
+
+        # Call Restore
+        self.cmd('vm repair restore -g {rg} -n {vm} --yes')
+
+        # Check swapped OS disk
+        vms = self.cmd('vm list -g {rg} -o json').get_output_in_json()
+        source_vm = vms[0]
+        assert source_vm['storageProfile']['osDisk']['name'] == result['copied_disk_name']
+
 @pytest.mark.WindowsUnmanaged
 class WindowsUnmanagedDiskCreateRestoreTest(LiveScenarioTest):
 
@@ -109,6 +129,26 @@ class LinuxManagedDiskCreateRestoreTest(LiveScenarioTest):
         repair_vm = repair_vms[0]
         # Check attached data disk
         assert repair_vm['storageProfile']['dataDisks'][0]['name'] == result['copied_disk_name']
+
+        # Call Restore
+        self.cmd('vm repair restore -g {rg} -n {vm} --yes')
+
+        # Check swapped OS disk
+        vms = self.cmd('vm list -g {rg} -o json').get_output_in_json()
+        source_vm = vms[0]
+        assert source_vm['storageProfile']['osDisk']['name'] == result['copied_disk_name']
+
+        # Test create with tags
+        result = self.cmd('vm repair create -g {rg} -n {vm} --repair-username azureadmin --repair-password !Passw0rd2018 --tags env=dev owner=bob --yes -o json').get_output_in_json()
+        assert result['status'] == STATUS_SUCCESS, result['error_message']
+
+        # Check repair VM and tags
+        repair_vms = self.cmd('vm list -g {} -o json'.format(result['repair_resource_group'])).get_output_in_json()
+        assert len(repair_vms) == 1
+        repair_vm = repair_vms[0]
+        assert repair_vm['storageProfile']['dataDisks'][0]['name'] == result['copied_disk_name']
+        assert repair_vm['tags']['env'] == 'dev'
+        assert repair_vm['tags']['owner'] == 'bob'
 
         # Call Restore
         self.cmd('vm repair restore -g {rg} -n {vm} --yes')
@@ -399,6 +439,7 @@ class LinuxSinglepassKekEncryptedManagedDiskCreateRestoreTest(LiveScenarioTest):
         source_vm = vms[0]
         assert source_vm['storageProfile']['osDisk']['name'] == result['copied_disk_name']
 
+
 @pytest.mark.WindowsNoKekRestore
 class WindowsSinglepassNoKekEncryptedManagedDiskCreateRestoreTest(LiveScenarioTest):
 
@@ -443,6 +484,7 @@ class WindowsSinglepassNoKekEncryptedManagedDiskCreateRestoreTest(LiveScenarioTe
         vms = self.cmd('vm list -g {rg} -o json').get_output_in_json()
         source_vm = vms[0]
         assert source_vm['storageProfile']['osDisk']['name'] == result['copied_disk_name']
+
 
 @pytest.mark.LinuxNoKekRestore
 class LinuxSinglepassNoKekEncryptedManagedDiskCreateRestoreTest(LiveScenarioTest):
@@ -490,6 +532,7 @@ class LinuxSinglepassNoKekEncryptedManagedDiskCreateRestoreTest(LiveScenarioTest
         vms = self.cmd('vm list -g {rg} -o json').get_output_in_json()
         source_vm = vms[0]
         assert source_vm['storageProfile']['osDisk']['name'] == result['copied_disk_name']
+
 
 @pytest.mark.WindHelloWorld
 class WindowsRunHelloWorldTest(LiveScenarioTest):

@@ -56,7 +56,7 @@ from .exceptions import AzCommandError, RunScriptNotFoundForIdError, SupportingR
 logger = get_logger(__name__)
 
 
-def create(cmd, vm_name, resource_group_name, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None, unlock_encrypted_vm=False, enable_nested=False, associate_public_ip=False, distro='ubuntu', yes=False, encrypt_recovery_key="", disable_trusted_launch=False, os_disk_type=None):  
+def create(cmd, vm_name, resource_group_name, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None, unlock_encrypted_vm=False, enable_nested=False, associate_public_ip=False, distro='ubuntu', yes=False, encrypt_recovery_key="", disable_trusted_launch=False, os_disk_type=None, tags=None):  
     """  
     This function creates a repair VM.  
       
@@ -76,7 +76,8 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
     - yes: If True, confirmation prompts will be skipped. Default is False.  
     - encrypt_recovery_key: The Bitlocker recovery key to use for encrypting the VM. Default is an empty string.  
     - disable_trusted_launch: A flag parameter that, when used, sets the security type of the repair VM to Standard.
-    - os_disk_type: Set the OS disk storage account type of the repair VM to the specified type. The default is PremiumSSD_LRS. 
+    - os_disk_type: Set the OS disk storage account type of the repair VM to the specified type. The default is PremiumSSD_LRS.
+    - tags: Tags to apply to the repair VM. Should be a dictionary or a string in key[=value] format.
     """  
     
     # Logging all the command parameters, except the sensitive data.
@@ -150,12 +151,27 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
         public_ip_name = _make_public_ip_name(repair_vm_name, associate_public_ip)
         
         # Set up base create vm command
+        # Azure CLI accepts tags as either a space-separated list of key=value pairs or a single string. Support both dict and string for flexibility.
+        tag_arg = ''
+        if tags:
+            if isinstance(tags, dict):
+                tag_items = [f"{k}={v}" for k, v in tags.items()]
+                tag_arg = ' --tags ' + ' '.join(tag_items)
+            else:
+                tag_arg = f' --tags {tags}'
+        # Only include the --public-ip-address argument if associate_public_ip is True. Omitting this argument prevents creation of an unwanted public IP.
+        public_ip_arg = f' --public-ip-address {public_ip_name}' if associate_public_ip else ''
         if is_linux:
-            create_repair_vm_command = 'az vm create -g {g} -n {n} --tag {tag} --image {image} --admin-username {username} --admin-password {password} --public-ip-address {option} --custom-data {cloud_init_script}' \
-                .format(g=repair_group_name, n=repair_vm_name, tag=resource_tag, image=os_image_urn, username=repair_username, password=repair_password, option=public_ip_name, cloud_init_script=_get_cloud_init_script())
+            create_repair_vm_command = (
+                f'az vm create -g {repair_group_name} -n {repair_vm_name} --tag {resource_tag} --image {os_image_urn} '
+                f'--admin-username {repair_username} --admin-password {repair_password}{public_ip_arg} '
+                f'--custom-data {_get_cloud_init_script()}{tag_arg}'
+            )
         else:
-            create_repair_vm_command = 'az vm create -g {g} -n {n} --tag {tag} --image {image} --admin-username {username} --admin-password {password} --public-ip-address {option}' \
-                .format(g=repair_group_name, n=repair_vm_name, tag=resource_tag, image=os_image_urn, username=repair_username, password=repair_password, option=public_ip_name)
+            create_repair_vm_command = (
+                f'az vm create -g {repair_group_name} -n {repair_vm_name} --tag {resource_tag} --image {os_image_urn} '
+                f'--admin-username {repair_username} --admin-password {repair_password}{public_ip_arg}{tag_arg}'
+            )
 
         # Fetching the size of the repair VM.  
         sku = _fetch_compatible_sku(source_vm, enable_nested)  
@@ -906,7 +922,7 @@ def reset_nic(cmd, vm_name, resource_group_name, yes=False):
     return return_dict
 
 
-def repair_and_restore(cmd, vm_name, resource_group_name, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None):    
+def repair_and_restore(cmd, vm_name, resource_group_name, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None, tags=None):    
     """    
     This function manages the process of repairing and restoring a specified virtual machine (VM). The process involves  
     the creation of a repair VM, the generation of a copy of the problem VM's disk, and the formation of a new resource   
@@ -920,6 +936,7 @@ def repair_and_restore(cmd, vm_name, resource_group_name, repair_password=None, 
     :param repair_vm_name: (Optional) The name to assign to the repair VM. If not provided, a unique name is generated.  
     :param copy_disk_name: (Optional) The name to assign to the copy of the disk. If not provided, a unique name is generated.  
     :param repair_group_name: (Optional) The name of the repair resource group. If not provided, a unique name is generated.  
+    :param tags: (Optional) Tags to apply to the repair VM.  
     """  
     from datetime import datetime  
     import secrets  
@@ -948,7 +965,7 @@ def repair_and_restore(cmd, vm_name, resource_group_name, repair_password=None, 
     existing_rg = _check_existing_rg(repair_group_name)  
   
     # Create a repair VM, copy of the disk, and a new resource group  
-    create_out = create(cmd, vm_name, resource_group_name, repair_password, repair_username, repair_vm_name=repair_vm_name, copy_disk_name=copy_disk_name, repair_group_name=repair_group_name, associate_public_ip=False, yes=True)  
+    create_out = create(cmd, vm_name, resource_group_name, repair_password, repair_username, repair_vm_name=repair_vm_name, copy_disk_name=copy_disk_name, repair_group_name=repair_group_name, associate_public_ip=False, yes=True, tags=tags)  
   
     # Log the output of the create operation  
     logger.info('create_out: %s', create_out)  
@@ -965,12 +982,11 @@ def repair_and_restore(cmd, vm_name, resource_group_name, repair_password=None, 
         # Run the fstab script on the repair VM  
         run_out = run(cmd, repair_vm_name, repair_group_name, run_id='linux-alar2', parameters=["fstab", "initiator=SELFHELP"])  
   
-    except Exception:  
-        # If running the fstab script fails, log the error and clean up resources  
-        command.set_status_error()  
-        command.error_stack_trace = traceback.format_exc()  
-        command.error_message = "Command failed when running fstab script."  
-        command.message = "Command failed when running fstab script."  
+    except Exception:
+        command.set_status_error()
+        command.error_stack_trace = traceback.format_exc()
+        command.error_message = "Command failed when running fstab script."
+        command.message = "Command failed when running fstab script."
     
         # If the resource group existed before, confirm before cleaning up resources  
         # Otherwise, clean up resources without confirmation  
@@ -1022,7 +1038,10 @@ def repair_and_restore(cmd, vm_name, resource_group_name, repair_password=None, 
     # Return the result of the operation  
     return return_dict
 
-def repair_button(cmd, vm_name, resource_group_name, button_command, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None):
+def repair_button(cmd, vm_name, resource_group_name, button_command, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None, tags=None):
+    """
+    Button-triggered repair operation. Supports tags for the repair VM.
+    """
     from datetime import datetime
     import secrets
     import string
