@@ -47,6 +47,19 @@ class Show(AAZCommand):
             help="The fully qualified Azure Resource manager identifier of the Managed Cluster.",
             required=False,
         )
+<<<<<<< HEAD
+=======
+        _args_schema.resource_group = AAZStrArg(
+            options=["-g", "--resource-group"],
+            help="The name of the resource group. You can configure the default group using az configure --defaults group=<name>.",
+            required=False,
+        )
+        _args_schema.cluster_name = AAZStrArg(
+            options=["--name", "-n"],
+            help="The name of the Managed Cluster.",
+            required=False,
+        )
+>>>>>>> 9e8d524281d638c59daad8a899ea953f66623a0c
         return cls._args_schema
 
     def _execute_operations(self):
