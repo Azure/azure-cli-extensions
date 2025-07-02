@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 import io
 import unittest
+import pytest
 from unittest import mock
 from azext_sftp import custom
 
@@ -379,81 +380,7 @@ class SftpCustomCertificateTest(unittest.TestCase):
         if os.path.exists(self.temp_dir):
             shutil.rmtree(self.temp_dir)
 
-    @mock.patch('azext_sftp.custom._get_and_write_certificate')
-    @mock.patch('azext_sftp.custom._check_or_create_public_private_files')
-    @mock.patch('os.path.isdir')
-    @mock.patch('os.path.abspath')
-    def test_sftp_cert_with_provided_public_key(self, mock_abspath, mock_isdir, mock_check_files, mock_write_cert):
-        """Test sftp cert with provided public key file.
-        
-        This scenario follows SSH extension pattern: user provides existing public key,
-        system generates certificate using that key.
-        """
-        # Setup mocks
-        cmd = mock.Mock()
-        mock_isdir.return_value = True
-        mock_abspath.side_effect = lambda x: x  # Return input unchanged
-        mock_check_files.return_value = (self.mock_public_key, None, False)
-        mock_write_cert.return_value = (self.mock_cert_path, "testuser@domain.com")
-        
-        # Execute test
-        custom.sftp_cert(cmd, cert_path=self.mock_cert_path, public_key_file=self.mock_public_key)
-        
-        # Verify calls
-        mock_check_files.assert_called_once_with(self.mock_public_key, None, None, None)
-        mock_write_cert.assert_called_once_with(cmd, self.mock_public_key, self.mock_cert_path, None)
 
-    @mock.patch('azext_sftp.custom._get_and_write_certificate')
-    @mock.patch('azext_sftp.custom._check_or_create_public_private_files')
-    @mock.patch('os.path.isdir')
-    @mock.patch('os.path.abspath')
-    def test_sftp_cert_with_nothing_provided(self, mock_abspath, mock_isdir, mock_check_files, mock_write_cert):
-        """Test sftp cert with nothing provided - generates key pair and certificate.
-        
-        This scenario follows SSH extension pattern: when no keys are provided,
-        system generates new key pair in same directory as certificate.
-        """
-        # Setup mocks
-        cmd = mock.Mock()
-        mock_isdir.return_value = True
-        mock_abspath.side_effect = lambda x: x  # Return input unchanged
-        mock_check_files.return_value = (self.mock_public_key, self.mock_private_key, True)
-        mock_write_cert.return_value = (self.mock_cert_path, "testuser@domain.com")
-        
-        # Execute test - only cert_path provided
-        custom.sftp_cert(cmd, cert_path=self.mock_cert_path)
-        
-        # Verify key generation in certificate directory
-        cert_dir = os.path.dirname(self.mock_cert_path)
-        mock_check_files.assert_called_once_with(None, None, cert_dir, None)
-        mock_write_cert.assert_called_once_with(cmd, self.mock_public_key, self.mock_cert_path, None)
-
-    @mock.patch('azext_sftp.custom._get_and_write_certificate')
-    @mock.patch('azext_sftp.custom._check_or_create_public_private_files')
-    @mock.patch('os.path.isdir')
-    @mock.patch('os.path.abspath')
-    def test_sftp_cert_with_ssh_client_folder(self, mock_abspath, mock_isdir, mock_check_files, mock_write_cert):
-        """Test sftp cert with custom SSH client folder.
-        
-        Verifies that SSH client folder parameter is passed through correctly.
-        """
-        # Setup mocks
-        cmd = mock.Mock()
-        mock_isdir.return_value = True
-        mock_abspath.side_effect = lambda x: x  # Return input unchanged
-        mock_check_files.return_value = (self.mock_public_key, None, False)
-        mock_write_cert.return_value = (self.mock_cert_path, "testuser@domain.com")
-        
-        ssh_client_folder = "/custom/ssh/path"
-        
-        # Execute test
-        custom.sftp_cert(cmd, cert_path=self.mock_cert_path, 
-                        public_key_file=self.mock_public_key, 
-                        ssh_client_folder=ssh_client_folder)
-        
-        # Verify SSH client folder is passed through
-        mock_check_files.assert_called_once_with(self.mock_public_key, None, None, ssh_client_folder)
-        mock_write_cert.assert_called_once_with(cmd, self.mock_public_key, self.mock_cert_path, ssh_client_folder)
 
     @mock.patch('azext_sftp.custom._get_and_write_certificate')
     @mock.patch('azext_sftp.custom._check_or_create_public_private_files')
@@ -678,4 +605,131 @@ class SftpCustomCertificateTest(unittest.TestCase):
         # Key generation should detect existing files and not overwrite
         public_key, private_key, delete_keys = custom._check_or_create_public_private_files(
             None, None, None, None)
+
+    @mock.patch('azext_sftp.custom._get_and_write_certificate')
+    @mock.patch('azext_sftp.custom._check_or_create_public_private_files')
+    @mock.patch('os.path.isdir')
+    @mock.patch('os.path.abspath')
+    def test_sftp_cert_parameter_combinations(self, mock_abspath, mock_isdir, mock_check_files, mock_write_cert):
+        """Test sftp cert with all valid parameter combinations using subTest."""
+        # Test cases: (cert_path, public_key_file, ssh_client_folder, expected_keys_folder, description)
+        test_cases = [
+            (None, "pubkey.pub", None, None, "public_key_only"),
+            ("cert.pub", None, None, "cert_dir", "cert_path_only"),
+            ("cert.pub", None, "/ssh", "cert_dir", "cert_path_with_ssh_client"),
+            (None, "pubkey.pub", "/ssh", None, "public_key_with_ssh_client"),
+            ("cert.pub", "pubkey.pub", None, None, "cert_path_with_public_key"),
+            ("cert.pub", "pubkey.pub", "/ssh", None, "all_parameters"),
+        ]
         
+        for cert_path, public_key_file, ssh_client_folder, expected_keys_folder, description in test_cases:
+            with self.subTest(case=description):
+                # Reset mocks and setup
+                mock_check_files.reset_mock()
+                mock_write_cert.reset_mock()
+                cmd = mock.Mock()
+                mock_isdir.return_value = True
+                mock_abspath.side_effect = lambda x: x
+                
+                # Configure mocks based on test case
+                keys_generated = public_key_file is None
+                effective_public_key = public_key_file or self.mock_public_key
+                mock_check_files.return_value = (effective_public_key, self.mock_private_key if keys_generated else None, keys_generated)
+                
+                expected_cert = (effective_public_key + "-aadcert.pub") if cert_path is None else cert_path
+                mock_write_cert.return_value = (expected_cert, "testuser@domain.com")
+                
+                # Execute test
+                custom.sftp_cert(cmd, cert_path=cert_path, public_key_file=public_key_file, ssh_client_folder=ssh_client_folder)
+                
+                # Verify calls
+                expected_keys_dir = os.path.dirname(cert_path) if expected_keys_folder == "cert_dir" else expected_keys_folder
+                mock_check_files.assert_called_once_with(public_key_file, None, expected_keys_dir, ssh_client_folder)
+                mock_write_cert.assert_called_once_with(cmd, effective_public_key, cert_path, ssh_client_folder)
+
+    def test_sftp_cert_error_cases(self):
+        """Test sftp cert error handling with invalid argument combinations."""
+        # Test cases: (cert_path, public_key_file, setup_mocks, expected_exception, expected_message, description)
+        test_cases = [
+            (None, None, {}, azclierror.RequiredArgumentMissingError, "--file or --public-key-file must be provided", "no_arguments"),
+            ("/bad/cert.pub", None, {"expanduser_return": "/bad/cert.pub", "isdir_return": False}, azclierror.InvalidArgumentValueError, "folder doesn't exist", "invalid_directory"),
+        ]
+        
+        for cert_path, public_key_file, setup_mocks, expected_exception, expected_message, description in test_cases:
+            with self.subTest(case=description):
+                cmd = mock.Mock()
+                patches = []
+                
+                # Apply setup mocks
+                if "expanduser_return" in setup_mocks:
+                    patches.append(mock.patch('os.path.expanduser', return_value=setup_mocks["expanduser_return"]))
+                if "isdir_return" in setup_mocks:
+                    patches.append(mock.patch('os.path.isdir', return_value=setup_mocks["isdir_return"]))
+                
+                for patch in patches:
+                    patch.start()
+                
+                try:
+                    with self.assertRaises(expected_exception) as context:
+                        custom.sftp_cert(cmd, cert_path=cert_path, public_key_file=public_key_file)
+                    self.assertIn(expected_message, str(context.exception))
+                finally:
+                    for patch in patches:
+                        patch.stop()
+
+    @mock.patch('os.path.expanduser')
+    @mock.patch('os.path.abspath')
+    def test_sftp_cert_path_expansion(self, mock_abspath, mock_expanduser):
+        """Test that all path arguments are properly expanded from ~ to full paths."""
+        # Test cases: (cert_path, public_key_file, ssh_client_folder, description)
+        test_cases = [
+            ("~/cert.pub", "~/.ssh/id_rsa.pub", "~/ssh_client", "all_paths_with_tilde"),
+            (None, "~/.ssh/id_rsa.pub", "~/ssh_client", "public_key_and_ssh_client_with_tilde"),
+            ("~/cert.pub", None, "~/ssh_client", "cert_path_and_ssh_client_with_tilde"),
+        ]
+        
+        for cert_path, public_key_file, ssh_client_folder, description in test_cases:
+            with self.subTest(case=description):
+                mock_expanduser.reset_mock()
+                mock_abspath.reset_mock()
+                cmd = mock.Mock()
+                
+                # Setup mocks
+                mock_expanduser.side_effect = lambda x: x.replace('~', '/home/user') if x else x
+                mock_abspath.side_effect = lambda x: '/absolute' + x if x else x
+                
+                # Mock dependencies
+                with mock.patch('os.path.isdir', return_value=True), \
+                     mock.patch('azext_sftp.custom._check_or_create_public_private_files') as mock_check_files, \
+                     mock.patch('azext_sftp.custom._get_and_write_certificate') as mock_write_cert:
+                    
+                    mock_check_files.return_value = ("/absolute/home/user/.ssh/id_rsa.pub", None, False)
+                    mock_write_cert.return_value = ("/absolute/home/user/cert.pub", "user@domain.com")
+                    
+                    # Execute test
+                    custom.sftp_cert(cmd, cert_path=cert_path, public_key_file=public_key_file, ssh_client_folder=ssh_client_folder)
+                    
+                    # Verify path expansion for tilde paths
+                    expected_calls = [mock.call(path) for path in [cert_path, public_key_file, ssh_client_folder] if path and path.startswith('~')]
+                    if expected_calls:
+                        mock_expanduser.assert_has_calls(expected_calls, any_order=True)
+                    self.assertTrue(mock_abspath.called)
+
+    def test_sftp_cert_valid_minimal_call(self):
+        """Test that a minimal valid call works correctly."""
+        cmd = mock.Mock()
+        
+        with mock.patch('os.path.expanduser', side_effect=lambda x: x), \
+             mock.patch('os.path.abspath', side_effect=lambda x: x), \
+             mock.patch('os.path.isdir', return_value=True), \
+             mock.patch('azext_sftp.custom._check_or_create_public_private_files') as mock_check_files, \
+             mock.patch('azext_sftp.custom._get_and_write_certificate') as mock_write_cert:
+            
+            mock_check_files.return_value = ("pubkey.pub", None, False)
+            mock_write_cert.return_value = ("pubkey.pub-aadcert.pub", "user@domain.com")
+            
+            # Should not raise any exception
+            custom.sftp_cert(cmd, public_key_file="pubkey.pub")
+            
+            # Verify function was called correctly
+            mock_check_files.assert_called_once_with("pubkey.pub", None, None, None)
