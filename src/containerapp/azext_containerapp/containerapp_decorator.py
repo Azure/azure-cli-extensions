@@ -50,7 +50,7 @@ from knack.util import CLIError
 
 from msrest.exceptions import DeserializationError
 
-from ._clients import ManagedEnvironmentClient, ConnectedEnvironmentClient, ManagedEnvironmentPreviewClient
+from ._clients import ManagedEnvironmentClient, ConnectedEnvironmentClient, ManagedEnvironmentPreviewClient, ContainerAppPreviewClient
 from ._client_factory import handle_raw_exception, handle_non_404_status_code_exception, get_linker_client
 from ._models import (
     RegistryCredentials as RegistryCredentialsModel,
@@ -449,6 +449,23 @@ class ContainerAppUpdateDecorator(BaseContainerAppDecorator):
             safe_set(self.new_containerapp, "properties", "template", "revisionSuffix", value=None)
 
         if self.get_argument_revisions_mode():
+            if self.get_argument_revisions_mode().lower() == "labels":
+                # Transitioning into labels mode is complicated and we don't want to combine it with other updates.
+                # Check if the app was previously in labels mode. If not, throw an error saying to use Set-Mode instead.                
+                containerapp_def = None
+                try:
+                    containerapp_def = ContainerAppPreviewClient.show(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(), name=self.get_argument_name())
+                except Exception as e:
+                    handle_raw_exception(e)
+
+                if not containerapp_def:
+                    raise ResourceNotFoundError("The containerapp '{}' does not exist".format(self.get_argument_name()))
+                
+                if safe_get(containerapp_def, "properties", "configuration", "activeRevisionsMode").lower() != "labels":
+                    raise ArgumentUsageError(
+                        "The containerapp '{}' is not in labels mode. Please use `az containerapp revision set-mode` to switch to labels mode first.".format(
+                            self.get_argument_name()))
+                
             safe_set(self.new_containerapp, "properties", "configuration", "activeRevisionsMode", value=self.get_argument_revisions_mode())
 
         if self.get_argument_target_label():
