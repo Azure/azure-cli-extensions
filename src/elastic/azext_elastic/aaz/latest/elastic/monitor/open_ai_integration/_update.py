@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "elastic monitor open-ai-integration update",
 )
 class Update(AAZCommand):
-    """Update a OpenAI integration rule for a given monitor resource.
+    """Update an OpenAI integration rule for a given Elastic monitor resource, ensuring optimal AI-driven observability and monitoring.
     """
 
     _aaz_info = {
