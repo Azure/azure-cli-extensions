@@ -41,19 +41,32 @@ class SftpCustomCommandTest(unittest.TestCase):
         if os.path.exists(self.temp_dir):
             shutil.rmtree(self.temp_dir)
 
-    def test_sftp_cert_no_args(self):
-        """Test that sftp_cert raises error when no arguments provided."""
-        cmd = mock.Mock()
-        with self.assertRaises(azclierror.RequiredArgumentMissingError):
-            custom.sftp_cert(cmd)
-
-    @mock.patch('os.path.isdir')
-    def test_sftp_cert_cert_file_missing(self, mock_isdir):
-        """Test that sftp_cert raises error when certificate directory doesn't exist."""
-        cmd = mock.Mock()
-        mock_isdir.return_value = False
-        with self.assertRaises(azclierror.InvalidArgumentValueError):
-            custom.sftp_cert(cmd, cert_path="cert")
+    def test_sftp_cert_basic_error_cases(self):
+        """Test basic sftp cert error cases with parameterized inputs."""
+        basic_error_cases = [
+            # (description, exception_type, cert_path, public_key_file, setup_mocks)
+            ("no arguments provided", azclierror.RequiredArgumentMissingError, None, None, {}),
+            ("certificate directory doesn't exist", azclierror.InvalidArgumentValueError, "cert", None, {"isdir_return": False}),
+        ]
+        
+        for description, exception_type, cert_path, public_key_file, setup_mocks in basic_error_cases:
+            with self.subTest(case=description):
+                cmd = mock.Mock()
+                
+                # Apply setup mocks
+                patches = []
+                if "isdir_return" in setup_mocks:
+                    patches.append(mock.patch('os.path.isdir', return_value=setup_mocks["isdir_return"]))
+                
+                for patch in patches:
+                    patch.start()
+                
+                try:
+                    with self.assertRaises(exception_type):
+                        custom.sftp_cert(cmd, cert_path=cert_path, public_key_file=public_key_file)
+                finally:
+                    for patch in patches:
+                        patch.stop()
 
     @mock.patch('os.path.isdir')
     @mock.patch('os.path.abspath')
@@ -111,19 +124,7 @@ class SftpCustomCommandTest(unittest.TestCase):
         
         mock_do_sftp.assert_called_once()
 
-    def test_sftp_connect_invalid_cert_provided(self):
-        """Test connect with invalid/missing certificate file."""
-        cmd = mock.Mock()
-        cmd.cli_ctx.cloud.name = "azurecloud"
-        
-        with self.assertRaises(azclierror.FileOperationError):
-            custom.sftp_connect(
-                cmd=cmd,
-                storage_account="teststorage",
-                port=22,
-                cert_file="/nonexistent/cert.pub",
-                private_key_file=self.mock_private_key
-            )
+
 
     @mock.patch('azext_sftp.custom.Profile')
     @mock.patch('azext_sftp.custom._get_storage_endpoint_suffix')
@@ -222,31 +223,26 @@ class SftpCustomCommandTest(unittest.TestCase):
         mock_gen_cert.assert_called_once()
         mock_do_sftp.assert_called_once()
 
-    def test_sftp_connect_invalid_private_key(self):
-        """Test connect with invalid/missing private key file."""
-        cmd = mock.Mock()
-        cmd.cli_ctx.cloud.name = "azurecloud"
+    def test_sftp_connect_error_cases(self):
+        """Test connect error cases with parameterized inputs."""
+        error_test_cases = [
+            # (description, exception_type, kwargs)
+            ("invalid/missing private key file", azclierror.FileOperationError, {"private_key_file": "/nonexistent/key"}),
+            ("invalid/missing public key file", azclierror.FileOperationError, {"public_key_file": "/nonexistent/key.pub"}),
+            ("invalid/missing certificate file", azclierror.FileOperationError, {"cert_file": "/nonexistent/cert.pub", "private_key_file": self.mock_private_key}),
+            ("missing storage account", azclierror.RequiredArgumentMissingError, {"storage_account": None}),
+        ]
         
-        with self.assertRaises(azclierror.FileOperationError):
-            custom.sftp_connect(
-                cmd=cmd,
-                storage_account="teststorage",
-                port=22,
-                private_key_file="/nonexistent/key"
-            )
-
-    def test_sftp_connect_invalid_public_key(self):
-        """Test connect with invalid/missing public key file.""" 
-        cmd = mock.Mock()
-        cmd.cli_ctx.cloud.name = "azurecloud"
-        
-        with self.assertRaises(azclierror.FileOperationError):
-            custom.sftp_connect(
-                cmd=cmd,
-                storage_account="teststorage",
-                port=22,
-                public_key_file="/nonexistent/key.pub"
-            )
+        for description, exception_type, kwargs in error_test_cases:
+            with self.subTest(case=description):
+                cmd = mock.Mock()
+                cmd.cli_ctx.cloud.name = "azurecloud"
+                
+                base_kwargs = {"cmd": cmd, "storage_account": "teststorage", "port": 22}
+                base_kwargs.update(kwargs)
+                
+                with self.assertRaises(exception_type):
+                    custom.sftp_connect(**base_kwargs)
 
     @mock.patch('azext_sftp.custom._do_sftp_op')
     @mock.patch('azext_sftp.sftp_utils.get_ssh_cert_principals')
@@ -294,63 +290,42 @@ class SftpCustomCommandTest(unittest.TestCase):
         mock_get_principals.assert_called_once()
         mock_do_sftp.assert_called_once()
 
-    def test_sftp_connect_missing_storage_account(self):
-        """Test connect without storage account - should raise error."""
-        cmd = mock.Mock()
-        
-        with self.assertRaises(azclierror.RequiredArgumentMissingError):
-            custom.sftp_connect(
-                cmd=cmd,
-                storage_account=None,
-                port=22
-            )
+
 
     @mock.patch('azext_sftp.custom._do_sftp_op')
     @mock.patch('azext_sftp.sftp_utils.get_ssh_cert_principals')
-    def test_sftp_connect_default_port(self, mock_get_principals, mock_do_sftp):
-        """Test connect with default port (should be None to let OpenSSH use its default)."""
-        cmd = mock.Mock()
-        cmd.cli_ctx.cloud.name = "azurecloud"
-        mock_get_principals.return_value = ["testuser@domain.com"]
-        mock_do_sftp.return_value = None
+    def test_sftp_connect_port_configurations(self, mock_get_principals, mock_do_sftp):
+        """Test connect with different port configurations."""
+        port_test_cases = [
+            # (description, port_value, expected_port)
+            ("default port (None)", None, None),
+            ("custom port", 2222, 2222),
+        ]
         
-        custom.sftp_connect(
-            cmd=cmd,
-            storage_account="teststorage",
-            cert_file=self.mock_cert_file,
-            private_key_file=self.mock_private_key,
-            sftp_batch_commands="ls\nexit\n"
-        )
-        
-        # Verify the session was created with port None (lets OpenSSH use default)
-        mock_do_sftp.assert_called_once()
-        call_args = mock_do_sftp.call_args[0]
-        sftp_session = call_args[0]  # First argument is the SFTP session
-        self.assertEqual(sftp_session.port, None)
-
-    @mock.patch('azext_sftp.custom._do_sftp_op')
-    @mock.patch('azext_sftp.sftp_utils.get_ssh_cert_principals')
-    def test_sftp_connect_custom_port(self, mock_get_principals, mock_do_sftp):
-        """Test connect with custom port."""
-        cmd = mock.Mock()
-        cmd.cli_ctx.cloud.name = "azurecloud"
-        mock_get_principals.return_value = ["testuser@domain.com"]
-        mock_do_sftp.return_value = None
-        
-        custom.sftp_connect(
-            cmd=cmd,
-            storage_account="teststorage",
-            port=2222,
-            cert_file=self.mock_cert_file,
-            private_key_file=self.mock_private_key,
-            sftp_batch_commands="ls\nexit\n"
-        )
-        
-        # Verify the session was created with custom port
-        mock_do_sftp.assert_called_once()
-        call_args = mock_do_sftp.call_args[0]
-        sftp_session = call_args[0]
-        self.assertEqual(sftp_session.port, 2222)
+        for description, port_value, expected_port in port_test_cases:
+            with self.subTest(case=description):
+                cmd = mock.Mock()
+                cmd.cli_ctx.cloud.name = "azurecloud"
+                mock_get_principals.return_value = ["testuser@domain.com"]
+                mock_do_sftp.return_value = None
+                
+                # Reset mock for each test case
+                mock_do_sftp.reset_mock()
+                
+                custom.sftp_connect(
+                    cmd=cmd,
+                    storage_account="teststorage",
+                    port=port_value,
+                    cert_file=self.mock_cert_file,
+                    private_key_file=self.mock_private_key,
+                    sftp_batch_commands="ls\nexit\n"
+                )
+                
+                # Verify the session was created with expected port
+                mock_do_sftp.assert_called_once()
+                call_args = mock_do_sftp.call_args[0]
+                sftp_session = call_args[0]  # First argument is the SFTP session
+                self.assertEqual(sftp_session.port, expected_port)
 
 
 class SftpCustomCertificateTest(unittest.TestCase):
