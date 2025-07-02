@@ -29,40 +29,33 @@ def cleanup_scenario1(test):
 def call_scenario1(test):
     """# Testcase: scenario1"""
     setup_scenario1(test)
-    step_reboot(
-        test,
-        checks=[
-            test.check("status", "Succeeded"),
-        ],
-    )
+    step_refresh_configuration(test, checks=[])
     cleanup_scenario1(test)
 
 
-def step_reboot(test, checks=None):
-    """Device run reboot operation"""
+def step_refresh_configuration(test, checks=None):
+    """Device refresh-configuration operation"""
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric device reboot --resource-name {name} --resource-group {rg} --reboot-type {rebootType}"
+        "az networkfabric device refresh-configuration --resource-group {rg} --resource-name {name}",
+        checks=checks,
     )
 
 
-class GA_DeviceRebootUngracefulZTPScenarioTest1(ScenarioTest):
+class GA_DeviceRefreshConfigurationScenarioTest1(ScenarioTest):
     """DeviceScenario test"""
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.kwargs.update(
             {
-                "name": CONFIG.get("NETWORK_DEVICE", "reboot_device_name"),
-                "rg": CONFIG.get("NETWORK_DEVICE", "reboot_device_rg"),
-                "rebootType": CONFIG.get(
-                    "NETWORK_DEVICE", "ungraceful_ztp_reboot_type"
-                ),
+                "rg": CONFIG.get("NETWORK_DEVICE", "resource_group"),
+                "name": CONFIG.get("NETWORK_DEVICE", "name"),
             }
         )
 
     @AllowLargeResponse()
-    def test_GA_Device_Reboot_UngracefulZTP_scenario1(self):
-        """test scenario for Device CRUD operations"""
+    def test_GA_Device_refresh_configuration_scenario1(self):
+        """test scenario for Device refresh-configuration operation"""
         call_scenario1(self)

@@ -3,6 +3,10 @@
 Release History
 ===============
 
+8.0.0b6
+* Enables the 'device refresh-configuration' command that was previously disabled/removed.
+* Renames the 'network-device-name' parameter on 'device refresh-configuration' and 'device reboot' operations to 'resource-name' for better overall consistency.
+
 8.0.0b5
 * Fixes 'taprule create' command as the API cannot support float values for 'polling-interval-in-seconds' option, i.e. - '30.0'.
 * Fixes the response object model for validate-configuration operations that cause response of the operation to not show any output.
