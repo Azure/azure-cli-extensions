@@ -95,13 +95,19 @@ class SftpCustomCommandTest(unittest.TestCase):
         cmd.cli_ctx = mock.Mock()
         cmd.cli_ctx.cloud = mock.Mock()
         cmd.cli_ctx.cloud.name = "azurecloud"
-        # Use batch mode to avoid interactive prompt
+        
+        # Create a temporary batch file for automated testing
+        batch_file = os.path.join(self.temp_dir, "test_batch.txt")
+        with open(batch_file, 'w') as f:
+            f.write("pwd\nls\nexit\n")
+        
+        # Use batch file to avoid interactive prompt
         custom.sftp_connect(
             cmd=cmd,
             storage_account='johnli1canary',
             port=22,
             cert_file='C:\\Users\\johnli1\\.ssh\\id_rsa-aadcert.pub',
-            sftp_batch_commands='ls\nexit\n'
+            sftp_args=['-b', batch_file]  # Use actual batch file
         )
         self.assertTrue(True)
 
@@ -134,7 +140,7 @@ class SftpCustomCommandTest(unittest.TestCase):
                     cert_file=cert_file,
                     public_key_file=public_key_file,
                     private_key_file=private_key_file,
-                    sftp_batch_commands="ls\nexit\n"
+                    sftp_args=['-b', '/dev/stdin']  # Use sftp_args for batch mode
                 )
                 
                 # Verify certificate was used
@@ -190,7 +196,7 @@ class SftpCustomCommandTest(unittest.TestCase):
                     port=22,
                     public_key_file=public_key_file,
                     private_key_file=private_key_file,
-                    sftp_batch_commands="ls\nexit\n"
+                    sftp_args=['-b', '/dev/stdin']  # Use sftp_args for batch mode
                 )
                 
                 # Build expected args with actual temp_dir value
@@ -251,7 +257,7 @@ class SftpCustomCommandTest(unittest.TestCase):
                     port=port_value,
                     cert_file=self.mock_cert_file,
                     private_key_file=self.mock_private_key,
-                    sftp_batch_commands="ls\nexit\n"
+                    sftp_args=['-b', '/dev/stdin']  # Use sftp_args for batch mode
                 )
                 
                 # Verify the session was created with expected port
@@ -270,14 +276,13 @@ class SftpCustomCommandTest(unittest.TestCase):
             ("with custom port", {"cert_file": self.mock_cert_file, "private_key_file": self.mock_private_key, "port": 2222}, "success"),
             ("with sftp_args", {"cert_file": self.mock_cert_file, "private_key_file": self.mock_private_key, "sftp_args": "-v"}, "success"),
             ("with ssh_client_folder", {"cert_file": self.mock_cert_file, "private_key_file": self.mock_private_key, "ssh_client_folder": "ssh_folder"}, "success"),
-            ("with sftp_batch_commands", {"cert_file": self.mock_cert_file, "private_key_file": self.mock_private_key, "sftp_batch_commands": "pwd\nls -la\nexit"}, "success"),
+            ("with sftp_args for batch", {"cert_file": self.mock_cert_file, "private_key_file": self.mock_private_key, "sftp_args": ["-b", "batchfile.txt"]}, "success"),
             ("all args combined", {
                 "cert_file": self.mock_cert_file, 
                 "private_key_file": self.mock_private_key,
                 "port": 2222,
-                "sftp_args": "-v -o StrictHostKeyChecking=no",
-                "ssh_client_folder": "ssh_folder",
-                "sftp_batch_commands": "pwd\nls -la\nexit"
+                "sftp_args": ["-v", "-o", "StrictHostKeyChecking=no", "-b", "batchfile.txt"],
+                "ssh_client_folder": "ssh_folder"
             }, "success"),
         ]
         
@@ -314,43 +319,6 @@ class SftpCustomCommandTest(unittest.TestCase):
                         # Just check that ssh_client_folder was set - path may be normalized
                         self.assertIsNotNone(sftp_session.ssh_client_folder)
                         self.assertIn("ssh_folder", sftp_session.ssh_client_folder)
-
-    def test_sftp_connect_batch_commands_variations(self):
-        """Test different sftp_batch_commands formats and edge cases."""
-        batch_command_cases = [
-            # (description, batch_commands, expected_behavior)
-            ("None (interactive mode)", None, "interactive"),
-            ("single command", "pwd", "batch"),
-            ("multiple commands with newlines", "pwd\nls -la\nexit", "batch"),
-            ("commands with semicolons", "pwd; ls -la; exit", "batch"),
-            ("empty string", "", "batch"),
-            ("only whitespace", "   \n  \t  ", "batch"),
-        ]
-        
-        for description, batch_commands, expected_behavior in batch_command_cases:
-            with self.subTest(case=description):
-                cmd = mock.Mock()
-                cmd.cli_ctx.cloud.name = "azurecloud"
-                
-                with mock.patch('azext_sftp.custom._do_sftp_op') as mock_do_sftp, \
-                     mock.patch('azext_sftp.sftp_utils.get_ssh_cert_principals', return_value=["testuser@domain.com"]):
-                    
-                    mock_do_sftp.return_value = None
-                    
-                    custom.sftp_connect(
-                        cmd=cmd,
-                        storage_account="teststorage",
-                        cert_file=self.mock_cert_file,
-                        private_key_file=self.mock_private_key,
-                        sftp_batch_commands=batch_commands
-                    )
-                    
-                    mock_do_sftp.assert_called_once()
-                    call_args = mock_do_sftp.call_args[0]
-                    sftp_session = call_args[0]
-                    
-                    # Verify batch commands are set correctly
-                    self.assertEqual(sftp_session.sftp_batch_commands, batch_commands)
 
     def test_sftp_connect_sftp_args_variations(self):
         """Test different sftp_args formats and common SSH options."""

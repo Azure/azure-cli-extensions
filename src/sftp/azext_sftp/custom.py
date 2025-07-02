@@ -79,7 +79,7 @@ def sftp_cert(cmd, cert_path=None, public_key_file=None, ssh_client_folder=None)
 
 
 def sftp_connect(cmd, storage_account, port=None, cert_file=None, private_key_file=None,
-                 public_key_file=None, sftp_args=None, ssh_client_folder=None, sftp_batch_commands=None):
+                 public_key_file=None, sftp_args=None, ssh_client_folder=None):
     """Connect to Azure Storage Account via SFTP with automatic certificate generation if needed."""
     logger.debug("Starting SFTP connection to storage account: %s", storage_account)
 
@@ -160,8 +160,7 @@ def sftp_connect(cmd, storage_account, port=None, cert_file=None, private_key_fi
             ssh_client_folder=ssh_client_folder,
             ssh_proxy_folder=None,
             credentials_folder=credentials_folder,
-            yes_without_prompt=False,
-            sftp_batch_commands=sftp_batch_commands
+            yes_without_prompt=False
         )
 
         sftp_session.local_user = user

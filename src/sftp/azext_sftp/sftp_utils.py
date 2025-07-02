@@ -56,15 +56,8 @@ def _handle_process_interruption(sftp_process):
         pass
 
 
-def _execute_sftp_process(command, env, creationflags, batch_input):
-    """Execute the SFTP process with appropriate input handling."""
-    if batch_input:
-        sftp_process = subprocess.Popen(
-            command, env=env, encoding='utf-8', stdin=subprocess.PIPE, creationflags=creationflags
-        )
-        sftp_process.communicate(input=batch_input)
-        return sftp_process, sftp_process.returncode
-
+def _execute_sftp_process(command, env, creationflags):
+    """Execute the SFTP process."""
     sftp_process = subprocess.Popen(
         command, env=env, encoding='utf-8', creationflags=creationflags
     )
@@ -82,8 +75,7 @@ def _attempt_connection(command, env, creationflags, op_info, attempt_num):
     try:
         logger.debug("Running SFTP command (attempt %d): %s", attempt_num, ' '.join(command))
 
-        batch_input = getattr(op_info, 'sftp_batch_commands', None)
-        _, return_code = _execute_sftp_process(command, env, creationflags, batch_input)
+        _, return_code = _execute_sftp_process(command, env, creationflags)
 
         if return_code is None:  # KeyboardInterrupt occurred
             return False, None, None

@@ -33,13 +33,12 @@ class SessionConfiguration:
     """Encapsulates session configuration options."""
 
     def __init__(self, sftp_args=None, ssh_client_folder=None, ssh_proxy_folder=None,
-                 credentials_folder=None, yes_without_prompt=False, sftp_batch_commands=None):
+                 credentials_folder=None, yes_without_prompt=False):
         self.sftp_args = sftp_args or []
         self.ssh_client_folder = os.path.abspath(ssh_client_folder) if ssh_client_folder else None
         self.ssh_proxy_folder = os.path.abspath(ssh_proxy_folder) if ssh_proxy_folder else None
         self.credentials_folder = os.path.abspath(credentials_folder) if credentials_folder else None
         self.yes_without_prompt = yes_without_prompt
-        self.sftp_batch_commands = sftp_batch_commands
 
 
 class RuntimeState:
@@ -56,11 +55,11 @@ class SFTPSession():
     def __init__(self, storage_account, username=None, host=None, port=None,
                  public_key_file=None, private_key_file=None, cert_file=None,
                  sftp_args=None, ssh_client_folder=None, ssh_proxy_folder=None,
-                 credentials_folder=None, yes_without_prompt=False, sftp_batch_commands=None):
+                 credentials_folder=None, yes_without_prompt=False):
         self.connection = ConnectionInfo(storage_account, username, host, port)
         self.auth_files = AuthenticationFiles(public_key_file, private_key_file, cert_file)
         self.config = SessionConfiguration(sftp_args, ssh_client_folder, ssh_proxy_folder,
-                                           credentials_folder, yes_without_prompt, sftp_batch_commands)
+                                           credentials_folder, yes_without_prompt)
         self.runtime = RuntimeState()
 
     @property
@@ -182,16 +181,6 @@ class SFTPSession():
     def yes_without_prompt(self, value):
         """Set yes without prompt flag."""
         self.config.yes_without_prompt = value
-
-    @property
-    def sftp_batch_commands(self):
-        """Get SFTP batch commands."""
-        return self.config.sftp_batch_commands
-
-    @sftp_batch_commands.setter
-    def sftp_batch_commands(self, value):
-        """Set SFTP batch commands."""
-        self.config.sftp_batch_commands = value
 
     @property
     def delete_credentials(self):
