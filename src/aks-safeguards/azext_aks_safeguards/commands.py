@@ -8,7 +8,6 @@
 # pylint: disable=too-many-lines
 # pylint: disable=too-many-statements
 
-<<<<<<< HEAD
 
 def load_command_table(self, _):  # pylint: disable=unused-argument
     from .custom import AKSSafeguardsShowCustom as Show
@@ -21,10 +20,3 @@ def load_command_table(self, _):  # pylint: disable=unused-argument
         self.command_table["aks safeguards create"] = Create(loader=self)
         self.command_table["aks safeguards update"] = Update(loader=self)
         self.command_table["aks safeguards delete"] = Delete(loader=self)
-=======
-# from azure.cli.core.commands import CliCommandType
-
-
-def load_command_table(self, _):  # pylint: disable=unused-argument
-    pass
->>>>>>> 9e8d524281d638c59daad8a899ea953f66623a0c
