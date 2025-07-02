@@ -19,7 +19,8 @@ from azure.cli.core.azclierror import ArgumentUsageError
 logger = get_logger(__name__)
 
 
-def _validate_and_set_managed_cluster_argument(args):
+def _validate_and_set_managed_cluster_argument(ctx):
+    args = ctx.args
     has_managed_cluster = has_value(args.managed_cluster)
     has_rg_and_cluster = has_value(
         args.resource_group) and has_value(args.cluster_name)
@@ -30,7 +31,7 @@ def _validate_and_set_managed_cluster_argument(args):
             "You must provide either 'managed_cluster' or both 'resource_group' and 'cluster_name', but not both.")
 
     if not has_managed_cluster:
-        args.managed_cluster = f"/subscriptions/{args.subscription_id}/resourceGroups/{args.resource_group}/providers/Microsoft.ContainerService/managedClusters/{args.cluster_name}"
+        args.managed_cluster = f"/subscriptions/{ctx.subscription_id}/resourceGroups/{args.resource_group}/providers/Microsoft.ContainerService/managedClusters/{args.cluster_name}"
 
 
 def _add_resource_group_cluster_name_subscription_id_args(_args_schema):
@@ -44,29 +45,26 @@ def _add_resource_group_cluster_name_subscription_id_args(_args_schema):
         help="The name of the Managed Cluster.",
         required=False,
     )
-    _args_schema.subscription_id = AAZSubscriptionIdArg(
-        options=["--subscription"],
-        help="The ID of the target subscription. You can configure the default subscription using az account set --subscription NAME_OR_ID.",
-        required=False,
-    )
     return _args_schema
 
 
 class AKSSafeguardsShowCustom(Show):
 
     def pre_operations(self):
-        _validate_and_set_managed_cluster_argument(self.ctx.args)
+        _validate_and_set_managed_cluster_argument(self.ctx)
 
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
         _args_schema = super()._build_arguments_schema(*args, **kwargs)
-        return _add_resource_group_cluster_name_subscription_id_args(_args_schema)
+        after_schema = _add_resource_group_cluster_name_subscription_id_args(
+            _args_schema)
+        return after_schema
 
 
 class AKSSafeguardsDeleteCustom(Delete):
 
     def pre_operations(self):
-        _validate_and_set_managed_cluster_argument(self.ctx.args)
+        _validate_and_set_managed_cluster_argument(self.ctx)
 
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
@@ -77,7 +75,7 @@ class AKSSafeguardsDeleteCustom(Delete):
 class AKSSafeguardsUpdateCustom(Update):
 
     def pre_operations(self):
-        _validate_and_set_managed_cluster_argument(self.ctx.args)
+        _validate_and_set_managed_cluster_argument(self.ctx)
 
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
@@ -88,7 +86,7 @@ class AKSSafeguardsUpdateCustom(Update):
 class AKSSafeguardsCreateCustom(Create):
 
     def pre_operations(self):
-        _validate_and_set_managed_cluster_argument(self.ctx.args)
+        _validate_and_set_managed_cluster_argument(self.ctx)
 
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
