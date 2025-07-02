@@ -124,18 +124,27 @@ class SftpCustomCommandTest(unittest.TestCase):
                 private_key_file=self.mock_private_key
             )
 
+    @mock.patch('azext_sftp.custom.Profile')
+    @mock.patch('azext_sftp.custom._get_storage_endpoint_suffix')
     @mock.patch('azext_sftp.custom._do_sftp_op')
     @mock.patch('azext_sftp.custom._get_and_write_certificate')
     @mock.patch('azext_sftp.custom._check_or_create_public_private_files')
     @mock.patch('tempfile.mkdtemp')
-    def test_sftp_connect_no_cert_auto_generate(self, mock_mkdtemp, mock_create_keys, mock_gen_cert, mock_do_sftp):
+    def test_sftp_connect_no_cert_auto_generate(self, mock_mkdtemp, mock_create_keys, mock_gen_cert, mock_do_sftp, mock_get_suffix, mock_profile):
         """Test connect with no credentials - should auto-generate."""
         cmd = mock.Mock()
         cmd.cli_ctx.cloud.name = "azurecloud"
+        
+        # Mock Profile and subscription check
+        mock_profile_instance = mock.Mock()
+        mock_profile.return_value = mock_profile_instance
+        mock_profile_instance.get_subscription.return_value = {"id": "test-subscription-id"}
+        
         mock_mkdtemp.return_value = self.temp_dir
         mock_create_keys.return_value = (self.mock_public_key, self.mock_private_key, True)
         mock_gen_cert.return_value = (self.mock_cert_file, "testuser")
         mock_do_sftp.return_value = None
+        mock_get_suffix.return_value = "blob.core.windows.net"
         
         custom.sftp_connect(
             cmd=cmd,
@@ -148,16 +157,25 @@ class SftpCustomCommandTest(unittest.TestCase):
         mock_gen_cert.assert_called_once()
         mock_do_sftp.assert_called_once()
 
+    @mock.patch('azext_sftp.custom.Profile')
+    @mock.patch('azext_sftp.custom._get_storage_endpoint_suffix')
     @mock.patch('azext_sftp.custom._do_sftp_op')
     @mock.patch('azext_sftp.custom._get_and_write_certificate')
     @mock.patch('azext_sftp.custom._check_or_create_public_private_files')
-    def test_sftp_connect_public_key_provided_no_cert(self, mock_create_keys, mock_gen_cert, mock_do_sftp):
+    def test_sftp_connect_public_key_provided_no_cert(self, mock_create_keys, mock_gen_cert, mock_do_sftp, mock_get_suffix, mock_profile):
         """Test connect with public key but no cert - should generate cert."""
         cmd = mock.Mock()
         cmd.cli_ctx.cloud.name = "azurecloud"
+        
+        # Mock Profile and subscription check
+        mock_profile_instance = mock.Mock()
+        mock_profile.return_value = mock_profile_instance
+        mock_profile_instance.get_subscription.return_value = {"id": "test-subscription-id"}
+        
         mock_create_keys.return_value = (self.mock_public_key, self.mock_private_key, False)
         mock_gen_cert.return_value = (self.mock_cert_file, "testuser")
         mock_do_sftp.return_value = None
+        mock_get_suffix.return_value = "blob.core.windows.net"
         
         custom.sftp_connect(
             cmd=cmd,
@@ -171,16 +189,25 @@ class SftpCustomCommandTest(unittest.TestCase):
         mock_gen_cert.assert_called_once()
         mock_do_sftp.assert_called_once()
 
+    @mock.patch('azext_sftp.custom.Profile')
+    @mock.patch('azext_sftp.custom._get_storage_endpoint_suffix')
     @mock.patch('azext_sftp.custom._do_sftp_op')
     @mock.patch('azext_sftp.custom._get_and_write_certificate')
     @mock.patch('azext_sftp.custom._check_or_create_public_private_files')
-    def test_sftp_connect_private_key_provided_no_cert(self, mock_create_keys, mock_gen_cert, mock_do_sftp):
+    def test_sftp_connect_private_key_provided_no_cert(self, mock_create_keys, mock_gen_cert, mock_do_sftp, mock_get_suffix, mock_profile):
         """Test connect with private key but no cert - should generate cert."""
         cmd = mock.Mock()
         cmd.cli_ctx.cloud.name = "azurecloud"
+        
+        # Mock Profile and subscription check
+        mock_profile_instance = mock.Mock()
+        mock_profile.return_value = mock_profile_instance
+        mock_profile_instance.get_subscription.return_value = {"id": "test-subscription-id"}
+        
         mock_create_keys.return_value = (self.mock_public_key, self.mock_private_key, False)
         mock_gen_cert.return_value = (self.mock_cert_file, "testuser")
         mock_do_sftp.return_value = None
+        mock_get_suffix.return_value = "blob.core.windows.net"
         
         custom.sftp_connect(
             cmd=cmd,
@@ -475,9 +502,9 @@ class SftpCustomCertificateTest(unittest.TestCase):
                                     public_key_file=self.mock_public_key)
                 
                 # Verify error is logged
-                mock_logger.error.assert_called()
-                error_call = mock_logger.error.call_args[0][0]
-                self.assertIn("Failed to generate certificate", error_call)
+                mock_logger.debug.assert_called()
+                error_call = mock_logger.debug.call_args[0][0]
+                self.assertIn("Certificate generation failed", error_call)
 
     def test_check_or_create_public_private_files_with_existing_files(self):
         """Test _check_or_create_public_private_files with existing key files.

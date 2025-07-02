@@ -10,7 +10,7 @@ from knack import log
 logger = log.get_logger(__name__)
 
 
-class ConnectionInfo:  # pylint: disable=too-few-public-methods
+class ConnectionInfo:
     """Encapsulates connection-specific information."""
 
     def __init__(self, storage_account, username=None, host=None, port=None):
@@ -20,7 +20,7 @@ class ConnectionInfo:  # pylint: disable=too-few-public-methods
         self.port = port
 
 
-class AuthenticationFiles:  # pylint: disable=too-few-public-methods
+class AuthenticationFiles:
     """Encapsulates authentication file paths."""
 
     def __init__(self, public_key_file=None, private_key_file=None, cert_file=None):
@@ -29,7 +29,7 @@ class AuthenticationFiles:  # pylint: disable=too-few-public-methods
         self.cert_file = os.path.abspath(os.path.expanduser(cert_file)) if cert_file else None
 
 
-class SessionConfiguration:  # pylint: disable=too-few-public-methods
+class SessionConfiguration:
     """Encapsulates session configuration options."""
 
     def __init__(self, sftp_args=None, ssh_client_folder=None, ssh_proxy_folder=None,
@@ -42,7 +42,7 @@ class SessionConfiguration:  # pylint: disable=too-few-public-methods
         self.sftp_batch_commands = sftp_batch_commands
 
 
-class RuntimeState:  # pylint: disable=too-few-public-methods
+class RuntimeState:
     """Encapsulates runtime state information."""
 
     def __init__(self):
@@ -50,25 +50,19 @@ class RuntimeState:  # pylint: disable=too-few-public-methods
         self.local_user = None
 
 
-class SFTPSession():  # pylint: disable=too-many-public-methods
-    """Class to hold SFTP session information and connection details.
-
-    Similar to SSH extension's SSHSession class, this encapsulates all
-    connection parameters and provides methods for session management.
-    """
+class SFTPSession():
+    """Class to hold SFTP session information and connection details."""
 
     def __init__(self, storage_account, username=None, host=None, port=None,
                  public_key_file=None, private_key_file=None, cert_file=None,
                  sftp_args=None, ssh_client_folder=None, ssh_proxy_folder=None,
                  credentials_folder=None, yes_without_prompt=False, sftp_batch_commands=None):
-        # Group related attributes into separate objects
         self.connection = ConnectionInfo(storage_account, username, host, port)
         self.auth_files = AuthenticationFiles(public_key_file, private_key_file, cert_file)
         self.config = SessionConfiguration(sftp_args, ssh_client_folder, ssh_proxy_folder,
                                            credentials_folder, yes_without_prompt, sftp_batch_commands)
         self.runtime = RuntimeState()
 
-    # Compatibility properties for backward compatibility
     @property
     def storage_account(self):
         """Get storage account name."""
@@ -221,46 +215,34 @@ class SFTPSession():  # pylint: disable=too-many-public-methods
 
     def resolve_connection_info(self):
         """Resolve connection information like hostname and username."""
-        # Hostname should already be set by the caller using cloud-aware logic
         if not self.connection.host:
             raise azclierror.ValidationError("Host must be set before calling resolve_connection_info()")
 
-        # Extract username from certificate if available
         if self.auth_files.cert_file and self.runtime.local_user:
-            # Process username - extract username part if it's a UPN
             user = self.runtime.local_user
             if '@' in user:
                 user = user.split('@')[0]
 
-            # Build Azure Storage SFTP username format
             self.connection.username = f"{self.connection.storage_account}.{user}"
         elif not self.connection.username:
-            # Fallback username format (will be set by caller)
             self.connection.username = f"{self.connection.storage_account}.unknown"
 
     def build_args(self):
-        """Build SSH/SFTP command line arguments.
-
-        Returns:
-            list: Command line arguments for SSH/SFTP client
-        """
+        """Build SSH/SFTP command line arguments."""
         args = []
 
-        # Add private key if provided
         if self.auth_files.private_key_file:
             args.extend(["-i", self.auth_files.private_key_file])
-        # Add certificate if provided
         if self.auth_files.cert_file:
             args.extend(["-o", f"CertificateFile=\"{self.auth_files.cert_file}\""])
 
-        # Add port if specified
         if self.connection.port is not None:
             args.extend(["-P", str(self.connection.port)])
 
         return args
 
     def get_host(self):
-        """Get the host for the connection (similar to SSH extension pattern)."""
+        """Get the host for the connection."""
         if not self.connection.host:
             raise azclierror.ValidationError("Host not set. Call resolve_connection_info() first.")
         return self.connection.host
@@ -280,11 +262,9 @@ class SFTPSession():  # pylint: disable=too-many-public-methods
         if not self.connection.username:
             raise azclierror.ValidationError("Username not resolved. Call resolve_connection_info() first.")
 
-        # Validate certificate file exists if provided
         if self.auth_files.cert_file and not os.path.isfile(self.auth_files.cert_file):
             raise azclierror.FileOperationError(f"Certificate file {self.auth_files.cert_file} not found.")
 
-        # Validate key files exist if provided
         if self.auth_files.public_key_file and not os.path.isfile(self.auth_files.public_key_file):
             raise azclierror.FileOperationError(f"Public key file {self.auth_files.public_key_file} not found.")
 

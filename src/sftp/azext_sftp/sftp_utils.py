@@ -26,11 +26,10 @@ def _build_sftp_command(op_info):
         "-o", "StrictHostKeyChecking=no",
         "-o", "UserKnownHostsFile=/dev/null",
         "-o", "PubkeyAcceptedKeyTypes=rsa-sha2-256-cert-v01@openssh.com,rsa-sha2-256",
-        "-o", "LogLevel=ERROR"  # Reduce verbose output
+        "-o", "LogLevel=ERROR"
     ]
     command.extend(op_info.build_args())
 
-    # Add SFTP-specific arguments if provided
     if op_info.sftp_args:
         sftp_arg_list = op_info.sftp_args.split(' ') if isinstance(op_info.sftp_args, str) else op_info.sftp_args
         command.extend(sftp_arg_list)
@@ -53,7 +52,6 @@ def _handle_process_interruption(sftp_process):
     try:
         sftp_process.wait(timeout=5)
     except (subprocess.TimeoutExpired, OSError):
-        # Process didn't terminate cleanly or other process-related error
         pass
 
 
@@ -127,7 +125,6 @@ def start_sftp_connection(op_info):
                     raise azclierror.UnclassifiedUserFault(error_msg, const.RECOMMENDATION_SSH_CLIENT_NOT_FOUND)
                 logger.warning("%s. Retrying...", error_msg)
 
-            # Only log duration if it's not None (not a KeyboardInterrupt)
             if duration is not None:
                 logger.debug("Connection attempt %d duration: %.2f seconds", attempt + 1, duration)
             if attempt < retry_attempts_allowed:
@@ -139,7 +136,7 @@ def start_sftp_connection(op_info):
         )
 
     except KeyboardInterrupt:
-        logger.info("SFTP connection interrupted by user (outer handler)")
+        logger.info("SFTP connection interrupted by user")
         print("\nSFTP session exited cleanly.")
 
 
@@ -171,7 +168,6 @@ def get_ssh_cert_principals(cert_file, ssh_client_folder=None):
     return principals
 
 
-# Helpers
 def get_ssh_cert_info(cert_file, ssh_client_folder=None):
     sshkeygen_path = get_ssh_client_path("ssh-keygen", ssh_client_folder)
     command = [sshkeygen_path, "-L", "-f", cert_file]
@@ -202,7 +198,6 @@ def get_ssh_client_path(ssh_command="ssh", ssh_client_folder=None):
         # look for System32 under SysNative folder.
         machine = platform.machine()
         os_architecture = None
-        # python interpreter architecture
         platform_architecture = platform.architecture()[0]
         sys_path = None
 

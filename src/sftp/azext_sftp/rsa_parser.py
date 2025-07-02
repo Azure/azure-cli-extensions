@@ -8,7 +8,6 @@ import struct
 
 
 class RSAParser():
-    # pylint: disable=too-few-public-methods
     RSAAlgorithm = 'ssh-rsa'
 
     def __init__(self):

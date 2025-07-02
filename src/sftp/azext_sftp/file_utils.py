@@ -31,7 +31,7 @@ def make_dirs_for_file(file_path):
 def mkdir_p(path):
     try:
         os.makedirs(path)
-    except OSError as exc:  # Python <= 2.5
+    except OSError as exc:
         if exc.errno == errno.EEXIST and os.path.isdir(path):
             pass
         else:
@@ -39,7 +39,6 @@ def mkdir_p(path):
 
 
 def delete_file(file_path, message, warning=False):
-    # pylint: disable=broad-except
     if os.path.isfile(file_path):
         try:
             os.remove(file_path)
@@ -51,7 +50,6 @@ def delete_file(file_path, message, warning=False):
 
 
 def delete_folder(dir_path, message, warning=False):
-    # pylint: disable=broad-except
     if os.path.isdir(dir_path):
         try:
             os.rmdir(dir_path)
@@ -70,7 +68,6 @@ def create_directory(file_path, error_message):
 
 
 def write_to_file(file_path, mode, content, error_message, encoding=None):
-    # pylint: disable=unspecified-encoding
     try:
         if encoding:
             with open(file_path, mode, encoding=encoding) as f:
@@ -101,15 +98,11 @@ def check_or_create_public_private_files(public_key_file, private_key_file, cred
     """Check for existing key files or create new ones if needed."""
     delete_keys = False
 
-    # If nothing is passed in create a temporary directory with a ephemeral keypair
     if not public_key_file and not private_key_file:
-        # We only want to delete the keys if the user hasn't provided their own keys
         delete_keys = True
         if not credentials_folder:
-            # Create keys on temp folder and delete folder once connection succeeds/fails.
             credentials_folder = tempfile.mkdtemp(prefix="aadsftpcert")
         else:
-            # Keys saved to the same folder as --file or to --keys-destination-folder.
             if not os.path.isdir(credentials_folder):
                 os.makedirs(credentials_folder)
         public_key_file = os.path.join(credentials_folder, "id_rsa.pub")
@@ -125,13 +118,10 @@ def check_or_create_public_private_files(public_key_file, private_key_file, cred
     if not os.path.isfile(public_key_file):
         raise azclierror.FileOperationError(f"Public key file {public_key_file} not found")
 
-    # The private key is not required as the user may be using a keypair
-    # stored in ssh-agent (and possibly in a hardware token)
     if private_key_file:
         if not os.path.isfile(private_key_file):
             raise azclierror.FileOperationError(f"Private key file {private_key_file} not found")
 
-    # Try to get private key if it's saved next to the public key. Not fail if it can't be found.
     if not private_key_file:
         if public_key_file.endswith(".pub"):
             private_key_file = public_key_file[:-4] if os.path.isfile(public_key_file[:-4]) else None
@@ -141,7 +131,6 @@ def check_or_create_public_private_files(public_key_file, private_key_file, cred
 
 def get_and_write_certificate(cmd, public_key_file, cert_file, ssh_client_folder):
     """Generate and write an SSH certificate using Azure AD authentication."""
-    # Map cloud names to scopes
     cloudtoscope = {
         "azurecloud": "https://pas.windows.net/CheckMyAccess/Linux/.default",
         "azurechinacloud": "https://pas.chinacloudapi.cn/CheckMyAccess/Linux/.default",
@@ -159,12 +148,9 @@ def get_and_write_certificate(cmd, public_key_file, cert_file, ssh_client_folder
 
     t0 = time.time()
 
-    # Get certificate using MSAL token
     if hasattr(profile, "get_msal_token"):
-        # we used to use the username from the token but now we throw it away
         _, certificate = profile.get_msal_token(scopes, data)
     else:
-        # Fallback for older CLI versions
         credential, _, _ = profile.get_login_credentials(subscription_id=profile.get_subscription()["id"])
         certificatedata = credential.get_token(*scopes, data=data)
         certificate = certificatedata.token
@@ -177,13 +163,10 @@ def get_and_write_certificate(cmd, public_key_file, cert_file, ssh_client_folder
 
     logger.debug("Generating certificate %s", cert_file)
 
-    # Write certificate to file
     _write_cert_file(certificate, cert_file)
 
-    # Get username from certificate principals
     username = sftp_utils.get_ssh_cert_principals(cert_file, ssh_client_folder)[0]
 
-    # Set appropriate permissions
     oschmod.set_mode(cert_file, 0o600)
 
     return cert_file, username.lower()
