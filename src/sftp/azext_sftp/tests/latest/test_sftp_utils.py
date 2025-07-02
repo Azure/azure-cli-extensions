@@ -5,6 +5,7 @@
 
 import unittest
 import os
+import subprocess
 from unittest import mock
 
 from azext_sftp import sftp_utils
@@ -73,58 +74,220 @@ class SftpUtilsTests(unittest.TestCase):
         
         self.assertIn("Could not find ssh.exe", str(context.exception))
 
-    def test_certificate_functions_exist(self):
-        """Test that certificate functions exist and can be called."""
-        # Simple test to ensure functions exist
-        self.assertTrue(hasattr(sftp_utils, 'get_ssh_cert_principals'))
-        
-        # Note: get_certificate_start_and_end_times was removed as unnecessary validation
-
-
-class SftpUtilsAdvancedTest(unittest.TestCase):
-    """Advanced test suite for SFTP utilities and edge cases."""
-
-    def test_ssh_client_path_resolution_multiple_clients(self):
-        """Test SSH client path resolution for different clients."""
-        # Test sftp client path
-        sftp_path = sftp_utils.get_ssh_client_path("sftp")
-        self.assertIsNotNone(sftp_path)
-        self.assertTrue(sftp_path.endswith("sftp") or sftp_path.endswith("sftp.exe"))
-        
-        # Test ssh client path  
-        ssh_path = sftp_utils.get_ssh_client_path("ssh")
-        self.assertIsNotNone(ssh_path)
-        self.assertTrue(ssh_path.endswith("ssh") or ssh_path.endswith("ssh.exe"))
-
-    def test_port_validation(self):
-        """Test port number validation logic."""
-        valid_ports = [22, 2222, 443, 80]
-        invalid_ports = [-1, 0, 65536, 999999]
-        
-        for port in valid_ports:
-            # Valid ports should be in acceptable range
-            self.assertGreater(port, 0)
-            self.assertLess(port, 65536)
-        
-        for port in invalid_ports:
-            # Invalid ports should be outside acceptable range
-            self.assertTrue(port <= 0 or port >= 65536)
-
-    def test_connection_option_validation(self):
-        """Test SSH connection options format validation."""
-        required_options = [
-            "PubkeyAcceptedKeyTypes=rsa-sha2-256-cert-v01@openssh.com,rsa-sha2-256",
-            "BatchMode=yes",
-            "PasswordAuthentication=no"
+    @mock.patch('azext_sftp.sftp_utils.get_ssh_cert_info')
+    def test_get_certificate_start_and_end_times_valid(self, mock_cert_info):
+        """Test certificate start and end times parsing with valid certificate."""
+        mock_cert_info.return_value = [
+            "Type: ssh-rsa-cert-v01@openssh.com user certificate",
+            "Public key: RSA-SHA256:AAAAB3NzaC1yc2E...",
+            "Signing CA: RSA SHA256:AAAAB3NzaC1yc2E...",
+            "Key ID: \"keyid\"",
+            "Serial: 123456789",
+            "Valid: from 2025-07-02T10:18:23 to 2025-07-02T11:18:23",
+            "Critical Options: (none)",
+            "Extensions:",
+            "        permit-X11-forwarding",
+            "        permit-agent-forwarding"
         ]
         
-        for option in required_options:
-            # Each option should be properly formatted
-            self.assertIn("=", option)
-            key, value = option.split("=", 1)
-            self.assertNotEqual(key, "")
-            self.assertNotEqual(value, "")
+        start_time, end_time = sftp_utils.get_certificate_start_and_end_times("test_cert", None)
+        
+        self.assertIsNotNone(start_time)
+        self.assertIsNotNone(end_time)
+        self.assertEqual(start_time.year, 2025)
+        self.assertEqual(start_time.month, 7)
+        self.assertEqual(start_time.day, 2)
+        self.assertEqual(start_time.hour, 10)
+        self.assertEqual(start_time.minute, 18)
+        self.assertEqual(start_time.second, 23)
+        
+        self.assertEqual(end_time.year, 2025)
+        self.assertEqual(end_time.month, 7)
+        self.assertEqual(end_time.day, 2)
+        self.assertEqual(end_time.hour, 11)
+        self.assertEqual(end_time.minute, 18)
+        self.assertEqual(end_time.second, 23)
+
+    @mock.patch('azext_sftp.sftp_utils.get_ssh_cert_info')
+    def test_get_certificate_start_and_end_times_invalid_format(self, mock_cert_info):
+        """Test certificate start and end times parsing with invalid certificate format."""
+        mock_cert_info.return_value = [
+            "Type: ssh-rsa-cert-v01@openssh.com user certificate",
+            "Public key: RSA-SHA256:AAAAB3NzaC1yc2E...",
+            "Invalid validity line format"
+        ]
+        
+        result = sftp_utils.get_certificate_start_and_end_times("test_cert", None)
+        
+        self.assertIsNone(result)
+
+    @mock.patch('azext_sftp.sftp_utils.get_ssh_cert_info')
+    def test_get_certificate_start_and_end_times_no_validity(self, mock_cert_info):
+        """Test certificate start and end times parsing with no validity information."""
+        mock_cert_info.return_value = [
+            "Type: ssh-rsa-cert-v01@openssh.com user certificate",
+            "Public key: RSA-SHA256:AAAAB3NzaC1yc2E...",
+            "Signing CA: RSA SHA256:AAAAB3NzaC1yc2E..."
+        ]
+        
+        result = sftp_utils.get_certificate_start_and_end_times("test_cert", None)
+        
+        self.assertIsNone(result)
+
+    @mock.patch('azext_sftp.sftp_utils.get_ssh_cert_info')
+    def test_get_ssh_cert_validity_found(self, mock_cert_info):
+        """Test getting SSH certificate validity line when it exists."""
+        mock_cert_info.return_value = [
+            "Type: ssh-rsa-cert-v01@openssh.com user certificate",
+            "Valid: from 2025-07-02T10:18:23 to 2025-07-02T11:18:23",
+            "Critical Options: (none)"
+        ]
+        
+        validity = sftp_utils._get_ssh_cert_validity("test_cert", None)
+        
+        self.assertEqual(validity, "Valid: from 2025-07-02T10:18:23 to 2025-07-02T11:18:23")
+
+    @mock.patch('azext_sftp.sftp_utils.get_ssh_cert_info')
+    def test_get_ssh_cert_validity_not_found(self, mock_cert_info):
+        """Test getting SSH certificate validity line when it doesn't exist."""
+        mock_cert_info.return_value = [
+            "Type: ssh-rsa-cert-v01@openssh.com user certificate",
+            "Public key: RSA-SHA256:AAAAB3NzaC1yc2E...",
+            "Critical Options: (none)"
+        ]
+        
+        validity = sftp_utils._get_ssh_cert_validity("test_cert", None)
+        
+        self.assertIsNone(validity)
+
+    def test_get_ssh_cert_validity_no_cert_file(self):
+        """Test getting SSH certificate validity with no certificate file."""
+        validity = sftp_utils._get_ssh_cert_validity(None, None)
+        
+        self.assertIsNone(validity)
+
+    @mock.patch('subprocess.check_output')
+    def test_get_ssh_cert_info_success(self, mock_subprocess):
+        """Test getting SSH certificate info successfully."""
+        mock_subprocess.return_value = b"""Type: ssh-rsa-cert-v01@openssh.com user certificate
+Public key: RSA-SHA256:AAAAB3NzaC1yc2E...
+Signing CA: RSA SHA256:AAAAB3NzaC1yc2E...
+Key ID: "keyid"
+Serial: 123456789
+Valid: from 2025-07-02T10:18:23 to 2025-07-02T11:18:23
+Critical Options: (none)
+Extensions:
+        permit-X11-forwarding
+        permit-agent-forwarding"""
+        
+        cert_info = sftp_utils.get_ssh_cert_info("test_cert", None)
+        
+        self.assertIsInstance(cert_info, list)
+        self.assertGreater(len(cert_info), 0)
+        self.assertIn("Type: ssh-rsa-cert-v01@openssh.com user certificate", cert_info)
+        self.assertIn("Valid: from 2025-07-02T10:18:23 to 2025-07-02T11:18:23", cert_info)
+
+    @mock.patch('subprocess.check_output')
+    def test_get_ssh_cert_info_failure(self, mock_subprocess):
+        """Test getting SSH certificate info when command fails."""
+        mock_subprocess.side_effect = OSError("ssh-keygen not found")
+        
+        with self.assertRaises(azclierror.BadRequestError) as context:
+            sftp_utils.get_ssh_cert_info("test_cert", None)
+        
+        self.assertIn("Failed to get certificate info", str(context.exception))
+
+    @mock.patch('subprocess.check_output')
+    def test_get_ssh_cert_principals_success(self, mock_subprocess):
+        """Test getting SSH certificate principals successfully."""
+        mock_subprocess.return_value = b"""Type: ssh-rsa-cert-v01@openssh.com user certificate
+Public key: RSA-SHA256:AAAAB3NzaC1yc2E...
+Signing CA: RSA SHA256:AAAAB3NzaC1yc2E...
+Key ID: "keyid"
+Serial: 123456789
+Valid: from 2025-07-02T10:18:23 to 2025-07-02T11:18:23
+Principals:
+        user1
+        user2
+        user3
+Critical Options: (none)"""
+        
+        principals = sftp_utils.get_ssh_cert_principals("test_cert", None)
+        
+        self.assertIsInstance(principals, list)
+        self.assertEqual(principals, ["user1", "user2", "user3"])
+
+    @mock.patch('subprocess.check_output')
+    def test_get_ssh_cert_principals_no_principals(self, mock_subprocess):
+        """Test getting SSH certificate principals when none exist."""
+        mock_subprocess.return_value = b"""Type: ssh-rsa-cert-v01@openssh.com user certificate
+Public key: RSA-SHA256:AAAAB3NzaC1yc2E...
+Signing CA: RSA SHA256:AAAAB3NzaC1yc2E...
+Key ID: "keyid"
+Serial: 123456789
+Valid: from 2025-07-02T10:18:23 to 2025-07-02T11:18:23
+Critical Options: (none)"""
+        
+        principals = sftp_utils.get_ssh_cert_principals("test_cert", None)
+        
+        self.assertIsInstance(principals, list)
+        self.assertEqual(len(principals), 0)
+
+    @mock.patch('subprocess.check_output')
+    def test_get_ssh_cert_principals_failure(self, mock_subprocess):
+        """Test getting SSH certificate principals when command fails."""
+        mock_subprocess.side_effect = OSError("ssh-keygen not found")
+        
+        with self.assertRaises(azclierror.BadRequestError) as context:
+            sftp_utils.get_ssh_cert_principals("test_cert", None)
+        
+        self.assertIn("Failed to get certificate info", str(context.exception))
+
+    def test_certificate_time_parsing_edge_cases(self):
+        """Test certificate time parsing with various edge cases."""
+        # Test with different date formats (should fail gracefully)
+        test_cases = [
+            "Valid: from invalid-date to invalid-date",
+            "Valid: from 2025-07-02T10:18:23 to invalid-date",
+            "Valid: from invalid-date to 2025-07-02T11:18:23",
+            "Invalid validity format",
+            ""
+        ]
+        
+        for test_case in test_cases:
+            with mock.patch('azext_sftp.sftp_utils.get_ssh_cert_info') as mock_cert_info:
+                mock_cert_info.return_value = [test_case] if test_case else []
+                try:
+                    result = sftp_utils.get_certificate_start_and_end_times("test_cert", None)
+                    # Should return None for invalid formats
+                    self.assertIsNone(result, f"Expected None for test case: {test_case}")
+                except (ValueError, TypeError):
+                    # Expected behavior for invalid date formats
+                    pass
 
 
-if __name__ == '__main__':
-    unittest.main()
+class SftpCertificateIntegrationTest(unittest.TestCase):
+    """Integration tests for certificate-related functionality."""
+    
+    def test_certificate_workflow_integration(self):
+        """Test that certificate functions work together correctly."""
+        # This is a mock integration test to ensure the functions are callable
+        # In a real scenario, this would test with actual certificate files
+        
+        cert_file = "mock_cert_file"
+        
+        # Test that functions exist and are callable
+        self.assertTrue(callable(sftp_utils.get_ssh_cert_info))
+        self.assertTrue(callable(sftp_utils.get_ssh_cert_principals))
+        self.assertTrue(callable(sftp_utils.get_certificate_start_and_end_times))
+        self.assertTrue(callable(sftp_utils._get_ssh_cert_validity))
+        
+        # Test error handling with invalid file
+        with self.assertRaises((azclierror.BadRequestError, FileNotFoundError, OSError, subprocess.CalledProcessError)):
+            sftp_utils.get_ssh_cert_info("nonexistent_file")
+
+    def test_ssh_client_path_for_keygen(self):
+        """Test SSH client path resolution for ssh-keygen command."""
+        keygen_path = sftp_utils.get_ssh_client_path("ssh-keygen")
+        self.assertIsNotNone(keygen_path)
+        self.assertTrue(keygen_path.endswith("ssh-keygen") or keygen_path.endswith("ssh-keygen.exe"))

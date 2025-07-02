@@ -8,6 +8,7 @@ import platform
 import subprocess
 import time
 import signal
+import datetime
 
 from knack import log
 from azure.cli.core import azclierror
@@ -231,3 +232,29 @@ def get_ssh_client_path(ssh_command="ssh", ssh_client_folder=None):
                 "Or use --ssh-client-folder to provide folder path with ssh executables. " + colorama.Style.RESET_ALL)
 
     return ssh_path
+
+
+def get_certificate_start_and_end_times(cert_file, ssh_client_folder=None):
+    """Get start and end times from SSH certificate validity."""
+    validity_str = _get_ssh_cert_validity(cert_file, ssh_client_folder)
+    times = None
+    if validity_str and "Valid: from " in validity_str and " to " in validity_str:
+        try:
+            times = validity_str.replace("Valid: from ", "").split(" to ")
+            t0 = datetime.datetime.strptime(times[0], '%Y-%m-%dT%X')
+            t1 = datetime.datetime.strptime(times[1], '%Y-%m-%dT%X')
+            times = (t0, t1)
+        except (ValueError, TypeError, IndexError):
+            # Invalid date format or parsing error
+            times = None
+    return times
+
+
+def _get_ssh_cert_validity(cert_file, ssh_client_folder=None):
+    """Get validity line from SSH certificate info."""
+    if cert_file:
+        info = get_ssh_cert_info(cert_file, ssh_client_folder)
+        for line in info:
+            if "Valid:" in line:
+                return line.strip()
+    return None

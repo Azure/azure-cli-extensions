@@ -477,9 +477,11 @@ class SftpCustomCertificateTest(unittest.TestCase):
             
             # Verify warning is logged when keys are generated
             mock_logger.warning.assert_called()
-            warning_call = mock_logger.warning.call_args[0][0]
-            self.assertIn("contains sensitive information", warning_call)
-            self.assertIn("id_rsa", warning_call)
+            # Check all warning calls to find the sensitive information one
+            warning_calls = [call[0][0] for call in mock_logger.warning.call_args_list]
+            sensitive_info_warning = next((call for call in warning_calls if "contains sensitive information" in call), None)
+            self.assertIsNotNone(sensitive_info_warning, "Sensitive information warning not found")
+            self.assertIn("id_rsa", sensitive_info_warning)
 
     @mock.patch('azext_sftp.custom._check_or_create_public_private_files')
     @mock.patch('os.path.isdir')

@@ -69,7 +69,13 @@ def sftp_cert(cmd, cert_path=None, public_key_file=None, ssh_client_folder=None)
         logger.warning("%s contains sensitive information (id_rsa, id_rsa.pub). "
                        "Please delete once this certificate is no longer being used.", keys_folder)
 
-    print_styled_text((Style.SUCCESS, f"Certificate saved: {cert_file}"))
+    try:
+        cert_expiration = sftp_utils.get_certificate_start_and_end_times(cert_file, ssh_client_folder)[1]
+        print_styled_text((Style.SUCCESS,
+                           f"Generated SSH certificate {cert_file} is valid until {cert_expiration} in local time."))
+    except Exception as e:
+        logger.warning("Couldn't determine certificate validity. Error: %s", str(e))
+        print_styled_text((Style.SUCCESS, f"Generated SSH certificate {cert_file}."))
 
 
 def sftp_connect(cmd, storage_account, port=None, cert_file=None, private_key_file=None,
