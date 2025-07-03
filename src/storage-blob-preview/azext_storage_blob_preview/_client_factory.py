@@ -4,7 +4,7 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=unused-import
 
-from azure.cli.core.commands.client_factory import get_mgmt_service_client, prepare_client_kwargs_track2
+from azure.cli.core.commands.client_factory import prepare_client_kwargs_track2
 from azure.cli.core.profiles import ResourceType, get_sdk
 from .profiles import CUSTOM_DATA_STORAGE_BLOB
 
