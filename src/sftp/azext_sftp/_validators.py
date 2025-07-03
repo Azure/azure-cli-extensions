@@ -13,7 +13,7 @@ def storage_account_name_or_id_validator(cmd, namespace):
     Validator for storage account name or resource ID.
     Converts storage account name to full resource ID if needed.
     """
-    if namespace.storage_account:
+    if hasattr(namespace, 'storage_account') and namespace.storage_account:
         if not is_valid_resource_id(namespace.storage_account):
             if not hasattr(namespace, 'resource_group_name') or not namespace.resource_group_name:
                 raise azclierror.RequiredArgumentMissingError(

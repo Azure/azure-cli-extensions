@@ -7,6 +7,7 @@ import base64
 import struct
 
 
+# pylint: disable=too-few-public-methods
 class RSAParser():
     RSAAlgorithm = 'ssh-rsa'
 

@@ -69,6 +69,7 @@ def sftp_cert(cmd, cert_path=None, public_key_file=None, ssh_client_folder=None)
         logger.warning("%s contains sensitive information (id_rsa, id_rsa.pub). "
                        "Please delete once this certificate is no longer being used.", keys_folder)
 
+    # pylint: disable=broad-except
     try:
         cert_expiration = sftp_utils.get_certificate_start_and_end_times(cert_file, ssh_client_folder)[1]
         print_styled_text((Style.SUCCESS,
@@ -103,7 +104,7 @@ def sftp_connect(cmd, storage_account, port=None, cert_file=None, private_key_fi
         delete_cert = True
         delete_keys = True
         credentials_folder = tempfile.mkdtemp(prefix="aadsftp")
-        
+
         try:
             profile = Profile(cli_ctx=cmd.cli_ctx)
             profile.get_subscription()
@@ -111,7 +112,7 @@ def sftp_connect(cmd, storage_account, port=None, cert_file=None, private_key_fi
             if credentials_folder and os.path.isdir(credentials_folder):
                 shutil.rmtree(credentials_folder)
             raise
-        
+
         print_styled_text((Style.ACTION, "Generating temporary credentials..."))
 
     if cert_file and public_key_file:
@@ -123,12 +124,9 @@ def sftp_connect(cmd, storage_account, port=None, cert_file=None, private_key_fi
                 None, None, credentials_folder, ssh_client_folder)
             cert_file, user = _get_and_write_certificate(cmd, public_key_file, None, ssh_client_folder)
         elif not cert_file:
-            try:
-                profile = Profile(cli_ctx=cmd.cli_ctx)
-                profile.get_subscription()
-            except Exception:
-                raise
-            
+            profile = Profile(cli_ctx=cmd.cli_ctx)
+            profile.get_subscription()
+
             public_key_file, private_key_file, _ = _check_or_create_public_private_files(
                 public_key_file, private_key_file, None, ssh_client_folder)
             print_styled_text((Style.ACTION, "Generating certificate..."))

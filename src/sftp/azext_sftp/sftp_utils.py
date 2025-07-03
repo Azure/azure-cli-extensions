@@ -69,7 +69,7 @@ def _execute_sftp_process(command, env, creationflags):
         return sftp_process, None
 
 
-def _attempt_connection(command, env, creationflags, op_info, attempt_num):
+def _attempt_connection(command, env, creationflags, op_info, attempt_num):  # pylint: disable=unused-argument
     """Attempt a single SFTP connection."""
     connection_start_time = time.time()
     try:

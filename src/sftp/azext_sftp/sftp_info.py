@@ -10,6 +10,7 @@ from knack import log
 logger = log.get_logger(__name__)
 
 
+# pylint: disable=too-few-public-methods
 class ConnectionInfo:
     """Encapsulates connection-specific information."""
 
@@ -20,6 +21,7 @@ class ConnectionInfo:
         self.port = port
 
 
+# pylint: disable=too-few-public-methods
 class AuthenticationFiles:
     """Encapsulates authentication file paths."""
 
@@ -29,6 +31,7 @@ class AuthenticationFiles:
         self.cert_file = os.path.abspath(os.path.expanduser(cert_file)) if cert_file else None
 
 
+# pylint: disable=too-few-public-methods
 class SessionConfiguration:
     """Encapsulates session configuration options."""
 
@@ -41,6 +44,7 @@ class SessionConfiguration:
         self.yes_without_prompt = yes_without_prompt
 
 
+# pylint: disable=too-few-public-methods
 class RuntimeState:
     """Encapsulates runtime state information."""
 
