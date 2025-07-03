@@ -8,10 +8,8 @@ from colorama import Fore, Style
 # File system constants
 WINDOWS_INVALID_FOLDERNAME_CHARS = "\\/*:<>?\"|"
 
-# Default SSH/SFTP configuration
-DEFAULT_SSH_PORT = 22
-DEFAULT_SFTP_PORT = 22
-AZURE_STORAGE_SFTP_PORT = 22
+# Default ports
+DEFAULT_SSH_PORT = DEFAULT_SFTP_PORT = AZURE_STORAGE_SFTP_PORT = 22
 
 # SSH/SFTP client configuration
 SSH_CONNECT_TIMEOUT = 30

@@ -24,21 +24,22 @@ logger = log.get_logger(__name__)
 
 
 def make_dirs_for_file(file_path):
+    """Create directories for the given file path if they don't exist."""
     if not os.path.exists(file_path):
         mkdir_p(os.path.dirname(file_path))
 
 
 def mkdir_p(path):
+    """Create directory and all parent directories if they don't exist."""
     try:
         os.makedirs(path)
     except OSError as exc:
-        if exc.errno == errno.EEXIST and os.path.isdir(path):
-            pass
-        else:
+        if exc.errno != errno.EEXIST or not os.path.isdir(path):
             raise
 
 
 def delete_file(file_path, message, warning=False):
+    """Delete a file with error handling."""
     if os.path.isfile(file_path):
         # pylint: disable=broad-except
         try:
@@ -47,10 +48,11 @@ def delete_file(file_path, message, warning=False):
             if warning:
                 logger.warning(message)
             else:
-                raise azclierror.FileOperationError(message + "Error: " + str(e)) from e
+                raise azclierror.FileOperationError(f"{message}Error: {str(e)}") from e
 
 
 def delete_folder(dir_path, message, warning=False):
+    """Delete a folder with error handling."""
     if os.path.isdir(dir_path):
         # pylint: disable=broad-except
         try:
@@ -59,41 +61,34 @@ def delete_folder(dir_path, message, warning=False):
             if warning:
                 logger.warning(message)
             else:
-                raise azclierror.FileOperationError(message + "Error: " + str(e)) from e
+                raise azclierror.FileOperationError(f"{message}Error: {str(e)}") from e
 
 
 def create_directory(file_path, error_message):
+    """Create a directory with error handling."""
     try:
         os.makedirs(file_path)
     except Exception as e:
-        raise azclierror.FileOperationError(error_message + "Error: " + str(e)) from e
+        raise azclierror.FileOperationError(f"{error_message}Error: {str(e)}") from e
 
 
 def write_to_file(file_path, mode, content, error_message, encoding=None):
+    """Write content to a file with error handling."""
     try:
-        if encoding:
-            with open(file_path, mode, encoding=encoding) as f:
-                f.write(content)
-        else:
-            with open(file_path, mode) as f:
-                f.write(content)
+        with open(file_path, mode, encoding=encoding) as f:
+            f.write(content)
     except Exception as e:
-        raise azclierror.FileOperationError(error_message + "Error: " + str(e)) from e
+        raise azclierror.FileOperationError(f"{error_message}Error: {str(e)}") from e
 
 
 def get_line_that_contains(substring, lines):
-    for line in lines:
-        if substring in line:
-            return line
-    return None
+    """Find the first line containing the substring."""
+    return next((line for line in lines if substring in line), None)
 
 
 def remove_invalid_characters_foldername(folder_name):
-    new_foldername = ""
-    for c in folder_name:
-        if c not in const.WINDOWS_INVALID_FOLDERNAME_CHARS:
-            new_foldername += c
-    return new_foldername
+    """Remove invalid characters from folder name for Windows compatibility."""
+    return ''.join(c for c in folder_name if c not in const.WINDOWS_INVALID_FOLDERNAME_CHARS)
 
 
 def check_or_create_public_private_files(public_key_file, private_key_file, credentials_folder, ssh_client_folder=None):
@@ -133,28 +128,27 @@ def check_or_create_public_private_files(public_key_file, private_key_file, cred
 
 def get_and_write_certificate(cmd, public_key_file, cert_file, ssh_client_folder):
     """Generate and write an SSH certificate using Azure AD authentication."""
-    cloudtoscope = {
+    cloud_scopes = {
         "azurecloud": "https://pas.windows.net/CheckMyAccess/Linux/.default",
         "azurechinacloud": "https://pas.chinacloudapi.cn/CheckMyAccess/Linux/.default",
         "azureusgovernment": "https://pasff.usgovcloudapi.net/CheckMyAccess/Linux/.default"
     }
-    scope = cloudtoscope.get(cmd.cli_ctx.cloud.name.lower(), None)
+
+    scope = cloud_scopes.get(cmd.cli_ctx.cloud.name.lower())
     if not scope:
         raise azclierror.InvalidArgumentValueError(
             f"Unsupported cloud {cmd.cli_ctx.cloud.name.lower()}",
             "Supported clouds include azurecloud,azurechinacloud,azureusgovernment")
 
-    scopes = [scope]
     data = _prepare_jwk_data(public_key_file)
     profile = Profile(cli_ctx=cmd.cli_ctx)
-
     t0 = time.time()
 
     if hasattr(profile, "get_msal_token"):
-        _, certificate = profile.get_msal_token(scopes, data)
+        _, certificate = profile.get_msal_token([scope], data)
     else:
         credential, _, _ = profile.get_login_credentials(subscription_id=profile.get_subscription()["id"])
-        certificatedata = credential.get_token(*scopes, data=data)
+        certificatedata = credential.get_token(scope, data=data)
         certificate = certificatedata.token
 
     time_elapsed = time.time() - t0
@@ -164,11 +158,8 @@ def get_and_write_certificate(cmd, public_key_file, cert_file, ssh_client_folder
         cert_file = str(public_key_file) + "-aadcert.pub"
 
     logger.debug("Generating certificate %s", cert_file)
-
     _write_cert_file(certificate, cert_file)
-
     username = sftp_utils.get_ssh_cert_principals(cert_file, ssh_client_folder)[0]
-
     oschmod.set_mode(cert_file, 0o600)
 
     return cert_file, username.lower()
@@ -181,19 +172,14 @@ def _prepare_jwk_data(public_key_file):
     key_hash.update(modulus.encode('utf-8'))
     key_hash.update(exponent.encode('utf-8'))
     key_id = key_hash.hexdigest()
-    jwk = {
-        "kty": "RSA",
-        "n": modulus,
-        "e": exponent,
-        "kid": key_id
-    }
-    json_jwk = json.dumps(jwk)
-    data = {
+
+    jwk = {"kty": "RSA", "n": modulus, "e": exponent, "kid": key_id}
+
+    return {
         "token_type": "ssh-cert",
-        "req_cnf": json_jwk,
+        "req_cnf": json.dumps(jwk),
         "key_id": key_id
     }
-    return data
 
 
 def _write_cert_file(certificate_contents, cert_file):

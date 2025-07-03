@@ -8,7 +8,7 @@ import struct
 
 
 # pylint: disable=too-few-public-methods
-class RSAParser():
+class RSAParser:
     RSAAlgorithm = 'ssh-rsa'
 
     def __init__(self):
@@ -19,27 +19,22 @@ class RSAParser():
 
     def parse(self, public_key_text):
         text_parts = public_key_text.split(' ')
-
         if len(text_parts) < 2:
-            error_str = ("Incorrectly formatted public key. "
-                         "Key must be format '<algorithm> <base64_key>'")
-            raise ValueError(error_str)
+            raise ValueError("Incorrectly formatted public key. "
+                             "Key must be format '<algorithm> <base64_key>'")
 
         algorithm = text_parts[0]
-        if algorithm != RSAParser.RSAAlgorithm:
+        if algorithm != self.RSAAlgorithm:
             raise ValueError(f"Public key is not ssh-rsa algorithm ({algorithm})")
 
-        b64_string = text_parts[1]
-        key_bytes = base64.b64decode(b64_string)
+        key_bytes = base64.b64decode(text_parts[1])
         fields = list(self._get_fields(key_bytes))
-
         if len(fields) < 3:
-            error_str = ("Incorrectly encoded public key. "
-                         "Encoded key must be base64 encoded <algorithm><exponent><modulus>")
-            raise ValueError(error_str)
+            raise ValueError("Incorrectly encoded public key. "
+                             "Encoded key must be base64 encoded <algorithm><exponent><modulus>")
 
         encoded_algorithm = fields[0].decode("ascii")
-        if encoded_algorithm != RSAParser.RSAAlgorithm:
+        if encoded_algorithm != self.RSAAlgorithm:
             raise ValueError(f"Encoded public key is not ssh-rsa algorithm ({encoded_algorithm})")
 
         self.algorithm = encoded_algorithm
@@ -56,5 +51,4 @@ class RSAParser():
             yield data
 
     def _get_struct_format(self):
-        format_start = ">" if self._key_length_big_endian else "<"
-        return format_start + "L"
+        return ">" + "L" if self._key_length_big_endian else "<L"

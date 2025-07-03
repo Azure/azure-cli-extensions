@@ -4,20 +4,14 @@
 # --------------------------------------------------------------------------------------------
 
 import os
-import hashlib
-import json
 import tempfile
-import time
 import shutil
-import oschmod
 
 from knack import log
 from azure.cli.core import azclierror
-from azure.cli.core import telemetry
 from azure.cli.core.style import Style, print_styled_text
 from azure.cli.core._profile import Profile
 
-from . import rsa_parser
 from . import sftp_info
 from . import sftp_utils
 from . import file_utils
@@ -185,122 +179,29 @@ def sftp_connect(cmd, storage_account, port=None, cert_file=None, private_key_fi
 
 def _check_or_create_public_private_files(public_key_file, private_key_file, credentials_folder,
                                           ssh_client_folder=None):
-    delete_keys = False
-    if not public_key_file and not private_key_file:
-        delete_keys = True
-        if not credentials_folder:
-            credentials_folder = tempfile.mkdtemp(prefix="aadsshcert")
-        else:
-            if not os.path.isdir(credentials_folder):
-                os.makedirs(credentials_folder)
-        public_key_file = os.path.join(credentials_folder, "id_rsa.pub")
-        private_key_file = os.path.join(credentials_folder, "id_rsa")
-        sftp_utils.create_ssh_keyfile(private_key_file, ssh_client_folder)
-
-    if not public_key_file:
-        if private_key_file:
-            public_key_file = str(private_key_file) + ".pub"
-        else:
-            raise azclierror.RequiredArgumentMissingError("Public key file not specified")
-
-    if not os.path.isfile(public_key_file):
-        raise azclierror.FileOperationError(f"Public key file {public_key_file} not found")
-
-    if private_key_file:
-        if not os.path.isfile(private_key_file):
-            raise azclierror.FileOperationError(f"Private key file {private_key_file} not found")
-
-    if not private_key_file:
-        if public_key_file.endswith(".pub"):
-            private_key_file = public_key_file[:-4] if os.path.isfile(public_key_file[:-4]) else None
-
-    return public_key_file, private_key_file, delete_keys
+    """Check for existing key files or create new ones if needed."""
+    return file_utils.check_or_create_public_private_files(
+        public_key_file, private_key_file, credentials_folder, ssh_client_folder)
 
 
 def _get_and_write_certificate(cmd, public_key_file, cert_file, ssh_client_folder):
-    cloudtoscope = {
-        "azurecloud": "https://pas.windows.net/CheckMyAccess/Linux/.default",
-        "azurechinacloud": "https://pas.chinacloudapi.cn/CheckMyAccess/Linux/.default",
-        "azureusgovernment": "https://pasff.usgovcloudapi.net/CheckMyAccess/Linux/.default"
-    }
-    scope = cloudtoscope.get(cmd.cli_ctx.cloud.name.lower(), None)
-    if not scope:
-        raise azclierror.InvalidArgumentValueError(
-            f"Unsupported cloud {cmd.cli_ctx.cloud.name.lower()}",
-            "Supported clouds include azurecloud,azurechinacloud,azureusgovernment")
-
-    scopes = [scope]
-    data = _prepare_jwk_data(public_key_file)
-    profile = Profile(cli_ctx=cmd.cli_ctx)
-
-    t0 = time.time()
-    if hasattr(profile, "get_msal_token"):
-        _, certificate = profile.get_msal_token(scopes, data)
-    else:
-        credential, _, _ = profile.get_login_credentials(subscription_id=profile.get_subscription()["id"])
-        certificatedata = credential.get_token(*scopes, data=data)
-        certificate = certificatedata.token
-
-    time_elapsed = time.time() - t0
-    telemetry.add_extension_event('sftp',
-                                  {'Context.Default.AzureCLI.SftpGetCertificateTime': time_elapsed})
-
-    if not cert_file:
-        base_name = os.path.splitext(str(public_key_file))[0]
-        cert_file = base_name + "-aadcert.pub"
-
-    logger.debug("Generating certificate %s", cert_file)
-    _write_cert_file(certificate, cert_file)
-    username = sftp_utils.get_ssh_cert_principals(cert_file, ssh_client_folder)[0]
-    oschmod.set_mode(cert_file, 0o600)
-
-    return cert_file, username.lower()
+    """Generate and write an SSH certificate using Azure AD authentication."""
+    return file_utils.get_and_write_certificate(cmd, public_key_file, cert_file, ssh_client_folder)
 
 
 def _prepare_jwk_data(public_key_file):
-    modulus, exponent = _get_modulus_exponent(public_key_file)
-    key_hash = hashlib.sha256()
-    key_hash.update(modulus.encode('utf-8'))
-    key_hash.update(exponent.encode('utf-8'))
-    key_id = key_hash.hexdigest()
-    jwk = {
-        "kty": "RSA",
-        "n": modulus,
-        "e": exponent,
-        "kid": key_id
-    }
-    json_jwk = json.dumps(jwk)
-    data = {
-        "token_type": "ssh-cert",
-        "req_cnf": json_jwk,
-        "key_id": key_id
-    }
-    return data
+    """Prepare JWK data for certificate request."""
+    return file_utils._prepare_jwk_data(public_key_file)  # pylint: disable=protected-access
 
 
 def _write_cert_file(certificate_contents, cert_file):
-    with open(cert_file, 'w', encoding='utf-8') as f:
-        f.write(f"ssh-rsa-cert-v01@openssh.com {certificate_contents}")
-    oschmod.set_mode(cert_file, 0o644)
-    return cert_file
+    """Write SSH certificate to file."""
+    return file_utils._write_cert_file(certificate_contents, cert_file)  # pylint: disable=protected-access
 
 
 def _get_modulus_exponent(public_key_file):
-    if not os.path.isfile(public_key_file):
-        raise azclierror.FileOperationError(f"Public key file '{public_key_file}' was not found")
-
-    with open(public_key_file, 'r', encoding='utf-8') as f:
-        public_key_text = f.read()
-
-    parser = rsa_parser.RSAParser()
-    try:
-        parser.parse(public_key_text)
-    except Exception as e:
-        raise azclierror.FileOperationError(f"Could not parse public key. Error: {str(e)}")
-    modulus = parser.modulus
-    exponent = parser.exponent
-
-    return modulus, exponent
+    """Extract modulus and exponent from RSA public key file."""
+    return file_utils._get_modulus_exponent(public_key_file)  # pylint: disable=protected-access
 
 
 def _assert_args(storage_account, cert_file, public_key_file, private_key_file):
@@ -308,20 +209,18 @@ def _assert_args(storage_account, cert_file, public_key_file, private_key_file):
     if not storage_account:
         raise azclierror.RequiredArgumentMissingError("Storage account name is required.")
 
-    if cert_file:
-        expanded_cert_file = os.path.expanduser(cert_file)
-        if not os.path.isfile(expanded_cert_file):
-            raise azclierror.FileOperationError(f"Certificate file {cert_file} not found.")
+    # Check file existence for provided files
+    files_to_check = [
+        (cert_file, "Certificate"),
+        (public_key_file, "Public key"),
+        (private_key_file, "Private key")
+    ]
 
-    if public_key_file:
-        expanded_public_key_file = os.path.expanduser(public_key_file)
-        if not os.path.isfile(expanded_public_key_file):
-            raise azclierror.FileOperationError(f"Public key file {public_key_file} not found.")
-
-    if private_key_file:
-        expanded_private_key_file = os.path.expanduser(private_key_file)
-        if not os.path.isfile(expanded_private_key_file):
-            raise azclierror.FileOperationError(f"Private key file {private_key_file} not found.")
+    for file_path, file_type in files_to_check:
+        if file_path:
+            expanded_path = os.path.expanduser(file_path)
+            if not os.path.isfile(expanded_path):
+                raise azclierror.FileOperationError(f"{file_type} file {file_path} not found.")
 
 
 def _do_sftp_op(sftp_session, op_call):
@@ -337,12 +236,9 @@ def _cleanup_credentials(delete_keys, delete_cert, credentials_folder, cert_file
             file_utils.delete_file(cert_file, f"Deleting generated certificate {cert_file}", warning=False)
 
         if delete_keys:
-            if private_key_file and os.path.isfile(private_key_file):
-                file_utils.delete_file(private_key_file,
-                                       f"Deleting generated private key {private_key_file}", warning=False)
-            if public_key_file and os.path.isfile(public_key_file):
-                file_utils.delete_file(public_key_file,
-                                       f"Deleting generated public key {public_key_file}", warning=False)
+            for key_file, key_type in [(private_key_file, "private"), (public_key_file, "public")]:
+                if key_file and os.path.isfile(key_file):
+                    file_utils.delete_file(key_file, f"Deleting generated {key_type} key {key_file}", warning=False)
 
         if credentials_folder and os.path.isdir(credentials_folder):
             logger.debug("Deleting credentials folder %s", credentials_folder)
@@ -354,9 +250,9 @@ def _cleanup_credentials(delete_keys, delete_cert, credentials_folder, cert_file
 
 def _get_storage_endpoint_suffix(cmd):
     """Get the appropriate storage endpoint suffix based on Azure cloud environment."""
-    cloud_to_storage_suffix = {
+    cloud_suffixes = {
         "azurecloud": "blob.core.windows.net",
         "azurechinacloud": "blob.core.chinacloudapi.cn",
         "azureusgovernment": "blob.core.usgovcloudapi.net"
     }
-    return cloud_to_storage_suffix.get(cmd.cli_ctx.cloud.name.lower(), "blob.core.windows.net")
+    return cloud_suffixes.get(cmd.cli_ctx.cloud.name.lower(), "blob.core.windows.net")

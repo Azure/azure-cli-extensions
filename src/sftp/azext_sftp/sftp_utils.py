@@ -134,6 +134,7 @@ def start_sftp_connection(op_info):
 
 
 def create_ssh_keyfile(private_key_file, ssh_client_folder=None):
+    """Create an SSH key file using ssh-keygen."""
     sshkeygen_path = get_ssh_client_path("ssh-keygen", ssh_client_folder)
     command = [sshkeygen_path, "-f", private_key_file, "-t", "rsa", "-q", "-N", ""]
     logger.debug("Running ssh-keygen command %s", ' '.join(command))
@@ -146,6 +147,7 @@ def create_ssh_keyfile(private_key_file, ssh_client_folder=None):
 
 
 def get_ssh_cert_principals(cert_file, ssh_client_folder=None):
+    """Extract principals from SSH certificate."""
     info = get_ssh_cert_info(cert_file, ssh_client_folder)
     principals = []
     in_principal = False
@@ -157,11 +159,11 @@ def get_ssh_cert_principals(cert_file, ssh_client_folder=None):
             continue
         if in_principal:
             principals.append(line.strip())
-
     return principals
 
 
 def get_ssh_cert_info(cert_file, ssh_client_folder=None):
+    """Get SSH certificate information using ssh-keygen."""
     sshkeygen_path = get_ssh_client_path("ssh-keygen", ssh_client_folder)
     command = [sshkeygen_path, "-L", "-f", cert_file]
     logger.debug("Running ssh-keygen command %s", ' '.join(command))
@@ -174,54 +176,46 @@ def get_ssh_cert_info(cert_file, ssh_client_folder=None):
 
 
 def get_ssh_client_path(ssh_command="ssh", ssh_client_folder=None):
+    """Get the path to an SSH client executable."""
     if ssh_client_folder:
         ssh_path = os.path.join(ssh_client_folder, ssh_command)
         if platform.system() == 'Windows':
-            ssh_path = ssh_path + '.exe'
+            ssh_path += '.exe'
         if os.path.isfile(ssh_path):
             logger.debug("Attempting to run %s from path %s", ssh_command, ssh_path)
             return ssh_path
         logger.warning("Could not find %s in provided --ssh-client-folder %s. "
                        "Attempting to get pre-installed OpenSSH bits.", ssh_command, ssh_client_folder)
 
-    ssh_path = ssh_command
+    if platform.system() != 'Windows':
+        return ssh_command
 
-    if platform.system() == 'Windows':
-        # If OS architecture is 64bit and python architecture is 32bit,
-        # look for System32 under SysNative folder.
-        machine = platform.machine()
-        os_architecture = None
-        platform_architecture = platform.architecture()[0]
-        sys_path = None
-
-        if machine.endswith('64'):
-            os_architecture = '64bit'
-        elif machine.endswith('86'):
-            os_architecture = '32bit'
-        elif machine == '':
+    # Windows-specific logic
+    machine = platform.machine()
+    if not machine.endswith(('64', '86')):
+        if machine == '':
             raise azclierror.BadRequestError("Couldn't identify the OS architecture.")
-        else:
-            raise azclierror.BadRequestError(f"Unsuported OS architecture: {machine} is not currently supported")
+        raise azclierror.BadRequestError(f"Unsupported OS architecture: {machine} is not currently supported")
 
-        if os_architecture == "64bit":
-            sys_path = 'SysNative' if platform_architecture == '32bit' else 'System32'
-        else:
-            sys_path = 'System32'
+    # Determine system path
+    is_64bit = machine.endswith('64')
+    is_32bit_python = platform.architecture()[0] == '32bit'
+    sys_path = 'SysNative' if is_64bit and is_32bit_python else 'System32'
 
-        system_root = os.environ['SystemRoot']
-        system32_path = os.path.join(system_root, sys_path)
-        ssh_path = os.path.join(system32_path, "openSSH", (ssh_command + ".exe"))
-        logger.debug("Platform architecture: %s", platform_architecture)
-        logger.debug("OS architecture: %s", os_architecture)
-        logger.debug("System Root: %s", system_root)
-        logger.debug("Attempting to run %s from path %s", ssh_command, ssh_path)
+    system_root = os.environ['SystemRoot']
+    ssh_path = os.path.join(system_root, sys_path, "openSSH", f"{ssh_command}.exe")
 
-        if not os.path.isfile(ssh_path):
-            raise azclierror.UnclassifiedUserFault(
-                "Could not find " + ssh_command + ".exe on path " + ssh_path + ". ",
-                colorama.Fore.YELLOW + "Make sure OpenSSH is installed correctly: "
-                "https://docs.microsoft.com/en-us/windows-server/administration/openssh/openssh_install_firstuse . "
-                "Or use --ssh-client-folder to provide folder path with ssh executables. " + colorama.Style.RESET_ALL)
+    logger.debug("Platform architecture: %s", platform.architecture()[0])
+    logger.debug("OS architecture: %s", '64bit' if is_64bit else '32bit')
+    logger.debug("System Root: %s", system_root)
+    logger.debug("Attempting to run %s from path %s", ssh_command, ssh_path)
+
+    if not os.path.isfile(ssh_path):
+        raise azclierror.UnclassifiedUserFault(
+            f"Could not find {ssh_command}.exe on path {ssh_path}. ",
+            colorama.Fore.YELLOW + "Make sure OpenSSH is installed correctly: "
+            "https://docs.microsoft.com/en-us/windows-server/administration/openssh/openssh_install_firstuse . "
+            "Or use --ssh-client-folder to provide folder path with ssh executables. " + colorama.Style.RESET_ALL)
 
     return ssh_path
 

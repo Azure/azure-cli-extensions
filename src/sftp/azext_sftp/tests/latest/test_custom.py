@@ -929,7 +929,7 @@ class SftpCustomCommandTest(unittest.TestCase):
 
     def test_prepare_jwk_data_structure(self):
         """Test _prepare_jwk_data creates correct JWK structure."""
-        with mock.patch('azext_sftp.custom._get_modulus_exponent') as mock_get_mod_exp:
+        with mock.patch('azext_sftp.file_utils._get_modulus_exponent') as mock_get_mod_exp:
             mock_get_mod_exp.return_value = ("test_modulus", "test_exponent")
             
             result = custom._prepare_jwk_data(self.mock_public_key)

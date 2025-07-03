@@ -12,18 +12,15 @@ logger = log.get_logger(__name__)
 
 
 def format_relay_info_string(relay_info):
-    relay_info_string = json.dumps(
-        {
-            "relay": {
-                "namespaceName": relay_info['namespaceName'],
-                "namespaceNameSuffix": relay_info['namespaceNameSuffix'],
-                "hybridConnectionName": relay_info['hybridConnectionName'],
-                "accessKey": relay_info['accessKey'],
-                "expiresOn": relay_info['expiresOn'],
-                "serviceConfigurationToken": relay_info['serviceConfigurationToken']
-            }
-        })
-    result_bytes = relay_info_string.encode("ascii")
-    enc = base64.b64encode(result_bytes)
-    base64_result_string = enc.decode("ascii")
-    return base64_result_string
+    """Format relay information as base64-encoded JSON string."""
+    relay_data = {
+        "relay": {
+            "namespaceName": relay_info['namespaceName'],
+            "namespaceNameSuffix": relay_info['namespaceNameSuffix'],
+            "hybridConnectionName": relay_info['hybridConnectionName'],
+            "accessKey": relay_info['accessKey'],
+            "expiresOn": relay_info['expiresOn'],
+            "serviceConfigurationToken": relay_info['serviceConfigurationToken']
+        }
+    }
+    return base64.b64encode(json.dumps(relay_data).encode("ascii")).decode("ascii")

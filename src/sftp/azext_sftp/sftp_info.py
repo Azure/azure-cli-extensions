@@ -53,7 +53,7 @@ class RuntimeState:
         self.local_user = None
 
 
-class SFTPSession():
+class SFTPSession:
     """Class to hold SFTP session information and connection details."""
 
     def __init__(self, storage_account, username=None, host=None, port=None,
@@ -66,200 +66,168 @@ class SFTPSession():
                                            credentials_folder, yes_without_prompt)
         self.runtime = RuntimeState()
 
+    # Connection properties
     @property
     def storage_account(self):
-        """Get storage account name."""
         return self.connection.storage_account
 
     @storage_account.setter
     def storage_account(self, value):
-        """Set storage account name."""
         self.connection.storage_account = value
 
     @property
     def username(self):
-        """Get username."""
         return self.connection.username
 
     @username.setter
     def username(self, value):
-        """Set username."""
         self.connection.username = value
 
     @property
     def host(self):
-        """Get host."""
         return self.connection.host
 
     @host.setter
     def host(self, value):
-        """Set host."""
         self.connection.host = value
 
     @property
     def port(self):
-        """Get port."""
         return self.connection.port
 
     @port.setter
     def port(self, value):
-        """Set port."""
         self.connection.port = value
 
+    # Authentication file properties
     @property
     def public_key_file(self):
-        """Get public key file path."""
         return self.auth_files.public_key_file
 
     @public_key_file.setter
     def public_key_file(self, value):
-        """Set public key file path."""
         self.auth_files.public_key_file = os.path.abspath(value) if value else None
 
     @property
     def private_key_file(self):
-        """Get private key file path."""
         return self.auth_files.private_key_file
 
     @private_key_file.setter
     def private_key_file(self, value):
-        """Set private key file path."""
         self.auth_files.private_key_file = os.path.abspath(value) if value else None
 
     @property
     def cert_file(self):
-        """Get certificate file path."""
         return self.auth_files.cert_file
 
     @cert_file.setter
     def cert_file(self, value):
-        """Set certificate file path."""
         self.auth_files.cert_file = os.path.abspath(value) if value else None
 
+    # Configuration properties
     @property
     def sftp_args(self):
-        """Get SFTP arguments."""
         return self.config.sftp_args
 
     @sftp_args.setter
     def sftp_args(self, value):
-        """Set SFTP arguments."""
         self.config.sftp_args = value or []
 
     @property
     def ssh_client_folder(self):
-        """Get SSH client folder path."""
         return self.config.ssh_client_folder
 
     @ssh_client_folder.setter
     def ssh_client_folder(self, value):
-        """Set SSH client folder path."""
         self.config.ssh_client_folder = os.path.abspath(value) if value else None
 
     @property
     def ssh_proxy_folder(self):
-        """Get SSH proxy folder path."""
         return self.config.ssh_proxy_folder
 
     @ssh_proxy_folder.setter
     def ssh_proxy_folder(self, value):
-        """Set SSH proxy folder path."""
         self.config.ssh_proxy_folder = os.path.abspath(value) if value else None
 
     @property
     def credentials_folder(self):
-        """Get credentials folder path."""
         return self.config.credentials_folder
 
     @credentials_folder.setter
     def credentials_folder(self, value):
-        """Set credentials folder path."""
         self.config.credentials_folder = os.path.abspath(value) if value else None
 
     @property
     def yes_without_prompt(self):
-        """Get yes without prompt flag."""
         return self.config.yes_without_prompt
 
     @yes_without_prompt.setter
     def yes_without_prompt(self, value):
-        """Set yes without prompt flag."""
         self.config.yes_without_prompt = value
 
+    # Runtime properties
     @property
     def delete_credentials(self):
-        """Get delete credentials flag."""
         return self.runtime.delete_credentials
 
     @delete_credentials.setter
     def delete_credentials(self, value):
-        """Set delete credentials flag."""
         self.runtime.delete_credentials = value
 
     @property
     def local_user(self):
-        """Get local user."""
         return self.runtime.local_user
 
     @local_user.setter
     def local_user(self, value):
-        """Set local user."""
         self.runtime.local_user = value
 
     def resolve_connection_info(self):
         """Resolve connection information like hostname and username."""
-        if not self.connection.host:
+        if not self.host:
             raise azclierror.ValidationError("Host must be set before calling resolve_connection_info()")
 
-        if self.auth_files.cert_file and self.runtime.local_user:
-            user = self.runtime.local_user
-            if '@' in user:
-                user = user.split('@')[0]
-
-            self.connection.username = f"{self.connection.storage_account}.{user}"
-        elif not self.connection.username:
-            self.connection.username = f"{self.connection.storage_account}.unknown"
+        if self.cert_file and self.local_user:
+            user = self.local_user.split('@')[0] if '@' in self.local_user else self.local_user
+            self.username = f"{self.storage_account}.{user}"
+        elif not self.username:
+            self.username = f"{self.storage_account}.unknown"
 
     def build_args(self):
         """Build SSH/SFTP command line arguments."""
         args = []
-
-        if self.auth_files.private_key_file:
-            args.extend(["-i", self.auth_files.private_key_file])
-        if self.auth_files.cert_file:
-            args.extend(["-o", f"CertificateFile=\"{self.auth_files.cert_file}\""])
-
-        if self.connection.port is not None:
-            args.extend(["-P", str(self.connection.port)])
-
+        if self.private_key_file:
+            args.extend(["-i", self.private_key_file])
+        if self.cert_file:
+            args.extend(["-o", f"CertificateFile=\"{self.cert_file}\""])
+        if self.port is not None:
+            args.extend(["-P", str(self.port)])
         return args
 
     def get_host(self):
         """Get the host for the connection."""
-        if not self.connection.host:
+        if not self.host:
             raise azclierror.ValidationError("Host not set. Call resolve_connection_info() first.")
-        return self.connection.host
+        return self.host
 
     def get_destination(self):
         """Get the destination string for SFTP connection."""
-        return f"{self.connection.username}@{self.get_host()}"
+        return f"{self.username}@{self.get_host()}"
 
     def validate_session(self):
         """Validate session configuration before connecting."""
-        if not self.connection.storage_account:
+        if not self.storage_account:
             raise azclierror.RequiredArgumentMissingError("Storage account name is required.")
-
-        if not self.connection.host:
+        if not self.host:
             raise azclierror.ValidationError("Host information not resolved. Call resolve_connection_info() first.")
-
-        if not self.connection.username:
+        if not self.username:
             raise azclierror.ValidationError("Username not resolved. Call resolve_connection_info() first.")
 
-        if self.auth_files.cert_file and not os.path.isfile(self.auth_files.cert_file):
-            raise azclierror.FileOperationError(f"Certificate file {self.auth_files.cert_file} not found.")
-
-        if self.auth_files.public_key_file and not os.path.isfile(self.auth_files.public_key_file):
-            raise azclierror.FileOperationError(f"Public key file {self.auth_files.public_key_file} not found.")
-
-        if self.auth_files.private_key_file and not os.path.isfile(self.auth_files.private_key_file):
-            raise azclierror.FileOperationError(f"Private key file {self.auth_files.private_key_file} not found.")
+        # Validate file existence
+        for file_attr, file_desc in [
+            (self.cert_file, "Certificate"),
+            (self.public_key_file, "Public key"),
+            (self.private_key_file, "Private key")
+        ]:
+            if file_attr and not os.path.isfile(file_attr):
+                raise azclierror.FileOperationError(f"{file_desc} file {file_attr} not found.")
