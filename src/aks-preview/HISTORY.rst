@@ -12,6 +12,14 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+18.0.0b17
++++++++
+* Remove `__import__('pkg_resources').declare_namespace(__name__)` from `vendored_sdks/__init__.py`` to fix the namespace package issue.
+
+18.0.0b16
++++++++
+* Vendor new SDK and bump API version to 2025-05-02-preview.
+
 18.0.0b15
 +++++++
 * Fixed NPE issue for `--acns-transit-encryption-type`.
