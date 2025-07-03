@@ -190,12 +190,13 @@ class ElasticScenario(ScenarioTest):
     @ResourceGroupPreparer(name_prefix='cli_test_elastic_monitor', location='eastus')
     def test_elastic_monitor_monitored_subscription(self, resource_group):
         email = self.cmd('account show').get_output_in_json()['user']['name']
+        subscription_id = self.get_subscription_id()
         self.kwargs.update({
             'monitor': self.create_random_name('monitor', 20),
             'rg': resource_group,
             'email': email,
-            'subscription_id': 'a81c0054-6c92-41aa-a235-4f9f98f917c6',
-            'subs_id': 'A81C0054-6C92-41AA-A235-4F9F98F917C6',
+            'subscription_id': subscription_id,
+            'subs_id': subscription_id.upper(),
             'updated_status': 'InProgress'
         })
         self.cmd('elastic monitor create '
