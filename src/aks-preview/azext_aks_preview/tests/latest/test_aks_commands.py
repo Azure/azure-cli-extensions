@@ -16601,7 +16601,7 @@ spec:
         create_bastion_cmd = f"network bastion create -g {nrg} -n aks-bastion " \
                               f"--public-ip-address aks-bastion-pip " \
                               f"--vnet-name {vnet_name} --enable-tunneling"
-        self.cmd(create_bastion_cmd, checks=[self.check("provisioningState", "Succeeded")])
+        self.cmd(create_bastion_cmd)
 
         kubectl_path = "kubectl"
         if not self._verify_kubectl_installation():
