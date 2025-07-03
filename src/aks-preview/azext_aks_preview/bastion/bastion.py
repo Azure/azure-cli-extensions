@@ -246,8 +246,6 @@ async def _aks_bastion_launch_subshell(kubeconfig_path, port):
         # attempt to terminate the subshell process gracefully
         if subshell_process is not None:
             logger.info("Subshell was cancelled. Terminating...")
-            if subshell_process.stdin:
-                subshell_process.stdin.close()
             subshell_process.terminate()
             try:
                 await asyncio.wait_for(subshell_process.wait(), timeout=5)
@@ -269,33 +267,28 @@ async def _aks_bastion_launch_tunnel(nrg, bastion, port, mc_id):
 
     tunnel_proces = None
     try:
+        az_cmd_name = _aks_bastion_get_az_cmd_name()
         cmd = (
-            f"az network bastion tunnel --resource-group {nrg} "
+            f"{az_cmd_name} network bastion tunnel --resource-group {nrg} "
             f"--name {bastion} --port {port} --target-resource-id {mc_id} --resource-port 443"
         )
         logger.debug("Creating bastion tunnel with command: %s", cmd)
-        tunnel_proces = await asyncio.create_subprocess_shell(
-            cmd,
+        tunnel_proces = await asyncio.create_subprocess_exec(
+            *(cmd.split()),
             stdin=asyncio.subprocess.DEVNULL,
-            stdout=asyncio.subprocess.PIPE,
-            stderr=asyncio.subprocess.PIPE,
-            shell=True,
+            stdout=asyncio.subprocess.DEVNULL,
+            stderr=asyncio.subprocess.DEVNULL,
+            shell=False,
         )
         logger.info("Tunnel launched with PID: %s", tunnel_proces.pid)
 
         # tunnel process must not exit unless it encounters a failure or is deliberately shut down
-        stdout, stderr = await tunnel_proces.communicate()
+        await tunnel_proces.wait()
         logger.error("Bastion tunnel exited with code %s", tunnel_proces.returncode)
-        if stdout:
-            logger.warning("Tunnel process stdout: %s", stdout.decode("utf-8"))
-        if stderr:
-            logger.error("Tunnel process stderr: %s", stderr.decode("utf-8"))
     except asyncio.CancelledError:
         # attempt to terminate the tunnel process gracefully
         if tunnel_proces is not None:
             logger.info("Tunnel process was cancelled. Terminating...")
-            if tunnel_proces.stdin:
-                tunnel_proces.stdin.close()
             tunnel_proces.terminate()
             try:
                 await asyncio.wait_for(tunnel_proces.wait(), timeout=5)
