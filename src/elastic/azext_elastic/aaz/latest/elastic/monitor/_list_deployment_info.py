@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "elastic monitor list-deployment-info",
 )
 class ListDeploymentInfo(AAZCommand):
-    """Fetch information regarding Elastic cloud deployment corresponding to                                the Elastic monitor resource.
+    """Fetch detailed information about Elastic cloud deployments corresponding to the Elastic monitor resource.
 
     :example: List deployment info
         az elastic monitor list-deployment-info --monitor-name name -g rg

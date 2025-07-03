@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "elastic monitor create",
 )
 class Create(AAZCommand):
-    """Create a monitor resource.
+    """Create a new Elastic monitor resource in your Azure subscription, enabling observability and monitoring of your Azure resources through Elastic.
 
     :example: Create monitor
         az elastic monitor create -n monitor-name -g rg --user-info "{firstName:Alice,lastName:bob,companyName:Micosoft,emailAddress:alice@microsoft.com}" --sku "{name:ess-consumption-2024_Monthly}"

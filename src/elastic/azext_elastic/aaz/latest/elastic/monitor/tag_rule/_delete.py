@@ -16,7 +16,7 @@ from azure.cli.core.aaz import *
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
-    """Delete a tag rule set for a given monitor resource.
+    """Delete a tag rule set for a given Elastic monitor resource, removing fine-grained control over observability based on resource tags.
 
     :example: Delete tag rule
         az elastic monitor tag-rule delete --monitor-name name -n name -g rg

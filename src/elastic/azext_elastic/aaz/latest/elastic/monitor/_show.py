@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "elastic monitor show",
 )
 class Show(AAZCommand):
-    """Get the properties of a specific monitor resource.
+    """Get detailed properties of a specific Elastic monitor resource, helping you manage observability and performance.
 
     :example: Show monitor
         az elastic monitor show -n name -g rg

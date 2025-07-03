@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "elastic monitor open-ai-integration",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage open-ai Integration with elastic
+    """Manage OpenAI integration with Elastic, enabling advanced AI-driven observability and monitoring.
     """
     pass
 

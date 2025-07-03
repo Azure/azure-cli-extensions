@@ -16,7 +16,7 @@ from azure.cli.core.aaz import *
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
-    """Delete OpenAI integration rule for a given monitor resource.
+    """Delete an OpenAI integration rule for a given Elastic monitor resource, removing AI-driven observability and monitoring capabilities.
 
     :example: OpenAI_Delete
         az elastic monitor open-ai-integration delete --resource-group myResourceGroup --monitor-name myMonitor --integration-name default

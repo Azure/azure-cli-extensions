@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "elastic monitor vm-ingestion-detail",
 )
 class VmIngestionDetail(AAZCommand):
-    """List the vm ingestion details that will be monitored by the Elastic                                monitor resource.
+    """List detailed information about VM ingestion that will be monitored by the Elastic monitor resource, ensuring optimal observability and performance.
 
     :example: Vm ingestion detail
         az elastic monitor vm-ingestion-detail --monitor-name name -g rg

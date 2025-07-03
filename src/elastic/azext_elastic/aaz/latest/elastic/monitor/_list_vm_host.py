@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "elastic monitor list-vm-host",
 )
 class ListVmHost(AAZCommand):
-    """List the vm resources currently being monitored by the Elastic                                monitor resource.
+    """List all VM resources currently being monitored by the Elastic monitor resource, helping you manage observability.
 
     :example: List vm host
         az elastic monitor list-vm-host --monitor-name name -g rg

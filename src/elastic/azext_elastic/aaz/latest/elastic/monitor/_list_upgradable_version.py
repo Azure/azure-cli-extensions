@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "elastic monitor list-upgradable-version",
 )
 class ListUpgradableVersion(AAZCommand):
-    """List upgradable version
+    """List all upgradable versions for your Elastic monitor resource, helping you plan and execute upgrades.
 
     :example: List upgradable version
         az elastic monitor list-upgradable-version --monitor-name name -g rg
