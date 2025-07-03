@@ -9,7 +9,6 @@ import os
 import socket
 import subprocess
 import sys
-import time
 from urllib.parse import urlparse
 
 import psutil
