@@ -24,7 +24,7 @@ def sftp_cert(cmd, cert_path=None, public_key_file=None, ssh_client_folder=None)
     logger.debug("Starting SFTP certificate generation")
 
     if not cert_path and not public_key_file:
-        raise azclierror.RequiredArgumentMissingError("--file or --public-key-file must be provided.")
+        raise azclierror.RequiredArgumentMissingError("--output-file or --public-key-file must be provided.")
 
     if cert_path:
         cert_path = os.path.expanduser(cert_path)

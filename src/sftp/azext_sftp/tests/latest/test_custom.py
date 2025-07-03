@@ -713,7 +713,7 @@ class SftpCustomCommandTest(unittest.TestCase):
         """Test sftp cert error handling with invalid argument combinations."""
         # Test cases: (cert_path, public_key_file, setup_mocks, expected_exception, expected_message, description)
         test_cases = [
-            (None, None, {}, azclierror.RequiredArgumentMissingError, "--file or --public-key-file must be provided", "no_arguments"),
+            (None, None, {}, azclierror.RequiredArgumentMissingError, "--output-file or --public-key-file must be provided", "no_arguments"),
             ("/bad/cert.pub", None, {"expanduser_return": "/bad/cert.pub", "isdir_return": False}, azclierror.InvalidArgumentValueError, "folder doesn't exist", "invalid_directory"),
         ]
         

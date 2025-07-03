@@ -44,7 +44,7 @@ with open('HISTORY.rst', 'r', encoding='utf-8') as f:
 setup(
     name='sftp',
     version=VERSION,
-    description='Secure connections to Azure Storage via SFTP with SSH certificates.',
+    description='Secure access to Azure Storage blob data via SFTP with SSH certificates.',
     author='Microsoft Corporation',
     author_email='azpycli@microsoft.com',
     # TODO: change to your extension source code repo if the code will not be put in azure-cli-extensions repo

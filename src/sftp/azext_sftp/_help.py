@@ -9,7 +9,7 @@ from knack.help_files import helps  # pylint: disable=unused-import
 
 helps['sftp'] = """
     type: group
-    short-summary: Commands to connect to Azure Storage Accounts via SFTP
+    short-summary: Generate SSH certificates and access Azure Storage blob data via SFTP
     long-summary: |
         These commands allow you to generate certificates and connect to Azure Storage Accounts using SFTP.
 
@@ -46,16 +46,16 @@ helps['sftp cert'] = """
         The certificate can be used with 'az sftp connect' or with standard SFTP clients.
     examples:
         - name: Generate a certificate using an existing public key
-          text: az sftp cert --public-key-file ~/.ssh/id_rsa.pub --file ~/my_cert.pub
+          text: az sftp cert --public-key-file ~/.ssh/id_rsa.pub --output-file ~/my_cert.pub
         - name: Generate a certificate and create a new key pair in the same directory
-          text: az sftp cert --file ~/my_cert.pub
+          text: az sftp cert --output-file ~/my_cert.pub
         - name: Generate a certificate with custom SSH client folder
-          text: az sftp cert --file ~/my_cert.pub --ssh-client-folder "C:\\Program Files\\OpenSSH"
+          text: az sftp cert --output-file ~/my_cert.pub --ssh-client-folder "C:\\Program Files\\OpenSSH"
 """
 
 helps['sftp connect'] = """
     type: command
-    short-summary: Connect to Azure Storage Account via SFTP
+    short-summary: Access Azure Storage blob data via SFTP
     long-summary: |
         Establish an SFTP connection to an Azure Storage Account.
 
