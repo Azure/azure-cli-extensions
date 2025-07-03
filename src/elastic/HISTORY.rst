@@ -3,7 +3,7 @@
 Release History
 ===============
 
-1.1.0b4
+1.0.0b4
 ++++++
 * Update the CLI command documentation
 
