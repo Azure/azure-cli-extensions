@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "mongo-db atlas organization create",
-    is_preview=True,
 )
 class Create(AAZCommand):
     """Create an Azure resource that provisions a corresponding MongoDB Atlas organization
@@ -23,9 +22,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-11-18-preview",
+        "version": "2025-06-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/mongodb.atlas/organizations/{}", "2024-11-18-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/mongodb.atlas/organizations/{}", "2025-06-01"],
         ]
     }
 
@@ -62,6 +61,23 @@ class Create(AAZCommand):
         )
 
         # define Arg Group "Identity"
+
+        _args_schema = cls._args_schema
+        _args_schema.mi_system_assigned = AAZStrArg(
+            options=["--system-assigned", "--mi-system-assigned"],
+            arg_group="Identity",
+            help="Set the system managed identity",
+            blank="True",
+        )
+        _args_schema.mi_user_assigned = AAZListArg(
+            options=["--user-assigned", "--mi-user-assigned"],
+            arg_group="Identity",
+            help="Set the user managed identities",
+            blank=[],
+        )
+
+        mi_user_assigned = cls._args_schema.mi_user_assigned
+        mi_user_assigned.Element = AAZStrArg()
 
         # define Arg Group "Properties"
 
@@ -113,17 +129,14 @@ class Create(AAZCommand):
             options=["publisher-id"],
             help="Publisher Id for the marketplace offer",
             required=True,
-            default="mongodb",
         )
         offer_details.term_id = AAZStrArg(
             options=["term-id"],
             help="Term id for the marketplace offer",
-            default="gmz7xq9ge3py",
         )
         offer_details.term_unit = AAZStrArg(
             options=["term-unit"],
             help="Term Unit for the marketplace offer",
-            default="P1M",
         )
 
         partner_properties = cls._args_schema.partner_properties
@@ -280,7 +293,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-11-18-preview",
+                    "api-version", "2025-06-01",
                     required=True,
                 ),
             }
@@ -309,6 +322,15 @@ class Create(AAZCommand):
             _builder.set_prop("location", AAZStrType, ".location", typ_kwargs={"flags": {"required": True}})
             _builder.set_prop("properties", AAZObjectType)
             _builder.set_prop("tags", AAZDictType, ".tags")
+
+            identity = _builder.get(".identity")
+            if identity is not None:
+                identity.set_prop("userAssigned", AAZListType, ".mi_user_assigned", typ_kwargs={"flags": {"action": "create"}})
+                identity.set_prop("systemAssigned", AAZStrType, ".mi_system_assigned", typ_kwargs={"flags": {"action": "create"}})
+
+            user_assigned = _builder.get(".identity.userAssigned")
+            if user_assigned is not None:
+                user_assigned.set_elements(AAZStrType, ".")
 
             properties = _builder.get(".properties")
             if properties is not None:

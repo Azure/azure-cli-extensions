@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command_group(
     "mongo-db atlas",
-    is_preview=True,
 )
 class __CMDGroup(AAZCommandGroup):
     """Manage MongoDB Atlas

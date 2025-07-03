@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "mongo-db atlas organization list",
-    is_preview=True,
 )
 class List(AAZCommand):
     """List all Azure resources representing MongoDB Atlas organizations under the current subscription
@@ -23,10 +22,10 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-11-18-preview",
+        "version": "2025-06-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/mongodb.atlas/organizations", "2024-11-18-preview"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/mongodb.atlas/organizations", "2024-11-18-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/mongodb.atlas/organizations", "2025-06-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/mongodb.atlas/organizations", "2025-06-01"],
         ]
     }
 
@@ -115,7 +114,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-11-18-preview",
+                    "api-version", "2025-06-01",
                     required=True,
                 ),
             }
@@ -364,7 +363,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-11-18-preview",
+                    "api-version", "2025-06-01",
                     required=True,
                 ),
             }
