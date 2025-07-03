@@ -83,30 +83,31 @@ class ContainerappEnvPreviewCreateDecorator(ContainerAppEnvCreateDecorator):
             self.managed_env_def["properties"]["infrastructureResourceGroup"] = self.get_argument_infrastructure_resource_group()
 
     def set_up_managed_identity(self):
-        identity_def = ManagedServiceIdentity
-        identity_def["type"] = "None"
+        if self.get_argument_system_assigned() or self.get_argument_user_assigned():
+            identity_def = ManagedServiceIdentity
+            identity_def["type"] = "None"
 
-        assign_system_identity = self.get_argument_system_assigned()
-        if self.get_argument_user_assigned():
-            assign_user_identities = [x.lower() for x in self.get_argument_user_assigned()]
-        else:
-            assign_user_identities = []
+            assign_system_identity = self.get_argument_system_assigned()
+            if self.get_argument_user_assigned():
+                assign_user_identities = [x.lower() for x in self.get_argument_user_assigned()]
+            else:
+                assign_user_identities = []
 
-        if assign_system_identity and assign_user_identities:
-            identity_def["type"] = "SystemAssigned, UserAssigned"
-        elif assign_system_identity:
-            identity_def["type"] = "SystemAssigned"
-        elif assign_user_identities:
-            identity_def["type"] = "UserAssigned"
+            if assign_system_identity and assign_user_identities:
+                identity_def["type"] = "SystemAssigned, UserAssigned"
+            elif assign_system_identity:
+                identity_def["type"] = "SystemAssigned"
+            elif assign_user_identities:
+                identity_def["type"] = "UserAssigned"
 
-        if assign_user_identities:
-            identity_def["userAssignedIdentities"] = {}
-            subscription_id = get_subscription_id(self.cmd.cli_ctx)
+            if assign_user_identities:
+                identity_def["userAssignedIdentities"] = {}
+                subscription_id = get_subscription_id(self.cmd.cli_ctx)
 
-            for r in assign_user_identities:
-                r = _ensure_identity_resource_id(subscription_id, self.get_argument_resource_group_name(), r)
-                identity_def["userAssignedIdentities"][r] = {}  # pylint: disable=unsupported-assignment-operation
-        self.managed_env_def["identity"] = identity_def
+                for r in assign_user_identities:
+                    r = _ensure_identity_resource_id(subscription_id, self.get_argument_resource_group_name(), r)
+                    identity_def["userAssignedIdentities"][r] = {}  # pylint: disable=unsupported-assignment-operation
+            self.managed_env_def["identity"] = identity_def
 
     def set_up_workload_profiles(self):
         if self.get_argument_enable_workload_profiles():
@@ -132,6 +133,20 @@ class ContainerappEnvPreviewCreateDecorator(ContainerAppEnvCreateDecorator):
                     "maximumCount": 1
                 }
                 workload_profiles.append(gpu_profile)
+            if self.is_env_for_azml_app() and not self.get_argument_enable_dedicated_gpu():
+                wp_type = self.get_argument_workload_profile_type()
+                if wp_type is None or wp_type.lower() == "consumption-gpu-nc24-a100":
+                    serverless_a100_profile = {
+                        "workloadProfileType": "Consumption-GPU-NC24-A100",
+                        "name": self.get_argument_workload_profile_name() if self.get_argument_workload_profile_name() else "serverless-A100",
+                    }
+                    workload_profiles.append(serverless_a100_profile)
+                else:
+                    serverless_gpu_profile = {
+                        "workloadProfileType": wp_type,
+                        "name": self.get_argument_workload_profile_name() if self.get_argument_workload_profile_name() else "serverless-gpu",
+                    }
+                    workload_profiles.append(serverless_gpu_profile)
             self.managed_env_def["properties"]["workloadProfiles"] = workload_profiles
 
     def set_up_custom_domain_configuration(self):
@@ -180,6 +195,15 @@ class ContainerappEnvPreviewCreateDecorator(ContainerAppEnvCreateDecorator):
 
     def get_argument_public_network_access(self):
         return self.get_param("public_network_access")
+
+    def is_env_for_azml_app(self):
+        return self.get_param("is_env_for_azml_app")
+
+    def get_argument_workload_profile_type(self):
+        return self.get_param("workload_profile_type")
+
+    def get_argument_workload_profile_name(self):
+        return self.get_param("workload_profile_name")
 
 
 class ContainerappEnvPreviewUpdateDecorator(ContainerAppEnvUpdateDecorator):

@@ -18,13 +18,13 @@ class Create(AAZCommand):
     """Create a project policy.
 
     :example: Create
-        az devcenter admin project-policy create --dev-center-name "Contoso" --project-policy-name "DevOnlyResources" --resource-group "rg1" --scopes "[\"/subscriptions/0ac520ee-14c0-480f-b6c9-0a90c58ffff1/resourceGroups/rg1/providers/Microsoft.DevCenter/projects/DevProject\"] --resource-policies "[{\"resources\": \"/subscriptions/0ac520ee-14c0-480f-b6c9-0a90c58ffff1/resourceGroups/rg1/providers/Microsoft.DevCenter/devcenters/Contoso/attachednetworks/network-westus3\"}]"
+        az devcenter admin project-policy create --dev-center-name "Contoso" --project-policy-name "DevOnlyResources" --resource-group "rg1" --resource-policies [{"resources": "/subscriptions/0ac520ee-14c0-480f-b6c9-0a90c58ffff1/resourceGroups/rg1/providers/Microsoft.DevCenter/devcenters/Contoso/attachednetworks/network-westus3"] --scopes ["/subscriptions/0ac520ee-14c0-480f-b6c9-0a90c58ffff1/resourceGroups/rg1/providers/Microsoft.DevCenter/projects/DevProject"]
     """
 
     _aaz_info = {
-        "version": "2024-10-01-preview",
+        "version": "2025-04-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}/projectpolicies/{}", "2024-10-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}/projectpolicies/{}", "2025-04-01-preview"],
         ]
     }
 
@@ -87,9 +87,19 @@ class Create(AAZCommand):
         resource_policies.Element = AAZObjectArg()
 
         _element = cls._args_schema.resource_policies.Element
+        _element.action = AAZStrArg(
+            options=["action"],
+            help="Policy action to be taken on the resources. This is optional, and defaults to allow",
+            enum={"Allow": "Allow", "Deny": "Deny"},
+        )
         _element.filter = AAZStrArg(
             options=["filter"],
             help="Optional. When specified, this expression is used to filter the resources.",
+        )
+        _element.resource_type = AAZStrArg(
+            options=["resource-type"],
+            help="Optional. The resource type being restricted or allowed by a project policy. Used with a given action to restrict or allow access to a resource type.",
+            enum={"AttachedNetworks": "AttachedNetworks", "Images": "Images", "Skus": "Skus"},
         )
         _element.resources = AAZStrArg(
             options=["resources"],
@@ -185,7 +195,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-10-01-preview",
+                    "api-version", "2025-04-01-preview",
                     required=True,
                 ),
             }
@@ -223,7 +233,9 @@ class Create(AAZCommand):
 
             _elements = _builder.get(".properties.resourcePolicies[]")
             if _elements is not None:
+                _elements.set_prop("action", AAZStrType, ".action")
                 _elements.set_prop("filter", AAZStrType, ".filter")
+                _elements.set_prop("resourceType", AAZStrType, ".resource_type")
                 _elements.set_prop("resources", AAZStrType, ".resources")
 
             scopes = _builder.get(".properties.scopes")
@@ -281,7 +293,11 @@ class Create(AAZCommand):
             resource_policies.Element = AAZObjectType()
 
             _element = cls._schema_on_200_201.properties.resource_policies.Element
+            _element.action = AAZStrType()
             _element.filter = AAZStrType()
+            _element.resource_type = AAZStrType(
+                serialized_name="resourceType",
+            )
             _element.resources = AAZStrType()
 
             scopes = cls._schema_on_200_201.properties.scopes

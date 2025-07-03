@@ -12,15 +12,134 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+18.0.0b17
++++++++
+* Remove `__import__('pkg_resources').declare_namespace(__name__)` from `vendored_sdks/__init__.py`` to fix the namespace package issue.
+
+18.0.0b16
++++++++
+* Vendor new SDK and bump API version to 2025-05-02-preview.
+
+18.0.0b15
++++++++
+* Fixed NPE issue for `--acns-transit-encryption-type`.
+
+18.0.0b14
++++++++
+* Add preview flag for `az aks namespace`.
+* Add `--node-provisioning-default-pools` to the `az aks update` command.
+* Add `--node-provisioning-default-pools` to the `az aks create` command.
+
+18.0.0b13
++++++++
+* Add option `--enable-http-proxy` to `az aks update`.
+
+18.0.0b12
++++++++
+* Add option `--acns-transit-encryption-type <None|WireGuard>` to `az aks create/update`
+
+18.0.0b11
++++++++
+* Vendor new SDK and bump API version to 2025-04-02-preview.
+
+18.0.0b10
++++++++
+* Wrap the ARG call in the managed namespace list command
+
+18.0.0b9
++++++++
+* Add `--max-blocked-nodes` to the `az aks nodepool add/update/upgrade` commands.
+
+18.0.0b8
++++++++
+* Populate location of managed namespaces using managed cluster's location
+
+18.0.0b7
++++++++
+* Add option `--disable-http-proxy` to `az aks update`.
+
+18.0.0b6
++++++++
+* Quality improvements for `az aks extension` and `az aks extension type` command groups
+
+18.0.0b5
++++++++
+* Add option `Ubuntu2204` and `Ubuntu2404` to `--os-sku` for `az aks nodepool add` and `az aks nodepool update`.
+
+18.0.0b4
++++++++
+* Add managed namespace commands `az aks namespace add/update/show/list/delete/get-credentials`
+
+18.0.0b3
++++++++
+* Add basic lb sku migration support `az aks update --load-balancer-sku standard`
+
+18.0.0b2
++++++++
+* Vendor new SDK and bump API version to 2025-03-02-preview.
+
+18.0.0b1
++++++++
+* [BREAKING CHANGE] Remove `--enable-pod-security-policy` and `--disable-pod-security-policy` as it's deprecated.
+
+17.0.0b4
+++++++++
+* Reset vm_size and count to None for `az aks update --migrate-vmas-to-vms`
+
+17.0.0b3
+++++++++
+* Add default value of option `--vm-sizes` for `az aks create` and `az aks nodepool add`.
+
+17.0.0b2
+++++++++
+* Add option `--migrate-vmas-to-vms` to `az aks update`
+
+17.0.0b1
++++++++
+* [BREAKING CHANGE]: `az aks create`: Change default value of option `--node-vm-size` to ""
+* [BREAKING CHANGE]: `az aks nodepool add`: Change default value of option `--node-vm-size` to ""
+
+16.0.0b1
++++++++
+* [BREAKING CHANGE] Remove flux extension from the list of supported core extensions
+
+15.0.0b2
++++++++
+* Add aks extension and aks extension-type command groups
+* Remove TrustedAccess commands from aks-preview extension as it is GA and exists in azure-cli for long time.
+
+15.0.0b1
+++++++++
+* [BREAKING CHANGE] Change `--vm-sizes` for VirtualMachines manual profile to awalys support single SKU size.
+
+14.0.0b7
+++++++++
+* Add `az aks create/update --enable-retina-flow-logs` and `az aks update --disable-retina-flow-logs` commands.
+
+14.0.0b6
++++++++
+* Add option `--acns-advanced-networkpolicies <None|FQDN|L7>` to `az aks create/update`
+
+14.0.0b5
+++++++++
+* Re-generate the SDK for API version 2025-02-02-preview with @autorest/python@6.32.3 to fix `\#31345 <https://github.com/Azure/azure-cli/issues/31345>`_.
+
+14.0.0b4
+++++++++
+* Vendor new SDK and bump API version to 2025-02-02-preview.
+
+14.0.0b3
++++++++
+* Support `az aks loadbalancer show/list/add/update/delete/rebalance` commands.
 
 14.0.0b2
 +++++++
 * Update the `disable-egress-gateway` subcommand to fix `--help` output for the `az aks mesh` command.
-* Vendor new SDK and bump API version to 2025-01-02-preview.
 * Modify behavior for `--nodepool-initialization-taints` to ignore taints with hard effects on node pools with system mode when creating or updating a cluster.
 
 14.0.0b1
 +++++++
+* Vendor new SDK and bump API version to 2025-01-02-preview.
 * [BREAKING CHANGE] Rename `--enable-addon-autoscaling` to `--enable-optimized-addon-scaling` to `az aks create` commands.
 * [BREAKING CHANGE] Rename `--enable-addon-autoscaling` to `--enable-optimized-addon-scaling` and `--disable-addon-autoscaling` to `--disable-optimized-addon-scaling` to `az aks update` commands.
 

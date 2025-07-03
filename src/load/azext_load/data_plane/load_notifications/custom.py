@@ -109,7 +109,7 @@ def list_notification_rules(
     if test_ids:
         test_ids = ",".join(test_ids)
         logger.info("Filtering notification rules by test ids: %s", test_ids)
-    responses = client.list_notification_rule(test_ids=test_ids)
+    responses = client.list_notification_rules(test_ids=test_ids)
     logger.info("Retrieved notification rules: %s", responses)
     return [response.as_dict() for response in responses]
 

@@ -22,9 +22,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-07-31-preview",
+        "version": "2024-11-10-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}/licenseprofiles/{}", "2024-07-31-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}/licenseprofiles/{}", "2024-11-10-preview"],
         ]
     }
 
@@ -55,7 +55,7 @@ class Create(AAZCommand):
             ),
         )
         _args_schema.machine_name = AAZStrArg(
-            options=["-m", "--machine-name"],
+            options=["--machine-name"],
             help="The name of the hybrid machine.",
             required=True,
             fmt=AAZStrArgFormat(
@@ -64,10 +64,6 @@ class Create(AAZCommand):
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
-        )
-        _args_schema.software_assurance_customer = AAZBoolArg(
-            options=["--software-assurance", "--software-assurance-customer"],
-            help="Specifies if this machine is licensed as part of a Software Assurance agreement.",
         )
 
         # define Arg Group "EsuProfile"
@@ -132,6 +128,15 @@ class Create(AAZCommand):
             options=["subscription-status"],
             help="Indicates the current status of the product features.",
             enum={"Disabled": "Disabled", "Disabling": "Disabling", "Enabled": "Enabled", "Enabling": "Enabling", "Failed": "Failed", "Unknown": "Unknown"},
+        )
+
+        # define Arg Group "SoftwareAssurance"
+
+        _args_schema = cls._args_schema
+        _args_schema.software_assurance_customer = AAZBoolArg(
+            options=["--software-assurance", "--software-assurance-customer"],
+            arg_group="SoftwareAssurance",
+            help="Specifies if this machine is licensed as part of a Software Assurance agreement.",
         )
         return cls._args_schema
 
@@ -220,7 +225,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-07-31-preview",
+                    "api-version", "2024-11-10-preview",
                     required=True,
                 ),
             }

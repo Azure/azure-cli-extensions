@@ -62,7 +62,7 @@ class ConnectedClusterPreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
 
 
 class SubnetPreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
-    def __init__(self, name_prefix='vnet', location='eastus2euap', resource_group_parameter_name='resource_group', vnet_name=None, vnet_address_prefixes='14.0.0.0/23', subnet_address_prefixes='14.0.0.0/23',
+    def __init__(self, name_prefix='vnet', location="centralus", resource_group_parameter_name='resource_group', vnet_name=None, vnet_address_prefixes='14.0.0.0/23', subnet_address_prefixes='14.0.0.0/23',
                  delegations=None, subnet_name="default", service_endpoints=None, skip_delete=False):
         super(SubnetPreparer, self).__init__(name_prefix, 15)
         self.cli_ctx = get_dummy_cli()
@@ -80,7 +80,7 @@ class SubnetPreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
 
     def create_resource(self, name, **kwargs):
         resource_group = self._get_resource_group(**kwargs)
-        subnet_id = None
+        subnet_id = "FAKESUBNETID"
         try:
             self.live_only_execute(self.cli_ctx, f"az network vnet create --address-prefixes {self.vnet_address_prefixes} -g {resource_group} -n {self.vnet_name} --subnet-name {self.subnet_name} --location {self.location}")
             subnet_command = f"az network vnet subnet update --address-prefixes {self.subnet_address_prefixes} " \

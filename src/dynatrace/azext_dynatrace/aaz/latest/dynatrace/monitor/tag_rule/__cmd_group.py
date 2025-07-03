@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "dynatrace monitor tag-rule",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage dynatrace monitor tag-rule
+    """Command for managing tag rules, which control how Azure resources are automatically included in or excluded from Dynatrace monitoring based on their tags.
     """
     pass
 

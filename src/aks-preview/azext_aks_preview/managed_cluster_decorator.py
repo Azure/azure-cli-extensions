@@ -40,13 +40,14 @@ from azext_aks_preview._consts import (
     CONST_OUTBOUND_TYPE_BLOCK,
     CONST_IMDS_RESTRICTION_ENABLED,
     CONST_IMDS_RESTRICTION_DISABLED,
+    CONST_AVAILABILITY_SET,
+    CONST_VIRTUAL_MACHINES,
 )
 from azext_aks_preview._helpers import (
     check_is_apiserver_vnet_integration_cluster,
     check_is_azure_cli_core_editable_installed,
     check_is_private_cluster,
     get_cluster_snapshot_by_snapshot_id,
-    setup_common_safeguards_profile,
     filter_hard_taints,
 )
 from azext_aks_preview._loadbalancer import create_load_balancer_profile
@@ -83,6 +84,7 @@ from azure.cli.command_modules.acs._consts import (
     CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY,
     CONST_OUTBOUND_TYPE_USER_ASSIGNED_NAT_GATEWAY,
     CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING,
+    CONST_LOAD_BALANCER_SKU_STANDARD,
     DecoratorEarlyExitException,
     DecoratorMode,
 )
@@ -343,6 +345,48 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         if sku_name == CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC:
             return True
         return enable_msi_auth_for_monitoring
+
+    def _get_load_balancer_sku(self, enable_validation: bool = False) -> Union[str, None]:
+        """Internal function to obtain the value of load_balancer_sku, default value is
+        CONST_LOAD_BALANCER_SKU_STANDARD.
+
+        Note: When returning a string, it will always be lowercase.
+
+        This function supports the option of enable_validation. When enabled, it will check if load_balancer_sku equals
+        to CONST_LOAD_BALANCER_SKU_BASIC, if so, when api_server_authorized_ip_ranges is assigned or
+        enable_private_cluster is specified, raise an InvalidArgumentValueError.
+
+        :return: string or None
+        """
+        # read the original value passed by the command
+        load_balancer_sku = safe_lower(self.raw_param.get("load_balancer_sku"))
+        # try to read the property value corresponding to the parameter from the `mc` object
+        if (
+            load_balancer_sku is None and
+            self.mc and
+            self.mc.network_profile and
+            self.mc.network_profile.load_balancer_sku is not None
+        ):
+            load_balancer_sku = safe_lower(
+                self.mc.network_profile.load_balancer_sku
+            )
+        if self.decorator_mode == DecoratorMode.CREATE and load_balancer_sku is None:
+            # default value
+            load_balancer_sku = CONST_LOAD_BALANCER_SKU_STANDARD
+
+        # validation
+        if enable_validation:
+            if load_balancer_sku == CONST_LOAD_BALANCER_SKU_BASIC:
+                if self._get_api_server_authorized_ip_ranges(enable_validation=False):
+                    raise InvalidArgumentValueError(
+                        "--api-server-authorized-ip-ranges can only be used with standard load balancer"
+                    )
+                if self._get_enable_private_cluster(enable_validation=False):
+                    raise InvalidArgumentValueError(
+                        "Please use standard load balancer for private cluster"
+                    )
+
+        return load_balancer_sku
 
     def _get_disable_local_accounts(self, enable_validation: bool = False) -> bool:
         """Internal function to obtain the value of disable_local_accounts.
@@ -763,6 +807,65 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             return not disable_acns_security
         return None
 
+    def get_acns_advanced_networkpolicies(self) -> Union[str, None]:
+        """Get the value of acns_advanced_networkpolicies
+
+        :return: str or None
+        """
+        disable_acns_security = self.raw_param.get("disable_acns_security")
+        disable_acns = self.raw_param.get("disable_acns")
+        acns_advanced_networkpolicies = self.raw_param.get("acns_advanced_networkpolicies")
+        if acns_advanced_networkpolicies is not None:
+            if disable_acns_security or disable_acns:
+                raise MutuallyExclusiveArgumentError(
+                    "--disable-acns-security and --disable-acns cannot be used with acns_advanced_networkpolicies."
+                )
+        return self.raw_param.get("acns_advanced_networkpolicies")
+
+    def get_acns_transit_encryption_type(self) -> Union[str, None]:
+        """Get the value of acns_transit_encryption_type
+
+        :return: str or None
+        """
+        disable_acns_security = self.raw_param.get("disable_acns_security")
+        disable_acns = self.raw_param.get("disable_acns")
+        acns_transit_encryption_type = self.raw_param.get("acns_transit_encryption_type")
+        if acns_transit_encryption_type is not None:
+            if disable_acns_security or disable_acns:
+                raise MutuallyExclusiveArgumentError(
+                    "--disable-acns-security and --disable-acns cannot be used with --acns-transit-encryption-type."
+                )
+        return self.raw_param.get("acns_transit_encryption_type")
+
+    def get_retina_flow_logs(self, mc: ManagedCluster) -> Union[bool, None]:
+        """Get the enablement of retina flow logs
+
+        :return: bool or None"""
+        enable_retina_flow_logs = self.raw_param.get("enable_retina_flow_logs")
+        disable_retina_flow_logs = self.raw_param.get("disable_retina_flow_logs")
+        if enable_retina_flow_logs is None and disable_retina_flow_logs is None:
+            return None
+        if enable_retina_flow_logs and disable_retina_flow_logs:
+            raise MutuallyExclusiveArgumentError(
+                "Cannot specify --enable-retina-flow-logs and "
+                "--disable-retina-flow-logs at the same time."
+            )
+        if (
+            enable_retina_flow_logs and
+            (not self.raw_param.get("enable_acns", False) and
+                not (mc.network_profile and mc.network_profile.advanced_networking and
+                     mc.network_profile.advanced_networking.enabled)) or
+            not (mc.addon_profiles and mc.addon_profiles.get("omsagent") and mc.addon_profiles["omsagent"].enabled)
+        ):
+            raise InvalidArgumentValueError(
+                "Flow logs requires '--enable-acns', advanced networking "
+                "to be enabled, and the monitoring addon to be enabled."
+            )
+        enable_retina_flow_logs = bool(enable_retina_flow_logs) if enable_retina_flow_logs is not None else False
+        disable_retina_flow_logs = bool(disable_retina_flow_logs) if disable_retina_flow_logs is not None else False
+        retina_flow_logs = enable_retina_flow_logs or not disable_retina_flow_logs
+        return retina_flow_logs
+
     def get_load_balancer_managed_outbound_ip_count(self) -> Union[int, None]:
         """Obtain the value of load_balancer_managed_outbound_ip_count.
 
@@ -938,76 +1041,6 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         if disable_force_upgrade is not None:
             return not disable_force_upgrade
         return None
-
-    def _get_enable_pod_security_policy(self, enable_validation: bool = False) -> bool:
-        """Internal function to obtain the value of enable_pod_security_policy.
-
-        This function supports the option of enable_validation. When enabled, if both enable_pod_security_policy and
-        disable_pod_security_policy are specified, raise a MutuallyExclusiveArgumentError.
-
-        :return: bool
-        """
-        # read the original value passed by the command
-        enable_pod_security_policy = self.raw_param.get("enable_pod_security_policy")
-        # In create mode, try to read the property value corresponding to the parameter from the `mc` object.
-        if self.decorator_mode == DecoratorMode.CREATE:
-            if (
-                self.mc and
-                self.mc.enable_pod_security_policy is not None
-            ):
-                enable_pod_security_policy = self.mc.enable_pod_security_policy
-
-        # this parameter does not need dynamic completion
-        # validation
-        if enable_validation:
-            if enable_pod_security_policy and self._get_disable_pod_security_policy(enable_validation=False):
-                raise MutuallyExclusiveArgumentError(
-                    "Cannot specify --enable-pod-security-policy and "
-                    "--disable-pod-security-policy at the same time."
-                )
-        return enable_pod_security_policy
-
-    def get_enable_pod_security_policy(self) -> bool:
-        """Obtain the value of enable_pod_security_policy.
-
-        This function will verify the parameter by default. If both enable_pod_security_policy and
-        disable_pod_security_policy are specified, raise a MutuallyExclusiveArgumentError.
-
-        :return: bool
-        """
-        return self._get_enable_pod_security_policy(enable_validation=True)
-
-    def _get_disable_pod_security_policy(self, enable_validation: bool = False) -> bool:
-        """Internal function to obtain the value of disable_pod_security_policy.
-
-        This function supports the option of enable_validation. When enabled, if both enable_pod_security_policy and
-        disable_pod_security_policy are specified, raise a MutuallyExclusiveArgumentError.
-
-        :return: bool
-        """
-        # read the original value passed by the command
-        disable_pod_security_policy = self.raw_param.get("disable_pod_security_policy")
-        # We do not support this option in create mode, therefore we do not read the value from `mc`.
-
-        # this parameter does not need dynamic completion
-        # validation
-        if enable_validation:
-            if disable_pod_security_policy and self._get_enable_pod_security_policy(enable_validation=False):
-                raise MutuallyExclusiveArgumentError(
-                    "Cannot specify --enable-pod-security-policy and "
-                    "--disable-pod-security-policy at the same time."
-                )
-        return disable_pod_security_policy
-
-    def get_disable_pod_security_policy(self) -> bool:
-        """Obtain the value of disable_pod_security_policy.
-
-        This function will verify the parameter by default. If both enable_pod_security_policy and
-        disable_pod_security_policy are specified, raise a MutuallyExclusiveArgumentError.
-
-        :return: bool
-        """
-        return self._get_disable_pod_security_policy(enable_validation=True)
 
     # pylint: disable=unused-argument
     def _get_enable_managed_identity(
@@ -2716,6 +2749,11 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         """
         return self.raw_param.get("node_provisioning_mode")
 
+    def get_node_provisioning_default_pools(self) -> Union[str, None]:
+        """Obtain the value of node_provisioning_default_pools.
+        """
+        return self.raw_param.get("node_provisioning_default_pools")
+
     def get_ai_toolchain_operator(self, enable_validation: bool = False) -> bool:
         """Internal function to obtain the value of enable_ai_toolchain_operator.
 
@@ -2812,6 +2850,33 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         :return: bool
         """
         return self.raw_param.get("disable_imds_restriction")
+
+    def get_migrate_vmas_to_vms(self) -> bool:
+        """Obtain the value of migrate_vmas_to_vms.
+
+        :return: bool
+        """
+        return self.raw_param.get("migrate_vmas_to_vms")
+
+    def get_disable_http_proxy(self) -> bool:
+        """Obtain the value of disable_http_proxy.
+
+        :return: bool
+        """
+        # read the original value passed by the command
+        disable_http_proxy = self.raw_param.get("disable_http_proxy")
+
+        return disable_http_proxy
+
+    def get_enable_http_proxy(self) -> bool:
+        """Obtain the value of enable_http_proxy.
+
+        :return: bool
+        """
+        # read the original value passed by the command
+        enable_http_proxy = self.raw_param.get("enable_http_proxy")
+
+        return enable_http_proxy
 
 
 # pylint: disable=too-many-public-methods
@@ -2939,6 +3004,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
 
         acns = None
         (acns_enabled, acns_observability_enabled, acns_security_enabled) = self.context.get_acns_enablement()
+        acns_advanced_networkpolicies = self.context.get_acns_advanced_networkpolicies()
+        acns_transit_encryption_type = self.context.get_acns_transit_encryption_type()
         if acns_enabled is not None:
             acns = self.models.AdvancedNetworking(
                 enabled=acns_enabled,
@@ -2951,8 +3018,20 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                 acns.security = self.models.AdvancedNetworkingSecurity(
                     enabled=acns_security_enabled,
                 )
+            if acns_advanced_networkpolicies is not None:
+                if acns.security is None:
+                    acns.security = self.models.AdvancedNetworkingSecurity(
+                        advanced_network_policies=acns_advanced_networkpolicies
+                    )
+                else:
+                    acns.security.advanced_network_policies = acns_advanced_networkpolicies
+            if acns_transit_encryption_type is not None:
+                if acns.security is None:
+                    acns.security = self.models.AdvancedNetworkingSecurity()
+                if acns.security.transit_encryption is None:
+                    acns.security.transit_encryption = self.models.AdvancedNetworkingSecurityTransitEncryption()
+                acns.security.transit_encryption.type = acns_transit_encryption_type
             network_profile.advanced_networking = acns
-
         return mc
 
     def set_up_api_server_access_profile(self, mc: ManagedCluster) -> ManagedCluster:
@@ -2974,6 +3053,12 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                 mc.api_server_access_profile = self.models.ManagedClusterAPIServerAccessProfile()
             mc.api_server_access_profile.subnet_id = self.context.get_apiserver_subnet_id()
 
+        if (
+            mc.api_server_access_profile is not None and
+            mc.api_server_access_profile.additional_properties is not None
+        ):
+            # remove the additional properties that are set in official azure-cli/acs
+            mc.api_server_access_profile.additional_properties = {}
         return mc
 
     def build_gitops_addon_profile(self) -> ManagedClusterAddonProfile:
@@ -3003,17 +3088,16 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             addon_profiles[
                 CONST_GITOPS_ADDON_NAME
             ] = self.build_gitops_addon_profile()
+
+        retina_flow_logs_enabled = self.context.get_retina_flow_logs(mc)
+        if retina_flow_logs_enabled is not None:
+            monitoring_addon_profile = addon_profiles.get(addon_consts.get("CONST_MONITORING_ADDON_NAME"))
+            if monitoring_addon_profile:
+                config = monitoring_addon_profile.config or {}
+                config["enableRetinaNetworkFlags"] = str(retina_flow_logs_enabled)
+                monitoring_addon_profile.config = config
+
         mc.addon_profiles = addon_profiles
-        return mc
-
-    def set_up_pod_security_policy(self, mc: ManagedCluster) -> ManagedCluster:
-        """Set up pod security policy for the ManagedCluster object.
-
-        :return: the ManagedCluster object
-        """
-        self._ensure_mc(mc)
-
-        mc.enable_pod_security_policy = self.context.get_enable_pod_security_policy()
         return mc
 
     def set_up_pod_identity_profile(self, mc: ManagedCluster) -> ManagedCluster:
@@ -3385,14 +3469,6 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             mc.auto_upgrade_profile.node_os_upgrade_channel = node_os_upgrade_channel
         return mc
 
-    def set_up_safeguards_profile(self, mc: ManagedCluster) -> ManagedCluster:
-        excludedNamespaces = self.context.get_safeguards_excluded_namespaces()
-        version = self.context.get_safeguards_version()
-        level = self.context.get_safeguards_level()
-        # provided any value?
-        mc = setup_common_safeguards_profile(level, version, excludedNamespaces, mc, self.models)
-        return mc
-
     def set_up_azure_service_mesh_profile(self, mc: ManagedCluster) -> ManagedCluster:
         """Set up azure service mesh for the ManagedCluster object.
 
@@ -3468,10 +3544,26 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
 
         return mc
 
+    def set_up_node_provisioning_default_pools(self, mc: ManagedCluster) -> ManagedCluster:
+        self._ensure_mc(mc)
+
+        default_pools = self.context.get_node_provisioning_default_pools()
+        if default_pools is not None:
+            if mc.node_provisioning_profile is None:
+                mc.node_provisioning_profile = (
+                    self.models.ManagedClusterNodeProvisioningProfile()  # pylint: disable=no-member
+                )
+
+            # set default_node_pools
+            mc.node_provisioning_profile.default_node_pools = default_pools
+
+        return mc
+
     def set_up_node_provisioning_profile(self, mc: ManagedCluster) -> ManagedCluster:
         self._ensure_mc(mc)
 
         mc = self.set_up_node_provisioning_mode(mc)
+        mc = self.set_up_node_provisioning_default_pools(mc)
 
         return mc
 
@@ -3555,8 +3647,6 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         # DO NOT MOVE: keep this on top, construct the default ManagedCluster profile
         mc = self.construct_mc_profile_default(bypass_restore_defaults=True)
 
-        # set up pod security policy
-        mc = self.set_up_pod_security_policy(mc)
         # set up pod identity profile
         mc = self.set_up_pod_identity_profile(mc)
         # set up workload identity profile
@@ -3583,8 +3673,6 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc = self.set_up_node_resource_group_profile(mc)
         # set up auto upgrade profile
         mc = self.set_up_auto_upgrade_profile(mc)
-        # set up safeguards profile
-        mc = self.set_up_safeguards_profile(mc)
         # set up azure service mesh profile
         mc = self.set_up_azure_service_mesh_profile(mc)
         # setup k8s support plan
@@ -3978,6 +4066,9 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         self.update_network_plugin_settings(mc)
 
+        loadbalancer_sku = self.context.get_load_balancer_sku()
+        if loadbalancer_sku:
+            mc.network_profile.load_balancer_sku = loadbalancer_sku
         return mc
 
     def update_network_plugin_settings(self, mc: ManagedCluster) -> ManagedCluster:
@@ -4025,6 +4116,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         acns = None
         (acns_enabled, acns_observability_enabled, acns_security_enabled) = self.context.get_acns_enablement()
+        acns_advanced_networkpolicies = self.context.get_acns_advanced_networkpolicies()
+        acns_transit_encryption_type = self.context.get_acns_transit_encryption_type()
         if acns_enabled is not None:
             acns = self.models.AdvancedNetworking(
                 enabled=acns_enabled,
@@ -4037,7 +4130,39 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 acns.security = self.models.AdvancedNetworkingSecurity(
                     enabled=acns_security_enabled,
                 )
+            if acns_advanced_networkpolicies is not None:
+                if acns.security is None:
+                    acns.security = self.models.AdvancedNetworkingSecurity(
+                        advanced_network_policies=acns_advanced_networkpolicies
+                    )
+                else:
+                    acns.security.advanced_network_policies = acns_advanced_networkpolicies
+            if acns_transit_encryption_type is not None:
+                if acns.security is None:
+                    acns.security = self.models.AdvancedNetworkingSecurity()
+                if acns.security.transit_encryption is None:
+                    acns.security.transit_encryption = self.models.AdvancedNetworkingSecurityTransitEncryption()
+                acns.security.transit_encryption.type = acns_transit_encryption_type
             mc.network_profile.advanced_networking = acns
+        return mc
+
+    def update_monitoring_profile_flow_logs(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update monitor profile for the ManagedCluster object for flow logs.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        retina_flow_logs_enabled = self.context.get_retina_flow_logs(mc)
+        if retina_flow_logs_enabled is not None:
+            if mc.addon_profiles:
+                addon_consts = self.context.get_addon_consts()
+                CONST_MONITORING_ADDON_NAME = addon_consts.get("CONST_MONITORING_ADDON_NAME")
+                monitoring_addon_profile = mc.addon_profiles.get(CONST_MONITORING_ADDON_NAME)
+                if monitoring_addon_profile:
+                    config = monitoring_addon_profile.config or {}
+                    config["enableRetinaNetworkFlags"] = str(retina_flow_logs_enabled)
+                    mc.addon_profiles[CONST_MONITORING_ADDON_NAME].config = config
         return mc
 
     # pylint: disable=too-many-statements,too-many-locals,too-many-branches
@@ -4457,20 +4582,6 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         return mc
 
-    def update_pod_security_policy(self, mc: ManagedCluster) -> ManagedCluster:
-        """Update pod security policy for the ManagedCluster object.
-
-        :return: the ManagedCluster object
-        """
-        self._ensure_mc(mc)
-
-        if self.context.get_enable_pod_security_policy():
-            mc.enable_pod_security_policy = True
-
-        if self.context.get_disable_pod_security_policy():
-            mc.enable_pod_security_policy = False
-        return mc
-
     def update_pod_identity_profile(self, mc: ManagedCluster) -> ManagedCluster:
         """Update pod identity profile for the ManagedCluster object.
 
@@ -4827,26 +4938,6 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             mc.auto_upgrade_profile.node_os_upgrade_channel = node_os_upgrade_channel
         return mc
 
-    def update_safeguards_profile(self, mc: ManagedCluster) -> ManagedCluster:
-        """Update safeguards profile for the ManagedCluster object
-        :return: the ManagedCluster object
-        """
-
-        self._ensure_mc(mc)
-
-        excludedNamespaces = self.context.get_safeguards_excluded_namespaces()
-        version = self.context.get_safeguards_version()
-        level = self.context.get_safeguards_level()
-
-        mc = setup_common_safeguards_profile(level, version, excludedNamespaces, mc, self.models)
-
-        if level is not None:
-            mc.safeguards_profile.level = level
-        if version is not None:
-            mc.safeguards_profile.version = version
-
-        return mc
-
     def update_azure_service_mesh_profile(self, mc: ManagedCluster) -> ManagedCluster:
         """Update azure service mesh profile for the ManagedCluster object.
         """
@@ -4981,6 +5072,21 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
             # set mode
             mc.node_provisioning_profile.mode = mode
+
+        return mc
+
+    def update_node_provisioning_default_pools(self, mc: ManagedCluster) -> ManagedCluster:
+        self._ensure_mc(mc)
+
+        default_pools = self.context.get_node_provisioning_default_pools()
+        if default_pools is not None:
+            if mc.node_provisioning_profile is None:
+                mc.node_provisioning_profile = (
+                    self.models.ManagedClusterNodeProvisioningProfile()  # pylint: disable=no-member
+                )
+
+            # set default_node_pools
+            mc.node_provisioning_profile.default_node_pools = default_pools
 
         return mc
 
@@ -5146,6 +5252,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         self._ensure_mc(mc)
 
         mc = self.update_node_provisioning_mode(mc)
+        mc = self.update_node_provisioning_default_pools(mc)
 
         return mc
 
@@ -5242,6 +5349,57 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 raise DecoratorEarlyExitException()
         return mc
 
+    def update_vmas_to_vms(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update the agent pool profile type from VMAS to VMS and LB sku to standard
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        if self.context.get_migrate_vmas_to_vms():
+            msg = (
+                "\nWARNING: This operation will be disruptive to your workload while underway. "
+                "Do you wish to continue?"
+            )
+            if not self.context.get_yes() and not prompt_y_n(msg, default="n"):
+                raise DecoratorEarlyExitException()
+            # Ensure we have valid vmas AP
+            if len(mc.agent_pool_profiles) == 1 and mc.agent_pool_profiles[0].type == CONST_AVAILABILITY_SET:
+                mc.agent_pool_profiles[0].type = CONST_VIRTUAL_MACHINES
+            else:
+                raise CLIError('This is not a valid VMAS cluster, we cannot proceed with the migration.')
+
+            if mc.network_profile.load_balancer_sku == CONST_LOAD_BALANCER_SKU_BASIC:
+                mc.network_profile.load_balancer_sku = CONST_LOAD_BALANCER_SKU_STANDARD
+
+            mc.agent_pool_profiles[0].count = None
+            mc.agent_pool_profiles[0].vm_size = None
+
+        return mc
+
+    def update_http_proxy_enabled(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update http proxy config for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        if self.context.get_disable_http_proxy():
+            if mc.http_proxy_config is None:
+                mc.http_proxy_config = (
+                    self.models.ManagedClusterHTTPProxyConfig()  # pylint: disable=no-member
+                )
+            mc.http_proxy_config.enabled = False
+
+        if self.context.get_enable_http_proxy():
+            if mc.http_proxy_config is None:
+                mc.http_proxy_config = (
+                    self.models.ManagedClusterHTTPProxyConfig()  # pylint: disable=no-member
+                )
+            mc.http_proxy_config.enabled = True
+
+        return mc
+
     def update_mc_profile_preview(self) -> ManagedCluster:
         """The overall controller used to update the preview ManagedCluster profile.
 
@@ -5253,8 +5411,6 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         # DO NOT MOVE: keep this on top, fetch and update the default ManagedCluster profile
         mc = self.update_mc_profile_default()
 
-        # update pod security policy
-        mc = self.update_pod_security_policy(mc)
         # update pod identity profile
         mc = self.update_pod_identity_profile(mc)
         # update workload identity profile
@@ -5291,8 +5447,6 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_node_resource_group_profile(mc)
         # update auto upgrade profile
         mc = self.update_auto_upgrade_profile(mc)
-        # update safeguards_profile
-        mc = self.update_safeguards_profile(mc)
         # update cluster upgrade settings profile
         mc = self.update_upgrade_settings(mc)
         # update nodepool taints
@@ -5301,6 +5455,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_nodepool_initialization_taints_mc(mc)
         # update acns in network_profile
         mc = self.update_acns_in_network_profile(mc)
+        # update update_monitoring_profile_flow_logs
+        mc = self.update_monitoring_profile_flow_logs(mc)
         # update kubernetes support plan
         mc = self.update_k8s_support_plan(mc)
         # update AI toolchain operator
@@ -5315,6 +5471,10 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_static_egress_gateway(mc)
         # update imds restriction
         mc = self.update_imds_restriction(mc)
+        # update VMAS to VMS
+        mc = self.update_vmas_to_vms(mc)
+        # update http proxy config
+        mc = self.update_http_proxy_enabled(mc)
 
         return mc
 

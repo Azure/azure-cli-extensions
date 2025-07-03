@@ -36,13 +36,3 @@ def load_command_table(self, _):
         self.command_table['notification-hub credential wns update'] = WnsUpdate(loader=self)
         self.command_table['notification-hub credential mpns update'] = MpnsUpdate(loader=self)
         self.command_table['notification-hub credential baidu update'] = BaiduUpdate(loader=self)
-
-    from ._client_factory import cf_notification_hubs
-    from ._validators import validate_notification_message
-    from azure.cli.core.commands import CliCommandType
-    notificationhubs_notification_hubs = CliCommandType(
-        operations_tmpl='azext_notification_hub.vendored_sdks.notificationhubs.operations.notification_hubs_operations#NotificationHubsOperations.{}',
-        client_factory=cf_notification_hubs)
-    with self.command_group('notification-hub', notificationhubs_notification_hubs, client_factory=cf_notification_hubs,
-                            is_experimental=True) as g:
-        g.custom_command('test-send', 'debug_send_notificationhubs_hub', validator=validate_notification_message)

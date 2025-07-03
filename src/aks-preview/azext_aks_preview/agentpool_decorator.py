@@ -37,7 +37,10 @@ from azext_aks_preview._consts import (
     CONST_VIRTUAL_MACHINES,
     CONST_DEFAULT_NODE_VM_SIZE,
     CONST_DEFAULT_WINDOWS_NODE_VM_SIZE,
+    CONST_DEFAULT_VMS_VM_SIZE,
+    CONST_DEFAULT_WINDOWS_VMS_VM_SIZE,
     CONST_SSH_ACCESS_LOCALUSER,
+    CONST_GPU_DRIVER_NONE,
 )
 from azext_aks_preview._helpers import (
     get_nodepool_snapshot_by_snapshot_id,
@@ -500,6 +503,26 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
         # this parameter does not need validation
         return max_unavailable
 
+    def get_max_blocked_nodes(self) -> str:
+        """Obtain the value of max_blocked_nodes.
+
+        :return: string
+        """
+        # read the original value passed by the command
+        max_blocked_nodes = self.raw_param.get("max_blocked_nodes")
+        # In create mode, try to read the property value corresponding to the parameter from the `agentpool` object
+        if self.decorator_mode == DecoratorMode.CREATE:
+            if (
+                self.agentpool and
+                self.agentpool.upgrade_settings and
+                self.agentpool.upgrade_settings.max_blocked_nodes is not None
+            ):
+                max_blocked_nodes = self.agentpool.upgrade_settings.max_blocked_nodes
+
+        # this parameter does not need dynamic completion
+        # this parameter does not need validation
+        return max_blocked_nodes
+
     def get_enable_artifact_streaming(self) -> bool:
         """Obtain the value of enable_artifact_streaming.
         :return: bool
@@ -601,11 +624,41 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
             if (
                 self.agentpool and
                 self.agentpool.gpu_profile is not None and
-                self.agentpool.gpu_profile.install_gpu_driver is not None
+                self.agentpool.gpu_profile.driver is not None and
+                self.agentpool.gpu_profile.driver.lower() == CONST_GPU_DRIVER_NONE.lower()
             ):
-                skip_gpu_driver_install = not self.agentpool.gpu_profile.install_gpu_driver
+                skip_gpu_driver_install = True
 
         return skip_gpu_driver_install
+
+    def _get_gpu_driver(self) -> Union[str, None]:
+        """Obtain the value of gpu_driver.
+
+        :return: string
+        """
+        # read the original value passed by the command
+        gpu_driver = self.raw_param.get("gpu_driver")
+
+        # In create mode, try to read the property value corresponding to the parameter from the `agentpool` object
+        if self.decorator_mode == DecoratorMode.CREATE:
+            if (
+                self.agentpool and
+                hasattr(self.agentpool, "gpu_profile") and      # backward compatibility
+                self.agentpool.gpu_profile and
+                self.agentpool.gpu_profile.driver is not None
+            ):
+                gpu_driver = self.agentpool.gpu_profile.driver
+
+        # this parameter does not need dynamic completion
+        # this parameter does not need validation
+        return gpu_driver
+
+    def get_gpu_driver(self) -> Union[str, None]:
+        """Obtain the value of gpu_driver.
+
+        :return: string or None
+        """
+        return self._get_gpu_driver()
 
     def get_driver_type(self) -> Union[str, None]:
         """Obtain the value of driver_type.
@@ -714,6 +767,12 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
             vm_sizes = [x.strip() for x in raw_value.split(",")]
         else:
             vm_sizes = [self.get_node_vm_size()]
+            # Populate default values if vm_sizes still empty
+            if vm_sizes == [""]:
+                if self.get_os_type().lower() == "windows":
+                    vm_sizes = [CONST_DEFAULT_WINDOWS_VMS_VM_SIZE]
+                else:
+                    vm_sizes = [CONST_DEFAULT_VMS_VM_SIZE]
         return vm_sizes
 
     # Overrides azure-cli command to allow changes after create
@@ -911,8 +970,19 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
 
         if self.context.get_skip_gpu_driver_install():
             if agentpool.gpu_profile is None:
-                agentpool.gpu_profile = self.models.AgentPoolGPUProfile()  # pylint: disable=no-member
-            agentpool.gpu_profile.install_gpu_driver = False
+                agentpool.gpu_profile = self.models.GPUProfile()  # pylint: disable=no-member
+            agentpool.gpu_profile.driver = CONST_GPU_DRIVER_NONE
+        return agentpool
+
+    def set_up_gpu_profile(self, agentpool: AgentPool) -> AgentPool:
+        """Set up gpu profile for the AgentPool object."""
+        self._ensure_agentpool(agentpool)
+
+        gpu_driver = self.context.get_gpu_driver()
+        if gpu_driver is not None:
+            if agentpool.gpu_profile is None:
+                agentpool.gpu_profile = self.models.GPUProfile()
+            agentpool.gpu_profile.driver = gpu_driver
         return agentpool
 
     def set_up_driver_type(self, agentpool: AgentPool) -> AgentPool:
@@ -922,7 +992,7 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         driver_type = self.context.get_driver_type()
         if driver_type is not None:
             if agentpool.gpu_profile is None:
-                agentpool.gpu_profile = self.models.AgentPoolGPUProfile()  # pylint: disable=no-member
+                agentpool.gpu_profile = self.models.GPUProfile()  # pylint: disable=no-member
             agentpool.gpu_profile.driver_type = driver_type
         return agentpool
 
@@ -982,12 +1052,14 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
             return agentpool
 
         sizes = self.context.get_vm_sizes()
+        if len(sizes) != 1:
+            raise InvalidArgumentValueError(f"We only accept single sku size for manual profile. {sizes} is invalid.")
         count, _, _, _ = self.context.get_node_count_and_enable_cluster_autoscaler_min_max_count()
         agentpool.virtual_machines_profile = self.models.VirtualMachinesProfile(
             scale=self.models.ScaleProfile(
                 manual=[
                     self.models.ManualScaleProfile(
-                        sizes=sizes,
+                        size=sizes[0],
                         count=count,
                     )
                 ]
@@ -1027,6 +1099,8 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         agentpool = self.set_up_artifact_streaming(agentpool)
         # set up skip_gpu_driver_install
         agentpool = self.set_up_skip_gpu_driver_install(agentpool)
+        # set up gpu profile
+        agentpool = self.set_up_gpu_profile(agentpool)
         # set up driver_type
         agentpool = self.set_up_driver_type(agentpool)
         # set up agentpool ssh access
@@ -1072,6 +1146,10 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         max_unavailable = self.context.get_max_unavailable()
         if max_unavailable:
             upgrade_settings.max_unavailable = max_unavailable
+
+        max_blocked_nodes = self.context.get_max_blocked_nodes()
+        if max_blocked_nodes:
+            upgrade_settings.max_blocked_nodes = max_blocked_nodes
 
         agentpool.upgrade_settings = upgrade_settings
         return agentpool
@@ -1296,6 +1374,11 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
         undrainable_node_behavior = self.context.get_undrainable_node_behavior()
         if undrainable_node_behavior:
             upgrade_settings.undrainable_node_behavior = undrainable_node_behavior
+            agentpool.upgrade_settings = upgrade_settings
+
+        max_blocked_nodes = self.context.get_max_blocked_nodes()
+        if max_blocked_nodes:
+            upgrade_settings.max_blocked_nodes = max_blocked_nodes
             agentpool.upgrade_settings = upgrade_settings
 
         max_unavailable = self.context.get_max_unavailable()

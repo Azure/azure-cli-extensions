@@ -10,6 +10,9 @@ from azure.mgmt.core.tools import parse_resource_id
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck)
+from knack.testsdk import live_only
+
+from .utils import create_vent_subnet
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
@@ -19,6 +22,7 @@ from .common import TEST_LOCATION, write_test_file, clean_up_test_file
 class ContainerAppEnvHttpRouteConfigTest(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus")
+    @live_only()
     def test_containerapp_env_http_route_config_crudoperations_e2e(self, resource_group):
 
         app1 = self.create_random_name(prefix='routed1', length=24)
@@ -86,7 +90,9 @@ class ContainerAppEnvHttpRouteConfigTest(ScenarioTest):
         self.cmd(f'configure --defaults location={TEST_LOCATION}')
 
         env_name = self.create_random_name(prefix='aca-http-route-config-env', length=30)
-        self.cmd(f'containerapp env create -g {resource_group} -n {env_name} --location {TEST_LOCATION}  --logs-destination none --enable-workload-profiles')
+        subnet_id = create_vent_subnet(self, resource_group, self.create_random_name(prefix='name', length=24))
+
+        self.cmd(f'containerapp env create -g {resource_group} -n {env_name} --location {TEST_LOCATION}  --logs-destination none --enable-workload-profiles -s {subnet_id}')
 
         self.cmd(f"az containerapp env http-route-config list -g {resource_group} -n {env_name}", checks=[
             JMESPathCheck('length(@)', 0),

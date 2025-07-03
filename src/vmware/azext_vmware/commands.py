@@ -9,9 +9,12 @@ def load_command_table(self, _):
     load_private_cloud_commands(self)
     load_location_commands(self)
     load_datastore_commands(self)
+    load_provisioned_network_commands(self)
+    load_pure_storage_policy_commands(self)
     load_script_execution_commands(self)
     load_placement_policy_commands(self)
     load_workload_network_commands(self)
+    load_vm_commands(self)
 
 
 def load_private_cloud_commands(self):
@@ -42,6 +45,22 @@ def load_location_commands(self):
         g.custom_command('checktrialavailability', 'check_trial_availability', deprecate_info=g.deprecate(redirect='az vmware location check-trial-availability', hide=True))
 
 
+def load_provisioned_network_commands(self):
+    with self.command_group("vmware provisioned-network"):
+        from .operations.provisioned_network import ProvisionedNetworkList, ProvisionedNetworkShow
+        self.command_table["vmware provisioned-network list"] = ProvisionedNetworkList(loader=self)
+        self.command_table["vmware provisioned-network show"] = ProvisionedNetworkShow(loader=self)
+
+
+def load_pure_storage_policy_commands(self):
+    with self.command_group("vmware pure-storage-policy"):
+        from .operations.pure_storage_policy import PureStoragePolicyList, PureStoragePolicyShow, PureStoragePolicyCreate, PureStoragePolicyDelete
+        self.command_table["vmware pure-storage-policy list"] = PureStoragePolicyList(loader=self)
+        self.command_table["vmware pure-storage-policy show"] = PureStoragePolicyShow(loader=self)
+        self.command_table["vmware pure-storage-policy create"] = PureStoragePolicyCreate(loader=self)
+        self.command_table["vmware pure-storage-policy delete"] = PureStoragePolicyDelete(loader=self)
+
+
 def load_datastore_commands(self):
     with self.command_group('vmware datastore') as g:
         g.custom_command('create', 'datastore_create', deprecate_info=g.deprecate(redirect='"az vmware datastore netapp-volume create" or "az vmware datastore disk-pool-volume create"', hide=True))
@@ -58,10 +77,16 @@ def load_datastore_commands(self):
         from .operations.datastore import DatastoreElasticVsanVolumeCreate
         self.command_table['vmware datastore elastic-san-volume create'] = DatastoreElasticVsanVolumeCreate(loader=self)
 
+    with self.command_group('vmware datastore pure-storage-volume'):
+        from .operations.datastore import DatastorePureStorageVolumeCreate
+        self.command_table['vmware datastore pure-storage-volume create'] = DatastorePureStorageVolumeCreate(loader=self)
+
 
 def load_script_execution_commands(self):
     with self.command_group('vmware script-execution') as g:
+        from .operations.script_execution import ScriptExecutionGetExecutionLog
         g.custom_command('create', 'script_execution_create')
+        self.command_table["vmware script-execution get-execution-log"] = ScriptExecutionGetExecutionLog(loader=self)
 
 
 def load_placement_policy_commands(self):
@@ -77,6 +102,12 @@ def load_placement_policy_commands(self):
         self.command_table['vmware placement-policy vm-host create'] = PlacementPolicyVMHostCreate(loader=self)
         self.command_table['vmware placement-policy vm-host update'] = PlacementPolicyVMHostUpdate(loader=self)
         self.command_table['vmware placement-policy vm-host delete'] = PlacementPolicyVMHostDelete(loader=self)
+
+
+def load_vm_commands(self):
+    with self.command_group('vmware vm'):
+        from .operations.virtual_machines import VmRestrictMovement
+        self.command_table['vmware vm restrict-movement'] = VmRestrictMovement(loader=self)
 
 
 def load_workload_network_commands(self):
