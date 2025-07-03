@@ -16581,7 +16581,7 @@ spec:
                 self.check("provisioningState", "Succeeded"),
             ],
         ).get_output_in_json()
-        nrg = mc.node_resource_group
+        nrg = mc["nodeResourceGroup"]
 
         # create bastion
         list_vnet_cmd = f"network vnet list -g {nrg} -o json"
