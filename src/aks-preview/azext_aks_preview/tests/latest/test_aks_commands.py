@@ -23,7 +23,6 @@ from azure.cli.command_modules.acs._helpers import (
     use_shared_identity,
 )
 from azure.cli.core.azclierror import ClientRequestError
-from azure.core.exceptions import (HttpResponseError)
 from azure.cli.testsdk import CliTestError, ScenarioTest, live_only
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from knack.util import CLIError
@@ -178,6 +177,21 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         assert "upgrades" in res and len(res["upgrades"]) > 0
         sorted_upgrades = self._sort_revisions(res["upgrades"])
         return sorted_upgrades[0]
+
+    def _verify_kubectl_installation(self) -> bool:
+        """Verify if kubectl is installed and accessible."""
+        try:
+            subprocess.run(
+                ["kubectl", "version", "--client"],
+                check=True,
+                stdin=subprocess.DEVNULL,
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+                shell=False,
+            )
+            return True
+        except subprocess.CalledProcessError:
+            return False
 
     @classmethod
     def generate_ssh_keys(cls):
@@ -11155,11 +11169,12 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         sp_oid = self._get_test_identity_object_id()
         print(f"objectid of service principal is {sp_oid}")
 
-        # Install kubectl (for setting up service principal permissions, and required by the 'kollect' command).
-        try:
-            subprocess.call(["az", "aks", "install-cli"])
-        except subprocess.CalledProcessError as err:
-            raise CliTestError(f"Failed to install kubectl with error: '{err}'")
+        if not self._verify_kubectl_installation():
+            # Install kubectl (for setting up service principal permissions, and required by the 'kollect' command).
+            try:
+                subprocess.call(["az", "aks", "install-cli"])
+            except subprocess.CalledProcessError as err:
+                raise CliTestError(f"Failed to install kubectl with error: '{err}'")
 
         # Grant the service principal cluster-admin access using the admin account
         # (it'd be nice if `az aks command invoke` had an --admin option, but it appears not to, so we have to download admin credentials)
@@ -12886,7 +12901,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         try:
             subprocess.call(["az", "aks", "install-cli"])
         except subprocess.CalledProcessError as err:
-            raise CLITestError("Failed to install kubectl with error: '{}'!".format(err))
+            raise CliTestError("Failed to install kubectl with error: '{}'!".format(err))
 
         try:
             # get credential
@@ -12924,7 +12939,7 @@ spec:
                     stderr=subprocess.STDOUT,
                 )
                 if not f"namespace/{istio_egress_namespace} created" in k_create_sgc_namespace_output:
-                    raise CLITestError(f"failed to create istio egress gateway namespace: {istio_egress_namespace}")
+                    raise CliTestError(f"failed to create istio egress gateway namespace: {istio_egress_namespace}")
 
                 k_create_sgc_command = ["kubectl", "apply", "-f", sgc_browse_path, "--kubeconfig", browse_path]
                 k_create_sgc_output = subprocess.check_output(
@@ -12933,7 +12948,7 @@ spec:
                     stderr=subprocess.STDOUT,
                 )
                 if not f"staticgatewayconfiguration.egressgateway.kubernetes.azure.com/{istio_sgc_name} created" in k_create_sgc_output:
-                    raise CLITestError("failed to create StaticGatewayConfiguration")
+                    raise CliTestError("failed to create StaticGatewayConfiguration")
             finally:
                 # Delete files
                 if os.path.exists(browse_path):
@@ -16588,16 +16603,18 @@ spec:
                               f"--vnet-name {vnet_name} --enable-tunneling"
         self.cmd(create_bastion_cmd, checks=[self.check("provisioningState", "Succeeded")])
 
-        # install kubectl
-        _, ctl_temp_file = tempfile.mkstemp()
-        _, login_temp_file = tempfile.mkstemp()
-        version = "latest"
-        install_cmd = 'aks install-cli --client-version={} --install-location={} --base-src-url={} ' \
-                    '--kubelogin-version={} --kubelogin-install-location={} --kubelogin-base-src-url={}'.format(version, ctl_temp_file, "", version, login_temp_file, "")
-        self.cmd(install_cmd, checks=[self.is_empty()])
+        kubectl_path = "kubectl"
+        if not self._verify_kubectl_installation():
+            # install kubectl
+            _, kubectl_path = tempfile.mkstemp()
+            _, login_temp_file = tempfile.mkstemp()
+            version = "latest"
+            install_cmd = 'aks install-cli --client-version={} --install-location={} --base-src-url={} ' \
+                        '--kubelogin-version={} --kubelogin-install-location={} --kubelogin-base-src-url={}'.format(version, kubectl_path, "", version, login_temp_file, "")
+            self.cmd(install_cmd, checks=[self.is_empty()])
 
         # test bastion connectivity
-        os.environ["AKS_BASTION_TEST_HOOK"] = ctl_temp_file
+        os.environ["AKS_BASTION_TEST_HOOK"] = kubectl_path
         bastion_cmd = f"aks bastion -g {resource_group} -n {aks_name}"
         self.cmd(bastion_cmd, checks=[self.is_empty()])
 
