@@ -16594,14 +16594,14 @@ spec:
         self.cmd(create_subnet_cmd, checks=[self.check("provisioningState", "Succeeded")])
 
         create_pip_cmd = f"network public-ip create -g {nrg} -n aks-bastion-pip --sku Standard"
-        self.cmd(create_pip_cmd, checks=[self.check("provisioningState", "Succeeded")])
+        self.cmd(create_pip_cmd)
 
         subprocess.run(["az", "extension", "add", "--name", "bastion", "--yes"], check=True)
 
         create_bastion_cmd = f"network bastion create -g {nrg} -n aks-bastion " \
                               f"--public-ip-address aks-bastion-pip " \
                               f"--vnet-name {vnet_name} --enable-tunneling"
-        self.cmd(create_bastion_cmd)
+        self.cmd(create_bastion_cmd, checks=[self.check("provisioningState", "Succeeded")])
 
         kubectl_path = "kubectl"
         if not self._verify_kubectl_installation():
