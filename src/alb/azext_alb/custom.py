@@ -7,6 +7,7 @@
 
 # pylint: disable=too-many-lines
 # pylint: disable=too-many-statements, protected-access
+# pylint: disable=too-few-public-methods
 
 from knack.log import get_logger
 from azure.cli.core.aaz import register_command, register_command_group, AAZCommandGroup
