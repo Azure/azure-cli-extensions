@@ -126,14 +126,20 @@ class ElasticScenario(ScenarioTest):
     @ResourceGroupPreparer(name_prefix='cli_test_elastic_monitor', location='eastus')
     def test_elastic_monitor_open_ai_integration(self, resource_group):
         email = self.cmd('account show').get_output_in_json()['user']['name']
+        subscription_id = self.get_subscription_id()
+        openai_account_name = 'es-openAi-resource'
+
+        openai_resource_id = f'/subscriptions/{subscription_id}/resourceGroups/es-cloudtests-portal/providers/Microsoft.CognitiveServices/accounts/{openai_account_name}'
+        openai_resource_endpoint = 'https://es-openai-resource.openai.azure.com/openai/deployments/test1/chat/completions?api-version=2024-06-15-preview'
+
         self.kwargs.update({
             'monitor': self.create_random_name('monitor', 20),
             'rg': resource_group,
             'email': email,
             'integration_name': 'default',
             'key':'9e1bac69b92242129ad1f2373dd06939',
-            'openAIResourceId': '/subscriptions/a81c0054-6c92-41aa-a235-4f9f98f917c6/resourceGroups/es-cloudtests-portal/providers/Microsoft.CognitiveServices/accounts/es-openAi-resource',
-            'openAIResourceEndpoint': 'https://es-openai-resource.openai.azure.com/openai/deployments/test1/chat/completions?api-version=2024-06-15-preview',
+            'openAIResourceId': openai_resource_id,
+            'openAIResourceEndpoint': openai_resource_endpoint,
         })
 
         self.cmd('elastic monitor create '
