@@ -15,17 +15,17 @@ class MongoDBScenario(ScenarioTest):
         self.kwargs.update({
             'name': 'MongoDBCLITestOrg2',
             'location': 'eastus2',
-            'subscription': '911e07bd-f921-4b16-a206-6af36bfb7fbc',
-            'marketplace_subscription_id': '911e07bd-f921-4b16-a206-6af36bfb7fbc',
+            'subscription': '00000000-0000-0000-0000-000000000000',
+            'marketplace_subscription_id': '00000000-0000-0000-0000-000000000000',
             'publisher_id': 'mongodb',
             'offer_id': 'mongodb_atlas_azure_native_prod',
             'plan_id': 'private_plan',
             'plan_name': 'Pay as You Go (Free) (Private)',
             'term_unit': 'P1M',
             'term_id': 'gmz7xq9ge3py',
-            'user_first_name': 'Ajay',
-            'user_last_name': 'Kumar',
-            'user_email': 'ajaykumar@microsoft.com',
+            'user_first_name': 'dummy',
+            'user_last_name': 'dummy',
+            'user_email': 'test@example.com',
             'organization-name': 'MongoDBCLITestOrg2',
             'resource_group': 'cli-test-rg'
         })
