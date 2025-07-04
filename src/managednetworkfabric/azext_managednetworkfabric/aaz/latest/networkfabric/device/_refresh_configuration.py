@@ -12,19 +12,19 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "networkfabric device reboot",
+    "networkfabric device refresh-configuration",
 )
-class Reboot(AAZCommand):
-    """Reboot the Network Device.
+class RefreshConfiguration(AAZCommand):
+    """Refreshes the configuration the Network Device.
 
-    :example: NetworkDevices_Reboot_MaximumSet_Gen
-        az networkfabric device reboot --resource-group example-rg --resource-name example-device --reboot-type GracefulRebootWithZTP
+    :example: NetworkDevices_RefreshConfiguration_MaximumSet_Gen
+        az networkfabric device refresh-configuration --resource-group example-rg --resource-name example-device
     """
 
     _aaz_info = {
         "version": "2024-06-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkdevices/{}/reboot", "2024-06-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkdevices/{}/refreshconfiguration", "2024-06-15-preview"],
         ]
     }
 
@@ -57,21 +57,11 @@ class Reboot(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
-
-        # define Arg Group "Body"
-
-        _args_schema = cls._args_schema
-        _args_schema.reboot_type = AAZStrArg(
-            options=["--reboot-type"],
-            arg_group="Body",
-            help="Type of reboot to be performed. Example: GracefulRebootWithZTP",
-            enum={"GracefulRebootWithZTP": "GracefulRebootWithZTP", "GracefulRebootWithoutZTP": "GracefulRebootWithoutZTP", "UngracefulRebootWithZTP": "UngracefulRebootWithZTP", "UngracefulRebootWithoutZTP": "UngracefulRebootWithoutZTP"},
-        )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.NetworkDevicesReboot(ctx=self.ctx)()
+        yield self.NetworkDevicesRefreshConfiguration(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -86,7 +76,7 @@ class Reboot(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class NetworkDevicesReboot(AAZHttpOperation):
+    class NetworkDevicesRefreshConfiguration(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -116,7 +106,7 @@ class Reboot(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedNetworkFabric/networkDevices/{networkDeviceName}/reboot",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedNetworkFabric/networkDevices/{networkDeviceName}/refreshConfiguration",
                 **self.url_parameters
             )
 
@@ -160,24 +150,10 @@ class Reboot(AAZCommand):
         def header_parameters(self):
             parameters = {
                 **self.serialize_header_param(
-                    "Content-Type", "application/json",
-                ),
-                **self.serialize_header_param(
                     "Accept", "application/json",
                 ),
             }
             return parameters
-
-        @property
-        def content(self):
-            _content_value, _builder = self.new_content_builder(
-                self.ctx.args,
-                typ=AAZObjectType,
-                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
-            )
-            _builder.set_prop("rebootType", AAZStrType, ".reboot_type")
-
-            return self.serialize_content(_content_value)
 
         def on_200(self, session):
             data = self.deserialize_http_content(session)
@@ -202,13 +178,13 @@ class Reboot(AAZCommand):
                 flags={"read_only": True},
             )
             _schema_on_200.error = AAZObjectType()
-            _RebootHelper._build_schema_error_detail_read(_schema_on_200.error)
+            _RefreshConfigurationHelper._build_schema_error_detail_read(_schema_on_200.error)
 
             return cls._schema_on_200
 
 
-class _RebootHelper:
-    """Helper class for Reboot"""
+class _RefreshConfigurationHelper:
+    """Helper class for RefreshConfiguration"""
 
     _schema_error_detail_read = None
 
@@ -264,4 +240,4 @@ class _RebootHelper:
         _schema.target = cls._schema_error_detail_read.target
 
 
-__all__ = ["Reboot"]
+__all__ = ["RefreshConfiguration"]
