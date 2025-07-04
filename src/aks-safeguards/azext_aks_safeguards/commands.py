@@ -14,9 +14,11 @@ def load_command_table(self, _):  # pylint: disable=unused-argument
     from .custom import AKSSafeguardsCreateCustom as Create
     from .custom import AKSSafeguardsUpdateCustom as Update
     from .custom import AKSSafeguardsDeleteCustom as Delete
+    from .custom import AKSSafeguardsListCustom as List
 
-    with self.command_group("aks safeguards", is_preview=True):
+    with self.command_group("aks safeguards", is_preview=False):
         self.command_table["aks safeguards show"] = Show(loader=self)
         self.command_table["aks safeguards create"] = Create(loader=self)
         self.command_table["aks safeguards update"] = Update(loader=self)
         self.command_table["aks safeguards delete"] = Delete(loader=self)
+        self.command_table["aks safeguards list"] = List(loader=self)

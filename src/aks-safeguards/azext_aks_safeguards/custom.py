@@ -13,6 +13,7 @@ from .aaz.latest.aks.safeguards._create import Create
 from .aaz.latest.aks.safeguards._update import Update
 from .aaz.latest.aks.safeguards._show import Show
 from .aaz.latest.aks.safeguards._delete import Delete
+from .aaz.latest.aks.safeguards._list import List
 from azure.cli.core.aaz import *
 from azure.cli.core.azclierror import ArgumentUsageError
 
@@ -84,6 +85,17 @@ class AKSSafeguardsUpdateCustom(Update):
 
 
 class AKSSafeguardsCreateCustom(Create):
+
+    def pre_operations(self):
+        _validate_and_set_managed_cluster_argument(self.ctx)
+
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        _args_schema = super()._build_arguments_schema(*args, **kwargs)
+        return _add_resource_group_cluster_name_subscription_id_args(_args_schema)
+
+
+class AKSSafeguardsListCustom(List):
 
     def pre_operations(self):
         _validate_and_set_managed_cluster_argument(self.ctx)

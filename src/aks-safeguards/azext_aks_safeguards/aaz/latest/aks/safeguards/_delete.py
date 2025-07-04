@@ -49,16 +49,6 @@ class Delete(AAZCommand):
             help="The fully qualified Azure Resource manager identifier of the Managed Cluster.",
             required=False,
         )
-        _args_schema.resource_group = AAZStrArg(
-            options=["-g", "--resource-group"],
-            help="The name of the resource group. You can configure the default group using az configure --defaults group=<name>.",
-            required=False,
-        )
-        _args_schema.cluster_name = AAZStrArg(
-            options=["--name", "-n"],
-            help="The name of the Managed Cluster.",
-            required=False,
-        )
         return cls._args_schema
 
     def _execute_operations(self):
