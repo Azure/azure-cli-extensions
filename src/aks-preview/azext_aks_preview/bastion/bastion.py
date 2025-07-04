@@ -223,8 +223,8 @@ async def _aks_bastion_launch_subshell(kubeconfig_path, port):
         env = os.environ.copy()
         env.update({"KUBECONFIG": kubeconfig_path})
         shell_cmd, updated_shell_cmd = _aks_bastion_prepare_shell_cmd(kubeconfig_path)
-        logger.info(
-            "Launching subshell '%s' with KUBECONFIG set to '%s'",
+        logger.warning(
+            "Launching subshell with command '%s'. Setting env var KUBECONFIG to '%s'.",
             updated_shell_cmd,
             kubeconfig_path,
         )
