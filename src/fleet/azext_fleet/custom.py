@@ -622,3 +622,9 @@ def generate_update_run(cmd,  # pylint: disable=unused-argument
         fleet_name,
         auto_upgrade_profile_name
     )
+
+def list_gates_by_fleet(cmd,  # pylint: disable=unused-argument
+                             client,
+                             resource_group_name,
+                             fleet_name):
+    return client.list_by_fleet(resource_group_name, fleet_name)
