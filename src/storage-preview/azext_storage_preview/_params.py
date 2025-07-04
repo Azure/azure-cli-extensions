@@ -7,6 +7,7 @@ from azure.cli.core.commands.parameters import (get_enum_type, get_three_state_f
                                                 tags_type, edge_zone_type, file_type)
 from azure.cli.core.commands.validators import get_default_location_from_resource_group
 from azure.cli.core.local_context import LocalContextAttribute, LocalContextAction, ALL
+from azure.cli.core.profiles import ResourceType
 
 from ._validators import (get_datetime_type, validate_metadata, validate_bypass, validate_subnet,
                           validate_azcopy_upload_destination_url, validate_azcopy_download_source_url,
@@ -25,12 +26,12 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
     from knack.arguments import CLIArgumentType
     from azure.cli.core.commands.parameters import get_resource_name_completion_list
 
-    from .sdkutil import get_table_data_type
     from .completers import get_storage_name_completion_list, get_container_name_completions
 
     t_base_blob_service = self.get_sdk('blob.baseblobservice#BaseBlobService')
     t_file_service = self.get_sdk('file#FileService')
-    t_table_service = get_table_data_type(self.cli_ctx, 'table', 'TableService')
+    t_table_service = self.get_sdk('_table_service_client#TableServiceClient',
+                                   resource_type=ResourceType.DATA_STORAGE_TABLE)
 
     acct_name_type = CLIArgumentType(options_list=['--account-name', '-n'], help='The storage account name.',
                                      id_part='name',
@@ -388,7 +389,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                         'Possible values include: `Enabled` or `Disabled`.')
         c.argument('account_name', acct_name_type, options_list=['--name', '-n'])
         c.argument('resource_group_name', required=False, validator=process_resource_group)
-        c.argument('enable_extended_groups', arg_type=get_three_state_flag(),
+        c.argument('enable_extended_groups', arg_type=get_three_state_flag(), is_preview=True,
                    help='Enable extended group support with local users feature, if set to true.')
 
     for scope in ['storage account create', 'storage account update']:
