@@ -32,7 +32,7 @@ def _validate_and_set_managed_cluster_argument(ctx):
             "You must provide either 'managed_cluster' or both 'resource_group' and 'cluster_name', but not both.")
 
     if not has_managed_cluster:
-        args.managed_cluster = f"/subscriptions/{ctx.subscription_id}/resourceGroups/{args.resource_group}/providers/Microsoft.ContainerService/managedClusters/{args.cluster_name}"
+        args.managed_cluster = f"subscriptions/{ctx.subscription_id}/resourceGroups/{args.resource_group}/providers/Microsoft.ContainerService/managedClusters/{args.cluster_name}"
 
 
 def _add_resource_group_cluster_name_subscription_id_args(_args_schema):
@@ -46,6 +46,7 @@ def _add_resource_group_cluster_name_subscription_id_args(_args_schema):
         help="The name of the Managed Cluster.",
         required=False,
     )
+    _args_schema.managed_cluster.required = False
     return _args_schema
 
 
