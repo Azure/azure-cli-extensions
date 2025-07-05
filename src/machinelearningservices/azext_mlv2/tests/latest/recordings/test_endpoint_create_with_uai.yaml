@@ -1,0 +1,302 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate, br
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.9.7 (Linux-5.10.16.3-microsoft-standard-WSL2-x86_64-with-glibc2.31)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/onlineEndpoints/mire2etest?api-version=0000-00-00
+  response:
+    body:
+      string: '{"error": {"code": "ResourceNotFound", "message": "The Resource ''Microsoft.MachineLearningServices/workspaces/dsvm_master/onlineEndpoints/mire2etest''
+        under resource group ''dsvm_master'' was not found. For more details please
+        go to https://aka.ms/ARMResourceNotFoundFix"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '270'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 07 Jun 2022 16:35:11 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-failure-cause:
+      - gateway
+    status:
+      code: 404
+      message: Not Found
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate, br
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.9.7 (Linux-5.10.16.3-microsoft-standard-WSL2-x86_64-with-glibc2.31)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/dsvm_master",
+        "name": "dsvm_master", "type": "Microsoft.MachineLearningServices/workspaces",
+        "location": "centraluseuap", "tags": {}, "etag": null, "properties": {"friendlyName":
+        "dsvm_master", "description": "", "storageAccount": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dsvm_master/providers/microsoft.storage/storageaccounts/dsvmmaster6912808807",
+        "keyVault": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dsvm_master/providers/microsoft.keyvault/vaults/dsvmmaster2743744523",
+        "applicationInsights": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dsvm_master/providers/microsoft.insights/components/dsvmmaster4700108333",
+        "hbiWorkspace": false, "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47",
+        "imageBuildCompute": null, "provisioningState": "Succeeded", "containerRegistry":
+        "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.ContainerRegistry/registries/3a59e9769196481792c5da1e6dfae03c",
+        "acrSkuTier": null, "notebookInfo": {"resourceId": "452c83d2860948038403d4dc96214d1b",
+        "fqdn": "ml-dsvmmaste-centraluseuap-3a59e976-9196-4817-92c5-da1e6dfae03c.notebooks.azure.net",
+        "isPrivateLinkEnabled": false, "notebookPreparationError": null}, "storageHnsEnabled":
+        false, "workspaceId": "3a59e976-9196-4817-92c5-da1e6dfae03c", "linkedModelInventoryArmId":
+        null, "privateLinkCount": 0, "publicNetworkAccess": "Enabled", "discoveryUrl":
+        "https://master.api.azureml-test.ms/discovery", "mlFlowTrackingUri": "azureml://master.api.azureml-test.ms/mlflow/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/dsvm_master",
+        "sdkTelemetryAppInsightsKey": "efed27c9-e6dc-4190-9989-79f9b7f3a4b7", "sasGetterUri":
+        null}, "identity": {"type": "SystemAssigned", "principalId": "f8b53650-c652-4b9c-aaee-3aa2ea3f4534",
+        "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47"}, "sku": {"name": "Basic",
+        "tier": "Basic"}, "systemData": {"createdAt": "2022-03-28T17:21:15.3914786Z",
+        "createdBy": "banide@microsoft.com", "createdByType": "User", "lastModifiedAt":
+        "2022-03-28T17:21:15.3914786Z", "lastModifiedBy": "banide@microsoft.com",
+        "lastModifiedByType": "User"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2402'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 07 Jun 2022 16:35:12 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:512cc15a-13b5-415b-bfd0-dce7accb6bb1
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-test-westus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.015'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"tags": {"endpointkey1": "newval1", "dummy": "dummy"}, "location": "centraluseuap",
+      "identity": {"type": "SystemAssigned"}, "properties": {"authMode": "AMLToken",
+      "description": "some description", "properties": {}, "mirrorTraffic": {}, "traffic":
+      {}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate, br
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '253'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.9.7 (Linux-5.10.16.3-microsoft-standard-WSL2-x86_64-with-glibc2.31)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/onlineEndpoints/mire2etest?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/dsvm_master/onlineEndpoints/mire2etest",
+        "name": "mire2etest", "type": "Microsoft.MachineLearningServices/workspaces/onlineEndpoints",
+        "properties": {"description": "some description", "properties": {"azureml.onlineendpointid":
+        "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dsvm_master/providers/microsoft.machinelearningservices/workspaces/dsvm_master/onlineendpoints/mire2etest",
+        "AzureAsyncOperationUri": "https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/centraluseuap/mfeOperationsStatus/oe:3a59e976-9196-4817-92c5-da1e6dfae03c:c4e419d2-2317-46b9-9de3-aac024d58c3c?api-version=2022-02-01-preview"},
+        "scoringUri": null, "swaggerUri": null, "authMode": "AMLToken", "provisioningState":
+        "Creating", "compute": null, "traffic": {}, "mirrorTraffic": {}, "publicNetworkAccess":
+        "Enabled"}, "systemData": {"createdAt": "2022-06-07T16:35:22.5703452Z", "createdBy":
+        "Banibrata De", "lastModifiedAt": "2022-06-07T16:35:22.5703457Z"}, "tags":
+        {"endpointkey1": "newval1", "dummy": "dummy"}, "location": "centraluseuap",
+        "kind": "Managed", "identity": {"type": "UserAssigned", "principalId": "00000000-0000-0000-0000-000000000000",
+        "tenantId": "e485c4d1-bbc8-41c4-89f0-b759794e141e", "userAssignedIdentities":
+        {"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.ManagedIdentity/userAssignedIdentities/vienna-test-westus2-msi":
+        {"principalId": "88477434-0c49-4e52-8ad1-e1b85a3e46a3", "clientId": "1b7dab80-3afc-41de-8073-ead68fb41ac9"}}}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/centraluseuap/mfeOperationsStatus/oe:3a59e976-9196-4817-92c5-da1e6dfae03c:c4e419d2-2317-46b9-9de3-aac024d58c3c?api-version=2022-02-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '1734'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 07 Jun 2022 16:35:23 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dsvm_master/providers/Microsoft.MachineLearningServices/workspaces/dsvm_master/onlineEndpoints/mire2etest?api-version=2022-02-01-preview
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:512cc15a-13b5-415b-bfd0-dce7accb6bb1
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aml-cluster:
+      - vienna-test-westus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-async-operation-timeout:
+      - PT30M
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '6.131'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, br
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.9.7 (Linux-5.10.16.3-microsoft-standard-WSL2-x86_64-with-glibc2.31)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/centraluseuap/mfeOperationsStatus/oe:3a59e976-9196-4817-92c5-da1e6dfae03c:c4e419d2-2317-46b9-9de3-aac024d58c3c?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/centraluseuap/mfeOperationsStatus/oe:3a59e976-9196-4817-92c5-da1e6dfae03c:c4e419d2-2317-46b9-9de3-aac024d58c3c",
+        "name": "oe:3a59e976-9196-4817-92c5-da1e6dfae03c:c4e419d2-2317-46b9-9de3-aac024d58c3c",
+        "startTime": "2022-06-07T16:35:20.9175698Z", "endTime": "2022-06-07T16:35:33.7177376Z",
+        "percentComplete": 100.0, "status": "Succeeded"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '451'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 07 Jun 2022 16:35:53 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:512cc15a-13b5-415b-bfd0-dce7accb6bb1
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-test-westus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.087'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, br
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.9.7 (Linux-5.10.16.3-microsoft-standard-WSL2-x86_64-with-glibc2.31)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/onlineEndpoints/mire2etest?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/dsvm_master/onlineEndpoints/mire2etest",
+        "name": "mire2etest", "type": "Microsoft.MachineLearningServices/workspaces/onlineEndpoints",
+        "properties": {"description": "some description", "properties": {"azureml.onlineendpointid":
+        "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dsvm_master/providers/microsoft.machinelearningservices/workspaces/dsvm_master/onlineendpoints/mire2etest",
+        "AzureAsyncOperationUri": "https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/centraluseuap/mfeOperationsStatus/oe:3a59e976-9196-4817-92c5-da1e6dfae03c:c4e419d2-2317-46b9-9de3-aac024d58c3c?api-version=2022-02-01-preview"},
+        "scoringUri": "https://mire2etest.westus2-main.inference.ml.azure.com/score",
+        "swaggerUri": "https://mire2etest.westus2-main.inference.ml.azure.com/swagger.json",
+        "authMode": "AMLToken", "provisioningState": "Succeeded", "compute": null,
+        "traffic": {}, "mirrorTraffic": {}, "publicNetworkAccess": "Enabled"}, "systemData":
+        {"createdAt": "2022-06-07T16:35:22.5703452Z", "createdBy": "Banibrata De",
+        "lastModifiedAt": "2022-06-07T16:35:33.8718838Z"}, "tags": {"endpointkey1":
+        "newval1", "dummy": "dummy"}, "location": "centraluseuap", "kind": "Managed",
+        "identity": {"type": "UserAssigned", "principalId": "00000000-0000-0000-0000-000000000000",
+        "tenantId": "e485c4d1-bbc8-41c4-89f0-b759794e141e", "userAssignedIdentities":
+        {"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.ManagedIdentity/userAssignedIdentities/vienna-test-westus2-msi":
+        {"principalId": "88477434-0c49-4e52-8ad1-e1b85a3e46a3", "clientId": "1b7dab80-3afc-41de-8073-ead68fb41ac9"}}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1858'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 07 Jun 2022 16:35:53 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:512cc15a-13b5-415b-bfd0-dce7accb6bb1
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-test-westus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.108'
+    status:
+      code: 200
+      message: OK
+version: 1

@@ -1,0 +1,1242 @@
+interactions:
+- request:
+    body: '{"properties": {"description": "This is description", "tags": {"test":
+      "test"}, "isAnonymous": false, "isArchived": false, "condaFile": "name: example-environment\nchannels:\n-
+      conda-forge\ndependencies:\n- python=3.6.1\n- pip\n- pip:\n  - nbgitpuller\n  -
+      sphinx-gallery\n  - pandas\n  - matplotlib\n", "image": "mcr.microsoft.com/azureml/openmpi3.1.2-ubuntu18.04"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '367'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.11 (Windows-10-10.0.22000-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/environments/000000000000000/versions/1?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/test-environment-000004/versions/1",
+        "name": "1", "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
+        "properties": {"description": "This is description", "tags": {"test": "test"},
+        "properties": {}, "isArchived": false, "isAnonymous": false, "environmentType":
+        "UserCreated", "image": "mcr.microsoft.com/azureml/openmpi3.1.2-ubuntu18.04",
+        "condaFile": "{\n  \"channels\": [\n    \"conda-forge\"\n  ],\n  \"dependencies\":
+        [\n    \"python=3.6.1\",\n    \"pip\",\n    {\n      \"pip\": [\n        \"nbgitpuller\",\n        \"sphinx-gallery\",\n        \"pandas\",\n        \"matplotlib\"\n      ]\n    }\n  ],\n  \"name\":
+        \"azureml_8f1d4517a9cdadbbbe72ab7c4b058009\"\n}", "osType": "Linux"}, "systemData":
+        {"createdAt": "2022-03-16T05:25:33.6859148Z", "createdBy": "Harneet Virk",
+        "createdByType": "User", "lastModifiedAt": "2022-03-16T05:25:33.6859148Z",
+        "lastModifiedBy": "Harneet Virk", "lastModifiedByType": "User"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1131'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 16 Mar 2022 05:25:36 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/v2testharnvir-rg/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/test-environment-000004/versions/1?api-version=2022-02-01-preview
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:512cc15a-13b5-415b-bfd0-dce7accb6bb1
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '3.791'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.11 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/environments/000000000000000/versions/1?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/test-environment-000004/versions/1",
+        "name": "1", "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
+        "properties": {"description": "This is description", "tags": {"test": "test"},
+        "properties": {}, "isArchived": false, "isAnonymous": false, "environmentType":
+        "UserCreated", "image": "mcr.microsoft.com/azureml/openmpi3.1.2-ubuntu18.04",
+        "condaFile": "{\n  \"channels\": [\n    \"conda-forge\"\n  ],\n  \"dependencies\":
+        [\n    \"python=3.6.1\",\n    \"pip\",\n    {\n      \"pip\": [\n        \"nbgitpuller\",\n        \"sphinx-gallery\",\n        \"pandas\",\n        \"matplotlib\"\n      ]\n    }\n  ],\n  \"name\":
+        \"azureml_8f1d4517a9cdadbbbe72ab7c4b058009\"\n}", "osType": "Linux"}, "systemData":
+        {"createdAt": "2022-03-16T05:25:33.6859148Z", "createdBy": "Harneet Virk",
+        "createdByType": "User", "lastModifiedAt": "2022-03-16T05:25:33.6859148Z",
+        "lastModifiedBy": "Harneet Virk", "lastModifiedByType": "User"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1131'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 16 Mar 2022 05:25:36 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:512cc15a-13b5-415b-bfd0-dce7accb6bb1
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.141'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.11 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/environments?api-version=0000-00-00&listViewType=ActiveOnly
+  response:
+    body:
+      string: '{"value": [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/AzureML-Image-Build",
+        "name": "AzureML-Image-Build", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "2", "nextVersion": "2022-03-16-05-25-37-3653619"},
+        "systemData": {"createdAt": "2022-03-16T05:25:34.4923509Z", "createdBy": "Microsoft",
+        "createdByType": "User", "lastModifiedAt": "2022-03-16T05:25:34.4923509Z",
+        "lastModifiedBy": "Microsoft", "lastModifiedByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/test-environment-000004",
+        "name": "test-environment-000004", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "1", "nextVersion": "2022-03-16-05-25-37-3654217"},
+        "systemData": {"createdAt": "2022-03-16T05:25:33.6859148Z", "createdBy": "Harneet
+        Virk", "createdByType": "User", "lastModifiedAt": "2022-03-16T05:25:33.6859148Z",
+        "lastModifiedBy": "Harneet Virk", "lastModifiedByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/AzureML-dummy",
+        "name": "AzureML-dummy", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "1", "nextVersion": "2022-03-16-05-25-37-3654291"},
+        "systemData": {"createdAt": "2022-03-16T05:24:58.4916431Z", "createdBy": "Microsoft",
+        "createdByType": "User", "lastModifiedAt": "2022-03-16T05:24:58.4916431Z",
+        "lastModifiedBy": "Microsoft", "lastModifiedByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/AzureML-Global-Test-Env",
+        "name": "AzureML-Global-Test-Env", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "13", "nextVersion": "2022-03-16-05-25-37-3654336"},
+        "systemData": {"createdAt": "2022-03-16T05:24:48.1067006Z", "createdBy": "Microsoft",
+        "createdByType": "User", "lastModifiedAt": "2022-03-16T05:24:48.1067006Z",
+        "lastModifiedBy": "Microsoft", "lastModifiedByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/AzureML
+        Test Environment", "name": "AzureML Test Environment", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "1", "nextVersion": "2022-03-16-05-25-37-3654379"},
+        "systemData": {"createdAt": "2022-03-16T05:24:38.8064499Z", "createdBy": "Microsoft",
+        "createdByType": "User", "lastModifiedAt": "2022-03-16T05:24:38.8064499Z",
+        "lastModifiedBy": "Microsoft", "lastModifiedByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/AzureML
+        Global Environment", "name": "AzureML Global Environment", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "3", "nextVersion": "2022-03-16-05-25-37-3654421"},
+        "systemData": {"createdAt": "2022-03-16T05:23:50.7449428Z", "createdBy": "Microsoft",
+        "createdByType": "User", "lastModifiedAt": "2022-03-16T05:23:50.7449428Z",
+        "lastModifiedBy": "Microsoft", "lastModifiedByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/AzureMLf6814d85-031e-4100-a922-05d04b48606f",
+        "name": "AzureMLf6814d85-031e-4100-a922-05d04b48606f", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "1", "nextVersion": "2022-03-16-05-25-37-3654464"},
+        "systemData": {"createdAt": "2022-03-16T05:23:35.4245495Z", "createdBy": "Microsoft",
+        "createdByType": "User", "lastModifiedAt": "2022-03-16T05:23:35.4245495Z",
+        "lastModifiedBy": "Microsoft", "lastModifiedByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/AzureML-Test-Label-Environment",
+        "name": "AzureML-Test-Label-Environment", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "2", "nextVersion": "2022-03-16-05-25-37-3654507"},
+        "systemData": {"createdAt": "2022-03-16T05:22:47.4734844Z", "createdBy": "Microsoft",
+        "createdByType": "User", "lastModifiedAt": "2022-03-16T05:22:47.4734844Z",
+        "lastModifiedBy": "Microsoft", "lastModifiedByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/AzureML997f2740-8379-45f7-9105-18c4c2d1f592",
+        "name": "AzureML997f2740-8379-45f7-9105-18c4c2d1f592", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "1", "nextVersion": "2022-03-16-05-25-37-3654548"},
+        "systemData": {"createdAt": "2022-03-16T05:14:53.7500166Z", "createdBy": "Microsoft",
+        "createdByType": "User", "lastModifiedAt": "2022-03-16T05:14:53.7500166Z",
+        "lastModifiedBy": "Microsoft", "lastModifiedByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/AzureML-Designer",
+        "name": "AzureML-Designer", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "41", "nextVersion": "2022-03-16-05-25-37-3654591"},
+        "systemData": {"createdAt": "2022-03-16T05:07:46.41705Z", "createdBy": "Microsoft",
+        "createdByType": "User", "lastModifiedAt": "2022-03-16T05:07:46.41705Z", "lastModifiedBy":
+        "Microsoft", "lastModifiedByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/AzureMLcfc603aa-8a76-4cf0-9d43-ce866ed805d8",
+        "name": "AzureMLcfc603aa-8a76-4cf0-9d43-ce866ed805d8", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "1", "nextVersion": "2022-03-16-05-25-37-3654642"},
+        "systemData": {"createdAt": "2022-03-16T04:14:54.1189007Z", "createdBy": "Microsoft",
+        "createdByType": "User", "lastModifiedAt": "2022-03-16T04:14:54.1189007Z",
+        "lastModifiedBy": "Microsoft", "lastModifiedByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/AzureMLae80e228-80c3-4218-820e-de2a776179dc",
+        "name": "AzureMLae80e228-80c3-4218-820e-de2a776179dc", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "1", "nextVersion": "2022-03-16-05-25-37-3654685"},
+        "systemData": {"createdAt": "2022-03-16T04:07:46.4725418Z", "createdBy": "Microsoft",
+        "createdByType": "User", "lastModifiedAt": "2022-03-16T04:07:46.4725418Z",
+        "lastModifiedBy": "Microsoft", "lastModifiedByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/AzureML81c294fb-cf49-44ec-91a2-ea817cb49149",
+        "name": "AzureML81c294fb-cf49-44ec-91a2-ea817cb49149", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "1", "nextVersion": "2022-03-16-05-25-37-3654728"},
+        "systemData": {"createdAt": "2022-03-16T03:32:21.2588208Z", "createdBy": "Microsoft",
+        "createdByType": "User", "lastModifiedAt": "2022-03-16T03:32:21.2588208Z",
+        "lastModifiedBy": "Microsoft", "lastModifiedByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/AzureMLfef2c7f7-1e7e-4af2-9fac-262b7ad2d491",
+        "name": "AzureMLfef2c7f7-1e7e-4af2-9fac-262b7ad2d491", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "1", "nextVersion": "2022-03-16-05-25-37-3654784"},
+        "systemData": {"createdAt": "2022-03-16T03:14:08.1350072Z", "createdBy": "Microsoft",
+        "createdByType": "User", "lastModifiedAt": "2022-03-16T03:14:08.1350072Z",
+        "lastModifiedBy": "Microsoft", "lastModifiedByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/AzureML56b17c7e-29ac-44ae-bdc2-cd2ff48a3566",
+        "name": "AzureML56b17c7e-29ac-44ae-bdc2-cd2ff48a3566", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "1", "nextVersion": "2022-03-16-05-25-37-3654828"},
+        "systemData": {"createdAt": "2022-03-16T01:25:13.3368313Z", "createdBy": "Microsoft",
+        "createdByType": "User", "lastModifiedAt": "2022-03-16T01:25:13.3368313Z",
+        "lastModifiedBy": "Microsoft", "lastModifiedByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/AzureML8a33f2e2-d0c0-48c9-bf7d-a1e62b5a5055",
+        "name": "AzureML8a33f2e2-d0c0-48c9-bf7d-a1e62b5a5055", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "1", "nextVersion": "2022-03-16-05-25-37-3654870"},
+        "systemData": {"createdAt": "2022-03-16T01:16:22.2284287Z", "createdBy": "Microsoft",
+        "createdByType": "User", "lastModifiedAt": "2022-03-16T01:16:22.2284287Z",
+        "lastModifiedBy": "Microsoft", "lastModifiedByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/AzureMLef875d7a-982d-44b2-be32-7e60f3939346",
+        "name": "AzureMLef875d7a-982d-44b2-be32-7e60f3939346", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "1", "nextVersion": "2022-03-16-05-25-37-3654913"},
+        "systemData": {"createdAt": "2022-03-16T01:04:38.7391782Z", "createdBy": "Microsoft",
+        "createdByType": "User", "lastModifiedAt": "2022-03-16T01:04:38.7391782Z",
+        "lastModifiedBy": "Microsoft", "lastModifiedByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/AzureMLfb3ca1fd-32a3-44ac-b4b0-1966d9640430",
+        "name": "AzureMLfb3ca1fd-32a3-44ac-b4b0-1966d9640430", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "1", "nextVersion": "2022-03-16-05-25-37-3654963"},
+        "systemData": {"createdAt": "2022-03-16T00:50:42.3890577Z", "createdBy": "Microsoft",
+        "createdByType": "User", "lastModifiedAt": "2022-03-16T00:50:42.3890577Z",
+        "lastModifiedBy": "Microsoft", "lastModifiedByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/AzureML-pytorch-1.10-ubuntu18.04-py38-cuda11-gpu",
+        "name": "AzureML-pytorch-1.10-ubuntu18.04-py38-cuda11-gpu", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "15", "nextVersion": "2022-03-16-05-25-37-3655005"},
+        "systemData": {"createdAt": "2022-03-16T00:29:33.681022Z", "createdBy": "Microsoft",
+        "createdByType": "User", "lastModifiedAt": "2022-03-16T00:29:33.681022Z",
+        "lastModifiedBy": "Microsoft", "lastModifiedByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/AzureML-pytorch-1.8-ubuntu18.04-py37-cuda11-gpu",
+        "name": "AzureML-pytorch-1.8-ubuntu18.04-py37-cuda11-gpu", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "22", "nextVersion": "2022-03-16-05-25-37-3655048"},
+        "systemData": {"createdAt": "2022-03-16T00:29:32.434488Z", "createdBy": "Microsoft",
+        "createdByType": "User", "lastModifiedAt": "2022-03-16T00:29:32.434488Z",
+        "lastModifiedBy": "Microsoft", "lastModifiedByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/AzureML-pytorch-1.9-ubuntu18.04-py37-cuda11-gpu",
+        "name": "AzureML-pytorch-1.9-ubuntu18.04-py37-cuda11-gpu", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "22", "nextVersion": "2022-03-16-05-25-37-3655090"},
+        "systemData": {"createdAt": "2022-03-16T00:29:32.0069681Z", "createdBy": "Microsoft",
+        "createdByType": "User", "lastModifiedAt": "2022-03-16T00:29:32.0069681Z",
+        "lastModifiedBy": "Microsoft", "lastModifiedByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/AzureML-pytorch-1.7-ubuntu18.04-py37-cuda11-gpu",
+        "name": "AzureML-pytorch-1.7-ubuntu18.04-py37-cuda11-gpu", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "29", "nextVersion": "2022-03-16-05-25-37-3655132"},
+        "systemData": {"createdAt": "2022-03-16T00:29:31.012061Z", "createdBy": "Microsoft",
+        "createdByType": "User", "lastModifiedAt": "2022-03-16T00:29:31.012061Z",
+        "lastModifiedBy": "Microsoft", "lastModifiedByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/AzureML-tensorflow-2.4-ubuntu18.04-py37-cuda11-gpu",
+        "name": "AzureML-tensorflow-2.4-ubuntu18.04-py37-cuda11-gpu", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "30", "nextVersion": "2022-03-16-05-25-37-3655174"},
+        "systemData": {"createdAt": "2022-03-16T00:29:26.7412947Z", "createdBy": "Microsoft",
+        "createdByType": "User", "lastModifiedAt": "2022-03-16T00:29:26.7412947Z",
+        "lastModifiedBy": "Microsoft", "lastModifiedByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/AzureML-tensorflow-2.7-ubuntu20.04-py38-cuda11-gpu",
+        "name": "AzureML-tensorflow-2.7-ubuntu20.04-py38-cuda11-gpu", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "7", "nextVersion": "2022-03-16-05-25-37-3655216"},
+        "systemData": {"createdAt": "2022-03-16T00:29:25.9623503Z", "createdBy": "Microsoft",
+        "createdByType": "User", "lastModifiedAt": "2022-03-16T00:29:25.9623503Z",
+        "lastModifiedBy": "Microsoft", "lastModifiedByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/AzureML-tensorflow-2.5-ubuntu20.04-py38-cuda11-gpu",
+        "name": "AzureML-tensorflow-2.5-ubuntu20.04-py38-cuda11-gpu", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "6", "nextVersion": "2022-03-16-05-25-37-3655257"},
+        "systemData": {"createdAt": "2022-03-16T00:29:25.5486783Z", "createdBy": "Microsoft",
+        "createdByType": "User", "lastModifiedAt": "2022-03-16T00:29:25.5486783Z",
+        "lastModifiedBy": "Microsoft", "lastModifiedByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/AzureML-tensorflow-2.6-ubuntu20.04-py38-cuda11-gpu",
+        "name": "AzureML-tensorflow-2.6-ubuntu20.04-py38-cuda11-gpu", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "7", "nextVersion": "2022-03-16-05-25-37-3655311"},
+        "systemData": {"createdAt": "2022-03-16T00:29:24.9665002Z", "createdBy": "Microsoft",
+        "createdByType": "User", "lastModifiedAt": "2022-03-16T00:29:24.9665002Z",
+        "lastModifiedBy": "Microsoft", "lastModifiedByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/AzureML-sklearn-0.24-ubuntu18.04-py37-cpu",
+        "name": "AzureML-sklearn-0.24-ubuntu18.04-py37-cpu", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "25", "nextVersion": "2022-03-16-05-25-37-3655353"},
+        "systemData": {"createdAt": "2022-03-16T00:29:24.1698645Z", "createdBy": "Microsoft",
+        "createdByType": "User", "lastModifiedAt": "2022-03-16T00:29:24.1698645Z",
+        "lastModifiedBy": "Microsoft", "lastModifiedByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/AzureML-sklearn-1.0-ubuntu20.04-py38-cpu",
+        "name": "AzureML-sklearn-1.0-ubuntu20.04-py38-cpu", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "11", "nextVersion": "2022-03-16-05-25-37-3655394"},
+        "systemData": {"createdAt": "2022-03-16T00:29:23.3815476Z", "createdBy": "Microsoft",
+        "createdByType": "User", "lastModifiedAt": "2022-03-16T00:29:23.3815476Z",
+        "lastModifiedBy": "Microsoft", "lastModifiedByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/AzureML-lightgbm-3.2-ubuntu18.04-py37-cpu",
+        "name": "AzureML-lightgbm-3.2-ubuntu18.04-py37-cpu", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "27", "nextVersion": "2022-03-16-05-25-37-3655437"},
+        "systemData": {"createdAt": "2022-03-16T00:29:22.6892639Z", "createdBy": "Microsoft",
+        "createdByType": "User", "lastModifiedAt": "2022-03-16T00:29:22.6892639Z",
+        "lastModifiedBy": "Microsoft", "lastModifiedByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/AzureML-responsibleai-0.17-ubuntu20.04-py38-cpu",
+        "name": "AzureML-responsibleai-0.17-ubuntu20.04-py38-cpu", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "1", "nextVersion": "2022-03-16-05-25-37-3655479"},
+        "systemData": {"createdAt": "2022-03-16T00:29:22.2696417Z", "createdBy": "Microsoft",
+        "createdByType": "User", "lastModifiedAt": "2022-03-16T00:29:22.2696417Z",
+        "lastModifiedBy": "Microsoft", "lastModifiedByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/AzureML-pytorch-1.7-ubuntu18.04-py37-cpu-inference",
+        "name": "AzureML-pytorch-1.7-ubuntu18.04-py37-cpu-inference", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "32", "nextVersion": "2022-03-16-05-25-37-3655539"},
+        "systemData": {"createdAt": "2022-03-16T00:29:21.1895703Z", "createdBy": "Microsoft",
+        "createdByType": "User", "lastModifiedAt": "2022-03-16T00:29:21.1895703Z",
+        "lastModifiedBy": "Microsoft", "lastModifiedByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/AzureML-pytorch-1.6-ubuntu18.04-py37-cpu-inference",
+        "name": "AzureML-pytorch-1.6-ubuntu18.04-py37-cpu-inference", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "32", "nextVersion": "2022-03-16-05-25-37-3655582"},
+        "systemData": {"createdAt": "2022-03-16T00:29:20.3312191Z", "createdBy": "Microsoft",
+        "createdByType": "User", "lastModifiedAt": "2022-03-16T00:29:20.3312191Z",
+        "lastModifiedBy": "Microsoft", "lastModifiedByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/AzureML-tensorflow-1.15-ubuntu18.04-py37-cpu-inference",
+        "name": "AzureML-tensorflow-1.15-ubuntu18.04-py37-cpu-inference", "type":
+        "Microsoft.MachineLearningServices/workspaces/environments", "properties":
+        {"description": "", "tags": {}, "properties": {}, "isArchived": false, "latestVersion":
+        "32", "nextVersion": "2022-03-16-05-25-37-3655632"}, "systemData": {"createdAt":
+        "2022-03-16T00:29:19.4316964Z", "createdBy": "Microsoft", "createdByType":
+        "User", "lastModifiedAt": "2022-03-16T00:29:19.4316964Z", "lastModifiedBy":
+        "Microsoft", "lastModifiedByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/AzureML-tensorflow-2.4-ubuntu18.04-py37-cuda11.0.3-gpu-inference",
+        "name": "AzureML-tensorflow-2.4-ubuntu18.04-py37-cuda11.0.3-gpu-inference",
+        "type": "Microsoft.MachineLearningServices/workspaces/environments", "properties":
+        {"description": "", "tags": {}, "properties": {}, "isArchived": false, "latestVersion":
+        "33", "nextVersion": "2022-03-16-05-25-37-3655674"}, "systemData": {"createdAt":
+        "2022-03-16T00:29:18.4641749Z", "createdBy": "Microsoft", "createdByType":
+        "User", "lastModifiedAt": "2022-03-16T00:29:18.4641749Z", "lastModifiedBy":
+        "Microsoft", "lastModifiedByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/AzureML-tensorflow-2.4-ubuntu18.04-py37-cpu-inference",
+        "name": "AzureML-tensorflow-2.4-ubuntu18.04-py37-cpu-inference", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "32", "nextVersion": "2022-03-16-05-25-37-3655715"},
+        "systemData": {"createdAt": "2022-03-16T00:29:16.9465005Z", "createdBy": "Microsoft",
+        "createdByType": "User", "lastModifiedAt": "2022-03-16T00:29:16.9465005Z",
+        "lastModifiedBy": "Microsoft", "lastModifiedByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/AzureML-minimal-ubuntu18.04-py37-cpu-inference",
+        "name": "AzureML-minimal-ubuntu18.04-py37-cpu-inference", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "32", "nextVersion": "2022-03-16-05-25-37-3655758"},
+        "systemData": {"createdAt": "2022-03-16T00:29:16.2333373Z", "createdBy": "Microsoft",
+        "createdByType": "User", "lastModifiedAt": "2022-03-16T00:29:16.2333373Z",
+        "lastModifiedBy": "Microsoft", "lastModifiedByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/AzureML-mlflow-ubuntu18.04-py37-cpu-inference",
+        "name": "AzureML-mlflow-ubuntu18.04-py37-cpu-inference", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "32", "nextVersion": "2022-03-16-05-25-37-3655801"},
+        "systemData": {"createdAt": "2022-03-16T00:29:15.4890017Z", "createdBy": "Microsoft",
+        "createdByType": "User", "lastModifiedAt": "2022-03-16T00:29:15.4890017Z",
+        "lastModifiedBy": "Microsoft", "lastModifiedByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/AzureML-sklearn-0.24.1-ubuntu18.04-py37-cpu-inference",
+        "name": "AzureML-sklearn-0.24.1-ubuntu18.04-py37-cpu-inference", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "32", "nextVersion": "2022-03-16-05-25-37-3655843"},
+        "systemData": {"createdAt": "2022-03-16T00:29:14.7345306Z", "createdBy": "Microsoft",
+        "createdByType": "User", "lastModifiedAt": "2022-03-16T00:29:14.7345306Z",
+        "lastModifiedBy": "Microsoft", "lastModifiedByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/AzureML-xgboost-0.9-ubuntu18.04-py37-cpu-inference",
+        "name": "AzureML-xgboost-0.9-ubuntu18.04-py37-cpu-inference", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "32", "nextVersion": "2022-03-16-05-25-37-3655885"},
+        "systemData": {"createdAt": "2022-03-16T00:29:14.3111281Z", "createdBy": "Microsoft",
+        "createdByType": "User", "lastModifiedAt": "2022-03-16T00:29:14.3111281Z",
+        "lastModifiedBy": "Microsoft", "lastModifiedByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/AzureML-onnxruntime-1.6-ubuntu18.04-py37-cpu-inference",
+        "name": "AzureML-onnxruntime-1.6-ubuntu18.04-py37-cpu-inference", "type":
+        "Microsoft.MachineLearningServices/workspaces/environments", "properties":
+        {"description": "", "tags": {}, "properties": {}, "isArchived": false, "latestVersion":
+        "32", "nextVersion": "2022-03-16-05-25-37-3655927"}, "systemData": {"createdAt":
+        "2022-03-16T00:29:13.4592272Z", "createdBy": "Microsoft", "createdByType":
+        "User", "lastModifiedAt": "2022-03-16T00:29:13.4592272Z", "lastModifiedBy":
+        "Microsoft", "lastModifiedByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/AzureMLc207bf66-1d38-481f-a764-67540d937bc8",
+        "name": "AzureMLc207bf66-1d38-481f-a764-67540d937bc8", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "1", "nextVersion": "2022-03-16-05-25-37-3655977"},
+        "systemData": {"createdAt": "2022-03-15T23:14:09.1253624Z", "createdBy": "Microsoft",
+        "createdByType": "User", "lastModifiedAt": "2022-03-15T23:14:09.1253624Z",
+        "lastModifiedBy": "Microsoft", "lastModifiedByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/AzureMLc5895492-b65b-4802-b882-b771cb437568",
+        "name": "AzureMLc5895492-b65b-4802-b882-b771cb437568", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "1", "nextVersion": "2022-03-16-05-25-37-3656019"},
+        "systemData": {"createdAt": "2022-03-15T23:10:54.7621422Z", "createdBy": "Microsoft",
+        "createdByType": "User", "lastModifiedAt": "2022-03-15T23:10:54.7621422Z",
+        "lastModifiedBy": "Microsoft", "lastModifiedByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/AzureMLa8ae63b2-8456-4b41-aaa4-bec2a959d891",
+        "name": "AzureMLa8ae63b2-8456-4b41-aaa4-bec2a959d891", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "1", "nextVersion": "2022-03-16-05-25-37-3656062"},
+        "systemData": {"createdAt": "2022-03-15T22:36:47.8332523Z", "createdBy": "Microsoft",
+        "createdByType": "User", "lastModifiedAt": "2022-03-15T22:36:47.8332523Z",
+        "lastModifiedBy": "Microsoft", "lastModifiedByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/AzureML8dd6bcb0-ca0a-4aba-b50d-c119a1eb5751",
+        "name": "AzureML8dd6bcb0-ca0a-4aba-b50d-c119a1eb5751", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "1", "nextVersion": "2022-03-16-05-25-37-3656104"},
+        "systemData": {"createdAt": "2022-03-15T21:17:58.92692Z", "createdBy": "Microsoft",
+        "createdByType": "User", "lastModifiedAt": "2022-03-15T21:17:58.92692Z", "lastModifiedBy":
+        "Microsoft", "lastModifiedByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/AzureML3530289a-6263-40db-a64c-9f92c2bda8ac",
+        "name": "AzureML3530289a-6263-40db-a64c-9f92c2bda8ac", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "1", "nextVersion": "2022-03-16-05-25-37-3656147"},
+        "systemData": {"createdAt": "2022-03-15T21:14:46.7967176Z", "createdBy": "Microsoft",
+        "createdByType": "User", "lastModifiedAt": "2022-03-15T21:14:46.7967176Z",
+        "lastModifiedBy": "Microsoft", "lastModifiedByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/AzureMLf5a1f14e-4e75-40ae-b8af-4a7841758397",
+        "name": "AzureMLf5a1f14e-4e75-40ae-b8af-4a7841758397", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "1", "nextVersion": "2022-03-16-05-25-37-3656189"},
+        "systemData": {"createdAt": "2022-03-15T20:52:14.1531635Z", "createdBy": "Microsoft",
+        "createdByType": "User", "lastModifiedAt": "2022-03-15T20:52:14.1531635Z",
+        "lastModifiedBy": "Microsoft", "lastModifiedByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/AzureMLafdf4d98-0c7a-4936-9441-9b0fab2ea59b",
+        "name": "AzureMLafdf4d98-0c7a-4936-9441-9b0fab2ea59b", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "1", "nextVersion": "2022-03-16-05-25-37-3656232"},
+        "systemData": {"createdAt": "2022-03-15T20:28:44.2201775Z", "createdBy": "Microsoft",
+        "createdByType": "User", "lastModifiedAt": "2022-03-15T20:28:44.2201775Z",
+        "lastModifiedBy": "Microsoft", "lastModifiedByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/AzureML5deae811-dd1d-42c4-b0b3-8d8da35508f9",
+        "name": "AzureML5deae811-dd1d-42c4-b0b3-8d8da35508f9", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "1", "nextVersion": "2022-03-16-05-25-37-3656280"},
+        "systemData": {"createdAt": "2022-03-15T20:16:32.0211033Z", "createdBy": "Microsoft",
+        "createdByType": "User", "lastModifiedAt": "2022-03-15T20:16:32.0211033Z",
+        "lastModifiedBy": "Microsoft", "lastModifiedByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/AzureMLc6b230d6-140e-41f7-8de8-72e77597d833",
+        "name": "AzureMLc6b230d6-140e-41f7-8de8-72e77597d833", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "1", "nextVersion": "2022-03-16-05-25-37-3656325"},
+        "systemData": {"createdAt": "2022-03-15T19:17:54.1341335Z", "createdBy": "Microsoft",
+        "createdByType": "User", "lastModifiedAt": "2022-03-15T19:17:54.1341335Z",
+        "lastModifiedBy": "Microsoft", "lastModifiedByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/AzureML668f745b-cc64-4e8a-b21a-6724c2359ea4",
+        "name": "AzureML668f745b-cc64-4e8a-b21a-6724c2359ea4", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "1", "nextVersion": "2022-03-16-05-25-37-3656367"},
+        "systemData": {"createdAt": "2022-03-15T19:07:30.2043072Z", "createdBy": "Microsoft",
+        "createdByType": "User", "lastModifiedAt": "2022-03-15T19:07:30.2043072Z",
+        "lastModifiedBy": "Microsoft", "lastModifiedByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/AzureMLec7246ba-009a-4983-a741-621003c6316d",
+        "name": "AzureMLec7246ba-009a-4983-a741-621003c6316d", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "1", "nextVersion": "2022-03-16-05-25-37-3656409"},
+        "systemData": {"createdAt": "2022-03-15T18:57:24.9576153Z", "createdBy": "Microsoft",
+        "createdByType": "User", "lastModifiedAt": "2022-03-15T18:57:24.9576153Z",
+        "lastModifiedBy": "Microsoft", "lastModifiedByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/AzureMLb5d4a6e8-66fe-4b78-8323-210d9afb5249",
+        "name": "AzureMLb5d4a6e8-66fe-4b78-8323-210d9afb5249", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "1", "nextVersion": "2022-03-16-05-25-37-3656450"},
+        "systemData": {"createdAt": "2022-03-15T18:09:01.1173212Z", "createdBy": "Microsoft",
+        "createdByType": "User", "lastModifiedAt": "2022-03-15T18:09:01.1173212Z",
+        "lastModifiedBy": "Microsoft", "lastModifiedByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/AzureML08d4d59b-6223-4722-b2ae-25054c6da068",
+        "name": "AzureML08d4d59b-6223-4722-b2ae-25054c6da068", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "1", "nextVersion": "2022-03-16-05-25-37-3656492"},
+        "systemData": {"createdAt": "2022-03-15T17:22:21.3971851Z", "createdBy": "Microsoft",
+        "createdByType": "User", "lastModifiedAt": "2022-03-15T17:22:21.3971851Z",
+        "lastModifiedBy": "Microsoft", "lastModifiedByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/AzureML5a6004ea-53cf-4cd3-abee-44db7b213e1c",
+        "name": "AzureML5a6004ea-53cf-4cd3-abee-44db7b213e1c", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "1", "nextVersion": "2022-03-16-05-25-37-3656534"},
+        "systemData": {"createdAt": "2022-03-15T17:16:28.6391567Z", "createdBy": "Microsoft",
+        "createdByType": "User", "lastModifiedAt": "2022-03-15T17:16:28.6391567Z",
+        "lastModifiedBy": "Microsoft", "lastModifiedByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/AzureML449bfaaa-3950-40c3-a1a4-59377a0e40e6",
+        "name": "AzureML449bfaaa-3950-40c3-a1a4-59377a0e40e6", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "1", "nextVersion": "2022-03-16-05-25-37-3656577"},
+        "systemData": {"createdAt": "2022-03-15T15:37:03.1175026Z", "createdBy": "Microsoft",
+        "createdByType": "User", "lastModifiedAt": "2022-03-15T15:37:03.1175026Z",
+        "lastModifiedBy": "Microsoft", "lastModifiedByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/AzureML24cfe40c-c785-45ea-b8f7-35badf354740",
+        "name": "AzureML24cfe40c-c785-45ea-b8f7-35badf354740", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "1", "nextVersion": "2022-03-16-05-25-37-3656626"},
+        "systemData": {"createdAt": "2022-03-15T15:20:35.2784802Z", "createdBy": "Microsoft",
+        "createdByType": "User", "lastModifiedAt": "2022-03-15T15:20:35.2784802Z",
+        "lastModifiedBy": "Microsoft", "lastModifiedByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/AzureML47821f62-eeac-4617-aed2-925d52051056",
+        "name": "AzureML47821f62-eeac-4617-aed2-925d52051056", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "1", "nextVersion": "2022-03-16-05-25-37-3656669"},
+        "systemData": {"createdAt": "2022-03-15T15:14:16.6632214Z", "createdBy": "Microsoft",
+        "createdByType": "User", "lastModifiedAt": "2022-03-15T15:14:16.6632214Z",
+        "lastModifiedBy": "Microsoft", "lastModifiedByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/AzureML0569ff54-64fa-4a61-8c8e-fdbca882817b",
+        "name": "AzureML0569ff54-64fa-4a61-8c8e-fdbca882817b", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "1", "nextVersion": "2022-03-16-05-25-37-3656712"},
+        "systemData": {"createdAt": "2022-03-15T14:53:37.0782566Z", "createdBy": "Microsoft",
+        "createdByType": "User", "lastModifiedAt": "2022-03-15T14:53:37.0782566Z",
+        "lastModifiedBy": "Microsoft", "lastModifiedByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/AzureML73e4cc72-de73-49d0-8cbb-cebd0cf9fd52",
+        "name": "AzureML73e4cc72-de73-49d0-8cbb-cebd0cf9fd52", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "1", "nextVersion": "2022-03-16-05-25-37-3656755"},
+        "systemData": {"createdAt": "2022-03-15T13:14:55.6814777Z", "createdBy": "Microsoft",
+        "createdByType": "User", "lastModifiedAt": "2022-03-15T13:14:55.6814777Z",
+        "lastModifiedBy": "Microsoft", "lastModifiedByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/AzureML92d54cb3-50ea-4ebc-a6c4-e6b6e50c6f0b",
+        "name": "AzureML92d54cb3-50ea-4ebc-a6c4-e6b6e50c6f0b", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "1", "nextVersion": "2022-03-16-05-25-37-3656797"},
+        "systemData": {"createdAt": "2022-03-15T11:15:53.683475Z", "createdBy": "Microsoft",
+        "createdByType": "User", "lastModifiedAt": "2022-03-15T11:15:53.683475Z",
+        "lastModifiedBy": "Microsoft", "lastModifiedByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/AzureML0609bde3-5f15-43a7-a271-87827175350c",
+        "name": "AzureML0609bde3-5f15-43a7-a271-87827175350c", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "1", "nextVersion": "2022-03-16-05-25-37-3656839"},
+        "systemData": {"createdAt": "2022-03-15T09:15:58.6334141Z", "createdBy": "Microsoft",
+        "createdByType": "User", "lastModifiedAt": "2022-03-15T09:15:58.6334141Z",
+        "lastModifiedBy": "Microsoft", "lastModifiedByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/AzureMLd0b1bf8c-cf9e-473a-b05b-b3b5050b690b",
+        "name": "AzureMLd0b1bf8c-cf9e-473a-b05b-b3b5050b690b", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "1", "nextVersion": "2022-03-16-05-25-37-3656881"},
+        "systemData": {"createdAt": "2022-03-15T07:15:50.1150027Z", "createdBy": "Microsoft",
+        "createdByType": "User", "lastModifiedAt": "2022-03-15T07:15:50.1150027Z",
+        "lastModifiedBy": "Microsoft", "lastModifiedByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/AzureML1ad77248-f95d-4130-a355-b422d3f4fb67",
+        "name": "AzureML1ad77248-f95d-4130-a355-b422d3f4fb67", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "1", "nextVersion": "2022-03-16-05-25-37-3656923"},
+        "systemData": {"createdAt": "2022-03-15T05:14:34.2789765Z", "createdBy": "Microsoft",
+        "createdByType": "User", "lastModifiedAt": "2022-03-15T05:14:34.2789765Z",
+        "lastModifiedBy": "Microsoft", "lastModifiedByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/AzureMLea686425-b311-4f8e-863c-3f3f48d0dd22",
+        "name": "AzureMLea686425-b311-4f8e-863c-3f3f48d0dd22", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "1", "nextVersion": "2022-03-16-05-25-37-3656972"},
+        "systemData": {"createdAt": "2022-03-15T04:47:17.3544117Z", "createdBy": "Microsoft",
+        "createdByType": "User", "lastModifiedAt": "2022-03-15T04:47:17.3544117Z",
+        "lastModifiedBy": "Microsoft", "lastModifiedByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/AzureML8d7cfdf3-f8bf-4256-bced-dcb4db41b5b9",
+        "name": "AzureML8d7cfdf3-f8bf-4256-bced-dcb4db41b5b9", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "1", "nextVersion": "2022-03-16-05-25-37-3657014"},
+        "systemData": {"createdAt": "2022-03-15T03:14:14.3390867Z", "createdBy": "Microsoft",
+        "createdByType": "User", "lastModifiedAt": "2022-03-15T03:14:14.3390867Z",
+        "lastModifiedBy": "Microsoft", "lastModifiedByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/AzureML68a6a294-0236-4fb5-9948-1922afc46cb1",
+        "name": "AzureML68a6a294-0236-4fb5-9948-1922afc46cb1", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "1", "nextVersion": "2022-03-16-05-25-37-3657056"},
+        "systemData": {"createdAt": "2022-03-15T01:35:12.8843712Z", "createdBy": "Microsoft",
+        "createdByType": "User", "lastModifiedAt": "2022-03-15T01:35:12.8843712Z",
+        "lastModifiedBy": "Microsoft", "lastModifiedByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/AzureML6ad6f819-6832-4816-aa70-cf9b0d25c6ef",
+        "name": "AzureML6ad6f819-6832-4816-aa70-cf9b0d25c6ef", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "1", "nextVersion": "2022-03-16-05-25-37-3657099"},
+        "systemData": {"createdAt": "2022-03-15T01:14:26.2233185Z", "createdBy": "Microsoft",
+        "createdByType": "User", "lastModifiedAt": "2022-03-15T01:14:26.2233185Z",
+        "lastModifiedBy": "Microsoft", "lastModifiedByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/AzureML11293aed-7660-4a8d-9fc8-420f403efc96",
+        "name": "AzureML11293aed-7660-4a8d-9fc8-420f403efc96", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "1", "nextVersion": "2022-03-16-05-25-37-3657141"},
+        "systemData": {"createdAt": "2022-03-14T23:32:17.8757272Z", "createdBy": "Microsoft",
+        "createdByType": "User", "lastModifiedAt": "2022-03-14T23:32:17.8757272Z",
+        "lastModifiedBy": "Microsoft", "lastModifiedByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/AzureML157fc327-7646-4b5f-b0d9-f02d936db131",
+        "name": "AzureML157fc327-7646-4b5f-b0d9-f02d936db131", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "1", "nextVersion": "2022-03-16-05-25-37-3657185"},
+        "systemData": {"createdAt": "2022-03-14T23:32:06.0072309Z", "createdBy": "Microsoft",
+        "createdByType": "User", "lastModifiedAt": "2022-03-14T23:32:06.0072309Z",
+        "lastModifiedBy": "Microsoft", "lastModifiedByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/AzureMLcd38ca2f-4257-4cb9-b39d-87921c2b5b3a",
+        "name": "AzureMLcd38ca2f-4257-4cb9-b39d-87921c2b5b3a", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "1", "nextVersion": "2022-03-16-05-25-37-3657228"},
+        "systemData": {"createdAt": "2022-03-14T23:15:43.2438139Z", "createdBy": "Microsoft",
+        "createdByType": "User", "lastModifiedAt": "2022-03-14T23:15:43.2438139Z",
+        "lastModifiedBy": "Microsoft", "lastModifiedByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/AzureMLbc662721-aed1-4a82-ac9f-8c98ee7d1603",
+        "name": "AzureMLbc662721-aed1-4a82-ac9f-8c98ee7d1603", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "1", "nextVersion": "2022-03-16-05-25-37-3657277"},
+        "systemData": {"createdAt": "2022-03-14T23:12:18.3269532Z", "createdBy": "Microsoft",
+        "createdByType": "User", "lastModifiedAt": "2022-03-14T23:12:18.3269532Z",
+        "lastModifiedBy": "Microsoft", "lastModifiedByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/AzureMLcce7b824-60b2-4b5f-90cc-6792f66f9518",
+        "name": "AzureMLcce7b824-60b2-4b5f-90cc-6792f66f9518", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "1", "nextVersion": "2022-03-16-05-25-37-3657319"},
+        "systemData": {"createdAt": "2022-03-14T23:11:53.6102937Z", "createdBy": "Microsoft",
+        "createdByType": "User", "lastModifiedAt": "2022-03-14T23:11:53.6102937Z",
+        "lastModifiedBy": "Microsoft", "lastModifiedByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/AzureML5f739dc0-f131-43c8-9104-952f0ef29954",
+        "name": "AzureML5f739dc0-f131-43c8-9104-952f0ef29954", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "1", "nextVersion": "2022-03-16-05-25-37-3657361"},
+        "systemData": {"createdAt": "2022-03-14T22:59:58.0088776Z", "createdBy": "Microsoft",
+        "createdByType": "User", "lastModifiedAt": "2022-03-14T22:59:58.0088776Z",
+        "lastModifiedBy": "Microsoft", "lastModifiedByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/AzureML71d6bcb3-954d-4477-8ba8-a0c52eca6acd",
+        "name": "AzureML71d6bcb3-954d-4477-8ba8-a0c52eca6acd", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "1", "nextVersion": "2022-03-16-05-25-37-3657403"},
+        "systemData": {"createdAt": "2022-03-14T22:57:46.9650663Z", "createdBy": "Microsoft",
+        "createdByType": "User", "lastModifiedAt": "2022-03-14T22:57:46.9650663Z",
+        "lastModifiedBy": "Microsoft", "lastModifiedByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/AzureMLc697107d-b0bb-4e5c-843a-d15b72e8124c",
+        "name": "AzureMLc697107d-b0bb-4e5c-843a-d15b72e8124c", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "1", "nextVersion": "2022-03-16-05-25-37-3657447"},
+        "systemData": {"createdAt": "2022-03-14T21:16:01.6185544Z", "createdBy": "Microsoft",
+        "createdByType": "User", "lastModifiedAt": "2022-03-14T21:16:01.6185544Z",
+        "lastModifiedBy": "Microsoft", "lastModifiedByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/AzureMLa32f7d40-db7c-492a-a49a-8494a8f0abfa",
+        "name": "AzureMLa32f7d40-db7c-492a-a49a-8494a8f0abfa", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "1", "nextVersion": "2022-03-16-05-25-37-3657488"},
+        "systemData": {"createdAt": "2022-03-14T20:56:46.754527Z", "createdBy": "Microsoft",
+        "createdByType": "User", "lastModifiedAt": "2022-03-14T20:56:46.754527Z",
+        "lastModifiedBy": "Microsoft", "lastModifiedByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/AzureMLdfa8e6a4-2d6f-4010-aaa9-bd7586039d52",
+        "name": "AzureMLdfa8e6a4-2d6f-4010-aaa9-bd7586039d52", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "1", "nextVersion": "2022-03-16-05-25-37-3657533"},
+        "systemData": {"createdAt": "2022-03-14T20:42:46.811741Z", "createdBy": "Microsoft",
+        "createdByType": "User", "lastModifiedAt": "2022-03-14T20:42:46.811741Z",
+        "lastModifiedBy": "Microsoft", "lastModifiedByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/AzureML5c0159a0-f8c2-463a-ab8d-4a3f28cf8710",
+        "name": "AzureML5c0159a0-f8c2-463a-ab8d-4a3f28cf8710", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "1", "nextVersion": "2022-03-16-05-25-37-3657574"},
+        "systemData": {"createdAt": "2022-03-14T20:07:01.9012751Z", "createdBy": "Microsoft",
+        "createdByType": "User", "lastModifiedAt": "2022-03-14T20:07:01.9012751Z",
+        "lastModifiedBy": "Microsoft", "lastModifiedByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/AzureML1b3800c3-bffa-4037-a2bd-af46fa14ac31",
+        "name": "AzureML1b3800c3-bffa-4037-a2bd-af46fa14ac31", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "1", "nextVersion": "2022-03-16-05-25-37-3657623"},
+        "systemData": {"createdAt": "2022-03-14T19:54:34.8650768Z", "createdBy": "Microsoft",
+        "createdByType": "User", "lastModifiedAt": "2022-03-14T19:54:34.8650768Z",
+        "lastModifiedBy": "Microsoft", "lastModifiedByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/AzureML0e1b4b3c-e9c1-4cef-bd22-7d98d2e08a58",
+        "name": "AzureML0e1b4b3c-e9c1-4cef-bd22-7d98d2e08a58", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "1", "nextVersion": "2022-03-16-05-25-37-3657668"},
+        "systemData": {"createdAt": "2022-03-14T19:15:54.7123052Z", "createdBy": "Microsoft",
+        "createdByType": "User", "lastModifiedAt": "2022-03-14T19:15:54.7123052Z",
+        "lastModifiedBy": "Microsoft", "lastModifiedByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/AzureML377c4166-f403-48fc-923d-315e20931bca",
+        "name": "AzureML377c4166-f403-48fc-923d-315e20931bca", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "1", "nextVersion": "2022-03-16-05-25-37-3657711"},
+        "systemData": {"createdAt": "2022-03-14T19:09:30.5780259Z", "createdBy": "Microsoft",
+        "createdByType": "User", "lastModifiedAt": "2022-03-14T19:09:30.5780259Z",
+        "lastModifiedBy": "Microsoft", "lastModifiedByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/AzureMLb3206456-d13e-4437-adb7-ef095eccac76",
+        "name": "AzureMLb3206456-d13e-4437-adb7-ef095eccac76", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "1", "nextVersion": "2022-03-16-05-25-37-3657759"},
+        "systemData": {"createdAt": "2022-03-14T19:09:01.3362693Z", "createdBy": "Microsoft",
+        "createdByType": "User", "lastModifiedAt": "2022-03-14T19:09:01.3362693Z",
+        "lastModifiedBy": "Microsoft", "lastModifiedByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/AzureMLf01b8678-0492-492d-8b44-045a55d118af",
+        "name": "AzureMLf01b8678-0492-492d-8b44-045a55d118af", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "1", "nextVersion": "2022-03-16-05-25-37-3657814"},
+        "systemData": {"createdAt": "2022-03-14T19:05:50.7001416Z", "createdBy": "Microsoft",
+        "createdByType": "User", "lastModifiedAt": "2022-03-14T19:05:50.7001416Z",
+        "lastModifiedBy": "Microsoft", "lastModifiedByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/test-environment-3vgw4dt",
+        "name": "test-environment-3vgw4dt", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "2", "nextVersion": "2022-03-16-05-25-37-3657863"},
+        "systemData": {"createdAt": "2022-03-14T18:26:38.7725608Z", "createdBy": "Harneet
+        Virk", "createdByType": "User", "lastModifiedAt": "2022-03-14T18:26:38.7725608Z",
+        "lastModifiedBy": "Harneet Virk", "lastModifiedByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/test-environment-lsdfc5n",
+        "name": "test-environment-lsdfc5n", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "1", "nextVersion": "2022-03-16-05-25-37-3657906"},
+        "systemData": {"createdAt": "2022-03-14T18:25:34.8958236Z", "createdBy": "Harneet
+        Virk", "createdByType": "User", "lastModifiedAt": "2022-03-14T18:25:34.8958236Z",
+        "lastModifiedBy": "Harneet Virk", "lastModifiedByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/test-environment-yoyliql",
+        "name": "test-environment-yoyliql", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "1", "nextVersion": "2022-03-16-05-25-37-3657956"},
+        "systemData": {"createdAt": "2022-03-14T18:25:25.1981369Z", "createdBy": "Harneet
+        Virk", "createdByType": "User", "lastModifiedAt": "2022-03-14T18:25:25.1981369Z",
+        "lastModifiedBy": "Harneet Virk", "lastModifiedByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/test-environment-rbbmkq3",
+        "name": "test-environment-rbbmkq3", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "1", "nextVersion": "2022-03-16-05-25-37-3657998"},
+        "systemData": {"createdAt": "2022-03-14T18:25:25.168538Z", "createdBy": "Harneet
+        Virk", "createdByType": "User", "lastModifiedAt": "2022-03-14T18:25:25.168538Z",
+        "lastModifiedBy": "Harneet Virk", "lastModifiedByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/test-environment-gblbnx6",
+        "name": "test-environment-gblbnx6", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "1", "nextVersion": "2022-03-16-05-25-37-3658039"},
+        "systemData": {"createdAt": "2022-03-14T18:22:52.3812546Z", "createdBy": "Harneet
+        Virk", "createdByType": "User", "lastModifiedAt": "2022-03-14T18:22:52.3812546Z",
+        "lastModifiedBy": "Harneet Virk", "lastModifiedByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/AzureML914608cb-4913-4570-ae93-9160c8a72261",
+        "name": "AzureML914608cb-4913-4570-ae93-9160c8a72261", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "1", "nextVersion": "2022-03-16-05-25-37-3658081"},
+        "systemData": {"createdAt": "2022-03-14T18:21:39.2593617Z", "createdBy": "Microsoft",
+        "createdByType": "User", "lastModifiedAt": "2022-03-14T18:21:39.2593617Z",
+        "lastModifiedBy": "Microsoft", "lastModifiedByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/AzureML233fe2e6-4573-430b-8af1-e88fd03b8cca",
+        "name": "AzureML233fe2e6-4573-430b-8af1-e88fd03b8cca", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "1", "nextVersion": "2022-03-16-05-25-37-3658123"},
+        "systemData": {"createdAt": "2022-03-14T17:43:33.3972403Z", "createdBy": "Microsoft",
+        "createdByType": "User", "lastModifiedAt": "2022-03-14T17:43:33.3972403Z",
+        "lastModifiedBy": "Microsoft", "lastModifiedByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/AzureML73eed329-dae5-4da8-92cc-398dc85959ad",
+        "name": "AzureML73eed329-dae5-4da8-92cc-398dc85959ad", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "1", "nextVersion": "2022-03-16-05-25-37-3658165"},
+        "systemData": {"createdAt": "2022-03-14T17:14:43.9725305Z", "createdBy": "Microsoft",
+        "createdByType": "User", "lastModifiedAt": "2022-03-14T17:14:43.9725305Z",
+        "lastModifiedBy": "Microsoft", "lastModifiedByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/AzureMLd6dabbaf-2f20-4aaa-97e1-0e485120b520",
+        "name": "AzureMLd6dabbaf-2f20-4aaa-97e1-0e485120b520", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "1", "nextVersion": "2022-03-16-05-25-37-3658208"},
+        "systemData": {"createdAt": "2022-03-14T17:14:29.3976759Z", "createdBy": "Microsoft",
+        "createdByType": "User", "lastModifiedAt": "2022-03-14T17:14:29.3976759Z",
+        "lastModifiedBy": "Microsoft", "lastModifiedByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/AzureML89e488e9-10ff-4f18-9f26-71b058a0ca7d",
+        "name": "AzureML89e488e9-10ff-4f18-9f26-71b058a0ca7d", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "1", "nextVersion": "2022-03-16-05-25-37-3658250"},
+        "systemData": {"createdAt": "2022-03-14T17:11:59.7146683Z", "createdBy": "Microsoft",
+        "createdByType": "User", "lastModifiedAt": "2022-03-14T17:11:59.7146683Z",
+        "lastModifiedBy": "Microsoft", "lastModifiedByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/AzureML3178c709-5fe0-4eb5-b5ea-5f793c404874",
+        "name": "AzureML3178c709-5fe0-4eb5-b5ea-5f793c404874", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "1", "nextVersion": "2022-03-16-05-25-37-3658299"},
+        "systemData": {"createdAt": "2022-03-14T17:11:39.8982053Z", "createdBy": "Microsoft",
+        "createdByType": "User", "lastModifiedAt": "2022-03-14T17:11:39.8982053Z",
+        "lastModifiedBy": "Microsoft", "lastModifiedByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/AzureML35e930be-4ab9-4cfa-8bce-eb4b76c6c19f",
+        "name": "AzureML35e930be-4ab9-4cfa-8bce-eb4b76c6c19f", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "1", "nextVersion": "2022-03-16-05-25-37-3658340"},
+        "systemData": {"createdAt": "2022-03-14T17:11:38.2899688Z", "createdBy": "Microsoft",
+        "createdByType": "User", "lastModifiedAt": "2022-03-14T17:11:38.2899688Z",
+        "lastModifiedBy": "Microsoft", "lastModifiedByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/AzureMLbad33b33-53dc-4c56-b14f-72439f288470",
+        "name": "AzureMLbad33b33-53dc-4c56-b14f-72439f288470", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "1", "nextVersion": "2022-03-16-05-25-37-3658382"},
+        "systemData": {"createdAt": "2022-03-14T17:01:37.598395Z", "createdBy": "Microsoft",
+        "createdByType": "User", "lastModifiedAt": "2022-03-14T17:01:37.598395Z",
+        "lastModifiedBy": "Microsoft", "lastModifiedByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/AzureMLb25cf4e7-1aac-430c-8138-afbc96151c14",
+        "name": "AzureMLb25cf4e7-1aac-430c-8138-afbc96151c14", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "1", "nextVersion": "2022-03-16-05-25-37-3658423"},
+        "systemData": {"createdAt": "2022-03-14T16:41:47.4464542Z", "createdBy": "Microsoft",
+        "createdByType": "User", "lastModifiedAt": "2022-03-14T16:41:47.4464542Z",
+        "lastModifiedBy": "Microsoft", "lastModifiedByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/AzureML6aeb2189-2bf4-4613-8fdd-4214ec71fdab",
+        "name": "AzureML6aeb2189-2bf4-4613-8fdd-4214ec71fdab", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "1", "nextVersion": "2022-03-16-05-25-37-3658466"},
+        "systemData": {"createdAt": "2022-03-14T16:39:46.5561711Z", "createdBy": "Microsoft",
+        "createdByType": "User", "lastModifiedAt": "2022-03-14T16:39:46.5561711Z",
+        "lastModifiedBy": "Microsoft", "lastModifiedByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/AzureMLfbd5eb28-6852-4d3d-a6ad-326d61e8c7bf",
+        "name": "AzureMLfbd5eb28-6852-4d3d-a6ad-326d61e8c7bf", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "1", "nextVersion": "2022-03-16-05-25-37-3658506"},
+        "systemData": {"createdAt": "2022-03-14T16:07:08.0117121Z", "createdBy": "Microsoft",
+        "createdByType": "User", "lastModifiedAt": "2022-03-14T16:07:08.0117121Z",
+        "lastModifiedBy": "Microsoft", "lastModifiedByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/AzureMLa04e4c50-b12e-4a81-b0d5-d82afd442d57",
+        "name": "AzureMLa04e4c50-b12e-4a81-b0d5-d82afd442d57", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "1", "nextVersion": "2022-03-16-05-25-37-3658549"},
+        "systemData": {"createdAt": "2022-03-14T15:42:50.7580222Z", "createdBy": "Microsoft",
+        "createdByType": "User", "lastModifiedAt": "2022-03-14T15:42:50.7580222Z",
+        "lastModifiedBy": "Microsoft", "lastModifiedByType": "User"}}], "nextLink":
+        "https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments?api-version=2022-02-01-preview&listViewType=ActiveOnly&$skipToken=H4sIAAAAAAAAAz2MsQqFMAxF_yWzQ3WSrorg4FvsDwSMGCyJPFMQpP8udnA63AP33DBv-F-CFnQqxpLQWCXoTgL-hilFYyNBsXf-6LJ55wN87VwF41mevQqBXzGeVEHPS5EDcvxkUMPYaXortWvanPMDWbfhHH0AAAA"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '73626'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 16 Mar 2022 05:25:36 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:512cc15a-13b5-415b-bfd0-dce7accb6bb1
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.181'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.11 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/environments/000000000000000/versions/1?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/test-environment-000004/versions/1",
+        "name": "1", "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
+        "properties": {"description": "This is description", "tags": {"test": "test"},
+        "properties": {}, "isArchived": false, "isAnonymous": false, "environmentType":
+        "UserCreated", "image": "mcr.microsoft.com/azureml/openmpi3.1.2-ubuntu18.04",
+        "condaFile": "{\n  \"channels\": [\n    \"conda-forge\"\n  ],\n  \"dependencies\":
+        [\n    \"python=3.6.1\",\n    \"pip\",\n    {\n      \"pip\": [\n        \"nbgitpuller\",\n        \"sphinx-gallery\",\n        \"pandas\",\n        \"matplotlib\"\n      ]\n    }\n  ],\n  \"name\":
+        \"azureml_8f1d4517a9cdadbbbe72ab7c4b058009\"\n}", "osType": "Linux"}, "systemData":
+        {"createdAt": "2022-03-16T05:25:33.6859148Z", "createdBy": "Harneet Virk",
+        "createdByType": "User", "lastModifiedAt": "2022-03-16T05:25:33.6859148Z",
+        "lastModifiedBy": "Harneet Virk", "lastModifiedByType": "User"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1131'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 16 Mar 2022 05:25:37 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:512cc15a-13b5-415b-bfd0-dce7accb6bb1
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.082'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"description": "This is description", "properties": {},
+      "tags": {"test": "test"}, "isAnonymous": false, "isArchived": true, "condaFile":
+      "{\n  \"channels\": [\n    \"conda-forge\"\n  ],\n  \"dependencies\": [\n    \"python=3.6.1\",\n    \"pip\",\n    {\n      \"pip\":
+      [\n        \"nbgitpuller\",\n        \"sphinx-gallery\",\n        \"pandas\",\n        \"matplotlib\"\n      ]\n    }\n  ],\n  \"name\":
+      \"azureml_8f1d4517a9cdadbbbe72ab7c4b058009\"\n}", "image": "mcr.microsoft.com/azureml/openmpi3.1.2-ubuntu18.04",
+      "osType": "Linux"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '554'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.11 (Windows-10-10.0.22000-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/environments/000000000000000/versions/1?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/test-environment-000004/versions/1",
+        "name": "1", "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
+        "properties": {"description": "This is description", "tags": {"test": "test"},
+        "properties": {}, "isArchived": true, "isAnonymous": false, "environmentType":
+        "UserCreated", "image": "mcr.microsoft.com/azureml/openmpi3.1.2-ubuntu18.04",
+        "condaFile": "{\n  \"channels\": [\n    \"conda-forge\"\n  ],\n  \"dependencies\":
+        [\n    \"python=3.6.1\",\n    \"pip\",\n    {\n      \"pip\": [\n        \"nbgitpuller\",\n        \"sphinx-gallery\",\n        \"pandas\",\n        \"matplotlib\"\n      ]\n    }\n  ],\n  \"name\":
+        \"azureml_8f1d4517a9cdadbbbe72ab7c4b058009\"\n}", "osType": "Linux"}, "systemData":
+        {"createdAt": "2022-03-16T05:25:33.6859148Z", "createdBy": "Harneet Virk",
+        "createdByType": "User", "lastModifiedAt": "2022-03-16T05:25:33.6859148Z",
+        "lastModifiedBy": "Harneet Virk", "lastModifiedByType": "User"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1130'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 16 Mar 2022 05:25:38 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/v2testharnvir-rg/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/test-environment-000004/versions/1?api-version=2022-02-01-preview
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:512cc15a-13b5-415b-bfd0-dce7accb6bb1
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.350'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.11 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/environments/000000000000000/versions/1?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/test-environment-000004/versions/1",
+        "name": "1", "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
+        "properties": {"description": "This is description", "tags": {"test": "test"},
+        "properties": {}, "isArchived": false, "isAnonymous": false, "environmentType":
+        "UserCreated", "image": "mcr.microsoft.com/azureml/openmpi3.1.2-ubuntu18.04",
+        "condaFile": "{\n  \"channels\": [\n    \"conda-forge\"\n  ],\n  \"dependencies\":
+        [\n    \"python=3.6.1\",\n    \"pip\",\n    {\n      \"pip\": [\n        \"nbgitpuller\",\n        \"sphinx-gallery\",\n        \"pandas\",\n        \"matplotlib\"\n      ]\n    }\n  ],\n  \"name\":
+        \"azureml_8f1d4517a9cdadbbbe72ab7c4b058009\"\n}", "osType": "Linux"}, "systemData":
+        {"createdAt": "2022-03-16T05:25:33.6859148Z", "createdBy": "Harneet Virk",
+        "createdByType": "User", "lastModifiedAt": "2022-03-16T05:25:33.6859148Z",
+        "lastModifiedBy": "Harneet Virk", "lastModifiedByType": "User"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1131'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 16 Mar 2022 05:25:38 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:512cc15a-13b5-415b-bfd0-dce7accb6bb1
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.034'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"description": "This is description", "properties": {},
+      "tags": {"test": "test"}, "isAnonymous": false, "isArchived": false, "condaFile":
+      "{\n  \"channels\": [\n    \"conda-forge\"\n  ],\n  \"dependencies\": [\n    \"python=3.6.1\",\n    \"pip\",\n    {\n      \"pip\":
+      [\n        \"nbgitpuller\",\n        \"sphinx-gallery\",\n        \"pandas\",\n        \"matplotlib\"\n      ]\n    }\n  ],\n  \"name\":
+      \"azureml_8f1d4517a9cdadbbbe72ab7c4b058009\"\n}", "image": "mcr.microsoft.com/azureml/openmpi3.1.2-ubuntu18.04",
+      "osType": "Linux"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '555'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.11 (Windows-10-10.0.22000-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/environments/000000000000000/versions/1?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/test-environment-000004/versions/1",
+        "name": "1", "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
+        "properties": {"description": "This is description", "tags": {"test": "test"},
+        "properties": {}, "isArchived": false, "isAnonymous": false, "environmentType":
+        "UserCreated", "image": "mcr.microsoft.com/azureml/openmpi3.1.2-ubuntu18.04",
+        "condaFile": "{\n  \"channels\": [\n    \"conda-forge\"\n  ],\n  \"dependencies\":
+        [\n    \"python=3.6.1\",\n    \"pip\",\n    {\n      \"pip\": [\n        \"nbgitpuller\",\n        \"sphinx-gallery\",\n        \"pandas\",\n        \"matplotlib\"\n      ]\n    }\n  ],\n  \"name\":
+        \"azureml_8f1d4517a9cdadbbbe72ab7c4b058009\"\n}", "osType": "Linux"}, "systemData":
+        {"createdAt": "2022-03-16T05:25:33.6859148Z", "createdBy": "Harneet Virk",
+        "createdByType": "User", "lastModifiedAt": "2022-03-16T05:25:33.6859148Z",
+        "lastModifiedBy": "Harneet Virk", "lastModifiedByType": "User"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1131'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 16 Mar 2022 05:25:39 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/v2testharnvir-rg/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/test-environment-000004/versions/1?api-version=2022-02-01-preview
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:512cc15a-13b5-415b-bfd0-dce7accb6bb1
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.311'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.11 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/environments/test-environment-000004?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/test-environment-000004",
+        "name": "test-environment-000004", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "1", "nextVersion": "2022-03-16-05-25-40-9303200"},
+        "systemData": {"createdAt": "2022-03-16T05:25:33.6859148Z", "createdBy": "Harneet
+        Virk", "createdByType": "User", "lastModifiedAt": "2022-03-16T05:25:33.6859148Z",
+        "lastModifiedBy": "Harneet Virk", "lastModifiedByType": "User"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '698'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 16 Mar 2022 05:25:40 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:512cc15a-13b5-415b-bfd0-dce7accb6bb1
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.067'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"description": "", "properties": {}, "tags": {}, "isArchived":
+      true}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '85'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.11 (Windows-10-10.0.22000-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/environments/test-environment-000004?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/test-environment-000004",
+        "name": "test-environment-000004", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        true, "latestVersion": "1", "nextVersion": "2022-03-16-05-25-41-2784697"},
+        "systemData": {"createdAt": "2022-03-16T05:25:33.6859148Z", "createdBy": "Harneet
+        Virk", "createdByType": "User", "lastModifiedAt": "2022-03-16T05:25:33.6859148Z",
+        "lastModifiedBy": "Harneet Virk", "lastModifiedByType": "User"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '697'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 16 Mar 2022 05:25:40 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/v2testharnvir-rg/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/test-environment-000004?api-version=2022-02-01-preview
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:512cc15a-13b5-415b-bfd0-dce7accb6bb1
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.230'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.11 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/environments/test-environment-000004?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/test-environment-000004",
+        "name": "test-environment-000004", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "1", "nextVersion": "2022-03-16-05-25-41-6162366"},
+        "systemData": {"createdAt": "2022-03-16T05:25:33.6859148Z", "createdBy": "Harneet
+        Virk", "createdByType": "User", "lastModifiedAt": "2022-03-16T05:25:33.6859148Z",
+        "lastModifiedBy": "Harneet Virk", "lastModifiedByType": "User"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '698'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 16 Mar 2022 05:25:41 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:512cc15a-13b5-415b-bfd0-dce7accb6bb1
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.032'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"description": "", "properties": {}, "tags": {}, "isArchived":
+      false}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '86'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.11 (Windows-10-10.0.22000-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/environments/test-environment-000004?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/test-environment-000004",
+        "name": "test-environment-000004", "type": "Microsoft.MachineLearningServices/workspaces/environments",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "1", "nextVersion": "2022-03-16-05-25-42-4868192"},
+        "systemData": {"createdAt": "2022-03-16T05:25:33.6859148Z", "createdBy": "Harneet
+        Virk", "createdByType": "User", "lastModifiedAt": "2022-03-16T05:25:33.6859148Z",
+        "lastModifiedBy": "Harneet Virk", "lastModifiedByType": "User"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '698'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 16 Mar 2022 05:25:42 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/v2testharnvir-rg/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/test-environment-000004?api-version=2022-02-01-preview
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:512cc15a-13b5-415b-bfd0-dce7accb6bb1
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.209'
+    status:
+      code: 201
+      message: Created
+version: 1

@@ -1,0 +1,14 @@
+name: mohitnegi-ws1
+location: centraluseuap
+display_name: my hub
+description: some updated desc
+public_network_access: enabled
+network_acls:
+  ip_rules:
+    - value: "167.220.238.193/32"
+    - value: "167.220.238.199/32"
+  default_action: Deny
+tags:
+  purpose: testing
+  team: ws-management
+enable_data_isolation: True

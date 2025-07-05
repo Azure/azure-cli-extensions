@@ -1,0 +1,112 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json, text/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0 Python/3.7.9
+        (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://eastus.api.azureml.ms/registrymanagement/v1.0/registries/testFeed/discovery
+  response:
+    body:
+      string: '{"registryId": "3b513a6b-f110-4e7f-9ce3-472b5aa28170", "registryName":
+        "testFeed", "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47", "primaryRegion":
+        "centraluseuap", "regions": ["centraluseuap"], "subscriptionId": "00000000-0000-0000-0000-000000000000",
+        "resourceGroup": "test-registries", "workspaceName": null, "primaryRegionResourceProviderUri":
+        "https://cert-master.experiments.azureml-test.net/", "registryFqdns": {"centraluseuap":
+        {"uri": "https://3b513a6b-f110-4e7f-9ce3-472b5aa28170.registry.master.api.azureml-test.ms"}}}'
+    headers:
+      connection:
+      - keep-alive
+      content-length:
+      - '533'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 30 Sep 2022 20:09:42 GMT
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=15724800; includeSubDomains; preload
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.263'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0 Python/3.7.9
+        (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://cert-master.experiments.azureml-test.net/mferp/managementfrontend/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/registries/testFeed/components/000000000000000/versions/0.0.1?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "azureml://registries/testFeed/components/HelloWorldRegistry/versions/0.0.1",
+        "name": "0.0.1", "properties": {"description": null, "tags": {"tags1": "tags1"},
+        "properties": {"properties1": "properties1"}, "isArchived": false, "isAnonymous":
+        false, "componentSpec": {"name": "HelloWorldRegistry", "version": "0.0.1",
+        "display_name": "HelloWorldRegistry", "is_deterministic": "True", "type":
+        "command", "description": "A hello world component which reference a curated
+        environment.", "tags": {"tags1": "tags1"}, "code": "azureml://registries/testFeed/codes/HelloWorld/versions/1",
+        "environment": "azureml://registries/CuratedRegistry/environments/AzureML-minimal-ubuntu18.04-py37-cpu-inference/versions/34",
+        "resources": {"instance_count": "1"}, "command": "python helloworld.py", "$schema":
+        "http://azureml/sdk-2-0/CommandComponent.json"}}, "systemData": {"createdAt":
+        "2022-03-30T20:31:22.4704462+00:00", "createdBy": "Jun Qi", "createdByType":
+        "User", "lastModifiedAt": "2022-03-30T20:31:22.4704463+00:00", "lastModifiedBy":
+        "Jun Qi", "lastModifiedByType": "User"}}'
+    headers:
+      connection:
+      - keep-alive
+      content-length:
+      - '1073'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 30 Sep 2022 20:09:44 GMT
+      request-context:
+      - appId=cid-v1:512cc15a-13b5-415b-bfd0-dce7accb6bb1
+      server-timing:
+      - traceparent;desc="00-22781e717409611659aae56f5118e9d9-c191f0d632370ed3-00"
+      strict-transport-security:
+      - max-age=15724800; includeSubDomains; preload
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aml-cluster:
+      - vienna-test-westus2-01
+      x-content-type-options:
+      - nosniff
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.937'
+    status:
+      code: 200
+      message: OK
+version: 1
