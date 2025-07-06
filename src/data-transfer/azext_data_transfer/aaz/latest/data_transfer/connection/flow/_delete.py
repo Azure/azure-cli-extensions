@@ -17,10 +17,11 @@ from azure.cli.core.aaz import *
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
-    """Delete the flow resource.
+    """Delete data flow for the approved connection
 
     :example: Deletes the flow resource
         az data-transfer connection flow delete --resource-group testRG --connection-name testConnection --flow-name testFlow
+        az data-transfer connection flow delete --ids /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/testRG/providers/Microsoft.AzureDataTransfer/connections/testConnection/flows/testFlow
     """
 
     _aaz_info = {
