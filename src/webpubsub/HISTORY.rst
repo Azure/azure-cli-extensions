@@ -3,7 +3,7 @@
 Release History
 ===============
 
-1.8.0
+1.7.1
 +++++
 * Upgrade `websockets` to `13.0.1` to sure the compatibility with Python 3.12
 
