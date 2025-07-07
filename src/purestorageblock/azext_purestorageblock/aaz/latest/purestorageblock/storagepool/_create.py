@@ -19,7 +19,7 @@ class Create(AAZCommand):
     """Create a storage pool
 
     :example: StoragePools_Create
-        az purestorageblock storage-pool create --resource-group rgpurestorage --storage-pool-name storagePoolname --availability-zone vknyl --vnet-injection "{subnet-id:tnlctolrxdvnkjiphlrdxq,vnet-id:zbumtytyqwewjcyckwqchiypshv}" --provisioned-bandwidth-mb-per-sec 17 --reservation-resource-id xiowoxnbtcotutcmmrofvgdi --type None --user-assigned-identities "{key4211:{}}" --tags "{key7593:vsyiygyurvwlfaezpuqu}" --location lonlc
+        az purestorageblock storage-pool create --resource-group rgpurestorage --storage-pool-name storagePoolname --availability-zone vknyl --vnet-injection "{subnet-id:tnlctolrxdvnkjiphlrdxq,vnet-id:zbumtytyqwewjcyckwqchiypshv}" --provisioned-bandwidth-mb-per-sec 17 --reservation-id xiowoxnbtcotutcmmrofvgdi --type None --user-assigned-identities "{key4211:{}}" --tags "{key7593:vsyiygyurvwlfaezpuqu}" --location lonlc
     """
 
     _aaz_info = {
@@ -92,8 +92,8 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="Total bandwidth provisioned for the pool, in MB/s",
         )
-        _args_schema.reservation_resource_id = AAZStrArg(
-            options=["--reservation-resource-id"],
+        _args_schema.reservation_id = AAZStrArg(
+            options=["--reservation-id"],
             arg_group="Properties",
             help="Azure resource ID of the Pure Storage Cloud service (reservation resource) this storage pool belongs to",
         )
@@ -260,7 +260,7 @@ class Create(AAZCommand):
             if properties is not None:
                 properties.set_prop("availabilityZone", AAZStrType, ".availability_zone", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("provisionedBandwidthMbPerSec", AAZIntType, ".provisioned_bandwidth", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("reservationResourceId", AAZStrType, ".reservation_resource_id", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("reservationResourceId", AAZStrType, ".reservation_id", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("vnetInjection", AAZObjectType, ".vnet_injection", typ_kwargs={"flags": {"required": True}})
 
             vnet_injection = _builder.get(".properties.vnetInjection")
