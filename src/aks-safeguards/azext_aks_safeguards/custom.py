@@ -14,7 +14,7 @@ from .aaz.latest.aks.safeguards._update import Update
 from .aaz.latest.aks.safeguards._show import Show
 from .aaz.latest.aks.safeguards._delete import Delete
 from .aaz.latest.aks.safeguards._list import List
-from azure.cli.core.aaz import *
+from azure.cli.core.aaz import AAZStrArg, AAZResourceGroupNameArg, has_value
 from azure.cli.core.azclierror import ArgumentUsageError
 
 logger = get_logger(__name__)
@@ -32,18 +32,21 @@ def _validate_and_set_managed_cluster_argument(ctx):
             "You must provide either 'managed_cluster' or both 'resource_group' and 'cluster_name', but not both.")
 
     if not has_managed_cluster:
+        # pylint: disable=line-too-long
         args.managed_cluster = f"subscriptions/{ctx.subscription_id}/resourceGroups/{args.resource_group}/providers/Microsoft.ContainerService/managedClusters/{args.cluster_name}"
 
 
 def _add_resource_group_cluster_name_subscription_id_args(_args_schema):
     _args_schema.resource_group = AAZResourceGroupNameArg(
         options=["-g", "--resource-group"],
-        help="The name of the resource group. You can configure the default group using az configure --defaults group=<name>.",
+        # pylint: disable=line-too-long
+        help="The name of the resource group. You can configure the default group using az configure --defaults group=<name>. You may provide either 'managed_cluster' or both 'resource_group' and 'name', but not both",
         required=False,
     )
     _args_schema.cluster_name = AAZStrArg(
         options=["--name", "-n"],
-        help="The name of the Managed Cluster.",
+        # pylint: disable=line-too-long
+        help="The name of the Managed Cluster.You may provide either 'managed_cluster' or both 'resource_group' and 'name', but not both.",
         required=False,
     )
     _args_schema.managed_cluster.required = False
