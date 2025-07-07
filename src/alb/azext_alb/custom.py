@@ -10,7 +10,7 @@
 # pylint: disable=too-few-public-methods
 
 from knack.log import get_logger
-from azure.cli.core.aaz import register_command, register_command_group, AAZCommandGroup
+from azure.cli.core.aaz import register_command
 from .aaz.latest.network.alb.association import Create as _AssociationCreate
 from .aaz.latest.network.alb.security_policy import Create as _SPCreate, Delete as _SPDelete, Update as _SPUpdate
 
@@ -32,12 +32,6 @@ class AssociationCreate(_AssociationCreate):
                      "/virtualNetworks/{vnet_name}/subnets/{}",
         )
         return args_schema
-
-
-@register_command_group("network alb security-policy waf")
-class __CMDGroup(AAZCommandGroup):
-    """Manage and Configure WAF Security Policies for Application Gateway for Containers resource
-    """
 
 
 @register_command("network alb security-policy waf create")
