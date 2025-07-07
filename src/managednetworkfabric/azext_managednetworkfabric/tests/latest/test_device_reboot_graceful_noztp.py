@@ -43,7 +43,7 @@ def step_reboot(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric device reboot --network-device-name {name} --resource-group {rg} --reboot-type {rebootType}"
+        "az networkfabric device reboot --resource-name {name} --resource-group {rg} --reboot-type {rebootType}"
     )
 
 
