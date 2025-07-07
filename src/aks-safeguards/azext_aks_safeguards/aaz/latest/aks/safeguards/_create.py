@@ -61,7 +61,7 @@ class Create(AAZCommand):
         _args_schema.excluded_namespaces = AAZListArg(
             options=["--excluded-ns", "--excluded-namespaces"],
             arg_group="Properties",
-            help="User defined list of namespaces to exclude from Deployment Safeguards. Deployments in these namespaces will not be checked against any safeguards",
+            help="User defined list of namespaces to exclude from Deployment Safeguards. Deployments in these namespaces will not be checked against any safeguards. Use the format [ns1,ns2] to specify multiple namespaces.",
         )
         _args_schema.level = AAZStrArg(
             options=["--level"],
