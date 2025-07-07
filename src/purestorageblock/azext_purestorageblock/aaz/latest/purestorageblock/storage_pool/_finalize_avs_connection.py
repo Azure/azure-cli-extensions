@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class FinalizeAvsConnection(AAZCommand):
     """Finalize an already started AVS connection to a specific AVS SDDC
+
+    :example: StoragePools_FinalizeAvsConnection
+        az purestorageblock storage-pool finalize-avs-connection --resource-group rgpurestorage --storage-pool-name storagePoolname --service-init-data-enc hlgzaxrohv --service-init-data "{service-account-username:axchgm,service-account-password:i,v-sphere-ip:lhbajnykbznxnxpxozyfdjaciennks,v-sphere-certificate:s}"
     """
 
     _aaz_info = {
@@ -61,34 +64,34 @@ class FinalizeAvsConnection(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.service_initialization_data = AAZObjectArg(
-            options=["--service-initialization-data"],
+        _args_schema.service_init_data = AAZObjectArg(
+            options=["--service-init-data"],
             arg_group="Properties",
             help="Explicit AVS connection information",
         )
-        _args_schema.service_initialization_data_enc = AAZStrArg(
-            options=["--service-initialization-data-enc"],
+        _args_schema.service_init_data_enc = AAZStrArg(
+            options=["--service-init-data-enc"],
             arg_group="Properties",
             help="Encoded AVS connection information",
         )
 
-        service_initialization_data = cls._args_schema.service_initialization_data
-        service_initialization_data.service_account_password = AAZPasswordArg(
+        service_init_data = cls._args_schema.service_init_data
+        service_init_data.service_account_password = AAZPasswordArg(
             options=["service-account-password"],
             help="Service account password",
             blank=AAZPromptPasswordInput(
                 msg="Password:",
             ),
         )
-        service_initialization_data.service_account_username = AAZStrArg(
+        service_init_data.service_account_username = AAZStrArg(
             options=["service-account-username"],
             help="Service account username",
         )
-        service_initialization_data.v_sphere_certificate = AAZStrArg(
+        service_init_data.v_sphere_certificate = AAZStrArg(
             options=["v-sphere-certificate"],
             help="AVS instance's vSphere certificate",
         )
-        service_initialization_data.v_sphere_ip = AAZStrArg(
+        service_init_data.v_sphere_ip = AAZStrArg(
             options=["v-sphere-ip"],
             help="AVS instance's vSphere IP address",
         )
@@ -184,8 +187,8 @@ class FinalizeAvsConnection(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("serviceInitializationData", AAZObjectType, ".service_initialization_data")
-            _builder.set_prop("serviceInitializationDataEnc", AAZStrType, ".service_initialization_data_enc")
+            _builder.set_prop("serviceInitializationData", AAZObjectType, ".service_init_data")
+            _builder.set_prop("serviceInitializationDataEnc", AAZStrType, ".service_init_data_enc")
 
             service_initialization_data = _builder.get(".serviceInitializationData")
             if service_initialization_data is not None:

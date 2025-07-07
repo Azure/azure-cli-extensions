@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get a reservation
+
+    :example: Reservations_Get
+        az purestorageblock reservation show --resource-group rgpurestorage --reservation-name storagePoolname
     """
 
     _aaz_info = {

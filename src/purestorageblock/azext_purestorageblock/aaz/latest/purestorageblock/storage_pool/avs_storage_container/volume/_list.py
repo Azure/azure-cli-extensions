@@ -20,6 +20,9 @@ class List(AAZCommand):
 
     :example: AvsStorageContainerVolumes_ListByAvsStorageContainer
         az purestorageblock storage-pool avs-storage-container volume list --resource-group rgpurestorage --storage-pool-name storagePoolname --storage-container-name name
+
+    :example: AvsStorageContainerVolumes_ListByAvsStorageContainer
+        az purestorageblock storage-pool avs-storage-container volume list --resource-group rgpurestorage --storage-pool-name storagePoolname --storage-container-name name
     """
 
     _aaz_info = {

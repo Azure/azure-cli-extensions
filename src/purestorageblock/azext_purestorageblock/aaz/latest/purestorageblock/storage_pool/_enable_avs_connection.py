@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class EnableAvsConnection(AAZCommand):
     """Initiate a connection between the storage pool and a specified AVS SDDC resource
+
+    :example: StoragePools_EnableAvsConnection
+        az purestorageblock storage-pool enable-avs-connection --resource-group rgpurestorage --storage-pool-name storagePoolname --sddc-resource-id tghkgktlddwlszbeh
     """
 
     _aaz_info = {

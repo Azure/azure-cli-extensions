@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List volumes in an AVS VM
+
+    :example: AvsVmVolumes_ListByAvsVm
+        az purestorageblock storage-pool avs-vm avs-vm-volume list --resource-group rgpurestorage --storage-pool-name storagePoolname --avs-vm-id cbdec-ddbb
     """
 
     _aaz_info = {

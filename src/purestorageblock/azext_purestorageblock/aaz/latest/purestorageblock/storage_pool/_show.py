@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get a storage pool
+
+    :example: StoragePools_Get
+        az purestorageblock storage-pool show --resource-group rgpurestorage --storage-pool-name storagePoolname
     """
 
     _aaz_info = {

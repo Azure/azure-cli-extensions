@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class GetBillingStatus(AAZCommand):
     """Provides various statistics about resources billed via given reservation.
+
+    :example: Reservations_GetBillingStatus_MaximumSet
+        az purestorageblock reservation get-billing-status --resource-group rgpurestorage --reservation-name reservationname
     """
 
     _aaz_info = {

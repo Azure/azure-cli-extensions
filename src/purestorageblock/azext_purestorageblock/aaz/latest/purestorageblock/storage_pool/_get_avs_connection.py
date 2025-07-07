@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class GetAvsConnection(AAZCommand):
     """Returns current information about an on-going connection to an AVS instance
+
+    :example: StoragePools_GetAvsConnection
+        az purestorageblock storage-pool get-avs-connection --resource-group rgpurestorage --storage-pool-name storagePoolname
     """
 
     _aaz_info = {

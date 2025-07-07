@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class GetBillingReport(AAZCommand):
     """Provides a summarized report along with actions for resources billed via given reservation
+
+    :example: Reservations_GetBillingReport_MaximumSet
+        az purestorageblock reservation get-billing-report --resource-group rgpurestorage --reservation-name reservationname
     """
 
     _aaz_info = {

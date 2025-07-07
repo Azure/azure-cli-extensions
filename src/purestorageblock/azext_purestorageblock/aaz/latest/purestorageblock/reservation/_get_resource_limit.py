@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class GetResourceLimit(AAZCommand):
     """Limits constraining certain resource properties.
+
+    :example: Reservations_GetResourceLimits
+        az purestorageblock reservation get-resource-limit --resource-group rgpurestorage --reservation-name storagePoolname
     """
 
     _aaz_info = {

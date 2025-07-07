@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "purestorageblock storage-pool identity remove",
-    is_preview=True,
 )
 class Remove(AAZCommand):
     """Remove the user or system managed identities.

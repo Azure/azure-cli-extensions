@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class RepairAvsConnection(AAZCommand):
     """Test and repair, if needed, all configuration elements of the storage pool connection to the AVS instance
+
+    :example: StoragePools_RepairAvsConnection
+        az purestorageblock storage-pool repair-avs-connection --resource-group rgpurestorage --storage-pool-name storagePoolname
     """
 
     _aaz_info = {

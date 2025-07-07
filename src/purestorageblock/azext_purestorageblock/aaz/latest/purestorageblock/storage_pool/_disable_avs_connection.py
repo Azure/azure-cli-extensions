@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class DisableAvsConnection(AAZCommand):
     """Disable the existing AVS connection
+
+    :example: StoragePools_DisableAvsConnection
+        az purestorageblock storage-pool disable-avs-connection --resource-group rgpurestorage --storage-pool-name storagePoolname
     """
 
     _aaz_info = {

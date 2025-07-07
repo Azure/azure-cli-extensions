@@ -18,6 +18,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete a storage pool
+
+    :example: StoragePools_Delete
+        az purestorageblock storage-pool delete --resource-group rgpurestorage --storage-pool-name storagePoolname
     """
 
     _aaz_info = {

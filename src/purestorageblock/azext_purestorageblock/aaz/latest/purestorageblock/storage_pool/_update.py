@@ -65,8 +65,8 @@ class Update(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.provisioned_bandwidth_mb_per_sec = AAZIntArg(
-            options=["--provisioned-bandwidth-mb-per-sec"],
+        _args_schema.provisioned_bandwidth = AAZIntArg(
+            options=["--provisioned-bandwidth"],
             arg_group="Properties",
             help="Total bandwidth provisioned for the pool, in MB/s",
         )
@@ -328,7 +328,7 @@ class Update(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("provisionedBandwidthMbPerSec", AAZIntType, ".provisioned_bandwidth_mb_per_sec", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("provisionedBandwidthMbPerSec", AAZIntType, ".provisioned_bandwidth", typ_kwargs={"flags": {"required": True}})
 
             tags = _builder.get(".tags")
             if tags is not None:

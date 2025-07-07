@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create a reservation
+
+    :example: Reservations_Create
+        az purestorageblock reservation create --resource-group rgpurestorage --reservation-name storagePoolname --marketplace "{subscription-status:PendingFulfillmentStart,offer-details:{publisher-id:vejockfhoavaqjvhtwvctdnaefvw,offer-id:efojrbphbimq,plan-id:caj,plan-name:lvvzchm,term-unit:ose,term-id:ucyvzkedohfjazifxweylhnbcmeza}}" --user "{first-name:bucysqbbclhwxrzig,last-name:fnsvxlop,email-address:abc@example.com,upn:ekqbqgpdylggddusuiifrnjcwiefay,phone-number:jglihtgsacdxocc,company-details:{company-name:nrndfzmrakk,address:{address-line1:f,address-line2:gycfosmknj,city:qxzhxjoatyuajoljfkd,state:dnusygshfvmebpmcjsd,country:nuexbknolfphlfguyzq,postal-code:yjzqichkfffbdtcswzolmrl}}}" --tags "{key1110:euhfdmtfpucwurtu}" --location jynnbjysbc
     """
 
     _aaz_info = {

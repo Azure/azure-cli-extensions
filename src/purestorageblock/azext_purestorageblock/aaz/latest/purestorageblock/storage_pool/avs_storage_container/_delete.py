@@ -18,6 +18,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete an AVS storage container
+
+    :example: AvsStorageContainers_Delete
+        az purestorageblock storage-pool avs-storage-container delete --resource-group rgpurestorage --storage-pool-name storagePoolName --storage-container-name storageContainerName
     """
 
     _aaz_info = {

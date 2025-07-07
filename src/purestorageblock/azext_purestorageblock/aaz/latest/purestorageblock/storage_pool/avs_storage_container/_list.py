@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List AVS storage containers by storage pool
+
+    :example: AvsStorageContainers_ListByStoragePool
+        az purestorageblock storage-pool avs-storage-container list --resource-group rgpurestorage --storage-pool-name spName
     """
 
     _aaz_info = {

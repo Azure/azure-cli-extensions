@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "purestorageblock storage-pool identity assign",
-    is_preview=True,
 )
 class Assign(AAZCommand):
     """Assign the user or system managed identities.
