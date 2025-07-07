@@ -15,42 +15,42 @@ helps['aks safeguards create'] = """
   type: command
   short-summary: Enable Deployment Safeguards for an AKS cluster
   examples:
-    - name: Enable Deployment Safeguards for an AKS cluster at Warn level
-    text: az aks safeguards create --resource-group MyResourceGroup --name MyAKSCluster --level Warn
-    - name: Enable Deployment Safeguards for an AKS cluster with excluded namespaces
-    text: az aks safeguards create --resource-group MyResourceGroup --name MyAKSCluster --excluded-namespaces [ns1,ns2]
-    - name: Enable Deployment Safeguards at Warn level for an AKS cluster by its resource ID
-    text: az aks safeguards create --managed-cluster "/subscriptions/MySubscriptionID/resourceGroups/MyResourceGroup/providers/Microsoft.ContainerService/managedClusters/MyAKSCluster" --level Warn
+      - name: Enable Deployment Safeguards for an AKS cluster at Warn level
+      text: az aks safeguards create --resource-group MyResourceGroup --name MyAKSCluster --level Warn
+      - name: Enable Deployment Safeguards for an AKS cluster with excluded namespaces
+      text: az aks safeguards create --resource-group MyResourceGroup --name MyAKSCluster --excluded-namespaces [ns1,ns2]
+      - name: Enable Deployment Safeguards at Warn level for an AKS cluster by its resource ID
+      text: az aks safeguards create --managed-cluster "/subscriptions/MySubscriptionID/resourceGroups/MyResourceGroup/providers/Microsoft.ContainerService/managedClusters/MyAKSCluster" --level Warn
 """
 
 helps['aks safeguards update'] = """
   type: command
   short-summary: Update Deployment Safeguards for an AKS cluster
   examples:
-    - name: Update Deployment Safeguards to Enforce level for an AKS cluster with a specific name and resource group
-      text: az aks safeguards update --resource-group MyResourceGroup --name MyAKSCluster --level Enforce
-    - name: Update Deployment Safeguards to Warn level for an AKS cluster with excluded namespaces
-      text: az aks safeguards update --resource-group MyResourceGroup --name MyAKSCluster --excluded-namespaces [ns1,ns2] --level Warn
-    - name: Update Deployment Safeguards to Enforce level for an AKS cluster by its resource ID
-      text: az aks safeguards update --managed-cluster "/subscriptions/MySubscriptionID/resourceGroups/MyResourceGroup/providers/Microsoft.ContainerService/managedClusters/MyAKSCluster" --level Enforce
+      - name: Update Deployment Safeguards to Enforce level for an AKS cluster with a specific name and resource group
+        text: az aks safeguards update --resource-group MyResourceGroup --name MyAKSCluster --level Enforce
+      - name: Update Deployment Safeguards to Warn level for an AKS cluster with excluded namespaces
+        text: az aks safeguards update --resource-group MyResourceGroup --name MyAKSCluster --excluded-namespaces [ns1,ns2] --level Warn
+      - name: Update Deployment Safeguards to Enforce level for an AKS cluster by its resource ID
+        text: az aks safeguards update --managed-cluster "/subscriptions/MySubscriptionID/resourceGroups/MyResourceGroup/providers/Microsoft.ContainerService/managedClusters/MyAKSCluster" --level Enforce
 """
 
 helps['aks safeguards show'] = """
   type: command
   short-summary: Show Deployment Safeguards configuration for a Managed Cluster
   examples:
-    - name: Show Deployment Safeguards for an AKS cluster with a specific name and resource group
-      text: az aks safeguards show --resource-group MyResourceGroup --name MyAKSCluster
-    - name: Show Deployment Safeguards for an AKS cluster by its resource ID
-      text: az aks safeguards show --managed-cluster "/subscriptions/MySubscriptionID/resourceGroups/MyResourceGroup/providers/Microsoft.ContainerService/managedClusters/MyAKSCluster"
+      - name: Show Deployment Safeguards for an AKS cluster with a specific name and resource group
+        text: az aks safeguards show --resource-group MyResourceGroup --name MyAKSCluster
+      - name: Show Deployment Safeguards for an AKS cluster by its resource ID
+        text: az aks safeguards show --managed-cluster "/subscriptions/MySubscriptionID/resourceGroups/MyResourceGroup/providers/Microsoft.ContainerService/managedClusters/MyAKSCluster"
 """
 
 helps['aks safeguards delete'] = """
   type: command
   short-summary: Delete Deployment Safeguards configuration for a Managed Cluster
   examples:
-    - name: Delete Deployment Safeguards for an AKS cluster with a specific name and resource group
-      text: az aks safeguards delete --resource-group MyResourceGroup --name MyAKSCluster
-    - name: Delete Deployment Safeguards for an AKS cluster by its resource ID
-      text: az aks safeguards delete --managed-cluster "/subscriptions/MySubscriptionID/resourceGroups/MyResourceGroup/providers/Microsoft.ContainerService/managedClusters/MyAKSCluster"
+      - name: Delete Deployment Safeguards for an AKS cluster with a specific name and resource group
+        text: az aks safeguards delete --resource-group MyResourceGroup --name MyAKSCluster
+      - name: Delete Deployment Safeguards for an AKS cluster by its resource ID
+        text: az aks safeguards delete --managed-cluster "/subscriptions/MySubscriptionID/resourceGroups/MyResourceGroup/providers/Microsoft.ContainerService/managedClusters/MyAKSCluster"
 """
