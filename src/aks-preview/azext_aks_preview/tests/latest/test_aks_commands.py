@@ -2100,6 +2100,65 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             ],
         )
 
+    # Reconcile cluster should succeed (this validates the cluster is in a good state)
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17, name_prefix="clitest", location="westus2"
+    )
+    def test_aks_update_with_managed_system_pool(
+        self, resource_group, resource_group_location
+    ):
+        # create a cluster with a ManagedSystem pool
+        # This validates the cluster is in a good state
+        aks_name = self.create_random_name("cliakstest", 16)
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "nodepool_name": "nodepool1",
+                "ssh_key_value": self.generate_ssh_keys(),
+            }
+        )
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} "
+            "--enable-managed-system-pool --ssh-key-value={ssh_key_value} -o json"
+        )
+        self.cmd(
+            create_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("agentPoolProfiles[0].mode", "ManagedSystem"),
+                self.check("agentPoolProfiles[0].type", "VirtualMachines"),
+                self.check("length(agentPoolProfiles)", 1),
+            ],
+        )
+
+        # Reconciling the cluster to ensure it is in a good state
+        update_cmd = (
+            "aks update --resource-group={resource_group} --name={name} --yes"
+        )
+        self.cmd(
+            update_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("agentPoolProfiles[0].mode", "ManagedSystem"),
+                self.check("agentPoolProfiles[0].type", "VirtualMachines"),
+                self.check("length(agentPoolProfiles)", 1),
+            ],
+        )
+
+        # reconciling the ManagedSystem pool to ensure it can be updated
+        update_nodepool_cmd = (
+            "aks nodepool update --resource-group={resource_group} --cluster-name={name} --name {nodepool_name}"
+        )
+        self.cmd(
+            update_nodepool_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("mode", "ManagedSystem"),
+            ],
+        )
+
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
         random_name_length=17, name_prefix="clitest", location="westus2"

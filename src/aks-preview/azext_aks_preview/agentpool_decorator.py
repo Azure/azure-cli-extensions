@@ -1354,6 +1354,15 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
         # DO NOT MOVE: keep this on top, fetch and update the default AgentPool profile
         agentpool = self.update_agentpool_profile_default(agentpools)
 
+        # Check if agentpool is in ManagedSystem mode and handle special case
+        if agentpool.mode == CONST_NODEPOOL_MODE_MANAGEDSYSTEM:
+            # Make sure all other attributes are None
+            for attr in vars(agentpool):
+                if attr != 'name' and attr != 'mode' and not attr.startswith('_'):
+                    if hasattr(agentpool, attr):
+                        setattr(agentpool, attr, None)
+            return agentpool
+
         # update custom ca trust
         agentpool = self.update_custom_ca_trust(agentpool)
 
