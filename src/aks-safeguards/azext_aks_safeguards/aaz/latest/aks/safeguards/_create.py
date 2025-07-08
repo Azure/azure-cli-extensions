@@ -17,11 +17,14 @@ from azure.cli.core.aaz import *
 class Create(AAZCommand):
     """Enable Deployment Safeguards for a Managed Cluster
 
-    :example: Creates a DeploymentSafeguards resource with a long running operation.
+    :example: Creates a DeploymentSafeguards resource at Warn level with a managed cluster resource id
         az aks safeguards create --resource /subscriptions/subid1/resourceGroups/rg1/providers/Microsoft.ContainerService/managedClusters/cluster1 --level Warn
 
-    :example: Creates a DeploymentSafeguards resource with a long running operation
+    :example: Creates a DeploymentSafeguards resource at Warn level using subscription, resourcegroup, and name tags
         az aks safeguards create --subscription subid1 -g rg1 -n cluster1 --level Warn
+
+    :example: Create a DeploymentSafeguards resource at Warn level with ignored namespaces
+        az aks safeguards create -g rg1 -n mc1 --excluded-ns [ns1,ns2] --level Warn
     """
 
     _aaz_info = {
@@ -61,7 +64,7 @@ class Create(AAZCommand):
         _args_schema.excluded_namespaces = AAZListArg(
             options=["--excluded-ns", "--excluded-namespaces"],
             arg_group="Properties",
-            help="User defined list of namespaces to exclude from Deployment Safeguards. Deployments in these namespaces will not be checked against any safeguards. Use the format [ns1,ns2] to specify multiple namespaces.",
+            help="User defined list of namespaces to exclude from Deployment Safeguards. Deployments in these namespaces will not be checked against any safeguards",
         )
         _args_schema.level = AAZStrArg(
             options=["--level"],

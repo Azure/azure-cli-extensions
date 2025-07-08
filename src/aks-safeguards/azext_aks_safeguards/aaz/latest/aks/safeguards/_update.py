@@ -16,6 +16,15 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update Deployment Safeguards configuration for a Managed Cluster
+
+    :example: Update a DeploymentSafeguards resource by cluster id to Enforce level
+        az aks safeguards update -c /subscriptions/subid/resourcegroups/rg1/providers/Microsoft.ContainerService/managedClusters/mc1 --level Enforce
+
+    :example: Update a DeploymentSafeguards resource to Enforce level using resourceGroup and name arguments
+        az aks safeguards update --level Enforce -g rg1 -n mc1
+
+    :example: Update a DeploymentSafeguards resource by adding 2 new namespaces to ignore
+        az aks safeguards update -g rg1 -n mc1 --excluded-ns [ns1,ns2]
     """
 
     _aaz_info = {
@@ -45,7 +54,7 @@ class Update(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.managed_cluster = AAZStrArg(
+        _args_schema.managed_cluster = AAZResourceIdArg(
             options=["-c", "--cluster", "--managed-cluster"],
             help="The fully qualified Azure Resource manager identifier of the Managed Cluster.",
             required=False,
@@ -57,7 +66,7 @@ class Update(AAZCommand):
         _args_schema.excluded_namespaces = AAZListArg(
             options=["--excluded-ns", "--excluded-namespaces"],
             arg_group="Properties",
-            help="User defined list of namespaces to exclude from Deployment Safeguards. Deployments in these namespaces will not be checked against any safeguards. Use the format [ns1,ns2] to specify multiple namespaces.",
+            help="User defined list of namespaces to exclude from Deployment Safeguards. Deployments in these namespaces will not be checked against any safeguards",
             nullable=True,
         )
         _args_schema.level = AAZStrArg(

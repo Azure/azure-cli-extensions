@@ -51,36 +51,36 @@ class AksSafeguardsScenario(ScenarioTest):
         })
 
         # Create AKS cluster
-        self.cmd('aks create -g {rg} -n {aks_name} --ssh-key-value={ssh_key_value} --node-vm-size {vm_size} --enable-addons azure-policy', checks=[
+        aks_cluster = self.cmd('aks create -g {rg} -n {aks_name} --ssh-key-value={ssh_key_value} --node-vm-size {vm_size} --enable-addons azure-policy', checks=[
             self.check('name', '{aks_name}'),
             self.check('agentPoolProfiles[0].vmSize', '{vm_size}'),
-        ])
+        ]).get_output_in_json()
 
         # Enable safeguards
-        self.cmd('aks safeguards create -g {rg} -n {aks_name} --level Warn', checks=[
+        self.cmd(f'aks safeguards create -c {aks_cluster["id"]} --level Warn', checks=[
             self.check('properties.level', 'Warn'),
         ])
 
         # Get Safeguards
-        self.cmd('aks safeguards show -g {rg} -n {aks_name}', checks=[
+        self.cmd(f'aks safeguards show -c {aks_cluster["id"]}', checks=[
             self.check('properties.level', 'Warn'),
             self.check('properties.excludedNamespaces', None),
         ])
 
-        self.cmd('aks safeguards list -g {rg} -n {aks_name}', checks=[
+        self.cmd(f'aks safeguards list -c {aks_cluster["id"]}', checks=[
             self.check('length(@)', 1),
             self.check('[0].properties.level', 'Warn'),
             self.check('[0].properties.excludedNamespaces', None),
         ])
 
         # Change excluded namespaces
-        self.cmd('aks safeguards update -g {rg} -n {aks_name} --excluded-namespaces ns1', checks=[
+        self.cmd(f'aks safeguards update -c {aks_cluster["id"]} --excluded-namespaces ns1', checks=[
             self.check('properties.excludedNamespaces[0]', 'ns1'),
         ])
 
         # Disable Safeguards
 
-        self.cmd('aks safeguards delete -g {rg} -n {aks_name} --yes')
+        self.cmd(f'aks safeguards delete -c {aks_cluster["id"]} --yes')
 
         # delete the aks cluster
         self.cmd('aks delete -g {rg} -n {aks_name} --yes --no-wait')

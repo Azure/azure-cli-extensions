@@ -16,6 +16,12 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List DeploymentSafeguards by parent resource
+
+    :example: List DeploymentSafeguards by parent resource
+        az aks safeguards list --managed-cluster subscriptions/subid1/resourceGroups/rg1/providers/Microsoft.ContainerService/managedClusters/cluster1
+
+    :example: List DeploymentSafeguards by parent resource
+        az aks safeguards list -g rg1 -n cluster1
     """
 
     _aaz_info = {
@@ -43,7 +49,7 @@ class List(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.managed_cluster = AAZStrArg(
+        _args_schema.managed_cluster = AAZResourceIdArg(
             options=["-c", "--cluster", "--managed-cluster"],
             help="The fully qualified Azure Resource manager identifier of the Managed Cluster.",
             required=False,
