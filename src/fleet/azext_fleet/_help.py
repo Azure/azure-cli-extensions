@@ -393,3 +393,16 @@ helps['fleet autoupgradeprofile wait'] = """
     short-summary: Wait for an auto upgrade resource to reach a desired state.
     long-summary: If an operation on an auto upgrade profile was interrupted or was started with `--no-wait`, use this command to wait for it to complete.
 """
+
+helps['fleet gate'] = """
+    type: group
+    short-summary: Commands to manage gates.
+"""
+
+helps['fleet gate list'] = """
+    type: command
+    short-summary: Lists all gates under a fleet.
+    examples:
+        - name: Lists all gates under a fleet.
+          text: az fleet list -g MyFleetResourceGroup --fleet-name MyFleetName
+"""

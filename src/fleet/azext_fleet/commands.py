@@ -115,3 +115,5 @@ def load_command_table(self, _):
      # fleet gates command group
     with self.command_group("fleet gate", gates_sdk, client_factory=cf_gates) as g:
         g.custom_command("list", "list_gates_by_fleet")
+        g.custom_command("get", "get_gates")
+        g.wait_command("wait")

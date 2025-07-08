@@ -543,6 +543,8 @@ def create_auto_upgrade_profile(cmd,  # pylint: disable=unused-argument
                                 channel,
                                 update_strategy_id=None,
                                 node_image_selection=None,
+                                target_kubernetes_version=None,
+                                long_term_support=False,
                                 disabled=False,
                                 no_wait=False):
 
@@ -574,6 +576,8 @@ def create_auto_upgrade_profile(cmd,  # pylint: disable=unused-argument
         update_strategy_id=update_strategy_id,
         channel=upgrade_channel,
         node_image_selection=auto_upgrade_node_image_selection,
+        target_kubernetes_version=target_kubernetes_version,
+        long_term_support=long_term_support,
         disabled=disabled
     )
 
@@ -628,3 +632,10 @@ def list_gates_by_fleet(cmd,  # pylint: disable=unused-argument
                              resource_group_name,
                              fleet_name):
     return client.list_by_fleet(resource_group_name, fleet_name)
+
+def get_gates(cmd,  # pylint: disable=unused-argument
+                             client,
+                             resource_group_name,
+                             fleet_name,
+                             gate_name):
+    return client.get(resource_group_name, fleet_name, gate_name)

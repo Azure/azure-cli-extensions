@@ -127,3 +127,9 @@ Release History
 1.5.2
 ++++++
 * Bug fix for `az fleet create --enable-hub --enable-private-cluster` argument
+
+1.6.0
+++++++
+* Upgrade SDK version to 2025-04-01-preview
+* Add Fleet Gates support
+* Add TargetKubernetesVersion channel support
