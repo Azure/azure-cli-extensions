@@ -30,7 +30,7 @@ helps['aks safeguards update'] = """
     - name: Update Deployment Safeguards to Enforce level for an AKS cluster with a specific name and resource group
       text: az aks safeguards update --resource-group MyResourceGroup --name MyAKSCluster --level Enforce
     - name: Update Deployment Safeguards to Warn level for an AKS cluster with excluded namespaces
-      text: az aks safeguards update --resource-group MyResourceGroup --name MyAKSCluster --excluded-namespaces [ns1,ns2] --level Warn
+      text: az aks safeguards update --resource-group MyResourceGroup --name MyAKSCluster --excluded-namespaces ns1 ns2 --level Warn
     - name: Update Deployment Safeguards to Enforce level for an AKS cluster by its resource ID
       text: az aks safeguards update --managed-cluster "/subscriptions/MySubscriptionID/resourceGroups/MyResourceGroup/providers/Microsoft.ContainerService/managedClusters/MyAKSCluster" --level Enforce
 """
