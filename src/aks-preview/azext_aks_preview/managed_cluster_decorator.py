@@ -3980,6 +3980,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         """
         self._ensure_mc(mc)
 
+        if mc.agent_pool_profiles is None:
+            return mc
         for agentpool in mc.agent_pool_profiles:
             # Check if agentpool is in ManagedSystem mode and handle special case
             if agentpool.mode == CONST_NODEPOOL_MODE_MANAGEDSYSTEM:
@@ -3988,7 +3990,6 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                     if attr != 'name' and attr != 'mode' and not attr.startswith('_'):
                         if hasattr(agentpool, attr):
                             setattr(agentpool, attr, None)
-
         return mc
 
     def init_models(self) -> None:
