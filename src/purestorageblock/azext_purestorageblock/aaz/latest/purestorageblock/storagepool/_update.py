@@ -19,7 +19,7 @@ class Update(AAZCommand):
     """Update a storage pool
 
     :example: storage-pool Update
-        az purestorageblock storage-pool update --resource-group rgpurestorage --storage-pool-name storagePoolname --provisioned-bandwidth 908
+        az purestorageblock storagepool update --resource-group rgpurestorage --storage-pool-name storagePoolname --provisioned-bandwidth 908
     """
 
     _aaz_info = {

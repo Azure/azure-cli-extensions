@@ -19,7 +19,7 @@ class Create(AAZCommand):
     """Create a storage pool
 
     :example: StoragePools_Create
-        az purestorageblock storage-pool create --resource-group rgpurestorage --storage-pool-name storagePoolname --availability-zone vknyl --vnet-injection "{subnet-id:tnlctolrxdvnkjiphlrdxq,vnet-id:zbumtytyqwewjcyckwqchiypshv}" --provisioned-bandwidth-mb-per-sec 17 --reservation-id xiowoxnbtcotutcmmrofvgdi --type None --user-assigned-identities "{key4211:{}}" --tags "{key7593:vsyiygyurvwlfaezpuqu}" --location lonlc
+        az purestorageblock storagepool create --resource-group rgpurestorage --storage-pool-name storagePoolname --availability-zone vknyl --vnet-injection "{subnet-id:tnlctolrxdvnkjiphlrdxq,vnet-id:zbumtytyqwewjcyckwqchiypshv}" --provisioned-bandwidth-mb-per-sec 17 --reservation-id xiowoxnbtcotutcmmrofvgdi --type None --user-assigned-identities "{key4211:{}}" --tags "{key7593:vsyiygyurvwlfaezpuqu}" --location lonlc
     """
 
     _aaz_info = {

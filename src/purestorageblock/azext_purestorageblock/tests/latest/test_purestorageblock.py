@@ -10,7 +10,7 @@ from azure.cli.testsdk import ScenarioTest, JMESPathCheck
 
 class PurestorageblockScenarioTest(ScenarioTest):
     
-    def test_purestorageblock(self):
+    def test_purestorageblock_reservation_crud(self):
         self.cmd("az purestorageblock reservation list", checks=[
                      self.greater_than('length(@)', 0)
                  ])
@@ -20,3 +20,63 @@ class PurestorageblockScenarioTest(ScenarioTest):
         # Create reservation command with proper JSON quoting
         create_cmd = """az purestorageblock reservation create --tags '{{"key1110":"euhfdmtfpucwurtu"}}' --resource-group S1RG1 --reservation-name cliTestReservation --location "Central US" --marketplace '{{"subscription-status":"Subscribed","offer-details":{{"publisher-id":"purestoragemarketplaceadmin","offer-id":"krypton_3_plan","plan-id":"private_preview_zero","term-unit":"P1M","term-id":"gmz7xq9ge3py"}}}}' --user '{{"first-name":"ritika","last-name":"joshi","email-address":"ritikajoshi@microsoft.com","company-details":{{"company-name":"Microsoft","address":{{"address-line1":"Street12s3","address-line2":"h","city":"Redmond","state":"wa","country":"US","postal-code":"98052-8300"}}}}}}'"""
         self.cmd(create_cmd)
+
+    def test_purestorageblock_resource_limits(self):
+        """Test purestorageblock reservation get-resource-limit command"""
+        # Test get-resource-limit command
+        self.cmd("az purestorageblock reservation get-resource-limit --resource-group S1RG1 --reservation-name cliTestReservation", checks=[
+           
+            # Verify the structure contains all expected top-level keys
+            self.exists('performancePolicy'),
+            self.exists('protectionPolicy'),
+            self.exists('storagePool'),
+            self.exists('volume')
+        ])
+
+    def test_purestorageblock_storagepool_create(self):
+        """Test purestorageblock storagepool create command"""
+        # Create storagepool command with proper JSON quoting for vnet-injection
+        create_storagepool_cmd = """az purestorageblock storagepool create --resource-group S1RG1 --storage-pool-name cliTestStoragePool --location "Central US" --availability-zone "1" --vnet-injection '{{"subnet-id":"/subscriptions/3490e0a3-59fd-4ed4-baed-873d4e401b99/resourceGroups/pure-cli-testing-vnet/providers/Microsoft.Network/virtualNetworks/pure-cli-vnet/subnets/delg-subnet","vnet-id":"/subscriptions/3490e0a3-59fd-4ed4-baed-873d4e401b99/resourceGroups/S1RG1/providers/PureStorage.Block/reservations/cliTestReservation"}}' --provisioned-bandwidth 992 --reservation-id "/subscriptions/3490e0a3-59fd-4ed4-baed-873d4e401b99/resourceGroups/S1RG1/providers/PureStorage.Block/reservations/cliTestReservation" --system-assigned"""
+        
+        # Execute the create command
+        self.cmd(create_storagepool_cmd, checks=[
+            self.exists('properties.vnetInjection'),
+            self.exists('identity'),
+            self.exists('properties')
+        ])
+
+    def test_purestorageblock_storagepool_get(self):
+        """Test storagepool show, list, and get-health-status commands with basic field checks"""
+
+        # 1. Test storagepool show
+        self.cmd(
+            "az purestorageblock storagepool show --resource-group S1RG1 --storage-pool-name deepak-sp-01",
+            checks=[
+                self.exists('id'),
+                self.exists('name'),
+                self.exists('location'),
+                self.exists('identity'),
+                self.exists('vnetInjection'),
+                self.exists('provisionedBandwidthMbPerSec')
+            ]
+        )
+
+        # 2. Test storagepool list
+        self.cmd(
+            "az purestorageblock storagepool list",
+            checks=[
+                self.greater_than('length(@)', 0)
+            ]
+        )
+
+    def test_purestorageblock_storagepool_postAction(self):
+        # 3. Test storagepool get-health-status
+        self.cmd(
+            "az purestorageblock storagepool get-health-status --resource-group dalSUK --storage-pool-name testpooltag_2",
+            checks=[
+                self.exists('health'),
+                self.exists('health.bandwidthUsage'),
+                self.exists('health.iopsUsage'),
+                self.exists('health.space')
+            ]
+        )    

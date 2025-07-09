@@ -19,7 +19,7 @@ class List(AAZCommand):
     """List storage pools by Azure subscription ID
 
     :example: StoragePools_ListBySubscription
-        az purestorageblock storage-pool list
+        az purestorageblock storagepool list
     """
 
     _aaz_info = {
