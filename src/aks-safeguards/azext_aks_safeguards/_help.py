@@ -18,7 +18,7 @@ helps['aks safeguards create'] = """
     - name: Enable Deployment Safeguards for an AKS cluster at Warn level
       text: az aks safeguards create --resource-group MyResourceGroup --name MyAKSCluster --level Warn
     - name: Enable Deployment Safeguards at Warn level for an AKS cluster with excluded namespaces
-      text: az aks safeguards create --resource-group MyResourceGroup --name MyAKSCluster --level Warn --excluded-namespaces [ns1,ns2]
+      text: az aks safeguards create --resource-group MyResourceGroup --name MyAKSCluster --level Warn --excluded-namespaces ns1 ns2
     - name: Enable Deployment Safeguards at Warn level for an AKS cluster by its resource ID
       text: az aks safeguards create --managed-cluster "/subscriptions/MySubscriptionID/resourceGroups/MyResourceGroup/providers/Microsoft.ContainerService/managedClusters/MyAKSCluster" --level Warn
 """
