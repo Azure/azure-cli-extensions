@@ -125,7 +125,7 @@ def load_arguments(self, _):
                    help='The auto upgrade channel type.')
         c.argument('node_image_selection', arg_type=get_enum_type(['Latest', 'Consistent']),
                    help='Node Image Selection is an option that lets you choose how your clusters\' nodes are upgraded.')
-        c.argument('target_kubernetes_version',
+        c.argument('target_kubernetes_version', options_list=['--target-kubernetes-version', '--tkv'],
             help=(
                 'This is the target Kubernetes version for auto-upgrade. The format must be "{major version}.{minor version}". '
                 'For example, "1.30". By default, this is empty. '
