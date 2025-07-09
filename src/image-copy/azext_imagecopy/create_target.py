@@ -73,7 +73,9 @@ def create_target_image(location, transient_resource_group_name, source_type, so
 
     sas_token = run_cli_command(cli_cmd)
     sas_token = sas_token.rstrip("\n\r")  # STRANGE
-    logger.debug("sas token: %s", sas_token.split()[-1])
+    if len(sas_token.split()) > 1:
+       sas_token = sas_token.split()[-1]
+    logger.debug("sas token: %s")
 
     # create a container in the target blob storage account
     logger.warning(
@@ -96,7 +98,7 @@ def create_target_image(location, transient_resource_group_name, source_type, so
                                    '--destination-blob', blob_name,
                                    '--destination-container', target_container_name,
                                    '--account-name', target_storage_account_name,
-                                   '--sas-token', sas_token.split()[-1]],
+                                   '--sas-token', sas_token],
                                   subscription=target_subscription,
                                   only_show_errors=only_show_errors)
 
