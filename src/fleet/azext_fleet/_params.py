@@ -155,12 +155,12 @@ def load_arguments(self, _):
     with self.argument_context('fleet gate get') as c:
         c.argument('resource_group_name', options_list=['--resource-group', '-g'], help='Name of the resource group.')
         c.argument('fleet_name', options_list=['--fleet-name', '-f'], help='Name of the fleet.')
-        c.argument('gate_name', options_list=['--gate-name', '-n'], help='Name of the gate.')
+        c.argument('gate_name', options_list=['--gate-name', '--gate', '-n'], help='Name of the gate.')
 
     with self.argument_context('fleet gate update') as c:
         c.argument('resource_group_name', options_list=['--resource-group', '-g'], help='Name of the resource group.')
         c.argument('fleet_name', options_list=['--fleet-name', '-f'], help='Name of the fleet.')
-        c.argument('gate_name', options_list=['--gate-name', '-n'], help='Name of the gate.')
+        c.argument('gate_name', options_list=['--gate-name', '--gate', '-n'], help='Name of the gate.')
         c.argument('gate_state',options_list=['--gate-state', '--gs', '--state'],
                    help='The Gate State to patch. Valid values are Pending, Skipped, Completed.')
 
