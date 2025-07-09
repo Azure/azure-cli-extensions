@@ -35,7 +35,7 @@ class EnableManagedSystemPoolTestCase(unittest.TestCase):
             self.models,
             decorator_mode=DecoratorMode.CREATE,
         )
-        self.assertEqual(ctx1.get_enable_managed_system_pool(), True)
+        self.assertEqual(ctx1.raw_param.get("enable_managed_system_pool"), True)
 
         # Test with enable_managed_system_pool=False
         ctx2 = AKSPreviewManagedClusterContext(
@@ -44,7 +44,7 @@ class EnableManagedSystemPoolTestCase(unittest.TestCase):
             self.models,
             decorator_mode=DecoratorMode.CREATE,
         )
-        self.assertEqual(ctx2.get_enable_managed_system_pool(), False)
+        self.assertEqual(ctx2.raw_param.get("enable_managed_system_pool"), False)
 
         # Test with enable_managed_system_pool=None (default)
         ctx3 = AKSPreviewManagedClusterContext(
@@ -53,7 +53,7 @@ class EnableManagedSystemPoolTestCase(unittest.TestCase):
             self.models,
             decorator_mode=DecoratorMode.CREATE,
         )
-        self.assertEqual(ctx3.get_enable_managed_system_pool(), None)
+        self.assertEqual(ctx3.raw_param.get("enable_managed_system_pool"), None)
 
     def test_raw_parameter_modification_logic(self):
         """Test the parameter modification logic that sets mode to ManagedSystem"""
@@ -74,7 +74,7 @@ class EnableManagedSystemPoolTestCase(unittest.TestCase):
 
         # Simulate the logic from init_agentpool_decorator_context
         modified_raw_parameters = raw_parameters_true.copy()
-        if ctx_true.get_enable_managed_system_pool():
+        if ctx_true.raw_param.get("enable_managed_system_pool"):
             modified_raw_parameters["mode"] = CONST_NODEPOOL_MODE_MANAGEDSYSTEM
 
         # Verify the mode was set
@@ -95,7 +95,7 @@ class EnableManagedSystemPoolTestCase(unittest.TestCase):
 
         # Simulate the logic from init_agentpool_decorator_context
         modified_raw_parameters_false = raw_parameters_false.copy()
-        if ctx_false.get_enable_managed_system_pool():
+        if ctx_false.raw_param.get("enable_managed_system_pool"):
             modified_raw_parameters_false["mode"] = CONST_NODEPOOL_MODE_MANAGEDSYSTEM
 
         # Verify the mode was NOT set
