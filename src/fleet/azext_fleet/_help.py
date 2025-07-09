@@ -117,7 +117,7 @@ helps['fleet member create'] = """
           short-summary: Update group of the member.
     examples:
         - name: Create a member and assign it to an update group.
-          text: az fleet member create -g MyFleetResourceGroup -f MyFleetName -n NameOfMember --update-group UpdateGroup1 --member-cluster-id "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyFleetResourceGroup/providers/Microsoft.ContainerService/managedClusters/MyManagedCluster"
+          text: az fleet member create -g MyFleetResourceGroup -f MyFleetName -n NameOfMember --update-group group1 --member-cluster-id "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyFleetResourceGroup/providers/Microsoft.ContainerService/managedClusters/MyManagedCluster"
 """
 
 helps['fleet member update'] = """
@@ -405,4 +405,22 @@ helps['fleet gate list'] = """
     examples:
         - name: Lists all gates under a fleet.
           text: az fleet list -g MyFleetResourceGroup --fleet-name MyFleetName
+        - name: List all gates with filtering.
+          text: az fleet gate list -g MyFleetResourceGroup --fleet-name MyFleetName --query "[?state=='Pending']" -o table
+"""
+
+helps['fleet gate get'] = """
+    type: command
+    short-summary: Gets a specific gate.
+    examples:
+        - name: Gets a specific gate.
+          text: az fleet get -g MyFleetResourceGroup --fleet-name MyFleetName --gate-name MyGate
+"""
+
+helps['fleet gate update'] = """
+    type: command
+    short-summary: Updates a gate. Currently only the gate state can be updated.
+    examples:
+        - name: Updates a gate.
+          text: az fleet gate update -g MyFleetResourceGroup --fleet-name MyFleetName --gate-name MyGate --state "Completed"
 """

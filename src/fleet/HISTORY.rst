@@ -133,3 +133,4 @@ Release History
 * Upgrade SDK version to 2025-04-01-preview
 * Add Fleet Gates support
 * Add TargetKubernetesVersion channel support
+* Add Fleet Member labels support

@@ -236,13 +236,14 @@ def create_fleet_member(cmd,
                         fleet_name,
                         member_cluster_id,
                         update_group=None,
+                        member_labels=None,
                         no_wait=False):
     fleet_member_model = cmd.get_models(
         "FleetMember",
         resource_type=CUSTOM_MGMT_FLEET,
         operation_group="fleet_members"
     )
-    fleet_member = fleet_member_model(cluster_resource_id=member_cluster_id, group=update_group)
+    fleet_member = fleet_member_model(cluster_resource_id=member_cluster_id, group=update_group, labels=member_labels)
     return sdk_no_wait(no_wait, client.begin_create, resource_group_name, fleet_name, name, fleet_member)
 
 
@@ -252,13 +253,14 @@ def update_fleet_member(cmd,
                         name,
                         fleet_name,
                         update_group=None,
+                        member_labels=None,
                         no_wait=False):
     fleet_member_update_model = cmd.get_models(
         "FleetMemberUpdate",
         resource_type=CUSTOM_MGMT_FLEET,
         operation_group="fleet_members"
     )
-    properties = fleet_member_update_model(group=update_group)
+    properties = fleet_member_update_model(group=update_group, labels=member_labels)
     return sdk_no_wait(no_wait, client.begin_update, resource_group_name, fleet_name, name, properties)
 
 
@@ -633,9 +635,24 @@ def list_gates_by_fleet(cmd,  # pylint: disable=unused-argument
                              fleet_name):
     return client.list_by_fleet(resource_group_name, fleet_name)
 
-def get_gates(cmd,  # pylint: disable=unused-argument
+def get_gate(cmd,  # pylint: disable=unused-argument
                              client,
                              resource_group_name,
                              fleet_name,
                              gate_name):
     return client.get(resource_group_name, fleet_name, gate_name)
+
+def update_gate(cmd,  # pylint: disable=unused-argument
+                             client,
+                             resource_group_name,
+                             fleet_name,
+                             gate_name,
+                             gate_state=None):
+
+    gate_model = cmd.get_models(
+        "GatePatch",
+        resource_type=CUSTOM_MGMT_FLEET,
+        operation_group="gates"
+    )
+    properties = gate_models(gate_state=gate_state)
+    return sdk_no_wait(no_wait, client.begin_update, resource_group_name, fleet_name, gate_name, properties)
