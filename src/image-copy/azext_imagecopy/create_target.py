@@ -96,7 +96,7 @@ def create_target_image(location, transient_resource_group_name, source_type, so
                                    '--destination-blob', blob_name,
                                    '--destination-container', target_container_name,
                                    '--account-name', target_storage_account_name,
-                                   '--sas-token', sas_token],
+                                   '--sas-token', sas_token.split()[-1]],
                                   subscription=target_subscription,
                                   only_show_errors=only_show_errors)
 
