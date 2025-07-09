@@ -24,7 +24,7 @@ class Create(AAZCommand):
         az aks safeguards create --subscription subid1 -g rg1 -n cluster1 --level Warn
 
     :example: Create a DeploymentSafeguards resource at Warn level with ignored namespaces
-        az aks safeguards create -g rg1 -n mc1 --excluded-ns [ns1,ns2] --level Warn
+        az aks safeguards create -g rg1 -n mc1 --excluded-ns ns1 ns2 --level Warn
     """
 
     _aaz_info = {
