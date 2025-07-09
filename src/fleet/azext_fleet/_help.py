@@ -117,7 +117,7 @@ helps['fleet member create'] = """
           short-summary: Update group of the member.
     examples:
         - name: Create a member and assign it to an update group.
-          text: az fleet member create -g MyFleetResourceGroup -f MyFleetName -n NameOfMember --update-group UpdateGroup1 --member-cluster-id "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyFleetResourceGroup/providers/Microsoft.ContainerService/managedClusters/MyManagedCluster"
+          text: az fleet member create -g MyFleetResourceGroup -f MyFleetName -n NameOfMember --update-group group1 --member-cluster-id "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyFleetResourceGroup/providers/Microsoft.ContainerService/managedClusters/MyManagedCluster"
 """
 
 helps['fleet member update'] = """
@@ -129,7 +129,7 @@ helps['fleet member update'] = """
           short-summary: Update group of the member.
     examples:
         - name: Update an existing member's update group.
-          text: az fleet member update -g MyFleetResourceGroup -f MyFleetName -n NameOfMember --update-group UpdateGroup2
+          text: az fleet member update -g MyFleetResourceGroup -f MyFleetName -n NameOfMember --update-group group2
 """
 
 helps['fleet member list'] = """
@@ -392,4 +392,35 @@ helps['fleet autoupgradeprofile wait'] = """
     type: command
     short-summary: Wait for an auto upgrade resource to reach a desired state.
     long-summary: If an operation on an auto upgrade profile was interrupted or was started with `--no-wait`, use this command to wait for it to complete.
+"""
+
+helps['fleet gate'] = """
+    type: group
+    short-summary: Commands to manage gates.
+"""
+
+helps['fleet gate list'] = """
+    type: command
+    short-summary: Lists all gates under a fleet.
+    examples:
+        - name: Lists all gates under a fleet.
+          text: az fleet list -g MyFleetResourceGroup --fleet-name MyFleetName
+        - name: List all gates with filtering.
+          text: az fleet gate list -g MyFleetResourceGroup --fleet-name MyFleetName --query "[?state=='Pending']" -o table
+"""
+
+helps['fleet gate get'] = """
+    type: command
+    short-summary: Gets a specific gate.
+    examples:
+        - name: Gets a specific gate.
+          text: az fleet get -g MyFleetResourceGroup --fleet-name MyFleetName --gate-name 3fa85f64-5717-4562-b3fc-2c963f66afa6
+"""
+
+helps['fleet gate update'] = """
+    type: command
+    short-summary: Updates a gate. Currently only the gate state can be updated.
+    examples:
+        - name: Updates a gate.
+          text: az fleet gate update -g MyFleetResourceGroup --fleet-name MyFleetName --gate-name 3fa85f64-5717-4562-b3fc-2c963f66afa6 --state "Completed"
 """
