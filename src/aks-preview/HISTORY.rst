@@ -10,6 +10,12 @@ If there is no rush to release a new version, please just add a description of t
 To release a new version, please select a new version number (usually plus 1 to last patch version, X.Y.Z -> Major.Minor.Patch, more details in `\doc <https://semver.org/>`_), and then add a new section named as the new version number in this file, the content should include the new modifications and everything from the *Pending* section. Finally, update the `VERSION` variable in `setup.py` with this new version number.
 
 Pending
+
++++++++
+18.0.0b19
++++++++
+- Added  `--localdns-config` to `az aks nodepool add`` and  to `az aks nodepool update` to support configuring a local DNS profile for agentpools.
+
 +++++++
 18.0.0b18
 +++++++
@@ -23,10 +29,6 @@ Pending
 18.0.0b16
 +++++++
 * Vendor new SDK and bump API version to 2025-05-02-preview.
-
-18.0.0b16
-++++++++++++++++++++++++++++
-- Added  `--localdns-config` to `az aks nodepool add`` and  to `az aks nodepool update` to support configuring a local DNS profile for agentpools.
 
 18.0.0b15
 +++++++
