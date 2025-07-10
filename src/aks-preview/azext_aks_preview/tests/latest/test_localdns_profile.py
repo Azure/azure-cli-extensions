@@ -17,7 +17,7 @@ kubeDnsOverridesExpected = {
         ".": {
             "cacheDurationInSeconds": 3600,
             "forwardDestination": "ClusterCoreDNS",
-            "forwardPolicy": "RoundRobin",
+            "forwardPolicy": "Sequential",
             "maxConcurrent": 1000,
             "protocol": "PreferUDP",
             "queryLogging": "Error",
@@ -27,7 +27,7 @@ kubeDnsOverridesExpected = {
         "cluster.local": {
             "cacheDurationInSeconds": 3600,
             "forwardDestination": "ClusterCoreDNS",
-            "forwardPolicy": "RoundRobin",
+            "forwardPolicy": "Sequential",
             "maxConcurrent": 1000,
             "protocol": "ForceTCP",
             "queryLogging": "Error",
@@ -40,7 +40,7 @@ vnetDnsOverridesExpected = {
         ".": {
             "cacheDurationInSeconds": 3600,
             "forwardDestination": "VnetDNS",
-            "forwardPolicy": "RoundRobin",
+            "forwardPolicy": "Sequential",
             "maxConcurrent": 1000,
             "protocol": "PreferUDP",
             "queryLogging": "Error",
@@ -50,7 +50,7 @@ vnetDnsOverridesExpected = {
         "cluster.local": {
             "cacheDurationInSeconds": 3600,
             "forwardDestination": "ClusterCoreDNS",
-            "forwardPolicy": "RoundRobin",
+            "forwardPolicy": "Sequential",
             "maxConcurrent": 1000,
             "protocol": "ForceTCP",
             "queryLogging": "Error",
