@@ -2,6 +2,10 @@
 
 Release History
 ===============
+1.4.2
+++++++
+* Bug fix for tunnel.
+
 1.4.1
 ++++++
 * Enable SSH connectivity support for Developer SKU.
