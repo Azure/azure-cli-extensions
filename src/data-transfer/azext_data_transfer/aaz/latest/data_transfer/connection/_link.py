@@ -20,6 +20,7 @@ class Link(AAZCommand):
 
     :example: Links the specified connection
         az data-transfer connection link --resource-group testRG --connection-name receiveConnection --pending-connection-id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/testRG/providers/Microsoft.AzureDataTransfer/connections/sendConnection
+        az data-transfer connection link --ids /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/testRG/providers/Microsoft.AzureDataTransfer/connections/recieveConnection  --pending-connection-id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/testRG/providers/Microsoft.AzureDataTransfer/connections/sendConnection
     """
 
     _aaz_info = {
