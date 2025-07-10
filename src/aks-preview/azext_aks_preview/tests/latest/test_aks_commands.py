@@ -2972,10 +2972,9 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "aks nodepool show --resource-group={resource_group} --cluster-name={name} --name={nodepool_name}"
         )
         result = self.cmd(show_cmd).get_output_in_json()
-        result = self.cmd(show_cmd).get_output_in_json()
-        assert result["localDnsProfile"]["mode"] == "Required"
-        assert_dns_overrides_equal(result["localDnsProfile"]["kubeDnsOverrides"], kubeDnsOverridesExpected)
-        assert_dns_overrides_equal(result["localDnsProfile"]["vnetDnsOverrides"], vnetDnsOverridesExpected)
+        assert result["localDNSProfile"]["mode"] == "Required"
+        assert_dns_overrides_equal(result["localDNSProfile"]["kubeDnsOverrides"], kubeDnsOverridesExpected)
+        assert_dns_overrides_equal(result["localDNSProfile"]["vnetDnsOverrides"], vnetDnsOverridesExpected)
 
         # Clean up
         self.cmd(
@@ -3027,9 +3026,10 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "aks nodepool show --resource-group={resource_group} --cluster-name={name} --name={nodepool_name}"
         )
         result = self.cmd(show_cmd).get_output_in_json()
-        assert result["localDnsProfile"]["mode"] == "Required"
-        assert_dns_overrides_equal(result["localDnsProfile"]["kubeDnsOverrides"], kubeDnsOverridesExpected)
-        assert_dns_overrides_equal(result["localDnsProfile"]["vnetDnsOverrides"], vnetDnsOverridesExpected)
+        
+        assert result["localDNSProfile"]["mode"] == "Required"
+        assert_dns_overrides_equal(result["localDNSProfile"]["kubeDnsOverrides"], kubeDnsOverridesExpected)
+        assert_dns_overrides_equal(result["localDNSProfile"]["vnetDNSOverrides"], vnetDnsOverridesExpected)
 
         # Clean up
         self.cmd(

@@ -4,7 +4,7 @@
     ".": {
       "cacheDurationInSeconds": 3600,
       "forwardDestination": "ClusterCoreDNS",
-      "forwardPolicy": "Sequential",
+      "forwardPolicy": "RoundRobin",
       "maxConcurrent": 1000,
       "protocol": "PreferUDP",
       "queryLogging": "Error",
@@ -14,7 +14,7 @@
     "cluster.local": {
       "cacheDurationInSeconds": 3600,
       "forwardDestination": "ClusterCoreDNS",
-      "forwardPolicy": "Sequential",
+      "forwardPolicy": "RoundRobin",
       "maxConcurrent": 1000,
       "protocol": "ForceTCP",
       "queryLogging": "Error",
@@ -26,7 +26,7 @@
     ".": {
       "cacheDurationInSeconds": 3600,
       "forwardDestination": "VnetDNS",
-      "forwardPolicy": "Sequential",
+      "forwardPolicy": "RoundRobin",
       "maxConcurrent": 1000,
       "protocol": "PreferUDP",
       "queryLogging": "Error",
@@ -36,7 +36,7 @@
     "cluster.local": {
       "cacheDurationInSeconds": 3600,
       "forwardDestination": "ClusterCoreDNS",
-      "forwardPolicy": "Sequential",
+      "forwardPolicy": "RoundRobin",
       "maxConcurrent": 1000,
       "protocol": "ForceTCP",
       "queryLogging": "Error",
