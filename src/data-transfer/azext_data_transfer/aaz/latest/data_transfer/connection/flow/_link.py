@@ -16,10 +16,11 @@ from azure.cli.core.aaz import *
     is_preview=True,
 )
 class Link(AAZCommand):
-    """Links the specified flow.
+    """Links the specified flow in the connection
 
     :example: Links the specified flow
-        az data-transfer connection flow link --resource-group testRG --connection-name testConnection --flow-name testFlow --id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/testRG/providers/Microsoft.AzureDataTransfer/connections/testConnection/flows/testFlow
+        az data-transfer connection flow link --resource-group testRG --connection-name receiveConnection --flow-name receiveFlow --id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/testRG/providers/Microsoft.AzureDataTransfer/connections/sendConnection/flows/sendFlow
+        az data-transfer connection flow link --ids /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/testRG/providers/Microsoft.AzureDataTransfer/receiveConnection/testConnection/flows/receiveFlow --pending-flow-id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/testRG/providers/Microsoft.AzureDataTransfer/connections/sendConnection/flows/sendFlow
     """
 
     _aaz_info = {

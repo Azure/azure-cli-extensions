@@ -19,8 +19,11 @@ from azure.cli.core.aaz import *
 class Delete(AAZCommand):
     """Delete the connection resource.
 
+    Deletes the connection specified by ids or by name and resource group
+
     :example: Deletes the connection resource
         az data-transfer connection delete --resource-group testRG --connection-name testConnection
+        az data-transfer connection delete --ids /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/testRG/providers/Microsoft.AzureDataTransfer/connections/testConnection /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/testRG/providers/Microsoft.AzureDataTransfer/connections/testConnection2
     """
 
     _aaz_info = {

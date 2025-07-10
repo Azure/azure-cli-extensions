@@ -16,7 +16,7 @@ from azure.cli.core.aaz import *
     is_preview=True,
 )
 class Create(AAZCommand):
-    """Create the flow resource.
+    """Create data flow for the approved connection
 
     :example: Creates the flow resource
         az data-transfer connection flow create --resource-group testRG --connection-name testConnection --flow-name testFlow --location East US --connection --flow-type Complex --storage-account /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rpaas-rg/providers/Private.AzureDataTransfer/storageAccounts/testsa --storage-container-name testcontainer

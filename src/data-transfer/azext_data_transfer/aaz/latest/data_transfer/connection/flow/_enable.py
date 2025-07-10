@@ -16,10 +16,11 @@ from azure.cli.core.aaz import *
     is_preview=True,
 )
 class Enable(AAZCommand):
-    """Enables the specified flow.
+    """Enables the specified flow in the connection
 
     :example: Enables the specified flow
         az data-transfer connection flow enable --resource-group testRG --connection-name testConnection --flow-name testFlow
+        az data-transfer connection flow enable --ids /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/testRG/providers/Microsoft.AzureDataTransfer/connections/testConnection/flows/testFlow
     """
 
     _aaz_info = {

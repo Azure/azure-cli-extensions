@@ -16,7 +16,7 @@ from azure.cli.core.aaz import *
     is_preview=True,
 )
 class List(AAZCommand):
-    """List Pipeline resource by Subscription or Resource Group
+    """List all the pipelines
 
     :example: Gets pipelines in a subscription
         az data-transfer pipeline list

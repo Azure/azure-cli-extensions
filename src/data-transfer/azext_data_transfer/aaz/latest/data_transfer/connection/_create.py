@@ -19,10 +19,12 @@ class Create(AAZCommand):
     """Create the connection resource.
 
     :example: Creates a receive side connection
-        az data-transfer connection create --resource-group testRG --connection-name testConnection --flow-types Mission API --location East US --justification justification --pipeline testdc --requirement-id id --direction Receive --remote-subscription-id 00000000-0000-0000-0000-000000000000
+        az data-transfer connection create --resource-group testRG --connection-name testConnection --flow-types Mission API --location eastus --justification justification --pipeline testdc --requirement-id id --direction Receive --remote-subscription-id 00000000-0000-0000-0000-000000000000
+        az data-transfer connection create --resource-group testRG --connection-name testConnection --flow-types ["Mission", "API"] --location eastus --justification justification --pipeline testdc --requirement-id id --direction Receive --remote-subscription-id 00000000-0000-0000-0000-000000000000
 
     :example: Creates a send side connection
-        az data-transfer connection create --resource-group testRG --connection-name testConnection --location East US --pipeline testdc --pin 1234
+        az data-transfer connection create --resource-group testRG --connection-name testConnection --location eastus --pipeline testdc --pin '$-pe3' --flow-types Api Mission --direction Send
+        az data-transfer connection create --resource-group testRG --connection-name testConnection --location 'East US' --pipeline testdc --pin 12345 --flow-types Api Mission --direction Send
     """
 
     _aaz_info = {

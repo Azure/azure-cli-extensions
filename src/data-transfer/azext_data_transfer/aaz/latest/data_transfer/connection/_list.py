@@ -16,7 +16,7 @@ from azure.cli.core.aaz import *
     is_preview=True,
 )
 class List(AAZCommand):
-    """List connections in a resource group.
+    """List all the connections.
 
     :example: Gets connections in a resource group
         az data-transfer connection list --resource-group testRG
