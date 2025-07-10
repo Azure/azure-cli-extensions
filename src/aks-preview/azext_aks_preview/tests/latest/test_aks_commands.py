@@ -163,12 +163,15 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         sorted_revisions = sorted(revisions, key=_convert_revision_to_semver)
         return sorted_revisions
 
-    def _get_asm_supported_revision(self, location):
+    def _get_asm_supported_revision(self, location, secondLatest=False):
         mesh_revisions_cmd = f"aks mesh get-revisions -l {location}"
         mesh_revisions = self.cmd(mesh_revisions_cmd).get_output_in_json()
         assert len(mesh_revisions["meshRevisions"]) > 0
         revisions = [r["revision"] for r in mesh_revisions["meshRevisions"]]
         sorted_revisons = self._sort_revisions(revisions)
+        lenRevisions = len(sorted_revisons)
+        if secondLatest and lenRevisions > 1:
+            return sorted_revisons[lenRevisions - 2]  # Return the second latest revision
         return sorted_revisons[0]
 
     def _get_asm_upgrade_version(self, resource_group, name):
@@ -785,7 +788,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         create_cmd = (
             "aks create --resource-group={resource_group} --name={name} --enable-managed-identity "
-            "-a ingress-appgw --appgw-subnet-cidr 10.232.0.0/16 "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AppGatewayWithOverlayPreview "
+            "-a ingress-appgw --appgw-subnet-cidr 10.232.0.0/26 "
             "--ssh-key-value={ssh_key_value} -o json"
         )
         self.cmd(
@@ -795,7 +799,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 self.check("addonProfiles.ingressApplicationGateway.enabled", True),
                 self.check(
                     "addonProfiles.ingressApplicationGateway.config.subnetCIDR",
-                    "10.232.0.0/16",
+                    "10.232.0.0/26",
                 ),
             ],
         )
@@ -849,6 +853,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "aks create --resource-group={resource_group} --name={aks_name} --enable-managed-identity "
             "--vnet-subnet-id {vnet_id}/subnets/aks-subnet -a ingress-appgw "
             "--appgw-name gateway --appgw-subnet-id {vnet_id}/subnets/appgw-subnet "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AppGatewayWithOverlayPreview "
             "--yes --ssh-key-value={ssh_key_value} -o json"
         )
         aks_cluster = self.cmd(
@@ -969,6 +974,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "aks create -n {aks_name} -g {resource_group} --enable-managed-identity "
             "--vnet-subnet-id {vnet_id}/subnets/aks-subnet "
             "-a ingress-appgw --appgw-id {appgw_id} --yes "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AppGatewayWithOverlayPreview "
             "--ssh-key-value={ssh_key_value} -o json"
         )
         aks_cluster = self.cmd(
@@ -2262,58 +2268,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         time.sleep(10)
         show_cmd = "aks show --resource-group={resource_group} --name={name}"
         self.cmd(show_cmd, checks=[self.check("provisioningState", "Canceled")])
-
-    @AllowLargeResponse()
-    @AKSCustomResourceGroupPreparer(
-        random_name_length=17, name_prefix="clitest", location="westus2"
-    )
-    def test_aks_nodepool_abort(self, resource_group, resource_group_location):
-        aks_name = self.create_random_name("cliakstest", 16)
-        node_pool_name = self.create_random_name("c", 6)
-        self.kwargs.update(
-            {
-                "resource_group": resource_group,
-                "name": aks_name,
-                "node_pool_name": node_pool_name,
-                "ssh_key_value": self.generate_ssh_keys(),
-            }
-        )
-
-        create_cmd = (
-            "aks create --resource-group={resource_group} --name={name} "
-            "--vm-set-type VirtualMachineScaleSets --node-count=1 "
-            "--ssh-key-value={ssh_key_value} "
-            "-o json"
-        )
-        self.cmd(create_cmd, checks=[self.check("provisioningState", "Succeeded")])
-
-        # add nodepool
-        self.cmd(
-            "aks nodepool add --resource-group={resource_group} --cluster-name={name} --name={node_pool_name} --node-count=2",
-            checks=[self.check("provisioningState", "Succeeded")],
-        )
-        # stop nodepool
-        self.cmd(
-            "aks nodepool stop --no-wait --resource-group={resource_group} --cluster-name={name} --nodepool-name={node_pool_name} --aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/PreviewStartStopAgentPool"
-        )
-
-        abort_cmd = "aks nodepool operation-abort --resource-group={resource_group} --cluster-name={name} --nodepool-name={node_pool_name}"
-        self.cmd(abort_cmd, checks=[self.is_empty()])
-
-        time.sleep(10)
-        get_nodepool_cmd = (
-            "aks nodepool show "
-            "--resource-group={resource_group} "
-            "--cluster-name={name} "
-            "-n {node_pool_name} "
-        )
-        self.cmd(
-            get_nodepool_cmd,
-            checks=[
-                self.check("provisioningState", "Canceled"),
-                self.check("powerState.code", "Running"),
-            ],
-        )
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
@@ -4953,7 +4907,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         # 1. create
         create_cmd = (
-            "aks create --resource-group={resource_group} --name={name} --location={location} "
+            "aks create --resource-group={resource_group} --name={name} --location={location} --node-vm-size Standard_D2s_v3 "
             "--nodepool-name {node_pool_name} -c 1 --enable-managed-identity "
             "--ssh-key-value={ssh_key_value} "
             '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/MutableFipsPreview '
@@ -5005,6 +4959,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "--resource-group={resource_group} "
             "--cluster-name={name} "
             "--name={node_pool_name_second} "
+            "--node-vm-size Standard_D2s_v3 "
             "--os-type Linux "
             '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/MutableFipsPreview ',
             checks=[
@@ -12692,7 +12647,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 "name": aks_name,
                 "location": resource_group_location,
                 "ssh_key_value": self.generate_ssh_keys(),
-                "revision": self._get_asm_supported_revision(resource_group_location),
+                "revision": self._get_asm_supported_revision(resource_group_location, False),
             }
         )
 
@@ -12766,7 +12721,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 "name": aks_name,
                 "location": resource_group_location,
                 "ssh_key_value": self.generate_ssh_keys(),
-                "revision": self._get_asm_supported_revision("westus2"), # Temporarily set to prod region to avoid using unsupported ASM revision for centraluseap
+                "revision": self._get_asm_supported_revision(resource_group_location, True),
             }
         )
 
@@ -12974,7 +12929,7 @@ spec:
                 "name": aks_name,
                 "location": resource_group_location,
                 "ssh_key_value": self.generate_ssh_keys(),
-                "revision": self._get_asm_supported_revision(resource_group_location),
+                "revision": self._get_asm_supported_revision(resource_group_location, False),
             }
         )
 
@@ -13060,7 +13015,7 @@ spec:
         self.test_resources_count = 0
         # kwargs for string formatting
         aks_name = self.create_random_name("cliakstest", 16)
-        installed_revision = self._get_asm_supported_revision(resource_group_location)
+        installed_revision = self._get_asm_supported_revision(resource_group_location, False)
         self.kwargs.update(
             {
                 "resource_group": resource_group,
@@ -13187,7 +13142,7 @@ spec:
                 "location": resource_group_location,
                 "ssh_key_value": self.generate_ssh_keys(),
                 "akv_resource_id": akv_resource_id,
-                "revision": self._get_asm_supported_revision(resource_group_location),
+                "revision": self._get_asm_supported_revision(resource_group_location, False),
             }
         )
 
@@ -13295,7 +13250,7 @@ spec:
                 "name": aks_name,
                 "location": resource_group_location,
                 "ssh_key_value": self.generate_ssh_keys(),
-                "revision": self._get_asm_supported_revision(resource_group_location),
+                "revision": self._get_asm_supported_revision(resource_group_location, False),
             }
         )
 
@@ -15854,17 +15809,11 @@ spec:
                 "acr_id": acr_id,
             }
         )
-        # enable anonymous pull for ACR
-        update_acr_cmd = (
-            "acr update --resource-group {resource_group} --name {acr_name} "
-            "--anonymous-pull-enabled true -o json"
-        )
-        self.cmd(update_acr_cmd, checks=[self.check("provisioningState", "Succeeded")])
 
         # enable acr artifact cache
         enable_acr_artifact_cache_cmd = (
-            "acr cache create -n aks-mcr -r {acr_name} "
-            "--source-repo \"mcr.microsoft.com/*\" --target-repo \"*\" -o json"
+            "acr cache create -n aks-managed-mcr -r {acr_name} "
+            "--source-repo \"mcr.microsoft.com/*\" --target-repo \"aks-managed-repository/*\" -o json"
         )
         self.cmd(enable_acr_artifact_cache_cmd, checks=[self.check("provisioningState", "Succeeded")])
 

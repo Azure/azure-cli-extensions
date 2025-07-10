@@ -172,7 +172,6 @@ helps['aks create'] = f"""
           short-summary: Enable the Kubernetes addons in a comma-separated list.
           long-summary: |-
             These addons are available:
-            - http_application_routing        : configure ingress with automatic public DNS name creation.
             - monitoring                      :  turn on Log Analytics monitoring. Uses the Log Analytics Default Workspace if it exists, else creates one. Specify "--workspace-resource-id" to use an existing workspace. If monitoring addon is enabled --no-wait argument will have no effect
             - virtual-node                    : enable AKS Virtual Node. Requires --aci-subnet-name to provide the name of an existing subnet for the Virtual Node to use. aci-subnet-name must be in the same vnet which is specified by --vnet-subnet-id (required as well).
             - azure-policy                    : enable Azure policy. The Azure Policy add-on for AKS enables at-scale enforcements and safeguards on your clusters in a centralized, consistent manner. Required if enabling deployment safeguards. Learn more at aka.ms/aks/policy.
@@ -181,7 +180,7 @@ helps['aks create'] = f"""
             - open-service-mesh               : enable Open Service Mesh addon (PREVIEW).
             - gitops                          : enable GitOps (PREVIEW).
             - azure-keyvault-secrets-provider : enable Azure Keyvault Secrets Provider addon.
-            - web_application_routing         : enable Web Application Routing addon (PREVIEW). Specify "--dns-zone-resource-id" to configure DNS.
+            - web_application_routing         : enable the App Routing addon (PREVIEW). Specify "--dns-zone-resource-id" to configure DNS.
         - name: --disable-rbac
           type: bool
           short-summary: Disable Kubernetes Role-Based Access Control.
@@ -240,8 +239,8 @@ helps['aks create'] = f"""
           long-summary: To access nodes after creating a cluster with this option, use the Azure Portal.
         - name: --pod-cidr
           type: string
-          short-summary: A CIDR notation IP range from which to assign pod IPs when kubenet is used.
-          long-summary: This range must not overlap with any Subnet IP ranges. For example, 172.244.0.0/16.
+          short-summary: A CIDR notation IP range from which to assign pod IPs when Azure CNI Overlay or Kubenet is used (On 31 March 2028, Kubenet will be retired).
+          long-summary: This range must not overlap with any Subnet IP ranges. For example, 172.244.0.0/16. See https://aka.ms/aks/azure-cni-overlay.
         - name: --service-cidr
           type: string
           short-summary: A CIDR notation IP range from which to assign service cluster IPs.
@@ -252,8 +251,8 @@ helps['aks create'] = f"""
           long-summary: Each range must not overlap with any Subnet IP ranges. For example, 10.0.0.0/16.
         - name: --pod-cidrs
           type: string
-          short-summary: A comma separated list of CIDR notation IP ranges from which to assign pod IPs when kubenet is used.
-          long-summary: Each range must not overlap with any Subnet IP ranges. For example, 172.244.0.0/16.
+          short-summary: A comma-separated list of CIDR notation IP ranges from which to assign pod IPs when Azure CNI Overlay or Kubenet is used (On 31 March 2028, Kubenet will be retired).
+          long-summary: Each range must not overlap with any Subnet IP ranges. For example, 172.244.0.0/16. See https://aka.ms/aks/azure-cni-overlay.
         - name: --ip-families
           type: string
           short-summary: A comma separated list of IP versions to use for cluster networking.
@@ -507,10 +506,10 @@ helps['aks create'] = f"""
           short-summary: Enable ImageIntegrity Service.
         - name: --dns-zone-resource-id
           type: string
-          short-summary: The resource ID of the DNS zone resource to use with the web_application_routing addon.
+          short-summary: The resource ID of the DNS zone resource to use with the App Routing addon.
         - name: --dns-zone-resource-ids
           type: string
-          short-summary: A comma separated list of resource IDs of the DNS zone resource to use with the web_application_routing addon.
+          short-summary: A comma separated list of resource IDs of the DNS zone resource to use with the App Routing addon.
         - name: --enable-custom-ca-trust
           type: bool
           short-summary: Enable Custom CA Trust on agent node pool.
@@ -2493,7 +2492,7 @@ long-summary: |-
         open-service-mesh               - enable Open Service Mesh addon (PREVIEW).
         gitops                          - enable GitOps (PREVIEW).
         azure-keyvault-secrets-provider - enable Azure Keyvault Secrets Provider addon.
-        web_application_routing         - enable Web Application Routing addon (PREVIEW). Specify "--dns-zone-resource-id" to configure DNS.
+        web_application_routing         - enable the App Routing addon (PREVIEW). Specify "--dns-zone-resource-id" to configure DNS.
 parameters:
   - name: --addon -a
     type: string
@@ -2548,10 +2547,10 @@ parameters:
     short-summary: Set interval of rotation poll. Use with azure-keyvault-secrets-provider addon.
   - name: --dns-zone-resource-id
     type: string
-    short-summary: The resource ID of the DNS zone resource to use with the web_application_routing addon.
+    short-summary: The resource ID of the DNS zone resource to use with the App Routing addon.
   - name: --dns-zone-resource-ids
     type: string
-    short-summary: A comma separated list of resource IDs of the DNS zone resource to use with the web_application_routing addon.
+    short-summary: A comma separated list of resource IDs of the DNS zone resource to use with the App Routing addon.
 examples:
   - name: Enable a Kubernetes addon. (autogenerated)
     text: az aks addon enable --addon virtual-node --name MyManagedCluster --resource-group MyResourceGroup --subnet-name VirtualNodeSubnet
@@ -2621,10 +2620,10 @@ parameters:
     short-summary: Set interval of rotation poll. Use with azure-keyvault-secrets-provider addon.
   - name: --dns-zone-resource-id
     type: string
-    short-summary: The resource ID of the DNS zone resource to use with the web_application_routing addon.
+    short-summary: The resource ID of the DNS zone resource to use with the App Routing addon.
   - name: --dns-zone-resource-ids
     type: string
-    short-summary: A comma separated list of resource IDs of the DNS zone resource to use with the web_application_routing addon.
+    short-summary: A comma separated list of resource IDs of the DNS zone resource to use with the App Routing addon.
 examples:
   - name: Update a Kubernetes addon. (autogenerated)
     text: az aks addon update --addon virtual-node --name MyManagedCluster --resource-group MyResourceGroup --subnet-name VirtualNodeSubnet
@@ -2653,7 +2652,7 @@ long-summary: |-
         open-service-mesh               - enable Open Service Mesh addon (PREVIEW).
         gitops                          - enable GitOps (PREVIEW).
         azure-keyvault-secrets-provider - enable Azure Keyvault Secrets Provider addon.
-        web_application_routing         - enable Web Application Routing addon (PREVIEW). Specify "--dns-zone-resource-id" to configure DNS.
+        web_application_routing         - enable the App Routing addon (PREVIEW). Specify "--dns-zone-resource-id" to configure DNS.
 parameters:
   - name: --addons -a
     type: string
@@ -2708,10 +2707,10 @@ parameters:
     short-summary: Set interval of rotation poll. Use with azure-keyvault-secrets-provider addon.
   - name: --dns-zone-resource-id
     type: string
-    short-summary: The resource ID of the DNS zone resource to use with the web_application_routing addon.
+    short-summary: The resource ID of the DNS zone resource to use with the App Routing addon.
   - name: --dns-zone-resource-ids
     type: string
-    short-summary: A comma separated list of resource IDs of the DNS zone resource to use with the web_application_routing addon.
+    short-summary: A comma separated list of resource IDs of the DNS zone resource to use with the App Routing addon.
   - name: --aks-custom-headers
     type: string
     short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2

@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Reboot(AAZCommand):
     """Reboot the Network Device.
+
+    :example: NetworkDevices_Reboot_MaximumSet_Gen
+        az networkfabric device reboot --resource-group example-rg --resource-name example-device --reboot-type GracefulRebootWithZTP
     """
 
     _aaz_info = {
@@ -43,7 +46,7 @@ class Reboot(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.network_device_name = AAZStrArg(
-            options=["--network-device-name"],
+            options=["--resource-name", "--network-device-name"],
             help="Name of the Network Device.",
             required=True,
             id_part="name",

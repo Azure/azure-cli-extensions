@@ -9,7 +9,6 @@ from knack.util import CLIError
 from knack.log import get_logger
 import time
 from azure.cli.core.commands.client_factory import get_subscription_id
-from datetime import datetime
 from ._client_factory import cf_deployments, cf_resources
 from azure.core.exceptions import ResourceNotFoundError
 
@@ -35,7 +34,8 @@ def install_vme(
 
     utils.check_and_add_cli_extension("connectedk8s")
     utils.check_and_add_cli_extension("k8s-extension")
-    utils.check_and_enable_bundle_feature_flag(cluster, resource_group_name, cluster_name, kube_config, kube_context)
+    utils.check_and_enable_bundle_feature_flag(
+        cmd, subscription_id, cluster, resource_group_name, cluster_name, kube_config, kube_context)
 
     # Install the bundle extensions one by one
     for extension_type in include_extension_types:
@@ -73,14 +73,16 @@ def install_vme(
             print(f"Installed extension {extension_type} successfully.")
             print(result)
 
-    print("All extensions installed successfully.")
+    if len(include_extension_types) > 1:
+        print("All extensions installed successfully.")
 
 
 def uninstall_vme(
         cmd,
         resource_group_name: str,
         cluster_name: str,
-        include_extension_types: list[str]):
+        include_extension_types: list[str],
+        force=False):
     if 'all' in include_extension_types:
         include_extension_types = consts.BundleExtensionTypes
     subscription_id = get_subscription_id(cmd.cli_ctx)
@@ -107,11 +109,13 @@ def uninstall_vme(
                    "connectedClusters",
                    "--name",
                    consts.BundleExtensionTypeNames[extension_type],
-                   "--force",
                    "--yes"]
+        if force:
+            command.append("--force")
         utils.call_subprocess_raise_output(command)
         print(f"Uninstalled extension {extension_type} successfully.")
-    print("All extensions uninstalled successfully.")
+    if len(include_extension_types) > 1:
+        print("All extensions uninstalled successfully.")
 
 
 def upgrade_vme(
@@ -136,7 +140,7 @@ def upgrade_vme(
 
     utils.check_and_add_cli_extension("connectedk8s")
     utils.check_and_enable_bundle_feature_flag(
-        cluster, resource_group_name, cluster_name, kube_config, kube_context)
+        cmd, subscription_id, cluster, resource_group_name, cluster_name, kube_config, kube_context)
     deployment_name = (consts.ARC_UPDATE_PREFIX + cluster_name).lower()
     print(f"Checking arm template deployment '{deployment_name}' for '{cluster_resource_id}' "
           f"which has agent version '{agent_version}'")
@@ -149,7 +153,7 @@ def upgrade_vme(
     deployment = None
     while time.time() - start_time < wait_timeout:
         # Get current timestamp
-        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        timestamp = utils.get_utctimestring()
         try:
             deployment = client.get(resource_group_name, deployment_name)
             if (not deployment or not deployment.tags):
