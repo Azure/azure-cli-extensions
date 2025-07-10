@@ -21,9 +21,10 @@ from azure.cli.testsdk import (
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 class AlbScenario(ScenarioTest):
+    @live_only()
+    @ResourceGroupPreparer(name_prefix='cli_record_test_tc_000999990', location="eastus2euap")
     def test_alb_resources(self):
         self.kwargs.update({
-            'rg': 'cli_record_test_tc_000999990',
             'tc': 'tc1',
             'fe': 'fe1',
             'aso': 'a1',
@@ -32,10 +33,6 @@ class AlbScenario(ScenarioTest):
             'waf_policy': 'waf_policy1',
             'sp_waf': 'sp_waf1',
         })
-        
-        #Works with subscription 668f1741-ef48-4132-bf98-28b3a3d3f257
-        # Create Resource group.
-        self.cmd('group create -n {rg} --location eastus2euap')
 
         # Create Traffic Controller
         tcCount1 = len(self.cmd('network alb list -g {rg}').get_output_in_json())
