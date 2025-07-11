@@ -1119,8 +1119,7 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
             mode=localdns_profile.get("mode"),
             kube_dns_overrides=kube_dns_overrides,
             vnet_dns_overrides=vnet_dns_overrides,
-            )
-            
+            )          
         return agentpool
 
     def construct_agentpool_profile_preview(self) -> AgentPool:
