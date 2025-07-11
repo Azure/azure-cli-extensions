@@ -1099,6 +1099,7 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         """Set up local DNS profile for the AgentPool object if provided via --localdns-config."""
         self._ensure_agentpool(agentpool)
         localdns_profile = self.context.get_localdns_profile()
+        print(localdns_profile)
         if localdns_profile is not None:
 
             kube_dns_overrides = {}
@@ -1109,10 +1110,12 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
 
             kube_overrides = localdns_profile.get("kube_dns_overrides", {})
             for key, value in kube_overrides.items():
+                print("key, value in kube_dns_overrides.items():", key, value)
                 kube_dns_overrides[key] = build_override(value)
 
             vnet_overrides = localdns_profile.get("vnet_dns_overrides", {})
             for key, value in vnet_overrides.items():
+                print("key, value in vnet_dns_overrides.items():", key, value)
                 vnet_dns_overrides[key] = build_override(value)
 
             agentpool.local_dns_profile = self.models.LocalDNSProfile(
