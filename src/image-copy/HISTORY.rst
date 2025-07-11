@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.0.3
+++++++
+* Fix the issue for sasTokenParsing, removing python related warnings from the sasToken(cmd_output was unfiltered)
+
 1.0.2
 ++++++
 * Create temporary storage account with minimum TLS version set to `TLS1_2`
