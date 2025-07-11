@@ -1100,26 +1100,26 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         self._ensure_agentpool(agentpool)
         localdns_profile = self.context.get_localdns_profile()
         if localdns_profile is not None:
-            
+
             kube_dns_overrides = {}
             vnet_dns_overrides = {}
-            
+
             def build_override(override_dict):
                 return self.models.LocalDNSOverride(**override_dict)
 
-            kube_overrides = localdns_profile.get("kubeDNSOverrides", {})
+            kube_overrides = localdns_profile.get("kube_dns_overrides", {})
             for key, value in kube_overrides.items():
                 kube_dns_overrides[key] = build_override(value)
 
-            vnet_overrides = localdns_profile.get("vnetDNSOverrides", {})
+            vnet_overrides = localdns_profile.get("vnet_dns_overrides", {})
             for key, value in vnet_overrides.items():
                 vnet_dns_overrides[key] = build_override(value)
 
             agentpool.local_dns_profile = self.models.LocalDNSProfile(
-            mode=localdns_profile.get("mode"),
-            kube_dns_overrides=kube_dns_overrides,
-            vnet_dns_overrides=vnet_dns_overrides,
-            )          
+                mode=localdns_profile.get("mode"),
+                kube_dns_overrides=kube_dns_overrides,
+                vnet_dns_overrides=vnet_dns_overrides,
+            )
         return agentpool
 
     def construct_agentpool_profile_preview(self) -> AgentPool:
