@@ -1,0 +1,58 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - purestorageblock reservation get-resource-limit
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --resource-group --reservation-name
+      User-Agent:
+      - AZURECLI/2.75.0 azsdk-python-core/1.35.0 Python/3.12.10 (Linux-6.8.0-1027-azure-x86_64-with-glibc2.36)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/S1RG1/providers/PureStorage.Block/reservations/cliTestReservation/getResourceLimits?api-version=2024-11-01-preview
+  response:
+    body:
+      string: '{"storagePool":{"provisionedBandwidthMbPerSec":{"min":800,"max":2048},"provisionedIops":{"min":50000,"max":150000},"physicalAvailabilityZones":["centralus-az3","centralus-az2","centralus-az1"]},"volume":{"provisionedSize":{"min":1048576,"max":54975581388800}},"protectionPolicy":{"frequency":{"min":300,"max":34560000},"retention":{"min":60,"max":34560000}},"performancePolicy":{"iopsLimit":{"min":100,"max":100000000},"bandwidthLimit":{"min":1048576,"max":549755813888}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '472'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 09 Jul 2025 11:33:29 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 3661e5c0-2204-4bde-ad3b-12d016078258
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=888d76fa-54b2-4ced-8ee5-aac1585adee7,objectId=a1dd6afd-047c-4534-9a7b-f72d98b2ec61/westindia/13d45448-813f-4455-af31-fc5ec602eb36
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: 72058D8B59864CCFB716B8566DED2AF7 Ref B: PNQ231110909042 Ref C: 2025-07-09T11:33:27Z'
+    status:
+      code: 200
+      message: OK
+version: 1
