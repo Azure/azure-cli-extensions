@@ -105,6 +105,9 @@ aks create:
     node_provisioning_default_pools:
       rule_exclusions:  
         - option_length_too_long
+    enable_managed_system_pool:
+      rule_exclusions:
+        - option_length_too_long
 aks update:
   parameters:
     enable_pod_identity_with_kubenet:

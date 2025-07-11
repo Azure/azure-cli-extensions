@@ -42,6 +42,7 @@ from azext_aks_preview._consts import (
     CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID,
     CONST_MONITORING_USING_AAD_MSI_AUTH,
     CONST_NODEPOOL_MODE_SYSTEM,
+    CONST_NODEPOOL_MODE_MANAGEDSYSTEM,
     CONST_OPEN_SERVICE_MESH_ADDON_NAME,
     CONST_PRIVATE_DNS_ZONE_NONE,
     CONST_PRIVATE_DNS_ZONE_SYSTEM,
@@ -885,7 +886,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         )
         with self.assertRaises(MutuallyExclusiveArgumentError):
             ctx_6.get_acns_advanced_networkpolicies()
-    
+
     def test_mc_get_acns_transit_encryption_type(self):
         # Default, not set.
         ctx_1 = AKSPreviewManagedClusterContext(
@@ -3801,7 +3802,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         self.assertEqual(new_profile, self.models.ServiceMeshProfile(
             mode="Istio", istio=self.models.IstioServiceMesh(revisions=["asm-1-18"])
         ))
-    
+
     def test_handle_egress_gateways_asm(self):
         ctx_0 = AKSPreviewManagedClusterContext(
             self.cmd,
@@ -9020,7 +9021,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             ),
         )
         self.assertEqual(dec_mc_1, ground_truth_mc_1)
-    
+
     def test_update_vmas_to_vms(self):
         # Should not update mc if unset
         dec_0 = AKSPreviewManagedClusterUpdateDecorator(
@@ -9060,14 +9061,14 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         dec_1.context.attach_mc(mc_1)
         with self.assertRaises(CLIError):
             dec_1.update_vmas_to_vms(mc_1)
-        
+
         # Should raise error if cluster has more than 1 AP
         dec_2 = AKSPreviewManagedClusterUpdateDecorator(
             self.cmd,
             self.client,
             {
                 "migrate_vmas_to_vms": True,
-                "yes": True,                
+                "yes": True,
             },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
@@ -9086,7 +9087,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         dec_2.context.attach_mc(mc_2)
         with self.assertRaises(CLIError):
             dec_2.update_vmas_to_vms(mc_2)
-        
+
         # Should migrate vmas-blb to vms-slb
         dec_3 = AKSPreviewManagedClusterUpdateDecorator(
             self.cmd,
@@ -9111,7 +9112,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         mc_3.network_profile = network_profile_3
         dec_3.context.attach_mc(mc_3)
         dec_mc_3 = dec_3.update_vmas_to_vms(mc_3)
-        
+
         ground_truth_mc_3 = self.models.ManagedCluster(
             location="test_location",
         )
@@ -9433,6 +9434,218 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             ),
         )
         self.assertEqual(dec_mc_2, ground_truth_mc_2)
+
+    def test_update_managed_system_pools(self):
+        """Test update_managed_system_pools method functionality."""
+        # Test with no agent pools
+        dec_1 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            agent_pool_profiles=None,
+        )
+        dec_1.context.attach_mc(mc_1)
+        dec_mc_1 = dec_1.update_managed_system_pools(mc_1)
+
+        ground_truth_mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            agent_pool_profiles=None,
+        )
+        self.assertEqual(dec_mc_1, ground_truth_mc_1)
+
+        # Test with empty agent pool profiles
+        dec_2 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_2 = self.models.ManagedCluster(
+            location="test_location",
+        )
+        mc_2.agent_pool_profiles = []
+        dec_2.context.attach_mc(mc_2)
+        dec_mc_2 = dec_2.update_managed_system_pools(mc_2)
+
+        ground_truth_mc_2 = self.models.ManagedCluster(
+            location="test_location",
+        )
+        ground_truth_mc_2.agent_pool_profiles = []
+        self.assertEqual(dec_mc_2, ground_truth_mc_2)
+
+        # Test with regular System mode agent pool (should remain unchanged)
+        dec_3 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+
+        regular_agentpool = self.models.ManagedClusterAgentPoolProfile(
+            name="nodepool1",
+            mode=CONST_NODEPOOL_MODE_SYSTEM,
+            vm_size="Standard_DS2_v2",
+            count=3,
+            max_pods=110,
+        )
+
+        mc_3 = self.models.ManagedCluster(location="test_location")
+        mc_3.agent_pool_profiles = [regular_agentpool]
+        dec_3.context.attach_mc(mc_3)
+        dec_mc_3 = dec_3.update_managed_system_pools(mc_3)
+
+        # Regular system pool should remain unchanged
+        self.assertEqual(dec_mc_3.agent_pool_profiles[0].name, "nodepool1")
+        self.assertEqual(dec_mc_3.agent_pool_profiles[0].mode, CONST_NODEPOOL_MODE_SYSTEM)
+        self.assertEqual(dec_mc_3.agent_pool_profiles[0].vm_size, "Standard_DS2_v2")
+        self.assertEqual(dec_mc_3.agent_pool_profiles[0].count, 3)
+        self.assertEqual(dec_mc_3.agent_pool_profiles[0].max_pods, 110)
+
+        # Test with ManagedSystem mode agent pool (should clean all other attributes)
+        dec_4 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+
+        managed_system_agentpool = self.models.ManagedClusterAgentPoolProfile(
+            name="managedsystem1",
+            mode=CONST_NODEPOOL_MODE_MANAGEDSYSTEM,
+            vm_size="Standard_DS2_v2",
+            count=3,
+            max_pods=110,
+            os_disk_size_gb=100,
+            vnet_subnet_id="/subscriptions/test/resourceGroups/test/providers/Microsoft.Network/virtualNetworks/test/subnets/test",
+        )
+
+        mc_4 = self.models.ManagedCluster(location="test_location")
+        mc_4.agent_pool_profiles = [managed_system_agentpool]
+        dec_4.context.attach_mc(mc_4)
+        dec_mc_4 = dec_4.update_managed_system_pools(mc_4)
+
+        # ManagedSystem pool should have all attributes except name and mode set to None
+        result_agentpool = dec_mc_4.agent_pool_profiles[0]
+        self.assertEqual(result_agentpool.name, "managedsystem1")
+        self.assertEqual(result_agentpool.mode, CONST_NODEPOOL_MODE_MANAGEDSYSTEM)
+        self.assertIsNone(result_agentpool.vm_size)
+        self.assertIsNone(result_agentpool.count)
+        self.assertIsNone(result_agentpool.max_pods)
+        self.assertIsNone(result_agentpool.os_disk_size_gb)
+        self.assertIsNone(result_agentpool.vnet_subnet_id)
+
+        # Test with mixed agent pools (System and ManagedSystem)
+        dec_5 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+
+        system_agentpool = self.models.ManagedClusterAgentPoolProfile(
+            name="systempool",
+            mode=CONST_NODEPOOL_MODE_SYSTEM,
+            vm_size="Standard_DS2_v2",
+            count=3,
+            max_pods=110,
+        )
+
+        managed_system_agentpool = self.models.ManagedClusterAgentPoolProfile(
+            name="managedsystempool",
+            mode=CONST_NODEPOOL_MODE_MANAGEDSYSTEM,
+            vm_size="Standard_DS4_v2",
+            count=5,
+            max_pods=250,
+            os_disk_size_gb=200,
+        )
+
+        mc_5 = self.models.ManagedCluster(location="test_location")
+        mc_5.agent_pool_profiles = [system_agentpool, managed_system_agentpool]
+        dec_5.context.attach_mc(mc_5)
+        dec_mc_5 = dec_5.update_managed_system_pools(mc_5)
+
+        # System pool should remain unchanged
+        system_result = dec_mc_5.agent_pool_profiles[0]
+        self.assertEqual(system_result.name, "systempool")
+        self.assertEqual(system_result.mode, CONST_NODEPOOL_MODE_SYSTEM)
+        self.assertEqual(system_result.vm_size, "Standard_DS2_v2")
+        self.assertEqual(system_result.count, 3)
+        self.assertEqual(system_result.max_pods, 110)
+
+        # ManagedSystem pool should be cleaned
+        managed_result = dec_mc_5.agent_pool_profiles[1]
+        self.assertEqual(managed_result.name, "managedsystempool")
+        self.assertEqual(managed_result.mode, CONST_NODEPOOL_MODE_MANAGEDSYSTEM)
+        self.assertIsNone(managed_result.vm_size)
+        self.assertIsNone(managed_result.count)
+        self.assertIsNone(managed_result.max_pods)
+        self.assertIsNone(managed_result.os_disk_size_gb)
+
+        # Test with multiple ManagedSystem pools
+        dec_6 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+
+        managed_system_agentpool_1 = self.models.ManagedClusterAgentPoolProfile(
+            name="managedsystem1",
+            mode=CONST_NODEPOOL_MODE_MANAGEDSYSTEM,
+            vm_size="Standard_DS2_v2",
+            count=3,
+            enable_auto_scaling=True,
+            min_count=1,
+            max_count=5,
+        )
+
+        managed_system_agentpool_2 = self.models.ManagedClusterAgentPoolProfile(
+            name="managedsystem2",
+            mode=CONST_NODEPOOL_MODE_MANAGEDSYSTEM,
+            vm_size="Standard_DS4_v2",
+            count=2,
+            os_type="Linux",
+        )
+
+        mc_6 = self.models.ManagedCluster(location="test_location")
+        mc_6.agent_pool_profiles = [managed_system_agentpool_1, managed_system_agentpool_2]
+        dec_6.context.attach_mc(mc_6)
+        dec_mc_6 = dec_6.update_managed_system_pools(mc_6)
+
+        # Both ManagedSystem pools should be cleaned
+        result_1 = dec_mc_6.agent_pool_profiles[0]
+        self.assertEqual(result_1.name, "managedsystem1")
+        self.assertEqual(result_1.mode, CONST_NODEPOOL_MODE_MANAGEDSYSTEM)
+        self.assertIsNone(result_1.vm_size)
+        self.assertIsNone(result_1.count)
+        self.assertIsNone(result_1.enable_auto_scaling)
+        self.assertIsNone(result_1.min_count)
+        self.assertIsNone(result_1.max_count)
+
+        result_2 = dec_mc_6.agent_pool_profiles[1]
+        self.assertEqual(result_2.name, "managedsystem2")
+        self.assertEqual(result_2.mode, CONST_NODEPOOL_MODE_MANAGEDSYSTEM)
+        self.assertIsNone(result_2.vm_size)
+        self.assertIsNone(result_2.count)
+        self.assertIsNone(result_2.os_type)
+
+        # Test error handling: fail on passing wrong mc object
+        dec_7 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_7 = self.models.ManagedCluster(location="test_location")
+        dec_7.context.attach_mc(mc_7)
+
+        with self.assertRaises(CLIInternalError):
+            dec_7.update_managed_system_pools(None)
+
 
 if __name__ == "__main__":
     unittest.main()
