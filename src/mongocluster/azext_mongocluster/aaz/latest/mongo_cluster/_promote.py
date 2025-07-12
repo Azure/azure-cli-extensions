@@ -11,9 +11,6 @@
 from azure.cli.core.aaz import *
 
 
-@register_command(
-    "mongo-cluster promote",
-)
 class Promote(AAZCommand):
     """Promotes a replica mongo cluster to a primary role.
 

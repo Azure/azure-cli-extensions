@@ -12,6 +12,15 @@
 
 
 def load_command_table(self, _):  # pylint: disable=unused-argument
-    with self.command_group("mongo-cluster replica") as g:
-        g.custom_command("create", "create_replica_cluster", supports_no_wait=True)
-        g.custom_command("promote", "promote_replica_cluster", supports_no_wait=True)
+    with self.command_group("mongo-cluster"):
+        from .custom import MongoClusterCreate
+        self.command_table["mongo-cluster create"] = MongoClusterCreate(loader=self)
+
+    with self.command_group("mongo-cluster replica"):
+        from .custom import MongoClusterReplicaCreate, MongoClusterReplicaPromote
+        self.command_table["mongo-cluster replica create"] = MongoClusterReplicaCreate(loader=self)
+        self.command_table["mongo-cluster replica promote"] = MongoClusterReplicaPromote(loader=self)
+
+    with self.command_group("mongo-cluster restore"):
+        from .custom import MongoClusterRestore
+        self.command_table["mongo-cluster restore"] = MongoClusterRestore(loader=self)

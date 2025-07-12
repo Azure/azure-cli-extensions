@@ -7,37 +7,142 @@
 
 # pylint: disable=too-many-lines
 # pylint: disable=too-many-statements
+# pylint: disable=line-too-long
+# pylint: disable=protected-access
 
 from knack.log import get_logger
+from azure.cli.core.aaz import register_command
 from .aaz.latest.mongo_cluster import Create as _MongoClusterCreate
 from .aaz.latest.mongo_cluster import Promote as _MongoClusterPromote
 
 logger = get_logger(__name__)
 
-def create_replica_cluster(cmd, resource_group, mongo_cluster_name, location, source_resource_id, source_location, no_wait=False):
-    class ReplicaCreate(_MongoClusterCreate):
-        def pre_operations(self):
-            args = self.ctx.args
-            args.no_wait = no_wait
 
-    return ReplicaCreate(cli_ctx=cmd.cli_ctx)(command_args={
-        "create_mode": "GeoReplica",
-        "resource_group": resource_group,
-        "mongo_cluster_name": mongo_cluster_name,
-        "location": location,
-        "replica_source_resource_id": source_resource_id,
-        "replica_source_location": source_location
-    })
+class MongoClusterCreate(_MongoClusterCreate):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
 
-def promote_replica_cluster(cmd, resource_group, mongo_cluster_name, promote_option, promote_mode, no_wait=False):
-    class ReplicaPromote(_MongoClusterPromote):
-        def pre_operations(self):
-            args = self.ctx.args
-            args.no_wait = no_wait
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
 
-    return ReplicaPromote(cli_ctx=cmd.cli_ctx)(command_args={
-        "resource_group": resource_group,
-        "mongo_cluster_name": mongo_cluster_name,
-        "promote_option": promote_option,
-        "promote_mode": promote_mode
-    })
+        # Hide create_mode since we have first class commands for replica/restore creation.
+        args_schema.create_mode._registered = False
+
+        # Hide replica specific create parameters
+        args_schema.replica_source_location._registered = False
+        args_schema.replica_source_resource_id._registered = False
+
+        # Hide restpre specific create parameters
+        args_schema.restore_source_resource_id._registered = False
+        args_schema.restore_time_utc._registered = False
+
+        return args_schema
+
+
+@register_command(
+    "mongo-cluster replica create",
+)
+class MongoClusterReplicaCreate(_MongoClusterCreate):
+    """Create a Mongo Cluster replica resource.
+
+    :example: Creates a replica Mongo Cluster resource from a source cluster.
+        az mongo-cluster replica create --resource-group TestResourceGroup --mongo-cluster-name myMongoCluster --location eastus2 --source-resource-id "/subscriptions/ffffffff-ffff-ffff-ffff-ffffffffffff/resourceGroups/TestResourceGroup/providers/Microsoft.DocumentDB/mongoClusters/mySourceMongoCluster"
+    """
+
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+
+        # Deregister all the properties that are inherited from the source cluster for replica creation.
+        # We can opt to support them as overrides at replica create time at a later stage.
+        args_schema.create_mode._registered = False
+
+        args_schema.administrator_password._registered = False
+        args_schema.administrator_name._registered = False
+
+        args_schema.computer_tier._registered = False
+
+        args_schema.high_availability_mode._registered = False
+
+        args_schema.preview_features._registered = False
+
+        args_schema.public_network_access._registered = False
+
+        args_schema.server_version._registered = False
+
+        args_schema.restore_time_utc._registered = False
+        args_schema.restore_source_resource_id._registered = False
+
+        args_schema.shard_count._registered = False
+
+        args_schema.storage_size_gb._registered = False
+
+        # override the replica arguments
+        args_schema.replica_source_location._options = ["--source-location"]
+        args_schema.replica_source_resource_id._options = ["--source-resource-id"]
+
+        return args_schema
+
+    def pre_operations(self):
+        args = self.ctx.args
+        args.create_mode = "GeoReplica"
+
+
+# Fully inherit the aaz code-generate promote command but re-map it to the replica command group
+@register_command(
+    "mongo-cluster replica promote",
+)
+class MongoClusterReplicaPromote(_MongoClusterPromote):
+    # inherit the documenation from the parent class as-is since it doesn't need to be modified
+    __doc__ = _MongoClusterPromote.__doc__
+
+
+@register_command(
+    "mongo-cluster restore",
+)
+class MongoClusterRestore(_MongoClusterCreate):
+    """Restores a Mongo Cluster resource.
+
+    :example: Creates a restored Mongo Cluster resource from a given source cluster and point in time.
+        az mongo-cluster restore --resource-group TestResourceGroup --mongo-cluster-name myMongoCluster --administrator-name mongoAdmin --administrator-password password --restore-time-utc 2023-01-13T20:07:35Z --source-resource-id "/subscriptions/ffffffff-ffff-ffff-ffff-ffffffffffff/resourceGroups/TestResourceGroup/providers/Microsoft.DocumentDB/mongoClusters/mySourceMongoCluster"
+    """
+
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+
+        # Deregister all the properties that are inherited from the source cluster for replica creation.
+        # We can opt to support them as overrides at replica create time at a later stage.
+        args_schema.create_mode._registered = False
+
+        args_schema.computer_tier._registered = False
+
+        args_schema.high_availability_mode._registered = False
+
+        args_schema.preview_features._registered = False
+
+        args_schema.public_network_access._registered = False
+
+        args_schema.server_version._registered = False
+
+        args_schema.replica_source_location._registered = False
+        args_schema.replica_source_resource_id._registered = False
+
+        args_schema.shard_count._registered = False
+
+        args_schema.storage_size_gb._registered = False
+
+        # Administrator arguments are needed to restore with native authentication.
+        # With upcoming Entra auth mode only these arguments will be partially optional
+        # so not declaring them as required in the argument schema.
+        args_schema.administrator_password._registered = True
+        args_schema.administrator_name._registered = True
+
+        # override the restore arguments
+        args_schema.restore_time_utc._options = ["--restore-time-utc"]
+        args_schema.restore_source_resource_id._options = ["--source-resource-id"]
+
+        return args_schema
+
+    def pre_operations(self):
+        args = self.ctx.args
+        args.create_mode = "PointInTimeRestore"
