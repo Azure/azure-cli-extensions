@@ -154,6 +154,12 @@ class CoseSignToolProxy:  # pylint: disable=too-few-public-methods
         item = call_cose_sign_tool(arg_list_chain, "Error getting information from signed fragment file")
 
         stdout = item.stdout.decode("utf-8")
+        # if we don't have a minimum svn, use the one from the fragment
+        fragment_svn = None
+        if minimum_svn == -1:
+            fragment_svn = stdout.split('svn := "')[1].split('"')[0]
+            if not fragment_svn:
+                eprint("Must have either a minimum SVN or fragment SVN defined")
         # extract issuer, feed, and payload from the fragment
         issuer = stdout.split("iss: ")[1].split("\n")[0]
         feed = stdout.split("feed: ")[1].split("\n")[0]
@@ -170,7 +176,8 @@ class CoseSignToolProxy:  # pylint: disable=too-few-public-methods
         import_statement = {
             POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_ISSUER: issuer,
             POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_FEED: feed,
-            POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_MINIMUM_SVN: minimum_svn,
+            POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_MINIMUM_SVN:
+                minimum_svn if minimum_svn != -1 else fragment_svn,
             ACI_FIELD_CONTAINERS_REGO_FRAGMENTS_INCLUDES: includes,
         }
 
