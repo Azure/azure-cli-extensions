@@ -16691,7 +16691,7 @@ spec:
     @AKSCustomResourceGroupPreparer(
         random_name_length=17,
         name_prefix="clitest",
-        location="centraluseuap",
+        location="westus2",
     )
     def test_aks_migrate_vmas_to_vms(
         self, resource_group, resource_group_location
