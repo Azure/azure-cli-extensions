@@ -18,4 +18,7 @@ short-summary: Manage compute node profile.
 helps['hdinsight-on-aks cluster node-profile create'] = """
 type: command
 short-summary: Create a node profile with SKU and worker count.
+examples:
+  - name: Create a node profile with SKU and worker count.
+    text: az hdinsight-on-aks cluster node-profile create --count 5 --node-type Worker --vm-size Standard_D16a_v4
 """
