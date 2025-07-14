@@ -1106,7 +1106,7 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
             vnet_dns_overrides = {}
 
             def build_override(override_dict):
-                return self.models.LocalDNSOverride(**override_dict)
+                return self.models.LocalDNSProfile.LocalDNSOverrides(**override_dict)
 
             kube_overrides = localdns_profile.get("kube_dns_overrides", {})
             for key, value in kube_overrides.items():
