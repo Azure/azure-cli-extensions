@@ -732,6 +732,8 @@ def aks_create(
     vm_sizes=None,
     # IMDS restriction
     enable_imds_restriction=False,
+    # managed system pool
+    enable_managed_system_pool=False,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
