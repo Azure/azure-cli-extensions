@@ -83,14 +83,6 @@ az cloudhsm backup start \
     --blob-container-uri "https://mystorageaccount.blob.core.windows.net/backups"
 ```
 
-#### Show backup status:
-```bash
-az cloudhsm backup show \
-    --resource-group myResourceGroup \
-    --cluster-name myCloudHSM \
-    --job-id backup-job-id
-```
-
 ### 6. Restore Operations
 
 #### Start a restore from backup:
@@ -100,14 +92,6 @@ az cloudhsm restore start \
     --cluster-name myCloudHSM \
     --backup-id cloudhsm-0e35c989-c582-4b3c-958d-596e4c4fe133 \
     --blob-container-uri "https://mystorageaccount.blob.core.windows.net/backups"
-```
-
-#### Show restore status:
-```bash
-az cloudhsm restore show \
-    --resource-group myResourceGroup \
-    --cluster-name myCloudHSM \
-    --job-id restore-job-id
 ```
 
 ### 7. Delete CloudHSM
