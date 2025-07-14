@@ -16,6 +16,9 @@ helps['network front-door'] = """
 helps['network front-door create'] = """
     type: command
     short-summary: Create a Front Door.
+    examples:
+      - name: Create a Front Door.
+        text: az network front-door create -g rg -n frontdoor --backend-address 202.120.2.3
 """
 
 helps['network front-door list'] = """
@@ -69,6 +72,9 @@ helps['network front-door backend-pool create'] = """
         Since a backend pool must contain a backend, this command
         also creates the first backend. To add additional backends,
         use the `az network front-door backend-pool backend add` command.
+    examples:
+      - name: Create a Front Door backend pool.
+        text: az network front-door backend-pool create -f frontdoor -g rg -n bkp1 --address 202.120.2.3 --load-balancing DefaultLoadBalancingSettings --probe DefaultProbeSettings
 """
 
 helps['network front-door backend-pool list'] = """
@@ -96,6 +102,9 @@ helps['network front-door backend-pool backend'] = """
 helps['network front-door backend-pool backend add'] = """
     type: command
     short-summary: Add a backend to a Front Door backend pool.
+    examples:
+      - name: Add a backend to a Front Door backend pool.
+        text: az network front-door backend-pool backend add -g rg --front-door-name myfrontdoor --pool-name pool --address 202.120.2.3 --backend-host-header "" --disabled true --http-port 80 --https-port 443 --priority 2 --weight 1
 """
 
 helps['network front-door backend-pool backend update'] = """
@@ -123,6 +132,9 @@ helps['network front-door frontend-endpoint'] = """
 helps['network front-door frontend-endpoint create'] = """
     type: command
     short-summary: Create a Front Door frontend endpoint.
+    examples:
+      - name: Create a Front Door frontend endpoint.
+        text: az network front-door frontend-endpoint create -g rg -f frontdoor -n endpoint --host-name www.contoso.com --session-affinity-enabled
 """
 
 helps['network front-door frontend-endpoint list'] = """
@@ -171,6 +183,9 @@ helps['network front-door load-balancing'] = """
 helps['network front-door load-balancing create'] = """
     type: command
     short-summary: Create Front Door load-balancing settings.
+    examples:
+      - name: Create Front Door load-balancing settings.
+        text: az network front-door load-balancing create -f frontdoor -g rg -n lb --sample-size 5 --successful-samples-required 1 --additional-latency 100
 """
 
 helps['network front-door load-balancing list'] = """
@@ -203,6 +218,9 @@ helps['network front-door probe'] = """
 helps['network front-door probe create'] = """
     type: command
     short-summary: Create Front Door health probe settings.
+    examples:
+      - name: Create Front Door health probe settings.
+        text: az network front-door probe create -f frontdoor -g rg -n pb --interval 100 --path /abc --enabled Disabled --probeMethod GET --protocol Http
 """
 
 helps['network front-door probe list'] = """
@@ -289,6 +307,9 @@ helps['network front-door rules-engine rule create'] = """
         This command allows creating Rules Engine configuration with Header
         action type. To add additional actions like Route overrides,
         use the `az network front-door rules-engine rule action add` command.
+    examples:
+      - name: Create a Rules Engine rule for a Front Door.
+        text: az network front-door rules-engine rule create -f frontdoor -g rg --rules-engine-name rulesengine --name rule --priority 2 --action-type ResponseHeader --header-action Append --header-name Security --header-value Strict --match-variable RequestPath --operator Contains --match-values private
 """
 
 helps['network front-door rules-engine rule update'] = """
@@ -319,6 +340,9 @@ helps['network front-door rules-engine rule action'] = """
 helps['network front-door rules-engine rule action add'] = """
     type: command
     short-summary: Add an action to a Rules Engine rule.
+    examples:
+      - name: Add an action to a Rules Engine rule.
+        text: az network front-door rules-engine rule action add -f frontdoor -g rg -r rulesengine --name rule1 --action-type RedirectRouteOverride --custom-path /redirect
 """
 
 helps['network front-door rules-engine rule action list'] = """
@@ -339,6 +363,9 @@ helps['network front-door rules-engine rule condition'] = """
 helps['network front-door rules-engine rule condition add'] = """
     type: command
     short-summary: Add a match condition to a Rules Engine rule.
+    examples:
+      - name: Add a match condition to a Rules Engine rule.
+        text: az network front-door rules-engine rule condition add -f frontdoor -g rg -r rulesengine --name rule1 --match-variable RequestPath --operator Any
 """
 
 helps['network front-door rules-engine rule condition list'] = """
@@ -361,6 +388,9 @@ helps['network front-door waf-policy'] = """
 helps['network front-door waf-policy create'] = """
     type: command
     short-summary: Create a WAF policy.
+    examples:
+      - name: Create a WAF policy.
+        text: az network front-door waf-policy create -g rg -n policy --mode prevention
 """
 
 helps['network front-door waf-policy list'] = """
@@ -409,6 +439,9 @@ helps['network front-door waf-policy rule match-condition add'] = """
           Variable allowed values: {variables}
 
           Operator allowed values: {operators}
+    examples:
+      - name: Add a match-condition to a WAF policy custom rule.
+        text: az network front-door waf-policy rule match-condition add -g rg --policy-name policy -n custom1 --match-variable RequestBody --operator RegEx --values "hello"
 """.format(
     variables=', '.join([x.value for x in MatchVariable]),
     operators=', '.join([x.value for x in Operator])
@@ -459,6 +492,9 @@ helps['network front-door waf-policy managed-rules add'] = """
     short-summary: Add a managed rule set to a WAF policy.
     long-summary: >
         Use 'az network front-door waf-policy managed-rule-definition list' to see the available managed rulesets.
+    examples:
+      - name: Add a managed rule set to a WAF policy.
+        text: az network front-door waf-policy managed-rules add -g rg --policy-name policy1 --type DefaultRuleSet --version 1.0
 """
 
 helps['network front-door waf-policy managed-rules remove'] = """
@@ -471,6 +507,9 @@ helps['network front-door waf-policy managed-rules override add'] = """
     short-summary: Add an override on a managed rule within a managed rule set.
     long-summary: >
         Use 'az network front-door waf-policy managed-rule-definition list' to see the available rules.
+    example:
+      - name: Add an override on a managed rule within a managed rule set.
+        text: az network front-door waf-policy managed-rules override add -g rg --policy-name policy1 --type DefaultRuleSet --rule-group-id SQLI --rule-id id --action Block --disabled
 """
 
 helps['network front-door waf-policy managed-rules override remove'] = """
@@ -499,6 +538,9 @@ helps['network front-door waf-policy managed-rules exclusion add'] = """
     long-summary: >
         Prevents the rule set, rule group, or rule from being applied to the content of the specified variable.
         Use 'az network front-door waf-policy managed-rule-definition list' to see the available rules.
+    examples:
+      - name: Add an exclusion on a managed rule set, rule group, or rule within a managed rule set.
+        text: az network front-door waf-policy managed-rules exclusion add -g rg --policy-name policy1 --type DefaultRuleSet --match-variable RequestHeaderNames --operator Contains --value ignoreme
 """
 
 helps['network front-door waf-policy managed-rules exclusion remove'] = """
