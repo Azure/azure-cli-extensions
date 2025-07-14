@@ -830,6 +830,7 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
                     f"Error reading local DNS config from {config}. "
                     "Please provide a valid JSON file."
                 )
+            print("localdns profile", profile)
             return profile
         return None
 
@@ -1099,23 +1100,25 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         """Set up local DNS profile for the AgentPool object if provided via --localdns-config."""
         self._ensure_agentpool(agentpool)
         localdns_profile = self.context.get_localdns_profile()
-        print(localdns_profile)
         if localdns_profile is not None:
-
             kube_dns_overrides = {}
             vnet_dns_overrides = {}
 
             def build_override(override_dict):
-                return self.models.LocalDNSProfile.LocalDNSOverrides(**override_dict)
+                override_fields = [
+                    "queryLogging", "protocol", "forwardDestination", "forwardpolicy",
+                    "maxConcurrent", "cacheDurationInSeconds", "serveStaleDurationInSeconds", "serveStale"
+                ]
+                filtered = {k: v for k, v in override_dict.items() if k in override_fields}
+                return self.models.LocalDNSOverride(**filtered)
 
-            kube_overrides = localdns_profile.get("kube_dns_overrides", {})
+           
+            kube_overrides = localdns_profile.get("kubeDNSOverrides")
             for key, value in kube_overrides.items():
-                print("key, value in kube_dns_overrides.items():", key, value)
                 kube_dns_overrides[key] = build_override(value)
 
-            vnet_overrides = localdns_profile.get("vnet_dns_overrides", {})
+            vnet_overrides = localdns_profile.get("vnetDNSOverrides")
             for key, value in vnet_overrides.items():
-                print("key, value in vnet_dns_overrides.items():", key, value)
                 vnet_dns_overrides[key] = build_override(value)
 
             agentpool.local_dns_profile = self.models.LocalDNSProfile(
