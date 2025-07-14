@@ -507,7 +507,7 @@ helps['network front-door waf-policy managed-rules override add'] = """
     short-summary: Add an override on a managed rule within a managed rule set.
     long-summary: >
         Use 'az network front-door waf-policy managed-rule-definition list' to see the available rules.
-    example:
+    examples:
       - name: Add an override on a managed rule within a managed rule set.
         text: az network front-door waf-policy managed-rules override add -g rg --policy-name policy1 --type DefaultRuleSet --rule-group-id SQLI --rule-id id --action Block --disabled
 """
