@@ -79,7 +79,10 @@ def discover(
                 f"Error pulling the policy fragment from {image}.\n\n"
                 + "Please log into the registry and try again.\n\n"
             )
-        eprint(f"Error retrieving fragments from remote repo: {item.stderr.decode('utf-8')}", exit_code=item.returncode)
+        elif "not found" in item.stderr.decode("utf-8"):
+            logger.warning("No policy fragments found for image %s", image)
+        else:
+            eprint(f"Error retrieving fragments from remote repo: {item.stderr.decode('utf-8')}", exit_code=item.returncode)
     return hashes
 
 

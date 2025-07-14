@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.2.7
+++++++
+* bugfix making it so that oras discover function doesn't error when no fragments are found in the remote repository
+
 1.2.6
 ++++++
 * bugfix making it so the fields in the --input format are case-insensitive
