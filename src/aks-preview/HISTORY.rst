@@ -11,9 +11,12 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* Add support for `ManagedSystem` Agent Pool Mode.
+
 18.0.0b18
 +++++++
 * Add validation error when neither --location or --cluster and --resource-group-name are specified for az extension type list or az extension type version list
+
 
 
 18.0.0b17
