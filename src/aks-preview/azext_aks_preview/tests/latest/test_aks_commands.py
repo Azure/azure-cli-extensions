@@ -16712,7 +16712,7 @@ spec:
         create_cmd = (
             "aks create --resource-group={resource_group} --name={name} --location={location} "
             "--ssh-key-value={ssh_key_value} "
-            "--vm-set-type AvailabilitySet " 
+            "--vm-set-type AvailabilitySet "
             "--load-balancer-sku Basic "
         )
         self.cmd(
