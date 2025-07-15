@@ -17,6 +17,7 @@ from azure.cli.command_modules.acs.agentpool_decorator import (
     AKSAgentPoolUpdateDecorator,
 )
 from azure.cli.core.azclierror import (
+    CLIInternalError,
     InvalidArgumentValueError,
     MutuallyExclusiveArgumentError,
 )
@@ -41,6 +42,7 @@ from azext_aks_preview._consts import (
     CONST_DEFAULT_WINDOWS_VMS_VM_SIZE,
     CONST_SSH_ACCESS_LOCALUSER,
     CONST_GPU_DRIVER_NONE,
+    CONST_NODEPOOL_MODE_MANAGEDSYSTEM,
 )
 from azext_aks_preview._helpers import (
     get_nodepool_snapshot_by_snapshot_id,
@@ -1070,6 +1072,33 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
 
         return agentpool
 
+    def set_up_managed_system_mode(self, agentpool: AgentPool) -> AgentPool:
+        """Handle the special ManagedSystem mode by resetting all properties except name and mode.
+
+        :param agentpool: the AgentPool object
+        :return: the AgentPool object
+        """
+        if self.context.raw_param.get("enable_managed_system_pool") is True:
+            mode = CONST_NODEPOOL_MODE_MANAGEDSYSTEM
+        else:
+            mode = self.context.raw_param.get("mode")
+
+        if mode == CONST_NODEPOOL_MODE_MANAGEDSYSTEM:
+            # Raise error if agentpool is None
+            if agentpool is None:
+                raise CLIInternalError("agentpool cannot be None for ManagedSystem mode")
+
+            # Instead of creating a new instance, modify the existing one
+            # Keep name and set mode to ManagedSystem
+            agentpool.mode = CONST_NODEPOOL_MODE_MANAGEDSYSTEM
+            # Make sure all other attributes are None
+            for attr in vars(agentpool):
+                if attr != 'name' and attr != 'mode' and not attr.startswith('_'):
+                    if hasattr(agentpool, attr):
+                        setattr(agentpool, attr, None)
+
+        return agentpool
+
     def construct_agentpool_profile_preview(self) -> AgentPool:
         """The overall controller used to construct the preview AgentPool profile.
 
@@ -1080,6 +1109,13 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         """
         # DO NOT MOVE: keep this on top, construct the default AgentPool profile
         agentpool = self.construct_agentpool_profile_default(bypass_restore_defaults=True)
+
+        # Check if mode is ManagedSystem, if yes, reset all properties
+        agentpool = self.set_up_managed_system_mode(agentpool)
+
+        # If mode is ManagedSystem, skip all other property setups
+        if agentpool.mode == CONST_NODEPOOL_MODE_MANAGEDSYSTEM:
+            return agentpool
 
         # set up preview vm properties
         agentpool = self.set_up_preview_vm_properties(agentpool)
@@ -1317,6 +1353,15 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
         """
         # DO NOT MOVE: keep this on top, fetch and update the default AgentPool profile
         agentpool = self.update_agentpool_profile_default(agentpools)
+
+        # Check if agentpool is in ManagedSystem mode and handle special case
+        if agentpool.mode == CONST_NODEPOOL_MODE_MANAGEDSYSTEM:
+            # Make sure all other attributes are None
+            for attr in vars(agentpool):
+                if attr != 'name' and attr != 'mode' and not attr.startswith('_'):
+                    if hasattr(agentpool, attr):
+                        setattr(agentpool, attr, None)
+            return agentpool
 
         # update custom ca trust
         agentpool = self.update_custom_ca_trust(agentpool)
