@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create an IP group.
+
+    :example: Create an IP group.
+        az network ip-group create -n ipgroup -g rg --ip-addresses 10.0.0.0 10.0.0.1
     """
 
     _aaz_info = {
