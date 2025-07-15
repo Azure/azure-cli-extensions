@@ -65,7 +65,7 @@ class MongoClusterScenario(ScenarioTest):
                      self.check('properties.highAvailability.targetMode', 'Disabled'),
                  ])
 
-        self.cmd('az mongo-cluster connection-strings list -g {rg} -n {name}',
+        self.cmd('az mongo-cluster connection-string list -g {rg} -n {name}',
                  checks=[
                      self.greater_than('length(@)', 1),
                      self.check("contains(connectionStrings[?name=='GlobalReadWrite'].connectionString | [0], '{name}.global.mongocluster')", True),

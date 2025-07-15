@@ -17,9 +17,10 @@ def load_command_table(self, _):  # pylint: disable=unused-argument
         self.command_table["mongo-cluster create"] = MongoClusterCreate(loader=self)
 
     with self.command_group("mongo-cluster replica"):
-        from .custom import MongoClusterReplicaCreate, MongoClusterReplicaPromote
+        from .custom import MongoClusterReplicaCreate, MongoClusterReplicaPromote, MongoClusterReplicaWait
         self.command_table["mongo-cluster replica create"] = MongoClusterReplicaCreate(loader=self)
         self.command_table["mongo-cluster replica promote"] = MongoClusterReplicaPromote(loader=self)
+        self.command_table["mongo-cluster replica wait"] = MongoClusterReplicaWait(loader=self)
 
     with self.command_group("mongo-cluster restore"):
         from .custom import MongoClusterRestore
