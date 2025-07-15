@@ -13,7 +13,6 @@
 from knack.log import get_logger
 from azure.cli.core.aaz import register_command
 from azure.mgmt.core.tools import is_valid_resource_id, resource_id
-from collections import OrderedDict
 from .aaz.latest.mongo_cluster import Create as _MongoClusterCreate
 from .aaz.latest.mongo_cluster import Promote as _MongoClusterPromote
 from .aaz.latest.mongo_cluster import Wait as _MongoClusterWait
@@ -56,7 +55,7 @@ class MongoClusterCreate(_MongoClusterCreate):
 class MongoClusterListConnectionStrings(_MongoClusterListConnectionStrings):
     # inherit the documenation from the parent class as-is since it doesn't need to be modified
     __doc__ = _MongoClusterListConnectionStrings.__doc__
-    
+
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance.connectionStrings, client_flatten=True)
         return result
