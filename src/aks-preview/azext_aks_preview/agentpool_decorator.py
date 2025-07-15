@@ -1380,6 +1380,50 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
 
         return agentpool
 
+    def update_localdns_profile(self, agentpool: AgentPool) -> AgentPool:
+        """Update local DNS profile for the AgentPool object if provided via --localdns-config."""
+        self._ensure_agentpool(agentpool)
+        localdns_profile = self.context.get_localdns_profile()
+        if localdns_profile is not None:
+            kube_dns_overrides = {}
+            vnet_dns_overrides = {}
+
+            def build_override(override_dict):
+                camel_to_snake_case = {
+                    "queryLogging": "query_logging",
+                    "protocol": "protocol",
+                    "forwardDestination": "forward_destination",
+                    "forwardPolicy": "forward_policy",
+                    "maxConcurrent": "max_concurrent",
+                    "cacheDurationInSeconds": "cache_duration_in_seconds",
+                    "serveStaleDurationInSeconds": "serve_stale_duration_in_seconds",
+                    "serveStale": "serve_stale",
+                }
+               
+                valid_keys = set(camel_to_snake_case.values())
+                filtered = {}
+                for k, v in override_dict.items():
+                    if k in camel_to_snake_case:
+                        filtered[camel_to_snake_case[k]] = v
+                    elif k in valid_keys:
+                        filtered[k] = v
+                return self.models.LocalDNSOverride(**filtered)
+
+           
+            kube_overrides = localdns_profile.get("kubeDNSOverrides")
+            for key, value in kube_overrides.items():
+                kube_dns_overrides[key] = build_override(value)
+
+            vnet_overrides = localdns_profile.get("vnetDNSOverrides")
+            for key, value in vnet_overrides.items():
+                vnet_dns_overrides[key] = build_override(value)
+
+            agentpool.local_dns_profile = self.models.LocalDNSProfile(
+                mode=localdns_profile.get("mode"),
+                kube_dns_overrides=kube_dns_overrides,
+                vnet_dns_overrides=vnet_dns_overrides,
+            )
+        return agentpool
 
     def update_agentpool_profile_preview(self, agentpools: List[AgentPool] = None) -> AgentPool:
         """The overall controller used to update the preview AgentPool profile.
@@ -1417,7 +1461,7 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
         agentpool = self.update_ssh_access(agentpool)
 
         # update local DNS profile
-        agentpool = self.set_up_localdns_profile(agentpool)
+        agentpool = self.update_localdns_profile(agentpool)
 
         return agentpool
 
