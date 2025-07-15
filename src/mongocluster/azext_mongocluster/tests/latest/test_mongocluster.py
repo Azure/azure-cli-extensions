@@ -6,8 +6,204 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.testsdk import *
+import time
 
+class MongoClusterScenario(ScenarioTest):
+    @ResourceGroupPreparer(name_prefix='cli_test_mongocuster', parameter_name_for_location='location', location='canadacentral')
+    def test_mongocluster(self, resource_group, location):
+        self.kwargs.update({
+          'name': self.create_random_name(prefix='cli', length=24),
+          'replica_name': self.create_random_name(prefix='cli_replica', length=24),
+          'restore_name': self.create_random_name(prefix='cli_restore', length=24),
+          'loc': location,
+          'replica_loc': 'centralus',
+          'pwd': self.create_random_name(prefix='Passw0rd2025', length=16),
+          'tier': 'M30',
+          'shard_count': 1,
+          'storage_size': 32,
+          'server_version': '8.0',
+          'admin_name': 'mongoAdmin',
+          'rule_name1': "allow_all",
+          'rule_name2': "allow_all_azure_services",
+        })
 
-class MongoclusterScenario(ScenarioTest):
-    # TODO: add tests here
-    pass
+        self.cmd('az mongo-cluster check-name-availability -n {name} --location {loc}', checks=[
+            self.check('nameAvailable', True)
+        ])
+
+        self.cmd('az mongo-cluster create -g {rg} -n {name} --location {loc} '
+                 '--administrator-name {admin_name} --administrator-password {pwd} --storage-size-gb {storage_size} '
+                 '--compute-tier {tier} --shard-count {shard_count} --server-version {server_version} --high-availability-mode Disabled '
+                 '--no-wait')
+
+        self.cmd('az mongo-cluster wait --resource-group {rg} --name {name} --created')
+
+        self.cmd('az mongo-cluster check-name-availability -n {name} --location {loc}',
+                 checks=[
+                    self.check('nameAvailable', False),
+                    self.check('reason', 'AlreadyExists')
+                ])
+
+        self.cmd('az mongo-cluster list --resource-group {rg}',
+                 checks=[
+                     self.check('length(@)', 1),
+                 ])
+
+        self.cmd('az mongo-cluster show --resource-group {rg} --name {name}',
+                 checks=[
+                     self.check('location', '{loc}'),
+                     self.check('name', '{name}'),
+                     self.check('properties.provisioningState', 'Succeeded'),
+                     self.check('properties.compute.tier', '{tier}'),
+                     self.check('properties.sharding.shardCount', '{shard_count}'),
+                     self.check('properties.serverVersion', '{server_version}'),
+                     self.check('properties.storage.sizeGb', '{storage_size}'),
+                     self.check('properties.administrator.userName', '{admin_name}'),
+                     self.check('properties.infrastructureVersion', '2.0'),
+                     self.check('properties.replica.role', 'Primary'),
+                     self.check('properties.publicNetworkAccess', 'Enabled'),
+                     self.check('properties.highAvailability.targetMode', 'Disabled'),
+                 ])
+
+        self.cmd('az mongo-cluster connection-strings list -g {rg} -n {name}',
+                 checks=[
+                     self.greater_than('length(@)', 1),
+                     self.check("contains(connectionStrings[?name=='GlobalReadWrite'].connectionString | [0], '{name}.global.mongocluster')", True),
+                     self.check("contains(connectionStrings[?name=='Self'].connectionString | [0], '{name}.mongocluster')", True),
+                 ])
+
+        # Valdiate firewall rule CRUD
+        self.cmd('az mongo-cluster firewall-rule create -g {rg} -n {name} -r {rule_name1} --start-ip-address 0.0.0.0 --end-ip-address 255.255.255.255',
+                 checks=[
+                     self.check('name', '{rule_name1}'),
+                     self.check('properties.startIpAddress', '0.0.0.0'),
+                     self.check('properties.endIpAddress', '255.255.255.255')
+                 ])
+
+        self.cmd('az mongo-cluster firewall-rule create -g {rg} -n {name} -r {rule_name2} --start-ip-address 0.0.0.0 --end-ip-address 255.255.255.255',
+                 checks=[
+                     self.check('name', '{rule_name2}'),
+                     self.check('properties.startIpAddress', '0.0.0.0'),
+                     self.check('properties.endIpAddress', '0.0.0.0')
+                 ])
+
+        self.cmd('az mongo-cluster firewall-rule list -g {rg} -n {name}',
+                 checks=[
+                     self.check('length(@)', 2),
+                     self.check("length([?name=='{rule_name1}'])", 1),
+                     self.check("length([?name=='{rule_name2}'])", 1),
+                 ])
+
+        self.cmd('az mongo-cluster firewall-rule delete -g {rg} -n {name} -r {rule_name1} -y')
+
+        self.cmd('az mongo-cluster firewall-rule list -g {rg} -n {name}',
+                 checks=[
+                     self.check('length(@)', 1),
+                     self.check("length([?name=='{rule_name2}'])", 1)
+                 ])
+
+        self.cmd('az mongo-cluster firewall-rule update -g {rg} -n {name} -r {rule_name2} --start-ip-address 0.0.0.0 --end-ip-address 255.255.255.255 --no-wait')
+        self.cmd('az mongo-cluster firewall-rule wait -g {rg} -n {name} -r {rule_name2} --updated')
+        self.cmd('az mongo-cluster firewall-rule show -g {rg} -n {name} -r {rule_name2}',
+                 checks=[
+                     self.check('name', '{rule_name2}'),
+                     self.check('properties.startIpAddress', '0.0.0.0'),
+                     self.check('properties.endIpAddress', '255.255.255.255')
+                 ])
+
+        self.cmd('az mongo-cluster update -g {rg} -n {name} --public-network-access Disabled',
+                checks=[
+                     self.check('properties.publicNetworkAccess', 'Disabled'),
+                 ])
+
+        # sleep to ensure the earliest restore time is populated for restore command.
+        time.sleep(120)
+        primary_cluster = self.cmd('az mongo-cluster show --resource-group {rg} --name {name}').get_output_in_json()
+        self.kwargs.update({
+            'source_resource_id': primary_cluster['id'],
+            'restore_time': primary_cluster['properties']['backup']['earliestRestoreTime'],
+        })
+        self.cmd('az mongo-cluster restore -g {rg} -n {restore_name} --location {loc} '
+                 '--source-resource-id {source_resource_id} --restore-time-utc {restore_time} '
+                 '--administrator-name {admin_name} --administrator-password {pwd} --no-wait')
+
+        # sleep to avoid possible concurrent operations on primary and start creating a replica in parallel.
+        self.sleep(60)
+        self.cmd('az mongo-cluster replica create -g {rg} -n {replica_name} --location {replica_loc} '
+            '--source-resource-id {source_resource_id} --source-location {loc} --no-wait')
+
+        # Validate restore cluster is created.
+        self.cmd('az mongo-cluster wait --resource-group {rg} --name {restore_name} --created')
+        self.cmd('az mongo-cluster show --resource-group {rg} --name {restore_name}',
+                 checks=[
+                     self.check('location', '{loc}'),
+                     self.check('name', '{restore_name}'),
+                     self.check('properties.provisioningState', 'Succeeded'),
+                     self.check('properties.compute.tier', '{tier}'),
+                     self.check('properties.sharding.shardCount', '{shard_count}'),
+                     self.check('properties.serverVersion', '{server_version}'),
+                     self.check('properties.storage.sizeGb', '{storage_size}'),
+                     self.check('properties.administrator.userName', '{admin_name}'),
+                     self.check('properties.infrastructureVersion', '2.0'),
+                     self.check('properties.replica.role', 'Primary'),
+                     self.check('properties.publicNetworkAccess', 'Enabled'),
+                     self.check('properties.highAvailability.targetMode', 'Disabled'),
+                 ])
+
+        # Validate replica cluster is created.
+        self.cmd('az mongo-cluster wait --resource-group {rg} --name {replica_name} --created')
+        replica_cluster = self.cmd('az mongo-cluster show --resource-group {rg} --name {replica_name}',
+                 checks=[
+                     self.check('location', '{replica_loc}'),
+                     self.check('name', '{replica_name}'),
+                     self.check('properties.provisioningState', 'Succeeded'),
+                     self.check('properties.replica.role', 'GeoAsyncReplica'),
+                 ]).get_output_in_json()
+
+        self.kwargs.update({
+            'replica_resource_id': replica_cluster['id'],
+        })
+
+        self.cmd('az mongo-cluster list --resource-group {rg}',
+                 checks=[
+                     self.check('length(@)', 3),
+                 ])
+
+        # Check list replicas on the original primary is consistent.
+        self.cmd('az mongo-cluster replica list -g {rg} -n {name}',
+                 checks=[
+                     self.check('length(@)', 1),
+                     self.check("[?name=='{replica_name}'].id", '{replica_resource_id}'),
+                 ])
+
+        # Promote the replica and validate transition to primary role.
+        self.cmd('az mongo-cluster replica promote -g {rg} -n {replica_name} --promote-option Forced')
+        self.cmd('az mongo-cluster show --resource-group {rg} --name {replica_name}',
+                 checks=[
+                     self.check('location', '{replica_loc}'),
+                     self.check('name', '{replica_name}'),
+                     self.check('properties.provisioningState', 'Succeeded'),
+                     self.check('properties.replica.role', 'Primary'),
+                 ])
+
+        # Validate original primary demotion to replica role.
+        self.cmd('az mongo-cluster show --resource-group {rg} --name {name}',
+                 checks=[
+                     self.check('location', '{loc}'),
+                     self.check('name', '{name}'),
+                     self.check('properties.provisioningState', 'Succeeded'),
+                     self.check('properties.replica.role', 'GeoAsyncReplica'),
+                 ])
+
+        # Validate replica list on new primary and new replics is consistent.
+        self.cmd('az mongo-cluster replica list -g {rg} -n {replica_name}',
+                 checks=[
+                     self.check('length(@)', 1),
+                     self.check("[?name=='{name}'].id", '{source_resource_id}'),
+                 ])
+        self.cmd('az mongo-cluster replica list -g {rg} -n {name}',
+                 checks=[
+                     self.check('length(@)', 0),
+                 ])
+
+        self.cmd('az mongo-cluster delete -g {rg} -n {restore_name} -y')

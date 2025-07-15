@@ -13,12 +13,16 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "mongo-cluster create",
+    is_preview=True,
 )
 class Create(AAZCommand):
     """Create a mongo cluster. Update overwrites all properties for the resource. To only modify some of the properties, use PATCH.
 
     :example: Creates a new Mongo Cluster resource.
-        az mongo-cluster create --resource-group TestResourceGroup --mongo-cluster-name myMongoCluster --location westus2 --resource-group TestResourceGroup --mongo-cluster-name myMongoCluster --location westus2 --administrator-name mongoAdmin --administrator-password password --server-version 5.0 --storage-size-gb 128 --computer-tier M30 --shard-count 1 --high-availability-mode SameZone
+        az mongo-cluster create --resource-group TestResourceGroup --mongo-cluster-name myMongoCluster --location westus2 --administrator-name mongoAdmin --administrator-password password --server-version 5.0 --storage-size-gb 128 --compute-tier M30 --shard-count 1 --high-availability-mode ZoneRedundantPreferred
+
+    :example: Creates a Mongo Cluster resource from a point in time restore
+        az mongo-cluster create --resource-group TestResourceGroup --mongo-cluster-name myMongoCluster --location westus2 --create-mode PointInTimeRestore --restore-time-utc 2023-01-13T20:07:35Z --restore-source-resource-id /subscriptions/ffffffff-ffff-ffff-ffff-ffffffffffff/resourceGroups/TestResourceGroup/providers/Microsoft.DocumentDB/mongoClusters/myOtherMongoCluster
     """
 
     _aaz_info = {
@@ -77,8 +81,8 @@ class Create(AAZCommand):
         # define Arg Group "Compute"
 
         _args_schema = cls._args_schema
-        _args_schema.computer_tier = AAZStrArg(
-            options=["--computer-tier"],
+        _args_schema.compute_tier = AAZStrArg(
+            options=["--compute-tier"],
             arg_group="Compute",
             help="The compute tier to assign to the cluster, where each tier maps to a virtual-core and memory size. Example values: 'M30', 'M40'.",
         )
@@ -323,7 +327,7 @@ class Create(AAZCommand):
 
             compute = _builder.get(".properties.compute")
             if compute is not None:
-                compute.set_prop("tier", AAZStrType, ".computer_tier")
+                compute.set_prop("tier", AAZStrType, ".compute_tier")
 
             high_availability = _builder.get(".properties.highAvailability")
             if high_availability is not None:

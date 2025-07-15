@@ -35,17 +35,25 @@ class MongoClusterCreate(_MongoClusterCreate):
         args_schema.restore_source_resource_id._registered = False
         args_schema.restore_time_utc._registered = False
 
+        args_schema.administrator_name._required = True
+        args_schema.administrator_password._required = True
+        args_schema.shard_count._required = True
+        args_schema.compute_tier._required = True
+        args_schema.storage_size_gb._required = True
+        args_schema.high_availability_mode._required = True
+
         return args_schema
 
 
 @register_command(
     "mongo-cluster replica create",
+    is_preview=True,
 )
 class MongoClusterReplicaCreate(_MongoClusterCreate):
     """Create a Mongo Cluster replica resource.
 
     :example: Creates a replica Mongo Cluster resource from a source cluster.
-        az mongo-cluster replica create --resource-group TestResourceGroup --mongo-cluster-name myMongoCluster --location eastus2 --source-resource-id "/subscriptions/ffffffff-ffff-ffff-ffff-ffffffffffff/resourceGroups/TestResourceGroup/providers/Microsoft.DocumentDB/mongoClusters/mySourceMongoCluster"
+        az mongo-cluster replica create --resource-group TestResourceGroup --mongo-cluster-name myMongoCluster --location eastus2 --source-location westus3 --source-resource-id "/subscriptions/ffffffff-ffff-ffff-ffff-ffffffffffff/resourceGroups/TestResourceGroup/providers/Microsoft.DocumentDB/mongoClusters/mySourceMongoCluster"
     """
 
     @classmethod
@@ -59,7 +67,7 @@ class MongoClusterReplicaCreate(_MongoClusterCreate):
         args_schema.administrator_password._registered = False
         args_schema.administrator_name._registered = False
 
-        args_schema.computer_tier._registered = False
+        args_schema.compute_tier._registered = False
 
         args_schema.high_availability_mode._registered = False
 
@@ -90,14 +98,26 @@ class MongoClusterReplicaCreate(_MongoClusterCreate):
 # Fully inherit the aaz code-generate promote command but re-map it to the replica command group
 @register_command(
     "mongo-cluster replica promote",
+    is_preview=True,
 )
 class MongoClusterReplicaPromote(_MongoClusterPromote):
     # inherit the documenation from the parent class as-is since it doesn't need to be modified
     __doc__ = _MongoClusterPromote.__doc__
 
+    def _execute_operations(self):
+        self.pre_operations()
+        lro_polling = self.MongoClustersPromote(ctx=self.ctx)()
+        lro_polling._deserialization_callback = self.on_202
+        yield lro_polling
+        self.post_operations()
+
+    def on_202(self, session):
+        pass
+
 
 @register_command(
     "mongo-cluster restore",
+    is_preview=True,
 )
 class MongoClusterRestore(_MongoClusterCreate):
     """Restores a Mongo Cluster resource.
@@ -114,7 +134,7 @@ class MongoClusterRestore(_MongoClusterCreate):
         # We can opt to support them as overrides at replica create time at a later stage.
         args_schema.create_mode._registered = False
 
-        args_schema.computer_tier._registered = False
+        args_schema.compute_tier._registered = False
 
         args_schema.high_availability_mode._registered = False
 

@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "mongo-cluster update",
+    is_preview=True,
 )
 class Update(AAZCommand):
     """Update a mongo cluster resource.
@@ -85,8 +86,8 @@ class Update(AAZCommand):
         # define Arg Group "Compute"
 
         _args_schema = cls._args_schema
-        _args_schema.computer_tier = AAZStrArg(
-            options=["--computer-tier"],
+        _args_schema.compute_tier = AAZStrArg(
+            options=["--compute-tier"],
             arg_group="Compute",
             help="The compute tier to assign to the cluster, where each tier maps to a virtual-core and memory size. Example values: 'M30', 'M40'.",
             nullable=True,
@@ -748,7 +749,7 @@ class Update(AAZCommand):
 
             compute = _builder.get(".properties.compute")
             if compute is not None:
-                compute.set_prop("tier", AAZStrType, ".computer_tier")
+                compute.set_prop("tier", AAZStrType, ".compute_tier")
 
             high_availability = _builder.get(".properties.highAvailability")
             if high_availability is not None:

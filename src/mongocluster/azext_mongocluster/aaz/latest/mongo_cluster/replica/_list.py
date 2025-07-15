@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "mongo-cluster replica list",
+    is_preview=True,
 )
 class List(AAZCommand):
     """List all the replicas for the mongo cluster.
@@ -46,8 +47,8 @@ class List(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.mongo_cluster_name = AAZStrArg(
-            options=["--mongo-cluster-name"],
-            help="The name of the primary mongo cluster to list replicas for.",
+            options=["-n", "--name", "--mongo-cluster-name"],
+            help="The name of the mongo cluster.",
             required=True,
             fmt=AAZStrArgFormat(
                 pattern="^[a-z0-9]+(-[a-z0-9]+)*",

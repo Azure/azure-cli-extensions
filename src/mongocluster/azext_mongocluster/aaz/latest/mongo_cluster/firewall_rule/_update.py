@@ -13,12 +13,13 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "mongo-cluster firewall-rule update",
+    is_preview=True,
 )
 class Update(AAZCommand):
     """Update a new firewall rule or updates an existing firewall rule on a mongo cluster.
 
     :example: Updates a firewall rule on a Mongo Cluster resource.
-        az mongo-cluster firewall-rule update --resource-group TestGroup --mongo-cluster-name myMongoCluster --firewall-rule-name rule1 --start-ip-address 0.0.0.0 --end-ip-address 255.255.255.255
+        az mongo-cluster firewall-rule update --resource-group TestGroup --mongo-cluster-name myMongoCluster --rule-name rule1 --start-ip-address 0.0.0.0 --end-ip-address 255.255.255.255
     """
 
     _aaz_info = {
@@ -47,8 +48,8 @@ class Update(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.firewall_rule_name = AAZStrArg(
-            options=["-n", "--name", "--firewall-rule-name"],
+        _args_schema.rule_name = AAZStrArg(
+            options=["-r", "--rule-name"],
             help="The name of the mongo cluster firewall rule.",
             required=True,
             id_part="child_name_1",
@@ -59,7 +60,7 @@ class Update(AAZCommand):
             ),
         )
         _args_schema.mongo_cluster_name = AAZStrArg(
-            options=["--mongo-cluster-name"],
+            options=["-n", "--name", "--mongo-cluster-name"],
             help="The name of the mongo cluster.",
             required=True,
             id_part="name",
@@ -155,7 +156,7 @@ class Update(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "firewallRuleName", self.ctx.args.firewall_rule_name,
+                    "firewallRuleName", self.ctx.args.rule_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -307,7 +308,7 @@ class Update(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "firewallRuleName", self.ctx.args.firewall_rule_name,
+                    "firewallRuleName", self.ctx.args.rule_name,
                     required=True,
                 ),
                 **self.serialize_url_param(

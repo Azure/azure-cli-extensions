@@ -11,25 +11,28 @@
 from azure.cli.core.aaz import *
 
 
-class Promote(AAZCommand):
-    """Promotes a replica mongo cluster to a primary role.
+@register_command(
+    "mongo-cluster check-name-availability",
+    is_preview=True,
+)
+class CheckNameAvailability(AAZCommand):
+    """Check if mongo cluster name is available for use.
 
-    :example: Promotes a replica Mongo Cluster resource to a primary role.
-        az mongo-cluster replica promote --resource-group TestGroup --mongo-cluster-name replicaMongoCluster --promote-option Forced --promote-mode Switchover
+    :example: Checks and confirms the Mongo Cluster name is availability for use.
+        az mongo-cluster check-name-availability --location westus2 --name newmongocluster
     """
 
     _aaz_info = {
         "version": "2024-07-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.documentdb/mongoclusters/{}/promote", "2024-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.documentdb/locations/{}/checkmongoclusternameavailability", "2024-07-01"],
         ]
     }
 
-    AZ_SUPPORT_NO_WAIT = True
-
     def _handler(self, command_args):
         super()._handler(command_args)
-        return self.build_lro_poller(self._execute_operations, None)
+        self._execute_operations()
+        return self._output()
 
     _args_schema = None
 
@@ -42,43 +45,30 @@ class Promote(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.mongo_cluster_name = AAZStrArg(
-            options=["-n", "--name", "--mongo-cluster-name"],
-            help="The name of the mongo cluster.",
+        _args_schema.location = AAZResourceLocationArg(
             required=True,
             id_part="name",
-            fmt=AAZStrArgFormat(
-                pattern="^[a-z0-9]+(-[a-z0-9]+)*",
-                max_length=40,
-                min_length=3,
-            ),
-        )
-        _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="Name of the resource group.",
-            required=True,
         )
 
         # define Arg Group "Body"
 
         _args_schema = cls._args_schema
-        _args_schema.promote_mode = AAZStrArg(
-            options=["--promote-mode"],
+        _args_schema.mongo_cluster_name = AAZStrArg(
+            options=["-n", "--name", "--mongo-cluster-name"],
             arg_group="Body",
-            help="The mode to apply to the promote operation. Value is optional and default value is 'Switchover'.",
-            enum={"Switchover": "Switchover"},
+            help="The name of the resource for which availability needs to be checked.",
         )
-        _args_schema.promote_option = AAZStrArg(
-            options=["--promote-option"],
+        _args_schema.type = AAZStrArg(
+            options=["--type"],
             arg_group="Body",
-            help="The promote option to apply to the operation.",
-            required=True,
-            enum={"Forced": "Forced"},
+            help="The resource type.",
+            default="Microsoft.DocumentDB/mongoClusters",
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.MongoClustersPromote(ctx=self.ctx)()
+        self.MongoClustersCheckNameAvailability(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -89,28 +79,25 @@ class Promote(AAZCommand):
     def post_operations(self):
         pass
 
-    class MongoClustersPromote(AAZHttpOperation):
+    def _output(self, *args, **kwargs):
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+        return result
+
+    class MongoClustersCheckNameAvailability(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [202]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    None,
-                    self.on_error,
-                    lro_options={"final-state-via": "location"},
-                    path_format_arguments=self.url_parameters,
-                )
+            if session.http_response.status_code in [200]:
+                return self.on_200(session)
 
             return self.on_error(session.http_response)
 
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/mongoClusters/{mongoClusterName}/promote",
+                "/subscriptions/{subscriptionId}/providers/Microsoft.DocumentDB/locations/{location}/checkMongoClusterNameAvailability",
                 **self.url_parameters
             )
 
@@ -126,11 +113,7 @@ class Promote(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "mongoClusterName", self.ctx.args.mongo_cluster_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "resourceGroupName", self.ctx.args.resource_group,
+                    "location", self.ctx.args.location,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -156,6 +139,9 @@ class Promote(AAZCommand):
                 **self.serialize_header_param(
                     "Content-Type", "application/json",
                 ),
+                **self.serialize_header_param(
+                    "Accept", "application/json",
+                ),
             }
             return parameters
 
@@ -166,14 +152,40 @@ class Promote(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("mode", AAZStrType, ".promote_mode")
-            _builder.set_prop("promoteOption", AAZStrType, ".promote_option", typ_kwargs={"flags": {"required": True}})
+            _builder.set_prop("name", AAZStrType, ".mongo_cluster_name")
+            _builder.set_prop("type", AAZStrType, ".type")
 
             return self.serialize_content(_content_value)
 
+        def on_200(self, session):
+            data = self.deserialize_http_content(session)
+            self.ctx.set_var(
+                "instance",
+                data,
+                schema_builder=self._build_schema_on_200
+            )
 
-class _PromoteHelper:
-    """Helper class for Promote"""
+        _schema_on_200 = None
+
+        @classmethod
+        def _build_schema_on_200(cls):
+            if cls._schema_on_200 is not None:
+                return cls._schema_on_200
+
+            cls._schema_on_200 = AAZObjectType()
+
+            _schema_on_200 = cls._schema_on_200
+            _schema_on_200.message = AAZStrType()
+            _schema_on_200.name_available = AAZBoolType(
+                serialized_name="nameAvailable",
+            )
+            _schema_on_200.reason = AAZStrType()
+
+            return cls._schema_on_200
 
 
-__all__ = ["Promote"]
+class _CheckNameAvailabilityHelper:
+    """Helper class for CheckNameAvailability"""
+
+
+__all__ = ["CheckNameAvailability"]

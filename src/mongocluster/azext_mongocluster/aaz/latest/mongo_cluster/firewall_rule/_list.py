@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "mongo-cluster firewall-rule list",
+    is_preview=True,
 )
 class List(AAZCommand):
     """List all the firewall rules in a given mongo cluster.
@@ -46,7 +47,7 @@ class List(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.mongo_cluster_name = AAZStrArg(
-            options=["--mongo-cluster-name"],
+            options=["-n", "--name", "--mongo-cluster-name"],
             help="The name of the mongo cluster.",
             required=True,
             fmt=AAZStrArgFormat(

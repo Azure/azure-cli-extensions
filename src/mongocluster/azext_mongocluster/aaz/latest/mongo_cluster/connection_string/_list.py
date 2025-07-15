@@ -12,29 +12,27 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "mongo-cluster delete",
+    "mongo-cluster connection-string list",
     is_preview=True,
-    confirmation="Are you sure you want to perform this operation?",
 )
-class Delete(AAZCommand):
-    """Delete a mongo cluster.
+class List(AAZCommand):
+    """List mongo cluster connection strings. This includes the default connection string using SCRAM-SHA-256, as well as other connection strings supported by the cluster.
 
-    :example: Deletes a Mongo Cluster resource.
-        az mongo-cluster delete --resource-group TestResourceGroup --mongo-cluster-name myMongoCluster
+    :example: List the available connection strings for the Mongo Cluster resource.
+        az mongo-cluster connection-string list --resource-group TestGroup --mongo-cluster-name myMongoCluster
     """
 
     _aaz_info = {
         "version": "2024-07-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.documentdb/mongoclusters/{}", "2024-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.documentdb/mongoclusters/{}/listconnectionstrings", "2024-07-01"],
         ]
     }
 
-    AZ_SUPPORT_NO_WAIT = True
-
     def _handler(self, command_args):
         super()._handler(command_args)
-        return self.build_lro_poller(self._execute_operations, None)
+        self._execute_operations()
+        return self._output()
 
     _args_schema = None
 
@@ -51,7 +49,6 @@ class Delete(AAZCommand):
             options=["-n", "--name", "--mongo-cluster-name"],
             help="The name of the mongo cluster.",
             required=True,
-            id_part="name",
             fmt=AAZStrArgFormat(
                 pattern="^[a-z0-9]+(-[a-z0-9]+)*",
                 max_length=40,
@@ -59,14 +56,13 @@ class Delete(AAZCommand):
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="Name of the resource group.",
             required=True,
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.MongoClustersDelete(ctx=self.ctx)()
+        self.MongoClustersListConnectionStrings(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -77,52 +73,31 @@ class Delete(AAZCommand):
     def post_operations(self):
         pass
 
-    class MongoClustersDelete(AAZHttpOperation):
+    def _output(self, *args, **kwargs):
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+        return result
+
+    class MongoClustersListConnectionStrings(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [202]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200_201,
-                    self.on_error,
-                    lro_options={"final-state-via": "location"},
-                    path_format_arguments=self.url_parameters,
-                )
-            if session.http_response.status_code in [204]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_204,
-                    self.on_error,
-                    lro_options={"final-state-via": "location"},
-                    path_format_arguments=self.url_parameters,
-                )
-            if session.http_response.status_code in [200, 201]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200_201,
-                    self.on_error,
-                    lro_options={"final-state-via": "location"},
-                    path_format_arguments=self.url_parameters,
-                )
+            if session.http_response.status_code in [200]:
+                return self.on_200(session)
 
             return self.on_error(session.http_response)
 
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/mongoClusters/{mongoClusterName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/mongoClusters/{mongoClusterName}/listConnectionStrings",
                 **self.url_parameters
             )
 
         @property
         def method(self):
-            return "DELETE"
+            return "POST"
 
         @property
         def error_format(self):
@@ -156,15 +131,58 @@ class Delete(AAZCommand):
             }
             return parameters
 
-        def on_204(self, session):
-            pass
+        @property
+        def header_parameters(self):
+            parameters = {
+                **self.serialize_header_param(
+                    "Accept", "application/json",
+                ),
+            }
+            return parameters
 
-        def on_200_201(self, session):
-            pass
+        def on_200(self, session):
+            data = self.deserialize_http_content(session)
+            self.ctx.set_var(
+                "instance",
+                data,
+                schema_builder=self._build_schema_on_200
+            )
+
+        _schema_on_200 = None
+
+        @classmethod
+        def _build_schema_on_200(cls):
+            if cls._schema_on_200 is not None:
+                return cls._schema_on_200
+
+            cls._schema_on_200 = AAZObjectType()
+
+            _schema_on_200 = cls._schema_on_200
+            _schema_on_200.connection_strings = AAZListType(
+                serialized_name="connectionStrings",
+                flags={"read_only": True},
+            )
+
+            connection_strings = cls._schema_on_200.connection_strings
+            connection_strings.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.connection_strings.Element
+            _element.connection_string = AAZStrType(
+                serialized_name="connectionString",
+                flags={"read_only": True},
+            )
+            _element.description = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.name = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            return cls._schema_on_200
 
 
-class _DeleteHelper:
-    """Helper class for Delete"""
+class _ListHelper:
+    """Helper class for List"""
 
 
-__all__ = ["Delete"]
+__all__ = ["List"]

@@ -1,0 +1,2251 @@
+interactions:
+- request:
+    body: '{"name": "cli000002", "type": "Microsoft.DocumentDB/mongoClusters"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mongo-cluster check-name-availability
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '67'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -n --location
+      User-Agent:
+      - AZURECLI/2.75.0 azsdk-python-core/1.31.0 Python/3.12.11 (Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.31)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/canadacentral/checkMongoClusterNameAvailability?api-version=2024-07-01
+  response:
+    body:
+      string: "{\n  \"nameAvailable\": true,\n  \"message\": \"\",\n  \"reason\":
+        \"\"\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '60'
+      content-security-policy:
+      - default-src 'none'; base-uri 'self'; block-all-mixed-content; connect-src
+        'self' https://login.microsoftonline.com/33e01921-4d64-4f8c-a055-5bdaffd5e33d/oauth2/v2.0/token
+        https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47/oauth2/v2.0/token;
+        font-src 'self'; form-action 'self'; frame-src 'self' https://login.microsoftonline.com/
+        https://microsoft-onmicrosoft-com.access.mcas.ms/; img-src 'self'; script-src
+        'self'; style-src 'self'; upgrade-insecure-requests
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 15 Jul 2025 04:04:47 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      referrer-policy:
+      - same-origin
+      request-id:
+      - bb2ba89a-ebad-409a-8eda-23f6d74dfaaf
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-download-options:
+      - noopen
+      x-frame-options:
+      - SAMEORIGIN
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=29823c86-e311-4434-abbe-37b7d7e6f8bf/westus/9d579111-b4d1-4bec-a627-223ec655fb4f
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 5795BA5E53D64D6195531A6FCDA26A81 Ref B: CO6AA3150217037 Ref C: 2025-07-15T04:04:46Z'
+      x-permitted-cross-domain-policies:
+      - none
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "canadacentral", "properties": {"administrator": {"password":
+      "Passw0rd2025000005", "userName": "mongoAdmin"}, "compute": {"tier": "M30"},
+      "highAvailability": {"targetMode": "Disabled"}, "serverVersion": "8.0", "sharding":
+      {"shardCount": 1}, "storage": {"sizeGb": 32}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mongo-cluster create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '282'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --location --administrator-name --administrator-password --storage-size-gb
+        --compute-tier --shard-count --server-version --high-availability-mode --no-wait
+      User-Agent:
+      - AZURECLI/2.75.0 azsdk-python-core/1.31.0 Python/3.12.11 (Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.31)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mongocuster000001/providers/Microsoft.DocumentDB/mongoClusters/cli000002?api-version=2024-07-01
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mongocuster000001/providers/Microsoft.DocumentDB/mongoClusters/cli000002\",\n
+        \ \"name\": \"cli000002\",\n  \"type\": \"Microsoft.DocumentDB/mongoClusters\",\n
+        \ \"tags\": {},\n  \"location\": \"canadacentral\",\n  \"systemData\": {\n
+        \   \"createdAt\": \"2025-07-15T04:04:49.7728606Z\",\n    \"createdBy\": \"test@example.com\",\n
+        \   \"createdByType\": \"User\",\n    \"lastModifiedAt\": \"2025-07-15T04:04:49.7728606Z\",\n
+        \   \"lastModifiedBy\": \"test@example.com\",\n    \"lastModifiedByType\":
+        \"User\"\n  },\n  \"properties\": {\n    \"provisioningState\": \"InProgress\",\n
+        \   \"clusterStatus\": \"Provisioning\",\n    \"administrator\": {\n      \"userName\":
+        \"mongoAdmin\"\n    },\n    \"serverVersion\": \"8.0\",\n    \"compute\":
+        {\n      \"tier\": \"M30\"\n    },\n    \"storage\": {\n      \"sizeGb\":
+        32\n    },\n    \"sharding\": {\n      \"shardCount\": 1\n    },\n    \"highAvailability\":
+        {\n      \"targetMode\": \"Disabled\"\n    },\n    \"backup\": {},\n    \"privateEndpointConnections\":
+        [],\n    \"publicNetworkAccess\": \"Enabled\",\n    \"replica\": {\n      \"role\":
+        \"Primary\"\n    },\n    \"infrastructureVersion\": \"2.0\"\n  }\n}"
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/canadacentral/mongoClusterAzureAsyncOperation/0e3e178b-2c99-4b25-b568-58fdcb54fe68?api-version=2024-07-01&t=638881490908196896&c=MIIHhzCCBm-gAwIBAgITfAd-Vd7NbNf6pu3--QAAB35V3jANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjUwNDE4MDkzMjM0WhcNMjUxMDE1MDkzMjM0WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAM4cOuemCoMuyhG-hRDGM5d3nryaXbAhDxKILmrQBSq9a63DN4sTbUHZafxKMxwqx_VcG1sqw5HvH-ddECtfe9gbDmbnQAVAUuFSpXo21kRsSsQXQnuX6FFB7s8SIV1uc2zU583Uv_pNTuYIfJFZVMvVua9bd7gtxjzvx7-2dp5tD2zL7TylVdkfZiPWTtOkx7xUwLdk3mjX0IQ1eRW8kPowHclVp0IyKGUEC4jjYVhgVcd2wheCcTwVTmcwVYVzk7WidEXyNszKaJz8DvZgi68_ynv1zePlFZVR_luI4_6niFY_1LEzwz-YcaPKBiOsmqE215FRrHra7d6t1qexoYUCAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBSl1U8yx_vfojwctA5ZGxImkaplujAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAKhiJkKUIhgDDVlsuQUomedC40VlL5azeJkfbx-zx6a7LSFof6BdKFuNAOOVwNyChuOjXniRM4Y8qq26SxDAjVs9MyCZivz4H9bIvBr3NTWojGo1fIzbo8DxsIVtDqospJOnXnc8sWFPYlOE8nKf1m3y_JRRM3CGr8gBdjiZIf5TJ6K2JjtVqyhuBDWMmjndiNnuIRh0zfUeC8hPFJYiWIiCpNUaZ6LtI6CPoiOk6QyFzWPveZBDIfdm8JbflJIFXFgPGzETW9ag037pB0zm4jf5VyKIPEWSyJaNLm64-SZI6ZAsvrtmQ1jux1dCP_nTlPS4YBZdy_lRYjRe_8cQLxM&s=LSm7VbDeaxV7wWExYtAvpqFI87XF8JWW5EsW3tLRNh7h6NoI6H14B0yz9ajV-rTwWN8H8cG72Wtvb6-01R0-SZdV74HsGrcHC9etNgKj1H8K41Mjn29DhZmduygyZqH2yOelEbW6DltuagPPzYsZ6naerCAqFOOAvQKq8C2GKdo8bDGDeiGuL6ZIm6vDrcMFCPs54-_TrRXhACo3tCmG324JKLiBnZmgt5TB05r6KJiv4sPNwQq1evRjPApG5UDwo2c022xOXgccFZTbYRlFF1pCrTcMGlCY5skE5pqut7-Cqn9f2pvZphGE6hWjZhSAFaB58Yep6YzkFo0g4-swHg&h=rcrzrP3_G6UCbKjpS26L2rq55cd5hHct8iXnlfBuJuQ
+      cache-control:
+      - no-cache
+      content-length:
+      - '1108'
+      content-security-policy:
+      - default-src 'none'; base-uri 'self'; block-all-mixed-content; connect-src
+        'self' https://login.microsoftonline.com/33e01921-4d64-4f8c-a055-5bdaffd5e33d/oauth2/v2.0/token
+        https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47/oauth2/v2.0/token;
+        font-src 'self'; form-action 'self'; frame-src 'self' https://login.microsoftonline.com/
+        https://microsoft-onmicrosoft-com.access.mcas.ms/; img-src 'self'; script-src
+        'self'; style-src 'self'; upgrade-insecure-requests
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 15 Jul 2025 04:04:50 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/canadacentral/mongoClusterOperationResults/0e3e178b-2c99-4b25-b568-58fdcb54fe68?api-version=2024-07-01&t=638881490908196896&c=MIIHhzCCBm-gAwIBAgITfAd-Vd7NbNf6pu3--QAAB35V3jANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjUwNDE4MDkzMjM0WhcNMjUxMDE1MDkzMjM0WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAM4cOuemCoMuyhG-hRDGM5d3nryaXbAhDxKILmrQBSq9a63DN4sTbUHZafxKMxwqx_VcG1sqw5HvH-ddECtfe9gbDmbnQAVAUuFSpXo21kRsSsQXQnuX6FFB7s8SIV1uc2zU583Uv_pNTuYIfJFZVMvVua9bd7gtxjzvx7-2dp5tD2zL7TylVdkfZiPWTtOkx7xUwLdk3mjX0IQ1eRW8kPowHclVp0IyKGUEC4jjYVhgVcd2wheCcTwVTmcwVYVzk7WidEXyNszKaJz8DvZgi68_ynv1zePlFZVR_luI4_6niFY_1LEzwz-YcaPKBiOsmqE215FRrHra7d6t1qexoYUCAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBSl1U8yx_vfojwctA5ZGxImkaplujAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAKhiJkKUIhgDDVlsuQUomedC40VlL5azeJkfbx-zx6a7LSFof6BdKFuNAOOVwNyChuOjXniRM4Y8qq26SxDAjVs9MyCZivz4H9bIvBr3NTWojGo1fIzbo8DxsIVtDqospJOnXnc8sWFPYlOE8nKf1m3y_JRRM3CGr8gBdjiZIf5TJ6K2JjtVqyhuBDWMmjndiNnuIRh0zfUeC8hPFJYiWIiCpNUaZ6LtI6CPoiOk6QyFzWPveZBDIfdm8JbflJIFXFgPGzETW9ag037pB0zm4jf5VyKIPEWSyJaNLm64-SZI6ZAsvrtmQ1jux1dCP_nTlPS4YBZdy_lRYjRe_8cQLxM&s=KON4vIyL81BANBJ8dgZDz00OPi8EucZnQaSHlvprmjeYlBiJjbCYFZwkSn7Z82-2rOgtQjw4PxWr4y5NTId-ci4S-cuM-4ttrxAJ5q7FWZThPmXMlhmvqB1s3VInKLmdSafnYJ62jB_y0scuEAEAF_r6TzerMMi-hcgQowMey2l4gpngjnsp0KqKtRaXsG02DkKjm9sPim3Jz26YeUabkHLNVw5pC1_IcqFqB26KjGN35oszzvH4ASHhCiync2mmkUNvo9HsQwx4OlNzXSTriCrnUwhtfClMXRukEHLk7BYQf0d9JKwu11X6r-N8w3-aTm93yMsAE0GZ9hoK6kYEgA&h=FJQMLrevGYOISMF2LzvQ-pG5hvbBLjKsqzGXDfAU0qU
+      pragma:
+      - no-cache
+      referrer-policy:
+      - same-origin
+      request-id:
+      - fabf121f-6db8-4534-bcf2-1f2415d41696
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-download-options:
+      - noopen
+      x-frame-options:
+      - SAMEORIGIN
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=29823c86-e311-4434-abbe-37b7d7e6f8bf/westus/4769b472-06f5-4bd5-af21-bae724c42663
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 7E65A2494C3C44BFAD287400071EC0C0 Ref B: CO6AA3150218039 Ref C: 2025-07-15T04:04:47Z'
+      x-permitted-cross-domain-policies:
+      - none
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mongo-cluster wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --created
+      User-Agent:
+      - AZURECLI/2.75.0 azsdk-python-core/1.31.0 Python/3.12.11 (Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.31)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mongocuster000001/providers/Microsoft.DocumentDB/mongoClusters/cli000002?api-version=2024-07-01
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mongocuster000001/providers/Microsoft.DocumentDB/mongoClusters/cli000002\",\n
+        \ \"name\": \"cli000002\",\n  \"type\": \"Microsoft.DocumentDB/mongoClusters\",\n
+        \ \"tags\": {},\n  \"location\": \"canadacentral\",\n  \"systemData\": {\n
+        \   \"createdAt\": \"2025-07-15T04:04:49.7728606Z\",\n    \"createdBy\": \"test@example.com\",\n
+        \   \"createdByType\": \"User\",\n    \"lastModifiedAt\": \"2025-07-15T04:04:49.7728606Z\",\n
+        \   \"lastModifiedBy\": \"test@example.com\",\n    \"lastModifiedByType\":
+        \"User\"\n  },\n  \"properties\": {\n    \"provisioningState\": \"InProgress\",\n
+        \   \"clusterStatus\": \"Provisioning\",\n    \"administrator\": {\n      \"userName\":
+        \"mongoAdmin\"\n    },\n    \"serverVersion\": \"8.0\",\n    \"compute\":
+        {\n      \"tier\": \"M30\"\n    },\n    \"storage\": {\n      \"sizeGb\":
+        32\n    },\n    \"sharding\": {\n      \"shardCount\": 1\n    },\n    \"highAvailability\":
+        {\n      \"targetMode\": \"Disabled\"\n    },\n    \"backup\": {},\n    \"privateEndpointConnections\":
+        [],\n    \"publicNetworkAccess\": \"Enabled\",\n    \"replica\": {\n      \"role\":
+        \"Primary\"\n    },\n    \"infrastructureVersion\": \"2.0\"\n  }\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1108'
+      content-security-policy:
+      - default-src 'none'; base-uri 'self'; block-all-mixed-content; connect-src
+        'self' https://login.microsoftonline.com/33e01921-4d64-4f8c-a055-5bdaffd5e33d/oauth2/v2.0/token
+        https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47/oauth2/v2.0/token;
+        font-src 'self'; form-action 'self'; frame-src 'self' https://login.microsoftonline.com/
+        https://microsoft-onmicrosoft-com.access.mcas.ms/; img-src 'self'; script-src
+        'self'; style-src 'self'; upgrade-insecure-requests
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 15 Jul 2025 04:04:51 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      referrer-policy:
+      - same-origin
+      request-id:
+      - 3d58af4f-8f02-44fb-aa84-6a0715cd823b
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-download-options:
+      - noopen
+      x-frame-options:
+      - SAMEORIGIN
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 634C80CFC4EA4040B2D42B82E69179DB Ref B: CO6AA3150219023 Ref C: 2025-07-15T04:04:51Z'
+      x-permitted-cross-domain-policies:
+      - none
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mongo-cluster wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --created
+      User-Agent:
+      - AZURECLI/2.75.0 azsdk-python-core/1.31.0 Python/3.12.11 (Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.31)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mongocuster000001/providers/Microsoft.DocumentDB/mongoClusters/cli000002?api-version=2024-07-01
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mongocuster000001/providers/Microsoft.DocumentDB/mongoClusters/cli000002\",\n
+        \ \"name\": \"cli000002\",\n  \"type\": \"Microsoft.DocumentDB/mongoClusters\",\n
+        \ \"tags\": {},\n  \"location\": \"canadacentral\",\n  \"systemData\": {\n
+        \   \"createdAt\": \"2025-07-15T04:04:49.7728606Z\",\n    \"createdBy\": \"test@example.com\",\n
+        \   \"createdByType\": \"User\",\n    \"lastModifiedAt\": \"2025-07-15T04:04:49.7728606Z\",\n
+        \   \"lastModifiedBy\": \"test@example.com\",\n    \"lastModifiedByType\":
+        \"User\"\n  },\n  \"properties\": {\n    \"provisioningState\": \"InProgress\",\n
+        \   \"clusterStatus\": \"Provisioning\",\n    \"administrator\": {\n      \"userName\":
+        \"mongoAdmin\"\n    },\n    \"serverVersion\": \"8.0\",\n    \"compute\":
+        {\n      \"tier\": \"M30\"\n    },\n    \"storage\": {\n      \"sizeGb\":
+        32\n    },\n    \"sharding\": {\n      \"shardCount\": 1\n    },\n    \"highAvailability\":
+        {\n      \"targetMode\": \"Disabled\"\n    },\n    \"backup\": {},\n    \"privateEndpointConnections\":
+        [],\n    \"publicNetworkAccess\": \"Enabled\",\n    \"replica\": {\n      \"role\":
+        \"Primary\"\n    },\n    \"infrastructureVersion\": \"2.0\"\n  }\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1108'
+      content-security-policy:
+      - default-src 'none'; base-uri 'self'; block-all-mixed-content; connect-src
+        'self' https://login.microsoftonline.com/33e01921-4d64-4f8c-a055-5bdaffd5e33d/oauth2/v2.0/token
+        https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47/oauth2/v2.0/token;
+        font-src 'self'; form-action 'self'; frame-src 'self' https://login.microsoftonline.com/
+        https://microsoft-onmicrosoft-com.access.mcas.ms/; img-src 'self'; script-src
+        'self'; style-src 'self'; upgrade-insecure-requests
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 15 Jul 2025 04:05:21 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      referrer-policy:
+      - same-origin
+      request-id:
+      - 00d62227-c6a6-4efe-9381-aa3379963a88
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-download-options:
+      - noopen
+      x-frame-options:
+      - SAMEORIGIN
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: E437E1B0B69640CD949A20EFA9A4C277 Ref B: CO6AA3150218045 Ref C: 2025-07-15T04:05:21Z'
+      x-permitted-cross-domain-policies:
+      - none
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mongo-cluster wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --created
+      User-Agent:
+      - AZURECLI/2.75.0 azsdk-python-core/1.31.0 Python/3.12.11 (Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.31)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mongocuster000001/providers/Microsoft.DocumentDB/mongoClusters/cli000002?api-version=2024-07-01
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mongocuster000001/providers/Microsoft.DocumentDB/mongoClusters/cli000002\",\n
+        \ \"name\": \"cli000002\",\n  \"type\": \"Microsoft.DocumentDB/mongoClusters\",\n
+        \ \"tags\": {},\n  \"location\": \"canadacentral\",\n  \"systemData\": {\n
+        \   \"createdAt\": \"2025-07-15T04:04:49.7728606Z\",\n    \"createdBy\": \"test@example.com\",\n
+        \   \"createdByType\": \"User\",\n    \"lastModifiedAt\": \"2025-07-15T04:04:49.7728606Z\",\n
+        \   \"lastModifiedBy\": \"test@example.com\",\n    \"lastModifiedByType\":
+        \"User\"\n  },\n  \"properties\": {\n    \"provisioningState\": \"InProgress\",\n
+        \   \"clusterStatus\": \"Provisioning\",\n    \"administrator\": {\n      \"userName\":
+        \"mongoAdmin\"\n    },\n    \"serverVersion\": \"8.0\",\n    \"compute\":
+        {\n      \"tier\": \"M30\"\n    },\n    \"storage\": {\n      \"sizeGb\":
+        32\n    },\n    \"sharding\": {\n      \"shardCount\": 1\n    },\n    \"highAvailability\":
+        {\n      \"targetMode\": \"Disabled\"\n    },\n    \"backup\": {},\n    \"privateEndpointConnections\":
+        [],\n    \"publicNetworkAccess\": \"Enabled\",\n    \"replica\": {\n      \"role\":
+        \"Primary\"\n    },\n    \"infrastructureVersion\": \"2.0\"\n  }\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1108'
+      content-security-policy:
+      - default-src 'none'; base-uri 'self'; block-all-mixed-content; connect-src
+        'self' https://login.microsoftonline.com/33e01921-4d64-4f8c-a055-5bdaffd5e33d/oauth2/v2.0/token
+        https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47/oauth2/v2.0/token;
+        font-src 'self'; form-action 'self'; frame-src 'self' https://login.microsoftonline.com/
+        https://microsoft-onmicrosoft-com.access.mcas.ms/; img-src 'self'; script-src
+        'self'; style-src 'self'; upgrade-insecure-requests
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 15 Jul 2025 04:05:51 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      referrer-policy:
+      - same-origin
+      request-id:
+      - 49350e96-d489-4d4a-b474-fe53873cb46a
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-download-options:
+      - noopen
+      x-frame-options:
+      - SAMEORIGIN
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 008ACF77E13348FD92AAC9A790A96E7B Ref B: CO6AA3150219049 Ref C: 2025-07-15T04:05:52Z'
+      x-permitted-cross-domain-policies:
+      - none
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mongo-cluster wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --created
+      User-Agent:
+      - AZURECLI/2.75.0 azsdk-python-core/1.31.0 Python/3.12.11 (Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.31)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mongocuster000001/providers/Microsoft.DocumentDB/mongoClusters/cli000002?api-version=2024-07-01
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mongocuster000001/providers/Microsoft.DocumentDB/mongoClusters/cli000002\",\n
+        \ \"name\": \"cli000002\",\n  \"type\": \"Microsoft.DocumentDB/mongoClusters\",\n
+        \ \"tags\": {},\n  \"location\": \"canadacentral\",\n  \"systemData\": {\n
+        \   \"createdAt\": \"2025-07-15T04:04:49.7728606Z\",\n    \"createdBy\": \"test@example.com\",\n
+        \   \"createdByType\": \"User\",\n    \"lastModifiedAt\": \"2025-07-15T04:04:49.7728606Z\",\n
+        \   \"lastModifiedBy\": \"test@example.com\",\n    \"lastModifiedByType\":
+        \"User\"\n  },\n  \"properties\": {\n    \"provisioningState\": \"InProgress\",\n
+        \   \"clusterStatus\": \"Provisioning\",\n    \"administrator\": {\n      \"userName\":
+        \"mongoAdmin\"\n    },\n    \"serverVersion\": \"8.0\",\n    \"compute\":
+        {\n      \"tier\": \"M30\"\n    },\n    \"storage\": {\n      \"sizeGb\":
+        32\n    },\n    \"sharding\": {\n      \"shardCount\": 1\n    },\n    \"highAvailability\":
+        {\n      \"targetMode\": \"Disabled\"\n    },\n    \"backup\": {},\n    \"privateEndpointConnections\":
+        [],\n    \"publicNetworkAccess\": \"Enabled\",\n    \"replica\": {\n      \"role\":
+        \"Primary\"\n    },\n    \"infrastructureVersion\": \"2.0\"\n  }\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1108'
+      content-security-policy:
+      - default-src 'none'; base-uri 'self'; block-all-mixed-content; connect-src
+        'self' https://login.microsoftonline.com/33e01921-4d64-4f8c-a055-5bdaffd5e33d/oauth2/v2.0/token
+        https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47/oauth2/v2.0/token;
+        font-src 'self'; form-action 'self'; frame-src 'self' https://login.microsoftonline.com/
+        https://microsoft-onmicrosoft-com.access.mcas.ms/; img-src 'self'; script-src
+        'self'; style-src 'self'; upgrade-insecure-requests
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 15 Jul 2025 04:06:22 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      referrer-policy:
+      - same-origin
+      request-id:
+      - f74ac053-6f52-4533-ba4f-e4e66b7ac1b5
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-download-options:
+      - noopen
+      x-frame-options:
+      - SAMEORIGIN
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: DE46567DC15D42DB83A5832D80637EF7 Ref B: CO6AA3150217025 Ref C: 2025-07-15T04:06:22Z'
+      x-permitted-cross-domain-policies:
+      - none
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mongo-cluster wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --created
+      User-Agent:
+      - AZURECLI/2.75.0 azsdk-python-core/1.31.0 Python/3.12.11 (Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.31)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mongocuster000001/providers/Microsoft.DocumentDB/mongoClusters/cli000002?api-version=2024-07-01
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mongocuster000001/providers/Microsoft.DocumentDB/mongoClusters/cli000002\",\n
+        \ \"name\": \"cli000002\",\n  \"type\": \"Microsoft.DocumentDB/mongoClusters\",\n
+        \ \"tags\": {},\n  \"location\": \"canadacentral\",\n  \"systemData\": {\n
+        \   \"createdAt\": \"2025-07-15T04:04:49.7728606Z\",\n    \"createdBy\": \"test@example.com\",\n
+        \   \"createdByType\": \"User\",\n    \"lastModifiedAt\": \"2025-07-15T04:04:49.7728606Z\",\n
+        \   \"lastModifiedBy\": \"test@example.com\",\n    \"lastModifiedByType\":
+        \"User\"\n  },\n  \"properties\": {\n    \"provisioningState\": \"InProgress\",\n
+        \   \"clusterStatus\": \"Provisioning\",\n    \"administrator\": {\n      \"userName\":
+        \"mongoAdmin\"\n    },\n    \"serverVersion\": \"8.0\",\n    \"compute\":
+        {\n      \"tier\": \"M30\"\n    },\n    \"storage\": {\n      \"sizeGb\":
+        32\n    },\n    \"sharding\": {\n      \"shardCount\": 1\n    },\n    \"highAvailability\":
+        {\n      \"targetMode\": \"Disabled\"\n    },\n    \"backup\": {},\n    \"privateEndpointConnections\":
+        [],\n    \"publicNetworkAccess\": \"Enabled\",\n    \"replica\": {\n      \"role\":
+        \"Primary\"\n    },\n    \"infrastructureVersion\": \"2.0\"\n  }\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1108'
+      content-security-policy:
+      - default-src 'none'; base-uri 'self'; block-all-mixed-content; connect-src
+        'self' https://login.microsoftonline.com/33e01921-4d64-4f8c-a055-5bdaffd5e33d/oauth2/v2.0/token
+        https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47/oauth2/v2.0/token;
+        font-src 'self'; form-action 'self'; frame-src 'self' https://login.microsoftonline.com/
+        https://microsoft-onmicrosoft-com.access.mcas.ms/; img-src 'self'; script-src
+        'self'; style-src 'self'; upgrade-insecure-requests
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 15 Jul 2025 04:06:53 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      referrer-policy:
+      - same-origin
+      request-id:
+      - b466338a-d2a2-43a7-a71c-0d3fba081a49
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-download-options:
+      - noopen
+      x-frame-options:
+      - SAMEORIGIN
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 9F820C3CC4564AEAA0747D5B494E1A23 Ref B: CO6AA3150217047 Ref C: 2025-07-15T04:06:53Z'
+      x-permitted-cross-domain-policies:
+      - none
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mongo-cluster wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --created
+      User-Agent:
+      - AZURECLI/2.75.0 azsdk-python-core/1.31.0 Python/3.12.11 (Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.31)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mongocuster000001/providers/Microsoft.DocumentDB/mongoClusters/cli000002?api-version=2024-07-01
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mongocuster000001/providers/Microsoft.DocumentDB/mongoClusters/cli000002\",\n
+        \ \"name\": \"cli000002\",\n  \"type\": \"Microsoft.DocumentDB/mongoClusters\",\n
+        \ \"tags\": {},\n  \"location\": \"canadacentral\",\n  \"systemData\": {\n
+        \   \"createdAt\": \"2025-07-15T04:04:49.7728606Z\",\n    \"createdBy\": \"test@example.com\",\n
+        \   \"createdByType\": \"User\",\n    \"lastModifiedAt\": \"2025-07-15T04:04:49.7728606Z\",\n
+        \   \"lastModifiedBy\": \"test@example.com\",\n    \"lastModifiedByType\":
+        \"User\"\n  },\n  \"properties\": {\n    \"provisioningState\": \"InProgress\",\n
+        \   \"clusterStatus\": \"Provisioning\",\n    \"administrator\": {\n      \"userName\":
+        \"mongoAdmin\"\n    },\n    \"serverVersion\": \"8.0\",\n    \"compute\":
+        {\n      \"tier\": \"M30\"\n    },\n    \"storage\": {\n      \"sizeGb\":
+        32\n    },\n    \"sharding\": {\n      \"shardCount\": 1\n    },\n    \"highAvailability\":
+        {\n      \"targetMode\": \"Disabled\"\n    },\n    \"backup\": {},\n    \"privateEndpointConnections\":
+        [],\n    \"publicNetworkAccess\": \"Enabled\",\n    \"replica\": {\n      \"role\":
+        \"Primary\"\n    },\n    \"infrastructureVersion\": \"2.0\"\n  }\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1108'
+      content-security-policy:
+      - default-src 'none'; base-uri 'self'; block-all-mixed-content; connect-src
+        'self' https://login.microsoftonline.com/33e01921-4d64-4f8c-a055-5bdaffd5e33d/oauth2/v2.0/token
+        https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47/oauth2/v2.0/token;
+        font-src 'self'; form-action 'self'; frame-src 'self' https://login.microsoftonline.com/
+        https://microsoft-onmicrosoft-com.access.mcas.ms/; img-src 'self'; script-src
+        'self'; style-src 'self'; upgrade-insecure-requests
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 15 Jul 2025 04:07:24 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      referrer-policy:
+      - same-origin
+      request-id:
+      - ec18e1f9-d68f-439e-b896-61d2ceed77b2
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-download-options:
+      - noopen
+      x-frame-options:
+      - SAMEORIGIN
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: ACB321742F554126B2170EA1B2B61737 Ref B: MWH011020809023 Ref C: 2025-07-15T04:07:24Z'
+      x-permitted-cross-domain-policies:
+      - none
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mongo-cluster wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --created
+      User-Agent:
+      - AZURECLI/2.75.0 azsdk-python-core/1.31.0 Python/3.12.11 (Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.31)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mongocuster000001/providers/Microsoft.DocumentDB/mongoClusters/cli000002?api-version=2024-07-01
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mongocuster000001/providers/Microsoft.DocumentDB/mongoClusters/cli000002\",\n
+        \ \"name\": \"cli000002\",\n  \"type\": \"Microsoft.DocumentDB/mongoClusters\",\n
+        \ \"tags\": {},\n  \"location\": \"canadacentral\",\n  \"systemData\": {\n
+        \   \"createdAt\": \"2025-07-15T04:04:49.7728606Z\",\n    \"createdBy\": \"test@example.com\",\n
+        \   \"createdByType\": \"User\",\n    \"lastModifiedAt\": \"2025-07-15T04:04:49.7728606Z\",\n
+        \   \"lastModifiedBy\": \"test@example.com\",\n    \"lastModifiedByType\":
+        \"User\"\n  },\n  \"properties\": {\n    \"provisioningState\": \"InProgress\",\n
+        \   \"clusterStatus\": \"Provisioning\",\n    \"administrator\": {\n      \"userName\":
+        \"mongoAdmin\"\n    },\n    \"serverVersion\": \"8.0\",\n    \"compute\":
+        {\n      \"tier\": \"M30\"\n    },\n    \"storage\": {\n      \"sizeGb\":
+        32\n    },\n    \"sharding\": {\n      \"shardCount\": 1\n    },\n    \"highAvailability\":
+        {\n      \"targetMode\": \"Disabled\"\n    },\n    \"backup\": {},\n    \"privateEndpointConnections\":
+        [],\n    \"publicNetworkAccess\": \"Enabled\",\n    \"replica\": {\n      \"role\":
+        \"Primary\"\n    },\n    \"infrastructureVersion\": \"2.0\"\n  }\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1108'
+      content-security-policy:
+      - default-src 'none'; base-uri 'self'; block-all-mixed-content; connect-src
+        'self' https://login.microsoftonline.com/33e01921-4d64-4f8c-a055-5bdaffd5e33d/oauth2/v2.0/token
+        https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47/oauth2/v2.0/token;
+        font-src 'self'; form-action 'self'; frame-src 'self' https://login.microsoftonline.com/
+        https://microsoft-onmicrosoft-com.access.mcas.ms/; img-src 'self'; script-src
+        'self'; style-src 'self'; upgrade-insecure-requests
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 15 Jul 2025 04:07:54 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      referrer-policy:
+      - same-origin
+      request-id:
+      - 20a7eb66-3799-4b80-8178-9a0ab233acee
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-download-options:
+      - noopen
+      x-frame-options:
+      - SAMEORIGIN
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 6ACBBA9DFA07460890AA16474DC7F01B Ref B: MWH011020807025 Ref C: 2025-07-15T04:07:54Z'
+      x-permitted-cross-domain-policies:
+      - none
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mongo-cluster wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --created
+      User-Agent:
+      - AZURECLI/2.75.0 azsdk-python-core/1.31.0 Python/3.12.11 (Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.31)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mongocuster000001/providers/Microsoft.DocumentDB/mongoClusters/cli000002?api-version=2024-07-01
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mongocuster000001/providers/Microsoft.DocumentDB/mongoClusters/cli000002\",\n
+        \ \"name\": \"cli000002\",\n  \"type\": \"Microsoft.DocumentDB/mongoClusters\",\n
+        \ \"tags\": {},\n  \"location\": \"canadacentral\",\n  \"systemData\": {\n
+        \   \"createdAt\": \"2025-07-15T04:04:49.7728606Z\",\n    \"createdBy\": \"test@example.com\",\n
+        \   \"createdByType\": \"User\",\n    \"lastModifiedAt\": \"2025-07-15T04:04:49.7728606Z\",\n
+        \   \"lastModifiedBy\": \"test@example.com\",\n    \"lastModifiedByType\":
+        \"User\"\n  },\n  \"properties\": {\n    \"provisioningState\": \"InProgress\",\n
+        \   \"clusterStatus\": \"Provisioning\",\n    \"administrator\": {\n      \"userName\":
+        \"mongoAdmin\"\n    },\n    \"serverVersion\": \"8.0\",\n    \"compute\":
+        {\n      \"tier\": \"M30\"\n    },\n    \"storage\": {\n      \"sizeGb\":
+        32\n    },\n    \"sharding\": {\n      \"shardCount\": 1\n    },\n    \"highAvailability\":
+        {\n      \"targetMode\": \"Disabled\"\n    },\n    \"backup\": {},\n    \"privateEndpointConnections\":
+        [],\n    \"publicNetworkAccess\": \"Enabled\",\n    \"replica\": {\n      \"role\":
+        \"Primary\"\n    },\n    \"infrastructureVersion\": \"2.0\"\n  }\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1108'
+      content-security-policy:
+      - default-src 'none'; base-uri 'self'; block-all-mixed-content; connect-src
+        'self' https://login.microsoftonline.com/33e01921-4d64-4f8c-a055-5bdaffd5e33d/oauth2/v2.0/token
+        https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47/oauth2/v2.0/token;
+        font-src 'self'; form-action 'self'; frame-src 'self' https://login.microsoftonline.com/
+        https://microsoft-onmicrosoft-com.access.mcas.ms/; img-src 'self'; script-src
+        'self'; style-src 'self'; upgrade-insecure-requests
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 15 Jul 2025 04:08:25 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      referrer-policy:
+      - same-origin
+      request-id:
+      - fe0cfc4b-afc9-4c19-a829-bbff570ad818
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-download-options:
+      - noopen
+      x-frame-options:
+      - SAMEORIGIN
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: C49381F9B34B493087ABE16A510D4728 Ref B: MWH011020809025 Ref C: 2025-07-15T04:08:25Z'
+      x-permitted-cross-domain-policies:
+      - none
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mongo-cluster wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --created
+      User-Agent:
+      - AZURECLI/2.75.0 azsdk-python-core/1.31.0 Python/3.12.11 (Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.31)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mongocuster000001/providers/Microsoft.DocumentDB/mongoClusters/cli000002?api-version=2024-07-01
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mongocuster000001/providers/Microsoft.DocumentDB/mongoClusters/cli000002\",\n
+        \ \"name\": \"cli000002\",\n  \"type\": \"Microsoft.DocumentDB/mongoClusters\",\n
+        \ \"tags\": {},\n  \"location\": \"canadacentral\",\n  \"systemData\": {\n
+        \   \"createdAt\": \"2025-07-15T04:04:49.7728606Z\",\n    \"createdBy\": \"test@example.com\",\n
+        \   \"createdByType\": \"User\",\n    \"lastModifiedAt\": \"2025-07-15T04:04:49.7728606Z\",\n
+        \   \"lastModifiedBy\": \"test@example.com\",\n    \"lastModifiedByType\":
+        \"User\"\n  },\n  \"properties\": {\n    \"provisioningState\": \"InProgress\",\n
+        \   \"clusterStatus\": \"Provisioning\",\n    \"administrator\": {\n      \"userName\":
+        \"mongoAdmin\"\n    },\n    \"serverVersion\": \"8.0\",\n    \"compute\":
+        {\n      \"tier\": \"M30\"\n    },\n    \"storage\": {\n      \"sizeGb\":
+        32\n    },\n    \"sharding\": {\n      \"shardCount\": 1\n    },\n    \"highAvailability\":
+        {\n      \"targetMode\": \"Disabled\"\n    },\n    \"backup\": {},\n    \"privateEndpointConnections\":
+        [],\n    \"publicNetworkAccess\": \"Enabled\",\n    \"replica\": {\n      \"role\":
+        \"Primary\"\n    },\n    \"infrastructureVersion\": \"2.0\"\n  }\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1108'
+      content-security-policy:
+      - default-src 'none'; base-uri 'self'; block-all-mixed-content; connect-src
+        'self' https://login.microsoftonline.com/33e01921-4d64-4f8c-a055-5bdaffd5e33d/oauth2/v2.0/token
+        https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47/oauth2/v2.0/token;
+        font-src 'self'; form-action 'self'; frame-src 'self' https://login.microsoftonline.com/
+        https://microsoft-onmicrosoft-com.access.mcas.ms/; img-src 'self'; script-src
+        'self'; style-src 'self'; upgrade-insecure-requests
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 15 Jul 2025 04:08:56 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      referrer-policy:
+      - same-origin
+      request-id:
+      - 6746f5cf-8296-4f57-a93b-2e6c4412b989
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-download-options:
+      - noopen
+      x-frame-options:
+      - SAMEORIGIN
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 055BEE7B272C487AA17B53B3E8A1808D Ref B: MWH011020806040 Ref C: 2025-07-15T04:08:56Z'
+      x-permitted-cross-domain-policies:
+      - none
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mongo-cluster wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --created
+      User-Agent:
+      - AZURECLI/2.75.0 azsdk-python-core/1.31.0 Python/3.12.11 (Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.31)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mongocuster000001/providers/Microsoft.DocumentDB/mongoClusters/cli000002?api-version=2024-07-01
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mongocuster000001/providers/Microsoft.DocumentDB/mongoClusters/cli000002\",\n
+        \ \"name\": \"cli000002\",\n  \"type\": \"Microsoft.DocumentDB/mongoClusters\",\n
+        \ \"tags\": {},\n  \"location\": \"canadacentral\",\n  \"systemData\": {\n
+        \   \"createdAt\": \"2025-07-15T04:04:49.7728606Z\",\n    \"createdBy\": \"test@example.com\",\n
+        \   \"createdByType\": \"User\",\n    \"lastModifiedAt\": \"2025-07-15T04:04:49.7728606Z\",\n
+        \   \"lastModifiedBy\": \"test@example.com\",\n    \"lastModifiedByType\":
+        \"User\"\n  },\n  \"properties\": {\n    \"provisioningState\": \"InProgress\",\n
+        \   \"clusterStatus\": \"Provisioning\",\n    \"administrator\": {\n      \"userName\":
+        \"mongoAdmin\"\n    },\n    \"serverVersion\": \"8.0\",\n    \"compute\":
+        {\n      \"tier\": \"M30\"\n    },\n    \"storage\": {\n      \"sizeGb\":
+        32\n    },\n    \"sharding\": {\n      \"shardCount\": 1\n    },\n    \"highAvailability\":
+        {\n      \"targetMode\": \"Disabled\"\n    },\n    \"backup\": {},\n    \"privateEndpointConnections\":
+        [],\n    \"publicNetworkAccess\": \"Enabled\",\n    \"replica\": {\n      \"role\":
+        \"Primary\"\n    },\n    \"infrastructureVersion\": \"2.0\"\n  }\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1108'
+      content-security-policy:
+      - default-src 'none'; base-uri 'self'; block-all-mixed-content; connect-src
+        'self' https://login.microsoftonline.com/33e01921-4d64-4f8c-a055-5bdaffd5e33d/oauth2/v2.0/token
+        https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47/oauth2/v2.0/token;
+        font-src 'self'; form-action 'self'; frame-src 'self' https://login.microsoftonline.com/
+        https://microsoft-onmicrosoft-com.access.mcas.ms/; img-src 'self'; script-src
+        'self'; style-src 'self'; upgrade-insecure-requests
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 15 Jul 2025 04:09:26 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      referrer-policy:
+      - same-origin
+      request-id:
+      - 60fb3c17-e6f0-4d57-96a8-d8af74fe7860
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-download-options:
+      - noopen
+      x-frame-options:
+      - SAMEORIGIN
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 8926E24D65DE4E3DB4E3E8820A89FE2A Ref B: CO6AA3150217039 Ref C: 2025-07-15T04:09:26Z'
+      x-permitted-cross-domain-policies:
+      - none
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mongo-cluster wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --created
+      User-Agent:
+      - AZURECLI/2.75.0 azsdk-python-core/1.31.0 Python/3.12.11 (Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.31)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mongocuster000001/providers/Microsoft.DocumentDB/mongoClusters/cli000002?api-version=2024-07-01
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mongocuster000001/providers/Microsoft.DocumentDB/mongoClusters/cli000002\",\n
+        \ \"name\": \"cli000002\",\n  \"type\": \"Microsoft.DocumentDB/mongoClusters\",\n
+        \ \"tags\": {},\n  \"location\": \"canadacentral\",\n  \"systemData\": {\n
+        \   \"createdAt\": \"2025-07-15T04:04:49.7728606Z\",\n    \"createdBy\": \"test@example.com\",\n
+        \   \"createdByType\": \"User\",\n    \"lastModifiedAt\": \"2025-07-15T04:04:49.7728606Z\",\n
+        \   \"lastModifiedBy\": \"test@example.com\",\n    \"lastModifiedByType\":
+        \"User\"\n  },\n  \"properties\": {\n    \"provisioningState\": \"InProgress\",\n
+        \   \"clusterStatus\": \"Provisioning\",\n    \"administrator\": {\n      \"userName\":
+        \"mongoAdmin\"\n    },\n    \"serverVersion\": \"8.0\",\n    \"compute\":
+        {\n      \"tier\": \"M30\"\n    },\n    \"storage\": {\n      \"sizeGb\":
+        32\n    },\n    \"sharding\": {\n      \"shardCount\": 1\n    },\n    \"highAvailability\":
+        {\n      \"targetMode\": \"Disabled\"\n    },\n    \"backup\": {},\n    \"privateEndpointConnections\":
+        [],\n    \"publicNetworkAccess\": \"Enabled\",\n    \"replica\": {\n      \"role\":
+        \"Primary\"\n    },\n    \"infrastructureVersion\": \"2.0\"\n  }\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1108'
+      content-security-policy:
+      - default-src 'none'; base-uri 'self'; block-all-mixed-content; connect-src
+        'self' https://login.microsoftonline.com/33e01921-4d64-4f8c-a055-5bdaffd5e33d/oauth2/v2.0/token
+        https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47/oauth2/v2.0/token;
+        font-src 'self'; form-action 'self'; frame-src 'self' https://login.microsoftonline.com/
+        https://microsoft-onmicrosoft-com.access.mcas.ms/; img-src 'self'; script-src
+        'self'; style-src 'self'; upgrade-insecure-requests
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 15 Jul 2025 04:09:56 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      referrer-policy:
+      - same-origin
+      request-id:
+      - 7dafa7c5-dd73-45cf-bf0c-e3e24d6831c6
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-download-options:
+      - noopen
+      x-frame-options:
+      - SAMEORIGIN
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: CA7C37E65AF1441CA97E82C6F82CDB65 Ref B: MWH011020809031 Ref C: 2025-07-15T04:09:57Z'
+      x-permitted-cross-domain-policies:
+      - none
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mongo-cluster wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --created
+      User-Agent:
+      - AZURECLI/2.75.0 azsdk-python-core/1.31.0 Python/3.12.11 (Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.31)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mongocuster000001/providers/Microsoft.DocumentDB/mongoClusters/cli000002?api-version=2024-07-01
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mongocuster000001/providers/Microsoft.DocumentDB/mongoClusters/cli000002\",\n
+        \ \"name\": \"cli000002\",\n  \"type\": \"Microsoft.DocumentDB/mongoClusters\",\n
+        \ \"tags\": {},\n  \"location\": \"canadacentral\",\n  \"systemData\": {\n
+        \   \"createdAt\": \"2025-07-15T04:04:49.7728606Z\",\n    \"createdBy\": \"test@example.com\",\n
+        \   \"createdByType\": \"User\",\n    \"lastModifiedAt\": \"2025-07-15T04:04:49.7728606Z\",\n
+        \   \"lastModifiedBy\": \"test@example.com\",\n    \"lastModifiedByType\":
+        \"User\"\n  },\n  \"properties\": {\n    \"provisioningState\": \"InProgress\",\n
+        \   \"clusterStatus\": \"Provisioning\",\n    \"administrator\": {\n      \"userName\":
+        \"mongoAdmin\"\n    },\n    \"serverVersion\": \"8.0\",\n    \"compute\":
+        {\n      \"tier\": \"M30\"\n    },\n    \"storage\": {\n      \"sizeGb\":
+        32\n    },\n    \"sharding\": {\n      \"shardCount\": 1\n    },\n    \"highAvailability\":
+        {\n      \"targetMode\": \"Disabled\"\n    },\n    \"backup\": {},\n    \"privateEndpointConnections\":
+        [],\n    \"publicNetworkAccess\": \"Enabled\",\n    \"replica\": {\n      \"role\":
+        \"Primary\"\n    },\n    \"infrastructureVersion\": \"2.0\"\n  }\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1108'
+      content-security-policy:
+      - default-src 'none'; base-uri 'self'; block-all-mixed-content; connect-src
+        'self' https://login.microsoftonline.com/33e01921-4d64-4f8c-a055-5bdaffd5e33d/oauth2/v2.0/token
+        https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47/oauth2/v2.0/token;
+        font-src 'self'; form-action 'self'; frame-src 'self' https://login.microsoftonline.com/
+        https://microsoft-onmicrosoft-com.access.mcas.ms/; img-src 'self'; script-src
+        'self'; style-src 'self'; upgrade-insecure-requests
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 15 Jul 2025 04:10:27 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      referrer-policy:
+      - same-origin
+      request-id:
+      - 29c8df09-4b7f-4dff-8236-9316cf7b689c
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-download-options:
+      - noopen
+      x-frame-options:
+      - SAMEORIGIN
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 5B18EE7A63F54B5796DC74386AA09E0D Ref B: CO6AA3150219011 Ref C: 2025-07-15T04:10:27Z'
+      x-permitted-cross-domain-policies:
+      - none
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mongo-cluster wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --created
+      User-Agent:
+      - AZURECLI/2.75.0 azsdk-python-core/1.31.0 Python/3.12.11 (Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.31)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mongocuster000001/providers/Microsoft.DocumentDB/mongoClusters/cli000002?api-version=2024-07-01
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mongocuster000001/providers/Microsoft.DocumentDB/mongoClusters/cli000002\",\n
+        \ \"name\": \"cli000002\",\n  \"type\": \"Microsoft.DocumentDB/mongoClusters\",\n
+        \ \"tags\": {},\n  \"location\": \"canadacentral\",\n  \"systemData\": {\n
+        \   \"createdAt\": \"2025-07-15T04:04:49.7728606Z\",\n    \"createdBy\": \"test@example.com\",\n
+        \   \"createdByType\": \"User\",\n    \"lastModifiedAt\": \"2025-07-15T04:04:49.7728606Z\",\n
+        \   \"lastModifiedBy\": \"test@example.com\",\n    \"lastModifiedByType\":
+        \"User\"\n  },\n  \"properties\": {\n    \"provisioningState\": \"InProgress\",\n
+        \   \"clusterStatus\": \"Provisioning\",\n    \"administrator\": {\n      \"userName\":
+        \"mongoAdmin\"\n    },\n    \"serverVersion\": \"8.0\",\n    \"compute\":
+        {\n      \"tier\": \"M30\"\n    },\n    \"storage\": {\n      \"sizeGb\":
+        32\n    },\n    \"sharding\": {\n      \"shardCount\": 1\n    },\n    \"highAvailability\":
+        {\n      \"targetMode\": \"Disabled\"\n    },\n    \"backup\": {},\n    \"privateEndpointConnections\":
+        [],\n    \"publicNetworkAccess\": \"Enabled\",\n    \"replica\": {\n      \"role\":
+        \"Primary\"\n    },\n    \"infrastructureVersion\": \"2.0\"\n  }\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1108'
+      content-security-policy:
+      - default-src 'none'; base-uri 'self'; block-all-mixed-content; connect-src
+        'self' https://login.microsoftonline.com/33e01921-4d64-4f8c-a055-5bdaffd5e33d/oauth2/v2.0/token
+        https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47/oauth2/v2.0/token;
+        font-src 'self'; form-action 'self'; frame-src 'self' https://login.microsoftonline.com/
+        https://microsoft-onmicrosoft-com.access.mcas.ms/; img-src 'self'; script-src
+        'self'; style-src 'self'; upgrade-insecure-requests
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 15 Jul 2025 04:10:58 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      referrer-policy:
+      - same-origin
+      request-id:
+      - 1234b4a2-3e1c-42d8-8e8a-3d00d2dd2a86
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-download-options:
+      - noopen
+      x-frame-options:
+      - SAMEORIGIN
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 1AA83E1A2A4040D7AFE2E5E80324EDA2 Ref B: MWH011020807031 Ref C: 2025-07-15T04:10:58Z'
+      x-permitted-cross-domain-policies:
+      - none
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mongo-cluster wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --created
+      User-Agent:
+      - AZURECLI/2.75.0 azsdk-python-core/1.31.0 Python/3.12.11 (Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.31)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mongocuster000001/providers/Microsoft.DocumentDB/mongoClusters/cli000002?api-version=2024-07-01
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mongocuster000001/providers/Microsoft.DocumentDB/mongoClusters/cli000002\",\n
+        \ \"name\": \"cli000002\",\n  \"type\": \"Microsoft.DocumentDB/mongoClusters\",\n
+        \ \"tags\": {},\n  \"location\": \"canadacentral\",\n  \"systemData\": {\n
+        \   \"createdAt\": \"2025-07-15T04:04:49.7728606Z\",\n    \"createdBy\": \"test@example.com\",\n
+        \   \"createdByType\": \"User\",\n    \"lastModifiedAt\": \"2025-07-15T04:04:49.7728606Z\",\n
+        \   \"lastModifiedBy\": \"test@example.com\",\n    \"lastModifiedByType\":
+        \"User\"\n  },\n  \"properties\": {\n    \"provisioningState\": \"InProgress\",\n
+        \   \"clusterStatus\": \"Provisioning\",\n    \"administrator\": {\n      \"userName\":
+        \"mongoAdmin\"\n    },\n    \"serverVersion\": \"8.0\",\n    \"compute\":
+        {\n      \"tier\": \"M30\"\n    },\n    \"storage\": {\n      \"sizeGb\":
+        32\n    },\n    \"sharding\": {\n      \"shardCount\": 1\n    },\n    \"highAvailability\":
+        {\n      \"targetMode\": \"Disabled\"\n    },\n    \"backup\": {},\n    \"privateEndpointConnections\":
+        [],\n    \"publicNetworkAccess\": \"Enabled\",\n    \"replica\": {\n      \"role\":
+        \"Primary\"\n    },\n    \"infrastructureVersion\": \"2.0\"\n  }\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1108'
+      content-security-policy:
+      - default-src 'none'; base-uri 'self'; block-all-mixed-content; connect-src
+        'self' https://login.microsoftonline.com/33e01921-4d64-4f8c-a055-5bdaffd5e33d/oauth2/v2.0/token
+        https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47/oauth2/v2.0/token;
+        font-src 'self'; form-action 'self'; frame-src 'self' https://login.microsoftonline.com/
+        https://microsoft-onmicrosoft-com.access.mcas.ms/; img-src 'self'; script-src
+        'self'; style-src 'self'; upgrade-insecure-requests
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 15 Jul 2025 04:11:28 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      referrer-policy:
+      - same-origin
+      request-id:
+      - 51188579-d51c-4fea-8fe5-ae3a9634bc42
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-download-options:
+      - noopen
+      x-frame-options:
+      - SAMEORIGIN
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 13D1E25DBD1F4EEEBD91022C94749CBD Ref B: MWH011020808034 Ref C: 2025-07-15T04:11:28Z'
+      x-permitted-cross-domain-policies:
+      - none
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mongo-cluster wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --created
+      User-Agent:
+      - AZURECLI/2.75.0 azsdk-python-core/1.31.0 Python/3.12.11 (Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.31)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mongocuster000001/providers/Microsoft.DocumentDB/mongoClusters/cli000002?api-version=2024-07-01
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mongocuster000001/providers/Microsoft.DocumentDB/mongoClusters/cli000002\",\n
+        \ \"name\": \"cli000002\",\n  \"type\": \"Microsoft.DocumentDB/mongoClusters\",\n
+        \ \"tags\": {},\n  \"location\": \"canadacentral\",\n  \"systemData\": {\n
+        \   \"createdAt\": \"2025-07-15T04:04:49.7728606Z\",\n    \"createdBy\": \"test@example.com\",\n
+        \   \"createdByType\": \"User\",\n    \"lastModifiedAt\": \"2025-07-15T04:04:49.7728606Z\",\n
+        \   \"lastModifiedBy\": \"test@example.com\",\n    \"lastModifiedByType\":
+        \"User\"\n  },\n  \"properties\": {\n    \"provisioningState\": \"Updating\",\n
+        \   \"clusterStatus\": \"Updating\",\n    \"administrator\": {\n      \"userName\":
+        \"mongoAdmin\"\n    },\n    \"serverVersion\": \"8.0\",\n    \"compute\":
+        {\n      \"tier\": \"M30\"\n    },\n    \"storage\": {\n      \"sizeGb\":
+        32\n    },\n    \"sharding\": {\n      \"shardCount\": 1\n    },\n    \"highAvailability\":
+        {\n      \"targetMode\": \"Disabled\"\n    },\n    \"connectionString\": \"mongodb+srv://<user>:<password>@cli000002.mongocluster.cosmos.azure.com/?tls=true&authMechanism=SCRAM-SHA-256&retrywrites=false&maxIdleTimeMS=120000\",\n
+        \   \"backup\": {},\n    \"privateEndpointConnections\": [],\n    \"publicNetworkAccess\":
+        \"Enabled\",\n    \"replica\": {\n      \"role\": \"Primary\",\n      \"replicationState\":
+        \"Active\"\n    },\n    \"infrastructureVersion\": \"2.0\"\n  }\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1314'
+      content-security-policy:
+      - default-src 'none'; base-uri 'self'; block-all-mixed-content; connect-src
+        'self' https://login.microsoftonline.com/33e01921-4d64-4f8c-a055-5bdaffd5e33d/oauth2/v2.0/token
+        https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47/oauth2/v2.0/token;
+        font-src 'self'; form-action 'self'; frame-src 'self' https://login.microsoftonline.com/
+        https://microsoft-onmicrosoft-com.access.mcas.ms/; img-src 'self'; script-src
+        'self'; style-src 'self'; upgrade-insecure-requests
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 15 Jul 2025 04:11:59 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      referrer-policy:
+      - same-origin
+      request-id:
+      - 0da95e71-7c86-40e8-8b87-abb3201ec885
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-download-options:
+      - noopen
+      x-frame-options:
+      - SAMEORIGIN
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 2BC6A0E604FE4550B4BD210C981B1CAC Ref B: CO6AA3150218011 Ref C: 2025-07-15T04:11:59Z'
+      x-permitted-cross-domain-policies:
+      - none
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mongo-cluster wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --created
+      User-Agent:
+      - AZURECLI/2.75.0 azsdk-python-core/1.31.0 Python/3.12.11 (Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.31)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mongocuster000001/providers/Microsoft.DocumentDB/mongoClusters/cli000002?api-version=2024-07-01
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mongocuster000001/providers/Microsoft.DocumentDB/mongoClusters/cli000002\",\n
+        \ \"name\": \"cli000002\",\n  \"type\": \"Microsoft.DocumentDB/mongoClusters\",\n
+        \ \"tags\": {},\n  \"location\": \"canadacentral\",\n  \"systemData\": {\n
+        \   \"createdAt\": \"2025-07-15T04:04:49.7728606Z\",\n    \"createdBy\": \"test@example.com\",\n
+        \   \"createdByType\": \"User\",\n    \"lastModifiedAt\": \"2025-07-15T04:04:49.7728606Z\",\n
+        \   \"lastModifiedBy\": \"test@example.com\",\n    \"lastModifiedByType\":
+        \"User\"\n  },\n  \"properties\": {\n    \"provisioningState\": \"Updating\",\n
+        \   \"clusterStatus\": \"Updating\",\n    \"administrator\": {\n      \"userName\":
+        \"mongoAdmin\"\n    },\n    \"serverVersion\": \"8.0\",\n    \"compute\":
+        {\n      \"tier\": \"M30\"\n    },\n    \"storage\": {\n      \"sizeGb\":
+        32\n    },\n    \"sharding\": {\n      \"shardCount\": 1\n    },\n    \"highAvailability\":
+        {\n      \"targetMode\": \"Disabled\"\n    },\n    \"connectionString\": \"mongodb+srv://<user>:<password>@cli000002.mongocluster.cosmos.azure.com/?tls=true&authMechanism=SCRAM-SHA-256&retrywrites=false&maxIdleTimeMS=120000\",\n
+        \   \"backup\": {},\n    \"privateEndpointConnections\": [],\n    \"publicNetworkAccess\":
+        \"Enabled\",\n    \"replica\": {\n      \"role\": \"Primary\",\n      \"replicationState\":
+        \"Active\"\n    },\n    \"infrastructureVersion\": \"2.0\"\n  }\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1314'
+      content-security-policy:
+      - default-src 'none'; base-uri 'self'; block-all-mixed-content; connect-src
+        'self' https://login.microsoftonline.com/33e01921-4d64-4f8c-a055-5bdaffd5e33d/oauth2/v2.0/token
+        https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47/oauth2/v2.0/token;
+        font-src 'self'; form-action 'self'; frame-src 'self' https://login.microsoftonline.com/
+        https://microsoft-onmicrosoft-com.access.mcas.ms/; img-src 'self'; script-src
+        'self'; style-src 'self'; upgrade-insecure-requests
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 15 Jul 2025 04:12:30 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      referrer-policy:
+      - same-origin
+      request-id:
+      - 450b1753-3286-421e-968e-6050d5d68af4
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-download-options:
+      - noopen
+      x-frame-options:
+      - SAMEORIGIN
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: B7C862BA75264DA7903F1F3E0C927A44 Ref B: MWH011020807029 Ref C: 2025-07-15T04:12:29Z'
+      x-permitted-cross-domain-policies:
+      - none
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mongo-cluster wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --created
+      User-Agent:
+      - AZURECLI/2.75.0 azsdk-python-core/1.31.0 Python/3.12.11 (Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.31)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mongocuster000001/providers/Microsoft.DocumentDB/mongoClusters/cli000002?api-version=2024-07-01
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mongocuster000001/providers/Microsoft.DocumentDB/mongoClusters/cli000002\",\n
+        \ \"name\": \"cli000002\",\n  \"type\": \"Microsoft.DocumentDB/mongoClusters\",\n
+        \ \"tags\": {},\n  \"location\": \"canadacentral\",\n  \"systemData\": {\n
+        \   \"createdAt\": \"2025-07-15T04:04:49.7728606Z\",\n    \"createdBy\": \"test@example.com\",\n
+        \   \"createdByType\": \"User\",\n    \"lastModifiedAt\": \"2025-07-15T04:04:49.7728606Z\",\n
+        \   \"lastModifiedBy\": \"test@example.com\",\n    \"lastModifiedByType\":
+        \"User\"\n  },\n  \"properties\": {\n    \"provisioningState\": \"Updating\",\n
+        \   \"clusterStatus\": \"Updating\",\n    \"administrator\": {\n      \"userName\":
+        \"mongoAdmin\"\n    },\n    \"serverVersion\": \"8.0\",\n    \"compute\":
+        {\n      \"tier\": \"M30\"\n    },\n    \"storage\": {\n      \"sizeGb\":
+        32\n    },\n    \"sharding\": {\n      \"shardCount\": 1\n    },\n    \"highAvailability\":
+        {\n      \"targetMode\": \"Disabled\"\n    },\n    \"connectionString\": \"mongodb+srv://<user>:<password>@cli000002.mongocluster.cosmos.azure.com/?tls=true&authMechanism=SCRAM-SHA-256&retrywrites=false&maxIdleTimeMS=120000\",\n
+        \   \"backup\": {},\n    \"privateEndpointConnections\": [],\n    \"publicNetworkAccess\":
+        \"Enabled\",\n    \"replica\": {\n      \"role\": \"Primary\",\n      \"replicationState\":
+        \"Active\"\n    },\n    \"infrastructureVersion\": \"2.0\"\n  }\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1314'
+      content-security-policy:
+      - default-src 'none'; base-uri 'self'; block-all-mixed-content; connect-src
+        'self' https://login.microsoftonline.com/33e01921-4d64-4f8c-a055-5bdaffd5e33d/oauth2/v2.0/token
+        https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47/oauth2/v2.0/token;
+        font-src 'self'; form-action 'self'; frame-src 'self' https://login.microsoftonline.com/
+        https://microsoft-onmicrosoft-com.access.mcas.ms/; img-src 'self'; script-src
+        'self'; style-src 'self'; upgrade-insecure-requests
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 15 Jul 2025 04:13:00 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      referrer-policy:
+      - same-origin
+      request-id:
+      - dc26d559-67fe-4b16-9645-fb09b495e68e
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-download-options:
+      - noopen
+      x-frame-options:
+      - SAMEORIGIN
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: C56815E73380404580667959D70D41A5 Ref B: CO6AA3150219051 Ref C: 2025-07-15T04:13:00Z'
+      x-permitted-cross-domain-policies:
+      - none
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mongo-cluster wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --created
+      User-Agent:
+      - AZURECLI/2.75.0 azsdk-python-core/1.31.0 Python/3.12.11 (Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.31)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mongocuster000001/providers/Microsoft.DocumentDB/mongoClusters/cli000002?api-version=2024-07-01
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mongocuster000001/providers/Microsoft.DocumentDB/mongoClusters/cli000002\",\n
+        \ \"name\": \"cli000002\",\n  \"type\": \"Microsoft.DocumentDB/mongoClusters\",\n
+        \ \"tags\": {},\n  \"location\": \"canadacentral\",\n  \"systemData\": {\n
+        \   \"createdAt\": \"2025-07-15T04:04:49.7728606Z\",\n    \"createdBy\": \"test@example.com\",\n
+        \   \"createdByType\": \"User\",\n    \"lastModifiedAt\": \"2025-07-15T04:04:49.7728606Z\",\n
+        \   \"lastModifiedBy\": \"test@example.com\",\n    \"lastModifiedByType\":
+        \"User\"\n  },\n  \"properties\": {\n    \"provisioningState\": \"Updating\",\n
+        \   \"clusterStatus\": \"Updating\",\n    \"administrator\": {\n      \"userName\":
+        \"mongoAdmin\"\n    },\n    \"serverVersion\": \"8.0\",\n    \"compute\":
+        {\n      \"tier\": \"M30\"\n    },\n    \"storage\": {\n      \"sizeGb\":
+        32\n    },\n    \"sharding\": {\n      \"shardCount\": 1\n    },\n    \"highAvailability\":
+        {\n      \"targetMode\": \"Disabled\"\n    },\n    \"connectionString\": \"mongodb+srv://<user>:<password>@cli000002.mongocluster.cosmos.azure.com/?tls=true&authMechanism=SCRAM-SHA-256&retrywrites=false&maxIdleTimeMS=120000\",\n
+        \   \"backup\": {},\n    \"privateEndpointConnections\": [],\n    \"publicNetworkAccess\":
+        \"Enabled\",\n    \"replica\": {\n      \"role\": \"Primary\",\n      \"replicationState\":
+        \"Active\"\n    },\n    \"infrastructureVersion\": \"2.0\"\n  }\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1314'
+      content-security-policy:
+      - default-src 'none'; base-uri 'self'; block-all-mixed-content; connect-src
+        'self' https://login.microsoftonline.com/33e01921-4d64-4f8c-a055-5bdaffd5e33d/oauth2/v2.0/token
+        https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47/oauth2/v2.0/token;
+        font-src 'self'; form-action 'self'; frame-src 'self' https://login.microsoftonline.com/
+        https://microsoft-onmicrosoft-com.access.mcas.ms/; img-src 'self'; script-src
+        'self'; style-src 'self'; upgrade-insecure-requests
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 15 Jul 2025 04:13:30 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      referrer-policy:
+      - same-origin
+      request-id:
+      - 5c13ff38-86df-4fec-bbba-368a9cc457b7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-download-options:
+      - noopen
+      x-frame-options:
+      - SAMEORIGIN
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 11FBDB6017E64BA2B5BE07EFD238C6DE Ref B: MWH011020808052 Ref C: 2025-07-15T04:13:30Z'
+      x-permitted-cross-domain-policies:
+      - none
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mongo-cluster wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --created
+      User-Agent:
+      - AZURECLI/2.75.0 azsdk-python-core/1.31.0 Python/3.12.11 (Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.31)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mongocuster000001/providers/Microsoft.DocumentDB/mongoClusters/cli000002?api-version=2024-07-01
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mongocuster000001/providers/Microsoft.DocumentDB/mongoClusters/cli000002\",\n
+        \ \"name\": \"cli000002\",\n  \"type\": \"Microsoft.DocumentDB/mongoClusters\",\n
+        \ \"tags\": {},\n  \"location\": \"canadacentral\",\n  \"systemData\": {\n
+        \   \"createdAt\": \"2025-07-15T04:04:49.7728606Z\",\n    \"createdBy\": \"test@example.com\",\n
+        \   \"createdByType\": \"User\",\n    \"lastModifiedAt\": \"2025-07-15T04:04:49.7728606Z\",\n
+        \   \"lastModifiedBy\": \"test@example.com\",\n    \"lastModifiedByType\":
+        \"User\"\n  },\n  \"properties\": {\n    \"provisioningState\": \"Updating\",\n
+        \   \"clusterStatus\": \"Updating\",\n    \"administrator\": {\n      \"userName\":
+        \"mongoAdmin\"\n    },\n    \"serverVersion\": \"8.0\",\n    \"compute\":
+        {\n      \"tier\": \"M30\"\n    },\n    \"storage\": {\n      \"sizeGb\":
+        32\n    },\n    \"sharding\": {\n      \"shardCount\": 1\n    },\n    \"highAvailability\":
+        {\n      \"targetMode\": \"Disabled\"\n    },\n    \"connectionString\": \"mongodb+srv://<user>:<password>@cli000002.mongocluster.cosmos.azure.com/?tls=true&authMechanism=SCRAM-SHA-256&retrywrites=false&maxIdleTimeMS=120000\",\n
+        \   \"backup\": {},\n    \"privateEndpointConnections\": [],\n    \"publicNetworkAccess\":
+        \"Enabled\",\n    \"replica\": {\n      \"role\": \"Primary\",\n      \"replicationState\":
+        \"Active\"\n    },\n    \"infrastructureVersion\": \"2.0\"\n  }\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1314'
+      content-security-policy:
+      - default-src 'none'; base-uri 'self'; block-all-mixed-content; connect-src
+        'self' https://login.microsoftonline.com/33e01921-4d64-4f8c-a055-5bdaffd5e33d/oauth2/v2.0/token
+        https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47/oauth2/v2.0/token;
+        font-src 'self'; form-action 'self'; frame-src 'self' https://login.microsoftonline.com/
+        https://microsoft-onmicrosoft-com.access.mcas.ms/; img-src 'self'; script-src
+        'self'; style-src 'self'; upgrade-insecure-requests
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 15 Jul 2025 04:14:01 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      referrer-policy:
+      - same-origin
+      request-id:
+      - 95b21509-c667-4209-9ece-6fc927ad5244
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-download-options:
+      - noopen
+      x-frame-options:
+      - SAMEORIGIN
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 0F51010C484040F3A7F6C17AC042B1AD Ref B: CO6AA3150217047 Ref C: 2025-07-15T04:14:01Z'
+      x-permitted-cross-domain-policies:
+      - none
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mongo-cluster wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --created
+      User-Agent:
+      - AZURECLI/2.75.0 azsdk-python-core/1.31.0 Python/3.12.11 (Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.31)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mongocuster000001/providers/Microsoft.DocumentDB/mongoClusters/cli000002?api-version=2024-07-01
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mongocuster000001/providers/Microsoft.DocumentDB/mongoClusters/cli000002\",\n
+        \ \"name\": \"cli000002\",\n  \"type\": \"Microsoft.DocumentDB/mongoClusters\",\n
+        \ \"tags\": {},\n  \"location\": \"canadacentral\",\n  \"systemData\": {\n
+        \   \"createdAt\": \"2025-07-15T04:04:49.7728606Z\",\n    \"createdBy\": \"test@example.com\",\n
+        \   \"createdByType\": \"User\",\n    \"lastModifiedAt\": \"2025-07-15T04:04:49.7728606Z\",\n
+        \   \"lastModifiedBy\": \"test@example.com\",\n    \"lastModifiedByType\":
+        \"User\"\n  },\n  \"properties\": {\n    \"provisioningState\": \"Updating\",\n
+        \   \"clusterStatus\": \"Updating\",\n    \"administrator\": {\n      \"userName\":
+        \"mongoAdmin\"\n    },\n    \"serverVersion\": \"8.0\",\n    \"compute\":
+        {\n      \"tier\": \"M30\"\n    },\n    \"storage\": {\n      \"sizeGb\":
+        32\n    },\n    \"sharding\": {\n      \"shardCount\": 1\n    },\n    \"highAvailability\":
+        {\n      \"targetMode\": \"Disabled\"\n    },\n    \"connectionString\": \"mongodb+srv://<user>:<password>@cli000002.mongocluster.cosmos.azure.com/?tls=true&authMechanism=SCRAM-SHA-256&retrywrites=false&maxIdleTimeMS=120000\",\n
+        \   \"backup\": {},\n    \"privateEndpointConnections\": [],\n    \"publicNetworkAccess\":
+        \"Enabled\",\n    \"replica\": {\n      \"role\": \"Primary\",\n      \"replicationState\":
+        \"Active\"\n    },\n    \"infrastructureVersion\": \"2.0\"\n  }\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1314'
+      content-security-policy:
+      - default-src 'none'; base-uri 'self'; block-all-mixed-content; connect-src
+        'self' https://login.microsoftonline.com/33e01921-4d64-4f8c-a055-5bdaffd5e33d/oauth2/v2.0/token
+        https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47/oauth2/v2.0/token;
+        font-src 'self'; form-action 'self'; frame-src 'self' https://login.microsoftonline.com/
+        https://microsoft-onmicrosoft-com.access.mcas.ms/; img-src 'self'; script-src
+        'self'; style-src 'self'; upgrade-insecure-requests
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 15 Jul 2025 04:14:31 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      referrer-policy:
+      - same-origin
+      request-id:
+      - 2d5f0895-2929-48c5-a64e-a2fd6f172767
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-download-options:
+      - noopen
+      x-frame-options:
+      - SAMEORIGIN
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: C32A15330E10422F92F9003CB6727AD2 Ref B: CO6AA3150217011 Ref C: 2025-07-15T04:14:31Z'
+      x-permitted-cross-domain-policies:
+      - none
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mongo-cluster wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --created
+      User-Agent:
+      - AZURECLI/2.75.0 azsdk-python-core/1.31.0 Python/3.12.11 (Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.31)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mongocuster000001/providers/Microsoft.DocumentDB/mongoClusters/cli000002?api-version=2024-07-01
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mongocuster000001/providers/Microsoft.DocumentDB/mongoClusters/cli000002\",\n
+        \ \"name\": \"cli000002\",\n  \"type\": \"Microsoft.DocumentDB/mongoClusters\",\n
+        \ \"tags\": {},\n  \"location\": \"canadacentral\",\n  \"systemData\": {\n
+        \   \"createdAt\": \"2025-07-15T04:04:49.7728606Z\",\n    \"createdBy\": \"test@example.com\",\n
+        \   \"createdByType\": \"User\",\n    \"lastModifiedAt\": \"2025-07-15T04:04:49.7728606Z\",\n
+        \   \"lastModifiedBy\": \"test@example.com\",\n    \"lastModifiedByType\":
+        \"User\"\n  },\n  \"properties\": {\n    \"provisioningState\": \"Updating\",\n
+        \   \"clusterStatus\": \"Updating\",\n    \"administrator\": {\n      \"userName\":
+        \"mongoAdmin\"\n    },\n    \"serverVersion\": \"8.0\",\n    \"compute\":
+        {\n      \"tier\": \"M30\"\n    },\n    \"storage\": {\n      \"sizeGb\":
+        32\n    },\n    \"sharding\": {\n      \"shardCount\": 1\n    },\n    \"highAvailability\":
+        {\n      \"targetMode\": \"Disabled\"\n    },\n    \"connectionString\": \"mongodb+srv://<user>:<password>@cli000002.mongocluster.cosmos.azure.com/?tls=true&authMechanism=SCRAM-SHA-256&retrywrites=false&maxIdleTimeMS=120000\",\n
+        \   \"backup\": {},\n    \"privateEndpointConnections\": [],\n    \"publicNetworkAccess\":
+        \"Enabled\",\n    \"replica\": {\n      \"role\": \"Primary\",\n      \"replicationState\":
+        \"Active\"\n    },\n    \"infrastructureVersion\": \"2.0\"\n  }\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1314'
+      content-security-policy:
+      - default-src 'none'; base-uri 'self'; block-all-mixed-content; connect-src
+        'self' https://login.microsoftonline.com/33e01921-4d64-4f8c-a055-5bdaffd5e33d/oauth2/v2.0/token
+        https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47/oauth2/v2.0/token;
+        font-src 'self'; form-action 'self'; frame-src 'self' https://login.microsoftonline.com/
+        https://microsoft-onmicrosoft-com.access.mcas.ms/; img-src 'self'; script-src
+        'self'; style-src 'self'; upgrade-insecure-requests
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 15 Jul 2025 04:15:02 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      referrer-policy:
+      - same-origin
+      request-id:
+      - 70682a8b-ad49-4180-8a99-500ebb80fa1b
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-download-options:
+      - noopen
+      x-frame-options:
+      - SAMEORIGIN
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: F5BC0292D8E04C5B9397763D60E6C606 Ref B: CO6AA3150220009 Ref C: 2025-07-15T04:15:02Z'
+      x-permitted-cross-domain-policies:
+      - none
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mongo-cluster wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --created
+      User-Agent:
+      - AZURECLI/2.75.0 azsdk-python-core/1.31.0 Python/3.12.11 (Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.31)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mongocuster000001/providers/Microsoft.DocumentDB/mongoClusters/cli000002?api-version=2024-07-01
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mongocuster000001/providers/Microsoft.DocumentDB/mongoClusters/cli000002\",\n
+        \ \"name\": \"cli000002\",\n  \"type\": \"Microsoft.DocumentDB/mongoClusters\",\n
+        \ \"tags\": {},\n  \"location\": \"canadacentral\",\n  \"systemData\": {\n
+        \   \"createdAt\": \"2025-07-15T04:04:49.7728606Z\",\n    \"createdBy\": \"test@example.com\",\n
+        \   \"createdByType\": \"User\",\n    \"lastModifiedAt\": \"2025-07-15T04:04:49.7728606Z\",\n
+        \   \"lastModifiedBy\": \"test@example.com\",\n    \"lastModifiedByType\":
+        \"User\"\n  },\n  \"properties\": {\n    \"provisioningState\": \"Updating\",\n
+        \   \"clusterStatus\": \"Updating\",\n    \"administrator\": {\n      \"userName\":
+        \"mongoAdmin\"\n    },\n    \"serverVersion\": \"8.0\",\n    \"compute\":
+        {\n      \"tier\": \"M30\"\n    },\n    \"storage\": {\n      \"sizeGb\":
+        32\n    },\n    \"sharding\": {\n      \"shardCount\": 1\n    },\n    \"highAvailability\":
+        {\n      \"targetMode\": \"Disabled\"\n    },\n    \"connectionString\": \"mongodb+srv://<user>:<password>@cli000002.mongocluster.cosmos.azure.com/?tls=true&authMechanism=SCRAM-SHA-256&retrywrites=false&maxIdleTimeMS=120000\",\n
+        \   \"backup\": {},\n    \"privateEndpointConnections\": [],\n    \"publicNetworkAccess\":
+        \"Enabled\",\n    \"replica\": {\n      \"role\": \"Primary\",\n      \"replicationState\":
+        \"Active\"\n    },\n    \"infrastructureVersion\": \"2.0\"\n  }\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1314'
+      content-security-policy:
+      - default-src 'none'; base-uri 'self'; block-all-mixed-content; connect-src
+        'self' https://login.microsoftonline.com/33e01921-4d64-4f8c-a055-5bdaffd5e33d/oauth2/v2.0/token
+        https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47/oauth2/v2.0/token;
+        font-src 'self'; form-action 'self'; frame-src 'self' https://login.microsoftonline.com/
+        https://microsoft-onmicrosoft-com.access.mcas.ms/; img-src 'self'; script-src
+        'self'; style-src 'self'; upgrade-insecure-requests
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 15 Jul 2025 04:15:32 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      referrer-policy:
+      - same-origin
+      request-id:
+      - d7b60b4d-7c77-4c9c-a898-f11417dd81ed
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-download-options:
+      - noopen
+      x-frame-options:
+      - SAMEORIGIN
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 493FC7C039164251BC7FD64BBCA094E5 Ref B: MWH011020809034 Ref C: 2025-07-15T04:15:33Z'
+      x-permitted-cross-domain-policies:
+      - none
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mongo-cluster wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --created
+      User-Agent:
+      - AZURECLI/2.75.0 azsdk-python-core/1.31.0 Python/3.12.11 (Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.31)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mongocuster000001/providers/Microsoft.DocumentDB/mongoClusters/cli000002?api-version=2024-07-01
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mongocuster000001/providers/Microsoft.DocumentDB/mongoClusters/cli000002\",\n
+        \ \"name\": \"cli000002\",\n  \"type\": \"Microsoft.DocumentDB/mongoClusters\",\n
+        \ \"tags\": {},\n  \"location\": \"canadacentral\",\n  \"systemData\": {\n
+        \   \"createdAt\": \"2025-07-15T04:04:49.7728606Z\",\n    \"createdBy\": \"test@example.com\",\n
+        \   \"createdByType\": \"User\",\n    \"lastModifiedAt\": \"2025-07-15T04:04:49.7728606Z\",\n
+        \   \"lastModifiedBy\": \"test@example.com\",\n    \"lastModifiedByType\":
+        \"User\"\n  },\n  \"properties\": {\n    \"provisioningState\": \"Succeeded\",\n
+        \   \"clusterStatus\": \"Ready\",\n    \"administrator\": {\n      \"userName\":
+        \"mongoAdmin\"\n    },\n    \"serverVersion\": \"8.0\",\n    \"compute\":
+        {\n      \"tier\": \"M30\"\n    },\n    \"storage\": {\n      \"sizeGb\":
+        32\n    },\n    \"sharding\": {\n      \"shardCount\": 1\n    },\n    \"highAvailability\":
+        {\n      \"targetMode\": \"Disabled\"\n    },\n    \"connectionString\": \"mongodb+srv://<user>:<password>@cli000002.mongocluster.cosmos.azure.com/?tls=true&authMechanism=SCRAM-SHA-256&retrywrites=false&maxIdleTimeMS=120000\",\n
+        \   \"backup\": {\n      \"earliestRestoreTime\": \"2025-07-15T04:13:36Z\"\n
+        \   },\n    \"privateEndpointConnections\": [],\n    \"publicNetworkAccess\":
+        \"Enabled\",\n    \"replica\": {\n      \"role\": \"Primary\",\n      \"replicationState\":
+        \"Active\"\n    },\n    \"infrastructureVersion\": \"2.0\"\n  }\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1369'
+      content-security-policy:
+      - default-src 'none'; base-uri 'self'; block-all-mixed-content; connect-src
+        'self' https://login.microsoftonline.com/33e01921-4d64-4f8c-a055-5bdaffd5e33d/oauth2/v2.0/token
+        https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47/oauth2/v2.0/token;
+        font-src 'self'; form-action 'self'; frame-src 'self' https://login.microsoftonline.com/
+        https://microsoft-onmicrosoft-com.access.mcas.ms/; img-src 'self'; script-src
+        'self'; style-src 'self'; upgrade-insecure-requests
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 15 Jul 2025 04:16:03 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      referrer-policy:
+      - same-origin
+      request-id:
+      - 3aac477a-5616-43cb-ac35-35b4ef84c4b1
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-download-options:
+      - noopen
+      x-frame-options:
+      - SAMEORIGIN
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 8EC2241306614AE2965D99DFFFCC3140 Ref B: CO6AA3150217047 Ref C: 2025-07-15T04:16:03Z'
+      x-permitted-cross-domain-policies:
+      - none
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"name": "cli000002", "type": "Microsoft.DocumentDB/mongoClusters"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mongo-cluster check-name-availability
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '67'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -n --location
+      User-Agent:
+      - AZURECLI/2.75.0 azsdk-python-core/1.31.0 Python/3.12.11 (Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.31)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/canadacentral/checkMongoClusterNameAvailability?api-version=2024-07-01
+  response:
+    body:
+      string: "{\n  \"nameAvailable\": false,\n  \"message\": \"Cluster name 'cli000002'
+        is already in use.\",\n  \"reason\": \"AlreadyExists\"\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '117'
+      content-security-policy:
+      - default-src 'none'; base-uri 'self'; block-all-mixed-content; connect-src
+        'self' https://login.microsoftonline.com/33e01921-4d64-4f8c-a055-5bdaffd5e33d/oauth2/v2.0/token
+        https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47/oauth2/v2.0/token;
+        font-src 'self'; form-action 'self'; frame-src 'self' https://login.microsoftonline.com/
+        https://microsoft-onmicrosoft-com.access.mcas.ms/; img-src 'self'; script-src
+        'self'; style-src 'self'; upgrade-insecure-requests
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 15 Jul 2025 04:16:04 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      referrer-policy:
+      - same-origin
+      request-id:
+      - 19dc9258-c5f9-4388-b6be-713689ca55d8
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-download-options:
+      - noopen
+      x-frame-options:
+      - SAMEORIGIN
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=29823c86-e311-4434-abbe-37b7d7e6f8bf/westus2/3d7653c9-4f2b-4fc3-84fd-00ecf9039f8e
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 51E7DA266A304F74867356438727FA98 Ref B: CO6AA3150220047 Ref C: 2025-07-15T04:16:04Z'
+      x-permitted-cross-domain-policies:
+      - none
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mongo-cluster list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group
+      User-Agent:
+      - AZURECLI/2.75.0 azsdk-python-core/1.31.0 Python/3.12.11 (Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.31)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mongocuster000001/providers/Microsoft.DocumentDB/mongoClusters?api-version=2024-07-01
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mongocuster000001/providers/Microsoft.DocumentDB/mongoClusters/cli000002","name":"cli000002","type":"Microsoft.DocumentDB/mongoClusters","tags":{},"location":"canadacentral","systemData":{"createdAt":"2025-07-15T04:04:49.7728606Z","createdBy":"test@example.com","createdByType":"User","lastModifiedAt":"2025-07-15T04:04:49.7728606Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User"},"properties":{"provisioningState":"Succeeded","clusterStatus":"Ready","administrator":{"userName":"mongoAdmin"},"serverVersion":"8.0","compute":{"tier":"M30"},"storage":{"sizeGb":32},"sharding":{"shardCount":1},"highAvailability":{"targetMode":"Disabled"},"connectionString":"mongodb+srv://<user>:<password>@cli000002.mongocluster.cosmos.azure.com/?tls=true&authMechanism=SCRAM-SHA-256&retrywrites=false&maxIdleTimeMS=120000","backup":{"earliestRestoreTime":"2025-07-15T04:13:36Z"},"privateEndpointConnections":[],"publicNetworkAccess":"Enabled","replica":{"role":"Primary","replicationState":"Active"},"infrastructureVersion":"2.0"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1127'
+      content-security-policy:
+      - default-src 'none'; base-uri 'self'; block-all-mixed-content; connect-src
+        'self' https://login.microsoftonline.com/33e01921-4d64-4f8c-a055-5bdaffd5e33d/oauth2/v2.0/token
+        https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47/oauth2/v2.0/token;
+        font-src 'self'; form-action 'self'; frame-src 'self' https://login.microsoftonline.com/
+        https://microsoft-onmicrosoft-com.access.mcas.ms/; img-src 'self'; script-src
+        'self'; style-src 'self'; upgrade-insecure-requests
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 15 Jul 2025 04:16:04 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      referrer-policy:
+      - same-origin
+      request-id:
+      - 16a4a794-9fde-4f97-a71a-05ee96914443
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-download-options:
+      - noopen
+      x-frame-options:
+      - SAMEORIGIN
+      x-ms-original-request-ids:
+      - ''
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 470EEC529B2D4E97AB6ADEB57D6A18EC Ref B: MWH011020809034 Ref C: 2025-07-15T04:16:04Z'
+      x-permitted-cross-domain-policies:
+      - none
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mongo-cluster show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name
+      User-Agent:
+      - AZURECLI/2.75.0 azsdk-python-core/1.31.0 Python/3.12.11 (Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.31)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mongocuster000001/providers/Microsoft.DocumentDB/mongoClusters/cli000002?api-version=2024-07-01
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mongocuster000001/providers/Microsoft.DocumentDB/mongoClusters/cli000002\",\n
+        \ \"name\": \"cli000002\",\n  \"type\": \"Microsoft.DocumentDB/mongoClusters\",\n
+        \ \"tags\": {},\n  \"location\": \"canadacentral\",\n  \"systemData\": {\n
+        \   \"createdAt\": \"2025-07-15T04:04:49.7728606Z\",\n    \"createdBy\": \"test@example.com\",\n
+        \   \"createdByType\": \"User\",\n    \"lastModifiedAt\": \"2025-07-15T04:04:49.7728606Z\",\n
+        \   \"lastModifiedBy\": \"test@example.com\",\n    \"lastModifiedByType\":
+        \"User\"\n  },\n  \"properties\": {\n    \"provisioningState\": \"Succeeded\",\n
+        \   \"clusterStatus\": \"Ready\",\n    \"administrator\": {\n      \"userName\":
+        \"mongoAdmin\"\n    },\n    \"serverVersion\": \"8.0\",\n    \"compute\":
+        {\n      \"tier\": \"M30\"\n    },\n    \"storage\": {\n      \"sizeGb\":
+        32\n    },\n    \"sharding\": {\n      \"shardCount\": 1\n    },\n    \"highAvailability\":
+        {\n      \"targetMode\": \"Disabled\"\n    },\n    \"connectionString\": \"mongodb+srv://<user>:<password>@cli000002.mongocluster.cosmos.azure.com/?tls=true&authMechanism=SCRAM-SHA-256&retrywrites=false&maxIdleTimeMS=120000\",\n
+        \   \"backup\": {\n      \"earliestRestoreTime\": \"2025-07-15T04:13:36Z\"\n
+        \   },\n    \"privateEndpointConnections\": [],\n    \"publicNetworkAccess\":
+        \"Enabled\",\n    \"replica\": {\n      \"role\": \"Primary\",\n      \"replicationState\":
+        \"Active\"\n    },\n    \"infrastructureVersion\": \"2.0\"\n  }\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1369'
+      content-security-policy:
+      - default-src 'none'; base-uri 'self'; block-all-mixed-content; connect-src
+        'self' https://login.microsoftonline.com/33e01921-4d64-4f8c-a055-5bdaffd5e33d/oauth2/v2.0/token
+        https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47/oauth2/v2.0/token;
+        font-src 'self'; form-action 'self'; frame-src 'self' https://login.microsoftonline.com/
+        https://microsoft-onmicrosoft-com.access.mcas.ms/; img-src 'self'; script-src
+        'self'; style-src 'self'; upgrade-insecure-requests
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 15 Jul 2025 04:16:05 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      referrer-policy:
+      - same-origin
+      request-id:
+      - 842887c6-da94-4ba6-839e-77fccb1983fc
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-download-options:
+      - noopen
+      x-frame-options:
+      - SAMEORIGIN
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: F61E4E7C7670424FA673492676C2A285 Ref B: MWH011020808060 Ref C: 2025-07-15T04:16:05Z'
+      x-permitted-cross-domain-policies:
+      - none
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+version: 1

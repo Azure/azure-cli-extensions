@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command_group(
     "mongo-cluster replica",
+    is_preview=True,
 )
 class __CMDGroup(AAZCommandGroup):
     """Manage Mongo cluster replicas.
