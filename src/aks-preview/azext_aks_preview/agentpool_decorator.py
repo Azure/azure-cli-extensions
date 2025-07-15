@@ -1380,10 +1380,6 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
 
         return agentpool
 
-    def update_localdns_profile(self, agentpool: AgentPool) -> AgentPool:
-        """Update local DNS profile for the AgentPool object if provided via --localdns-config."""
-        self._ensure_agentpool(agentpool)
-        return self.set_up_localdns_profile(agentpool)
 
     def update_agentpool_profile_preview(self, agentpools: List[AgentPool] = None) -> AgentPool:
         """The overall controller used to update the preview AgentPool profile.
@@ -1421,7 +1417,7 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
         agentpool = self.update_ssh_access(agentpool)
 
         # update local DNS profile
-        agentpool = self.update_localdns_profile(agentpool)
+        agentpool = self.set_up_localdns_profile(agentpool)
 
         return agentpool
 
