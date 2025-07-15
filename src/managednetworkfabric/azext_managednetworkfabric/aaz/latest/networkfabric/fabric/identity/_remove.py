@@ -18,7 +18,7 @@ class Remove(AAZCommand):
     """Remove the user or system managed identities.
 
     :example: Remove identity on the Network Fabric
-        az networkfabric fabric identity remove--resource group example-rg --network-fabric-name example-fabric --system-assigned
+        az networkfabric fabric identity remove --resource group example-rg --network-fabric-name example-fabric --system-assigned
     """
 
     _aaz_info = {
