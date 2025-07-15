@@ -16,7 +16,6 @@ from azure.cli.core.azclierror import InvalidArgumentValueError
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core.profiles import ResourceType
 from azure.cli.core.aaz import has_value, register_command
-from azext_applicationinsights.vendored_sdks.applicationinsights.models import ErrorResponseException
 from .util import get_id_from_azure_resource, get_query_targets, get_timespan, get_linked_properties
 from .aaz.latest.monitor.app_insights.api_key import List as APIKeyList, Create as _APIKeyCreate, Delete as _APIKeyDelete
 from .aaz.latest.monitor.app_insights.component.billing import Show as _BillingShow, Update as _BillingUpdate
@@ -29,33 +28,66 @@ logger = get_logger(__name__)
 HELP_MESSAGE = " Please use `az feature register --name AIWorkspacePreview --namespace microsoft.insights` to register the feature"
 
 
-def execute_query(cmd, client, application, analytics_query, start_time=None, end_time=None, offset='1h', resource_group_name=None):
+def execute_query(cmd, application, analytics_query, start_time=None, end_time=None, offset='1h', resource_group_name=None):
     """Executes a query against the provided Application Insights application."""
-    from .vendored_sdks.applicationinsights.models import QueryBody
     targets = get_query_targets(cmd.cli_ctx, application, resource_group_name)
     if not isinstance(offset, datetime.timedelta):
         offset = isodate.parse_duration(offset)
+    timespan = get_timespan(cmd.cli_ctx, start_time, end_time, offset)
+    from .aaz.latest.monitor.app_insights import QueryExecute
+    arg_obj = {
+        "app_id": targets[0],
+        "query": analytics_query,
+        "timespan": timespan,
+        "applications": targets[1:],
+    }
     try:
-        return client.query.execute(targets[0], QueryBody(query=analytics_query, timespan=get_timespan(cmd.cli_ctx, start_time, end_time, offset), applications=targets[1:]))
-    except ErrorResponseException as ex:
+        return QueryExecute(cli_ctx=cmd.cli_ctx)(command_args=arg_obj)
+    except Exception as ex:
         if "PathNotFoundError" in ex.message:
             raise ValueError("The Application Insight is not found. Please check the app id again.")
         raise ex
 
 
-def get_events(cmd, client, application, event_type, event=None, start_time=None, end_time=None, offset='1h', resource_group_name=None):
+def get_events(cmd, application, event_type, event=None, start_time=None, end_time=None, offset='1h', resource_group_name=None):
     timespan = get_timespan(cmd.cli_ctx, start_time, end_time, offset)
+    app_id = get_id_from_azure_resource(cmd.cli_ctx, application, resource_group=resource_group_name)
+    from .aaz.latest.monitor.app_insights.events import Show
+    arg_obj = {
+        "app_id": app_id,
+        "event_type": event_type,
+        "timespan": timespan,
+    }
     if event:
-        return client.events.get(get_id_from_azure_resource(cmd.cli_ctx, application, resource_group=resource_group_name), event_type, event, timespan=timespan)
-    return client.events.get_by_type(get_id_from_azure_resource(cmd.cli_ctx, application, resource_group=resource_group_name), event_type, timespan=get_timespan(cmd.cli_ctx, start_time, end_time, offset))
+        arg_obj["event_id"] = event
+    return Show(cli_ctx=cmd.cli_ctx)(command_args=arg_obj)
 
 
-def get_metric(cmd, client, application, metric, start_time=None, end_time=None, offset='1h', interval=None, aggregation=None, segment=None, top=None, orderby=None, filter_arg=None, resource_group_name=None):
-    return client.metrics.get(get_id_from_azure_resource(cmd.cli_ctx, application, resource_group=resource_group_name), metric, timespan=get_timespan(cmd.cli_ctx, start_time, end_time, offset), interval=interval, aggregation=aggregation, segment=segment, top=top, orderby=orderby, filter_arg=filter_arg)
+def get_metric(cmd, application, metric, start_time=None, end_time=None, offset='1h', interval=None, aggregation=None, segment=None, top=None, orderby=None, filter_arg=None, resource_group_name=None):
+    timespan = get_timespan(cmd.cli_ctx, start_time, end_time, offset)
+    app_id = get_id_from_azure_resource(cmd.cli_ctx, application, resource_group=resource_group_name)
+    from .aaz.latest.monitor.app_insights.metric import Show
+    arg_obj = {
+        "app_id": app_id,
+        "metric_id": metric,
+        "timespan": timespan,
+        "interval": interval,
+        "aggregation": aggregation,
+        "segment": segment,
+        "top": top,
+        "orderby": orderby,
+        "filter": filter_arg
+    }
+    return Show(cli_ctx=cmd.cli_ctx)(command_args=arg_obj)
 
 
-def get_metrics_metadata(cmd, client, application, resource_group_name=None):
-    return client.metrics.get_metadata(get_id_from_azure_resource(cmd.cli_ctx, application, resource_group=resource_group_name))
+def get_metrics_metadata(cmd, application, resource_group_name=None):
+    app_id = get_id_from_azure_resource(cmd.cli_ctx, application, resource_group=resource_group_name)
+    from .aaz.latest.monitor.app_insights.metric import GetMetadata
+    arg_obj = {
+        "app_id": app_id,
+    }
+    return GetMetadata(cli_ctx=cmd.cli_ctx)(command_args=arg_obj)
 
 
 def create_or_update_component(cmd, client, application, resource_group_name, location, tags=None,

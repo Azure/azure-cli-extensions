@@ -13,6 +13,7 @@ from azure.cli.core.util import sdk_no_wait
 
 from azext_fleet._client_factory import CUSTOM_MGMT_FLEET
 from azext_fleet._helpers import print_or_merge_credentials
+from azext_fleet._helpers import assign_network_contributor_role_to_subnet
 from azext_fleet.constants import UPGRADE_TYPE_CONTROLPLANEONLY
 from azext_fleet.constants import UPGRADE_TYPE_FULL
 from azext_fleet.constants import UPGRADE_TYPE_NODEIMAGEONLY
@@ -108,6 +109,9 @@ def create_fleet(cmd,
         hub_profile=fleet_hub_profile,
         identity=managed_service_identity
     )
+
+    if enable_private_cluster:
+        assign_network_contributor_role_to_subnet(cmd, agent_subnet_id)
 
     return sdk_no_wait(no_wait,
                        client.begin_create_or_update,
@@ -603,3 +607,18 @@ def delete_auto_upgrade_profile(cmd,  # pylint: disable=unused-argument
                                 name,
                                 no_wait=False):
     return sdk_no_wait(no_wait, client.begin_delete, resource_group_name, fleet_name, name)
+
+
+def generate_update_run(cmd,  # pylint: disable=unused-argument
+                        client,
+                        resource_group_name,
+                        fleet_name,
+                        auto_upgrade_profile_name,
+                        no_wait=False):
+    return sdk_no_wait(
+        no_wait,
+        client.begin_generate_update_run,
+        resource_group_name,
+        fleet_name,
+        auto_upgrade_profile_name
+    )

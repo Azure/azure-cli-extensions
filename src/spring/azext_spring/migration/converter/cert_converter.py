@@ -16,7 +16,7 @@ class CertConverter(BaseConverter):
             asa_content_certs = self.wrapper_data.get_content_certificates()
             for cert in asa_content_certs:
                 logger.warning(f"Action Needed: The content certificate '{cert['name']}' cannot be exported automatically. Please export it manually.")
-            return self.wrapper_data.get_certificates()
+            return self.wrapper_data.get_keyvault_certificates()
         super().__init__(source, transform_data)
 
     def transform_data_item(self, cert):

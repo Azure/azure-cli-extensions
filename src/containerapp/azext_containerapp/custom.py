@@ -131,12 +131,12 @@ from ._ssh_utils import (SSH_DEFAULT_ENCODING, DebugWebSocketConnection, read_de
 from ._utils import (connected_env_check_cert_name_availability, get_oryx_run_image_tags, patchable_check,
                      get_pack_exec_path, is_docker_running, parse_build_env_vars, env_has_managed_identity)
 
-from ._arc_utils import (get_core_dns_deployment, get_core_dns_configmap, backup_custom_core_dns_configmap,
+from ._arc_utils import (extract_domain_from_configmap, get_core_dns_deployment, get_core_dns_configmap, backup_custom_core_dns_configmap,
                          replace_configmap, replace_deployment, delete_configmap, patch_coredns,
                          create_folder, create_sub_folder,
-                         check_kube_connection, create_kube_client)
+                         check_kube_connection, create_kube_client, restart_openshift_dns_daemonset)
 
-from ._constants import (CONTAINER_APPS_RP,
+from ._constants import (AKS_AZURE_LOCAL_DISTRO, CONTAINER_APPS_RP,
                          NAME_INVALID, NAME_ALREADY_EXISTS, ACR_IMAGE_SUFFIX, DEV_POSTGRES_IMAGE, DEV_POSTGRES_SERVICE_TYPE,
                          DEV_POSTGRES_CONTAINER_NAME, DEV_REDIS_IMAGE, DEV_REDIS_SERVICE_TYPE, DEV_REDIS_CONTAINER_NAME, DEV_KAFKA_CONTAINER_NAME,
                          DEV_KAFKA_IMAGE, DEV_KAFKA_SERVICE_TYPE, DEV_MARIADB_CONTAINER_NAME, DEV_MARIADB_IMAGE, DEV_MARIADB_SERVICE_TYPE, DEV_QDRANT_IMAGE,
@@ -144,7 +144,7 @@ from ._constants import (CONTAINER_APPS_RP,
                          DEV_MILVUS_IMAGE, DEV_MILVUS_CONTAINER_NAME, DEV_MILVUS_SERVICE_TYPE, DEV_SERVICE_LIST, CONTAINER_APPS_SDK_MODELS, BLOB_STORAGE_TOKEN_STORE_SECRET_SETTING_NAME,
                          DAPR_SUPPORTED_STATESTORE_DEV_SERVICE_LIST, DAPR_SUPPORTED_PUBSUB_DEV_SERVICE_LIST,
                          JAVA_COMPONENT_CONFIG, JAVA_COMPONENT_EUREKA, JAVA_COMPONENT_ADMIN, JAVA_COMPONENT_NACOS, JAVA_COMPONENT_GATEWAY, DOTNET_COMPONENT_RESOURCE_TYPE,
-                         CUSTOM_CORE_DNS, CORE_DNS, KUBE_SYSTEM)
+                         CUSTOM_CORE_DNS, CORE_DNS, KUBE_SYSTEM, OPENSHIFT_DISTRO, OPENSHIFT_DNS)
 
 
 logger = get_logger(__name__)
@@ -750,6 +750,79 @@ def create_managed_environment(cmd,
                                system_assigned=False,
                                user_assigned=None,
                                public_network_access=None):
+    return create_managed_environment_logic(
+        cmd=cmd,
+        name=name,
+        resource_group_name=resource_group_name,
+        logs_destination=logs_destination,
+        storage_account=storage_account,
+        logs_customer_id=logs_customer_id,
+        logs_key=logs_key,
+        location=location,
+        instrumentation_key=instrumentation_key,
+        dapr_connection_string=dapr_connection_string,
+        infrastructure_subnet_resource_id=infrastructure_subnet_resource_id,
+        infrastructure_resource_group=infrastructure_resource_group,
+        docker_bridge_cidr=docker_bridge_cidr,
+        platform_reserved_cidr=platform_reserved_cidr,
+        platform_reserved_dns_ip=platform_reserved_dns_ip,
+        internal_only=internal_only,
+        tags=tags,
+        disable_warnings=disable_warnings,
+        zone_redundant=zone_redundant,
+        hostname=hostname,
+        certificate_file=certificate_file,
+        certificate_password=certificate_password,
+        certificate_identity=certificate_identity,
+        certificate_key_vault_url=certificate_key_vault_url,
+        enable_workload_profiles=enable_workload_profiles,
+        mtls_enabled=mtls_enabled,
+        p2p_encryption_enabled=p2p_encryption_enabled,
+        enable_dedicated_gpu=enable_dedicated_gpu,
+        no_wait=no_wait,
+        logs_dynamic_json_columns=logs_dynamic_json_columns,
+        system_assigned=system_assigned,
+        user_assigned=user_assigned,
+        public_network_access=public_network_access
+    )
+
+
+def create_managed_environment_logic(cmd,
+                                     name,
+                                     resource_group_name,
+                                     logs_destination="log-analytics",
+                                     storage_account=None,
+                                     logs_customer_id=None,
+                                     logs_key=None,
+                                     location=None,
+                                     instrumentation_key=None,
+                                     dapr_connection_string=None,
+                                     infrastructure_subnet_resource_id=None,
+                                     infrastructure_resource_group=None,
+                                     docker_bridge_cidr=None,
+                                     platform_reserved_cidr=None,
+                                     platform_reserved_dns_ip=None,
+                                     internal_only=False,
+                                     tags=None,
+                                     disable_warnings=False,
+                                     zone_redundant=False,
+                                     hostname=None,
+                                     certificate_file=None,
+                                     certificate_password=None,
+                                     certificate_identity=None,
+                                     certificate_key_vault_url=None,
+                                     enable_workload_profiles=True,
+                                     mtls_enabled=None,
+                                     p2p_encryption_enabled=None,
+                                     enable_dedicated_gpu=False,
+                                     no_wait=False,
+                                     logs_dynamic_json_columns=False,
+                                     system_assigned=False,
+                                     user_assigned=None,
+                                     public_network_access=None,
+                                     workload_profile_type=None,
+                                     workload_profile_name=None,
+                                     is_env_for_azml_app=False):
     raw_parameters = locals()
     containerapp_env_create_decorator = ContainerappEnvPreviewCreateDecorator(
         cmd=cmd,
@@ -1244,16 +1317,27 @@ def containerapp_up(cmd,
                     user_assigned=None,
                     system_assigned=None,
                     custom_location_id=None,
-                    connected_cluster_id=None):
+                    connected_cluster_id=None,
+                    model_registry=None,
+                    model_name=None,
+                    model_version=None):
     from ._up_utils import (_validate_up_args, _validate_custom_location_connected_cluster_args, _reformat_image, _get_dockerfile_content, _get_ingress_and_target_port,
                             ResourceGroup, Extension, CustomLocation, ContainerAppEnvironment, ContainerApp, _get_registry_from_app,
                             _get_registry_details, _get_registry_details_without_get_creds, _create_github_action, _set_up_defaults, up_output,
-                            check_env_name_on_rg, get_token, _has_dockerfile)
+                            check_env_name_on_rg, get_token, _has_dockerfile, _validate_azml_args, _is_azml_app, _validate_azml_env_and_create_if_needed, _set_azml_env_vars)
     from azure.cli.command_modules.containerapp._github_oauth import cache_github_token
     HELLOWORLD = "mcr.microsoft.com/k8se/quickstart"
+    ACA_AZML_MCR = "mcr.microsoft.com/k8se/aca-foundry-model-host"
     dockerfile = "Dockerfile"  # for now the dockerfile name must be "Dockerfile" (until GH actions API is updated)
 
     register_provider_if_needed(cmd, CONTAINER_APPS_RP)
+    is_azureml_app = _is_azml_app(model_registry, model_name, model_version)
+    model_asset_id = None
+    model_reference_endpoint = None
+    if is_azureml_app:
+        model_asset_id, model_reference_endpoint, model_type, model_load_class, image = _validate_azml_args(cmd, ACA_AZML_MCR, image, model_registry, model_name, model_version)
+        env_vars = _set_azml_env_vars(cmd, env_vars, model_asset_id, model_reference_endpoint, model_type, model_load_class, is_azml_mcr_app=image.lower() == ACA_AZML_MCR.lower())
+
     _validate_up_args(cmd, source, artifact, build_env_vars, image, repo, registry_server)
     validate_create(registry_identity=registry_identity,
                     registry_pass=registry_pass,
@@ -1280,6 +1364,10 @@ def containerapp_up(cmd,
         ingress = "external" if not ingress else ingress
         target_port = 80 if not target_port else target_port
 
+    if image and ACA_AZML_MCR in image.lower():
+        ingress = "external" if not ingress else ingress
+        target_port = 8000 if not target_port else target_port
+
     if image:
         if ingress and not target_port and target_port != 0:
             target_port = 0
@@ -1294,7 +1382,7 @@ def containerapp_up(cmd,
     resource_group = ResourceGroup(cmd, name=resource_group_name, location=location)
     custom_location = CustomLocation(cmd, name=custom_location_id, resource_group_name=resource_group_name, connected_cluster_id=connected_cluster_id)
     extension = Extension(cmd, logs_rg=resource_group_name, logs_location=location, logs_share_key=logs_key, logs_customer_id=logs_customer_id, connected_cluster_id=connected_cluster_id)
-    env = ContainerAppEnvironment(cmd, environment, resource_group, location=location, logs_key=logs_key, logs_customer_id=logs_customer_id, custom_location_id=custom_location_id, connected_cluster_id=connected_cluster_id)
+    env = ContainerAppEnvironment(cmd, environment, resource_group, location=location, logs_key=logs_key, logs_customer_id=logs_customer_id, custom_location_id=custom_location_id, connected_cluster_id=connected_cluster_id, is_env_for_azml_app=is_azureml_app)
     app = ContainerApp(cmd, name, resource_group, None, image, env, target_port, registry_server, registry_user, registry_pass, env_vars, workload_profile_name, ingress, registry_identity=registry_identity, user_assigned=user_assigned, system_assigned=system_assigned, revisions_mode=revisions_mode, target_label=target_label)
 
     # Check and see if registry (username and passwords) or registry-identity are specified. If so, set is_registry_server_params_set to True to use those creds.
@@ -1304,6 +1392,12 @@ def containerapp_up(cmd,
     if app.check_exists():
         if app.get()["properties"]["provisioningState"] == "InProgress":
             raise ValidationError("Containerapp has an existing provisioning in progress. Please wait until provisioning has completed and rerun the command.")
+
+    if is_azureml_app:
+        env, workload_profile_name, app_cpu_limit, app_memory_limit = _validate_azml_env_and_create_if_needed(cmd, app, env, environment, resource_group, resource_group_name, workload_profile_name)
+        app.workload_profile_name = workload_profile_name
+        app.cpu = app_cpu_limit
+        app.memory = app_memory_limit
 
     resource_group.create_if_needed()
     extension.create_if_needed()
@@ -1337,7 +1431,7 @@ def containerapp_up(cmd,
     up_output(app, no_dockerfile=(source and not _has_dockerfile(source, dockerfile)))
 
 
-def containerapp_up_logic(cmd, resource_group_name, name, managed_env, image, env_vars, ingress, target_port, registry_server, registry_user, workload_profile_name, registry_pass, environment_type=None, force_single_container_updates=False, registry_identity=None, system_assigned=None, user_assigned=None, revisions_mode=None, target_label=None):
+def containerapp_up_logic(cmd, resource_group_name, name, managed_env, image, env_vars, ingress, target_port, registry_server, registry_user, workload_profile_name, registry_pass, environment_type=None, force_single_container_updates=False, registry_identity=None, system_assigned=None, user_assigned=None, revisions_mode=None, target_label=None, cpu=None, memory=None):
     containerapp_def = None
     try:
         containerapp_def = ContainerAppPreviewClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
@@ -1349,7 +1443,7 @@ def containerapp_up_logic(cmd, resource_group_name, name, managed_env, image, en
                                          registry_server=registry_server, registry_user=registry_user, registry_pass=registry_pass, workload_profile_name=workload_profile_name, container_name=name, force_single_container_updates=force_single_container_updates,
                                          registry_identity=registry_identity, system_assigned=system_assigned, user_assigned=user_assigned, revisions_mode=revisions_mode, target_label=target_label)
     return create_containerapp(cmd=cmd, name=name, resource_group_name=resource_group_name, managed_env=managed_env, image=image, env_vars=env_vars, ingress=ingress, target_port=target_port, registry_server=registry_server, registry_user=registry_user, registry_pass=registry_pass, workload_profile_name=workload_profile_name, environment_type=environment_type,
-                               registry_identity=registry_identity, system_assigned=system_assigned, user_assigned=user_assigned, revisions_mode=revisions_mode, target_label=target_label)
+                               registry_identity=registry_identity, system_assigned=system_assigned, user_assigned=user_assigned, revisions_mode=revisions_mode, target_label=target_label, cpu=cpu, memory=memory)
 
 
 def list_certificates(cmd, name, resource_group_name, location=None, certificate=None, thumbprint=None, managed_certificates_only=False, private_key_certificates_only=False):
@@ -1401,6 +1495,7 @@ def update_auth_config(cmd, resource_group_name, name, set_string=None, enabled=
                        proxy_convention=None, proxy_custom_host_header=None,
                        proxy_custom_proto_header=None, excluded_paths=None,
                        token_store=None, sas_url_secret=None, sas_url_secret_name=None,
+                       blob_container_uri=None, blob_container_identity=None,
                        yes=False):
     raw_parameters = locals()
     containerapp_auth_decorator = ContainerAppPreviewAuthDecorator(
@@ -2087,89 +2182,110 @@ def setup_core_dns(cmd, distro=None, kube_config=None, kube_context=None, skip_s
     original_folder, folder_status, error = create_sub_folder(parent_folder, "original")
     if not folder_status:
         raise ValidationError(error)
-
-    kube_client = create_kube_client(kube_config, kube_context, skip_ssl_verification)
-
-    # backup original deployment and configmap
-    logger.info("Backup existing coredns deployment and configmap")
-    original_coredns_deployment = get_core_dns_deployment(kube_client, original_folder)
-    coredns_deployment = copy.deepcopy(original_coredns_deployment)
-
-    original_coredns_configmap = get_core_dns_configmap(kube_client, original_folder)
-    coredns_configmap = copy.deepcopy(original_coredns_configmap)
-
-    volumes = coredns_deployment.spec.template.spec.volumes
-    if volumes is None:
-        raise ValidationError('Unexpected Volumes in coredns deployment, Volumes not found')
-
-    volume_mounts = coredns_deployment.spec.template.spec.containers[0].volume_mounts
-    if volume_mounts is None:
-        raise ValidationError('Unexpected Volume mounts in coredns deployment, VolumeMounts not found')
-
-    coredns_configmap_volume_set = False
-    custom_coredns_configmap_volume_set = False
-    custom_coredns_configmap_volume_mounted = False
-
-    for volume in volumes:
-        if volume.config_map is not None:
-            if volume.config_map.name == CORE_DNS:
-                for mount in volume_mounts:
-                    if mount.name is not None and mount.name == volume.name:
-                        coredns_configmap_volume_set = True
-                        break
-            elif volume.config_map.name == CUSTOM_CORE_DNS:
-                custom_coredns_configmap_volume_set = True
-                for mount in volume_mounts:
-                    if mount.name is not None and mount.name == volume.name:
-                        custom_coredns_configmap_volume_mounted = True
-                        break
-
-    if not coredns_configmap_volume_set:
-        raise ValidationError("Cannot find volume and volume mounts for core dns config map")
-
-    original_custom_core_dns_configmap = backup_custom_core_dns_configmap(kube_client, original_folder)
-
     new_filepath_with_timestamp, folder_status, error = create_sub_folder(parent_folder, "new")
     if not folder_status:
         raise ValidationError(error)
 
-    try:
-        patch_coredns(kube_client, coredns_configmap, coredns_deployment, new_filepath_with_timestamp,
-                      original_custom_core_dns_configmap is not None, not custom_coredns_configmap_volume_set, not custom_coredns_configmap_volume_mounted)
-    except Exception as e:
-        logger.error(f"Failed to setup custom coredns. {e}")
-        logger.info("Start to reverted coredns")
-        replace_succeeded = False
-        retry_count = 0
-        while not replace_succeeded and retry_count < 10:
-            logger.info(f"Retry the revert operation with retry count {retry_count}")
+    kube_client = create_kube_client(kube_config, kube_context, skip_ssl_verification)
 
-            try:
-                logger.info("Start to reverted coredns configmap")
-                latest_core_dns_configmap = get_core_dns_configmap(kube_client)
-                latest_core_dns_configmap.data = original_coredns_configmap.data
+    if distro == AKS_AZURE_LOCAL_DISTRO:
+        # backup original deployment and configmap
+        logger.info("Backup existing coredns deployment and configmap")
+        original_coredns_deployment = get_core_dns_deployment(kube_client, original_folder)
+        coredns_deployment = copy.deepcopy(original_coredns_deployment)
 
-                replace_configmap(CORE_DNS, KUBE_SYSTEM, kube_client, latest_core_dns_configmap)
-                logger.info("Reverted coredns configmap successfully")
+        original_coredns_configmap = get_core_dns_configmap(kube_client, original_folder)
+        coredns_configmap = copy.deepcopy(original_coredns_configmap)
 
-                logger.info("Start to reverted coredns deployment")
-                latest_core_dns_deployment = get_core_dns_deployment(kube_client)
-                latest_core_dns_deployment.spec.template.spec = original_coredns_deployment.spec.template.spec
+        volumes = coredns_deployment.spec.template.spec.volumes
+        if volumes is None:
+            raise ValidationError('Unexpected Volumes in coredns deployment, Volumes not found')
 
-                replace_deployment(CORE_DNS, KUBE_SYSTEM, kube_client, latest_core_dns_deployment)
-                logger.info("Reverted coredns deployment successfully")
+        volume_mounts = coredns_deployment.spec.template.spec.containers[0].volume_mounts
+        if volume_mounts is None:
+            raise ValidationError('Unexpected Volume mounts in coredns deployment, VolumeMounts not found')
 
-                if original_custom_core_dns_configmap is None:
-                    delete_configmap(CUSTOM_CORE_DNS, KUBE_SYSTEM, kube_client)
-                replace_succeeded = True
-            except Exception as revertEx:
-                logger.warning(f"Failed to revert coredns configmap or deployment {revertEx}")
-                retry_count = retry_count + 1
-                time.sleep(2)
+        coredns_configmap_volume_set = False
+        custom_coredns_configmap_volume_set = False
+        custom_coredns_configmap_volume_mounted = False
 
-        if not replace_succeeded:
-            logger.error(f"Failed to revert the deployment and configuration. "
-                         f"You can get the original coredns config and deployment from {original_folder}")
+        for volume in volumes:
+            if volume.config_map is not None:
+                if volume.config_map.name == CORE_DNS:
+                    for mount in volume_mounts:
+                        if mount.name is not None and mount.name == volume.name:
+                            coredns_configmap_volume_set = True
+                            break
+                elif volume.config_map.name == CUSTOM_CORE_DNS:
+                    custom_coredns_configmap_volume_set = True
+                    for mount in volume_mounts:
+                        if mount.name is not None and mount.name == volume.name:
+                            custom_coredns_configmap_volume_mounted = True
+                            break
+
+        if not coredns_configmap_volume_set:
+            raise ValidationError("Cannot find volume and volume mounts for core dns config map")
+
+        original_custom_core_dns_configmap = backup_custom_core_dns_configmap(kube_client, original_folder)
+
+        try:
+            patch_coredns(kube_client, coredns_configmap, coredns_deployment, new_filepath_with_timestamp,
+                          original_custom_core_dns_configmap is not None, not custom_coredns_configmap_volume_set, not custom_coredns_configmap_volume_mounted)
+        except Exception as e:
+            logger.error(f"Failed to setup custom coredns. {e}")
+            logger.info("Start to reverted coredns")
+            replace_succeeded = False
+            retry_count = 0
+            while not replace_succeeded and retry_count < 10:
+                logger.info(f"Retry the revert operation with retry count {retry_count}")
+
+                try:
+                    logger.info("Start to reverted coredns configmap")
+                    latest_core_dns_configmap = get_core_dns_configmap(kube_client)
+                    latest_core_dns_configmap.data = original_coredns_configmap.data
+
+                    replace_configmap(CORE_DNS, KUBE_SYSTEM, kube_client, latest_core_dns_configmap)
+                    logger.info("Reverted coredns configmap successfully")
+
+                    logger.info("Start to reverted coredns deployment")
+                    latest_core_dns_deployment = get_core_dns_deployment(kube_client)
+                    latest_core_dns_deployment.spec.template.spec = original_coredns_deployment.spec.template.spec
+
+                    replace_deployment(CORE_DNS, KUBE_SYSTEM, kube_client, latest_core_dns_deployment)
+                    logger.info("Reverted coredns deployment successfully")
+
+                    if original_custom_core_dns_configmap is None:
+                        delete_configmap(CUSTOM_CORE_DNS, KUBE_SYSTEM, kube_client)
+                    replace_succeeded = True
+                except Exception as revertEx:
+                    logger.warning(f"Failed to revert coredns configmap or deployment {revertEx}")
+                    retry_count = retry_count + 1
+                    time.sleep(2)
+
+            if not replace_succeeded:
+                logger.error(f"Failed to revert the deployment and configuration. "
+                             f"You can get the original coredns config and deployment from {original_folder}")
+    elif distro == OPENSHIFT_DISTRO:
+        logger.info("Setting up CoreDNS for OpenShift")
+        try:
+
+            from ._arc_utils import create_openshift_custom_coredns_resources, patch_openshift_dns_operator
+
+            create_openshift_custom_coredns_resources(kube_client, OPENSHIFT_DNS)
+
+            domain = extract_domain_from_configmap(kube_client)
+
+            # Patch the OpenShift DNS operator to use the custom CoreDNS service
+            patch_openshift_dns_operator(kube_client, domain, original_folder)
+
+            restart_openshift_dns_daemonset(kube_client)
+
+            logger.info("Successfully set up CoreDNS for OpenShift")
+        except Exception as e:
+            logger.error(f"Failed to setup CoreDNS for OpenShift. {e}")
+            raise ValidationError("Failed to setup CoreDNS for OpenShift distro")
+    else:
+        raise ValidationError(f"Unsupported distro: {distro}. Supported distros are: {AKS_AZURE_LOCAL_DISTRO}, {OPENSHIFT_DISTRO}.")
 
 
 def init_dapr_components(cmd, resource_group_name, environment_name, statestore="redis", pubsub="redis"):
@@ -3034,7 +3150,10 @@ def update_session_pool(cmd,
                         target_port=None,
                         registry_server=None,
                         registry_pass=None,
-                        registry_user=None):
+                        registry_user=None,
+                        mi_user_assigned=None,
+                        registry_identity=None,
+                        mi_system_assigned=False):
     raw_parameters = locals()
     session_pool_decorator = SessionPoolUpdateDecorator(
         cmd=cmd,
@@ -3707,5 +3826,119 @@ def remove_revision_label(cmd, resource_group_name, name, label, no_wait=False):
         r = ContainerAppPreviewClient.update(
             cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=containerapp_patch_def, no_wait=no_wait)
         return r['properties']['configuration']['ingress']['traffic']
+    except Exception as e:
+        handle_raw_exception(e)
+
+
+def show_environment_premium_ingress(cmd, name, resource_group_name):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    try:
+        env = ManagedEnvironmentPreviewClient.show(cmd, resource_group_name, name)
+        ingress_config = safe_get(env, "properties", "ingressConfiguration")
+        if not ingress_config:
+            return {"message": "No premium ingress configuration found for this environment, using default values."}
+
+        return ingress_config
+    except Exception as e:
+        handle_raw_exception(e)
+
+
+def add_environment_premium_ingress(cmd, name, resource_group_name, workload_profile_name, min_replicas, max_replicas, termination_grace_period=None, request_idle_timeout=None, header_count_limit=None, no_wait=False):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    try:
+        ManagedEnvironmentPreviewClient.show(cmd, resource_group_name, name)
+        env_patch = {}
+        ingress_config = {}
+        safe_set(env_patch, "properties", "ingressConfiguration", value=ingress_config)
+        scale = {}
+        ingress_config["scale"] = scale
+
+        # Required
+        ingress_config["workloadProfileName"] = workload_profile_name
+        scale["minReplicas"] = min_replicas
+        scale["maxReplicas"] = max_replicas
+        # Optional, remove if None
+        ingress_config["terminationGracePeriodSeconds"] = termination_grace_period
+        ingress_config["requestIdleTimeout"] = request_idle_timeout
+        ingress_config["headerCountLimit"] = header_count_limit
+
+        result = ManagedEnvironmentPreviewClient.update(
+            cmd=cmd,
+            resource_group_name=resource_group_name,
+            name=name,
+            managed_environment_envelope=env_patch,
+            no_wait=no_wait
+        )
+
+        return safe_get(result, "properties", "ingressConfiguration")
+
+    except Exception as e:
+        handle_raw_exception(e)
+
+
+def update_environment_premium_ingress(cmd, name, resource_group_name, workload_profile_name=None, min_replicas=None, max_replicas=None, termination_grace_period=None, request_idle_timeout=None, header_count_limit=None, no_wait=False):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    try:
+        ManagedEnvironmentPreviewClient.show(cmd, resource_group_name, name)
+        env_patch = {}
+        ingress_config = {}
+        scale = {}
+
+        if workload_profile_name is not None:
+            ingress_config["workloadProfileName"] = workload_profile_name
+        if min_replicas is not None:
+            ingress_config["scale"] = scale
+            scale["minReplicas"] = min_replicas
+        if max_replicas is not None:
+            ingress_config["scale"] = scale
+            scale["maxReplicas"] = max_replicas
+        if termination_grace_period is not None:
+            ingress_config["terminationGracePeriodSeconds"] = termination_grace_period
+        if request_idle_timeout is not None:
+            ingress_config["requestIdleTimeout"] = request_idle_timeout
+        if header_count_limit is not None:
+            ingress_config["headerCountLimit"] = header_count_limit
+
+        # Only add ingressConfiguration to the patch if any values were specified
+        if ingress_config:
+            safe_set(env_patch, "properties", "ingressConfiguration", value=ingress_config)
+        else:
+            return {"message": "No changes specified for premium ingress configuration"}
+
+        # Update the environment with the patched ingress configuration
+        result = ManagedEnvironmentPreviewClient.update(
+            cmd=cmd,
+            resource_group_name=resource_group_name,
+            name=name,
+            managed_environment_envelope=env_patch,
+            no_wait=no_wait
+        )
+
+        return safe_get(result, "properties", "ingressConfiguration")
+
+    except Exception as e:
+        handle_raw_exception(e)
+
+
+def remove_environment_premium_ingress(cmd, name, resource_group_name, no_wait=False):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    try:
+        ManagedEnvironmentPreviewClient.show(cmd, resource_group_name, name)
+        env_patch = {}
+        # Remove the whole section to restore defaults
+        safe_set(env_patch, "properties", "ingressConfiguration", value=None)
+
+        ManagedEnvironmentPreviewClient.update(
+            cmd=cmd,
+            resource_group_name=resource_group_name,
+            name=name,
+            managed_environment_envelope=env_patch,
+            no_wait=no_wait
+        )
+
     except Exception as e:
         handle_raw_exception(e)

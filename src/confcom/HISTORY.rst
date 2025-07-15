@@ -2,6 +2,28 @@
 
 Release History
 ===============
+
+1.2.6
+++++++
+* bugfix making it so the fields in the --input format are case-insensitive
+
+1.2.5
+++++++
+* consolidating functions for --input policygen
+* bugfix for "scenario" field in json input
+* updating tests and examples to use azurelinux
+* "name" field is required when using --input
+
+1.2.4
+++++++
+* rolling back genpolicy version for Azure Linux V2 support instead of V3
+
+1.2.3
+++++++
+* adding fragment support for VN2
+* bugfix for vn2 workload identities
+* no longer encouraged to have multiple images in the same tar file
+
 1.2.2
 ++++++
 * support for pure OCI v1 schema 2 formatted images

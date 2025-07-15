@@ -57,7 +57,7 @@ from .aaz.latest.apic import Import
 
 from azure.cli.core.aaz._arg import AAZStrArg, AAZListArg, AAZResourceIdArg
 from azure.cli.core.aaz import register_command
-from msrestazure.tools import is_valid_resource_id
+from azure.mgmt.core.tools import is_valid_resource_id
 
 
 class DefaultWorkspaceParameter:

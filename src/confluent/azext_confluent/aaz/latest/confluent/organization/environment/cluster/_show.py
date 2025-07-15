@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "confluent organization environment cluster show",
 )
 class Show(AAZCommand):
-    """Get cluster by Id
+    """Retrieve details of a specific Confluent cluster by its ID.
     """
 
     _aaz_info = {
@@ -60,8 +60,6 @@ class Show(AAZCommand):
             id_part="name",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            options=["--resource-group"],
-            help="Resource Group Name",
             required=True,
         )
         return cls._args_schema

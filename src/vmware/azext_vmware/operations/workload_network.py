@@ -35,6 +35,7 @@ class DHCPRelayCreate(_DHCPCreate):
 
         setattr(args_schema.relay, '_registered', False)
         setattr(args_schema.server, '_registered', False)
+        setattr(args_schema.no_wait, '_registered', False)
         return args_schema
 
     def pre_operations(self):
@@ -118,6 +119,7 @@ class DHCPServerCreate(_DHCPCreate):
 
         setattr(args_schema.relay, '_registered', False)
         setattr(args_schema.server, '_registered', False)
+        setattr(args_schema.no_wait, '_registered', False)
         return args_schema
 
     def pre_operations(self):

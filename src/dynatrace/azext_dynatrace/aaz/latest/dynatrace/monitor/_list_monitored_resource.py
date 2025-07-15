@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "dynatrace monitor list-monitored-resource",
 )
 class ListMonitoredResource(AAZCommand):
-    """List the resources currently being monitored by the dynatrace monitor resource
+    """List of all Azure resources currently being monitored by a Dynatrace resource.
 
     :example: List-monitored-resource
         az dynatrace monitor list-monitored-resource -g rg --monitor-name monitor

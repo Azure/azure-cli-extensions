@@ -17,7 +17,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["data-plane:microsoft.devcenter", "/projects/{}/users/{}/environments/{}", "2024-10-01-preview"],
+            ["data-plane:microsoft.devcenter", "/projects/{}/users/{}/environments/{}", "2025-04-01-preview"],
         ]
     }
 
@@ -150,7 +150,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-10-01-preview",
+                    "api-version", "2025-04-01-preview",
                     required=True,
                 ),
             }

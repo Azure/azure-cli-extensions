@@ -110,3 +110,8 @@ def load_arguments(self, _):
     with self.argument_context('fleet autoupgradeprofile wait') as c:
         c.argument('auto_upgrade_profile_name', options_list=['--auto-upgrade-profile-name', '--profile-name'],
                    help='Specify name for the auto upgrade profile.')
+
+    with self.argument_context('fleet autoupgradeprofile generate-update-run') as c:
+        c.argument('resource_group_name', options_list=['--resource-group', '-g'], help='Name of the resource group.')
+        c.argument('fleet_name', options_list=['--fleet-name', '-f'], help='Name of the fleet.')
+        c.argument('auto_upgrade_profile_name', options_list=['--auto-upgrade-profile-name', '--profile-name', '--name', '-n'], help='Name of the auto upgrade profile.')

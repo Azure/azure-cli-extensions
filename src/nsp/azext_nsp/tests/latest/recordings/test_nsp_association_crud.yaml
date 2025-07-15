@@ -1,6 +1,6 @@
 interactions:
 - request:
-    body: '{"location": "eastus2euap", "name": "TestNetworkSecurityPerimeter"}'
+    body: '{"location": "eastus2euap"}'
     headers:
       Accept:
       - application/json
@@ -11,18 +11,18 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '67'
+      - '27'
       Content-Type:
       - application/json
       ParameterSetName:
       - --name -l --resource-group
       User-Agent:
-      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.12.7 (Windows-11-10.0.22631-SP0)
+      - AZURECLI/2.70.0 azsdk-python-core/1.31.0 Python/3.12.9 (Windows-11-10.0.22631-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter?api-version=2023-08-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter?api-version=2024-07-01
   response:
     body:
-      string: '{"name":"TestNetworkSecurityPerimeter","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter","location":"eastus2euap","type":"Microsoft.Network/networkSecurityPerimeters","tags":{},"etag":"","properties":{"perimeterGuid":"4f12958e-925f-4b86-9b4f-fc494ad6c617","provisioningState":"Succeeded"}}'
+      string: '{"name":"TestNetworkSecurityPerimeter","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter","location":"eastus2euap","type":"Microsoft.Network/networkSecurityPerimeters","tags":{},"etag":"","properties":{"perimeterGuid":"53648c93-62cb-4705-bea0-c21028010d6b","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
@@ -31,7 +31,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 29 Nov 2024 07:09:20 GMT
+      - Fri, 21 Mar 2025 14:45:47 GMT
       expires:
       - '-1'
       pragma:
@@ -47,7 +47,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-writes:
       - '799'
       x-msedge-ref:
-      - 'Ref A: C90DBA337FB6429884341763A202338A Ref B: MNZ221060609051 Ref C: 2024-11-29T07:09:19Z'
+      - 'Ref A: C8ED54C0A5654228A68532362E3CB8FA Ref B: MNZ221060610053 Ref C: 2025-03-21T14:45:46Z'
     status:
       code: 200
       message: OK
@@ -65,12 +65,12 @@ interactions:
       ParameterSetName:
       - --name --perimeter-name --resource-group
       User-Agent:
-      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.12.7 (Windows-11-10.0.22631-SP0)
+      - AZURECLI/2.70.0 azsdk-python-core/1.31.0 Python/3.12.9 (Windows-11-10.0.22631-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/test_nsp_association_crud000001?api-version=2022-09-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001","name":"test_nsp_association_crud000001","type":"Microsoft.Resources/resourceGroups","location":"eastus2euap","tags":{"product":"azurecli","cause":"automation","test":"test_nsp_association_crud","date":"2024-11-29T07:09:15Z","module":"nsp","Created":"2024-11-29T07:09:17.1285269Z"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001","name":"test_nsp_association_crud000001","type":"Microsoft.Resources/resourceGroups","location":"eastus2euap","tags":{"product":"azurecli","cause":"automation","test":"test_nsp_association_crud","date":"2025-03-21T14:45:42Z","module":"nsp","Created":"2025-03-21T14:45:43.9878435Z"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
@@ -79,7 +79,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 29 Nov 2024 07:09:20 GMT
+      - Fri, 21 Mar 2025 14:45:47 GMT
       expires:
       - '-1'
       pragma:
@@ -93,12 +93,12 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: EC73C806B6F14AA4BD2706F9646EB3EC Ref B: MNZ221060619021 Ref C: 2024-11-29T07:09:21Z'
+      - 'Ref A: 11D0182584A644C18ADD461511AE5F4E Ref B: MNZ221060608039 Ref C: 2025-03-21T14:45:48Z'
     status:
       code: 200
       message: OK
 - request:
-    body: '{"location": "eastus2euap", "name": "TestNspProfile"}'
+    body: '{"location": "eastus2euap"}'
     headers:
       Accept:
       - application/json
@@ -109,15 +109,15 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '53'
+      - '27'
       Content-Type:
       - application/json
       ParameterSetName:
       - --name --perimeter-name --resource-group
       User-Agent:
-      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.12.7 (Windows-11-10.0.22631-SP0)
+      - AZURECLI/2.70.0 azsdk-python-core/1.31.0 Python/3.12.9 (Windows-11-10.0.22631-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/profiles/TestNspProfile?api-version=2023-08-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/profiles/TestNspProfile?api-version=2024-07-01
   response:
     body:
       string: '{"name":"TestNspProfile","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/profiles/TestNspProfile","type":"Microsoft.Network/networkSecurityPerimeters/profiles","properties":{"accessRulesVersion":"0","diagnosticSettingsVersion":"0"},"location":"eastus2euap"}'
@@ -129,7 +129,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 29 Nov 2024 07:09:22 GMT
+      - Fri, 21 Mar 2025 14:45:48 GMT
       expires:
       - '-1'
       pragma:
@@ -145,7 +145,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-writes:
       - '799'
       x-msedge-ref:
-      - 'Ref A: 15915E0535E04F36953F8CB236EC1451 Ref B: MNZ221060610031 Ref C: 2024-11-29T07:09:21Z'
+      - 'Ref A: 41186531D00A4795AA5852E416D06F7F Ref B: MNZ221060608033 Ref C: 2025-03-21T14:45:48Z'
     status:
       code: 200
       message: OK
@@ -163,23 +163,23 @@ interactions:
       ParameterSetName:
       - --name -l --resource-group
       User-Agent:
-      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.12.7 (Windows-11-10.0.22631-SP0)
+      - AZURECLI/2.70.0 azsdk-python-core/1.31.0 Python/3.12.9 (Windows-11-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.KeyVault/vaults/kvclinsp18?api-version=2023-02-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.KeyVault/vaults/kvclinsp19-test?api-version=2023-02-01
   response:
     body:
-      string: '{"error":{"code":"ResourceNotFound","message":"The Resource ''Microsoft.KeyVault/vaults/kvclinsp18''
+      string: '{"error":{"code":"ResourceNotFound","message":"The Resource ''Microsoft.KeyVault/vaults/kvclinsp19-test''
         under resource group ''test_nsp_association_crud000001'' was not found. For
         more details please go to https://aka.ms/ARMResourceNotFoundFix"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '239'
+      - '244'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 29 Nov 2024 07:09:22 GMT
+      - Fri, 21 Mar 2025 14:45:49 GMT
       expires:
       - '-1'
       pragma:
@@ -193,7 +193,7 @@ interactions:
       x-ms-failure-cause:
       - gateway
       x-msedge-ref:
-      - 'Ref A: 43F8AAA6728E43A8974B9CAD8D672AA9 Ref B: MNZ221060618021 Ref C: 2024-11-29T07:09:23Z'
+      - 'Ref A: 355A17F90DDA42F7B69C13495CD725A3 Ref B: MNZ221060610039 Ref C: 2025-03-21T14:45:49Z'
     status:
       code: 404
       message: Not Found
@@ -218,21 +218,21 @@ interactions:
       ParameterSetName:
       - --name -l --resource-group
       User-Agent:
-      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.12.7 (Windows-11-10.0.22631-SP0)
+      - AZURECLI/2.70.0 azsdk-python-core/1.31.0 Python/3.12.9 (Windows-11-10.0.22631-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.KeyVault/vaults/kvclinsp18?api-version=2023-02-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.KeyVault/vaults/kvclinsp19-test?api-version=2023-02-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.KeyVault/vaults/kvclinsp18","name":"kvclinsp18","type":"Microsoft.KeyVault/vaults","location":"eastus2euap","tags":{},"systemData":{"createdBy":"karthikgumpu@microsoft.com","createdByType":"User","createdAt":"2024-11-29T07:09:23.675Z","lastModifiedBy":"karthikgumpu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-11-29T07:09:23.675Z"},"properties":{"sku":{"family":"A","name":"standard"},"tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","accessPolicies":[],"enabledForDeployment":false,"enableSoftDelete":true,"softDeleteRetentionInDays":90,"enableRbacAuthorization":true,"vaultUri":"https://kvclinsp18.vault.azure.net","provisioningState":"RegisteringDns","publicNetworkAccess":"Enabled"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.KeyVault/vaults/kvclinsp19-test","name":"kvclinsp19-test","type":"Microsoft.KeyVault/vaults","location":"eastus2euap","tags":{},"systemData":{"createdBy":"karthikgumpu@microsoft.com","createdByType":"User","createdAt":"2025-03-21T14:45:50.621Z","lastModifiedBy":"karthikgumpu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-03-21T14:45:50.621Z"},"properties":{"sku":{"family":"A","name":"standard"},"tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","accessPolicies":[],"enabledForDeployment":false,"enableSoftDelete":true,"softDeleteRetentionInDays":90,"enableRbacAuthorization":true,"vaultUri":"https://kvclinsp19-test.vault.azure.net","provisioningState":"RegisteringDns","publicNetworkAccess":"Enabled"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '836'
+      - '851'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 29 Nov 2024 07:09:25 GMT
+      - Fri, 21 Mar 2025 14:45:51 GMT
       expires:
       - '-1'
       pragma:
@@ -246,13 +246,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-keyvault-service-version:
-      - 1.5.1400.0
+      - 2.2.29.0
       x-ms-ratelimit-remaining-subscription-global-writes:
       - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
       - '799'
       x-msedge-ref:
-      - 'Ref A: 9FA1EC7818EC49498956AB24D746E369 Ref B: MNZ221060618021 Ref C: 2024-11-29T07:09:23Z'
+      - 'Ref A: 7D8B880EAF5F4DDDBBBFBB0339119AE2 Ref B: MNZ221060610039 Ref C: 2025-03-21T14:45:49Z'
     status:
       code: 200
       message: OK
@@ -270,21 +270,21 @@ interactions:
       ParameterSetName:
       - --name -l --resource-group
       User-Agent:
-      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.12.7 (Windows-11-10.0.22631-SP0)
+      - AZURECLI/2.70.0 azsdk-python-core/1.31.0 Python/3.12.9 (Windows-11-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.KeyVault/vaults/kvclinsp18?api-version=2023-02-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.KeyVault/vaults/kvclinsp19-test?api-version=2023-02-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.KeyVault/vaults/kvclinsp18","name":"kvclinsp18","type":"Microsoft.KeyVault/vaults","location":"eastus2euap","tags":{},"systemData":{"createdBy":"karthikgumpu@microsoft.com","createdByType":"User","createdAt":"2024-11-29T07:09:23.675Z","lastModifiedBy":"karthikgumpu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-11-29T07:09:23.675Z"},"properties":{"sku":{"family":"A","name":"standard"},"tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","accessPolicies":[],"enabledForDeployment":false,"enableSoftDelete":true,"softDeleteRetentionInDays":90,"enableRbacAuthorization":true,"vaultUri":"https://kvclinsp18.vault.azure.net/","provisioningState":"RegisteringDns","publicNetworkAccess":"Enabled"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.KeyVault/vaults/kvclinsp19-test","name":"kvclinsp19-test","type":"Microsoft.KeyVault/vaults","location":"eastus2euap","tags":{},"systemData":{"createdBy":"karthikgumpu@microsoft.com","createdByType":"User","createdAt":"2025-03-21T14:45:50.621Z","lastModifiedBy":"karthikgumpu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-03-21T14:45:50.621Z"},"properties":{"sku":{"family":"A","name":"standard"},"tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","accessPolicies":[],"enabledForDeployment":false,"enableSoftDelete":true,"softDeleteRetentionInDays":90,"enableRbacAuthorization":true,"vaultUri":"https://kvclinsp19-test.vault.azure.net/","provisioningState":"RegisteringDns","publicNetworkAccess":"Enabled"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '837'
+      - '852'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 29 Nov 2024 07:09:25 GMT
+      - Fri, 21 Mar 2025 14:45:51 GMT
       expires:
       - '-1'
       pragma:
@@ -298,61 +298,61 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-keyvault-service-version:
-      - 1.5.1400.0
-      x-ms-ratelimit-remaining-subscription-global-reads:
-      - '16498'
-      x-msedge-ref:
-      - 'Ref A: 362385BB2C9746F492EE3F40BD35018A Ref B: MNZ221060618021 Ref C: 2024-11-29T07:09:25Z'
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - keyvault create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --name -l --resource-group
-      User-Agent:
-      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.12.7 (Windows-11-10.0.22631-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.KeyVault/vaults/kvclinsp18?api-version=2023-02-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.KeyVault/vaults/kvclinsp18","name":"kvclinsp18","type":"Microsoft.KeyVault/vaults","location":"eastus2euap","tags":{},"systemData":{"createdBy":"karthikgumpu@microsoft.com","createdByType":"User","createdAt":"2024-11-29T07:09:23.675Z","lastModifiedBy":"karthikgumpu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-11-29T07:09:23.675Z"},"properties":{"sku":{"family":"A","name":"standard"},"tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","accessPolicies":[],"enabledForDeployment":false,"enableSoftDelete":true,"softDeleteRetentionInDays":90,"enableRbacAuthorization":true,"vaultUri":"https://kvclinsp18.vault.azure.net/","provisioningState":"Succeeded","publicNetworkAccess":"Enabled"}}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '832'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Fri, 29 Nov 2024 07:09:55 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-aspnet-version:
-      - 4.0.30319
-      x-cache:
-      - CONFIG_NOCACHE
-      x-content-type-options:
-      - nosniff
-      x-ms-keyvault-service-version:
-      - 1.5.1400.0
+      - 2.2.29.0
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: 5CCD76F8105A4A01A3EEA1329D1FC0D1 Ref B: MNZ221060618021 Ref C: 2024-11-29T07:09:55Z'
+      - 'Ref A: BE020423C08C4E7497B06C9D742383FE Ref B: MNZ221060610039 Ref C: 2025-03-21T14:45:52Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - keyvault create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name -l --resource-group
+      User-Agent:
+      - AZURECLI/2.70.0 azsdk-python-core/1.31.0 Python/3.12.9 (Windows-11-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.KeyVault/vaults/kvclinsp19-test?api-version=2023-02-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.KeyVault/vaults/kvclinsp19-test","name":"kvclinsp19-test","type":"Microsoft.KeyVault/vaults","location":"eastus2euap","tags":{},"systemData":{"createdBy":"karthikgumpu@microsoft.com","createdByType":"User","createdAt":"2025-03-21T14:45:50.621Z","lastModifiedBy":"karthikgumpu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-03-21T14:45:50.621Z"},"properties":{"sku":{"family":"A","name":"standard"},"tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","accessPolicies":[],"enabledForDeployment":false,"enableSoftDelete":true,"softDeleteRetentionInDays":90,"enableRbacAuthorization":true,"vaultUri":"https://kvclinsp19-test.vault.azure.net/","provisioningState":"Succeeded","publicNetworkAccess":"Enabled"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '847'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 21 Mar 2025 14:46:21 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aspnet-version:
+      - 4.0.30319
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-keyvault-service-version:
+      - 2.2.29.0
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 95A7A5929F224D2D945B17CE730E1265 Ref B: MNZ221060610039 Ref C: 2025-03-21T14:46:22Z'
     status:
       code: 200
       message: OK
@@ -371,12 +371,12 @@ interactions:
       - --name --perimeter-name --resource-group --access-mode --private-link-resource
         --profile
       User-Agent:
-      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.12.7 (Windows-11-10.0.22631-SP0)
+      - AZURECLI/2.70.0 azsdk-python-core/1.31.0 Python/3.12.9 (Windows-11-10.0.22631-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/test_nsp_association_crud000001?api-version=2022-09-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001","name":"test_nsp_association_crud000001","type":"Microsoft.Resources/resourceGroups","location":"eastus2euap","tags":{"product":"azurecli","cause":"automation","test":"test_nsp_association_crud","date":"2024-11-29T07:09:15Z","module":"nsp","Created":"2024-11-29T07:09:17.1285269Z"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001","name":"test_nsp_association_crud000001","type":"Microsoft.Resources/resourceGroups","location":"eastus2euap","tags":{"product":"azurecli","cause":"automation","test":"test_nsp_association_crud","date":"2025-03-21T14:45:42Z","module":"nsp","Created":"2025-03-21T14:45:43.9878435Z"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
@@ -385,7 +385,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 29 Nov 2024 07:09:55 GMT
+      - Fri, 21 Mar 2025 14:46:22 GMT
       expires:
       - '-1'
       pragma:
@@ -399,13 +399,13 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: D44D6DD53DB5464B92EB7DC8951A58B6 Ref B: MNZ221060619017 Ref C: 2024-11-29T07:09:56Z'
+      - 'Ref A: 9D39B88BD16148B1AC6CB882A81D8736 Ref B: MNZ221060618009 Ref C: 2025-03-21T14:46:23Z'
     status:
       code: 200
       message: OK
 - request:
-    body: '{"location": "eastus2euap", "name": "TestNspAssociation", "properties":
-      {"accessMode": "Learning", "privateLinkResource": {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.KeyVault/vaults/kvclinsp18"},
+    body: '{"location": "eastus2euap", "properties": {"accessMode": "Learning", "privateLinkResource":
+      {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.KeyVault/vaults/kvclinsp19-test"},
       "profile": {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/profiles/TestNspProfile"}}}'
     headers:
       Accept:
@@ -417,32 +417,32 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '507'
+      - '482'
       Content-Type:
       - application/json
       ParameterSetName:
       - --name --perimeter-name --resource-group --access-mode --private-link-resource
         --profile
       User-Agent:
-      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.12.7 (Windows-11-10.0.22631-SP0)
+      - AZURECLI/2.70.0 azsdk-python-core/1.31.0 Python/3.12.9 (Windows-11-10.0.22631-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/resourceAssociations/TestNspAssociation?api-version=2023-08-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/resourceAssociations/TestNspAssociation?api-version=2024-07-01
   response:
     body:
-      string: '{"name":"TestNspAssociation","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/resourceAssociations/TestNspAssociation","type":"Microsoft.Network/networkSecurityPerimeters/resourceAssociations","properties":{"privateLinkResource":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.KeyVault/vaults/kvclinsp18"},"profile":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/profiles/TestNspProfile"},"accessMode":"Learning","provisioningState":"Succeeded","hasProvisioningIssues":"no"}}'
+      string: '{"name":"TestNspAssociation","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/resourceAssociations/TestNspAssociation","type":"Microsoft.Network/networkSecurityPerimeters/resourceAssociations","properties":{"privateLinkResource":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.KeyVault/vaults/kvclinsp19-test"},"profile":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/profiles/TestNspProfile"},"accessMode":"Learning","provisioningState":"Creating","hasProvisioningIssues":"no"}}'
     headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/networkSecurityPerimeterOperationStatuses/d9fdb754-a42f-4d16-84aa-8e223c685604?api-version=2024-07-01&t=638781651855569197&c=MIIHhzCCBm-gAwIBAgITfAaPVSYGYp0_a9-AhQAABo9VJjANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjUwMTIwMDgzNTM2WhcNMjUwNzE5MDgzNTM2WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMIvzhqGKiWeVv5oxugQQEZ8AxTC1p8Lu-WshPo0K7VS2EMvF_bHNAJa2ICbsiu5eWYlTaYcdzZL_li8T_EER2Dx5l6uj7GUfGoYbEJQ0ZdYtzLoQJYa5_x168-RsA7F1839wPdzv32z3afnCHOSeIzPiOiCJXb6FjOWJ-znbB2na5Gw4nwgaj4uxlRQGN3ElReqQ4P64xkAph5x91fRINLkaaRTDeKQ_g_suaN1BHm22myYRg2O9gZy5mhTUzDjj9HsrGu2-1-ZFNZZPMl5ltWBsQD6c_49DWpOowaX9ZSYaO9E9s45gP5YMr-ALxZrETB9ilbvFNbbXmv9Kc5LEc0CAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBQj9GN21vymIgY86pEWjNqGR6-dlDAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAF0lTrFg0dSUCXo41FDWmaQFDJKZsucTat3vhDRkbIfxlo0n4QQJOqJQSCzj8n-NvH0p0CR42nsTk2C70Vpr54i80YKfcTOm0Q0Rq9FHB-Nz4KlrymTkU6hfeD0WRhUOq6PB1WhWLF_mqSzEwmTmuQAsVGXf8Gh0psllvyF--eEaF0pSbhEuo6lPzPk3hgUSico8gbSjr4hgIVn6x0JCa1XSFgaeKHIqD8eapb-mDfYa0QAQwJ8tYxzrkJ_n5OI7g5xCiIeV5DXmSzLTGx9QvaE4Y8-jFgRKG0qMhnqf8StrJOSKMrcJlHtjT7plbWt-fXPLHNvPydmtAiA2qygRnU0&s=nHbMW9HTDwOYlPMdcJGH0YWWcCoouI6xSrEiXtK6VXgK0CGwVToeQ-y7_tsaB_K0vWggFEpnN5fwQ7MUl4PU4PpesbHc3aW8A38JVIcM8ELb4onWDnZ-DsuhhEJiyaoIGfIUdIL1SIcdDYqmlmhuhUmpO7YEVXPeDMMcsWqUiBEzYjwaUoJ_CUMDp6q0Vgw0cJVcA1eX2KaSWyI7Ho5fnmdx27JH2GQkUfD2jSp_t7pvM4gkZK1Gh9lSx0ws_v-1BWxowQvdVfFVcpXP8qSmuIkHjOjtoXBAUl39QoIywTRWqqqppgcWLgzGd-_qs0vcUAUGHQQW2wWHOxAje9ZqsA&h=8lykyn56I5d75Jn93Q9JUKA2o7YAwm6L-Owy0dZdOIQ
       cache-control:
       - no-cache
       content-length:
-      - '834'
+      - '838'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 29 Nov 2024 07:10:00 GMT
+      - Fri, 21 Mar 2025 14:46:24 GMT
       expires:
       - '-1'
-      location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/resourceAssociations/TestNspAssociation?api-version=2023-08-01-preview
       pragma:
       - no-cache
       strict-transport-security:
@@ -456,10 +456,151 @@ interactions:
       x-ms-ratelimit-remaining-subscription-writes:
       - '799'
       x-msedge-ref:
-      - 'Ref A: 1E5E53D1CCE04190B8FB7483902BE3A4 Ref B: MNZ221060608051 Ref C: 2024-11-29T07:09:56Z'
+      - 'Ref A: E5FC03EA9D354980B37FA0EC2395DC09 Ref B: MNZ221060619037 Ref C: 2025-03-21T14:46:23Z'
     status:
-      code: 201
-      message: Created
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network perimeter association create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --perimeter-name --resource-group --access-mode --private-link-resource
+        --profile
+      User-Agent:
+      - AZURECLI/2.70.0 azsdk-python-core/1.31.0 Python/3.12.9 (Windows-11-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/networkSecurityPerimeterOperationStatuses/d9fdb754-a42f-4d16-84aa-8e223c685604?api-version=2024-07-01&t=638781651855569197&c=MIIHhzCCBm-gAwIBAgITfAaPVSYGYp0_a9-AhQAABo9VJjANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjUwMTIwMDgzNTM2WhcNMjUwNzE5MDgzNTM2WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMIvzhqGKiWeVv5oxugQQEZ8AxTC1p8Lu-WshPo0K7VS2EMvF_bHNAJa2ICbsiu5eWYlTaYcdzZL_li8T_EER2Dx5l6uj7GUfGoYbEJQ0ZdYtzLoQJYa5_x168-RsA7F1839wPdzv32z3afnCHOSeIzPiOiCJXb6FjOWJ-znbB2na5Gw4nwgaj4uxlRQGN3ElReqQ4P64xkAph5x91fRINLkaaRTDeKQ_g_suaN1BHm22myYRg2O9gZy5mhTUzDjj9HsrGu2-1-ZFNZZPMl5ltWBsQD6c_49DWpOowaX9ZSYaO9E9s45gP5YMr-ALxZrETB9ilbvFNbbXmv9Kc5LEc0CAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBQj9GN21vymIgY86pEWjNqGR6-dlDAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAF0lTrFg0dSUCXo41FDWmaQFDJKZsucTat3vhDRkbIfxlo0n4QQJOqJQSCzj8n-NvH0p0CR42nsTk2C70Vpr54i80YKfcTOm0Q0Rq9FHB-Nz4KlrymTkU6hfeD0WRhUOq6PB1WhWLF_mqSzEwmTmuQAsVGXf8Gh0psllvyF--eEaF0pSbhEuo6lPzPk3hgUSico8gbSjr4hgIVn6x0JCa1XSFgaeKHIqD8eapb-mDfYa0QAQwJ8tYxzrkJ_n5OI7g5xCiIeV5DXmSzLTGx9QvaE4Y8-jFgRKG0qMhnqf8StrJOSKMrcJlHtjT7plbWt-fXPLHNvPydmtAiA2qygRnU0&s=nHbMW9HTDwOYlPMdcJGH0YWWcCoouI6xSrEiXtK6VXgK0CGwVToeQ-y7_tsaB_K0vWggFEpnN5fwQ7MUl4PU4PpesbHc3aW8A38JVIcM8ELb4onWDnZ-DsuhhEJiyaoIGfIUdIL1SIcdDYqmlmhuhUmpO7YEVXPeDMMcsWqUiBEzYjwaUoJ_CUMDp6q0Vgw0cJVcA1eX2KaSWyI7Ho5fnmdx27JH2GQkUfD2jSp_t7pvM4gkZK1Gh9lSx0ws_v-1BWxowQvdVfFVcpXP8qSmuIkHjOjtoXBAUl39QoIywTRWqqqppgcWLgzGd-_qs0vcUAUGHQQW2wWHOxAje9ZqsA&h=8lykyn56I5d75Jn93Q9JUKA2o7YAwm6L-Owy0dZdOIQ
+  response:
+    body:
+      string: '{"name":"d9fdb754-a42f-4d16-84aa-8e223c685604","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/networkSecurityPerimeterOperationStatuses/d9fdb754-a42f-4d16-84aa-8e223c685604","status":"Creating","startTime":"2025-03-21T14:46:25.4862849Z","properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/resourceAssociations/TestNspAssociation"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '550'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 21 Mar 2025 14:46:25 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: EA0F8EF80FE840E3B8A0F8F267C483BD Ref B: MNZ221060619037 Ref C: 2025-03-21T14:46:25Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network perimeter association create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --perimeter-name --resource-group --access-mode --private-link-resource
+        --profile
+      User-Agent:
+      - AZURECLI/2.70.0 azsdk-python-core/1.31.0 Python/3.12.9 (Windows-11-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/networkSecurityPerimeterOperationStatuses/d9fdb754-a42f-4d16-84aa-8e223c685604?api-version=2024-07-01&t=638781651855569197&c=MIIHhzCCBm-gAwIBAgITfAaPVSYGYp0_a9-AhQAABo9VJjANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjUwMTIwMDgzNTM2WhcNMjUwNzE5MDgzNTM2WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMIvzhqGKiWeVv5oxugQQEZ8AxTC1p8Lu-WshPo0K7VS2EMvF_bHNAJa2ICbsiu5eWYlTaYcdzZL_li8T_EER2Dx5l6uj7GUfGoYbEJQ0ZdYtzLoQJYa5_x168-RsA7F1839wPdzv32z3afnCHOSeIzPiOiCJXb6FjOWJ-znbB2na5Gw4nwgaj4uxlRQGN3ElReqQ4P64xkAph5x91fRINLkaaRTDeKQ_g_suaN1BHm22myYRg2O9gZy5mhTUzDjj9HsrGu2-1-ZFNZZPMl5ltWBsQD6c_49DWpOowaX9ZSYaO9E9s45gP5YMr-ALxZrETB9ilbvFNbbXmv9Kc5LEc0CAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBQj9GN21vymIgY86pEWjNqGR6-dlDAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAF0lTrFg0dSUCXo41FDWmaQFDJKZsucTat3vhDRkbIfxlo0n4QQJOqJQSCzj8n-NvH0p0CR42nsTk2C70Vpr54i80YKfcTOm0Q0Rq9FHB-Nz4KlrymTkU6hfeD0WRhUOq6PB1WhWLF_mqSzEwmTmuQAsVGXf8Gh0psllvyF--eEaF0pSbhEuo6lPzPk3hgUSico8gbSjr4hgIVn6x0JCa1XSFgaeKHIqD8eapb-mDfYa0QAQwJ8tYxzrkJ_n5OI7g5xCiIeV5DXmSzLTGx9QvaE4Y8-jFgRKG0qMhnqf8StrJOSKMrcJlHtjT7plbWt-fXPLHNvPydmtAiA2qygRnU0&s=nHbMW9HTDwOYlPMdcJGH0YWWcCoouI6xSrEiXtK6VXgK0CGwVToeQ-y7_tsaB_K0vWggFEpnN5fwQ7MUl4PU4PpesbHc3aW8A38JVIcM8ELb4onWDnZ-DsuhhEJiyaoIGfIUdIL1SIcdDYqmlmhuhUmpO7YEVXPeDMMcsWqUiBEzYjwaUoJ_CUMDp6q0Vgw0cJVcA1eX2KaSWyI7Ho5fnmdx27JH2GQkUfD2jSp_t7pvM4gkZK1Gh9lSx0ws_v-1BWxowQvdVfFVcpXP8qSmuIkHjOjtoXBAUl39QoIywTRWqqqppgcWLgzGd-_qs0vcUAUGHQQW2wWHOxAje9ZqsA&h=8lykyn56I5d75Jn93Q9JUKA2o7YAwm6L-Owy0dZdOIQ
+  response:
+    body:
+      string: '{"name":"d9fdb754-a42f-4d16-84aa-8e223c685604","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/networkSecurityPerimeterOperationStatuses/d9fdb754-a42f-4d16-84aa-8e223c685604","status":"Succeeded","startTime":"2025-03-21T14:46:25.4862849Z","endTime":"2025-03-21T14:46:29.8345096Z","properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/resourceAssociations/TestNspAssociation"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '592'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 21 Mar 2025 14:46:55 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 03D123DA8C4542ABBAAF4982DC44BF3D Ref B: MNZ221060619037 Ref C: 2025-03-21T14:46:55Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network perimeter association create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --perimeter-name --resource-group --access-mode --private-link-resource
+        --profile
+      User-Agent:
+      - AZURECLI/2.70.0 azsdk-python-core/1.31.0 Python/3.12.9 (Windows-11-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/resourceAssociations/TestNspAssociation?api-version=2024-07-01
+  response:
+    body:
+      string: '{"name":"TestNspAssociation","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/resourceAssociations/TestNspAssociation","type":"Microsoft.Network/networkSecurityPerimeters/resourceAssociations","properties":{"privateLinkResource":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.KeyVault/vaults/kvclinsp19-test"},"profile":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/profiles/TestNspProfile"},"accessMode":"Learning","provisioningState":"Succeeded","hasProvisioningIssues":"no"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '839'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 21 Mar 2025 14:47:03 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 6E5F2B088FC74086B610E8E3FFB73938 Ref B: MNZ221060619037 Ref C: 2025-03-21T14:46:56Z'
+    status:
+      code: 200
+      message: OK
 - request:
     body: null
     headers:
@@ -474,21 +615,21 @@ interactions:
       ParameterSetName:
       - --name --perimeter-name --resource-group
       User-Agent:
-      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.12.7 (Windows-11-10.0.22631-SP0)
+      - AZURECLI/2.70.0 azsdk-python-core/1.31.0 Python/3.12.9 (Windows-11-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/resourceAssociations/TestNspAssociation?api-version=2023-08-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/resourceAssociations/TestNspAssociation?api-version=2024-07-01
   response:
     body:
-      string: '{"name":"TestNspAssociation","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/resourceAssociations/TestNspAssociation","type":"Microsoft.Network/networkSecurityPerimeters/resourceAssociations","properties":{"privateLinkResource":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.KeyVault/vaults/kvclinsp18"},"profile":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/profiles/TestNspProfile"},"accessMode":"Learning","provisioningState":"Succeeded","hasProvisioningIssues":"no"}}'
+      string: '{"name":"TestNspAssociation","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/resourceAssociations/TestNspAssociation","type":"Microsoft.Network/networkSecurityPerimeters/resourceAssociations","properties":{"privateLinkResource":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.KeyVault/vaults/kvclinsp19-test"},"profile":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/profiles/TestNspProfile"},"accessMode":"Learning","provisioningState":"Succeeded","hasProvisioningIssues":"no"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '834'
+      - '839'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 29 Nov 2024 07:10:01 GMT
+      - Fri, 21 Mar 2025 14:47:05 GMT
       expires:
       - '-1'
       pragma:
@@ -502,7 +643,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: 6DBA044368344CB8B686E13BA33AF97F Ref B: MNZ221060619053 Ref C: 2024-11-29T07:10:00Z'
+      - 'Ref A: DD8FA1D8B8124F05AC97700538593EF0 Ref B: MNZ221060610051 Ref C: 2025-03-21T14:47:04Z'
     status:
       code: 200
       message: OK
@@ -521,12 +662,12 @@ interactions:
       - --name --perimeter-name --resource-group --access-mode --private-link-resource
         --profile
       User-Agent:
-      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.12.7 (Windows-11-10.0.22631-SP0)
+      - AZURECLI/2.70.0 azsdk-python-core/1.31.0 Python/3.12.9 (Windows-11-10.0.22631-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/test_nsp_association_crud000001?api-version=2022-09-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001","name":"test_nsp_association_crud000001","type":"Microsoft.Resources/resourceGroups","location":"eastus2euap","tags":{"product":"azurecli","cause":"automation","test":"test_nsp_association_crud","date":"2024-11-29T07:09:15Z","module":"nsp","Created":"2024-11-29T07:09:17.1285269Z"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001","name":"test_nsp_association_crud000001","type":"Microsoft.Resources/resourceGroups","location":"eastus2euap","tags":{"product":"azurecli","cause":"automation","test":"test_nsp_association_crud","date":"2025-03-21T14:45:42Z","module":"nsp","Created":"2025-03-21T14:45:43.9878435Z"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
@@ -535,7 +676,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 29 Nov 2024 07:10:01 GMT
+      - Fri, 21 Mar 2025 14:47:05 GMT
       expires:
       - '-1'
       pragma:
@@ -549,7 +690,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: C87792B5DE9E4BD1A3532E41131E7487 Ref B: MNZ221060609053 Ref C: 2024-11-29T07:10:01Z'
+      - 'Ref A: 2B95A73CD9734C158239178C6251F864 Ref B: MNZ221060610025 Ref C: 2025-03-21T14:47:05Z'
     status:
       code: 200
       message: OK
@@ -568,21 +709,21 @@ interactions:
       - --name --perimeter-name --resource-group --access-mode --private-link-resource
         --profile
       User-Agent:
-      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.12.7 (Windows-11-10.0.22631-SP0)
+      - AZURECLI/2.70.0 azsdk-python-core/1.31.0 Python/3.12.9 (Windows-11-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/resourceAssociations/TestNspAssociation?api-version=2023-08-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/resourceAssociations/TestNspAssociation?api-version=2024-07-01
   response:
     body:
-      string: '{"name":"TestNspAssociation","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/resourceAssociations/TestNspAssociation","type":"Microsoft.Network/networkSecurityPerimeters/resourceAssociations","properties":{"privateLinkResource":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.KeyVault/vaults/kvclinsp18"},"profile":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/profiles/TestNspProfile"},"accessMode":"Learning","provisioningState":"Succeeded","hasProvisioningIssues":"no"}}'
+      string: '{"name":"TestNspAssociation","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/resourceAssociations/TestNspAssociation","type":"Microsoft.Network/networkSecurityPerimeters/resourceAssociations","properties":{"privateLinkResource":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.KeyVault/vaults/kvclinsp19-test"},"profile":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/profiles/TestNspProfile"},"accessMode":"Learning","provisioningState":"Succeeded","hasProvisioningIssues":"no"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '834'
+      - '839'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 29 Nov 2024 07:10:02 GMT
+      - Fri, 21 Mar 2025 14:47:06 GMT
       expires:
       - '-1'
       pragma:
@@ -596,13 +737,13 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: FC998CBFB8364BCD8F0026C7FBFE574A Ref B: MNZ221060618023 Ref C: 2024-11-29T07:10:01Z'
+      - 'Ref A: 90A578002B71417C84F4E6DE6D3F62C0 Ref B: MNZ221060619031 Ref C: 2025-03-21T14:47:06Z'
     status:
       code: 200
       message: OK
 - request:
-    body: '{"location": "eastus2euap", "name": "TestNspAssociation", "properties":
-      {"accessMode": "Enforced", "privateLinkResource": {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.KeyVault/vaults/kvclinsp18"},
+    body: '{"location": "eastus2euap", "properties": {"accessMode": "Enforced", "privateLinkResource":
+      {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.KeyVault/vaults/kvclinsp19-test"},
       "profile": {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/profiles/TestNspProfile"}}}'
     headers:
       Accept:
@@ -614,28 +755,30 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '507'
+      - '482'
       Content-Type:
       - application/json
       ParameterSetName:
       - --name --perimeter-name --resource-group --access-mode --private-link-resource
         --profile
       User-Agent:
-      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.12.7 (Windows-11-10.0.22631-SP0)
+      - AZURECLI/2.70.0 azsdk-python-core/1.31.0 Python/3.12.9 (Windows-11-10.0.22631-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/resourceAssociations/TestNspAssociation?api-version=2023-08-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/resourceAssociations/TestNspAssociation?api-version=2024-07-01
   response:
     body:
-      string: '{"name":"TestNspAssociation","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/resourceAssociations/TestNspAssociation","type":"Microsoft.Network/networkSecurityPerimeters/resourceAssociations","properties":{"privateLinkResource":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.KeyVault/vaults/kvclinsp18"},"profile":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/profiles/TestNspProfile"},"accessMode":"Enforced","provisioningState":"Succeeded","hasProvisioningIssues":"no"}}'
+      string: '{"name":"TestNspAssociation","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/resourceAssociations/TestNspAssociation","type":"Microsoft.Network/networkSecurityPerimeters/resourceAssociations","properties":{"privateLinkResource":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.KeyVault/vaults/kvclinsp19-test"},"profile":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/profiles/TestNspProfile"},"accessMode":"Enforced","provisioningState":"Updating","hasProvisioningIssues":"no"}}'
     headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/networkSecurityPerimeterOperationStatuses/a5446a26-df24-4158-9c0a-783eaef0b50d?api-version=2024-07-01&t=638781652283192265&c=MIIHhzCCBm-gAwIBAgITfAaPVSYGYp0_a9-AhQAABo9VJjANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjUwMTIwMDgzNTM2WhcNMjUwNzE5MDgzNTM2WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMIvzhqGKiWeVv5oxugQQEZ8AxTC1p8Lu-WshPo0K7VS2EMvF_bHNAJa2ICbsiu5eWYlTaYcdzZL_li8T_EER2Dx5l6uj7GUfGoYbEJQ0ZdYtzLoQJYa5_x168-RsA7F1839wPdzv32z3afnCHOSeIzPiOiCJXb6FjOWJ-znbB2na5Gw4nwgaj4uxlRQGN3ElReqQ4P64xkAph5x91fRINLkaaRTDeKQ_g_suaN1BHm22myYRg2O9gZy5mhTUzDjj9HsrGu2-1-ZFNZZPMl5ltWBsQD6c_49DWpOowaX9ZSYaO9E9s45gP5YMr-ALxZrETB9ilbvFNbbXmv9Kc5LEc0CAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBQj9GN21vymIgY86pEWjNqGR6-dlDAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAF0lTrFg0dSUCXo41FDWmaQFDJKZsucTat3vhDRkbIfxlo0n4QQJOqJQSCzj8n-NvH0p0CR42nsTk2C70Vpr54i80YKfcTOm0Q0Rq9FHB-Nz4KlrymTkU6hfeD0WRhUOq6PB1WhWLF_mqSzEwmTmuQAsVGXf8Gh0psllvyF--eEaF0pSbhEuo6lPzPk3hgUSico8gbSjr4hgIVn6x0JCa1XSFgaeKHIqD8eapb-mDfYa0QAQwJ8tYxzrkJ_n5OI7g5xCiIeV5DXmSzLTGx9QvaE4Y8-jFgRKG0qMhnqf8StrJOSKMrcJlHtjT7plbWt-fXPLHNvPydmtAiA2qygRnU0&s=A9dB3SHF8ht3-Hyt5BEO-s0GcrO-PtLLGnqO54hSbtSavHXhXWPZYHCY8FS1rWC1adr3nzn6TxfjJBlprDSgu-p9OcijujZ-sDFFAQezgI92ov7tukrOFGC8hX83g4C1M5vK8PpesDXQ_K11E8EJr4E-y6fzILidSUIoWscdp2tp9iBrRW8vbYXdhDuhnxG4gvyHgsjEQhW_P01iVTfxOnohXQzpm0gU69monNFwd1QbkQTDL0E3YNgOjb58noDbXPfKi4XgAGtMyymZyEGDiE9vm3K2WlLhgF2io_VcysWGhzcKVCY0jkkfiin3-_DCDpPOqYc-gPifDmTBM2hCwQ&h=dHiBrfDJ36cMHp1O33Z38hWzLhUFvVDE5nIePGDiel8
       cache-control:
       - no-cache
       content-length:
-      - '834'
+      - '838'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 29 Nov 2024 07:10:03 GMT
+      - Fri, 21 Mar 2025 14:47:07 GMT
       expires:
       - '-1'
       pragma:
@@ -651,7 +794,148 @@ interactions:
       x-ms-ratelimit-remaining-subscription-writes:
       - '799'
       x-msedge-ref:
-      - 'Ref A: A69C0B242263466B85C5723C88608D19 Ref B: MNZ221060618023 Ref C: 2024-11-29T07:10:02Z'
+      - 'Ref A: E191069922A84651971464585F9820BA Ref B: MNZ221060619031 Ref C: 2025-03-21T14:47:07Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network perimeter association update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --perimeter-name --resource-group --access-mode --private-link-resource
+        --profile
+      User-Agent:
+      - AZURECLI/2.70.0 azsdk-python-core/1.31.0 Python/3.12.9 (Windows-11-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/networkSecurityPerimeterOperationStatuses/a5446a26-df24-4158-9c0a-783eaef0b50d?api-version=2024-07-01&t=638781652283192265&c=MIIHhzCCBm-gAwIBAgITfAaPVSYGYp0_a9-AhQAABo9VJjANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjUwMTIwMDgzNTM2WhcNMjUwNzE5MDgzNTM2WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMIvzhqGKiWeVv5oxugQQEZ8AxTC1p8Lu-WshPo0K7VS2EMvF_bHNAJa2ICbsiu5eWYlTaYcdzZL_li8T_EER2Dx5l6uj7GUfGoYbEJQ0ZdYtzLoQJYa5_x168-RsA7F1839wPdzv32z3afnCHOSeIzPiOiCJXb6FjOWJ-znbB2na5Gw4nwgaj4uxlRQGN3ElReqQ4P64xkAph5x91fRINLkaaRTDeKQ_g_suaN1BHm22myYRg2O9gZy5mhTUzDjj9HsrGu2-1-ZFNZZPMl5ltWBsQD6c_49DWpOowaX9ZSYaO9E9s45gP5YMr-ALxZrETB9ilbvFNbbXmv9Kc5LEc0CAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBQj9GN21vymIgY86pEWjNqGR6-dlDAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAF0lTrFg0dSUCXo41FDWmaQFDJKZsucTat3vhDRkbIfxlo0n4QQJOqJQSCzj8n-NvH0p0CR42nsTk2C70Vpr54i80YKfcTOm0Q0Rq9FHB-Nz4KlrymTkU6hfeD0WRhUOq6PB1WhWLF_mqSzEwmTmuQAsVGXf8Gh0psllvyF--eEaF0pSbhEuo6lPzPk3hgUSico8gbSjr4hgIVn6x0JCa1XSFgaeKHIqD8eapb-mDfYa0QAQwJ8tYxzrkJ_n5OI7g5xCiIeV5DXmSzLTGx9QvaE4Y8-jFgRKG0qMhnqf8StrJOSKMrcJlHtjT7plbWt-fXPLHNvPydmtAiA2qygRnU0&s=A9dB3SHF8ht3-Hyt5BEO-s0GcrO-PtLLGnqO54hSbtSavHXhXWPZYHCY8FS1rWC1adr3nzn6TxfjJBlprDSgu-p9OcijujZ-sDFFAQezgI92ov7tukrOFGC8hX83g4C1M5vK8PpesDXQ_K11E8EJr4E-y6fzILidSUIoWscdp2tp9iBrRW8vbYXdhDuhnxG4gvyHgsjEQhW_P01iVTfxOnohXQzpm0gU69monNFwd1QbkQTDL0E3YNgOjb58noDbXPfKi4XgAGtMyymZyEGDiE9vm3K2WlLhgF2io_VcysWGhzcKVCY0jkkfiin3-_DCDpPOqYc-gPifDmTBM2hCwQ&h=dHiBrfDJ36cMHp1O33Z38hWzLhUFvVDE5nIePGDiel8
+  response:
+    body:
+      string: '{"name":"a5446a26-df24-4158-9c0a-783eaef0b50d","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/networkSecurityPerimeterOperationStatuses/a5446a26-df24-4158-9c0a-783eaef0b50d","status":"Updating","startTime":"2025-03-21T14:47:08.2594103Z","properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/resourceAssociations/TestNspAssociation"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '550'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 21 Mar 2025 14:47:08 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 1CC63E6A5EB341749C4B3F29A7220D41 Ref B: MNZ221060619031 Ref C: 2025-03-21T14:47:08Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network perimeter association update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --perimeter-name --resource-group --access-mode --private-link-resource
+        --profile
+      User-Agent:
+      - AZURECLI/2.70.0 azsdk-python-core/1.31.0 Python/3.12.9 (Windows-11-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/networkSecurityPerimeterOperationStatuses/a5446a26-df24-4158-9c0a-783eaef0b50d?api-version=2024-07-01&t=638781652283192265&c=MIIHhzCCBm-gAwIBAgITfAaPVSYGYp0_a9-AhQAABo9VJjANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjUwMTIwMDgzNTM2WhcNMjUwNzE5MDgzNTM2WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMIvzhqGKiWeVv5oxugQQEZ8AxTC1p8Lu-WshPo0K7VS2EMvF_bHNAJa2ICbsiu5eWYlTaYcdzZL_li8T_EER2Dx5l6uj7GUfGoYbEJQ0ZdYtzLoQJYa5_x168-RsA7F1839wPdzv32z3afnCHOSeIzPiOiCJXb6FjOWJ-znbB2na5Gw4nwgaj4uxlRQGN3ElReqQ4P64xkAph5x91fRINLkaaRTDeKQ_g_suaN1BHm22myYRg2O9gZy5mhTUzDjj9HsrGu2-1-ZFNZZPMl5ltWBsQD6c_49DWpOowaX9ZSYaO9E9s45gP5YMr-ALxZrETB9ilbvFNbbXmv9Kc5LEc0CAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBQj9GN21vymIgY86pEWjNqGR6-dlDAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAF0lTrFg0dSUCXo41FDWmaQFDJKZsucTat3vhDRkbIfxlo0n4QQJOqJQSCzj8n-NvH0p0CR42nsTk2C70Vpr54i80YKfcTOm0Q0Rq9FHB-Nz4KlrymTkU6hfeD0WRhUOq6PB1WhWLF_mqSzEwmTmuQAsVGXf8Gh0psllvyF--eEaF0pSbhEuo6lPzPk3hgUSico8gbSjr4hgIVn6x0JCa1XSFgaeKHIqD8eapb-mDfYa0QAQwJ8tYxzrkJ_n5OI7g5xCiIeV5DXmSzLTGx9QvaE4Y8-jFgRKG0qMhnqf8StrJOSKMrcJlHtjT7plbWt-fXPLHNvPydmtAiA2qygRnU0&s=A9dB3SHF8ht3-Hyt5BEO-s0GcrO-PtLLGnqO54hSbtSavHXhXWPZYHCY8FS1rWC1adr3nzn6TxfjJBlprDSgu-p9OcijujZ-sDFFAQezgI92ov7tukrOFGC8hX83g4C1M5vK8PpesDXQ_K11E8EJr4E-y6fzILidSUIoWscdp2tp9iBrRW8vbYXdhDuhnxG4gvyHgsjEQhW_P01iVTfxOnohXQzpm0gU69monNFwd1QbkQTDL0E3YNgOjb58noDbXPfKi4XgAGtMyymZyEGDiE9vm3K2WlLhgF2io_VcysWGhzcKVCY0jkkfiin3-_DCDpPOqYc-gPifDmTBM2hCwQ&h=dHiBrfDJ36cMHp1O33Z38hWzLhUFvVDE5nIePGDiel8
+  response:
+    body:
+      string: '{"name":"a5446a26-df24-4158-9c0a-783eaef0b50d","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/networkSecurityPerimeterOperationStatuses/a5446a26-df24-4158-9c0a-783eaef0b50d","status":"Succeeded","startTime":"2025-03-21T14:47:08.2594103Z","endTime":"2025-03-21T14:47:12.2529945Z","properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/resourceAssociations/TestNspAssociation"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '592'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 21 Mar 2025 14:47:39 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 873E6EBBFEA14AEB96149F38189AF2BA Ref B: MNZ221060619031 Ref C: 2025-03-21T14:47:39Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network perimeter association update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --perimeter-name --resource-group --access-mode --private-link-resource
+        --profile
+      User-Agent:
+      - AZURECLI/2.70.0 azsdk-python-core/1.31.0 Python/3.12.9 (Windows-11-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/resourceAssociations/TestNspAssociation?api-version=2024-07-01
+  response:
+    body:
+      string: '{"name":"TestNspAssociation","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/resourceAssociations/TestNspAssociation","type":"Microsoft.Network/networkSecurityPerimeters/resourceAssociations","properties":{"privateLinkResource":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.KeyVault/vaults/kvclinsp19-test"},"profile":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/profiles/TestNspProfile"},"accessMode":"Enforced","provisioningState":"Succeeded","hasProvisioningIssues":"no"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '839'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 21 Mar 2025 14:47:41 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 05EA6BC2173E40FE97BC9A1AB2798746 Ref B: MNZ221060619031 Ref C: 2025-03-21T14:47:40Z'
     status:
       code: 200
       message: OK
@@ -669,21 +953,21 @@ interactions:
       ParameterSetName:
       - --name --perimeter-name --resource-group
       User-Agent:
-      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.12.7 (Windows-11-10.0.22631-SP0)
+      - AZURECLI/2.70.0 azsdk-python-core/1.31.0 Python/3.12.9 (Windows-11-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/resourceAssociations/TestNspAssociation?api-version=2023-08-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/resourceAssociations/TestNspAssociation?api-version=2024-07-01
   response:
     body:
-      string: '{"name":"TestNspAssociation","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/resourceAssociations/TestNspAssociation","type":"Microsoft.Network/networkSecurityPerimeters/resourceAssociations","properties":{"privateLinkResource":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.KeyVault/vaults/kvclinsp18"},"profile":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/profiles/TestNspProfile"},"accessMode":"Enforced","provisioningState":"Succeeded","hasProvisioningIssues":"no"}}'
+      string: '{"name":"TestNspAssociation","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/resourceAssociations/TestNspAssociation","type":"Microsoft.Network/networkSecurityPerimeters/resourceAssociations","properties":{"privateLinkResource":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.KeyVault/vaults/kvclinsp19-test"},"profile":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/profiles/TestNspProfile"},"accessMode":"Enforced","provisioningState":"Succeeded","hasProvisioningIssues":"no"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '834'
+      - '839'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 29 Nov 2024 07:10:05 GMT
+      - Fri, 21 Mar 2025 14:47:44 GMT
       expires:
       - '-1'
       pragma:
@@ -697,7 +981,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: 65FFB657020947D4877A7BC991CD0ED3 Ref B: MNZ221060610017 Ref C: 2024-11-29T07:10:03Z'
+      - 'Ref A: 68C5EBE6CB964B64B29423CBB42B3B64 Ref B: MNZ221060608033 Ref C: 2025-03-21T14:47:42Z'
     status:
       code: 200
       message: OK
@@ -715,21 +999,21 @@ interactions:
       ParameterSetName:
       - --perimeter-name --resource-group
       User-Agent:
-      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.12.7 (Windows-11-10.0.22631-SP0)
+      - AZURECLI/2.70.0 azsdk-python-core/1.31.0 Python/3.12.9 (Windows-11-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/resourceAssociations?api-version=2023-08-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/resourceAssociations?api-version=2024-07-01
   response:
     body:
-      string: '{"nextLink":"","value":[{"name":"TestNspAssociation","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/resourceAssociations/TestNspAssociation","type":"Microsoft.Network/networkSecurityPerimeters/resourceAssociations","properties":{"privateLinkResource":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.KeyVault/vaults/kvclinsp18"},"profile":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/profiles/TestNspProfile"},"accessMode":"Enforced","provisioningState":"Succeeded","hasProvisioningIssues":"no"}}]}'
+      string: '{"nextLink":"","value":[{"name":"TestNspAssociation","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/resourceAssociations/TestNspAssociation","type":"Microsoft.Network/networkSecurityPerimeters/resourceAssociations","properties":{"privateLinkResource":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.KeyVault/vaults/kvclinsp19-test"},"profile":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/profiles/TestNspProfile"},"accessMode":"Enforced","provisioningState":"Succeeded","hasProvisioningIssues":"no"}}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '860'
+      - '865'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 29 Nov 2024 07:10:13 GMT
+      - Fri, 21 Mar 2025 14:47:45 GMT
       expires:
       - '-1'
       pragma:
@@ -743,7 +1027,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: 38D1B798E37A4ECD8F4E1C457BA84D77 Ref B: MNZ221060608011 Ref C: 2024-11-29T07:10:05Z'
+      - 'Ref A: CEA7440643AD4F5490343277BBCCF7FA Ref B: MNZ221060619017 Ref C: 2025-03-21T14:47:45Z'
     status:
       code: 200
       message: OK
@@ -763,17 +1047,23 @@ interactions:
       ParameterSetName:
       - --name --perimeter-name --resource-group --yes
       User-Agent:
-      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.12.7 (Windows-11-10.0.22631-SP0)
+      - AZURECLI/2.70.0 azsdk-python-core/1.31.0 Python/3.12.9 (Windows-11-10.0.22631-SP0)
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/resourceAssociations/TestNspAssociation?api-version=2023-08-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/resourceAssociations/TestNspAssociation?api-version=2024-07-01
   response:
     body:
-      string: ''
+      string: '{"name":"TestNspAssociation","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/resourceAssociations/TestNspAssociation","type":"Microsoft.Network/networkSecurityPerimeters/resourceAssociations","properties":{"privateLinkResource":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.KeyVault/vaults/kvclinsp19-test"},"profile":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/profiles/TestNspProfile"},"accessMode":"Enforced","provisioningState":"Deleting","hasProvisioningIssues":"no"}}'
     headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/networkSecurityPerimeterOperationStatuses/1593769d-3c98-4661-97ed-1fdd9ce68fe0?api-version=2024-07-01&t=638781652677557147&c=MIIHhzCCBm-gAwIBAgITfAaTYo0ffVKAVQo0FAAABpNijTANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjUwMTIxMjE0MDQ4WhcNMjUwNzIwMjE0MDQ4WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKl-TWTOH_oCbu9zNBntAM-9rowzTWYg_nRy16M4ghALCnU3YR0fsip-EwpHzk9rnA5iIgnJlMI24hzCv8PHGFCetnQdEMPxXIAtPo2i11HHKdcdycYnJhIqn0dddd92khimTrvPl1xVX65oC1uuMOEtYmaMGk26gGAo9mB9Zr4WVufN-UvLKvZwiDY-1ddNpdcUGB0S56H1dFUw8k7GHlWSYZS5eSVQZ9aXl7wJmQC-v3c2X-p3hLdo59aIWab5bWDKRbtaYjcAD6nr-GrtOOf2M96Ce_K9djoryf-X1tdOJSgIU4-Ortzj0xbyC9xNtrEVFfPwLRrR2KEGrEZkA4kCAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBSJEel4OnU1M8eUZtmgkwWb3vk1VTAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBABuKpMrZMDe3nmRYZgM_6QgVm5HpwSTDM72-Lvvtvbqu2HnIfPvmK-Qf9nxbZ3uCylFll3Zrq0s0c2GBdBoZmx7_eEa_ttQ9pvMj9uVUnuHbvLYOBYpmBIE8Q_b-DaOjC_1Rkkan6Jnpi_Cnu6QTe729Gf5FZnI0sIGY_eaetW7FjqOfGIlVKLX_50hcOXYCV_goHf2VHFIhVo4g9QShK_UEpzuG0yZCEKqHQRs-3UIEDZSuhchSmic2WNuSunTZ_HI9feNwqUIMBnn5EyIdrpjSszdDRR00CiJs7kBU2NvO5dQQ5qHwUJCWr69a42_uqATc6_1ViE8yGCSO6nZ0i1M&s=EratI6xLkqRE29VGBYbrxfpyPRl75YDfuZ4uQQQ6FzicHN8OLb2KiDg4WrQ8Nq9VCTa2X8_P2UUSszu6Htulcw8Wt7VKsCJJxkGrWayyqaUTgVGKihKhk-giswAZHCz_SN0eacoCTCjPfAJfjUQSKyyrV1weoKimtlX8Fg2B0rtOYuj4amwWMsr_Wgw12yrnD1pQohovDbZ5VJmQrLt8eh2b0EcRLEKA1Zr9Sae8U2kzdN-Wlj04LlDvqQ9RplGjAcJYU3v-uXppQpYUj3awm_60ljiZrjqTfi-xUrnfS_bEuXxs7ycQRpBBXqRWWzQZyNdlCkk1GskKmpAL4g2VQg&h=X3YvxJuLEAfU0w-MmpjiBE3dcEsyRVdSjKTLwZ5tdug
       cache-control:
       - no-cache
+      content-length:
+      - '838'
+      content-type:
+      - application/json; charset=utf-8
       date:
-      - Fri, 29 Nov 2024 07:10:14 GMT
+      - Fri, 21 Mar 2025 14:47:47 GMT
       expires:
       - '-1'
       pragma:
@@ -789,10 +1079,102 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-deletes:
       - '11999'
       x-msedge-ref:
-      - 'Ref A: 6486E8B2B7DC4346BCED6370620CC09F Ref B: MNZ221060618021 Ref C: 2024-11-29T07:10:13Z'
+      - 'Ref A: 1AFD3AADCEBE454FACC9919B45EE1EB8 Ref B: MNZ221060609037 Ref C: 2025-03-21T14:47:45Z'
     status:
-      code: 204
-      message: No Content
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network perimeter association delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --perimeter-name --resource-group --yes
+      User-Agent:
+      - AZURECLI/2.70.0 azsdk-python-core/1.31.0 Python/3.12.9 (Windows-11-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/networkSecurityPerimeterOperationStatuses/1593769d-3c98-4661-97ed-1fdd9ce68fe0?api-version=2024-07-01&t=638781652677557147&c=MIIHhzCCBm-gAwIBAgITfAaTYo0ffVKAVQo0FAAABpNijTANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjUwMTIxMjE0MDQ4WhcNMjUwNzIwMjE0MDQ4WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKl-TWTOH_oCbu9zNBntAM-9rowzTWYg_nRy16M4ghALCnU3YR0fsip-EwpHzk9rnA5iIgnJlMI24hzCv8PHGFCetnQdEMPxXIAtPo2i11HHKdcdycYnJhIqn0dddd92khimTrvPl1xVX65oC1uuMOEtYmaMGk26gGAo9mB9Zr4WVufN-UvLKvZwiDY-1ddNpdcUGB0S56H1dFUw8k7GHlWSYZS5eSVQZ9aXl7wJmQC-v3c2X-p3hLdo59aIWab5bWDKRbtaYjcAD6nr-GrtOOf2M96Ce_K9djoryf-X1tdOJSgIU4-Ortzj0xbyC9xNtrEVFfPwLRrR2KEGrEZkA4kCAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBSJEel4OnU1M8eUZtmgkwWb3vk1VTAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBABuKpMrZMDe3nmRYZgM_6QgVm5HpwSTDM72-Lvvtvbqu2HnIfPvmK-Qf9nxbZ3uCylFll3Zrq0s0c2GBdBoZmx7_eEa_ttQ9pvMj9uVUnuHbvLYOBYpmBIE8Q_b-DaOjC_1Rkkan6Jnpi_Cnu6QTe729Gf5FZnI0sIGY_eaetW7FjqOfGIlVKLX_50hcOXYCV_goHf2VHFIhVo4g9QShK_UEpzuG0yZCEKqHQRs-3UIEDZSuhchSmic2WNuSunTZ_HI9feNwqUIMBnn5EyIdrpjSszdDRR00CiJs7kBU2NvO5dQQ5qHwUJCWr69a42_uqATc6_1ViE8yGCSO6nZ0i1M&s=EratI6xLkqRE29VGBYbrxfpyPRl75YDfuZ4uQQQ6FzicHN8OLb2KiDg4WrQ8Nq9VCTa2X8_P2UUSszu6Htulcw8Wt7VKsCJJxkGrWayyqaUTgVGKihKhk-giswAZHCz_SN0eacoCTCjPfAJfjUQSKyyrV1weoKimtlX8Fg2B0rtOYuj4amwWMsr_Wgw12yrnD1pQohovDbZ5VJmQrLt8eh2b0EcRLEKA1Zr9Sae8U2kzdN-Wlj04LlDvqQ9RplGjAcJYU3v-uXppQpYUj3awm_60ljiZrjqTfi-xUrnfS_bEuXxs7ycQRpBBXqRWWzQZyNdlCkk1GskKmpAL4g2VQg&h=X3YvxJuLEAfU0w-MmpjiBE3dcEsyRVdSjKTLwZ5tdug
+  response:
+    body:
+      string: '{"name":"1593769d-3c98-4661-97ed-1fdd9ce68fe0","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/networkSecurityPerimeterOperationStatuses/1593769d-3c98-4661-97ed-1fdd9ce68fe0","status":"Deleting","startTime":"2025-03-21T14:47:47.6900225Z","properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/resourceAssociations/TestNspAssociation"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '550'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 21 Mar 2025 14:47:47 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 48B924FE5DAA415592B293D183605365 Ref B: MNZ221060609037 Ref C: 2025-03-21T14:47:47Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network perimeter association delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --perimeter-name --resource-group --yes
+      User-Agent:
+      - AZURECLI/2.70.0 azsdk-python-core/1.31.0 Python/3.12.9 (Windows-11-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/networkSecurityPerimeterOperationStatuses/1593769d-3c98-4661-97ed-1fdd9ce68fe0?api-version=2024-07-01&t=638781652677557147&c=MIIHhzCCBm-gAwIBAgITfAaTYo0ffVKAVQo0FAAABpNijTANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjUwMTIxMjE0MDQ4WhcNMjUwNzIwMjE0MDQ4WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKl-TWTOH_oCbu9zNBntAM-9rowzTWYg_nRy16M4ghALCnU3YR0fsip-EwpHzk9rnA5iIgnJlMI24hzCv8PHGFCetnQdEMPxXIAtPo2i11HHKdcdycYnJhIqn0dddd92khimTrvPl1xVX65oC1uuMOEtYmaMGk26gGAo9mB9Zr4WVufN-UvLKvZwiDY-1ddNpdcUGB0S56H1dFUw8k7GHlWSYZS5eSVQZ9aXl7wJmQC-v3c2X-p3hLdo59aIWab5bWDKRbtaYjcAD6nr-GrtOOf2M96Ce_K9djoryf-X1tdOJSgIU4-Ortzj0xbyC9xNtrEVFfPwLRrR2KEGrEZkA4kCAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBSJEel4OnU1M8eUZtmgkwWb3vk1VTAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBABuKpMrZMDe3nmRYZgM_6QgVm5HpwSTDM72-Lvvtvbqu2HnIfPvmK-Qf9nxbZ3uCylFll3Zrq0s0c2GBdBoZmx7_eEa_ttQ9pvMj9uVUnuHbvLYOBYpmBIE8Q_b-DaOjC_1Rkkan6Jnpi_Cnu6QTe729Gf5FZnI0sIGY_eaetW7FjqOfGIlVKLX_50hcOXYCV_goHf2VHFIhVo4g9QShK_UEpzuG0yZCEKqHQRs-3UIEDZSuhchSmic2WNuSunTZ_HI9feNwqUIMBnn5EyIdrpjSszdDRR00CiJs7kBU2NvO5dQQ5qHwUJCWr69a42_uqATc6_1ViE8yGCSO6nZ0i1M&s=EratI6xLkqRE29VGBYbrxfpyPRl75YDfuZ4uQQQ6FzicHN8OLb2KiDg4WrQ8Nq9VCTa2X8_P2UUSszu6Htulcw8Wt7VKsCJJxkGrWayyqaUTgVGKihKhk-giswAZHCz_SN0eacoCTCjPfAJfjUQSKyyrV1weoKimtlX8Fg2B0rtOYuj4amwWMsr_Wgw12yrnD1pQohovDbZ5VJmQrLt8eh2b0EcRLEKA1Zr9Sae8U2kzdN-Wlj04LlDvqQ9RplGjAcJYU3v-uXppQpYUj3awm_60ljiZrjqTfi-xUrnfS_bEuXxs7ycQRpBBXqRWWzQZyNdlCkk1GskKmpAL4g2VQg&h=X3YvxJuLEAfU0w-MmpjiBE3dcEsyRVdSjKTLwZ5tdug
+  response:
+    body:
+      string: '{"name":"1593769d-3c98-4661-97ed-1fdd9ce68fe0","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/networkSecurityPerimeterOperationStatuses/1593769d-3c98-4661-97ed-1fdd9ce68fe0","status":"Succeeded","startTime":"2025-03-21T14:47:47.6900225Z","endTime":"2025-03-21T14:47:52.5795659Z","properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/resourceAssociations/TestNspAssociation"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '592'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 21 Mar 2025 14:48:19 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: A1CC0EBD99EB4191A5D9AE05C333610A Ref B: MNZ221060609037 Ref C: 2025-03-21T14:48:18Z'
+    status:
+      code: 200
+      message: OK
 - request:
     body: null
     headers:
@@ -807,9 +1189,9 @@ interactions:
       ParameterSetName:
       - --name --perimeter-name --resource-group
       User-Agent:
-      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.12.7 (Windows-11-10.0.22631-SP0)
+      - AZURECLI/2.70.0 azsdk-python-core/1.31.0 Python/3.12.9 (Windows-11-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/resourceAssociations/TestNspAssociation?api-version=2023-08-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/resourceAssociations/TestNspAssociation?api-version=2024-07-01
   response:
     body:
       string: '{"error":{"message":"Resource [/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/resourceAssociations/TestNspAssociation]
@@ -822,7 +1204,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 29 Nov 2024 07:10:16 GMT
+      - Fri, 21 Mar 2025 14:48:20 GMT
       expires:
       - '-1'
       pragma:
@@ -836,7 +1218,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: F31019A519EC4FA9890A4BE4DD3A1408 Ref B: MNZ221060609027 Ref C: 2024-11-29T07:10:15Z'
+      - 'Ref A: 9E1DB18B27CE47ED968C805C450FD05D Ref B: MNZ221060618031 Ref C: 2025-03-21T14:48:20Z'
     status:
       code: 404
       message: Not Found
@@ -856,9 +1238,9 @@ interactions:
       ParameterSetName:
       - --name --resource-group --no-wait
       User-Agent:
-      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.12.7 (Windows-11-10.0.22631-SP0)
+      - AZURECLI/2.70.0 azsdk-python-core/1.31.0 Python/3.12.9 (Windows-11-10.0.22631-SP0)
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.KeyVault/vaults/kvclinsp18?api-version=2023-02-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.KeyVault/vaults/kvclinsp19-test?api-version=2023-02-01
   response:
     body:
       string: ''
@@ -868,7 +1250,7 @@ interactions:
       content-length:
       - '0'
       date:
-      - Fri, 29 Nov 2024 07:10:24 GMT
+      - Fri, 21 Mar 2025 14:48:30 GMT
       expires:
       - '-1'
       pragma:
@@ -882,13 +1264,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-keyvault-service-version:
-      - 1.5.1400.0
+      - 2.2.29.0
       x-ms-ratelimit-remaining-subscription-deletes:
       - '800'
       x-ms-ratelimit-remaining-subscription-global-deletes:
       - '12000'
       x-msedge-ref:
-      - 'Ref A: 5D73AC93C71B4FAA8FE90BDD3350CC69 Ref B: MNZ221060610031 Ref C: 2024-11-29T07:10:16Z'
+      - 'Ref A: F8405AEF9CF14C59AEDC62E6DC56A6CE Ref B: MNZ221060609019 Ref C: 2025-03-21T14:48:21Z'
     status:
       code: 200
       message: OK
@@ -906,21 +1288,21 @@ interactions:
       ParameterSetName:
       - --name -l --no-wait
       User-Agent:
-      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.12.7 (Windows-11-10.0.22631-SP0)
+      - AZURECLI/2.70.0 azsdk-python-core/1.31.0 Python/3.12.9 (Windows-11-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.KeyVault/locations/eastus2euap/deletedVaults/kvclinsp18?api-version=2023-02-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.KeyVault/locations/eastus2euap/deletedVaults/kvclinsp19-test?api-version=2023-02-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.KeyVault/locations/eastus2euap/deletedVaults/kvclinsp18","name":"kvclinsp18","type":"Microsoft.KeyVault/deletedVaults","properties":{"vaultId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.KeyVault/vaults/kvclinsp18","location":"eastus2euap","tags":{},"deletionDate":"2024-11-29T07:10:17Z","scheduledPurgeDate":"2025-02-27T07:10:17Z"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.KeyVault/locations/eastus2euap/deletedVaults/kvclinsp19-test","name":"kvclinsp19-test","type":"Microsoft.KeyVault/deletedVaults","properties":{"vaultId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.KeyVault/vaults/kvclinsp19-test","location":"eastus2euap","tags":{},"deletionDate":"2025-03-21T14:48:21Z","scheduledPurgeDate":"2025-06-19T14:48:21Z"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '488'
+      - '503'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 29 Nov 2024 07:10:24 GMT
+      - Fri, 21 Mar 2025 14:48:29 GMT
       expires:
       - '-1'
       pragma:
@@ -934,11 +1316,11 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-keyvault-service-version:
-      - 1.5.1400.0
+      - 2.2.29.0
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: 6769292F258F4C1F8FAABC69A545331B Ref B: MNZ221060610029 Ref C: 2024-11-29T07:10:24Z'
+      - 'Ref A: AF0C0570FF4647EDAFD5AD36ADBF2B07 Ref B: MNZ221060618021 Ref C: 2025-03-21T14:48:30Z'
     status:
       code: 200
       message: OK
@@ -958,9 +1340,9 @@ interactions:
       ParameterSetName:
       - --name -l --no-wait
       User-Agent:
-      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.12.7 (Windows-11-10.0.22631-SP0)
+      - AZURECLI/2.70.0 azsdk-python-core/1.31.0 Python/3.12.9 (Windows-11-10.0.22631-SP0)
     method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.KeyVault/locations/eastus2euap/deletedVaults/kvclinsp18/purge?api-version=2023-02-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.KeyVault/locations/eastus2euap/deletedVaults/kvclinsp19-test/purge?api-version=2023-02-01
   response:
     body:
       string: ''
@@ -970,11 +1352,11 @@ interactions:
       content-length:
       - '0'
       date:
-      - Fri, 29 Nov 2024 07:10:25 GMT
+      - Fri, 21 Mar 2025 14:48:30 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.KeyVault/locations/eastus2euap/operationResults/VVR8MDYzODY4NDYxMDI3MDU4MDY3NHw2MDQ0RUM1MzkzQkU0RjUyQjEwMzg1RDA2MUM5NjE5NA?api-version=2023-02-01&t=638684610261734430&c=MIIHhzCCBm-gAwIBAgITHgVqhF9GOoUjuyqQWAAABWqEXzANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwOTIwMjMxMTQxWhcNMjUwMzE5MjMxMTQxWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKRtcYDBXS7zz5tRtvVyhrUAjudYhej1E2D3dp6XWuPdbVMbQZwMlye8vdT-kDhFD7T2mrdWqsoGnTGk0_xOHBfLGnW-0QRUqpeoTNIhu8vc2CfTUtm2t2s_-fzvFtRyhDA4mfCH1cz92EVj0vd3FD4ikW6bdOp1NkYFqUVBhKlbvJk6y-TbLFBLP5Zx4m0Ua-_P7aMzbgvOJgMOTC2jLs5w_lFDJWeP3IKUOiJmrfLpf4ey5Ov94oCE6YncDBSHJZKWcrSxDHgSz9AXrxarL4HLajGbF3MRvfkMN2gNXCoiJXBEqCLDnyQZ0BgXIvuK7vG8Rj0TyhJNj-QPr8taY6UCAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBRKlJQpFyyZKSchkTlshetYOUX7xzAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAG0WbzLPsmSSMI7aTe2npixmkdCmwcdZHGd43tUnB8JKrLNJEFcBsQmbcIH0adpnQNrDgRkNBBOTZ4s1LIBlRQapZpPsRItAMUguVpGVRH08T0i43w9xrp_clNbAJrrfRbmYroF0WJKMJ0nwW2rPjxdevSRygGK_nEfywwFi-p1RhHnkiEGL4GnP7PpQcRvAYMdH9LO5MRY7iLbBmosKatS_eWtSJD1CvzglNwy_vQzx81Vnk0CgndqXcVq-loGu7R4U7mkQ2NNqLbp447STxkpP-6Mdyv8J4bdnf1s3vFBNpgvJWKogWcNLlo8jnkbEf6RPNGe1W5lma7JwMKAcPzY&s=Y-F-HdsAEu_Tg6emlME8u6yntAUaJuhvhMiOFwSj_20yzH17AuZPM6ggzrBFAQg7PqHGiHz_pSJGqEOq328Uq8yPVOer0mUrDDqCpjuLNPX1X6Or8via4l_RQmEI_tYk1MORHbCrkPjSe0VZHv7r-91bjIKUtCm6VV0x4FdUuO5oOZjgwN7xmEwe573kD4h7jJaMVIqyFSTgH4MR0LH0XVvQmTNcyO9V7oIVYc3SlJqjTjR_d8UhA8AJmg57YZIRItsaGsCpI73oPsqMj7dtJL9cPE-oiWwWvfCRRVFQFpeE7KIyryLYaAVMndCuJowEsfydV-xkRG1aJClJ2Oazqw&h=TxPoZHLxRyEOEjYvOV5GHTNFJEbcaNe6rcKOsYFOdr8
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.KeyVault/locations/eastus2euap/operationResults/VVR8MDYzODc4MTY1MzExOTM1MjIyOHxDNUY2RDRBNzdGREE0QjNDQkU4ODZDMDYxQUVGMzQ3NQ?api-version=2023-02-01&t=638781653110296669&c=MIIHhzCCBm-gAwIBAgITfAaPVSYGYp0_a9-AhQAABo9VJjANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjUwMTIwMDgzNTM2WhcNMjUwNzE5MDgzNTM2WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMIvzhqGKiWeVv5oxugQQEZ8AxTC1p8Lu-WshPo0K7VS2EMvF_bHNAJa2ICbsiu5eWYlTaYcdzZL_li8T_EER2Dx5l6uj7GUfGoYbEJQ0ZdYtzLoQJYa5_x168-RsA7F1839wPdzv32z3afnCHOSeIzPiOiCJXb6FjOWJ-znbB2na5Gw4nwgaj4uxlRQGN3ElReqQ4P64xkAph5x91fRINLkaaRTDeKQ_g_suaN1BHm22myYRg2O9gZy5mhTUzDjj9HsrGu2-1-ZFNZZPMl5ltWBsQD6c_49DWpOowaX9ZSYaO9E9s45gP5YMr-ALxZrETB9ilbvFNbbXmv9Kc5LEc0CAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBQj9GN21vymIgY86pEWjNqGR6-dlDAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAF0lTrFg0dSUCXo41FDWmaQFDJKZsucTat3vhDRkbIfxlo0n4QQJOqJQSCzj8n-NvH0p0CR42nsTk2C70Vpr54i80YKfcTOm0Q0Rq9FHB-Nz4KlrymTkU6hfeD0WRhUOq6PB1WhWLF_mqSzEwmTmuQAsVGXf8Gh0psllvyF--eEaF0pSbhEuo6lPzPk3hgUSico8gbSjr4hgIVn6x0JCa1XSFgaeKHIqD8eapb-mDfYa0QAQwJ8tYxzrkJ_n5OI7g5xCiIeV5DXmSzLTGx9QvaE4Y8-jFgRKG0qMhnqf8StrJOSKMrcJlHtjT7plbWt-fXPLHNvPydmtAiA2qygRnU0&s=QtNvD0ClxF6MSMN1Nw6ydQKRlmAhLYSrLa0tJPz_DTKXD6Ps304kUTXWuQPao_J25N2I10aSPLwvOafCg3SbS_qNgViEh7tWFtR73GPNwTdv5DFrOkFhmvDAW2NdMqroF2EXzxijt22pSHbbIvCJwSjmRApaExPToetMRTDsk7bWf2lI2zMoQBmqh4fwbm1NU9mS6E3y1bHX0QgMdO_Cy4sC56WIN9FaNq3cLegvJ6O1DWpiFb3--njAJ8z-TYejIXAEzdrfqNyVRDWdrxuHM6e2T5-TxlhxyTd0MNGIepCXkLee3NzL45azqFGXzsQjlA0m7xPlSPk1XqaJJZroRA&h=7HBrvYRL_0TZ5nJCN658CErtj8PPYaXVA4Ttf4CGew8
       pragma:
       - no-cache
       strict-transport-security:
@@ -986,13 +1368,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-keyvault-service-version:
-      - 1.5.1400.0
+      - 2.2.29.0
       x-ms-ratelimit-remaining-subscription-global-writes:
       - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
       - '799'
       x-msedge-ref:
-      - 'Ref A: 3762FD27AB7942FA8239DEDAEBBA19D3 Ref B: MNZ221060610017 Ref C: 2024-11-29T07:10:25Z'
+      - 'Ref A: 99E2F027E25042D9A6C89A7ABD20385F Ref B: MNZ221060619011 Ref C: 2025-03-21T14:48:30Z'
     status:
       code: 202
       message: Accepted

@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "elastic get elastic organization-to-azure",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage to get Elastic organization
+    """Manage and retrieve information about the Elastic organization linked to your Azure subscription.
     """
     pass
 

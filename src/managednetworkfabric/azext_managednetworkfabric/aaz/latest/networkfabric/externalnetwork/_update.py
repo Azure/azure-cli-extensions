@@ -21,7 +21,7 @@ class Update(AAZCommand):
         az networkfabric externalnetwork update --resource-group "example-rg" --l3domain "example-l3domain" --resource-name "example-externalNetwork" --peering-option "OptionB" --option-b-properties "{routeTargets:{exportIpv4RouteTargets:['65046:10039'],exportIpv6RouteTargets:['65046:10039'],importIpv4RouteTargets:['65046:10039'],importIpv6RouteTargets:['65046:10039']}}" --import-route-policy "{importIpv4RoutePolicyId:'/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/microsoft.managednetworkfabric/routePolicies/example-routepolicy',importIpv6RoutePolicyId:'/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/microsoft.managednetworkfabric/routePolicies/example-routepolicy'}" --export-route-policy "{exportIpv4RoutePolicyId:'/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/microsoft.managednetworkfabric/routePolicies/example-routepolicy',exportIpv6RoutePolicyId:'/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/microsoft.managednetworkfabric/routePolicies/example-routepolicy'}"
 
     :example: Update the External Network with option A properties
-        az networkfabric externalnetwork update --resource-group "example-rg" --l3domain "example-l3domain" --resource-name "example-externalNetwork" --peering-option "OptionA" --nni-id "/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourcegroups/example-rg/providers/microsoft.managednetworkfabric/networkfabrics/example-fabric/networkToNetworkInterconnects/example-nni" --option-a-properties "{peerASN:65234,vlanId:501,mtu:1500,primaryIpv4Prefix:'172.23.1.0/31',secondaryIpv4Prefix:'172.23.1.2/31',bfdConfiguration:{multiplier:5,intervalInMilliSeconds:300}}" --import-route-policy "{importIpv4RoutePolicyId:'/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/microsoft.managednetworkfabric/routePolicies/example-routepolicy',importIpv6RoutePolicyId:'/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/microsoft.managednetworkfabric/routePolicies/example-routepolicy'}" --export-route-policy "{exportIpv4RoutePolicyId:'/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/microsoft.managednetworkfabric/routePolicies/example-routepolicy',exportIpv6RoutePolicyId:'/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/microsoft.managednetworkfabric/routePolicies/example-routepolicy'}"
+        az networkfabric externalnetwork update --resource-group "example-rg" --l3domain "example-l3domain" --resource-name "example-externalNetwork" --peering-option "OptionA" --nni-id "/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourcegroups/example-rg/providers/microsoft.managednetworkfabric/networkfabrics/example-fabric/networkToNetworkInterconnects/example-nni" --option-a-properties "{peerASN:65234,vlanId:501,mtu:1500,primaryIpv4Prefix:'172.23.1.0/31',secondaryIpv4Prefix:'172.23.1.2/31',bfdConfiguration:{multiplier:5,intervalInMilliSeconds:300},v4OverV6BgpSession:'Enabled',v6OverV4BgpSession:'Enabled',nativeIpv4PrefixLimit:{prefixLimits:[{idleTimeExpiry:60,maximumRoutes:5,threshold:50},{idleTimeExpiry:80,maximumRoutes:10,threshold:60}]},nativeIpv6PrefixLimit:{prefixLimits:[{idleTimeExpiry:60,maximumRoutes:5,threshold:50},{idleTimeExpiry:80,maximumRoutes:10,threshold:60}]}}" --import-route-policy "{importIpv4RoutePolicyId:'/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/microsoft.managednetworkfabric/routePolicies/example-routepolicy',importIpv6RoutePolicyId:'/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/microsoft.managednetworkfabric/routePolicies/example-routepolicy'}" --export-route-policy "{exportIpv4RoutePolicyId:'/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/microsoft.managednetworkfabric/routePolicies/example-routepolicy',exportIpv6RoutePolicyId:'/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/microsoft.managednetworkfabric/routePolicies/example-routepolicy'}"
 
     :example: Help text for sub parameters under the specific parent can be viewed by using the shorthand syntax '??'. See https://github.com/Azure/azure-cli/tree/dev/doc/shorthand_syntax.md for more about shorthand syntax.
         az networkfabric externalnetwork update --option-a-properties "??"
@@ -370,7 +370,7 @@ class Update(AAZCommand):
         if cls._args_prefix_limit_patch_properties_update is not None:
             _schema.idle_time_expiry = cls._args_prefix_limit_patch_properties_update.idle_time_expiry
             _schema.maximum_routes = cls._args_prefix_limit_patch_properties_update.maximum_routes
-            _schema.soft_limit = cls._args_prefix_limit_patch_properties_update.soft_limit
+            _schema.threshold = cls._args_prefix_limit_patch_properties_update.threshold
             return
 
         cls._args_prefix_limit_patch_properties_update = AAZObjectArg()
@@ -384,14 +384,14 @@ class Update(AAZCommand):
             options=["maximum-routes"],
             help="Maximum routes allowed.",
         )
-        prefix_limit_patch_properties_update.soft_limit = AAZIntArg(
-            options=["soft-limit"],
+        prefix_limit_patch_properties_update.threshold = AAZIntArg(
+            options=["threshold"],
             help="Limit at which route prefixes a warning is generate.",
         )
 
         _schema.idle_time_expiry = cls._args_prefix_limit_patch_properties_update.idle_time_expiry
         _schema.maximum_routes = cls._args_prefix_limit_patch_properties_update.maximum_routes
-        _schema.soft_limit = cls._args_prefix_limit_patch_properties_update.soft_limit
+        _schema.threshold = cls._args_prefix_limit_patch_properties_update.threshold
 
     _args_static_route_patch_properties_update = None
 
@@ -931,7 +931,7 @@ class _UpdateHelper:
             return
         _builder.set_prop("idleTimeExpiry", AAZIntType, ".idle_time_expiry")
         _builder.set_prop("maximumRoutes", AAZIntType, ".maximum_routes")
-        _builder.set_prop("softLimit", AAZIntType, ".soft_limit")
+        _builder.set_prop("threshold", AAZIntType, ".threshold")
 
     @classmethod
     def _build_schema_static_route_patch_properties_update(cls, _builder):

@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "storage-actions task update",
-    is_preview=True,
 )
 class Update(AAZCommand):
     """Update a storage task resource with the specified parameters. If a storage task is already created and a subsequent update request is issued with different properties, the storage task properties will be updated. If a storage task is already created and a subsequent update request is issued with the exact same set of properties, the request will succeed.
@@ -334,7 +333,7 @@ class Update(AAZCommand):
                     session,
                     self.on_200_201,
                     self.on_error,
-                    lro_options={"final-state-via": "location"},
+                    lro_options={"final-state-via": "azure-async-operation"},
                     path_format_arguments=self.url_parameters,
                 )
             if session.http_response.status_code in [200, 201]:
@@ -343,7 +342,7 @@ class Update(AAZCommand):
                     session,
                     self.on_200_201,
                     self.on_error,
-                    lro_options={"final-state-via": "location"},
+                    lro_options={"final-state-via": "azure-async-operation"},
                     path_format_arguments=self.url_parameters,
                 )
 
@@ -444,7 +443,7 @@ class Update(AAZCommand):
                 value=instance,
                 typ=AAZObjectType
             )
-            _builder.set_prop("identity", AAZObjectType, ".identity", typ_kwargs={"flags": {"required": True}})
+            _builder.set_prop("identity", AAZIdentityObjectType, ".identity", typ_kwargs={"flags": {"required": True}})
             _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True, "client_flatten": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
 
@@ -570,7 +569,7 @@ class _UpdateHelper:
         storage_task_read.id = AAZStrType(
             flags={"read_only": True},
         )
-        storage_task_read.identity = AAZObjectType(
+        storage_task_read.identity = AAZIdentityObjectType(
             flags={"required": True},
         )
         storage_task_read.location = AAZStrType(

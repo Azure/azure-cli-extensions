@@ -11,6 +11,7 @@
 from .__cmd_group import *
 from ._list import *
 from ._reboot import *
+from ._refresh_configuration import *
 from ._run_ro import *
 from ._run_rw import *
 from ._show import *

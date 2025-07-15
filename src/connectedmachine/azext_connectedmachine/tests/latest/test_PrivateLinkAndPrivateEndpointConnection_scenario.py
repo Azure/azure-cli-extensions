@@ -38,7 +38,7 @@ class PrivateLinkAndPrivateEndpointConnectionScenarioTest(ScenarioTest):
     @AllowLargeResponse(size_kb=9999)
     @ResourceGroupPreparer(name_prefix='cli_test_privatelink')
     def test_private_link(self):
-        rand_string = 'test4'
+        rand_string = 'test'
         self.kwargs.update({
             'machine': 'testmachine',
             'rg': 'ytongtest',
@@ -47,7 +47,7 @@ class PrivateLinkAndPrivateEndpointConnectionScenarioTest(ScenarioTest):
             'subnet': 'subnet-' + rand_string,
             'private_endpoint': 'pe-' + rand_string,
             'private_endpoint_connection': 'pec-' + rand_string,
-            'location': 'eastus',
+            'location': 'westus2',
             'customScriptName': 'custom-' + rand_string,
         })
 
@@ -70,13 +70,11 @@ class PrivateLinkAndPrivateEndpointConnectionScenarioTest(ScenarioTest):
 
         # Update the private link scope
         self.cmd('az connectedmachine private-link-scope update '
-                '--tags Tag1="Value1" '
-                '--public-network-access Enabled '
+                '--tags Tag1=Value1 '
                 '--resource-group "{rg}" '
                 '--scope-name "{scope}"',
                 checks=[
-                    self.check('name','{scope}'),
-                    self.check('properties.publicNetworkAccess','Enabled')
+                    self.check('name','{scope}')
                 ])
 
         # Test private link scope list 

@@ -2,9 +2,21 @@
 
 Release History
 ===============
+
+2.1.0
+++++++
+* Add option for `--autostop-engine-users` to set maximum users per engine for AutoStop criteria.
+* Update API version to 2025-03-01-preview.
+
+2.0.0
+++++++
+* Add commands for creating and managing notification rules using CLI. 
+
+
 1.8.0
 ++++++
 * Add commands for creating and managing schedule triggers using CLI. 
+
 
 1.7.0
 ++++++

@@ -6,13 +6,19 @@
 import os
 import unittest
 import json
+import subprocess
 import azext_confcom.config as config
+import azext_confcom.os_util as os_util
 from azext_confcom.template_util import extract_containers_from_text
 from azext_confcom.security_policy import (
-    load_policy_from_str,
+    load_policy_from_json,
     load_policy_from_virtual_node_yaml_str,
     OutputType,
     decompose_confidential_properties
+)
+from azext_confcom.custom import (
+    acipolicygen_confcom,
+    acifragmentgen_confcom,
 )
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), ".."))
@@ -27,7 +33,7 @@ class PolicyGeneratingVirtualNode(unittest.TestCase):
             "containers": [
                 {
                     "name": "simple-container",
-                    "containerImage": "mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot",
+                    "containerImage": "mcr.microsoft.com/azurelinux/base/python:3.12",
                     "environmentVariables": [
                         {
                             "name":"PATH",
@@ -53,6 +59,44 @@ class PolicyGeneratingVirtualNode(unittest.TestCase):
             ]
         }
         """
+    custom_json2 = """
+{
+  "version": "1.0",
+  "fragments": [],
+  "scenario": "vn2",
+  "containers": [
+    {
+      "name": "simple-container",
+      "properties": {
+        "image": "mcr.microsoft.com/azurelinux/base/python:3.12",
+        "environmentVariables": [
+          {
+            "name": "PATH",
+            "value": "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+          }
+        ],
+        "command": [
+          "python3"
+        ],
+        "volumeMounts": [
+          {
+            "name": "logs",
+            "mountType": "emptyDir",
+            "mountPath": "/aci/logs",
+            "readonly": false
+          },
+          {
+            "name": "secret",
+            "mountType": "emptyDir",
+            "mountPath": "/aci/secret",
+            "readonly": true
+          }
+        ]
+      }
+    }
+  ]
+}
+    """
 
     custom_yaml = """
 apiVersion: v1
@@ -62,7 +106,7 @@ metadata:
 spec:
   containers:
   - name: simple-container
-    image: mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot
+    image: mcr.microsoft.com/azurelinux/base/python:3.12
     command: ["python3"]
     env:
     - name: PATH
@@ -94,7 +138,7 @@ metadata:
 spec:
   containers:
     - name: simple-container
-      image: mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot
+      image: mcr.microsoft.com/azurelinux/base/python:3.12
       command:
         - python3
       env:
@@ -157,7 +201,7 @@ metadata:
 spec:
   containers:
     - name: simple-container
-      image: mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot
+      image: mcr.microsoft.com/azurelinux/base/python:3.12
       command:
         - python3
       env:
@@ -223,7 +267,7 @@ metadata:
 spec:
   initContainers:
     - name: init-container
-      image: mcr.microsoft.com/cbl-mariner/distroless/minimal:2.0
+      image: mcr.microsoft.com/azurelinux/distroless/base:3.0
       command:
         - echo "hello world!"
       env:
@@ -231,7 +275,7 @@ spec:
           value: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
   containers:
     - name: simple-container
-      image: mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot
+      image: mcr.microsoft.com/azurelinux/base/python:3.12
       command:
         - python3
 """
@@ -254,7 +298,7 @@ spec:
     spec:
       containers:
       - name: nginx
-        image: mcr.microsoft.com/cbl-mariner/distroless/minimal:2.0
+        image: mcr.microsoft.com/azurelinux/distroless/base:3.0
         ports:
         - containerPort: 80
           name: web
@@ -271,8 +315,57 @@ spec:
           storage: 1Gi
 """
 
+    custom_yaml_command = """
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: web
+spec:
+  serviceName: "container"
+  replicas: 2
+  selector:
+    matchLabels:
+      app: container
+  template:
+    metadata:
+      labels:
+        app: container
+    spec:
+      containers:
+      - name: container
+        image: mcr.microsoft.com/aci/msi-atlas-adapter:master_20201203.1
+        args: ["test", "values"]
+        ports:
+        - containerPort: 80
+          name: web
+"""
+    @classmethod
+    def setUpClass(cls):
+        cls.key_dir_parent = os.path.join(TEST_DIR, '..', '..', '..', 'samples', 'certs')
+        cls.key = os.path.join(cls.key_dir_parent, 'intermediateCA', 'private', 'ec_p384_private.pem')
+        cls.chain = os.path.join(cls.key_dir_parent, 'intermediateCA', 'certs', 'www.contoso.com.chain.cert.pem')
+        if not os.path.exists(cls.key) or not os.path.exists(cls.chain):
+            script_path = os.path.join(cls.key_dir_parent, 'create_certchain.sh')
+
+            arg_list = [
+                script_path,
+            ]
+            os.chmod(script_path, 0o755)
+
+            # NOTE: this will raise an exception if it's run on windows and the key/cert files don't exist
+            item = subprocess.run(
+                arg_list,
+                check=False,
+                shell=True,
+                cwd=cls.key_dir_parent,
+                env=os.environ.copy(),
+            )
+
+            if item.returncode != 0:
+                raise Exception("Error creating certificate chain")
+
     def test_compare_policy_sources(self):
-        custom_policy = load_policy_from_str(self.custom_json)
+        custom_policy = load_policy_from_json(self.custom_json)
         custom_policy.populate_policy_content_for_all_images()
         virtual_node_policy = load_policy_from_virtual_node_yaml_str(self.custom_yaml)[0]
         virtual_node_policy.populate_policy_content_for_all_images()
@@ -287,6 +380,60 @@ spec:
         self.assertEqual(custom_containers[0].get("layers"), virtual_node_containers[0].get("layers"))
         # test the image command
         self.assertEqual(custom_containers[0].get("command"), virtual_node_containers[0].get("command"))
+
+
+    def test_virtual_node_policy_fragments(self):
+        fragment_filename = "policy_file.json"
+        yaml_filename = "policy_file.yaml"
+        rego_filename = "example_file"
+        import_filename = "my_fragments.json"
+        signed_file_path = f"{rego_filename}.rego.cose"
+        try:
+
+          os_util.write_str_to_file(fragment_filename, self.custom_json2)
+          os_util.write_str_to_file(yaml_filename, self.custom_yaml)
+          acifragmentgen_confcom(None, fragment_filename, None, rego_filename, "1", "test_feed_file", self.key, self.chain, None)
+
+          # create import file
+          acifragmentgen_confcom(None, None, None, None, None, None, None, None, "1", fragment_path=signed_file_path, generate_import=True, fragments_json=import_filename)
+          # add path into the fragment import
+          import_data = os_util.load_json_from_file(import_filename)
+          import_data[config.POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS][0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_PATH] = signed_file_path
+          os_util.write_json_to_file(import_filename, import_data)
+
+          # create policy using import statement
+          acipolicygen_confcom(None, None, None, None, yaml_filename, None, None, fragments_json=import_filename, exclude_default_fragments=True, include_fragments=True)
+
+          # count all the vn2 specific env vars to amke sure they're all there
+          fragment_content = os_util.str_to_base64(os_util.load_str_from_file(f"{rego_filename}.rego"))
+          containers, _ = decompose_confidential_properties(fragment_content)
+
+          env_vars = containers[0].get(config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS)
+
+          vn2_env_var_count = 0
+          vn2_env_vars = [x.get(config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS_NAME) for x in config.VIRTUAL_NODE_ENV_RULES]
+
+          for env_var in env_vars:
+              name = env_var.get(config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS_RULE).split("=")[0]
+              if name in vn2_env_vars:
+                  vn2_env_var_count += 1
+          self.assertEqual(len(vn2_env_vars), vn2_env_var_count)
+
+          output_yaml = os_util.load_yaml_from_file(yaml_filename)
+          output_containers, output_fragments = decompose_confidential_properties(output_yaml.get(config.VIRTUAL_NODE_YAML_METADATA).get(config.VIRTUAL_NODE_YAML_ANNOTATIONS).get(config.VIRTUAL_NODE_YAML_POLICY))
+
+          self.assertTrue(config.DEFAULT_REGO_FRAGMENTS not in output_fragments)
+          for container in output_containers:
+              if container.get(config.POLICY_FIELD_CONTAINERS_NAME) == "simple-container":
+                  self.fail("policy contains container covered by fragment")
+        finally:
+
+          os_util.force_delete_silently(fragment_filename)
+          os_util.force_delete_silently(yaml_filename)
+          os_util.force_delete_silently(import_filename)
+          os_util.force_delete_silently(signed_file_path)
+          os_util.force_delete_silently(f"{rego_filename}.rego")
+
 
     def test_configmaps(self):
         virtual_node_policy = load_policy_from_virtual_node_yaml_str(self.custom_yaml_configmap)[0]
@@ -360,9 +507,12 @@ spec:
 
         # have to extract the name from the pattern
         env_rule_names = [(env_rule['pattern']).split("=")[0] for env_rule in containers[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS]]
+        mounts = [mount[config.POLICY_FIELD_CONTAINERS_ELEMENTS_MOUNTS_DESTINATION] for mount in containers[0][config.ACI_FIELD_CONTAINERS_MOUNTS]]
 
         for var in config.VIRTUAL_NODE_ENV_RULES_WORKLOAD_IDENTITY:
           self.assertTrue(var['name'] in env_rule_names)
+        for mount in config.DEFAULT_MOUNTS_WORKLOAD_IDENTITY_VIRTUAL_NODE:
+            self.assertTrue(mount['mountPath'] in mounts)
 
     def test_volume_claim(self):
         virtual_node_policy = load_policy_from_virtual_node_yaml_str(self.custom_yaml_volume_claim)[0]
@@ -381,3 +531,12 @@ spec:
 
         # get the nginx mount and make sure it is readonly
         containers[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_MOUNTS]
+
+    def test_custom_args(self):
+        virtual_node_policy = load_policy_from_virtual_node_yaml_str(self.custom_yaml_command)[0]
+        virtual_node_policy.populate_policy_content_for_all_images()
+        container_start = "containers := "
+        containers = json.loads(extract_containers_from_text(virtual_node_policy.get_serialized_output(OutputType.PRETTY_PRINT), container_start))
+        command = containers[0].get("command")
+
+        self.assertEqual(command[-2:], ["test", "values"])

@@ -11,6 +11,7 @@
 from .__cmd_group import *
 from ._create import *
 from ._delete import *
+from ._get_deployment_details import *
 from ._get_provisioning_details import *
 from ._list import *
 from ._show import *

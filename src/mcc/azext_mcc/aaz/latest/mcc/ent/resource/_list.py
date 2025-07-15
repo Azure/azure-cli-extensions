@@ -13,17 +13,19 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "mcc ent resource list",
-    is_preview=True,
 )
 class List(AAZCommand):
     """Retrieves relevant information about all Microsoft Connected Cache for Enterprise resources under the resource group.
+
+    :example: List MCC Enterprise Resources in Resource Group
+        az mcc ent resource list --resource-group [MccResourceRgName]
     """
 
     _aaz_info = {
-        "version": "2023-05-01-preview",
+        "version": "2024-11-30-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.connectedcache/enterprisemcccustomers", "2023-05-01-preview"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.connectedcache/enterprisemcccustomers", "2023-05-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.connectedcache/enterprisemcccustomers", "2024-11-30-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.connectedcache/enterprisemcccustomers", "2024-11-30-preview"],
         ]
     }
 
@@ -49,12 +51,12 @@ class List(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        condition_0 = has_value(self.ctx.args.resource_group) and has_value(self.ctx.subscription_id)
-        condition_1 = has_value(self.ctx.subscription_id) and has_value(self.ctx.args.resource_group) is not True
+        condition_0 = has_value(self.ctx.subscription_id) and has_value(self.ctx.args.resource_group) is not True
+        condition_1 = has_value(self.ctx.args.resource_group) and has_value(self.ctx.subscription_id)
         if condition_0:
-            self.EnterpriseMccCustomersListByResourceGroup(ctx=self.ctx)()
-        if condition_1:
             self.EnterpriseMccCustomersListBySubscription(ctx=self.ctx)()
+        if condition_1:
+            self.EnterpriseMccCustomersListByResourceGroup(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -70,7 +72,7 @@ class List(AAZCommand):
         next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
         return result, next_link
 
-    class EnterpriseMccCustomersListByResourceGroup(AAZHttpOperation):
+    class EnterpriseMccCustomersListBySubscription(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -84,7 +86,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ConnectedCache/enterpriseMccCustomers",
+                "/subscriptions/{subscriptionId}/providers/Microsoft.ConnectedCache/enterpriseMccCustomers",
                 **self.url_parameters
             )
 
@@ -100,10 +102,6 @@ class List(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "resourceGroupName", self.ctx.args.resource_group,
-                    required=True,
-                ),
-                **self.serialize_url_param(
                     "subscriptionId", self.ctx.subscription_id,
                     required=True,
                 ),
@@ -114,7 +112,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-05-01-preview",
+                    "api-version", "2024-11-30-preview",
                     required=True,
                 ),
             }
@@ -292,10 +290,6 @@ class List(AAZCommand):
             )
             additional_customer_properties.peering_db_last_update_date = AAZStrType(
                 serialized_name="peeringDbLastUpdateDate",
-                flags={"read_only": True},
-            )
-            additional_customer_properties.peering_db_last_update_time = AAZStrType(
-                serialized_name="peeringDbLastUpdateTime",
                 flags={"read_only": True},
             )
             additional_customer_properties.signup_phase_status_code = AAZIntType(
@@ -402,7 +396,7 @@ class List(AAZCommand):
 
             return cls._schema_on_200
 
-    class EnterpriseMccCustomersListBySubscription(AAZHttpOperation):
+    class EnterpriseMccCustomersListByResourceGroup(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -416,7 +410,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/providers/Microsoft.ConnectedCache/enterpriseMccCustomers",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ConnectedCache/enterpriseMccCustomers",
                 **self.url_parameters
             )
 
@@ -432,6 +426,10 @@ class List(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
+                    "resourceGroupName", self.ctx.args.resource_group,
+                    required=True,
+                ),
+                **self.serialize_url_param(
                     "subscriptionId", self.ctx.subscription_id,
                     required=True,
                 ),
@@ -442,7 +440,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-05-01-preview",
+                    "api-version", "2024-11-30-preview",
                     required=True,
                 ),
             }
@@ -620,10 +618,6 @@ class List(AAZCommand):
             )
             additional_customer_properties.peering_db_last_update_date = AAZStrType(
                 serialized_name="peeringDbLastUpdateDate",
-                flags={"read_only": True},
-            )
-            additional_customer_properties.peering_db_last_update_time = AAZStrType(
-                serialized_name="peeringDbLastUpdateTime",
                 flags={"read_only": True},
             )
             additional_customer_properties.signup_phase_status_code = AAZIntType(
@@ -772,12 +766,15 @@ class _ListHelper:
         additional_info.Element = AAZObjectType()
 
         _element = _schema_error_detail_read.additional_info.Element
-        _element.info = AAZObjectType(
+        _element.info = AAZDictType(
             flags={"read_only": True},
         )
         _element.type = AAZStrType(
             flags={"read_only": True},
         )
+
+        info = _schema_error_detail_read.additional_info.Element.info
+        info.Element = AAZAnyType()
 
         details = _schema_error_detail_read.details
         details.Element = AAZObjectType()
