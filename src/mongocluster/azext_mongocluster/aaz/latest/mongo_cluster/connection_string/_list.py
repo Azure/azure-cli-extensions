@@ -11,15 +11,11 @@
 from azure.cli.core.aaz import *
 
 
-@register_command(
-    "mongo-cluster connection-string list",
-    is_preview=True,
-)
 class List(AAZCommand):
     """List mongo cluster connection strings. This includes the default connection string using SCRAM-SHA-256, as well as other connection strings supported by the cluster.
 
     :example: List the available connection strings for the Mongo Cluster resource.
-        az mongo-cluster connection-string list --resource-group TestGroup --mongo-cluster-name myMongoCluster
+        az mongo-cluster list-connection-strings --resource-group TestGroup --mongo-cluster-name myMongoCluster
     """
 
     _aaz_info = {

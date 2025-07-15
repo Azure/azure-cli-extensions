@@ -11,10 +11,6 @@
 from azure.cli.core.aaz import *
 
 
-@register_command_group(
-    "mongo-cluster connection-string",
-    is_preview=True,
-)
 class __CMDGroup(AAZCommandGroup):
     """Manage connection strings on a Mongo cluster.
     """

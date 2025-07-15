@@ -20,9 +20,6 @@ class Create(AAZCommand):
 
     :example: Creates a new Mongo Cluster resource.
         az mongo-cluster create --resource-group TestResourceGroup --mongo-cluster-name myMongoCluster --location westus2 --administrator-name mongoAdmin --administrator-password password --server-version 5.0 --storage-size-gb 128 --compute-tier M30 --shard-count 1 --high-availability-mode ZoneRedundantPreferred
-
-    :example: Creates a Mongo Cluster resource from a point in time restore
-        az mongo-cluster create --resource-group TestResourceGroup --mongo-cluster-name myMongoCluster --location westus2 --create-mode PointInTimeRestore --restore-time-utc 2023-01-13T20:07:35Z --restore-source-resource-id /subscriptions/ffffffff-ffff-ffff-ffff-ffffffffffff/resourceGroups/TestResourceGroup/providers/Microsoft.DocumentDB/mongoClusters/myOtherMongoCluster
     """
 
     _aaz_info = {
@@ -137,10 +134,10 @@ class Create(AAZCommand):
             arg_group="ReplicaParameters",
             help="The location of the source cluster",
         )
-        _args_schema.replica_source_resource_id = AAZStrArg(
-            options=["--replica-source-resource-id"],
+        _args_schema.replica_source_resource = AAZStrArg(
+            options=["--replica-source-resource"],
             arg_group="ReplicaParameters",
-            help="The id of the replication source cluster.",
+            help="ARM resource ID of the primary cluster to create a replica from.",
         )
 
         # define Arg Group "Resource"
@@ -166,15 +163,15 @@ class Create(AAZCommand):
         # define Arg Group "RestoreParameters"
 
         _args_schema = cls._args_schema
-        _args_schema.restore_time_utc = AAZDateTimeArg(
-            options=["--restore-time-utc"],
+        _args_schema.restore_time = AAZDateTimeArg(
+            options=["--restore-time"],
             arg_group="RestoreParameters",
-            help="UTC point in time to restore a mongo cluster",
+            help="ISO 8601 UTC formatted time stamp to restore a mongo cluster to eg. '2024-07-01T09:03:15Z'",
         )
-        _args_schema.restore_source_resource_id = AAZStrArg(
-            options=["--restore-source-resource-id"],
+        _args_schema.restore_source_resource = AAZStrArg(
+            options=["--restore-source-resource"],
             arg_group="RestoreParameters",
-            help="Resource ID to locate the source cluster to restore",
+            help="ARM resource ID to locate the source cluster to restore",
         )
 
         # define Arg Group "Sharding"
@@ -340,12 +337,12 @@ class Create(AAZCommand):
             replica_parameters = _builder.get(".properties.replicaParameters")
             if replica_parameters is not None:
                 replica_parameters.set_prop("sourceLocation", AAZStrType, ".replica_source_location", typ_kwargs={"flags": {"required": True}})
-                replica_parameters.set_prop("sourceResourceId", AAZStrType, ".replica_source_resource_id", typ_kwargs={"flags": {"required": True}})
+                replica_parameters.set_prop("sourceResourceId", AAZStrType, ".replica_source_resource", typ_kwargs={"flags": {"required": True}})
 
             restore_parameters = _builder.get(".properties.restoreParameters")
             if restore_parameters is not None:
-                restore_parameters.set_prop("pointInTimeUTC", AAZStrType, ".restore_time_utc")
-                restore_parameters.set_prop("sourceResourceId", AAZStrType, ".restore_source_resource_id")
+                restore_parameters.set_prop("pointInTimeUTC", AAZStrType, ".restore_time")
+                restore_parameters.set_prop("sourceResourceId", AAZStrType, ".restore_source_resource")
 
             sharding = _builder.get(".properties.sharding")
             if sharding is not None:

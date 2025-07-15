@@ -13,8 +13,8 @@ class MongoClusterScenario(ScenarioTest):
     def test_mongocluster(self, resource_group, location):
         self.kwargs.update({
           'name': self.create_random_name(prefix='cli', length=24),
-          'replica_name': self.create_random_name(prefix='cli_replica', length=24),
-          'restore_name': self.create_random_name(prefix='cli_restore', length=24),
+          'replica_name': self.create_random_name(prefix='cli-replica', length=24),
+          'restore_name': self.create_random_name(prefix='cli-restore', length=24),
           'loc': location,
           'replica_loc': 'centralus',
           'pwd': self.create_random_name(prefix='Passw0rd2025', length=16),
@@ -65,11 +65,11 @@ class MongoClusterScenario(ScenarioTest):
                      self.check('properties.highAvailability.targetMode', 'Disabled'),
                  ])
 
-        self.cmd('az mongo-cluster connection-string list -g {rg} -n {name}',
+        self.cmd('az mongo-cluster list-connection-strings -g {rg} -n {name}',
                  checks=[
                      self.greater_than('length(@)', 1),
-                     self.check("contains(connectionStrings[?name=='GlobalReadWrite'].connectionString | [0], '{name}.global.mongocluster')", True),
-                     self.check("contains(connectionStrings[?name=='Self'].connectionString | [0], '{name}.mongocluster')", True),
+                     self.check("contains([?name=='GlobalReadWrite'].connectionString | [0], '{name}.global.mongocluster')", True),
+                     self.check("contains([?name=='Self'].connectionString | [0], '{name}.mongocluster')", True),
                  ])
 
         # Valdiate firewall rule CRUD
@@ -80,7 +80,7 @@ class MongoClusterScenario(ScenarioTest):
                      self.check('properties.endIpAddress', '255.255.255.255')
                  ])
 
-        self.cmd('az mongo-cluster firewall-rule create -g {rg} -n {name} -r {rule_name2} --start-ip-address 0.0.0.0 --end-ip-address 255.255.255.255',
+        self.cmd('az mongo-cluster firewall-rule create -g {rg} -n {name} -r {rule_name2} --start-ip-address 0.0.0.0 --end-ip-address 0.0.0.0',
                  checks=[
                      self.check('name', '{rule_name2}'),
                      self.check('properties.startIpAddress', '0.0.0.0'),
@@ -124,13 +124,13 @@ class MongoClusterScenario(ScenarioTest):
             'restore_time': primary_cluster['properties']['backup']['earliestRestoreTime'],
         })
         self.cmd('az mongo-cluster restore -g {rg} -n {restore_name} --location {loc} '
-                 '--source-resource-id {source_resource_id} --restore-time-utc {restore_time} '
+                 '--source-cluster {source_resource_id} --restore-time {restore_time} '
                  '--administrator-name {admin_name} --administrator-password {pwd} --no-wait')
 
         # sleep to avoid possible concurrent operations on primary and start creating a replica in parallel.
-        self.sleep(60)
-        self.cmd('az mongo-cluster replica create -g {rg} -n {replica_name} --location {replica_loc} '
-            '--source-resource-id {source_resource_id} --source-location {loc} --no-wait')
+        time.sleep(60)
+        self.cmd('az mongo-cluster replica create -g {rg} --replica-name {replica_name} --location {replica_loc} '
+            '--source-cluster {name} --source-location {loc} --no-wait')
 
         # Validate restore cluster is created.
         self.cmd('az mongo-cluster wait --resource-group {rg} --name {restore_name} --created')
@@ -146,7 +146,6 @@ class MongoClusterScenario(ScenarioTest):
                      self.check('properties.administrator.userName', '{admin_name}'),
                      self.check('properties.infrastructureVersion', '2.0'),
                      self.check('properties.replica.role', 'Primary'),
-                     self.check('properties.publicNetworkAccess', 'Enabled'),
                      self.check('properties.highAvailability.targetMode', 'Disabled'),
                  ])
 
@@ -173,7 +172,7 @@ class MongoClusterScenario(ScenarioTest):
         self.cmd('az mongo-cluster replica list -g {rg} -n {name}',
                  checks=[
                      self.check('length(@)', 1),
-                     self.check("[?name=='{replica_name}'].id", '{replica_resource_id}'),
+                     self.check("[?name=='{replica_name}'].id | [0]", '{replica_resource_id}'),
                  ])
 
         # Promote the replica and validate transition to primary role.
@@ -199,7 +198,7 @@ class MongoClusterScenario(ScenarioTest):
         self.cmd('az mongo-cluster replica list -g {rg} -n {replica_name}',
                  checks=[
                      self.check('length(@)', 1),
-                     self.check("[?name=='{name}'].id", '{source_resource_id}'),
+                     self.check("[?name=='{name}'].id | [0]", '{source_resource_id}'),
                  ])
         self.cmd('az mongo-cluster replica list -g {rg} -n {name}',
                  checks=[

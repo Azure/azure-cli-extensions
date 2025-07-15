@@ -12,9 +12,12 @@
 
 from knack.log import get_logger
 from azure.cli.core.aaz import register_command
+from azure.mgmt.core.tools import is_valid_resource_id, resource_id
+from collections import OrderedDict
 from .aaz.latest.mongo_cluster import Create as _MongoClusterCreate
 from .aaz.latest.mongo_cluster import Promote as _MongoClusterPromote
 from .aaz.latest.mongo_cluster import Wait as _MongoClusterWait
+from .aaz.latest.mongo_cluster.connection_string import List as _MongoClusterListConnectionStrings
 
 logger = get_logger(__name__)
 
@@ -30,11 +33,11 @@ class MongoClusterCreate(_MongoClusterCreate):
 
         # Hide replica specific create parameters
         args_schema.replica_source_location._registered = False
-        args_schema.replica_source_resource_id._registered = False
+        args_schema.replica_source_resource._registered = False
 
         # Hide restpre specific create parameters
-        args_schema.restore_source_resource_id._registered = False
-        args_schema.restore_time_utc._registered = False
+        args_schema.restore_source_resource._registered = False
+        args_schema.restore_time._registered = False
 
         args_schema.administrator_name._required = True
         args_schema.administrator_password._required = True
@@ -47,6 +50,19 @@ class MongoClusterCreate(_MongoClusterCreate):
 
 
 @register_command(
+    "mongo-cluster list-connection-strings",
+    is_preview=True,
+)
+class MongoClusterListConnectionStrings(_MongoClusterListConnectionStrings):
+    # inherit the documenation from the parent class as-is since it doesn't need to be modified
+    __doc__ = _MongoClusterListConnectionStrings.__doc__
+    
+    def _output(self, *args, **kwargs):
+        result = self.deserialize_output(self.ctx.vars.instance.connectionStrings, client_flatten=True)
+        return result
+
+
+@register_command(
     "mongo-cluster replica create",
     is_preview=True,
 )
@@ -54,7 +70,7 @@ class MongoClusterReplicaCreate(_MongoClusterCreate):
     """Create a Mongo Cluster replica resource.
 
     :example: Creates a replica Mongo Cluster resource from a source cluster.
-        az mongo-cluster replica create --resource-group TestResourceGroup --mongo-cluster-name myMongoCluster --location eastus2 --source-location westus3 --source-resource-id "/subscriptions/ffffffff-ffff-ffff-ffff-ffffffffffff/resourceGroups/TestResourceGroup/providers/Microsoft.DocumentDB/mongoClusters/mySourceMongoCluster"
+        az mongo-cluster replica create --resource-group TestResourceGroup --mongo-cluster-name myMongoCluster --location eastus2 --source-location westus3 --source-resource "/subscriptions/ffffffff-ffff-ffff-ffff-ffffffffffff/resourceGroups/TestResourceGroup/providers/Microsoft.DocumentDB/mongoClusters/mySourceMongoCluster"
     """
 
     @classmethod
@@ -78,22 +94,34 @@ class MongoClusterReplicaCreate(_MongoClusterCreate):
 
         args_schema.server_version._registered = False
 
-        args_schema.restore_time_utc._registered = False
-        args_schema.restore_source_resource_id._registered = False
+        args_schema.restore_time._registered = False
+        args_schema.restore_source_resource._registered = False
 
         args_schema.shard_count._registered = False
 
         args_schema.storage_size_gb._registered = False
 
-        # override the replica arguments
+        # override the replica arguments.
+        args_schema.mongo_cluster_name._options = ["--replica-name"]
+        args_schema.mongo_cluster_name._help["short-summary"] = "The name of the replica mongo cluster."
         args_schema.replica_source_location._options = ["--source-location"]
-        args_schema.replica_source_resource_id._options = ["--source-resource-id"]
+        args_schema.replica_source_location._required = True
+        args_schema.replica_source_resource._options = ["--source-cluster"]
+        args_schema.replica_source_resource._required = True
 
         return args_schema
 
     def pre_operations(self):
         args = self.ctx.args
         args.create_mode = "GeoReplica"
+
+        if not is_valid_resource_id(args.replica_source_resource):
+            args.replica_source_resource = resource_id(
+                subscription=args.subscription_id,
+                resource_group=args.resource_group,
+                namespace='Microsoft.DocumentDB', type='mongoClusters',
+                name=args.replica_source_resource
+            )
 
 
 # Fully inherit the aaz code-generate promote command but re-map it to the replica command group
@@ -133,7 +161,7 @@ class MongoClusterRestore(_MongoClusterCreate):
     """Restores a Mongo Cluster resource.
 
     :example: Creates a restored Mongo Cluster resource from a given source cluster and point in time.
-        az mongo-cluster restore --resource-group TestResourceGroup --mongo-cluster-name myMongoCluster --administrator-name mongoAdmin --administrator-password password --restore-time-utc 2023-01-13T20:07:35Z --source-resource-id "/subscriptions/ffffffff-ffff-ffff-ffff-ffffffffffff/resourceGroups/TestResourceGroup/providers/Microsoft.DocumentDB/mongoClusters/mySourceMongoCluster"
+        az mongo-cluster restore --resource-group TestResourceGroup --mongo-cluster-name myMongoCluster --administrator-name mongoAdmin --administrator-password password --restore-time 2023-01-13T20:07:35Z --source-cluster "/subscriptions/ffffffff-ffff-ffff-ffff-ffffffffffff/resourceGroups/TestResourceGroup/providers/Microsoft.DocumentDB/mongoClusters/mySourceMongoCluster"
     """
 
     @classmethod
@@ -155,24 +183,35 @@ class MongoClusterRestore(_MongoClusterCreate):
         args_schema.server_version._registered = False
 
         args_schema.replica_source_location._registered = False
-        args_schema.replica_source_resource_id._registered = False
+        args_schema.replica_source_resource._registered = False
 
         args_schema.shard_count._registered = False
 
         args_schema.storage_size_gb._registered = False
 
         # Administrator arguments are needed to restore with native authentication.
-        # With upcoming Entra auth mode only these arguments will be partially optional
-        # so not declaring them as required in the argument schema.
         args_schema.administrator_password._registered = True
+        args_schema.administrator_password._required = True
         args_schema.administrator_name._registered = True
+        args_schema.administrator_name._required = True
 
         # override the restore arguments
-        args_schema.restore_time_utc._options = ["--restore-time-utc"]
-        args_schema.restore_source_resource_id._options = ["--source-resource-id"]
+        args_schema.mongo_cluster_name._help["short-summary"] = 'The name of restored mongo cluster.'
+        args_schema.restore_time._options = ["--restore-time"]
+        args_schema.restore_time._required = True
+        args_schema.restore_source_resource._options = ["--source-cluster"]
+        args_schema.restore_source_resource._required = True
 
         return args_schema
 
     def pre_operations(self):
         args = self.ctx.args
         args.create_mode = "PointInTimeRestore"
+
+        if not is_valid_resource_id(args.restore_source_resource):
+            args.restore_source_resource = resource_id(
+                subscription=args.subscription_id,
+                resource_group=args.resource_group,
+                namespace='Microsoft.DocumentDB', type='mongoClusters',
+                name=args.restore_source_resource
+            )

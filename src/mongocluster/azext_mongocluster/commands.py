@@ -13,8 +13,9 @@
 
 def load_command_table(self, _):  # pylint: disable=unused-argument
     with self.command_group("mongo-cluster"):
-        from .custom import MongoClusterCreate
+        from .custom import MongoClusterCreate, MongoClusterListConnectionStrings
         self.command_table["mongo-cluster create"] = MongoClusterCreate(loader=self)
+        self.command_table["mongo-cluster list-connection-strings"] = MongoClusterListConnectionStrings(loader=self)
 
     with self.command_group("mongo-cluster replica"):
         from .custom import MongoClusterReplicaCreate, MongoClusterReplicaPromote, MongoClusterReplicaWait
