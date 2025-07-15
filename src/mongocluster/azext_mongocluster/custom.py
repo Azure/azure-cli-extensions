@@ -115,6 +115,7 @@ class MongoClusterReplicaPromote(_MongoClusterPromote):
     def on_202(self, session):
         pass
 
+
 @register_command(
     "mongo-cluster replica wait",
     is_preview=True,
@@ -122,6 +123,7 @@ class MongoClusterReplicaPromote(_MongoClusterPromote):
 class MongoClusterReplicaWait(_MongoClusterWait):
     # inherit the documenation from the parent class as-is since it doesn't need to be modified
     __doc__ = _MongoClusterWait.__doc__
+
 
 @register_command(
     "mongo-cluster restore",
