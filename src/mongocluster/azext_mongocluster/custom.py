@@ -114,12 +114,13 @@ class MongoClusterReplicaCreate(_MongoClusterCreate):
         args = self.ctx.args
         args.create_mode = "GeoReplica"
 
-        if not is_valid_resource_id(args.replica_source_resource):
+        source_resource = str(args.replica_source_resource)
+        if not is_valid_resource_id(source_resource):
             args.replica_source_resource = resource_id(
-                subscription=args.subscription_id,
+                subscription=self.ctx.subscription_id,
                 resource_group=args.resource_group,
                 namespace='Microsoft.DocumentDB', type='mongoClusters',
-                name=args.replica_source_resource
+                name=source_resource
             )
 
 
@@ -207,10 +208,11 @@ class MongoClusterRestore(_MongoClusterCreate):
         args = self.ctx.args
         args.create_mode = "PointInTimeRestore"
 
-        if not is_valid_resource_id(args.restore_source_resource):
+        source_resource = str(args.restore_source_resource)
+        if not is_valid_resource_id(source_resource):
             args.restore_source_resource = resource_id(
-                subscription=args.subscription_id,
+                subscription=self.ctx.subscription_id,
                 resource_group=args.resource_group,
                 namespace='Microsoft.DocumentDB', type='mongoClusters',
-                name=args.restore_source_resource
+                name=source_resource
             )
