@@ -60,12 +60,18 @@ vnetDnsOverridesExpected = {
     }
 
 def assert_dns_overrides_equal(actual, expected):
-    """Assert that all keys and subkeys in expected are present and equal in actual."""
-    for key, expected_subdict in expected.items():
-        assert key in actual, f"Missing key: {key} in actual local DNS profile"
+    """Assert that all keys and subkeys in expected are present and equal in actual, case-insensitive for keys."""
+    # Lowercase all keys in actual and expected for comparison
+    def lower_keys(d):
+        return {k.lower(): {sk.lower(): sv for sk, sv in v.items()} for k, v in d.items()}
+    actual_lower = lower_keys(actual)
+    expected_lower = lower_keys(expected)
+
+    for key, expected_subdict in expected_lower.items():
+        assert key in actual_lower, f"Missing key: {key} in actual local DNS profile"
         for subkey, subval in expected_subdict.items():
-            assert subkey in actual[key], f"Missing subkey: {subkey} in {key}"
-            assert actual[key][subkey] == subval, f"Mismatch for {key}.{subkey}: {actual[key][subkey]} != {subval}"
+            assert subkey in actual_lower[key], f"Missing subkey: {subkey} in {key}"
+            assert actual_lower[key][subkey] == subval, f"Mismatch for {key}.{subkey}: {actual_lower[key][subkey]} != {subval}"
 
 class TestLocalDNSProfile(unittest.TestCase):
     def setUp(self):

@@ -1105,11 +1105,24 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
             vnet_dns_overrides = {}
 
             def build_override(override_dict):
-                override_fields = [
-                    "queryLogging", "protocol", "forwardDestination", "forwardpolicy",
-                    "maxConcurrent", "cacheDurationInSeconds", "serveStaleDurationInSeconds", "serveStale"
-                ]
-                filtered = {k: v for k, v in override_dict.items() if k in override_fields}
+                camel_to_snake_case = {
+                    "queryLogging": "query_logging",
+                    "protocol": "protocol",
+                    "forwardDestination": "forward_destination",
+                    "forwardPolicy": "forward_policy",
+                    "maxConcurrent": "max_concurrent",
+                    "cacheDurationInSeconds": "cache_duration_in_seconds",
+                    "serveStaleDurationInSeconds": "serve_stale_duration_in_seconds",
+                    "serveStale": "serve_stale",
+                }
+               
+                valid_keys = set(camel_to_snake_case.values())
+                filtered = {}
+                for k, v in override_dict.items():
+                    if k in camel_to_snake_case:
+                        filtered[camel_to_snake_case[k]] = v
+                    elif k in valid_keys:
+                        filtered[k] = v
                 return self.models.LocalDNSOverride(**filtered)
 
            
