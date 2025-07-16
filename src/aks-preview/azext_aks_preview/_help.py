@@ -3865,7 +3865,7 @@ helps['aks bastion'] = """
     parameters:
         - name: --bastion
           type: string
-          short-summary: The resource ID of a pre-deployed Bastion resource configured to connect to the current AKS cluster.
+          short-summary: The name or resource ID of a pre-deployed Bastion resource configured to connect to the current AKS cluster.
           long-summary: If not specified, the command will try to identify an existing Bastion resource within the cluster's node resource group.
         - name: --port
           type: int
