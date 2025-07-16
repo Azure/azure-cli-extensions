@@ -91,6 +91,7 @@ from azext_aks_preview._consts import (
     CONST_OS_DISK_TYPE_EPHEMERAL,
     CONST_OS_DISK_TYPE_MANAGED,
     CONST_OS_SKU_AZURELINUX,
+    CONST_OS_SKU_AZURELINUX3,
     CONST_OS_SKU_CBLMARINER,
     CONST_OS_SKU_MARINER,
     CONST_OS_SKU_UBUNTU,
@@ -268,6 +269,7 @@ node_mode_types = [
 ]
 node_os_skus_create = [
     CONST_OS_SKU_AZURELINUX,
+    CONST_OS_SKU_AZURELINUX3,
     CONST_OS_SKU_UBUNTU,
     CONST_OS_SKU_CBLMARINER,
     CONST_OS_SKU_MARINER,
@@ -281,6 +283,7 @@ node_os_skus = node_os_skus_create + [
 ]
 node_os_skus_update = [
     CONST_OS_SKU_AZURELINUX,
+    CONST_OS_SKU_AZURELINUX3,
     CONST_OS_SKU_UBUNTU,
     CONST_OS_SKU_UBUNTU2204,
     CONST_OS_SKU_UBUNTU2404,
