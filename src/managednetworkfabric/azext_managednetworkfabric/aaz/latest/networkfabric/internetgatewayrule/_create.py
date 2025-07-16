@@ -17,7 +17,7 @@ from azure.cli.core.aaz import *
 class Create(AAZCommand):
     """Create an Internet Gateway Rule resource
 
-    :example: Create a Internet Gateway Rule
+    :example: Create an Internet Gateway Rule
         az networkfabric internetgatewayrule create --resource-group "example-rg" --location "westus3" --resource-name "example-internetgatewayrule" --rule-properties "{action:Allow,addressList:['10.10.10.10']}"
 
     :example: Help text for sub parameters under the specific parent can be viewed by using the shorthand syntax '??'. See https://github.com/Azure/azure-cli/tree/dev/doc/shorthand_syntax.md for more about shorthand syntax.

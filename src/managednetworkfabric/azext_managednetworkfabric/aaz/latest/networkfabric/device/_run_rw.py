@@ -17,7 +17,7 @@ from azure.cli.core.aaz import *
 class RunRw(AAZCommand):
     """Run the RW Command on the Network Device.
 
-    :example: Run rw on the network device
+    :example: Run rw on the Network Device
         az networkfabric device run-rw --resource-name "example-device" --resource-group "example-rg" --rw-command "example command"
     """
 
@@ -248,12 +248,15 @@ class _RunRwHelper:
         additional_info.Element = AAZObjectType()
 
         _element = _schema_error_detail_read.additional_info.Element
-        _element.info = AAZFreeFormDictType(
+        _element.info = AAZDictType(
             flags={"read_only": True},
         )
         _element.type = AAZStrType(
             flags={"read_only": True},
         )
+
+        info = _schema_error_detail_read.additional_info.Element.info
+        info.Element = AAZAnyType()
 
         details = _schema_error_detail_read.details
         details.Element = AAZObjectType()
