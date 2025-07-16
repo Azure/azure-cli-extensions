@@ -832,7 +832,6 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
                     f"Error reading local DNS config from {config}. "
                     "Please provide a valid JSON file."
                 )
-            print("localdns profile", profile)
             return profile
         return None
 
