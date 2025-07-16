@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Show the details of managed identities.
+
+    :example: Show identity on the Network Fabric
+        az networkfabric fabric identity show --resource-group example-rg --network-fabric-name example-fabric
     """
 
     _aaz_info = {

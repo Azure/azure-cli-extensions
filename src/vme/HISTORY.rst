@@ -19,3 +19,7 @@ Release History
 1.0.0b4
 ++++++
 * Add '--force' to 'az vme uninstall' to force delete extension.
+
+1.0.0b5
+++++++
+* Skip running animation if stdout is not a TTY.
