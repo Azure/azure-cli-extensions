@@ -32,7 +32,7 @@ class BastionResource:
         self.resource_group = resource_group
 
 
-def aks_bastion_get_bastion_name(
+def aks_bastion_parse_bastion_resource(
     bastion: str, resource_groups: List[str]
 ) -> BastionResource:
     """Get the bastion resource name from the provided name or node resource group."""

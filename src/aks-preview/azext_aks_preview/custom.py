@@ -94,7 +94,7 @@ from azext_aks_preview.aks_draft.commands import (
     aks_draft_cmd_update,
 )
 from azext_aks_preview.bastion.bastion import (
-    aks_bastion_get_bastion_name,
+    aks_bastion_parse_bastion_resource,
     aks_bastion_get_local_port,
     aks_bastion_extension,
     aks_bastion_set_kubeconfig,
@@ -4364,7 +4364,7 @@ def aks_bastion(cmd, client, resource_group_name, name, bastion=None, port=None,
             mc = client.get(resource_group_name, name)
             mc_id = mc.id
             nrg = mc.node_resource_group
-            bastion_resource = aks_bastion_get_bastion_name(bastion, [nrg, resource_group_name])
+            bastion_resource = aks_bastion_parse_bastion_resource(bastion, [nrg, resource_group_name])
             port = aks_bastion_get_local_port(port)
             aks_get_credentials(cmd, client, resource_group_name, name, admin=admin, path=kubeconfig_path)
             aks_bastion_set_kubeconfig(kubeconfig_path, port)
