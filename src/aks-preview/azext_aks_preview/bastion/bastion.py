@@ -26,6 +26,7 @@ from knack.prompting import prompt_y_n
 logger = get_logger(__name__)
 
 
+# pylint: disable=too-few-public-methods
 class BastionResource:
     def __init__(self, name, resource_group):
         self.name = name
