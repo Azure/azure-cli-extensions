@@ -11,11 +11,11 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
-* Add support for `ManagedSystem` Agent Pool Mode.
 
 18.0.0b19
 +++++++
 * Add command `az aks bastion` to enable connections to managed Kubernetes clusters via Azure Bastion.
+* Add support for `ManagedSystem` Agent Pool Mode.
 
 18.0.0b18
 +++++++
