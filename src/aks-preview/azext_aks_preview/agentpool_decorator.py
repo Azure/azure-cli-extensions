@@ -1143,7 +1143,6 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
                     "serveStaleDurationInSeconds": "serve_stale_duration_in_seconds",
                     "serveStale": "serve_stale",
                 }
-               
                 valid_keys = set(camel_to_snake_case.values())
                 filtered = {}
                 for k, v in override_dict.items():
@@ -1153,7 +1152,7 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
                         filtered[k] = v
                 return self.models.LocalDNSOverride(**filtered)
 
-           
+            # Build kubeDNSOverrides and vnetDNSOverrides from the localdns_profile
             kube_overrides = localdns_profile.get("kubeDNSOverrides")
             for key, value in kube_overrides.items():
                 kube_dns_overrides[key] = build_override(value)
@@ -1434,7 +1433,6 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
                     "serveStaleDurationInSeconds": "serve_stale_duration_in_seconds",
                     "serveStale": "serve_stale",
                 }
-               
                 valid_keys = set(camel_to_snake_case.values())
                 filtered = {}
                 for k, v in override_dict.items():
@@ -1444,7 +1442,7 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
                         filtered[k] = v
                 return self.models.LocalDNSOverride(**filtered)
 
-           
+            # Build kubeDNSOverrides and vnetDNSOverrides from the localdns_profile
             kube_overrides = localdns_profile.get("kubeDNSOverrides")
             for key, value in kube_overrides.items():
                 kube_dns_overrides[key] = build_override(value)
