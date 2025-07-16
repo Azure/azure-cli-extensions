@@ -25,6 +25,7 @@ from azure.cli.command_modules.acs._helpers import (
 from azure.cli.core.azclierror import ClientRequestError
 from azure.cli.testsdk import CliTestError, ScenarioTest, live_only
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
+from azure.core.exceptions import HttpResponseError
 from knack.util import CLIError
 
 def _get_test_data_file(filename):
