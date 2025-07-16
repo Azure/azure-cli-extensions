@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class ViewDeviceConfiguration(AAZCommand):
     """Post action: Triggers view of network fabric configuration.
+
+    :example: View device configuration on the Network Fabric
+        az networkfabric fabric view-device-configuration --resource-group example-rg --network-fabric-name example-fabric
     """
 
     _aaz_info = {
@@ -218,12 +221,15 @@ class _ViewDeviceConfigurationHelper:
         additional_info.Element = AAZObjectType()
 
         _element = _schema_error_detail_read.additional_info.Element
-        _element.info = AAZFreeFormDictType(
+        _element.info = AAZDictType(
             flags={"read_only": True},
         )
         _element.type = AAZStrType(
             flags={"read_only": True},
         )
+
+        info = _schema_error_detail_read.additional_info.Element.info
+        info.Element = AAZAnyType()
 
         details = _schema_error_detail_read.details
         details.Element = AAZObjectType()

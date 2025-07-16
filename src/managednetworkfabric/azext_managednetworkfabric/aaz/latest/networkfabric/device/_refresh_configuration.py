@@ -17,7 +17,7 @@ from azure.cli.core.aaz import *
 class RefreshConfiguration(AAZCommand):
     """Refreshes the configuration the Network Device.
 
-    :example: NetworkDevices_RefreshConfiguration_MaximumSet_Gen
+    :example: Run refresh configuration on the Network Device
         az networkfabric device refresh-configuration --resource-group example-rg --resource-name example-device
     """
 
@@ -222,12 +222,15 @@ class _RefreshConfigurationHelper:
         additional_info.Element = AAZObjectType()
 
         _element = _schema_error_detail_read.additional_info.Element
-        _element.info = AAZFreeFormDictType(
+        _element.info = AAZDictType(
             flags={"read_only": True},
         )
         _element.type = AAZStrType(
             flags={"read_only": True},
         )
+
+        info = _schema_error_detail_read.additional_info.Element.info
+        info.Element = AAZAnyType()
 
         details = _schema_error_detail_read.details
         details.Element = AAZObjectType()

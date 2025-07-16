@@ -17,7 +17,7 @@ from azure.cli.core.aaz import *
 class Update(AAZCommand):
     """Update to update certain properties of the IP Community resource.
 
-    :example: Update IP Community
+    :example: Update the Ip Community
         az networkfabric ipcommunity update --resource-group "example-rg" --resource-name "example-ipcommunity" --ip-community-rules "[{action:Permit,communityMembers:['1:1'],sequenceNumber:1234,wellKnownCommunities:[Internet,GShut]}]"
     """
 

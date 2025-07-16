@@ -17,7 +17,7 @@ from azure.cli.core.aaz import *
 class ValidateConfiguration(AAZCommand):
     """Validates the configuration of the underlying resources in the given Network Fabric instance.
 
-    :example: Validate the configuration
+    :example: Validate the configuration on the Network Fabric
         az networkfabric fabric validate-configuration -g "example-rg" --resource-name "example-nf" --validate-action "Cabling"
     """
 
@@ -252,12 +252,15 @@ class _ValidateConfigurationHelper:
         additional_info.Element = AAZObjectType()
 
         _element = _schema_error_detail_read.additional_info.Element
-        _element.info = AAZFreeFormDictType(
+        _element.info = AAZDictType(
             flags={"read_only": True},
         )
         _element.type = AAZStrType(
             flags={"read_only": True},
         )
+
+        info = _schema_error_detail_read.additional_info.Element.info
+        info.Element = AAZAnyType()
 
         details = _schema_error_detail_read.details
         details.Element = AAZObjectType()

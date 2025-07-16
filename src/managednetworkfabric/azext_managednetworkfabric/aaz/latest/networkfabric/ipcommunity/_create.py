@@ -17,7 +17,7 @@ from azure.cli.core.aaz import *
 class Create(AAZCommand):
     """Create a Ip Community resource
 
-    :example: Create a Ip Community
+    :example: Create an Ip Community
         az networkfabric ipcommunity create --resource-group "example-rg" --location "westus3" --resource-name "example-ipcommunity" --ip-community-rules "[{action:Permit,communityMembers:['1:1'],sequenceNumber:1234,wellKnownCommunities:[Internet,GShut]}]"
 
     :example: Help text for sub parameters under the specific parent can be viewed by using the shorthand syntax '??'. See https://github.com/Azure/azure-cli/tree/dev/doc/shorthand_syntax.md for more about shorthand syntax.

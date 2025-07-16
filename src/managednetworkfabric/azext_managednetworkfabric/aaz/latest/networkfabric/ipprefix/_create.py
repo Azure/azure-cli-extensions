@@ -17,7 +17,7 @@ from azure.cli.core.aaz import *
 class Create(AAZCommand):
     """Create a Ip Prefix resource
 
-    :example: Create a Ip Prefix
+    :example: Create an Ip Prefix
         az networkfabric ipprefix create --resource-group "example-rg" --location "westus3" --resource-name "example-ipprefix" --ip-prefix-rules "[{action:Permit,sequenceNumber:1234,networkPrefix:'1.1.1.0/24',condition:EqualTo,subnetMaskLength:24}]"
 
     :example: Help text for sub parameters under the specific parent can be viewed by using the shorthand syntax '??'. See https://github.com/Azure/azure-cli/tree/dev/doc/shorthand_syntax.md for more about shorthand syntax.

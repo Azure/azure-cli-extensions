@@ -17,7 +17,7 @@ from azure.cli.core.aaz import *
 class RunRo(AAZCommand):
     """Run the RO Command on the Network Device.
 
-    :example: Run ro on the network device
+    :example: Run ro on the Network Device
         az networkfabric device run-ro --resource-name "example-device" --resource-group "example-rg" --ro-command "example command"
     """
 
@@ -275,12 +275,15 @@ class _RunRoHelper:
         additional_info.Element = AAZObjectType()
 
         _element = _schema_error_detail_read.additional_info.Element
-        _element.info = AAZFreeFormDictType(
+        _element.info = AAZDictType(
             flags={"read_only": True},
         )
         _element.type = AAZStrType(
             flags={"read_only": True},
         )
+
+        info = _schema_error_detail_read.additional_info.Element.info
+        info.Element = AAZAnyType()
 
         details = _schema_error_detail_read.details
         details.Element = AAZObjectType()

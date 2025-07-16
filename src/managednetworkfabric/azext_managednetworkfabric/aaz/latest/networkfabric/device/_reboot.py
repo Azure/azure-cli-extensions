@@ -17,7 +17,7 @@ from azure.cli.core.aaz import *
 class Reboot(AAZCommand):
     """Reboot the Network Device.
 
-    :example: NetworkDevices_Reboot_MaximumSet_Gen
+    :example: Reboot the Network Device
         az networkfabric device reboot --resource-group example-rg --resource-name example-device --reboot-type GracefulRebootWithZTP
     """
 
@@ -246,12 +246,15 @@ class _RebootHelper:
         additional_info.Element = AAZObjectType()
 
         _element = _schema_error_detail_read.additional_info.Element
-        _element.info = AAZFreeFormDictType(
+        _element.info = AAZDictType(
             flags={"read_only": True},
         )
         _element.type = AAZStrType(
             flags={"read_only": True},
         )
+
+        info = _schema_error_detail_read.additional_info.Element.info
+        info.Element = AAZAnyType()
 
         details = _schema_error_detail_read.details
         details.Element = AAZObjectType()

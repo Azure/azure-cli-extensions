@@ -17,7 +17,7 @@ from azure.cli.core.aaz import *
 class Update(AAZCommand):
     """Update to update certain properties of the IP Extended Community resource.
 
-    :example: Update IP Extended Community
+    :example: Update the Ip Extended Community
         az networkfabric ipextendedcommunity update --resource-group "example-rg" --resource-name "example-ipextendedcommunity" --ip-extended-community-rules "[{action:Permit,sequenceNumber:1234,routeTargets:['1024:219','1001:200']}]"
     """
 

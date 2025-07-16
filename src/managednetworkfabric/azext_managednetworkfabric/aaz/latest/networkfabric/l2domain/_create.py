@@ -17,7 +17,7 @@ from azure.cli.core.aaz import *
 class Create(AAZCommand):
     """Create a L2 Isolation Domain resource
 
-    :example: Create a L2 Isolation Domain
+    :example: Create an L2 Isolation Domain
         az networkfabric l2domain create --resource-group "example-rg" --resource-name "example-l2domain" --location "westus3" --nf-id "/subscriptions/xxxxxx-xxxxxx-xxxx-xxxx-xxxxxx/resourceGroups/example-rg/providers/Microsoft.ManagedNetworkFabric/NetworkFabrics/example-fabricName" --vlan-id  501 --mtu 1500
     """
 
