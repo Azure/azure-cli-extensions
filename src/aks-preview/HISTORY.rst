@@ -13,15 +13,13 @@ Pending
 +++++++
 * Add support for `ManagedSystem` Agent Pool Mode.
 
+18.0.0b19
++++++++
+* Add command `az aks bastion` to enable connections to managed Kubernetes clusters via Azure Bastion.
+
 18.0.0b18
 +++++++
 * Add validation error when neither --location or --cluster and --resource-group-name are specified for az extension type list or az extension type version list
-
-
-
-18.0.0b18
-+++++++
-* Add command `az aks bastion` to enable connections to managed Kubernetes clusters via Azure Bastion.
 
 18.0.0b17
 +++++++
