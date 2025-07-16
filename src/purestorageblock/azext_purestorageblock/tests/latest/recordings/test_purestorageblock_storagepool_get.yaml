@@ -1,0 +1,104 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - purestorageblock storagepool show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --storage-pool-name
+      User-Agent:
+      - AZURECLI/2.75.0 azsdk-python-core/1.35.0 Python/3.12.10 (Linux-6.8.0-1027-azure-x86_64-with-glibc2.36)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/S1RG1/providers/PureStorage.Block/storagePools/deepak-sp-01?api-version=2024-11-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/S1RG1/providers/PureStorage.Block/storagePools/deepak-sp-01","name":"deepak-sp-01","type":"purestorage.block/storagepools","location":"East
+        US 2 EUAP","tags":{"project":"alpha","env":"test"},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-05-05T07:04:14.2945985Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-05-05T07:04:14.2945985Z"},"identity":{"principalId":"b09a9dd6-ae17-4634-86ae-65c4b0a00449","tenantId":"888d76fa-54b2-4ced-8ee5-aac1585adee7","type":"SystemAssigned"},"properties":{"storagePoolInternalId":"1fb5f324-540d-4e07-8496-d11d10002250","availabilityZone":"1","vnetInjection":{"subnetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/S1RG1/providers/Microsoft.Network/virtualNetworks/ritikavnet/subnets/ritikasubnet","vnetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/S1RG1/providers/Microsoft.Network/virtualNetworks/ritikavnet"},"dataRetentionPeriod":259200,"provisionedBandwidthMbPerSec":992,"provisionedIops":65384,"avs":{"avsEnabled":false,"sddcResourceId":""},"provisioningState":"Failed","reservationResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/S1RG1/providers/PureStorage.Block/reservations/tempReservation2"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1370'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 09 Jul 2025 15:19:45 GMT
+      etag:
+      - '"150067d8-0000-3300-0000-683812370000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: B82ABF4161564B6B960A6A5E2B326E12 Ref B: PNQ231110906060 Ref C: 2025-07-09T15:19:45Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - purestorageblock storagepool list
+      Connection:
+      - keep-alive
+      User-Agent:
+      - AZURECLI/2.75.0 azsdk-python-core/1.35.0 Python/3.12.10 (Linux-6.8.0-1027-azure-x86_64-with-glibc2.36)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/PureStorage.Block/storagePools?api-version=2024-11-01-preview
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/S1RG1/providers/PureStorage.Block/storagePools/cliTestStoragePool","name":"cliTestStoragePool","type":"purestorage.block/storagepools","location":"centralus","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-07-09T12:19:19.325741Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-07-09T12:19:19.325741Z"},"identity":{"principalId":"24506c88-6a32-49de-b5e2-42fdeb7cef2d","tenantId":"888d76fa-54b2-4ced-8ee5-aac1585adee7","type":"SystemAssigned"},"properties":{"availabilityZone":"1","vnetInjection":{"subnetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/pure-cli-testing-vnet/providers/Microsoft.Network/virtualNetworks/pure-cli-vnet/subnets/delg-subnet","vnetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/S1RG1/providers/PureStorage.Block/reservations/cliTestReservation"},"provisionedBandwidthMbPerSec":992,"provisioningState":"Failed","reservationResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/S1RG1/providers/PureStorage.Block/reservations/cliTestReservation"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/S1RG1/providers/PureStorage.Block/storagePools/SeedKajal1","name":"SeedKajal1","type":"purestorage.block/storagepools","location":"eastus2euap","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2024-12-03T10:37:06.6255072Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2024-12-03T10:37:06.6255072Z"},"identity":{"principalId":"ffe8aea3-37a1-4d02-abf6-2eea6da25d15","tenantId":"888d76fa-54b2-4ced-8ee5-aac1585adee7","type":"SystemAssigned"},"properties":{"availabilityZone":"1","vnetInjection":{"subnetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/S1RG10/providers/Microsoft.Network/virtualNetworks/vnet01/subnets/subnet4","vnetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/S1RG10/providers/Microsoft.Network/virtualNetworks/vnet01"},"provisionedBandwidthMbPerSec":1024,"provisioningState":"Failed","reservationResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/S1RG1/providers/PureStorage.Block/reservations/CompleteSetup"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/S1RG1/providers/PureStorage.Block/storagePools/deepak-sp-01","name":"deepak-sp-01","type":"purestorage.block/storagepools","location":"East
+        US 2 EUAP","tags":{"project":"alpha","env":"test"},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-05-05T07:04:14.2945985Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-05-05T07:04:14.2945985Z"},"identity":{"principalId":"b09a9dd6-ae17-4634-86ae-65c4b0a00449","tenantId":"888d76fa-54b2-4ced-8ee5-aac1585adee7","type":"SystemAssigned"},"properties":{"storagePoolInternalId":"1fb5f324-540d-4e07-8496-d11d10002250","availabilityZone":"1","vnetInjection":{"subnetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/S1RG1/providers/Microsoft.Network/virtualNetworks/ritikavnet/subnets/ritikasubnet","vnetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/S1RG1/providers/Microsoft.Network/virtualNetworks/ritikavnet"},"dataRetentionPeriod":259200,"provisionedBandwidthMbPerSec":992,"provisionedIops":65384,"avs":{"avsEnabled":false,"sddcResourceId":""},"provisioningState":"Failed","reservationResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/S1RG1/providers/PureStorage.Block/reservations/tempReservation2"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/S1RG1/providers/PureStorage.Block/storagePools/billtest_pool","name":"billtest_pool","type":"purestorage.block/storagepools","location":"East
+        US 2 EUAP","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-07-01T16:25:15.8195076Z","lastModifiedBy":"2ac806ef-bfc3-487f-b66a-ec5023c35730","lastModifiedByType":"Application","lastModifiedAt":"2025-07-01T16:50:59.075793Z"},"properties":{"availabilityZone":"1","vnetInjection":{"subnetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/S1RG1/providers/Microsoft.Network/virtualNetworks/test/subnets/deepakSubnet","vnetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/S1RG1/providers/Microsoft.Network/virtualNetworks/test"},"provisionedBandwidthMbPerSec":821,"provisioningState":"Failed","reservationResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/S1RG1/providers/PureStorage.Block/reservations/testbillingreservationV8","storagePoolInternalId":"ea6fd109-b040-403f-840e-5ada9e85d9f2"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/S1RG1/providers/PureStorage.Block/storagePools/ritika_billing_test","name":"ritika_billing_test","type":"purestorage.block/storagepools","location":"East
+        US 2 EUAP","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-07-01T16:53:07.5244791Z","lastModifiedBy":"2ac806ef-bfc3-487f-b66a-ec5023c35730","lastModifiedByType":"Application","lastModifiedAt":"2025-07-01T17:15:34.5319826Z"},"identity":{"principalId":"5052e7dc-6d0b-4ed9-b6a9-ada414040137","tenantId":"888d76fa-54b2-4ced-8ee5-aac1585adee7","type":"SystemAssigned"},"properties":{"availabilityZone":"1","vnetInjection":{"subnetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/S1RG1/providers/Microsoft.Network/virtualNetworks/test/subnets/deepakSubnet","vnetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/S1RG1/providers/Microsoft.Network/virtualNetworks/test"},"provisionedBandwidthMbPerSec":1024,"provisioningState":"Failed","reservationResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/S1RG1/providers/PureStorage.Block/reservations/testbillingreservationV8","storagePoolInternalId":"3cf78c23-6462-4beb-ab21-20b0c7fe5599"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aaa/providers/PureStorage.Block/storagePools/test_ritika","name":"test_ritika","type":"purestorage.block/storagepools","location":"East
+        US 2 EUAP","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-07-03T11:05:00.4302853Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-07-03T11:05:00.4302853Z"},"properties":{"availabilityZone":"1","vnetInjection":{"subnetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/S1RG9/providers/Microsoft.Network/virtualNetworks/pure_pp_vnet_testing/subnets/vnet_subnet_test_1","vnetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/S1RG9/providers/Microsoft.Network/virtualNetworks/pure_pp_vnet_testing"},"provisionedBandwidthMbPerSec":800,"provisioningState":"Failed","reservationResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/S1RG1/providers/PureStorage.Block/reservations/testbillingreservationV8"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '7170'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 09 Jul 2025 15:19:47 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-original-request-ids:
+      - 2d1fb515-153a-43bf-bf94-f7804040453d
+      - 8c0b6e15-73d9-4be5-993e-8539fe8423f9
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3748'
+      x-msedge-ref:
+      - 'Ref A: 4929AE83337847128E2E3D44026E4E9D Ref B: PNQ231110909054 Ref C: 2025-07-09T15:19:46Z'
+    status:
+      code: 200
+      message: OK
+version: 1

@@ -1,0 +1,58 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - purestorageblock storagepool get-health-status
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --resource-group --storage-pool-name
+      User-Agent:
+      - AZURECLI/2.75.0 azsdk-python-core/1.35.0 Python/3.12.10 (Linux-6.8.0-1027-azure-x86_64-with-glibc2.36)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dalSUK/providers/PureStorage.Block/storagePools/testpooltag_2/getHealthStatus?api-version=2024-11-01-preview
+  response:
+    body:
+      string: '{"health":{"usedCapacityPercentage":0.0,"bandwidthUsage":{"current":0.0,"provisioned":838860800.0,"max":2147483648.0},"iopsUsage":{"current":0.0,"provisioned":50000.0,"max":150000.0},"space":{"totalUsed":344711168,"unique":0,"snapshots":0,"shared":344711168},"dataReductionRatio":1.0,"estimatedMaxCapacity":0},"alerts":[]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '322'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 09 Jul 2025 15:17:43 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - f04cfff9-ce4b-4006-9894-6eee91dfbcc7
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=888d76fa-54b2-4ced-8ee5-aac1585adee7,objectId=a1dd6afd-047c-4534-9a7b-f72d98b2ec61/centralindia/397efe68-f4fc-4fd8-9b78-fa79e5903270
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: 2BC8B896414045B5A9A754066B9EEA79 Ref B: PNQ231110906060 Ref C: 2025-07-09T15:17:40Z'
+    status:
+      code: 200
+      message: OK
+version: 1
