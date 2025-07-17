@@ -1,1 +1,0 @@
-"""WO Artifact Generator package"""
