@@ -71,6 +71,7 @@ class Create(AAZCommand):
             options=["--context-id"],
             arg_group="Properties",
             help="ArmId of Context",
+            required=True,
         )
         _args_schema.description = AAZStrArg(
             options=["--description"],
@@ -197,7 +198,7 @@ class Create(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.edge/targets/{targetName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Edge/targets/{targetName}",
                 **self.url_parameters
             )
 
