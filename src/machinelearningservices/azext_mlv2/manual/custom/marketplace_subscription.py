@@ -1,0 +1,102 @@
+# ---------------------------------------------------------
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# ---------------------------------------------------------
+
+
+import logging
+
+from azure.ai.ml.entities._load_functions import load_marketplace_subscription
+
+from .raise_error import log_and_raise_error
+from .utils import (
+    _dump_entity_with_warnings,
+    get_ml_client,
+    is_not_found_error,
+    wrap_lro,
+)
+
+module_logger = logging.getLogger(__name__)
+module_logger.propagate = 0
+
+
+def ml_marketplace_subscription_show(cmd, resource_group_name, workspace_name, name):
+    ml_client, debug = get_ml_client(
+        cli_ctx=cmd.cli_ctx, resource_group_name=resource_group_name, workspace_name=workspace_name
+    )
+
+    try:
+        endpoint = ml_client.marketplace_subscriptions.get(name=name)
+        return endpoint.as_dict()
+    except Exception as err:
+        log_and_raise_error(err, debug)
+
+
+def ml_marketplace_subscription_create(
+    cmd,
+    resource_group_name,
+    workspace_name,
+    file=None,
+    name=None,
+    no_wait=False,
+    params_override=None,
+    **kwargs,
+):
+    ml_client, debug = get_ml_client(
+        cli_ctx=cmd.cli_ctx, resource_group_name=resource_group_name, workspace_name=workspace_name
+    )
+    params_override = params_override or []
+    try:
+        if name:
+            # MFE is case-insensitive for Name. So convert the name into lower case here.
+            params_override.append({"name": name.lower()})
+
+        marketplace_subscription = load_marketplace_subscription(source=file, params_override=params_override)
+        marketplace_subscription_name = marketplace_subscription.name
+        marketplace_subscription = ml_client.begin_create_or_update(marketplace_subscription)
+        if no_wait:
+            module_logger.warning(
+                "Marketplace subscription create request initiated. "
+                f"Status can be checked using `az ml marketplace-subscription show -n {marketplace_subscription_name}`\n"
+            )
+        else:
+            marketplace_subscription = wrap_lro(cmd.cli_ctx, marketplace_subscription)
+            return marketplace_subscription.as_dict()
+    except Exception as err:
+        yaml_operation = True if file else False
+        log_and_raise_error(err, debug, yaml_operation=yaml_operation)
+
+
+def ml_marketplace_subscription_delete(
+    cmd,
+    resource_group_name,
+    workspace_name,
+    name,
+    no_wait=False,
+):
+    ml_client, debug = get_ml_client(
+        cli_ctx=cmd.cli_ctx, resource_group_name=resource_group_name, workspace_name=workspace_name
+    )
+    try:
+        ml_client.marketplace_subscriptions.get(name=name)
+    except Exception as err:
+        if is_not_found_error(err):
+            raise Exception(f"Marketplace subscription {name} does not exist.")
+
+    try:
+        delete_result = ml_client.marketplace_subscriptions.begin_delete(name=name)
+        if not no_wait:
+            delete_result = wrap_lro(cmd.cli_ctx, delete_result)
+        return _dump_entity_with_warnings(delete_result)
+    except Exception as err:
+        log_and_raise_error(err, debug)
+
+
+def ml_marketplace_subscription_list(cmd, resource_group_name, workspace_name):
+    ml_client, debug = get_ml_client(
+        cli_ctx=cmd.cli_ctx, resource_group_name=resource_group_name, workspace_name=workspace_name
+    )
+    try:
+        results = ml_client.marketplace_subscriptions.list()
+        return list(map(lambda x: _dump_entity_with_warnings(x), results))
+    except Exception as err:
+        log_and_raise_error(err, debug)

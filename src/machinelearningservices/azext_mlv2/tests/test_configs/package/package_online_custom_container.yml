@@ -1,0 +1,19 @@
+target_environment_name: diabetes-online-custom-container
+base_environment_source: 
+  type: environment_asset
+  resource_id: azureml:mycontainer:1
+inferencing_server: 
+  type: custom
+  inference_configuration:
+    entry_script: gunicorn --workers=2 $AZUREML_MODEL_DIR
+    liveness_route:
+      port: 8501
+      path: /v1/models/half_plus_two
+model_configuration:
+  mode: readonly_mount
+inputs:
+  path: azureml:labels-data:1
+  type: uri_folder
+  mode: readonly_mount
+environment_variables:
+  LABELS_PATH: /var/server/labels_path

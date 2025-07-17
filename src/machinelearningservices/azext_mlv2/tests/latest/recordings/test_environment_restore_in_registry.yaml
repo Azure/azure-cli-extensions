@@ -1,0 +1,159 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json, text/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0 Python/3.10.12
+        (Linux-6.2.0-32-generic-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://eastus.api.azureml.ms/registrymanagement/v1.0/registries/taji-registry2/discovery
+  response:
+    body:
+      string: '{"registryId": "3b615807-f759-4e41-ac66-9ff54345ed9c", "registryName":
+        "taji-registry2", "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47", "primaryRegion":
+        "eastus2", "regions": ["eastus2", "centraluseuap", "eastus2euap"], "subscriptionId":
+        "00000000-0000-0000-0000-000000000000", "resourceGroup": "taji-rg", "workspaceName":
+        null, "primaryRegionResourceProviderUri": "https://cert-eastus2.experiments.azureml.net/",
+        "registryFqdns": {"eastus2": {"uri": "https://eastus2.api.azureml.ms"}, "centraluseuap":
+        {"uri": "https://int.api.azureml-test.ms"}, "int": {"uri": "https://int.api.azureml-test.ms"},
+        "eastus2euap": {"uri": "https://eastus2euap.api.azureml.ms"}}, "intellectualPropertyPublisher":
+        null}'
+    headers:
+      connection:
+      - keep-alive
+      content-length:
+      - '704'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 12 Sep 2023 16:55:12 GMT
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=15724800; includeSubDomains; preload
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.060'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0 Python/3.10.12
+        (Linux-6.2.0-32-generic-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://cert-eastus2.experiments.azureml.net/mferp/managementfrontend/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/registries/taji-registry2/environments/taji-registry-env/versions/1?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "azureml://registries/taji-registry2/environments/taji-registry-env/versions/1",
+        "name": "1", "type": "environments", "properties": {"description": "Environment
+        created from a Docker image.", "tags": {}, "properties": {}, "isArchived":
+        false, "isAnonymous": false, "environmentType": "UserCreated", "image": "pytorch/pytorch:latest",
+        "condaFile": "", "osType": "Linux", "stage": "Development", "intellectualProperty":
+        null}, "systemData": {"createdAt": "2023-09-07T18:30:45.28594+00:00", "createdBy":
+        "Taji Harris", "createdByType": "User", "lastModifiedAt": "2023-09-07T18:30:45.28594+00:00",
+        "lastModifiedBy": "Taji Harris", "lastModifiedByType": "User"}}'
+    headers:
+      connection:
+      - keep-alive
+      content-length:
+      - '664'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 12 Sep 2023 16:55:14 GMT
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=15724800; includeSubDomains; preload
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-02
+      x-content-type-options:
+      - nosniff
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.718'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"description": "Environment created from a Docker image.",
+      "properties": {}, "tags": {}, "isAnonymous": false, "isArchived": false, "condaFile":
+      "", "image": "pytorch/pytorch:latest", "osType": "Linux", "stage": "Development"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '243'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0 Python/3.10.12
+        (Linux-6.2.0-32-generic-x86_64-with-glibc2.35)
+    method: PUT
+    uri: https://cert-eastus2.experiments.azureml.net/mferp/managementfrontend/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/registries/taji-registry2/environments/taji-registry-env/versions/1?api-version=0000-00-00
+  response:
+    body:
+      string: 'null'
+    headers:
+      connection:
+      - keep-alive
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 12 Sep 2023 16:55:14 GMT
+      location:
+      - https://eastus2.api.azureml.ms/environment/v1.0/operations/taji-registry2_taji-registry-env_1_f60889ea-b404-4720-bace-0871e4733c05
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=15724800; includeSubDomains; preload
+      x-aml-cluster:
+      - vienna-eastus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-async-operation-timeout:
+      - PT1H
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.634'
+    status:
+      code: 202
+      message: Accepted
+version: 1

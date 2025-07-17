@@ -1,0 +1,158 @@
+# ---------------------------------------------------------
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# ---------------------------------------------------------
+
+import yaml
+import pytest
+from azext_mlv2.tests.scenario_test_helper import MLBaseScenarioTest
+from azure.core.exceptions import HttpResponseError
+
+
+class ComputeScenarioTest(MLBaseScenarioTest):
+    def test_compute_aml(self) -> None:
+        compute_name_suffix = "cc1"
+        # Updating dictionary with the job name
+        self.kwargs["compute_name_1"] = "{}{}".format(self.kwargs.get("computeName", None), compute_name_suffix)
+        ws_obj = self.cmd(
+            "az ml compute create --name {compute_name_1} --type AmlCompute --no-wait --location eastus"
+        )
+        assert ws_obj.output == ""
+        if not self.is_live:
+            from time import sleep
+
+            sleep(30)  # This sleep is only required for fresh recording of cassette
+        ws_obj = self.cmd("az ml compute show --name {compute_name_1} -o json")
+        ws_obj = yaml.safe_load(ws_obj.output)
+        assert ws_obj["name"] == self.kwargs.get("compute_name_1", None)
+        assert ws_obj["type"] == "amlcompute"
+        assert ws_obj["size"] == "STANDARD_DS3_V2"
+        assert ws_obj["enable_node_public_ip"]
+        assert ws_obj["location"] == "eastus"
+        ws_update = self.cmd(
+            "az ml compute update -n {compute_name_1} --max-instances 4 --min-instances 1 --idle-time-before-scale-down 100 --identity-type SystemAssigned -o json"
+        )
+        ws_update = yaml.safe_load(ws_update.output)
+        assert ws_update["min_instances"] == 1
+        # service returns failure on setting identity-type of compute: identity-type system_assigned
+        # https://msdata.visualstudio.com/Vienna/_workitems/edit/1706972
+        # assert ws_update["identity"]["type"] == "system_assigned"
+        computes = self.cmd("az ml compute list --max-results 1")
+        assert len(yaml.safe_load(computes.output)) != 0
+        ws_del = self.cmd("az ml compute delete --name {compute_name_1} --no-wait -y")
+        assert ws_del.output == ""
+        # Delete a key regardless of whether it is in the dictionary for the new name
+        self.kwargs.pop("compute_name_1", None)
+
+    def test_compute_list_nodes(self) -> None:
+        compute_name_suffix = "cc2"
+        # Updating dictionary with the job name
+        self.kwargs["compute_name_2"] = "{}{}".format(self.kwargs.get("computeName", None), compute_name_suffix)
+        ws_obj = self.cmd(
+            "az ml compute create --name {compute_name_2} --type AmlCompute --max-instances 2 --min-instances 1"
+        )
+        ws_obj = self.cmd("az ml compute list-nodes -n {compute_name_2} -o json")
+        ws_obj = yaml.safe_load(ws_obj.output)[0]
+        assert ws_obj["node_id"] == "tvmps_a8d843e863f72cbb087729d8c016718d5edd972f3d9a5b78e278380447a61dd6_d"
+        assert ws_obj["node_state"] == "idle"
+        assert ws_obj["port"] == "50000"
+        assert ws_obj["private_ip_address"] == "10.0.0.4"
+        assert ws_obj["public_ip_address"] == "20.246.149.32"
+        ws_del = self.cmd("az ml compute delete --name {compute_name_2} --no-wait -y")
+        assert ws_del.output == ""
+        # Delete a key regardless of whether it is in the dictionary for the new name
+        self.kwargs.pop("compute_name_2", None)
+
+    def test_compute_compute_instance(self) -> None:
+        compute_name_suffix = "ci3"
+        # Updating dictionary with the job name
+        self.kwargs["compute_name_3"] = "{}{}".format(self.kwargs.get("computeName", None), compute_name_suffix)
+        ws_obj = self.cmd(
+            "az ml compute create --name {compute_name_3} --type computeinstance --identity-type SystemAssigned  --tags test1='true' test2=test --no-wait"
+        )
+        assert ws_obj.output == ""
+        if not self.is_live:
+            from time import sleep
+
+            sleep(30)  # This sleep is only required for fresh recording of cassette
+        ws_obj = self.cmd("az ml compute show --name {compute_name_3} -o json")
+        ws_obj = yaml.safe_load(ws_obj.output)
+        assert ws_obj["name"] == self.kwargs.get("compute_name_3", None)
+        assert ws_obj["type"] == "computeinstance"
+        assert ws_obj["size"] == "STANDARD_DS3_V2"
+        assert ws_obj["identity"]["type"] == "system_assigned"
+        assert ws_obj["enable_node_public_ip"]
+        assert ws_obj["tags"] is not None
+        assert ws_obj["tags"]["test1"] == "true"
+        assert ws_obj["tags"]["test2"] == "test"
+        ws_del = self.cmd("az ml compute delete --name {compute_name_3} --no-wait -y")
+        assert ws_del.output == ""
+        # Delete a key regardless of whether it is in the dictionary for the new name
+        self.kwargs.pop("compute_name_3", None)
+
+    def test_compute_compute_instance_with_schedules(self) -> None:
+        compute_name_suffix = "ci4"
+        # Updating dictionary with the job name
+        self.kwargs["compute_name_4"] = "{}{}".format(self.kwargs.get("computeName", None), compute_name_suffix)
+        ws_obj = self.cmd(
+            "az ml compute create --name {compute_name_4} --type computeinstance --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/compute/compute-ci-schedules.yaml  --no-wait"
+        )
+        assert ws_obj.output == ""
+        if not self.is_live:
+            from time import sleep
+
+            sleep(360)  # This sleep is only required for fresh recording of cassette
+        ws_obj = self.cmd("az ml compute show --name {compute_name_4} -o json")
+        ws_obj = yaml.safe_load(ws_obj.output)
+        assert ws_obj["name"] == self.kwargs.get("compute_name_4", None)
+        assert ws_obj["type"] == "computeinstance"
+        assert ws_obj["size"] == "STANDARD_DS3_V2"
+        assert len(ws_obj["schedules"]["compute_start_stop"]) == 2
+        ws_del = self.cmd("az ml compute delete --name {compute_name_4} --no-wait -y")
+        assert ws_del.output == ""
+        # Delete a key regardless of whether it is in the dictionary for the new name
+        self.kwargs.pop("compute_name_4", None)
+
+    def test_compute_aml_no_location(self) -> None:
+        compute_name_suffix = "cc5"
+        # Updating dictionary with the job name
+        self.kwargs["compute_name_5"] = "{}{}".format(self.kwargs.get("computeName", None), compute_name_suffix)
+        ws_obj = self.cmd(
+            "az ml compute create --name {compute_name_5} --type AmlCompute --no-wait"
+        )
+        assert ws_obj.output == ""
+        if not self.is_live:
+            from time import sleep
+            sleep(30)  # This sleep is only required for fresh recording of cassette
+
+        ws_obj = self.cmd("az ml compute show --name {compute_name_5} -o json")
+        ws_obj = yaml.safe_load(ws_obj.output)        
+        ws_obj_loc = self.cmd("az ml workspace show -o json")
+        ws_obj_loc = yaml.safe_load(ws_obj_loc.output)
+        assert ws_obj["location"] == ws_obj_loc["location"]
+        
+        ws_del = self.cmd("az ml compute delete --name {compute_name_5} --no-wait -y")
+        assert ws_del.output == ""
+        # Delete a key regardless of whether it is in the dictionary for the new name
+        self.kwargs.pop("compute_name_5", None)
+
+    def test_compute_compute_instance_with_no_public_ip(self) -> None:
+        compute_name_suffix = "ci6"
+        # Updating dictionary with the job name
+        self.kwargs["compute_name_6"] = "{}{}".format(self.kwargs.get("computeName", None), compute_name_suffix)
+        with pytest.raises((HttpResponseError)) as ex:
+            self.cmd(
+                "az ml compute create --name {compute_name_6} --type computeinstance --no-wait --enable-node-public-ip False"
+            )
+            assert ex.message == "Provided EnableNodePublicIp 'False' requires workspace private endpoint."
+        # Delete a key regardless of whether it is in the dictionary for the new name
+        self.kwargs.pop("compute_name_6", None)
+
+    def test_compute_list(self) -> None:
+        ws_obj_list = self.cmd("az ml compute list")
+        ws_obj_list = yaml.safe_load(ws_obj_list.output)
+        assert len(ws_obj_list) > 0
+
+    def test_compute_list_type(self) -> None:
+        ws_obj_list = self.cmd("az ml compute list --type AmlCompute")
+        ws_obj_list = yaml.safe_load(ws_obj_list.output)
+        assert len(ws_obj_list) > 0
