@@ -1354,6 +1354,7 @@ def helm_install_release(
             "Please check if the azure-arc namespace was deployed and run 'kubectl get pods -n azure-arc' "
             "to check if all the pods are in running state. A possible cause for pods stuck in pending "
             "state could be insufficient resources on the kubernetes cluster to onboard to arc."
+            "Also pod logs can be checked using kubectl logs <pod-name> -n azure-arc.\n"
         )
         logger.warning(warn_msg)
         raise CLIInternalError(

@@ -621,6 +621,7 @@ def create_connectedk8s(
                     "The kubernetes cluster you are trying to onboard is already onboarded to "
                     f"the resource group '{configmap_rg_name}' with resource name '{configmap_cluster_name}'."
                 )
+                logger.warning(consts.Cluster_Already_Onboarded_Error)
                 raise ArgumentUsageError(err_msg)
 
             # Re-put connected cluster
@@ -1148,7 +1149,7 @@ def check_kube_connection() -> str:
         git_version: str = api_response.git_version
         return git_version
     except Exception as e:  # pylint: disable=broad-except
-        logger.warning("Unable to verify connectivity to the Kubernetes cluster.")
+        logger.warning(consts.KubeApi_Connectivity_Failed_Warning)
         utils.kubernetes_exception_handler(
             e,
             consts.Kubernetes_Connectivity_FaultType,
@@ -1370,6 +1371,7 @@ def load_kube_config(
             fault_type=consts.Load_Kubeconfig_Fault_Type,
             summary="Problem loading the kubeconfig file",
         )
+        logger.warning(consts.Kubeconfig_Load_Failed_Warning)
         raise FileOperationError("Problem loading the kubeconfig file. " + str(e))
 
 

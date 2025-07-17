@@ -460,6 +460,14 @@ For guidance, refer to: https://aka.ms/enable-customlocation"""
 
 Custom_Location_Enable_Failed_warning = """Important! Custom Location feature wasn't enabled due to insufficient privileges on the Service Principal Name. If the custom location feature is not enabled, you will encounter an error when creating the custom location. Refer to: https://aka.ms/enable-cl-spn"""
 
+KubeApi_Connectivity_Failed_Warning = """Unable to verify connectivity to the Kubernetes cluster.
+Please check https://learn.microsoft.com/en-us/azure/azure-arc/kubernetes/diagnose-connection-issues"""
+
+Kubeconfig_Load_Failed_Warning = """Unable to load the kubeconfig file.
+Please check https://learn.microsoft.com/en-us/azure/azure-arc/kubernetes/diagnose-connection-issues#is-kubeconfig-pointing-to-the-right-cluster"""
+
+Cluster_Already_Onboarded_Error = """The kubernetes cluster is already onboarded.
+Please check if the Kubeconfig is pointing to the correct cluster using  command: kubectl config current-context."""
 
 # Diagnostic Results Name
 Outbound_Connectivity_Check_Result_String = "Outbound Network Connectivity"
