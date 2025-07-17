@@ -18,7 +18,8 @@ from azext_fleet.constants import UPGRADE_TYPE_CONTROLPLANEONLY
 from azext_fleet.constants import UPGRADE_TYPE_FULL
 from azext_fleet.constants import UPGRADE_TYPE_NODEIMAGEONLY
 from azext_fleet.constants import UPGRADE_TYPE_ERROR_MESSAGES
-
+from azext_fleet.constants import SUPPORTED_GATE_STATES_FILTERS
+from azext_fleet.constants import SUPPORTED_GATE_STATES_PATCH
 
 # pylint: disable=too-many-locals
 def create_fleet(cmd,
@@ -632,8 +633,18 @@ def generate_update_run(cmd,  # pylint: disable=unused-argument
 def list_gates_by_fleet(cmd,  # pylint: disable=unused-argument
                              client,
                              resource_group_name,
-                             fleet_name):
-    return client.list_by_fleet(resource_group_name, fleet_name)
+                             fleet_name,
+                             state_filter=None):
+    params = {}
+
+    if state_filter:
+        if state_filter not in SUPPORTED_GATE_STATES_FILTERS:
+            raise CLIError(f"Unsupported gate state filter value: '{state_filter}'. Allowed values are {SUPPORTED_GATE_STATES_FILTERS}")
+
+        params["$filter"] = f"state eq {state_filter}"
+
+    return client.list_by_fleet(resource_group_name, fleet_name, params=params)
+
 
 def get_gate(cmd,  # pylint: disable=unused-argument
                              client,
@@ -642,17 +653,48 @@ def get_gate(cmd,  # pylint: disable=unused-argument
                              gate_name):
     return client.get(resource_group_name, fleet_name, gate_name)
 
-def update_gate(cmd,  # pylint: disable=unused-argument
-                             client,
-                             resource_group_name,
-                             fleet_name,
-                             gate_name,
-                             gate_state=None):
+
+def _patch_gate(cmd,  # pylint: disable=unused-argument
+                client,
+                resource_group_name,
+                fleet_name,
+                gate_name,
+                gate_state,
+                no_wait=False):
+    if gate_state not in SUPPORTED_GATE_STATES_PATCH:
+        raise CLIError(f"Unsupported gate state value: '{gate_state}'. Allowed values are {SUPPORTED_GATE_STATES_PATCH}")
 
     gate_model = cmd.get_models(
         "GatePatch",
         resource_type=CUSTOM_MGMT_FLEET,
         operation_group="gates"
     )
-    properties = gate_models(gate_state=gate_state)
-    return sdk_no_wait(no_wait, client.begin_update, resource_group_name, fleet_name, gate_name, properties)
+    gate_properties_model = cmd.get_models(
+        "GatePatchProperties",
+        resource_type=CUSTOM_MGMT_FLEET,
+        operation_group="gates"
+    )
+
+    properties = gate_properties_model(state=gate_state)
+    patch_request = gate_model(properties=properties)
+
+    return sdk_no_wait(no_wait, client.begin_update, resource_group_name, fleet_name, gate_name, patch_request)
+
+
+def update_gate(cmd,  # pylint: disable=unused-argument
+                client,
+                resource_group_name,
+                fleet_name,
+                gate_name,
+                gate_state=None,
+                no_wait=False):
+    return _patch_gate(cmd, client, resource_group_name, fleet_name, gate_name, gate_state, no_wait)
+
+
+def approve_gate(cmd,  # pylint: disable=unused-argument
+                 client,
+                 resource_group_name,
+                 fleet_name,
+                 gate_name,
+                 no_wait=False):
+    return _patch_gate(cmd, client, resource_group_name, fleet_name, gate_name, "Completed", no_wait)

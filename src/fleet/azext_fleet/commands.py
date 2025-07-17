@@ -117,3 +117,4 @@ def load_command_table(self, _):
         g.custom_command("list", "list_gates_by_fleet")
         g.custom_command("get", "get_gate")
         g.custom_command("update", "update_gate")
+        g.custom_command("approve", "approve_gate")
