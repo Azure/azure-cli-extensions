@@ -10,7 +10,7 @@ from setuptools import setup, find_packages
 
 
 # HISTORY.rst entry.
-VERSION = '1.0.0'
+VERSION = '1.0.1'
 
 # The full list of classifiers is available at
 # https://pypi.python.org/pypi?%3Aaction=list_classifiers
@@ -34,18 +34,8 @@ with open('HISTORY.rst', 'r', encoding='utf-8') as f:
     HISTORY = f.read()
 
 SUMMARY = """
-Workload Orchestration for Azure Arc is a comprehensive, cloud-native, cross-platform service engine that simplifies the deployment, management, and update of application workloads across edge environments. It addresses typical application lifecycle management problems for customers who need application deployments across multiple fleets with site-specific configurations and natively supports Kubernetes workloads.
+Workload orchestration for Azure Arc is a comprehensive, cloud-native, cross-platform service engine that simplifies the deployment, management, and update of application workloads across edge environments. Workload orchestration addresses typical application lifecycle management problems for customers who need to have application deployments across multiple fleets with site-specific configurations. It natively supports kubernetes workloads.
 
-Key capabilities include:
-- Template framework and schema inheritance for consistent deployments
-- Dependent application management with orchestrated workflows
-- Custom and external validation rules to prevent misconfigurations
-- Integrated monitoring and unified control with centralized dashboard
-- No-code authoring experience with role-based access control
-- CLI and automation support for DevOps integration
-- Fast onboarding and setup with guided workflows
-
-Workload orchestration uses both cloud and edge components to deliver a unified management experience through Azure Resource Manager, enabling fine-grained RBAC and consistent governance across distributed edge environments.
 """
 
 setup(

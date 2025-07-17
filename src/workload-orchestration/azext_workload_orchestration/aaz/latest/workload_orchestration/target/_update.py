@@ -23,7 +23,7 @@ class Update(AAZCommand):
     _aaz_info = {
         "version": "2025-06-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.edge/targets/{}", "2025-06-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/Microsoft.Edge/targets/{}", "2025-06-01"],
         ]
     }
 
@@ -102,6 +102,14 @@ class Update(AAZCommand):
             arg_group="Properties",
             help="target spec",
         )
+
+
+        _args_schema.context_id = AAZResourceIdArg(
+            options=["--context-id"],
+            arg_group="Properties",
+            help="ArmId of Context",
+        )
+
 
         capabilities = cls._args_schema.capabilities
         capabilities.Element = AAZStrArg(
@@ -371,6 +379,7 @@ class Update(AAZCommand):
                 properties.set_prop("solutionScope", AAZStrType, ".solution_scope")
                 properties.set_prop("state", AAZStrType, ".state")
                 properties.set_prop("targetSpecification", AAZFreeFormDictType, ".target_specification", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("contextId", AAZStrType, ".context_id", typ_kwargs={"flags": {"required": True}})
 
             capabilities = _builder.get(".properties.capabilities")
             if capabilities is not None:
