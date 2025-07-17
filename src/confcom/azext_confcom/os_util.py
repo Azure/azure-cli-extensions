@@ -11,6 +11,7 @@ import binascii
 import shutil
 import json
 import os
+import stat
 from tarfile import TarFile
 from azext_confcom.errors import (
     eprint,
@@ -170,7 +171,7 @@ def map_image_from_tar_backwards_compatibility(image_name: str, tar: TarFile, ta
                 ][0]
                 break
         # remove the extracted manifest file to clean up
-        os.remove(manifest_path)
+        force_delete_silently(manifest_path)
     else:
         eprint(f"Tarball at {tar_location} contains no images")
 
@@ -182,12 +183,62 @@ def map_image_from_tar_backwards_compatibility(image_name: str, tar: TarFile, ta
     image_info_file_path = os.path.join(tar_dir, info_file.name)
     image_info_raw = load_json_from_file(image_info_file_path)
     # delete the extracted json file to clean up
-    os.remove(image_info_file_path)
+    force_delete_silently(image_info_file_path)
     image_info = image_info_raw.get("config")
     # importing the constant from config.py gives a circular dependency error
     image_info["Architecture"] = image_info_raw.get("architecture")
 
+    shutil.rmtree("blobs", ignore_errors=True)
     return image_info
+
+
+def get_oci_image_name(image_name: str) -> str:
+    if "/" not in image_name:
+        return f"docker.io/library/{image_name}"
+    return image_name
+
+
+def read_file_from_tar(tar: TarFile, filename: str) -> str:
+    try:
+        return tar.extractfile(filename).read()
+    except KeyError:
+        eprint(f"'{filename}' not found in tar file")
+
+
+def map_image_from_tar_oci_layout_v1(image_name: str, tar: TarFile, tar_location: str):
+    # since this uses containerd naming, we need to append the docker.io path
+    oci_image_name = get_oci_image_name(image_name)
+
+    index_bytes = read_file_from_tar(tar, "index.json")
+    index = load_json_from_str(index_bytes)
+
+    manifests = index.get("manifests") or []
+    for manifest in manifests:
+        image_annotations = manifest.get("annotations")
+        image_name_annotation = ""
+        if image_annotations:
+            image_name_annotation = image_annotations.get("io.containerd.image.name")
+            if image_name_annotation and image_name_annotation != oci_image_name:
+                continue
+        if (
+            manifest.get("mediaType") in
+            ["application/vnd.docker.distribution.manifest.v2+json", "application/vnd.oci.image.manifest.v1+json"]
+        ):
+            hashing_algo, manifest_name = manifest.get("digest").split(":")
+            manifest_location = f"blobs/{hashing_algo}/{manifest_name}"
+
+            nested_manifest_bytes = tar.extractfile(manifest_location).read()
+            nested_manifest = load_json_from_str(nested_manifest_bytes)
+            config = nested_manifest.get("config")
+
+            config_hashing_algo, config_digest = config.get("digest").split(":")
+            config_location = f"blobs/{config_hashing_algo}/{config_digest}"
+            image_info_raw_bytes = tar.extractfile(config_location).read()
+            image_info_raw = load_json_from_str(image_info_raw_bytes)
+            image_info = image_info_raw.get("config")
+            image_info["Architecture"] = image_info_raw.get("architecture")
+            return image_info
+    eprint(f"Image '{image_name}' is not found in '{tar_location}'")
 
 
 def map_image_from_tar(image_name: str, tar: TarFile, tar_location: str):
@@ -209,7 +260,7 @@ def map_image_from_tar(image_name: str, tar: TarFile, tar_location: str):
                 break
     finally:
         # remove the extracted manifest file to clean up
-        os.remove(manifest_path)
+        force_delete_silently(manifest_path)
 
     if not info_file:
         return None
@@ -219,12 +270,25 @@ def map_image_from_tar(image_name: str, tar: TarFile, tar_location: str):
     image_info_file_path = os.path.join(tar_dir, info_file)
     image_info_raw = load_json_from_file(image_info_file_path)
     # delete the extracted json file to clean up
-    os.remove(image_info_file_path)
+    force_delete_silently(image_info_file_path)
     image_info = image_info_raw.get("config")
     # importing the constant from config.py gives a circular dependency error
     image_info["Architecture"] = image_info_raw.get("architecture")
 
     return image_info
+
+
+# sometimes image tarfiles have readonly members. this will try to change their permissions and delete them
+def force_delete_silently(filename: str) -> None:
+    try:
+        os.chmod(filename, stat.S_IWRITE)
+    except FileNotFoundError:
+        pass
+    except PermissionError:
+        eprint(f"Permission denied to edit file: {filename}")
+    except OSError as e:
+        eprint(f"Error editing file: {filename}, {e}")
+    delete_silently(filename)
 
 
 # helper function to delete a file that may or may not exist

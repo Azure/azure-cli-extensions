@@ -2,6 +2,30 @@
 
 Release History
 ===============
+8.0.0b7
+* Added missing examples and updated verbiage on existing examples
+
+8.0.0b6
+* Enables the 'device refresh-configuration' command that was previously disabled/removed.
+* Renames the 'network-device-name' parameter on 'device refresh-configuration' and 'device reboot' operations to 'resource-name' for better overall consistency.
+
+8.0.0b5
+* Fixes 'taprule create' command as the API cannot support float values for 'polling-interval-in-seconds' option, i.e. - '30.0'.
+* Fixes the response object model for validate-configuration operations that cause response of the operation to not show any output.
+* az core cli updated to version 2.70, aaz_dev updated to version 4.2.0, and azdev to version 0.2.4.
+
+8.0.0b4
+++++++
+* Fixes 'device run-ro' command for missing fields in the response.
+
+8.0.0b3
+++++++
+* Adding custom output formatting for 'device' run-ro command
+
+8.0.0b2
+++++++
+* Making the Network Monitor resource available through the CLI.
+* Within the the IPv4/IPv6 PrefixLimitPatchProperties structure for External and Internal Networks, renamed the 'softLimit' property to 'threshold'.
 
 8.0.0b1
 ++++++

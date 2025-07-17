@@ -9,6 +9,8 @@
 # flake8: noqa
 
 from .__cmd_group import *
+from ._align import *
+from ._approve import *
 from ._capture_snapshot import *
 from ._create import *
 from ._delay_action import *
@@ -22,6 +24,7 @@ from ._list_snapshot import *
 from ._repair import *
 from ._restart import *
 from ._restore_snapshot import *
+from ._set_active_hours import *
 from ._show import *
 from ._show_action import *
 from ._show_operation import *

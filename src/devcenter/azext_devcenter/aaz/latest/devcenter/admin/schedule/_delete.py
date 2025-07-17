@@ -23,9 +23,9 @@ class Delete(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-10-01-preview",
+        "version": "2025-04-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/pools/{}/schedules/{}", "2024-10-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/pools/{}/schedules/{}", "2025-04-01-preview"],
         ]
     }
 
@@ -78,7 +78,7 @@ class Delete(AAZCommand):
             id_part="child_name_2",
             default="default",
             fmt=AAZStrArgFormat(
-                pattern=r"^[-\w]+$",
+                pattern="^[-\\w]+$",
                 max_length=100,
                 min_length=1,
             ),
@@ -108,16 +108,7 @@ class Delete(AAZCommand):
                 return self.client.build_lro_polling(
                     self.ctx.args.no_wait,
                     session,
-                    self.on_200,
-                    self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
-                    path_format_arguments=self.url_parameters,
-                )
-            if session.http_response.status_code in [200]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200,
+                    self.on_200_201,
                     self.on_error,
                     lro_options={"final-state-via": "azure-async-operation"},
                     path_format_arguments=self.url_parameters,
@@ -127,6 +118,15 @@ class Delete(AAZCommand):
                     self.ctx.args.no_wait,
                     session,
                     self.on_204,
+                    self.on_error,
+                    lro_options={"final-state-via": "azure-async-operation"},
+                    path_format_arguments=self.url_parameters,
+                )
+            if session.http_response.status_code in [200, 201]:
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200_201,
                     self.on_error,
                     lro_options={"final-state-via": "azure-async-operation"},
                     path_format_arguments=self.url_parameters,
@@ -179,16 +179,16 @@ class Delete(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-10-01-preview",
+                    "api-version", "2025-04-01-preview",
                     required=True,
                 ),
             }
             return parameters
 
-        def on_200(self, session):
+        def on_204(self, session):
             pass
 
-        def on_204(self, session):
+        def on_200_201(self, session):
             pass
 
 

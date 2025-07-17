@@ -252,7 +252,7 @@ configuration:
         then:
         - mentionUsers:
             mentionees:
-            - dyu1208
+            - mbifeld
             - FumingZhang
             - andyliuliming
             replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
@@ -1197,9 +1197,11 @@ configuration:
         - mentionUsers:
             mentionees:
             - toddysm
-            - luisdlp
             - northtyphoon
+            - luisdlp
             - terencet-dev
+            - shizhMSFT
+            - JXavierMSFT
             replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
             assignMentionees: False
       - if:
@@ -1503,8 +1505,7 @@ configuration:
         then:
         - mentionUsers:
             mentionees:
-            - alec-baird
-            - costinhagiu
+            - MichaelWu
             replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
             assignMentionees: False
       - if:
@@ -1780,6 +1781,7 @@ configuration:
             - schaabs
             - chen-karen
             - chandanrr
+            - cheathamb36
             replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
             assignMentionees: False
       - if:
@@ -2295,6 +2297,17 @@ configuration:
         - hasLabel:
             label: Service Attention
         - hasLabel:
+            label: Neon Postgre
+        then:
+        - mentionUsers:
+            mentionees:
+            - alluri02
+            replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
+            assignMentionees: False
+      - if:
+        - hasLabel:
+            label: Service Attention
+        - hasLabel:
             label: NetApp Files
         then:
         - mentionUsers:
@@ -2391,8 +2404,7 @@ configuration:
         - mentionUsers:
             mentionees:
             - gopimsft
-            - gimotwanMSFT
-            - avripintoms
+            - Azure/azure-firewall
             replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
             assignMentionees: False
       - if:
@@ -2858,10 +2870,10 @@ configuration:
         then:
         - mentionUsers:
             mentionees:
-            - mwesigwaguma
-            - a-Santamaria
+            - iliu816
+            - a-santamaria
             - LukeSlev
-            - jkochhar
+            - Jkochhar
             replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
             assignMentionees: False
       - if:
@@ -3333,12 +3345,12 @@ configuration:
       - addLabel:
           label: Auto-Assign
       - requestReview:
-          reviewer: kairu-ms
+          reviewer: wangzelin007
       - requestReview:
           reviewer: yonzhan
       - assignTo:
           users:
-          - kairu-ms
+          - wangzelin007
       description: '[machine learning] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
@@ -3689,14 +3701,13 @@ configuration:
       - addLabel:
           label: Auto-Assign
       - requestReview:
-          reviewer: kairu-ms
+          reviewer: evelyn-ys
       - requestReview:
           reviewer: jsntcy
       - requestReview:
           reviewer: yonzhan
       - assignTo:
           users:
-          - kairu-ms
           - evelyn-ys
       description: '[kusto] Auto assign labels and reviewers based on PR title/description.'
     - if:
@@ -4123,8 +4134,6 @@ configuration:
       - assignTo:
           users:
           - necusjz
-          - AllyW
-          - kairu-ms
       description: '[ stream-analytics ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
@@ -4140,12 +4149,12 @@ configuration:
       then:
       - addReply:
           reply: >-
-            Hi @kairu-ms,
+            Hi @AllyW,
 
             Please review the pull request.
       - assignTo:
           users:
-          - kairu-ms
+          - AllyW
       description: '[ confidentialledger ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
@@ -4182,12 +4191,12 @@ configuration:
       then:
       - addReply:
           reply: >-
-            Hi @kairu-ms,
+            Hi @AllyW,
 
             Please review the pull request.
       - assignTo:
           users:
-          - kairu-ms
+          - AllyW
       description: '[ alertsmanagement ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
@@ -4245,12 +4254,12 @@ configuration:
       then:
       - addReply:
           reply: >-
-            Hi @kairu-ms,
+            Hi @necusjz,
 
             Please review the pull request.
       - assignTo:
           users:
-          - kairu-ms
+          - necusjz
       description: '[ quantum ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
@@ -4397,12 +4406,12 @@ configuration:
       then:
       - addReply:
           reply: >-
-            Hi @kairu-ms,
+            Hi @necusjz,
 
             Please review the pull request.
       - assignTo:
           users:
-          - kairu-ms
+          - necusjz
       description: '[ resource-mover ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
@@ -4544,12 +4553,12 @@ configuration:
       then:
       - addReply:
           reply: >-
-            Hi @kairu-ms,
+            Hi @necusjz,
 
             Please review the pull request.
       - assignTo:
           users:
-          - kairu-ms
+          - necusjz
       description: '[ scheduled-query ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
@@ -4592,7 +4601,6 @@ configuration:
       - assignTo:
           users:
           - necusjz
-          - kairu-ms
       description: '[ network-manager ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
@@ -4608,12 +4616,12 @@ configuration:
       then:
       - addReply:
           reply: >-
-            Hi @kairu-ms,
+            Hi @AllyW,
 
             Please review the pull request.
       - assignTo:
           users:
-          - kairu-ms
+          - AllyW
       description: '[ azure-firewall ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
@@ -4650,12 +4658,12 @@ configuration:
       then:
       - addReply:
           reply: >-
-            Hi @kairu-ms,
+            Hi @necusjz,
 
             Please review the pull request.
       - assignTo:
           users:
-          - kairu-ms
+          - necusjz
       description: '[ virtual-wan ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
@@ -4713,12 +4721,12 @@ configuration:
       then:
       - addReply:
           reply: >-
-            Hi @kairu-ms,
+            Hi @necusjz,
 
             Please review the pull request.
       - assignTo:
           users:
-          - kairu-ms
+          - necusjz
       description: '[ webpubsub ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
@@ -4734,12 +4742,12 @@ configuration:
       then:
       - addReply:
           reply: >-
-            Hi @kairu-ms,
+            Hi @necusjz,
 
             Please review the pull request.
       - assignTo:
           users:
-          - kairu-ms
+          - necusjz
       description: '[ support ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
@@ -4755,12 +4763,12 @@ configuration:
       then:
       - addReply:
           reply: >-
-            Hi @kairu-ms,
+            Hi @AllyW,
 
             Please review the pull request.
       - assignTo:
           users:
-          - kairu-ms
+          - AllyW
       description: '[ logz ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
@@ -4882,12 +4890,12 @@ configuration:
       - addLabel:
           label: Auto-Assign
       - requestReview:
-          reviewer: kairu-ms
+          reviewer: AllyW
       - requestReview:
           reviewer: yonzhan
       - assignTo:
           users:
-          - kairu-ms
+          - AllyW
       description: '[arcdata] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Pull_Request
@@ -4904,12 +4912,12 @@ configuration:
       - addLabel:
           label: Auto-Assign
       - requestReview:
-          reviewer: kairu-ms
+          reviewer: AllyW
       - requestReview:
           reviewer: necusjz
       - assignTo:
           users:
-          - kairu-ms
+          - necusjz
       - requestReview:
           reviewer: yonzhan
       description: '[quota] Auto assign labels and reviewers based on PR title/description.'
@@ -4932,7 +4940,7 @@ configuration:
           label: Code Gen
       - assignTo:
           users:
-          - kairu-ms
+          - AllyW
       - assignTo:
           users:
           - necusjz
@@ -4952,12 +4960,13 @@ configuration:
       - addLabel:
           label: Auto-Assign
       - requestReview:
-          reviewer: kairu-ms
+          reviewer: AllyW
       - requestReview:
           reviewer: necusjz
       - assignTo:
           users:
-          - kairu-ms
+          - necusjz
+          - AllyW
       - requestReview:
           reviewer: yonzhan
       - addLabel:
@@ -4978,12 +4987,12 @@ configuration:
       - addLabel:
           label: Auto-Assign
       - requestReview:
-          reviewer: kairu-ms
+          reviewer: AllyW
       - requestReview:
           reviewer: necusjz
       - assignTo:
           users:
-          - kairu-ms
+          - necusjz
       - requestReview:
           reviewer: yonzhan
       - addLabel:
@@ -5172,7 +5181,6 @@ configuration:
       - assignTo:
           users:
           - AllyW
-          - kairu-ms
       description: '[grafana] auto assign labels and users based on issue description.'
     - if:
       - payloadType: Pull_Request
@@ -5194,12 +5202,11 @@ configuration:
           reviewer: wangzelin007
       - assignTo:
           users:
-          - kairu-ms
           - AllyW
       - addLabel:
           label: extension/grafana
       - requestReview:
-          reviewer: kairu-ms
+          reviewer: AllyW
       - requestReview:
           reviewer: jsntcy
       description: '[grafana] Auto assign labels and reviewers based on PR title/description.'
@@ -5322,7 +5329,7 @@ configuration:
       - requestReview:
           reviewer: jsntcy
       - requestReview:
-          reviewer: kairu-ms
+          reviewer: AllyW
       description: '[desktopvirtualization] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
@@ -5444,7 +5451,7 @@ configuration:
       - addLabel:
           label: Alerts Management
       - requestReview:
-          reviewer: 'kairu-ms '
+          reviewer: kairu-ms
       - requestReview:
           reviewer: zhoxing-ms
       description: '[Alerts Management] Auto assign labels and reviewers based on PR title/description.'
@@ -5574,7 +5581,6 @@ configuration:
       - assignTo:
           users:
           - necusjz
-          - kairu-ms
       description: '[NetworkManager] auto assign labels and users based on issue description.'
     - if:
       - payloadType: Pull_Request
@@ -5603,11 +5609,10 @@ configuration:
       - addLabel:
           label: Network - Network Manager
       - requestReview:
-          reviewer: kairu-ms
+          reviewer: necusjz
       - assignTo:
           users:
           - necusjz
-          - kairu-ms
       - requestReview:
           reviewer: jsntcy
       description: '[NetworkManager] Auto assign labels and reviewers based on PR title/description.'
@@ -5968,8 +5973,7 @@ configuration:
           label: Stream Analytics
       - assignTo:
           users:
-          - AllyW
-          - kairu-ms
+          - necusjz
       description: '[stream-analytics] auto assign labels and users based on issue description.'
     - if:
       - payloadType: Pull_Request
@@ -5992,12 +5996,12 @@ configuration:
       - assignTo:
           users:
           - necusjz
-          - AllyW
-          - kairu-ms
       - addLabel:
           label: Stream Analytics
       - requestReview:
-          reviewer: kairu-ms
+          reviewer: necusjz
+      - requestReview:
+          reviewer: AllyW
       description: '[stream-analytics] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Pull_Request
@@ -6192,12 +6196,12 @@ configuration:
             isRegex: True
       then:
       - requestReview:
-          reviewer: kairu-ms
+          reviewer: necusjz
       - addLabel:
           label: Auto-Assign
       - assignTo:
           users:
-          - kairu-ms
+          - necusjz
       - addLabel:
           label: Serial Console
       description: '[Serial-Console] Auto assign labels and reviewers based on PR title/description.'
@@ -6261,12 +6265,12 @@ configuration:
       - requestReview:
           reviewer: jsntcy
       - requestReview:
-          reviewer: kairu-ms
+          reviewer: AllyW
       - addLabel:
           label: Auto-Assign
       - assignTo:
           users:
-          - kairu-ms
+          - AllyW
       description: '[Fleet] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Pull_Request
@@ -6357,8 +6361,7 @@ configuration:
           label: Internet Analyzer
       - assignTo:
           users:
-          - necusjz
-          - kairu-ms
+          - AllyW
       description: '[Internet Analyzer] auto assign labels and users based on issue description.'
     - if:
       - payloadType: Pull_Request
@@ -6387,11 +6390,11 @@ configuration:
       - requestReview:
           reviewer: necusjz
       - requestReview:
-          reviewer: kairu-ms
+          reviewer: AllyW
       - assignTo:
           users:
+          - AllyW
           - necusjz
-          - kairu-ms
       description: '[Internet Analyzer] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Pull_Request
@@ -6406,7 +6409,7 @@ configuration:
             isRegex: True
       then:
       - requestReview:
-          reviewer: kairu-ms
+          reviewer: AllyW
       - requestReview:
           reviewer: jsntcy
       - requestReview:
@@ -6415,7 +6418,7 @@ configuration:
           label: Auto-Assign
       - assignTo:
           users:
-          - kairu-ms
+          - AllyW
       description: '[load] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
@@ -6450,14 +6453,14 @@ configuration:
             isRegex: True
       then:
       - requestReview:
-          reviewer: kairu-ms
+          reviewer: AllyW
       - requestReview:
           reviewer: jsntcy
       - addLabel:
           label: Auto-Assign
       - assignTo:
           users:
-          - kairu-ms
+          - AllyW
       description: '[devcenter] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Pull_Request
@@ -6472,12 +6475,12 @@ configuration:
             isRegex: True
       then:
       - requestReview:
-          reviewer: kairu-ms
+          reviewer: AllyW
       - addLabel:
           label: Auto-Assign
       - assignTo:
           users:
-          - kairu-ms
+          - AllyW
       description: '[Arc Appliance] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Pull_Request
@@ -6492,14 +6495,14 @@ configuration:
             isRegex: True
       then:
       - requestReview:
-          reviewer: kairu-ms
+          reviewer: necusjz
       - requestReview:
           reviewer: jsntcy
       - addLabel:
           label: Auto-Assign
       - assignTo:
           users:
-          - kairu-ms
+          - necusjz
       description: '[Service Connector] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Pull_Request
@@ -6514,14 +6517,14 @@ configuration:
             isRegex: True
       then:
       - requestReview:
-          reviewer: kairu-ms
+          reviewer: AllyW
       - requestReview:
           reviewer: jsntcy
       - addLabel:
           label: Auto-Assign
       - assignTo:
           users:
-          - kairu-ms
+          - AllyW
       description: '[Connected Vmware] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
@@ -6569,7 +6572,6 @@ configuration:
       - assignTo:
           users:
           - necusjz
-          - kairu-ms
       description: '[Peering] auto assign labels and users based on issue description.'
     - if:
       - payloadType: Pull_Request
@@ -6599,12 +6601,9 @@ configuration:
           reviewer: jsntcy
       - requestReview:
           reviewer: necusjz
-      - requestReview:
-          reviewer: kairu-ms
       - assignTo:
           users:
           - necusjz
-          - kairu-ms
       description: '[Peering] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
@@ -6690,7 +6689,6 @@ configuration:
           label: Network - Network Watcher
       - assignTo:
           users:
-          - kairu-ms
           - AllyW
           - necusjz
       description: '[Network Watcher] auto assign labels and users based on issue description.'
@@ -6721,14 +6719,13 @@ configuration:
       - requestReview:
           reviewer: jsntcy
       - requestReview:
-          reviewer: kairu-ms
+          reviewer: AllyW
       - requestReview:
           reviewer: necusjz
       - assignTo:
           users:
-          - necusjz
-          - kairu-ms
           - AllyW
+          - necusjz
       description: '[Network Watcher] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
@@ -6755,8 +6752,7 @@ configuration:
           label: PowerBI
       - assignTo:
           users:
-          - kairu-ms
-          - AllyW
+          - necusjz
       description: '[PowerBI] auto assign labels and users based on issue description.'
     - if:
       - payloadType: Pull_Request
@@ -6785,13 +6781,12 @@ configuration:
       - requestReview:
           reviewer: jsntcy
       - requestReview:
-          reviewer: kairu-ms
+          reviewer: necusjz
       - requestReview:
           reviewer: AllyW
       - assignTo:
           users:
-          - kairu-ms
-          - AllyW
+          - necusjz
       description: '[PowerBI] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Pull_Request

@@ -18,9 +18,9 @@ from azure.cli.command_modules.containerapp._validators import (validate_memory,
 from .action import AddCustomizedKeys
 from ._validators import (validate_env_name_or_id, validate_build_env_vars,
                           validate_custom_location_name_or_id, validate_env_name_or_id_for_up,
-                          validate_otlp_headers, validate_target_port_range, validate_timeout_in_seconds)
+                          validate_otlp_headers, validate_target_port_range, validate_session_timeout_in_seconds)
 from ._constants import (MAXIMUM_CONTAINER_APP_NAME_LENGTH, MAXIMUM_APP_RESILIENCY_NAME_LENGTH, MAXIMUM_COMPONENT_RESILIENCY_NAME_LENGTH,
-                         AKS_AZURE_LOCAL_DISTRO)
+                         AKS_AZURE_LOCAL_DISTRO, OPENSHIFT_DISTRO)
 
 
 def load_arguments(self, _):
@@ -48,7 +48,7 @@ def load_arguments(self, _):
         c.ignore('service_type')
 
     with self.argument_context('containerapp create', arg_group='GitHub Repository', is_preview=True) as c:
-        c.argument('repo', help='Create an app via GitHub Actions in the format: https://github.com/owner/repository-name or owner/repository-name')
+        c.argument('repo', help='Create an app via GitHub Actions in the format: `https://github.com/owner/repository-name` or owner/repository-name')
         c.argument('token', help='A Personal Access Token with write access to the specified repository. For more information: https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line. If not provided or not found in the cache (and using --repo), a browser page will be opened to authenticate with Github.')
         c.argument('branch', options_list=['--branch', '-b'], help='Branch in the provided GitHub repository. Assumed to be the GitHub repository\'s default branch if not specified.')
         c.argument('context_path', help='Path in the repository to run docker build. Defaults to "./". Dockerfile is assumed to be named "Dockerfile" and in this directory.')
@@ -264,7 +264,7 @@ def load_arguments(self, _):
         c.argument('target_label', help="The label to apply to new revisions. Required for revisions-mode 'labels'.", is_preview=True)
 
     with self.argument_context('containerapp up', arg_group='Github Repo') as c:
-        c.argument('repo', help='Create an app via Github Actions. In the format: https://github.com/owner/repository-name or owner/repository-name')
+        c.argument('repo', help='Create an app via Github Actions. In the format: `https://github.com/owner/repository-name` or owner/repository-name')
         c.argument('token', help='A Personal Access Token with write access to the specified repository. For more information: https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line. If not provided or not found in the cache (and using --repo), a browser page will be opened to authenticate with Github.')
         c.argument('branch', options_list=['--branch', '-b'], help='The branch of the Github repo. Assumed to be the Github repo\'s default branch if not specified.')
         c.argument('context_path', help='Path in the repo from which to run the docker build. Defaults to "./". Dockerfile is assumed to be named "Dockerfile" and in this directory.')
@@ -275,6 +275,16 @@ def load_arguments(self, _):
     with self.argument_context('containerapp up', arg_group='Identity') as c:
         c.argument('user_assigned', nargs='+', help="Space-separated user identities to be assigned.")
         c.argument('system_assigned', help="Boolean indicating whether to assign system-assigned identity.", action='store_true')
+
+    with self.argument_context('containerapp up', arg_group='Deploy an Azure AI Foundry Model', is_preview=True) as c:
+        c.argument('model_registry', help="The name of the Azure AI Foundry model registry.", is_preview=True)
+        c.argument('model_name', help="The name of the Azure AI Foundry model.", is_preview=True)
+        c.argument('model_version', help="The version of the Azure AI Foundry model.", is_preview=True)
+
+    with self.argument_context('containerapp auth') as c:
+        c.argument('blob_container_uri', help='The URI of the blob storage containing the tokens. Should not be used along with sas_url_secret and sas_url_secret_name.', is_preview=True)
+        c.argument('blob_container_identity', options_list=['--blob-container-identity', '--bci'],
+                   help='Default Empty to use system-assigned identity, or using Resource ID of a managed identity to authenticate with Azure blob storage.', is_preview=True)
 
     with self.argument_context('containerapp env workload-profile set') as c:
         c.argument('workload_profile_type', help="The type of workload profile to add or update. Run `az containerapp env workload-profile list-supported -l <region>` to check the options for your region.")
@@ -368,7 +378,7 @@ def load_arguments(self, _):
         c.argument('yaml', type=file_type, help='Path to a .yaml file with the configuration of a Dapr component. All other parameters will be ignored. For an example, see https://learn.microsoft.com/en-us/azure/container-apps/dapr-overview?tabs=bicep1%2Cyaml#component-schema')
 
     with self.argument_context('containerapp arc setup-core-dns') as c:
-        c.argument('distro', arg_type=get_enum_type([AKS_AZURE_LOCAL_DISTRO]), required=True, help="The distro supported to setup CoreDNS.")
+        c.argument('distro', arg_type=get_enum_type([AKS_AZURE_LOCAL_DISTRO, OPENSHIFT_DISTRO]), required=True, help="The distro supported to setup CoreDNS.")
         c.argument('kube_config', help="Path to the kube config file.")
         c.argument('kube_context', help="Kube context from current machine.")
         c.argument('skip_ssl_verification', help="Skip SSL verification for any cluster connection.")
@@ -473,7 +483,7 @@ def load_arguments(self, _):
 
     with self.argument_context('containerapp session code-interpreter', arg_group='execute') as c:
         c.argument('code', help="The code to execute in the code interpreter session")
-        c.argument('timeout_in_seconds', type=int, validator=validate_timeout_in_seconds, default=60, help="Duration in seconds code in session can run prior to timing out 0 - 60 secs, e.g. 30")
+        c.argument('timeout_in_seconds', type=int, validator=validate_session_timeout_in_seconds, default=60, help="Duration in seconds code in session can run prior to timing out 1 - 220 secs, e.g. 30")
 
     with self.argument_context('containerapp java logger') as c:
         c.argument('logger_name', help="The logger name.")
@@ -500,3 +510,13 @@ def load_arguments(self, _):
     with self.argument_context('containerapp revision set-mode') as c:
         c.argument('mode', arg_type=get_enum_type(['single', 'multiple', 'labels']), help="The active revisions mode for the container app.")
         c.argument('target_label', help="The label to apply to new revisions. Required for revision mode 'labels'.", is_preview=True)
+
+    with self.argument_context('containerapp env premium-ingress') as c:
+        c.argument('resource_group_name', arg_type=resource_group_name_type, id_part=None)
+        c.argument('name', options_list=['--name', '-n'], help="The name of the managed environment.")
+        c.argument('workload_profile_name', options_list=['--workload-profile-name', '-w'], help="The workload profile to run ingress replicas on. This profile must not be shared with any container app or job.")
+        c.argument('min_replicas', options_list=['--min-replicas'], type=int, help="Minimum number of replicas to run. Default 2, minimum 2.")
+        c.argument('max_replicas', options_list=['--max-replicas'], type=int, help="Maximum number of replicas to run. Default 10. The upper limit is the maximum cores available in the workload profile.")
+        c.argument('termination_grace_period', options_list=['--termination-grace-period', '-t'], type=int, help="Time in seconds to drain requests during ingress shutdown. Default 500, minimum 0, maximum 3600.")
+        c.argument('request_idle_timeout', options_list=['--request-idle-timeout'], type=int, help="Timeout in minutes for idle requests. Default 4, minimum 1.")
+        c.argument('header_count_limit', options_list=['--header-count-limit'], type=int, help="Limit of http headers per request. Default 100, minimum 1.")

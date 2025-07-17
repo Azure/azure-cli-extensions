@@ -37,9 +37,6 @@ aks create:
     node_public_ip_prefix_id:
       rule_exclusions:
         - option_length_too_long
-    enable_pod_security_policy:
-      rule_exclusions:
-      - option_length_too_long
     enable_private_cluster:
       rule_exclusions:
       - option_length_too_long
@@ -133,12 +130,6 @@ aks update:
       rule_exclusions:
       - option_length_too_long
     cluster_autoscaler_profile:
-      rule_exclusions:
-      - option_length_too_long
-    disable_pod_security_policy:
-      rule_exclusions:
-      - option_length_too_long
-    enable_pod_security_policy:
       rule_exclusions:
       - option_length_too_long
     load_balancer_idle_timeout:
@@ -2092,12 +2083,18 @@ network front-door waf-policy create:
     custom_block_response_status_code:
       rule_exclusions:
       - option_length_too_long
+    captcha_expiration_in_minutes:
+      rule_exclusions:
+      - option_length_too_long
 network front-door waf-policy update:
   parameters:
     custom_block_response_body:
       rule_exclusions:
       - option_length_too_long
     custom_block_response_status_code:
+      rule_exclusions:
+      - option_length_too_long
+    captcha_expiration_in_minutes:
       rule_exclusions:
       - option_length_too_long
 network manager connect-config create:

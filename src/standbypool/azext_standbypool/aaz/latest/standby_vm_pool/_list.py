@@ -15,17 +15,17 @@ from azure.cli.core.aaz import *
     "standby-vm-pool list",
 )
 class List(AAZCommand):
-    """List StandbyVirtualMachinePoolResource resources by subscription ID or by resource group
+    """List StandbyVirtualMachinePoolResource resources by subscription ID by resource group name
 
-    :example: List by subscriptionId by resource group
-        az standby-vm-pool list --subscription 461fa159-654a-415f-853a-40b801021944 --resource-group myrg
+    :example: StandbyVirtualMachinePools_ListBySubscription
+        az standby-vm-pool list --subscription 00000000-0000-0000-0000-000000000009 --resource-group myRG
     """
 
     _aaz_info = {
-        "version": "2024-03-01",
+        "version": "2025-03-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.standbypool/standbyvirtualmachinepools", "2024-03-01"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.standbypool/standbyvirtualmachinepools", "2024-03-01"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.standbypool/standbyvirtualmachinepools", "2025-03-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.standbypool/standbyvirtualmachinepools", "2025-03-01"],
         ]
     }
 
@@ -53,12 +53,12 @@ class List(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        condition_0 = has_value(self.ctx.args.resource_group) and has_value(self.ctx.subscription_id)
-        condition_1 = has_value(self.ctx.subscription_id) and has_value(self.ctx.args.resource_group) is not True
+        condition_0 = has_value(self.ctx.subscription_id) and has_value(self.ctx.args.resource_group) is not True
+        condition_1 = has_value(self.ctx.args.resource_group) and has_value(self.ctx.subscription_id)
         if condition_0:
-            self.StandbyVirtualMachinePoolsListByResourceGroup(ctx=self.ctx)()
-        if condition_1:
             self.StandbyVirtualMachinePoolsListBySubscription(ctx=self.ctx)()
+        if condition_1:
+            self.StandbyVirtualMachinePoolsListByResourceGroup(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -74,7 +74,7 @@ class List(AAZCommand):
         next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
         return result, next_link
 
-    class StandbyVirtualMachinePoolsListByResourceGroup(AAZHttpOperation):
+    class StandbyVirtualMachinePoolsListBySubscription(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -88,7 +88,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.StandbyPool/standbyVirtualMachinePools",
+                "/subscriptions/{subscriptionId}/providers/Microsoft.StandbyPool/standbyVirtualMachinePools",
                 **self.url_parameters
             )
 
@@ -104,10 +104,6 @@ class List(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "resourceGroupName", self.ctx.args.resource_group,
-                    required=True,
-                ),
-                **self.serialize_url_param(
                     "subscriptionId", self.ctx.subscription_id,
                     required=True,
                 ),
@@ -118,7 +114,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-03-01",
+                    "api-version", "2025-03-01",
                     required=True,
                 ),
             }
@@ -233,7 +229,7 @@ class List(AAZCommand):
 
             return cls._schema_on_200
 
-    class StandbyVirtualMachinePoolsListBySubscription(AAZHttpOperation):
+    class StandbyVirtualMachinePoolsListByResourceGroup(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -247,7 +243,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/providers/Microsoft.StandbyPool/standbyVirtualMachinePools",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.StandbyPool/standbyVirtualMachinePools",
                 **self.url_parameters
             )
 
@@ -263,6 +259,10 @@ class List(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
+                    "resourceGroupName", self.ctx.args.resource_group,
+                    required=True,
+                ),
+                **self.serialize_url_param(
                     "subscriptionId", self.ctx.subscription_id,
                     required=True,
                 ),
@@ -273,7 +273,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-03-01",
+                    "api-version", "2025-03-01",
                     required=True,
                 ),
             }

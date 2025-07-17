@@ -209,28 +209,39 @@ class QuantumJobsScenarioTest(ScenarioTest):
         test_provider_sku_list = "rigetti/azure-quantum-credits,ionq/aq-internal-testing"
         test_storage = get_test_workspace_storage()
 
-        self.cmd(f"az quantum workspace create -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage} -r {test_provider_sku_list} --skip-autoadd")
+        self.cmd(f"az quantum workspace create --auto-accept -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage} -r {test_provider_sku_list} --skip-autoadd")
         self.cmd(f"az quantum workspace set -g {test_resource_group} -w {test_workspace_temp} -l {test_location}")
 
         # Submit a job to Rigetti and look for SAS tokens in URIs in the output
         results = self.cmd("az quantum job submit -t rigetti.sim.qvm --job-input-format rigetti.quil.v1 -t rigetti.sim.qvm --job-input-file src/quantum/azext_quantum/tests/latest/input_data/bell-state.quil --job-output-format rigetti.quil-results.v1 -o json").get_output_in_json()
-        self.assertIn("?sv=", results["containerUri"])
-        self.assertIn("&st=", results["containerUri"])
-        self.assertIn("&se=", results["containerUri"])
-        self.assertIn("&sp=", results["containerUri"])
-        self.assertIn("&sig=", results["containerUri"])
+        self.assertNotIn("?sv=", results["containerUri"])
+        self.assertNotIn("&sig=", results["containerUri"])
 
-        self.assertIn("?sv=", results["inputDataUri"])
-        self.assertIn("&st=", results["inputDataUri"])
-        self.assertIn("&se=", results["inputDataUri"])
-        self.assertIn("&sp=", results["inputDataUri"])
-        self.assertIn("&sig=", results["inputDataUri"])
+        self.assertNotIn("?sv=", results["inputDataUri"])
+        self.assertNotIn("&sig=", results["inputDataUri"])
 
-        self.assertIn("?sv=", results["outputDataUri"])
-        self.assertIn("&st=", results["outputDataUri"])
-        self.assertIn("&se=", results["outputDataUri"])
-        self.assertIn("&sp=", results["outputDataUri"])
-        self.assertIn("&sig=", results["outputDataUri"])
+        self.assertNotIn("?sv=", results["outputDataUri"])
+        self.assertNotIn("&sig=", results["outputDataUri"])
+
+        job = self.cmd(f"az quantum job show -j {results['id']} -o json").get_output_in_json()
+
+        self.assertIn("?sv=", job["containerUri"])
+        self.assertIn("&st=", job["containerUri"])
+        self.assertIn("&se=", job["containerUri"])
+        self.assertIn("&sp=", job["containerUri"])
+        self.assertIn("&sig=", job["containerUri"])
+
+        self.assertIn("?sv=", job["inputDataUri"])
+        self.assertIn("&st=", job["inputDataUri"])
+        self.assertIn("&se=", job["inputDataUri"])
+        self.assertIn("&sp=", job["inputDataUri"])
+        self.assertIn("&sig=", job["inputDataUri"])
+
+        self.assertIn("?sv=", job["outputDataUri"])
+        self.assertIn("&st=", job["outputDataUri"])
+        self.assertIn("&se=", job["outputDataUri"])
+        self.assertIn("&sp=", job["outputDataUri"])
+        self.assertIn("&sig=", job["outputDataUri"])
 
         # Run a Quil pass-through job on Rigetti
         results = self.cmd("az quantum run -t rigetti.sim.qvm --job-input-format rigetti.quil.v1 -t rigetti.sim.qvm --job-input-file src/quantum/azext_quantum/tests/latest/input_data/bell-state.quil --job-output-format rigetti.quil-results.v1 -o json").get_output_in_json()
@@ -276,31 +287,30 @@ class QuantumJobsScenarioTest(ScenarioTest):
         test_provider_sku_list = f"{elements_provider_name}/elements-internal-testing"
         test_storage = get_test_workspace_storage()
 
-        self.cmd(f"az quantum workspace create -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage} -r \"{test_provider_sku_list}\" --skip-autoadd")
+        self.cmd(f"az quantum workspace create --auto-accept -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage} -r \"{test_provider_sku_list}\" --skip-autoadd")
         self.cmd(f"az quantum workspace set -g {test_resource_group} -w {test_workspace_temp} -l {test_location}")
 
         # Run a "microsoft.dft" job to test that successful job returns proper output
-        results = self.cmd("az quantum run -t microsoft.dft --job-input-format microsoft.xyz.v1 --job-output-format microsoft.dft-results.v1 --job-input-file src/quantum/azext_quantum/tests/latest/input_data/dft_molecule_success.xyz --job-params {{\\\"tasks\\\":[{{\\\"taskType\\\":\\\"spe\\\",\\\"basisSet\\\":{{\\\"name\\\":\\\"def2-svp\\\",\\\"cartesian\\\":false}},\\\"xcFunctional\\\":{{\\\"name\\\":\\\"m06-2x\\\",\\\"gridLevel\\\":4}},\\\"scf\\\":{{\\\"method\\\":\\\"rks\\\",\\\"maxSteps\\\":100,\\\"convergeThreshold\\\":1e-8}}}}]}} -o json").get_output_in_json()
+        results = self.cmd("az quantum run -t microsoft.dft --job-input-format microsoft.qc-schema.v1 --job-output-format microsoft.dft-results.v1 --job-input-file src/quantum/azext_quantum/tests/latest/input_data/dft_molecule_success.json -o json").get_output_in_json()
         self.assertIsNotNone(results["results"])
         self.assertTrue(len(results["results"]) == 1)
         self.assertTrue(results["results"][0]["success"])
 
         # Run a "microsoft.dft" job to test that failed run returns "Job"-object if job didn't produce any output
         # In the test case below the run doesn't produce any output since the job fails on input parameter validation (i.e. taskType: "invalidTask")
-        results = self.cmd("az quantum run -t microsoft.dft --job-input-format microsoft.xyz.v1 --job-output-format microsoft.dft-results.v1 --job-input-file src/quantum/azext_quantum/tests/latest/input_data/dft_molecule_success.xyz --job-params {{\\\"tasks\\\":[{{\\\"taskType\\\":\\\"invalidTask\\\",\\\"basisSet\\\":{{\\\"name\\\":\\\"def2-svp\\\",\\\"cartesian\\\":false}},\\\"xcFunctional\\\":{{\\\"name\\\":\\\"m06-2x\\\",\\\"gridLevel\\\":4}},\\\"scf\\\":{{\\\"method\\\":\\\"rks\\\",\\\"maxSteps\\\":100,\\\"convergeThreshold\\\":1e-8}}}}]}} -o json").get_output_in_json()
-        self.assertEqual("Job", results["itemType"])  # the object is a "Job"-object
-        self.assertEqual("Failed", results["status"])
-        self.assertIsNotNone(results["errorData"])
-        self.assertEqual("InvalidInputData", results["errorData"]["code"])
-        self.assertEqual("microsoft.dft", results["target"])
-
-        # Run a "microsoft.dft" job to test that failed run returns output if it was produced by the job
-        # In the test case below the job fails to converge in "maxSteps", but it still produces the output with a detailed message
-        results = self.cmd("az quantum run -t microsoft.dft --job-input-format microsoft.xyz.v1 --job-output-format microsoft.dft-results.v1 --job-input-file src/quantum/azext_quantum/tests/latest/input_data/dft_molecule_failure.xyz --job-params {{\\\"tasks\\\":[{{\\\"taskType\\\":\\\"go\\\",\\\"basisSet\\\":{{\\\"name\\\":\\\"def2-tzvpp\\\",\\\"cartesian\\\":false}},\\\"xcFunctional\\\":{{\\\"name\\\":\\\"m06-2x\\\",\\\"gridLevel\\\":4}},\\\"scf\\\":{{\\\"method\\\":\\\"rks\\\",\\\"maxSteps\\\":5,\\\"convergeThreshold\\\":1e-8}},\\\"geometryOptimization\\\":{{\\\"gdiis\\\":false}}}}]}} -o json").get_output_in_json()
-        self.assertTrue("itemType" not in results or results["itemType"] != "Job")  # the object is not a "Job"-object
+        results = self.cmd("az quantum run -t microsoft.dft --job-input-format microsoft.qc-schema.v1 --job-output-format microsoft.dft-results.v1 --job-input-file src/quantum/azext_quantum/tests/latest/input_data/dft_molecule_failure_bad_params.json  -o json").get_output_in_json()
         self.assertIsNotNone(results["results"])
         self.assertTrue(len(results["results"]) == 1)
         self.assertFalse(results["results"][0]["success"])
+        self.assertTrue(results["results"][0]["error"]["error_type"] == "input_error")
+
+        # Run a "microsoft.dft" job to test that failed run returns output if it was produced by the job
+        # In the test case below the job fails to converge in "maxSteps", but it still produces the output with a detailed message
+        results = self.cmd("az quantum run -t microsoft.dft --job-input-format microsoft.qc-schema.v1 --job-output-format microsoft.dft-results.v1 --job-input-file src/quantum/azext_quantum/tests/latest/input_data/dft_molecule_failure_no_convergence.json  -o json").get_output_in_json()
+        self.assertIsNotNone(results["results"])
+        self.assertTrue(len(results["results"]) == 1)
+        self.assertFalse(results["results"][0]["success"])
+        self.assertTrue(results["results"][0]["error"]["error_type"] == "convergence_error")
 
         self.cmd(f'az quantum workspace delete -g {test_resource_group} -w {test_workspace_temp}')
 

@@ -1,0 +1,69 @@
+interactions:
+- request:
+    body: '{"carbonScopeList": ["Scope1", "Scope2", "Scope3"], "dateRange": {"end":
+      "2025-03-01", "start": "2024-03-01"}, "reportType": "OverallSummaryReport",
+      "subscriptionList": ["1fcfa925-ad8b-443e-afc9-73038125cc86"]}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - carbon get-emission-report
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '210'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --subscription-list --date-range --carbon-scope-list --overall-summary
+      User-Agent:
+      - AZURECLI/2.72.0 azsdk-python-core/1.31.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
+    method: POST
+    uri: https://management.azure.com/providers/Microsoft.Carbon/carbonEmissionReports?api-version=2025-04-01
+  response:
+    body:
+      string: '{"value":[{"dataType":"OverallSummaryData","latestMonthEmissions":3764.88845070415,"previousMonthEmissions":3662.81335934428,"monthOverMonthEmissionsChangeRatio":0.0278679477619186,"monthlyEmissionsChangeValue":102.075091359864}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '230'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 16 May 2025 18:29:53 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - e530c384-0de1-4fdc-be93-359015db5743
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:1b30ee95-d108-4b28-8df6-b780a66c5364
+      set-cookie:
+      - ARRAffinity=1a1db42e64c24222c8d6c447e0028598d5fe62845b3b315c8b25f53a387e2abb;Path=/;HttpOnly;Secure;Domain=sustcarbon-webapp-prod-wus.azurewebsites.net
+      - ARRAffinitySameSite=1a1db42e64c24222c8d6c447e0028598d5fe62845b3b315c8b25f53a387e2abb;Path=/;HttpOnly;SameSite=None;Secure;Domain=sustcarbon-webapp-prod-wus.azurewebsites.net
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-azure-ref:
+      - 20250516T182952Z-1794cd57cdbwxqfbhC1CO1q4cg000000034g000000000zk9
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - ''
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-msedge-ref:
+      - 'Ref A: 07FA43F501ED4B98B1B17EB48F8AE84E Ref B: CO6AA3150220047 Ref C: 2025-05-16T18:29:52Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+version: 1

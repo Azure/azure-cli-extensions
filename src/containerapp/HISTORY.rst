@@ -4,6 +4,22 @@ Release History
 ===============
 upcoming
 ++++++
+* 'az containerapp session code-interpreter execute': Extend maximum supported value of `--timeout-in-seconds` from 60 to 220.
+* 'az containerapp job create': Fix message with `--help`
+* 'az containerapp arc': Enable setup custom core dns for Openshift on Arc
+
+1.2.0b1
+++++++
+* 'az containerapp env premium-ingress': New environment level ingress configuration.
+* 'az containerapp sessionpool update': Support `--mi-system-assigned`, `--mi-user-assigned` and `--registry-identity`
+*  Upgrade api-version to 2025-02-02-preview
+
+1.1.0b5
+++++++
+* 'az containerapp auth update': Support authenticating blob storage token store using managed identity with `--blob-container-uri` and `--blob-container-identity`.
+* 'az containerapp env create': Set identity only when `--mi-system-assigned` or `--mi-user-assigned` is specified.
+* 'az containerapp env create': Set identity only when `--system-assigned` or `--user-assigned` is specified.
+* 'az containerapp up': Support deploying Azure AI Foundry model to Container App with `--model-registry`, `--model-name`, `--model-version`.
 
 1.1.0b4
 ++++++

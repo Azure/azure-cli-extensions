@@ -103,6 +103,7 @@ class SecurityPolicyProxy:  # pylint: disable=too-few-public-methods
 
         # decide if we're reading from a tarball or not
         if tar_location:
+            logger.info("Calculating layer hashes from tarball")
             arg_list += ["--tarball", tar_location]
         else:
             arg_list += ["-d"]

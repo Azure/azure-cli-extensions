@@ -84,3 +84,27 @@ type: group
 short-summary: Command group to retrieve load test run metrics.
 long-summary: Command group to retrieve load test run metrics with list, get-namespaces, get-definitions, get-dimension.
 """ + _common_params
+
+helps[
+    "load trigger"
+] = """
+type: group
+short-summary: Command group to manage trigger.
+long-summary: Command group to manage triggers. Currently the only supported trigger type is schedule.
+""" + _common_params
+
+helps[
+    "load trigger schedule"
+] = """
+type: group
+short-summary: Command group to manage schedule triggers.
+long-summary: Command group to manage schedule triggers.
+""" + _common_params
+
+helps[
+    "load notification-rule"
+] = """
+type: group
+short-summary: Command group to manage notification rules.
+long-summary: Command group to manage notification rules.
+""" + _common_params

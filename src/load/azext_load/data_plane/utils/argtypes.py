@@ -5,7 +5,6 @@
 
 # pylint: disable=line-too-long
 
-from azext_load.data_plane.utils import completers, models, utils, validators
 from azure.cli.core.commands.parameters import (
     get_generic_completion_list,
     get_resource_name_completion_list,
@@ -13,6 +12,9 @@ from azure.cli.core.commands.parameters import (
     resource_group_name_type,
 )
 from knack.arguments import CLIArgumentType
+from azext_load.data_plane.utils import completers, models, utils, validators
+from azext_load.vendored_sdks.loadtesting.models._enums import WeekDays, Frequency, TriggerState
+from azext_load.data_plane.load_trigger import utils as trigger_utils
 
 quote_text = f"Use {quotes} to clear existing {{}}."
 
@@ -393,6 +395,13 @@ autostop_error_rate_time_window = CLIArgumentType(
     help="Time window during which the error percentage should be evaluated in seconds.",
 )
 
+autostop_maximum_virtual_users_per_engine = CLIArgumentType(
+    options_list=["--autostop-engine-users"],
+    type=int,
+    validator=validators.validate_autostop_maximum_virtual_users_per_engine,
+    help="Maximum number of users per engine at which the test will stop.",
+)
+
 regionwise_engines = CLIArgumentType(
     options_list=["--regionwise-engines"],
     validator=validators.validate_regionwise_engines,
@@ -422,4 +431,166 @@ response_time_aggregate = CLIArgumentType(
     type=str,
     choices=utils.get_enum_values(models.AllowedTrendsResponseTimeAggregations),
     help="Specify the aggregation method for response time.",
+)
+
+trigger_id = CLIArgumentType(
+    validator=validators.validate_trigger_id,
+    options_list=["--trigger-id"],
+    type=str,
+    help="Trigger ID of the load trigger",
+)
+
+trigger_start_date_time = CLIArgumentType(
+    options_list=["--start-date-time"],
+    type=trigger_utils.parse_datetime_in_utc,
+    help="Start date time of the load trigger schedule",
+)
+
+recurrence_type = CLIArgumentType(
+    options_list=["--recurrence-type"],
+    type=str,
+    choices=utils.get_enum_values(Frequency),
+    help="Recurrence type of the load trigger schedule",
+)
+
+end_after_occurrences = CLIArgumentType(
+    options_list=["--end-after-occurrence"],
+    type=int,
+    help="End after occurrence of the load trigger schedule",
+)
+
+end_after_date_time = CLIArgumentType(
+    options_list=["--end-after-date-time"],
+    type=trigger_utils.parse_datetime_in_utc,
+    help="End after date time of the load trigger schedule",
+)
+
+test_ids = CLIArgumentType(
+    options_list=["--test-ids"],
+    nargs=1,
+    validator=validators.validate_schedule_test_ids,
+    help="Test IDs of the load tests to be triggered by schedule. Currently we only support one test ID per schedule.",
+)
+
+trigger_display_name = CLIArgumentType(
+    options_list=["--display-name"],
+    type=str,
+    help="Display name of the load trigger schedule",
+)
+
+trigger_description = CLIArgumentType(
+    options_list=["--description"],
+    type=str,
+    help="Description of the load trigger schedule",
+)
+
+recurrence_cron_expression = CLIArgumentType(
+    options_list=["--recurrence-cron-exp"],
+    type=str,
+    help="Cron expression for the recurrence type 'Cron'.",
+)
+
+recurrence_interval = CLIArgumentType(
+    options_list=["--recurrence-interval"],
+    type=int,
+    help="Interval for all recurrence type except 'Cron'.",
+)
+
+recurrence_dates_in_month = CLIArgumentType(
+    options_list=["--recurrence-dates"],
+    nargs="+",
+    type=int,
+    validator=validators.validate_recurrence_dates_in_month,
+    help="Space separated list of dates in month for the recurrence type 'Monthly'.",
+)
+
+recurrence_week_days = CLIArgumentType(
+    options_list=["--recurrence-week-days"],
+    choices=utils.get_enum_values(WeekDays),
+    nargs="*",
+    help="Week days for the recurrence type 'Weekly' and 'MonthlyByDays'.",
+)
+
+recurrence_index = CLIArgumentType(
+    options_list=["--recurrence-index"],
+    type=int,
+    choices=[1, 2, 3, 4, 5],
+    help="Index for the recurrence type 'MonthlyByDays'.",
+)
+
+list_schedule_test_ids = CLIArgumentType(
+    options_list=["--test-ids"],
+    nargs="*",
+    help="List all the schedules which are associated with the provided test ids.",
+)
+
+list_schedule_states = CLIArgumentType(
+    options_list=["--states"],
+    nargs="*",
+    choices=utils.get_enum_values(TriggerState),
+    help="List all the schedules in the resource which are in the provided states.",
+)
+
+notification_rule_test_ids = CLIArgumentType(
+    options_list=["--test-ids"],
+    nargs="+",
+    validator=validators.validate_notification_rule_test_ids,
+    help="Space separated list of test ids for the notification rule.",
+)
+
+notification_display_name = CLIArgumentType(
+    option_list=["--display-name"],
+    type=str,
+    help="Display name of notification rule.",
+)
+
+notification_rule_id = CLIArgumentType(
+    validator=validators.validate_notification_rule_id,
+    options_list=["--notification-rule-id", "-i"],
+    type=str,
+    help="Identifier for the notification rule.",
+)
+
+action_groups = CLIArgumentType(
+    option_list=["--action-groups"],
+    nargs="*",
+    help="Space separated list of resource ids of action groups for the notification rule.",
+)
+
+notification_rule_event = CLIArgumentType(
+    option_list=["--event"],
+    validator=validators.validate_event,
+    nargs="+",
+    action="append",
+    help="Event to be enabled on the notification rule. Expected format is --event event-id='event id' type='event type' status='a list of statuses in comma-separated format' result='a list of results in comma-separated format'. Status and result fields are valid only for event type 'TestRunEnded'.",
+)
+
+notification_rule_remove_event = CLIArgumentType(
+    option_list=["--remove-event"],
+    nargs="+",
+    validator=validators.validate_remove_event,
+    action="append",
+    help="Provide the event id of the event to be removed from the notification rule. Format should be --remove-event event-id='event id'.",
+)
+
+notification_rule_add_event = CLIArgumentType(
+    option_list=["--add-event"],
+    validator=validators.validate_add_event,
+    nargs="+",
+    action="append",
+    help="Event to be enabled on the notification rule. Expected format is --event event-id='event id' type='event type' status='a list of statuses in comma-separated format' result='a list of results in comma-separated format'. Status and result fields are valid only for event type 'TestRunEnded'.",
+)
+
+notification_all_tests = CLIArgumentType(
+    option_list=["--all-tests"],
+    action="store_true",
+    default=False,
+    help="Provide this flag if all tests should be included for the notification rule. This will override any tests provided using --test-ids."
+)
+
+notification_all_events = CLIArgumentType(
+    option_list=["--all-events"],
+    action="store_true",
+    default=False,
+    help="Provide this flag if all events should be included for the notification rule. This will override any events provided using --event."
 )

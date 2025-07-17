@@ -3,13 +3,12 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from msrestazure.tools import parse_resource_id
-
 from knack.util import CLIError
 
 from azure.cli.core.commands.validators import get_default_location_from_resource_group, validate_tags
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core.profiles import ResourceType
+from azure.mgmt.core.tools import parse_resource_id
 
 
 def process_grafana_create_namespace(cmd, namespace):

@@ -19,12 +19,15 @@ class Create(AAZCommand):
 
     :example: Create an Elastic SAN.
         az elastic-san create -n "san_name" -g "rg" --tags '{key1810:aaaa}' -l southcentralusstg --base-size-tib 23 --extended-capacity-size-tib 14 --sku '{name:Premium_LRS,tier:Premium}' --public-network-access Enabled --auto-scale-policy-enforcement Enabled --capacity-unit-scale-up-limit-tib 17 --increase-capacity-unit-by-tib 4 --unused-size-tib 24
+
+    :example: Create an ElasticSAN with auto scale params
+        az elastic-san create -n san_name -g rg_name -l eastus2euap --base-size-tib 23 --extended-capacity-size-tib 14 --sku '{name:Premium_LRS,tier:Premium}' --availability-zones 1 --auto-scale-policy-enforcement Enabled --capacity-unit-scale-up-limit-tib 40 --increase-capacity-unit-by-tib 4 --unused-size-tib 24 --availability-zones 1
     """
 
     _aaz_info = {
-        "version": "2024-06-01-preview",
+        "version": "2024-07-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elasticsan/elasticsans/{}", "2024-06-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elasticsan/elasticsans/{}", "2024-07-01-preview"],
         ]
     }
 
@@ -121,12 +124,14 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="Base size of the Elastic San appliance in TiB.",
             required=True,
+            default=20,
         )
         _args_schema.extended_capacity_size_tib = AAZIntArg(
             options=["--extended-size", "--extended-capacity-size-tib"],
             arg_group="Properties",
             help="Extended size of the Elastic San appliance in TiB.",
             required=True,
+            default=0,
         )
         _args_schema.public_network_access = AAZStrArg(
             options=["--public-network-access"],
@@ -239,7 +244,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-06-01-preview",
+                    "api-version", "2024-07-01-preview",
                     required=True,
                 ),
             }

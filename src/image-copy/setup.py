@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------------------------
 
 from codecs import open
-from setuptools import setup, find_packages
+from setuptools import find_packages, setup
 
-VERSION = "1.0.1"
+VERSION = "1.0.3"
 
 CLASSIFIERS = [
     'Development Status :: 4 - Beta',

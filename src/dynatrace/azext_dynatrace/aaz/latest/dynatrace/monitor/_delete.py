@@ -16,7 +16,7 @@ from azure.cli.core.aaz import *
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
-    """Delete a monitor resource
+    """Delete a Dynatrace resource.
 
     :example: Delete a monitor
         az dynatrace monitor delete -n monitor -g rg -y

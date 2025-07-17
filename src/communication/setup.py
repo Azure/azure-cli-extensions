@@ -10,7 +10,7 @@ from codecs import open
 from setuptools import setup, find_packages
 
 # HISTORY.rst entry.
-VERSION = '1.11.2'
+VERSION = '1.13.0'
 
 # The full list of classifiers is available at
 # https://pypi.python.org/pypi?%3Aaction=list_classifiers
@@ -25,12 +25,12 @@ CLASSIFIERS = [
     'License :: OSI Approved :: MIT License',
 ]
 
-DEPENDENCIES = ['azure-core',
-                'azure-communication-identity >= 1.2.0',
+DEPENDENCIES = ['azure-core >= 1.32.0',
+                'azure-communication-identity >= 1.5.0',
                 'azure-communication-phonenumbers >= 1.2.0b3',
                 'azure-communication-sms',
                 'azure-communication-chat >= 1.3.0',
-                'azure-communication-rooms >= 1.1.0',
+                'azure-communication-rooms >= 1.2.0',
                 'azure-communication-email >= 1.0.0',
                 ]
 

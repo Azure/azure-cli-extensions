@@ -19,9 +19,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-09-01-preview",
+        "version": "2025-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cache/redisenterprise/{}", "2024-09-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cache/redisenterprise/{}", "2025-05-01-preview"],
         ]
     }
 
@@ -50,7 +50,7 @@ class Update(AAZCommand):
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
-                pattern="^[A-Za-z0-9]+(-[A-Za-z0-9]+)*$",
+                pattern="^(?=.{1,60}$)[A-Za-z0-9]+(-[A-Za-z0-9]+)*$",
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
@@ -139,7 +139,6 @@ class Update(AAZCommand):
             options=["--high-availability"],
             arg_group="Properties",
             help="Enabled by default. If highAvailability is disabled, the data set is not replicated. This affects the availability SLA, and increases the risk of data loss.",
-            is_preview=True,
             nullable=True,
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
         )
@@ -246,7 +245,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-09-01-preview",
+                    "api-version", "2025-05-01-preview",
                     required=True,
                 ),
             }
@@ -345,7 +344,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-09-01-preview",
+                    "api-version", "2025-05-01-preview",
                     required=True,
                 ),
             }
@@ -403,7 +402,7 @@ class Update(AAZCommand):
                 value=instance,
                 typ=AAZObjectType
             )
-            _builder.set_prop("identity", AAZObjectType)
+            _builder.set_prop("identity", AAZIdentityObjectType)
             _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
             _builder.set_prop("sku", AAZObjectType, ".", typ_kwargs={"flags": {"required": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
@@ -472,6 +471,7 @@ class _UpdateHelper:
         if cls._schema_cluster_read is not None:
             _schema.id = cls._schema_cluster_read.id
             _schema.identity = cls._schema_cluster_read.identity
+            _schema.kind = cls._schema_cluster_read.kind
             _schema.location = cls._schema_cluster_read.location
             _schema.name = cls._schema_cluster_read.name
             _schema.properties = cls._schema_cluster_read.properties
@@ -487,7 +487,10 @@ class _UpdateHelper:
         cluster_read.id = AAZStrType(
             flags={"read_only": True},
         )
-        cluster_read.identity = AAZObjectType()
+        cluster_read.identity = AAZIdentityObjectType()
+        cluster_read.kind = AAZStrType(
+            flags={"read_only": True},
+        )
         cluster_read.location = AAZStrType(
             flags={"required": True},
         )
@@ -645,6 +648,7 @@ class _UpdateHelper:
 
         _schema.id = cls._schema_cluster_read.id
         _schema.identity = cls._schema_cluster_read.identity
+        _schema.kind = cls._schema_cluster_read.kind
         _schema.location = cls._schema_cluster_read.location
         _schema.name = cls._schema_cluster_read.name
         _schema.properties = cls._schema_cluster_read.properties

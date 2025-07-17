@@ -6,8 +6,9 @@
 # pylint: disable=line-too-long
 # pylint: disable=unused-import
 
-from azure.cli.testsdk import ScenarioTest
+from azure.cli.testsdk import ScenarioTest, live_only
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
+import time
 
 
 def reset_softdelete_base_state(test):
@@ -36,6 +37,7 @@ class BackupInstanceOperationsScenarioTest(ScenarioTest):
             'rg': 'clitest-dpp-rg',
             'vaultName': 'clitest-bkp-vault-persistent-bi-donotdelete',
             'softDeleteVault': 'clitest-bkp-vault-sd1-donotdelete',
+            'uamiVault': 'clitest-bkp-vault-uami-donotdelete',
         })
 
     @AllowLargeResponse()
@@ -109,6 +111,101 @@ class BackupInstanceOperationsScenarioTest(ScenarioTest):
             test.greater_than('length([])', 0),
             test.exists("[?name == '{vaultName}']")
         ])
+
+    @AllowLargeResponse()
+    @live_only()
+    def test_dataprotection_backup_instance_uami_create_update(test):
+        test.kwargs.update({
+            'diskname': 'clitest-dpp-disk-uami-donotdelete',
+            'diskId': '/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/clitest-dpp-rg/providers/Microsoft.Compute/disks/clitest-dpp-disk-uami-donotdelete',
+            'targetDiskId': '/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/clitest-dpp-rg/providers/Microsoft.Compute/disks/clitest-dpp-disk-uami-target',
+            'datasourceType': 'AzureDisk',
+            'policyId': '/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-uami-donotdelete/backupPolicies/clitest-dpp-uami-disk-policy',
+            'backupInstanceName': 'clitest-dpp-disk-uami-donotdelete-clitest-dpp-disk-uami-donotdelete-32d2e1ea-1062-11f0-8673-cc15311bf11f',
+            'uamiUrl': '/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/clitest-dpp-rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/dppcliuamiccy',
+        })
+
+        test.addCleanup(test.cmd, 'az dataprotection backup-instance delete -g "{rg}" --vault-name "{uamiVault}" --backup-instance-name "{backupInstanceName}" --yes --no-wait')
+        ########## PRE-TEST-VALIDATIONS ##########
+        # Ensure backup-instance deletion from prev run, just in case. If instance is already deleted, it will return instantly.
+        test.cmd('az dataprotection backup-vault update '
+                 '-g "{rg}" -v "{uamiVault}" '
+                 '--type "SystemAssigned,UserAssigned" ')
+        test.cmd('az dataprotection backup-instance delete -g "{rg}" --vault-name "{uamiVault}" --backup-instance-name "{backupInstanceName}" --yes')
+
+        # Set Backup vault to User-Assigned only. It needs to have the same Managed Identity as we will be associating with the BI.
+        test.cmd('az dataprotection backup-vault update '
+                 '-g "{rg}" -v "{uamiVault}" '
+                 '--type "UserAssigned" '
+                 '--uami {{"{uamiUrl}":{{}}}} ',
+                 checks=[
+                    test.check('identity.type', 'UserAssigned')
+                 ])
+        
+        ########## CORE TEST ##########
+        # Backup Instance initialization
+        backup_instance_json = test.cmd('az dataprotection backup-instance initialize '
+                                        '--datasource-id "{diskId}" '
+                                        '--datasource-location "{location}" '
+                                        '--datasource-type "{datasourceType}" '
+                                        '--policy-id "{policyId}" '
+                                        '--uami "{uamiUrl}" ', checks=[
+                                            test.exists("properties.identity_details")
+                                        ]).get_output_in_json()
+        backup_instance_json["backup_instance_name"] = test.kwargs['backupInstanceName']
+        test.kwargs.update({
+            "backupInstance": backup_instance_json,
+        })
+
+        # Set permissions for Backup
+        # Only run this step in live mode, if the operation is failing due to a permissions issue. Comment otherwise.
+        test.cmd('az dataprotection backup-instance update-msi-permissions '
+                 '-g "{rg}" -v "{uamiVault}" --datasource-type "{datasourceType}" --operation "Backup" '
+                 '--permissions-scope "Resource" --backup-instance "{backupInstance}" --uami "{uamiUrl}" --yes ')
+
+        # Validate the backup
+        test.cmd('az dataprotection backup-instance validate-for-backup '
+                 '-g "{rg}" -v "{uamiVault}" '
+                 '--backup-instance "{backupInstance}" ')
+
+        # Create the backup Instance
+        test.cmd('az dataprotection backup-instance create '
+                 '-g "{rg}" -v "{uamiVault}" '
+                 '--backup-instance "{backupInstance}" ')
+
+        # Update the vault to System+UserAssigned
+        backup_vault = test.cmd('az dataprotection backup-vault update '
+                                '-g "{rg}" -v "{uamiVault}" '
+                               '--type "SystemAssigned,UserAssigned" ',
+                                checks=[
+                                    test.check('identity.type', 'SystemAssigned,UserAssigned')
+                                ]).get_output_in_json()
+        # Fix for 'Cannot find user or service principal in graph database' error. Confirming sp is created for the backup vault.
+        sp_list = []
+        while backup_vault['identity']['principalId'] not in sp_list:
+            sp_list = test.cmd('az ad sp list --display-name "{vaultName}" --query [].id').get_output_in_json()
+            time.sleep(10)
+
+        # Set permissions for System Assigned Identity
+        # Only run this step in live mode, if the operation is failing due to a permissions issue. Comment otherwise.
+        test.cmd('az dataprotection backup-instance update-msi-permissions '
+                 '-g "{rg}" -v "{uamiVault}" --datasource-type "{datasourceType}" --operation "Backup" '
+                 '--permissions-scope "Resource" --backup-instance "{backupInstance}" --yes ')
+
+        # Validate modify BI
+        test.cmd('az dataprotection backup-instance validate-for-update '
+                 '-g "{rg}" -v "{uamiVault}" '
+                 '--backup-instance-name "{backupInstanceName}" '
+                 '--use-system-identity ')
+
+        # Modify BI
+        test.cmd('az dataprotection backup-instance update '
+                 '-g "{rg}" -v "{uamiVault}" '
+                 '--backup-instance-name "{backupInstanceName}" '
+                 '--use-system-identity ',
+                 checks=[
+                     test.check('properties.identityDetails.useSystemAssignedIdentity', True)
+                 ])
 
     @AllowLargeResponse()
     def test_dataprotection_backup_instance_softdelete(test):

@@ -18,13 +18,13 @@ class Create(AAZCommand):
     """Create a segment by id in a private cloud workload network.
 
     :example: Create a segment by ID in a workload network.
-        az vmware workload-network segment create --resource-group group1 --private-cloud cloud1 --segment segment1 --display-name segment1 --connected-gateway /infra/tier-1s/gateway --revision 1 --dhcp-ranges 40.20.0.0 40.20.0.1 --gateway-address 40.20.20.20/16
+        az vmware workload-network segment create --resource-group group1 --private-cloud cloud1 --segment segment1 --display-name segment1 --connected-gateway /infra/tier-1s/gateway --dhcp-ranges "[40.20.0.0-40.20.0.1]" --gateway-address 40.20.20.20/16 --revision 1
     """
 
     _aaz_info = {
-        "version": "2023-09-01",
+        "version": "2024-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}/workloadnetworks/default/segments/{}", "2023-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}/workloadnetworks/default/segments/{}", "2024-09-01"],
         ]
     }
 
@@ -50,7 +50,7 @@ class Create(AAZCommand):
             help="Name of the private cloud",
             required=True,
             fmt=AAZStrArgFormat(
-                pattern="^[-\w\._]+$",
+                pattern="^[-\\w\\._]+$",
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
@@ -61,7 +61,7 @@ class Create(AAZCommand):
             help="NSX Segment identifier. Generally the same as the Segment's display name",
             required=True,
             fmt=AAZStrArgFormat(
-                pattern="^[-\w\._]+$",
+                pattern="^[-\\w\\._]+$",
             ),
         )
 
@@ -187,7 +187,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-09-01",
+                    "api-version", "2024-09-01",
                     required=True,
                 ),
             }
@@ -283,7 +283,9 @@ class Create(AAZCommand):
                 flags={"read_only": True},
             )
             properties.revision = AAZIntType()
-            properties.status = AAZStrType()
+            properties.status = AAZStrType(
+                flags={"read_only": True},
+            )
             properties.subnet = AAZObjectType()
 
             port_vif = cls._schema_on_200_201.properties.port_vif

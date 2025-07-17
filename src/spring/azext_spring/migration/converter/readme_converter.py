@@ -19,9 +19,10 @@ class ReadMeConverter(BaseConverter):
 
             data = {
                 "isVnet": self.wrapper_data.is_vnet(),
-                "containerApps": self.wrapper_data.get_container_deployments(),
-                "buildResultsApps": self.wrapper_data.get_build_results_deployments(),
+                "containerDeployments": self.wrapper_data.get_container_deployments(),
+                "buildResultsDeployments": self.wrapper_data.get_build_results_deployments(),
                 "hasApps": len(apps) > 0,
+                "isSupportGateway": self.wrapper_data.is_support_gateway(),
                 "isSupportConfigServer": self.wrapper_data.is_support_configserver(),
                 "customDomains": self._transform_domains(custom_domains),
                 "hasCerts": len(keyvault_certs) > 0 or len(content_certs) > 0,

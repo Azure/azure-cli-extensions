@@ -1,0 +1,301 @@
+interactions:
+- request:
+    body: '{"location": "westus", "kind": "web", "properties": {"Application_Type":
+      "web", "Flow_Type": "Bluefield", "Request_Source": "rest", "RetentionInDays":
+      120, "IngestionMode": "ApplicationInsights"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - monitor app-insights component create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '196'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --app --location --kind -g --application-type --retention-time
+      User-Agent:
+      - AZURECLI/2.71.0 azsdk-python-core/1.31.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Insights/components/testApp1?api-version=2018-05-01-preview
+  response:
+    body:
+      string: "{\r\n  \"kind\": \"web\",\r\n  \"etag\": \"\\\"f100c53d-0000-0200-0000-67fe23240000\\\"\",\r\n
+        \ \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/testApp1\",\r\n
+        \ \"name\": \"testApp1\",\r\n  \"type\": \"microsoft.insights/components\",\r\n
+        \ \"location\": \"westus\",\r\n  \"tags\": {},\r\n  \"properties\": {\r\n
+        \   \"ApplicationId\": \"testApp1\",\r\n    \"AppId\": \"757321a2-7e6c-4529-8e3b-dec3fe964a76\",\r\n
+        \   \"Application_Type\": \"web\",\r\n    \"Flow_Type\": \"Bluefield\",\r\n
+        \   \"Request_Source\": \"rest\",\r\n    \"InstrumentationKey\": \"13bcd475-4e19-44f8-b213-a116c10ed267\",\r\n
+        \   \"ConnectionString\": \"InstrumentationKey=13bcd475-4e19-44f8-b213-a116c10ed267;IngestionEndpoint=https://westus-0.in.applicationinsights.azure.com/;LiveEndpoint=https://westus.livediagnostics.monitor.azure.com/;ApplicationId=757321a2-7e6c-4529-8e3b-dec3fe964a76\",\r\n
+        \   \"Name\": \"testApp1\",\r\n    \"CreationDate\": \"2025-04-15T09:12:53.8571004+00:00\",\r\n
+        \   \"TenantId\": \"0b1f6471-1bf0-4dda-aec3-cb9272f09590\",\r\n    \"provisioningState\":
+        \"Succeeded\",\r\n    \"SamplingPercentage\": null,\r\n    \"RetentionInDays\":
+        120,\r\n    \"Retention\": \"P120D\",\r\n    \"WorkspaceResourceId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ai_testapp1_757321a2-7e6c-4529-8e3b-dec3fe964a76_managed/providers/Microsoft.OperationalInsights/workspaces/managed-testApp1-ws\",\r\n
+        \   \"IngestionMode\": \"LogAnalytics\",\r\n    \"publicNetworkAccessForIngestion\":
+        \"Enabled\",\r\n    \"publicNetworkAccessForQuery\": \"Enabled\",\r\n    \"Ver\":
+        \"v2\"\r\n  }\r\n}"
+    headers:
+      access-control-expose-headers:
+      - Request-Context
+      cache-control:
+      - no-cache
+      content-length:
+      - '1516'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 15 Apr 2025 09:13:07 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:0dd6a9c3-b728-41ca-aa78-7e1962e22331
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a,objectId=cded80ac-7840-4070-a783-db73a7c3ee4c/japaneast/5a5653d4-5310-43d8-b2f9-ddb2ac91083f
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: 82800A64261548038608EF3632C10D48 Ref B: TYO201151006042 Ref C: 2025-04-15T09:12:51Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - monitor app-insights component show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --app -g
+      User-Agent:
+      - AZURECLI/2.71.0 azsdk-python-core/1.31.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Insights/components/testApp1?api-version=2020-02-02-preview
+  response:
+    body:
+      string: "{\r\n  \"kind\": \"web\",\r\n  \"etag\": \"\\\"f100c53d-0000-0200-0000-67fe23240000\\\"\",\r\n
+        \ \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/testApp1\",\r\n
+        \ \"name\": \"testApp1\",\r\n  \"type\": \"microsoft.insights/components\",\r\n
+        \ \"location\": \"westus\",\r\n  \"tags\": {},\r\n  \"properties\": {\r\n
+        \   \"ApplicationId\": \"testApp1\",\r\n    \"AppId\": \"757321a2-7e6c-4529-8e3b-dec3fe964a76\",\r\n
+        \   \"Application_Type\": \"web\",\r\n    \"Flow_Type\": \"Bluefield\",\r\n
+        \   \"Request_Source\": \"rest\",\r\n    \"InstrumentationKey\": \"13bcd475-4e19-44f8-b213-a116c10ed267\",\r\n
+        \   \"ConnectionString\": \"InstrumentationKey=13bcd475-4e19-44f8-b213-a116c10ed267;IngestionEndpoint=https://westus-0.in.applicationinsights.azure.com/;LiveEndpoint=https://westus.livediagnostics.monitor.azure.com/;ApplicationId=757321a2-7e6c-4529-8e3b-dec3fe964a76\",\r\n
+        \   \"Name\": \"testApp1\",\r\n    \"CreationDate\": \"2025-04-15T09:12:53.8571004+00:00\",\r\n
+        \   \"TenantId\": \"0b1f6471-1bf0-4dda-aec3-cb9272f09590\",\r\n    \"provisioningState\":
+        \"Succeeded\",\r\n    \"SamplingPercentage\": null,\r\n    \"RetentionInDays\":
+        120,\r\n    \"Retention\": \"P120D\",\r\n    \"WorkspaceResourceId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ai_testapp1_757321a2-7e6c-4529-8e3b-dec3fe964a76_managed/providers/Microsoft.OperationalInsights/workspaces/managed-testApp1-ws\",\r\n
+        \   \"IngestionMode\": \"LogAnalytics\",\r\n    \"publicNetworkAccessForIngestion\":
+        \"Enabled\",\r\n    \"publicNetworkAccessForQuery\": \"Enabled\",\r\n    \"Ver\":
+        \"v2\"\r\n  }\r\n}"
+    headers:
+      access-control-expose-headers:
+      - Request-Context
+      cache-control:
+      - no-cache
+      content-length:
+      - '1516'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 15 Apr 2025 09:13:09 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:0dd6a9c3-b728-41ca-aa78-7e1962e22331
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: EF8B4BA043E44D548A412DAA428C0354 Ref B: TYO201151001062 Ref C: 2025-04-15T09:13:09Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - monitor app-insights metrics get-metadata
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --app
+      User-Agent:
+      - AZURECLI/2.71.0 azsdk-python-core/1.31.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://api.applicationinsights.io/v1/apps/757321a2-7e6c-4529-8e3b-dec3fe964a76/metrics/metadata
+  response:
+    body:
+      string: '{"metrics":{"requests/count":{"supportedAggregations":["sum"],"displayName":"Server
+        requests","supportedGroupBy":{"all":["request/source","request/name","request/urlHost","request/urlPath","request/success","request/resultCode","request/performanceBucket","operation/name","operation/synthetic","operation/syntheticSource","user/authenticated","application/version","client/type","client/model","client/os","client/city","client/stateOrProvince","client/countryOrRegion","client/browser","cloud/roleName","cloud/roleInstance"]},"defaultAggregation":"sum"},"requests/duration":{"supportedAggregations":["avg","min","max","sum","count"],"displayName":"Server
+        response time","units":"ms","supportedGroupBy":{"all":["request/source","request/name","request/urlHost","request/urlPath","request/success","request/resultCode","request/performanceBucket","operation/name","operation/synthetic","operation/syntheticSource","user/authenticated","application/version","client/type","client/model","client/os","client/city","client/stateOrProvince","client/countryOrRegion","client/browser","cloud/roleName","cloud/roleInstance"]},"defaultAggregation":"avg"},"requests/failed":{"supportedAggregations":["sum"],"displayName":"Failed
+        requests","supportedGroupBy":{"all":["request/source","request/name","request/urlHost","request/urlPath","request/success","request/resultCode","request/performanceBucket","operation/name","operation/synthetic","operation/syntheticSource","user/authenticated","application/version","client/type","client/model","client/os","client/city","client/stateOrProvince","client/countryOrRegion","client/browser","cloud/roleName","cloud/roleInstance"]},"defaultAggregation":"sum"},"pageViews/count":{"supportedAggregations":["sum"],"displayName":"Page
+        views","supportedGroupBy":{"all":["pageView/name","pageView/urlPath","pageView/urlHost","pageView/performanceBucket","operation/name","operation/synthetic","operation/syntheticSource","user/authenticated","application/version","client/type","client/model","client/os","client/city","client/stateOrProvince","client/countryOrRegion","client/browser","cloud/roleName","cloud/roleInstance"]},"defaultAggregation":"sum"},"pageViews/duration":{"supportedAggregations":["avg","min","max","sum","count"],"displayName":"Page
+        view load time","units":"ms","supportedGroupBy":{"all":["pageView/name","pageView/urlPath","pageView/urlHost","pageView/performanceBucket","operation/name","operation/synthetic","operation/syntheticSource","user/authenticated","application/version","client/type","client/model","client/os","client/city","client/stateOrProvince","client/countryOrRegion","client/browser","cloud/roleName","cloud/roleInstance"]},"defaultAggregation":"avg"},"browserTimings/networkDuration":{"supportedAggregations":["avg","min","max","sum","count"],"displayName":"Page
+        load network connect time","units":"ms","supportedGroupBy":{"all":["browserTiming/name","browserTiming/urlHost","browserTiming/urlPath","browserTiming/performanceBucket","operation/name","operation/synthetic","operation/syntheticSource","user/authenticated","application/version","client/type","client/model","client/os","client/city","client/stateOrProvince","client/countryOrRegion","client/browser","cloud/roleName","cloud/roleInstance"]},"defaultAggregation":"avg"},"browserTimings/sendDuration":{"supportedAggregations":["avg","min","max","sum","count"],"displayName":"Send
+        request time","units":"ms","supportedGroupBy":{"all":["browserTiming/name","browserTiming/urlHost","browserTiming/urlPath","browserTiming/performanceBucket","operation/name","operation/synthetic","operation/syntheticSource","user/authenticated","application/version","client/type","client/model","client/os","client/city","client/stateOrProvince","client/countryOrRegion","client/browser","cloud/roleName","cloud/roleInstance"]},"defaultAggregation":"avg"},"browserTimings/receiveDuration":{"supportedAggregations":["avg","min","max","sum","count"],"displayName":"Receiving
+        response time","units":"ms","supportedGroupBy":{"all":["browserTiming/name","browserTiming/urlHost","browserTiming/urlPath","browserTiming/performanceBucket","operation/name","operation/synthetic","operation/syntheticSource","user/authenticated","application/version","client/type","client/model","client/os","client/city","client/stateOrProvince","client/countryOrRegion","client/browser","cloud/roleName","cloud/roleInstance"]},"defaultAggregation":"avg"},"browserTimings/processingDuration":{"supportedAggregations":["avg","min","max","sum","count"],"displayName":"Client
+        processing time","units":"ms","supportedGroupBy":{"all":["browserTiming/name","browserTiming/urlHost","browserTiming/urlPath","browserTiming/performanceBucket","operation/name","operation/synthetic","operation/syntheticSource","user/authenticated","application/version","client/type","client/model","client/os","client/city","client/stateOrProvince","client/countryOrRegion","client/browser","cloud/roleName","cloud/roleInstance"]},"defaultAggregation":"avg"},"browserTimings/totalDuration":{"supportedAggregations":["avg","min","max","sum","count"],"displayName":"Browser
+        page load time","units":"ms","supportedGroupBy":{"all":["browserTiming/name","browserTiming/urlHost","browserTiming/urlPath","browserTiming/performanceBucket","operation/name","operation/synthetic","operation/syntheticSource","user/authenticated","application/version","client/type","client/model","client/os","client/city","client/stateOrProvince","client/countryOrRegion","client/browser","cloud/roleName","cloud/roleInstance"]},"defaultAggregation":"avg"},"users/count":{"supportedAggregations":["unique"],"displayName":"Users","supportedGroupBy":{"all":["trace/severityLevel","type","operation/name","operation/synthetic","operation/syntheticSource","application/version","client/type","client/model","client/os","client/city","client/stateOrProvince","client/countryOrRegion","client/browser","cloud/roleName","cloud/roleInstance","request/source","request/name","request/urlHost","request/urlPath","request/success","request/resultCode","request/performanceBucket","user/authenticated","pageView/name","pageView/urlPath","pageView/urlHost","pageView/performanceBucket","dependency/target","dependency/type","dependency/name","dependency/success","dependency/resultCode","dependency/performanceBucket","customEvent/name","availabilityResult/name","availabilityResult/location","availabilityResult/success","exception/problemId","exception/handledAt","exception/type","exception/assembly","exception/method","exception/severityLevel","browserTiming/name","browserTiming/urlHost","browserTiming/urlPath","browserTiming/performanceBucket"]},"defaultAggregation":"unique"},"users/authenticated":{"supportedAggregations":["unique"],"displayName":"Users,
+        authenticated","supportedGroupBy":{"all":["trace/severityLevel","type","operation/name","operation/synthetic","operation/syntheticSource","application/version","client/type","client/model","client/os","client/city","client/stateOrProvince","client/countryOrRegion","client/browser","cloud/roleName","cloud/roleInstance","request/source","request/name","request/urlHost","request/urlPath","request/success","request/resultCode","request/performanceBucket","user/authenticated","pageView/name","pageView/urlPath","pageView/urlHost","pageView/performanceBucket","dependency/target","dependency/type","dependency/name","dependency/success","dependency/resultCode","dependency/performanceBucket","customEvent/name","availabilityResult/name","availabilityResult/location","availabilityResult/success","exception/problemId","exception/handledAt","exception/type","exception/assembly","exception/method","exception/severityLevel","browserTiming/name","browserTiming/urlHost","browserTiming/urlPath","browserTiming/performanceBucket"]},"defaultAggregation":"unique"},"sessions/count":{"supportedAggregations":["unique"],"displayName":"Sessions","supportedGroupBy":{"all":["trace/severityLevel","type","operation/name","operation/synthetic","operation/syntheticSource","application/version","client/type","client/model","client/os","client/city","client/stateOrProvince","client/countryOrRegion","client/browser","cloud/roleName","cloud/roleInstance","request/source","request/name","request/urlHost","request/urlPath","request/success","request/resultCode","request/performanceBucket","user/authenticated","pageView/name","pageView/urlPath","pageView/urlHost","pageView/performanceBucket","dependency/target","dependency/type","dependency/name","dependency/success","dependency/resultCode","dependency/performanceBucket","customEvent/name","availabilityResult/name","availabilityResult/location","availabilityResult/success","exception/problemId","exception/handledAt","exception/type","exception/assembly","exception/method","exception/severityLevel","browserTiming/name","browserTiming/urlHost","browserTiming/urlPath","browserTiming/performanceBucket"]},"defaultAggregation":"unique"},"customEvents/count":{"supportedAggregations":["sum"],"displayName":"Events","supportedGroupBy":{"all":["customEvent/name","operation/name","operation/synthetic","operation/syntheticSource","user/authenticated","application/version","client/type","client/model","client/os","client/city","client/stateOrProvince","client/countryOrRegion","client/browser","cloud/roleName","cloud/roleInstance"]},"defaultAggregation":"sum"},"dependencies/count":{"supportedAggregations":["sum"],"displayName":"Dependency
+        calls","supportedGroupBy":{"all":["dependency/target","dependency/type","dependency/name","dependency/success","dependency/resultCode","dependency/performanceBucket","operation/name","operation/synthetic","operation/syntheticSource","user/authenticated","application/version","client/type","client/model","client/os","client/city","client/stateOrProvince","client/countryOrRegion","client/browser","cloud/roleName","cloud/roleInstance"]},"defaultAggregation":"sum"},"dependencies/failed":{"supportedAggregations":["sum"],"displayName":"Dependency
+        failures","supportedGroupBy":{"all":["dependency/target","dependency/type","dependency/name","dependency/success","dependency/resultCode","dependency/performanceBucket","operation/name","operation/synthetic","operation/syntheticSource","user/authenticated","application/version","client/type","client/model","client/os","client/city","client/stateOrProvince","client/countryOrRegion","client/browser","cloud/roleName","cloud/roleInstance"]},"defaultAggregation":"sum"},"dependencies/duration":{"supportedAggregations":["avg","min","max","sum","count"],"displayName":"Dependency
+        duration","units":"ms","supportedGroupBy":{"all":["dependency/target","dependency/type","dependency/name","dependency/success","dependency/resultCode","dependency/performanceBucket","operation/name","operation/synthetic","operation/syntheticSource","user/authenticated","application/version","client/type","client/model","client/os","client/city","client/stateOrProvince","client/countryOrRegion","client/browser","cloud/roleName","cloud/roleInstance"]},"defaultAggregation":"avg"},"exceptions/count":{"supportedAggregations":["sum"],"displayName":"Exceptions","supportedGroupBy":{"all":["exception/problemId","exception/handledAt","exception/type","exception/assembly","exception/method","exception/severityLevel","operation/name","operation/synthetic","operation/syntheticSource","user/authenticated","application/version","client/type","client/model","client/os","client/city","client/stateOrProvince","client/countryOrRegion","client/browser","cloud/roleName","cloud/roleInstance"]},"defaultAggregation":"sum"},"exceptions/browser":{"supportedAggregations":["sum"],"displayName":"Browser
+        exceptions","supportedGroupBy":{"all":["exception/problemId","exception/handledAt","exception/type","exception/assembly","exception/method","exception/severityLevel","operation/name","operation/synthetic","operation/syntheticSource","user/authenticated","application/version","client/type","client/model","client/os","client/city","client/stateOrProvince","client/countryOrRegion","client/browser","cloud/roleName","cloud/roleInstance"]},"defaultAggregation":"sum"},"exceptions/server":{"supportedAggregations":["sum"],"displayName":"Server
+        exceptions","supportedGroupBy":{"all":["exception/problemId","exception/handledAt","exception/type","exception/assembly","exception/method","exception/severityLevel","operation/name","operation/synthetic","operation/syntheticSource","user/authenticated","application/version","client/type","client/model","client/os","client/city","client/stateOrProvince","client/countryOrRegion","client/browser","cloud/roleName","cloud/roleInstance"]},"defaultAggregation":"sum"},"availabilityResults/count":{"supportedAggregations":["sum"],"displayName":"Availability
+        test results count","supportedGroupBy":{"all":["availabilityResult/name","availabilityResult/location","availabilityResult/success","operation/name","operation/synthetic","operation/syntheticSource","user/authenticated","application/version","client/type","client/model","client/os","client/city","client/stateOrProvince","client/countryOrRegion","client/browser","cloud/roleName","cloud/roleInstance"]},"defaultAggregation":"sum"},"availabilityResults/duration":{"supportedAggregations":["avg","min","max","sum","count"],"displayName":"Test
+        duration","units":"ms","supportedGroupBy":{"all":["availabilityResult/name","availabilityResult/location","availabilityResult/success","operation/name","operation/synthetic","operation/syntheticSource","user/authenticated","application/version","client/type","client/model","client/os","client/city","client/stateOrProvince","client/countryOrRegion","client/browser","cloud/roleName","cloud/roleInstance"]},"defaultAggregation":"avg"},"availabilityResults/availabilityPercentage":{"supportedAggregations":["avg","count"],"displayName":"Availability","units":"percent","supportedGroupBy":{"all":["availabilityResult/name","availabilityResult/location","availabilityResult/success","operation/name","operation/synthetic","operation/syntheticSource","user/authenticated","application/version","client/type","client/model","client/os","client/city","client/stateOrProvince","client/countryOrRegion","client/browser","cloud/roleName","cloud/roleInstance"]},"defaultAggregation":"avg"},"billingMeters/telemetryCount":{"supportedAggregations":["sum"],"displayName":"Data
+        point count","supportedGroupBy":{"all":["billing/telemetryItemSource","billing/telemetryItemType"]},"defaultAggregation":"sum"},"billingMeters/telemetrySize":{"supportedAggregations":["sum"],"displayName":"Data
+        point volume","units":"bytes","supportedGroupBy":{"all":["billing/telemetryItemSource","billing/telemetryItemType"]},"defaultAggregation":"sum"},"performanceCounters/requestExecutionTime":{"supportedAggregations":["avg","min","max","sum","count"],"displayName":"ASP.NET
+        request execution time","units":"ms","supportedGroupBy":{"all":["performanceCounter/name","performanceCounter/category","performanceCounter/counter","performanceCounter/instance","operation/name","operation/synthetic","operation/syntheticSource","user/authenticated","application/version","client/type","client/model","client/os","client/city","client/stateOrProvince","client/countryOrRegion","client/browser","cloud/roleName","cloud/roleInstance"]},"defaultAggregation":"avg"},"performanceCounters/requestsPerSecond":{"supportedAggregations":["avg","min","max","count"],"displayName":"ASP.NET
+        request rate","units":"perSec","supportedGroupBy":{"all":["performanceCounter/name","performanceCounter/category","performanceCounter/counter","performanceCounter/instance","operation/name","operation/synthetic","operation/syntheticSource","user/authenticated","application/version","client/type","client/model","client/os","client/city","client/stateOrProvince","client/countryOrRegion","client/browser","cloud/roleName","cloud/roleInstance"]},"defaultAggregation":"avg"},"performanceCounters/requestsInQueue":{"supportedAggregations":["avg","min","max","count"],"displayName":"ASP.NET
+        requests in application queue","supportedGroupBy":{"all":["performanceCounter/name","performanceCounter/category","performanceCounter/counter","performanceCounter/instance","operation/name","operation/synthetic","operation/syntheticSource","user/authenticated","application/version","client/type","client/model","client/os","client/city","client/stateOrProvince","client/countryOrRegion","client/browser","cloud/roleName","cloud/roleInstance"]},"defaultAggregation":"avg"},"performanceCounters/memoryAvailableBytes":{"supportedAggregations":["avg","min","max","count"],"displayName":"Available
+        memory","units":"bytes","supportedGroupBy":{"all":["performanceCounter/name","performanceCounter/category","performanceCounter/counter","performanceCounter/instance","operation/name","operation/synthetic","operation/syntheticSource","user/authenticated","application/version","client/type","client/model","client/os","client/city","client/stateOrProvince","client/countryOrRegion","client/browser","cloud/roleName","cloud/roleInstance"]},"defaultAggregation":"avg"},"performanceCounters/exceptionsPerSecond":{"supportedAggregations":["avg","min","max","count"],"displayName":"Exception
+        rate","units":"perSec","supportedGroupBy":{"all":["performanceCounter/name","performanceCounter/category","performanceCounter/counter","performanceCounter/instance","operation/name","operation/synthetic","operation/syntheticSource","user/authenticated","application/version","client/type","client/model","client/os","client/city","client/stateOrProvince","client/countryOrRegion","client/browser","cloud/roleName","cloud/roleInstance"]},"defaultAggregation":"avg"},"performanceCounters/processCpuPercentage":{"supportedAggregations":["avg","min","max","count"],"displayName":"Process
+        CPU","units":"percent","supportedGroupBy":{"all":["performanceCounter/name","performanceCounter/category","performanceCounter/counter","performanceCounter/instance","operation/name","operation/synthetic","operation/syntheticSource","user/authenticated","application/version","client/type","client/model","client/os","client/city","client/stateOrProvince","client/countryOrRegion","client/browser","cloud/roleName","cloud/roleInstance"]},"defaultAggregation":"avg"},"performanceCounters/processCpuPercentageTotal":{"supportedAggregations":["avg","min","max","count"],"displayName":"Process
+        CPU (all cores)","units":"percent","supportedGroupBy":{"all":["performanceCounter/name","performanceCounter/category","performanceCounter/counter","performanceCounter/instance","operation/name","operation/synthetic","operation/syntheticSource","user/authenticated","application/version","client/type","client/model","client/os","client/city","client/stateOrProvince","client/countryOrRegion","client/browser","cloud/roleName","cloud/roleInstance"]},"defaultAggregation":"avg"},"performanceCounters/processIOBytesPerSecond":{"supportedAggregations":["avg","min","max","count"],"displayName":"Process
+        IO rate","units":"bytesPerSec","supportedGroupBy":{"all":["performanceCounter/name","performanceCounter/category","performanceCounter/counter","performanceCounter/instance","operation/name","operation/synthetic","operation/syntheticSource","user/authenticated","application/version","client/type","client/model","client/os","client/city","client/stateOrProvince","client/countryOrRegion","client/browser","cloud/roleName","cloud/roleInstance"]},"defaultAggregation":"avg"},"performanceCounters/processPrivateBytes":{"supportedAggregations":["avg","min","max","count"],"displayName":"Process
+        private bytes","units":"bytes","supportedGroupBy":{"all":["performanceCounter/name","performanceCounter/category","performanceCounter/counter","performanceCounter/instance","operation/name","operation/synthetic","operation/syntheticSource","user/authenticated","application/version","client/type","client/model","client/os","client/city","client/stateOrProvince","client/countryOrRegion","client/browser","cloud/roleName","cloud/roleInstance"]},"defaultAggregation":"avg"},"performanceCounters/processorCpuPercentage":{"supportedAggregations":["avg","min","max","count"],"displayName":"Processor
+        time","units":"percent","supportedGroupBy":{"all":["performanceCounter/name","performanceCounter/category","performanceCounter/counter","performanceCounter/instance","operation/name","operation/synthetic","operation/syntheticSource","user/authenticated","application/version","client/type","client/model","client/os","client/city","client/stateOrProvince","client/countryOrRegion","client/browser","cloud/roleName","cloud/roleInstance"]},"defaultAggregation":"avg"},"traces/count":{"supportedAggregations":["sum"],"displayName":"Traces","supportedGroupBy":{"all":["trace/severityLevel","operation/name","operation/synthetic","operation/syntheticSource","application/version","client/type","client/model","client/os","client/city","client/stateOrProvince","client/countryOrRegion","client/browser","cloud/roleName","cloud/roleInstance"]},"defaultAggregation":"sum"}},"dimensions":{"request/source":{"displayName":"Request
+        source"},"request/name":{"displayName":"Request name"},"request/urlHost":{"displayName":"Request
+        URL host"},"request/urlPath":{"displayName":"Request URL path"},"request/success":{"displayName":"Successful
+        request"},"request/resultCode":{"displayName":"Response code"},"request/performanceBucket":{"displayName":"Performance"},"operation/name":{"displayName":"Operation
+        name"},"operation/synthetic":{"displayName":"Real or synthetic traffic"},"operation/syntheticSource":{"displayName":"Source
+        of synthetic traffic"},"user/authenticated":{"displayName":"Authenticated
+        user"},"application/version":{"displayName":"Application version"},"client/type":{"displayName":"Device
+        type"},"client/model":{"displayName":"Device model"},"client/os":{"displayName":"Operating
+        system"},"client/city":{"displayName":"City"},"client/stateOrProvince":{"displayName":"State
+        or province"},"client/countryOrRegion":{"displayName":"Country or region"},"client/browser":{"displayName":"Browser
+        version"},"cloud/roleName":{"displayName":"Cloud role name"},"cloud/roleInstance":{"displayName":"Cloud
+        role instance"},"pageView/name":{"displayName":"View page name"},"pageView/urlPath":{"displayName":"Page
+        view URL path"},"pageView/urlHost":{"displayName":"Page view URL host"},"pageView/performanceBucket":{"displayName":"Performance"},"browserTiming/name":{"displayName":"Name"},"browserTiming/urlHost":{"displayName":"Url
+        host"},"browserTiming/urlPath":{"displayName":"Url path"},"browserTiming/performanceBucket":{"displayName":"Performance
+        Bucket"},"trace/severityLevel":{"displayName":"Severity level"},"type":{"displayName":"Telemetry
+        type"},"dependency/target":{"displayName":"Base name"},"dependency/type":{"displayName":"Dependency
+        type"},"dependency/name":{"displayName":"Remote dependency name"},"dependency/success":{"displayName":"Dependency
+        call status"},"dependency/resultCode":{"displayName":"Result code"},"dependency/performanceBucket":{"displayName":"Performance"},"customEvent/name":{"displayName":"Event
+        name"},"availabilityResult/name":{"displayName":"Test name"},"availabilityResult/location":{"displayName":"Run
+        location"},"availabilityResult/success":{"displayName":"Test result"},"exception/problemId":{"displayName":"Problem
+        Id"},"exception/handledAt":{"displayName":"Handled at"},"exception/type":{"displayName":"Exception
+        type"},"exception/assembly":{"displayName":"Assembly"},"exception/method":{"displayName":"Failed
+        method"},"exception/severityLevel":{"displayName":"Severity level"},"billing/telemetryItemSource":{"displayName":"Telemetry
+        item source"},"billing/telemetryItemType":{"displayName":"Telemetry item type"},"performanceCounter/name":{"displayName":"Name"},"performanceCounter/category":{"displayName":"Category
+        name"},"performanceCounter/counter":{"displayName":"Counter"},"performanceCounter/instance":{"displayName":"Instance
+        name"}}}'
+    headers:
+      access-control-allow-origin:
+      - '*'
+      access-control-expose-headers:
+      - Retry-After,Age,WWW-Authenticate,x-resource-identities,x-ms-status-location
+      connection:
+      - keep-alive
+      content-length:
+      - '23967'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 15 Apr 2025 09:13:12 GMT
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      via:
+      - 1.1 draft-oms-58f6f7cd6b-8jr5k
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - monitor app-insights component delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --app -g
+      User-Agent:
+      - AZURECLI/2.71.0 azsdk-python-core/1.31.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Insights/components/testApp1?api-version=2018-05-01-preview
+  response:
+    body:
+      string: ''
+    headers:
+      access-control-expose-headers:
+      - Request-Context
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 15 Apr 2025 09:13:17 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:0dd6a9c3-b728-41ca-aa78-7e1962e22331
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a,objectId=cded80ac-7840-4070-a783-db73a7c3ee4c/japaneast/e2e10460-cdcb-4a53-a79b-fda2ecb3665b
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '199'
+      x-ms-ratelimit-remaining-subscription-global-deletes:
+      - '2999'
+      x-msedge-ref:
+      - 'Ref A: 933A654E975A459AA596DEAB1155C228 Ref B: TYO201100114045 Ref C: 2025-04-15T09:13:13Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+version: 1

@@ -1,0 +1,58 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - confidentialledger list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group
+      User-Agent:
+      - AZURECLI/2.71.0 azsdk-python-core/1.31.0 Python/3.12.9 (Linux-6.8.0-1026-azure-x86_64-with-glibc2.36)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzCliExtensionRg/providers/Microsoft.ConfidentialLedger/ledgers?api-version=2024-09-19-preview
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzCliExtensionRg/providers/Microsoft.ConfidentialLedger/Ledgers/azclitest1","name":"azclitest1","type":"Microsoft.ConfidentialLedger/Ledgers","location":"eastus","properties":{"ledgerName":"azclitest1","ledgerUri":"https://azclitest1.confidential-ledger.azure.com","identityServiceUri":"https://identity.confidential-ledger.core.azure.com/ledgerIdentity/azclitest1","runningState":"Active","ledgerType":"Public","aadBasedSecurityPrincipals":[{"principalId":"78945818-3e7d-4708-bd84-3a480f1fbeb5","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","ledgerRoleName":"Contributor"}],"ledgerInternalNamespace":"00000000-0000-0000-0000-9dde71291670","ledgerSku":"Standard","enclavePlatform":"IntelSgx","applicationType":"ConfidentialLedger","nodeCount":3,"hostLevel":"Info","maxBodySizeInMb":1,"subjectName":"CN=CCF
+        Node","workerThreads":0}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzCliExtensionRg/providers/Microsoft.ConfidentialLedger/Ledgers/azcliextensiontest1","name":"azcliextensiontest1","type":"Microsoft.ConfidentialLedger/Ledgers","location":"eastus","properties":{"ledgerName":"azcliextensiontest1","ledgerUri":"https://azcliextensiontest1.confidential-ledger.azure.com","identityServiceUri":"https://identity.confidential-ledger.core.azure.com/ledgerIdentity/azcliextensiontest1","runningState":"Active","ledgerType":"Unknown","aadBasedSecurityPrincipals":[{"principalId":"34621747-6fc8-4771-a2eb-72f31c461f2e","tenantId":"bce123b9-2b7b-4975-8360-5ca0b9b1cd08","ledgerRoleName":"Administrator"}],"ledgerInternalNamespace":"00000000-0000-0000-0000-befbbae86ed7","ledgerSku":"Standard","enclavePlatform":"IntelSgx","applicationType":"ConfidentialLedger","nodeCount":3,"hostLevel":"Info","maxBodySizeInMb":1,"subjectName":"CN=CCF
+        Node","workerThreads":0}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1879'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 22 Apr 2025 05:57:29 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 02a74fc9-b148-448e-b2fb-8fda06154798
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-image-tag:
+      - 1.0.03020.245-cd77d0d5c8109fe7bf9e3ea1e1bb58b23d8a69d4
+      x-ms-machinename:
+      - controlplane-6d79b784b6-tvfw2
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 970A59891AA94525A565E2A9387548ED Ref B: SJC211051203017 Ref C: 2025-04-22T05:57:29Z'
+    status:
+      code: 200
+      message: OK
+version: 1

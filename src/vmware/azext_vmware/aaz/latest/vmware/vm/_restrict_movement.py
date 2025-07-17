@@ -11,9 +11,6 @@
 from azure.cli.core.aaz import *
 
 
-@register_command(
-    "vmware vm restrict-movement",
-)
 class RestrictMovement(AAZCommand):
     """Enable or disable DRS-driven VM movement restriction
 
@@ -22,9 +19,9 @@ class RestrictMovement(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-09-01",
+        "version": "2024-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}/clusters/{}/virtualmachines/{}/restrictmovement", "2023-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}/clusters/{}/virtualmachines/{}/restrictmovement", "2024-09-01"],
         ]
     }
 
@@ -51,7 +48,7 @@ class RestrictMovement(AAZCommand):
             required=True,
             id_part="child_name_1",
             fmt=AAZStrArgFormat(
-                pattern="^[-\w\._]+$",
+                pattern="^[-\\w\\._]+$",
             ),
         )
         _args_schema.private_cloud = AAZStrArg(
@@ -60,7 +57,7 @@ class RestrictMovement(AAZCommand):
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
-                pattern="^[-\w\._]+$",
+                pattern="^[-\\w\\._]+$",
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
@@ -72,7 +69,7 @@ class RestrictMovement(AAZCommand):
             required=True,
             id_part="child_name_2",
             fmt=AAZStrArgFormat(
-                pattern="^[-\w\._]+$",
+                pattern="^[-\\w\\._]+$",
             ),
         )
 
@@ -110,7 +107,16 @@ class RestrictMovement(AAZCommand):
                 return self.client.build_lro_polling(
                     self.ctx.args.no_wait,
                     session,
-                    None,
+                    self.on_200,
+                    self.on_error,
+                    lro_options={"final-state-via": "location"},
+                    path_format_arguments=self.url_parameters,
+                )
+            if session.http_response.status_code in [200]:
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200,
                     self.on_error,
                     lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
@@ -163,7 +169,7 @@ class RestrictMovement(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-09-01",
+                    "api-version", "2024-09-01",
                     required=True,
                 ),
             }
@@ -188,6 +194,9 @@ class RestrictMovement(AAZCommand):
             _builder.set_prop("restrictMovement", AAZStrType, ".restrict_movement")
 
             return self.serialize_content(_content_value)
+
+        def on_200(self, session):
+            pass
 
 
 class _RestrictMovementHelper:

@@ -10,7 +10,9 @@ from azext_fleet._client_factory import (
     cf_fleet_members,
     cf_update_runs,
     cf_fleet_update_strategies,
-    cf_auto_upgrade_profiles
+    cf_auto_upgrade_profiles,
+    cf_auto_upgrade_profile_operations
+
 )
 
 
@@ -44,6 +46,12 @@ def load_command_table(self, _):
         operations_tmpl="azext_fleet.vendored_sdks.operations._auto_upgrade_profiles_operations#AutoUpgradeProfilesOperations.{}",
         operation_group="auto_upgrade_profiles",
         client_factory=cf_auto_upgrade_profiles
+    )
+
+    auto_upgrade_profile_operations_sdk = CliCommandType(
+        operations_tmpl="azext_fleet.vendored_sdks.operations._auto_upgrade_profile_operations_operations#AutoUpgradeProfileOperationsOperations.{}",
+        operation_group="auto_upgrade_profile_operations",
+        client_factory=cf_auto_upgrade_profile_operations
     )
 
     # fleets command group
@@ -87,9 +95,13 @@ def load_command_table(self, _):
         g.wait_command("wait")
 
     # auto upgrade profiles command group
-    with self.command_group("fleet autoupgradeprofile", auto_upgrade_profiles_sdk, client_factory=cf_auto_upgrade_profiles, is_preview=True) as g:
+    with self.command_group("fleet autoupgradeprofile", auto_upgrade_profiles_sdk, client_factory=cf_auto_upgrade_profiles) as g:
         g.custom_command("create", "create_auto_upgrade_profile", supports_no_wait=True)
         g.custom_show_command("show", "show_auto_upgrade_profile")
         g.custom_command("list", "list_auto_upgrade_profiles")
         g.custom_command("delete", "delete_auto_upgrade_profile", supports_no_wait=True, confirmation=True)
         g.wait_command("wait")
+
+    # auto upgrade profiles operation command group
+    with self.command_group("fleet autoupgradeprofile", auto_upgrade_profile_operations_sdk, client_factory=cf_auto_upgrade_profile_operations) as g:
+        g.custom_command("generate-update-run", "generate_update_run", supports_no_wait=True)

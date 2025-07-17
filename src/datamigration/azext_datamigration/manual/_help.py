@@ -166,6 +166,28 @@ offline=true --scope "/subscriptions/00000000-1111-2222-3333-444444444444/resour
 /managedInstances/instance" --source-database-name "aaa" --source-sql-connection authentication="WindowsAuthentication"\
  data-source="aaa" encrypt-connection=true password="placeholder" trust-server-certificate=true user-name="bbb" \
 --resource-group "testrg" --target-db-name "db1"
+      - name: Create or update a Database Migration resource using Azure Blob storage (via System-Assigned Managed Identity) as the backup source.
+        text: |-
+               az datamigration sql-managed-instance create --managed-instance-name "managedInstance1" \
+--source-location '{\\"AzureBlob\\":{\\"storageAccountResourceId\\":\\"/subscriptions/1111-2222-3333-4444/resourceGroups/RG/prooviders\
+/Microsoft.Storage/storageAccounts/MyStorage\\",\\"authType\\":\\"ManagedIdentity\\",\\"identity\\":{\\"type\\":\\"SystemAssigned\\"},\\"blobContainerName\\":\\"ContainerName\
+-X\\"}}' --migration-service "/subscriptions/00000000-1111-2222-3333-444444444444/resourceGroups/testrg/providers/Micr\
+osoft.DataMigration/sqlMigrationServices/testagent" --offline-configuration last-backup-name="last_backup_file_name" \
+offline=true --scope "/subscriptions/00000000-1111-2222-3333-444444444444/resourceGroups/testrg/providers/Microsoft.Sql\
+/managedInstances/instance" --source-database-name "aaa" --source-sql-connection authentication="WindowsAuthentication"\
+ data-source="aaa" encrypt-connection=true password="placeholder" trust-server-certificate=true user-name="bbb" \
+--resource-group "testrg" --target-db-name "db1"
+      - name: Create or update a Database Migration resource using Azure Blob storage (via User-Assigned Managed Identity) as the backup source.
+        text: |-
+               az datamigration sql-managed-instance create --managed-instance-name "managedInstance1" \
+--source-location '{\\"AzureBlob\\":{\\"storageAccountResourceId\\":\\"/subscriptions/1111-2222-3333-4444/resourceGroups/RG/prooviders\
+/Microsoft.Storage/storageAccounts/MyStorage\\",\\"authType\\":\\"ManagedIdentity\\",\\"identity\\":{\\"type\\":\\"UserAssigned\\",\\"userAssignedIdentities\\":{\\"/subscriptions/00000000-1111-2222-3333-444444444444/resourcegroups/testrg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/test-uami\":{}}},\\"blobContainerName\\":\\"ContainerName\
+-X\\"}}' --migration-service "/subscriptions/00000000-1111-2222-3333-444444444444/resourceGroups/testrg/providers/Micr\
+osoft.DataMigration/sqlMigrationServices/testagent" --offline-configuration last-backup-name="last_backup_file_name" \
+offline=true --scope "/subscriptions/00000000-1111-2222-3333-444444444444/resourceGroups/testrg/providers/Microsoft.Sql\
+/managedInstances/instance" --source-database-name "aaa" --source-sql-connection authentication="WindowsAuthentication"\
+ data-source="aaa" encrypt-connection=true password="placeholder" trust-server-certificate=true user-name="bbb" \
+--resource-group "testrg" --target-db-name "db1"
 """
 
 helps['datamigration sql-vm create'] = """

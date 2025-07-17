@@ -219,44 +219,49 @@ class SessionPoolCreateDecorator(SessionPoolPreviewDecorator):
             safe_set(self.session_pool_def, "properties", "managedIdentitySettings", value=managed_identity_settings)
 
     def set_up_managed_identity(self):
-        identity_def = deepcopy(ManagedServiceIdentity)
-        identity_def["type"] = "None"
+        if self.get_argument_user_assigned() or self.get_argument_system_assigned() or self.get_argument_registry_identity():
+            identity_def = deepcopy(ManagedServiceIdentity)
+            identity_def["type"] = "None"
 
-        assign_system_identity = self.get_argument_system_assigned()
-        if self.get_argument_user_assigned():
-            assign_user_identities = [x.lower() for x in self.get_argument_user_assigned()]
-        else:
-            assign_user_identities = []
-
-        identity = self.get_argument_registry_identity()
-        if identity:
-            if is_registry_msi_system(identity):
-                assign_system_identity = True
+            assign_system_identity = self.get_argument_system_assigned()
+            if self.get_argument_user_assigned():
+                assign_user_identities = [x.lower() for x in self.get_argument_user_assigned()]
             else:
-                assign_user_identities.append(self.get_argument_registry_identity())
+                assign_user_identities = []
 
-        if assign_system_identity and assign_user_identities:
-            identity_def["type"] = "SystemAssigned, UserAssigned"
-        elif assign_system_identity:
-            identity_def["type"] = "SystemAssigned"
-        elif assign_user_identities:
-            identity_def["type"] = "UserAssigned"
+            identity = self.get_argument_registry_identity()
+            if identity:
+                if is_registry_msi_system(identity):
+                    assign_system_identity = True
+                else:
+                    assign_user_identities.append(self.get_argument_registry_identity())
 
-        if assign_user_identities:
-            identity_def["userAssignedIdentities"] = {}
-            subscription_id = get_subscription_id(self.cmd.cli_ctx)
+            if assign_system_identity and assign_user_identities:
+                identity_def["type"] = "SystemAssigned, UserAssigned"
+            elif assign_system_identity:
+                identity_def["type"] = "SystemAssigned"
+            elif assign_user_identities:
+                identity_def["type"] = "UserAssigned"
 
-            for r in assign_user_identities:
-                r = _ensure_identity_resource_id(subscription_id, self.get_argument_resource_group_name(), r)
-                identity_def["userAssignedIdentities"][r] = {}  # pylint: disable=unsupported-assignment-operation
-        self.session_pool_def["identity"] = identity_def
+            if assign_user_identities:
+                identity_def["userAssignedIdentities"] = {}
+                subscription_id = get_subscription_id(self.cmd.cli_ctx)
+
+                for r in assign_user_identities:
+                    r = _ensure_identity_resource_id(subscription_id, self.get_argument_resource_group_name(), r)
+                    identity_def["userAssignedIdentities"][r] = {}  # pylint: disable=unsupported-assignment-operation
+            self.session_pool_def["identity"] = identity_def
 
     def set_up_dynamic_configuration(self):
-        dynamic_pool_def = {}
-        dynamic_pool_def["executionType"] = "Timed"
         if self.get_argument_cooldown_period_in_seconds() is None:
             self.set_argument_cooldown_period_in_seconds(300)
-        dynamic_pool_def["cooldownPeriodInSeconds"] = self.get_argument_cooldown_period_in_seconds()
+
+        dynamic_pool_def = {}
+        lifecycle_config_def = {}
+        lifecycle_config_def["lifecycleType"] = "Timed"
+        lifecycle_config_def["cooldownPeriodInSeconds"] = self.get_argument_cooldown_period_in_seconds()
+        dynamic_pool_def["lifecycleConfiguration"] = lifecycle_config_def
+
         return dynamic_pool_def
 
     def set_up_network_configuration(self):
@@ -415,16 +420,75 @@ class SessionPoolUpdateDecorator(SessionPoolPreviewDecorator):
                 (self.get_argument_managed_env() is not None and safe_get(self.existing_pool_def, "properties", "environmentId").lower() == self.get_argument_managed_env().lower())):
             raise ValidationError("containerType and environmentId cannot be updated.")
 
+        self.set_up_managed_identity()
         self.set_up_dynamic_configuration()
         self.set_up_network_configuration()
         self.set_up_scale_configuration()
         self.set_up_secrets()
         self.set_up_custom_container_template(safe_get(self.session_pool_def, "properties", "secrets"))
+        self.set_up_managed_identity_settings()
+
+    def set_up_managed_identity(self):
+        if self.get_argument_system_assigned() is not None or self.get_argument_user_assigned() is not None:
+            identity_def = deepcopy(ManagedServiceIdentity)
+            identity_def["type"] = "None"
+
+            assign_system_identity = self.get_argument_system_assigned()
+            if self.get_argument_user_assigned():
+                assign_user_identities = [x.lower() for x in self.get_argument_user_assigned()]
+            else:
+                assign_user_identities = []
+
+            identity = self.get_argument_registry_identity()
+            if identity:
+                if is_registry_msi_system(identity):
+                    assign_system_identity = True
+                else:
+                    assign_user_identities.append(self.get_argument_registry_identity())
+
+            if assign_system_identity and assign_user_identities:
+                identity_def["type"] = "SystemAssigned, UserAssigned"
+            elif assign_system_identity:
+                identity_def["type"] = "SystemAssigned"
+            elif assign_user_identities:
+                identity_def["type"] = "UserAssigned"
+
+            if assign_user_identities:
+                identity_def["userAssignedIdentities"] = {}
+                subscription_id = get_subscription_id(self.cmd.cli_ctx)
+
+                for r in assign_user_identities:
+                    r = _ensure_identity_resource_id(subscription_id, self.get_argument_resource_group_name(), r)
+                    identity_def["userAssignedIdentities"][r] = {}  # pylint: disable=unsupported-assignment-operation
+
+            safe_set(self.session_pool_def, "identity", value=identity_def)
+
+    def set_up_managed_identity_settings(self):
+        managed_identity_settings = []
+        if self.get_argument_system_assigned():
+            managed_identity_setting = {
+                "identity": "system",
+                "lifecycle": "Main"
+            }
+            managed_identity_settings.append(managed_identity_setting)
+
+        if self.get_argument_user_assigned():
+            for x in self.get_argument_user_assigned():
+                managed_identity_setting = {
+                    "identity": x.lower(),
+                    "lifecycle": "Main"
+                }
+                managed_identity_settings.append(managed_identity_setting)
+        if managed_identity_settings:
+            safe_set(self.session_pool_def, "properties", "managedIdentitySettings", value=managed_identity_settings)
 
     def set_up_dynamic_configuration(self):
         if self.get_argument_cooldown_period_in_seconds() is not None:
             dynamic_pool_def = {}
-            dynamic_pool_def["cooldownPeriodInSeconds"] = self.get_argument_cooldown_period_in_seconds()
+            lifecycle_config_def = {}
+            lifecycle_config_def["lifecycleType"] = "Timed"
+            lifecycle_config_def["cooldownPeriodInSeconds"] = self.get_argument_cooldown_period_in_seconds()
+            dynamic_pool_def["lifecycleConfiguration"] = lifecycle_config_def
             safe_set(self.session_pool_def, "properties", "dynamicPoolConfiguration", value=dynamic_pool_def)
 
     def set_up_network_configuration(self):
@@ -489,15 +553,16 @@ class SessionPoolUpdateDecorator(SessionPoolPreviewDecorator):
     def set_up_registry_auth_configuration(self, secrets_def, customer_container_template):
         if self.has_registry_change():
             if safe_get(customer_container_template, "registryCredentials") is None:
-                if self.get_argument_registry_server() is None or (self.get_argument_registry_user() is None or self.get_argument_registry_pass() is None):
+                if self.get_argument_registry_server() is None or (self.get_argument_registry_identity() is None and (self.get_argument_registry_user() is None or self.get_argument_registry_pass() is None)):
                     raise ValidationError("The existing registry credentials are empty. \n"
-                                          "Please provide --registry-server, --registry-username, and --registry-password to update the registry credentials. \n"
-                                          "If you want to use managed identity for registry, please use `az containerapp sessionpool create --registry-server myregistry.azurecr.io --registry-identity  MyUserIdentityResourceId`.\n")
+                                          "Please provide --registry-server, --registry-username, --registry-password or --registry-identity to update the registry credentials. \n")
                 safe_set(customer_container_template, "registryCredentials", value={})
         if self.get_argument_registry_server() is not None:
             safe_set(customer_container_template, "registryCredentials", "server", value=self.get_argument_registry_server())
         if self.get_argument_registry_user() is not None:
             safe_set(customer_container_template, "registryCredentials", "username", value=self.get_argument_registry_user())
+        if self.get_argument_registry_identity() is not None:
+            safe_set(customer_container_template, "registryCredentials", "identity", value=self.get_argument_registry_identity())
         if secrets_def is None:
             secrets_def = []
         if self.get_argument_registry_pass() is not None:
@@ -542,7 +607,8 @@ class SessionPoolUpdateDecorator(SessionPoolPreviewDecorator):
     def has_registry_change(self):
         return (self.get_argument_registry_server() is not None or
                 self.get_argument_registry_user() is not None or
-                self.get_argument_registry_pass() is not None)
+                self.get_argument_registry_pass() is not None or
+                self.get_argument_registry_identity() is not None)
 
     def has_target_port_change(self):
         return self.get_argument_target_port() is not None

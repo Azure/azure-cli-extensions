@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "dynatrace monitor list-host",
 )
 class ListHost(AAZCommand):
-    """List the compute resources currently being monitored by the dynatrace resource
+    """Displays compute resources (VMs, VMSS) that are currently being monitored by the specified Dynatrace resource.
 
     :example: List-host
         az dynatrace monitor list-host -g rg --monitor-name monitor

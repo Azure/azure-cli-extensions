@@ -9,7 +9,7 @@ import re
 import stat
 import sys
 import tempfile
-from typing import TypeVar
+from typing import List, TypeVar
 
 import yaml
 from azext_aks_preview._client_factory import (
@@ -19,7 +19,8 @@ from azext_aks_preview._client_factory import (
 
 from azext_aks_preview._consts import (
     ADDONS,
-    CONST_MONITORING_ADDON_NAME
+    CONST_MONITORING_ADDON_NAME,
+    CONST_K8S_EXTENSION_NAME,
 )
 
 from azure.cli.command_modules.acs._helpers import map_azure_error_to_cli_error
@@ -28,6 +29,8 @@ from azure.cli.core.azclierror import (
     FileOperationError,
     InvalidArgumentValueError,
     ResourceNotFoundError,
+    UnknownError,
+    ValidationError,
 )
 from azure.core.exceptions import AzureError
 from knack.log import get_logger
@@ -38,6 +41,7 @@ logger = get_logger(__name__)
 
 # type variables
 ManagedCluster = TypeVar("ManagedCluster")
+allowed_extensions = ["microsoft.dataprotection.kubernetes"]
 
 
 def which(binary):
@@ -374,3 +378,73 @@ def check_is_monitoring_addon_enabled(addons, instance):
     except Exception as ex:  # pylint: disable=broad-except
         logger.debug("failed to check monitoring addon enabled: %s", ex)
     return is_monitoring_addon_enabled
+
+
+def get_k8s_extension_module(module_name):
+    try:
+        # adding the installed extension in the path
+        from azure.cli.core.extension.operations import add_extension_to_path
+        add_extension_to_path(CONST_K8S_EXTENSION_NAME)
+        # import the extension module
+        from importlib import import_module
+        azext_custom = import_module(module_name)
+        return azext_custom
+    except ImportError:
+        raise UnknownError(  # pylint: disable=raise-missing-from
+            "Please add CLI extension `k8s-extension` for performing Azure Extension operations.\n"
+            "Run command `az extension add --name k8s-extension`"
+        )
+
+
+# TODO: Need to should source the set of allowed extensions from the extensions API at some point
+def _check_if_extension_type_is_in_allow_list(extension_type_name):
+    return extension_type_name.lower() in allowed_extensions
+
+
+def raise_validation_error_if_extension_type_not_in_allow_list(extension_type_name):
+    if not _check_if_extension_type_is_in_allow_list(extension_type_name):
+        raise ValidationError(f"Operation failed as extension type {extension_type_name.lower()} " +
+                              f"is not in allowed list of extension types {allowed_extensions}")
+
+
+def filter_hard_taints(node_initialization_taints: List[str]) -> List[str]:
+    filtered_taints = []
+    for taint in node_initialization_taints:
+        if not taint:
+            continue
+        # Parse the taint to get the effect
+        taint_parts = taint.split(":")
+        if len(taint_parts) == 2:
+            effect = taint_parts[-1].strip()
+            # Keep the taint if it has a soft effect (PreferNoSchedule)
+            # or if it's a CriticalAddonsOnly taint - AKS allows those on system pools
+            if effect.lower() == "prefernoschedule" or taint.lower().startswith("criticaladdonsonly"):
+                filtered_taints.append(taint)
+            else:
+                logger.warning('Taint %s with hard effect will be skipped from system pool', taint)
+        else:
+            # If the taint doesn't have a recognizable format, keep it, if it's incorrect - AKS-RP will return an error
+            filtered_taints.append(taint)
+    return filtered_taints
+
+
+def get_all_extension_types_in_allow_list(result):
+    output = []
+    for obj in result:
+        if _check_if_extension_type_is_in_allow_list(obj.name.lower()):
+            output.append(obj)
+    return output
+
+
+def get_all_extensions_in_allow_list(result):
+    output = []
+    for obj in result:
+        if _check_if_extension_type_is_in_allow_list(obj.extension_type.lower()):
+            output.append(obj)
+    return output
+
+
+def get_extension_in_allow_list(result):
+    if _check_if_extension_type_is_in_allow_list(result.extension_type.lower()):
+        return result
+    return None

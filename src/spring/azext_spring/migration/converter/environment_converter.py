@@ -15,12 +15,11 @@ class EnvironmentConverter(BaseConverter):
         def transform_data():
             asa_service = self.wrapper_data.get_asa_service()
             name = self._get_resource_name(asa_service)
-            apps = self.wrapper_data.get_apps()
-            certs = self.wrapper_data.get_certificates()
+            certs = self.wrapper_data.get_keyvault_certificates()
             data = {
                 "containerAppEnvName": name,
                 "containerAppLogAnalyticsName": f"log-{name}",
-                "storages": self._get_app_storage_configs(apps),
+                "storages": self._get_app_storage_configs(),
             }
             if self._need_identity(certs):
                 data["identity"] = {
@@ -57,31 +56,3 @@ class EnvironmentConverter(BaseConverter):
         if certs is not None and len(certs) > 0:
             return True
         return False
-
-    def _get_app_storage_configs(self, apps):
-        storage_configs = []
-        for app in apps:
-            # Check if app has properties and customPersistentDiskProperties
-            if 'properties' in app and 'customPersistentDisks' in app['properties']:
-                disks = app['properties'].get('customPersistentDisks', [])
-                for disk_props in disks:
-                    if self._get_storage_enable_subpath(disk_props) is True:
-                        logger.warning("Mismatch: enableSubPath of custom persistent disks is not supported in Azure Container Apps.")
-                    # print("storage_name + account_name + share_name + mount_path + access_mode:", storage_name + account_name + share_name + mountPath + access_mode)
-                    storage_config = {
-                        'containerAppEnvStorageName': self._get_resource_name_of_storage(app, disk_props),
-                        'paramContainerAppEnvStorageAccountKey': self._get_param_name_of_storage_account_key(disk_props),
-                        'storageName': self._get_storage_unique_name(disk_props),
-                        'shareName': self._get_storage_share_name(disk_props),
-                        'accessMode': self._get_storage_access_mode(disk_props),
-                        'accountName': self._get_storage_account_name(disk_props),
-                    }
-                    storage_configs.append(storage_config)
-        # print("storage_configs:", storage_configs)
-        return storage_configs
-
-    # get resource name of containerAppEnvStorageName
-    def _get_resource_name_of_storage(self, app, disk_props):
-        storage_name = self._get_storage_name(disk_props)
-        app_name = self._get_resource_name(app)
-        return (app_name + "_" + storage_name).replace("-", "_")

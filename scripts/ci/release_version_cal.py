@@ -86,7 +86,7 @@ def extract_module_version_update_info(mod_update_info, mod):
                     diff_file_started = True
 
 
-def extract_module_metadata_update_info(mod_update_info, mod):
+def extract_module_metadata_update_info_pre(mod_update_info, mod):
     """
     re pattern:
     --- a/src/monitor-control-service/azext_amcs/azext_metadata.json
@@ -94,6 +94,7 @@ def extract_module_metadata_update_info(mod_update_info, mod):
     -    "azext.isPreview": true
     +    "azext.isPreview": true
     --- a/src/monitor-control-service/HISTORY.RST
+    not robust, use previous version's metatata and current metadata to compare
     """
     mod_update_info["meta_updated"] = False
     module_meta_update_pattern = re.compile(r"\+\+\+.*?src/%s/azext_.*?/azext_metadata.json" % mod)
@@ -123,13 +124,124 @@ def extract_module_metadata_update_info(mod_update_info, mod):
                 if module_meta_update_match:
                     mod_update_info["meta_updated"] = True
 
+def check_extension_list():
+    cmd = ["az", "extension", "list", "-o", "table"]
+    print("cmd: ", cmd)
+    res = subprocess.run(cmd, stdout=subprocess.PIPE)
+    print(res.stdout.decode("utf8"))
 
-def find_module_metadata_of_latest_version(mod):
+def clean_mod_of_azdev(mod):
+    """
+    be sure to get all the required info before removing mod in azdev
+    """
+    print("removing azdev extensions: ", mod)
+    cmd = ["azdev", "extension", "remove", mod]
+    result = subprocess.run(cmd, stdout=subprocess.PIPE)
+    if result.returncode:
+        raise Exception(f'Error when removing {mod} from azdev')
+    # remove extension source code
+    cmd = ["rm", "-rf", "./src/" + mod]
+    result = subprocess.run(cmd, stdout=subprocess.PIPE)
+    if result.returncode:
+        raise Exception(f'Error when removing {mod} from src')
+
+
+def install_mod_of_last_version(pkg_name, pre_release):
+    whl_file_url = pre_release['downloadUrl']
+    cmd = ["az", "extension", "add", "-s", whl_file_url, "-y"]
+    print("cmd: ", cmd)
+    result = subprocess.run(cmd, stdout=subprocess.PIPE)
+    if result.returncode:
+        raise Exception(f'Error when adding {pkg_name} from source {whl_file_url}')
+    check_extension_list()
+
+
+def remove_mod_of_last_version(pkg_name):
+    cmd = ['az', 'extension', 'remove', '-n', pkg_name]
+    result = subprocess.run(cmd, stdout=subprocess.PIPE)
+    if result.returncode:
+        raise Exception(f'Error when removing {pkg_name}')
+    check_extension_list()
+
+def gen_metadata_from_whl(pkg_name, target_folder):
+    cmd = ['azdev', 'command-change', 'meta-export', pkg_name, '--include-whl-extensions', '--meta-output-path', target_folder, "--debug"]
+    print("cmd: ", cmd)
+    result = subprocess.run(cmd, stdout=subprocess.PIPE)
+    if result.returncode:
+        raise Exception(f'Error when generating metadata from whl for {pkg_name}')
+
+
+def get_mod_package_name(mod):
+    """
+    the preliminary step for running following cmd is installing extension using azdev
+    """
     cmd = ["azdev", "extension", "show", "--mod-name", mod, "--query", "pkg_name", "-o", "tsv"]
     result = subprocess.run(cmd, stdout=subprocess.PIPE)
     if result.returncode == 0:
         mod = result.stdout.decode("utf8").strip()
-    return get_module_metadata_of_max_version(mod)
+    return mod
+
+
+def get_module_metadata_of_max_version(mod):
+    if mod not in get_index_data()['extensions']:
+        print("No previous release for {0}".format(mod))
+        return None
+    pre_releases = get_index_data()['extensions'][mod]
+    candidates_sorted = sorted(pre_releases, key=lambda c: parse(c['metadata']['version']), reverse=True)
+    chosen = candidates_sorted[0]
+    return chosen
+
+
+def find_module_metadata_of_latest_version(mod):
+    pkg_name = get_mod_package_name(mod)
+    return get_module_metadata_of_max_version(pkg_name)
+
+
+def find_module_metadata_of_current_version(mod):
+    mod_directory = cli_ext_path +  "/src/" + mod
+    for root, dirs, files in os.walk(mod_directory):
+        if 'azext_metadata.json' in files:
+            file_path = os.path.join(root, 'azext_metadata.json')
+            try:
+                with open(file_path, 'r', encoding='utf-8') as f:
+                    data = json.load(f)
+                    print(f"Found azext_metadata.json at: {file_path}")
+                    return data
+            except Exception as e:
+                print(f"Error reading {file_path}: {e}")
+                return None
+    print(f"Mod: {mod} does not have azext_metadata.json, please check")
+    return None
+
+def extract_module_metadata_update_info(mod_update_info, mod):
+    """
+     use previous version's metatata and current metadata to compare
+     relevent mod files should be in diff branch
+    """
+    mod_update_info["meta_updated"] = False
+    # metadata is required for this task, (and also az extension *)
+    pre_release = find_module_metadata_of_latest_version(mod)
+    last_meta_data = pre_release.get("metadata", {}) if pre_release else None
+    current_meta_data = find_module_metadata_of_current_version(mod)
+    if not current_meta_data:
+        raise Exception(f"Please check {mod}: azext_metadata.json file")
+    if not last_meta_data:
+        if current_meta_data.get("azext.isPreview", None):
+            mod_update_info["meta_updated"] = True
+            mod_update_info["preview_tag_diff"] = "add"
+        return
+    if last_meta_data.get("azext.isExperimental", False) and not current_meta_data.get("azext.isExperimental", False):
+        mod_update_info["exp_tag_diff"] = "remove"
+        mod_update_info["meta_updated"] = True
+    if not last_meta_data.get("azext.isExperimental", False) and current_meta_data.get("azext.isExperimental", False):
+        mod_update_info["exp_tag_diff"] = "add"
+        mod_update_info["meta_updated"] = True
+    if last_meta_data.get("azext.isPreview", False) and not current_meta_data.get("azext.isPreview", False):
+        mod_update_info["preview_tag_diff"] = "remove"
+        mod_update_info["meta_updated"] = True
+    if not last_meta_data.get("azext.isPreview", False) and current_meta_data.get("azext.isPreview", False):
+        mod_update_info["preview_tag_diff"] = "add"
+        mod_update_info["meta_updated"] = True
 
 
 def extract_module_version_info(mod_update_info, mod):
@@ -137,7 +249,20 @@ def extract_module_version_info(mod_update_info, mod):
     next_version_segment_tag = get_next_version_segment_tag()
     print("next_version_pre_tag: ", next_version_pre_tag)
     print("next_version_segment_tag: ", next_version_segment_tag)
-    base_meta_file = os.path.join(cli_ext_path, base_meta_path, "az_" + mod + "_meta.json")
+    pkg_name = get_mod_package_name(mod)
+    print(f"get pkg name: {pkg_name} for mod: {mod}")
+    pre_release = get_module_metadata_of_max_version(pkg_name)
+    clean_mod_of_azdev(mod)
+    if pre_release:
+        print(f"Get prerelease info for mod: {mod} as below:")
+        print(json.dumps(pre_release))
+        print("Start generating base metadata")
+        install_mod_of_last_version(pkg_name, pre_release)
+        base_meta_folder = os.path.join(cli_ext_path, base_meta_path)
+        gen_metadata_from_whl(pkg_name, base_meta_folder)
+        remove_mod_of_last_version(pkg_name)
+        print("End generating base metadata")
+    base_meta_file = os.path.join(cli_ext_path, base_meta_path, "az_" + pkg_name + "_meta.json")
     diff_meta_file = os.path.join(cli_ext_path, diff_meta_path, "az_" + mod + "_meta.json")
     if not os.path.exists(base_meta_file) and not os.path.exists(diff_meta_file):
         print("no base and diff meta file found for {0}".format(mod))
@@ -149,7 +274,6 @@ def extract_module_version_info(mod_update_info, mod):
     elif not os.path.exists(diff_meta_file):
         print("no diff meta file found for {0}".format(mod))
         return
-    pre_release = find_module_metadata_of_latest_version(mod)
     if pre_release is None:
         next_version = cal_next_version(base_meta_file=base_meta_file, diff_meta_file=diff_meta_file,
                                         current_version=DEFAULT_VERSION,
@@ -175,16 +299,6 @@ def fill_module_update_info(mods_update_info):
         mods_update_info[mod] = update_info
     print("mods_update_info")
     print(mods_update_info)
-
-
-def get_module_metadata_of_max_version(mod):
-    if mod not in get_index_data()['extensions']:
-        print("No previous release for {0}".format(mod))
-        return None
-    pre_releases = get_index_data()['extensions'][mod]
-    candidates_sorted = sorted(pre_releases, key=lambda c: parse(c['metadata']['version']), reverse=True)
-    chosen = candidates_sorted[0]
-    return chosen
 
 
 def get_next_version_pre_tag():

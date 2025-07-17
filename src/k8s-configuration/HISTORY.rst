@@ -2,6 +2,9 @@
 
 Release History
 ===============
+2.2.0
+++++++++++++++++++
+* Introduce a new feature to add provider authentication for git repositories.
 
 2.1.0
 ++++++++++++++++++

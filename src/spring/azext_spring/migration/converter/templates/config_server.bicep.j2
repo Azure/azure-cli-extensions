@@ -3,6 +3,7 @@ param managedEnvironments_aca_env_name string
 // Provide the credentials in the parameters below to access the Git repositories.
 // Example: param spring_cloud_config_server_git_username string = 'username'
 {%- for param in data.params %}
+@secure()
 param {{param}} string = ' // please fill in the value
 {%- endfor %}
 

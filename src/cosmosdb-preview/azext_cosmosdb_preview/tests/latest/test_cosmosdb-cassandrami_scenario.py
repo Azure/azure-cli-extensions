@@ -6,7 +6,7 @@
 import os
 from unittest import mock
 
-from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
+from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, live_only)
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
 
@@ -78,6 +78,33 @@ class ManagedCassandraScenarioTest(ScenarioTest):
         assert len(clusters_sub) >= 1
 
         # Delete Cluster
+        try:
+            self.cmd('az managed-cassandra cluster delete -c {c} -g {rg} --yes')
+        except Exception as e:
+            print(e)
+
+    @live_only() # Will be updated after service changes are updated.
+    @ResourceGroupPreparer(name_prefix='cli_managed_cassandra')
+    @AllowLargeResponse()
+    def test_managed_cassandra_cluster_create_with_azure_connection_method(self, resource_group):
+        self.kwargs.update({
+            'c': self.create_random_name(prefix='cli', length=10),
+            'subnet_id': self.create_subnet(resource_group),
+            'd': self.create_random_name(prefix='cli-dc', length=10),
+            'azure_connection_method': 'VPN',  # valid value(s) are : None or VPN
+        })
+
+        # Create Cluster with azure_connection_method
+        self.cmd('az managed-cassandra cluster create -c {c} -l eastus2 -g {rg} -i password -q {azure_connection_method}')
+        cluster = self.cmd('az managed-cassandra cluster show -c {c} -g {rg}').get_output_in_json()
+        assert cluster['properties']['provisioningState'] == 'Succeeded'
+
+        # Create Datacenter
+        self.cmd('az managed-cassandra datacenter create -c {c} -d {d} -l eastus2 -g {rg} -n 3 -s {subnet_id} -i 10.0.0.8')
+        datacenter = self.cmd('az managed-cassandra datacenter show -c {c} -d {d} -g {rg}').get_output_in_json()
+        assert datacenter['properties']['provisioningState'] == 'Succeeded'
+
+        # Clean up
         try:
             self.cmd('az managed-cassandra cluster delete -c {c} -g {rg} --yes')
         except Exception as e:

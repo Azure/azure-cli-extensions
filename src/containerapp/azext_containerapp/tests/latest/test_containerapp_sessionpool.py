@@ -12,18 +12,21 @@ from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathChec
 from .common import (TEST_LOCATION, STAGE_LOCATION, write_test_file,
                      clean_up_test_file,
                      )
+from .custom_preparers import SubnetPreparer
 from .utils import create_containerapp_env
 
 
 class ContainerappSessionPoolTests(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer()
-    def test_containerapp_sessionpool(self, resource_group):
+    @SubnetPreparer(location=TEST_LOCATION, delegations='Microsoft.App/environments',
+                    service_endpoints="Microsoft.Storage.Global")
+    def test_containerapp_sessionpool(self, resource_group, subnet_id, vnet_name, subnet_name):
         location = TEST_LOCATION
         self.cmd('configure --defaults location={}'.format(location))
 
         env_name = self.create_random_name(prefix='aca-sp-env', length=24)
-        self.cmd('containerapp env create -g {} -n {} -l {} --logs-destination none'.format(resource_group, env_name, location), expect_failure=False)
+        self.cmd('containerapp env create -g {} -n {} -l {} --logs-destination none -s {}'.format(resource_group, env_name, location, subnet_id), expect_failure=False)
         containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
         while containerapp_env["properties"]["provisioningState"].lower() in ["waiting", "inprogress"]:
             time.sleep(5)
@@ -40,7 +43,8 @@ class ContainerappSessionPoolTests(ScenarioTest):
             JMESPathCheck('name', sessionpool_name_python),
             JMESPathCheck('properties.containerType', "PythonLTS"),
             JMESPathCheck('properties.provisioningState', "Succeeded"),
-            JMESPathCheck('properties.dynamicPoolConfiguration.cooldownPeriodInSeconds', 300)
+            JMESPathCheck('properties.dynamicPoolConfiguration.lifecycleConfiguration.lifecycleType', "Timed"),
+            JMESPathCheck('properties.dynamicPoolConfiguration.lifecycleConfiguration.cooldownPeriodInSeconds', 300),
         ])
 
         # Create CustomContainer SessionPool
@@ -64,6 +68,8 @@ class ContainerappSessionPoolTests(ScenarioTest):
                 JMESPathCheck('properties.customContainerTemplate.containers[0].resources.cpu', cpu),
                 JMESPathCheck('properties.customContainerTemplate.containers[0].resources.memory', memory),
                 JMESPathCheck('properties.customContainerTemplate.ingress.targetPort', 80),
+                JMESPathCheck('properties.dynamicPoolConfiguration.lifecycleConfiguration.lifecycleType', "Timed"),
+                JMESPathCheck('properties.dynamicPoolConfiguration.lifecycleConfiguration.cooldownPeriodInSeconds', 300),
             ])
 
         sessionpool = self.cmd('containerapp sessionpool show -g {} -n {}'.format(resource_group, sessionpool_name_custom)).get_output_in_json()
@@ -102,7 +108,8 @@ class ContainerappSessionPoolTests(ScenarioTest):
                 JMESPathCheck('properties.customContainerTemplate.containers[0].resources.memory', memory),
                 JMESPathCheck('properties.customContainerTemplate.ingress.targetPort', 80),
                 JMESPathCheck('properties.sessionNetworkConfiguration.status', egress),
-                JMESPathCheck('properties.dynamicPoolConfiguration.cooldownPeriodInSeconds', cooldown),
+                JMESPathCheck('properties.dynamicPoolConfiguration.lifecycleConfiguration.lifecycleType', "Timed"),
+                JMESPathCheck('properties.dynamicPoolConfiguration.lifecycleConfiguration.cooldownPeriodInSeconds', cooldown),
             ])
 
         sessionpool = self.cmd('containerapp sessionpool show -g {} -n {}'.format(resource_group, sessionpool_name_custom)).get_output_in_json()
@@ -132,14 +139,16 @@ class ContainerappSessionPoolTests(ScenarioTest):
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer()
-    def test_containerapp_sessionpool_registry_update(self, resource_group):
+    @SubnetPreparer(location=TEST_LOCATION, delegations='Microsoft.App/environments',
+                    service_endpoints="Microsoft.Storage.Global")
+    def test_containerapp_sessionpool_registry_update(self, resource_group, subnet_id, vnet_name, subnet_name):
         location = TEST_LOCATION
         if format_location(location) == format_location(STAGE_LOCATION):
             location = "eastasia"
         self.cmd('configure --defaults location={}'.format(location))
 
         env_name = self.create_random_name(prefix='aca-sp-env-registry', length=24)
-        self.cmd('containerapp env create -g {} -n {} -l {} --logs-destination none'.format(resource_group, env_name, location), expect_failure=False)
+        self.cmd('containerapp env create -g {} -n {} -l {} --logs-destination none -s {}'.format(resource_group, env_name, location, subnet_id), expect_failure=False)
         containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
         while containerapp_env["properties"]["provisioningState"].lower() in ["waiting", "inprogress"]:
             time.sleep(5)
@@ -198,17 +207,18 @@ class ContainerappSessionPoolTests(ScenarioTest):
         sessionpool_list = self.cmd("containerapp sessionpool list -g {}".format(resource_group)).get_output_in_json()
         self.assertTrue(len(sessionpool_list) == 0)
 
-
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer()
-    def test_containerapp_sessionpool_registry(self, resource_group):
+    @SubnetPreparer(location=TEST_LOCATION, delegations='Microsoft.App/environments',
+                    service_endpoints="Microsoft.Storage.Global")
+    def test_containerapp_sessionpool_registry(self, resource_group, subnet_id, vnet_name, subnet_name):
         location = TEST_LOCATION
         if format_location(location) == format_location(STAGE_LOCATION):
             location = "eastasia"
         self.cmd('configure --defaults location={}'.format(location))
 
         env_name = self.create_random_name(prefix='aca-sp-env-registry', length=24)
-        self.cmd('containerapp env create -g {} -n {} -l {} --logs-destination none'.format(resource_group, env_name, location), expect_failure=False)
+        self.cmd('containerapp env create -g {} -n {} -l {} --logs-destination none -s {}'.format(resource_group, env_name, location, subnet_id), expect_failure=False)
         containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
         while containerapp_env["properties"]["provisioningState"].lower() in ["waiting", "inprogress"]:
             time.sleep(5)
@@ -277,7 +287,9 @@ class ContainerappSessionPoolTests(ScenarioTest):
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer()
-    def test_containerapp_sessionpool_registry_identity(self, resource_group):
+    @SubnetPreparer(location=TEST_LOCATION, delegations='Microsoft.App/environments',
+                    service_endpoints="Microsoft.Storage.Global")
+    def test_containerapp_sessionpool_registry_identity(self, resource_group, subnet_id, vnet_name, subnet_name):
         location = TEST_LOCATION
         if format_location(location) == format_location(STAGE_LOCATION):
             location = "eastasia"
@@ -289,7 +301,7 @@ class ContainerappSessionPoolTests(ScenarioTest):
         principal_id = identity_json["principalId"]
         
         env_name = self.create_random_name(prefix='aca-sp-env-registry', length=24)
-        self.cmd('containerapp env create -g {} -n {} -l {} --logs-destination none'.format(resource_group, env_name, location), expect_failure=False)
+        self.cmd('containerapp env create -g {} -n {} -l {} --logs-destination none -s {}'.format(resource_group, env_name, location, subnet_id), expect_failure=False)
         containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
         while containerapp_env["properties"]["provisioningState"].lower() in ["waiting", "inprogress"]:
             time.sleep(5)
@@ -347,6 +359,18 @@ class ContainerappSessionPoolTests(ScenarioTest):
                 JMESPathCheck("properties.managedIdentitySettings[0].lifecycle", "None"),
             ])
         
+        # Update session pool image
+        self.cmd(
+            f'containerapp sessionpool update -g {resource_group} -n {sessionpool_name_custom} -l {location} --image {image_name} --registry-server {acr}.azurecr.io --registry-identity {user_identity_id}',
+            checks=[
+                JMESPathCheck('name', sessionpool_name_custom),
+                JMESPathCheck("properties.provisioningState", "Succeeded"),
+                JMESPathCheck("identity.type", "UserAssigned"),
+                JMESPathCheck("properties.managedIdentitySettings[0].identity", user_identity_id),
+                JMESPathCheck("properties.managedIdentitySettings[0].lifecycle", "None"),
+            ])
+        
+
         self.cmd('containerapp sessionpool delete -g {} -n {} --yes'.format(resource_group, sessionpool_name_custom))
 
         # List Session Pools

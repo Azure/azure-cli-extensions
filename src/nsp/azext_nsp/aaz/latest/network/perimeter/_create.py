@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "network perimeter create",
 )
 class Create(AAZCommand):
-    """Creates a Network Security Perimeter.
+    """Create a network security perimeter.
 
-    :example: Create a Network Security Perimeter
+    :example: Create a network security perimeter
         az network perimeter create -n MyPerimeter -g MyResourceGroup -l northcentralus
     """
 
     _aaz_info = {
-        "version": "2023-08-01-preview",
+        "version": "2024-07-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networksecurityperimeters/{}", "2023-08-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networksecurityperimeters/{}", "2024-07-01"],
         ]
     }
 
@@ -48,6 +48,10 @@ class Create(AAZCommand):
             options=["-n", "--name", "--perimeter-name"],
             help="The name of the network security perimeter.",
             required=True,
+            fmt=AAZStrArgFormat(
+                pattern="(^[a-zA-Z0-9]+[a-zA-Z0-9_.-]*[a-zA-Z0-9_]+$)|(^[a-zA-Z0-9]$)",
+                max_length=80,
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -59,6 +63,7 @@ class Create(AAZCommand):
         _args_schema.location = AAZResourceLocationArg(
             arg_group="Parameters",
             help="The location in which NSP is created.",
+            required=True,
             fmt=AAZResourceLocationArgFormat(
                 resource_group_arg="resource_group",
             ),
@@ -87,7 +92,7 @@ class Create(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=False)
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
     class NetworkSecurityPerimetersCreateOrUpdate(AAZHttpOperation):
@@ -138,7 +143,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-08-01-preview",
+                    "api-version", "2024-07-01",
                     required=True,
                 ),
             }
@@ -163,8 +168,7 @@ class Create(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("location", AAZStrType, ".location")
-            _builder.set_prop("name", AAZStrType, ".perimeter_name")
+            _builder.set_prop("location", AAZStrType, ".location", typ_kwargs={"flags": {"required": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
 
             tags = _builder.get(".tags")
@@ -194,9 +198,19 @@ class Create(AAZCommand):
             _schema_on_200_201.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200_201.location = AAZStrType()
-            _schema_on_200_201.name = AAZStrType()
-            _schema_on_200_201.properties = AAZObjectType()
+            _schema_on_200_201.location = AAZStrType(
+                flags={"required": True},
+            )
+            _schema_on_200_201.name = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200_201.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
+            _schema_on_200_201.system_data = AAZObjectType(
+                serialized_name="systemData",
+                flags={"read_only": True},
+            )
             _schema_on_200_201.tags = AAZDictType()
             _schema_on_200_201.type = AAZStrType(
                 flags={"read_only": True},
@@ -210,6 +224,26 @@ class Create(AAZCommand):
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
+            )
+
+            system_data = cls._schema_on_200_201.system_data
+            system_data.created_at = AAZStrType(
+                serialized_name="createdAt",
+            )
+            system_data.created_by = AAZStrType(
+                serialized_name="createdBy",
+            )
+            system_data.created_by_type = AAZStrType(
+                serialized_name="createdByType",
+            )
+            system_data.last_modified_at = AAZStrType(
+                serialized_name="lastModifiedAt",
+            )
+            system_data.last_modified_by = AAZStrType(
+                serialized_name="lastModifiedBy",
+            )
+            system_data.last_modified_by_type = AAZStrType(
+                serialized_name="lastModifiedByType",
             )
 
             tags = cls._schema_on_200_201.tags

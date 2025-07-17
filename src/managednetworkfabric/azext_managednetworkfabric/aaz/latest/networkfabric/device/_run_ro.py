@@ -17,7 +17,7 @@ from azure.cli.core.aaz import *
 class RunRo(AAZCommand):
     """Run the RO Command on the Network Device.
 
-    :example: Run ro on the network device
+    :example: Run ro on the Network Device
         az networkfabric device run-ro --resource-name "example-device" --resource-group "example-rg" --ro-command "example command"
     """
 
@@ -196,13 +196,40 @@ class RunRo(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.configuration_state = AAZStrType(
-                serialized_name="configurationState",
+            _schema_on_200.end_time = AAZStrType(
+                serialized_name="endTime",
                 flags={"read_only": True},
             )
             _schema_on_200.error = AAZObjectType()
             _RunRoHelper._build_schema_error_detail_read(_schema_on_200.error)
-            _schema_on_200.output_url = AAZStrType(
+            _schema_on_200.id = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200.name = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200.properties = AAZObjectType()
+            _schema_on_200.resource_id = AAZStrType(
+                serialized_name="resourceId",
+                flags={"read_only": True},
+            )
+            _schema_on_200.start_time = AAZStrType(
+                serialized_name="startTime",
+                flags={"read_only": True},
+            )
+            _schema_on_200.status = AAZStrType(
+                flags={"required": True},
+            )
+
+            properties = cls._schema_on_200.properties
+            properties.configuration_state = AAZStrType(
+                serialized_name="configurationState",
+                flags={"read_only": True},
+            )
+            properties.device_configuration_preview = AAZStrType(
+                serialized_name="deviceConfigurationPreview",
+            )
+            properties.output_url = AAZStrType(
                 serialized_name="outputUrl",
             )
 
@@ -248,12 +275,15 @@ class _RunRoHelper:
         additional_info.Element = AAZObjectType()
 
         _element = _schema_error_detail_read.additional_info.Element
-        _element.info = AAZFreeFormDictType(
+        _element.info = AAZDictType(
             flags={"read_only": True},
         )
         _element.type = AAZStrType(
             flags={"read_only": True},
         )
+
+        info = _schema_error_detail_read.additional_info.Element.info
+        info.Element = AAZAnyType()
 
         details = _schema_error_detail_read.details
         details.Element = AAZObjectType()

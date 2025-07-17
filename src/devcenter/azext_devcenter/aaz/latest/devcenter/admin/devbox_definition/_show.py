@@ -25,10 +25,10 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-10-01-preview",
+        "version": "2025-04-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}/devboxdefinitions/{}", "2024-10-01-preview"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/devboxdefinitions/{}", "2024-10-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}/devboxdefinitions/{}", "2025-04-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/devboxdefinitions/{}", "2025-04-01-preview"],
         ]
     }
 
@@ -144,7 +144,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-10-01-preview",
+                    "api-version", "2025-04-01-preview",
                     required=True,
                 ),
             }
@@ -201,6 +201,7 @@ class Show(AAZCommand):
             properties = cls._schema_on_200.properties
             properties.active_image_reference = AAZObjectType(
                 serialized_name="activeImageReference",
+                flags={"read_only": True},
             )
             _ShowHelper._build_schema_image_reference_read(properties.active_image_reference)
             properties.hibernate_support = AAZStrType(
@@ -213,9 +214,11 @@ class Show(AAZCommand):
             _ShowHelper._build_schema_image_reference_read(properties.image_reference)
             properties.image_validation_error_details = AAZObjectType(
                 serialized_name="imageValidationErrorDetails",
+                flags={"read_only": True},
             )
             properties.image_validation_status = AAZStrType(
                 serialized_name="imageValidationStatus",
+                flags={"read_only": True},
             )
             properties.os_storage_type = AAZStrType(
                 serialized_name="osStorageType",
@@ -229,6 +232,7 @@ class Show(AAZCommand):
             )
             properties.validation_status = AAZStrType(
                 serialized_name="validationStatus",
+                flags={"read_only": True},
             )
 
             image_validation_error_details = cls._schema_on_200.properties.image_validation_error_details
@@ -321,7 +325,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-10-01-preview",
+                    "api-version", "2025-04-01-preview",
                     required=True,
                 ),
             }
@@ -378,6 +382,7 @@ class Show(AAZCommand):
             properties = cls._schema_on_200.properties
             properties.active_image_reference = AAZObjectType(
                 serialized_name="activeImageReference",
+                flags={"read_only": True},
             )
             _ShowHelper._build_schema_image_reference_read(properties.active_image_reference)
             properties.hibernate_support = AAZStrType(
@@ -390,9 +395,11 @@ class Show(AAZCommand):
             _ShowHelper._build_schema_image_reference_read(properties.image_reference)
             properties.image_validation_error_details = AAZObjectType(
                 serialized_name="imageValidationErrorDetails",
+                flags={"read_only": True},
             )
             properties.image_validation_status = AAZStrType(
                 serialized_name="imageValidationStatus",
+                flags={"read_only": True},
             )
             properties.os_storage_type = AAZStrType(
                 serialized_name="osStorageType",
@@ -406,7 +413,9 @@ class Show(AAZCommand):
             )
             properties.validation_status = AAZStrType(
                 serialized_name="validationStatus",
+                flags={"read_only": True},
             )
+
 
             image_validation_error_details = cls._schema_on_200.properties.image_validation_error_details
             image_validation_error_details.code = AAZStrType()
