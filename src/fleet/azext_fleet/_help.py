@@ -404,7 +404,7 @@ helps['fleet gate list'] = """
     short-summary: Lists all gates under a fleet.
     examples:
         - name: Lists all gates under a fleet.
-          text: az fleet list -g MyFleetResourceGroup --fleet-name MyFleetName
+          text: az fleet gate list -g MyFleetResourceGroup --fleet-name MyFleetName
         - name: List all gates, filtering on gate state. Valid values are ('Pending', 'Skipped', 'Completed').
           text: az fleet gate list -g MyFleetResourceGroup --fleet-name MyFleetName --state Pending
 """
@@ -414,7 +414,7 @@ helps['fleet gate get'] = """
     short-summary: Gets a specific gate.
     examples:
         - name: Gets a specific gate.
-          text: az fleet get -g MyFleetResourceGroup --fleet-name MyFleetName --gate-name 3fa85f64-5717-4562-b3fc-2c963f66afa6
+          text: az fleet gate get -g MyFleetResourceGroup -f MyFleetName -n 3fa85f64-5717-4562-b3fc-2c963f66afa6
 """
 
 helps['fleet gate update'] = """
