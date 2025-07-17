@@ -13,7 +13,7 @@ from azure.cli.core.azclierror import (
     RequiredArgumentMissingError,
 )
 
-@patch("azext_aks_preview.managednamespace.get_mgmt_service_client")
+@patch("azext_aks_preview.managednamespace.get_container_service_client")
 class TestAddManagedNamespace(unittest.TestCase):
     def setUp(self):
         # Set up mock cluster client and location
@@ -178,7 +178,8 @@ class TestAddManagedNamespace(unittest.TestCase):
     # aks_managed_namespace_add(cmd, client, raw_parameters, headers, no_wait):
     # aks_managed_namespace_update(cmd, client, raw_parameters, headers, existedNamespace, no_wait)
 
-@patch("azext_aks_preview.managednamespace.get_mgmt_service_client")
+
+@patch("azext_aks_preview.managednamespace.get_container_service_client")
 class TestUpdateManagedNamespace(unittest.TestCase):
     def setUp(self):
         # Set up mock cluster client and location
@@ -285,3 +286,7 @@ class TestUpdateManagedNamespace(unittest.TestCase):
         with self.assertRaises(InvalidArgumentValueError) as cm:
             ns.aks_managed_namespace_update(cmd, None, raw_parameters, None, None, False)
         self.assertIn(err, str(cm.exception))
+
+
+if __name__ == "__main__":
+    unittest.main()
