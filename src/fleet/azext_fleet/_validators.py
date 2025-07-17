@@ -97,6 +97,7 @@ def validate_update_strategy_id(namespace):
         raise InvalidArgumentValueError(
             "--update-strategy-id is not a valid Azure resource ID.")
 
+
 def validate_labels(val):
     result = {}
     for item in val.split():

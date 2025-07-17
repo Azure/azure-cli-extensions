@@ -33,6 +33,7 @@ labels_type = CLIArgumentType(
     help='Space-separated labels: key[=value] [key[=value] ...]. Example: env=production region=us-west team=devops'
 )
 
+
 def load_arguments(self, _):
     with self.argument_context('fleet') as c:
         c.argument('name', options_list=['--name', '-n'], help='Specify the fleet name.')
@@ -76,7 +77,6 @@ def load_arguments(self, _):
             help='Space-separated labels in key=value format. Example: env=production region=us-west team=devops'
         )
 
-
     with self.argument_context('fleet member update') as c:
         c.argument('update_group')
         c.argument(
@@ -85,7 +85,6 @@ def load_arguments(self, _):
             options_list=['--member-labels', '--labels'],
             help='Space-separated labels in key=value format. Example: env=production region=us-west team=devops'
         )
-
 
     with self.argument_context('fleet updaterun') as c:
         c.argument('name', options_list=['--name', '-n'], help='Specify name for the update run.')
@@ -125,7 +124,9 @@ def load_arguments(self, _):
                    help='The auto upgrade channel type.')
         c.argument('node_image_selection', arg_type=get_enum_type(['Latest', 'Consistent']),
                    help='Node Image Selection is an option that lets you choose how your clusters\' nodes are upgraded.')
-        c.argument('target_kubernetes_version', options_list=['--target-kubernetes-version', '--tkv'],
+        c.argument(
+            'target_kubernetes_version',
+            options_list=['--target-kubernetes-version', '--tkv'],
             help=(
                 'This is the target Kubernetes version for auto-upgrade. The format must be "{major version}.{minor version}". '
                 'For example, "1.30". By default, this is empty. '
@@ -147,7 +148,6 @@ def load_arguments(self, _):
         c.argument('fleet_name', options_list=['--fleet-name', '-f'], help='Name of the fleet.')
         c.argument('auto_upgrade_profile_name', options_list=['--auto-upgrade-profile-name', '--profile-name', '--name', '-n'], help='Name of the auto upgrade profile.')
 
-    
     with self.argument_context('fleet gate list') as c:
         c.argument('resource_group_name', options_list=['--resource-group', '-g'], help='Name of the resource group.')
         c.argument('fleet_name', options_list=['--fleet-name', '-f'], help='Name of the fleet.')
@@ -162,8 +162,11 @@ def load_arguments(self, _):
         c.argument('resource_group_name', options_list=['--resource-group', '-g'], help='Name of the resource group.')
         c.argument('fleet_name', options_list=['--fleet-name', '-f'], help='Name of the fleet.')
         c.argument('gate_name', options_list=['--gate-name', '--gate', '-n'], help='Name of the gate.')
-        c.argument('gate_state',options_list=['--gate-state', '--gs', '--state'],
-                   help='The Gate State to patch. Valid values are: Completed.')
+        c.argument(
+            'gate_state',
+            options_list=['--gate-state', '--gs', '--state'],
+            help='The Gate State to patch. Valid values are: Completed.'
+        )
 
     with self.argument_context('fleet gate approve') as c:
         c.argument('resource_group_name', options_list=['--resource-group', '-g'], help='Name of the resource group.')

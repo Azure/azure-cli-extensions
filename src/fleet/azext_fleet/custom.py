@@ -21,6 +21,7 @@ from azext_fleet.constants import UPGRADE_TYPE_ERROR_MESSAGES
 from azext_fleet.constants import SUPPORTED_GATE_STATES_FILTERS
 from azext_fleet.constants import SUPPORTED_GATE_STATES_PATCH
 
+
 # pylint: disable=too-many-locals
 def create_fleet(cmd,
                  client,
@@ -630,16 +631,20 @@ def generate_update_run(cmd,  # pylint: disable=unused-argument
         auto_upgrade_profile_name
     )
 
+
 def list_gates_by_fleet(cmd,  # pylint: disable=unused-argument
-                             client,
-                             resource_group_name,
-                             fleet_name,
-                             state_filter=None):
+                        client,
+                        resource_group_name,
+                        fleet_name,
+                        state_filter=None):
     params = {}
 
     if state_filter:
         if state_filter not in SUPPORTED_GATE_STATES_FILTERS:
-            raise CLIError(f"Unsupported gate state filter value: '{state_filter}'. Allowed values are {SUPPORTED_GATE_STATES_FILTERS}")
+            raise CLIError(
+                f"Unsupported gate state filter value: '{state_filter}'. "
+                f"Allowed values are {SUPPORTED_GATE_STATES_FILTERS}"
+            )
 
         params["$filter"] = f"state eq {state_filter}"
 
@@ -647,10 +652,10 @@ def list_gates_by_fleet(cmd,  # pylint: disable=unused-argument
 
 
 def get_gate(cmd,  # pylint: disable=unused-argument
-                             client,
-                             resource_group_name,
-                             fleet_name,
-                             gate_name):
+             client,
+             resource_group_name,
+             fleet_name,
+             gate_name):
     return client.get(resource_group_name, fleet_name, gate_name)
 
 
@@ -662,7 +667,10 @@ def _patch_gate(cmd,  # pylint: disable=unused-argument
                 gate_state,
                 no_wait=False):
     if gate_state not in SUPPORTED_GATE_STATES_PATCH:
-        raise CLIError(f"Unsupported gate state value: '{gate_state}'. Allowed values are {SUPPORTED_GATE_STATES_PATCH}")
+        raise CLIError(
+            f"Unsupported gate state value: '{gate_state}'. "
+            f"Allowed values are {SUPPORTED_GATE_STATES_PATCH}"
+        )
 
     gate_model = cmd.get_models(
         "GatePatch",
