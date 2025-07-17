@@ -24,7 +24,7 @@ class Create(AAZCommand):
     _aaz_info = {
         "version": "2025-06-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.edge/targets/{}", "2025-06-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/Microsoft.Edge/targets/{}", "2025-06-01"],
         ]
     }
 
@@ -83,11 +83,13 @@ class Create(AAZCommand):
             options=["--display-name"],
             arg_group="Properties",
             help="Display name of target",
+            required=True,
         )
         _args_schema.hierarchy_level = AAZStrArg(
             options=["--hierarchy-level"],
             arg_group="Properties",
             help="Hierarchy Level",
+            required=True,
         )
         _args_schema.solution_scope = AAZStrArg(
             options=["--solution-scope"],
@@ -96,6 +98,7 @@ class Create(AAZCommand):
             fmt=AAZStrArgFormat(
                 pattern="^[a-z0-9]([-a-z0-9]*[a-z0-9])?$",
             ),
+
         )
         _args_schema.state = AAZStrArg(
             options=["--state"],
@@ -107,6 +110,7 @@ class Create(AAZCommand):
             options=["--target-specification"],
             arg_group="Properties",
             help="Specifies that we are using Helm charts for the k8s deployment",
+            required=True,
         )
 
         capabilities = cls._args_schema.capabilities
