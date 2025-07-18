@@ -7,6 +7,7 @@
 
 # pylint: disable=too-many-lines
 # pylint: disable=too-many-statements
+# pylint: disable=line-too-long
 
 # from azure.cli.core.commands import CliCommandType
 

@@ -17,6 +17,12 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update a mongo cluster.
+
+    :example: Updates the disk size on a Mongo Cluster resource.
+        az document-db cluster update --storage-size-gb 256
+
+    :example: Disables public network access on a Mongo Cluster resource with a private endpoint connection.
+        az mongo-cluster cluster update --public-network-access Disabled
     """
 
     _aaz_info = {

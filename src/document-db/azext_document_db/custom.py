@@ -20,6 +20,7 @@ from .aaz.latest.document_db.cluster import ListConnectionStrings as _DocumentDB
 
 logger = get_logger(__name__)
 
+
 # Modify az document-db cluster create command to hide replica and restore specific parameters.
 class DocumentDBClusterCreate(_DocumentDBClusterCreate):
     @classmethod
@@ -47,6 +48,7 @@ class DocumentDBClusterCreate(_DocumentDBClusterCreate):
 
         return args_schema
 
+
 # Modify az document-db cluster list-connection-strings command to deserialize flattened 'connectionStrings'
 # property to allow for table output formats.
 class DocumentDBClusterListConnectionStrings(_DocumentDBClusterListConnectionStrings):
@@ -56,6 +58,7 @@ class DocumentDBClusterListConnectionStrings(_DocumentDBClusterListConnectionStr
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance.connectionStrings, client_flatten=True)
         return result
+
 
 # Register az document-db cluster replica create command to create a replica Mongo Cluster resource.
 # This derives from base DocumentDBClusterCreate command and overrides the arguments schema to remove unnecessary parameters for replica creation.
@@ -121,6 +124,7 @@ class DocumentDBClusterReplicaCreate(_DocumentDBClusterCreate):
                 name=source_resource
             )
 
+
 # Modify az document-db cluster replica promote command to overrride LRO polling deserialization behavior.
 # By default the deserialization callback is set to 'None' which is incorrect for the POST operation with
 # no content response defined in TypeSpec. SDK code generation handles this correctly but AAZ code generation
@@ -145,6 +149,7 @@ class DocumentDBClusterReplicaPromote(_DocumentDBClusterPromote):
     def on_202(self, session):
         pass
 
+
 # Register az document-db cluster replica wait command to wait for a replica Mongo Cluster resource.
 # This is required by linter and style-checks since replica command group has a 'create' command.
 @register_command(
@@ -154,6 +159,7 @@ class DocumentDBClusterReplicaPromote(_DocumentDBClusterPromote):
 class DocumentDBClusterReplicaWait(_DocumentDBClusterWait):
     # inherit the documenation from the parent class as-is since it doesn't need to be modified
     __doc__ = _DocumentDBClusterWait.__doc__
+
 
 # Register az document-db cluster restore command to restore a Mongo Cluster resource.
 # This derives from base DocumentDBClusterCreate command and overrides the arguments schema to remove unnecessary parameters for restore creation.

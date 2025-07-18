@@ -32,7 +32,7 @@ class DocumentDbScenario(ScenarioTest):
         ])
 
         self.cmd('az document-db cluster create -g {rg} -n {name} --location {loc} '
-                 '--administrator-name {admin_name} --administrator-password {pwd} --storage-size-gb {storage_size} '
+                 '--administrator-name {admin_name} --administrator-password {pwd} --storage-size {storage_size} '
                  '--compute-tier {tier} --shard-count {shard_count} --server-version {server_version} --high-availability-mode Disabled '
                  '--no-wait')
 
@@ -177,6 +177,7 @@ class DocumentDbScenario(ScenarioTest):
 
         # Promote the replica and validate transition to primary role.
         self.cmd('az document-db cluster replica promote -g {rg} -n {replica_name} --promote-option Forced')
+        self.cmd('az document-db cluster wait --resource-group {rg} --name {replica_name} --updated')
         self.cmd('az document-db cluster show --resource-group {rg} --name {replica_name}',
                  checks=[
                      self.check('location', '{replica_loc}'),
