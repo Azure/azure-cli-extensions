@@ -23,21 +23,6 @@ from . import sftp_utils
 logger = log.get_logger(__name__)
 
 
-def make_dirs_for_file(file_path):
-    """Create directories for the given file path if they don't exist."""
-    if not os.path.exists(file_path):
-        mkdir_p(os.path.dirname(file_path))
-
-
-def mkdir_p(path):
-    """Create directory and all parent directories if they don't exist."""
-    try:
-        os.makedirs(path)
-    except OSError as exc:
-        if exc.errno != errno.EEXIST or not os.path.isdir(path):
-            raise
-
-
 def delete_file(file_path, message, warning=False):
     """Delete a file with error handling."""
     if os.path.isfile(file_path):
@@ -49,46 +34,6 @@ def delete_file(file_path, message, warning=False):
                 logger.warning(message)
             else:
                 raise azclierror.FileOperationError(f"{message}Error: {str(e)}") from e
-
-
-def delete_folder(dir_path, message, warning=False):
-    """Delete a folder with error handling."""
-    if os.path.isdir(dir_path):
-        # pylint: disable=broad-except
-        try:
-            os.rmdir(dir_path)
-        except Exception as e:
-            if warning:
-                logger.warning(message)
-            else:
-                raise azclierror.FileOperationError(f"{message}Error: {str(e)}") from e
-
-
-def create_directory(file_path, error_message):
-    """Create a directory with error handling."""
-    try:
-        os.makedirs(file_path)
-    except Exception as e:
-        raise azclierror.FileOperationError(f"{error_message}Error: {str(e)}") from e
-
-
-def write_to_file(file_path, mode, content, error_message, encoding=None):
-    """Write content to a file with error handling."""
-    try:
-        with open(file_path, mode, encoding=encoding) as f:
-            f.write(content)
-    except Exception as e:
-        raise azclierror.FileOperationError(f"{error_message}Error: {str(e)}") from e
-
-
-def get_line_that_contains(substring, lines):
-    """Find the first line containing the substring."""
-    return next((line for line in lines if substring in line), None)
-
-
-def remove_invalid_characters_foldername(folder_name):
-    """Remove invalid characters from folder name for Windows compatibility."""
-    return ''.join(c for c in folder_name if c not in const.WINDOWS_INVALID_FOLDERNAME_CHARS)
 
 
 def check_or_create_public_private_files(public_key_file, private_key_file, credentials_folder, ssh_client_folder=None):
