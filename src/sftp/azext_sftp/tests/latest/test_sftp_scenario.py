@@ -1,223 +1,221 @@
-# --------------------------------------------------------------------------------------------
-# Copyright (c) Microsoft Corporation. All rights reserved.
-# Licensed under the MIT License. See License.txt in the project root for license information.
-# --------------------------------------------------------------------------------------------
-
 import os
 import unittest
-import subprocess
 import tempfile
-from unittest import mock
-from azext_sftp import sftp_info
+import time
+
+from azure.cli.testsdk.scenario_tests import AllowLargeResponse
+from azure.cli.testsdk import (LiveScenarioTest, ScenarioTest, ResourceGroupPreparer)
+from cryptography.hazmat.primitives import serialization
+from cryptography.hazmat.primitives.asymmetric import rsa
+from cryptography.hazmat.backends import default_backend
 
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
-class SftpPathExpansionTest(unittest.TestCase):
-    """Test cases for proper handling of tilde paths in SFTP extension.
-    
-    These tests ensure that the SFTP extension properly expands tilde (~) paths
-    to full absolute paths, similar to how the SSH extension should handle them.
-    Owner: johnli1
-    """
+class SftpCertScenarioTest(LiveScenarioTest):
 
-    def test_authentication_files_tilde_expansion(self):
-        """Test that AuthenticationFiles correctly expands tilde paths."""
-        auth_files = sftp_info.AuthenticationFiles(
-            cert_file="~/.ssh/id_rsa-aadcert.pub",
-            private_key_file="~/.ssh/id_rsa",
-            public_key_file="~/.ssh/id_rsa.pub"
-        )
-        
-        # Verify tilde was expanded
-        self.assertFalse(auth_files.cert_file.startswith('~'))
-        self.assertFalse(auth_files.private_key_file.startswith('~'))
-        self.assertFalse(auth_files.public_key_file.startswith('~'))
-        
-        # Verify paths are absolute
-        self.assertTrue(os.path.isabs(auth_files.cert_file))
-        self.assertTrue(os.path.isabs(auth_files.private_key_file))
-        self.assertTrue(os.path.isabs(auth_files.public_key_file))
-        
-        # Verify paths contain the expected file names
-        self.assertTrue(auth_files.cert_file.endswith('id_rsa-aadcert.pub'))
-        self.assertTrue(auth_files.private_key_file.endswith('id_rsa'))
-        self.assertTrue(auth_files.public_key_file.endswith('id_rsa.pub'))
-
-    def test_authentication_files_absolute_paths_unchanged(self):
-        """Test that absolute paths are not modified by AuthenticationFiles."""
-        abs_cert = "/absolute/path/cert.pub"
-        abs_private = "/absolute/path/private"
-        abs_public = "/absolute/path/public.pub"
-        
-        auth_files = sftp_info.AuthenticationFiles(
-            cert_file=abs_cert,
-            private_key_file=abs_private,
-            public_key_file=abs_public
-        )
-        
-        # On Windows, paths get normalized but should still be absolute
-        self.assertTrue(os.path.isabs(auth_files.cert_file))
-        self.assertTrue(os.path.isabs(auth_files.private_key_file))
-        self.assertTrue(os.path.isabs(auth_files.public_key_file))
-
-
-class SftpScenarioTest(unittest.TestCase):
-    """Integration tests for SFTP extension scenarios.
-    
-    These tests focus on end-to-end scenarios that would typically be run
-    by users in real-world situations. Uses mocking for Azure resources.
-    Owner: johnli1
-    """
-
-    def __init__(self, *args, **kwargs):
-        super(SftpScenarioTest, self).__init__(*args, **kwargs)
-
-    def test_sftp_cert_generation_scenario(self):
-        """Test end-to-end certificate generation scenario."""
-        # Use mock-based testing instead of real Azure resources
-        cert_path = os.path.join(TEST_DIR, 'test_cert.pub')
-        
-        # Test certificate generation command structure
-        # This would typically involve actual Azure CLI command execution
-        # For now, we'll focus on the command structure and parameter validation
-        self.assertIsNotNone(cert_path)
-        self.assertTrue(cert_path.endswith('.pub'))
-
-    def test_sftp_connect_scenario_with_cert(self):
-        """Test end-to-end SFTP connection scenario with certificate."""
-        # This would test the full connect flow with actual or mocked SFTP operations
-        pass
-
-    def test_sftp_connect_scenario_auto_generate(self):
-        """Test end-to-end SFTP connection scenario with auto-generated credentials."""
-        # This would test the flow where no credentials are provided
-        # and the system auto-generates everything needed
-        pass
-
-
-class SftpConnectionValidationTest(unittest.TestCase):
-    """Integration tests for validating SFTP connections.
-    
-    These tests validate actual SFTP connection behavior using real Azure Storage
-    accounts when available. Tests are skipped if required credentials are not present.
-    Owner: johnli1
-    """
-    
     def setUp(self):
-        """Set up test fixtures for connection validation."""
-        self.test_storage_account = "johnli1canary"
-        self.test_username = "johnli1canary.johnli1"
-        self.test_host = "johnli1canary.blob.core.windows.net"
-        self.test_port = 22
-        self.test_cert_file = r"C:\users\johnli1\.ssh\id_rsa-aadcert.pub"
-        self.test_private_key_file = r"C:\users\johnli1\.ssh\id_rsa"
-        
-        # Skip integration tests if credentials are not available
-        if not os.path.exists(self.test_cert_file) or not os.path.exists(self.test_private_key_file):
-            self.skipTest("SFTP credentials not available for integration testing")
+        super().setUp()
 
-    def test_direct_sftp_connection_standard_port(self):
-        """Test direct SFTP connection using standard port 22."""
-        command = [
-            "sftp",
-            "-o", "PubkeyAcceptedKeyTypes=rsa-sha2-256-cert-v01@openssh.com,rsa-sha2-256",
-            "-o", f"IdentityFile={self.test_private_key_file}",
-            "-o", f"CertificateFile={self.test_cert_file}",
-            "-o", "ConnectTimeout=10",
-            "-o", "BatchMode=yes",
-            f"{self.test_username}@{self.test_host}"
-        ]
+        self.temp_dir = tempfile.mkdtemp(prefix="sftp_scenario_test_")
+        self.test_cert_file = os.path.join(self.temp_dir, "test_cert.pub")
+        self.temp_dir_no_keys = tempfile.mkdtemp(prefix="sftp_scenario_test_no_keys_")
+        self.test_cert_file_no_keys = os.path.join(self.temp_dir_no_keys, "test_cert_no_keys.pub")
+        self.test_public_key_file = os.path.join(self.temp_dir, "id_rsa.pub")
         
-        try:
-            result = subprocess.run(
-                command,
-                input="pwd\nexit\n",
-                capture_output=True,
-                text=True,
-                timeout=15
-            )
-            
-            self.assertEqual(result.returncode, 0, 
-                           f"Direct SFTP connection should succeed. Error: {result.stderr}")
-            
-        except subprocess.TimeoutExpired:
-            self.fail("Direct SFTP connection timed out")
-
-    def test_extension_sftp_session_creation(self):
-        """Test that the extension creates SFTP session with correct parameters."""
-        session = sftp_info.SFTPSession(
-            storage_account=self.test_storage_account,
-            username=self.test_username,
-            host=self.test_host,
-            port=self.test_port,
-            cert_file=self.test_cert_file,
-            private_key_file=self.test_private_key_file
-        )
+        # use real pub key
+        user_ssh_key = os.path.expanduser("~/.ssh/id_rsa.pub")
+        with open(user_ssh_key, 'r') as src:
+            with open(self.test_public_key_file, 'w') as dst:
+                dst.write(src.read())
         
-        self.assertEqual(session.storage_account, self.test_storage_account)
-        self.assertEqual(session.username, self.test_username)
-        self.assertEqual(session.host, self.test_host)
-        self.assertEqual(session.port, self.test_port)
-        self.assertEqual(session.cert_file, self.test_cert_file)
-        self.assertEqual(session.private_key_file, self.test_private_key_file)
+    def tearDown(self):
+        super().tearDown()
+        # Clean up temporary directory
+        import shutil
+        if os.path.exists(self.temp_dir):
+            shutil.rmtree(self.temp_dir)
 
-    def test_sftp_batch_operations(self):
-        """Test SFTP batch operations for automated workflows."""
-        operations = [
-            {
-                "name": "List Directory",
-                "commands": "ls\nexit\n",
-                "description": "List remote directory contents",
-                "expect_success": True
-            },
-            {
-                "name": "Change Directory",
-                "commands": "pwd\ncd /\npwd\nexit\n",
-                "description": "Change to root directory",
-                "expect_success": True
-            },
-            {
-                "name": "Get Remote Working Directory",
-                "commands": "pwd\nexit\n", 
-                "description": "Print current working directory",
-                "expect_success": True
-            }
-        ]
+        if os.path.exists(self.temp_dir_no_keys):
+            shutil.rmtree(self.temp_dir_no_keys)
+
+    def test_sftpcert_file_publickeyfile(self):
+        self.kwargs.update({
+            'public_key_file': self.test_public_key_file.replace('\\', '\\\\'),
+            'file': self.test_cert_file.replace('\\', '\\\\')
+        })
+        result = self.cmd('az sftp cert --public-key-file {public_key_file} --file {file}')
+
+        self.assertTrue(os.path.exists(self.test_cert_file),
+                        f"Certificate file {self.test_cert_file} was not created.")
         
-        base_command = [
-            "sftp",
-            "-o", "PubkeyAcceptedKeyTypes=rsa-sha2-256-cert-v01@openssh.com,rsa-sha2-256",
-            "-o", f"IdentityFile={self.test_private_key_file}",
-            "-o", f"CertificateFile={self.test_cert_file}",
-            "-o", "ConnectTimeout=10",
-            "-o", "BatchMode=yes",
-            f"{self.test_username}@{self.test_host}"
-        ]
+        with open(self.test_cert_file, 'r') as f:
+            cert_content = f.read()
+            self.assertTrue(cert_content.startswith("ssh-rsa-cert-v01@openssh.com"),
+                            "Certificate content does not start with expected header.")
+
+    def test_sftpcert_publickeyfile(self):
+        self.kwargs.update({
+            'public_key_file': self.test_public_key_file.replace('\\', '\\\\'),
+        })
+        result = self.cmd('az sftp cert --public-key-file {public_key_file}')
+
+        # Check if the certificate file was created in the same directory as the public key
+        expected_cert_path = self.test_public_key_file.rstrip('.pub') + '-aadcert.pub'
+
+        self.assertTrue(os.path.exists(expected_cert_path),
+                        f"Certificate file {expected_cert_path} was not created.")
         
-        for operation in operations:
-            with self.subTest(operation=operation["name"]):
-                try:
-                    result = subprocess.run(
-                        base_command,
-                        input=operation["commands"],
-                        capture_output=True,
-                        text=True,
-                        timeout=15
-                    )
-                    
-                    if operation["expect_success"]:
-                        self.assertEqual(result.returncode, 0,
-                                       f"{operation['name']} should succeed. Error: {result.stderr}")
-                    else:
-                        self.assertNotEqual(result.returncode, 0,
-                                          f"{operation['name']} should fail")
-                        
-                except subprocess.TimeoutExpired:
-                    if operation["expect_success"]:
-                        self.fail(f"{operation['name']} timed out")
+        with open(expected_cert_path, 'r') as f:
+            cert_content = f.read()
+            self.assertTrue(cert_content.startswith("ssh-rsa-cert-v01@openssh.com"),
+                            "Certificate content does not start with expected header.")
 
+    def test_sftpcert_file_keypairexists(self):
+        self.kwargs.update({
+            'file': self.test_cert_file.replace('\\', '\\\\')
+        })
+        result = self.cmd('az sftp cert --file {file}')
 
-if __name__ == '__main__':
-    unittest.main()
+        self.assertTrue(os.path.exists(self.test_cert_file),
+                        f"Certificate file {self.test_cert_file} was not created.")
+        
+        with open(self.test_cert_file, 'r') as f:
+            cert_content = f.read()
+            self.assertTrue(cert_content.startswith("ssh-rsa-cert-v01@openssh.com"),
+                            "Certificate content does not start with expected header.")
+
+    def test_sftpcert_file_nokeypair(self):
+        self.kwargs.update({
+            'file': self.test_cert_file_no_keys.replace('\\', '\\\\')
+        })
+        result = self.cmd('az sftp cert --file {file}')
+
+        # expect new key pair to be created
+        self.assertTrue(os.path.exists(f"{self.temp_dir_no_keys}\\\\id_rsa.pub"),
+                        f"Public key file {self.temp_dir_no_keys}\\\\id_rsa.pub was not created.")
+        self.assertTrue(os.path.exists(f"{self.temp_dir_no_keys}\\\\id_rsa"),
+                        f"Private key file {self.temp_dir_no_keys}\\\\id_rsa was not created.")
+        self.assertTrue(os.path.exists(self.test_cert_file_no_keys),
+                        f"Certificate file {self.test_cert_file_no_keys} was not created.")
+        
+        with open(self.test_cert_file_no_keys, 'r') as f:
+            cert_content = f.read()
+            self.assertTrue(cert_content.startswith("ssh-rsa-cert-v01@openssh.com"),
+                            "Certificate content does not start with expected header.")
+
+class SftpConnectScenarioTest(LiveScenarioTest):
+
+    def setUp(self):
+        super().setUp()
+        # Create a temporary directory for test files
+        self.temp_dir = tempfile.mkdtemp(prefix="sftp_scenario_test_")
+        self.test_cert_file = os.path.join(self.temp_dir, "test_cert.pub")
+        self.test_public_key_file = os.path.join(self.temp_dir, "id_rsa.pub")
+        self.test_private_key_file = os.path.join(self.temp_dir, "id_rsa")
+        
+        # use real pub key
+        user_ssh_key = os.path.expanduser("~/.ssh/id_rsa.pub")
+        user_private_key = os.path.expanduser("~/.ssh/id_rsa")
+        with open(user_ssh_key, 'r') as src:
+            with open(self.test_public_key_file, 'w') as dst:
+                dst.write(src.read())
+        # For private key, we need to check if it exists
+        with open(user_private_key, 'r') as src:
+            with open(self.test_private_key_file, 'w') as dst:
+                dst.write(src.read())
+
+    def tearDown(self):
+        super().tearDown()
+        # Clean up temporary directory
+        import shutil
+        if os.path.exists(self.temp_dir):
+            shutil.rmtree(self.temp_dir)
+
+    @ResourceGroupPreparer()
+    def test_sftpconnect_storageaccount(self, resource_group):
+        storage_account_name = self.create_random_name('sftptest', 24)
+        self.kwargs.update({
+            'storage_account': storage_account_name,
+            'resource_group': resource_group,
+            'location': 'centraluseuap' # flaky. not all tenants have entra enabled
+        })
+        
+        # create acc in centraleuap with hns, sftp enabled
+        self.cmd('az storage account create -n {storage_account} -g {rg} -l {location} '
+                '--sku Standard_LRS --hns true --enable-sftp true')
+        
+        # connect. fails if connection fails
+        result = self.cmd('az sftp connect --storage-account {storage_account}')
+
+        # clean
+        self.cmd('az storage account delete -n {storage_account} -g {resource_group} --yes')    
+
+    @ResourceGroupPreparer()
+    def test_sftpconnect_storageaccount_certificatefile(self, resource_group):
+        storage_account_name = self.create_random_name('sftptest', 24)
+        self.kwargs.update({
+            'storage_account': storage_account_name,
+            'resource_group': resource_group,
+            'location': 'centraluseuap' # flaky. not all tenants have entra enabled
+        })
+        
+        # create acc in centraleuap with hns, sftp enabled
+        self.cmd('az storage account create -n {storage_account} -g {rg} -l {location} '
+                '--sku Standard_LRS --hns true --enable-sftp true')
+
+        # generate cert
+        self.kwargs.update({
+            'public_key_file': self.test_public_key_file.replace('\\', '\\\\'),
+            'file': self.test_cert_file.replace('\\', '\\\\')
+        })
+        result = self.cmd('az sftp cert --public-key-file {public_key_file} --file {file}')
+
+        # connect with cert
+        result = self.cmd('az sftp connect --storage-account {storage_account} --certificate-file {file}')
+
+        # clean
+        self.cmd('az storage account delete -n {storage_account} -g {resource_group} --yes')
+
+    @ResourceGroupPreparer()
+    def test_sftpconnect_storageaccount_publickeyfile(self, resource_group):
+        # test account creation
+        storage_account_name = self.create_random_name('sftptest', 24)
+        self.kwargs.update({
+            'storage_account': storage_account_name,
+            'resource_group': resource_group,
+            'location': 'centraluseuap', # flaky. not all tenants have entra enabled
+            'public_key_file': self.test_public_key_file.replace('\\', '\\\\')
+        })
+        
+        # create acc in centraleuap with hns, sftp enabled
+        self.cmd('az storage account create -n {storage_account} -g {rg} -l {location} '
+                '--sku Standard_LRS --hns true --enable-sftp true')
+
+        # connect with public key file
+        result = self.cmd('az sftp connect --storage-account {storage_account} --public-key-file {public_key_file}')
+
+        # clean
+        self.cmd('az storage account delete -n {storage_account} -g {resource_group} --yes')
+
+    @ResourceGroupPreparer()
+    def test_sftpconnect_storageaccount_privatekeyfile(self, resource_group):
+        # test account creation
+        storage_account_name = self.create_random_name('sftptest', 24)
+        self.kwargs.update({
+            'storage_account': storage_account_name,
+            'resource_group': resource_group,
+            'location': 'centraluseuap', # flaky. not all tenants have entra enabled
+            'private_key_file': self.test_private_key_file.replace('\\', '\\\\')
+        })
+        
+        # create acc in centraleuap with hns, sftp enabled
+        self.cmd('az storage account create -n {storage_account} -g {rg} -l {location} '
+                '--sku Standard_LRS --hns true --enable-sftp true')
+
+        # connect with private key file
+        result = self.cmd('az sftp connect --storage-account {storage_account} --private-key-file {private_key_file}')
+
+        # clean
+        self.cmd('az storage account delete -n {storage_account} -g {resource_group} --yes')

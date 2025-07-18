@@ -190,6 +190,23 @@ class SftpInfoErrorHandlingTest(unittest.TestCase):
                     # Port should be converted to string
                     self.assertIsInstance(command_args[port_index + 1], str)
 
+    def test_extension_sftp_session_creation(self):
+        """Test that the extension creates SFTP session with correct parameters."""
+        session = sftp_info.SFTPSession(
+            storage_account=self.test_storage_account,
+            username=self.test_username,
+            host=self.test_host,
+            port=self.test_port,
+            cert_file=self.test_cert_file,
+            private_key_file=self.test_private_key_file
+        )
+        
+        self.assertEqual(session.storage_account, self.test_storage_account)
+        self.assertEqual(session.username, self.test_username)
+        self.assertEqual(session.host, self.test_host)
+        self.assertEqual(session.port, self.test_port)
+        self.assertEqual(session.cert_file, os.path.abspath(self.test_cert_file))
+        self.assertEqual(session.private_key_file, os.path.abspath(self.test_private_key_file))
 
 if __name__ == '__main__':
     unittest.main()

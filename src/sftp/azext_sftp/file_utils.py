@@ -96,15 +96,22 @@ def check_or_create_public_private_files(public_key_file, private_key_file, cred
     delete_keys = False
 
     if not public_key_file and not private_key_file:
-        delete_keys = True
         if not credentials_folder:
             credentials_folder = tempfile.mkdtemp(prefix="aadsftpcert")
         else:
             if not os.path.isdir(credentials_folder):
                 os.makedirs(credentials_folder)
+        
         public_key_file = os.path.join(credentials_folder, "id_rsa.pub")
         private_key_file = os.path.join(credentials_folder, "id_rsa")
-        sftp_utils.create_ssh_keyfile(private_key_file, ssh_client_folder)
+        
+        # Check if existing keys are present before generating new ones
+        if not (os.path.isfile(public_key_file) and os.path.isfile(private_key_file)):
+            # Only generate new keys if both don't exist
+            sftp_utils.create_ssh_keyfile(private_key_file, ssh_client_folder)
+            # Only set delete_keys to True when we actually create new keys
+            delete_keys = True
+        # If existing keys are found, delete_keys remains False
 
     if not public_key_file:
         if private_key_file:
@@ -155,7 +162,7 @@ def get_and_write_certificate(cmd, public_key_file, cert_file, ssh_client_folder
     telemetry.add_extension_event('sftp', {'Context.Default.AzureCLI.SFTPGetCertificateTime': time_elapsed})
 
     if not cert_file:
-        cert_file = str(public_key_file) + "-aadcert.pub"
+        cert_file = str(public_key_file.removesuffix(".pub")) + "-aadcert.pub"
 
     logger.debug("Generating certificate %s", cert_file)
     _write_cert_file(certificate, cert_file)

@@ -379,11 +379,14 @@ class SftpFileUtilsCertificateTest(unittest.TestCase):
         expected_public_key = os.path.join(self.temp_dir, "id_rsa.pub")
         expected_private_key = os.path.join(self.temp_dir, "id_rsa")
         
-        # Create the expected files so they exist for the function
-        with open(expected_public_key, 'w') as f:
-            f.write("ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQ test@example.com")
-        with open(expected_private_key, 'w') as f:
-            f.write("-----BEGIN OPENSSH PRIVATE KEY-----\ntest\n-----END OPENSSH PRIVATE KEY-----")
+        # Mock the create_ssh_keyfile to create the files when called
+        def create_key_files(private_key_path, ssh_client_folder):
+            with open(private_key_path, 'w') as f:
+                f.write("-----BEGIN OPENSSH PRIVATE KEY-----\ntest\n-----END OPENSSH PRIVATE KEY-----")
+            with open(private_key_path + ".pub", 'w') as f:
+                f.write("ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQ test@example.com")
+        
+        mock_create_keyfile.side_effect = create_key_files
         
         # Act
         public_key, private_key, delete_keys = file_utils.check_or_create_public_private_files(
@@ -454,7 +457,7 @@ class SftpFileUtilsCertificateTest(unittest.TestCase):
         mock_get_principals.return_value = ["testuser@domain.com"]
         
         # Set up the cert file path that the function will generate
-        expected_cert_file = str(self.mock_public_key) + "-aadcert.pub"
+        expected_cert_file = str(self.mock_public_key.removesuffix(".pub")) + "-aadcert.pub"
         mock_write_cert.return_value = expected_cert_file
         
         # Act

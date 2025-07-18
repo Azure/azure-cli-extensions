@@ -46,11 +46,11 @@ helps['sftp cert'] = """
         The certificate can be used with 'az sftp connect' or with standard SFTP clients.
     examples:
         - name: Generate a certificate using an existing public key
-          text: az sftp cert --public-key-file ~/.ssh/id_rsa.pub --output-file ~/my_cert.pub
+          text: az sftp cert --public-key-file ~/.ssh/id_rsa.pub --file ~/my_cert.pub
         - name: Generate a certificate and create a new key pair in the same directory
-          text: az sftp cert --output-file ~/my_cert.pub
+          text: az sftp cert --file ~/my_cert.pub
         - name: Generate a certificate with custom SSH client folder
-          text: az sftp cert --output-file ~/my_cert.pub --ssh-client-folder "C:\\Program Files\\OpenSSH"
+          text: az sftp cert --file ~/my_cert.pub --ssh-client-folder "C:\\Program Files\\OpenSSH"
 """
 
 helps['sftp connect'] = """

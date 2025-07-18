@@ -175,8 +175,11 @@ def get_ssh_cert_info(cert_file, ssh_client_folder=None):
                                          const.RECOMMENDATION_SSH_CLIENT_NOT_FOUND)
 
 
+_warned_ssh_client_folders = set()
+
 def get_ssh_client_path(ssh_command="ssh", ssh_client_folder=None):
     """Get the path to an SSH client executable."""
+    global _warned_ssh_client_folders
     if ssh_client_folder:
         ssh_path = os.path.join(ssh_client_folder, ssh_command)
         if platform.system() == 'Windows':
@@ -184,8 +187,11 @@ def get_ssh_client_path(ssh_command="ssh", ssh_client_folder=None):
         if os.path.isfile(ssh_path):
             logger.debug("Attempting to run %s from path %s", ssh_command, ssh_path)
             return ssh_path
-        logger.warning("Could not find %s in provided --ssh-client-folder %s. "
-                       "Attempting to get pre-installed OpenSSH bits.", ssh_command, ssh_client_folder)
+        warn_key = (ssh_command, os.path.abspath(ssh_client_folder))
+        if warn_key not in _warned_ssh_client_folders:
+            logger.warning("Could not find %s in provided --ssh-client-folder %s. "
+                           "Attempting to get pre-installed OpenSSH bits.", ssh_command, ssh_client_folder)
+            _warned_ssh_client_folders.add(warn_key)
 
     if platform.system() != 'Windows':
         return ssh_command
