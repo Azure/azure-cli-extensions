@@ -24,7 +24,7 @@ class Create(AAZCommand):
     _aaz_info = {
         "version": "2025-06-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/Microsoft.Edge/targets/{}", "2025-06-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/Microsoft.edge/targets/{}", "2025-06-01"],
         ]
     }
 
@@ -77,19 +77,16 @@ class Create(AAZCommand):
             options=["--description"],
             arg_group="Properties",
             help="Description of target",
-            required=True,
         )
         _args_schema.display_name = AAZStrArg(
             options=["--display-name"],
             arg_group="Properties",
             help="Display name of target",
-            required=True,
         )
         _args_schema.hierarchy_level = AAZStrArg(
             options=["--hierarchy-level"],
             arg_group="Properties",
             help="Hierarchy Level",
-            required=True,
         )
         _args_schema.solution_scope = AAZStrArg(
             options=["--solution-scope"],
@@ -202,7 +199,7 @@ class Create(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Edge/targets/{targetName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.edge/targets/{targetName}",
                 **self.url_parameters
             )
 
