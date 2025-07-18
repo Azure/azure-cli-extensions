@@ -13,6 +13,11 @@ Pending
 +++++++
 * Add support for `ManagedSystem` Agent Pool Mode.
 
+18.0.0b19
++++++++
+- Add `--localdns-config` to `az aks nodepool add` and to `az aks nodepool update` to support configuring a local DNS profile for agent pools.
+
+
 18.0.0b18
 +++++++
 * Add validation error when neither --location or --cluster and --resource-group-name are specified for az extension type list or az extension type version list
