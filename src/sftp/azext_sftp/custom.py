@@ -52,9 +52,9 @@ def sftp_cert(cmd, cert_path=None, public_key_file=None, ssh_client_folder=None)
         logger.debug("Will generate key pair in: %s", keys_folder)
 
     try:
-        public_key_file, _, delete_keys = _check_or_create_public_private_files(
+        public_key_file, _, delete_keys = file_utils.check_or_create_public_private_files(
             public_key_file, None, keys_folder, ssh_client_folder)
-        cert_file, _ = _get_and_write_certificate(cmd, public_key_file, cert_path, ssh_client_folder)
+        cert_file, _ = file_utils.get_and_write_certificate(cmd, public_key_file, cert_path, ssh_client_folder)
     except Exception as e:
         logger.debug("Certificate generation failed: %s", str(e))
         raise
@@ -114,17 +114,17 @@ def sftp_connect(cmd, storage_account, port=None, cert_file=None, private_key_fi
 
     try:
         if auto_generate_cert:
-            public_key_file, private_key_file, _ = _check_or_create_public_private_files(
+            public_key_file, private_key_file, _ = file_utils.check_or_create_public_private_files(
                 None, None, credentials_folder, ssh_client_folder)
-            cert_file, user = _get_and_write_certificate(cmd, public_key_file, None, ssh_client_folder)
+            cert_file, user = file_utils.get_and_write_certificate(cmd, public_key_file, None, ssh_client_folder)
         elif not cert_file:
             profile = Profile(cli_ctx=cmd.cli_ctx)
             profile.get_subscription()
 
-            public_key_file, private_key_file, _ = _check_or_create_public_private_files(
+            public_key_file, private_key_file, _ = file_utils.check_or_create_public_private_files(
                 public_key_file, private_key_file, None, ssh_client_folder)
             print_styled_text((Style.ACTION, "Generating certificate..."))
-            cert_file, user = _get_and_write_certificate(cmd, public_key_file, None, ssh_client_folder)
+            cert_file, user = file_utils.get_and_write_certificate(cmd, public_key_file, None, ssh_client_folder)
             delete_cert = True
         else:
             logger.debug("Using provided certificate file...")
@@ -175,33 +175,6 @@ def sftp_connect(cmd, storage_account, port=None, cert_file=None, private_key_fi
         if delete_keys or delete_cert:
             _cleanup_credentials(delete_keys, delete_cert, credentials_folder, cert_file,
                                  private_key_file, public_key_file)
-
-
-def _check_or_create_public_private_files(public_key_file, private_key_file, credentials_folder,
-                                          ssh_client_folder=None):
-    """Check for existing key files or create new ones if needed."""
-    return file_utils.check_or_create_public_private_files(
-        public_key_file, private_key_file, credentials_folder, ssh_client_folder)
-
-
-def _get_and_write_certificate(cmd, public_key_file, cert_file, ssh_client_folder):
-    """Generate and write an SSH certificate using Azure AD authentication."""
-    return file_utils.get_and_write_certificate(cmd, public_key_file, cert_file, ssh_client_folder)
-
-
-def _prepare_jwk_data(public_key_file):
-    """Prepare JWK data for certificate request."""
-    return file_utils._prepare_jwk_data(public_key_file)  # pylint: disable=protected-access
-
-
-def _write_cert_file(certificate_contents, cert_file):
-    """Write SSH certificate to file."""
-    return file_utils._write_cert_file(certificate_contents, cert_file)  # pylint: disable=protected-access
-
-
-def _get_modulus_exponent(public_key_file):
-    """Extract modulus and exponent from RSA public key file."""
-    return file_utils._get_modulus_exponent(public_key_file)  # pylint: disable=protected-access
 
 
 def _assert_args(storage_account, cert_file, public_key_file, private_key_file):
