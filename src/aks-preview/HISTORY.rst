@@ -15,7 +15,7 @@ Pending
 
 18.0.0b19
 +++++++
-- Add  `--localdns-config` to `az aks nodepool add`` and  to `az aks nodepool update` to support configuring a local DNS profile for agentpools.
+- Add `--localdns-config` to `az aks nodepool add` and to `az aks nodepool update` to support configuring a local DNS profile for agent pools.
 
 
 18.0.0b18
