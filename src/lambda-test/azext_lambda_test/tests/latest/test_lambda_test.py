@@ -29,7 +29,7 @@ class LambdaTestScenario(ScenarioTest):
             'description': 'Test-Description',
             'licenses_subscribed': 1,
             'list_resource_group': 'yashika-rg-lambdatest',
-            'delete_name' : 'test1'
+            'delete_name': 'test1'
         })
 
         # Create LambdaTest Organization
@@ -59,5 +59,5 @@ class LambdaTestScenario(ScenarioTest):
                  ])
         
         # Delete LambdaTest Organization
-        self.cmd('az lambda-test hyper-execute organization delete --resource-group {resource_group} --organizationname {delete_name} -y' ,
+        self.cmd('az lambda-test hyper-execute organization delete --resource-group {resource_group} --organizationname {delete_name} -y',
                  checks=[])
