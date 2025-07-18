@@ -67,7 +67,6 @@ class Create(AAZCommand):
             options=["--capabilities"],
             arg_group="Properties",
             help="List of capabilities",
-            required=True,
         )
         _args_schema.description = AAZStrArg(
             options=["--description"],
@@ -93,13 +92,11 @@ class Create(AAZCommand):
         _args_schema.configurations = AAZFileArg(
             options=["--config-template-file","--configuration-template-file","-f"],
             help="Link to File containing Config expressions  for this solution version",
-            required=True,
         )
     
         _args_schema.specification = AAZFreeFormDictArg(
             options=["--specification"],
             help="App components spec, use @ to load from file",
-            required=True,
         )
 
         _args_schema.enable_external_validation = AAZBoolArg(

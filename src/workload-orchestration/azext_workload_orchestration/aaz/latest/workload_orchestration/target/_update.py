@@ -104,13 +104,6 @@ class Update(AAZCommand):
         )
 
 
-        _args_schema.context_id = AAZResourceIdArg(
-            options=["--context-id"],
-            arg_group="Properties",
-            help="ArmId of Context",
-        )
-
-
         capabilities = cls._args_schema.capabilities
         capabilities.Element = AAZStrArg(
             nullable=True,
@@ -379,7 +372,6 @@ class Update(AAZCommand):
                 properties.set_prop("solutionScope", AAZStrType, ".solution_scope")
                 properties.set_prop("state", AAZStrType, ".state")
                 properties.set_prop("targetSpecification", AAZFreeFormDictType, ".target_specification", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("contextId", AAZStrType, ".context_id", typ_kwargs={"flags": {"required": True}})
 
             capabilities = _builder.get(".properties.capabilities")
             if capabilities is not None:
