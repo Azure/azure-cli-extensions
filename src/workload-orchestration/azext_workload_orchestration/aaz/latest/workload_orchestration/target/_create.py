@@ -71,12 +71,12 @@ class Create(AAZCommand):
             options=["--context-id"],
             arg_group="Properties",
             help="ArmId of Context",
+            required=True,
         )
         _args_schema.description = AAZStrArg(
             options=["--description"],
             arg_group="Properties",
             help="Description of target",
-            required=True,
         )
         _args_schema.display_name = AAZStrArg(
             options=["--display-name"],
@@ -95,6 +95,7 @@ class Create(AAZCommand):
             fmt=AAZStrArgFormat(
                 pattern="^[a-z0-9]([-a-z0-9]*[a-z0-9])?$",
             ),
+
         )
         _args_schema.state = AAZStrArg(
             options=["--state"],
