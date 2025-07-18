@@ -101,10 +101,10 @@ def check_or_create_public_private_files(public_key_file, private_key_file, cred
         else:
             if not os.path.isdir(credentials_folder):
                 os.makedirs(credentials_folder)
-        
+
         public_key_file = os.path.join(credentials_folder, "id_rsa.pub")
         private_key_file = os.path.join(credentials_folder, "id_rsa")
-        
+
         # Check if existing keys are present before generating new ones
         if not (os.path.isfile(public_key_file) and os.path.isfile(private_key_file)):
             # Only generate new keys if both don't exist

@@ -177,9 +177,9 @@ def get_ssh_cert_info(cert_file, ssh_client_folder=None):
 
 _warned_ssh_client_folders = set()
 
+
 def get_ssh_client_path(ssh_command="ssh", ssh_client_folder=None):
     """Get the path to an SSH client executable."""
-    global _warned_ssh_client_folders
     if ssh_client_folder:
         ssh_path = os.path.join(ssh_client_folder, ssh_command)
         if platform.system() == 'Windows':
