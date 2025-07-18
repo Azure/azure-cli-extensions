@@ -7,8 +7,216 @@
 
 # pylint: disable=too-many-lines
 # pylint: disable=too-many-statements
+# pylint: disable=line-too-long
+# pylint: disable=protected-access
 
 from knack.log import get_logger
-
+from azure.cli.core.aaz import register_command
+from azure.mgmt.core.tools import is_valid_resource_id, resource_id
+from .aaz.latest.document_db.cluster import Create as _DocumentDBClusterCreate
+from .aaz.latest.document_db.cluster.replica import Promote as _DocumentDBClusterPromote
+from .aaz.latest.document_db.cluster import Wait as _DocumentDBClusterWait
+from .aaz.latest.document_db.cluster import ListConnectionStrings as _DocumentDBClusterListConnectionStrings
 
 logger = get_logger(__name__)
+
+# Modify az document-db cluster create command to hide replica and restore specific parameters.
+class DocumentDBClusterCreate(_DocumentDBClusterCreate):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+
+        # Hide create_mode since we have first class commands for replica/restore creation.
+        args_schema.create_mode._registered = False
+
+        # Hide replica specific create parameters
+        args_schema.replica_source_location._registered = False
+        args_schema.replica_source_resource._registered = False
+
+        # Hide restpre specific create parameters
+        args_schema.restore_source_resource._registered = False
+        args_schema.restore_time._registered = False
+
+        args_schema.administrator_name._required = True
+        args_schema.administrator_password._required = True
+        args_schema.shard_count._required = True
+        args_schema.compute_tier._required = True
+        args_schema.storage_size._required = True
+        args_schema.high_availability_mode._required = True
+
+        return args_schema
+
+# Modify az document-db cluster list-connection-strings command to deserialize flattened 'connectionStrings'
+# property to allow for table output formats.
+class DocumentDBClusterListConnectionStrings(_DocumentDBClusterListConnectionStrings):
+    # inherit the documenation from the parent class as-is since it doesn't need to be modified
+    __doc__ = _DocumentDBClusterListConnectionStrings.__doc__
+
+    def _output(self, *args, **kwargs):
+        result = self.deserialize_output(self.ctx.vars.instance.connectionStrings, client_flatten=True)
+        return result
+
+# Register az document-db cluster replica create command to create a replica Mongo Cluster resource.
+# This derives from base DocumentDBClusterCreate command and overrides the arguments schema to remove unnecessary parameters for replica creation.
+@register_command(
+    "document-db cluster replica create",
+    is_preview=True,
+)
+class DocumentDBClusterReplicaCreate(_DocumentDBClusterCreate):
+    """Create a Mongo Cluster replica resource.
+
+    :example: Creates a replica Mongo Cluster resource from a source cluster.
+        az document-db cluster replica create --resource-group TestResourceGroup --cluster-name myMongoCluster --location eastus2 --source-location westus3 --source-resource "/subscriptions/ffffffff-ffff-ffff-ffff-ffffffffffff/resourceGroups/TestResourceGroup/providers/Microsoft.DocumentDB/mongoClusters/mySourceMongoCluster"
+    """
+
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+
+        # Deregister all the properties that are inherited from the source cluster for replica creation.
+        # We can opt to support them as overrides at replica create time at a later stage.
+        args_schema.create_mode._registered = False
+
+        args_schema.administrator_password._registered = False
+        args_schema.administrator_name._registered = False
+
+        args_schema.compute_tier._registered = False
+
+        args_schema.high_availability_mode._registered = False
+
+        args_schema.preview_features._registered = False
+
+        args_schema.public_network_access._registered = False
+
+        args_schema.server_version._registered = False
+
+        args_schema.restore_time._registered = False
+        args_schema.restore_source_resource._registered = False
+
+        args_schema.shard_count._registered = False
+
+        args_schema.storage_size._registered = False
+
+        # override the replica arguments.
+        args_schema.cluster_name._options = ["--replica-name"]
+        args_schema.cluster_name._help["short-summary"] = "The name of the replica mongo cluster."
+        args_schema.replica_source_location._options = ["--source-location"]
+        args_schema.replica_source_location._required = True
+        args_schema.replica_source_resource._options = ["--source-cluster"]
+        args_schema.replica_source_resource._required = True
+
+        return args_schema
+
+    def pre_operations(self):
+        args = self.ctx.args
+        args.create_mode = "GeoReplica"
+
+        source_resource = str(args.replica_source_resource)
+        if not is_valid_resource_id(source_resource):
+            args.replica_source_resource = resource_id(
+                subscription=self.ctx.subscription_id,
+                resource_group=args.resource_group,
+                namespace='Microsoft.DocumentDB', type='mongoClusters',
+                name=source_resource
+            )
+
+# Modify az document-db cluster replica promote command to overrride LRO polling deserialization behavior.
+# By default the deserialization callback is set to 'None' which is incorrect for the POST operation with
+# no content response defined in TypeSpec. SDK code generation handles this correctly but AAZ code generation
+# does not, so we need to override the deserialization callback to handle the 202 response.
+class DocumentDBClusterReplicaPromote(_DocumentDBClusterPromote):
+    # inherit the documenation from the parent class as-is since it doesn't need to be modified
+    __doc__ = _DocumentDBClusterPromote.__doc__
+
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.cluster_name._required = True
+        return args_schema
+
+    def _execute_operations(self):
+        self.pre_operations()
+        lro_polling = self.MongoClustersPromote(ctx=self.ctx)()
+        lro_polling._deserialization_callback = self.on_202
+        yield lro_polling
+        self.post_operations()
+
+    def on_202(self, session):
+        pass
+
+# Register az document-db cluster replica wait command to wait for a replica Mongo Cluster resource.
+# This is required by linter and style-checks since replica command group has a 'create' command.
+@register_command(
+    "document-db cluster replica wait",
+    is_preview=True,
+)
+class DocumentDBClusterReplicaWait(_DocumentDBClusterWait):
+    # inherit the documenation from the parent class as-is since it doesn't need to be modified
+    __doc__ = _DocumentDBClusterWait.__doc__
+
+# Register az document-db cluster restore command to restore a Mongo Cluster resource.
+# This derives from base DocumentDBClusterCreate command and overrides the arguments schema to remove unnecessary parameters for restore creation.
+@register_command(
+    "document-db cluster restore",
+    is_preview=True,
+)
+class DocumentDBClusterRestore(_DocumentDBClusterCreate):
+    """Restores a Mongo Cluster resource.
+
+    :example: Creates a restored Mongo Cluster resource from a given source cluster and point in time.
+        az document-db cluster restore --resource-group TestResourceGroup --cluster-name myMongoCluster --administrator-name mongoAdmin --administrator-password password --restore-time 2023-01-13T20:07:35Z --source-cluster "/subscriptions/ffffffff-ffff-ffff-ffff-ffffffffffff/resourceGroups/TestResourceGroup/providers/Microsoft.DocumentDB/mongoClusters/mySourceMongoCluster"
+    """
+
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+
+        # Deregister all the properties that are inherited from the source cluster for replica creation.
+        # We can opt to support them as overrides at replica create time at a later stage.
+        args_schema.create_mode._registered = False
+
+        args_schema.compute_tier._registered = False
+
+        args_schema.high_availability_mode._registered = False
+
+        args_schema.preview_features._registered = False
+
+        args_schema.public_network_access._registered = False
+
+        args_schema.server_version._registered = False
+
+        args_schema.replica_source_location._registered = False
+        args_schema.replica_source_resource._registered = False
+
+        args_schema.shard_count._registered = False
+
+        args_schema.storage_size._registered = False
+
+        # Administrator arguments are needed to restore with native authentication.
+        args_schema.administrator_password._registered = True
+        args_schema.administrator_password._required = True
+        args_schema.administrator_name._registered = True
+        args_schema.administrator_name._required = True
+
+        # override the restore arguments
+        args_schema.cluster_name._help["short-summary"] = 'The name of restored mongo cluster.'
+        args_schema.restore_time._options = ["--restore-time"]
+        args_schema.restore_time._required = True
+        args_schema.restore_source_resource._options = ["--source-cluster"]
+        args_schema.restore_source_resource._required = True
+
+        return args_schema
+
+    def pre_operations(self):
+        args = self.ctx.args
+        args.create_mode = "PointInTimeRestore"
+
+        source_resource = str(args.restore_source_resource)
+        if not is_valid_resource_id(source_resource):
+            args.restore_source_resource = resource_id(
+                subscription=self.ctx.subscription_id,
+                resource_group=args.resource_group,
+                namespace='Microsoft.DocumentDB', type='mongoClusters',
+                name=source_resource
+            )
