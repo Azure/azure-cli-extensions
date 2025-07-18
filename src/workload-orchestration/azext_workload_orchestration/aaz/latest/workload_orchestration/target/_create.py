@@ -77,6 +77,7 @@ class Create(AAZCommand):
             options=["--description"],
             arg_group="Properties",
             help="Description of target",
+            required=True,
         )
         _args_schema.display_name = AAZStrArg(
             options=["--display-name"],
