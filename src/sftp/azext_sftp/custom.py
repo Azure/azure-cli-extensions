@@ -24,7 +24,7 @@ def sftp_cert(cmd, cert_path=None, public_key_file=None, ssh_client_folder=None)
     logger.debug("Starting SFTP certificate generation")
 
     if not cert_path and not public_key_file:
-        raise azclierror.RequiredArgumentMissingError("--output-file or --public-key-file must be provided.")
+        raise azclierror.RequiredArgumentMissingError("--file or --public-key-file must be provided.")
 
     if cert_path:
         cert_path = os.path.expanduser(cert_path)
@@ -52,14 +52,14 @@ def sftp_cert(cmd, cert_path=None, public_key_file=None, ssh_client_folder=None)
         logger.debug("Will generate key pair in: %s", keys_folder)
 
     try:
-        public_key_file, _, _ = _check_or_create_public_private_files(
+        public_key_file, _, delete_keys = _check_or_create_public_private_files(
             public_key_file, None, keys_folder, ssh_client_folder)
         cert_file, _ = _get_and_write_certificate(cmd, public_key_file, cert_path, ssh_client_folder)
     except Exception as e:
         logger.debug("Certificate generation failed: %s", str(e))
         raise
 
-    if keys_folder:
+    if keys_folder and delete_keys:
         logger.warning("%s contains sensitive information (id_rsa, id_rsa.pub). "
                        "Please delete once this certificate is no longer being used.", keys_folder)
 

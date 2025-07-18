@@ -86,31 +86,6 @@ class SftpCustomCommandTest(unittest.TestCase):
         mock_get_keys.assert_called_once_with('/pubkey/path', None, None, None)
         mock_write_cert.assert_called_once_with(cmd, 'pubkey', '/cert/path', None)
 
-    def test_sftp_connect_preprod(self):
-        """Test SFTP connection to preprod environment.
-        
-        Owner: johnli1
-        """
-        cmd = mock.Mock()
-        cmd.cli_ctx = mock.Mock()
-        cmd.cli_ctx.cloud = mock.Mock()
-        cmd.cli_ctx.cloud.name = "azurecloud"
-        
-        # Create a temporary batch file for automated testing
-        batch_file = os.path.join(self.temp_dir, "test_batch.txt")
-        with open(batch_file, 'w') as f:
-            f.write("pwd\nls\nexit\n")
-        
-        # Use batch file to avoid interactive prompt
-        custom.sftp_connect(
-            cmd=cmd,
-            storage_account='johnli1canary',
-            port=22,
-            cert_file='C:\\Users\\johnli1\\.ssh\\id_rsa-aadcert.pub',
-            sftp_args=['-b', batch_file]  # Use actual batch file
-        )
-        self.assertTrue(True)
-
     @mock.patch('azext_sftp.custom._do_sftp_op')
     @mock.patch('azext_sftp.sftp_utils.get_ssh_cert_principals')
     def test_sftp_connect_certificate_scenarios(self, mock_get_principals, mock_do_sftp):
@@ -713,7 +688,7 @@ class SftpCustomCommandTest(unittest.TestCase):
         """Test sftp cert error handling with invalid argument combinations."""
         # Test cases: (cert_path, public_key_file, setup_mocks, expected_exception, expected_message, description)
         test_cases = [
-            (None, None, {}, azclierror.RequiredArgumentMissingError, "--output-file or --public-key-file must be provided", "no_arguments"),
+            (None, None, {}, azclierror.RequiredArgumentMissingError, "--file or --public-key-file must be provided", "no_arguments"),
             ("/bad/cert.pub", None, {"expanduser_return": "/bad/cert.pub", "isdir_return": False}, azclierror.InvalidArgumentValueError, "folder doesn't exist", "invalid_directory"),
         ]
         
