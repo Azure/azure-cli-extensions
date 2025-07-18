@@ -475,6 +475,10 @@ class _UpdateHelper:
             serialized_name="hierarchyLevel",
             flags={"required": True},
         )
+        properties.context_id = AAZStrType(
+            serialized_name="contextId",
+            flags={"required": True},
+        )
         properties.provisioning_state = AAZStrType(
             serialized_name="provisioningState",
             flags={"read_only": True},
