@@ -107,7 +107,6 @@ class Create(AAZCommand):
             options=["--target-specification"],
             arg_group="Properties",
             help="Specifies that we are using Helm charts for the k8s deployment",
-            required=True,
         )
 
         capabilities = cls._args_schema.capabilities
