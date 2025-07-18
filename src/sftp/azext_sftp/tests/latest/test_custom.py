@@ -71,8 +71,8 @@ class SftpCustomCommandTest(unittest.TestCase):
 
     @mock.patch('os.path.isdir')
     @mock.patch('os.path.abspath')
-    @mock.patch('azext_sftp.custom._check_or_create_public_private_files')
-    @mock.patch('azext_sftp.custom._get_and_write_certificate')
+    @mock.patch('azext_sftp.file_utils.check_or_create_public_private_files')
+    @mock.patch('azext_sftp.file_utils.get_and_write_certificate')
     def test_sftp_cert(self, mock_write_cert, mock_get_keys, mock_abspath, mock_isdir):
         """Test successful certificate generation."""
         cmd = mock.Mock()
@@ -129,8 +129,8 @@ class SftpCustomCommandTest(unittest.TestCase):
     @mock.patch('azext_sftp.custom.Profile')
     @mock.patch('azext_sftp.custom._get_storage_endpoint_suffix')
     @mock.patch('azext_sftp.custom._do_sftp_op')
-    @mock.patch('azext_sftp.custom._get_and_write_certificate')
-    @mock.patch('azext_sftp.custom._check_or_create_public_private_files')
+    @mock.patch('azext_sftp.file_utils.get_and_write_certificate')
+    @mock.patch('azext_sftp.file_utils.check_or_create_public_private_files')
     @mock.patch('tempfile.mkdtemp')
     def test_sftp_connect_key_generation_scenarios(self, mock_mkdtemp, mock_create_keys, mock_gen_cert, mock_do_sftp, mock_get_suffix, mock_profile, mock_assert_args):
         """Test connect with various key generation scenarios."""
@@ -374,8 +374,8 @@ class SftpCustomCommandTest(unittest.TestCase):
                         # Path will be converted to absolute path, so just check it's not None
                         self.assertIsNotNone(sftp_session.ssh_client_folder)
 
-    @mock.patch('azext_sftp.custom._get_and_write_certificate')
-    @mock.patch('azext_sftp.custom._check_or_create_public_private_files')
+    @mock.patch('azext_sftp.file_utils.get_and_write_certificate')
+    @mock.patch('azext_sftp.file_utils.check_or_create_public_private_files')
     @mock.patch('os.path.isdir')
     @mock.patch('os.path.abspath')
     def test_sftp_cert_key_generation_warning(self, mock_abspath, mock_isdir, mock_check_files, mock_write_cert):
@@ -402,7 +402,7 @@ class SftpCustomCommandTest(unittest.TestCase):
             self.assertIsNotNone(sensitive_info_warning, "Sensitive information warning not found")
             self.assertIn("id_rsa", sensitive_info_warning)
 
-    @mock.patch('azext_sftp.custom._check_or_create_public_private_files')
+    @mock.patch('azext_sftp.file_utils.check_or_create_public_private_files')
     @mock.patch('os.path.isdir')
     @mock.patch('os.path.abspath')
     def test_sftp_cert_certificate_generation_failure(self, mock_abspath, mock_isdir, mock_check_files):
@@ -414,7 +414,7 @@ class SftpCustomCommandTest(unittest.TestCase):
         mock_check_files.return_value = (self.mock_public_key, None, False)
         
         # Mock certificate generation to fail
-        with mock.patch('azext_sftp.custom._get_and_write_certificate') as mock_write_cert:
+        with mock.patch('azext_sftp.file_utils.get_and_write_certificate') as mock_write_cert:
             mock_write_cert.side_effect = Exception("Certificate generation failed")
             
             with mock.patch('azext_sftp.custom.logger') as mock_logger:
@@ -425,226 +425,8 @@ class SftpCustomCommandTest(unittest.TestCase):
                 # Verify error is logged - certificate generation failed so exception should be raised
                 # The debug logging might not be called depending on where the exception occurs
 
-    def test_check_or_create_public_private_files_with_existing_files(self):
-        """Test _check_or_create_public_private_files with existing key files.
-        
-        This verifies the SSH extension pattern where existing files are validated.
-        """
-        # Test with existing public key file
-        public_key, private_key, delete_keys = custom._check_or_create_public_private_files(
-            self.mock_public_key, None, None, None)
-        
-        self.assertEqual(public_key, self.mock_public_key)
-        self.assertEqual(private_key, self.mock_private_key)  # Should find matching private key
-        self.assertFalse(delete_keys)
-
-    def test_check_or_create_public_private_files_missing_public_key(self):
-        """Test error when public key file doesn't exist."""
-        nonexistent_key = "/nonexistent/key.pub"
-        
-        with self.assertRaises(azclierror.FileOperationError) as context:
-            custom._check_or_create_public_private_files(nonexistent_key, None, None, None)
-        
-        self.assertIn("not found", str(context.exception))
-
-    @mock.patch('azext_sftp.sftp_utils.create_ssh_keyfile')
-    @mock.patch('tempfile.mkdtemp')
-    def test_check_or_create_public_private_files_generates_keys(self, mock_mkdtemp, mock_create_keyfile):
-        """Test key generation when no keys are provided.
-        
-        This verifies SSH extension pattern for automatic key generation.
-        """
-        mock_mkdtemp.return_value = self.temp_dir
-        
-        # Create the expected key files that would be generated
-        expected_public = os.path.join(self.temp_dir, "id_rsa.pub")
-        expected_private = os.path.join(self.temp_dir, "id_rsa")
-        
-        # Mock the create_ssh_keyfile to actually create the files
-        def create_key_files(private_key_path, passphrase):
-            with open(private_key_path, 'w') as f:
-                f.write("mock private key")
-            with open(private_key_path + ".pub", 'w') as f:
-                f.write("mock public key")
-        
-        mock_create_keyfile.side_effect = create_key_files
-        
-        # Test with no keys provided - should generate new ones
-        public_key, private_key, delete_keys = custom._check_or_create_public_private_files(
-            None, None, None, None)
-        
-        # Verify paths are constructed correctly
-        self.assertEqual(public_key, expected_public)
-        self.assertEqual(private_key, expected_private)
-        self.assertTrue(delete_keys)  # Generated keys should be marked for deletion
-        
-        # Verify key generation was called
-        mock_create_keyfile.assert_called_once_with(expected_private, None)
-
-    def test_check_or_create_public_private_files_with_credentials_folder(self):
-        """Test key generation in specified credentials folder.
-        
-        This verifies SSH extension pattern for controlled key placement.
-        """
-        with mock.patch('azext_sftp.sftp_utils.create_ssh_keyfile') as mock_create_keyfile:
-            with mock.patch('os.makedirs') as mock_makedirs:
-                with mock.patch('os.path.isdir', return_value=False):
-                    
-                    # Mock the create_ssh_keyfile to actually create the files
-                    def create_key_files(private_key_path, passphrase):
-                        with open(private_key_path, 'w') as f:
-                            f.write("mock private key")
-                        with open(private_key_path + ".pub", 'w') as f:
-                            f.write("mock public key")
-                    
-                    mock_create_keyfile.side_effect = create_key_files
-                    
-                    # Test with credentials folder that doesn't exist
-                    public_key, private_key, delete_keys = custom._check_or_create_public_private_files(
-                        None, None, self.temp_dir, None)
-                    
-                    # Verify keys are generated in the specified folder
-                    self.assertTrue(public_key.startswith(self.temp_dir))
-                    self.assertTrue(private_key.startswith(self.temp_dir))
-                    self.assertTrue(delete_keys)  # Should be marked for deletion
-                    
-                    # Verify key generation was called with correct path
-                    mock_create_keyfile.assert_called_once_with(private_key, None)
-
-    @mock.patch('azext_sftp.sftp_utils.create_ssh_keyfile')
-    @mock.patch('tempfile.mkdtemp')
-    def test_check_or_create_public_private_files_with_existing_credentials_folder(self, mock_mkdtemp, mock_create_keyfile):
-        """Test key generation with existing credentials folder.
-        
-        This verifies SSH extension pattern where keys are generated in existing folder.
-        """
-        # Create the credentials folder
-        os.makedirs(self.temp_dir, exist_ok=True)
-        
-        # Mock the create_ssh_keyfile to actually create the files
-        def create_key_files(private_key_path, passphrase):
-            with open(private_key_path, 'w') as f:
-                f.write("mock private key")
-            with open(private_key_path + ".pub", 'w') as f:
-                f.write("mock public key")
-        
-        mock_create_keyfile.side_effect = create_key_files
-        
-        with mock.patch('os.path.isdir', return_value=True):
-            public_key, private_key, delete_keys = custom._check_or_create_public_private_files(
-                None, None, self.temp_dir, None)
-            
-            # Verify keys are generated in the specified folder
-            self.assertTrue(public_key.startswith(self.temp_dir))
-            self.assertTrue(private_key.startswith(self.temp_dir))
-            self.assertTrue(delete_keys)  # Should be marked for deletion
-
-    @mock.patch('azext_sftp.sftp_utils.create_ssh_keyfile')
-    @mock.patch('tempfile.mkdtemp')
-    def test_check_or_create_public_private_files_no_cleanup_on_error(self, mock_mkdtemp, mock_create_keyfile):
-        """Test that keys are not deleted if an error occurs after generation.
-        
-        This verifies SSH extension pattern for error handling during key operations.
-        """
-        mock_mkdtemp.return_value = self.temp_dir
-        
-        # Mock the create_ssh_keyfile to actually create the files
-        def create_key_files(private_key_path, passphrase):
-            with open(private_key_path, 'w') as f:
-                f.write("mock private key")
-            with open(private_key_path + ".pub", 'w') as f:
-                f.write("mock public key")
-        
-        mock_create_keyfile.side_effect = create_key_files
-        
-        # Force key generation
-        public_key, private_key, delete_keys = custom._check_or_create_public_private_files(
-            None, None, None, None)
-        
-        # Simulate an error after key generation
-        with mock.patch('azext_sftp.custom.logger') as mock_logger:
-            with self.assertRaises(Exception):
-                raise Exception("Forced error after key generation")
-            
-            # Verify keys still exist after the error
-            self.assertTrue(os.path.exists(public_key))
-            self.assertTrue(os.path.exists(private_key))
-            
-            # Cleanup
-            os.remove(public_key)
-            os.remove(private_key)
-
-    @mock.patch('azext_sftp.sftp_utils.create_ssh_keyfile')
-    @mock.patch('tempfile.mkdtemp')
-    def test_check_or_create_public_private_files_partial_cleanup_on_error(self, mock_mkdtemp, mock_create_keyfile):
-        """Test that partial cleanup occurs if an error happens during processing.
-        
-        This verifies SSH extension pattern for partial cleanup on error.
-        """
-        mock_mkdtemp.return_value = self.temp_dir
-        
-        # Mock key creation to succeed for public key but fail for private key
-        def side_effect_create_key(private_key_path, passphrase):
-            # Create public key file
-            public_key_path = private_key_path + ".pub"
-            with open(public_key_path, 'w') as f:
-                f.write("mock public key")
-            # Fail to create private key
-            raise Exception("Failed to create private key")
-        
-        mock_create_keyfile.side_effect = side_effect_create_key
-        
-        # This should fail during key generation
-        with self.assertRaises(Exception):
-            custom._check_or_create_public_private_files(None, None, None, None)
-
-    @mock.patch('azext_sftp.sftp_utils.create_ssh_keyfile')
-    @mock.patch('tempfile.mkdtemp')
-    def test_check_or_create_public_private_files_error_handling_during_keygen(self, mock_mkdtemp, mock_create_keyfile):
-        """Test error handling during key generation process.
-        
-        This verifies SSH extension pattern for robust error handling.
-        """
-        mock_mkdtemp.return_value = self.temp_dir
-        
-        # Mock key generation to raise error
-        with mock.patch('azext_sftp.sftp_utils.create_ssh_keyfile', side_effect=Exception("Key generation error")):
-            with self.assertRaises(Exception) as context:
-                custom._check_or_create_public_private_files(None, None, None, None)
-            
-            # Verify error message
-            self.assertIn("Key generation error", str(context.exception))
-
-    @mock.patch('azext_sftp.sftp_utils.create_ssh_keyfile')
-    @mock.patch('tempfile.mkdtemp')
-    def test_check_or_create_public_private_files_keygen_with_existing_files(self, mock_mkdtemp, mock_create_keyfile):
-        """Test key generation when files already exist.
-        
-        This verifies SSH extension pattern for handling existing files during key generation.
-        """
-        # Create existing key files
-        with open(self.mock_public_key, 'w') as f:
-            f.write("existing public key")
-        with open(self.mock_private_key, 'w') as f:
-            f.write("existing private key")
-        
-        mock_mkdtemp.return_value = self.temp_dir
-        
-        # Mock the create_ssh_keyfile to actually create the files
-        def create_key_files(private_key_path, passphrase):
-            with open(private_key_path, 'w') as f:
-                f.write("mock private key")
-            with open(private_key_path + ".pub", 'w') as f:
-                f.write("mock public key")
-        
-        mock_create_keyfile.side_effect = create_key_files
-        
-        # Key generation should detect existing files and not overwrite
-        public_key, private_key, delete_keys = custom._check_or_create_public_private_files(
-            None, None, None, None)
-
-    @mock.patch('azext_sftp.custom._get_and_write_certificate')
-    @mock.patch('azext_sftp.custom._check_or_create_public_private_files')
+    @mock.patch('azext_sftp.file_utils.get_and_write_certificate')
+    @mock.patch('azext_sftp.file_utils.check_or_create_public_private_files')
     @mock.patch('os.path.isdir')
     @mock.patch('os.path.abspath')
     def test_sftp_cert_parameter_combinations(self, mock_abspath, mock_isdir, mock_check_files, mock_write_cert):
@@ -737,8 +519,8 @@ class SftpCustomCommandTest(unittest.TestCase):
                 
                 # Mock dependencies
                 with mock.patch('os.path.isdir', return_value=True), \
-                     mock.patch('azext_sftp.custom._check_or_create_public_private_files') as mock_check_files, \
-                     mock.patch('azext_sftp.custom._get_and_write_certificate') as mock_write_cert:
+                     mock.patch('azext_sftp.file_utils.check_or_create_public_private_files') as mock_check_files, \
+                     mock.patch('azext_sftp.file_utils.get_and_write_certificate') as mock_write_cert:
                     
                     mock_check_files.return_value = ("/absolute/home/user/.ssh/id_rsa.pub", None, False)
                     mock_write_cert.return_value = ("/absolute/home/user/cert.pub", "user@domain.com")
@@ -759,8 +541,8 @@ class SftpCustomCommandTest(unittest.TestCase):
         with mock.patch('os.path.expanduser', side_effect=lambda x: x), \
              mock.patch('os.path.abspath', side_effect=lambda x: x), \
              mock.patch('os.path.isdir', return_value=True), \
-             mock.patch('azext_sftp.custom._check_or_create_public_private_files') as mock_check_files, \
-             mock.patch('azext_sftp.custom._get_and_write_certificate') as mock_write_cert:
+             mock.patch('azext_sftp.file_utils.check_or_create_public_private_files') as mock_check_files, \
+             mock.patch('azext_sftp.file_utils.get_and_write_certificate') as mock_write_cert:
             
             mock_check_files.return_value = ("pubkey.pub", None, False)
             mock_write_cert.return_value = ("pubkey.pub-aadcert.pub", "user@domain.com")
@@ -901,91 +683,3 @@ class SftpCustomCommandTest(unittest.TestCase):
                 
                 result = custom._get_storage_endpoint_suffix(cmd)
                 self.assertEqual(result, expected_suffix)
-
-    def test_prepare_jwk_data_structure(self):
-        """Test _prepare_jwk_data creates correct JWK structure."""
-        with mock.patch('azext_sftp.file_utils._get_modulus_exponent') as mock_get_mod_exp:
-            mock_get_mod_exp.return_value = ("test_modulus", "test_exponent")
-            
-            result = custom._prepare_jwk_data(self.mock_public_key)
-            
-            # Verify structure
-            self.assertIn("token_type", result)
-            self.assertIn("req_cnf", result)
-            self.assertIn("key_id", result)
-            self.assertEqual(result["token_type"], "ssh-cert")
-            
-            # Verify JWK structure within req_cnf
-            jwk_data = json.loads(result["req_cnf"])
-            self.assertEqual(jwk_data["kty"], "RSA")
-            self.assertEqual(jwk_data["n"], "test_modulus")
-            self.assertEqual(jwk_data["e"], "test_exponent")
-            self.assertIn("kid", jwk_data)
-
-    def test_write_cert_file_format_and_permissions(self):
-        """Test _write_cert_file creates file with correct format and permissions."""
-        cert_content = "AAAAB3NzaC1yc2EAAA test certificate content"
-        test_cert_file = os.path.join(self.temp_dir, "test_output_cert.pub")
-        
-        with mock.patch('oschmod.set_mode') as mock_set_mode:
-            result = custom._write_cert_file(cert_content, test_cert_file)
-            
-            # Verify file was created with correct content
-            self.assertTrue(os.path.exists(test_cert_file))
-            with open(test_cert_file, 'r') as f:
-                content = f.read()
-            
-            expected_content = f"ssh-rsa-cert-v01@openssh.com {cert_content}"
-            self.assertEqual(content, expected_content)
-            self.assertEqual(result, test_cert_file)
-            
-            # Verify permissions were set correctly
-            mock_set_mode.assert_called_once_with(test_cert_file, 0o644)
-
-    def test_get_modulus_exponent_parsing(self):
-        """Test _get_modulus_exponent parses RSA public key correctly."""
-        # Create a mock RSA key content
-        rsa_key_content = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQ test@example.com"
-        test_key_file = os.path.join(self.temp_dir, "test_rsa_key.pub")
-        
-        with open(test_key_file, 'w') as f:
-            f.write(rsa_key_content)
-        
-        with mock.patch('azext_sftp.rsa_parser.RSAParser') as mock_parser_class:
-            mock_parser = mock.Mock()
-            mock_parser.modulus = "test_modulus"
-            mock_parser.exponent = "test_exponent"
-            mock_parser_class.return_value = mock_parser
-            
-            modulus, exponent = custom._get_modulus_exponent(test_key_file)
-            
-            self.assertEqual(modulus, "test_modulus")
-            self.assertEqual(exponent, "test_exponent")
-            mock_parser.parse.assert_called_once_with(rsa_key_content)
-
-    def test_get_modulus_exponent_file_not_found(self):
-        """Test _get_modulus_exponent handles missing file gracefully."""
-        nonexistent_file = "/nonexistent/key.pub"
-        
-        with self.assertRaises(azclierror.FileOperationError) as context:
-            custom._get_modulus_exponent(nonexistent_file)
-        
-        self.assertIn("not found", str(context.exception))
-
-    def test_get_modulus_exponent_parsing_error(self):
-        """Test _get_modulus_exponent handles parsing errors gracefully."""
-        invalid_key_content = "invalid key content"
-        test_key_file = os.path.join(self.temp_dir, "invalid_key.pub")
-        
-        with open(test_key_file, 'w') as f:
-            f.write(invalid_key_content)
-        
-        with mock.patch('azext_sftp.rsa_parser.RSAParser') as mock_parser_class:
-            mock_parser = mock.Mock()
-            mock_parser.parse.side_effect = Exception("Invalid key format")
-            mock_parser_class.return_value = mock_parser
-            
-            with self.assertRaises(azclierror.FileOperationError) as context:
-                custom._get_modulus_exponent(test_key_file)
-            
-            self.assertIn("Could not parse public key", str(context.exception))

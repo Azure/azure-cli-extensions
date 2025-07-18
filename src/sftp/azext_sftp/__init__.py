@@ -31,13 +31,11 @@ class SftpCommandsLoader(AzCommandsLoader):
 
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
-        from azext_sftp._client_factory import cf_sftp
 
         super().__init__(
             cli_ctx=cli_ctx,
             custom_command_type=CliCommandType(
-                operations_tmpl='azext_sftp.custom#{}',
-                client_factory=cf_sftp))
+                operations_tmpl='azext_sftp.custom#{}'))
 
     def load_command_table(self, args):
         """Load the command table for SFTP commands."""

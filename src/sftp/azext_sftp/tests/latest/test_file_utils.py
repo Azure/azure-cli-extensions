@@ -128,6 +128,64 @@ class SftpFileUtilsCertificateTest(unittest.TestCase):
         self.assertTrue(delete_keys)
         mock_create_keyfile.assert_called_once_with(expected_private_key, None)
 
+    def test_check_or_create_public_private_files_with_credentials_folder(self):
+        """Test key generation in specified credentials folder.
+        
+        This verifies SSH extension pattern for controlled key placement.
+        """
+        with mock.patch('azext_sftp.sftp_utils.create_ssh_keyfile') as mock_create_keyfile:
+            with mock.patch('os.makedirs') as mock_makedirs:
+                with mock.patch('os.path.isdir', return_value=False):
+                    
+                    # Mock the create_ssh_keyfile to actually create the files
+                    def create_key_files(private_key_path, passphrase):
+                        with open(private_key_path, 'w') as f:
+                            f.write("mock private key")
+                        with open(private_key_path + ".pub", 'w') as f:
+                            f.write("mock public key")
+                    
+                    mock_create_keyfile.side_effect = create_key_files
+                    
+                    # Test with credentials folder that doesn't exist
+                    public_key, private_key, delete_keys = file_utils.check_or_create_public_private_files(
+                        None, None, self.temp_dir, None)
+                    
+                    # Verify keys are generated in the specified folder
+                    self.assertTrue(public_key.startswith(self.temp_dir))
+                    self.assertTrue(private_key.startswith(self.temp_dir))
+                    self.assertTrue(delete_keys)  # Should be marked for deletion
+                    
+                    # Verify key generation was called with correct path
+                    mock_create_keyfile.assert_called_once_with(private_key, None)
+
+    @mock.patch('azext_sftp.sftp_utils.create_ssh_keyfile')
+    @mock.patch('tempfile.mkdtemp')
+    def test_check_or_create_public_private_files_with_existing_credentials_folder(self, mock_mkdtemp, mock_create_keyfile):
+        """Test key generation with existing credentials folder.
+        
+        This verifies SSH extension pattern where keys are generated in existing folder.
+        """
+        # Create the credentials folder
+        os.makedirs(self.temp_dir, exist_ok=True)
+        
+        # Mock the create_ssh_keyfile to actually create the files
+        def create_key_files(private_key_path, passphrase):
+            with open(private_key_path, 'w') as f:
+                f.write("mock private key")
+            with open(private_key_path + ".pub", 'w') as f:
+                f.write("mock public key")
+        
+        mock_create_keyfile.side_effect = create_key_files
+        
+        with mock.patch('os.path.isdir', return_value=True):
+            public_key, private_key, delete_keys = file_utils.check_or_create_public_private_files(
+                None, None, self.temp_dir, None)
+            
+            # Verify keys are generated in the specified folder
+            self.assertTrue(public_key.startswith(self.temp_dir))
+            self.assertTrue(private_key.startswith(self.temp_dir))
+            self.assertTrue(delete_keys)  # Should be marked for deletion
+
     def test_check_or_create_public_private_files_with_existing_files(self):
         """Test check_or_create_public_private_files with existing key files."""
         # Arrange
@@ -166,6 +224,23 @@ class SftpFileUtilsCertificateTest(unittest.TestCase):
                 self.mock_public_key, nonexistent_private_key, None)
         
         self.assertIn("not found", str(context.exception))
+
+    @mock.patch('azext_sftp.sftp_utils.create_ssh_keyfile')
+    @mock.patch('tempfile.mkdtemp')
+    def test_check_or_create_public_private_files_error_handling_during_keygen(self, mock_mkdtemp, mock_create_keyfile):
+        """Test error handling during key generation process.
+        
+        This verifies SSH extension pattern for robust error handling.
+        """
+        mock_mkdtemp.return_value = self.temp_dir
+        
+        # Mock key generation to raise error
+        with mock.patch('azext_sftp.sftp_utils.create_ssh_keyfile', side_effect=Exception("Key generation error")):
+            with self.assertRaises(Exception) as context:
+                file_utils.check_or_create_public_private_files(None, None, None, None)
+            
+            # Verify error message
+            self.assertIn("Key generation error", str(context.exception))
 
     @mock.patch('azext_sftp.file_utils.Profile')
     @mock.patch('azext_sftp.file_utils._prepare_jwk_data')

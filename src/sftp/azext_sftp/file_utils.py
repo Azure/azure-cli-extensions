@@ -3,7 +3,6 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-import errno
 import os
 import hashlib
 import json
@@ -16,7 +15,6 @@ from azure.cli.core import telemetry
 from azure.cli.core._profile import Profile
 from knack import log
 
-from . import constants as const
 from . import rsa_parser
 from . import sftp_utils
 
