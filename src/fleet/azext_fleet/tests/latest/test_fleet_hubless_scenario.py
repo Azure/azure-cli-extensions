@@ -170,7 +170,7 @@ class FleetHublessScenarioTest(ScenarioTest):
         ])
 
         gate_list = self.cmd('fleet gate list -g {rg} -f {fleet_name}', checks=[
-            self.check('length([])', 1)
+            self.check('length([])', 2)
         ]).get_output_in_json()
 
         gate = gate_list['value'][0]
