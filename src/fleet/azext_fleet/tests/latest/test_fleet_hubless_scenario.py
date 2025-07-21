@@ -181,7 +181,7 @@ class FleetHublessScenarioTest(ScenarioTest):
             'gate_name': gate_name
         })
 
-        self.cmd('fleet gate get -g {rg} -f {fleet_name} -n {gate_name}', checks=[
+        self.cmd('fleet gate show -g {rg} -f {fleet_name} -n {gate_name}', checks=[
             self.check('name', '{gate_name}')
         ])
 
