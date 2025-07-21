@@ -17,6 +17,10 @@ from ._client_factory import cf_deployments
 logger = get_logger(__name__)
 
 
+def supports_animation():
+    return sys.stdout.isatty()
+
+
 class PollingAnimation:
     def __init__(self):
         self.tickers = ["/", "|", "\\", "-", "/", "|", "\\", "-"]
@@ -53,6 +57,8 @@ def call_subprocess_raise_output(cmd: list, logcmd: bool = False, logstatus: boo
         # Log the command to be run, but do not log the password.
         print(f"Running command: {' '.join(log_cmd)}")
 
+    if not supports_animation():
+        logstatus = False
     if logstatus:
         animation = PollingAnimation()
         spinner_thread = threading.Thread(target=animation.tick)

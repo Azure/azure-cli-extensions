@@ -16,7 +16,7 @@ from azure.cli.core.aaz import *
     is_preview=True,
 )
 class __CMDGroup(AAZCommandGroup):
-    """Data transfer commands
+    """Commands for cross domain Service that enables customers to transfer data across security domains.
     """
     pass
 

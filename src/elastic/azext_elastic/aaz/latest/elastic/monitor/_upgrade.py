@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "elastic monitor upgrade",
 )
 class Upgrade(AAZCommand):
-    """Upgrade elastic monitor
+    """Upgrade the Elastic monitor resource to a newer version, ensuring optimal observability and performance.
 
     :example: Monitor upgrade
         az elastic monitor upgrade -g rg --monitor-name monitor --version 8.0.0

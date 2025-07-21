@@ -2,6 +2,8 @@
 
 Release History
 ===============
+8.0.0b7
+* Added missing examples and updated verbiage on existing examples
 
 8.0.0b6
 * Enables the 'device refresh-configuration' command that was previously disabled/removed.
