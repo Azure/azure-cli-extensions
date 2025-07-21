@@ -18,9 +18,9 @@ from azure.cli.command_modules.acs.azuremonitormetrics.helper import (
     check_azuremonitormetrics_profile,
     rp_registrations
 )
+from azure.cli.core.azclierror import InvalidArgumentValueError
 from knack.util import CLIError
 from knack.log import get_logger
-from azure.cli.core.azclierror import InvalidArgumentValueError
 
 logger = get_logger(__name__)
 
