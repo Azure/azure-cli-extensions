@@ -165,6 +165,30 @@ class FleetHublessScenarioTest(ScenarioTest):
             self.check('length([])', 1)
         ])
 
+        self.cmd('fleet gate list -g {rg} -f {fleet_name}', checks=[
+            self.check('length([])', 1)
+        ])
+
+        gate_list = self.cmd('fleet gate list -g {rg} -f {fleet_name}', checks=[
+            self.check('length([])', 1)
+        ]).get_output_in_json()
+
+        gate = gate_list['value'][0]
+
+        gate_name = gate['name']
+
+        self.kwargs.update({
+            'gate_name': gate_name
+        })
+
+        self.cmd('fleet gate get -g {rg} -f {fleet_name} -n {gate_name}', checks=[
+            self.check('name', '{gate_name}')
+        ])
+
+        self.cmd('fleet gate approve -g {rg} -f {fleet_name} -n {gate_name}', checks=[
+            self.check('properties.state', 'Completed')
+        ])
+
         self.cmd('fleet updaterun delete -g {rg} -n {updaterun} -f {fleet_name} --yes')
 
         self.cmd('fleet autoupgradeprofile create -g {rg} -f {fleet_name} -n {autoupgradeprofile_name} -c Rapid --node-image-selection Latest --update-strategy-id {update_strategy_id} --disabled', checks=[
