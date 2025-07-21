@@ -483,15 +483,25 @@ def get_update_run_strategy(cmd, operation_group, stages):
     )
 
     update_stages = []
+
     for stage in data["stages"]:
         update_groups = []
         for group in stage["groups"]:
-            update_groups.append(update_group_model(name=group["name"]))
-        sec = stage.get("afterStageWaitInSeconds") or 0
+            update_groups.append(update_group_model(
+                name=group["name"],
+                before_gates=group.get("beforeGates", []),
+                after_gates=group.get("afterGates", []),
+            ))
+
+        after_wait = stage.get("afterStageWaitInSeconds") or 0
+
         update_stages.append(update_stage_model(
             name=stage["name"],
             groups=update_groups,
-            after_stage_wait_in_seconds=sec))
+            before_gates=stage.get("beforeGates", []),
+            after_gates=stage.get("afterGates", []),
+            after_stage_wait_in_seconds=after_wait
+        ))
 
     return update_run_strategy_model(stages=update_stages)
 
