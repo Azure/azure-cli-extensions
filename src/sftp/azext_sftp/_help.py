@@ -90,9 +90,9 @@ helps['sftp connect'] = """
         - name: Connect with custom port
           text: az sftp connect --storage-account mystorageaccount --port 2222
         - name: Connect with additional SFTP arguments for debugging
-          text: az sftp connect --storage-account mystorageaccount --sftp-args "-v"
+          text: az sftp connect --storage-account mystorageaccount --sftp-args="-v"
         - name: Connect with custom SSH client folder (Windows)
           text: az sftp connect --storage-account mystorageaccount --ssh-client-folder "C:\\Program Files\\OpenSSH"
-        - name: Run batch commands after connecting
-          text: az sftp connect --storage-account mystorageaccount --batch-commands "ls\\nget file.txt\\nbye"
+        - name: Connect with custom connection timeout
+          text: az sftp connect --storage-account mystorageaccount --sftp-args="-o ConnectTimeout=30"
 """
