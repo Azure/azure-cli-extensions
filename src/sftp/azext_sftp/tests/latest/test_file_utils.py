@@ -246,8 +246,7 @@ class SftpFileUtilsCertificateTest(unittest.TestCase):
     @mock.patch('azext_sftp.file_utils._prepare_jwk_data')
     @mock.patch('azext_sftp.file_utils._write_cert_file')
     @mock.patch('azext_sftp.sftp_utils.get_ssh_cert_principals')
-    @mock.patch('oschmod.set_mode')
-    def test_get_and_write_certificate_success(self, mock_set_mode, mock_get_principals, 
+    def test_get_and_write_certificate_success(self, mock_get_principals, 
                                                mock_write_cert, mock_prepare_jwk, mock_profile):
         """Test get_and_write_certificate successfully generates certificate."""
         # Arrange
@@ -274,7 +273,6 @@ class SftpFileUtilsCertificateTest(unittest.TestCase):
         self.assertEqual(username, "testuser@domain.com")
         mock_prepare_jwk.assert_called_once_with(self.mock_public_key)
         mock_write_cert.assert_called_once_with("test_certificate_data", expected_cert_file)
-        mock_set_mode.assert_called_once_with(expected_cert_file, 0o600)
 
     @mock.patch('azure.cli.core._profile.Profile')
     def test_get_and_write_certificate_unsupported_cloud(self, mock_profile):
@@ -316,8 +314,7 @@ class SftpFileUtilsCertificateTest(unittest.TestCase):
         cert_file = os.path.join(self.temp_dir, "test_cert.pub")
         
         # Act
-        with mock.patch('oschmod.set_mode') as mock_set_mode:
-            result = file_utils._write_cert_file(cert_contents, cert_file)
+        result = file_utils._write_cert_file(cert_contents, cert_file)
         
         # Assert
         self.assertEqual(result, cert_file)
@@ -327,8 +324,6 @@ class SftpFileUtilsCertificateTest(unittest.TestCase):
             content = f.read()
             self.assertEqual(content, f"ssh-rsa-cert-v01@openssh.com {cert_contents}")
         
-        mock_set_mode.assert_called_once_with(cert_file, 0o644)
-
     @mock.patch('azext_sftp.rsa_parser.RSAParser')
     def test_get_modulus_exponent_success(self, mock_parser_class):
         """Test _get_modulus_exponent successfully extracts modulus and exponent."""

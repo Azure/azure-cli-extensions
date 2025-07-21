@@ -8,7 +8,6 @@ import hashlib
 import json
 import tempfile
 import time
-import oschmod
 
 from azure.cli.core import azclierror
 from azure.cli.core import telemetry
@@ -110,7 +109,6 @@ def get_and_write_certificate(cmd, public_key_file, cert_file, ssh_client_folder
     logger.debug("Generating certificate %s", cert_file)
     _write_cert_file(certificate, cert_file)
     username = sftp_utils.get_ssh_cert_principals(cert_file, ssh_client_folder)[0]
-    oschmod.set_mode(cert_file, 0o600)
 
     return cert_file, username.lower()
 
@@ -136,7 +134,6 @@ def _write_cert_file(certificate_contents, cert_file):
     """Write SSH certificate to file."""
     with open(cert_file, 'w', encoding='utf-8') as f:
         f.write(f"ssh-rsa-cert-v01@openssh.com {certificate_contents}")
-    oschmod.set_mode(cert_file, 0o644)
     return cert_file
 
 
