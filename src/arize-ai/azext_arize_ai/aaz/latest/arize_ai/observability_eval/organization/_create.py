@@ -92,7 +92,7 @@ class Create(AAZCommand):
             help="partner properties",
         )
         _args_schema.single_sign_on_properties = AAZObjectArg(
-            options=["--single-sign-on-properties"],
+            options=["--sso-properties", "--single-sign-on-properties"],
             arg_group="Properties",
             help="Single sign-on properties",
         )
