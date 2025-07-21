@@ -409,11 +409,11 @@ helps['fleet gate list'] = """
           text: az fleet gate list -g MyFleetResourceGroup --fleet-name MyFleetName --state Pending
 """
 
-helps['fleet gate get'] = """
+helps['fleet gate show'] = """
     type: command
-    short-summary: Gets a specific gate.
+    short-summary: Shows a specific gate.
     examples:
-        - name: Gets a specific gate.
+        - name: Shows a specific gate.
           text: az fleet gate get -g MyFleetResourceGroup -f MyFleetName -n 3fa85f64-5717-4562-b3fc-2c963f66afa6
 """
 
