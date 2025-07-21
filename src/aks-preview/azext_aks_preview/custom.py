@@ -1419,6 +1419,8 @@ def aks_agentpool_add(
     gateway_prefix_size=None,
     # virtualmachines
     vm_sizes=None,
+    # local DNS
+    localdns_config=None,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -1486,6 +1488,8 @@ def aks_agentpool_update(
     if_none_match=None,
     enable_fips_image=False,
     disable_fips_image=False,
+    # local DNS
+    localdns_config=None,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()

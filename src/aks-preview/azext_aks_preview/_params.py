@@ -1772,6 +1772,11 @@ def load_arguments(self, _):
         )
         # virtual machines
         c.argument("vm_sizes", is_preview=True)
+        # local DNS
+        c.argument(
+            'localdns_config',
+            help='Path to a JSON file to configure the local DNS profile for a new nodepool.'
+        )
 
     with self.argument_context("aks nodepool update") as c:
         c.argument(
@@ -1863,6 +1868,11 @@ def load_arguments(self, _):
         c.argument(
             "disable_fips_image",
             action="store_true"
+        )
+        # local DNS
+        c.argument(
+            'localdns_config',
+            help='Path to a JSON file to configure the local DNS profile for an existing nodepool.',
         )
 
     with self.argument_context("aks nodepool upgrade") as c:
