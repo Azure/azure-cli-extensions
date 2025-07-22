@@ -2,6 +2,12 @@
 
 Release History
 ===============
+1.10.8
+++++++
+* Force delete paramter updated to `connectedk8s delete` command to allow force deletion of connectedk8s ARM resource.
+* Update AgentState timeout to 30 minutes to allow more time for workload identity extension operation.
+* Parameterize the MCR url for Airgapped clouds.
+* Update error strings for config and connectivity errors in connect command.
 
 1.10.7
 ++++++
