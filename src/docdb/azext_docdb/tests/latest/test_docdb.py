@@ -8,9 +8,9 @@
 from azure.cli.testsdk import *
 import time
 
-class DocumentDbScenario(ScenarioTest):
-    @ResourceGroupPreparer(name_prefix='cli_test_documentdbcluster', parameter_name_for_location='location', location='canadacentral')
-    def test_documentdbcluster(self, resource_group, location):
+class DocDbScenario(ScenarioTest):
+    @ResourceGroupPreparer(name_prefix='cli_test_docdbcluster', parameter_name_for_location='location', location='canadacentral')
+    def test_docdbcluster(self, resource_group, location):
         self.kwargs.update({
           'name': self.create_random_name(prefix='cli', length=24),
           'replica_name': self.create_random_name(prefix='cli-replica', length=24),
