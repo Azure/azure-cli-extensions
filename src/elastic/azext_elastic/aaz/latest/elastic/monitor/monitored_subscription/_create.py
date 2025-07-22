@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "elastic monitor monitored-subscription create",
 )
 class Create(AAZCommand):
-    """Create the subscriptions that should be monitored by the Elastic monitor resource.
+    """Create subscriptions to be monitored by the Elastic monitor resource, enabling observability and monitoring.
 
     :example: Monitors_AddMonitoredSubscriptions
         az elastic monitor monitored-subscription create --resource-group myResourceGroup --monitor-name myMonitor --configuration-name default

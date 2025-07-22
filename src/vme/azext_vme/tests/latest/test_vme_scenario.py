@@ -72,5 +72,5 @@ class VmeScenarioTest(ScenarioTest):
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
-            self.cmd("vme uninstall -g {rg} -c {cluster_name} --include all")
+            self.cmd("vme uninstall -g {rg} -c {cluster_name} --include all --force")
             self.assertIn("All extensions uninstalled successfully.", captured_output.getvalue())

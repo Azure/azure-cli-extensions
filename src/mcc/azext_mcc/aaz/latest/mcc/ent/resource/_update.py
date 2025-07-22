@@ -16,9 +16,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-05-01-preview",
+        "version": "2024-11-30-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.connectedcache/enterprisemcccustomers/{}", "2023-05-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.connectedcache/enterprisemcccustomers/{}", "2024-11-30-preview"],
         ]
     }
 
@@ -304,7 +304,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-05-01-preview",
+                    "api-version", "2024-11-30-preview",
                     required=True,
                 ),
             }
@@ -403,7 +403,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-05-01-preview",
+                    "api-version", "2024-11-30-preview",
                     required=True,
                 ),
             }
@@ -672,10 +672,6 @@ class _UpdateHelper:
             serialized_name="peeringDbLastUpdateDate",
             flags={"read_only": True},
         )
-        additional_customer_properties.peering_db_last_update_time = AAZStrType(
-            serialized_name="peeringDbLastUpdateTime",
-            flags={"read_only": True},
-        )
         additional_customer_properties.signup_phase_status_code = AAZIntType(
             serialized_name="signupPhaseStatusCode",
             flags={"read_only": True},
@@ -824,12 +820,15 @@ class _UpdateHelper:
         additional_info.Element = AAZObjectType()
 
         _element = _schema_error_detail_read.additional_info.Element
-        _element.info = AAZObjectType(
+        _element.info = AAZDictType(
             flags={"read_only": True},
         )
         _element.type = AAZStrType(
             flags={"read_only": True},
         )
+
+        info = _schema_error_detail_read.additional_info.Element.info
+        info.Element = AAZAnyType()
 
         details = _schema_error_detail_read.details
         details.Element = AAZObjectType()

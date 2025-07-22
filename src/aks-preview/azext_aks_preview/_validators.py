@@ -964,6 +964,10 @@ def validate_location_resource_group_cluster_parameters(namespace):
     location = namespace.location
     resource_group_name = namespace.resource_group_name
     cluster_name = namespace.cluster_name
+    if not namespace.location and not namespace.cluster_name and not namespace.resource_group_name:
+        raise RequiredArgumentMissingError(
+            "You must specify --location or --resource-group and --cluster."
+        )
     if location and (resource_group_name or cluster_name):
         raise RequiredArgumentMissingError(
             "You must specify --location or --resource-group and --cluster."
