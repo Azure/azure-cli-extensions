@@ -16,13 +16,13 @@ from azure.cli.core.aaz import *
     is_preview=True,
 )
 class Update(AAZCommand):
-    """Update a mongo cluster.
+    """Update a Document DB cluster.
 
-    :example: Updates the disk size on a Mongo Cluster resource.
+    :example: Updates the disk size on a cluster resource.
         az docdb cluster update --storage-size-gb 256
 
-    :example: Disables public network access on a Mongo Cluster resource with a private endpoint connection.
-        az mongo-cluster cluster update --public-network-access Disabled
+    :example: Disables public network access on a cluster resource with a private endpoint connection.
+        az docdb cluster update --public-network-access Disabled
     """
 
     _aaz_info = {
@@ -53,7 +53,7 @@ class Update(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.cluster_name = AAZStrArg(
             options=["-n", "--name", "--cluster-name"],
-            help="The name of the mongo cluster.",
+            help="The name of the cluster.",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
@@ -109,13 +109,13 @@ class Update(AAZCommand):
         _args_schema.preview_features = AAZListArg(
             options=["--preview-features"],
             arg_group="Properties",
-            help="List of private endpoint connections.",
+            help="Preview features to enable on the cluster. Provided list will replace all existing preview features on a cluster.",
             nullable=True,
         )
         _args_schema.public_network_access = AAZStrArg(
             options=["--public-network-access"],
             arg_group="Properties",
-            help="Whether or not public endpoint access is allowed for this mongo cluster.",
+            help="Whether or not public endpoint access is allowed for this cluster.",
             nullable=True,
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
         )

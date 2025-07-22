@@ -16,7 +16,7 @@ from azure.cli.core.aaz import *
     is_preview=True,
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage Firewall Rule on a Document DB mongo cluster.
+    """Manage Firewall Rule on a Document DB cluster.
     """
     pass
 

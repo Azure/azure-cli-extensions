@@ -16,10 +16,10 @@ from azure.cli.core.aaz import *
     is_preview=True,
 )
 class Create(AAZCommand):
-    """Create a new firewall rule or updates an existing firewall rule on a mongo cluster.
+    """Create a new firewall rule or updates an existing firewall rule on a Document DB cluster.
 
-    :example: Creates a firewall rule on a Mongo Cluster resource.
-        az docdb cluster firewall-rule create --resource-group TestGroup --cluster-name myMongoCluster --rule-name rule1 --start-ip-address 0.0.0.0 --end-ip-address 255.255.255.255
+    :example: Creates a firewall rule on a cluster resource.
+        az docdb cluster firewall-rule create --resource-group TestGroup --cluster-name myCluster --rule-name rule1 --start-ip-address 0.0.0.0 --end-ip-address 255.255.255.255
     """
 
     _aaz_info = {
@@ -48,7 +48,7 @@ class Create(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.rule_name = AAZStrArg(
             options=["-r", "--rule-name"],
-            help="The name of the mongo cluster firewall rule.",
+            help="The name of the firewall rule.",
             required=True,
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9][-_.a-zA-Z0-9]*",
@@ -58,7 +58,7 @@ class Create(AAZCommand):
         )
         _args_schema.cluster_name = AAZStrArg(
             options=["-n", "--name", "--cluster-name"],
-            help="The name of the mongo cluster.",
+            help="The name of the cluster.",
             required=True,
             fmt=AAZStrArgFormat(
                 pattern="^[a-z0-9]+(-[a-z0-9]+)*",
@@ -76,7 +76,7 @@ class Create(AAZCommand):
         _args_schema.end_ip_address = AAZStrArg(
             options=["--end-ip-address"],
             arg_group="Properties",
-            help="The end IP address of the mongo cluster firewall rule. Must be IPv4 format.",
+            help="The end IP address of the cluster firewall rule. Must be IPv4 format.",
             fmt=AAZStrArgFormat(
                 pattern="^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$",
             ),
@@ -84,7 +84,7 @@ class Create(AAZCommand):
         _args_schema.start_ip_address = AAZStrArg(
             options=["--start-ip-address"],
             arg_group="Properties",
-            help="The start IP address of the mongo cluster firewall rule. Must be IPv4 format.",
+            help="The start IP address of the cluster firewall rule. Must be IPv4 format.",
             fmt=AAZStrArgFormat(
                 pattern="^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$",
             ),

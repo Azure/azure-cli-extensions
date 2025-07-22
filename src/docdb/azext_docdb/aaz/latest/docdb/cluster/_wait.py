@@ -42,7 +42,7 @@ class Wait(AAZWaitCommand):
         _args_schema = cls._args_schema
         _args_schema.cluster_name = AAZStrArg(
             options=["-n", "--name", "--cluster-name"],
-            help="The name of the mongo cluster.",
+            help="The name of the cluster.",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(

@@ -16,10 +16,10 @@ from azure.cli.core.aaz import *
     is_preview=True,
 )
 class Promote(AAZCommand):
-    """Promotes a replica mongo cluster to be primary.
+    """Promotes a replica Document DB cluster to be primary.
 
-    :example: Promotes a replica Mongo Cluster resource to a primary role.
-        az docdb cluster replica promote --resource-group TestGroup --cluster-name myMongoCluster --promote-option Forced --promote-mode Switchover
+    :example: Promotes a replica cluster resource to a primary role.
+        az docdb cluster replica promote --resource-group TestGroup --cluster-name myCluster --promote-option Forced --promote-mode Switchover
     """
 
     _aaz_info = {
@@ -48,7 +48,7 @@ class Promote(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.cluster_name = AAZStrArg(
             options=["-n", "--name", "--cluster-name"],
-            help="The name of the mongo cluster.",
+            help="The name of the cluster.",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(

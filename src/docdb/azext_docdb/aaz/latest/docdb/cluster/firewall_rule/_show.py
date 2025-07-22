@@ -16,10 +16,10 @@ from azure.cli.core.aaz import *
     is_preview=True,
 )
 class Show(AAZCommand):
-    """Get information about a mongo cluster firewall rule.
+    """Get information about a Document DB cluster firewall rule.
 
-    :example: Gets a firewall rule on a Mongo Cluster resource.
-        az docdb cluster firewall-rule show --resource-group TestGroup --cluster-name myMongoCluster --rule-name rule1
+    :example: Gets a firewall rule on a cluster resource.
+        az docdb cluster firewall-rule show --resource-group TestGroup --cluster-name myCluster --rule-name rule1
     """
 
     _aaz_info = {
@@ -47,7 +47,7 @@ class Show(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.rule_name = AAZStrArg(
             options=["-r", "--rule-name"],
-            help="The name of the mongo cluster firewall rule.",
+            help="The name of the firewall rule.",
             required=True,
             id_part="child_name_1",
             fmt=AAZStrArgFormat(
@@ -58,7 +58,7 @@ class Show(AAZCommand):
         )
         _args_schema.cluster_name = AAZStrArg(
             options=["-n", "--name", "--cluster-name"],
-            help="The name of the mongo cluster.",
+            help="The name of the cluster.",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(

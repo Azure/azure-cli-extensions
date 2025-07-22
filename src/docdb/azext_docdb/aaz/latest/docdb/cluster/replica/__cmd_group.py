@@ -16,7 +16,7 @@ from azure.cli.core.aaz import *
     is_preview=True,
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manages replicas on a mongo cluster.
+    """Manages Document DB cluster replicas.
     """
     pass
 

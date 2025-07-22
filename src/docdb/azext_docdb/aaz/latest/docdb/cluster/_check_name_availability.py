@@ -16,10 +16,10 @@ from azure.cli.core.aaz import *
     is_preview=True,
 )
 class CheckNameAvailability(AAZCommand):
-    """Check if mongo cluster name is available for use.
+    """Check if a Document DB cluster name is available for use.
 
-    :example: Checks and confirms the Mongo Cluster name is availability for use.
-        az docdb cluster check-name-availability --location westus2 --name newmongocluster
+    :example: Checks and confirms the cluster name is availability for use.
+        az docdb cluster check-name-availability --location westus2 --name newClusterName
     """
 
     _aaz_info = {

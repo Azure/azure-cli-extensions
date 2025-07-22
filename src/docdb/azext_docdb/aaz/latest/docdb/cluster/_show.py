@@ -16,10 +16,10 @@ from azure.cli.core.aaz import *
     is_preview=True,
 )
 class Show(AAZCommand):
-    """Get information about a mongo cluster.
+    """Get information about a Document DB cluster.
 
-    :example: Gets a Mongo Cluster resource.
-        az docdb cluster show --resource-group TestResourceGroup --cluster-name myMongoCluster
+    :example: Gets a cluster resource.
+        az docdb cluster show --resource-group TestResourceGroup --cluster-name myCluster
     """
 
     _aaz_info = {
@@ -47,7 +47,7 @@ class Show(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.cluster_name = AAZStrArg(
             options=["-n", "--name", "--cluster-name"],
-            help="The name of the mongo cluster.",
+            help="The name of the cluster.",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(

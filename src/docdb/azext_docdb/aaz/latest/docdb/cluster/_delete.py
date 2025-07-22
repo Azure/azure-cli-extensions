@@ -17,10 +17,10 @@ from azure.cli.core.aaz import *
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
-    """Delete a mongo cluster.
+    """Delete a Document DB cluster.
 
-    :example: Deletes a Mongo Cluster resource.
-        az docdb cluster delete --resource-group TestResourceGroup --cluster-name myMongoCluster
+    :example: Deletes a cluster resource.
+        az docdb cluster delete --resource-group TestResourceGroup --cluster-name myCluster
     """
 
     _aaz_info = {
@@ -49,7 +49,7 @@ class Delete(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.cluster_name = AAZStrArg(
             options=["-n", "--name", "--cluster-name"],
-            help="The name of the mongo cluster.",
+            help="The name of the cluster.",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(

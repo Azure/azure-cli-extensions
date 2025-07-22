@@ -16,10 +16,10 @@ from azure.cli.core.aaz import *
     is_preview=True,
 )
 class List(AAZCommand):
-    """List all the firewall rules in a given mongo cluster.
+    """List all the firewall rules in a Document DB cluster.
 
-    :example: List the firewall rules on a Mongo Cluster resource.
-        az docdb cluster firewall-rule list --resource-group TestGroup --cluster-name myMongoCluster
+    :example: List the firewall rules on a cluster resource.
+        az docdb cluster firewall-rule list --resource-group TestGroup --cluster-name myCluster
     """
 
     _aaz_info = {
@@ -47,8 +47,8 @@ class List(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.cluster_name = AAZStrArg(
-            options=["-n", "--cluster-name"],
-            help="The name of the mongo cluster.",
+            options=["-n", "--name", "--cluster-name"],
+            help="The name of the cluster.",
             required=True,
             fmt=AAZStrArgFormat(
                 pattern="^[a-z0-9]+(-[a-z0-9]+)*",

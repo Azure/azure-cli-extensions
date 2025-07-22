@@ -16,10 +16,10 @@ from azure.cli.core.aaz import *
     is_preview=True,
 )
 class ListConnectionStrings(AAZCommand):
-    """List mongo cluster connection strings. This includes the default connection string using SCRAM-SHA-256, as well as other connection strings supported by the cluster.
+    """List Document DB cluster connection strings. This includes the default connection string using SCRAM-SHA-256, as well as other connection strings supported by the cluster.
 
-    :example: List the available connection strings for the Mongo Cluster resource.
-        az docdb cluster list-connection-strings --resource-group TestGroup --cluster-name myMongoCluster
+    :example: List the available connection strings for the cluster resource.
+        az docdb cluster list-connection-strings --resource-group TestGroup --cluster-name myCluster
     """
 
     _aaz_info = {
@@ -47,7 +47,7 @@ class ListConnectionStrings(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.cluster_name = AAZStrArg(
             options=["-n", "--name", "--cluster-name"],
-            help="The name of the mongo cluster.",
+            help="The name of the cluster.",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(

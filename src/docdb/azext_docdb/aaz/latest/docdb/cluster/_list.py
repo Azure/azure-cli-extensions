@@ -16,12 +16,12 @@ from azure.cli.core.aaz import *
     is_preview=True,
 )
 class List(AAZCommand):
-    """List all the mongo clusters in a given subscription.
+    """List all the Document DB clusters in a given subscription.
 
-    :example: Lists the Mongo Cluster resources in a subscription.
+    :example: Lists the cluster resources in a subscription.
         az docdb cluster list
 
-    :example: Lists the Mongo Cluster resources in a resource group.
+    :example: Lists the cluster resources in a resource group.
         az docdb cluster list --resource-group TestResourceGroup
     """
 

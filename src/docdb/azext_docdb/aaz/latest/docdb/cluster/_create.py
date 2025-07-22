@@ -16,10 +16,10 @@ from azure.cli.core.aaz import *
     is_preview=True,
 )
 class Create(AAZCommand):
-    """Create a mongo cluster.
+    """Create a Document DB cluster.
 
-    :example: Creates a new Mongo Cluster resource.
-        az docdb cluster create --resource-group TestResourceGroup --cluster-name myMongoCluster --location westus2 --administrator-name mongoAdmin --administrator-password password --server-version 5.0 --storage-size 128 --compute-tier M30 --shard-count 1 --high-availability-mode ZoneRedundantPreferred
+    :example: Creates a new cluster resource.
+        az docdb cluster create --resource-group TestResourceGroup --cluster-name myCluster --location westus2 --administrator-name myAdmin --administrator-password password --server-version 5.0 --storage-size 128 --compute-tier M30 --shard-count 1 --high-availability-mode ZoneRedundantPreferred
     """
 
     _aaz_info = {
@@ -48,7 +48,7 @@ class Create(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.cluster_name = AAZStrArg(
             options=["-n", "--name", "--cluster-name"],
-            help="The name of the mongo cluster.",
+            help="The name of the cluster.",
             required=True,
             fmt=AAZStrArgFormat(
                 pattern="^[a-z0-9]+(-[a-z0-9]+)*",
@@ -99,18 +99,18 @@ class Create(AAZCommand):
         _args_schema.create_mode = AAZStrArg(
             options=["--create-mode"],
             arg_group="Properties",
-            help="The mode to create a mongo cluster.",
+            help="The mode to create a cluster.",
             enum={"Default": "Default", "GeoReplica": "GeoReplica", "PointInTimeRestore": "PointInTimeRestore", "Replica": "Replica"},
         )
         _args_schema.preview_features = AAZListArg(
             options=["--preview-features"],
             arg_group="Properties",
-            help="List of private endpoint connections.",
+            help="Preview features to enable on the cluster. Provided list will replace all existing preview features on a cluster.",
         )
         _args_schema.public_network_access = AAZStrArg(
             options=["--public-network-access"],
             arg_group="Properties",
-            help="Whether or not public endpoint access is allowed for this mongo cluster.",
+            help="Whether or not public endpoint access is allowed for this cluster.",
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
         )
         _args_schema.server_version = AAZStrArg(
@@ -164,7 +164,7 @@ class Create(AAZCommand):
         _args_schema.restore_time = AAZDateTimeArg(
             options=["--restore-time"],
             arg_group="RestoreParameters",
-            help="ISO 8601 UTC formatted time stamp to restore a mongo cluster to eg. '2024-07-01T09:03:15Z'.",
+            help="ISO 8601 UTC formatted time stamp to restore a cluster to eg. '2024-07-01T09:03:15Z'.",
         )
         _args_schema.restore_source_resource = AAZStrArg(
             options=["--restore-source-resource"],
