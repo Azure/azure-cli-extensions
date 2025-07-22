@@ -714,7 +714,16 @@ def create_vm(
     inventory_item=None,
     vm_template=None,
     cloud=None,
+    admin_username=None,
     admin_password=None,
+    computer_name=None,
+    domain_name=None,
+    domain_username=None,
+    domain_password=None,
+    workgroup=None,
+    product_key=None,
+    timezone=None,
+    run_once_commands=None,
     cpu_count=None,
     memory_size=None,
     dynamic_memory_enabled=None,
@@ -757,8 +766,33 @@ def create_vm(
             dynamic_memory_max_mb=dynamic_memory_max,
         )
 
-    if admin_password is not None:
-        os_profile = OsProfileForVmInstance(admin_password=admin_password)
+    if any(
+        prop is not None
+        for prop in [
+            admin_username,
+            admin_password,
+            computer_name,
+            domain_name,
+            domain_username,
+            domain_password,
+            workgroup,
+            product_key,
+            timezone,
+            run_once_commands,
+        ]
+    ):
+        os_profile = OsProfileForVmInstance(
+            admin_username=admin_username,
+            admin_password=admin_password,
+            computer_name=computer_name,
+            domain_name=domain_name,
+            domain_username=domain_username,
+            domain_password=domain_password,
+            workgroup=workgroup,
+            product_key=product_key,
+            timezone=timezone,
+            run_once_commands=run_once_commands,
+        )
 
     if nics is not None:
         network_profile = NetworkProfile(
@@ -1989,6 +2023,7 @@ def enable_guest_agent(
     vm_name,
     username,
     password,
+    private_link_scope_resource_id=None,
     https_proxy=None,
     no_wait=False,
 ):
@@ -2018,6 +2053,7 @@ def enable_guest_agent(
         credentials=vm_creds,
         http_proxy_config=https_proxy_config,
         provisioning_action=GUEST_AGENT_PROVISIONING_ACTION_INSTALL,
+        private_link_scope_resource_id=private_link_scope_resource_id,
     )
     guest_agent = GuestAgent(properties=guest_agent_props)
 
