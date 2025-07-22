@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create a Service Artifact under a gallery.
+    
+    :example: Create a Service Artifact under a gallery.
+        az gallery service-artifact create --gallery-name gallery -g rg --service-artifact-name TestArco --location eastus2euap --target-locations "[{'name': 'eastus2euap'}, {'name': 'centraluseuap'}, {'name': 'westcentralus'}, {'name': 'westus'}]" --vm-artifacts-profiles "[{'artifactProfiles': [{'description': 'Using a SIG Image for mocking', 'imageReference': {'id': '/subscriptions/0000-0000-0000-0000-000000000000/resourceGroups/myrg/providers/Microsoft.Compute/galleries/Gallery1/images/WindowsGen2ImageGeneralized1', 'initialVersion': '0.0.1'}}], 'description': 'VM Artifact profile with default upgrade window', 'name': 'vmArtifactsProfile', 'upgradeSdpPolicy': {'schedulingPolicy': {'disableRegularUpgrades': False, 'maxConcurrentResourceCountPerRegion': 5, 'upgradeWindow': 'Default'}, 'type': 'PlatformOrchestratedForNewAndExistingResources'}}]" --description "Test Arco"
     """
 
     _aaz_info = {
