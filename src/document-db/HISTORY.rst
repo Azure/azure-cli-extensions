@@ -3,7 +3,7 @@
 Release History
 ===============
 
-0.1.0
+1.0.0b1
 ++++++
 * Initial preview version of the Document DB extension for Azure CLI for API version 2024-07-01.
 * Adds commands to
