@@ -84,13 +84,13 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="Azure Availability Zone the Pool is located in",
         )
-        _args_schema.provisioned_bandwidth_mb_per_sec = AAZIntArg(
-            options=["--provisioned-bandwidth-mb-per-sec"],
+        _args_schema.provisioned_bandwidth = AAZIntArg(
+            options=["--provisioned-bandwidth"],
             arg_group="Properties",
             help="Total bandwidth provisioned for the pool, in MB/s",
         )
-        _args_schema.reservation_resource_id = AAZStrArg(
-            options=["--reservation-resource-id"],
+        _args_schema.reservation_id = AAZStrArg(
+            options=["--reservation-id"],
             arg_group="Properties",
             help="Azure resource ID of the Pure Storage Cloud service (reservation resource) this storage pool belongs to",
         )
@@ -256,8 +256,8 @@ class Create(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("availabilityZone", AAZStrType, ".availability_zone", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("provisionedBandwidthMbPerSec", AAZIntType, ".provisioned_bandwidth_mb_per_sec", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("reservationResourceId", AAZStrType, ".reservation_resource_id", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("provisionedBandwidthMbPerSec", AAZIntType, ".provisioned_bandwidth", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("reservationResourceId", AAZStrType, ".reservation_id", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("vnetInjection", AAZObjectType, ".vnet_injection", typ_kwargs={"flags": {"required": True}})
 
             vnet_injection = _builder.get(".properties.vnetInjection")
