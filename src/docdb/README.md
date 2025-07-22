@@ -1,8 +1,8 @@
-# Azure CLI DocumentDb Extension
-This is an extension to Azure CLI to manage Document DB resources.
+# Azure CLI Database for Document DB Extension
+This is an extension to Azure CLI to manage Database for Document DB resources.
 
 This includes:
-- Create/update Mongo cluster instances.
+- Create/update cluster instances.
 - Add/remove firewall rules to a cluster.
 - Restoring cluster to a point in time from backups.
 - Promoting a replica cluster to be a primary cluster.
@@ -25,11 +25,11 @@ And to get a description of a command and usage examples:
 az docdb cluster <command> -h
 ```
 
-### Create a new Mongo cluster
+### Create a new cluster
 
 ```bash
-az docdb cluster create --resource-group TestResourceGroup --cluster-name myMongoCluster \
-    --location westus2 --administrator-name mongoAdmin --administrator-password password231 \
+az docdb cluster create --resource-group TestResourceGroup --cluster-name myCluster \
+    --location westus2 --administrator-name myAdmin --administrator-password password231 \
     --server-version 5.0 --storage-size-gb 128 --compute-tier M30 \
     --shard-count 1 --high-availability-mode ZoneRedundantPreferred
 ```
@@ -37,13 +37,13 @@ az docdb cluster create --resource-group TestResourceGroup --cluster-name myMong
 ### Create a replica cluster
 ```bash
 az docdb cluster replica create --resource-group TestResourceGroup \
-    --cluster-name myMongoCluster --location eastus2 --source-location westus3 \
-    --source-resource mySourceMongoCluster
+    --cluster-name myCluster --location eastus2 --source-location westus3 \
+    --source-resource mySourceCluster
 ```
 
 ### Promote a replica cluster
 ```bash
 az docdb cluster replica promote --resource-group TestGroup \
-    --cluster-name replicaMongoCluster --promote-option Forced \
+    --cluster-name replicaCluster --promote-option Forced \
     --promote-mode Switchover
 ```

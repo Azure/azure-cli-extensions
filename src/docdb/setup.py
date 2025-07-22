@@ -36,7 +36,7 @@ with open('HISTORY.rst', 'r', encoding='utf-8') as f:
 setup(
     name='docdb',
     version=VERSION,
-    description='Microsoft Azure Command-Line Tools DocumentDb Extension.',
+    description='Microsoft Azure Command-Line Tools Database for Document DB Extension.',
     long_description=README + '\n\n' + HISTORY,
     license='MIT',
     author='Microsoft Corporation',
