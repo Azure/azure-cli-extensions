@@ -27,29 +27,29 @@ class DocumentDbScenario(ScenarioTest):
           'rule_name2': "allow_all_azure_services",
         })
 
-        self.cmd('az document-db cluster check-name-availability -n {name} --location {loc}', checks=[
+        self.cmd('az docdb cluster check-name-availability -n {name} --location {loc}', checks=[
             self.check('nameAvailable', True)
         ])
 
-        self.cmd('az document-db cluster create -g {rg} -n {name} --location {loc} '
+        self.cmd('az docdb cluster create -g {rg} -n {name} --location {loc} '
                  '--administrator-name {admin_name} --administrator-password {pwd} --storage-size {storage_size} '
                  '--compute-tier {tier} --shard-count {shard_count} --server-version {server_version} --high-availability-mode Disabled '
                  '--no-wait')
 
-        self.cmd('az document-db cluster wait --resource-group {rg} --name {name} --created')
+        self.cmd('az docdb cluster wait --resource-group {rg} --name {name} --created')
 
-        self.cmd('az document-db cluster check-name-availability -n {name} --location {loc}',
+        self.cmd('az docdb cluster check-name-availability -n {name} --location {loc}',
                  checks=[
                     self.check('nameAvailable', False),
                     self.check('reason', 'AlreadyExists')
                 ])
 
-        self.cmd('az document-db cluster list --resource-group {rg}',
+        self.cmd('az docdb cluster list --resource-group {rg}',
                  checks=[
                      self.check('length(@)', 1),
                  ])
 
-        self.cmd('az document-db cluster show --resource-group {rg} --name {name}',
+        self.cmd('az docdb cluster show --resource-group {rg} --name {name}',
                  checks=[
                      self.check('location', '{loc}'),
                      self.check('name', '{name}'),
@@ -65,7 +65,7 @@ class DocumentDbScenario(ScenarioTest):
                      self.check('properties.highAvailability.targetMode', 'Disabled'),
                  ])
 
-        self.cmd('az document-db cluster list-connection-strings -g {rg} -n {name}',
+        self.cmd('az docdb cluster list-connection-strings -g {rg} -n {name}',
                  checks=[
                      self.greater_than('length(@)', 1),
                      self.check("contains([?name=='GlobalReadWrite'].connectionString | [0], '{name}.global.mongocluster')", True),
@@ -73,68 +73,68 @@ class DocumentDbScenario(ScenarioTest):
                  ])
 
         # Valdiate firewall rule CRUD
-        self.cmd('az document-db cluster firewall-rule create -g {rg} -n {name} -r {rule_name1} --start-ip-address 0.0.0.0 --end-ip-address 255.255.255.255',
+        self.cmd('az docdb cluster firewall-rule create -g {rg} -n {name} -r {rule_name1} --start-ip-address 0.0.0.0 --end-ip-address 255.255.255.255',
                  checks=[
                      self.check('name', '{rule_name1}'),
                      self.check('properties.startIpAddress', '0.0.0.0'),
                      self.check('properties.endIpAddress', '255.255.255.255')
                  ])
 
-        self.cmd('az document-db cluster firewall-rule create -g {rg} -n {name} -r {rule_name2} --start-ip-address 0.0.0.0 --end-ip-address 0.0.0.0',
+        self.cmd('az docdb cluster firewall-rule create -g {rg} -n {name} -r {rule_name2} --start-ip-address 0.0.0.0 --end-ip-address 0.0.0.0',
                  checks=[
                      self.check('name', '{rule_name2}'),
                      self.check('properties.startIpAddress', '0.0.0.0'),
                      self.check('properties.endIpAddress', '0.0.0.0')
                  ])
 
-        self.cmd('az document-db cluster firewall-rule list -g {rg} -n {name}',
+        self.cmd('az docdb cluster firewall-rule list -g {rg} -n {name}',
                  checks=[
                      self.check('length(@)', 2),
                      self.check("length([?name=='{rule_name1}'])", 1),
                      self.check("length([?name=='{rule_name2}'])", 1),
                  ])
 
-        self.cmd('az document-db cluster firewall-rule delete -g {rg} -n {name} -r {rule_name1} -y')
+        self.cmd('az docdb cluster firewall-rule delete -g {rg} -n {name} -r {rule_name1} -y')
 
-        self.cmd('az document-db cluster firewall-rule list -g {rg} -n {name}',
+        self.cmd('az docdb cluster firewall-rule list -g {rg} -n {name}',
                  checks=[
                      self.check('length(@)', 1),
                      self.check("length([?name=='{rule_name2}'])", 1)
                  ])
 
-        self.cmd('az document-db cluster firewall-rule update -g {rg} -n {name} -r {rule_name2} --start-ip-address 0.0.0.0 --end-ip-address 255.255.255.255 --no-wait')
-        self.cmd('az document-db cluster firewall-rule wait -g {rg} -n {name} -r {rule_name2} --updated')
-        self.cmd('az document-db cluster firewall-rule show -g {rg} -n {name} -r {rule_name2}',
+        self.cmd('az docdb cluster firewall-rule update -g {rg} -n {name} -r {rule_name2} --start-ip-address 0.0.0.0 --end-ip-address 255.255.255.255 --no-wait')
+        self.cmd('az docdb cluster firewall-rule wait -g {rg} -n {name} -r {rule_name2} --updated')
+        self.cmd('az docdb cluster firewall-rule show -g {rg} -n {name} -r {rule_name2}',
                  checks=[
                      self.check('name', '{rule_name2}'),
                      self.check('properties.startIpAddress', '0.0.0.0'),
                      self.check('properties.endIpAddress', '255.255.255.255')
                  ])
 
-        self.cmd('az document-db cluster update -g {rg} -n {name} --public-network-access Disabled',
+        self.cmd('az docdb cluster update -g {rg} -n {name} --public-network-access Disabled',
                 checks=[
                      self.check('properties.publicNetworkAccess', 'Disabled'),
                  ])
 
         # sleep to ensure the earliest restore time is populated for restore command.
         time.sleep(120)
-        primary_cluster = self.cmd('az document-db cluster show --resource-group {rg} --name {name}').get_output_in_json()
+        primary_cluster = self.cmd('az docdb cluster show --resource-group {rg} --name {name}').get_output_in_json()
         self.kwargs.update({
             'source_resource_id': primary_cluster['id'],
             'restore_time': primary_cluster['properties']['backup']['earliestRestoreTime'],
         })
-        self.cmd('az document-db cluster restore -g {rg} -n {restore_name} --location {loc} '
+        self.cmd('az docdb cluster restore -g {rg} -n {restore_name} --location {loc} '
                  '--source-cluster {source_resource_id} --restore-time {restore_time} '
                  '--administrator-name {admin_name} --administrator-password {pwd} --no-wait')
 
         # sleep to avoid possible concurrent operations on primary and start creating a replica in parallel.
         time.sleep(60)
-        self.cmd('az document-db cluster replica create -g {rg} --replica-name {replica_name} --location {replica_loc} '
+        self.cmd('az docdb cluster replica create -g {rg} --replica-name {replica_name} --location {replica_loc} '
             '--source-cluster {name} --source-location {loc} --no-wait')
 
         # Validate restore cluster is created.
-        self.cmd('az document-db cluster wait --resource-group {rg} --name {restore_name} --created')
-        self.cmd('az document-db cluster show --resource-group {rg} --name {restore_name}',
+        self.cmd('az docdb cluster wait --resource-group {rg} --name {restore_name} --created')
+        self.cmd('az docdb cluster show --resource-group {rg} --name {restore_name}',
                  checks=[
                      self.check('location', '{loc}'),
                      self.check('name', '{restore_name}'),
@@ -150,8 +150,8 @@ class DocumentDbScenario(ScenarioTest):
                  ])
 
         # Validate replica cluster is created.
-        self.cmd('az document-db cluster wait --resource-group {rg} --name {replica_name} --created')
-        replica_cluster = self.cmd('az document-db cluster show --resource-group {rg} --name {replica_name}',
+        self.cmd('az docdb cluster wait --resource-group {rg} --name {replica_name} --created')
+        replica_cluster = self.cmd('az docdb cluster show --resource-group {rg} --name {replica_name}',
                  checks=[
                      self.check('location', '{replica_loc}'),
                      self.check('name', '{replica_name}'),
@@ -163,22 +163,22 @@ class DocumentDbScenario(ScenarioTest):
             'replica_resource_id': replica_cluster['id'],
         })
 
-        self.cmd('az document-db cluster list --resource-group {rg}',
+        self.cmd('az docdb cluster list --resource-group {rg}',
                  checks=[
                      self.check('length(@)', 3),
                  ])
 
         # Check list replicas on the original primary is consistent.
-        self.cmd('az document-db cluster replica list -g {rg} -n {name}',
+        self.cmd('az docdb cluster replica list -g {rg} -n {name}',
                  checks=[
                      self.check('length(@)', 1),
                      self.check("[?name=='{replica_name}'].id | [0]", '{replica_resource_id}'),
                  ])
 
         # Promote the replica and validate transition to primary role.
-        self.cmd('az document-db cluster replica promote -g {rg} -n {replica_name} --promote-option Forced')
-        self.cmd('az document-db cluster wait --resource-group {rg} --name {replica_name} --updated')
-        self.cmd('az document-db cluster show --resource-group {rg} --name {replica_name}',
+        self.cmd('az docdb cluster replica promote -g {rg} -n {replica_name} --promote-option Forced')
+        self.cmd('az docdb cluster wait --resource-group {rg} --name {replica_name} --updated')
+        self.cmd('az docdb cluster show --resource-group {rg} --name {replica_name}',
                  checks=[
                      self.check('location', '{replica_loc}'),
                      self.check('name', '{replica_name}'),
@@ -187,7 +187,7 @@ class DocumentDbScenario(ScenarioTest):
                  ])
 
         # Validate original primary demotion to replica role.
-        self.cmd('az document-db cluster show --resource-group {rg} --name {name}',
+        self.cmd('az docdb cluster show --resource-group {rg} --name {name}',
                  checks=[
                      self.check('location', '{loc}'),
                      self.check('name', '{name}'),
@@ -196,14 +196,14 @@ class DocumentDbScenario(ScenarioTest):
                  ])
 
         # Validate replica list on new primary and new replics is consistent.
-        self.cmd('az document-db cluster replica list -g {rg} -n {replica_name}',
+        self.cmd('az docdb cluster replica list -g {rg} -n {replica_name}',
                  checks=[
                      self.check('length(@)', 1),
                      self.check("[?name=='{name}'].id | [0]", '{source_resource_id}'),
                  ])
-        self.cmd('az document-db cluster replica list -g {rg} -n {name}',
+        self.cmd('az docdb cluster replica list -g {rg} -n {name}',
                  checks=[
                      self.check('length(@)', 0),
                  ])
 
-        self.cmd('az document-db cluster delete -g {rg} -n {restore_name} -y')
+        self.cmd('az docdb cluster delete -g {rg} -n {restore_name} -y')

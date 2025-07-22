@@ -6,7 +6,7 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.core import AzCommandsLoader
-from azext_document_db._help import helps  # pylint: disable=unused-import
+from azext_docdb._help import helps  # pylint: disable=unused-import
 
 
 class DocumentDbCommandsLoader(AzCommandsLoader):
@@ -14,12 +14,12 @@ class DocumentDbCommandsLoader(AzCommandsLoader):
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
         custom_command_type = CliCommandType(
-            operations_tmpl='azext_document_db.custom#{}')
+            operations_tmpl='azext_docdb.custom#{}')
         super().__init__(cli_ctx=cli_ctx,
                          custom_command_type=custom_command_type)
 
     def load_command_table(self, args):
-        from azext_document_db.commands import load_command_table
+        from azext_docdb.commands import load_command_table
         from azure.cli.core.aaz import load_aaz_command_table
         try:
             from . import aaz
@@ -35,7 +35,7 @@ class DocumentDbCommandsLoader(AzCommandsLoader):
         return self.command_table
 
     def load_arguments(self, command):
-        from azext_document_db._params import load_arguments
+        from azext_docdb._params import load_arguments
         load_arguments(self, command)
 
 

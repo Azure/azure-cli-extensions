@@ -34,16 +34,16 @@ with open('HISTORY.rst', 'r', encoding='utf-8') as f:
     HISTORY = f.read()
 
 setup(
-    name='document-db',
+    name='docdb',
     version=VERSION,
     description='Microsoft Azure Command-Line Tools DocumentDb Extension.',
     long_description=README + '\n\n' + HISTORY,
     license='MIT',
     author='Microsoft Corporation',
     author_email='azpycli@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/document-db',
+    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/docdb',
     classifiers=CLASSIFIERS,
     packages=find_packages(exclude=["tests"]),
-    package_data={'azext_document_db': ['azext_metadata.json']},
+    package_data={'azext_docdb': ['azext_metadata.json']},
     install_requires=DEPENDENCIES
 )

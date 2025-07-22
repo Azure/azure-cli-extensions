@@ -12,14 +12,14 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "document-db cluster show",
+    "docdb cluster show",
     is_preview=True,
 )
 class Show(AAZCommand):
     """Get information about a mongo cluster.
 
     :example: Gets a Mongo Cluster resource.
-        az document-db cluster show --resource-group TestResourceGroup --cluster-name myMongoCluster
+        az docdb cluster show --resource-group TestResourceGroup --cluster-name myMongoCluster
     """
 
     _aaz_info = {

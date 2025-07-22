@@ -12,14 +12,14 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "document-db cluster create",
+    "docdb cluster create",
     is_preview=True,
 )
 class Create(AAZCommand):
     """Create a mongo cluster.
 
     :example: Creates a new Mongo Cluster resource.
-        az document-db cluster create --resource-group TestResourceGroup --cluster-name myMongoCluster --location westus2 --administrator-name mongoAdmin --administrator-password password --server-version 5.0 --storage-size 128 --compute-tier M30 --shard-count 1 --high-availability-mode ZoneRedundantPreferred
+        az docdb cluster create --resource-group TestResourceGroup --cluster-name myMongoCluster --location westus2 --administrator-name mongoAdmin --administrator-password password --server-version 5.0 --storage-size 128 --compute-tier M30 --shard-count 1 --high-availability-mode ZoneRedundantPreferred
     """
 
     _aaz_info = {

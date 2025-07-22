@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "document-db cluster firewall-rule delete",
+    "docdb cluster firewall-rule delete",
     is_preview=True,
     confirmation="Are you sure you want to perform this operation?",
 )
@@ -20,7 +20,7 @@ class Delete(AAZCommand):
     """Delete a mongo cluster firewall rule.
 
     :example: Deletes a firewall rule on a Mongo Cluster resource.
-        az document-db cluster firewall-rule delete --resource-group TestGroup --cluster-name myMongoCluster --rule-name rule1
+        az docdb cluster firewall-rule delete --resource-group TestGroup --cluster-name myMongoCluster --rule-name rule1
     """
 
     _aaz_info = {

@@ -12,14 +12,14 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "document-db cluster firewall-rule create",
+    "docdb cluster firewall-rule create",
     is_preview=True,
 )
 class Create(AAZCommand):
     """Create a new firewall rule or updates an existing firewall rule on a mongo cluster.
 
     :example: Creates a firewall rule on a Mongo Cluster resource.
-        az document-db cluster firewall-rule create --resource-group TestGroup --cluster-name myMongoCluster --rule-name rule1 --start-ip-address 0.0.0.0 --end-ip-address 255.255.255.255
+        az docdb cluster firewall-rule create --resource-group TestGroup --cluster-name myMongoCluster --rule-name rule1 --start-ip-address 0.0.0.0 --end-ip-address 255.255.255.255
     """
 
     _aaz_info = {

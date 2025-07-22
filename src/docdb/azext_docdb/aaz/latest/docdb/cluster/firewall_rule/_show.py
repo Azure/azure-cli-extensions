@@ -12,14 +12,14 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "document-db cluster firewall-rule show",
+    "docdb cluster firewall-rule show",
     is_preview=True,
 )
 class Show(AAZCommand):
     """Get information about a mongo cluster firewall rule.
 
     :example: Gets a firewall rule on a Mongo Cluster resource.
-        az document-db cluster firewall-rule show --resource-group TestGroup --cluster-name myMongoCluster --rule-name rule1
+        az docdb cluster firewall-rule show --resource-group TestGroup --cluster-name myMongoCluster --rule-name rule1
     """
 
     _aaz_info = {

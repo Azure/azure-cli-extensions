@@ -12,14 +12,14 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "document-db cluster firewall-rule update",
+    "docdb cluster firewall-rule update",
     is_preview=True,
 )
 class Update(AAZCommand):
     """Update a new firewall rule or updates an existing firewall rule on a mongo cluster.
 
     :example: Updates a firewall rule on a Mongo Cluster resource.
-        az document-db cluster firewall-rule update --resource-group TestGroup --cluster-name myMongoCluster --rule-name rule1 --start-ip-address 0.0.0.0 --end-ip-address 255.255.255.255
+        az docdb cluster firewall-rule update --resource-group TestGroup --cluster-name myMongoCluster --rule-name rule1 --start-ip-address 0.0.0.0 --end-ip-address 255.255.255.255
     """
 
     _aaz_info = {

@@ -12,14 +12,14 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "document-db cluster replica promote",
+    "docdb cluster replica promote",
     is_preview=True,
 )
 class Promote(AAZCommand):
     """Promotes a replica mongo cluster to be primary.
 
     :example: Promotes a replica Mongo Cluster resource to a primary role.
-        az document-db cluster replica promote --resource-group TestGroup --cluster-name myMongoCluster --promote-option Forced --promote-mode Switchover
+        az docdb cluster replica promote --resource-group TestGroup --cluster-name myMongoCluster --promote-option Forced --promote-mode Switchover
     """
 
     _aaz_info = {

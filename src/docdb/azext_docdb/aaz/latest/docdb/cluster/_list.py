@@ -12,17 +12,17 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "document-db cluster list",
+    "docdb cluster list",
     is_preview=True,
 )
 class List(AAZCommand):
     """List all the mongo clusters in a given subscription.
 
     :example: Lists the Mongo Cluster resources in a subscription.
-        az document-db cluster list
+        az docdb cluster list
 
     :example: Lists the Mongo Cluster resources in a resource group.
-        az document-db cluster list --resource-group TestResourceGroup
+        az docdb cluster list --resource-group TestResourceGroup
     """
 
     _aaz_info = {

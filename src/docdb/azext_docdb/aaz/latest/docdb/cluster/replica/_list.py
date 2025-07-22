@@ -12,14 +12,14 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "document-db cluster replica list",
+    "docdb cluster replica list",
     is_preview=True,
 )
 class List(AAZCommand):
     """List all the replicas of a mongo cluster.
 
     :example: List the replicas linked to a Mongo Cluster resource.
-        az document-db cluster replica list --resource-group TestGroup --cluster-name myMongoCluster
+        az docdb cluster replica list --resource-group TestGroup --cluster-name myMongoCluster
     """
 
     _aaz_info = {

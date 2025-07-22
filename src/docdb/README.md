@@ -12,23 +12,23 @@ This includes:
 Install the extension with this command:
 
 ```bash
-az extension add --name document-db
+az extension add --name docdb
 ```
 
 Use help `-h` to get a list of available commands:
 ```bash
-az document-db cluster -h
+az docdb cluster -h
 ```
 
 And to get a description of a command and usage examples:
 ```bash
-az document-db cluster <command> -h
+az docdb cluster <command> -h
 ```
 
 ### Create a new Mongo cluster
 
 ```bash
-az document-db cluster create --resource-group TestResourceGroup --cluster-name myMongoCluster \
+az docdb cluster create --resource-group TestResourceGroup --cluster-name myMongoCluster \
     --location westus2 --administrator-name mongoAdmin --administrator-password password231 \
     --server-version 5.0 --storage-size-gb 128 --compute-tier M30 \
     --shard-count 1 --high-availability-mode ZoneRedundantPreferred
@@ -36,14 +36,14 @@ az document-db cluster create --resource-group TestResourceGroup --cluster-name 
 
 ### Create a replica cluster
 ```bash
-az document-db cluster replica create --resource-group TestResourceGroup \
+az docdb cluster replica create --resource-group TestResourceGroup \
     --cluster-name myMongoCluster --location eastus2 --source-location westus3 \
     --source-resource mySourceMongoCluster
 ```
 
 ### Promote a replica cluster
 ```bash
-az document-db cluster replica promote --resource-group TestGroup \
+az docdb cluster replica promote --resource-group TestGroup \
     --cluster-name replicaMongoCluster --promote-option Forced \
     --promote-mode Switchover
 ```

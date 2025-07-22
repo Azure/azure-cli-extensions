@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "document-db cluster",
+    "docdb cluster",
     is_preview=True,
 )
 class __CMDGroup(AAZCommandGroup):

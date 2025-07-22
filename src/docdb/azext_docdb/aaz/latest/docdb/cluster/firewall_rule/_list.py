@@ -12,14 +12,14 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "document-db cluster firewall-rule list",
+    "docdb cluster firewall-rule list",
     is_preview=True,
 )
 class List(AAZCommand):
     """List all the firewall rules in a given mongo cluster.
 
     :example: List the firewall rules on a Mongo Cluster resource.
-        az document-db cluster firewall-rule list --resource-group TestGroup --cluster-name myMongoCluster
+        az docdb cluster firewall-rule list --resource-group TestGroup --cluster-name myMongoCluster
     """
 
     _aaz_info = {
