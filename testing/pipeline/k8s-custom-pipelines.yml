@@ -37,6 +37,10 @@ stages:
       path: ./test/extensions/public/AzureMonitor.Tests.ps1
   - template: ./templates/run-test.yml
     parameters:
+      jobName: AzureMonitorHighScale
+      path: ./test/extensions/public/AzureMonitorHighScale.Tests.ps1
+  - template: ./templates/run-test.yml
+    parameters:
       jobName: AzurePolicy
       path: ./test/extensions/public/AzurePolicy.Tests.ps1
   - template: ./templates/run-test.yml
