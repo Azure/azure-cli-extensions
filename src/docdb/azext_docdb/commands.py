@@ -14,13 +14,13 @@
 
 def load_command_table(self, _):  # pylint: disable=unused-argument
     with self.command_group("docdb cluster"):
-        from .custom import DocumentDBClusterCreate, DocumentDBClusterListConnectionStrings, DocumentDBClusterRestore
-        self.command_table["docdb cluster create"] = DocumentDBClusterCreate(loader=self)
-        self.command_table["docdb cluster list-connection-strings"] = DocumentDBClusterListConnectionStrings(loader=self)
-        self.command_table["docdb cluster restore"] = DocumentDBClusterRestore(loader=self)
+        from .custom import DocDBClusterCreate, DocDBClusterListConnectionStrings, DocDBClusterRestore
+        self.command_table["docdb cluster create"] = DocDBClusterCreate(loader=self)
+        self.command_table["docdb cluster list-connection-strings"] = DocDBClusterListConnectionStrings(loader=self)
+        self.command_table["docdb cluster restore"] = DocDBClusterRestore(loader=self)
 
     with self.command_group("docdb cluster replica"):
-        from .custom import DocumentDBClusterReplicaCreate, DocumentDBClusterReplicaPromote, DocumentDBClusterReplicaWait
-        self.command_table["docdb cluster replica create"] = DocumentDBClusterReplicaCreate(loader=self)
-        self.command_table["docdb cluster replica promote"] = DocumentDBClusterReplicaPromote(loader=self)
-        self.command_table["docdb cluster replica wait"] = DocumentDBClusterReplicaWait(loader=self)
+        from .custom import DocDBClusterReplicaCreate, DocDBClusterReplicaPromote, DocDBClusterReplicaWait
+        self.command_table["docdb cluster replica create"] = DocDBClusterReplicaCreate(loader=self)
+        self.command_table["docdb cluster replica promote"] = DocDBClusterReplicaPromote(loader=self)
+        self.command_table["docdb cluster replica wait"] = DocDBClusterReplicaWait(loader=self)

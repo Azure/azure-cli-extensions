@@ -13,16 +13,16 @@
 from knack.log import get_logger
 from azure.cli.core.aaz import register_command
 from azure.mgmt.core.tools import is_valid_resource_id, resource_id
-from .aaz.latest.docdb.cluster import Create as _DocumentDBClusterCreate
-from .aaz.latest.docdb.cluster.replica import Promote as _DocumentDBClusterPromote
-from .aaz.latest.docdb.cluster import Wait as _DocumentDBClusterWait
-from .aaz.latest.docdb.cluster import ListConnectionStrings as _DocumentDBClusterListConnectionStrings
+from .aaz.latest.docdb.cluster import Create as _DocDBClusterCreate
+from .aaz.latest.docdb.cluster.replica import Promote as _DocDBClusterPromote
+from .aaz.latest.docdb.cluster import Wait as _DocDBClusterWait
+from .aaz.latest.docdb.cluster import ListConnectionStrings as _DocDBClusterListConnectionStrings
 
 logger = get_logger(__name__)
 
 
 # Modify az docdb cluster create command to hide replica and restore specific parameters.
-class DocumentDBClusterCreate(_DocumentDBClusterCreate):
+class DocDBClusterCreate(_DocDBClusterCreate):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
 
@@ -51,26 +51,26 @@ class DocumentDBClusterCreate(_DocumentDBClusterCreate):
 
 # Modify az docdb cluster list-connection-strings command to deserialize flattened 'connectionStrings'
 # property to allow for table output formats.
-class DocumentDBClusterListConnectionStrings(_DocumentDBClusterListConnectionStrings):
+class DocDBClusterListConnectionStrings(_DocDBClusterListConnectionStrings):
     # inherit the documenation from the parent class as-is since it doesn't need to be modified
-    __doc__ = _DocumentDBClusterListConnectionStrings.__doc__
+    __doc__ = _DocDBClusterListConnectionStrings.__doc__
 
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance.connectionStrings, client_flatten=True)
         return result
 
 
-# Register az docdb cluster replica create command to create a replica Mongo Cluster resource.
+# Register az docdb cluster replica create command to create a replica cluster resource.
 # This derives from base DocumentDBClusterCreate command and overrides the arguments schema to remove unnecessary parameters for replica creation.
 @register_command(
     "docdb cluster replica create",
     is_preview=True,
 )
-class DocumentDBClusterReplicaCreate(_DocumentDBClusterCreate):
-    """Create a Mongo Cluster replica resource.
+class DocDBClusterReplicaCreate(_DocDBClusterCreate):
+    """Create a Document DB cluster replica resource.
 
-    :example: Creates a replica Mongo Cluster resource from a source cluster.
-        az docdb cluster replica create --resource-group TestResourceGroup --cluster-name myMongoCluster --location eastus2 --source-location westus3 --source-resource "/subscriptions/ffffffff-ffff-ffff-ffff-ffffffffffff/resourceGroups/TestResourceGroup/providers/Microsoft.DocumentDB/mongoClusters/mySourceMongoCluster"
+    :example: Creates a replica cluster resource from a source cluster.
+        az docdb cluster replica create --resource-group TestResourceGroup --cluster-name myCluster --location eastus2 --source-location westus3 --source-resource "/subscriptions/ffffffff-ffff-ffff-ffff-ffffffffffff/resourceGroups/TestResourceGroup/providers/Microsoft.DocumentDB/cluster/mySourceCluster"
     """
 
     @classmethod
@@ -103,7 +103,7 @@ class DocumentDBClusterReplicaCreate(_DocumentDBClusterCreate):
 
         # override the replica arguments.
         args_schema.cluster_name._options = ["--replica-name"]
-        args_schema.cluster_name._help["short-summary"] = "The name of the replica mongo cluster."
+        args_schema.cluster_name._help["short-summary"] = "The name of the replica cluster."
         args_schema.replica_source_location._options = ["--source-location"]
         args_schema.replica_source_location._required = True
         args_schema.replica_source_resource._options = ["--source-cluster"]
@@ -129,9 +129,9 @@ class DocumentDBClusterReplicaCreate(_DocumentDBClusterCreate):
 # By default the deserialization callback is set to 'None' which is incorrect for the POST operation with
 # no content response defined in TypeSpec. SDK code generation handles this correctly but AAZ code generation
 # does not, so we need to override the deserialization callback to handle the 202 response.
-class DocumentDBClusterReplicaPromote(_DocumentDBClusterPromote):
+class DocDBClusterReplicaPromote(_DocDBClusterPromote):
     # inherit the documenation from the parent class as-is since it doesn't need to be modified
-    __doc__ = _DocumentDBClusterPromote.__doc__
+    __doc__ = _DocDBClusterPromote.__doc__
 
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
@@ -150,28 +150,31 @@ class DocumentDBClusterReplicaPromote(_DocumentDBClusterPromote):
         pass
 
 
-# Register az docdb cluster replica wait command to wait for a replica Mongo Cluster resource.
+# Register az docdb cluster replica wait command to wait for a replica cluster resource.
 # This is required by linter and style-checks since replica command group has a 'create' command.
 @register_command(
     "docdb cluster replica wait",
     is_preview=True,
 )
-class DocumentDBClusterReplicaWait(_DocumentDBClusterWait):
+class DocDBClusterReplicaWait(_DocDBClusterWait):
     # inherit the documenation from the parent class as-is since it doesn't need to be modified
-    __doc__ = _DocumentDBClusterWait.__doc__
+    __doc__ = _DocDBClusterWait.__doc__
 
 
-# Register az docdb cluster restore command to restore a Mongo Cluster resource.
+# Register az docdb cluster restore command to restore a cluster resource.
 # This derives from base DocumentDBClusterCreate command and overrides the arguments schema to remove unnecessary parameters for restore creation.
 @register_command(
     "docdb cluster restore",
     is_preview=True,
 )
-class DocumentDBClusterRestore(_DocumentDBClusterCreate):
-    """Restores a Mongo Cluster resource.
+class DocDBClusterRestore(_DocDBClusterCreate):
+    """Restores a Document DB Cluster resource.
 
-    :example: Creates a restored Mongo Cluster resource from a given source cluster and point in time.
-        az docdb cluster restore --resource-group TestResourceGroup --cluster-name myMongoCluster --administrator-name mongoAdmin --administrator-password password --restore-time 2023-01-13T20:07:35Z --source-cluster "/subscriptions/ffffffff-ffff-ffff-ffff-ffffffffffff/resourceGroups/TestResourceGroup/providers/Microsoft.DocumentDB/mongoClusters/mySourceMongoCluster"
+    :example: Creates a restored cluster resource from a given source cluster ARM resource id and point in time.
+        az docdb cluster restore --resource-group TestResourceGroup --cluster-name myCluster --administrator-name myAdmin --administrator-password password --restore-time 2023-01-13T20:07:35Z --source-cluster "/subscriptions/ffffffff-ffff-ffff-ffff-ffffffffffff/resourceGroups/TestResourceGroup/providers/Microsoft.DocumentDB/mongoClusters/mySourceCluster"
+
+    :example: Creates a restored cluster resource from a given source cluster name and point in time.
+        az docdb cluster restore --resource-group TestResourceGroup --cluster-name myCluster --administrator-name myAdmin --administrator-password password --restore-time 2023-01-13T20:07:35Z --source-cluster "mySourceCluster"
     """
 
     @classmethod
@@ -206,7 +209,7 @@ class DocumentDBClusterRestore(_DocumentDBClusterCreate):
         args_schema.administrator_name._required = True
 
         # override the restore arguments
-        args_schema.cluster_name._help["short-summary"] = 'The name of restored mongo cluster.'
+        args_schema.cluster_name._help["short-summary"] = 'The name of restored cluster.'
         args_schema.restore_time._options = ["--restore-time"]
         args_schema.restore_time._required = True
         args_schema.restore_source_resource._options = ["--source-cluster"]
