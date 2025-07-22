@@ -7,7 +7,7 @@
 
 from codecs import open as open1
 
-from setuptools import setup, find_packages
+from setuptools import find_packages, setup
 
 VERSION = "18.0.0b21"
 
@@ -23,7 +23,9 @@ CLASSIFIERS = [
     "License :: OSI Approved :: MIT License",
 ]
 
-DEPENDENCIES = []
+DEPENDENCIES = [
+    "holmesgpt @ git+ssh://git@github.com/robusta-dev/holmesgpt@master", # will use a official pypi package once available
+]
 
 with open1("README.rst", "r", encoding="utf-8") as f:
     README = f.read()

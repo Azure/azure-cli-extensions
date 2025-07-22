@@ -3884,4 +3884,50 @@ helps['aks bastion'] = """
     examples:
         - name: Connect to a managed Kubernetes cluster using Azure Bastion with custom port and admin credentials.
           text: az aks bastion -g MyResourceGroup --name MyManagedCluster --bastion MyBastionResource --port 50001 --admin
+    """
+
+helps['aks agent'] = """
+    type: command
+    short-summary: Run AI assistant to analyze and troubleshoot Kubernetes clusters.
+    parameters:
+        - name: prompt
+          type: string
+          short-summary: Ask any question and get an answer using available tools.
+        - name: --api-key
+          type: string
+          short-summary: API key to use for the LLM (if not given, uses environment variables AZURE_API_KEY, OPENAI_API_KEY).
+        - name: --model
+          type: string
+        - name: --config-file
+          type: string
+          short-summary: Path to configuration file.
+        - name: --max-steps
+          type: int
+          short-summary: Maximum number of steps the LLM can take to investigate the issue.
+        - name: --non-interactive
+          type: bool
+          short-summary: Disable interactive mode. When set, the agent will not prompt for input and will run in batch mode.
+        - name: --echo_request
+          type: bool
+          short-summary: Disable echoing back the question provided to AKS Agent in the output.
+        - name: --show-tool-output
+          type: bool
+          short-summary: Show the output of each tool that was called during the analysis.
+        - name: --refresh-toolsets
+          type: bool
+          short-summary: Refresh the toolsets status.
+
+    examples:
+        - name: Ask about pod issues in the cluster
+          text: az aks agent "Why are my pods not starting?"
+        - name: Analyze cluster with specific AI model
+          text: az aks agent "Check cluster health" --model azure/my-gpt4-deployment --api-key sk-xxx
+        - name: Run in non-interactive batch mode
+          text: az aks agent "Diagnose networking issues" --interactive false --max-steps 5
+        - name: Use Azure OpenAI with custom deployment
+          text: az aks agent "Analyze failed deployments" --model azure/my-gpt4-deployment --api-key xxx
+        - name: Show detailed tool output during analysis
+          text: az aks agent "Why is my service unavailable?" --show-tool-output
+        - name: Use custom configuration file
+          text: az aks agent "Check resource usage" --config-file /path/to/custom.config
 """
