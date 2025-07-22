@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "qumulo storage file-system list",
 )
 class List(AAZCommand):
-    """List file system resources
+    """List all existing Qumulo file system storage resources.
 
     :example: List file system by resource group
         az qumulo storage file-system list -g rg
@@ -226,7 +226,7 @@ class List(AAZCommand):
                 serialized_name="marketplaceDetails",
                 flags={"required": True},
             )
-            properties.private_ips = AAZListType(
+            properties.private_i_ps = AAZListType(
                 serialized_name="privateIPs",
             )
             properties.provisioning_state = AAZStrType(
@@ -265,8 +265,8 @@ class List(AAZCommand):
                 serialized_name="termUnit",
             )
 
-            private_ips = cls._schema_on_200.value.Element.properties.private_ips
-            private_ips.Element = AAZStrType()
+            private_i_ps = cls._schema_on_200.value.Element.properties.private_i_ps
+            private_i_ps.Element = AAZStrType()
 
             user_details = cls._schema_on_200.value.Element.properties.user_details
             user_details.email = AAZStrType(
@@ -456,7 +456,7 @@ class List(AAZCommand):
                 serialized_name="marketplaceDetails",
                 flags={"required": True},
             )
-            properties.private_ips = AAZListType(
+            properties.private_i_ps = AAZListType(
                 serialized_name="privateIPs",
             )
             properties.provisioning_state = AAZStrType(
@@ -495,8 +495,8 @@ class List(AAZCommand):
                 serialized_name="termUnit",
             )
 
-            private_ips = cls._schema_on_200.value.Element.properties.private_ips
-            private_ips.Element = AAZStrType()
+            private_i_ps = cls._schema_on_200.value.Element.properties.private_i_ps
+            private_i_ps.Element = AAZStrType()
 
             user_details = cls._schema_on_200.value.Element.properties.user_details
             user_details.email = AAZStrType(

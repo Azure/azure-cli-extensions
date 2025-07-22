@@ -172,7 +172,6 @@ helps['aks create'] = f"""
           short-summary: Enable the Kubernetes addons in a comma-separated list.
           long-summary: |-
             These addons are available:
-            - http_application_routing        : configure ingress with automatic public DNS name creation.
             - monitoring                      :  turn on Log Analytics monitoring. Uses the Log Analytics Default Workspace if it exists, else creates one. Specify "--workspace-resource-id" to use an existing workspace. If monitoring addon is enabled --no-wait argument will have no effect
             - virtual-node                    : enable AKS Virtual Node. Requires --aci-subnet-name to provide the name of an existing subnet for the Virtual Node to use. aci-subnet-name must be in the same vnet which is specified by --vnet-subnet-id (required as well).
             - azure-policy                    : enable Azure policy. The Azure Policy add-on for AKS enables at-scale enforcements and safeguards on your clusters in a centralized, consistent manner. Required if enabling deployment safeguards. Learn more at aka.ms/aks/policy.
@@ -181,7 +180,7 @@ helps['aks create'] = f"""
             - open-service-mesh               : enable Open Service Mesh addon (PREVIEW).
             - gitops                          : enable GitOps (PREVIEW).
             - azure-keyvault-secrets-provider : enable Azure Keyvault Secrets Provider addon.
-            - web_application_routing         : enable Web Application Routing addon (PREVIEW). Specify "--dns-zone-resource-id" to configure DNS.
+            - web_application_routing         : enable the App Routing addon (PREVIEW). Specify "--dns-zone-resource-id" to configure DNS.
         - name: --disable-rbac
           type: bool
           short-summary: Disable Kubernetes Role-Based Access Control.
@@ -240,8 +239,8 @@ helps['aks create'] = f"""
           long-summary: To access nodes after creating a cluster with this option, use the Azure Portal.
         - name: --pod-cidr
           type: string
-          short-summary: A CIDR notation IP range from which to assign pod IPs when kubenet is used.
-          long-summary: This range must not overlap with any Subnet IP ranges. For example, 172.244.0.0/16.
+          short-summary: A CIDR notation IP range from which to assign pod IPs when Azure CNI Overlay or Kubenet is used (On 31 March 2028, Kubenet will be retired).
+          long-summary: This range must not overlap with any Subnet IP ranges. For example, 172.244.0.0/16. See https://aka.ms/aks/azure-cni-overlay.
         - name: --service-cidr
           type: string
           short-summary: A CIDR notation IP range from which to assign service cluster IPs.
@@ -252,8 +251,8 @@ helps['aks create'] = f"""
           long-summary: Each range must not overlap with any Subnet IP ranges. For example, 10.0.0.0/16.
         - name: --pod-cidrs
           type: string
-          short-summary: A comma separated list of CIDR notation IP ranges from which to assign pod IPs when kubenet is used.
-          long-summary: Each range must not overlap with any Subnet IP ranges. For example, 172.244.0.0/16.
+          short-summary: A comma-separated list of CIDR notation IP ranges from which to assign pod IPs when Azure CNI Overlay or Kubenet is used (On 31 March 2028, Kubenet will be retired).
+          long-summary: Each range must not overlap with any Subnet IP ranges. For example, 172.244.0.0/16. See https://aka.ms/aks/azure-cni-overlay.
         - name: --ip-families
           type: string
           short-summary: A comma separated list of IP versions to use for cluster networking.
@@ -507,10 +506,10 @@ helps['aks create'] = f"""
           short-summary: Enable ImageIntegrity Service.
         - name: --dns-zone-resource-id
           type: string
-          short-summary: The resource ID of the DNS zone resource to use with the web_application_routing addon.
+          short-summary: The resource ID of the DNS zone resource to use with the App Routing addon.
         - name: --dns-zone-resource-ids
           type: string
-          short-summary: A comma separated list of resource IDs of the DNS zone resource to use with the web_application_routing addon.
+          short-summary: A comma separated list of resource IDs of the DNS zone resource to use with the App Routing addon.
         - name: --enable-custom-ca-trust
           type: bool
           short-summary: Enable Custom CA Trust on agent node pool.
@@ -651,6 +650,10 @@ helps['aks create'] = f"""
         - name: --vm-sizes
           type: string
           short-summary: Comma-separated list of sizes. Must use VirtualMachines agent pool type.
+        - name: --enable-managed-system-pool
+          type: bool
+          short-summary: Create a default ManagedSystem mode that is fully managed by AKS.
+          long-summary: When set, the default system node pool is created with ManagedSystem mode, where all properties except name and mode are managed by AKS. Learn more at https://aka.ms/aks/nodepool/mode.
     examples:
         - name: Create a Kubernetes cluster with an existing SSH public key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --ssh-key-value /path/to/publickey
@@ -730,6 +733,8 @@ helps['aks create'] = f"""
           text: az aks create -g MyResourceGroup -n MyManagedCluster --os-sku Ubuntu --max-pods MaxPodsPerNode --network-plugin azure --vnet-subnet-id /subscriptions/00000/resourceGroups/AnotherResourceGroup/providers/Microsoft.Network/virtualNetworks/MyVnet/subnets/NodeSubnet --pod-subnet-id /subscriptions/00000/resourceGroups/AnotherResourceGroup/providers/Microsoft.Network/virtualNetworks/MyVnet/subnets/PodSubnet --pod-ip-allocation-mode StaticBlock
         - name: Create a kubernetes cluster with a VirtualMachines nodepool
           text: az aks create -g MyResourceGroup -n MyManagedCluster --vm-set-type VirtualMachines --vm-sizes "VMSize1,VMSize2" --node-count 3
+        - name: Create a kubernetes cluster with a fully managed system node pool
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-managed-system-pool
 
 """
 
@@ -1934,7 +1939,7 @@ helps['aks nodepool add'] = """
           short-summary: The node labels for the node pool. See https://aka.ms/node-labels for syntax of labels.
         - name: --mode
           type: string
-          short-summary: The mode for a node pool which defines a node pool's primary function. If set as "System", AKS prefers system pods scheduling to node pools with mode `System`. Learn more at https://aka.ms/aks/nodepool/mode.
+          short-summary: The mode for a node pool which defines a node pool's primary function. If set as "System", AKS prefers system pods scheduling to node pools with mode `System`. If set as "ManagedSystem", all other properties except name and mode will be reset and managed by AKS. Learn more at https://aka.ms/aks/nodepool/mode.
         - name: --vm-set-type
           type: string
           short-summary: Agent pool vm set type. VirtualMachineScaleSets, AvailabilitySet or VirtualMachines(Preview).
@@ -2043,6 +2048,9 @@ helps['aks nodepool add'] = """
         - name: --undrainable-node-behavior
           type: string
           short-summary: Define the behavior for undrainable nodes during upgrade. The value should be "Cordon" or "Schedule". The default value is "Schedule".
+        - name: --localdns-config
+          type: string
+          short-summary: Set the localDNS Profile for a nodepool with a JSON config file.
     examples:
         - name: Create a nodepool in an existing AKS cluster with ephemeral os enabled.
           text: az aks nodepool add -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --node-osdisk-type Ephemeral --node-osdisk-size 48
@@ -2062,6 +2070,8 @@ helps['aks nodepool add'] = """
           text: az aks nodepool add -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster  --os-sku Ubuntu --pod-subnet-id /subscriptions/00000/resourceGroups/AnotherResourceGroup/providers/Microsoft.Network/virtualNetworks/MyVnet/subnets/MySubnet --pod-ip-allocation-mode StaticBlock
         - name: Create a nodepool of type VirtualMachines
           text: az aks nodepool add -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --vm-set-type VirtualMachines --vm-sizes "Standard_D4s_v3,Standard_D8s_v3" --node-count 3
+        - name: Create a nodepool with ManagedSystem mode
+          text: az aks nodepool add -g MyResourceGroup -n managedsystem1 --cluster-name MyManagedCluster --mode ManagedSystem
 """
 
 helps['aks nodepool scale'] = """
@@ -2158,7 +2168,7 @@ helps['aks nodepool update'] = """
           short-summary: The maximum number or percentage of extra nodes that are allowed to be blocked in the agent pool during an upgrade when undrainable node behavior is Cordon. When specified, it represents the number or percent used, eg. 1 or 5%.
         - name: --mode
           type: string
-          short-summary: The mode for a node pool which defines a node pool's primary function. If set as "System", AKS prefers system pods scheduling to node pools with mode `System`. Learn more at https://aka.ms/aks/nodepool/mode.
+          short-summary: The mode for a node pool which defines a node pool's primary function. If set as "System", AKS prefers system pods scheduling to node pools with mode `System`. If set as "ManagedSystem", all other properties except name and mode will be rejected and managed by AKS. Learn more at https://aka.ms/aks/nodepool/mode.
         - name: --labels
           type: string
           short-summary: The node labels for the node pool. See https://aka.ms/node-labels for syntax of labels.
@@ -2216,6 +2226,9 @@ helps['aks nodepool update'] = """
         - name: --undrainable-node-behavior
           type: string
           short-summary: Define the behavior for undrainable nodes during upgrade. The value should be "Cordon" or "Schedule". The default value is "Schedule".
+        - name: --localdns-config
+          type: string
+          short-summary: Set the localDNS Profile for a nodepool with a JSON config file.
     examples:
       - name: Reconcile the nodepool back to its current state.
         text: az aks nodepool update -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster
@@ -2487,7 +2500,7 @@ long-summary: |-
         open-service-mesh               - enable Open Service Mesh addon (PREVIEW).
         gitops                          - enable GitOps (PREVIEW).
         azure-keyvault-secrets-provider - enable Azure Keyvault Secrets Provider addon.
-        web_application_routing         - enable Web Application Routing addon (PREVIEW). Specify "--dns-zone-resource-id" to configure DNS.
+        web_application_routing         - enable the App Routing addon (PREVIEW). Specify "--dns-zone-resource-id" to configure DNS.
 parameters:
   - name: --addon -a
     type: string
@@ -2542,10 +2555,10 @@ parameters:
     short-summary: Set interval of rotation poll. Use with azure-keyvault-secrets-provider addon.
   - name: --dns-zone-resource-id
     type: string
-    short-summary: The resource ID of the DNS zone resource to use with the web_application_routing addon.
+    short-summary: The resource ID of the DNS zone resource to use with the App Routing addon.
   - name: --dns-zone-resource-ids
     type: string
-    short-summary: A comma separated list of resource IDs of the DNS zone resource to use with the web_application_routing addon.
+    short-summary: A comma separated list of resource IDs of the DNS zone resource to use with the App Routing addon.
 examples:
   - name: Enable a Kubernetes addon. (autogenerated)
     text: az aks addon enable --addon virtual-node --name MyManagedCluster --resource-group MyResourceGroup --subnet-name VirtualNodeSubnet
@@ -2615,10 +2628,10 @@ parameters:
     short-summary: Set interval of rotation poll. Use with azure-keyvault-secrets-provider addon.
   - name: --dns-zone-resource-id
     type: string
-    short-summary: The resource ID of the DNS zone resource to use with the web_application_routing addon.
+    short-summary: The resource ID of the DNS zone resource to use with the App Routing addon.
   - name: --dns-zone-resource-ids
     type: string
-    short-summary: A comma separated list of resource IDs of the DNS zone resource to use with the web_application_routing addon.
+    short-summary: A comma separated list of resource IDs of the DNS zone resource to use with the App Routing addon.
 examples:
   - name: Update a Kubernetes addon. (autogenerated)
     text: az aks addon update --addon virtual-node --name MyManagedCluster --resource-group MyResourceGroup --subnet-name VirtualNodeSubnet
@@ -2647,7 +2660,7 @@ long-summary: |-
         open-service-mesh               - enable Open Service Mesh addon (PREVIEW).
         gitops                          - enable GitOps (PREVIEW).
         azure-keyvault-secrets-provider - enable Azure Keyvault Secrets Provider addon.
-        web_application_routing         - enable Web Application Routing addon (PREVIEW). Specify "--dns-zone-resource-id" to configure DNS.
+        web_application_routing         - enable the App Routing addon (PREVIEW). Specify "--dns-zone-resource-id" to configure DNS.
 parameters:
   - name: --addons -a
     type: string
@@ -2702,10 +2715,10 @@ parameters:
     short-summary: Set interval of rotation poll. Use with azure-keyvault-secrets-provider addon.
   - name: --dns-zone-resource-id
     type: string
-    short-summary: The resource ID of the DNS zone resource to use with the web_application_routing addon.
+    short-summary: The resource ID of the DNS zone resource to use with the App Routing addon.
   - name: --dns-zone-resource-ids
     type: string
-    short-summary: A comma separated list of resource IDs of the DNS zone resource to use with the web_application_routing addon.
+    short-summary: A comma separated list of resource IDs of the DNS zone resource to use with the App Routing addon.
   - name: --aks-custom-headers
     type: string
     short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2

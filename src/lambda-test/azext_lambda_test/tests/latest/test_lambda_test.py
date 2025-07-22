@@ -12,38 +12,38 @@ class LambdaTestScenario(ScenarioTest):
     @ResourceGroupPreparer(name_prefix='test_lambda_test', location="centraluseuap")
     def test_lambda_test(self, resource_group):
         self.kwargs.update({
-            'name': 'lambda-test-cli-instance-6',
-            'location': 'centraluseuap',
-            'marketplace_subscription_id': 'fc35d936-3b89-41f8-8110-a24b56826c37',
+            'name': 'test4',
+            'location': 'East US',
+            'marketplace_subscription_id': '61641157-140c-4b97-b365-30ff76d9f82e',
             'publisher_id': 'lambdatestinc1584019832435',
             'offer_id': 'lambdatest_liftr_testing',
             'plan_id': 'testing',
             'plan_name': 'testing_liftr',
             'term_unit': 'P1Y',
             'term_id': 'o73usof6rkyy',
-            'user_first_name': 'Swati',
-            'user_last_name': 'Aggarwal',
-            'user_email': 'aggarwalsw@microsoft.com',
-            'user_upn': 'aggarwalsw@microsoft.com',
-            'resource_group': 'abdul-test',
+            'user_first_name': 'Yashika',
+            'user_last_name': 'Jain',
+            'user_email': 'yashikajain@microsoft.com',
+            'user_upn': 'yashikajain@microsoft.com',
+            'resource_group': 'yashika-rg-lambdatest',
             'description': 'Test-Description',
-            'licenses-subscribed': 1,
-            'list-resource-group': 'jawt-rg',
-
+            'licenses_subscribed': 1,
+            'list_resource_group': 'yashika-rg-lambdatest',
+            'delete_name': 'test1'
         })
 
         # Create LambdaTest Organization
-        self.cmd('az lambda-test hyper-execute organization create --resource-group {resource_group} --organizationname {name} --location {location} '
+        self.cmd('az lambda-test hyper-execute organization create --resource-group {resource_group} --organizationname {name} --location "{location}" '
                  '--marketplace \'{{"subscription-id": "{marketplace_subscription_id}", '
                  '"offer-details": {{"publisher-id": "{publisher_id}", "offer-id": "{offer_id}", "plan-id": "{plan_id}", "plan-name": "{plan_name}", "term-unit": "{term_unit}", "term-id": "{term_id}"}}}}\' '
                  '--user \'{{"first-name": "{user_first_name}", "last-name": "{user_last_name}", "email-address": "{user_email}", "upn": "{user_upn}"}}\' '
-                 '--partner-properties \'{{"licenses-subscribed": {licenses-subscribed}}}\' ',
+                 '--partner-properties \'{{"licenses-subscribed": {licenses_subscribed}}}\' ',
                  checks=[
                      self.check('name', '{name}'),
                  ])
 
         # List LambdaTest Organizations
-        self.cmd('az lambda-test hyper-execute organization list --resource-group {list-resource-group}',
+        self.cmd('az lambda-test hyper-execute organization list --resource-group {list_resource_group}',
                  checks=[])
 
         # Show LambdaTest Organization
@@ -51,3 +51,13 @@ class LambdaTestScenario(ScenarioTest):
                  checks=[
                      self.check('name', '{name}'),
                  ])
+        
+        # Update LambdaTest Organization
+        self.cmd('az lambda-test hyper-execute organization update --resource-group {resource_group} --organizationname {name} --tags {{"key1":"value1"}}',
+                 checks=[
+                     self.check('name', '{name}'),
+                 ])
+        
+        # Delete LambdaTest Organization
+        self.cmd('az lambda-test hyper-execute organization delete --resource-group {resource_group} --organizationname {delete_name} -y',
+                 checks=[])

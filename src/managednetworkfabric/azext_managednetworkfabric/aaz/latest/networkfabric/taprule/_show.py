@@ -212,7 +212,7 @@ class Show(AAZCommand):
                 serialized_name="networkTapId",
                 flags={"read_only": True},
             )
-            properties.polling_interval_in_seconds = AAZFloatType(
+            properties.polling_interval_in_seconds = AAZIntType(
                 serialized_name="pollingIntervalInSeconds",
             )
             properties.provisioning_state = AAZStrType(

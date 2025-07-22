@@ -3,6 +3,15 @@
 Release History
 ===============
 
+1.0.0b7
+++++++
+* Remove DATA_COSMOS_TABLE and DATA_STORAGE references
+* `az storage account migration start/show`: Remove since it has been GA in main repo
+
+1.0.0b6
++++++++
+* `az storage account task-assignment`: Task-Assignment GA for Storage Action
+
 1.0.0b5
 +++++++
 * `az storage blob access/directory/move`: Remove deprecated command groups since `az storage fs` command group has been GA since 2021

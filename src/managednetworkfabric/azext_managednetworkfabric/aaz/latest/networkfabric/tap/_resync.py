@@ -17,7 +17,7 @@ from azure.cli.core.aaz import *
 class Resync(AAZCommand):
     """Implements the operation to the underlying resources.
 
-    :example: Resync Operation
+    :example: Resync the Network Tap
         az networkfabric tap resync --resource-group "example-rg" --network-tap-name "example-networktap"
     """
 
@@ -222,12 +222,15 @@ class _ResyncHelper:
         additional_info.Element = AAZObjectType()
 
         _element = _schema_error_detail_read.additional_info.Element
-        _element.info = AAZFreeFormDictType(
+        _element.info = AAZDictType(
             flags={"read_only": True},
         )
         _element.type = AAZStrType(
             flags={"read_only": True},
         )
+
+        info = _schema_error_detail_read.additional_info.Element.info
+        info.Element = AAZAnyType()
 
         details = _schema_error_detail_read.details
         details.Element = AAZObjectType()
