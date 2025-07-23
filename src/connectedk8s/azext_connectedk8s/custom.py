@@ -81,7 +81,7 @@ if TYPE_CHECKING:
     from azure.cli.core.commands import AzCliCommand
     from azure.core.polling import LROPoller
     from Crypto.PublicKey.RSA import RsaKey
-    from knack.commands import CLICommmand
+    from knack.commands import CLICommand
     from kubernetes.client import V1NodeList
     from kubernetes.config.kube_config import ConfigNode
     from requests.models import Response
@@ -99,7 +99,7 @@ logger = get_logger(__name__)
 
 
 def create_connectedk8s(
-    cmd: CLICommmand,
+    cmd: CLICommand,
     client: ConnectedClusterOperations,
     resource_group_name: str,
     cluster_name: str,
@@ -301,7 +301,7 @@ def create_connectedk8s(
     # Install kubectl and helm
     try:
         kubectl_client_location = install_kubectl_client()
-        helm_client_location = install_helm_client()
+        helm_client_location = install_helm_client(cmd)
     except Exception as e:
         raise CLIInternalError(
             f"An exception has occured while trying to perform kubectl or helm install: {e}"
@@ -344,6 +344,7 @@ def create_connectedk8s(
             # Performing cluster-diagnostic-checks
             diagnostic_checks, storage_space_available = (
                 precheckutils.fetch_diagnostic_checks_results(
+                    cmd,
                     api_instance,
                     batchv1_api_instance,
                     helm_client_location,
@@ -620,6 +621,7 @@ def create_connectedk8s(
                     "The kubernetes cluster you are trying to onboard is already onboarded to "
                     f"the resource group '{configmap_rg_name}' with resource name '{configmap_cluster_name}'."
                 )
+                logger.warning(consts.Cluster_Already_Onboarded_Error)
                 raise ArgumentUsageError(err_msg)
 
             # Re-put connected cluster
@@ -742,7 +744,9 @@ def create_connectedk8s(
             "Cleaning up the stale arc agents present on the cluster before starting new onboarding."
         )
         # Explicit CRD Deletion
-        crd_cleanup_force_delete(kubectl_client_location, kube_config, kube_context)
+        crd_cleanup_force_delete(
+            cmd, kubectl_client_location, kube_config, kube_context
+        )
         # Cleaning up the cluster
         utils.delete_arc_agents(
             release_namespace,
@@ -773,7 +777,9 @@ def create_connectedk8s(
             raise ArgumentUsageError(err_msg, recommendation=reco_msg)
 
         # cleanup of stuck CRD if release namespace is not present/deleted
-        crd_cleanup_force_delete(kubectl_client_location, kube_config, kube_context)
+        crd_cleanup_force_delete(
+            cmd, kubectl_client_location, kube_config, kube_context
+        )
 
     print(
         f"Step: {utils.get_utctimestring()}: Check if ResourceGroup exists.  Try to create if it doesn't"
@@ -1043,7 +1049,7 @@ def validate_existing_provisioned_cluster_for_reput(
                 raise InvalidArgumentValueError(err_msg)
 
 
-def send_cloud_telemetry(cmd: CLICommmand) -> str:
+def send_cloud_telemetry(cmd: CLICommand) -> str:
     telemetry.add_extension_event(
         "connectedk8s", {"Context.Default.AzureCLI.AzureCloud": cmd.cli_ctx.cloud.name}
     )
@@ -1143,7 +1149,7 @@ def check_kube_connection() -> str:
         git_version: str = api_response.git_version
         return git_version
     except Exception as e:  # pylint: disable=broad-except
-        logger.warning("Unable to verify connectivity to the Kubernetes cluster.")
+        logger.warning(consts.KubeApi_Connectivity_Failed_Warning)
         utils.kubernetes_exception_handler(
             e,
             consts.Kubernetes_Connectivity_FaultType,
@@ -1153,7 +1159,7 @@ def check_kube_connection() -> str:
     assert False
 
 
-def install_helm_client() -> str:
+def install_helm_client(cmd: CLICommand) -> str:
     print(
         f"Step: {utils.get_utctimestring()}: Install Helm client if it does not exist"
     )
@@ -1219,13 +1225,16 @@ def install_helm_client() -> str:
         logger.warning(
             "Downloading helm client for first time. This can take few minutes..."
         )
-        client = oras.client.OrasClient()
+
+        mcr_url = utils.get_mcr_path(cmd)
+
+        client = oras.client.OrasClient(hostname=mcr_url)
         retry_count = 3
         retry_delay = 5
         for i in range(retry_count):
             try:
                 client.pull(
-                    target=f"{consts.HELM_MCR_URL}:{artifactTag}",
+                    target=f"{mcr_url}/{consts.HELM_MCR_URL}:{artifactTag}",
                     outdir=download_location,
                 )
                 break
@@ -1289,8 +1298,22 @@ def connected_cluster_exists(
     return True
 
 
-def get_default_config_dp_endpoint(cmd: CLICommmand, location: str) -> str:
-    cloud_based_domain = cmd.cli_ctx.cloud.endpoints.active_directory.split(".")[2]
+def get_default_config_dp_endpoint(cmd: CLICommand, location: str) -> str:
+    active_directory_array = cmd.cli_ctx.cloud.endpoints.active_directory.split(".")
+    # default for public, mc, ff clouds
+    cloud_based_domain = active_directory_array[2]
+    # special cases for USSec/USNat clouds
+    if len(active_directory_array) == 4:
+        cloud_based_domain = active_directory_array[2] + "." + active_directory_array[3]
+    elif len(active_directory_array) == 5:
+        cloud_based_domain = (
+            active_directory_array[2]
+            + "."
+            + active_directory_array[3]
+            + "."
+            + active_directory_array[4]
+        )
+
     config_dp_endpoint = (
         f"https://{location}.dp.kubernetesconfiguration.azure.{cloud_based_domain}"
     )
@@ -1298,7 +1321,7 @@ def get_default_config_dp_endpoint(cmd: CLICommmand, location: str) -> str:
 
 
 def get_config_dp_endpoint(
-    cmd: CLICommmand,
+    cmd: CLICommand,
     location: str,
     values_file: str | None,
     arm_metadata: dict[str, Any] | None = None,
@@ -1348,6 +1371,7 @@ def load_kube_config(
             fault_type=consts.Load_Kubeconfig_Fault_Type,
             summary="Problem loading the kubeconfig file",
         )
+        logger.warning(consts.Kubeconfig_Load_Failed_Warning)
         raise FileOperationError("Problem loading the kubeconfig file. " + str(e))
 
 
@@ -1733,7 +1757,7 @@ def list_connectedk8s(
 
 
 def delete_connectedk8s(
-    cmd: CLICommmand,
+    cmd: CLICommand,
     client: ConnectedClusterOperations,
     resource_group_name: str,
     cluster_name: str,
@@ -1785,7 +1809,7 @@ def delete_connectedk8s(
     check_kube_connection()
 
     # Install helm client
-    helm_client_location = install_helm_client()
+    helm_client_location = install_helm_client(cmd)
 
     # Check Release Existance
     release_namespace = utils.get_release_namespace(
@@ -1802,10 +1826,14 @@ def delete_connectedk8s(
         print(f"Step: {utils.get_utctimestring()}: Performing Force Delete")
         kubectl_client_location = install_kubectl_client()
 
-        delete_cc_resource(client, resource_group_name, cluster_name, no_wait).result()
+        delete_cc_resource(
+            client, resource_group_name, cluster_name, no_wait, force=force_delete
+        ).result()
 
         # Explicit CRD Deletion
-        crd_cleanup_force_delete(kubectl_client_location, kube_config, kube_context)
+        crd_cleanup_force_delete(
+            cmd, kubectl_client_location, kube_config, kube_context
+        )
 
         if release_namespace:
             utils.delete_arc_agents(
@@ -1820,7 +1848,9 @@ def delete_connectedk8s(
         return
 
     if not release_namespace:
-        delete_cc_resource(client, resource_group_name, cluster_name, no_wait).result()
+        delete_cc_resource(
+            client, resource_group_name, cluster_name, no_wait, force=force_delete
+        ).result()
         return
 
     # Loading config map
@@ -1871,7 +1901,9 @@ def delete_connectedk8s(
                 recommendation=reco_str,
             )
 
-        delete_cc_resource(client, resource_group_name, cluster_name, no_wait).result()
+        delete_cc_resource(
+            client, resource_group_name, cluster_name, no_wait, force=force_delete
+        ).result()
     else:
         telemetry.set_exception(
             exception="Unable to delete connected cluster",
@@ -1952,15 +1984,26 @@ def delete_cc_resource(
     resource_group_name: str,
     cluster_name: str,
     no_wait: bool,
+    force: bool = False,
 ) -> LROPoller[None]:
     print(f"Step: {utils.get_utctimestring()}: Deleting ARM resource")
     try:
-        poller: LROPoller[None] = sdk_no_wait(
-            no_wait,
-            client.begin_delete,
-            resource_group_name=resource_group_name,
-            cluster_name=cluster_name,
-        )
+        poller: LROPoller[None]
+        if force:
+            poller = sdk_no_wait(
+                no_wait,
+                client.begin_delete,
+                resource_group_name=resource_group_name,
+                cluster_name=cluster_name,
+                params={"force": True},
+            )
+        else:
+            poller = sdk_no_wait(
+                no_wait,
+                client.begin_delete,
+                resource_group_name=resource_group_name,
+                cluster_name=cluster_name,
+            )
         return poller
     except Exception as e:
         utils.arm_exception_handler(
@@ -1995,7 +2038,7 @@ def update_connected_cluster_internal(
 
 
 def update_connected_cluster(
-    cmd: CLICommmand,
+    cmd: CLICommand,
     client: ConnectedClusterOperations,
     resource_group_name: str,
     cluster_name: str,
@@ -2158,7 +2201,7 @@ def update_connected_cluster(
     kubernetes_version = check_kube_connection()
 
     # Install helm client
-    helm_client_location = install_helm_client()
+    helm_client_location = install_helm_client(cmd)
 
     release_namespace = validate_release_namespace(
         client,
@@ -2351,7 +2394,7 @@ def update_connected_cluster(
 
 
 def upgrade_agents(
-    cmd: CLICommmand,
+    cmd: CLICommand,
     client: ConnectedClusterOperations,
     resource_group_name: str,
     cluster_name: str,
@@ -2396,7 +2439,7 @@ def upgrade_agents(
     api_instance = kube_client.CoreV1Api()
 
     # Install helm client
-    helm_client_location = install_helm_client()
+    helm_client_location = install_helm_client(cmd)
 
     # Check Release Existence
     release_namespace = utils.get_release_namespace(
@@ -2797,7 +2840,7 @@ def get_all_helm_values(
 
 
 def enable_features(
-    cmd: CLICommmand,
+    cmd: CLICommand,
     client: ConnectedClusterOperations,
     resource_group_name: str,
     cluster_name: str,
@@ -2892,7 +2935,7 @@ def enable_features(
     kubernetes_version = check_kube_connection()
 
     # Install helm client
-    helm_client_location = install_helm_client()
+    helm_client_location = install_helm_client(cmd)
 
     release_namespace = validate_release_namespace(
         client,
@@ -3030,7 +3073,7 @@ def enable_features(
 
 
 def disable_features(
-    cmd: CLICommmand,
+    cmd: CLICommand,
     client: ConnectedClusterOperations,
     resource_group_name: str,
     cluster_name: str,
@@ -3085,7 +3128,7 @@ def disable_features(
     kubernetes_version = check_kube_connection()
 
     # Install helm client
-    helm_client_location = install_helm_client()
+    helm_client_location = install_helm_client(cmd)
 
     release_namespace = validate_release_namespace(
         client,
@@ -3169,7 +3212,7 @@ def disable_features(
 
 
 def get_chart_and_disable_features(
-    cmd: CLICommmand,
+    cmd: CLICommand,
     connected_cluster: ConnectedCluster,
     kube_config: str | None,
     kube_context: str | None,
@@ -3260,7 +3303,7 @@ def get_chart_and_disable_features(
 
 
 def disable_cluster_connect(
-    cmd: CLICommmand,
+    cmd: CLICommand,
     client: ConnectedClusterOperations,
     resource_group_name: str,
     cluster_name: str,
@@ -3467,7 +3510,7 @@ def handle_merge(
 
 
 def client_side_proxy_wrapper(
-    cmd: CLICommmand,
+    cmd: CLICommand,
     client: ConnectedClusterOperations,
     resource_group_name: str,
     cluster_name: str,
@@ -3535,7 +3578,7 @@ def client_side_proxy_wrapper(
     if "--debug" in cmd.cli_ctx.data["safe_params"]:
         debug_mode = True
 
-    install_location = proxybinaryutils.install_client_side_proxy(None, debug_mode)
+    install_location = proxybinaryutils.install_client_side_proxy(cmd, None, debug_mode)
     args.append(install_location)
     install_dir = os.path.dirname(install_location)
 
@@ -3638,7 +3681,7 @@ def client_side_proxy_wrapper(
 
 
 def client_side_proxy_main(
-    cmd: CLICommmand,
+    cmd: CLICommand,
     tenant_id: str,
     client: ConnectedClusterOperations,
     resource_group_name: str,
@@ -3709,7 +3752,7 @@ def client_side_proxy_main(
 
 
 def client_side_proxy(
-    cmd: CLICommmand,
+    cmd: CLICommand,
     tenant_id: str,
     client: ConnectedClusterOperations,
     resource_group_name: str,
@@ -3842,7 +3885,7 @@ def client_side_proxy(
 
 
 def check_cl_registration_and_get_oid(
-    cmd: CLICommmand, cl_oid: str | None, subscription_id: str | None
+    cmd: CLICommand, cl_oid: str | None, subscription_id: str | None
 ) -> tuple[bool, str]:
     print(
         f"Step: {utils.get_utctimestring()}: Checking Custom Location(Microsoft.ExtendedLocation) RP Registration state for this Subscription, and attempt to get the Custom Location Object ID (OID),if registered"
@@ -3881,7 +3924,7 @@ def check_cl_registration_and_get_oid(
     return enable_custom_locations, custom_locations_oid
 
 
-def get_custom_locations_oid(cmd: CLICommmand, cl_oid: str | None) -> str:
+def get_custom_locations_oid(cmd: CLICommand, cl_oid: str | None) -> str:
     try:
         graph_client = graph_client_factory(cmd.cli_ctx)
         app_id = "bc313c14-388c-4e7d-a58e-70017303ee3b"
@@ -3942,7 +3985,7 @@ def get_custom_locations_oid(cmd: CLICommmand, cl_oid: str | None) -> str:
 
 
 def troubleshoot(
-    cmd: CLICommmand,
+    cmd: CLICommand,
     client: ConnectedClusterOperations,
     resource_group_name: str,
     cluster_name: str,
@@ -3985,7 +4028,7 @@ def troubleshoot(
         load_kube_config(kube_config, kube_context, skip_ssl_verification)
 
         # Install helm client
-        helm_client_location = install_helm_client()
+        helm_client_location = install_helm_client(cmd)
 
         # Install kubectl client
         kubectl_client_location = install_kubectl_client()
@@ -4392,16 +4435,36 @@ def install_kubectl_client() -> str:
 
 
 def crd_cleanup_force_delete(
-    kubectl_client_location: str, kube_config: str | None, kube_context: str | None
+    cmd: CLICommand,
+    kubectl_client_location: str,
+    kube_config: str | None,
+    kube_context: str | None,
 ) -> None:
     print(f"Step: {utils.get_utctimestring()}: Deleting Arc CRDs")
+
+    active_directory_array = cmd.cli_ctx.cloud.endpoints.active_directory.split(".")
+    # default for public, mc, ff clouds
+    cloud_based_domain = active_directory_array[2]
+    # special cases for USSec/USNat clouds
+    if len(active_directory_array) == 4:
+        cloud_based_domain = active_directory_array[2] + "." + active_directory_array[3]
+    elif len(active_directory_array) == 5:
+        cloud_based_domain = (
+            active_directory_array[2]
+            + "."
+            + active_directory_array[3]
+            + "."
+            + active_directory_array[4]
+        )
+
     timeout_for_crd_deletion = "20s"
     for crds in consts.CRD_FOR_FORCE_DELETE:
+        full_crds = f"{crds}.{cloud_based_domain}"
         cmd_helm_delete = [
             kubectl_client_location,
             "delete",
             "crds",
-            crds,
+            full_crds,
             "--ignore-not-found",
             "--wait",
             "--timeout",
@@ -4424,7 +4487,8 @@ def crd_cleanup_force_delete(
 
     # Patch if CRD is in Terminating state
     for crds in consts.CRD_FOR_FORCE_DELETE:
-        cmd = [kubectl_client_location, "get", "crd", crds, "-ojson"]
+        full_crds = f"{crds}.{cloud_based_domain}"
+        cmd = [kubectl_client_location, "get", "crd", full_crds, "-ojson"]
         if kube_config:
             cmd.extend(["--kubeconfig", kube_config])
         if kube_context:
@@ -4441,7 +4505,7 @@ def crd_cleanup_force_delete(
                     kubectl_client_location,
                     "patch",
                     "crd",
-                    crds,
+                    full_crds,
                     "--type=merge",
                     "--patch-file",
                     yaml_file_path,

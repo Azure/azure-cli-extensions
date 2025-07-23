@@ -110,10 +110,11 @@ def install_helm_client():
         logger.warning(
             "Downloading helm client for first time. This can take few minutes..."
         )
-        client = oras.client.OrasClient()
+        client = oras.client.OrasClient(hostname="mcr.microsoft.com")
         try:
             client.pull(
-                target=f"{consts.HELM_MCR_URL}:{artifactTag}", outdir=download_location
+                target=f"mcr.microsoft.com/{consts.HELM_MCR_URL}:{artifactTag}",
+                outdir=download_location,
             )
         except Exception as e:
             logger.warning("Failed to download helm client." + str(e))
