@@ -18,6 +18,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete a reservation
+
+    :example: Reservations_Delete
+        az pscloud reservation delete --resource-group rgpurestorage --reservation-name reservation_resource_name
     """
 
     _aaz_info = {

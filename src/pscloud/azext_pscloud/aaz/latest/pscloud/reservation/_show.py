@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get a reservation
+
+    :example: Reservations_Get
+        az pscloud reservation show --resource-group rgpurestorage --reservation-name reservation_resource_name
     """
 
     _aaz_info = {

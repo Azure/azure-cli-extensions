@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class GetAvsStatus(AAZCommand):
     """Returns the status of the storage pool connection to AVS
+
+    :example: StoragePools_GetAvsStatus
+        az pscloud storagepool get-avs-status --resource-group rgpurestorage --storage-pool-name storagePoolname
     """
 
     _aaz_info = {

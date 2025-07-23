@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update a storage pool
+
+    :example: update_example
+        az pscloud storagepool update --resource-group rgpurestorage --name storagePoolName --provisioned-bandwidth 1024
     """
 
     _aaz_info = {

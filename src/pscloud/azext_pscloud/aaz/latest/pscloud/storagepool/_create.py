@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create a storage pool
+
+    :example: StoragePools_Create
+        az pscloud storagepool create --resource-group rgpurestorage --storage-pool-name storagePoolname --availability-zone Zone3 --vnet-injection "{subnet-id:subnet_resource_id,vnet-id:vnet_resource_id}" --provisioned-bandwidth 992 --reservation-id reservation_resource_id --tags "{key7593:vsyiygyurvwlfaezpuqu}" --location Central US
     """
 
     _aaz_info = {

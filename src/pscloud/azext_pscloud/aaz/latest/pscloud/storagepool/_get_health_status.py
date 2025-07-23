@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class GetHealthStatus(AAZCommand):
     """Retrieve health metrics of a storage pool
+
+    :example: StoragePools_GetHealthStatus
+        az pscloud storagepool get-health-status --resource-group rgpurestorage --storage-pool-name storagePoolname
     """
 
     _aaz_info = {
