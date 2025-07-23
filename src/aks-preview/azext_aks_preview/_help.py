@@ -657,6 +657,9 @@ helps['aks create'] = f"""
           type: bool
           short-summary: Create a default ManagedSystem mode that is fully managed by AKS.
           long-summary: When set, the default system node pool is created with ManagedSystem mode, where all properties except name and mode are managed by AKS. Learn more at https://aka.ms/aks/nodepool/mode.
+        - name: --enable-upstream-kubescheduler-user-configuration
+          type: bool
+          short-summary: Enable user-defined scheduler configuration for kube-scheduler upstream on the cluster
     examples:
         - name: Create a Kubernetes cluster with an existing SSH public key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --ssh-key-value /path/to/publickey
@@ -1298,6 +1301,12 @@ helps['aks update'] = """
         - name: --enable-http-proxy
           type: bool
           short-summary: Enable HTTP Proxy Configuration on the cluster.
+        - name: --enable-upstream-kubescheduler-user-configuration
+          type: bool
+          short-summary: Enable user-defined scheduler configuration for kube-scheduler upstream on the cluster
+        - name: --disable-upstream-kubescheduler-user-configuration
+          type: bool
+          short-summary: Disable user-defined scheduler configuration for kube-scheduler upstream on the cluster
     examples:
       - name: Reconcile the cluster back to its current state.
         text: az aks update -g MyResourceGroup -n MyManagedCluster

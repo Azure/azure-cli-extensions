@@ -751,6 +751,7 @@ def aks_create(
     enable_imds_restriction=False,
     # managed system pool
     enable_managed_system_pool=False,
+    enable_upstream_kubescheduler_user_configuration=False,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -966,6 +967,8 @@ def aks_update(
     enable_imds_restriction=False,
     disable_imds_restriction=False,
     migrate_vmas_to_vms=False,
+    enable_upstream_kubescheduler_user_configuration=False,
+    disable_upstream_kubescheduler_user_configuration=False,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
