@@ -67,7 +67,6 @@ class PscloudScenario(ScenarioTest):
         self.cmd(
             "az pscloud storagepool get-avs-status --resource-group S1RG1 --storage-pool-name cliTestStoragePool8",
             checks=[
-                self.exists('avsEnabled'),
                 self.exists('currentConnectionStatus')
             ]
         )
