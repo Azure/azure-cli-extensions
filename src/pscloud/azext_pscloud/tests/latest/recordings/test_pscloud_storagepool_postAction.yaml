@@ -1,0 +1,114 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - pscloud storagepool get-health-status
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --resource-group --storage-pool-name
+      User-Agent:
+      - AZURECLI/2.75.0 azsdk-python-core/1.35.0 Python/3.12.11 (Linux-6.8.0-1027-azure-x86_64-with-glibc2.36)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/S1RG1/providers/PureStorage.Block/storagePools/cliTestStoragePool8/getHealthStatus?api-version=2024-11-01-preview
+  response:
+    body:
+      string: '{"health":{"usedCapacityPercentage":0.0,"bandwidthUsage":{"current":0.0,"provisioned":1040187392.0,"max":2147483648.0},"iopsUsage":{"current":0.0,"provisioned":65384.0,"max":150000.0},"space":{"totalUsed":613023744,"unique":0,"snapshots":0,"shared":613023744},"dataReductionRatio":1.0,"estimatedMaxCapacity":0},"alerts":[]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '323'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 23 Jul 2025 07:00:16 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 30bcd825-0556-4413-bca3-6a849461a7ad
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - appId=91a99062-ab22-4fd2-a3b2-766d55d6f5c5,tenantId=888d76fa-54b2-4ced-8ee5-aac1585adee7,objectId=d72e9d00-2ae6-4216-9c0f-ef425c71a2bc/southindia/14e9895a-1e5a-4627-aebc-7a1779146ab0
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: 76B70449E52C4F08B1F14CA0CFBB1124 Ref B: PNQ231110908031 Ref C: 2025-07-23T07:00:13Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - pscloud storagepool get-avs-status
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --resource-group --storage-pool-name
+      User-Agent:
+      - AZURECLI/2.75.0 azsdk-python-core/1.35.0 Python/3.12.11 (Linux-6.8.0-1027-azure-x86_64-with-glibc2.36)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/S1RG1/providers/PureStorage.Block/storagePools/cliTestStoragePool8/getAvsStatus?api-version=2024-11-01-preview
+  response:
+    body:
+      string: '{"avsEnabled":false,"currentConnectionStatus":"NoAVS","sddcResourceId":""}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '74'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 23 Jul 2025 07:00:19 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 5f16ddd8-8445-4cf2-ab47-b3431fb25c94
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - appId=91a99062-ab22-4fd2-a3b2-766d55d6f5c5,tenantId=888d76fa-54b2-4ced-8ee5-aac1585adee7,objectId=d72e9d00-2ae6-4216-9c0f-ef425c71a2bc/jioindiacentral/3fce6fc6-e763-4f65-8184-2040bc2cf85b
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: E4E735F0016B4B5CBEE41182766847FF Ref B: PNQ231110907054 Ref C: 2025-07-23T07:00:16Z'
+    status:
+      code: 200
+      message: OK
+version: 1
