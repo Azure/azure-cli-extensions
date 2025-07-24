@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List StorageDiscoveryWorkspace resources by subscription ID
+
+    :example: List StorageDiscoveryWorkspaces by Subscription
+        az storage-discovery workspace list
     """
 
     _aaz_info = {

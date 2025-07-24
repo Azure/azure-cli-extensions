@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create a StorageDiscoveryWorkspace
+
+    :example: Create StorageDiscoveryWorkspace
+        az storage-discovery workspace create --resource-group sample-rg --storage-discovery-workspace-name Sample-Storage-Workspace --location westeurope --tags "{tag1:value1,tag2:value2}" --workspace-roots "[/subscriptions/b79cb3ba-745e-5d9a-8903-4a02327a7e09]" --description Sample Storage Discovery Workspace --scopes "[{display-name:Sample-Collection,resource-types:[/subscriptions/b79cb3ba-745e-5d9a-8903-4a02327a7e09/resourceGroups/sample-rg/providers/Microsoft.Storage/storageAccounts/sample-storageAccount],tag-keys-only:[filterTag1,filterTag2],tags:{filterTag3:value3,filterTag4:value4}},{display-name:Sample-Collection-2,resource-types:[/subscriptions/b79cb3ba-745e-5d9a-8903-4a02327a7e09/resourceGroups/sample-rg/providers/Microsoft.Storage/storageAccounts/sample-storageAccount],tag-keys-only:[filterTag5],tags:{filterTag6:value6}}]"
     """
 
     _aaz_info = {

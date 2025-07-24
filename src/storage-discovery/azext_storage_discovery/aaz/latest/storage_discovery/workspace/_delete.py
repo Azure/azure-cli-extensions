@@ -18,6 +18,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete a StorageDiscoveryWorkspace
+
+    :example: Delete a StorageDiscoveryWorkspace
+        az storage-discovery workspace delete --resource-group sample-rg --storage-discovery-workspace-name sampleworkspace
     """
 
     _aaz_info = {

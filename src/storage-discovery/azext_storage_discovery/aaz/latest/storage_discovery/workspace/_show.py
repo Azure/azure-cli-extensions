@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get a StorageDiscoveryWorkspace
+
+    :example: Get a StorageDiscoveryWorkspace
+        az storage-discovery workspace show --resource-group sample-rg --storage-discovery-workspace-name Sample-Storage-Workspace
     """
 
     _aaz_info = {
