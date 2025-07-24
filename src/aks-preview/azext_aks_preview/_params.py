@@ -1681,6 +1681,7 @@ def load_arguments(self, _):
         c.argument("max_surge", validator=validate_max_surge)
         c.argument("drain_timeout", type=int)
         c.argument("node_soak_duration", type=int)
+        # TODO: Add args for blue green upgrades (and validators if needed)
         c.argument("undrainable_node_behavior")
         c.argument("max_unavailable", validator=validate_max_unavailable)
         c.argument("max_blocked_nodes", validator=validate_max_blocked_nodes)

@@ -487,6 +487,8 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
         # this parameter does not need dynamic completion
         # this parameter does not need validation
         return undrainable_node_behavior
+    
+    # TODO: Add getters for blue-green upgrade settings
 
     def get_max_unavailable(self) -> str:
         """Obtain the value of max_unavailable.
@@ -1485,6 +1487,8 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
 
         agentpool.upgrade_settings = upgrade_settings
         return agentpool
+    
+    # TODO: Add a function to set up the blue green upgrade settings
 
 
 class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
@@ -1869,6 +1873,8 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
             upgrade_settings.max_unavailable = max_unavailable
 
         return agentpool
+    
+    ## TODO: Add a function to update the blue green upgrade settings
 
     def update_agentpool(self, agentpool: AgentPool) -> AgentPool:
         """Send request to add a new agentpool.
