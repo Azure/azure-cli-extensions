@@ -1879,6 +1879,7 @@ helps['aks nodepool list'] = """
     short-summary: List node pools in the managed Kubernetes cluster.
 """
 
+# TODO: Add params for blue green upgrade settings
 helps['aks nodepool add'] = """
     type: command
     short-summary: Add a node pool to the managed Kubernetes cluster.
