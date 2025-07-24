@@ -11,18 +11,19 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
-* Add support for `ManagedSystem` Agent Pool Mode.
+
+18.0.0b20
++++++++
+* Fix the bug affecting VMAS to VMS migration in the `az aks update`` command using the `--migrate-vmas-to-vms` option.
 
 18.0.0b19
 +++++++
-- Add `--localdns-config` to `az aks nodepool add` and to `az aks nodepool update` to support configuring a local DNS profile for agent pools.
-
+* Add support for `ManagedSystem` Agent Pool Mode.
+* Add `--localdns-config` to `az aks nodepool add` and to `az aks nodepool update` to support configuring a local DNS profile for agent pools.
 
 18.0.0b18
 +++++++
 * Add validation error when neither --location or --cluster and --resource-group-name are specified for az extension type list or az extension type version list
-
-
 
 18.0.0b17
 +++++++
