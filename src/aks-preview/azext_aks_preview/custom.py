@@ -1378,6 +1378,7 @@ def aks_agentpool_add(
     drain_timeout=None,
     node_soak_duration=None,
     undrainable_node_behavior=None,
+    # TODO: Add cli params for --upgrade-strategy and --upgrade-settings-blue-green
     max_unavailable=None,
     max_blocked_nodes=None,
     mode=CONST_NODEPOOL_MODE_USER,
@@ -1463,6 +1464,7 @@ def aks_agentpool_update(
     max_surge=None,
     drain_timeout=None,
     node_soak_duration=None,
+    # TODO: Add cli params for --upgrade-strategy and --upgrade-settings-blue-green
     undrainable_node_behavior=None,
     max_unavailable=None,
     max_blocked_nodes=None,
@@ -1558,6 +1560,7 @@ def aks_agentpool_upgrade(cmd,
                           max_surge=None,
                           drain_timeout=None,
                           node_soak_duration=None,
+                          # TODO: Add cli params for --upgrade-strategy and --upgrade-settings-blue-green
                           undrainable_node_behavior=None,
                           max_unavailable=None,
                           max_blocked_nodes=None,
