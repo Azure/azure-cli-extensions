@@ -9,7 +9,7 @@ import json
 from knack.util import CLIError
 
 from azure.cli.core.commands.client_factory import get_subscription_id
-from azure.cli.core.util import sdk_no_wait
+from azure.cli.core.util import sdk_no_wait, get_file_json, shell_safe_json_parse
 
 from azext_fleet._client_factory import CUSTOM_MGMT_FLEET
 from azext_fleet._helpers import print_or_merge_credentials
@@ -461,8 +461,6 @@ def skip_update_run(cmd,  # pylint: disable=unused-argument
 def get_update_run_strategy(cmd, operation_group, stages):
     if stages is None:
         return None
-
-    from azure.cli.core.util import get_file_json, shell_safe_json_parse
 
     # Check if the input is a file path or inline JSON
     if os.path.exists(stages):
