@@ -9,5 +9,118 @@ from azure.cli.testsdk import *
 
 
 class StorageDiscoveryScenario(ScenarioTest):
-    # TODO: add tests here
-    pass
+    @ResourceGroupPreparer(location='francecentral')
+    def test_storage_discovery_workspace_scenarios(self):
+        self.kwargs.update({
+            "workspace_name": self.create_random_name('clitest', 18),
+            "discovery_scope_level1": f"/subscriptions/{self.get_subscription_id()}/resourceGroups/{self.kwargs['rg']}",
+            "discovery_scope_level2": f"/subscriptions/{self.get_subscription_id()}"
+        })
+        
+        # Test create workspace with scope file
+        self.kwargs.update({
+            "scope1_json": '[{"displayName":"test1","resourceTypes":["Microsoft.Storage/storageAccounts"],"tagKeysOnly":["e2etest1"],"tags":{"tag1":"value1","tag2":"value2"}}]'
+        })
+        
+        # Create workspace
+        self.cmd('az storage-discovery workspace create '
+                 '-g {rg} -n {workspace_name} --location francecentral '
+                 '--description "123" --sku Standard '
+                 '--workspace-roots "{discovery_scope_level1}" '
+                 '--scopes "{scope1_json}"',
+                 checks=[
+                     JMESPathCheck('name', self.kwargs.get('workspace_name', '')),
+                     JMESPathCheck('location', "francecentral"),
+                     JMESPathCheck('properties.description', "123"),
+                     JMESPathCheck('properties.sku', "Standard"),
+                     JMESPathCheck('properties.workspaceRoots[0]', self.kwargs.get('discovery_scope_level1', '')),
+                     JMESPathCheck('properties.scopes[0].displayName', "test1"),
+                     JMESPathCheck('properties.scopes[0].resourceTypes[0]', "Microsoft.Storage/storageAccounts"),
+                     JMESPathCheck('properties.scopes[0].tagKeysOnly[0]', "e2etest1"),
+                     JMESPathCheck('properties.scopes[0].tags.tag1', "value1"),
+                     JMESPathCheck('properties.scopes[0].tags.tag2', "value2")
+                 ])
+        
+        # Test show workspace
+        self.cmd('az storage-discovery workspace show -g {rg} -n {workspace_name}',
+                 checks=[
+                     JMESPathCheck('name', self.kwargs.get('workspace_name', '')),
+                     JMESPathCheck('location', "francecentral"),
+                     JMESPathCheck('properties.description', "123"),
+                     JMESPathCheck('properties.sku', "Standard")
+                 ])
+        
+        # Test list workspaces from resource group
+        self.cmd('az storage-discovery workspace list -g {rg}',
+                 checks=[JMESPathCheck('length(@)', 1)])
+        
+        # Test update workspace
+        self.kwargs.update({
+            "scope2_json": '[{"displayName":"test2","resourceTypes":["Microsoft.Storage/storageAccounts"],"tagKeysOnly":["e2etest2"],"tags":{"tag3":"value3"}}]'
+        })
+        
+        self.cmd('az storage-discovery workspace update '
+                 '-g {rg} -n {workspace_name} '
+                 '--description "test2" --sku Free '
+                 '--workspace-roots "{discovery_scope_level2}" '
+                 '--scopes "{scope2_json}" '
+                 '--tags tag4=value4',
+                 checks=[
+                     JMESPathCheck('properties.description', "test2"),
+                     JMESPathCheck('properties.sku', "Free"),
+                     JMESPathCheck('properties.workspaceRoots[0]', self.kwargs.get('discovery_scope_level2', '')),
+                     JMESPathCheck('properties.scopes[0].displayName', "test2"),
+                     JMESPathCheck('properties.scopes[0].tagKeysOnly[0]', "e2etest2"),
+                     JMESPathCheck('properties.scopes[0].tags.tag3', "value3"),
+                     JMESPathCheck('tags.tag4', "value4")
+                 ])
+        
+        # Test delete workspace
+        self.cmd('az storage-discovery workspace delete -g {rg} -n {workspace_name} -y')
+        
+        # Verify workspace is deleted
+        self.cmd('az storage-discovery workspace list -g {rg}',
+                 checks=[JMESPathCheck('length(@)', 0)])
+    
+    @ResourceGroupPreparer(location='eastus2')
+    def test_storage_discovery_workspace_basic_operations(self):
+        self.kwargs.update({
+            "workspace_name": self.create_random_name('sdworkspace', 18),
+            "workspace_scope": f"/subscriptions/{self.get_subscription_id()}/resourceGroups/{self.kwargs['rg']}",
+            "basic_scope_json": '[{"displayName":"basic","resourceTypes":["Microsoft.Storage/storageAccounts"]}]'
+        })
+        
+        # Test create workspace with minimal parameters but required scopes
+        self.cmd('az storage-discovery workspace create '
+                 '-g {rg} -n {workspace_name} --location eastus2 '
+                 '--workspace-roots "{workspace_scope}" '
+                 '--scopes "{basic_scope_json}"',
+                 checks=[
+                     JMESPathCheck('name', self.kwargs.get('workspace_name', '')),
+                     JMESPathCheck('location', "eastus2"),
+                     JMESPathCheck('properties.workspaceRoots[0]', self.kwargs.get('workspace_scope', ''))
+                 ])
+        
+        # Test show workspace
+        self.cmd('az storage-discovery workspace show -g {rg} -n {workspace_name}',
+                 checks=[
+                     JMESPathCheck('name', self.kwargs.get('workspace_name', '')),
+                     JMESPathCheck('location', "eastus2")
+                 ])
+        
+        # Test update workspace with tags only
+        self.cmd('az storage-discovery workspace update '
+                 '-g {rg} -n {workspace_name} '
+                 '--tags environment=test purpose=demo',
+                 checks=[
+                     JMESPathCheck('tags.environment', "test"),
+                     JMESPathCheck('tags.purpose', "demo")
+                 ])
+        
+        # Clean up
+        self.cmd('az storage-discovery workspace delete -g {rg} -n {workspace_name} -y')
+    
+    def test_storage_discovery_workspace_list_subscription(self):
+        # Test list workspaces from subscription (may be empty)
+        result = self.cmd('az storage-discovery workspace list').get_output_in_json()
+        self.assertIsInstance(result, list)

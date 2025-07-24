@@ -1,0 +1,50 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage-discovery workspace list
+      Connection:
+      - keep-alive
+      User-Agent:
+      - AZURECLI/2.75.0 azsdk-python-core/1.35.0 Python/3.12.11 (Linux-6.8.0-1030-azure-x86_64-with-glibc2.36)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StorageDiscovery/storageDiscoveryWorkspaces?api-version=2025-06-01-preview
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/shane_cli_test/providers/Microsoft.StorageDiscovery/storageDiscoveryWorkspaces/clitest0724","name":"clitest0724","type":"microsoft.storagediscovery/storagediscoveryworkspaces","location":"francecentral","tags":{"team":"Discovery","tag4":"value4"},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-07-24T20:55:05.0509322Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-07-24T20:55:14.4024626Z"},"properties":{"sku":"Free","workspaceRoots":["/subscriptions/00000000-0000-0000-0000-000000000000"],"description":"test2","scopes":[{"displayName":"test2","resourceTypes":["Microsoft.Storage/storageAccounts"],"tagKeysOnly":["e2etest2"],"tags":{"tag3":"value3"}}],"provisioningState":"Succeeded"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '853'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 24 Jul 2025 21:18:02 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-original-request-ids:
+      - 92bf27dc-ec8f-4ad4-8a63-263a925996e2
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 66ED014298694DF598E9324C559D74AD Ref B: MWH011020807040 Ref C: 2025-07-24T21:18:02Z'
+    status:
+      code: 200
+      message: OK
+version: 1
