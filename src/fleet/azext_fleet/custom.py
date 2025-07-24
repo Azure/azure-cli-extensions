@@ -462,9 +462,13 @@ def get_update_run_strategy(cmd, operation_group, stages):
     if stages is None:
         return None
 
-    with open(stages, 'r', encoding='utf-8') as fp:
-        data = json.load(fp)
-        fp.close()
+    from azure.cli.core.util import get_file_json, shell_safe_json_parse
+
+    # Check if the input is a file path or inline JSON
+    if os.path.exists(stages):
+        data = get_file_json(stages)
+    else:
+        data = shell_safe_json_parse(stages)
 
     update_group_model = cmd.get_models(
         "UpdateGroup",
