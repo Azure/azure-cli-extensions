@@ -14,7 +14,7 @@ Pending
 
 18.0.0b20
 +++++++
-* Fix the bug affecting VMAS to VMS migration in the `az aks update`` command using the `--migrate-vmas-to-vms` option.
+* Fix the bug affecting VMAS to VMS migration in the `az aks update` command using the `--migrate-vmas-to-vms` option.
 
 18.0.0b19
 +++++++
