@@ -4,12 +4,11 @@
 # --------------------------------------------------------------------------------------------
 
 import os
-import json
 
 from knack.util import CLIError
 
 from azure.cli.core.commands.client_factory import get_subscription_id
-from azure.cli.core.util import sdk_no_wait
+from azure.cli.core.util import sdk_no_wait, get_file_json, shell_safe_json_parse
 
 from azext_fleet._client_factory import CUSTOM_MGMT_FLEET
 from azext_fleet._helpers import print_or_merge_credentials
@@ -458,9 +457,11 @@ def get_update_run_strategy(cmd, operation_group, stages):
     if stages is None:
         return None
 
-    with open(stages, 'r', encoding='utf-8') as fp:
-        data = json.load(fp)
-        fp.close()
+    # Check if the input is a file path or inline JSON
+    if os.path.exists(stages):
+        data = get_file_json(stages)
+    else:
+        data = shell_safe_json_parse(stages)
 
     update_group_model = cmd.get_models(
         "UpdateGroup",

@@ -75,8 +75,8 @@ def load_arguments(self, _):
         c.argument('kubernetes_version', validator=validate_kubernetes_version)
         c.argument('node_image_selection', arg_type=get_enum_type(['Latest', 'Consistent']),
                    help='Node Image Selection is an option that lets you choose how your clusters\' nodes are upgraded')
-        c.argument('stages', type=file_type, completer=FilesCompleter(),
-                   help='Path to a json file that defines stages to upgrade a fleet. See examples for further reference.')
+        c.argument('stages',
+                   help='Path to a JSON file that defines stages to upgrade a fleet, or a JSON string. See examples for further reference.')
         c.argument('update_strategy_name', validator=validate_update_strategy_name,
                    help='The name of the update strategy to use for this update run. If not specified, the default update strategy will be used.')
 
@@ -90,8 +90,8 @@ def load_arguments(self, _):
         c.argument('fleet_name', options_list=['--fleet-name', '-f'], help='Specify the fleet name.')
 
     with self.argument_context('fleet updatestrategy create') as c:
-        c.argument('stages', type=file_type, completer=FilesCompleter(),
-                   help='Path to a json file that defines an update strategy.')
+        c.argument('stages',
+                   help='Path to a JSON file that defines an update strategy, or a JSON string.')
 
     with self.argument_context('fleet autoupgradeprofile') as c:
         c.argument('name', options_list=['--name', '-n'], help='Specify name for the auto upgrade profile.')
