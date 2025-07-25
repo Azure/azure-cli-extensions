@@ -16296,7 +16296,7 @@ spec:
             "aks create --resource-group={resource_group} --name={name} --location={location} "
             "--ssh-key-value={ssh_key_value} "
             "--kubernetes-version={k8s_version} "
-            "--enable-imds-restriction "
+            "--enable-imds-restriction --enable-oidc-issuer "
             "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/IMDSRestrictionPreview"
         )
         self.cmd(
