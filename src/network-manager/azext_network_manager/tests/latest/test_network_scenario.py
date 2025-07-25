@@ -654,7 +654,7 @@ class NetworkScenarioTest(ScenarioTest):
     @ResourceGroupPreparer(name_prefix='test_network_manager_static_cidr_crud', location='eastus2')
     def test_network_manager_static_cidr_crud(self, resource_group):
         self.kwargs.update({
-            'manager_name': 'TestNetworkManager',
+            'manager_name': 'TestNetworkManagerIPAM',
             'sub': '/subscriptions/{}'.format(self.get_subscription_id()),
             "pool_name": self.create_random_name("pool-", 10),
             "staticCidr_name": self.create_random_name("staticCidr-", 15),
@@ -663,7 +663,7 @@ class NetworkScenarioTest(ScenarioTest):
         })
 
         self.cmd('network manager create --name {manager_name} --description "My Test Network Manager" '
-                 '--scope-accesses "SecurityAdmin" '
+                 '--scope-accesses "Connectivity" '
                  '--network-manager-scopes '
                  'subscriptions={sub} '
                  '-l eastus2euap '
@@ -680,12 +680,17 @@ class NetworkScenarioTest(ScenarioTest):
         self.cmd('az network manager ipam-pool show --name {pool_name} --manager-name {manager_name} --resource-group {rg}',
                  self.check('properties.description', 'updated desc'))
         
-        self.cmd('az network manager ipam-pool static-cidr create --name {staticCidr_name} --pool-name {pool_name} --manager-name {manager_name} --resource-group {rg} --number-of-ip-addresses-to-allocate {num_to_allocate}')
+        self.cmd('az network manager ipam-pool static-cidr create --name {staticCidr_name} --pool-name {pool_name} --manager-name {manager_name} --resource-group {rg} --number-of-ip-addresses-to-allocate {num_to_allocate} --description "First decription"')
         self.cmd('az resource wait --created --name {staticCidr_name} --resource-group {rg} --resource-type "Microsoft.Network/networkManagers/ipamPools/staticCidrs" --timeout 60')
 
 
         self.cmd('az network manager ipam-pool static-cidr list --pool-name {pool_name} --manager-name {manager_name} --resource-group {rg}',
                  self.check('length(@)', 1))
+        self.cmd('az network manager ipam-pool static-cidr show --name {staticCidr_name} --pool-name {pool_name} --manager-name {manager_name} --resource-group {rg}',
+                 self.check('name', '{staticCidr_name}'))
+
+        self.cmd('az network manager ipam-pool static-cidr update --name {staticCidr_name} --pool-name {pool_name} --manager-name {manager_name} --resource-group {rg} --address-prefixes "[\"10.0.0.0/20\"]"',
+                 self.check('properties.addressPrefixes[0]', '10.0.0.0/20'))
         self.cmd('az network manager ipam-pool static-cidr show --name {staticCidr_name} --pool-name {pool_name} --manager-name {manager_name} --resource-group {rg}',
                  self.check('name', '{staticCidr_name}'))
 
