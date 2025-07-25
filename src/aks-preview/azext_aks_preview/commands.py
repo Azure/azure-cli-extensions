@@ -186,6 +186,7 @@ def load_command_table(self, _):
         g.custom_command(
             "operation-abort", "aks_operation_abort", supports_no_wait=True
         )
+        g.custom_command("agent", "aks_agent")
 
     # AKS maintenance configuration commands
     with self.command_group(

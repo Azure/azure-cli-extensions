@@ -6,14 +6,30 @@
 # pylint: disable=too-many-lines, disable=broad-except
 import datetime
 import json
+import logging
 import os
 import os.path
+from pathlib import Path
 import platform
-import ssl
+import socket
 import sys
 import threading
 import time
+import typer
+import uuid
 import webbrowser
+
+# disable INFO logs from LiteLLM
+logging.getLogger("LiteLLM").setLevel(logging.WARNING)
+from holmes.config import Config
+from holmes.core.prompt import build_initial_ask_messages
+from holmes.interactive import run_interactive_loop
+from holmes.plugins.destinations import DestinationType
+from holmes.plugins.interfaces import Issue
+from holmes.plugins.prompts import load_and_render_prompt
+from holmes.utils.console.logging import init_logging
+from holmes.utils.console.result import handle_result
+
 
 from azext_aks_preview._client_factory import (
     CUSTOM_MGMT_AKS_PREVIEW,
@@ -4339,3 +4355,142 @@ def aks_loadbalancer_rebalance_nodes(
     }
 
     return aks_loadbalancer_rebalance_internal(managed_clusters_client, parameters)
+
+
+def aks_agent(
+        prompt,
+        api_key,
+        model,
+        interactive,
+        max_steps,
+        echo,
+        show_tool_output,
+        config_file,
+        refresh_toolsets,
+        ):
+    # add description for the function and variables
+    '''
+    Interact with the AKS agent using a prompt or piped input.
+
+    :param prompt: The prompt to send to the agent.
+    :type prompt: str
+    :param api_key: API key for authentication.
+    :type api_key: str
+    :param model: Model to use for the LLM.
+    :type model: str
+    :param interactive: Whether to run in interactive mode.
+    :type interactive: bool
+    :param max_steps: Maximum number of steps to take.
+    :type max_steps: int
+    :param echo: Whether to echo the prompt back in the response.
+    :type echo: bool
+    :param show_tool_output: Whether to show tool output.
+    :type show_tool_output: bool
+    :param config_file: Path to the config file.
+    :type config_file: str
+    :param refresh_toolsets: Whether to refresh the toolsets.
+    :type refresh_toolsets: bool
+    '''
+
+    # NOTE(mainred): holmes leverage the log handler RichHandler to provide colorful, readable and well-formatted logs
+    # making the interactive mode more user-friendly.
+    # And we removed exising log handlers to avoid duplicate logs.
+    # Also make the console log consistent, we remove the telemetry and data logger to skip redundant logs.
+    def init_log():
+        logging.getLogger("telemetry.main").setLevel(logging.WARNING)
+        logging.getLogger("telemetry.process").setLevel(logging.WARNING)
+        logging.getLogger("telemetry.save").setLevel(logging.WARNING)
+        logging.getLogger("telemetry.client").setLevel(logging.WARNING)
+        logging.getLogger("az_command_data_logger").setLevel(logging.WARNING)
+        # TODO: make log verbose configurable, currently disbled by [].
+        return init_logging([])
+
+    console = init_log()
+
+    # Detect and read piped input
+    piped_data = None
+    if not sys.stdin.isatty():
+        piped_data = sys.stdin.read().strip()
+        if interactive:
+            console.print(
+                "[bold yellow]Interactive mode disabled when reading piped input[/bold yellow]"
+            )
+            interactive = False
+
+    config_file = Path(config_file)
+    config = Config.load_from_file(
+        config_file,
+        api_key=api_key,
+        model=model,
+        max_steps=max_steps,
+    )
+
+    ai = config.create_console_toolcalling_llm(
+        dal=None,
+        refresh_toolsets=refresh_toolsets,
+    )
+    template_context = {
+        "toolsets": ai.tool_executor.toolsets,
+        "runbooks": config.get_runbook_catalog(),
+    }
+    # TODO: extend the system prompt with AKS context
+    system_prompt= "builtin://generic_ask.jinja2"
+    system_prompt_rendered = load_and_render_prompt(system_prompt, template_context)  # type: ignore
+
+    if not prompt and not interactive and not piped_data:
+        raise typer.BadParameter(
+            "Either the 'prompt' argument must be provided (unless using --interactive mode)."
+        )
+
+    # Handle piped data
+    if piped_data:
+        if prompt:
+            # User provided both piped data and a prompt
+            prompt = f"Here's some piped output:\n\n{piped_data}\n\n{prompt}"
+        else:
+            # Only piped data, no prompt - ask what to do with it
+            prompt = f"Here's some piped output:\n\n{piped_data}\n\nWhat can you tell me about this output?"
+
+    if echo and not interactive and prompt:
+        console.print("[bold yellow]User:[/bold yellow] " + prompt)
+
+    # TODO: add refresh-toolset to refresh the toolset if it has changed
+    if interactive:
+        run_interactive_loop(
+            ai,
+            console,
+            system_prompt_rendered,
+            prompt,
+            None,
+            None,
+            show_tool_output=show_tool_output,
+        )
+        return
+
+    messages = build_initial_ask_messages(
+        console,
+        system_prompt_rendered,
+        prompt,  # type: ignore
+    )
+
+    response = ai.call(messages)
+
+
+    messages = response.messages  # type: ignore # Update messages with the full history
+
+    issue = Issue(
+        id=str(uuid.uuid4()),
+        name=prompt, 
+        source_type="holmes-ask",
+        raw={"prompt": prompt, "full_conversation": messages},
+        source_instance_id=socket.gethostname(),
+    )
+    handle_result(
+        response,
+        console,
+        DestinationType.CLI, 
+        config,
+        issue,
+        show_tool_output,
+        False, 
+    )
