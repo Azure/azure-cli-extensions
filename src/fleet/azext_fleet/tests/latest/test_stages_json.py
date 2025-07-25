@@ -8,6 +8,10 @@ import json
 import tempfile
 import os
 from unittest.mock import Mock, patch
+from azext_fleet.custom import get_update_run_strategy
+from azure.cli.core.azclierror import (
+    InvalidArgumentValueError,
+)
 
 
 def mock_get_file_json(file_path):
@@ -20,46 +24,6 @@ def mock_shell_safe_json_parse(json_string):
     """Mock implementation of shell_safe_json_parse."""
     return json.loads(json_string)
 
-
-def get_update_run_strategy_standalone(cmd, operation_group, stages):
-    """Standalone version of get_update_run_strategy for testing."""
-    if stages is None:
-        return None
-
-    # Check if the input is a file path or inline JSON
-    if os.path.exists(stages):
-        data = mock_get_file_json(stages)
-    else:
-        data = mock_shell_safe_json_parse(stages)
-
-    update_group_model = cmd.get_models(
-        "UpdateGroup",
-        resource_type="CUSTOM_MGMT_FLEET",
-        operation_group=operation_group
-    )
-    update_stage_model = cmd.get_models(
-        "UpdateStage",
-        resource_type="CUSTOM_MGMT_FLEET",
-        operation_group=operation_group
-    )
-    update_run_strategy_model = cmd.get_models(
-        "UpdateRunStrategy",
-        resource_type="CUSTOM_MGMT_FLEET",
-        operation_group=operation_group
-    )
-
-    update_stages = []
-    for stage in data["stages"]:
-        update_groups = []
-        for group in stage["groups"]:
-            update_groups.append(update_group_model(name=group["name"]))
-        sec = stage.get("afterStageWaitInSeconds") or 0
-        update_stages.append(update_stage_model(
-            name=stage["name"],
-            groups=update_groups,
-            after_stage_wait_in_seconds=sec))
-
-    return update_run_strategy_model(stages=update_stages)
 
 
 class MockUpdateGroup:
@@ -125,7 +89,7 @@ class TestStagesJsonHandling(unittest.TestCase):
         
         try:
             # Test the actual function
-            result = get_update_run_strategy_standalone(self.mock_cmd, "fleet_update_runs", temp_file_path)
+            result = get_update_run_strategy(self.mock_cmd, "fleet_update_runs", temp_file_path)
             
             # Verify the returned strategy
             self.assertIsNotNone(result)
@@ -153,7 +117,7 @@ class TestStagesJsonHandling(unittest.TestCase):
         inline_json = json.dumps(self.test_data)
         
         # Test the actual function
-        result = get_update_run_strategy_standalone(self.mock_cmd, "fleet_update_runs", inline_json)
+        result = get_update_run_strategy(self.mock_cmd, "fleet_update_runs", inline_json)
         
         # Verify the returned strategy
         self.assertIsNotNone(result)
@@ -186,7 +150,7 @@ class TestStagesJsonHandling(unittest.TestCase):
         }
         
         inline_json = json.dumps(minimal_data)
-        result = get_update_run_strategy_standalone(self.mock_cmd, "fleet_update_runs", inline_json)
+        result = get_update_run_strategy(self.mock_cmd, "fleet_update_runs", inline_json)
         
         # Verify minimal structure works
         self.assertIsNotNone(result)
@@ -221,7 +185,7 @@ class TestStagesJsonHandling(unittest.TestCase):
         }
         
         inline_json = json.dumps(complex_data)
-        result = get_update_run_strategy_standalone(self.mock_cmd, "fleet_update_runs", inline_json)
+        result = get_update_run_strategy(self.mock_cmd, "fleet_update_runs", inline_json)
         
         # Verify complex structure
         self.assertIsNotNone(result)
@@ -244,7 +208,7 @@ class TestStagesJsonHandling(unittest.TestCase):
 
     def test_none_stages_returns_none(self):
         """Test that None stages input returns None."""
-        result = get_update_run_strategy_standalone(self.mock_cmd, "fleet_update_runs", None)
+        result = get_update_run_strategy(self.mock_cmd, "fleet_update_runs", None)
         self.assertIsNone(result)
 
     def test_invalid_json_raises_error(self):
@@ -252,8 +216,8 @@ class TestStagesJsonHandling(unittest.TestCase):
         invalid_json = '{"stages": [{"name": "test", invalid_syntax}]}'
         
         # Should raise an error when parsing invalid JSON
-        with self.assertRaises(json.JSONDecodeError):
-            get_update_run_strategy_standalone(self.mock_cmd, "fleet_update_runs", invalid_json)
+        with self.assertRaises(InvalidArgumentValueError):
+            get_update_run_strategy(self.mock_cmd, "fleet_update_runs", invalid_json)
 
 
 if __name__ == "__main__":
