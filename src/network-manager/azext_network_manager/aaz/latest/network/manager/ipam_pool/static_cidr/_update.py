@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update the Static CIDR resource.
+
+    :example: StaticCidrs_Update
+        az network manager ipam-pool static-cidr update -g MyResourceGroup --network-manager-name MyNetworkManager --pool-name MyIpamPool -n MyStaticCidr --number-of-ip-addresses-to-allocate 256
     """
 
     _aaz_info = {
