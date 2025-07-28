@@ -462,7 +462,7 @@ def get_update_run_strategy(cmd, operation_group, stages):
     if stages is None:
         return None
 
-    with open(r'C:\Users\ftran\work\cli-real\azure-cli-extensions\src\fleet\azext_fleet\tests\latest\data\stages.json', 'r') as fp:
+    with open(stages, 'r', encoding='utf-8') as fp:
         data = json.load(fp)
         fp.close()
 
