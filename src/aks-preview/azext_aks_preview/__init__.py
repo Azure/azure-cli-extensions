@@ -5,7 +5,7 @@
 
 
 from azure.cli.core import AzCommandsLoader
-from azure.cli.core.profiles import register_resource_type, SDKProfile
+from azure.cli.core.profiles import register_resource_type
 
 # pylint: disable=unused-import
 import azext_aks_preview._help
