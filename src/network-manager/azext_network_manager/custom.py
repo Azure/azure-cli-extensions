@@ -11,7 +11,6 @@
 # pylint: disable=unused-argument
 # pylint: disable=protected-access
 from knack.util import CLIError
-from azure.cli.core.aaz import register_callback
 from .aaz.latest.network.manager.group.static_member import Create as _GroupStaticMemberCreate
 from .aaz.latest.network.manager.scope_connection import Create as _ScopeConnectionCreate
 from .aaz.latest.network.manager.connection.management_group import Create as _ConnectionManagementGroupCreate
@@ -317,39 +316,22 @@ class ConnectConfigUpdate(_ConnectConfigUpdate):
 
 
 class StaticCidrUpdate(_StaticCidrUpdate):
-    """Custom Static CIDR Update command with conflict resolution logic"""
-    
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
-        """Make arguments nullable for proper conflict resolution"""
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         return args_schema
 
     def pre_operations(self):
-        """Handle mutually exclusive properties before any operations"""
         from azure.cli.core.aaz import has_value
         args = self.ctx.args
-        
+
         address_prefixes_provided = has_value(args.address_prefixes)
         num_ip_provided = has_value(args.number_of_ip_addresses_to_allocate)
-        
-        print(f"DEBUG: pre_operations - address_prefixes_provided: {address_prefixes_provided}")
-        print(f"DEBUG: pre_operations - num_ip_provided: {num_ip_provided}")
-        
+
         # if address_prefixes is provided and number_of_ip_addresses_to_allocate is not provided
         if address_prefixes_provided and not num_ip_provided:
-            print("DEBUG: Setting number_of_ip_addresses_to_allocate to '0' because address_prefixes is provided")
             args.number_of_ip_addresses_to_allocate = "0"
-        
+
         # if number_of_ip_addresses_to_allocate is provided and address_prefixes is not provided
         elif num_ip_provided and not address_prefixes_provided:
-            print("DEBUG: Setting address_prefixes to [] because number_of_ip_addresses_to_allocate is provided")
             args.address_prefixes = []
-        
-        # if both are provided, do nothing (will fail as expected)
-        elif address_prefixes_provided and num_ip_provided:
-            print("DEBUG: Both properties provided - will fail with mutual exclusion error as expected")
-        
-        # if neither is provided, do nothing
-        else:
-            print("DEBUG: Neither IP property provided - description-only update")
