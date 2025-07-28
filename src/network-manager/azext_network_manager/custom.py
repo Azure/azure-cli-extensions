@@ -325,91 +325,31 @@ class StaticCidrUpdate(_StaticCidrUpdate):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         return args_schema
 
-    class InstanceUpdateByJson(_StaticCidrUpdate.InstanceUpdateByJson):
-        """Custom instance update logic that only sets properties provided by the user"""
+    def pre_operations(self):
+        """Handle mutually exclusive properties before any operations"""
+        from azure.cli.core.aaz import has_value
+        args = self.ctx.args
         
-        def _update_instance(self, instance):
-            from azure.cli.core.aaz import AAZObjectType, AAZListType, AAZStrType
-            
-            _instance_value, _builder = self.new_content_builder(
-                self.ctx.args,
-                value=instance,
-                typ=AAZObjectType
-            )
-            _builder.set_prop("properties", AAZObjectType)
-
-            properties = _builder.get(".properties")
-            if properties is not None:
-                address_prefixes_provided = (
-                    self.ctx.args.address_prefixes is not None and 
-                    len(self.ctx.args.address_prefixes) > 0
-                )
-                print(f"DEBUG: address_prefixes value: {self.ctx.args.address_prefixes}")
-                print(f"DEBUG: address_prefixes_provided: {address_prefixes_provided}")
-                address_prefixes_undefined = str(self.ctx.args.address_prefixes).strip() == "Undefined"
-                print(f"DEBUG: address_prefixes_undefined: {address_prefixes_undefined}")
-
-                num_ip_provided = (
-                    self.ctx.args.number_of_ip_addresses_to_allocate is not None and
-                    str(self.ctx.args.number_of_ip_addresses_to_allocate).strip() != ""
-                )
-                print(f"DEBUG: number_of_ip_addresses_to_allocate value: {self.ctx.args.number_of_ip_addresses_to_allocate}")
-                print(f"DEBUG: number_of_ip_addresses_to_allocate type: {type(self.ctx.args.number_of_ip_addresses_to_allocate)}")
-                print(f"DEBUG: number_of_ip_addresses_to_allocate str: '{str(self.ctx.args.number_of_ip_addresses_to_allocate)}'")
-                print(f"DEBUG: num_ip_provided: {num_ip_provided}")
-                
-                # Check if the value is not provided by user
-                num_ip_is_undefined = str(self.ctx.args.number_of_ip_addresses_to_allocate).strip() == "Undefined"
-                print(f"DEBUG: num_ip_is_undefined: {num_ip_is_undefined}")
-                
-                num_ip_is_zero_or_empty = (
-                    num_ip_is_undefined or
-                    self.ctx.args.number_of_ip_addresses_to_allocate is None or
-                    str(self.ctx.args.number_of_ip_addresses_to_allocate).strip() in ["", "0"]
-                )
-                print(f"DEBUG: num_ip_is_zero_or_empty: {num_ip_is_zero_or_empty}")
-                
-                address_prefixes_is_empty = (
-                    self.ctx.args.address_prefixes is None or
-                    len(self.ctx.args.address_prefixes) == 0 or
-                    (len(self.ctx.args.address_prefixes) == 1 and str(self.ctx.args.address_prefixes[0]).strip() == "")
-                )
-                print(f"DEBUG: address_prefixes_is_empty: {address_prefixes_is_empty}")
-                
-                # Simplified logic: only set the property that was actually provided by the user
-                if address_prefixes_provided and (num_ip_is_undefined or num_ip_is_zero_or_empty):
-                    print("DEBUG: Taking Logic 1 - User provided address_prefixes, num_ip is Undefined")
-                    properties.set_prop("addressPrefixes", AAZListType, ".address_prefixes")
-                    self.ctx.args.number_of_ip_addresses_to_allocate = "0"
-                    properties.set_prop("numberOfIPAddressesToAllocate", AAZStrType, ".number_of_ip_addresses_to_allocate")
-           
-                elif num_ip_provided and (address_prefixes_undefined or address_prefixes_is_empty):
-                    print("DEBUG: Taking Logic 2 - User provided number_of_ip_addresses_to_allocate only")
-                    properties.set_prop("numberOfIPAddressesToAllocate", AAZStrType, ".number_of_ip_addresses_to_allocate")
-                    self.ctx.args.address_prefixes = []
-                    properties.set_prop("addressPrefixes", AAZListType, ".address_prefixes")
-
-                elif address_prefixes_provided and num_ip_provided:
-                    print("DEBUG: Taking Logic 3 - User provided both (will fail as expected)")
-                    properties.set_prop("addressPrefixes", AAZListType, ".address_prefixes")
-                    properties.set_prop("numberOfIPAddressesToAllocate", AAZStrType, ".number_of_ip_addresses_to_allocate")
-                
-                # Always allow description updates
-                properties.set_prop("description", AAZStrType, ".description")
-
-            address_prefixes = _builder.get(".properties.addressPrefixes")
-            if address_prefixes is not None:
-                address_prefixes.set_elements(AAZStrType, ".")
-
-            #print value of address_prefixes
-            print(f"DEBUG: address_prefixes: {address_prefixes}")
-
-            return _instance_value
-            
-    class InstanceUpdateByGeneric(_StaticCidrUpdate.InstanceUpdateByGeneric):
-        """Override generic update to prevent it from overriding our custom logic"""
+        address_prefixes_provided = has_value(args.address_prefixes)
+        num_ip_provided = has_value(args.number_of_ip_addresses_to_allocate)
         
-        def __call__(self, *args, **kwargs):
-            # Do nothing - our custom InstanceUpdateByJson already handled everything
-            print("DEBUG: InstanceUpdateByGeneric - doing nothing (custom logic already applied)")
-            pass
+        print(f"DEBUG: pre_operations - address_prefixes_provided: {address_prefixes_provided}")
+        print(f"DEBUG: pre_operations - num_ip_provided: {num_ip_provided}")
+        
+        # if address_prefixes is provided and number_of_ip_addresses_to_allocate is not provided
+        if address_prefixes_provided and not num_ip_provided:
+            print("DEBUG: Setting number_of_ip_addresses_to_allocate to '0' because address_prefixes is provided")
+            args.number_of_ip_addresses_to_allocate = "0"
+        
+        # if number_of_ip_addresses_to_allocate is provided and address_prefixes is not provided
+        elif num_ip_provided and not address_prefixes_provided:
+            print("DEBUG: Setting address_prefixes to [] because number_of_ip_addresses_to_allocate is provided")
+            args.address_prefixes = []
+        
+        # if both are provided, do nothing (will fail as expected)
+        elif address_prefixes_provided and num_ip_provided:
+            print("DEBUG: Both properties provided - will fail with mutual exclusion error as expected")
+        
+        # if neither is provided, do nothing
+        else:
+            print("DEBUG: Neither IP property provided - description-only update")

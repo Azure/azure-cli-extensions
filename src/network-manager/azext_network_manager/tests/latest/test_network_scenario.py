@@ -694,6 +694,11 @@ class NetworkScenarioTest(ScenarioTest):
         self.cmd('az network manager ipam-pool static-cidr show --name {staticCidr_name} --pool-name {pool_name} --manager-name {manager_name} --resource-group {rg}',
                  self.check('name', '{staticCidr_name}'))
 
+        self.cmd('az network manager ipam-pool static-cidr update --name {staticCidr_name} --pool-name {pool_name} --manager-name {manager_name} --resource-group {rg} --number-of-ip-addresses-to-allocate {num_to_allocate} --description "Updated description"',
+                 self.check('properties.description', "Updated description"))
+        self.cmd('az network manager ipam-pool static-cidr show --name {staticCidr_name} --pool-name {pool_name} --manager-name {manager_name} --resource-group {rg}',
+                 self.check('name', '{staticCidr_name}'))
+
         self.cmd('az network manager ipam-pool static-cidr delete --name {staticCidr_name} --pool-name {pool_name} --manager-name {manager_name} --resource-group {rg} -y')
         
         self.cmd('az network manager ipam-pool delete --name {pool_name} --manager-name {manager_name} --resource-group {rg} -y')
