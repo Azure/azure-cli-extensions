@@ -77,16 +77,22 @@ class Create(AAZCommand):
             options=["--description"],
             arg_group="Properties",
             help="Description of target",
+            required=True,
+
         )
         _args_schema.display_name = AAZStrArg(
             options=["--display-name"],
             arg_group="Properties",
             help="Display name of target",
+            required=True,
+
         )
         _args_schema.hierarchy_level = AAZStrArg(
             options=["--hierarchy-level"],
             arg_group="Properties",
             help="Hierarchy Level",
+            required=True,
+
         )
         _args_schema.solution_scope = AAZStrArg(
             options=["--solution-scope"],
@@ -107,6 +113,8 @@ class Create(AAZCommand):
             options=["--target-specification"],
             arg_group="Properties",
             help="Specifies that we are using Helm charts for the k8s deployment",
+            required=True,
+
         )
 
         capabilities = cls._args_schema.capabilities
