@@ -675,14 +675,14 @@ class NetworkScenarioTest(ScenarioTest):
         self.cmd('az network manager ipam-pool show --name {pool_name} --manager-name {manager_name} --resource-group {rg}',
                  self.check('name', '{pool_name}'))
         
-        self.cmd('az network manager ipam-pool update --name {pool_name} --manager-name {manager_name} --resource-group {rg} --description "updated desc"')
-        
+        self.cmd('az network manager ipam-pool update --name {pool_name} --manager-name {manager_name} --resource-group {rg} --description "updated desc" --address-prefixes \'["10.0.0.0/16", "192.168.0.0/16"]\'',
+                 self.check('properties.addressPrefixes[1]', '192.168.0.0/16'))
+
         self.cmd('az network manager ipam-pool show --name {pool_name} --manager-name {manager_name} --resource-group {rg}',
                  self.check('properties.description', 'updated desc'))
         
         self.cmd('az network manager ipam-pool static-cidr create --name {staticCidr_name} --pool-name {pool_name} --manager-name {manager_name} --resource-group {rg} --number-of-ip-addresses-to-allocate {num_to_allocate} --description "First decription"')
         self.cmd('az resource wait --created --name {staticCidr_name} --resource-group {rg} --resource-type "Microsoft.Network/networkManagers/ipamPools/staticCidrs" --timeout 60')
-
 
         self.cmd('az network manager ipam-pool static-cidr list --pool-name {pool_name} --manager-name {manager_name} --resource-group {rg}',
                  self.check('length(@)', 1))
