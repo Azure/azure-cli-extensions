@@ -662,10 +662,10 @@ def list_gates_by_fleet(cmd,  # pylint: disable=unused-argument
 
 
 def show_gate(cmd,  # pylint: disable=unused-argument
-             client,
-             resource_group_name,
-             fleet_name,
-             gate_name):
+              client,
+              resource_group_name,
+              fleet_name,
+              gate_name):
     return client.get(resource_group_name, fleet_name, gate_name)
 
 

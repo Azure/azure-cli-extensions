@@ -414,7 +414,7 @@ helps['fleet gate show'] = """
     short-summary: Shows a specific gate.
     examples:
         - name: Shows a specific gate.
-          text: az fleet gate get -g MyFleetResourceGroup -f MyFleetName -n 3fa85f64-5717-4562-b3fc-2c963f66afa6
+          text: az fleet gate show -g MyFleetResourceGroup -f MyFleetName -n 3fa85f64-5717-4562-b3fc-2c963f66afa6
 """
 
 helps['fleet gate update'] = """
