@@ -4386,6 +4386,7 @@ def aks_bastion(cmd, client, resource_group_name, name, bastion=None, port=None,
         finally:
             aks_batsion_clean_up()
 
+
 def aks_agent(
         cmd,
         client,

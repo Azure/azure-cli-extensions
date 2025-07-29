@@ -2,15 +2,17 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-from knack.log import get_logger
+
 from knack.util import CLIError
 import logging
 import os
 from pathlib import Path
 import socket
 import sys
-import uuid
 import typer
+import uuid
+
+from azure.cli.core.commands.client_factory import get_subscription_id
 
 
 # NOTE(mainred): holmes leverage the log handler RichHandler to provide colorful, readable and well-formatted logs
@@ -31,6 +33,7 @@ def init_log():
 
     # TODO: make log verbose configurable, currently disbled by [].
     return init_logging([])
+
 
 def aks_agent(
         cmd,
@@ -85,7 +88,6 @@ def aks_agent(
     from holmes.plugins.interfaces import Issue
     from holmes.plugins.prompts import load_and_render_prompt
     from holmes.utils.console.result import handle_result
-
 
     # Detect and read piped input
     piped_data = None
