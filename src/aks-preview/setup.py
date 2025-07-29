@@ -24,7 +24,7 @@ CLASSIFIERS = [
 ]
 
 DEPENDENCIES = [
-    "holmesgpt==0.12.3"
+    "holmesgpt==0.12.3; python_version >= '3.10'",
 ]
 
 with open1("README.rst", "r", encoding="utf-8") as f:

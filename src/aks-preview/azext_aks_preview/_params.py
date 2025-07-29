@@ -2784,7 +2784,6 @@ def load_arguments(self, _):
         )
         c.argument(
             "config_file",
-            type=str,
             default=os.path.join(get_config_dir(), "aksAgent.config"),
             required=False,
             help="Path to the config file.",
@@ -2792,25 +2791,21 @@ def load_arguments(self, _):
         c.argument(
             "no_interactive",
             help="Disable interactive mode. When set, the agent will not prompt for input and will run in batch mode.",
-            required=False,
             action='store_true',
         )
         c.argument(
             "no_echo_request",
             help="Disable echoing back the question provided to AKS Agent in the output.",
-            required=False,
             action='store_true',
         )
         c.argument(
             "show_tool_output",
             help="Show the output of each tool that was called.",
-            required=False,
             action='store_true',
         )
         c.argument(
             "refresh_toolsets",
             help="Refresh the toolsets status.",
-            required=False,
             action='store_true',
         )
 
