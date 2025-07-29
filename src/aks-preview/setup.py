@@ -24,7 +24,7 @@ CLASSIFIERS = [
 ]
 
 DEPENDENCIES = [
-    "holmesgpt @ git+ssh://git@github.com/robusta-dev/holmesgpt@master", # will use a official pypi package once available
+    "holmesgpt==0.12.3"
 ]
 
 with open1("README.rst", "r", encoding="utf-8") as f:
