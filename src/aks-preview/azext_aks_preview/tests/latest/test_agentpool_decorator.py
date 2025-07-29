@@ -1119,7 +1119,7 @@ class AKSPreviewAgentPoolContextManagedClusterModeTestCase(
         # Now run set_up_ssh_access and assert the expected log is emitted
         with self.assertLogs(level='WARNING') as log:
             dec.set_up_ssh_access(agentpool)
-        self.assertIn("--disable-ssh is in preview by the time automatic is GA", "\n".join(log.output))
+        self.assertIn("SSH access is in preview", "\n".join(log.output))
 
 
     def test_set_up_ssh_access_logs_warning_for_base(self):

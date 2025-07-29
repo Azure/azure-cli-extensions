@@ -993,7 +993,7 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
             agentpool.security_profile.ssh_access = ssh_access
             if ssh_access == CONST_SSH_ACCESS_LOCALUSER:
                 if sku_name == CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC:
-                    logger.warning("--disable-ssh is in preview by the time automatic is GA")
+                    logger.warning("SSH access is in preview")
                 else:
                     logger.warning(
                         "The new node pool will enable SSH access, recommended to use "
