@@ -3904,10 +3904,10 @@ helps['aks agent'] = """
         - name: --max-steps
           type: int
           short-summary: Maximum number of steps the LLM can take to investigate the issue.
-        - name: --non-interactive
+        - name: --no-interactive
           type: bool
           short-summary: Disable interactive mode. When set, the agent will not prompt for input and will run in batch mode.
-        - name: --echo_request
+        - name: --no-echo-request
           type: bool
           short-summary: Disable echoing back the question provided to AKS Agent in the output.
         - name: --show-tool-output
@@ -3923,11 +3923,15 @@ helps['aks agent'] = """
         - name: Analyze cluster with specific AI model
           text: az aks agent "Check cluster health" --model azure/my-gpt4-deployment --api-key sk-xxx
         - name: Run in non-interactive batch mode
-          text: az aks agent "Diagnose networking issues" --interactive false --max-steps 5
+          text: az aks agent "Diagnose networking issues" --no-interactive --max-steps 5
         - name: Use Azure OpenAI with custom deployment
           text: az aks agent "Analyze failed deployments" --model azure/my-gpt4-deployment --api-key xxx
         - name: Show detailed tool output during analysis
           text: az aks agent "Why is my service unavailable?" --show-tool-output
         - name: Use custom configuration file
           text: az aks agent "Check resource usage" --config-file /path/to/custom.config
+        - name: Run agent with no echo of the original question
+          text: az aks agent "What is the status of my cluster?" --no-echo-request
+        - name: Refresh toolsets to get the latest available tools
+          text: az aks agent --refresh-toolsets
 """
