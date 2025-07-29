@@ -4392,6 +4392,7 @@ def aks_agent(
         resource_group_name,
         name,
         prompt,
+        model,
         max_steps,
         config_file,
         no_interactive=False,
@@ -4403,7 +4404,9 @@ def aks_agent(
     aks_agent_internal(
         cmd,
         resource_group_name,
-        name, prompt,
+        name,
+        prompt,
+        model,
         max_steps,
         config_file,
         no_interactive,

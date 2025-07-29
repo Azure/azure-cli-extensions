@@ -2,25 +2,33 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+from knack.log import get_logger
+from knack.util import CLIError
 import logging
 import os
 from pathlib import Path
 import socket
 import sys
-import typer
 import uuid
+import typer
+
 
 # NOTE(mainred): holmes leverage the log handler RichHandler to provide colorful, readable and well-formatted logs
 # making the interactive mode more user-friendly.
 # And we removed exising log handlers to avoid duplicate logs.
 # Also make the console log consistent, we remove the telemetry and data logger to skip redundant logs.
 def init_log():
-    from holmes.utils.console.logging import init_logging
+    # NOTE(mainred): we need to disable INFO logs from LiteLLM before LiteLLM library is loaded, to avoid logging the
+    # debug logs from heading of LiteLLM.
+    logging.getLogger("LiteLLM").setLevel(logging.WARNING)
     logging.getLogger("telemetry.main").setLevel(logging.WARNING)
     logging.getLogger("telemetry.process").setLevel(logging.WARNING)
     logging.getLogger("telemetry.save").setLevel(logging.WARNING)
     logging.getLogger("telemetry.client").setLevel(logging.WARNING)
     logging.getLogger("az_command_data_logger").setLevel(logging.WARNING)
+
+    from holmes.utils.console.logging import init_logging
+
     # TODO: make log verbose configurable, currently disbled by [].
     return init_logging([])
 
@@ -29,6 +37,7 @@ def aks_agent(
         resource_group_name,
         name,
         prompt,
+        model,
         max_steps,
         config_file,
         no_interactive,
@@ -41,6 +50,8 @@ def aks_agent(
 
     :param prompt: The prompt to send to the agent.
     :type prompt: str
+    :param model: The model to use for the LLM.
+    :type model: str
     :param max_steps: Maximum number of steps to take.
     :type max_steps: int
     :param config_file: Path to the config file.
@@ -55,15 +66,18 @@ def aks_agent(
     :type refresh_toolsets: bool
     """
 
+    if sys.version_info < (3, 10):
+        raise CLIError("Please upgrade the python version to 3.10 or above to use aks agent.")
+
     # reverse the value of the variables so that
     interactive = not no_interactive
     echo = not no_echo_request
 
+    console = init_log()
+
     # Holmes library allows the user to specify the agent name through environment variable before loading the library.
     os.environ["AGENT_NAME"] = "AKS AGENT"
-    # NOTE(mainred): we need to disable INFO logs from LiteLLM before LiteLLM library is loaded, to avoid logging the
-    # debug logs from heading of LiteLLM.
-    logging.getLogger("LiteLLM").setLevel(logging.WARNING)
+
     from holmes.config import Config
     from holmes.core.prompt import build_initial_ask_messages
     from holmes.interactive import run_interactive_loop
@@ -72,7 +86,6 @@ def aks_agent(
     from holmes.plugins.prompts import load_and_render_prompt
     from holmes.utils.console.result import handle_result
 
-    console = init_log()
 
     # Detect and read piped input
     piped_data = None
@@ -87,6 +100,7 @@ def aks_agent(
     config_file = Path(config_file)
     config = Config.load_from_file(
         config_file,
+        model=model,
         max_steps=max_steps,
     )
 

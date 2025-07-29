@@ -3896,6 +3896,9 @@ helps['aks agent'] = """
         - name: prompt
           type: string
           short-summary: Ask any question and get an answer using available tools.
+        - name: --model
+          type: string
+          short-summary: Model to use for the LLM.
         - name: --config-file
           type: string
           short-summary: Path to configuration file.
@@ -3918,15 +3921,13 @@ helps['aks agent'] = """
     examples:
         - name: Ask about pod issues in the cluster with Azure OpenAI
           text: |-
-            export MODEL=azure/my-gpt4.1-deployment
             export AZURE_API_BASE="https://my-azureopenai-service.openai.azure.com/"
             export AZURE_API_VERSION="2025-01-01-preview"
             export AZURE_API_KEY="sk-xxx"
-            az aks agent "Why are my pods not starting?"
+            az aks agent "Why are my pods not starting?" --model azure/my-gpt4.1-deployment
         - name: Ask about pod issues in the cluster with OpenAI
           text: |-
-            export MODEL=gpt-4o
-            export OPENAI_API_KEY="sk-xxx"
+            export OPENAI_API_KEY="sk-xxx" --model gpt-4o
             az aks agent "Why are my pods not starting?"
           text: az aks agent "Why are my pods not starting?"
         - name: Run in non-interactive batch mode

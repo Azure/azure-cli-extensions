@@ -2789,6 +2789,11 @@ def load_arguments(self, _):
             help="Path to the config file.",
         )
         c.argument(
+            "model",
+            help="The model to use for the LLM.",
+            type=str,
+        )
+        c.argument(
             "no_interactive",
             help="Disable interactive mode. When set, the agent will not prompt for input and will run in batch mode.",
             action='store_true',
