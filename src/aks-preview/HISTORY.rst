@@ -12,6 +12,10 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+18.0.0b21
++++++++
+* Add command `az aks bastion` to enable connections to managed Kubernetes clusters via Azure Bastion.
+
 18.0.0b20
 +++++++
 * Fix the bug affecting VMAS to VMS migration in the `az aks update` command using the `--migrate-vmas-to-vms` option.
