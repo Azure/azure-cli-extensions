@@ -7,6 +7,7 @@ import subprocess
 import json
 import platform
 import re
+from knack.log import get_logger
 from typing import List
 from azext_confcom.errors import eprint
 from azext_confcom.config import ARTIFACT_TYPE
@@ -15,6 +16,37 @@ from azext_confcom.os_util import delete_silently
 
 host_os = platform.system()
 machine = platform.machine()
+
+logger = get_logger(__name__)
+
+
+def prepend_docker_registry(image_name: str) -> str:
+    """
+    Normalize a Docker image reference by adding `docker.io/library` if necessary.
+
+    Args:
+        image (str): The Docker image reference (e.g., `nginx:latest` or `myrepo/myimage`).
+
+    Returns:
+        str: The normalized Docker image reference.
+    """
+    # Split the image into name and tag
+    if ":" in image_name:
+        name, _ = image_name.rsplit(":", 1)
+    else:
+        name, _ = image_name, "latest"
+
+    registry = ""
+    # Check if the image name contains a registry (e.g., docker.io, custom registry)
+    if "/" not in name or "." not in name.split("/")[0]:
+        # If no registry is specified, assume docker.io/library
+        if "/" not in name:
+            # Add the `library` namespace for official images
+            registry = "library/"
+        # Add the default `docker.io` registry
+        registry = f"docker.io/{registry}"
+
+    return f"{registry}{image_name}"
 
 
 def call_oras_cli(args, check=False):
@@ -26,10 +58,14 @@ def call_oras_cli(args, check=False):
 def discover(
     image: str,
 ) -> List[str]:
+    # normalize the name in case the docker registry is implied
+    image = prepend_docker_registry(image)
+
     arg_list = ["oras", "discover", image, "-o", "json", "--artifact-type", ARTIFACT_TYPE]
     item = call_oras_cli(arg_list, check=False)
     hashes = []
 
+    logger.info("Discovering fragments for %s: %s", image, item.stdout.decode('utf-8'))
     if item.returncode == 0:
         json_output = json.loads(item.stdout.decode("utf-8"))
         manifests = json_output.get("manifests", [])
@@ -55,6 +91,7 @@ def pull(
     if "@sha256:" in image:
         image = image.split("@")[0]
     arg_list = ["oras", "pull", f"{image}@{image_hash}"]
+    logger.info("Pulling fragment: %s@%s", image, image_hash)
     item = call_oras_cli(arg_list, check=False)
 
     # get the exit code from the subprocess
@@ -138,7 +175,7 @@ def attach_fragment_to_image(image_name: str, filename: str):
     print(f"Fragment attached to image '{image_name}' with Digest:{digest}")
 
 
-def generate_imports_from_image_name(image_name: str, minimum_svn: int) -> List[dict]:
+def generate_imports_from_image_name(image_name: str, minimum_svn: str) -> List[dict]:
     cose_proxy = CoseSignToolProxy()
     fragment_hashes = discover(image_name)
     import_list = []

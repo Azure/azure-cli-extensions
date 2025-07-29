@@ -3,6 +3,20 @@
 Release History
 ===============
 
+1.6.6
+++++++++++++++++++
+* microsoft.entraworkloadiam: Remove code that is no longer in use.
+
+1.6.5
+++++++++++++++++++
+* microsoft.dataprotection.kubernetes: Add support for 'DisableInformerCache' configuration.
+* microsoft.azuremonitor.containers.metrics: Simplify logic and enable correct recording rule groups for managed prom extension
+
+1.6.4
+++++++++++++++++++
+* microsoft.azuremonitor.containers.metrics: Update default region for azure monitor metrics extension in mooncake.
+* microsoft.dataprotection.kubernetes: Strip user input, add provision for updating resource requests.
+
 1.6.3
 ++++++++++++++++++
 * Do not attempt to register Microsoft.Monitor and Microsoft.Dashboard resource providers if they are already registered.

@@ -1,0 +1,1606 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --kind
+      User-Agent:
+      - AZURECLI/2.74.0 azsdk-python-core/1.31.0 Python/3.10.11 (Windows-10-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_cosmosdb_mongoMI_role_assignment000001?api-version=2024-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongoMI_role_assignment000001","name":"cli_test_cosmosdb_mongoMI_role_assignment000001","type":"Microsoft.Resources/resourceGroups","location":"westus2","tags":{"product":"azurecli","cause":"automation","test":"test_cosmosdb_mongoMI_role_assignment","date":"2025-05-30T09:12:16Z","module":"azure-cli-extensions"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '452'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 30 May 2025 09:12:18 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 9B340CE5B1BF4A34A37A8B175BDA0C6F Ref B: BL2AA2011006023 Ref C: 2025-05-30T09:12:18Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "westus2", "kind": "MongoDB", "properties": {"locations":
+      [{"locationName": "westus2", "failoverPriority": 0, "isZoneRedundant": false}],
+      "databaseAccountOfferType": "Standard", "apiProperties": {}, "createMode": "Default"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '237'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -n -g --kind
+      User-Agent:
+      - AZURECLI/2.74.0 azsdk-python-core/1.31.0 Python/3.10.11 (Windows-10-10.0.26100-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongoMI_role_assignment000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002?api-version=2025-05-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongoMI_role_assignment000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002","name":"cli000002","location":"West
+        US 2","type":"Microsoft.DocumentDB/databaseAccounts","kind":"MongoDB","tags":{},"systemData":{"createdAt":"2025-05-30T09:12:25.3769655Z"},"properties":{"provisioningState":"Creating","publicNetworkAccess":"Enabled","enableAutomaticFailover":true,"enableMultipleWriteLocations":false,"enablePartitionKeyMonitor":false,"isVirtualNetworkFilterEnabled":false,"virtualNetworkRules":[],"EnabledApiTypes":"MongoDB","disableKeyBasedMetadataWriteAccess":false,"enableFreeTier":false,"enableAnalyticalStorage":false,"analyticalStorageConfiguration":{"schemaType":"FullFidelity"},"instanceId":"ade43d8f-3a41-4b84-840e-89e6e3d0cdc2","databaseAccountOfferType":"Standard","capacityMode":"Provisioned","enableFullFidelityChangeFeed":false,"defaultIdentity":"","networkAclBypass":"None","disableLocalAuth":false,"enablePartitionMerge":false,"enablePerRegionPerPartitionAutoscale":false,"enableBurstCapacity":false,"enablePriorityBasedExecution":false,"defaultPriorityLevel":"High","minMaxThresholdsForPriorityBasedExecution":{"minPercentForLowPriorityRequests":0,"maxPercentForLowPriorityRequests":100,"minPercentForHighPriorityRequests":0,"maxPercentForHighPriorityRequests":100},"minimalTlsVersion":"Tls12","consistencyPolicy":{"defaultConsistencyLevel":"Session","maxIntervalInSeconds":5,"maxStalenessPrefix":100},"apiProperties":{"serverVersion":"3.6"},"configurationOverrides":{"EnablePerRegionPerPartitionAutoscaleOptIn":"True"},"writeLocations":[{"id":"cli000002-westus2","locationName":"West
+        US 2","provisioningState":"Creating","failoverPriority":0,"isZoneRedundant":false}],"readLocations":[{"id":"cli000002-westus2","locationName":"West
+        US 2","provisioningState":"Creating","failoverPriority":0,"isZoneRedundant":false}],"locations":[{"id":"cli000002-westus2","locationName":"West
+        US 2","provisioningState":"Creating","failoverPriority":0,"isZoneRedundant":false}],"failoverPolicies":[{"id":"cli000002-westus2","locationName":"West
+        US 2","failoverPriority":0}],"cors":[],"capabilities":[{"name":"EnableMongo"}],"ipRules":[],"backupPolicy":{"type":"Periodic","periodicModeProperties":{"backupIntervalInMinutes":240,"backupRetentionIntervalInHours":8,"backupStorageRedundancy":"Invalid"}},"networkAclBypassResourceIds":[],"diagnosticLogSettings":{"enableFullTextQuery":"None"},"keysMetadata":{"primaryMasterKey":{"generationTime":"2025-05-30T09:12:25.3769655Z"},"secondaryMasterKey":{"generationTime":"2025-05-30T09:12:25.3769655Z"},"primaryReadonlyMasterKey":{"generationTime":"2025-05-30T09:12:25.3769655Z"},"secondaryReadonlyMasterKey":{"generationTime":"2025-05-30T09:12:25.3769655Z"}}},"identity":{"type":"None"}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus2/operationsStatus/099a9ffe-7031-4cca-8faa-705bf1792252?api-version=2025-05-01-preview&t=638841931475244041&c=MIIHhzCCBm-gAwIBAgITHgbIFmDY79XLPJrDjgAABsgWYDANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjUwNDE3MDcxODAyWhcNMjUxMDE0MDcxODAyWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMmXL0h9ESvC4b92QYV7yPeOyC8nGJyORFUoUm7UdBjxDbKTdSt8SfTfQkW5HjszhiwurE_fjCMlYj9_ymGSwiuCaKmitW7pcXF-WPgkAU2dKPUrSPqJAyeDDvG5SbZOmYYKHttoh0ZCPxadX4ljJ_k6BiE0-a-tSIYI__abusYKDqLuE9uYszi2Ra_hhLOH8qi2TBg71Jc7Dasa4RRwHnwfYbhpKL0tyMrBwyvMUGO00Q_Lx0iRvtIyWhp0HLppX7M2gzHCkh37uEJaggrcqn2T1QHSLgt2AuneElzaS8_if-JVZWv8ZdwCW8Oa-9JXQCzDSFKFP-2yMm1KPtualuUCAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBSJ3ygYgt4NuGG8mfdBelaS0ABH_DAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAI2X3AiLN4s7W-C4ho0tyyAJfaEptV5HLxJHbIHK4awoIyOC8pp8Ay2pGHpXZlTZAhmvEJBKPbB0dVv_cphT1EjWF5rgvvLTBfp9Roo8PqmTQxmvMefBGXnYPmtPgtKMi5nwH1Y4xayGTzvIjIz1ZwYW5_hkF8jKx3e9bGDWPlgyHm3bRRRSgD650gZ7x69myyaDo4tX8FNWbLk-7PYxKiDBeLyle73_kab63klBJc7ep-O2AIxEtxi2DhDGLlGADWVwyYhEhlcFAhxXcOjCETnpsvDfOiK7XD3hnEkdKsChwTT9Gp6wEmn6xu59Qm2DenO3AMiv6vEyP2-7F-bR5G4&s=YB3G4RiZfOkIc2L_VaDB6O-qgKG5KmMbef54IkYJkmbw6N_m6LvWxmqWa8rrRI_usl9HwHn_XG_wR8EmbTksBADBal0YxEmUH5l6Et-quv4x5u55Qtag4hQBcZo3iepE4JBpgpikhPTitfMfCXCHm1PtbA4piy15i7wmXN5-Z9ODQWhYp-IfguavkOYfjer1ce6xOu1OwuHc49K4cD5pmwrgQKVrASqT33xMhLftrKIhYdYEo1Tz8oBPfAbVNDlREAogfOX82X1n0O8UyxgXHlwnMSyIXeI__2eaPW7425JOGj6ehXJImeeLUlRyHpjDcO8AyiyauTXes9R_FvzPCA&h=5egtvm2JIvtIUFQww1vBF5XZSGUCGYSL1V04YkbAVN0
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '2829'
+      content-type:
+      - application/json
+      date:
+      - Fri, 30 May 2025 09:12:26 GMT
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongoMI_role_assignment000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/operationResults/099a9ffe-7031-4cca-8faa-705bf1792252?api-version=2025-05-01-preview&t=638841931475244041&c=MIIHhzCCBm-gAwIBAgITHgbIFmDY79XLPJrDjgAABsgWYDANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjUwNDE3MDcxODAyWhcNMjUxMDE0MDcxODAyWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMmXL0h9ESvC4b92QYV7yPeOyC8nGJyORFUoUm7UdBjxDbKTdSt8SfTfQkW5HjszhiwurE_fjCMlYj9_ymGSwiuCaKmitW7pcXF-WPgkAU2dKPUrSPqJAyeDDvG5SbZOmYYKHttoh0ZCPxadX4ljJ_k6BiE0-a-tSIYI__abusYKDqLuE9uYszi2Ra_hhLOH8qi2TBg71Jc7Dasa4RRwHnwfYbhpKL0tyMrBwyvMUGO00Q_Lx0iRvtIyWhp0HLppX7M2gzHCkh37uEJaggrcqn2T1QHSLgt2AuneElzaS8_if-JVZWv8ZdwCW8Oa-9JXQCzDSFKFP-2yMm1KPtualuUCAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBSJ3ygYgt4NuGG8mfdBelaS0ABH_DAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAI2X3AiLN4s7W-C4ho0tyyAJfaEptV5HLxJHbIHK4awoIyOC8pp8Ay2pGHpXZlTZAhmvEJBKPbB0dVv_cphT1EjWF5rgvvLTBfp9Roo8PqmTQxmvMefBGXnYPmtPgtKMi5nwH1Y4xayGTzvIjIz1ZwYW5_hkF8jKx3e9bGDWPlgyHm3bRRRSgD650gZ7x69myyaDo4tX8FNWbLk-7PYxKiDBeLyle73_kab63klBJc7ep-O2AIxEtxi2DhDGLlGADWVwyYhEhlcFAhxXcOjCETnpsvDfOiK7XD3hnEkdKsChwTT9Gp6wEmn6xu59Qm2DenO3AMiv6vEyP2-7F-bR5G4&s=rCMh_IyT3wkZHb7D2gtcBiUFQ0sXw_ci1OtdEMnwfJy6v0b_Zx2UXwOJbX1l_v9WEvV1t3AlI4rtLvpimb2-wgx_riBFSEm-BaVgRTQarW90CZDHz0DVuXkMgirbj9jPQH8RzdVb1j_i1PWdjZXHEn-UlTYH4XR75XRrPTtBIdJkYLxxFs-kblAtGyFpm_j3SO-KKcBNsaz-dYtAsT9Xa9j2eA982yf20uhY8b8s2by6RHpfp0E4-CcAVc6Z9Pv8cuZPoQx5vbY8sL8y8zw894KORRQnoy-saOErU7AsFZZyOL-kRcQJzp0e0EX989vbNsPc77oU62telXQtghX6qw&h=rsVFbGuDV59yZCwm4UbiYhQdUhIaW7nMDiDQY1HbWM8
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=71581c6f-df31-4790-bc49-26c6b38df8bd/eastus/b718bb6d-ea3f-4cce-8de7-bb532b3d5223
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '12000'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '800'
+      x-msedge-ref:
+      - 'Ref A: 53705E39EAF04F8392F049A607A1A92C Ref B: MNZ221060619025 Ref C: 2025-05-30T09:12:19Z'
+    status:
+      code: 200
+      message: Ok
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --kind
+      User-Agent:
+      - AZURECLI/2.74.0 azsdk-python-core/1.31.0 Python/3.10.11 (Windows-10-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus2/operationsStatus/099a9ffe-7031-4cca-8faa-705bf1792252?api-version=2025-05-01-preview&t=638841931475244041&c=MIIHhzCCBm-gAwIBAgITHgbIFmDY79XLPJrDjgAABsgWYDANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjUwNDE3MDcxODAyWhcNMjUxMDE0MDcxODAyWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMmXL0h9ESvC4b92QYV7yPeOyC8nGJyORFUoUm7UdBjxDbKTdSt8SfTfQkW5HjszhiwurE_fjCMlYj9_ymGSwiuCaKmitW7pcXF-WPgkAU2dKPUrSPqJAyeDDvG5SbZOmYYKHttoh0ZCPxadX4ljJ_k6BiE0-a-tSIYI__abusYKDqLuE9uYszi2Ra_hhLOH8qi2TBg71Jc7Dasa4RRwHnwfYbhpKL0tyMrBwyvMUGO00Q_Lx0iRvtIyWhp0HLppX7M2gzHCkh37uEJaggrcqn2T1QHSLgt2AuneElzaS8_if-JVZWv8ZdwCW8Oa-9JXQCzDSFKFP-2yMm1KPtualuUCAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBSJ3ygYgt4NuGG8mfdBelaS0ABH_DAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAI2X3AiLN4s7W-C4ho0tyyAJfaEptV5HLxJHbIHK4awoIyOC8pp8Ay2pGHpXZlTZAhmvEJBKPbB0dVv_cphT1EjWF5rgvvLTBfp9Roo8PqmTQxmvMefBGXnYPmtPgtKMi5nwH1Y4xayGTzvIjIz1ZwYW5_hkF8jKx3e9bGDWPlgyHm3bRRRSgD650gZ7x69myyaDo4tX8FNWbLk-7PYxKiDBeLyle73_kab63klBJc7ep-O2AIxEtxi2DhDGLlGADWVwyYhEhlcFAhxXcOjCETnpsvDfOiK7XD3hnEkdKsChwTT9Gp6wEmn6xu59Qm2DenO3AMiv6vEyP2-7F-bR5G4&s=YB3G4RiZfOkIc2L_VaDB6O-qgKG5KmMbef54IkYJkmbw6N_m6LvWxmqWa8rrRI_usl9HwHn_XG_wR8EmbTksBADBal0YxEmUH5l6Et-quv4x5u55Qtag4hQBcZo3iepE4JBpgpikhPTitfMfCXCHm1PtbA4piy15i7wmXN5-Z9ODQWhYp-IfguavkOYfjer1ce6xOu1OwuHc49K4cD5pmwrgQKVrASqT33xMhLftrKIhYdYEo1Tz8oBPfAbVNDlREAogfOX82X1n0O8UyxgXHlwnMSyIXeI__2eaPW7425JOGj6ehXJImeeLUlRyHpjDcO8AyiyauTXes9R_FvzPCA&h=5egtvm2JIvtIUFQww1vBF5XZSGUCGYSL1V04YkbAVN0
+  response:
+    body:
+      string: '{"status":"Enqueued"}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '21'
+      content-type:
+      - application/json
+      date:
+      - Fri, 30 May 2025 09:12:27 GMT
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=71581c6f-df31-4790-bc49-26c6b38df8bd/eastus/ba3bcfef-bd14-4e60-9f80-84ebafbe6a31
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: ABC84E6516544750A9057652C451B229 Ref B: MNZ221060619025 Ref C: 2025-05-30T09:12:27Z'
+    status:
+      code: 200
+      message: Ok
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --kind
+      User-Agent:
+      - AZURECLI/2.74.0 azsdk-python-core/1.31.0 Python/3.10.11 (Windows-10-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus2/operationsStatus/099a9ffe-7031-4cca-8faa-705bf1792252?api-version=2025-05-01-preview&t=638841931475244041&c=MIIHhzCCBm-gAwIBAgITHgbIFmDY79XLPJrDjgAABsgWYDANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjUwNDE3MDcxODAyWhcNMjUxMDE0MDcxODAyWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMmXL0h9ESvC4b92QYV7yPeOyC8nGJyORFUoUm7UdBjxDbKTdSt8SfTfQkW5HjszhiwurE_fjCMlYj9_ymGSwiuCaKmitW7pcXF-WPgkAU2dKPUrSPqJAyeDDvG5SbZOmYYKHttoh0ZCPxadX4ljJ_k6BiE0-a-tSIYI__abusYKDqLuE9uYszi2Ra_hhLOH8qi2TBg71Jc7Dasa4RRwHnwfYbhpKL0tyMrBwyvMUGO00Q_Lx0iRvtIyWhp0HLppX7M2gzHCkh37uEJaggrcqn2T1QHSLgt2AuneElzaS8_if-JVZWv8ZdwCW8Oa-9JXQCzDSFKFP-2yMm1KPtualuUCAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBSJ3ygYgt4NuGG8mfdBelaS0ABH_DAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAI2X3AiLN4s7W-C4ho0tyyAJfaEptV5HLxJHbIHK4awoIyOC8pp8Ay2pGHpXZlTZAhmvEJBKPbB0dVv_cphT1EjWF5rgvvLTBfp9Roo8PqmTQxmvMefBGXnYPmtPgtKMi5nwH1Y4xayGTzvIjIz1ZwYW5_hkF8jKx3e9bGDWPlgyHm3bRRRSgD650gZ7x69myyaDo4tX8FNWbLk-7PYxKiDBeLyle73_kab63klBJc7ep-O2AIxEtxi2DhDGLlGADWVwyYhEhlcFAhxXcOjCETnpsvDfOiK7XD3hnEkdKsChwTT9Gp6wEmn6xu59Qm2DenO3AMiv6vEyP2-7F-bR5G4&s=YB3G4RiZfOkIc2L_VaDB6O-qgKG5KmMbef54IkYJkmbw6N_m6LvWxmqWa8rrRI_usl9HwHn_XG_wR8EmbTksBADBal0YxEmUH5l6Et-quv4x5u55Qtag4hQBcZo3iepE4JBpgpikhPTitfMfCXCHm1PtbA4piy15i7wmXN5-Z9ODQWhYp-IfguavkOYfjer1ce6xOu1OwuHc49K4cD5pmwrgQKVrASqT33xMhLftrKIhYdYEo1Tz8oBPfAbVNDlREAogfOX82X1n0O8UyxgXHlwnMSyIXeI__2eaPW7425JOGj6ehXJImeeLUlRyHpjDcO8AyiyauTXes9R_FvzPCA&h=5egtvm2JIvtIUFQww1vBF5XZSGUCGYSL1V04YkbAVN0
+  response:
+    body:
+      string: '{"status":"Dequeued"}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '21'
+      content-type:
+      - application/json
+      date:
+      - Fri, 30 May 2025 09:12:57 GMT
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=71581c6f-df31-4790-bc49-26c6b38df8bd/eastus/5a823c44-8063-4d30-b9ea-220c0c823078
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 888605A563594216BB2CF8E1AAA45B47 Ref B: MNZ221060619025 Ref C: 2025-05-30T09:12:58Z'
+    status:
+      code: 200
+      message: Ok
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --kind
+      User-Agent:
+      - AZURECLI/2.74.0 azsdk-python-core/1.31.0 Python/3.10.11 (Windows-10-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus2/operationsStatus/099a9ffe-7031-4cca-8faa-705bf1792252?api-version=2025-05-01-preview&t=638841931475244041&c=MIIHhzCCBm-gAwIBAgITHgbIFmDY79XLPJrDjgAABsgWYDANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjUwNDE3MDcxODAyWhcNMjUxMDE0MDcxODAyWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMmXL0h9ESvC4b92QYV7yPeOyC8nGJyORFUoUm7UdBjxDbKTdSt8SfTfQkW5HjszhiwurE_fjCMlYj9_ymGSwiuCaKmitW7pcXF-WPgkAU2dKPUrSPqJAyeDDvG5SbZOmYYKHttoh0ZCPxadX4ljJ_k6BiE0-a-tSIYI__abusYKDqLuE9uYszi2Ra_hhLOH8qi2TBg71Jc7Dasa4RRwHnwfYbhpKL0tyMrBwyvMUGO00Q_Lx0iRvtIyWhp0HLppX7M2gzHCkh37uEJaggrcqn2T1QHSLgt2AuneElzaS8_if-JVZWv8ZdwCW8Oa-9JXQCzDSFKFP-2yMm1KPtualuUCAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBSJ3ygYgt4NuGG8mfdBelaS0ABH_DAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAI2X3AiLN4s7W-C4ho0tyyAJfaEptV5HLxJHbIHK4awoIyOC8pp8Ay2pGHpXZlTZAhmvEJBKPbB0dVv_cphT1EjWF5rgvvLTBfp9Roo8PqmTQxmvMefBGXnYPmtPgtKMi5nwH1Y4xayGTzvIjIz1ZwYW5_hkF8jKx3e9bGDWPlgyHm3bRRRSgD650gZ7x69myyaDo4tX8FNWbLk-7PYxKiDBeLyle73_kab63klBJc7ep-O2AIxEtxi2DhDGLlGADWVwyYhEhlcFAhxXcOjCETnpsvDfOiK7XD3hnEkdKsChwTT9Gp6wEmn6xu59Qm2DenO3AMiv6vEyP2-7F-bR5G4&s=YB3G4RiZfOkIc2L_VaDB6O-qgKG5KmMbef54IkYJkmbw6N_m6LvWxmqWa8rrRI_usl9HwHn_XG_wR8EmbTksBADBal0YxEmUH5l6Et-quv4x5u55Qtag4hQBcZo3iepE4JBpgpikhPTitfMfCXCHm1PtbA4piy15i7wmXN5-Z9ODQWhYp-IfguavkOYfjer1ce6xOu1OwuHc49K4cD5pmwrgQKVrASqT33xMhLftrKIhYdYEo1Tz8oBPfAbVNDlREAogfOX82X1n0O8UyxgXHlwnMSyIXeI__2eaPW7425JOGj6ehXJImeeLUlRyHpjDcO8AyiyauTXes9R_FvzPCA&h=5egtvm2JIvtIUFQww1vBF5XZSGUCGYSL1V04YkbAVN0
+  response:
+    body:
+      string: '{"status":"Dequeued"}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '21'
+      content-type:
+      - application/json
+      date:
+      - Fri, 30 May 2025 09:13:27 GMT
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=71581c6f-df31-4790-bc49-26c6b38df8bd/eastus/5e250c45-d1f3-486e-9502-35d5e753a151
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 573A49CCA80943C8B2ACBC00F2EA512F Ref B: MNZ221060619025 Ref C: 2025-05-30T09:13:28Z'
+    status:
+      code: 200
+      message: Ok
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --kind
+      User-Agent:
+      - AZURECLI/2.74.0 azsdk-python-core/1.31.0 Python/3.10.11 (Windows-10-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus2/operationsStatus/099a9ffe-7031-4cca-8faa-705bf1792252?api-version=2025-05-01-preview&t=638841931475244041&c=MIIHhzCCBm-gAwIBAgITHgbIFmDY79XLPJrDjgAABsgWYDANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjUwNDE3MDcxODAyWhcNMjUxMDE0MDcxODAyWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMmXL0h9ESvC4b92QYV7yPeOyC8nGJyORFUoUm7UdBjxDbKTdSt8SfTfQkW5HjszhiwurE_fjCMlYj9_ymGSwiuCaKmitW7pcXF-WPgkAU2dKPUrSPqJAyeDDvG5SbZOmYYKHttoh0ZCPxadX4ljJ_k6BiE0-a-tSIYI__abusYKDqLuE9uYszi2Ra_hhLOH8qi2TBg71Jc7Dasa4RRwHnwfYbhpKL0tyMrBwyvMUGO00Q_Lx0iRvtIyWhp0HLppX7M2gzHCkh37uEJaggrcqn2T1QHSLgt2AuneElzaS8_if-JVZWv8ZdwCW8Oa-9JXQCzDSFKFP-2yMm1KPtualuUCAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBSJ3ygYgt4NuGG8mfdBelaS0ABH_DAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAI2X3AiLN4s7W-C4ho0tyyAJfaEptV5HLxJHbIHK4awoIyOC8pp8Ay2pGHpXZlTZAhmvEJBKPbB0dVv_cphT1EjWF5rgvvLTBfp9Roo8PqmTQxmvMefBGXnYPmtPgtKMi5nwH1Y4xayGTzvIjIz1ZwYW5_hkF8jKx3e9bGDWPlgyHm3bRRRSgD650gZ7x69myyaDo4tX8FNWbLk-7PYxKiDBeLyle73_kab63klBJc7ep-O2AIxEtxi2DhDGLlGADWVwyYhEhlcFAhxXcOjCETnpsvDfOiK7XD3hnEkdKsChwTT9Gp6wEmn6xu59Qm2DenO3AMiv6vEyP2-7F-bR5G4&s=YB3G4RiZfOkIc2L_VaDB6O-qgKG5KmMbef54IkYJkmbw6N_m6LvWxmqWa8rrRI_usl9HwHn_XG_wR8EmbTksBADBal0YxEmUH5l6Et-quv4x5u55Qtag4hQBcZo3iepE4JBpgpikhPTitfMfCXCHm1PtbA4piy15i7wmXN5-Z9ODQWhYp-IfguavkOYfjer1ce6xOu1OwuHc49K4cD5pmwrgQKVrASqT33xMhLftrKIhYdYEo1Tz8oBPfAbVNDlREAogfOX82X1n0O8UyxgXHlwnMSyIXeI__2eaPW7425JOGj6ehXJImeeLUlRyHpjDcO8AyiyauTXes9R_FvzPCA&h=5egtvm2JIvtIUFQww1vBF5XZSGUCGYSL1V04YkbAVN0
+  response:
+    body:
+      string: '{"status":"Dequeued"}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '21'
+      content-type:
+      - application/json
+      date:
+      - Fri, 30 May 2025 09:13:58 GMT
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=71581c6f-df31-4790-bc49-26c6b38df8bd/eastus/1caed001-0eb0-4ec2-a2a2-25ed6063f7e3
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 434D8C18F7DA44349F8FA2C8B64D2AF3 Ref B: MNZ221060619025 Ref C: 2025-05-30T09:13:58Z'
+    status:
+      code: 200
+      message: Ok
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --kind
+      User-Agent:
+      - AZURECLI/2.74.0 azsdk-python-core/1.31.0 Python/3.10.11 (Windows-10-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus2/operationsStatus/099a9ffe-7031-4cca-8faa-705bf1792252?api-version=2025-05-01-preview&t=638841931475244041&c=MIIHhzCCBm-gAwIBAgITHgbIFmDY79XLPJrDjgAABsgWYDANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjUwNDE3MDcxODAyWhcNMjUxMDE0MDcxODAyWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMmXL0h9ESvC4b92QYV7yPeOyC8nGJyORFUoUm7UdBjxDbKTdSt8SfTfQkW5HjszhiwurE_fjCMlYj9_ymGSwiuCaKmitW7pcXF-WPgkAU2dKPUrSPqJAyeDDvG5SbZOmYYKHttoh0ZCPxadX4ljJ_k6BiE0-a-tSIYI__abusYKDqLuE9uYszi2Ra_hhLOH8qi2TBg71Jc7Dasa4RRwHnwfYbhpKL0tyMrBwyvMUGO00Q_Lx0iRvtIyWhp0HLppX7M2gzHCkh37uEJaggrcqn2T1QHSLgt2AuneElzaS8_if-JVZWv8ZdwCW8Oa-9JXQCzDSFKFP-2yMm1KPtualuUCAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBSJ3ygYgt4NuGG8mfdBelaS0ABH_DAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAI2X3AiLN4s7W-C4ho0tyyAJfaEptV5HLxJHbIHK4awoIyOC8pp8Ay2pGHpXZlTZAhmvEJBKPbB0dVv_cphT1EjWF5rgvvLTBfp9Roo8PqmTQxmvMefBGXnYPmtPgtKMi5nwH1Y4xayGTzvIjIz1ZwYW5_hkF8jKx3e9bGDWPlgyHm3bRRRSgD650gZ7x69myyaDo4tX8FNWbLk-7PYxKiDBeLyle73_kab63klBJc7ep-O2AIxEtxi2DhDGLlGADWVwyYhEhlcFAhxXcOjCETnpsvDfOiK7XD3hnEkdKsChwTT9Gp6wEmn6xu59Qm2DenO3AMiv6vEyP2-7F-bR5G4&s=YB3G4RiZfOkIc2L_VaDB6O-qgKG5KmMbef54IkYJkmbw6N_m6LvWxmqWa8rrRI_usl9HwHn_XG_wR8EmbTksBADBal0YxEmUH5l6Et-quv4x5u55Qtag4hQBcZo3iepE4JBpgpikhPTitfMfCXCHm1PtbA4piy15i7wmXN5-Z9ODQWhYp-IfguavkOYfjer1ce6xOu1OwuHc49K4cD5pmwrgQKVrASqT33xMhLftrKIhYdYEo1Tz8oBPfAbVNDlREAogfOX82X1n0O8UyxgXHlwnMSyIXeI__2eaPW7425JOGj6ehXJImeeLUlRyHpjDcO8AyiyauTXes9R_FvzPCA&h=5egtvm2JIvtIUFQww1vBF5XZSGUCGYSL1V04YkbAVN0
+  response:
+    body:
+      string: '{"status":"Succeeded"}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '22'
+      content-type:
+      - application/json
+      date:
+      - Fri, 30 May 2025 09:14:28 GMT
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=71581c6f-df31-4790-bc49-26c6b38df8bd/eastus/14bf2af0-8452-4afe-8478-1adeda751ec3
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 476AAF8FF07147D1AFD3E75B787E20A0 Ref B: MNZ221060619025 Ref C: 2025-05-30T09:14:29Z'
+    status:
+      code: 200
+      message: Ok
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --kind
+      User-Agent:
+      - AZURECLI/2.74.0 azsdk-python-core/1.31.0 Python/3.10.11 (Windows-10-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongoMI_role_assignment000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002?api-version=2025-05-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongoMI_role_assignment000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002","name":"cli000002","location":"West
+        US 2","type":"Microsoft.DocumentDB/databaseAccounts","kind":"MongoDB","tags":{},"systemData":{"createdAt":"2025-05-30T09:13:48.1065556Z"},"properties":{"provisioningState":"Succeeded","documentEndpoint":"https://cli000002.documents.azure.com:443/","sqlEndpoint":"https://cli000002.documents.azure.com:443/","mongoEndpoint":"https://cli000002.mongo.cosmos.azure.com:443/","publicNetworkAccess":"Enabled","enableAutomaticFailover":true,"enableMultipleWriteLocations":false,"enablePartitionKeyMonitor":false,"isVirtualNetworkFilterEnabled":false,"virtualNetworkRules":[],"EnabledApiTypes":"MongoDB","disableKeyBasedMetadataWriteAccess":false,"enableFreeTier":false,"enableAnalyticalStorage":false,"analyticalStorageConfiguration":{"schemaType":"FullFidelity"},"instanceId":"ade43d8f-3a41-4b84-840e-89e6e3d0cdc2","databaseAccountOfferType":"Standard","capacityMode":"Provisioned","enableFullFidelityChangeFeed":false,"defaultIdentity":"FirstPartyIdentity","networkAclBypass":"None","disableLocalAuth":false,"enablePartitionMerge":false,"enablePerRegionPerPartitionAutoscale":false,"enableBurstCapacity":false,"enablePriorityBasedExecution":false,"defaultPriorityLevel":"High","minMaxThresholdsForPriorityBasedExecution":{"minPercentForLowPriorityRequests":0,"maxPercentForLowPriorityRequests":100,"minPercentForHighPriorityRequests":0,"maxPercentForHighPriorityRequests":100},"minimalTlsVersion":"Tls12","consistencyPolicy":{"defaultConsistencyLevel":"Session","maxIntervalInSeconds":5,"maxStalenessPrefix":100},"apiProperties":{"serverVersion":"3.6"},"configurationOverrides":{"EnableBsonSchema":"True","EnablePerRegionPerPartitionAutoscaleOptIn":"True"},"writeLocations":[{"id":"cli000002-westus2","locationName":"West
+        US 2","documentEndpoint":"https://cli000002-westus2.documents.azure.com:443/","provisioningState":"Succeeded","failoverPriority":0,"isZoneRedundant":false}],"readLocations":[{"id":"cli000002-westus2","locationName":"West
+        US 2","documentEndpoint":"https://cli000002-westus2.documents.azure.com:443/","provisioningState":"Succeeded","failoverPriority":0,"isZoneRedundant":false}],"locations":[{"id":"cli000002-westus2","locationName":"West
+        US 2","documentEndpoint":"https://cli000002-westus2.documents.azure.com:443/","provisioningState":"Succeeded","failoverPriority":0,"isZoneRedundant":false}],"failoverPolicies":[{"id":"cli000002-westus2","locationName":"West
+        US 2","failoverPriority":0}],"cors":[],"capabilities":[{"name":"EnableMongo"}],"ipRules":[],"backupPolicy":{"type":"Periodic","periodicModeProperties":{"backupIntervalInMinutes":240,"backupRetentionIntervalInHours":8,"backupStorageRedundancy":"Geo"}},"networkAclBypassResourceIds":[],"diagnosticLogSettings":{"enableFullTextQuery":"None"},"keysMetadata":{"primaryMasterKey":{"generationTime":"2025-05-30T09:13:48.1065556Z"},"secondaryMasterKey":{"generationTime":"2025-05-30T09:13:48.1065556Z"},"primaryReadonlyMasterKey":{"generationTime":"2025-05-30T09:13:48.1065556Z"},"secondaryReadonlyMasterKey":{"generationTime":"2025-05-30T09:13:48.1065556Z"}}},"identity":{"type":"None"}}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '3276'
+      content-type:
+      - application/json
+      date:
+      - Fri, 30 May 2025 09:14:29 GMT
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 6F0080B0DBF641529F756D84A8D62328 Ref B: MNZ221060619025 Ref C: 2025-05-30T09:14:29Z'
+    status:
+      code: 200
+      message: Ok
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --kind
+      User-Agent:
+      - AZURECLI/2.74.0 azsdk-python-core/1.31.0 Python/3.10.11 (Windows-10-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongoMI_role_assignment000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002?api-version=2025-05-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongoMI_role_assignment000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002","name":"cli000002","location":"West
+        US 2","type":"Microsoft.DocumentDB/databaseAccounts","kind":"MongoDB","tags":{},"systemData":{"createdAt":"2025-05-30T09:13:48.1065556Z"},"properties":{"provisioningState":"Succeeded","documentEndpoint":"https://cli000002.documents.azure.com:443/","sqlEndpoint":"https://cli000002.documents.azure.com:443/","mongoEndpoint":"https://cli000002.mongo.cosmos.azure.com:443/","publicNetworkAccess":"Enabled","enableAutomaticFailover":true,"enableMultipleWriteLocations":false,"enablePartitionKeyMonitor":false,"isVirtualNetworkFilterEnabled":false,"virtualNetworkRules":[],"EnabledApiTypes":"MongoDB","disableKeyBasedMetadataWriteAccess":false,"enableFreeTier":false,"enableAnalyticalStorage":false,"analyticalStorageConfiguration":{"schemaType":"FullFidelity"},"instanceId":"ade43d8f-3a41-4b84-840e-89e6e3d0cdc2","databaseAccountOfferType":"Standard","capacityMode":"Provisioned","enableFullFidelityChangeFeed":false,"defaultIdentity":"FirstPartyIdentity","networkAclBypass":"None","disableLocalAuth":false,"enablePartitionMerge":false,"enablePerRegionPerPartitionAutoscale":false,"enableBurstCapacity":false,"enablePriorityBasedExecution":false,"defaultPriorityLevel":"High","minMaxThresholdsForPriorityBasedExecution":{"minPercentForLowPriorityRequests":0,"maxPercentForLowPriorityRequests":100,"minPercentForHighPriorityRequests":0,"maxPercentForHighPriorityRequests":100},"minimalTlsVersion":"Tls12","consistencyPolicy":{"defaultConsistencyLevel":"Session","maxIntervalInSeconds":5,"maxStalenessPrefix":100},"apiProperties":{"serverVersion":"3.6"},"configurationOverrides":{"EnableBsonSchema":"True","EnablePerRegionPerPartitionAutoscaleOptIn":"True"},"writeLocations":[{"id":"cli000002-westus2","locationName":"West
+        US 2","documentEndpoint":"https://cli000002-westus2.documents.azure.com:443/","provisioningState":"Succeeded","failoverPriority":0,"isZoneRedundant":false}],"readLocations":[{"id":"cli000002-westus2","locationName":"West
+        US 2","documentEndpoint":"https://cli000002-westus2.documents.azure.com:443/","provisioningState":"Succeeded","failoverPriority":0,"isZoneRedundant":false}],"locations":[{"id":"cli000002-westus2","locationName":"West
+        US 2","documentEndpoint":"https://cli000002-westus2.documents.azure.com:443/","provisioningState":"Succeeded","failoverPriority":0,"isZoneRedundant":false}],"failoverPolicies":[{"id":"cli000002-westus2","locationName":"West
+        US 2","failoverPriority":0}],"cors":[],"capabilities":[{"name":"EnableMongo"}],"ipRules":[],"backupPolicy":{"type":"Periodic","periodicModeProperties":{"backupIntervalInMinutes":240,"backupRetentionIntervalInHours":8,"backupStorageRedundancy":"Geo"}},"networkAclBypassResourceIds":[],"diagnosticLogSettings":{"enableFullTextQuery":"None"},"keysMetadata":{"primaryMasterKey":{"generationTime":"2025-05-30T09:13:48.1065556Z"},"secondaryMasterKey":{"generationTime":"2025-05-30T09:13:48.1065556Z"},"primaryReadonlyMasterKey":{"generationTime":"2025-05-30T09:13:48.1065556Z"},"secondaryReadonlyMasterKey":{"generationTime":"2025-05-30T09:13:48.1065556Z"}}},"identity":{"type":"None"}}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '3276'
+      content-type:
+      - application/json
+      date:
+      - Fri, 30 May 2025 09:14:30 GMT
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 6F8E134FC1314D27959224770D22F57A Ref B: MNZ221060619025 Ref C: 2025-05-30T09:14:30Z'
+    status:
+      code: 200
+      message: Ok
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group
+      User-Agent:
+      - AZURECLI/2.74.0 azsdk-python-core/1.31.0 Python/3.10.11 (Windows-10-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongoMI_role_assignment000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002?api-version=2025-05-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongoMI_role_assignment000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002","name":"cli000002","location":"West
+        US 2","type":"Microsoft.DocumentDB/databaseAccounts","kind":"MongoDB","tags":{},"systemData":{"createdAt":"2025-05-30T09:13:48.1065556Z"},"properties":{"provisioningState":"Succeeded","documentEndpoint":"https://cli000002.documents.azure.com:443/","sqlEndpoint":"https://cli000002.documents.azure.com:443/","mongoEndpoint":"https://cli000002.mongo.cosmos.azure.com:443/","publicNetworkAccess":"Enabled","enableAutomaticFailover":true,"enableMultipleWriteLocations":false,"enablePartitionKeyMonitor":false,"isVirtualNetworkFilterEnabled":false,"virtualNetworkRules":[],"EnabledApiTypes":"MongoDB","disableKeyBasedMetadataWriteAccess":false,"enableFreeTier":false,"enableAnalyticalStorage":false,"analyticalStorageConfiguration":{"schemaType":"FullFidelity"},"instanceId":"ade43d8f-3a41-4b84-840e-89e6e3d0cdc2","databaseAccountOfferType":"Standard","capacityMode":"Provisioned","enableFullFidelityChangeFeed":false,"defaultIdentity":"FirstPartyIdentity","networkAclBypass":"None","disableLocalAuth":false,"enablePartitionMerge":false,"enablePerRegionPerPartitionAutoscale":false,"enableBurstCapacity":false,"enablePriorityBasedExecution":false,"defaultPriorityLevel":"High","minMaxThresholdsForPriorityBasedExecution":{"minPercentForLowPriorityRequests":0,"maxPercentForLowPriorityRequests":100,"minPercentForHighPriorityRequests":0,"maxPercentForHighPriorityRequests":100},"minimalTlsVersion":"Tls12","consistencyPolicy":{"defaultConsistencyLevel":"Session","maxIntervalInSeconds":5,"maxStalenessPrefix":100},"apiProperties":{"serverVersion":"3.6"},"configurationOverrides":{"EnableBsonSchema":"True","EnablePerRegionPerPartitionAutoscaleOptIn":"True"},"writeLocations":[{"id":"cli000002-westus2","locationName":"West
+        US 2","documentEndpoint":"https://cli000002-westus2.documents.azure.com:443/","provisioningState":"Succeeded","failoverPriority":0,"isZoneRedundant":false}],"readLocations":[{"id":"cli000002-westus2","locationName":"West
+        US 2","documentEndpoint":"https://cli000002-westus2.documents.azure.com:443/","provisioningState":"Succeeded","failoverPriority":0,"isZoneRedundant":false}],"locations":[{"id":"cli000002-westus2","locationName":"West
+        US 2","documentEndpoint":"https://cli000002-westus2.documents.azure.com:443/","provisioningState":"Succeeded","failoverPriority":0,"isZoneRedundant":false}],"failoverPolicies":[{"id":"cli000002-westus2","locationName":"West
+        US 2","failoverPriority":0}],"cors":[],"capabilities":[{"name":"EnableMongo"}],"ipRules":[],"backupPolicy":{"type":"Periodic","periodicModeProperties":{"backupIntervalInMinutes":240,"backupRetentionIntervalInHours":8,"backupStorageRedundancy":"Geo"}},"networkAclBypassResourceIds":[],"diagnosticLogSettings":{"enableFullTextQuery":"None"},"keysMetadata":{"primaryMasterKey":{"generationTime":"2025-05-30T09:13:48.1065556Z"},"secondaryMasterKey":{"generationTime":"2025-05-30T09:13:48.1065556Z"},"primaryReadonlyMasterKey":{"generationTime":"2025-05-30T09:13:48.1065556Z"},"secondaryReadonlyMasterKey":{"generationTime":"2025-05-30T09:13:48.1065556Z"}}},"identity":{"type":"None"}}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '3276'
+      content-type:
+      - application/json
+      date:
+      - Fri, 30 May 2025 09:14:31 GMT
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16498'
+      x-msedge-ref:
+      - 'Ref A: AC21AF959DC44FB6BC597AECD3070FF5 Ref B: MNZ221060619025 Ref C: 2025-05-30T09:14:31Z'
+    status:
+      code: 200
+      message: Ok
+- request:
+    body: '{"properties": {"resource": {"id": "cli000003", "createMode": "Default"},
+      "options": {}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongodb database create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '89'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -a -n
+      User-Agent:
+      - AZURECLI/2.74.0 azsdk-python-core/1.31.0 Python/3.10.11 (Windows-10-10.0.26100-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongoMI_role_assignment000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbDatabases/cli000003?api-version=2025-04-15
+  response:
+    body:
+      string: '{"status":"Enqueued"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus2/operationsStatus/0e2fd8e8-23e3-4c0f-ac12-aa2639760944?api-version=2025-04-15&t=638841932730621810&c=MIIHhzCCBm-gAwIBAgITHgbIFmDY79XLPJrDjgAABsgWYDANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjUwNDE3MDcxODAyWhcNMjUxMDE0MDcxODAyWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMmXL0h9ESvC4b92QYV7yPeOyC8nGJyORFUoUm7UdBjxDbKTdSt8SfTfQkW5HjszhiwurE_fjCMlYj9_ymGSwiuCaKmitW7pcXF-WPgkAU2dKPUrSPqJAyeDDvG5SbZOmYYKHttoh0ZCPxadX4ljJ_k6BiE0-a-tSIYI__abusYKDqLuE9uYszi2Ra_hhLOH8qi2TBg71Jc7Dasa4RRwHnwfYbhpKL0tyMrBwyvMUGO00Q_Lx0iRvtIyWhp0HLppX7M2gzHCkh37uEJaggrcqn2T1QHSLgt2AuneElzaS8_if-JVZWv8ZdwCW8Oa-9JXQCzDSFKFP-2yMm1KPtualuUCAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBSJ3ygYgt4NuGG8mfdBelaS0ABH_DAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAI2X3AiLN4s7W-C4ho0tyyAJfaEptV5HLxJHbIHK4awoIyOC8pp8Ay2pGHpXZlTZAhmvEJBKPbB0dVv_cphT1EjWF5rgvvLTBfp9Roo8PqmTQxmvMefBGXnYPmtPgtKMi5nwH1Y4xayGTzvIjIz1ZwYW5_hkF8jKx3e9bGDWPlgyHm3bRRRSgD650gZ7x69myyaDo4tX8FNWbLk-7PYxKiDBeLyle73_kab63klBJc7ep-O2AIxEtxi2DhDGLlGADWVwyYhEhlcFAhxXcOjCETnpsvDfOiK7XD3hnEkdKsChwTT9Gp6wEmn6xu59Qm2DenO3AMiv6vEyP2-7F-bR5G4&s=umj34jAdwBgDT0eUQhGK0wRXUgqKNUN5ZptfeoXu65R84w_uA3nB6ALy1qnquHXjDDRDIq4Iv_lgoB-QrwmlSPkan-Cl4HGSnomagDZBpF-GzZQ6eYGG7o0MQkf6dxHQPEmGptaoNi-mjcWP3hzXiyLd9MaxjcB5eJaDoFcZ8g33y3CYj5CTvJpB3zhcRA57zA8CewUIk6-C6ueAfU-JqD9mGD8lqndZWgmcHqD41qUXIBSkIo5nb7hS_4TR9STuj-tdbQavbejy39bDqZQZb_EetTPveArVQ5p8MdbM0I-TKjj76HsWbJf2yaNZFl5_kprmcTQVCfAOiAWBLmRaMA&h=r8SDRByrZhK1F0iyuFvv3VC90uWjIPDGfu2oZ3LSVtU
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '21'
+      content-type:
+      - application/json
+      date:
+      - Fri, 30 May 2025 09:14:32 GMT
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongoMI_role_assignment000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbDatabases/cli000003/operationResults/0e2fd8e8-23e3-4c0f-ac12-aa2639760944?api-version=2025-04-15&t=638841932730778008&c=MIIHhzCCBm-gAwIBAgITHgbIFmDY79XLPJrDjgAABsgWYDANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjUwNDE3MDcxODAyWhcNMjUxMDE0MDcxODAyWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMmXL0h9ESvC4b92QYV7yPeOyC8nGJyORFUoUm7UdBjxDbKTdSt8SfTfQkW5HjszhiwurE_fjCMlYj9_ymGSwiuCaKmitW7pcXF-WPgkAU2dKPUrSPqJAyeDDvG5SbZOmYYKHttoh0ZCPxadX4ljJ_k6BiE0-a-tSIYI__abusYKDqLuE9uYszi2Ra_hhLOH8qi2TBg71Jc7Dasa4RRwHnwfYbhpKL0tyMrBwyvMUGO00Q_Lx0iRvtIyWhp0HLppX7M2gzHCkh37uEJaggrcqn2T1QHSLgt2AuneElzaS8_if-JVZWv8ZdwCW8Oa-9JXQCzDSFKFP-2yMm1KPtualuUCAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBSJ3ygYgt4NuGG8mfdBelaS0ABH_DAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAI2X3AiLN4s7W-C4ho0tyyAJfaEptV5HLxJHbIHK4awoIyOC8pp8Ay2pGHpXZlTZAhmvEJBKPbB0dVv_cphT1EjWF5rgvvLTBfp9Roo8PqmTQxmvMefBGXnYPmtPgtKMi5nwH1Y4xayGTzvIjIz1ZwYW5_hkF8jKx3e9bGDWPlgyHm3bRRRSgD650gZ7x69myyaDo4tX8FNWbLk-7PYxKiDBeLyle73_kab63klBJc7ep-O2AIxEtxi2DhDGLlGADWVwyYhEhlcFAhxXcOjCETnpsvDfOiK7XD3hnEkdKsChwTT9Gp6wEmn6xu59Qm2DenO3AMiv6vEyP2-7F-bR5G4&s=rmn0smfJv4zDwSpeymQxayUmgwuATszpLkUJ47j4tmIaohl55SMDBQMJA5gY7_zjjsLkY2nNCszXaRIQVPMEJOdK3RlICefq9ge7WZq57tP-rqlva600bTeBu4ffhXlOrck0DkgKcvTOAxqM0Q5pHV2MMY3zC2cu8OOZ9M23bwJsrJvF4K5PIpGlfg4Jx15WmFW7IZHwStpbiKKekoLp9eQ19Zx_U6E0bohxj_vXW9pymjIwzrFFF038n9prjiKHpXwQ7ErfuJPaMO1e3E0PECpU5oi0gqALt3YToIVuBuQLd7ghFdPpPpPX6rCLe1jkvajg-TuwcBj0LVBpMiAeHw&h=eO7mp7RgJ7Fp_yZkjmR-KorW9I8a97xDe9KZBFlsDIc
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=71581c6f-df31-4790-bc49-26c6b38df8bd/eastus/9bb21712-98dc-4d49-864b-9c5c183d3731
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 5CC760224CCB4270B8D082BDD9602A96 Ref B: MNZ221060610045 Ref C: 2025-05-30T09:14:32Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongodb database create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -a -n
+      User-Agent:
+      - AZURECLI/2.74.0 azsdk-python-core/1.31.0 Python/3.10.11 (Windows-10-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus2/operationsStatus/0e2fd8e8-23e3-4c0f-ac12-aa2639760944?api-version=2025-04-15&t=638841932730621810&c=MIIHhzCCBm-gAwIBAgITHgbIFmDY79XLPJrDjgAABsgWYDANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjUwNDE3MDcxODAyWhcNMjUxMDE0MDcxODAyWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMmXL0h9ESvC4b92QYV7yPeOyC8nGJyORFUoUm7UdBjxDbKTdSt8SfTfQkW5HjszhiwurE_fjCMlYj9_ymGSwiuCaKmitW7pcXF-WPgkAU2dKPUrSPqJAyeDDvG5SbZOmYYKHttoh0ZCPxadX4ljJ_k6BiE0-a-tSIYI__abusYKDqLuE9uYszi2Ra_hhLOH8qi2TBg71Jc7Dasa4RRwHnwfYbhpKL0tyMrBwyvMUGO00Q_Lx0iRvtIyWhp0HLppX7M2gzHCkh37uEJaggrcqn2T1QHSLgt2AuneElzaS8_if-JVZWv8ZdwCW8Oa-9JXQCzDSFKFP-2yMm1KPtualuUCAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBSJ3ygYgt4NuGG8mfdBelaS0ABH_DAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAI2X3AiLN4s7W-C4ho0tyyAJfaEptV5HLxJHbIHK4awoIyOC8pp8Ay2pGHpXZlTZAhmvEJBKPbB0dVv_cphT1EjWF5rgvvLTBfp9Roo8PqmTQxmvMefBGXnYPmtPgtKMi5nwH1Y4xayGTzvIjIz1ZwYW5_hkF8jKx3e9bGDWPlgyHm3bRRRSgD650gZ7x69myyaDo4tX8FNWbLk-7PYxKiDBeLyle73_kab63klBJc7ep-O2AIxEtxi2DhDGLlGADWVwyYhEhlcFAhxXcOjCETnpsvDfOiK7XD3hnEkdKsChwTT9Gp6wEmn6xu59Qm2DenO3AMiv6vEyP2-7F-bR5G4&s=umj34jAdwBgDT0eUQhGK0wRXUgqKNUN5ZptfeoXu65R84w_uA3nB6ALy1qnquHXjDDRDIq4Iv_lgoB-QrwmlSPkan-Cl4HGSnomagDZBpF-GzZQ6eYGG7o0MQkf6dxHQPEmGptaoNi-mjcWP3hzXiyLd9MaxjcB5eJaDoFcZ8g33y3CYj5CTvJpB3zhcRA57zA8CewUIk6-C6ueAfU-JqD9mGD8lqndZWgmcHqD41qUXIBSkIo5nb7hS_4TR9STuj-tdbQavbejy39bDqZQZb_EetTPveArVQ5p8MdbM0I-TKjj76HsWbJf2yaNZFl5_kprmcTQVCfAOiAWBLmRaMA&h=r8SDRByrZhK1F0iyuFvv3VC90uWjIPDGfu2oZ3LSVtU
+  response:
+    body:
+      string: '{"status":"Enqueued"}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '21'
+      content-type:
+      - application/json
+      date:
+      - Fri, 30 May 2025 09:14:32 GMT
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=71581c6f-df31-4790-bc49-26c6b38df8bd/eastus/6667a7de-6ece-4d02-a404-cd281ac5e8ac
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: EBC878A6E69D4696BF0FD758DDCB50B0 Ref B: MNZ221060610045 Ref C: 2025-05-30T09:14:33Z'
+    status:
+      code: 200
+      message: Ok
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongodb database create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -a -n
+      User-Agent:
+      - AZURECLI/2.74.0 azsdk-python-core/1.31.0 Python/3.10.11 (Windows-10-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus2/operationsStatus/0e2fd8e8-23e3-4c0f-ac12-aa2639760944?api-version=2025-04-15&t=638841932730621810&c=MIIHhzCCBm-gAwIBAgITHgbIFmDY79XLPJrDjgAABsgWYDANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjUwNDE3MDcxODAyWhcNMjUxMDE0MDcxODAyWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMmXL0h9ESvC4b92QYV7yPeOyC8nGJyORFUoUm7UdBjxDbKTdSt8SfTfQkW5HjszhiwurE_fjCMlYj9_ymGSwiuCaKmitW7pcXF-WPgkAU2dKPUrSPqJAyeDDvG5SbZOmYYKHttoh0ZCPxadX4ljJ_k6BiE0-a-tSIYI__abusYKDqLuE9uYszi2Ra_hhLOH8qi2TBg71Jc7Dasa4RRwHnwfYbhpKL0tyMrBwyvMUGO00Q_Lx0iRvtIyWhp0HLppX7M2gzHCkh37uEJaggrcqn2T1QHSLgt2AuneElzaS8_if-JVZWv8ZdwCW8Oa-9JXQCzDSFKFP-2yMm1KPtualuUCAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBSJ3ygYgt4NuGG8mfdBelaS0ABH_DAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAI2X3AiLN4s7W-C4ho0tyyAJfaEptV5HLxJHbIHK4awoIyOC8pp8Ay2pGHpXZlTZAhmvEJBKPbB0dVv_cphT1EjWF5rgvvLTBfp9Roo8PqmTQxmvMefBGXnYPmtPgtKMi5nwH1Y4xayGTzvIjIz1ZwYW5_hkF8jKx3e9bGDWPlgyHm3bRRRSgD650gZ7x69myyaDo4tX8FNWbLk-7PYxKiDBeLyle73_kab63klBJc7ep-O2AIxEtxi2DhDGLlGADWVwyYhEhlcFAhxXcOjCETnpsvDfOiK7XD3hnEkdKsChwTT9Gp6wEmn6xu59Qm2DenO3AMiv6vEyP2-7F-bR5G4&s=umj34jAdwBgDT0eUQhGK0wRXUgqKNUN5ZptfeoXu65R84w_uA3nB6ALy1qnquHXjDDRDIq4Iv_lgoB-QrwmlSPkan-Cl4HGSnomagDZBpF-GzZQ6eYGG7o0MQkf6dxHQPEmGptaoNi-mjcWP3hzXiyLd9MaxjcB5eJaDoFcZ8g33y3CYj5CTvJpB3zhcRA57zA8CewUIk6-C6ueAfU-JqD9mGD8lqndZWgmcHqD41qUXIBSkIo5nb7hS_4TR9STuj-tdbQavbejy39bDqZQZb_EetTPveArVQ5p8MdbM0I-TKjj76HsWbJf2yaNZFl5_kprmcTQVCfAOiAWBLmRaMA&h=r8SDRByrZhK1F0iyuFvv3VC90uWjIPDGfu2oZ3LSVtU
+  response:
+    body:
+      string: '{"status":"Succeeded"}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '22'
+      content-type:
+      - application/json
+      date:
+      - Fri, 30 May 2025 09:15:03 GMT
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=71581c6f-df31-4790-bc49-26c6b38df8bd/eastus/18f60d65-6ead-4ba7-b454-d3a79fbc3b55
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 450AB805EABC47F9BC6EC0B738BFBDB9 Ref B: MNZ221060610045 Ref C: 2025-05-30T09:15:03Z'
+    status:
+      code: 200
+      message: Ok
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongodb database create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -a -n
+      User-Agent:
+      - AZURECLI/2.74.0 azsdk-python-core/1.31.0 Python/3.10.11 (Windows-10-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongoMI_role_assignment000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbDatabases/cli000003?api-version=2025-04-15
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongoMI_role_assignment000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbDatabases/cli000003","type":"Microsoft.DocumentDB/databaseAccounts/mongodbDatabases","name":"cli000003","properties":{"resource":{"id":"cli000003"}}}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '336'
+      content-type:
+      - application/json
+      date:
+      - Fri, 30 May 2025 09:15:03 GMT
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=71581c6f-df31-4790-bc49-26c6b38df8bd/eastus/e2a7b47f-eaf2-4ff5-91df-936e2520fa66
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: E5D164B3F9A04BFDA1B3C2945DD76F3F Ref B: MNZ221060610045 Ref C: 2025-05-30T09:15:04Z'
+    status:
+      code: 200
+      message: Ok
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongomi role definition exists
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -a --role-definition-id
+      User-Agent:
+      - AZURECLI/2.74.0 azsdk-python-core/1.31.0 Python/3.10.11 (Windows-10-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongoMI_role_assignment000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongoMIRoleDefinitions/00000000-0000-0000-0000-000000000001?api-version=2025-05-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongoMI_role_assignment000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongoMIRoleDefinitions/00000000-0000-0000-0000-000000000001","name":"00000000-0000-0000-0000-000000000001","properties":{"roleName":"Cosmos
+        DB Built-in Data Reader","type":"BuiltInRole","assignableScopes":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongoMI_role_assignment000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002"],"permissions":[{"dataActions":["Microsoft.DocumentDB/databaseAccounts/readMetadata","Microsoft.DocumentDB/databaseAccounts/throughputSettings/read","Microsoft.DocumentDB/databaseAccounts/mongoMI/containers/executeQuery","Microsoft.DocumentDB/databaseAccounts/mongoMI/containers/readChangeFeed","Microsoft.DocumentDB/databaseAccounts/mongoMI/containers/entities/read"],"notDataActions":[]}]},"type":"Microsoft.DocumentDB/databaseAccounts/mongoMIRoleDefinitions"}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '1023'
+      content-type:
+      - application/json
+      date:
+      - Fri, 30 May 2025 09:15:05 GMT
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=71581c6f-df31-4790-bc49-26c6b38df8bd/eastus/3fbb79b4-e593-413e-83cc-1cdf41ef0994
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: B3C9472C1AD54979B7D217EB447B47B6 Ref B: MNZ221060610017 Ref C: 2025-05-30T09:15:04Z'
+    status:
+      code: 200
+      message: Ok
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongomi role assignment delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g -a --role-assignment-id --yes
+      User-Agent:
+      - AZURECLI/2.74.0 azsdk-python-core/1.31.0 Python/3.10.11 (Windows-10-10.0.26100-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongoMI_role_assignment000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongoMIRoleAssignments/cb8ed2d7-2371-4e3c-bd31-6cc1560e84f8?api-version=2025-05-01-preview
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-store, no-cache
+      date:
+      - Fri, 30 May 2025 09:15:06 GMT
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-activity-id:
+      - 9358f883-3d36-11f0-9cc1-7c1e52178e45
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=71581c6f-df31-4790-bc49-26c6b38df8bd/eastus/0fa86156-54cb-45c7-84eb-483a87f3e951
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '799'
+      x-ms-ratelimit-remaining-subscription-global-deletes:
+      - '11999'
+      x-msedge-ref:
+      - 'Ref A: A9D5E5269CA947008288724B42C9FFAF Ref B: MNZ221060609045 Ref C: 2025-05-30T09:15:06Z'
+    status:
+      code: 204
+      message: No Content
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongomi role assignment list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -a
+      User-Agent:
+      - AZURECLI/2.74.0 azsdk-python-core/1.31.0 Python/3.10.11 (Windows-10-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongoMI_role_assignment000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongoMIRoleAssignments?api-version=2025-05-01-preview
+  response:
+    body:
+      string: '{"value":[]}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '12'
+      content-type:
+      - application/json
+      date:
+      - Fri, 30 May 2025 09:15:07 GMT
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=71581c6f-df31-4790-bc49-26c6b38df8bd/eastus2/6ca23465-0cc6-4457-9820-2d5cfaafaf4a
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 54E2F28D2A084D44912325ABB22AD502 Ref B: BL2AA2011001031 Ref C: 2025-05-30T09:15:07Z'
+    status:
+      code: 200
+      message: Ok
+- request:
+    body: '{"properties": {"roleDefinitionId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongoMI_role_assignmentu4ss2n535bbvhe2wmufck5yfhyziujp77gg4/providers/Microsoft.DocumentDB/databaseAccounts/clikznzrccyiwbv/mongoMIRoleDefinitions/00000000-0000-0000-0000-000000000001",
+      "scope": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongoMI_role_assignment000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002",
+      "principalId": "ca95ad70-0b97-48cd-a757-57662ffa33e9"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongomi role assignment create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '548'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -a --scope --principal-id --role-definition-id --role-assignment-id
+      User-Agent:
+      - AZURECLI/2.74.0 azsdk-python-core/1.31.0 Python/3.10.11 (Windows-10-10.0.26100-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongoMI_role_assignment000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongoMIRoleAssignments/cb8ed2d7-2371-4e3c-bd31-6cc1560e84f8?api-version=2025-05-01-preview
+  response:
+    body:
+      string: '{"status":"Enqueued"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus2/operationsStatus/9d40cf6c-76f9-4adb-b33b-47e49f5fd1bb?api-version=2025-05-01-preview&t=638841933106735784&c=MIIHhzCCBm-gAwIBAgITHgbIFmDY79XLPJrDjgAABsgWYDANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjUwNDE3MDcxODAyWhcNMjUxMDE0MDcxODAyWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMmXL0h9ESvC4b92QYV7yPeOyC8nGJyORFUoUm7UdBjxDbKTdSt8SfTfQkW5HjszhiwurE_fjCMlYj9_ymGSwiuCaKmitW7pcXF-WPgkAU2dKPUrSPqJAyeDDvG5SbZOmYYKHttoh0ZCPxadX4ljJ_k6BiE0-a-tSIYI__abusYKDqLuE9uYszi2Ra_hhLOH8qi2TBg71Jc7Dasa4RRwHnwfYbhpKL0tyMrBwyvMUGO00Q_Lx0iRvtIyWhp0HLppX7M2gzHCkh37uEJaggrcqn2T1QHSLgt2AuneElzaS8_if-JVZWv8ZdwCW8Oa-9JXQCzDSFKFP-2yMm1KPtualuUCAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBSJ3ygYgt4NuGG8mfdBelaS0ABH_DAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAI2X3AiLN4s7W-C4ho0tyyAJfaEptV5HLxJHbIHK4awoIyOC8pp8Ay2pGHpXZlTZAhmvEJBKPbB0dVv_cphT1EjWF5rgvvLTBfp9Roo8PqmTQxmvMefBGXnYPmtPgtKMi5nwH1Y4xayGTzvIjIz1ZwYW5_hkF8jKx3e9bGDWPlgyHm3bRRRSgD650gZ7x69myyaDo4tX8FNWbLk-7PYxKiDBeLyle73_kab63klBJc7ep-O2AIxEtxi2DhDGLlGADWVwyYhEhlcFAhxXcOjCETnpsvDfOiK7XD3hnEkdKsChwTT9Gp6wEmn6xu59Qm2DenO3AMiv6vEyP2-7F-bR5G4&s=JR3bczdeKMnPD32chFVzs9vSPH1nrLpovh-TjR1ocIx_qXlhAsIaFY4v2rTFiOzv-qF_ZB7zyPyssKygGV0V1786PhHpH-kL335MaVemKZd65Hy-JYBFKsxLRmLYFqDlhYkMzDbf4JelCUB3zK0auGOQqAPMBUkCNrQqwzKMSeY5Kada0c8AgBXBsgWPMkKByooRxZ-JrBQLkZtvTRfMmSVU6sv7lg1DvtWe8r5DMsKytzhayNR23iIml_vKAThwuLpnhBE8kdea-eHlPBLHkqLkpKE0bUG2zoIMtFvaqyPA4ZI324gMsxzQ5eJVGVR5MBAQuCOGKkhsgRpFomKN9w&h=l4w9LT2KJMnH2iwvK0QIbnJHCTL9vbey1DROm4CjsYw
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '21'
+      content-type:
+      - application/json
+      date:
+      - Fri, 30 May 2025 09:15:09 GMT
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongoMI_role_assignment000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongoMIRoleAssignments/cb8ed2d7-2371-4e3c-bd31-6cc1560e84f8/operationResults/9d40cf6c-76f9-4adb-b33b-47e49f5fd1bb?api-version=2025-05-01-preview&t=638841933108454579&c=MIIHhzCCBm-gAwIBAgITHgbIFmDY79XLPJrDjgAABsgWYDANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjUwNDE3MDcxODAyWhcNMjUxMDE0MDcxODAyWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMmXL0h9ESvC4b92QYV7yPeOyC8nGJyORFUoUm7UdBjxDbKTdSt8SfTfQkW5HjszhiwurE_fjCMlYj9_ymGSwiuCaKmitW7pcXF-WPgkAU2dKPUrSPqJAyeDDvG5SbZOmYYKHttoh0ZCPxadX4ljJ_k6BiE0-a-tSIYI__abusYKDqLuE9uYszi2Ra_hhLOH8qi2TBg71Jc7Dasa4RRwHnwfYbhpKL0tyMrBwyvMUGO00Q_Lx0iRvtIyWhp0HLppX7M2gzHCkh37uEJaggrcqn2T1QHSLgt2AuneElzaS8_if-JVZWv8ZdwCW8Oa-9JXQCzDSFKFP-2yMm1KPtualuUCAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBSJ3ygYgt4NuGG8mfdBelaS0ABH_DAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAI2X3AiLN4s7W-C4ho0tyyAJfaEptV5HLxJHbIHK4awoIyOC8pp8Ay2pGHpXZlTZAhmvEJBKPbB0dVv_cphT1EjWF5rgvvLTBfp9Roo8PqmTQxmvMefBGXnYPmtPgtKMi5nwH1Y4xayGTzvIjIz1ZwYW5_hkF8jKx3e9bGDWPlgyHm3bRRRSgD650gZ7x69myyaDo4tX8FNWbLk-7PYxKiDBeLyle73_kab63klBJc7ep-O2AIxEtxi2DhDGLlGADWVwyYhEhlcFAhxXcOjCETnpsvDfOiK7XD3hnEkdKsChwTT9Gp6wEmn6xu59Qm2DenO3AMiv6vEyP2-7F-bR5G4&s=T_jS7c5rPjEKPK_D9DMbkLxq_9ytHk4hkMPL_OutRMLhUdaDEvGTnlN8gtghxVddvgBPtkrtq8JuFLMVdxQ8jTcXX1cz8h1NgKpvU05Hatv7G1E9dbLy31YO2uZ0LylzGdZJ3uHMfvsdxrAdYmmivrEFsaASu_1v7vU3dYPRlqLCj00mGFKmtKWRh41xx7yBMCEg1MxrSAAsvjj2NfhAqQScU2ogNSKQG4oLfRjzai_hhbcHzBjhLjcZPj6pTvnr1NvMo0zuX9AnbVa_O1zR5iRIAB8qvXDzQxcFfcNEZjJljai5Le_NYZt2rnuLH1kWpj7fZ3lA--wZxgzy90Yaew&h=aIm8888Irmnlt-HNPdZVl0xGbvLLrMrCdselPwV7xA4
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=71581c6f-df31-4790-bc49-26c6b38df8bd/eastus/2c23a774-e5ed-4c9d-96af-f342a5d2b60c
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 3CAD015E996643DE808821B9419402F8 Ref B: MNZ221060618051 Ref C: 2025-05-30T09:15:08Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongomi role assignment create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -a --scope --principal-id --role-definition-id --role-assignment-id
+      User-Agent:
+      - AZURECLI/2.74.0 azsdk-python-core/1.31.0 Python/3.10.11 (Windows-10-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus2/operationsStatus/9d40cf6c-76f9-4adb-b33b-47e49f5fd1bb?api-version=2025-05-01-preview&t=638841933106735784&c=MIIHhzCCBm-gAwIBAgITHgbIFmDY79XLPJrDjgAABsgWYDANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjUwNDE3MDcxODAyWhcNMjUxMDE0MDcxODAyWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMmXL0h9ESvC4b92QYV7yPeOyC8nGJyORFUoUm7UdBjxDbKTdSt8SfTfQkW5HjszhiwurE_fjCMlYj9_ymGSwiuCaKmitW7pcXF-WPgkAU2dKPUrSPqJAyeDDvG5SbZOmYYKHttoh0ZCPxadX4ljJ_k6BiE0-a-tSIYI__abusYKDqLuE9uYszi2Ra_hhLOH8qi2TBg71Jc7Dasa4RRwHnwfYbhpKL0tyMrBwyvMUGO00Q_Lx0iRvtIyWhp0HLppX7M2gzHCkh37uEJaggrcqn2T1QHSLgt2AuneElzaS8_if-JVZWv8ZdwCW8Oa-9JXQCzDSFKFP-2yMm1KPtualuUCAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBSJ3ygYgt4NuGG8mfdBelaS0ABH_DAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAI2X3AiLN4s7W-C4ho0tyyAJfaEptV5HLxJHbIHK4awoIyOC8pp8Ay2pGHpXZlTZAhmvEJBKPbB0dVv_cphT1EjWF5rgvvLTBfp9Roo8PqmTQxmvMefBGXnYPmtPgtKMi5nwH1Y4xayGTzvIjIz1ZwYW5_hkF8jKx3e9bGDWPlgyHm3bRRRSgD650gZ7x69myyaDo4tX8FNWbLk-7PYxKiDBeLyle73_kab63klBJc7ep-O2AIxEtxi2DhDGLlGADWVwyYhEhlcFAhxXcOjCETnpsvDfOiK7XD3hnEkdKsChwTT9Gp6wEmn6xu59Qm2DenO3AMiv6vEyP2-7F-bR5G4&s=JR3bczdeKMnPD32chFVzs9vSPH1nrLpovh-TjR1ocIx_qXlhAsIaFY4v2rTFiOzv-qF_ZB7zyPyssKygGV0V1786PhHpH-kL335MaVemKZd65Hy-JYBFKsxLRmLYFqDlhYkMzDbf4JelCUB3zK0auGOQqAPMBUkCNrQqwzKMSeY5Kada0c8AgBXBsgWPMkKByooRxZ-JrBQLkZtvTRfMmSVU6sv7lg1DvtWe8r5DMsKytzhayNR23iIml_vKAThwuLpnhBE8kdea-eHlPBLHkqLkpKE0bUG2zoIMtFvaqyPA4ZI324gMsxzQ5eJVGVR5MBAQuCOGKkhsgRpFomKN9w&h=l4w9LT2KJMnH2iwvK0QIbnJHCTL9vbey1DROm4CjsYw
+  response:
+    body:
+      string: '{"status":"Enqueued"}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '21'
+      content-type:
+      - application/json
+      date:
+      - Fri, 30 May 2025 09:15:10 GMT
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=71581c6f-df31-4790-bc49-26c6b38df8bd/eastus/baf6e397-8f7a-45a0-9e69-a63ebe166122
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: D4F7A317D7F74B4690D96EFC39A68949 Ref B: MNZ221060618051 Ref C: 2025-05-30T09:15:10Z'
+    status:
+      code: 200
+      message: Ok
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongomi role assignment create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -a --scope --principal-id --role-definition-id --role-assignment-id
+      User-Agent:
+      - AZURECLI/2.74.0 azsdk-python-core/1.31.0 Python/3.10.11 (Windows-10-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus2/operationsStatus/9d40cf6c-76f9-4adb-b33b-47e49f5fd1bb?api-version=2025-05-01-preview&t=638841933106735784&c=MIIHhzCCBm-gAwIBAgITHgbIFmDY79XLPJrDjgAABsgWYDANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjUwNDE3MDcxODAyWhcNMjUxMDE0MDcxODAyWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMmXL0h9ESvC4b92QYV7yPeOyC8nGJyORFUoUm7UdBjxDbKTdSt8SfTfQkW5HjszhiwurE_fjCMlYj9_ymGSwiuCaKmitW7pcXF-WPgkAU2dKPUrSPqJAyeDDvG5SbZOmYYKHttoh0ZCPxadX4ljJ_k6BiE0-a-tSIYI__abusYKDqLuE9uYszi2Ra_hhLOH8qi2TBg71Jc7Dasa4RRwHnwfYbhpKL0tyMrBwyvMUGO00Q_Lx0iRvtIyWhp0HLppX7M2gzHCkh37uEJaggrcqn2T1QHSLgt2AuneElzaS8_if-JVZWv8ZdwCW8Oa-9JXQCzDSFKFP-2yMm1KPtualuUCAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBSJ3ygYgt4NuGG8mfdBelaS0ABH_DAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAI2X3AiLN4s7W-C4ho0tyyAJfaEptV5HLxJHbIHK4awoIyOC8pp8Ay2pGHpXZlTZAhmvEJBKPbB0dVv_cphT1EjWF5rgvvLTBfp9Roo8PqmTQxmvMefBGXnYPmtPgtKMi5nwH1Y4xayGTzvIjIz1ZwYW5_hkF8jKx3e9bGDWPlgyHm3bRRRSgD650gZ7x69myyaDo4tX8FNWbLk-7PYxKiDBeLyle73_kab63klBJc7ep-O2AIxEtxi2DhDGLlGADWVwyYhEhlcFAhxXcOjCETnpsvDfOiK7XD3hnEkdKsChwTT9Gp6wEmn6xu59Qm2DenO3AMiv6vEyP2-7F-bR5G4&s=JR3bczdeKMnPD32chFVzs9vSPH1nrLpovh-TjR1ocIx_qXlhAsIaFY4v2rTFiOzv-qF_ZB7zyPyssKygGV0V1786PhHpH-kL335MaVemKZd65Hy-JYBFKsxLRmLYFqDlhYkMzDbf4JelCUB3zK0auGOQqAPMBUkCNrQqwzKMSeY5Kada0c8AgBXBsgWPMkKByooRxZ-JrBQLkZtvTRfMmSVU6sv7lg1DvtWe8r5DMsKytzhayNR23iIml_vKAThwuLpnhBE8kdea-eHlPBLHkqLkpKE0bUG2zoIMtFvaqyPA4ZI324gMsxzQ5eJVGVR5MBAQuCOGKkhsgRpFomKN9w&h=l4w9LT2KJMnH2iwvK0QIbnJHCTL9vbey1DROm4CjsYw
+  response:
+    body:
+      string: '{"status":"Succeeded"}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '22'
+      content-type:
+      - application/json
+      date:
+      - Fri, 30 May 2025 09:15:40 GMT
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=71581c6f-df31-4790-bc49-26c6b38df8bd/eastus/5f7f2907-94c0-4d18-a053-7c70ec482c6a
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: BC98E208F605468C8CDE9E82716C2E79 Ref B: MNZ221060618051 Ref C: 2025-05-30T09:15:41Z'
+    status:
+      code: 200
+      message: Ok
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongomi role assignment create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -a --scope --principal-id --role-definition-id --role-assignment-id
+      User-Agent:
+      - AZURECLI/2.74.0 azsdk-python-core/1.31.0 Python/3.10.11 (Windows-10-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongoMI_role_assignment000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongoMIRoleAssignments/cb8ed2d7-2371-4e3c-bd31-6cc1560e84f8?api-version=2025-05-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongoMI_role_assignment000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongoMIRoleAssignments/cb8ed2d7-2371-4e3c-bd31-6cc1560e84f8","name":"cb8ed2d7-2371-4e3c-bd31-6cc1560e84f8","properties":{"roleDefinitionId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongoMI_role_assignment000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongoMIRoleDefinitions/00000000-0000-0000-0000-000000000001","principalId":"ca95ad70-0b97-48cd-a757-57662ffa33e9","scope":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongoMI_role_assignment000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002"},"type":"Microsoft.DocumentDB/databaseAccounts/mongoMIRoleAssignments"}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '862'
+      content-type:
+      - application/json
+      date:
+      - Fri, 30 May 2025 09:15:41 GMT
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=71581c6f-df31-4790-bc49-26c6b38df8bd/eastus/7fb9ee9f-5fdb-43d7-bedb-03306e0b7f40
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: BB020583956D4255AAD5EEA41580C5D2 Ref B: MNZ221060618051 Ref C: 2025-05-30T09:15:41Z'
+    status:
+      code: 200
+      message: Ok
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongomi role assignment show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -a --role-assignment-id
+      User-Agent:
+      - AZURECLI/2.74.0 azsdk-python-core/1.31.0 Python/3.10.11 (Windows-10-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongoMI_role_assignment000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongoMIRoleAssignments/cb8ed2d7-2371-4e3c-bd31-6cc1560e84f8?api-version=2025-05-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongoMI_role_assignment000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongoMIRoleAssignments/cb8ed2d7-2371-4e3c-bd31-6cc1560e84f8","name":"cb8ed2d7-2371-4e3c-bd31-6cc1560e84f8","properties":{"roleDefinitionId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongoMI_role_assignment000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongoMIRoleDefinitions/00000000-0000-0000-0000-000000000001","principalId":"ca95ad70-0b97-48cd-a757-57662ffa33e9","scope":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongoMI_role_assignment000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002"},"type":"Microsoft.DocumentDB/databaseAccounts/mongoMIRoleAssignments"}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '862'
+      content-type:
+      - application/json
+      date:
+      - Fri, 30 May 2025 09:15:43 GMT
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=71581c6f-df31-4790-bc49-26c6b38df8bd/eastus2/acaf7a7a-01e4-4b7e-8fc5-6630b5d0afe1
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 70C984E8EA0247AF9321451DAE3A8C3C Ref B: BL2AA2011001040 Ref C: 2025-05-30T09:15:43Z'
+    status:
+      code: 200
+      message: Ok
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongomi role assignment list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -a
+      User-Agent:
+      - AZURECLI/2.74.0 azsdk-python-core/1.31.0 Python/3.10.11 (Windows-10-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongoMI_role_assignment000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongoMIRoleAssignments?api-version=2025-05-01-preview
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongoMI_role_assignment000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongoMIRoleAssignments/cb8ed2d7-2371-4e3c-bd31-6cc1560e84f8","name":"cb8ed2d7-2371-4e3c-bd31-6cc1560e84f8","properties":{"roleDefinitionId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongoMI_role_assignment000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongoMIRoleDefinitions/00000000-0000-0000-0000-000000000001","principalId":"ca95ad70-0b97-48cd-a757-57662ffa33e9","scope":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongoMI_role_assignment000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002"},"type":"Microsoft.DocumentDB/databaseAccounts/mongoMIRoleAssignments"}]}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '874'
+      content-type:
+      - application/json
+      date:
+      - Fri, 30 May 2025 09:15:44 GMT
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=71581c6f-df31-4790-bc49-26c6b38df8bd/eastus/0c20843c-448e-439b-ae08-b68886b2cb51
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 35A7C57D149D4E46AE35D4A4BC25E2D3 Ref B: MNZ221060609017 Ref C: 2025-05-30T09:15:44Z'
+    status:
+      code: 200
+      message: Ok
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongomi role assignment update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -a --scope --principal-id --role-definition-id --role-assignment-id
+      User-Agent:
+      - AZURECLI/2.74.0 azsdk-python-core/1.31.0 Python/3.10.11 (Windows-10-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongoMI_role_assignment000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongoMIRoleAssignments/cb8ed2d7-2371-4e3c-bd31-6cc1560e84f8?api-version=2025-05-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongoMI_role_assignment000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongoMIRoleAssignments/cb8ed2d7-2371-4e3c-bd31-6cc1560e84f8","name":"cb8ed2d7-2371-4e3c-bd31-6cc1560e84f8","properties":{"roleDefinitionId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongoMI_role_assignment000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongoMIRoleDefinitions/00000000-0000-0000-0000-000000000001","principalId":"ca95ad70-0b97-48cd-a757-57662ffa33e9","scope":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongoMI_role_assignment000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002"},"type":"Microsoft.DocumentDB/databaseAccounts/mongoMIRoleAssignments"}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '862'
+      content-type:
+      - application/json
+      date:
+      - Fri, 30 May 2025 09:15:45 GMT
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=71581c6f-df31-4790-bc49-26c6b38df8bd/eastus/e1a276d3-559b-469b-9963-8dca58689153
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 97FE1F51B87F43A9A08921B276EC60E3 Ref B: MNZ221060610009 Ref C: 2025-05-30T09:15:45Z'
+    status:
+      code: 200
+      message: Ok
+- request:
+    body: '{"properties": {"roleDefinitionId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongoMI_role_assignmentu4ss2n535bbvhe2wmufck5yfhyziujp77gg4/providers/Microsoft.DocumentDB/databaseAccounts/clikznzrccyiwbv/mongoMIRoleDefinitions/00000000-0000-0000-0000-000000000002",
+      "scope": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongoMI_role_assignment000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002",
+      "principalId": "ca95ad70-0b97-48cd-a757-57662ffa33e9"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongomi role assignment update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '548'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -a --scope --principal-id --role-definition-id --role-assignment-id
+      User-Agent:
+      - AZURECLI/2.74.0 azsdk-python-core/1.31.0 Python/3.10.11 (Windows-10-10.0.26100-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongoMI_role_assignment000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongoMIRoleAssignments/cb8ed2d7-2371-4e3c-bd31-6cc1560e84f8?api-version=2025-05-01-preview
+  response:
+    body:
+      string: '{"status":"Enqueued"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus2/operationsStatus/541a4411-298e-4978-8453-6d0c554cae32?api-version=2025-05-01-preview&t=638841933465538021&c=MIIHhzCCBm-gAwIBAgITHgbIFmDY79XLPJrDjgAABsgWYDANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjUwNDE3MDcxODAyWhcNMjUxMDE0MDcxODAyWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMmXL0h9ESvC4b92QYV7yPeOyC8nGJyORFUoUm7UdBjxDbKTdSt8SfTfQkW5HjszhiwurE_fjCMlYj9_ymGSwiuCaKmitW7pcXF-WPgkAU2dKPUrSPqJAyeDDvG5SbZOmYYKHttoh0ZCPxadX4ljJ_k6BiE0-a-tSIYI__abusYKDqLuE9uYszi2Ra_hhLOH8qi2TBg71Jc7Dasa4RRwHnwfYbhpKL0tyMrBwyvMUGO00Q_Lx0iRvtIyWhp0HLppX7M2gzHCkh37uEJaggrcqn2T1QHSLgt2AuneElzaS8_if-JVZWv8ZdwCW8Oa-9JXQCzDSFKFP-2yMm1KPtualuUCAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBSJ3ygYgt4NuGG8mfdBelaS0ABH_DAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAI2X3AiLN4s7W-C4ho0tyyAJfaEptV5HLxJHbIHK4awoIyOC8pp8Ay2pGHpXZlTZAhmvEJBKPbB0dVv_cphT1EjWF5rgvvLTBfp9Roo8PqmTQxmvMefBGXnYPmtPgtKMi5nwH1Y4xayGTzvIjIz1ZwYW5_hkF8jKx3e9bGDWPlgyHm3bRRRSgD650gZ7x69myyaDo4tX8FNWbLk-7PYxKiDBeLyle73_kab63klBJc7ep-O2AIxEtxi2DhDGLlGADWVwyYhEhlcFAhxXcOjCETnpsvDfOiK7XD3hnEkdKsChwTT9Gp6wEmn6xu59Qm2DenO3AMiv6vEyP2-7F-bR5G4&s=fHgF5AMq3P5BXBDU5c5cvblyjmdJu7GQIkQ8PVhvTqc5mSPq-J6dBeJVaZnf3sao4xXcDZ0FAOLSVcr7Fr-h10ts6pXiGM5-8_uvg5YxJeOgGSv3HJpbvg_tDttCXsDEyBDzrEIpJ3SydnJqxUKjhW1BOV9GQ7Z0tcSpcMrz30DeGMW7WCFz3ME4cE1m05lFvsIHhYlzkON2f-2la8UZtylzRgcCoVPIoPFVujOvGMxDW8d07F-afiaQ1OwGjs-upCS0QD1y82DzGyWiT1q-sCGhnsLBqk7AwgYx18ZxGYkykUd-QDcSW1qaWtlkdVeMrcOHfcs5yyt4C9PxlFkEZA&h=5bcG4LlQvLAtIFKoIn679i0eMUa5dSEZavo0k4FYUBs
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '21'
+      content-type:
+      - application/json
+      date:
+      - Fri, 30 May 2025 09:15:46 GMT
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongoMI_role_assignment000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongoMIRoleAssignments/cb8ed2d7-2371-4e3c-bd31-6cc1560e84f8/operationResults/541a4411-298e-4978-8453-6d0c554cae32?api-version=2025-05-01-preview&t=638841933465538021&c=MIIHhzCCBm-gAwIBAgITHgbIFmDY79XLPJrDjgAABsgWYDANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjUwNDE3MDcxODAyWhcNMjUxMDE0MDcxODAyWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMmXL0h9ESvC4b92QYV7yPeOyC8nGJyORFUoUm7UdBjxDbKTdSt8SfTfQkW5HjszhiwurE_fjCMlYj9_ymGSwiuCaKmitW7pcXF-WPgkAU2dKPUrSPqJAyeDDvG5SbZOmYYKHttoh0ZCPxadX4ljJ_k6BiE0-a-tSIYI__abusYKDqLuE9uYszi2Ra_hhLOH8qi2TBg71Jc7Dasa4RRwHnwfYbhpKL0tyMrBwyvMUGO00Q_Lx0iRvtIyWhp0HLppX7M2gzHCkh37uEJaggrcqn2T1QHSLgt2AuneElzaS8_if-JVZWv8ZdwCW8Oa-9JXQCzDSFKFP-2yMm1KPtualuUCAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBSJ3ygYgt4NuGG8mfdBelaS0ABH_DAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAI2X3AiLN4s7W-C4ho0tyyAJfaEptV5HLxJHbIHK4awoIyOC8pp8Ay2pGHpXZlTZAhmvEJBKPbB0dVv_cphT1EjWF5rgvvLTBfp9Roo8PqmTQxmvMefBGXnYPmtPgtKMi5nwH1Y4xayGTzvIjIz1ZwYW5_hkF8jKx3e9bGDWPlgyHm3bRRRSgD650gZ7x69myyaDo4tX8FNWbLk-7PYxKiDBeLyle73_kab63klBJc7ep-O2AIxEtxi2DhDGLlGADWVwyYhEhlcFAhxXcOjCETnpsvDfOiK7XD3hnEkdKsChwTT9Gp6wEmn6xu59Qm2DenO3AMiv6vEyP2-7F-bR5G4&s=mMjlE8LOyAridnDC2D59w91vshvaLCuoDYNoy1Roq5EK3_b1UuJNAkxaE5-Kowdzq3tdGOtn3y3XQvJeVowqUyTrRpJfB1Fhu6l-UY_h5GJjSVnum5Te66dHoI9GdeX4VKSJABqitIWHaOwNrC4O3TJCNC7In8vILIj8TBcN6vmzOwwMTtIa2PIkHoHAd2HVomt5vVNqbug0iUT6-sxA3fiC3kmp5vaKBaXonbGu9TJRH79_F2KBVHvDujm285h0eXV_bvqhynlWSVnHxgC_dnHqfdtccyYPi9nJJComHE56DI9lK8J_qRqH_cFxUOzgvV-TrJedkKexI3UDhRQw0Q&h=i_hqh-xABWOFfZoOrV4kica6a0HYcwVBhCzc-ERwkSc
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=71581c6f-df31-4790-bc49-26c6b38df8bd/eastus/a0ab51ca-e5ed-48e9-aa9d-bc17755b257d
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 1B4CC7D9D45045059C6B25EAF0E97FA4 Ref B: MNZ221060610009 Ref C: 2025-05-30T09:15:45Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongomi role assignment update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -a --scope --principal-id --role-definition-id --role-assignment-id
+      User-Agent:
+      - AZURECLI/2.74.0 azsdk-python-core/1.31.0 Python/3.10.11 (Windows-10-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus2/operationsStatus/541a4411-298e-4978-8453-6d0c554cae32?api-version=2025-05-01-preview&t=638841933465538021&c=MIIHhzCCBm-gAwIBAgITHgbIFmDY79XLPJrDjgAABsgWYDANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjUwNDE3MDcxODAyWhcNMjUxMDE0MDcxODAyWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMmXL0h9ESvC4b92QYV7yPeOyC8nGJyORFUoUm7UdBjxDbKTdSt8SfTfQkW5HjszhiwurE_fjCMlYj9_ymGSwiuCaKmitW7pcXF-WPgkAU2dKPUrSPqJAyeDDvG5SbZOmYYKHttoh0ZCPxadX4ljJ_k6BiE0-a-tSIYI__abusYKDqLuE9uYszi2Ra_hhLOH8qi2TBg71Jc7Dasa4RRwHnwfYbhpKL0tyMrBwyvMUGO00Q_Lx0iRvtIyWhp0HLppX7M2gzHCkh37uEJaggrcqn2T1QHSLgt2AuneElzaS8_if-JVZWv8ZdwCW8Oa-9JXQCzDSFKFP-2yMm1KPtualuUCAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBSJ3ygYgt4NuGG8mfdBelaS0ABH_DAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAI2X3AiLN4s7W-C4ho0tyyAJfaEptV5HLxJHbIHK4awoIyOC8pp8Ay2pGHpXZlTZAhmvEJBKPbB0dVv_cphT1EjWF5rgvvLTBfp9Roo8PqmTQxmvMefBGXnYPmtPgtKMi5nwH1Y4xayGTzvIjIz1ZwYW5_hkF8jKx3e9bGDWPlgyHm3bRRRSgD650gZ7x69myyaDo4tX8FNWbLk-7PYxKiDBeLyle73_kab63klBJc7ep-O2AIxEtxi2DhDGLlGADWVwyYhEhlcFAhxXcOjCETnpsvDfOiK7XD3hnEkdKsChwTT9Gp6wEmn6xu59Qm2DenO3AMiv6vEyP2-7F-bR5G4&s=fHgF5AMq3P5BXBDU5c5cvblyjmdJu7GQIkQ8PVhvTqc5mSPq-J6dBeJVaZnf3sao4xXcDZ0FAOLSVcr7Fr-h10ts6pXiGM5-8_uvg5YxJeOgGSv3HJpbvg_tDttCXsDEyBDzrEIpJ3SydnJqxUKjhW1BOV9GQ7Z0tcSpcMrz30DeGMW7WCFz3ME4cE1m05lFvsIHhYlzkON2f-2la8UZtylzRgcCoVPIoPFVujOvGMxDW8d07F-afiaQ1OwGjs-upCS0QD1y82DzGyWiT1q-sCGhnsLBqk7AwgYx18ZxGYkykUd-QDcSW1qaWtlkdVeMrcOHfcs5yyt4C9PxlFkEZA&h=5bcG4LlQvLAtIFKoIn679i0eMUa5dSEZavo0k4FYUBs
+  response:
+    body:
+      string: '{"status":"Enqueued"}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '21'
+      content-type:
+      - application/json
+      date:
+      - Fri, 30 May 2025 09:15:46 GMT
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=71581c6f-df31-4790-bc49-26c6b38df8bd/eastus/c824e7fe-3372-4a61-ab62-7213c82883ac
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: CDDB667597424FEB9CA1E5FBE666A037 Ref B: MNZ221060610009 Ref C: 2025-05-30T09:15:46Z'
+    status:
+      code: 200
+      message: Ok
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongomi role assignment update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -a --scope --principal-id --role-definition-id --role-assignment-id
+      User-Agent:
+      - AZURECLI/2.74.0 azsdk-python-core/1.31.0 Python/3.10.11 (Windows-10-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus2/operationsStatus/541a4411-298e-4978-8453-6d0c554cae32?api-version=2025-05-01-preview&t=638841933465538021&c=MIIHhzCCBm-gAwIBAgITHgbIFmDY79XLPJrDjgAABsgWYDANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjUwNDE3MDcxODAyWhcNMjUxMDE0MDcxODAyWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMmXL0h9ESvC4b92QYV7yPeOyC8nGJyORFUoUm7UdBjxDbKTdSt8SfTfQkW5HjszhiwurE_fjCMlYj9_ymGSwiuCaKmitW7pcXF-WPgkAU2dKPUrSPqJAyeDDvG5SbZOmYYKHttoh0ZCPxadX4ljJ_k6BiE0-a-tSIYI__abusYKDqLuE9uYszi2Ra_hhLOH8qi2TBg71Jc7Dasa4RRwHnwfYbhpKL0tyMrBwyvMUGO00Q_Lx0iRvtIyWhp0HLppX7M2gzHCkh37uEJaggrcqn2T1QHSLgt2AuneElzaS8_if-JVZWv8ZdwCW8Oa-9JXQCzDSFKFP-2yMm1KPtualuUCAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBSJ3ygYgt4NuGG8mfdBelaS0ABH_DAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAI2X3AiLN4s7W-C4ho0tyyAJfaEptV5HLxJHbIHK4awoIyOC8pp8Ay2pGHpXZlTZAhmvEJBKPbB0dVv_cphT1EjWF5rgvvLTBfp9Roo8PqmTQxmvMefBGXnYPmtPgtKMi5nwH1Y4xayGTzvIjIz1ZwYW5_hkF8jKx3e9bGDWPlgyHm3bRRRSgD650gZ7x69myyaDo4tX8FNWbLk-7PYxKiDBeLyle73_kab63klBJc7ep-O2AIxEtxi2DhDGLlGADWVwyYhEhlcFAhxXcOjCETnpsvDfOiK7XD3hnEkdKsChwTT9Gp6wEmn6xu59Qm2DenO3AMiv6vEyP2-7F-bR5G4&s=fHgF5AMq3P5BXBDU5c5cvblyjmdJu7GQIkQ8PVhvTqc5mSPq-J6dBeJVaZnf3sao4xXcDZ0FAOLSVcr7Fr-h10ts6pXiGM5-8_uvg5YxJeOgGSv3HJpbvg_tDttCXsDEyBDzrEIpJ3SydnJqxUKjhW1BOV9GQ7Z0tcSpcMrz30DeGMW7WCFz3ME4cE1m05lFvsIHhYlzkON2f-2la8UZtylzRgcCoVPIoPFVujOvGMxDW8d07F-afiaQ1OwGjs-upCS0QD1y82DzGyWiT1q-sCGhnsLBqk7AwgYx18ZxGYkykUd-QDcSW1qaWtlkdVeMrcOHfcs5yyt4C9PxlFkEZA&h=5bcG4LlQvLAtIFKoIn679i0eMUa5dSEZavo0k4FYUBs
+  response:
+    body:
+      string: '{"status":"Succeeded"}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '22'
+      content-type:
+      - application/json
+      date:
+      - Fri, 30 May 2025 09:16:16 GMT
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=71581c6f-df31-4790-bc49-26c6b38df8bd/eastus/c2f407c4-2769-4959-bf82-be873de90741
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 0483313AD729408BAF4CE99DA5D3BF50 Ref B: MNZ221060610009 Ref C: 2025-05-30T09:16:17Z'
+    status:
+      code: 200
+      message: Ok
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongomi role assignment update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -a --scope --principal-id --role-definition-id --role-assignment-id
+      User-Agent:
+      - AZURECLI/2.74.0 azsdk-python-core/1.31.0 Python/3.10.11 (Windows-10-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongoMI_role_assignment000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongoMIRoleAssignments/cb8ed2d7-2371-4e3c-bd31-6cc1560e84f8?api-version=2025-05-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongoMI_role_assignment000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongoMIRoleAssignments/cb8ed2d7-2371-4e3c-bd31-6cc1560e84f8","name":"cb8ed2d7-2371-4e3c-bd31-6cc1560e84f8","properties":{"roleDefinitionId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongoMI_role_assignment000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongoMIRoleDefinitions/00000000-0000-0000-0000-000000000002","principalId":"ca95ad70-0b97-48cd-a757-57662ffa33e9","scope":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongoMI_role_assignment000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002"},"type":"Microsoft.DocumentDB/databaseAccounts/mongoMIRoleAssignments"}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '862'
+      content-type:
+      - application/json
+      date:
+      - Fri, 30 May 2025 09:16:17 GMT
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=71581c6f-df31-4790-bc49-26c6b38df8bd/eastus/21a364dc-d95a-48dd-b674-5f0e52f0b50d
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: A6CCCE80FD57424884E106820B8A424F Ref B: MNZ221060610009 Ref C: 2025-05-30T09:16:17Z'
+    status:
+      code: 200
+      message: Ok
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongomi role assignment delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g -a --role-assignment-id --yes
+      User-Agent:
+      - AZURECLI/2.74.0 azsdk-python-core/1.31.0 Python/3.10.11 (Windows-10-10.0.26100-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongoMI_role_assignment000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongoMIRoleAssignments/cb8ed2d7-2371-4e3c-bd31-6cc1560e84f8?api-version=2025-05-01-preview
+  response:
+    body:
+      string: '{"status":"Enqueued"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus2/operationsStatus/1f2f67a3-194c-43e1-a824-afcd6dd519f8?api-version=2025-05-01-preview&t=638841933793764113&c=MIIHhzCCBm-gAwIBAgITHgbIFmDY79XLPJrDjgAABsgWYDANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjUwNDE3MDcxODAyWhcNMjUxMDE0MDcxODAyWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMmXL0h9ESvC4b92QYV7yPeOyC8nGJyORFUoUm7UdBjxDbKTdSt8SfTfQkW5HjszhiwurE_fjCMlYj9_ymGSwiuCaKmitW7pcXF-WPgkAU2dKPUrSPqJAyeDDvG5SbZOmYYKHttoh0ZCPxadX4ljJ_k6BiE0-a-tSIYI__abusYKDqLuE9uYszi2Ra_hhLOH8qi2TBg71Jc7Dasa4RRwHnwfYbhpKL0tyMrBwyvMUGO00Q_Lx0iRvtIyWhp0HLppX7M2gzHCkh37uEJaggrcqn2T1QHSLgt2AuneElzaS8_if-JVZWv8ZdwCW8Oa-9JXQCzDSFKFP-2yMm1KPtualuUCAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBSJ3ygYgt4NuGG8mfdBelaS0ABH_DAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAI2X3AiLN4s7W-C4ho0tyyAJfaEptV5HLxJHbIHK4awoIyOC8pp8Ay2pGHpXZlTZAhmvEJBKPbB0dVv_cphT1EjWF5rgvvLTBfp9Roo8PqmTQxmvMefBGXnYPmtPgtKMi5nwH1Y4xayGTzvIjIz1ZwYW5_hkF8jKx3e9bGDWPlgyHm3bRRRSgD650gZ7x69myyaDo4tX8FNWbLk-7PYxKiDBeLyle73_kab63klBJc7ep-O2AIxEtxi2DhDGLlGADWVwyYhEhlcFAhxXcOjCETnpsvDfOiK7XD3hnEkdKsChwTT9Gp6wEmn6xu59Qm2DenO3AMiv6vEyP2-7F-bR5G4&s=HMoBkWlRi5lBpfXQMMpE4wAI0oj7cdiZY0yl0EobJFmslkF1Uqw-vxHUTh87LGikX37Mmp0ovqyVJYAoqls_u2N-bhOH06cGRVoyED2AOCdWrigX8wm2ZVqr7w62gLRzWbvRkWc00u-2T-9xR5OB8zuNztZUs16sekBXjWKz6cNgUA9Fq--9F6ImE3gj8l7L9ZmfNxZRFcfNg_6t7ngklMSrGem9x7GbeNxEkl__EL_UqvT-j3SfcEQQZis8yufwB49yM-5GbNpmw1eKxcWgTSAR7eJmDuJvjOvWbYOX1BUkr5dFxQR9FjNrw28_NjLTVBm15CGWO3EQpL09attEeA&h=d1mfMhCcoCiAenzlx7B0VaOncCd_UU7gG67YouKyfUA
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '21'
+      content-type:
+      - application/json
+      date:
+      - Fri, 30 May 2025 09:16:19 GMT
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongoMI_role_assignment000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongoMIRoleAssignments/cb8ed2d7-2371-4e3c-bd31-6cc1560e84f8/operationResults/1f2f67a3-194c-43e1-a824-afcd6dd519f8?api-version=2025-05-01-preview&t=638841933793764113&c=MIIHhzCCBm-gAwIBAgITHgbIFmDY79XLPJrDjgAABsgWYDANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjUwNDE3MDcxODAyWhcNMjUxMDE0MDcxODAyWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMmXL0h9ESvC4b92QYV7yPeOyC8nGJyORFUoUm7UdBjxDbKTdSt8SfTfQkW5HjszhiwurE_fjCMlYj9_ymGSwiuCaKmitW7pcXF-WPgkAU2dKPUrSPqJAyeDDvG5SbZOmYYKHttoh0ZCPxadX4ljJ_k6BiE0-a-tSIYI__abusYKDqLuE9uYszi2Ra_hhLOH8qi2TBg71Jc7Dasa4RRwHnwfYbhpKL0tyMrBwyvMUGO00Q_Lx0iRvtIyWhp0HLppX7M2gzHCkh37uEJaggrcqn2T1QHSLgt2AuneElzaS8_if-JVZWv8ZdwCW8Oa-9JXQCzDSFKFP-2yMm1KPtualuUCAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBSJ3ygYgt4NuGG8mfdBelaS0ABH_DAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAI2X3AiLN4s7W-C4ho0tyyAJfaEptV5HLxJHbIHK4awoIyOC8pp8Ay2pGHpXZlTZAhmvEJBKPbB0dVv_cphT1EjWF5rgvvLTBfp9Roo8PqmTQxmvMefBGXnYPmtPgtKMi5nwH1Y4xayGTzvIjIz1ZwYW5_hkF8jKx3e9bGDWPlgyHm3bRRRSgD650gZ7x69myyaDo4tX8FNWbLk-7PYxKiDBeLyle73_kab63klBJc7ep-O2AIxEtxi2DhDGLlGADWVwyYhEhlcFAhxXcOjCETnpsvDfOiK7XD3hnEkdKsChwTT9Gp6wEmn6xu59Qm2DenO3AMiv6vEyP2-7F-bR5G4&s=mb2t0yrFJm4xLEFcvgd_hEgbIIULgV___ki-KS6MNvB0qQ5viHQEcq2CkzvAHVozcgJAWikyG9SCb18GAT7Imw-hbqudT7T4QBlQFdItRl0hEmzpw9tcEZU4mv-VN-bw3vZL7yGpJqLD4dj9ZmNYfOSpkJaILFbeoztRsEBhduheZecs39HhSPtwoL_Pgtl86n6grQg6Zm3bSy1aPn-ECClQ7fcGwkKsaTQNxIFdbs2WV1tOwFDS2TeQXyzyXf2fM4fXND7_mYIksrlBpW6f2czYm7-3vKdhL8sQYDnpvMf8FO-lOP7tQ2TGL3s_TJMFrAWBv1PF_B2k6Y0jhUR33A&h=O9QZwwd57JCaA4sfGAxN-4aRfIOhqq469jac5bVI5PI
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=71581c6f-df31-4790-bc49-26c6b38df8bd/eastus/692c956a-6716-44a5-9b0a-344f94fea464
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '799'
+      x-ms-ratelimit-remaining-subscription-global-deletes:
+      - '11999'
+      x-msedge-ref:
+      - 'Ref A: 035637870283412C928741CD7D5946F2 Ref B: MNZ221060618039 Ref C: 2025-05-30T09:16:18Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongomi role assignment delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -a --role-assignment-id --yes
+      User-Agent:
+      - AZURECLI/2.74.0 azsdk-python-core/1.31.0 Python/3.10.11 (Windows-10-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus2/operationsStatus/1f2f67a3-194c-43e1-a824-afcd6dd519f8?api-version=2025-05-01-preview&t=638841933793764113&c=MIIHhzCCBm-gAwIBAgITHgbIFmDY79XLPJrDjgAABsgWYDANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjUwNDE3MDcxODAyWhcNMjUxMDE0MDcxODAyWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMmXL0h9ESvC4b92QYV7yPeOyC8nGJyORFUoUm7UdBjxDbKTdSt8SfTfQkW5HjszhiwurE_fjCMlYj9_ymGSwiuCaKmitW7pcXF-WPgkAU2dKPUrSPqJAyeDDvG5SbZOmYYKHttoh0ZCPxadX4ljJ_k6BiE0-a-tSIYI__abusYKDqLuE9uYszi2Ra_hhLOH8qi2TBg71Jc7Dasa4RRwHnwfYbhpKL0tyMrBwyvMUGO00Q_Lx0iRvtIyWhp0HLppX7M2gzHCkh37uEJaggrcqn2T1QHSLgt2AuneElzaS8_if-JVZWv8ZdwCW8Oa-9JXQCzDSFKFP-2yMm1KPtualuUCAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBSJ3ygYgt4NuGG8mfdBelaS0ABH_DAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAI2X3AiLN4s7W-C4ho0tyyAJfaEptV5HLxJHbIHK4awoIyOC8pp8Ay2pGHpXZlTZAhmvEJBKPbB0dVv_cphT1EjWF5rgvvLTBfp9Roo8PqmTQxmvMefBGXnYPmtPgtKMi5nwH1Y4xayGTzvIjIz1ZwYW5_hkF8jKx3e9bGDWPlgyHm3bRRRSgD650gZ7x69myyaDo4tX8FNWbLk-7PYxKiDBeLyle73_kab63klBJc7ep-O2AIxEtxi2DhDGLlGADWVwyYhEhlcFAhxXcOjCETnpsvDfOiK7XD3hnEkdKsChwTT9Gp6wEmn6xu59Qm2DenO3AMiv6vEyP2-7F-bR5G4&s=HMoBkWlRi5lBpfXQMMpE4wAI0oj7cdiZY0yl0EobJFmslkF1Uqw-vxHUTh87LGikX37Mmp0ovqyVJYAoqls_u2N-bhOH06cGRVoyED2AOCdWrigX8wm2ZVqr7w62gLRzWbvRkWc00u-2T-9xR5OB8zuNztZUs16sekBXjWKz6cNgUA9Fq--9F6ImE3gj8l7L9ZmfNxZRFcfNg_6t7ngklMSrGem9x7GbeNxEkl__EL_UqvT-j3SfcEQQZis8yufwB49yM-5GbNpmw1eKxcWgTSAR7eJmDuJvjOvWbYOX1BUkr5dFxQR9FjNrw28_NjLTVBm15CGWO3EQpL09attEeA&h=d1mfMhCcoCiAenzlx7B0VaOncCd_UU7gG67YouKyfUA
+  response:
+    body:
+      string: '{"status":"Enqueued"}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '21'
+      content-type:
+      - application/json
+      date:
+      - Fri, 30 May 2025 09:16:19 GMT
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=71581c6f-df31-4790-bc49-26c6b38df8bd/eastus/5ac3fccd-989a-47de-9a73-55b9a2adb93d
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 763B41301CEC48838E46D723B5B1498C Ref B: MNZ221060618039 Ref C: 2025-05-30T09:16:19Z'
+    status:
+      code: 200
+      message: Ok
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongomi role assignment delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -a --role-assignment-id --yes
+      User-Agent:
+      - AZURECLI/2.74.0 azsdk-python-core/1.31.0 Python/3.10.11 (Windows-10-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus2/operationsStatus/1f2f67a3-194c-43e1-a824-afcd6dd519f8?api-version=2025-05-01-preview&t=638841933793764113&c=MIIHhzCCBm-gAwIBAgITHgbIFmDY79XLPJrDjgAABsgWYDANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjUwNDE3MDcxODAyWhcNMjUxMDE0MDcxODAyWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMmXL0h9ESvC4b92QYV7yPeOyC8nGJyORFUoUm7UdBjxDbKTdSt8SfTfQkW5HjszhiwurE_fjCMlYj9_ymGSwiuCaKmitW7pcXF-WPgkAU2dKPUrSPqJAyeDDvG5SbZOmYYKHttoh0ZCPxadX4ljJ_k6BiE0-a-tSIYI__abusYKDqLuE9uYszi2Ra_hhLOH8qi2TBg71Jc7Dasa4RRwHnwfYbhpKL0tyMrBwyvMUGO00Q_Lx0iRvtIyWhp0HLppX7M2gzHCkh37uEJaggrcqn2T1QHSLgt2AuneElzaS8_if-JVZWv8ZdwCW8Oa-9JXQCzDSFKFP-2yMm1KPtualuUCAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBSJ3ygYgt4NuGG8mfdBelaS0ABH_DAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAI2X3AiLN4s7W-C4ho0tyyAJfaEptV5HLxJHbIHK4awoIyOC8pp8Ay2pGHpXZlTZAhmvEJBKPbB0dVv_cphT1EjWF5rgvvLTBfp9Roo8PqmTQxmvMefBGXnYPmtPgtKMi5nwH1Y4xayGTzvIjIz1ZwYW5_hkF8jKx3e9bGDWPlgyHm3bRRRSgD650gZ7x69myyaDo4tX8FNWbLk-7PYxKiDBeLyle73_kab63klBJc7ep-O2AIxEtxi2DhDGLlGADWVwyYhEhlcFAhxXcOjCETnpsvDfOiK7XD3hnEkdKsChwTT9Gp6wEmn6xu59Qm2DenO3AMiv6vEyP2-7F-bR5G4&s=HMoBkWlRi5lBpfXQMMpE4wAI0oj7cdiZY0yl0EobJFmslkF1Uqw-vxHUTh87LGikX37Mmp0ovqyVJYAoqls_u2N-bhOH06cGRVoyED2AOCdWrigX8wm2ZVqr7w62gLRzWbvRkWc00u-2T-9xR5OB8zuNztZUs16sekBXjWKz6cNgUA9Fq--9F6ImE3gj8l7L9ZmfNxZRFcfNg_6t7ngklMSrGem9x7GbeNxEkl__EL_UqvT-j3SfcEQQZis8yufwB49yM-5GbNpmw1eKxcWgTSAR7eJmDuJvjOvWbYOX1BUkr5dFxQR9FjNrw28_NjLTVBm15CGWO3EQpL09attEeA&h=d1mfMhCcoCiAenzlx7B0VaOncCd_UU7gG67YouKyfUA
+  response:
+    body:
+      string: '{"status":"Succeeded"}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '22'
+      content-type:
+      - application/json
+      date:
+      - Fri, 30 May 2025 09:16:49 GMT
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=71581c6f-df31-4790-bc49-26c6b38df8bd/eastus/8e435e63-c98f-4f36-bd86-7854551644d9
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: EC37AEFC18644BBCB4110A24DF76FE94 Ref B: MNZ221060618039 Ref C: 2025-05-30T09:16:49Z'
+    status:
+      code: 200
+      message: Ok
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongomi role assignment list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -a
+      User-Agent:
+      - AZURECLI/2.74.0 azsdk-python-core/1.31.0 Python/3.10.11 (Windows-10-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongoMI_role_assignment000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongoMIRoleAssignments?api-version=2025-05-01-preview
+  response:
+    body:
+      string: '{"value":[]}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '12'
+      content-type:
+      - application/json
+      date:
+      - Fri, 30 May 2025 09:16:50 GMT
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=71581c6f-df31-4790-bc49-26c6b38df8bd/eastus2/7253e94f-153f-4206-845b-59c44cddc49c
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: D70BE83EB97E4F168BD26E95D3A2319F Ref B: BL2AA2011001023 Ref C: 2025-05-30T09:16:50Z'
+    status:
+      code: 200
+      message: Ok
+version: 1

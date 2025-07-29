@@ -1,0 +1,1444 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azsdk-python-mgmt-loadtesting/1.0.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-notification-000001/providers/Microsoft.LoadTestService/loadTests/clitest-notification-000002?api-version=2022-12-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-notification-000001/providers/Microsoft.LoadTestService/loadTests/clitest-notification-000002","name":"clitest-notification-000002","type":"microsoft.loadtestservice/loadtests","location":"eastus","systemData":{"createdBy":"harshanb@microsoft.com","createdByType":"User","createdAt":"2025-04-30T13:34:50.8547177Z","lastModifiedBy":"harshanb@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-04-30T13:34:50.8547177Z"},"identity":{"type":"None"},"properties":{"dataPlaneURI":"d6c74774-4450-4445-a7c1-a17349a2fcb1.eastus.cnt-prod.loadtesting.azure.com","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '681'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 30 Apr 2025 13:35:28 GMT
+      etag:
+      - '"5401a12c-0000-0200-0000-681227100000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: F5D795200C924FC1828094675456DF00 Ref B: MAA201060513017 Ref C: 2025-04-30T13:35:28Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - AZURECLI/2.71.0 azsdk-python-core/1.33.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
+    method: GET
+    uri: https://d6c74774-4450-4445-a7c1-a17349a2fcb1.eastus.cnt-prod.loadtesting.azure.com/tests/test1?api-version=2025-03-01-preview
+  response:
+    body:
+      string: '{"error":{"code":"TestNotFound","message":"Test couldn''t find with
+        given identifier test1","target":null,"details":null}}'
+    headers:
+      api-supported-versions:
+      - 2022-11-01, 2023-04-01-preview, 2024-03-01-preview, 2024-05-01-preview, 2024-07-01-preview,
+        2024-12-01-preview, 2025-03-01-preview
+      connection:
+      - keep-alive
+      content-type:
+      - application/json
+      date:
+      - Wed, 30 Apr 2025 13:35:29 GMT
+      mise-correlation-id:
+      - c503c309-07a5-47fa-9bbb-29892fccd1d7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      x-azure-ref:
+      - 20250430T133529Z-155d6647456znq9chC1BOMq5z800000003k000000000dqc6
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-error-code:
+      - TestNotFound
+    status:
+      code: 404
+      message: Not Found
+- request:
+    body: '{"displayName": "test1", "kind": null, "keyvaultReferenceIdentityType":
+      "SystemAssigned", "metricsReferenceIdentityType": "SystemAssigned", "environmentVariables":
+      {}, "secrets": {}, "loadTestConfiguration": {"engineInstances": 1, "regionalLoadTestConfig":
+      null, "quickStartTest": false}, "autoStopCriteria": {}, "baselineTestRunId":
+      null, "engineBuiltinIdentityType": null, "engineBuiltinIdentityIds": null}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '408'
+      Content-Type:
+      - application/merge-patch+json
+      User-Agent:
+      - AZURECLI/2.71.0 azsdk-python-core/1.33.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
+    method: PATCH
+    uri: https://d6c74774-4450-4445-a7c1-a17349a2fcb1.eastus.cnt-prod.loadtesting.azure.com/tests/test1?api-version=2025-03-01-preview
+  response:
+    body:
+      string: '{"autoStopCriteria":{"autoStopDisabled":false,"errorRate":90.0,"errorRateTimeWindowInSeconds":60,"maximumVirtualUsersPerEngine":5000},"loadTestConfiguration":{"engineInstances":1,"splitAllCSVs":false,"quickStartTest":false},"inputArtifacts":{"additionalFileInfo":[]},"kind":"URL","publicIPDisabled":false,"metricsReferenceIdentityType":"SystemAssigned","testId":"test1","displayName":"test1","keyvaultReferenceIdentityType":"SystemAssigned","createdDateTime":"2025-04-30T13:35:30.647Z","createdBy":"harshanb@microsoft.com","lastModifiedDateTime":"2025-04-30T13:35:30.647Z","lastModifiedBy":"harshanb@microsoft.com"}'
+    headers:
+      api-supported-versions:
+      - 2022-11-01, 2023-04-01-preview, 2024-03-01-preview, 2024-05-01-preview, 2024-07-01-preview,
+        2024-12-01-preview, 2025-03-01-preview
+      connection:
+      - keep-alive
+      content-length:
+      - '615'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 30 Apr 2025 13:35:30 GMT
+      location:
+      - https://d6c74774-4450-4445-a7c1-a17349a2fcb1.eastus.cnt-prod.loadtesting.azure.com/tests/test1?api-version=2025-03-01-preview
+      mise-correlation-id:
+      - 1256afd1-24e0-4996-b332-43125e75ea39
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-azure-ref:
+      - 20250430T133530Z-r1b8575b5cbsxt98hC1BOMucx400000004q0000000005qyf
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - AZURECLI/2.71.0 azsdk-python-core/1.33.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
+    method: GET
+    uri: https://d6c74774-4450-4445-a7c1-a17349a2fcb1.eastus.cnt-prod.loadtesting.azure.com/tests/test1/files?api-version=2025-03-01-preview
+  response:
+    body:
+      string: '{"value":[]}'
+    headers:
+      accept-ranges:
+      - bytes
+      api-supported-versions:
+      - 2022-11-01, 2023-04-01-preview, 2024-03-01-preview, 2024-05-01-preview, 2024-07-01-preview,
+        2024-12-01-preview, 2025-03-01-preview
+      connection:
+      - keep-alive
+      content-length:
+      - '12'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 30 Apr 2025 13:35:31 GMT
+      mise-correlation-id:
+      - 20ec98aa-620c-4ce8-b120-5e51a90f4ec2
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-azure-ref:
+      - 20250430T133530Z-r1b8575b5cb8j4bjhC1BOMd6zs000000021g0000000017v7
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - AZURECLI/2.71.0 azsdk-python-core/1.33.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
+    method: GET
+    uri: https://d6c74774-4450-4445-a7c1-a17349a2fcb1.eastus.cnt-prod.loadtesting.azure.com/tests/test1?api-version=2025-03-01-preview
+  response:
+    body:
+      string: '{"autoStopCriteria":{"autoStopDisabled":false,"errorRate":90.0,"errorRateTimeWindowInSeconds":60,"maximumVirtualUsersPerEngine":5000},"loadTestConfiguration":{"engineInstances":1,"splitAllCSVs":false,"quickStartTest":false},"inputArtifacts":{"additionalFileInfo":[]},"kind":"URL","publicIPDisabled":false,"metricsReferenceIdentityType":"SystemAssigned","testId":"test1","displayName":"test1","keyvaultReferenceIdentityType":"SystemAssigned","createdDateTime":"2025-04-30T13:35:30.647Z","createdBy":"harshanb@microsoft.com","lastModifiedDateTime":"2025-04-30T13:35:30.647Z","lastModifiedBy":"harshanb@microsoft.com"}'
+    headers:
+      accept-ranges:
+      - bytes
+      api-supported-versions:
+      - 2022-11-01, 2023-04-01-preview, 2024-03-01-preview, 2024-05-01-preview, 2024-07-01-preview,
+        2024-12-01-preview, 2025-03-01-preview
+      connection:
+      - keep-alive
+      content-length:
+      - '615'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 30 Apr 2025 13:35:32 GMT
+      mise-correlation-id:
+      - 63e04617-cd23-4e75-819a-a036cc3bedad
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-azure-ref:
+      - 20250430T133531Z-155d6647456znq9chC1BOMq5z800000003r00000000006dx
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azsdk-python-mgmt-loadtesting/1.0.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-notification-000001/providers/Microsoft.LoadTestService/loadTests/clitest-notification-000002?api-version=2022-12-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-notification-000001/providers/Microsoft.LoadTestService/loadTests/clitest-notification-000002","name":"clitest-notification-000002","type":"microsoft.loadtestservice/loadtests","location":"eastus","systemData":{"createdBy":"harshanb@microsoft.com","createdByType":"User","createdAt":"2025-04-30T13:34:50.8547177Z","lastModifiedBy":"harshanb@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-04-30T13:34:50.8547177Z"},"identity":{"type":"None"},"properties":{"dataPlaneURI":"d6c74774-4450-4445-a7c1-a17349a2fcb1.eastus.cnt-prod.loadtesting.azure.com","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '681'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 30 Apr 2025 13:35:32 GMT
+      etag:
+      - '"5401a12c-0000-0200-0000-681227100000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: A63D55CB0FB94F0494EB3FE9AE042284 Ref B: MAA201060514033 Ref C: 2025-04-30T13:35:32Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - AZURECLI/2.71.0 azsdk-python-core/1.33.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
+    method: GET
+    uri: https://d6c74774-4450-4445-a7c1-a17349a2fcb1.eastus.cnt-prod.loadtesting.azure.com/tests/test2?api-version=2025-03-01-preview
+  response:
+    body:
+      string: '{"error":{"code":"TestNotFound","message":"Test couldn''t find with
+        given identifier test2","target":null,"details":null}}'
+    headers:
+      api-supported-versions:
+      - 2022-11-01, 2023-04-01-preview, 2024-03-01-preview, 2024-05-01-preview, 2024-07-01-preview,
+        2024-12-01-preview, 2025-03-01-preview
+      connection:
+      - keep-alive
+      content-type:
+      - application/json
+      date:
+      - Wed, 30 Apr 2025 13:35:33 GMT
+      mise-correlation-id:
+      - d1dc879c-b08a-4541-b7ec-23b56d003ec3
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      x-azure-ref:
+      - 20250430T133532Z-155d6647456wc8fjhC1BOMmg3s00000003hg00000000e8z3
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-error-code:
+      - TestNotFound
+    status:
+      code: 404
+      message: Not Found
+- request:
+    body: '{"displayName": "test2", "kind": null, "keyvaultReferenceIdentityType":
+      "SystemAssigned", "metricsReferenceIdentityType": "SystemAssigned", "environmentVariables":
+      {}, "secrets": {}, "loadTestConfiguration": {"engineInstances": 1, "regionalLoadTestConfig":
+      null, "quickStartTest": false}, "autoStopCriteria": {}, "baselineTestRunId":
+      null, "engineBuiltinIdentityType": null, "engineBuiltinIdentityIds": null}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '408'
+      Content-Type:
+      - application/merge-patch+json
+      User-Agent:
+      - AZURECLI/2.71.0 azsdk-python-core/1.33.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
+    method: PATCH
+    uri: https://d6c74774-4450-4445-a7c1-a17349a2fcb1.eastus.cnt-prod.loadtesting.azure.com/tests/test2?api-version=2025-03-01-preview
+  response:
+    body:
+      string: '{"autoStopCriteria":{"autoStopDisabled":false,"errorRate":90.0,"errorRateTimeWindowInSeconds":60,"maximumVirtualUsersPerEngine":5000},"loadTestConfiguration":{"engineInstances":1,"splitAllCSVs":false,"quickStartTest":false},"inputArtifacts":{"additionalFileInfo":[]},"kind":"URL","publicIPDisabled":false,"metricsReferenceIdentityType":"SystemAssigned","testId":"test2","displayName":"test2","keyvaultReferenceIdentityType":"SystemAssigned","createdDateTime":"2025-04-30T13:35:34.109Z","createdBy":"harshanb@microsoft.com","lastModifiedDateTime":"2025-04-30T13:35:34.109Z","lastModifiedBy":"harshanb@microsoft.com"}'
+    headers:
+      api-supported-versions:
+      - 2022-11-01, 2023-04-01-preview, 2024-03-01-preview, 2024-05-01-preview, 2024-07-01-preview,
+        2024-12-01-preview, 2025-03-01-preview
+      connection:
+      - keep-alive
+      content-length:
+      - '615'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 30 Apr 2025 13:35:34 GMT
+      location:
+      - https://d6c74774-4450-4445-a7c1-a17349a2fcb1.eastus.cnt-prod.loadtesting.azure.com/tests/test2?api-version=2025-03-01-preview
+      mise-correlation-id:
+      - 7d181bac-1d42-4380-a92b-9059ffe094f4
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-azure-ref:
+      - 20250430T133533Z-r1b8575b5cbmvwr7hC1BOMcce80000000190000000006z1m
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - AZURECLI/2.71.0 azsdk-python-core/1.33.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
+    method: GET
+    uri: https://d6c74774-4450-4445-a7c1-a17349a2fcb1.eastus.cnt-prod.loadtesting.azure.com/tests/test2/files?api-version=2025-03-01-preview
+  response:
+    body:
+      string: '{"value":[]}'
+    headers:
+      accept-ranges:
+      - bytes
+      api-supported-versions:
+      - 2022-11-01, 2023-04-01-preview, 2024-03-01-preview, 2024-05-01-preview, 2024-07-01-preview,
+        2024-12-01-preview, 2025-03-01-preview
+      connection:
+      - keep-alive
+      content-length:
+      - '12'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 30 Apr 2025 13:35:34 GMT
+      mise-correlation-id:
+      - 2a672e35-0a4d-4da9-93c5-46cd65d62c41
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-azure-ref:
+      - 20250430T133534Z-r1b8575b5cbrshtthC1BOMv8gs000000054g00000000az3x
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - AZURECLI/2.71.0 azsdk-python-core/1.33.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
+    method: GET
+    uri: https://d6c74774-4450-4445-a7c1-a17349a2fcb1.eastus.cnt-prod.loadtesting.azure.com/tests/test2?api-version=2025-03-01-preview
+  response:
+    body:
+      string: '{"autoStopCriteria":{"autoStopDisabled":false,"errorRate":90.0,"errorRateTimeWindowInSeconds":60,"maximumVirtualUsersPerEngine":5000},"loadTestConfiguration":{"engineInstances":1,"splitAllCSVs":false,"quickStartTest":false},"inputArtifacts":{"additionalFileInfo":[]},"kind":"URL","publicIPDisabled":false,"metricsReferenceIdentityType":"SystemAssigned","testId":"test2","displayName":"test2","keyvaultReferenceIdentityType":"SystemAssigned","createdDateTime":"2025-04-30T13:35:34.109Z","createdBy":"harshanb@microsoft.com","lastModifiedDateTime":"2025-04-30T13:35:34.109Z","lastModifiedBy":"harshanb@microsoft.com"}'
+    headers:
+      accept-ranges:
+      - bytes
+      api-supported-versions:
+      - 2022-11-01, 2023-04-01-preview, 2024-03-01-preview, 2024-05-01-preview, 2024-07-01-preview,
+        2024-12-01-preview, 2025-03-01-preview
+      connection:
+      - keep-alive
+      content-length:
+      - '615'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 30 Apr 2025 13:35:35 GMT
+      mise-correlation-id:
+      - a5d0e655-309c-440d-972a-7c8c6095baea
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-azure-ref:
+      - 20250430T133534Z-r1b8575b5cbmvwr7hC1BOMcce800000001a0000000006gs7
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azsdk-python-mgmt-loadtesting/1.0.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-notification-000001/providers/Microsoft.LoadTestService/loadTests/clitest-notification-000002?api-version=2022-12-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-notification-000001/providers/Microsoft.LoadTestService/loadTests/clitest-notification-000002","name":"clitest-notification-000002","type":"microsoft.loadtestservice/loadtests","location":"eastus","systemData":{"createdBy":"harshanb@microsoft.com","createdByType":"User","createdAt":"2025-04-30T13:34:50.8547177Z","lastModifiedBy":"harshanb@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-04-30T13:34:50.8547177Z"},"identity":{"type":"None"},"properties":{"dataPlaneURI":"d6c74774-4450-4445-a7c1-a17349a2fcb1.eastus.cnt-prod.loadtesting.azure.com","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '681'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 30 Apr 2025 13:35:35 GMT
+      etag:
+      - '"5401a12c-0000-0200-0000-681227100000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: F7E1AD1D707243E2B247D854A8EB822F Ref B: MAA201060516029 Ref C: 2025-04-30T13:35:35Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - AZURECLI/2.71.0 azsdk-python-core/1.33.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
+    method: GET
+    uri: https://d6c74774-4450-4445-a7c1-a17349a2fcb1.eastus.cnt-prod.loadtesting.azure.com/notification-rules/nri-test?api-version=2025-03-01-preview
+  response:
+    body:
+      string: '{"error":{"code":"NotificationRuleNotFound","message":"Notification
+        rule with Id: ''nri-test'' not found.","target":null,"details":null}}'
+    headers:
+      api-supported-versions:
+      - 2024-12-01-preview, 2025-03-01-preview
+      connection:
+      - keep-alive
+      content-type:
+      - application/json
+      date:
+      - Wed, 30 Apr 2025 13:35:36 GMT
+      mise-correlation-id:
+      - 84cb6bc1-2e19-4a23-930a-1c53360a35e2
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      x-azure-ref:
+      - 20250430T133536Z-r1b8575b5cbmvwr7hC1BOMcce800000001cg0000000021ap
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-error-code:
+      - NotificationRuleNotFound
+    status:
+      code: 404
+      message: Not Found
+- request:
+    body: '{"scope": "Tests", "displayName": "NotificationRule1", "actionGroupIds":
+      ["/subscriptions/7C71B563-0DC0-4BC0-BCF6-06F8F0516C7A/resourceGroups/clitest-notification-snu5pgmk6/providers/microsoft.insights/actionGroups/clitest-notification-bdabjnjro"],
+      "eventFilters": {"event1": {"kind": "TestRunEnded", "condition": {"testRunResults":
+      ["FAILED"], "testRunStatuses": ["DONE"]}}}, "testIds": ["test1"]}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '398'
+      Content-Type:
+      - application/merge-patch+json
+      User-Agent:
+      - AZURECLI/2.71.0 azsdk-python-core/1.33.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
+    method: PATCH
+    uri: https://d6c74774-4450-4445-a7c1-a17349a2fcb1.eastus.cnt-prod.loadtesting.azure.com/notification-rules/nri-test?api-version=2025-03-01-preview
+  response:
+    body:
+      string: '{"scope":"Tests","testIds":["test1"],"eventFilters":{"event1":{"kind":"TestRunEnded","condition":{"testRunStatuses":["DONE"],"testRunResults":["FAILED"]}}},"notificationRuleId":"nri-test","displayName":"NotificationRule1","actionGroupIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-notification-000001/providers/microsoft.insights/actionGroups/clitest-notification-000003"],"createdDateTime":"2025-04-30T13:35:38.37Z","createdBy":"harshanb@microsoft.com","lastModifiedDateTime":"2025-04-30T13:35:38.37Z","lastModifiedBy":"harshanb@microsoft.com"}'
+    headers:
+      api-supported-versions:
+      - 2024-12-01-preview, 2025-03-01-preview
+      connection:
+      - keep-alive
+      content-length:
+      - '580'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 30 Apr 2025 13:35:38 GMT
+      location:
+      - https://d6c74774-4450-4445-a7c1-a17349a2fcb1.eastus.cnt-prod.loadtesting.azure.com/notification-rules/nri-test?api-version=2025-03-01-preview
+      mise-correlation-id:
+      - 1d3ce29f-f146-4337-b551-608dd4d61387
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-azure-ref:
+      - 20250430T133536Z-r1b8575b5cbvscv7hC1BOMnvs000000001z0000000005vs7
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azsdk-python-mgmt-loadtesting/1.0.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-notification-000001/providers/Microsoft.LoadTestService/loadTests/clitest-notification-000002?api-version=2022-12-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-notification-000001/providers/Microsoft.LoadTestService/loadTests/clitest-notification-000002","name":"clitest-notification-000002","type":"microsoft.loadtestservice/loadtests","location":"eastus","systemData":{"createdBy":"harshanb@microsoft.com","createdByType":"User","createdAt":"2025-04-30T13:34:50.8547177Z","lastModifiedBy":"harshanb@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-04-30T13:34:50.8547177Z"},"identity":{"type":"None"},"properties":{"dataPlaneURI":"d6c74774-4450-4445-a7c1-a17349a2fcb1.eastus.cnt-prod.loadtesting.azure.com","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '681'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 30 Apr 2025 13:35:39 GMT
+      etag:
+      - '"5401a12c-0000-0200-0000-681227100000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: D0A3D0885E4E4C219B3A6A424CD50EA2 Ref B: MAA201060514019 Ref C: 2025-04-30T13:35:38Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - AZURECLI/2.71.0 azsdk-python-core/1.33.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
+    method: GET
+    uri: https://d6c74774-4450-4445-a7c1-a17349a2fcb1.eastus.cnt-prod.loadtesting.azure.com/notification-rules/nri-test?api-version=2025-03-01-preview
+  response:
+    body:
+      string: '{"scope":"Tests","testIds":["test1"],"eventFilters":{"event1":{"kind":"TestRunEnded","condition":{"testRunStatuses":["DONE"],"testRunResults":["FAILED"]}}},"notificationRuleId":"nri-test","displayName":"NotificationRule1","actionGroupIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-notification-000001/providers/microsoft.insights/actionGroups/clitest-notification-000003"],"createdDateTime":"2025-04-30T13:35:38.37Z","createdBy":"harshanb@microsoft.com","lastModifiedDateTime":"2025-04-30T13:35:38.37Z","lastModifiedBy":"harshanb@microsoft.com"}'
+    headers:
+      accept-ranges:
+      - bytes
+      api-supported-versions:
+      - 2024-12-01-preview, 2025-03-01-preview
+      connection:
+      - keep-alive
+      content-length:
+      - '580'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 30 Apr 2025 13:35:41 GMT
+      mise-correlation-id:
+      - 922c2345-3921-4e71-8920-559e1663ffc3
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-azure-ref:
+      - 20250430T133540Z-155d6647456r89nthC1BOMhd28000000044g00000000a21k
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azsdk-python-mgmt-loadtesting/1.0.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-notification-000001/providers/Microsoft.LoadTestService/loadTests/clitest-notification-000002?api-version=2022-12-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-notification-000001/providers/Microsoft.LoadTestService/loadTests/clitest-notification-000002","name":"clitest-notification-000002","type":"microsoft.loadtestservice/loadtests","location":"eastus","systemData":{"createdBy":"harshanb@microsoft.com","createdByType":"User","createdAt":"2025-04-30T13:34:50.8547177Z","lastModifiedBy":"harshanb@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-04-30T13:34:50.8547177Z"},"identity":{"type":"None"},"properties":{"dataPlaneURI":"d6c74774-4450-4445-a7c1-a17349a2fcb1.eastus.cnt-prod.loadtesting.azure.com","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '681'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 30 Apr 2025 13:35:42 GMT
+      etag:
+      - '"5401a12c-0000-0200-0000-681227100000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: CABF2EE6233B47B3A64C12F8B8E2B9C4 Ref B: MAA201060515033 Ref C: 2025-04-30T13:35:41Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - AZURECLI/2.71.0 azsdk-python-core/1.33.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
+    method: GET
+    uri: https://d6c74774-4450-4445-a7c1-a17349a2fcb1.eastus.cnt-prod.loadtesting.azure.com/notification-rules/nri-all-events?api-version=2025-03-01-preview
+  response:
+    body:
+      string: '{"error":{"code":"NotificationRuleNotFound","message":"Notification
+        rule with Id: ''nri-all-events'' not found.","target":null,"details":null}}'
+    headers:
+      api-supported-versions:
+      - 2024-12-01-preview, 2025-03-01-preview
+      connection:
+      - keep-alive
+      content-type:
+      - application/json
+      date:
+      - Wed, 30 Apr 2025 13:35:43 GMT
+      mise-correlation-id:
+      - 88b7cdf8-5a19-4386-8958-df96f1fde380
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      x-azure-ref:
+      - 20250430T133542Z-r1b8575b5cbrpphshC1BOMs7nc000000018g000000002upc
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-error-code:
+      - NotificationRuleNotFound
+    status:
+      code: 404
+      message: Not Found
+- request:
+    body: '{"scope": "Tests", "actionGroupIds": ["/subscriptions/7C71B563-0DC0-4BC0-BCF6-06F8F0516C7A/resourceGroups/clitest-notification-snu5pgmk6/providers/microsoft.insights/actionGroups/clitest-notification-bdabjnjro"]}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '212'
+      Content-Type:
+      - application/merge-patch+json
+      User-Agent:
+      - AZURECLI/2.71.0 azsdk-python-core/1.33.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
+    method: PATCH
+    uri: https://d6c74774-4450-4445-a7c1-a17349a2fcb1.eastus.cnt-prod.loadtesting.azure.com/notification-rules/nri-all-events?api-version=2025-03-01-preview
+  response:
+    body:
+      string: '{"scope":"Tests","notificationRuleId":"nri-all-events","displayName":"nri-all-events","actionGroupIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-notification-000001/providers/microsoft.insights/actionGroups/clitest-notification-000003"],"createdDateTime":"2025-04-30T13:35:45.169Z","createdBy":"harshanb@microsoft.com","lastModifiedDateTime":"2025-04-30T13:35:45.169Z","lastModifiedBy":"harshanb@microsoft.com"}'
+    headers:
+      api-supported-versions:
+      - 2024-12-01-preview, 2025-03-01-preview
+      connection:
+      - keep-alive
+      content-length:
+      - '446'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 30 Apr 2025 13:35:45 GMT
+      location:
+      - https://d6c74774-4450-4445-a7c1-a17349a2fcb1.eastus.cnt-prod.loadtesting.azure.com/notification-rules/nri-all-events?api-version=2025-03-01-preview
+      mise-correlation-id:
+      - 6a3b23cd-37ce-4f77-8c5d-d5a662490e2a
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-azure-ref:
+      - 20250430T133543Z-155d6647456znq9chC1BOMq5z800000003pg0000000043w1
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azsdk-python-mgmt-loadtesting/1.0.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-notification-000001/providers/Microsoft.LoadTestService/loadTests/clitest-notification-000002?api-version=2022-12-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-notification-000001/providers/Microsoft.LoadTestService/loadTests/clitest-notification-000002","name":"clitest-notification-000002","type":"microsoft.loadtestservice/loadtests","location":"eastus","systemData":{"createdBy":"harshanb@microsoft.com","createdByType":"User","createdAt":"2025-04-30T13:34:50.8547177Z","lastModifiedBy":"harshanb@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-04-30T13:34:50.8547177Z"},"identity":{"type":"None"},"properties":{"dataPlaneURI":"d6c74774-4450-4445-a7c1-a17349a2fcb1.eastus.cnt-prod.loadtesting.azure.com","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '681'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 30 Apr 2025 13:35:46 GMT
+      etag:
+      - '"5401a12c-0000-0200-0000-681227100000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 7249D8AA1E1240079CED125E4D8B50AD Ref B: MAA201060516037 Ref C: 2025-04-30T13:35:45Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - AZURECLI/2.71.0 azsdk-python-core/1.33.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
+    method: GET
+    uri: https://d6c74774-4450-4445-a7c1-a17349a2fcb1.eastus.cnt-prod.loadtesting.azure.com/notification-rules/nri-all-events?api-version=2025-03-01-preview
+  response:
+    body:
+      string: '{"scope":"Tests","notificationRuleId":"nri-all-events","displayName":"nri-all-events","actionGroupIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-notification-000001/providers/microsoft.insights/actionGroups/clitest-notification-000003"],"createdDateTime":"2025-04-30T13:35:45.169Z","createdBy":"harshanb@microsoft.com","lastModifiedDateTime":"2025-04-30T13:35:45.169Z","lastModifiedBy":"harshanb@microsoft.com"}'
+    headers:
+      accept-ranges:
+      - bytes
+      api-supported-versions:
+      - 2024-12-01-preview, 2025-03-01-preview
+      connection:
+      - keep-alive
+      content-length:
+      - '446'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 30 Apr 2025 13:35:47 GMT
+      mise-correlation-id:
+      - 7846a90d-eadf-487e-a697-6640991f7ef5
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-azure-ref:
+      - 20250430T133546Z-155d66474564czdnhC1BOMfh8n000000056000000000d4kt
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azsdk-python-mgmt-loadtesting/1.0.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-notification-000001/providers/Microsoft.LoadTestService/loadTests/clitest-notification-000002?api-version=2022-12-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-notification-000001/providers/Microsoft.LoadTestService/loadTests/clitest-notification-000002","name":"clitest-notification-000002","type":"microsoft.loadtestservice/loadtests","location":"eastus","systemData":{"createdBy":"harshanb@microsoft.com","createdByType":"User","createdAt":"2025-04-30T13:34:50.8547177Z","lastModifiedBy":"harshanb@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-04-30T13:34:50.8547177Z"},"identity":{"type":"None"},"properties":{"dataPlaneURI":"d6c74774-4450-4445-a7c1-a17349a2fcb1.eastus.cnt-prod.loadtesting.azure.com","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '681'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 30 Apr 2025 13:35:47 GMT
+      etag:
+      - '"5401a12c-0000-0200-0000-681227100000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: BD6BEB40961D40C29ED654EA587A6830 Ref B: MAA201060515027 Ref C: 2025-04-30T13:35:47Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - AZURECLI/2.71.0 azsdk-python-core/1.33.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
+    method: GET
+    uri: https://d6c74774-4450-4445-a7c1-a17349a2fcb1.eastus.cnt-prod.loadtesting.azure.com/notification-rules/nri-specific-tests?api-version=2025-03-01-preview
+  response:
+    body:
+      string: '{"error":{"code":"NotificationRuleNotFound","message":"Notification
+        rule with Id: ''nri-specific-tests'' not found.","target":null,"details":null}}'
+    headers:
+      api-supported-versions:
+      - 2024-12-01-preview, 2025-03-01-preview
+      connection:
+      - keep-alive
+      content-type:
+      - application/json
+      date:
+      - Wed, 30 Apr 2025 13:35:49 GMT
+      mise-correlation-id:
+      - 5a5c6029-cfda-4aac-86c2-81ef44d2187b
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      x-azure-ref:
+      - 20250430T133548Z-r1b8575b5cbxs264hC1BOM2xzn00000001x0000000008dpb
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-error-code:
+      - NotificationRuleNotFound
+    status:
+      code: 404
+      message: Not Found
+- request:
+    body: '{"scope": "Tests", "actionGroupIds": ["/subscriptions/7C71B563-0DC0-4BC0-BCF6-06F8F0516C7A/resourceGroups/clitest-notification-snu5pgmk6/providers/microsoft.insights/actionGroups/clitest-notification-bdabjnjro"],
+      "testIds": ["test1", "test2"]}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '243'
+      Content-Type:
+      - application/merge-patch+json
+      User-Agent:
+      - AZURECLI/2.71.0 azsdk-python-core/1.33.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
+    method: PATCH
+    uri: https://d6c74774-4450-4445-a7c1-a17349a2fcb1.eastus.cnt-prod.loadtesting.azure.com/notification-rules/nri-specific-tests?api-version=2025-03-01-preview
+  response:
+    body:
+      string: '{"scope":"Tests","testIds":["test1","test2"],"notificationRuleId":"nri-specific-tests","displayName":"nri-specific-tests","actionGroupIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-notification-000001/providers/microsoft.insights/actionGroups/clitest-notification-000003"],"createdDateTime":"2025-04-30T13:35:50.452Z","createdBy":"harshanb@microsoft.com","lastModifiedDateTime":"2025-04-30T13:35:50.452Z","lastModifiedBy":"harshanb@microsoft.com"}'
+    headers:
+      api-supported-versions:
+      - 2024-12-01-preview, 2025-03-01-preview
+      connection:
+      - keep-alive
+      content-length:
+      - '482'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 30 Apr 2025 13:35:50 GMT
+      location:
+      - https://d6c74774-4450-4445-a7c1-a17349a2fcb1.eastus.cnt-prod.loadtesting.azure.com/notification-rules/nri-specific-tests?api-version=2025-03-01-preview
+      mise-correlation-id:
+      - 58de57db-cfda-4028-8f60-b8e5e9149f4f
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-azure-ref:
+      - 20250430T133549Z-155d6647456vvclghC1BOMhscs00000004m000000000mbwt
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azsdk-python-mgmt-loadtesting/1.0.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-notification-000001/providers/Microsoft.LoadTestService/loadTests/clitest-notification-000002?api-version=2022-12-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-notification-000001/providers/Microsoft.LoadTestService/loadTests/clitest-notification-000002","name":"clitest-notification-000002","type":"microsoft.loadtestservice/loadtests","location":"eastus","systemData":{"createdBy":"harshanb@microsoft.com","createdByType":"User","createdAt":"2025-04-30T13:34:50.8547177Z","lastModifiedBy":"harshanb@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-04-30T13:34:50.8547177Z"},"identity":{"type":"None"},"properties":{"dataPlaneURI":"d6c74774-4450-4445-a7c1-a17349a2fcb1.eastus.cnt-prod.loadtesting.azure.com","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '681'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 30 Apr 2025 13:35:51 GMT
+      etag:
+      - '"5401a12c-0000-0200-0000-681227100000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 1060B2BDC88A4FA28EE52C08572F9975 Ref B: MAA201060516021 Ref C: 2025-04-30T13:35:50Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - AZURECLI/2.71.0 azsdk-python-core/1.33.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
+    method: GET
+    uri: https://d6c74774-4450-4445-a7c1-a17349a2fcb1.eastus.cnt-prod.loadtesting.azure.com/notification-rules/nri-specific-tests?api-version=2025-03-01-preview
+  response:
+    body:
+      string: '{"scope":"Tests","testIds":["test1","test2"],"notificationRuleId":"nri-specific-tests","displayName":"nri-specific-tests","actionGroupIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-notification-000001/providers/microsoft.insights/actionGroups/clitest-notification-000003"],"createdDateTime":"2025-04-30T13:35:50.452Z","createdBy":"harshanb@microsoft.com","lastModifiedDateTime":"2025-04-30T13:35:50.452Z","lastModifiedBy":"harshanb@microsoft.com"}'
+    headers:
+      accept-ranges:
+      - bytes
+      api-supported-versions:
+      - 2024-12-01-preview, 2025-03-01-preview
+      connection:
+      - keep-alive
+      content-length:
+      - '482'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 30 Apr 2025 13:35:52 GMT
+      mise-correlation-id:
+      - 58840ea5-47dc-4001-9241-82340eac3738
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-azure-ref:
+      - 20250430T133552Z-r1b8575b5cbfp9thhC1BOM069w000000058g000000004kwa
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azsdk-python-mgmt-loadtesting/1.0.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-notification-000001/providers/Microsoft.LoadTestService/loadTests/clitest-notification-000002?api-version=2022-12-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-notification-000001/providers/Microsoft.LoadTestService/loadTests/clitest-notification-000002","name":"clitest-notification-000002","type":"microsoft.loadtestservice/loadtests","location":"eastus","systemData":{"createdBy":"harshanb@microsoft.com","createdByType":"User","createdAt":"2025-04-30T13:34:50.8547177Z","lastModifiedBy":"harshanb@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-04-30T13:34:50.8547177Z"},"identity":{"type":"None"},"properties":{"dataPlaneURI":"d6c74774-4450-4445-a7c1-a17349a2fcb1.eastus.cnt-prod.loadtesting.azure.com","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '681'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 30 Apr 2025 13:35:53 GMT
+      etag:
+      - '"5401a12c-0000-0200-0000-681227100000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 44CAE852E3A143D79D6CB66A9BA373E1 Ref B: MAA201060514009 Ref C: 2025-04-30T13:35:52Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - AZURECLI/2.71.0 azsdk-python-core/1.33.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
+    method: GET
+    uri: https://d6c74774-4450-4445-a7c1-a17349a2fcb1.eastus.cnt-prod.loadtesting.azure.com/notification-rules/nri-multiple-events?api-version=2025-03-01-preview
+  response:
+    body:
+      string: '{"error":{"code":"NotificationRuleNotFound","message":"Notification
+        rule with Id: ''nri-multiple-events'' not found.","target":null,"details":null}}'
+    headers:
+      api-supported-versions:
+      - 2024-12-01-preview, 2025-03-01-preview
+      connection:
+      - keep-alive
+      content-type:
+      - application/json
+      date:
+      - Wed, 30 Apr 2025 13:35:54 GMT
+      mise-correlation-id:
+      - 5a363248-5cf5-48b9-942e-15b57b8420d9
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      x-azure-ref:
+      - 20250430T133553Z-r1b8575b5cbsxt98hC1BOMucx400000004s0000000003rfk
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-error-code:
+      - NotificationRuleNotFound
+    status:
+      code: 404
+      message: Not Found
+- request:
+    body: '{"scope": "Tests", "displayName": "NotificationRuleMultipleEvents", "actionGroupIds":
+      ["/subscriptions/7C71B563-0DC0-4BC0-BCF6-06F8F0516C7A/resourceGroups/clitest-notification-snu5pgmk6/providers/microsoft.insights/actionGroups/clitest-notification-bdabjnjro"],
+      "eventFilters": {"event1": {"kind": "TestRunEnded", "condition": {"testRunResults":
+      ["FAILED"], "testRunStatuses": ["DONE"]}}, "event2": {"kind": "TestRunStarted"}},
+      "testIds": ["test1", "test2"]}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '458'
+      Content-Type:
+      - application/merge-patch+json
+      User-Agent:
+      - AZURECLI/2.71.0 azsdk-python-core/1.33.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
+    method: PATCH
+    uri: https://d6c74774-4450-4445-a7c1-a17349a2fcb1.eastus.cnt-prod.loadtesting.azure.com/notification-rules/nri-multiple-events?api-version=2025-03-01-preview
+  response:
+    body:
+      string: '{"scope":"Tests","testIds":["test1","test2"],"eventFilters":{"event1":{"kind":"TestRunEnded","condition":{"testRunStatuses":["DONE"],"testRunResults":["FAILED"]}},"event2":{"kind":"TestRunStarted"}},"notificationRuleId":"nri-multiple-events","displayName":"NotificationRuleMultipleEvents","actionGroupIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-notification-000001/providers/microsoft.insights/actionGroups/clitest-notification-000003"],"createdDateTime":"2025-04-30T13:35:55.346Z","createdBy":"harshanb@microsoft.com","lastModifiedDateTime":"2025-04-30T13:35:55.346Z","lastModifiedBy":"harshanb@microsoft.com"}'
+    headers:
+      api-supported-versions:
+      - 2024-12-01-preview, 2025-03-01-preview
+      connection:
+      - keep-alive
+      content-length:
+      - '649'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 30 Apr 2025 13:35:55 GMT
+      location:
+      - https://d6c74774-4450-4445-a7c1-a17349a2fcb1.eastus.cnt-prod.loadtesting.azure.com/notification-rules/nri-multiple-events?api-version=2025-03-01-preview
+      mise-correlation-id:
+      - 38538ad6-24dc-4fe4-b30b-28edf279edb0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-azure-ref:
+      - 20250430T133554Z-r1b8575b5cbrpphshC1BOMs7nc0000000180000000003q9q
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azsdk-python-mgmt-loadtesting/1.0.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-notification-000001/providers/Microsoft.LoadTestService/loadTests/clitest-notification-000002?api-version=2022-12-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-notification-000001/providers/Microsoft.LoadTestService/loadTests/clitest-notification-000002","name":"clitest-notification-000002","type":"microsoft.loadtestservice/loadtests","location":"eastus","systemData":{"createdBy":"harshanb@microsoft.com","createdByType":"User","createdAt":"2025-04-30T13:34:50.8547177Z","lastModifiedBy":"harshanb@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-04-30T13:34:50.8547177Z"},"identity":{"type":"None"},"properties":{"dataPlaneURI":"d6c74774-4450-4445-a7c1-a17349a2fcb1.eastus.cnt-prod.loadtesting.azure.com","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '681'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 30 Apr 2025 13:35:57 GMT
+      etag:
+      - '"5401a12c-0000-0200-0000-681227100000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 3E29BB319CB54281A14E3646458E18B2 Ref B: MAA201060514025 Ref C: 2025-04-30T13:35:55Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - AZURECLI/2.71.0 azsdk-python-core/1.33.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
+    method: GET
+    uri: https://d6c74774-4450-4445-a7c1-a17349a2fcb1.eastus.cnt-prod.loadtesting.azure.com/notification-rules/nri-multiple-events?api-version=2025-03-01-preview
+  response:
+    body:
+      string: '{"scope":"Tests","testIds":["test1","test2"],"eventFilters":{"event1":{"kind":"TestRunEnded","condition":{"testRunStatuses":["DONE"],"testRunResults":["FAILED"]}},"event2":{"kind":"TestRunStarted"}},"notificationRuleId":"nri-multiple-events","displayName":"NotificationRuleMultipleEvents","actionGroupIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-notification-000001/providers/microsoft.insights/actionGroups/clitest-notification-000003"],"createdDateTime":"2025-04-30T13:35:55.346Z","createdBy":"harshanb@microsoft.com","lastModifiedDateTime":"2025-04-30T13:35:55.346Z","lastModifiedBy":"harshanb@microsoft.com"}'
+    headers:
+      accept-ranges:
+      - bytes
+      api-supported-versions:
+      - 2024-12-01-preview, 2025-03-01-preview
+      connection:
+      - keep-alive
+      content-length:
+      - '649'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 30 Apr 2025 13:35:57 GMT
+      mise-correlation-id:
+      - a4b04633-8201-44ca-89cb-9cdb598b0b04
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-azure-ref:
+      - 20250430T133557Z-155d6647456hhsq9hC1BOM0dyn00000004ng00000000e4xw
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azsdk-python-mgmt-loadtesting/1.0.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-notification-000001/providers/Microsoft.LoadTestService/loadTests/clitest-notification-000002?api-version=2022-12-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-notification-000001/providers/Microsoft.LoadTestService/loadTests/clitest-notification-000002","name":"clitest-notification-000002","type":"microsoft.loadtestservice/loadtests","location":"eastus","systemData":{"createdBy":"harshanb@microsoft.com","createdByType":"User","createdAt":"2025-04-30T13:34:50.8547177Z","lastModifiedBy":"harshanb@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-04-30T13:34:50.8547177Z"},"identity":{"type":"None"},"properties":{"dataPlaneURI":"d6c74774-4450-4445-a7c1-a17349a2fcb1.eastus.cnt-prod.loadtesting.azure.com","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '681'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 30 Apr 2025 13:35:57 GMT
+      etag:
+      - '"5401a12c-0000-0200-0000-681227100000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 5C3B065AA4604FAE9D6F0BDCCB0D2E36 Ref B: MAA201060513023 Ref C: 2025-04-30T13:35:58Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - AZURECLI/2.71.0 azsdk-python-core/1.33.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
+    method: GET
+    uri: https://d6c74774-4450-4445-a7c1-a17349a2fcb1.eastus.cnt-prod.loadtesting.azure.com/notification-rules?api-version=2025-03-01-preview
+  response:
+    body:
+      string: '{"value":[{"scope":"Tests","testIds":["test1","test2"],"eventFilters":{"event1":{"kind":"TestRunEnded","condition":{"testRunStatuses":["DONE"],"testRunResults":["FAILED"]}},"event2":{"kind":"TestRunStarted"}},"notificationRuleId":"nri-multiple-events","displayName":"NotificationRuleMultipleEvents","actionGroupIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-notification-000001/providers/microsoft.insights/actionGroups/clitest-notification-000003"],"createdDateTime":"2025-04-30T13:35:55.346Z","createdBy":"harshanb@microsoft.com","lastModifiedDateTime":"2025-04-30T13:35:55.346Z","lastModifiedBy":"harshanb@microsoft.com"},{"scope":"Tests","testIds":["test1","test2"],"notificationRuleId":"nri-specific-tests","displayName":"nri-specific-tests","actionGroupIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-notification-000001/providers/microsoft.insights/actionGroups/clitest-notification-000003"],"createdDateTime":"2025-04-30T13:35:50.452Z","createdBy":"harshanb@microsoft.com","lastModifiedDateTime":"2025-04-30T13:35:50.452Z","lastModifiedBy":"harshanb@microsoft.com"},{"scope":"Tests","notificationRuleId":"nri-all-events","displayName":"nri-all-events","actionGroupIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-notification-000001/providers/microsoft.insights/actionGroups/clitest-notification-000003"],"createdDateTime":"2025-04-30T13:35:45.169Z","createdBy":"harshanb@microsoft.com","lastModifiedDateTime":"2025-04-30T13:35:45.169Z","lastModifiedBy":"harshanb@microsoft.com"},{"scope":"Tests","testIds":["test1"],"eventFilters":{"event1":{"kind":"TestRunEnded","condition":{"testRunStatuses":["DONE"],"testRunResults":["FAILED"]}}},"notificationRuleId":"nri-test","displayName":"NotificationRule1","actionGroupIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-notification-000001/providers/microsoft.insights/actionGroups/clitest-notification-000003"],"createdDateTime":"2025-04-30T13:35:38.37Z","createdBy":"harshanb@microsoft.com","lastModifiedDateTime":"2025-04-30T13:35:38.37Z","lastModifiedBy":"harshanb@microsoft.com"}]}'
+    headers:
+      accept-ranges:
+      - bytes
+      api-supported-versions:
+      - 2024-12-01-preview, 2025-03-01-preview
+      connection:
+      - keep-alive
+      content-length:
+      - '2172'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 30 Apr 2025 13:35:59 GMT
+      mise-correlation-id:
+      - 2e198219-92aa-4bfe-ac4c-6fa30a5f19ba
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-azure-ref:
+      - 20250430T133558Z-155d6647456p78r4hC1BOM1w1400000004ng00000000eas2
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+version: 1

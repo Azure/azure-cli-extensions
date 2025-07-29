@@ -1237,3 +1237,610 @@ examples:
         --scope "/dbs/mydb/colls/mycontainer" \\
         --principal-id 6328f5f7-dbf7-4244-bba8-fbb9d8066506
 """
+
+# Gremlin Role Definition and Role Assigment
+helps['cosmosdb gremlin role'] = """
+type: group
+short-summary: Manage Azure Cosmos DB Gremlin role resources.
+"""
+
+helps['cosmosdb gremlin role definition'] = """
+type: group
+short-summary: Manage Azure Cosmos DB Gremlin role definitions.
+"""
+
+helps['cosmosdb gremlin role definition create'] = """
+type: command
+short-summary: Create a Gremlin role definition under an Azure Cosmos DB account.
+examples:
+  - name: Create a Gremlin role definition under an Azure Cosmos DB account using a JSON string.
+    text: |
+      az cosmosdb gremlin role definition create --account-name MyAccount --resource-group MyResourceGroup --body '{
+        "Id": "be79875a-2cc4-40d5-8958-566017875b39",
+        "RoleName": "My Read Only Role",
+        "Type": "CustomRole",
+        "AssignableScopes": ["/dbs/mydb/colls/mycontainer"],
+        "Permissions": [{
+          "DataActions": [
+            "Microsoft.DocumentDB/databaseAccounts/readMetadata",
+            "Microsoft.DocumentDB/databaseAccounts/gremlin/containers/entities/read",
+            "Microsoft.DocumentDB/databaseAccounts/gremlin/containers/executeQuery",
+            "Microsoft.DocumentDB/databaseAccounts/gremlin/containers/readChangeFeed"
+          ]
+        }]
+      }'
+  - name: Create a Gremlin role definition under an Azure Cosmos DB account using a JSON file.
+    text: az cosmosdb gremlin role definition create --account-name MyAccount --resource-group MyResourceGroup --body @role-definition.json
+"""
+
+helps['cosmosdb gremlin role definition delete'] = """
+type: command
+short-summary: Delete a Gremlin role definition under an Azure Cosmos DB account.
+examples:
+  - name: Delete a Gremlin role definition under an Azure Cosmos DB account.
+    text: az cosmosdb gremlin role definition delete --account-name MyAccount --resource-group MyResourceGroup --role-definition-id be79875a-2cc4-40d5-8958-566017875b39
+"""
+
+helps['cosmosdb gremlin role definition exists'] = """
+type: command
+short-summary: Check if an Azure Cosmos DB role definition exists.
+examples:
+  - name: Check if an Azure Cosmos DB role definition exists.
+    text: az cosmosdb gremlin role definition exists --account-name MyAccount --resource-group MyResourceGroup --role-definition-id be79875a-2cc4-40d5-8958-566017875b39
+"""
+
+helps['cosmosdb gremlin role definition list'] = """
+type: command
+short-summary: List all Gremlin role definitions under an Azure Cosmos DB account.
+examples:
+  - name: List all Gremlin role definitions under an Azure Cosmos DB account.
+    text: az cosmosdb gremlin role definition list --account-name MyAccount --resource-group MyResourceGroup
+"""
+
+helps['cosmosdb gremlin role definition show'] = """
+type: command
+short-summary: Show the properties of a Gremlin role definition under an Azure Cosmos DB account.
+examples:
+  - name: Show the properties of a Gremlin role definition under an Azure Cosmos DB account.
+    text: az cosmosdb gremlin role definition show --account-name MyAccount --resource-group MyResourceGroup --role-definition-id be79875a-2cc4-40d5-8958-566017875b39
+"""
+
+helps['cosmosdb gremlin role definition update'] = """
+type: command
+short-summary: Update a Gremlin role definition under an Azure Cosmos DB account.
+examples:
+  - name: Update a Gremlin role definition under an Azure Cosmos DB account.
+    text: az cosmosdb gremlin role definition update --account-name MyAccount --resource-group MyResourceGroup --body @role-definition.json
+"""
+
+helps['cosmosdb gremlin role assignment'] = """
+type: group
+short-summary: Manage Azure Cosmos DB Gremlin role assignments.
+"""
+
+helps['cosmosdb gremlin role assignment create'] = """
+type: command
+short-summary: Create a Gremlin role assignment under an Azure Cosmos DB account.
+examples:
+  - name: Create a Gremlin role assignment under an Azure Cosmos DB account using Role Definition Name.
+    text: |
+      az cosmosdb gremlin role assignment create --account-name MyAccount --resource-group MyResourceGroup \\
+        --role-assignment-id cb8ed2d7-2371-4e3c-bd31-6cc1560e84f8 \\
+        --role-definition-name "My Read Only Role" \\
+        --scope "/dbs/mydb/colls/mycontainer" \\
+        --principal-id 6328f5f7-dbf7-4244-bba8-fbb9d8066506
+  - name: Create a Gremlin role assignment under an Azure Cosmos DB account using Role Definition ID.
+    text: |
+      az cosmosdb gremlin role assignment create --account-name MyAccount --resource-group MyResourceGroup \\
+        --role-assignment-id cb8ed2d7-2371-4e3c-bd31-6cc1560e84f8 \\
+        --role-definition-id be79875a-2cc4-40d5-8958-566017875b39 \\
+        --scope "/dbs/mydb/colls/mycontainer" \\
+        --principal-id 6328f5f7-dbf7-4244-bba8-fbb9d8066506
+"""
+
+helps['cosmosdb gremlin role assignment delete'] = """
+type: command
+short-summary: Delete a Gremlin role assignment under an Azure Cosmos DB account.
+examples:
+  - name: Delete a Gremlin role assignment under an Azure Cosmos DB account.
+    text: az cosmosdb gremlin role assignment delete --account-name MyAccount --resource-group MyResourceGroup --role-assignment-id cb8ed2d7-2371-4e3c-bd31-6cc1560e84f8
+"""
+
+helps['cosmosdb gremlin role assignment exists'] = """
+type: command
+short-summary: Check if an Azure Cosmos DB role assignment exists.
+examples:
+  - name: Check if an Azure Cosmos DB role assignment exists.
+    text: az cosmosdb gremlin role assignment exists --account-name MyAccount --resource-group MyResourceGroup --role-assignment-id cb8ed2d7-2371-4e3c-bd31-6cc1560e84f8
+"""
+
+helps['cosmosdb gremlin role assignment list'] = """
+type: command
+short-summary: List all Gremlin role assignments under an Azure Cosmos DB account.
+examples:
+  - name: List all Gremlin role assignments under an Azure Cosmos DB account.
+    text: az cosmosdb gremlin role assignment list --account-name MyAccount --resource-group MyResourceGroup
+"""
+
+helps['cosmosdb gremlin role assignment show'] = """
+type: command
+short-summary: Show the properties of a Gremlin role assignment under an Azure Cosmos DB account.
+examples:
+  - name: Show the properties of a Gremlin role assignment under an Azure Cosmos DB account.
+    text: az cosmosdb gremlin role assignment show --account-name MyAccount --resource-group MyResourceGroup --role-assignment-id cb8ed2d7-2371-4e3c-bd31-6cc1560e84f8
+"""
+
+helps['cosmosdb gremlin role assignment update'] = """
+type: command
+short-summary: Update a Gremlin role assignment under an Azure Cosmos DB account.
+examples:
+  - name: Update a Gremlin role assignment under an Azure Cosmos DB account using Role Definition Name.
+    text: |
+      az cosmosdb gremlin role assignment update --account-name MyAccount --resource-group MyResourceGroup \\
+        --role-assignment-id cb8ed2d7-2371-4e3c-bd31-6cc1560e84f8 \\
+        --role-definition-name "My Read Only Role" \\
+        --scope "/dbs/mydb/colls/mycontainer" \\
+        --principal-id 6328f5f7-dbf7-4244-bba8-fbb9d8066506
+  - name: update a Gremlin role assignment under an Azure Cosmos DB account using Role Definition ID.
+    text: |
+      az cosmosdb gremlin role assignment update --account-name MyAccount --resource-group MyResourceGroup \\
+        --role-assignment-id cb8ed2d7-2371-4e3c-bd31-6cc1560e84f8 \\
+        --role-definition-id be79875a-2cc4-40d5-8958-566017875b39 \\
+        --scope "/dbs/mydb/colls/mycontainer" \\
+        --principal-id 6328f5f7-dbf7-4244-bba8-fbb9d8066506
+"""
+
+# Cassandra Role Definition and Role Assignment
+helps['cosmosdb cassandra role'] = """
+type: group
+short-summary: Manage Azure Cosmos DB Cassandra role resources.
+"""
+
+helps['cosmosdb cassandra role definition'] = """
+type: group
+short-summary: Manage Azure Cosmos DB Cassandra role definitions.
+"""
+
+helps['cosmosdb cassandra role definition create'] = """
+type: command
+short-summary: Create a Cassandra role definition under an Azure Cosmos DB account.
+examples:
+  - name: Create a Cassandra role definition under an Azure Cosmos DB account using a JSON string.
+    text: |
+      az cosmosdb cassandra role definition create --account-name MyAccount --resource-group MyResourceGroup --body '{
+        "Id": "be79875a-2cc4-40d5-8958-566017875b39",
+        "RoleName": "My Read Only Role",
+        "Type": "CustomRole",
+        "AssignableScopes": ["/dbs/mydb/colls/mycontainer"],
+        "Permissions": [{
+          "DataActions": [
+            "Microsoft.DocumentDB/databaseAccounts/readMetadata",
+            "Microsoft.DocumentDB/databaseAccounts/cassandra/containers/entities/read",
+            "Microsoft.DocumentDB/databaseAccounts/cassandra/containers/executeQuery",
+            "Microsoft.DocumentDB/databaseAccounts/cassandra/containers/readChangeFeed"
+          ]
+        }]
+      }'
+  - name: Create a Cassandra role definition under an Azure Cosmos DB account using a JSON file.
+    text: az cosmosdb cassandra role definition create --account-name MyAccount --resource-group MyResourceGroup --body @role-definition.json
+"""
+
+helps['cosmosdb cassandra role definition delete'] = """
+type: command
+short-summary: Delete a Cassandra role definition under an Azure Cosmos DB account.
+examples:
+  - name: Delete a Cassandra role definition under an Azure Cosmos DB account.
+    text: az cosmosdb cassandra role definition delete --account-name MyAccount --resource-group MyResourceGroup --role-definition-id be79875a-2cc4-40d5-8958-566017875b39
+"""
+
+helps['cosmosdb cassandra role definition exists'] = """
+type: command
+short-summary: Check if an Azure Cosmos DB role definition exists.
+examples:
+  - name: Check if an Azure Cosmos DB role definition exists.
+    text: az cosmosdb cassandra role definition exists --account-name MyAccount --resource-group MyResourceGroup --role-definition-id be79875a-2cc4-40d5-8958-566017875b39
+"""
+
+helps['cosmosdb cassandra role definition list'] = """
+type: command
+short-summary: List all Cassandra role definitions under an Azure Cosmos DB account.
+examples:
+  - name: List all Cassandra role definitions under an Azure Cosmos DB account.
+    text: az cosmosdb cassandra role definition list --account-name MyAccount --resource-group MyResourceGroup
+"""
+
+helps['cosmosdb cassandra role definition show'] = """
+type: command
+short-summary: Show the properties of a Cassandra role definition under an Azure Cosmos DB account.
+examples:
+  - name: Show the properties of a Cassandra role definition under an Azure Cosmos DB account.
+    text: az cosmosdb cassandra role definition show --account-name MyAccount --resource-group MyResourceGroup --role-definition-id be79875a-2cc4-40d5-8958-566017875b39
+"""
+
+helps['cosmosdb cassandra role definition update'] = """
+type: command
+short-summary: Update a Cassandra role definition under an Azure Cosmos DB account.
+examples:
+  - name: Update a Cassandra role definition under an Azure Cosmos DB account.
+    text: az cosmosdb cassandra role definition update --account-name MyAccount --resource-group MyResourceGroup --body @role-definition.json
+"""
+
+helps['cosmosdb cassandra role assignment'] = """
+type: group
+short-summary: Manage Azure Cosmos DB Cassandra role assignments.
+"""
+
+helps['cosmosdb cassandra role assignment create'] = """
+type: command
+short-summary: Create a Cassandra role assignment under an Azure Cosmos DB account.
+examples:
+  - name: Create a Cassandra role assignment under an Azure Cosmos DB account using Role Definition Name.
+    text: |
+      az cosmosdb cassandra role assignment create --account-name MyAccount --resource-group MyResourceGroup \\
+        --role-assignment-id cb8ed2d7-2371-4e3c-bd31-6cc1560e84f8 \\
+        --role-definition-name "My Read Only Role" \\
+        --scope "/dbs/mydb/colls/mycontainer" \\
+        --principal-id 6328f5f7-dbf7-4244-bba8-fbb9d8066506
+  - name: Create a Cassandra role assignment under an Azure Cosmos DB account using Role Definition ID.
+    text: |
+      az cosmosdb cassandra role assignment create --account-name MyAccount --resource-group MyResourceGroup \\
+        --role-assignment-id cb8ed2d7-2371-4e3c-bd31-6cc1560e84f8 \\
+        --role-definition-id be79875a-2cc4-40d5-8958-566017875b39 \\
+        --scope "/dbs/mydb/colls/mycontainer" \\
+        --principal-id 6328f5f7-dbf7-4244-bba8-fbb9d8066506
+"""
+
+helps['cosmosdb cassandra role assignment delete'] = """
+type: command
+short-summary: Delete a Cassandra role assignment under an Azure Cosmos DB account.
+examples:
+  - name: Delete a Cassandra role assignment under an Azure Cosmos DB account.
+    text: az cosmosdb cassandra role assignment delete --account-name MyAccount --resource-group MyResourceGroup --role-assignment-id cb8ed2d7-2371-4e3c-bd31-6cc1560e84f8
+"""
+
+helps['cosmosdb cassandra role assignment exists'] = """
+type: command
+short-summary: Check if an Azure Cosmos DB role assignment exists.
+examples:
+  - name: Check if an Azure Cosmos DB role assignment exists.
+    text: az cosmosdb cassandra role assignment exists --account-name MyAccount --resource-group MyResourceGroup --role-assignment-id cb8ed2d7-2371-4e3c-bd31-6cc1560e84f8
+"""
+
+helps['cosmosdb cassandra role assignment list'] = """
+type: command
+short-summary: List all Cassandra role assignments under an Azure Cosmos DB account.
+examples:
+  - name: List all Cassandra role assignments under an Azure Cosmos DB account.
+    text: az cosmosdb cassandra role assignment list --account-name MyAccount --resource-group MyResourceGroup
+"""
+
+helps['cosmosdb cassandra role assignment show'] = """
+type: command
+short-summary: Show the properties of a Cassandra role assignment under an Azure Cosmos DB account.
+examples:
+  - name: Show the properties of a Cassandra role assignment under an Azure Cosmos DB account.
+    text: az cosmosdb cassandra role assignment show --account-name MyAccount --resource-group MyResourceGroup --role-assignment-id cb8ed2d7-2371-4e3c-bd31-6cc1560e84f8
+"""
+
+helps['cosmosdb cassandra role assignment update'] = """
+type: command
+short-summary: Update a Cassandra role assignment under an Azure Cosmos DB account.
+examples:
+  - name: Update a Cassandra role assignment under an Azure Cosmos DB account using Role Definition Name.
+    text: |
+      az cosmosdb cassandra role assignment update --account-name MyAccount --resource-group MyResourceGroup \\
+        --role-assignment-id cb8ed2d7-2371-4e3c-bd31-6cc1560e84f8 \\
+        --role-definition-name "My Read Only Role" \\
+        --scope "/dbs/mydb/colls/mycontainer" \\
+        --principal-id 6328f5f7-dbf7-4244-bba8-fbb9d8066506
+  - name: update a Cassandra role assignment under an Azure Cosmos DB account using Role Definition ID.
+    text: |
+      az cosmosdb cassandra role assignment update --account-name MyAccount --resource-group MyResourceGroup \\
+        --role-assignment-id cb8ed2d7-2371-4e3c-bd31-6cc1560e84f8 \\
+        --role-definition-id be79875a-2cc4-40d5-8958-566017875b39 \\
+        --scope "/dbs/mydb/colls/mycontainer" \\
+        --principal-id 6328f5f7-dbf7-4244-bba8-fbb9d8066506
+"""
+
+
+# MongoMI Role Definition and Role Assignment
+helps['cosmosdb mongomi'] = """
+type: group
+short-summary: Manage Azure Cosmos DB MongoMI resources.
+"""
+
+helps['cosmosdb mongomi role'] = """
+type: group
+short-summary: Manage Azure Cosmos DB MongoMI role resources.
+"""
+
+helps['cosmosdb mongomi role definition'] = """
+type: group
+short-summary: Manage Azure Cosmos DB MongoMI role definitions.
+"""
+
+helps['cosmosdb mongomi role definition create'] = """
+type: command
+short-summary: Create a MongoMI role definition under an Azure Cosmos DB account.
+examples:
+  - name: Create a MongoMI role definition under an Azure Cosmos DB account using a JSON string.
+    text: |
+      az cosmosdb mongomi role definition create --account-name MyAccount --resource-group MyResourceGroup --body '{
+        "Id": "be79875a-2cc4-40d5-8958-566017875b39",
+        "RoleName": "My Read Only Role",
+        "Type": "CustomRole",
+        "AssignableScopes": ["/dbs/mydb/colls/mycontainer"],
+        "Permissions": [{
+          "DataActions": [
+            "Microsoft.DocumentDB/databaseAccounts/readMetadata",
+            "Microsoft.DocumentDB/databaseAccounts/mongoMI/containers/entities/read",
+            "Microsoft.DocumentDB/databaseAccounts/mongoMI/containers/executeQuery",
+            "Microsoft.DocumentDB/databaseAccounts/mongoMI/containers/readChangeFeed"
+          ]
+        }]
+      }'
+  - name: Create a MongoMI role definition under an Azure Cosmos DB account using a JSON file.
+    text: az cosmosdb mongomi role definition create --account-name MyAccount --resource-group MyResourceGroup --body @role-definition.json
+"""
+
+helps['cosmosdb mongomi role definition delete'] = """
+type: command
+short-summary: Delete a MongoMI role definition under an Azure Cosmos DB account.
+examples:
+  - name: Delete a MongoMI role definition under an Azure Cosmos DB account.
+    text: az cosmosdb mongomi role definition delete --account-name MyAccount --resource-group MyResourceGroup --role-definition-id be79875a-2cc4-40d5-8958-566017875b39
+"""
+
+helps['cosmosdb mongomi role definition exists'] = """
+type: command
+short-summary: Check if an Azure Cosmos DB role definition exists.
+examples:
+  - name: Check if an Azure Cosmos DB role definition exists.
+    text: az cosmosdb mongomi role definition exists --account-name MyAccount --resource-group MyResourceGroup --role-definition-id be79875a-2cc4-40d5-8958-566017875b39
+"""
+
+helps['cosmosdb mongomi role definition list'] = """
+type: command
+short-summary: List all MongoMI role definitions under an Azure Cosmos DB account.
+examples:
+  - name: List all MongoMI role definitions under an Azure Cosmos DB account.
+    text: az cosmosdb mongomi role definition list --account-name MyAccount --resource-group MyResourceGroup
+"""
+
+helps['cosmosdb mongomi role definition show'] = """
+type: command
+short-summary: Show the properties of a MongoMI role definition under an Azure Cosmos DB account.
+examples:
+  - name: Show the properties of a MongoMI role definition under an Azure Cosmos DB account.
+    text: az cosmosdb mongomi role definition show --account-name MyAccount --resource-group MyResourceGroup --role-definition-id be79875a-2cc4-40d5-8958-566017875b39
+"""
+
+helps['cosmosdb mongomi role definition update'] = """
+type: command
+short-summary: Update a MongoMI role definition under an Azure Cosmos DB account.
+examples:
+  - name: Update a MongoMI role definition under an Azure Cosmos DB account.
+    text: az cosmosdb mongomi role definition update --account-name MyAccount --resource-group MyResourceGroup --body @role-definition.json
+"""
+
+helps['cosmosdb mongomi role assignment'] = """
+type: group
+short-summary: Manage Azure Cosmos DB MongoMI role assignments.
+"""
+
+helps['cosmosdb mongomi role assignment create'] = """
+type: command
+short-summary: Create a MongoMI role assignment under an Azure Cosmos DB account.
+examples:
+  - name: Create a MongoMI role assignment under an Azure Cosmos DB account using Role Definition Name.
+    text: |
+      az cosmosdb mongomi role assignment create --account-name MyAccount --resource-group MyResourceGroup \\
+        --role-assignment-id cb8ed2d7-2371-4e3c-bd31-6cc1560e84f8 \\
+        --role-definition-name "My Read Only Role" \\
+        --scope "/dbs/mydb/colls/mycontainer" \\
+        --principal-id 6328f5f7-dbf7-4244-bba8-fbb9d8066506
+  - name: Create a MongoMI role assignment under an Azure Cosmos DB account using Role Definition ID.
+    text: |
+      az cosmosdb mongomi role assignment create --account-name MyAccount --resource-group MyResourceGroup \\
+        --role-assignment-id cb8ed2d7-2371-4e3c-bd31-6cc1560e84f8 \\
+        --role-definition-id be79875a-2cc4-40d5-8958-566017875b39 \\
+        --scope "/dbs/mydb/colls/mycontainer" \\
+        --principal-id 6328f5f7-dbf7-4244-bba8-fbb9d8066506
+"""
+
+helps['cosmosdb mongomi role assignment delete'] = """
+type: command
+short-summary: Delete a MongoMI role assignment under an Azure Cosmos DB account.
+examples:
+  - name: Delete a MongoMI role assignment under an Azure Cosmos DB account.
+    text: az cosmosdb mongomi role assignment delete --account-name MyAccount --resource-group MyResourceGroup --role-assignment-id cb8ed2d7-2371-4e3c-bd31-6cc1560e84f8
+"""
+
+helps['cosmosdb mongomi role assignment exists'] = """
+type: command
+short-summary: Check if an Azure Cosmos DB role assignment exists.
+examples:
+  - name: Check if an Azure Cosmos DB role assignment exists.
+    text: az cosmosdb mongomi role assignment exists --account-name MyAccount --resource-group MyResourceGroup --role-assignment-id cb8ed2d7-2371-4e3c-bd31-6cc1560e84f8
+"""
+
+helps['cosmosdb mongomi role assignment list'] = """
+type: command
+short-summary: List all MongoMI role assignments under an Azure Cosmos DB account.
+examples:
+  - name: List all MongoMI role assignments under an Azure Cosmos DB account.
+    text: az cosmosdb mongomi role assignment list --account-name MyAccount --resource-group MyResourceGroup
+"""
+
+helps['cosmosdb mongomi role assignment show'] = """
+type: command
+short-summary: Show the properties of a MongoMI role assignment under an Azure Cosmos DB account.
+examples:
+  - name: Show the properties of a MongoMI role assignment under an Azure Cosmos DB account.
+    text: az cosmosdb mongomi role assignment show --account-name MyAccount --resource-group MyResourceGroup --role-assignment-id cb8ed2d7-2371-4e3c-bd31-6cc1560e84f8
+"""
+
+helps['cosmosdb mongomi role assignment update'] = """
+type: command
+short-summary: Update a MongoMI role assignment under an Azure Cosmos DB account.
+examples:
+  - name: Update a MongoMI role assignment under an Azure Cosmos DB account using Role Definition Name.
+    text: |
+      az cosmosdb mongomi role assignment update --account-name MyAccount --resource-group MyResourceGroup \\
+        --role-assignment-id cb8ed2d7-2371-4e3c-bd31-6cc1560e84f8 \\
+        --role-definition-name "My Read Only Role" \\
+        --scope "/dbs/mydb/colls/mycontainer" \\
+        --principal-id 6328f5f7-dbf7-4244-bba8-fbb9d8066506
+  - name: update a MongoMI role assignment under an Azure Cosmos DB account using Role Definition ID.
+    text: |
+      az cosmosdb mongomi role assignment update --account-name MyAccount --resource-group MyResourceGroup \\
+        --role-assignment-id cb8ed2d7-2371-4e3c-bd31-6cc1560e84f8 \\
+        --role-definition-id be79875a-2cc4-40d5-8958-566017875b39 \\
+        --scope "/dbs/mydb/colls/mycontainer" \\
+        --principal-id 6328f5f7-dbf7-4244-bba8-fbb9d8066506
+"""
+
+helps['cosmosdb fleet'] = """
+type: group
+short-summary: Manage Azure Cosmos DB Fleet resources.
+"""
+
+helps['cosmosdb fleet create'] = """
+type: command
+short-summary: Create a new Cosmos DB Fleet.
+examples:
+  - name: Create a fleet
+    text: |
+      az cosmosdb fleet create \\
+        --resource-group MyResourceGroup \\
+        --fleet-name MyFleet \\
+        --location westus
+"""
+
+helps['cosmosdb fleet list'] = """
+type: command
+short-summary: List Cosmos DB Fleets in a subscription or resource group.
+"""
+
+helps['cosmosdb fleet show'] = """
+type: command
+short-summary: Show details of a specific Cosmos DB Fleet.
+"""
+
+helps['cosmosdb fleet delete'] = """
+type: command
+short-summary: Delete a specific Cosmos DB Fleet.
+"""
+
+helps['cosmosdb fleetspace'] = """
+type: group
+short-summary: Manage Cosmos DB Fleetspace resources.
+"""
+
+helps['cosmosdb fleetspace create'] = """
+type: command
+short-summary: Create a new Fleetspace under a Cosmos DB Fleet.
+examples:
+  - name: Create a fleetspace
+    text: |
+      az cosmosdb fleetspace create \\
+        --resource-group MyResourceGroup \\
+        --fleet-name MyFleet \\
+        --fleetspace-name MyFleetspace \\
+        --body @fleetspace.json
+"""
+
+helps['cosmosdb fleetspace update'] = """
+type: command
+short-summary: Update an existing Cosmos DB Fleetspace.
+examples:
+  - name: Update fleetspace throughput settings
+    text: |
+      az cosmosdb fleetspace update \\
+        --resource-group MyResourceGroup \\
+        --fleet-name MyFleet \\
+        --fleetspace-name MyFleetspace \\
+        --body @fleetspace.json
+"""
+
+helps['cosmosdb fleetspace list'] = """
+type: command
+short-summary: List all Fleetspaces under a Fleet.
+"""
+
+helps['cosmosdb fleetspace show'] = """
+type: command
+short-summary: Show details of a specific Fleetspace.
+"""
+
+helps['cosmosdb fleetspace delete'] = """
+type: command
+short-summary: Delete a Fleetspace from a Fleet.
+"""
+
+helps['cosmosdb fleetspace account'] = """
+type: group
+short-summary: Manage database accounts within a Cosmos DB Fleetspace.
+"""
+
+helps['cosmosdb fleetspace account create'] = """
+type: command
+short-summary: Register an existing Cosmos DB database account to a Fleetspace.
+examples:
+  - name: Register a database account to a fleetspace
+    text: |
+      az cosmosdb fleetspace account create \\
+        --resource-group MyResourceGroup \\
+        --fleet-name MyFleet \\
+        --fleetspace-name MyFleetspace \\
+        --fleetspace-account-name MyAccount \\
+        --body @fleetspaceAccount.json
+"""
+
+helps['cosmosdb fleetspace account list'] = """
+type: command
+short-summary: List all database accounts associated with a Fleetspace.
+"""
+
+helps['cosmosdb fleetspace account show'] = """
+type: command
+short-summary: Show details of a registered database account in a Fleetspace.
+"""
+
+helps['cosmosdb fleetspace account delete'] = """
+type: command
+short-summary: Unregister a database account from a Fleetspace.
+"""
+
+helps['cosmosdb fleet analytics'] = """
+type: group
+short-summary: Manage Azure Cosmos DB Fleet Analytics resources.
+"""
+
+helps['cosmosdb fleet analytics create'] = """
+type: command
+short-summary: Create a new Fleet Analytics resource under a Cosmos DB Fleet.
+examples:
+  - name: Create a Fleet Analytics resource
+    text: |
+      az cosmosdb fleet analytics create \\
+        --resource-group MyResourceGroup \\
+        --fleet-name MyFleet \\
+        --fleet-analytics-name MyFleetAnalytics \\
+        --body @fleetAnalytics.json
+"""
+
+helps['cosmosdb fleet analytics show'] = """
+type: command
+short-summary: Show details of a specific Fleet Analytics resource.
+"""
+
+helps['cosmosdb fleet analytics list'] = """
+type: command
+short-summary: List all Fleet Analytics resources under a Fleet.
+"""
+
+helps['cosmosdb fleet analytics delete'] = """
+type: command
+short-summary: Delete a Fleet Analytics resource from a Fleet.
+"""

@@ -17,7 +17,7 @@ class VmwareCloudLinkScenarioTest(ScenarioTest):
         self.kwargs.update({
             'privatecloud': 'cloud1',
             'cloud_link': 'cloudLink1',
-            'linked_cloud': '/subscriptions/12341234-1234-1234-1234-123412341234/resourceGroups/mygroup/providers/Microsoft.AVS/privateClouds/cloud2',
+            'linked_cloud': '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mygroup/providers/Microsoft.AVS/privateClouds/cloud2',
         })
 
         rsp = self.cmd('az vmware cloud-link create -g {rg} -c {privatecloud} -n {cloud_link} --linked-cloud {linked_cloud}').get_output_in_json()

@@ -1,0 +1,38 @@
+displayName: CLI-Load-Test-Advanced-URL
+description: 'Advanced URL load test created from az load test command'
+failureCriteria:
+  clientMetrics:
+    - avg(requests_per_sec) > 78
+    - percentage(error) > 50
+    - GetCustomerDetails: avg(latency) > 200
+  serverMetrics:
+    - resourceId: /subscriptions/7c71b563-0dc0-4bc0-bcf6-06f8f0516c7a/resourceGroups/cnt-integration-tests-rg/providers/Microsoft.Web/serverfarms/cnt-integration-tests-server
+      metricName: CpuPercentage
+      aggregation: Maximum
+      condition: GreaterThan
+      value: 0
+    - resourceId: /subscriptions/7c71b563-0dc0-4bc0-bcf6-06f8f0516c7a/resourceGroups/cnt-integration-tests-rg/providers/Microsoft.Web/serverfarms/cnt-integration-tests-server
+      metricNamespace: microsoft.web/serverfarms
+      metricName: MemoryPercentage
+      aggregation: Average
+      condition: LessThan
+      value: 100
+splitAllCSVs: false
+referenceIdentities:
+  - kind: "Metrics"
+    type: "UserAssigned"
+    value: /subscriptions/7c71b563-0dc0-4bc0-bcf6-06f8f0516c7a/resourcegroups/cnt-integration-tests-rg/providers/microsoft.managedidentity/userassignedidentities/cnt-integration-tests-mi1-eastus
+appComponents:
+- resourceId: /subscriptions/7c71b563-0dc0-4bc0-bcf6-06f8f0516c7a/resourceGroups/cnt-integration-tests-rg/providers/Microsoft.Web/serverfarms/cnt-integration-tests-server
+  kind: app # Optional
+  metrics:
+    - name: "ServiceApiHit"
+      aggregation: "Count"
+      namespace: microsoft.keyvault/vaults
+- resourceId: /subscriptions/7c71b563-0dc0-4bc0-bcf6-06f8f0516c7a/resourceGroups/cnt-integration-tests-rg/providers/Microsoft.Web/serverfarms/cnt-integration-tests-server
+  metrics:
+    - name: "ServiceApiHit"
+      aggregation: "Count"
+      namespace: Microsoft.Web/serverfarms
+    - name: "ServiceApiLatency"
+      aggregation: "Average"

@@ -18,13 +18,13 @@ class Create(AAZCommand):
     """Create a cloud link in a private cloud
 
     :example: Create a cloud link.
-        az vmware cloud-link create --resource-group group1 --private-cloud cloud1 --name cloudLink1 --linked-cloud "/subscriptions/12341234-1234-1234-1234-123412341234/resourceGroups/mygroup/providers/Microsoft.AVS/privateClouds/cloud2
+        az vmware cloud-link create --resource-group group1 --private-cloud cloud1 --cloud-link-name cloudLink1 --linked-cloud /subscriptions/12341234-1234-1234-1234-123412341234/resourceGroups/mygroup/providers/Microsoft.AVS/privateClouds/cloud2
     """
 
     _aaz_info = {
-        "version": "2023-09-01",
+        "version": "2024-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}/cloudlinks/{}", "2023-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}/cloudlinks/{}", "2024-09-01"],
         ]
     }
 
@@ -50,7 +50,7 @@ class Create(AAZCommand):
             help="Name of the cloud link resource",
             required=True,
             fmt=AAZStrArgFormat(
-                pattern="^[-\w\._]+$",
+                pattern="^[-\\w\\._]+$",
             ),
         )
         _args_schema.private_cloud = AAZStrArg(
@@ -58,7 +58,7 @@ class Create(AAZCommand):
             help="Name of the private cloud",
             required=True,
             fmt=AAZStrArgFormat(
-                pattern="^[-\w\._]+$",
+                pattern="^[-\\w\\._]+$",
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
@@ -160,7 +160,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-09-01",
+                    "api-version", "2024-09-01",
                     required=True,
                 ),
             }
@@ -236,7 +236,9 @@ class Create(AAZCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
-            properties.status = AAZStrType()
+            properties.status = AAZStrType(
+                flags={"read_only": True},
+            )
 
             system_data = cls._schema_on_200_201.system_data
             system_data.created_at = AAZStrType(

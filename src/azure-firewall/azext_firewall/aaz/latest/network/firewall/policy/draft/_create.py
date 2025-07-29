@@ -209,6 +209,11 @@ class Create(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
+        self.FirewallPolicyGet(ctx=self.ctx)()
+        self.pre_instance_update(self.ctx.vars.instance)
+        self.InstanceUpdateByJson(ctx=self.ctx)()
+        self.InstanceUpdateByGeneric(ctx=self.ctx)()
+        self.post_instance_update(self.ctx.vars.instance)
         yield self.FirewallPolicyDraftsCreateOrUpdate(ctx=self.ctx)()
         self.post_operations()
 
@@ -220,9 +225,100 @@ class Create(AAZCommand):
     def post_operations(self):
         pass
 
+    @register_callback
+    def pre_instance_update(self, instance):
+        pass
+
+    @register_callback
+    def post_instance_update(self, instance):
+        pass
+
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
+    
+    class FirewallPolicyGet(AAZHttpOperation):
+        CLIENT_TYPE = "MgmtClient"
+
+        def __call__(self, *args, **kwargs):
+            request = self.make_request()
+            session = self.client.send_request(request=request, stream=False, **kwargs)
+            if session.http_response.status_code in [200]:
+                return self.on_200(session)
+
+            return self.on_error(session.http_response)
+
+        @property
+        def url(self):
+            return self.client.format_url(
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/firewallPolicies/{firewallPolicyName}",
+                **self.url_parameters
+            )
+
+        @property
+        def method(self):
+            return "GET"
+
+        @property
+        def error_format(self):
+            return "ODataV4Format"
+
+        @property
+        def url_parameters(self):
+            parameters = {
+                **self.serialize_url_param(
+                    "firewallPolicyName", self.ctx.args.firewall_policy_name,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "resourceGroupName", self.ctx.args.resource_group,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "subscriptionId", self.ctx.subscription_id,
+                    required=True,
+                ),
+            }
+            return parameters
+
+        @property
+        def query_parameters(self):
+            parameters = {
+                **self.serialize_query_param(
+                    "api-version", "2023-11-01",
+                    required=True,
+                ),
+            }
+            return parameters
+
+        @property
+        def header_parameters(self):
+            parameters = {
+                **self.serialize_header_param(
+                    "Accept", "application/json",
+                ),
+            }
+            return parameters
+
+        def on_200(self, session):
+            data = self.deserialize_http_content(session)
+            self.ctx.set_var(
+                "instance",
+                data,
+                schema_builder=self._build_schema_on_200
+            )
+
+        _schema_on_200 = None
+
+        @classmethod
+        def _build_schema_on_200(cls):
+            if cls._schema_on_200 is not None:
+                return cls._schema_on_200
+
+            cls._schema_on_200 = AAZObjectType()
+            _CreateHelper._build_schema_firewall_policy_read(cls._schema_on_200)
+
+            return cls._schema_on_200
 
     class FirewallPolicyDraftsCreateOrUpdate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
@@ -310,6 +406,7 @@ class Create(AAZCommand):
         def content(self):
             _content_value, _builder = self.new_content_builder(
                 self.ctx.args,
+                value=self.ctx.vars.instance,
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
@@ -601,6 +698,147 @@ class Create(AAZCommand):
 
             return cls._schema_on_200_201
 
+    class InstanceUpdateByJson(AAZJsonInstanceUpdateOperation):
+
+        def __call__(self, *args, **kwargs):
+            self._update_instance(self.ctx.vars.instance)
+
+        def _update_instance(self, instance):
+            _instance_value, _builder = self.new_content_builder(
+                self.ctx.args,
+                value=instance,
+                typ=AAZObjectType
+            )
+            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
+            _builder.set_prop("tags", AAZDictType, ".tags")
+
+            properties = _builder.get(".properties")
+            if properties is not None:
+                properties.set_prop("basePolicy", AAZObjectType)
+                properties.set_prop("dnsSettings", AAZObjectType)
+                properties.set_prop("explicitProxy", AAZObjectType, ".explicit_proxy")
+                properties.set_prop("intrusionDetection", AAZObjectType)
+                properties.set_prop("snat", AAZObjectType)
+                properties.set_prop("sql", AAZObjectType)
+                properties.set_prop("threatIntelMode", AAZStrType, ".threat_intel_mode")
+                properties.set_prop("threatIntelWhitelist", AAZObjectType)
+
+            dns_settings = _builder.get(".properties.dnsSettings")
+            if dns_settings is not None:
+                dns_settings.set_prop("enableProxy", AAZBoolType, ".enable_dns_proxy")
+                dns_settings.set_prop("servers", AAZListType, ".dns_servers")
+
+            servers = _builder.get(".properties.dnsSettings.servers")
+            if servers is not None:
+                servers.set_elements(AAZStrType, ".")
+
+            explicit_proxy = _builder.get(".properties.explicitProxy")
+            if explicit_proxy is not None:
+                explicit_proxy.set_prop("enableExplicitProxy", AAZBoolType, ".enable_explicit_proxy", typ_kwargs={"nullable": True})
+                explicit_proxy.set_prop("enablePacFile", AAZBoolType, ".enable_pac_file", typ_kwargs={"nullable": True})
+                explicit_proxy.set_prop("httpPort", AAZIntType, ".http_port")
+                explicit_proxy.set_prop("httpsPort", AAZIntType, ".https_port")
+                explicit_proxy.set_prop("pacFile", AAZStrType, ".pac_file")
+                explicit_proxy.set_prop("pacFilePort", AAZIntType, ".pac_file_port")
+
+            intrusion_detection = _builder.get(".properties.intrusionDetection")
+            if intrusion_detection is not None:
+                intrusion_detection.set_prop("configuration", AAZObjectType, ".configuration")
+                intrusion_detection.set_prop("mode", AAZStrType, ".idps_mode")
+
+            configuration = _builder.get(".properties.intrusionDetection.configuration")
+            if configuration is not None:
+                configuration.set_prop("bypassTrafficSettings", AAZListType, ".bypass_traffic_settings")
+                configuration.set_prop("privateRanges", AAZListType, ".private_ranges")
+                configuration.set_prop("signatureOverrides", AAZListType, ".signature_overrides")
+
+            bypass_traffic_settings = _builder.get(".properties.intrusionDetection.configuration.bypassTrafficSettings")
+            if bypass_traffic_settings is not None:
+                bypass_traffic_settings.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".properties.intrusionDetection.configuration.bypassTrafficSettings[]")
+            if _elements is not None:
+                _elements.set_prop("description", AAZStrType, ".description")
+                _elements.set_prop("destinationAddresses", AAZListType, ".destination_addresses")
+                _elements.set_prop("destinationIpGroups", AAZListType, ".destination_ip_groups")
+                _elements.set_prop("destinationPorts", AAZListType, ".destination_ports")
+                _elements.set_prop("name", AAZStrType, ".name")
+                _elements.set_prop("protocol", AAZStrType, ".protocol")
+                _elements.set_prop("sourceAddresses", AAZListType, ".source_addresses")
+                _elements.set_prop("sourceIpGroups", AAZListType, ".source_ip_groups")
+
+            destination_addresses = _builder.get(".properties.intrusionDetection.configuration.bypassTrafficSettings[].destinationAddresses")
+            if destination_addresses is not None:
+                destination_addresses.set_elements(AAZStrType, ".")
+
+            destination_ip_groups = _builder.get(".properties.intrusionDetection.configuration.bypassTrafficSettings[].destinationIpGroups")
+            if destination_ip_groups is not None:
+                destination_ip_groups.set_elements(AAZStrType, ".")
+
+            destination_ports = _builder.get(".properties.intrusionDetection.configuration.bypassTrafficSettings[].destinationPorts")
+            if destination_ports is not None:
+                destination_ports.set_elements(AAZStrType, ".")
+
+            source_addresses = _builder.get(".properties.intrusionDetection.configuration.bypassTrafficSettings[].sourceAddresses")
+            if source_addresses is not None:
+                source_addresses.set_elements(AAZStrType, ".")
+
+            source_ip_groups = _builder.get(".properties.intrusionDetection.configuration.bypassTrafficSettings[].sourceIpGroups")
+            if source_ip_groups is not None:
+                source_ip_groups.set_elements(AAZStrType, ".")
+
+            private_ranges = _builder.get(".properties.intrusionDetection.configuration.privateRanges")
+            if private_ranges is not None:
+                private_ranges.set_elements(AAZStrType, ".")
+
+            signature_overrides = _builder.get(".properties.intrusionDetection.configuration.signatureOverrides")
+            if signature_overrides is not None:
+                signature_overrides.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".properties.intrusionDetection.configuration.signatureOverrides[]")
+            if _elements is not None:
+                _elements.set_prop("id", AAZStrType, ".id")
+                _elements.set_prop("mode", AAZStrType, ".mode")
+
+            snat = _builder.get(".properties.snat")
+            if snat is not None:
+                snat.set_prop("autoLearnPrivateRanges", AAZStrType, ".auto_learn_private_ranges")
+                snat.set_prop("privateRanges", AAZListType, ".private_ranges")
+
+            private_ranges = _builder.get(".properties.snat.privateRanges")
+            if private_ranges is not None:
+                private_ranges.set_elements(AAZStrType, ".")
+
+            sql = _builder.get(".properties.sql")
+            if sql is not None:
+                sql.set_prop("allowSqlRedirect", AAZBoolType, ".sql")
+
+            threat_intel_whitelist = _builder.get(".properties.threatIntelWhitelist")
+            if threat_intel_whitelist is not None:
+                threat_intel_whitelist.set_prop("fqdns", AAZListType, ".fqdns")
+                threat_intel_whitelist.set_prop("ipAddresses", AAZListType, ".ip_addresses")
+
+            fqdns = _builder.get(".properties.threatIntelWhitelist.fqdns")
+            if fqdns is not None:
+                fqdns.set_elements(AAZStrType, ".")
+
+            ip_addresses = _builder.get(".properties.threatIntelWhitelist.ipAddresses")
+            if ip_addresses is not None:
+                ip_addresses.set_elements(AAZStrType, ".")
+
+            tags = _builder.get(".tags")
+            if tags is not None:
+                tags.set_elements(AAZStrType, ".")
+
+            return _instance_value
+
+    class InstanceUpdateByGeneric(AAZGenericInstanceUpdateOperation):
+
+        def __call__(self, *args, **kwargs):
+            self._update_instance_by_generic(
+                self.ctx.vars.instance,
+                self.ctx.generic_update_args
+            )
 
 class _CreateHelper:
     """Helper class for Create"""
@@ -610,6 +848,468 @@ class _CreateHelper:
         if _builder is None:
             return
         _builder.set_prop("id", AAZStrType, ".id")
+
+    _schema_firewall_policy_read = None
+
+    @classmethod
+    def _build_schema_firewall_policy_read(cls, _schema):
+        if cls._schema_firewall_policy_read is not None:
+            _schema.etag = cls._schema_firewall_policy_read.etag
+            _schema.id = cls._schema_firewall_policy_read.id
+            _schema.name = cls._schema_firewall_policy_read.name
+            _schema.properties = cls._schema_firewall_policy_read.properties
+            _schema.tags = cls._schema_firewall_policy_read.tags
+            _schema.type = cls._schema_firewall_policy_read.type
+            return
+
+        cls._schema_firewall_policy_read = _schema_firewall_policy_read = AAZObjectType()
+
+        firewall_policy_read = _schema_firewall_policy_read
+        firewall_policy_read.etag = AAZStrType(
+            flags={"read_only": True},
+        )
+        firewall_policy_read.id = AAZStrType()
+        firewall_policy_read.name = AAZStrType(
+            flags={"read_only": True},
+        )
+        firewall_policy_read.properties = AAZObjectType(
+            flags={"client_flatten": True},
+        )
+        firewall_policy_read.tags = AAZDictType()
+        firewall_policy_read.type = AAZStrType(
+            flags={"read_only": True},
+        )
+
+        properties = _schema_firewall_policy_read.properties
+        properties.base_policy = AAZObjectType(
+            serialized_name="basePolicy",
+        )
+        cls._build_schema_sub_resource_read(properties.base_policy)
+        properties.dns_settings = AAZObjectType(
+            serialized_name="dnsSettings",
+        )
+        properties.explicit_proxy = AAZObjectType(
+            serialized_name="explicitProxy",
+        )
+        properties.insights = AAZObjectType()
+        properties.intrusion_detection = AAZObjectType(
+            serialized_name="intrusionDetection",
+        )
+        properties.snat = AAZObjectType()
+        properties.sql = AAZObjectType()
+        properties.threat_intel_mode = AAZStrType(
+            serialized_name="threatIntelMode",
+        )
+        properties.threat_intel_whitelist = AAZObjectType(
+            serialized_name="threatIntelWhitelist",
+        )
+
+        dns_settings = _schema_firewall_policy_read.properties.dns_settings
+        dns_settings.enable_proxy = AAZBoolType(
+            serialized_name="enableProxy",
+        )
+        dns_settings.require_proxy_for_network_rules = AAZBoolType(
+            serialized_name="requireProxyForNetworkRules",
+            nullable=True,
+        )
+        dns_settings.servers = AAZListType()
+
+        servers = _schema_firewall_policy_read.properties.dns_settings.servers
+        servers.Element = AAZStrType()
+
+        explicit_proxy = _schema_firewall_policy_read.properties.explicit_proxy
+        explicit_proxy.enable_explicit_proxy = AAZBoolType(
+            serialized_name="enableExplicitProxy",
+            nullable=True,
+        )
+        explicit_proxy.enable_pac_file = AAZBoolType(
+            serialized_name="enablePacFile",
+            nullable=True,
+        )
+        explicit_proxy.http_port = AAZIntType(
+            serialized_name="httpPort",
+        )
+        explicit_proxy.https_port = AAZIntType(
+            serialized_name="httpsPort",
+        )
+        explicit_proxy.pac_file = AAZStrType(
+            serialized_name="pacFile",
+        )
+        explicit_proxy.pac_file_port = AAZIntType(
+            serialized_name="pacFilePort",
+        )
+
+        insights = _schema_firewall_policy_read.properties.insights
+        insights.is_enabled = AAZBoolType(
+            serialized_name="isEnabled",
+        )
+        insights.log_analytics_resources = AAZObjectType(
+            serialized_name="logAnalyticsResources",
+        )
+        insights.retention_days = AAZIntType(
+            serialized_name="retentionDays",
+        )
+
+        log_analytics_resources = _schema_firewall_policy_read.properties.insights.log_analytics_resources
+        log_analytics_resources.default_workspace_id = AAZObjectType(
+            serialized_name="defaultWorkspaceId",
+        )
+        cls._build_schema_sub_resource_read(log_analytics_resources.default_workspace_id)
+        log_analytics_resources.workspaces = AAZListType()
+
+        workspaces = _schema_firewall_policy_read.properties.insights.log_analytics_resources.workspaces
+        workspaces.Element = AAZObjectType()
+
+        _element = _schema_firewall_policy_read.properties.insights.log_analytics_resources.workspaces.Element
+        _element.region = AAZStrType()
+        _element.workspace_id = AAZObjectType(
+            serialized_name="workspaceId",
+        )
+        cls._build_schema_sub_resource_read(_element.workspace_id)
+
+        intrusion_detection = _schema_firewall_policy_read.properties.intrusion_detection
+        intrusion_detection.configuration = AAZObjectType()
+        intrusion_detection.mode = AAZStrType()
+
+        configuration = _schema_firewall_policy_read.properties.intrusion_detection.configuration
+        configuration.bypass_traffic_settings = AAZListType(
+            serialized_name="bypassTrafficSettings",
+        )
+        configuration.private_ranges = AAZListType(
+            serialized_name="privateRanges",
+        )
+        configuration.signature_overrides = AAZListType(
+            serialized_name="signatureOverrides",
+        )
+
+        bypass_traffic_settings = _schema_firewall_policy_read.properties.intrusion_detection.configuration.bypass_traffic_settings
+        bypass_traffic_settings.Element = AAZObjectType()
+
+        _element = _schema_firewall_policy_read.properties.intrusion_detection.configuration.bypass_traffic_settings.Element
+        _element.description = AAZStrType()
+        _element.destination_addresses = AAZListType(
+            serialized_name="destinationAddresses",
+        )
+        _element.destination_ip_groups = AAZListType(
+            serialized_name="destinationIpGroups",
+        )
+        _element.destination_ports = AAZListType(
+            serialized_name="destinationPorts",
+        )
+        _element.name = AAZStrType()
+        _element.protocol = AAZStrType()
+        _element.source_addresses = AAZListType(
+            serialized_name="sourceAddresses",
+        )
+        _element.source_ip_groups = AAZListType(
+            serialized_name="sourceIpGroups",
+        )
+
+        destination_addresses = _schema_firewall_policy_read.properties.intrusion_detection.configuration.bypass_traffic_settings.Element.destination_addresses
+        destination_addresses.Element = AAZStrType()
+
+        destination_ip_groups = _schema_firewall_policy_read.properties.intrusion_detection.configuration.bypass_traffic_settings.Element.destination_ip_groups
+        destination_ip_groups.Element = AAZStrType()
+
+        destination_ports = _schema_firewall_policy_read.properties.intrusion_detection.configuration.bypass_traffic_settings.Element.destination_ports
+        destination_ports.Element = AAZStrType()
+
+        source_addresses = _schema_firewall_policy_read.properties.intrusion_detection.configuration.bypass_traffic_settings.Element.source_addresses
+        source_addresses.Element = AAZStrType()
+
+        source_ip_groups = _schema_firewall_policy_read.properties.intrusion_detection.configuration.bypass_traffic_settings.Element.source_ip_groups
+        source_ip_groups.Element = AAZStrType()
+
+        private_ranges = _schema_firewall_policy_read.properties.intrusion_detection.configuration.private_ranges
+        private_ranges.Element = AAZStrType()
+
+        signature_overrides = _schema_firewall_policy_read.properties.intrusion_detection.configuration.signature_overrides
+        signature_overrides.Element = AAZObjectType()
+
+        _element = _schema_firewall_policy_read.properties.intrusion_detection.configuration.signature_overrides.Element
+        _element.id = AAZStrType()
+        _element.mode = AAZStrType()
+
+        snat = _schema_firewall_policy_read.properties.snat
+        snat.auto_learn_private_ranges = AAZStrType(
+            serialized_name="autoLearnPrivateRanges",
+        )
+        snat.private_ranges = AAZListType(
+            serialized_name="privateRanges",
+        )
+
+        private_ranges = _schema_firewall_policy_read.properties.snat.private_ranges
+        private_ranges.Element = AAZStrType()
+
+        sql = _schema_firewall_policy_read.properties.sql
+        sql.allow_sql_redirect = AAZBoolType(
+            serialized_name="allowSqlRedirect",
+        )
+
+        threat_intel_whitelist = _schema_firewall_policy_read.properties.threat_intel_whitelist
+        threat_intel_whitelist.fqdns = AAZListType()
+        threat_intel_whitelist.ip_addresses = AAZListType(
+            serialized_name="ipAddresses",
+        )
+
+        fqdns = _schema_firewall_policy_read.properties.threat_intel_whitelist.fqdns
+        fqdns.Element = AAZStrType()
+
+        ip_addresses = _schema_firewall_policy_read.properties.threat_intel_whitelist.ip_addresses
+        ip_addresses.Element = AAZStrType()
+
+        tags = _schema_firewall_policy_read.tags
+        tags.Element = AAZStrType()
+
+        _schema.etag = cls._schema_firewall_policy_read.etag
+        _schema.id = cls._schema_firewall_policy_read.id
+        _schema.name = cls._schema_firewall_policy_read.name
+        _schema.properties = cls._schema_firewall_policy_read.properties
+        _schema.tags = cls._schema_firewall_policy_read.tags
+        _schema.type = cls._schema_firewall_policy_read.type
+
+    _schema_sub_resource_read = None
+
+    @classmethod
+    def _build_schema_sub_resource_read(cls, _schema):
+        if cls._schema_sub_resource_read is not None:
+            _schema.id = cls._schema_sub_resource_read.id
+            return
+
+        cls._schema_sub_resource_read = _schema_sub_resource_read = AAZObjectType()
+
+        sub_resource_read = _schema_sub_resource_read
+        sub_resource_read.id = AAZStrType()
+
+        _schema.id = cls._schema_sub_resource_read.id
+
+class _UpdateHelper:
+    """Helper class for Update"""
+
+    @classmethod
+    def _build_schema_sub_resource_update(cls, _builder):
+        if _builder is None:
+            return
+        _builder.set_prop("id", AAZStrType, ".id")
+
+    _schema_firewall_policy_read = None
+
+    @classmethod
+    def _build_schema_firewall_policy_read(cls, _schema):
+        if cls._schema_firewall_policy_read is not None:
+            _schema.etag = cls._schema_firewall_policy_read.etag
+            _schema.id = cls._schema_firewall_policy_read.id
+            _schema.name = cls._schema_firewall_policy_read.name
+            _schema.properties = cls._schema_firewall_policy_read.properties
+            _schema.tags = cls._schema_firewall_policy_read.tags
+            _schema.type = cls._schema_firewall_policy_read.type
+            return
+
+        cls._schema_firewall_policy_read = _schema_firewall_policy_read = AAZObjectType()
+
+        firewall_policy_read = _schema_firewall_policy_read
+        firewall_policy_read.etag = AAZStrType(
+            flags={"read_only": True},
+        )
+        firewall_policy_read.id = AAZStrType()
+        firewall_policy_read.name = AAZStrType(
+            flags={"read_only": True},
+        )
+        firewall_policy_read.properties = AAZObjectType(
+            flags={"client_flatten": True},
+        )
+        firewall_policy_read.tags = AAZDictType()
+        firewall_policy_read.type = AAZStrType(
+            flags={"read_only": True},
+        )
+
+        properties = _schema_firewall_policy_read.properties
+        properties.base_policy = AAZObjectType(
+            serialized_name="basePolicy",
+        )
+        cls._build_schema_sub_resource_read(properties.base_policy)
+        properties.dns_settings = AAZObjectType(
+            serialized_name="dnsSettings",
+        )
+        properties.explicit_proxy = AAZObjectType(
+            serialized_name="explicitProxy",
+        )
+        properties.insights = AAZObjectType()
+        properties.intrusion_detection = AAZObjectType(
+            serialized_name="intrusionDetection",
+        )
+        properties.snat = AAZObjectType()
+        properties.sql = AAZObjectType()
+        properties.threat_intel_mode = AAZStrType(
+            serialized_name="threatIntelMode",
+        )
+        properties.threat_intel_whitelist = AAZObjectType(
+            serialized_name="threatIntelWhitelist",
+        )
+
+        dns_settings = _schema_firewall_policy_read.properties.dns_settings
+        dns_settings.enable_proxy = AAZBoolType(
+            serialized_name="enableProxy",
+        )
+        dns_settings.require_proxy_for_network_rules = AAZBoolType(
+            serialized_name="requireProxyForNetworkRules",
+            nullable=True,
+        )
+        dns_settings.servers = AAZListType()
+
+        servers = _schema_firewall_policy_read.properties.dns_settings.servers
+        servers.Element = AAZStrType()
+
+        explicit_proxy = _schema_firewall_policy_read.properties.explicit_proxy
+        explicit_proxy.enable_explicit_proxy = AAZBoolType(
+            serialized_name="enableExplicitProxy",
+            nullable=True,
+        )
+        explicit_proxy.enable_pac_file = AAZBoolType(
+            serialized_name="enablePacFile",
+            nullable=True,
+        )
+        explicit_proxy.http_port = AAZIntType(
+            serialized_name="httpPort",
+        )
+        explicit_proxy.https_port = AAZIntType(
+            serialized_name="httpsPort",
+        )
+        explicit_proxy.pac_file = AAZStrType(
+            serialized_name="pacFile",
+        )
+        explicit_proxy.pac_file_port = AAZIntType(
+            serialized_name="pacFilePort",
+        )
+
+        insights = _schema_firewall_policy_read.properties.insights
+        insights.is_enabled = AAZBoolType(
+            serialized_name="isEnabled",
+        )
+        insights.log_analytics_resources = AAZObjectType(
+            serialized_name="logAnalyticsResources",
+        )
+        insights.retention_days = AAZIntType(
+            serialized_name="retentionDays",
+        )
+
+        log_analytics_resources = _schema_firewall_policy_read.properties.insights.log_analytics_resources
+        log_analytics_resources.default_workspace_id = AAZObjectType(
+            serialized_name="defaultWorkspaceId",
+        )
+        cls._build_schema_sub_resource_read(log_analytics_resources.default_workspace_id)
+        log_analytics_resources.workspaces = AAZListType()
+
+        workspaces = _schema_firewall_policy_read.properties.insights.log_analytics_resources.workspaces
+        workspaces.Element = AAZObjectType()
+
+        _element = _schema_firewall_policy_read.properties.insights.log_analytics_resources.workspaces.Element
+        _element.region = AAZStrType()
+        _element.workspace_id = AAZObjectType(
+            serialized_name="workspaceId",
+        )
+        cls._build_schema_sub_resource_read(_element.workspace_id)
+
+        intrusion_detection = _schema_firewall_policy_read.properties.intrusion_detection
+        intrusion_detection.configuration = AAZObjectType()
+        intrusion_detection.mode = AAZStrType()
+
+        configuration = _schema_firewall_policy_read.properties.intrusion_detection.configuration
+        configuration.bypass_traffic_settings = AAZListType(
+            serialized_name="bypassTrafficSettings",
+        )
+        configuration.private_ranges = AAZListType(
+            serialized_name="privateRanges",
+        )
+        configuration.signature_overrides = AAZListType(
+            serialized_name="signatureOverrides",
+        )
+
+        bypass_traffic_settings = _schema_firewall_policy_read.properties.intrusion_detection.configuration.bypass_traffic_settings
+        bypass_traffic_settings.Element = AAZObjectType()
+
+        _element = _schema_firewall_policy_read.properties.intrusion_detection.configuration.bypass_traffic_settings.Element
+        _element.description = AAZStrType()
+        _element.destination_addresses = AAZListType(
+            serialized_name="destinationAddresses",
+        )
+        _element.destination_ip_groups = AAZListType(
+            serialized_name="destinationIpGroups",
+        )
+        _element.destination_ports = AAZListType(
+            serialized_name="destinationPorts",
+        )
+        _element.name = AAZStrType()
+        _element.protocol = AAZStrType()
+        _element.source_addresses = AAZListType(
+            serialized_name="sourceAddresses",
+        )
+        _element.source_ip_groups = AAZListType(
+            serialized_name="sourceIpGroups",
+        )
+
+        destination_addresses = _schema_firewall_policy_read.properties.intrusion_detection.configuration.bypass_traffic_settings.Element.destination_addresses
+        destination_addresses.Element = AAZStrType()
+
+        destination_ip_groups = _schema_firewall_policy_read.properties.intrusion_detection.configuration.bypass_traffic_settings.Element.destination_ip_groups
+        destination_ip_groups.Element = AAZStrType()
+
+        destination_ports = _schema_firewall_policy_read.properties.intrusion_detection.configuration.bypass_traffic_settings.Element.destination_ports
+        destination_ports.Element = AAZStrType()
+
+        source_addresses = _schema_firewall_policy_read.properties.intrusion_detection.configuration.bypass_traffic_settings.Element.source_addresses
+        source_addresses.Element = AAZStrType()
+
+        source_ip_groups = _schema_firewall_policy_read.properties.intrusion_detection.configuration.bypass_traffic_settings.Element.source_ip_groups
+        source_ip_groups.Element = AAZStrType()
+
+        private_ranges = _schema_firewall_policy_read.properties.intrusion_detection.configuration.private_ranges
+        private_ranges.Element = AAZStrType()
+
+        signature_overrides = _schema_firewall_policy_read.properties.intrusion_detection.configuration.signature_overrides
+        signature_overrides.Element = AAZObjectType()
+
+        _element = _schema_firewall_policy_read.properties.intrusion_detection.configuration.signature_overrides.Element
+        _element.id = AAZStrType()
+        _element.mode = AAZStrType()
+
+        snat = _schema_firewall_policy_read.properties.snat
+        snat.auto_learn_private_ranges = AAZStrType(
+            serialized_name="autoLearnPrivateRanges",
+        )
+        snat.private_ranges = AAZListType(
+            serialized_name="privateRanges",
+        )
+
+        private_ranges = _schema_firewall_policy_read.properties.snat.private_ranges
+        private_ranges.Element = AAZStrType()
+
+        sql = _schema_firewall_policy_read.properties.sql
+        sql.allow_sql_redirect = AAZBoolType(
+            serialized_name="allowSqlRedirect",
+        )
+
+        threat_intel_whitelist = _schema_firewall_policy_read.properties.threat_intel_whitelist
+        threat_intel_whitelist.fqdns = AAZListType()
+        threat_intel_whitelist.ip_addresses = AAZListType(
+            serialized_name="ipAddresses",
+        )
+
+        fqdns = _schema_firewall_policy_read.properties.threat_intel_whitelist.fqdns
+        fqdns.Element = AAZStrType()
+
+        ip_addresses = _schema_firewall_policy_read.properties.threat_intel_whitelist.ip_addresses
+        ip_addresses.Element = AAZStrType()
+
+        tags = _schema_firewall_policy_read.tags
+        tags.Element = AAZStrType()
+
+        _schema.etag = cls._schema_firewall_policy_read.etag
+        _schema.id = cls._schema_firewall_policy_read.id
+        _schema.name = cls._schema_firewall_policy_read.name
+        _schema.properties = cls._schema_firewall_policy_read.properties
+        _schema.tags = cls._schema_firewall_policy_read.tags
+        _schema.type = cls._schema_firewall_policy_read.type
 
     _schema_sub_resource_read = None
 

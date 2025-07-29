@@ -16,7 +16,7 @@ except ImportError:
 
     logger.warn("Wheel is not available, disabling bdist_wheel hook")
 
-VERSION = "2.1.0"
+VERSION = "2.2.0"
 
 # The full list of classifiers is available at
 # https://pypi.python.org/pypi?%3Aaction=list_classifiers

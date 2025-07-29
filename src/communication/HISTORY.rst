@@ -2,6 +2,18 @@
 
 Release History
 ===============
+1.13.0
+++++++
+* Add SMTP Username CRUD operations.
+
+1.12.0
+++++++
+* Update azure-rooms-communication to 1.2.0 (collaborator role)
+* Add new argument "collaborator-participants" to support collaborator role
+* Add abbreviations for role-based participant arguments
+* Update azure-core to 1.32.0
+* Update azure-identity to 1.5.0
+
 1.11.2
 ++++++
 * Adding an error message for incorrect formats of inline attachments in Email communication send mail.

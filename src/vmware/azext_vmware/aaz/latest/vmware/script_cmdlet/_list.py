@@ -18,13 +18,13 @@ class List(AAZCommand):
     """List script cmdlet resources available for a private cloud to create a script execution resource on a private cloud
 
     :example: List script cmdlet resources.
-        az vmware script-cmdlet list --resource-group group1 --private-cloud cloud1 --script-package package1
+        az vmware script-cmdlet list --resource-group group1 --private-cloud cloud1 --script-package package@1.0.2
     """
 
     _aaz_info = {
-        "version": "2023-09-01",
+        "version": "2024-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}/scriptpackages/{}/scriptcmdlets", "2023-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}/scriptpackages/{}/scriptcmdlets", "2024-09-01"],
         ]
     }
 
@@ -50,7 +50,7 @@ class List(AAZCommand):
             help="Name of the private cloud",
             required=True,
             fmt=AAZStrArgFormat(
-                pattern="^[-\w\._]+$",
+                pattern="^[-\\w\\._]+$",
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
@@ -61,7 +61,7 @@ class List(AAZCommand):
             help="Name of the script package in the private cloud",
             required=True,
             fmt=AAZStrArgFormat(
-                pattern="^[-\w\._@]+$",
+                pattern="^[-\\w\\._@]+$",
             ),
         )
         return cls._args_schema
@@ -136,7 +136,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-09-01",
+                    "api-version", "2024-09-01",
                     required=True,
                 ),
             }
@@ -198,7 +198,9 @@ class List(AAZCommand):
             )
 
             properties = cls._schema_on_200.value.Element.properties
-            properties.audience = AAZStrType()
+            properties.audience = AAZStrType(
+                flags={"read_only": True},
+            )
             properties.description = AAZStrType(
                 flags={"read_only": True},
             )
@@ -221,9 +223,15 @@ class List(AAZCommand):
                 flags={"read_only": True},
             )
             _element.name = AAZStrType()
-            _element.optional = AAZStrType()
-            _element.type = AAZStrType()
-            _element.visibility = AAZStrType()
+            _element.optional = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.type = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.visibility = AAZStrType(
+                flags={"read_only": True},
+            )
 
             system_data = cls._schema_on_200.value.Element.system_data
             system_data.created_at = AAZStrType(

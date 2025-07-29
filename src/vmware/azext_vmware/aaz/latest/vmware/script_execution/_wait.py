@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}/scriptexecutions/{}", "2023-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}/scriptexecutions/{}", "2024-09-01"],
         ]
     }
 
@@ -46,7 +46,7 @@ class Wait(AAZWaitCommand):
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
-                pattern="^[-\w\._]+$",
+                pattern="^[-\\w\\._]+$",
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
@@ -58,7 +58,7 @@ class Wait(AAZWaitCommand):
             required=True,
             id_part="child_name_1",
             fmt=AAZStrArgFormat(
-                pattern="^[-\w\._]+$",
+                pattern="^[-\\w\\._]+$",
             ),
         )
         return cls._args_schema
@@ -132,7 +132,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-09-01",
+                    "api-version", "2024-09-01",
                     required=True,
                 ),
             }
@@ -238,7 +238,10 @@ class Wait(AAZWaitCommand):
             information.Element = AAZStrType()
 
             named_outputs = cls._schema_on_200.properties.named_outputs
-            named_outputs.Element = AAZObjectType()
+            named_outputs.Element = AAZDictType()
+
+            _element = cls._schema_on_200.properties.named_outputs.Element
+            _element.Element = AAZAnyType()
 
             output = cls._schema_on_200.properties.output
             output.Element = AAZStrType()

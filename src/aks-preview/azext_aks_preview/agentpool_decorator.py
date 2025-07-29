@@ -5,6 +5,7 @@
 
 import base64
 import os
+from azure.cli.core.util import get_file_json
 from types import SimpleNamespace
 from typing import Dict, TypeVar, Union, List
 
@@ -17,6 +18,7 @@ from azure.cli.command_modules.acs.agentpool_decorator import (
     AKSAgentPoolUpdateDecorator,
 )
 from azure.cli.core.azclierror import (
+    CLIInternalError,
     InvalidArgumentValueError,
     MutuallyExclusiveArgumentError,
 )
@@ -37,9 +39,16 @@ from azext_aks_preview._consts import (
     CONST_VIRTUAL_MACHINES,
     CONST_DEFAULT_NODE_VM_SIZE,
     CONST_DEFAULT_WINDOWS_NODE_VM_SIZE,
+    CONST_DEFAULT_VMS_VM_SIZE,
+    CONST_DEFAULT_WINDOWS_VMS_VM_SIZE,
     CONST_SSH_ACCESS_LOCALUSER,
+    CONST_GPU_DRIVER_NONE,
+    CONST_NODEPOOL_MODE_MANAGEDSYSTEM,
 )
-from azext_aks_preview._helpers import get_nodepool_snapshot_by_snapshot_id
+from azext_aks_preview._helpers import (
+    get_nodepool_snapshot_by_snapshot_id,
+    filter_hard_taints,
+)
 
 logger = get_logger(__name__)
 
@@ -497,6 +506,26 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
         # this parameter does not need validation
         return max_unavailable
 
+    def get_max_blocked_nodes(self) -> str:
+        """Obtain the value of max_blocked_nodes.
+
+        :return: string
+        """
+        # read the original value passed by the command
+        max_blocked_nodes = self.raw_param.get("max_blocked_nodes")
+        # In create mode, try to read the property value corresponding to the parameter from the `agentpool` object
+        if self.decorator_mode == DecoratorMode.CREATE:
+            if (
+                self.agentpool and
+                self.agentpool.upgrade_settings and
+                self.agentpool.upgrade_settings.max_blocked_nodes is not None
+            ):
+                max_blocked_nodes = self.agentpool.upgrade_settings.max_blocked_nodes
+
+        # this parameter does not need dynamic completion
+        # this parameter does not need validation
+        return max_blocked_nodes
+
     def get_enable_artifact_streaming(self) -> bool:
         """Obtain the value of enable_artifact_streaming.
         :return: bool
@@ -598,11 +627,41 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
             if (
                 self.agentpool and
                 self.agentpool.gpu_profile is not None and
-                self.agentpool.gpu_profile.install_gpu_driver is not None
+                self.agentpool.gpu_profile.driver is not None and
+                self.agentpool.gpu_profile.driver.lower() == CONST_GPU_DRIVER_NONE.lower()
             ):
-                skip_gpu_driver_install = not self.agentpool.gpu_profile.install_gpu_driver
+                skip_gpu_driver_install = True
 
         return skip_gpu_driver_install
+
+    def _get_gpu_driver(self) -> Union[str, None]:
+        """Obtain the value of gpu_driver.
+
+        :return: string
+        """
+        # read the original value passed by the command
+        gpu_driver = self.raw_param.get("gpu_driver")
+
+        # In create mode, try to read the property value corresponding to the parameter from the `agentpool` object
+        if self.decorator_mode == DecoratorMode.CREATE:
+            if (
+                self.agentpool and
+                hasattr(self.agentpool, "gpu_profile") and      # backward compatibility
+                self.agentpool.gpu_profile and
+                self.agentpool.gpu_profile.driver is not None
+            ):
+                gpu_driver = self.agentpool.gpu_profile.driver
+
+        # this parameter does not need dynamic completion
+        # this parameter does not need validation
+        return gpu_driver
+
+    def get_gpu_driver(self) -> Union[str, None]:
+        """Obtain the value of gpu_driver.
+
+        :return: string or None
+        """
+        return self._get_gpu_driver()
 
     def get_driver_type(self) -> Union[str, None]:
         """Obtain the value of driver_type.
@@ -711,6 +770,12 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
             vm_sizes = [x.strip() for x in raw_value.split(",")]
         else:
             vm_sizes = [self.get_node_vm_size()]
+            # Populate default values if vm_sizes still empty
+            if vm_sizes == [""]:
+                if self.get_os_type().lower() == "windows":
+                    vm_sizes = [CONST_DEFAULT_WINDOWS_VMS_VM_SIZE]
+                else:
+                    vm_sizes = [CONST_DEFAULT_VMS_VM_SIZE]
         return vm_sizes
 
     # Overrides azure-cli command to allow changes after create
@@ -745,6 +810,30 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
         """
         # read the original value passed by the command
         return self.raw_param.get("disable_fips_image")
+
+    def get_localdns_config(self):
+        return self.raw_param.get("localdns_config")
+
+    def get_localdns_profile(self):
+        """
+        Returns the local DNS profile dict if set, or None.
+        Only supports loading from --localdns-config (JSON file).
+        Assumes the input is always a string filename.
+        """
+        config = self.get_localdns_config()
+        if config:
+            if not isinstance(config, str) or not os.path.isfile(config):
+                raise InvalidArgumentValueError(
+                    f"{config} is not a valid file, or not accessible."
+                )
+            profile = get_file_json(config)
+            if not isinstance(profile, dict):
+                raise InvalidArgumentValueError(
+                    f"Error reading local DNS config from {config}. "
+                    "Please provide a valid JSON file."
+                )
+            return profile
+        return None
 
 
 class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
@@ -870,7 +959,11 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         :return: the AgentPool object
         """
         self._ensure_agentpool(agentpool)
-        agentpool.node_initialization_taints = self.context.get_node_initialization_taints()
+        nodepool_initialization_taints = self.context.get_node_initialization_taints()
+        # filter out taints with hard effects for System pools
+        if agentpool.mode is None or agentpool.mode.lower() == "system":
+            nodepool_initialization_taints = filter_hard_taints(nodepool_initialization_taints)
+        agentpool.node_initialization_taints = nodepool_initialization_taints
         return agentpool
 
     def set_up_artifact_streaming(self, agentpool: AgentPool) -> AgentPool:
@@ -904,8 +997,19 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
 
         if self.context.get_skip_gpu_driver_install():
             if agentpool.gpu_profile is None:
-                agentpool.gpu_profile = self.models.AgentPoolGPUProfile()  # pylint: disable=no-member
-            agentpool.gpu_profile.install_gpu_driver = False
+                agentpool.gpu_profile = self.models.GPUProfile()  # pylint: disable=no-member
+            agentpool.gpu_profile.driver = CONST_GPU_DRIVER_NONE
+        return agentpool
+
+    def set_up_gpu_profile(self, agentpool: AgentPool) -> AgentPool:
+        """Set up gpu profile for the AgentPool object."""
+        self._ensure_agentpool(agentpool)
+
+        gpu_driver = self.context.get_gpu_driver()
+        if gpu_driver is not None:
+            if agentpool.gpu_profile is None:
+                agentpool.gpu_profile = self.models.GPUProfile()
+            agentpool.gpu_profile.driver = gpu_driver
         return agentpool
 
     def set_up_driver_type(self, agentpool: AgentPool) -> AgentPool:
@@ -915,7 +1019,7 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         driver_type = self.context.get_driver_type()
         if driver_type is not None:
             if agentpool.gpu_profile is None:
-                agentpool.gpu_profile = self.models.AgentPoolGPUProfile()  # pylint: disable=no-member
+                agentpool.gpu_profile = self.models.GPUProfile()  # pylint: disable=no-member
             agentpool.gpu_profile.driver_type = driver_type
         return agentpool
 
@@ -975,12 +1079,14 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
             return agentpool
 
         sizes = self.context.get_vm_sizes()
+        if len(sizes) != 1:
+            raise InvalidArgumentValueError(f"We only accept single sku size for manual profile. {sizes} is invalid.")
         count, _, _, _ = self.context.get_node_count_and_enable_cluster_autoscaler_min_max_count()
         agentpool.virtual_machines_profile = self.models.VirtualMachinesProfile(
             scale=self.models.ScaleProfile(
                 manual=[
                     self.models.ManualScaleProfile(
-                        sizes=sizes,
+                        size=sizes[0],
                         count=count,
                     )
                 ]
@@ -989,6 +1095,77 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         agentpool.vm_size = None
         agentpool.count = None
 
+        return agentpool
+
+    def set_up_managed_system_mode(self, agentpool: AgentPool) -> AgentPool:
+        """Handle the special ManagedSystem mode by resetting all properties except name and mode.
+
+        :param agentpool: the AgentPool object
+        :return: the AgentPool object
+        """
+        if self.context.raw_param.get("enable_managed_system_pool") is True:
+            mode = CONST_NODEPOOL_MODE_MANAGEDSYSTEM
+        else:
+            mode = self.context.raw_param.get("mode")
+
+        if mode == CONST_NODEPOOL_MODE_MANAGEDSYSTEM:
+            # Raise error if agentpool is None
+            if agentpool is None:
+                raise CLIInternalError("agentpool cannot be None for ManagedSystem mode")
+
+            # Instead of creating a new instance, modify the existing one
+            # Keep name and set mode to ManagedSystem
+            agentpool.mode = CONST_NODEPOOL_MODE_MANAGEDSYSTEM
+            # Make sure all other attributes are None
+            for attr in vars(agentpool):
+                if attr != 'name' and attr != 'mode' and not attr.startswith('_'):
+                    if hasattr(agentpool, attr):
+                        setattr(agentpool, attr, None)
+
+        return agentpool
+
+    def set_up_localdns_profile(self, agentpool: AgentPool) -> AgentPool:
+        """Set up local DNS profile for the AgentPool object if provided via --localdns-config."""
+        self._ensure_agentpool(agentpool)
+        localdns_profile = self.context.get_localdns_profile()
+        if localdns_profile is not None:
+            kube_dns_overrides = {}
+            vnet_dns_overrides = {}
+
+            def build_override(override_dict):
+                camel_to_snake_case = {
+                    "queryLogging": "query_logging",
+                    "protocol": "protocol",
+                    "forwardDestination": "forward_destination",
+                    "forwardPolicy": "forward_policy",
+                    "maxConcurrent": "max_concurrent",
+                    "cacheDurationInSeconds": "cache_duration_in_seconds",
+                    "serveStaleDurationInSeconds": "serve_stale_duration_in_seconds",
+                    "serveStale": "serve_stale",
+                }
+                valid_keys = set(camel_to_snake_case.values())
+                filtered = {}
+                for k, v in override_dict.items():
+                    if k in camel_to_snake_case:
+                        filtered[camel_to_snake_case[k]] = v
+                    elif k in valid_keys:
+                        filtered[k] = v
+                return self.models.LocalDNSOverride(**filtered)
+
+            # Build kubeDNSOverrides and vnetDNSOverrides from the localdns_profile
+            kube_overrides = localdns_profile.get("kubeDNSOverrides")
+            for key, value in kube_overrides.items():
+                kube_dns_overrides[key] = build_override(value)
+
+            vnet_overrides = localdns_profile.get("vnetDNSOverrides")
+            for key, value in vnet_overrides.items():
+                vnet_dns_overrides[key] = build_override(value)
+
+            agentpool.local_dns_profile = self.models.LocalDNSProfile(
+                mode=localdns_profile.get("mode"),
+                kube_dns_overrides=kube_dns_overrides,
+                vnet_dns_overrides=vnet_dns_overrides,
+            )
         return agentpool
 
     def construct_agentpool_profile_preview(self) -> AgentPool:
@@ -1001,6 +1178,13 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         """
         # DO NOT MOVE: keep this on top, construct the default AgentPool profile
         agentpool = self.construct_agentpool_profile_default(bypass_restore_defaults=True)
+
+        # Check if mode is ManagedSystem, if yes, reset all properties
+        agentpool = self.set_up_managed_system_mode(agentpool)
+
+        # If mode is ManagedSystem, skip all other property setups
+        if agentpool.mode == CONST_NODEPOOL_MODE_MANAGEDSYSTEM:
+            return agentpool
 
         # set up preview vm properties
         agentpool = self.set_up_preview_vm_properties(agentpool)
@@ -1020,6 +1204,8 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         agentpool = self.set_up_artifact_streaming(agentpool)
         # set up skip_gpu_driver_install
         agentpool = self.set_up_skip_gpu_driver_install(agentpool)
+        # set up gpu profile
+        agentpool = self.set_up_gpu_profile(agentpool)
         # set up driver_type
         agentpool = self.set_up_driver_type(agentpool)
         # set up agentpool ssh access
@@ -1034,6 +1220,8 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         agentpool = self.set_up_agentpool_gateway_profile(agentpool)
         # set up virtual machines profile
         agentpool = self.set_up_virtual_machines_profile(agentpool)
+        # set up local DNS profile
+        agentpool = self.set_up_localdns_profile(agentpool)
         # DO NOT MOVE: keep this at the bottom, restore defaults
         agentpool = self._restore_defaults_in_agentpool(agentpool)
         return agentpool
@@ -1065,6 +1253,10 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         max_unavailable = self.context.get_max_unavailable()
         if max_unavailable:
             upgrade_settings.max_unavailable = max_unavailable
+
+        max_blocked_nodes = self.context.get_max_blocked_nodes()
+        if max_blocked_nodes:
+            upgrade_settings.max_blocked_nodes = max_blocked_nodes
 
         agentpool.upgrade_settings = upgrade_settings
         return agentpool
@@ -1222,6 +1414,50 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
 
         return agentpool
 
+    def update_localdns_profile(self, agentpool: AgentPool) -> AgentPool:
+        """Update local DNS profile for the AgentPool object if provided via --localdns-config."""
+        self._ensure_agentpool(agentpool)
+        localdns_profile = self.context.get_localdns_profile()
+        if localdns_profile is not None:
+            kube_dns_overrides = {}
+            vnet_dns_overrides = {}
+
+            def build_override(override_dict):
+                camel_to_snake_case = {
+                    "queryLogging": "query_logging",
+                    "protocol": "protocol",
+                    "forwardDestination": "forward_destination",
+                    "forwardPolicy": "forward_policy",
+                    "maxConcurrent": "max_concurrent",
+                    "cacheDurationInSeconds": "cache_duration_in_seconds",
+                    "serveStaleDurationInSeconds": "serve_stale_duration_in_seconds",
+                    "serveStale": "serve_stale",
+                }
+                valid_keys = set(camel_to_snake_case.values())
+                filtered = {}
+                for k, v in override_dict.items():
+                    if k in camel_to_snake_case:
+                        filtered[camel_to_snake_case[k]] = v
+                    elif k in valid_keys:
+                        filtered[k] = v
+                return self.models.LocalDNSOverride(**filtered)
+
+            # Build kubeDNSOverrides and vnetDNSOverrides from the localdns_profile
+            kube_overrides = localdns_profile.get("kubeDNSOverrides")
+            for key, value in kube_overrides.items():
+                kube_dns_overrides[key] = build_override(value)
+
+            vnet_overrides = localdns_profile.get("vnetDNSOverrides")
+            for key, value in vnet_overrides.items():
+                vnet_dns_overrides[key] = build_override(value)
+
+            agentpool.local_dns_profile = self.models.LocalDNSProfile(
+                mode=localdns_profile.get("mode"),
+                kube_dns_overrides=kube_dns_overrides,
+                vnet_dns_overrides=vnet_dns_overrides,
+            )
+        return agentpool
+
     def update_agentpool_profile_preview(self, agentpools: List[AgentPool] = None) -> AgentPool:
         """The overall controller used to update the preview AgentPool profile.
 
@@ -1232,6 +1468,15 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
         """
         # DO NOT MOVE: keep this on top, fetch and update the default AgentPool profile
         agentpool = self.update_agentpool_profile_default(agentpools)
+
+        # Check if agentpool is in ManagedSystem mode and handle special case
+        if agentpool.mode == CONST_NODEPOOL_MODE_MANAGEDSYSTEM:
+            # Make sure all other attributes are None
+            for attr in vars(agentpool):
+                if attr != 'name' and attr != 'mode' and not attr.startswith('_'):
+                    if hasattr(agentpool, attr):
+                        setattr(agentpool, attr, None)
+            return agentpool
 
         # update custom ca trust
         agentpool = self.update_custom_ca_trust(agentpool)
@@ -1256,6 +1501,9 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
 
         # update ssh access
         agentpool = self.update_ssh_access(agentpool)
+
+        # update local DNS profile
+        agentpool = self.update_localdns_profile(agentpool)
 
         return agentpool
 
@@ -1289,6 +1537,11 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
         undrainable_node_behavior = self.context.get_undrainable_node_behavior()
         if undrainable_node_behavior:
             upgrade_settings.undrainable_node_behavior = undrainable_node_behavior
+            agentpool.upgrade_settings = upgrade_settings
+
+        max_blocked_nodes = self.context.get_max_blocked_nodes()
+        if max_blocked_nodes:
+            upgrade_settings.max_blocked_nodes = max_blocked_nodes
             agentpool.upgrade_settings = upgrade_settings
 
         max_unavailable = self.context.get_max_unavailable()

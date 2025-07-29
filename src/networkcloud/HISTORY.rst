@@ -12,7 +12,7 @@ Release History
 3.0.0b1
 ++++++++
 * This beta version supports NetworkCloud 2024-10-01-preview APIs.
-* This version requires a minimum of 2.67 Azure core CLI. See release notes for more details: https://github.com/MicrosoftDocs/azure-docs-cli/blob/main/docs-ref-conceptual/release-notes-azure-cli.md
+* This version requires a minimum of 2.67 Azure core CLI. See release notes for more details: https://github.com/MicrosoftDocs/azure-docs-cli/blob/main/docs-ref-conceptual/Latest-version/release-notes-azure-cli.md
 * This version upgrades the internal generation tool aaz-dev-tools to 3.2.0. Refer to the release notes for more details: https://github.com/Azure/aaz-dev-tools/releases/tag/v3.2.0.
 * A bug fix for delete commands returning 204 without content is included in this release.
 * New `identity` command group is added to Cluster Manager for handling system-assigned and user-assigned identity updates.
@@ -31,7 +31,7 @@ Release History
 
 2.0.0b7
 ++++++++
-* This version requires a minimum of 2.66 Azure core CLI. See release notes for more details: https://github.com/MicrosoftDocs/azure-docs-cli/blob/main/docs-ref-conceptual/release-notes-azure-cli.md
+* This version requires a minimum of 2.66 Azure core CLI. See release notes for more details: https://github.com/MicrosoftDocs/azure-docs-cli/blob/main/docs-ref-conceptual/Latest-version/release-notes-azure-cli.md
 * This version upgrades the internal generation tool aaz-dev-tools to 3.1.0. Refer to the release notes for more details: https://github.com/Azure/aaz-dev-tools/releases/tag/v3.1.0.
 * Optional Cluster properties can be now set to null during update (PATCH) operation. This includes `--cluster-service-principal`, `--command-output-settings`, `--compute-deployment-threshold`, `--update-strategy`, `--secret-archive`, and `--runtime-protection`. In that case, the value will be reset to the default if defined by the API.
 * This version introduces custom code to validate the `--command-output-settings` property of a cluster for both create and update operations. When the `identity-type` is `SystemAssignedIdentity`, the UAI(User Assigned Identity) should not be provided and will be set to None to erase any previous value. When the `identity-type` is `UserAssignedIdentity`, the UAI must be provided.

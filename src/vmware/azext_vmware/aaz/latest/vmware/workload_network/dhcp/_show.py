@@ -18,13 +18,13 @@ class Show(AAZCommand):
     """Get dhcp by id in a private cloud workload network.
 
     :example: Get DHCP by ID in a workload network.
-        az vmware workload-network dhcp show --resource-group group1 --private-cloud cloud1 --dhcp dhcp1
+        az vmware workload-network dhcp show --resource-group group1 --dhcp dhcp1 --private-cloud cloud1
     """
 
     _aaz_info = {
-        "version": "2023-09-01",
+        "version": "2024-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}/workloadnetworks/default/dhcpconfigurations/{}", "2023-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}/workloadnetworks/default/dhcpconfigurations/{}", "2024-09-01"],
         ]
     }
 
@@ -50,7 +50,7 @@ class Show(AAZCommand):
             required=True,
             id_part="child_name_2",
             fmt=AAZStrArgFormat(
-                pattern="^[-\w\._]+$",
+                pattern="^[-\\w\\._]+$",
             ),
         )
         _args_schema.private_cloud = AAZStrArg(
@@ -59,7 +59,7 @@ class Show(AAZCommand):
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
-                pattern="^[-\w\._]+$",
+                pattern="^[-\\w\\._]+$",
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
@@ -136,7 +136,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-09-01",
+                    "api-version", "2024-09-01",
                     required=True,
                 ),
             }
@@ -175,7 +175,9 @@ class Show(AAZCommand):
             _schema_on_200.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.properties = AAZObjectType()
+            _schema_on_200.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
             _schema_on_200.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},

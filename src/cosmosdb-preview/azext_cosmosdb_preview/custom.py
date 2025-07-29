@@ -67,7 +67,19 @@ from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import (
     ThroughputSettingsResource,
     ThroughputSettingsUpdateParameters,
     TableRoleDefinitionResource,
-    TableRoleAssignmentResource
+    TableRoleAssignmentResource,
+    GremlinRoleDefinitionResource,
+    GremlinRoleAssignmentResource,
+    CassandraRoleDefinitionResource,
+    CassandraRoleAssignmentResource,
+    MongoMIRoleDefinitionResource,
+    MongoMIRoleAssignmentResource,
+    FleetResource,
+    FleetspaceResource,
+    FleetspacePropertiesThroughputPoolConfiguration,
+    FleetspaceAccountResource,
+    FleetspaceAccountPropertiesGlobalDatabaseAccountProperties,
+    FleetAnalyticsResource
 )
 
 from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_mongocluster.models import (
@@ -81,19 +93,12 @@ from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_mongocluster.models import 
 )
 
 from azext_cosmosdb_preview._client_factory import (
-    cf_restorable_gremlin_resources,
-    cf_restorable_table_resources,
     cf_restorable_database_accounts
 )
 
 from azure.cli.core.azclierror import InvalidArgumentValueError
 from azure.cli.command_modules.cosmosdb.custom import _convert_to_utc_timestamp
 from azure.core.exceptions import ResourceNotFoundError
-
-from azure.cli.command_modules.cosmosdb._client_factory import (
-    cf_restorable_sql_resources,
-    cf_restorable_mongodb_resources
-)
 
 DEFAULT_INDEXING_POLICY = """{
   "indexingMode": "consistent",
@@ -325,7 +330,7 @@ def cli_cosmosdb_managed_cassandra_cluster_create(client,
                                                   resource_group_name,
                                                   cluster_name,
                                                   location,
-                                                  delegated_management_subnet_id,
+                                                  delegated_management_subnet_id=None,
                                                   tags=None,
                                                   identity_type='None',
                                                   cluster_name_override=None,
@@ -339,7 +344,8 @@ def cli_cosmosdb_managed_cassandra_cluster_create(client,
                                                   hours_between_backups=None,
                                                   repair_enabled=None,
                                                   cluster_type='Production',
-                                                  extensions=None):
+                                                  extensions=None,
+                                                  azure_connection_method=None):
 
     """Creates an Azure Managed Cassandra Cluster"""
 
@@ -362,7 +368,8 @@ def cli_cosmosdb_managed_cassandra_cluster_create(client,
         hours_between_backups=hours_between_backups,
         repair_enabled=repair_enabled,
         cluster_type=cluster_type,
-        extensions=extensions)
+        extensions=extensions,
+        azure_connection_method=azure_connection_method)
 
     managed_service_identity_parameter = ManagedCassandraManagedServiceIdentity(
         type=identity_type
@@ -451,8 +458,8 @@ def cli_cosmosdb_managed_cassandra_cluster_update(client,
         external_seed_nodes=cluster_resource.properties.external_seed_nodes,
         seed_nodes=cluster_resource.properties.seed_nodes,
         cluster_type=cluster_type,
-        extensions=extensions
-    )
+        extensions=extensions,
+        azure_connection_method=cluster_resource.properties.azure_connection_method)
 
     cluster_resource_create_update_parameters = ClusterResource(
         location=cluster_resource.location,
@@ -517,7 +524,8 @@ def cli_cosmosdb_managed_cassandra_datacenter_create(client,
                                                      service_user_password=None,
                                                      search_base_distinguished_name=None,
                                                      search_filter_template=None,
-                                                     server_certificates=None):
+                                                     server_certificates=None,
+                                                     private_endpoint_ip_address=None):
 
     """Creates an Azure Managed Cassandra Datacenter"""
 
@@ -542,7 +550,8 @@ def cli_cosmosdb_managed_cassandra_datacenter_create(client,
         availability_zone=availability_zone,
         managed_disk_customer_key_uri=managed_disk_customer_key_uri,
         backup_storage_customer_key_uri=backup_storage_customer_key_uri,
-        authentication_method_ldap_properties=authentication_method_ldap_properties
+        authentication_method_ldap_properties=authentication_method_ldap_properties,
+        private_endpoint_ip_address=private_endpoint_ip_address
     )
 
     data_center_resource = DataCenterResource(
@@ -2751,6 +2760,7 @@ def cli_cosmosdb_table_restore(cmd,
                                             table_name,
                                             table_resource)
 
+
 def cli_cosmosdb_table_role_definition_exists(client,
                                               resource_group_name,
                                               account_name,
@@ -2763,11 +2773,12 @@ def cli_cosmosdb_table_role_definition_exists(client,
 
     return True
 
+
 def cli_cosmosdb_table_role_definition_create(client,
                                               resource_group_name,
                                               account_name,
                                               table_role_definition_body):
-    '''Creates an Azure Cosmos DB Table Role Definition '''    
+    '''Creates an Azure Cosmos DB Table Role Definition '''
     table_role_definition_create_resource = TableRoleDefinitionResource(
         role_name=table_role_definition_body['RoleName'],
         type_properties_type=table_role_definition_body['Type'],
@@ -2775,7 +2786,8 @@ def cli_cosmosdb_table_role_definition_create(client,
         assignable_scopes=table_role_definition_body['AssignableScopes'])
 
     return client.begin_create_update_table_role_definition(resource_group_name, account_name, table_role_definition_body['Id'], table_role_definition_create_resource)
-   
+
+
 def cli_cosmosdb_table_role_definition_update(client,
                                               resource_group_name,
                                               account_name,
@@ -2793,28 +2805,30 @@ def cli_cosmosdb_table_role_definition_update(client,
         permissions=table_role_definition_body['Permissions'],
         assignable_scopes=table_role_definition_body['AssignableScopes'])
 
-    return client.begin_create_update_table_role_definition( resource_group_name, account_name, table_role_definition_body['Id'], table_role_definition_update_resource)
-    
+    return client.begin_create_update_table_role_definition(resource_group_name, account_name, table_role_definition_body['Id'], table_role_definition_update_resource)
+
+
 def cli_cosmosdb_table_role_assignment_exists(client,
                                               resource_group_name,
                                               account_name,
                                               role_assignment_id):
     """Checks if an Azure Cosmos DB Table Role assignment exists"""
     try:
-        client.get_table_role_assignment(resource_group_name, account_name,role_assignment_id)
+        client.get_table_role_assignment(resource_group_name, account_name, role_assignment_id)
     except Exception as ex:
         return _handle_exists_exception(ex.response)
 
     return True
 
+
 def cli_cosmosdb_table_role_assignment_create(client,
-                                            resource_group_name,
-                                            account_name,
-                                            scope,
-                                            principal_id,
-                                            role_assignment_id=None,
-                                            role_definition_name=None,
-                                            role_definition_id=None):
+                                              resource_group_name,
+                                              account_name,
+                                              scope,
+                                              principal_id,
+                                              role_assignment_id=None,
+                                              role_definition_name=None,
+                                              role_definition_id=None):
     """Creates an Azure Cosmos DB Table Role Assignment"""
 
     if role_definition_id is not None and role_definition_name is not None:
@@ -2832,13 +2846,13 @@ def cli_cosmosdb_table_role_assignment_create(client,
 
 
 def cli_cosmosdb_table_role_assignment_update(client,
-                                            resource_group_name,
-                                            account_name,
-                                            scope,
-                                            principal_id,
-                                            role_assignment_id=None,
-                                            role_definition_name=None,
-                                            role_definition_id=None):
+                                              resource_group_name,
+                                              account_name,
+                                              scope,
+                                              principal_id,
+                                              role_assignment_id=None,
+                                              role_definition_name=None,
+                                              role_definition_id=None):
     """Updates an Azure Cosmos DB Table Role Assignment"""
 
     if role_definition_id is not None and role_definition_name is not None:
@@ -2846,10 +2860,10 @@ def cli_cosmosdb_table_role_assignment_update(client,
 
     if role_definition_id is None and role_definition_name is None:
         raise CLIError('Providing one out of role_definition_id and role_definition_name is required.')
-        
+
     if role_assignment_id is None:
         raise CLIError('Providing role_assignment_id is required.')
-    
+
     table_role_assignment = client.get_table_role_assignment(resource_group_name, account_name, role_assignment_id)
 
     if role_assignment_id != table_role_assignment.name:
@@ -2861,3 +2875,496 @@ def cli_cosmosdb_table_role_assignment_update(client,
         principal_id=principal_id)
 
     return client.begin_create_update_table_role_assignment(resource_group_name, account_name, role_assignment_id, table_role_assignment_create_update_parameters)
+
+
+def cli_cosmosdb_gremlin_role_definition_exists(client,
+                                                resource_group_name,
+                                                account_name,
+                                                role_definition_id):
+    """Checks if an Azure Cosmos DB Gremlin Role Definition exists"""
+    try:
+        client.get_gremlin_role_definition(resource_group_name, account_name, role_definition_id)
+    except Exception as ex:
+        return _handle_exists_exception(ex.response)
+
+    return True
+
+
+def cli_cosmosdb_gremlin_role_definition_create(client,
+                                                resource_group_name,
+                                                account_name,
+                                                gremlin_role_definition_body):
+    '''Creates an Azure Cosmos DB Gremlin Role Definition '''
+    gremlin_role_definition_create_resource = GremlinRoleDefinitionResource(
+        role_name=gremlin_role_definition_body['RoleName'],
+        type_properties_type=gremlin_role_definition_body['Type'],
+        permissions=gremlin_role_definition_body['Permissions'],
+        assignable_scopes=gremlin_role_definition_body['AssignableScopes'])
+
+    return client.begin_create_update_gremlin_role_definition(resource_group_name, account_name, gremlin_role_definition_body['Id'], gremlin_role_definition_create_resource)
+
+
+def cli_cosmosdb_gremlin_role_definition_update(client,
+                                                resource_group_name,
+                                                account_name,
+                                                gremlin_role_definition_body):
+    '''Update an existing Azure Cosmos DB Gremlin Role Definition'''
+    logger.debug('reading Gremlin role definition')
+    gremlin_role_definition = client.get_gremlin_role_definition(resource_group_name, account_name, gremlin_role_definition_body['Id'])
+
+    if gremlin_role_definition_body['RoleName'] != gremlin_role_definition.role_name:
+        raise InvalidArgumentValueError('Cannot update Gremlin Role Definition Name.')
+
+    gremlin_role_definition_update_resource = GremlinRoleDefinitionResource(
+        role_name=gremlin_role_definition_body['RoleName'],
+        type_properties_type=gremlin_role_definition_body['Type'],
+        permissions=gremlin_role_definition_body['Permissions'],
+        assignable_scopes=gremlin_role_definition_body['AssignableScopes'])
+
+    return client.begin_create_update_gremlin_role_definition(resource_group_name, account_name, gremlin_role_definition_body['Id'], gremlin_role_definition_update_resource)
+
+
+def cli_cosmosdb_gremlin_role_assignment_exists(client,
+                                                resource_group_name,
+                                                account_name,
+                                                role_assignment_id):
+    """Checks if an Azure Cosmos DB Gremlin Role assignment exists"""
+    try:
+        client.get_gremlin_role_assignment(resource_group_name, account_name, role_assignment_id)
+    except Exception as ex:
+        return _handle_exists_exception(ex.response)
+
+    return True
+
+
+def cli_cosmosdb_gremlin_role_assignment_create(client,
+                                                resource_group_name,
+                                                account_name,
+                                                scope,
+                                                principal_id,
+                                                role_assignment_id=None,
+                                                role_definition_name=None,
+                                                role_definition_id=None):
+    """Creates an Azure Cosmos DB Gremlin Role Assignment"""
+
+    if role_definition_id is not None and role_definition_name is not None:
+        raise CLIError('Can only provide one out of role_definition_id and role_definition_name.')
+
+    if role_definition_id is None and role_definition_name is None:
+        raise CLIError('Providing one out of role_definition_id and role_definition_name is required.')
+
+    gremlin_role_assignment_create_update_parameters = GremlinRoleAssignmentResource(
+        role_definition_id=role_definition_id,
+        scope=scope,
+        principal_id=principal_id)
+
+    return client.begin_create_update_gremlin_role_assignment(resource_group_name, account_name, role_assignment_id, gremlin_role_assignment_create_update_parameters)
+
+
+def cli_cosmosdb_gremlin_role_assignment_update(client,
+                                                resource_group_name,
+                                                account_name,
+                                                scope,
+                                                principal_id,
+                                                role_assignment_id=None,
+                                                role_definition_name=None,
+                                                role_definition_id=None):
+    """Updates an Azure Cosmos DB Gremlin Role Assignment"""
+
+    if role_definition_id is not None and role_definition_name is not None:
+        raise CLIError('Can only provide one out of role_definition_id and role_definition_name.')
+
+    if role_definition_id is None and role_definition_name is None:
+        raise CLIError('Providing one out of role_definition_id and role_definition_name is required.')
+
+    if role_assignment_id is None:
+        raise CLIError('Providing role_assignment_id is required.')
+
+    gremlin_role_assignment = client.get_gremlin_role_assignment(resource_group_name, account_name, role_assignment_id)
+
+    if role_assignment_id != gremlin_role_assignment.name:
+        raise InvalidArgumentValueError('Cannot update Gremlin Role Assignment Id.')
+
+    gremlin_role_assignment_create_update_parameters = GremlinRoleAssignmentResource(
+        role_definition_id=role_definition_id,
+        scope=scope,
+        principal_id=principal_id)
+
+    return client.begin_create_update_gremlin_role_assignment(resource_group_name, account_name, role_assignment_id, gremlin_role_assignment_create_update_parameters)
+
+
+def cli_cosmosdb_cassandra_role_definition_exists(client,
+                                                  resource_group_name,
+                                                  account_name,
+                                                  role_definition_id):
+    """Checks if an Azure Cosmos DB Cassandra Role Definition exists"""
+    try:
+        client.get_cassandra_role_definition(resource_group_name, account_name, role_definition_id)
+    except Exception as ex:
+        return _handle_exists_exception(ex.response)
+
+    return True
+
+
+def cli_cosmosdb_cassandra_role_definition_create(client,
+                                                  resource_group_name,
+                                                  account_name,
+                                                  cassandra_role_definition_body):
+    '''Creates an Azure Cosmos DB Cassandra Role Definition '''
+    cassandra_role_definition_create_resource = CassandraRoleDefinitionResource(
+        role_name=cassandra_role_definition_body['RoleName'],
+        type_properties_type=cassandra_role_definition_body['Type'],
+        permissions=cassandra_role_definition_body['Permissions'],
+        assignable_scopes=cassandra_role_definition_body['AssignableScopes'])
+
+    return client.begin_create_update_cassandra_role_definition(resource_group_name, account_name, cassandra_role_definition_body['Id'], cassandra_role_definition_create_resource)
+
+
+def cli_cosmosdb_cassandra_role_definition_update(client,
+                                                  resource_group_name,
+                                                  account_name,
+                                                  cassandra_role_definition_body):
+    '''Update an existing Azure Cosmos DB Cassandra Role Definition'''
+    logger.debug('reading Cassandra role definition')
+    cassandra_role_definition = client.get_cassandra_role_definition(
+        resource_group_name, account_name, cassandra_role_definition_body['Id'])
+
+    if cassandra_role_definition_body['RoleName'] != cassandra_role_definition.role_name:
+        raise InvalidArgumentValueError(
+            'Cannot update Cassandra Role Definition Name.')
+
+    cassandra_role_definition_update_resource = CassandraRoleDefinitionResource(
+        role_name=cassandra_role_definition_body['RoleName'],
+        type_properties_type=cassandra_role_definition_body['Type'],
+        permissions=cassandra_role_definition_body['Permissions'],
+        assignable_scopes=cassandra_role_definition_body['AssignableScopes'])
+
+    return client.begin_create_update_cassandra_role_definition(resource_group_name, account_name, cassandra_role_definition_body['Id'], cassandra_role_definition_update_resource)
+
+
+def cli_cosmosdb_cassandra_role_assignment_exists(client,
+                                                  resource_group_name,
+                                                  account_name,
+                                                  role_assignment_id):
+    """Checks if an Azure Cosmos DB Cassandra Role assignment exists"""
+    try:
+        client.get_cassandra_role_assignment(
+            resource_group_name, account_name, role_assignment_id)
+    except Exception as ex:
+        return _handle_exists_exception(ex.response)
+
+    return True
+
+
+def cli_cosmosdb_cassandra_role_assignment_create(client,
+                                                  resource_group_name,
+                                                  account_name,
+                                                  scope,
+                                                  principal_id,
+                                                  role_assignment_id=None,
+                                                  role_definition_name=None,
+                                                  role_definition_id=None):
+    """Creates an Azure Cosmos DB Cassandra Role Assignment"""
+
+    if role_definition_id is not None and role_definition_name is not None:
+        raise CLIError(
+            'Can only provide one out of role_definition_id and role_definition_name.')
+
+    if role_definition_id is None and role_definition_name is None:
+        raise CLIError(
+            'Providing one out of role_definition_id and role_definition_name is required.')
+
+    cassandra_role_assignment_create_update_parameters = CassandraRoleAssignmentResource(
+        role_definition_id=role_definition_id,
+        scope=scope,
+        principal_id=principal_id)
+
+    return client.begin_create_update_cassandra_role_assignment(resource_group_name, account_name, role_assignment_id, cassandra_role_assignment_create_update_parameters)
+
+
+def cli_cosmosdb_cassandra_role_assignment_update(client,
+                                                  resource_group_name,
+                                                  account_name,
+                                                  scope,
+                                                  principal_id,
+                                                  role_assignment_id=None,
+                                                  role_definition_name=None,
+                                                  role_definition_id=None):
+    """Updates an Azure Cosmos DB Cassandra Role Assignment"""
+
+    if role_definition_id is not None and role_definition_name is not None:
+        raise CLIError('Can only provide one out of role_definition_id and role_definition_name.')
+
+    if role_definition_id is None and role_definition_name is None:
+        raise CLIError('Providing one out of role_definition_id and role_definition_name is required.')
+
+    if role_assignment_id is None:
+        raise CLIError('Providing role_assignment_id is required.')
+
+    cassandra_role_assignment = client.get_cassandra_role_assignment(resource_group_name, account_name, role_assignment_id)
+
+    if role_assignment_id != cassandra_role_assignment.name:
+        raise InvalidArgumentValueError('Cannot update Cassandra Role Assignment Id.')
+
+    cassandra_role_assignment_create_update_parameters = CassandraRoleAssignmentResource(
+        role_definition_id=role_definition_id,
+        scope=scope,
+        principal_id=principal_id)
+
+    return client.begin_create_update_cassandra_role_assignment(resource_group_name, account_name, role_assignment_id, cassandra_role_assignment_create_update_parameters)
+
+
+def cli_cosmosdb_mongomi_role_definition_exists(client,
+                                                resource_group_name,
+                                                account_name,
+                                                role_definition_id):
+    """Checks if an Azure Cosmos DB MongoMI Role Definition exists"""
+    try:
+        client.get_mongo_mi_role_definition(
+            resource_group_name, account_name, role_definition_id)
+    except Exception as ex:
+        return _handle_exists_exception(ex.response)
+
+    return True
+
+
+def cli_cosmosdb_mongomi_role_definition_create(client,
+                                                resource_group_name,
+                                                account_name,
+                                                mongoMI_role_definition_body):
+    '''Creates an Azure Cosmos DB MongoMI Role Definition '''
+    mongoMI_role_definition_create_resource = MongoMIRoleDefinitionResource(
+        role_name=mongoMI_role_definition_body['RoleName'],
+        type_properties_type=mongoMI_role_definition_body['Type'],
+        permissions=mongoMI_role_definition_body['Permissions'],
+        assignable_scopes=mongoMI_role_definition_body['AssignableScopes'])
+
+    return client.begin_create_update_mongo_mi_role_definition(resource_group_name, account_name, mongoMI_role_definition_body['Id'], mongoMI_role_definition_create_resource)
+
+
+def cli_cosmosdb_mongomi_role_definition_update(client,
+                                                resource_group_name,
+                                                account_name,
+                                                mongoMI_role_definition_body):
+    '''Update an existing Azure Cosmos DB MongoMI Role Definition'''
+    logger.debug('reading MongoMI role definition')
+    mongoMI_role_definition = client.get_mongo_mi_role_definition(
+        resource_group_name, account_name, mongoMI_role_definition_body['Id'])
+
+    if mongoMI_role_definition_body['RoleName'] != mongoMI_role_definition.role_name:
+        raise InvalidArgumentValueError(
+            'Cannot update MongoMI Role Definition Name.')
+
+    mongoMI_role_definition_update_resource = MongoMIRoleDefinitionResource(
+        role_name=mongoMI_role_definition_body['RoleName'],
+        type_properties_type=mongoMI_role_definition_body['Type'],
+        permissions=mongoMI_role_definition_body['Permissions'],
+        assignable_scopes=mongoMI_role_definition_body['AssignableScopes'])
+
+    return client.begin_create_update_mongo_mi_role_definition(resource_group_name, account_name, mongoMI_role_definition_body['Id'], mongoMI_role_definition_update_resource)
+
+
+def cli_cosmosdb_mongomi_role_assignment_exists(client,
+                                                resource_group_name,
+                                                account_name,
+                                                role_assignment_id):
+    """Checks if an Azure Cosmos DB MongoMI Role assignment exists"""
+    try:
+        client.get_mongo_mi_role_assignment(
+            resource_group_name, account_name, role_assignment_id)
+    except Exception as ex:
+        return _handle_exists_exception(ex.response)
+
+    return True
+
+
+def cli_cosmosdb_mongomi_role_assignment_create(client,
+                                                resource_group_name,
+                                                account_name,
+                                                scope,
+                                                principal_id,
+                                                role_assignment_id=None,
+                                                role_definition_name=None,
+                                                role_definition_id=None):
+    """Creates an Azure Cosmos DB MongoMI Role Assignment"""
+
+    if role_definition_id is not None and role_definition_name is not None:
+        raise CLIError(
+            'Can only provide one out of role_definition_id and role_definition_name.')
+
+    if role_definition_id is None and role_definition_name is None:
+        raise CLIError(
+            'Providing one out of role_definition_id and role_definition_name is required.')
+
+    mongoMI_role_assignment_create_update_parameters = MongoMIRoleAssignmentResource(
+        role_definition_id=role_definition_id,
+        scope=scope,
+        principal_id=principal_id)
+
+    return client.begin_create_update_mongo_mi_role_assignment(resource_group_name, account_name, role_assignment_id, mongoMI_role_assignment_create_update_parameters)
+
+
+def cli_cosmosdb_mongomi_role_assignment_update(client,
+                                                resource_group_name,
+                                                account_name,
+                                                scope,
+                                                principal_id,
+                                                role_assignment_id=None,
+                                                role_definition_name=None,
+                                                role_definition_id=None):
+    """Updates an Azure Cosmos DB MongoMI Role Assignment"""
+
+    if role_definition_id is not None and role_definition_name is not None:
+        raise CLIError('Can only provide one out of role_definition_id and role_definition_name.')
+
+    if role_definition_id is None and role_definition_name is None:
+        raise CLIError('Providing one out of role_definition_id and role_definition_name is required.')
+
+    if role_assignment_id is None:
+        raise CLIError('Providing role_assignment_id is required.')
+
+    mongoMI_role_assignment = client.get_mongo_mi_role_assignment(resource_group_name, account_name, role_assignment_id)
+
+    if role_assignment_id != mongoMI_role_assignment.name:
+        raise InvalidArgumentValueError('Cannot update MongoMI Role Assignment Id.')
+
+    mongoMI_role_assignment_create_update_parameters = MongoMIRoleAssignmentResource(
+        role_definition_id=role_definition_id,
+        scope=scope,
+        principal_id=principal_id)
+
+    return client.begin_create_update_mongo_mi_role_assignment(resource_group_name, account_name, role_assignment_id, mongoMI_role_assignment_create_update_parameters)
+
+
+def cli_cosmosdb_fleet_create(client,
+                              resource_group_name,
+                              fleet_name,
+                              location,
+                              tags=None):
+    """Creates an Azure Cosmos DB Fleet."""
+
+    if isinstance(tags, str):
+        try:
+            tags = dict(tag.split('=') for tag in tags.split())
+        except ValueError:
+            raise InvalidArgumentValueError('Tags must be in key=value format.')
+
+    fleet_parameters = FleetResource(location=location)
+
+    if tags:
+        fleet_parameters.tags = tags
+
+    return client.create(
+        resource_group_name=resource_group_name,
+        fleet_name=fleet_name,
+        body=fleet_parameters)
+
+
+def cli_list_cosmosdb_fleets(client, resource_group_name=None):
+    """Lists Azure Cosmos DB Fleets."""
+    if resource_group_name:
+        return client.list_by_resource_group(resource_group_name=resource_group_name)
+    return client.list()
+
+
+def cli_cosmosdb_fleet_analytics_create(client,
+                                        resource_group_name,
+                                        fleet_name,
+                                        fleet_analytics_name,
+                                        fleet_analytics_body):
+
+    """Creates an Azure Cosmos DB Fleet Analytics."""
+
+    fleet_analytics_resource = FleetAnalyticsResource(
+        storage_location_type=fleet_analytics_body['properties']['storageLocationType'],
+        storage_location_uri=fleet_analytics_body['properties']['storageLocationUri']
+    )
+
+    return client.create(
+        resource_group_name=resource_group_name,
+        fleet_name=fleet_name,
+        fleet_analytics_name=fleet_analytics_name,
+        body=fleet_analytics_resource
+    )
+
+
+def cli_cosmosdb_fleetspace_create(client,
+                                   resource_group_name,
+                                   fleet_name,
+                                   fleetspace_name,
+                                   fleetspace_body):
+
+    """Creates an Azure Cosmos DB Fleetspace."""
+
+    throughput_pool_config = FleetspacePropertiesThroughputPoolConfiguration(
+        min_throughput=fleetspace_body['properties']['throughputPoolConfiguration']['minThroughput'],
+        max_throughput=fleetspace_body['properties']['throughputPoolConfiguration']['maxThroughput'],
+        service_tier=fleetspace_body['properties']['throughputPoolConfiguration']['serviceTier'],
+        data_regions=fleetspace_body['properties']['throughputPoolConfiguration']['dataRegions']
+    )
+
+    fleetspace_body = FleetspaceResource(
+        fleetspace_api_kind="NoSQL",
+        throughput_pool_configuration=throughput_pool_config
+    )
+
+    return client.begin_create(
+        resource_group_name=resource_group_name,
+        fleet_name=fleet_name,
+        fleetspace_name=fleetspace_name,
+        body=fleetspace_body
+    )
+
+
+def cli_cosmosdb_fleetspace_update(client,
+                                   resource_group_name,
+                                   fleet_name,
+                                   fleetspace_name,
+                                   fleetspace_body):
+
+    """Updates an existing Azure Cosmos DB Fleetspace."""
+
+    throughput_pool_config = FleetspacePropertiesThroughputPoolConfiguration(
+        min_throughput=fleetspace_body['properties']['throughputPoolConfiguration']['minThroughput'],
+        max_throughput=fleetspace_body['properties']['throughputPoolConfiguration']['maxThroughput'],
+        service_tier=fleetspace_body['properties']['throughputPoolConfiguration']['serviceTier']
+    )
+
+    fleetspace_body = FleetspaceResource(
+        fleetspace_api_kind="NoSQL",
+        throughput_pool_configuration=throughput_pool_config
+    )
+
+    return client.begin_update(
+        resource_group_name=resource_group_name,
+        fleet_name=fleet_name,
+        fleetspace_name=fleetspace_name,
+        body=fleetspace_body
+    )
+
+
+def cli_cosmosdb_fleetspace_account_create(client,
+                                           resource_group_name,
+                                           fleet_name,
+                                           fleetspace_name,
+                                           fleetspace_account_name,
+                                           fleetspace_account_body):
+
+    """Creates an Azure Cosmos DB Fleetspace Account."""
+
+    fleetspaceAccountPropertiesGlobalDatabaseAccountProperties = FleetspaceAccountPropertiesGlobalDatabaseAccountProperties(
+        resource_id=fleetspace_account_body['properties']['globalDatabaseAccountProperties']['resourceId'],
+        arm_location=fleetspace_account_body['properties']['globalDatabaseAccountProperties']['armLocation'],
+    )
+
+    fleetspace_account_body = FleetspaceAccountResource(
+        global_database_account_properties=fleetspaceAccountPropertiesGlobalDatabaseAccountProperties
+    )
+
+    return client.begin_create(
+        resource_group_name=resource_group_name,
+        fleet_name=fleet_name,
+        fleetspace_name=fleetspace_name,
+        fleetspace_account_name=fleetspace_account_name,
+        body=fleetspace_account_body
+    )

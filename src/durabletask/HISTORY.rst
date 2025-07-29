@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.0.0b4
++++++
+* Adding various retention-policy commands.
+
 1.0.0b3
 +++++
 * Updating the help outputs for various taskhub and scheduler commands

@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.standbypool/standbycontainergrouppools/{}", "2024-03-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.standbypool/standbycontainergrouppools/{}", "2025-03-01"],
         ]
     }
 
@@ -44,8 +44,8 @@ class Wait(AAZWaitCommand):
             help="The resource group",
             required=True,
         )
-        _args_schema.standby_container_group_pool_name = AAZStrArg(
-            options=["-n", "--name", "--standby-container-group-pool-name"],
+        _args_schema.name = AAZStrArg(
+            options=["-n", "--name"],
             help="Name of the standby container group pool",
             required=True,
             id_part="name",
@@ -106,7 +106,7 @@ class Wait(AAZWaitCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "standbyContainerGroupPoolName", self.ctx.args.standby_container_group_pool_name,
+                    "standbyContainerGroupPoolName", self.ctx.args.name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -120,7 +120,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-03-01",
+                    "api-version", "2025-03-01",
                     required=True,
                 ),
             }
@@ -187,6 +187,7 @@ class Wait(AAZWaitCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+            properties.zones = AAZListType()
 
             container_group_properties = cls._schema_on_200.properties.container_group_properties
             container_group_properties.container_group_profile = AAZObjectType(
@@ -219,6 +220,9 @@ class Wait(AAZWaitCommand):
             elasticity_profile.refill_policy = AAZStrType(
                 serialized_name="refillPolicy",
             )
+
+            zones = cls._schema_on_200.properties.zones
+            zones.Element = AAZStrType()
 
             system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(

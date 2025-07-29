@@ -12,7 +12,11 @@ from knack.help_files import helps  # pylint: disable=unused-import
 from azext_load.data_plane.help import helps as data_common_helps
 from azext_load.data_plane.load_test.help import helps as data_load_test_helps
 from azext_load.data_plane.load_test_run.help import helps as data_load_test_run_helps
+from azext_load.data_plane.load_trigger.help import helps as data_load_trigger_helps
+from azext_load.data_plane.load_notifications.help import helps as data_load_notifications_helps
 
 helps.update(data_common_helps)
 helps.update(data_load_test_helps)
 helps.update(data_load_test_run_helps)
+helps.update(data_load_trigger_helps)
+helps.update(data_load_notifications_helps)

@@ -34,6 +34,9 @@ setupAZ(){
     # install azdev, used later to install azcli and extension
     pip install azdev==0.1.60
 
+    # fix setuptools to 77.0.3 as a workaround for "No module named azure.cli.__main__; 'azure.cli' is a package and cannot be directly executed"
+    pip install setuptools==77.0.3
+
     # pre-install-az: check existing az
     which az || az version || az extension list || true
 
@@ -44,8 +47,8 @@ setupAZ(){
         azdev setup -c "${cli_repo}" -r "${ext_repo}"
     fi
 
-    # fix the issue that vcrpy>=4.3.0 is not compatible with urllib3
-    pip install vcrpy==4.2.1
+    # bump to 7.0.0 to fix the issue missing request.version_string attribute with urllib3 == 2.3.0, see https://github.com/kevin1024/vcrpy/issues/888
+    pip install vcrpy==7.0.0
 
     # fix the issue "Cannot import name 'AccessTokenInfo' from 'azure.core.credentials'"
     pip install azure-identity==1.17.1

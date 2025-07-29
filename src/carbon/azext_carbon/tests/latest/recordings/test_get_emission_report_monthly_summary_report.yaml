@@ -1,0 +1,69 @@
+interactions:
+- request:
+    body: '{"carbonScopeList": ["Scope1", "Scope2", "Scope3"], "dateRange": {"end":
+      "2025-03-01", "start": "2024-03-01"}, "reportType": "MonthlySummaryReport",
+      "subscriptionList": ["1fcfa925-ad8b-443e-afc9-73038125cc86"]}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - carbon get-emission-report
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '210'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --subscription-list --date-range --carbon-scope-list --monthly-summary
+      User-Agent:
+      - AZURECLI/2.72.0 azsdk-python-core/1.31.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
+    method: POST
+    uri: https://management.azure.com/providers/Microsoft.Carbon/carbonEmissionReports?api-version=2025-04-01
+  response:
+    body:
+      string: '{"value":[{"dataType":"MonthlySummaryData","date":"2024-03-01","carbonIntensity":0.0170261988257036,"latestMonthEmissions":127.264697099075,"previousMonthEmissions":103.363434855836,"monthOverMonthEmissionsChangeRatio":0.231235177861249,"monthlyEmissionsChangeValue":23.9012622432389},{"dataType":"MonthlySummaryData","date":"2024-04-01","carbonIntensity":0.0339931563188226,"latestMonthEmissions":477.077652156969,"previousMonthEmissions":127.264697099075,"monthOverMonthEmissionsChangeRatio":2.74870378849498,"monthlyEmissionsChangeValue":349.812955057894},{"dataType":"MonthlySummaryData","date":"2024-05-01","carbonIntensity":0.0378519995913714,"latestMonthEmissions":446.00891522622,"previousMonthEmissions":477.077652156969,"monthOverMonthEmissionsChangeRatio":-0.0651230188424896,"monthlyEmissionsChangeValue":-31.068736930749},{"dataType":"MonthlySummaryData","date":"2024-06-01","carbonIntensity":0.0343279807068098,"latestMonthEmissions":410.027128806015,"previousMonthEmissions":446.00891522622,"monthOverMonthEmissionsChangeRatio":-0.080675038529116,"monthlyEmissionsChangeValue":-35.9817864202045},{"dataType":"MonthlySummaryData","date":"2024-07-01","carbonIntensity":0.0262470481920649,"latestMonthEmissions":324.079583749917,"previousMonthEmissions":410.027128806015,"monthOverMonthEmissionsChangeRatio":-0.209614288952963,"monthlyEmissionsChangeValue":-85.9475450560978},{"dataType":"MonthlySummaryData","date":"2024-08-01","carbonIntensity":0.0283019830079276,"latestMonthEmissions":338.414580966828,"previousMonthEmissions":324.079583749917,"monthOverMonthEmissionsChangeRatio":0.0442329536808244,"monthlyEmissionsChangeValue":14.334997216911},{"dataType":"MonthlySummaryData","date":"2024-09-01","carbonIntensity":0.0252361267622333,"latestMonthEmissions":313.900701876921,"previousMonthEmissions":338.414580966828,"monthOverMonthEmissionsChangeRatio":-0.0724374198649259,"monthlyEmissionsChangeValue":-24.5138790899071},{"dataType":"MonthlySummaryData","date":"2024-10-01","carbonIntensity":0.0156194396216124,"latestMonthEmissions":209.356857057996,"previousMonthEmissions":313.900701876921,"monthOverMonthEmissionsChangeRatio":-0.333047502582254,"monthlyEmissionsChangeValue":-104.543844818925},{"dataType":"MonthlySummaryData","date":"2024-11-01","carbonIntensity":0.0167278799465911,"latestMonthEmissions":234.972575589762,"previousMonthEmissions":209.356857057996,"monthOverMonthEmissionsChangeRatio":0.122354332653501,"monthlyEmissionsChangeValue":25.6157185317656},{"dataType":"MonthlySummaryData","date":"2024-12-01","carbonIntensity":0.0159317504832839,"latestMonthEmissions":227.093155878317,"previousMonthEmissions":234.972575589762,"monthOverMonthEmissionsChangeRatio":-0.0335333589107919,"monthlyEmissionsChangeValue":-7.87941971144466},{"dataType":"MonthlySummaryData","date":"2025-01-01","carbonIntensity":0.0151881971247023,"latestMonthEmissions":217.200291580438,"previousMonthEmissions":227.093519360606,"monthOverMonthEmissionsChangeRatio":-0.0435645535285346,"monthlyEmissionsChangeValue":-9.89322778016844},{"dataType":"MonthlySummaryData","date":"2025-02-01","carbonIntensity":0.0178679554927896,"latestMonthEmissions":234.053421017701,"previousMonthEmissions":217.200291580438,"monthOverMonthEmissionsChangeRatio":0.0775925728028856,"monthlyEmissionsChangeValue":16.8531294372631},{"dataType":"MonthlySummaryData","date":"2025-03-01","carbonIntensity":0.0139939611574088,"latestMonthEmissions":205.438889697989,"previousMonthEmissions":234.053421017701,"monthOverMonthEmissionsChangeRatio":-0.122256411358104,"monthlyEmissionsChangeValue":-28.6145313197115}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '3603'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 16 May 2025 18:29:52 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 1dfc2508-98b9-4a90-8dcb-d5100dd58796
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:1b30ee95-d108-4b28-8df6-b780a66c5364
+      set-cookie:
+      - ARRAffinity=92cff1672181f3de1ff12b696639b5c8fe7f87b1484ca72975ce446af3251683;Path=/;HttpOnly;Secure;Domain=sustcarbon-webapp-prod-wus.azurewebsites.net
+      - ARRAffinitySameSite=92cff1672181f3de1ff12b696639b5c8fe7f87b1484ca72975ce446af3251683;Path=/;HttpOnly;SameSite=None;Secure;Domain=sustcarbon-webapp-prod-wus.azurewebsites.net
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-azure-ref:
+      - 20250516T182952Z-1794cd57cdbbttrthC1CO1tgzn00000002mg000000002ycr
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - ''
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-msedge-ref:
+      - 'Ref A: FA4830CFA0624C8E82C0E5A54FBA16C3 Ref B: MWH011020808029 Ref C: 2025-05-16T18:29:52Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+version: 1

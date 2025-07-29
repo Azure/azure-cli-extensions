@@ -16,12 +16,15 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update a StandbyContainerGroupPoolResource
+
+    :example: StandbyPoolContainerGroup_Update
+        az standby-container-group-pool update --resource-group rgstandbypool --name pool --max-ready-capacity 688 --refill-policy always --container-profile-id /subscriptions/00000000-0000-0000-0000-000000000009/resourceGroups/rgstandbypool/providers/Microsoft.ContainerInstance/containerGroupProfiles/cgProfile --profile-revision 1 --subnet-ids "[{id:/subscriptions/00000000-0000-0000-0000-000000000009/resourceGroups/rgstandbypool/providers/Microsoft.Network/virtualNetworks/cgSubnet/subnets/cgSubnet}]" --zones "[1,2,3]" --tags "{}" --location West US --subscription 00000000-0000-0000-0000-000000000009
     """
 
     _aaz_info = {
-        "version": "2024-03-01",
+        "version": "2025-03-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.standbypool/standbycontainergrouppools/{}", "2024-03-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.standbypool/standbycontainergrouppools/{}", "2025-03-01"],
         ]
     }
 
@@ -42,7 +45,6 @@ class Update(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="The resource group",
             required=True,
         )
         _args_schema.name = AAZStrArg(
@@ -110,11 +112,19 @@ class Update(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
+        _args_schema.zones = AAZListArg(
+            options=["--zones"],
+            arg_group="Properties",
+            help="Specifies zones of standby container group pools.",
+        )
         _args_schema.tags = AAZDictArg(
             options=["--tags"],
             arg_group="Properties",
             help="Resource tags.",
         )
+
+        zones = cls._args_schema.zones
+        zones.Element = AAZStrArg()
 
         tags = cls._args_schema.tags
         tags.Element = AAZStrArg()
@@ -185,7 +195,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-03-01",
+                    "api-version", "2025-03-01",
                     required=True,
                 ),
             }
@@ -217,15 +227,16 @@ class Update(AAZCommand):
             if properties is not None:
                 properties.set_prop("containerGroupProperties", AAZObjectType)
                 properties.set_prop("elasticityProfile", AAZObjectType)
+                properties.set_prop("zones", AAZListType, ".zones")
 
             container_group_properties = _builder.get(".properties.containerGroupProperties")
             if container_group_properties is not None:
-                container_group_properties.set_prop("containerGroupProfile", AAZObjectType)
+                container_group_properties.set_prop("containerGroupProfile", AAZObjectType, ".", typ_kwargs={"flags": {"required": True}})
                 container_group_properties.set_prop("subnetIds", AAZListType, ".subnet_ids")
 
             container_group_profile = _builder.get(".properties.containerGroupProperties.containerGroupProfile")
             if container_group_profile is not None:
-                container_group_profile.set_prop("id", AAZStrType, ".container_profile_id")
+                container_group_profile.set_prop("id", AAZStrType, ".container_profile_id", typ_kwargs={"flags": {"required": True}})
                 container_group_profile.set_prop("revision", AAZIntType, ".profile_revision")
 
             subnet_ids = _builder.get(".properties.containerGroupProperties.subnetIds")
@@ -238,8 +249,12 @@ class Update(AAZCommand):
 
             elasticity_profile = _builder.get(".properties.elasticityProfile")
             if elasticity_profile is not None:
-                elasticity_profile.set_prop("maxReadyCapacity", AAZIntType, ".max_ready_capacity")
+                elasticity_profile.set_prop("maxReadyCapacity", AAZIntType, ".max_ready_capacity", typ_kwargs={"flags": {"required": True}})
                 elasticity_profile.set_prop("refillPolicy", AAZStrType, ".refill_policy")
+
+            zones = _builder.get(".properties.zones")
+            if zones is not None:
+                zones.set_elements(AAZStrType, ".")
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -299,6 +314,7 @@ class Update(AAZCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+            properties.zones = AAZListType()
 
             container_group_properties = cls._schema_on_200.properties.container_group_properties
             container_group_properties.container_group_profile = AAZObjectType(
@@ -331,6 +347,9 @@ class Update(AAZCommand):
             elasticity_profile.refill_policy = AAZStrType(
                 serialized_name="refillPolicy",
             )
+
+            zones = cls._schema_on_200.properties.zones
+            zones.Element = AAZStrType()
 
             system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(

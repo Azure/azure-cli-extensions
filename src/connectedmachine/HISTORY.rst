@@ -2,6 +2,14 @@
 
 Release History
 ===============
+2.0.0b1
++++++	
+* 2024/11/10-preview is used for aaz generation. Migrated to aaz.
+
+1.1.1b1
++++++	
+* Fix connectedmachine list command and set resource group as optional.
+
 1.1.0
 +++++	
 * Add Pay-as-you-go features. 2024/07/31-preview is used for aaz generation. Migrated to aaz.
