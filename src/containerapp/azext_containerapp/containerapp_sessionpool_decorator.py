@@ -173,10 +173,14 @@ class SessionPoolCreateDecorator(SessionPoolPreviewDecorator):
             if environment_name is not None:
                 raise ValidationError(f"Do not pass environment name when using container type {container_type}")
 
-        if self.get_argument_max_alive_period() is not None and self.get_argument_lifecycle_type().lower() != "oncontainerexit":
+        if self.get_argument_max_alive_period() is not None and \
+            self.get_argument_lifecycle_type() is not None and \
+            self.get_argument_lifecycle_type().lower() != "oncontainerexit":
             raise ValidationError("max_alive_period can only be set when lifecycle_type is 'OnContainerExit'.")
 
-        if self.get_argument_cooldown_period_in_seconds() is not None and self.get_argument_lifecycle_type().lower() != "timed":
+        if self.get_argument_cooldown_period_in_seconds() is not None and \
+            self.get_argument_lifecycle_type() is not None and \
+            self.get_argument_lifecycle_type().lower() != "timed":
             raise ValidationError("cooldown_period can only be set when lifecycle_type is 'Timed'.")
 
 
@@ -511,10 +515,14 @@ class SessionPoolUpdateDecorator(SessionPoolPreviewDecorator):
     def set_up_dynamic_configuration(self):
         lifecycle_config_def = {}
 
-        if self.get_argument_max_alive_period() is not None and self.get_argument_lifecycle_type().lower() != "oncontainerexit":
+        if self.get_argument_max_alive_period() is not None and \
+            self.get_argument_lifecycle_type() is not None and \
+            self.get_argument_lifecycle_type().lower() != "oncontainerexit":
             raise ValidationError("max_alive_period can only be set when lifecycle_type is 'OnContainerExit'.")
 
-        if self.get_argument_cooldown_period_in_seconds() is not None and self.get_argument_lifecycle_type().lower() != "timed":
+        if self.get_argument_cooldown_period_in_seconds() is not None and \
+            self.get_argument_lifecycle_type() is not None and \
+            self.get_argument_lifecycle_type().lower() != "timed":
             raise ValidationError("cooldown_period can only be set when lifecycle_type is 'Timed'.")
 
         if self.get_argument_max_alive_period() is not None and self.get_argument_cooldown_period_in_seconds() is not None:
