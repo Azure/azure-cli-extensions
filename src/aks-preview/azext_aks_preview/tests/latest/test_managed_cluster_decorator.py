@@ -111,15 +111,7 @@ class AKSPreviewManagedClusterModelsTestCase(unittest.TestCase):
         models = AKSPreviewManagedClusterModels(self.cmd, CUSTOM_MGMT_AKS_PREVIEW)
 
         # load models directly (instead of through the `get_sdk` method provided by the cli component)
-        from azure.cli.core.profiles._shared import AZURE_API_PROFILES
-
-        sdk_profile = AZURE_API_PROFILES["latest"][CUSTOM_MGMT_AKS_PREVIEW]
-        api_version = sdk_profile.default_api_version
-        module_name = (
-            "azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks.v{}.models".format(
-                api_version.replace("-", "_")
-            )
-        )
+        module_name = "azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks.models"
         module = importlib.import_module(module_name)
 
         # pod identity models
