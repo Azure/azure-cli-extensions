@@ -4388,6 +4388,7 @@ def aks_bastion(cmd, client, resource_group_name, name, bastion=None, port=None,
         finally:
             aks_batsion_clean_up()
 
+
 def aks_agent(
         cmd,
         client,
@@ -4400,7 +4401,7 @@ def aks_agent(
         no_echo_request=False,
         show_tool_output=False,
         refresh_toolsets=False,
-        ):
+):
     '''
     Interact with the AKS agent using a prompt or piped input.
 
@@ -4422,13 +4423,14 @@ def aks_agent(
     :type refresh_toolsets: bool
     '''
 
-    # reverse the value of the variables so that 
+    # reverse the value of the variables so that
     interactive = not no_interactive
     echo = not no_echo_request
 
     # Holmes library allows the user to specify the agent name through environment variable before loading the library.
     os.environ["AGENT_NAME"] = "AKS AGENT"
-    # NOTE(mainred): we need to disable INFO logs from LiteLLM before LiteLLM library is loaded, to avoid logging the debug logs from heading of LiteLLM.
+    # NOTE(mainred): we need to disable INFO logs from LiteLLM before LiteLLM library is loaded, to avoid logging the
+    # debug logs from heading of LiteLLM.
     logging.getLogger("LiteLLM").setLevel(logging.WARNING)
     import typer
     from holmes.config import Config
@@ -4498,7 +4500,7 @@ def aks_agent(
         console.print("[bold yellow]User:[/bold yellow] " + prompt)
 
     # TODO: extend the system prompt with AKS context
-    system_prompt= "builtin://generic_ask.jinja2"
+    system_prompt = "builtin://generic_ask.jinja2"
     system_prompt_rendered = load_and_render_prompt(system_prompt, template_context)
 
     subscription_id = get_subscription_id(cmd.cli_ctx)
@@ -4532,7 +4534,7 @@ If the current kubeconfig context is set to the AKS cluster {{cluster_name}}, yo
     aks_context_prompt = load_and_render_prompt(aks_context_prompt, aks_template_context)
     system_prompt_rendered += aks_context_prompt
 
-    ## Variables not exposed to the user.
+    # Variables not exposed to the user.
     # Adds a prompt for post processing.
     post_processing_prompt = None
     # File to append to prompt
@@ -4563,7 +4565,7 @@ If the current kubeconfig context is set to the AKS cluster {{cluster_name}}, yo
 
     issue = Issue(
         id=str(uuid.uuid4()),
-        name=prompt, 
+        name=prompt,
         source_type="holmes-ask",
         raw={"prompt": prompt, "full_conversation": messages},
         source_instance_id=socket.gethostname(),
@@ -4571,9 +4573,9 @@ If the current kubeconfig context is set to the AKS cluster {{cluster_name}}, yo
     handle_result(
         response,
         console,
-        DestinationType.CLI, 
+        DestinationType.CLI,
         config,
         issue,
         show_tool_output,
-        False, 
+        False,
     )

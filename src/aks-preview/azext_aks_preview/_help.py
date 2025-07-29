@@ -3884,7 +3884,7 @@ helps['aks bastion'] = """
     examples:
         - name: Connect to a managed Kubernetes cluster using Azure Bastion with custom port and admin credentials.
           text: az aks bastion -g MyResourceGroup --name MyManagedCluster --bastion MyBastionResource --port 50001 --admin
-    """
+"""
 
 helps['aks agent'] = """
     type: command
