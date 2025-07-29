@@ -33,6 +33,8 @@ from azext_aks_preview._consts import (
     CONST_DEFAULT_VMS_VM_SIZE,
     CONST_DEFAULT_WINDOWS_VMS_VM_SIZE,
     CONST_GPU_DRIVER_INSTALL,
+    CONST_MANAGED_CLUSTER_SKU_NAME_BASE,
+    CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC,
     CONST_GPU_DRIVER_NONE,
     CONST_NODEPOOL_MODE_MANAGEDSYSTEM,
 )
@@ -1088,6 +1090,66 @@ class AKSPreviewAgentPoolContextManagedClusterModeTestCase(
         self.assertEqual(dec_agentpool_1, ground_truth_agentpool_1)
 
         dec_1.context.raw_param.print_usage_statistics()
+
+
+    def test_set_up_ssh_access_logs_warning_for_automatic(self):
+        raw_param_dict = {
+            "resource_group_name": "test_rg_name",
+            "cluster_name": "test_cluster_name",
+            "nodepool_name": "test_nodepool_name",
+            "sku": "automatic",
+        }
+
+        dec = AKSPreviewAgentPoolAddDecorator(
+            self.cmd,
+            self.client,
+            raw_param_dict,
+            self.resource_type,
+            self.agentpool_decorator_mode,
+        )
+
+        # Patch the SKU to be "automatic"
+        dec.context.get_ssh_access = Mock(return_value=CONST_SSH_ACCESS_LOCALUSER)
+        dec.context.get_sku_name = Mock(return_value=CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC)
+
+        # Construct and attach the agentpool using the correct method
+        with patch("azext_aks_preview.agentpool_decorator.cf_agent_pools", return_value=Mock(list=Mock(return_value=[]))):
+            agentpool = dec.construct_agentpool_profile_preview()
+
+        # Now run set_up_ssh_access and assert the expected log is emitted
+        with self.assertLogs(level='WARNING') as log:
+            dec.set_up_ssh_access(agentpool)
+        self.assertIn("--disable-ssh is in preview by the time automatic is GA", "\n".join(log.output))
+
+
+    def test_set_up_ssh_access_logs_warning_for_base(self):
+        raw_param_dict = {
+            "resource_group_name": "test_rg_name",
+            "cluster_name": "test_cluster_name",
+            "nodepool_name": "test_nodepool_name",
+            "sku": "base",
+        }
+
+        dec = AKSPreviewAgentPoolAddDecorator(
+            self.cmd,
+            self.client,
+            raw_param_dict,
+            self.resource_type,
+            self.agentpool_decorator_mode,
+        )
+
+        # Patch the SKU to be "base"
+        dec.context.get_ssh_access = Mock(return_value=CONST_SSH_ACCESS_LOCALUSER)
+        dec.context.get_sku_name = Mock(return_value=CONST_MANAGED_CLUSTER_SKU_NAME_BASE)
+
+        # Construct and attach the agentpool using the correct method
+        with patch("azext_aks_preview.agentpool_decorator.cf_agent_pools", return_value=Mock(list=Mock(return_value=[]))):
+            agentpool = dec.construct_agentpool_profile_preview()
+
+        # Now run set_up_ssh_access and assert the expected log is emitted
+        with self.assertLogs(level='WARNING') as log:
+            dec.set_up_ssh_access(agentpool)
+        self.assertIn("The new node pool will enable SSH access, recommended to use '--ssh-access disabled'", "\n".join(log.output))
 
 
 class AKSPreviewAgentPoolAddDecoratorCommonTestCase(unittest.TestCase):

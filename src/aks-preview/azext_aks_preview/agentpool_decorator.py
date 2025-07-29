@@ -41,6 +41,7 @@ from azext_aks_preview._consts import (
     CONST_DEFAULT_WINDOWS_NODE_VM_SIZE,
     CONST_DEFAULT_VMS_VM_SIZE,
     CONST_DEFAULT_WINDOWS_VMS_VM_SIZE,
+    CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC,
     CONST_SSH_ACCESS_LOCALUSER,
     CONST_GPU_DRIVER_NONE,
     CONST_NODEPOOL_MODE_MANAGEDSYSTEM,
@@ -567,6 +568,9 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
         """
         return self.raw_param.get("ssh_access")
 
+    def get_sku_name(self) -> str:
+        return self.raw_param.get("sku")
+
     def get_yes(self) -> bool:
         """Obtain the value of yes.
 
@@ -982,13 +986,19 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         self._ensure_agentpool(agentpool)
 
         ssh_access = self.context.get_ssh_access()
+        sku_name = self.context.get_sku_name()
         if ssh_access is not None:
             if agentpool.security_profile is None:
                 agentpool.security_profile = self.models.AgentPoolSecurityProfile()  # pylint: disable=no-member
             agentpool.security_profile.ssh_access = ssh_access
             if ssh_access == CONST_SSH_ACCESS_LOCALUSER:
-                logger.warning("The new node pool will enable SSH access, recommended to use '--ssh-access disabled' "
-                               "option to disable SSH access for the node pool to make it more secure.")
+                if sku_name == CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC:
+                    logger.warning("--disable-ssh is in preview by the time automatic is GA")
+                else:
+                    logger.warning(
+                        "The new node pool will enable SSH access, recommended to use "
+                        "'--ssh-access disabled' option to disable SSH access for the node pool to make it more secure."
+                    )
         return agentpool
 
     def set_up_skip_gpu_driver_install(self, agentpool: AgentPool) -> AgentPool:
