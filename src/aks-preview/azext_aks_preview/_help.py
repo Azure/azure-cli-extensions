@@ -3889,15 +3889,13 @@ helps['aks bastion'] = """
 helps['aks agent'] = """
     type: command
     short-summary: Run AI assistant to analyze and troubleshoot Kubernetes clusters.
+    long-summary: |-
+      This command allows you to ask questions about your Azure Kubernetes cluster and get answers using AI models.
+      Environment variables must be set to use the AI model, please refer to https://docs.litellm.ai/docs/providers to learn more about supported AI providers and models and required environment variables.
     parameters:
         - name: prompt
           type: string
           short-summary: Ask any question and get an answer using available tools.
-        - name: --api-key
-          type: string
-          short-summary: API key to use for the LLM (if not given, uses environment variables AZURE_API_KEY, OPENAI_API_KEY).
-        - name: --model
-          type: string
         - name: --config-file
           type: string
           short-summary: Path to configuration file.
@@ -3918,14 +3916,21 @@ helps['aks agent'] = """
           short-summary: Refresh the toolsets status.
 
     examples:
-        - name: Ask about pod issues in the cluster
+        - name: Ask about pod issues in the cluster with Azure OpenAI
+          text: |-
+            export MODEL=azure/my-gpt4.1-deployment
+            export AZURE_API_BASE="https://my-azureopenai-service.openai.azure.com/"
+            export AZURE_API_VERSION="2025-01-01-preview"
+            export AZURE_API_KEY="sk-xxx"
+            az aks agent "Why are my pods not starting?"
+        - name: Ask about pod issues in the cluster with OpenAI
+          text: |-
+            export MODEL=gpt-4o
+            export OPENAI_API_KEY="sk-xxx"
+            az aks agent "Why are my pods not starting?"
           text: az aks agent "Why are my pods not starting?"
-        - name: Analyze cluster with specific AI model
-          text: az aks agent "Check cluster health" --model azure/my-gpt4-deployment --api-key sk-xxx
         - name: Run in non-interactive batch mode
           text: az aks agent "Diagnose networking issues" --no-interactive --max-steps 5
-        - name: Use Azure OpenAI with custom deployment
-          text: az aks agent "Analyze failed deployments" --model azure/my-gpt4-deployment --api-key xxx
         - name: Show detailed tool output during analysis
           text: az aks agent "Why is my service unavailable?" --show-tool-output
         - name: Use custom configuration file

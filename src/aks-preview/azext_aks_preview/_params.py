@@ -2776,18 +2776,6 @@ def load_arguments(self, _):
     with self.argument_context("aks agent") as c:
         c.positional("prompt", help="Ask any question and answer using available tools.")
         c.argument(
-            "api_key",
-            default=None,
-            required=False,
-            help="API key to use for the LLM (if not given, uses environment variables AZURE_API_KEY, OPENAI_API_KEY).",
-        )
-        c.argument(
-            "model",
-            default=None,
-            required=False,
-            help="Model to use for the LLM. For example, azure/<deployment_name> for Azure OpenAI, or <model_name> for OpenAI.",
-        )
-        c.argument(
             "max_steps",
             type=int,
             default=10,

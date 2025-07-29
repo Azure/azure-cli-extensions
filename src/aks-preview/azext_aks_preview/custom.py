@@ -12,10 +12,10 @@ import os.path
 from pathlib import Path
 import platform
 import socket
+import ssl
 import sys
 import threading
 import time
-import typer
 import uuid
 import webbrowser
 
@@ -4394,8 +4394,6 @@ def aks_agent(
         resource_group_name,
         name,
         prompt,
-        api_key,
-        model,
         max_steps,
         config_file,
         no_interactive=False,
@@ -4403,16 +4401,11 @@ def aks_agent(
         show_tool_output=False,
         refresh_toolsets=False,
         ):
-    # add description for the function and variables
     '''
     Interact with the AKS agent using a prompt or piped input.
 
     :param prompt: The prompt to send to the agent.
     :type prompt: str
-    :param api_key: API key for authentication.
-    :type api_key: str
-    :param model: Model to use for the LLM.
-    :type model: str
     :param interactive: Whether to run in interactive mode.
     :type interactive: bool
     :param max_steps: Maximum number of steps to take.
@@ -4437,6 +4430,7 @@ def aks_agent(
     os.environ["AGENT_NAME"] = "AKS AGENT"
     # NOTE(mainred): we need to disable INFO logs from LiteLLM before LiteLLM library is loaded, to avoid logging the debug logs from heading of LiteLLM.
     logging.getLogger("LiteLLM").setLevel(logging.WARNING)
+    import typer
     from holmes.config import Config
     from holmes.core.prompt import build_initial_ask_messages
     from holmes.interactive import run_interactive_loop
@@ -4474,8 +4468,6 @@ def aks_agent(
     config_file = Path(config_file)
     config = Config.load_from_file(
         config_file,
-        api_key=api_key,
-        model=model,
         max_steps=max_steps,
     )
 
@@ -4567,7 +4559,6 @@ If the current kubeconfig context is set to the AKS cluster {{cluster_name}}, yo
 
     response = ai.call(messages)
 
-
     messages = response.messages  # type: ignore # Update messages with the full history
 
     issue = Issue(
@@ -4586,4 +4577,3 @@ If the current kubeconfig context is set to the AKS cluster {{cluster_name}}, yo
         show_tool_output,
         False, 
     )
-
