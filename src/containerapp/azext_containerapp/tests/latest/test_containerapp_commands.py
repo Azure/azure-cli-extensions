@@ -673,8 +673,10 @@ class ContainerappIngressTests(ScenarioTest):
             JMESPathCheck('message', 'No premium ingress configuration found for this environment, using default values.'),
         ])
 
-        self.cmd(f'containerapp env premium-ingress add -g {resource_group} -n {env_name} -w wp-ingress', checks=[
+        self.cmd(f'containerapp env premium-ingress add -g {resource_group} -n {env_name} -w wp-ingress --min-replicas 3 --max-replicas 5', checks=[
             JMESPathCheck('workloadProfileName', 'wp-ingress'),
+            JMESPathCheck('scale.minReplicas', 3),
+            JMESPathCheck('scale.maxReplicas', 5),
             JMESPathCheck('terminationGracePeriodSeconds', None),
             JMESPathCheck('requestIdleTimeout', None),
             JMESPathCheck('headerCountLimit', None),
@@ -682,21 +684,27 @@ class ContainerappIngressTests(ScenarioTest):
         
         self.cmd(f'containerapp env premium-ingress show -g {resource_group} -n {env_name}', checks=[
             JMESPathCheck('workloadProfileName', 'wp-ingress'),
+            JMESPathCheck('scale.minReplicas', 3),
+            JMESPathCheck('scale.maxReplicas', 5),
             JMESPathCheck('terminationGracePeriodSeconds', None),
             JMESPathCheck('requestIdleTimeout', None),
             JMESPathCheck('headerCountLimit', None),
         ])
         
-        self.cmd(f'containerapp env premium-ingress update -g {resource_group} -n {env_name} --termination-grace-period 45 --request-idle-timeout 180 --header-count-limit 40', checks=[
+        self.cmd(f'containerapp env premium-ingress update -g {resource_group} -n {env_name} --min-replicas 4 --max-replicas 20 --termination-grace-period 45 --request-idle-timeout 180 --header-count-limit 40', checks=[
             JMESPathCheck('workloadProfileName', 'wp-ingress'),
+            JMESPathCheck('scale.minReplicas', 4),
+            JMESPathCheck('scale.maxReplicas', 20),
             JMESPathCheck('terminationGracePeriodSeconds', 45),
             JMESPathCheck('requestIdleTimeout', 180),
             JMESPathCheck('headerCountLimit', 40),
         ])
 
         # set removes unspecified optional parameters
-        self.cmd(f'containerapp env premium-ingress add -g {resource_group} -n {env_name} -w wp-ingress --request-idle-timeout 90', checks=[
+        self.cmd(f'containerapp env premium-ingress add -g {resource_group} -n {env_name} -w wp-ingress --min-replicas 2 --max-replicas 3 --request-idle-timeout 90', checks=[
             JMESPathCheck('workloadProfileName', 'wp-ingress'),
+            JMESPathCheck('scale.minReplicas', 2),
+            JMESPathCheck('scale.maxReplicas', 3),
             JMESPathCheck('requestIdleTimeout', 90),
             JMESPathCheck('terminationGracePeriodSeconds', None),
             JMESPathCheck('headerCountLimit', None),
