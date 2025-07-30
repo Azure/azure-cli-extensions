@@ -2,44 +2,55 @@
 
 Release History
 ===============
+9.0.0
+++++++
+* Adds `bootstrapdevice`` and `bootstrapinterface`` resources and commands.
+* For consistency the following command parameter-names have been updated
+*	- `--network-fabric-name` parameter on `nni update-bfd-administrative-state` has been changed to `--fabric --fabric-name`.
+*	- `--network-fabric-name` parameter on `fabric arm-configuration-diff` has been changed to `--resource-name`.
+*	- `--network-fabric-name` parameter on `fabric commit-batch-status` has been changed to `--resource-name`.
+*   - `--network-fabric-name` parameter on `fabric view-device-configuration` has been changed to `--resource-name`.
+*   - `--network-fabric-name` parameter on `fabric discard-commit-batch` has been changed to `--resource-name`.
+*	- `--network-fabric-name --name -n`` parameters on `fabric identity` sub-commands `assign`, `remove`, `show`, `wait`` have been changed to `--resource-name`.
+
 8.0.0b7
 ++++++
 * Added missing examples and updated verbiage on existing examples
 
 8.0.0b6
 ++++++
-* Enables the 'device refresh-configuration' command that was previously disabled/removed.
-* Renames the 'network-device-name' parameter on 'device refresh-configuration' and 'device reboot' operations to 'resource-name' for better overall consistency.
+* Enables the `device refresh-configuration` command that was previously disabled/removed.
+* Renames the `network-device-name` parameter on `device refresh-configuration` and `device reboot` operations to `resource-name` for better overall consistency.
 
 8.0.0b5
 ++++++
-* Fixes 'taprule create' command as the API cannot support float values for 'polling-interval-in-seconds' option, i.e. - '30.0'.
+* Fixes `taprule create` command as the API cannot support float values for `polling-interval-in-seconds` option, i.e. - `30.0`.
 * Fixes the response object model for validate-configuration operations that cause response of the operation to not show any output.
 * az core cli updated to version 2.70, aaz_dev updated to version 4.2.0, and azdev to version 0.2.4.
 
 8.0.0b4
 ++++++
-* Fixes 'device run-ro' command for missing fields in the response.
+* Fixes `device run-ro` command for missing fields in the response.
 
 8.0.0b3
 ++++++
-* Adding custom output formatting for 'device' run-ro command
+* Adding custom output formatting for `device run-ro command`.
 
 8.0.0b2
 ++++++
 * Making the Network Monitor resource available through the CLI.
-* Within the the IPv4/IPv6 PrefixLimitPatchProperties structure for External and Internal Networks, renamed the 'softLimit' property to 'threshold'.
+* Within the the IPv4/IPv6 PrefixLimitPatchProperties structure for External and Internal Networks, renamed the `softLimit` property to `threshold`.
 
 8.0.0b1
 ++++++
 * New preview CLI version for latest api 2024-06-15-preview.
 * az core cli updated to version 2.67, aaz_dev updated to version 3.2.0, and azdev to version 0.1.94.
 * New `fabric identity` commands introduced: `fabric identity assign`, `fabric identity remove`, `fabric identity show`.
-* Expose the 'update' command for the 'interface' resource that was previously removed in post generate script.
+* Expose the `update` command for the `interface` resource that was previously removed in post generate script.
 
 7.1.0
 ++++++
-* Bug fix: expose the 'update-admin-state' command for the 'interface' resource that was removed from the CLI by invalid post-processing logic.
+* Bug fix: expose the `update-admin-state` command for the `interface` resource that was removed from the CLI by invalid post-processing logic.
 
 7.0.0
 ++++++

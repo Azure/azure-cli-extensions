@@ -38,7 +38,7 @@ def step_update_bfd_admin_state(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric nni update-bfd-administrative-state  --network-fabric-name {fabric} --nni-name {name}"
+        "az networkfabric nni update-bfd-administrative-state  --fabric-name {fabric} --nni-name {name}"
         " --resource-group {rg} --administrative-state {administrativeState} --route-type {routeType}"
     )
 

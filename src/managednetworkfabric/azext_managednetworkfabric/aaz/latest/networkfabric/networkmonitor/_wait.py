@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkmonitors/{}", "2024-06-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkmonitors/{}", "2025-07-15"],
         ]
     }
 
@@ -119,7 +119,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-06-15-preview",
+                    "api-version", "2025-07-15",
                     required=True,
                 ),
             }
@@ -199,6 +199,9 @@ class Wait(AAZWaitCommand):
             bmp_configuration.export_policy = AAZStrType(
                 serialized_name="exportPolicy",
             )
+            bmp_configuration.export_policy_configuration = AAZObjectType(
+                serialized_name="exportPolicyConfiguration",
+            )
             bmp_configuration.monitored_address_families = AAZListType(
                 serialized_name="monitoredAddressFamilies",
             )
@@ -229,6 +232,14 @@ class Wait(AAZWaitCommand):
             bmp_configuration.station_port = AAZIntType(
                 serialized_name="stationPort",
             )
+
+            export_policy_configuration = cls._schema_on_200.properties.bmp_configuration.export_policy_configuration
+            export_policy_configuration.export_policies = AAZListType(
+                serialized_name="exportPolicies",
+            )
+
+            export_policies = cls._schema_on_200.properties.bmp_configuration.export_policy_configuration.export_policies
+            export_policies.Element = AAZStrType()
 
             monitored_address_families = cls._schema_on_200.properties.bmp_configuration.monitored_address_families
             monitored_address_families.Element = AAZStrType()
