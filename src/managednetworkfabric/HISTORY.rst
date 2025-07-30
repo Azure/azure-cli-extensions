@@ -6,12 +6,12 @@ Release History
 ++++++
 * Adds `bootstrapdevice`` and `bootstrapinterface`` resources and commands.
 * For consistency the following command parameter-names have been updated
-*	- `--network-fabric-name` parameter on `nni update-bfd-administrative-state` has been changed to `--fabric --fabric-name`.
-*	- `--network-fabric-name` parameter on `fabric arm-configuration-diff` has been changed to `--resource-name`.
-*	- `--network-fabric-name` parameter on `fabric commit-batch-status` has been changed to `--resource-name`.
+*   - `--network-fabric-name` parameter on `nni update-bfd-administrative-state` has been changed to `--fabric --fabric-name`.
+*   - `--network-fabric-name` parameter on `fabric arm-configuration-diff` has been changed to `--resource-name`.
+*   - `--network-fabric-name` parameter on `fabric commit-batch-status` has been changed to `--resource-name`.
 *   - `--network-fabric-name` parameter on `fabric view-device-configuration` has been changed to `--resource-name`.
 *   - `--network-fabric-name` parameter on `fabric discard-commit-batch` has been changed to `--resource-name`.
-*	- `--network-fabric-name --name -n`` parameters on `fabric identity` sub-commands `assign`, `remove`, `show`, `wait`` have been changed to `--resource-name`.
+*   - `--network-fabric-name --name -n`` parameters on `fabric identity` sub-commands `assign`, `remove`, `show`, `wait`` have been changed to `--resource-name`.
 
 8.0.0b7
 ++++++
