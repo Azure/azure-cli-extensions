@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "elastic monitor tag-rule create",
 )
 class Create(AAZCommand):
-    """Create a tag rule set for a given monitor resource.
+    """Create a tag rule set for a given Elastic monitor resource, enabling fine-grained control over observability based on resource tags.
 
     :example: Create monitor tag-rule
         az elastic monitor tag-rule create -n default -g rg --monitor-name monitor --log-rules "{filteringTags:[{name:Environment,value:Prod,action:Include}]}"

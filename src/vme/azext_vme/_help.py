@@ -47,3 +47,15 @@ helps['vme upgrade'] = """
         text: |-
           az vme upgrade --resource-group my-resource-group --cluster-name my-cluster --wait
 """
+
+helps['vme list'] = """
+    type: command
+    short-summary: List version managed extensions.
+    examples:
+      - name: List version managed extensions
+        text: |-
+          az vme list --resource-group my-resource-group --cluster-name my-cluster
+      - name: List version managed extensions with table format
+        text: |-
+          az vme list --resource-group my-resource-group --cluster-name my-cluster --output table
+"""

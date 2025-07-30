@@ -3,6 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+# pylint: disable=no-else-raise
 
 def resource_exception_handler(exception):
     from knack.util import CLIError

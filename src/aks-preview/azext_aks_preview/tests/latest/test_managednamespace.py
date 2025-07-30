@@ -4,7 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 import unittest
-
+from unittest.mock import patch, Mock
 import azext_aks_preview.managednamespace as ns
 from azext_aks_preview.__init__ import register_aks_preview_resource_type
 from azure.cli.command_modules.acs.tests.latest.mocks import MockCLI, MockCmd
@@ -13,11 +13,26 @@ from azure.cli.core.azclierror import (
     RequiredArgumentMissingError,
 )
 
+@patch("azext_aks_preview.managednamespace.get_container_service_client")
 class TestAddManagedNamespace(unittest.TestCase):
-    def test_add_managed_namespace_with_invalid_labels(self):
+    def setUp(self):
+        # Set up mock cluster client and location
+        self.mock_cluster = Mock()
+        self.mock_cluster.location = "eastus"
+
+        self.mock_managed_clusters = Mock()
+        self.mock_managed_clusters.get.return_value = self.mock_cluster
+
+        self.mock_client = Mock()
+        self.mock_client.managed_clusters = self.mock_managed_clusters
+
+    def test_add_managed_namespace_with_invalid_labels(self, mock_get_client):
         register_aks_preview_resource_type()
         cli_ctx = MockCLI()
         cmd = MockCmd(cli_ctx)
+
+        mock_get_client.return_value = self.mock_client
+
         raw_parameters = {
             "resource_group_name": "test_rg",
             "cluster_name": "test_cluster",
@@ -29,10 +44,13 @@ class TestAddManagedNamespace(unittest.TestCase):
             ns.aks_managed_namespace_add(cmd, None, raw_parameters, None, False)
         self.assertEqual(str(cm.exception), err)
     
-    def test_add_managed_namespace_with_invalid_annotations(self):
+    def test_add_managed_namespace_with_invalid_annotations(self, mock_get_client):
         register_aks_preview_resource_type()
         cli_ctx = MockCLI()
         cmd = MockCmd(cli_ctx)
+
+        mock_get_client.return_value = self.mock_client
+
         raw_parameters = {
             "resource_group_name": "test_rg",
             "cluster_name": "test_cluster",
@@ -45,10 +63,13 @@ class TestAddManagedNamespace(unittest.TestCase):
             ns.aks_managed_namespace_add(cmd, None, raw_parameters, None, False)
         self.assertEqual(str(cm.exception), err)
 
-    def test_add_managed_namespace_with_missing_cpu_request(self):
+    def test_add_managed_namespace_with_missing_cpu_request(self, mock_get_client):
         register_aks_preview_resource_type()
         cli_ctx = MockCLI()
         cmd = MockCmd(cli_ctx)
+
+        mock_get_client.return_value = self.mock_client
+
         raw_parameters = {
             "resource_group_name": "test_rg",
             "cluster_name": "test_cluster",
@@ -60,10 +81,13 @@ class TestAddManagedNamespace(unittest.TestCase):
             ns.aks_managed_namespace_add(cmd, None, raw_parameters, None, False)
         self.assertEqual(str(cm.exception), err)
     
-    def test_add_managed_namespace_with_invalid_ingress_policy(self):
+    def test_add_managed_namespace_with_invalid_ingress_policy(self, mock_get_client):
         register_aks_preview_resource_type()
         cli_ctx = MockCLI()
         cmd = MockCmd(cli_ctx)
+
+        mock_get_client.return_value = self.mock_client
+
         raw_parameters = {
             "resource_group_name": "test_rg",
             "cluster_name": "test_cluster",
@@ -79,10 +103,13 @@ class TestAddManagedNamespace(unittest.TestCase):
             ns.aks_managed_namespace_add(cmd, None, raw_parameters, None, False)
         self.assertIn(err, str(cm.exception))
 
-    def test_add_managed_namespace_with_invalid_egress_policy(self):
+    def test_add_managed_namespace_with_invalid_egress_policy(self, mock_get_client):
         register_aks_preview_resource_type()
         cli_ctx = MockCLI()
         cmd = MockCmd(cli_ctx)
+
+        mock_get_client.return_value = self.mock_client
+
         raw_parameters = {
             "resource_group_name": "test_rg",
             "cluster_name": "test_cluster",
@@ -99,10 +126,13 @@ class TestAddManagedNamespace(unittest.TestCase):
             ns.aks_managed_namespace_add(cmd, None, raw_parameters, None, False)
         self.assertIn(err, str(cm.exception))
         
-    def test_add_managed_namespace_with_invalid_adoption_policy(self):
+    def test_add_managed_namespace_with_invalid_adoption_policy(self, mock_get_client):
         register_aks_preview_resource_type()
         cli_ctx = MockCLI()
         cmd = MockCmd(cli_ctx)
+
+        mock_get_client.return_value = self.mock_client
+
         raw_parameters = {
             "resource_group_name": "test_rg",
             "cluster_name": "test_cluster",
@@ -120,10 +150,13 @@ class TestAddManagedNamespace(unittest.TestCase):
             ns.aks_managed_namespace_add(cmd, None, raw_parameters, None, False)
         self.assertIn(err, str(cm.exception))
 
-    def test_add_managed_namespace_with_invalid_delete_policy(self):
+    def test_add_managed_namespace_with_invalid_delete_policy(self, mock_get_client):
         register_aks_preview_resource_type()
         cli_ctx = MockCLI()
         cmd = MockCmd(cli_ctx)
+
+        mock_get_client.return_value = self.mock_client
+
         raw_parameters = {
             "resource_group_name": "test_rg",
             "cluster_name": "test_cluster",
@@ -145,11 +178,28 @@ class TestAddManagedNamespace(unittest.TestCase):
     # aks_managed_namespace_add(cmd, client, raw_parameters, headers, no_wait):
     # aks_managed_namespace_update(cmd, client, raw_parameters, headers, existedNamespace, no_wait)
 
+
+@patch("azext_aks_preview.managednamespace.get_container_service_client")
 class TestUpdateManagedNamespace(unittest.TestCase):
-    def test_update_managed_namespace_with_invalid_ingress_policy(self):
+    def setUp(self):
+        # Set up mock cluster client and location
+        self.mock_cluster = Mock()
+        self.mock_cluster.location = "eastus"
+
+        self.mock_managed_clusters = Mock()
+        self.mock_managed_clusters.get.return_value = self.mock_cluster
+
+        self.mock_client = Mock()
+        self.mock_client.managed_clusters = self.mock_managed_clusters
+
+
+    def test_update_managed_namespace_with_invalid_ingress_policy(self, mock_get_client):
         register_aks_preview_resource_type()
         cli_ctx = MockCLI()
         cmd = MockCmd(cli_ctx)
+
+        mock_get_client.return_value = self.mock_client
+
         raw_parameters = {
             "resource_group_name": "test_rg",
             "cluster_name": "test_cluster",
@@ -165,10 +215,13 @@ class TestUpdateManagedNamespace(unittest.TestCase):
             ns.aks_managed_namespace_update(cmd, None, raw_parameters, None, None, False)
         self.assertIn(err, str(cm.exception))
 
-    def test_update_managed_namespace_with_invalid_egress_policy(self):
+    def test_update_managed_namespace_with_invalid_egress_policy(self, mock_get_client):
         register_aks_preview_resource_type()
         cli_ctx = MockCLI()
         cmd = MockCmd(cli_ctx)
+
+        mock_get_client.return_value = self.mock_client
+
         raw_parameters = {
             "resource_group_name": "test_rg",
             "cluster_name": "test_cluster",
@@ -185,10 +238,13 @@ class TestUpdateManagedNamespace(unittest.TestCase):
             ns.aks_managed_namespace_update(cmd, None, raw_parameters, None, None, False)
         self.assertIn(err, str(cm.exception))
         
-    def test_update_managed_namespace_with_invalid_adoption_policy(self):
+    def test_update_managed_namespace_with_invalid_adoption_policy(self, mock_get_client):
         register_aks_preview_resource_type()
         cli_ctx = MockCLI()
         cmd = MockCmd(cli_ctx)
+
+        mock_get_client.return_value = self.mock_client
+
         raw_parameters = {
             "resource_group_name": "test_rg",
             "cluster_name": "test_cluster",
@@ -206,10 +262,13 @@ class TestUpdateManagedNamespace(unittest.TestCase):
             ns.aks_managed_namespace_update(cmd, None, raw_parameters, None, None, False)
         self.assertIn(err, str(cm.exception))
 
-    def test_update_managed_namespace_with_invalid_delete_policy(self):
+    def test_update_managed_namespace_with_invalid_delete_policy(self, mock_get_client):
         register_aks_preview_resource_type()
         cli_ctx = MockCLI()
         cmd = MockCmd(cli_ctx)
+
+        mock_get_client.return_value = self.mock_client
+
         raw_parameters = {
             "resource_group_name": "test_rg",
             "cluster_name": "test_cluster",
@@ -227,3 +286,7 @@ class TestUpdateManagedNamespace(unittest.TestCase):
         with self.assertRaises(InvalidArgumentValueError) as cm:
             ns.aks_managed_namespace_update(cmd, None, raw_parameters, None, None, False)
         self.assertIn(err, str(cm.exception))
+
+
+if __name__ == "__main__":
+    unittest.main()

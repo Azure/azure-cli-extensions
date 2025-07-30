@@ -71,6 +71,7 @@ from azext_aks_preview._helpers import (
     get_all_extension_types_in_allow_list,
     get_all_extensions_in_allow_list,
     raise_validation_error_if_extension_type_not_in_allow_list,
+    get_extension_in_allow_list,
 )
 from azext_aks_preview._podidentity import (
     _ensure_managed_identity_operator_permission,
@@ -91,6 +92,14 @@ from azext_aks_preview.aks_draft.commands import (
     aks_draft_cmd_setup_gh,
     aks_draft_cmd_up,
     aks_draft_cmd_update,
+)
+from azext_aks_preview.bastion.bastion import (
+    aks_bastion_parse_bastion_resource,
+    aks_bastion_get_local_port,
+    aks_bastion_extension,
+    aks_bastion_set_kubeconfig,
+    aks_bastion_runner,
+    aks_batsion_clean_up
 )
 from azext_aks_preview.maintenanceconfiguration import (
     aks_maintenanceconfiguration_update_internal,
@@ -120,7 +129,10 @@ from azure.cli.core.azclierror import (
     ValidationError,
 )
 from azure.cli.core.commands import LongRunningOperation
-from azure.cli.core.commands.client_factory import get_subscription_id
+from azure.cli.core.commands.client_factory import (
+    get_subscription_id,
+    get_mgmt_service_client,
+)
 from azure.cli.core.profiles import ResourceType
 from azure.cli.core.util import (
     in_cloud_console,
@@ -325,10 +337,20 @@ def aks_namespace_show(
 def aks_namespace_list(
     cmd,  # pylint: disable=unused-argument
     client,
-    resource_group_name,
-    cluster_name
+    resource_group_name=None,
+    cluster_name=None,
 ):
-    return client.list_by_managed_cluster(resource_group_name, cluster_name)
+    if resource_group_name and cluster_name:
+        return client.list_by_managed_cluster(resource_group_name, cluster_name)
+    rcf = get_mgmt_service_client(cmd.cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES)
+    full_resource_type = "Microsoft.ContainerService/managedClusters/managedNamespaces"
+    filters = [f"resourceType eq '{full_resource_type}'"]
+    if resource_group_name:
+        filters.append(f"resourceGroup eq '{resource_group_name}'")
+    odata_filter = " and ".join(filters)
+    expand = "createdTime,changedTime,provisioningState"
+    resources = rcf.resources.list(filter=odata_filter, expand=expand)
+    return list(resources)
 
 
 def aks_namespace_delete(
@@ -664,6 +686,7 @@ def aks_create(
     disable_acns_observability=None,
     disable_acns_security=None,
     acns_advanced_networkpolicies=None,
+    acns_transit_encryption_type=None,
     enable_retina_flow_logs=None,
     # nodepool
     crg_id=None,
@@ -703,6 +726,7 @@ def aks_create(
     ephemeral_disk_volume_type=None,
     ephemeral_disk_nvme_perf_tier=None,
     node_provisioning_mode=None,
+    node_provisioning_default_pools=None,
     ssh_access=CONST_SSH_ACCESS_LOCALUSER,
     # trusted launch
     enable_secure_boot=False,
@@ -716,6 +740,8 @@ def aks_create(
     vm_sizes=None,
     # IMDS restriction
     enable_imds_restriction=False,
+    # managed system pool
+    enable_managed_system_pool=False,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -821,6 +847,8 @@ def aks_update(
     azure_keyvault_kms_key_vault_network_access=None,
     azure_keyvault_kms_key_vault_resource_id=None,
     http_proxy_config=None,
+    disable_http_proxy=False,
+    enable_http_proxy=False,
     bootstrap_artifact_source=None,
     bootstrap_container_registry_resource_id=None,
     # addons
@@ -896,6 +924,7 @@ def aks_update(
     disable_acns_observability=None,
     disable_acns_security=None,
     acns_advanced_networkpolicies=None,
+    acns_transit_encryption_type=None,
     enable_retina_flow_logs=None,
     disable_retina_flow_logs=None,
     # metrics profile
@@ -915,6 +944,7 @@ def aks_update(
     ephemeral_disk_volume_type=None,
     ephemeral_disk_nvme_perf_tier=None,
     node_provisioning_mode=None,
+    node_provisioning_default_pools=None,
     cluster_service_load_balancer_health_probe_mode=None,
     if_match=None,
     if_none_match=None,
@@ -1357,6 +1387,7 @@ def aks_agentpool_add(
     node_soak_duration=None,
     undrainable_node_behavior=None,
     max_unavailable=None,
+    max_blocked_nodes=None,
     mode=CONST_NODEPOOL_MODE_USER,
     scale_down_mode=CONST_SCALE_DOWN_MODE_DELETE,
     max_pods=0,
@@ -1396,6 +1427,8 @@ def aks_agentpool_add(
     gateway_prefix_size=None,
     # virtualmachines
     vm_sizes=None,
+    # local DNS
+    localdns_config=None,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -1440,6 +1473,7 @@ def aks_agentpool_update(
     node_soak_duration=None,
     undrainable_node_behavior=None,
     max_unavailable=None,
+    max_blocked_nodes=None,
     mode=None,
     scale_down_mode=None,
     no_wait=False,
@@ -1462,6 +1496,8 @@ def aks_agentpool_update(
     if_none_match=None,
     enable_fips_image=False,
     disable_fips_image=False,
+    # local DNS
+    localdns_config=None,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -1532,6 +1568,7 @@ def aks_agentpool_upgrade(cmd,
                           node_soak_duration=None,
                           undrainable_node_behavior=None,
                           max_unavailable=None,
+                          max_blocked_nodes=None,
                           snapshot_id=None,
                           no_wait=False,
                           aks_custom_headers=None,
@@ -1551,13 +1588,24 @@ def aks_agentpool_upgrade(cmd,
         )
 
     # Note: we exclude this option because node image upgrade can't accept nodepool put fields like max surge
-    hasUpgradeSetting = max_surge or drain_timeout or node_soak_duration or undrainable_node_behavior or max_unavailable
+    hasUpgradeSetting = (
+        max_surge or
+        drain_timeout or
+        node_soak_duration or
+        undrainable_node_behavior or
+        max_unavailable or
+        max_blocked_nodes)
     if hasUpgradeSetting and node_image_only:
         raise MutuallyExclusiveArgumentError(
-            "Conflicting flags. Unable to specify max-surge/drain-timeout/node-soak-duration with node-image-only."
-            "If you want to use max-surge/drain-timeout/node-soak-duration with a node image upgrade, please first "
-            "update max-surge/drain-timeout/node-soak-duration using "
-            '"az aks nodepool update --max-surge/--drain-timeout/--node-soak-duration".'
+            "Conflicting flags. Unable to specify "
+            "max-surge/drain-timeout/node-soak-duration/undrainable-node-behavior/max-unavailable/max-blocked-nodes"
+            " with node-image-only.If you want to use "
+            "max-surge/drain-timeout/node-soak-duration/undrainable-node-behavior/max-unavailable/max-blocked-nodes"
+            " with a node image upgrade, please first update "
+            "max-surge/drain-timeout/node-soak-duration/undrainable-node-behavior/max-unavailable/max-blocked-nodes"
+            " using 'az aks nodepool update "
+            "--max-surge/--drain-timeout/--node-soak-duration/"
+            "--undrainable-node-behavior/--max-unavailable/--max-blocked-nodes'."
         )
 
     if node_image_only:
@@ -1619,6 +1667,8 @@ def aks_agentpool_upgrade(cmd,
         instance.upgrade_settings.undrainable_node_behavior = undrainable_node_behavior
     if max_unavailable:
         instance.upgrade_settings.max_unavailable = max_unavailable
+    if max_blocked_nodes:
+        instance.upgrade_settings.max_blocked_nodes = max_blocked_nodes
 
     # custom headers
     aks_custom_headers = extract_comma_separated_string(
@@ -3987,7 +4037,7 @@ def show_k8s_extension(cmd, client, resource_group_name, cluster_name, name):
             name,
             "managedClusters",
         )
-        return result
+        return get_extension_in_allow_list(result)
     except Exception as ex:
         logger.error("Failed to get K8s extension.\nError: %s", ex)
 
@@ -4297,3 +4347,39 @@ def aks_loadbalancer_rebalance_nodes(
     }
 
     return aks_loadbalancer_rebalance_internal(managed_clusters_client, parameters)
+
+
+def aks_bastion(cmd, client, resource_group_name, name, bastion=None, port=None, admin=False, yes=False):
+    import asyncio
+    import tempfile
+
+    from azure.cli.command_modules.acs._consts import DecoratorEarlyExitException
+
+    try:
+        aks_bastion_extension(yes)
+    except DecoratorEarlyExitException as ex:
+        logger.error(ex)
+        return
+
+    with tempfile.TemporaryDirectory() as temp_dir:
+        logger.info("creating temporary directory: %s", temp_dir)
+        try:
+            kubeconfig_path = os.path.join(temp_dir, ".kube", "config")
+            mc = client.get(resource_group_name, name)
+            mc_id = mc.id
+            nrg = mc.node_resource_group
+            bastion_resource = aks_bastion_parse_bastion_resource(bastion, [nrg])
+            port = aks_bastion_get_local_port(port)
+            aks_get_credentials(cmd, client, resource_group_name, name, admin=admin, path=kubeconfig_path)
+            aks_bastion_set_kubeconfig(kubeconfig_path, port)
+            asyncio.run(
+                aks_bastion_runner(
+                    bastion_resource,
+                    port,
+                    mc_id,
+                    kubeconfig_path,
+                    test_hook=os.getenv("AKS_BASTION_TEST_HOOK"),
+                )
+            )
+        finally:
+            aks_batsion_clean_up()

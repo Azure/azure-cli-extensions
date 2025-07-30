@@ -21,7 +21,6 @@ from azure.cli.core.extension.operations import _install_deps_for_psycopg2, _run
 from azure.cli.core._profile import Profile
 from azure.cli.command_modules.serviceconnector._utils import (
     generate_random_string,
-    is_packaged_installed,
     get_object_id_of_current_user
 )
 from azure.cli.command_modules.serviceconnector._resource_config import (
@@ -32,7 +31,14 @@ from azure.cli.command_modules.serviceconnector._validators import (
     get_source_resource_name,
     get_target_resource_name,
 )
-from ._utils import run_cli_cmd, get_local_ip, confirm_all_ip_allow, confirm_admin_set, confirm_enable_entra_auth
+from ._utils import (
+    run_cli_cmd,
+    get_local_ip,
+    confirm_all_ip_allow,
+    confirm_admin_set,
+    confirm_enable_entra_auth,
+    is_packaged_installed
+)
 logger = get_logger(__name__)
 
 AUTHTYPES = {

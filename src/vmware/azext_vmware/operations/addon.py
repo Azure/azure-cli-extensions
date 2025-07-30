@@ -171,6 +171,14 @@ class AddonHcxCreate(_AddonCreate):
             help="The HCX offer, example VMware MaaS Cloud Provider (Enterprise)",
             required=True,
         )
+        args_schema.management_network = AAZStrArg(
+            options=["--management-network"],
+            help="HCX management network.",
+        )
+        args_schema.uplink_network = AAZStrArg(
+            options=["--uplink-network"],
+            help="HCX uplink network.",
+        )
 
         setattr(args_schema.vr, '_registered', False)
         setattr(args_schema.hcx, '_registered', False)
@@ -186,6 +194,8 @@ class AddonHcxCreate(_AddonCreate):
         args.addon_name = "hcx"
 
         args.hcx.offer = args.offer
+        args.hcx.management_network = args.management_network
+        args.hcx.uplink_network = args.uplink_network
 
 
 @register_command(
@@ -209,6 +219,14 @@ class AddonHcxUpdate(_AddonUpdate):
             help="The HCX offer, example VMware MaaS Cloud Provider (Enterprise)",
             required=True,
         )
+        args_schema.management_network = AAZStrArg(
+            options=["--management-network"],
+            help="HCX management network.",
+        )
+        args_schema.uplink_network = AAZStrArg(
+            options=["--uplink-network"],
+            help="HCX uplink network.",
+        )
 
         setattr(args_schema.vr, '_registered', False)
         setattr(args_schema.hcx, '_registered', False)
@@ -224,6 +242,8 @@ class AddonHcxUpdate(_AddonUpdate):
         args.addon_name = "hcx"
 
         args.hcx.offer = args.offer
+        args.hcx.management_network = args.management_network
+        args.hcx.uplink_network = args.uplink_network
 
 
 @register_command(

@@ -67,6 +67,13 @@ class microsoft_network:
             # Gateway
             return ZoneRedundancyValidationResult.Dependent
 
+        # NAT Gateways
+        if resourceSubType == "natgateways":
+            zones = resource.get("zones") or []
+            if len(zones) > 1:
+                return ZoneRedundancyValidationResult.Yes
+            return ZoneRedundancyValidationResult.No
+
         # Network Interfaces
         if resourceSubType == "networkinterfaces":
             # Network interfaces are in the zone of the virtual machines
@@ -104,6 +111,13 @@ class microsoft_network:
         if resourceSubType == "publicipaddresses":
             zones = resource.get("zones") or []
             if resource["sku"]["name"] in ["Standard"] and len(zones) > 1:
+                return ZoneRedundancyValidationResult.Yes
+            return ZoneRedundancyValidationResult.No
+
+        # Public IP Prefixes
+        if resourceSubType == "publicipprefixes":
+            zones = resource.get("zones") or []
+            if len(zones) > 1:
                 return ZoneRedundancyValidationResult.Yes
             return ZoneRedundancyValidationResult.No
 

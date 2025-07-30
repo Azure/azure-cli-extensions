@@ -18,13 +18,13 @@ class Create(AAZCommand):
     """Create a DNS security rule for a DNS resolver policy.
 
     :example: Upsert DNS security rule
-        az dns-resolver policy dns-security-rule create --resource-group sampleResourceGroup --policy-name sampleDnsResolverPolicy --dns-security-rule-name sampleDnsSecurityRule --location westus2 --tags "{key1:value1}" --priority 100 --action "{action-type:Block,block-response-code:SERVFAIL}" --domain-lists "[{id:/subscriptions/abdd4249-9f34-4cc6-8e42-c2e32110603e/resourceGroups/sampleResourceGroup/providers/Microsoft.Network/dnsResolverDomainLists/sampleDnsResolverDomainList}]" --rule-state Enabled
+        az dns-resolver policy dns-security-rule create --resource-group sampleResourceGroup --policy-name sampleDnsResolverPolicy --dns-security-rule-name sampleDnsSecurityRule --location westus2 --tags "{key1:value1}" --priority 100 --action "{action-type:Block}" --domain-lists "[{id:/subscriptions/abdd4249-9f34-4cc6-8e42-c2e32110603e/resourceGroups/sampleResourceGroup/providers/Microsoft.Network/dnsResolverDomainLists/sampleDnsResolverDomainList}]" --rule-state Enabled
     """
 
     _aaz_info = {
-        "version": "2023-07-01-preview",
+        "version": "2025-05-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/dnsresolverpolicies/{}/dnssecurityrules/{}", "2023-07-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/dnsresolverpolicies/{}/dnssecurityrules/{}", "2025-05-01"],
         ]
     }
 
@@ -131,11 +131,6 @@ class Create(AAZCommand):
             help="The type of action to take.",
             enum={"Alert": "Alert", "Allow": "Allow", "Block": "Block"},
         )
-        action.block_response_code = AAZStrArg(
-            options=["block-response-code"],
-            help="The response code for block actions.",
-            enum={"SERVFAIL": "SERVFAIL"},
-        )
 
         domain_lists = cls._args_schema.domain_lists
         domain_lists.Element = AAZObjectArg()
@@ -233,7 +228,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-07-01-preview",
+                    "api-version", "2025-05-01",
                     required=True,
                 ),
             }
@@ -278,7 +273,6 @@ class Create(AAZCommand):
             action = _builder.get(".properties.action")
             if action is not None:
                 action.set_prop("actionType", AAZStrType, ".action_type")
-                action.set_prop("blockResponseCode", AAZStrType, ".block_response_code")
 
             dns_resolver_domain_lists = _builder.get(".properties.dnsResolverDomainLists")
             if dns_resolver_domain_lists is not None:
@@ -358,9 +352,6 @@ class Create(AAZCommand):
             action = cls._schema_on_200_201.properties.action
             action.action_type = AAZStrType(
                 serialized_name="actionType",
-            )
-            action.block_response_code = AAZStrType(
-                serialized_name="blockResponseCode",
             )
 
             dns_resolver_domain_lists = cls._schema_on_200_201.properties.dns_resolver_domain_lists

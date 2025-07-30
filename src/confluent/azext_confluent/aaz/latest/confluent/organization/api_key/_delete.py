@@ -16,7 +16,7 @@ from azure.cli.core.aaz import *
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
-    """Delete API key of a kafka or schema registry cluster
+    """Remove an API key from a Kafka or Schema Registry cluster in Confluent.
     """
 
     _aaz_info = {
@@ -55,8 +55,6 @@ class Delete(AAZCommand):
             id_part="name",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            options=["--resource-group"],
-            help="Resource group name",
             required=True,
         )
         return cls._args_schema

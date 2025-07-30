@@ -27,6 +27,12 @@ class microsoft_app:
             # zone redundant managedEnvironment
             return ZoneRedundancyValidationResult.Dependent
 
+        # Container App Jobs
+        if resourceSubType == "jobs":
+            # Jobs are zone redundant if they are hosted on a
+            # zone redundant managedEnvironment
+            return ZoneRedundancyValidationResult.Dependent
+
         # Container Apps Environments
         if resourceSubType == "managedenvironments":
             # Managed Environments are zone redundant if the zoneRedundant property is set to true

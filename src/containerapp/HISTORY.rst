@@ -4,6 +4,20 @@ Release History
 ===============
 upcoming
 ++++++
+
+1.2.0b3
+++++++
+* 'az containerapp job list': Fix only 20 items returned
+
+1.2.0b2
+++++++
+* 'az containerapp session code-interpreter execute': Extend maximum supported value of `--timeout-in-seconds` from 60 to 220.
+* 'az containerapp job create': Fix message with `--help`
+* 'az containerapp arc': Enable setup custom core dns for Openshift on Arc
+
+1.2.0b1
+++++++
+* 'az containerapp env premium-ingress': New environment level ingress configuration.
 * 'az containerapp sessionpool update': Support `--mi-system-assigned`, `--mi-user-assigned` and `--registry-identity`
 *  Upgrade api-version to 2025-02-02-preview
 

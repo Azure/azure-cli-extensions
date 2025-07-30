@@ -455,7 +455,7 @@ helps['containerapp job create'] = """
     - name: Create a container apps job with Trigger Type as Manual.
       text: |
           az containerapp job create -n MyContainerappsjob -g MyResourceGroup \\
-              --environment MyContainerappEnv
+              --environment MyContainerappEnv \\
               --trigger-type Manual \\
               --replica-timeout 5 \\
               --replica-retry-limit 2 \\
@@ -466,7 +466,7 @@ helps['containerapp job create'] = """
     - name: Create a container apps job with Trigger Type as Schedule.
       text: |
           az containerapp job create -n MyContainerappsjob -g MyResourceGroup \\
-              --environment MyContainerappEnv
+              --environment MyContainerappEnv \\
               --trigger-type Schedule \\
               --replica-timeout 5 \\
               --replica-retry-limit 2 \\
@@ -477,7 +477,7 @@ helps['containerapp job create'] = """
     - name: Create a container apps job with Trigger Type as Event.
       text: |
           az containerapp job create -n MyContainerappsjob -g MyResourceGroup \\
-              --environment MyContainerappEnv
+              --environment MyContainerappEnv \\
               --trigger-type Event \\
               --replica-timeout 5 \\
               --replica-retry-limit 2 \\
@@ -486,11 +486,11 @@ helps['containerapp job create'] = """
               --polling-interval 30 \\
               --min-executions 0 \\
               --max-executions 1 \\
-              --scale-rule-name queueJob \\
+              --scale-rule-name queue \\
               --scale-rule-type azure-queue \\
               --scale-rule-metadata "accountName=mystorageaccountname" \\
                                     "cloud=AzurePublicCloud" \\
-                                    "queueLength": "5" "queueName": "foo" \\
+                                    "queueLength=5" "queueName=foo" \\
               --scale-rule-auth "connection=my-connection-string-secret-name" \\
               --image imageName
 """
@@ -1188,7 +1188,7 @@ helps['containerapp job create'] = """
     - name: Create a container apps job with Trigger Type as Manual.
       text: |
           az containerapp job create -n MyContainerappsjob -g MyResourceGroup \\
-              --environment MyContainerappEnv
+              --environment MyContainerappEnv \\
               --trigger-type Manual \\
               --replica-timeout 5 \\
               --replica-retry-limit 2 \\
@@ -1199,7 +1199,7 @@ helps['containerapp job create'] = """
     - name: Create a container apps job with Trigger Type as Schedule.
       text: |
           az containerapp job create -n MyContainerappsjob -g MyResourceGroup \\
-              --environment MyContainerappEnv
+              --environment MyContainerappEnv \\
               --trigger-type Schedule \\
               --replica-timeout 5 \\
               --replica-retry-limit 2 \\
@@ -1210,7 +1210,7 @@ helps['containerapp job create'] = """
     - name: Create a container apps job with Trigger Type as Event.
       text: |
           az containerapp job create -n MyContainerappsjob -g MyResourceGroup \\
-              --environment MyContainerappEnv
+              --environment MyContainerappEnv \\
               --trigger-type Event \\
               --replica-timeout 5 \\
               --replica-retry-limit 2 \\
@@ -2365,4 +2365,53 @@ helps['containerapp env http-route-config delete'] = """
     - name: Delete a route from the environment.
       text: |
           az containerapp env http-route-config delete -g MyResourceGroup -n MyEnvironment -r configname
+"""
+
+helps['containerapp env premium-ingress show'] = """
+    type: command
+    short-summary: Show the premium ingress settings for the environment.
+    examples:
+    - name: Show the premium ingress settings for the environment.
+      text: |
+          az containerapp env premium-ingress show -g MyResourceGroup -n MyEnvironment
+"""
+
+helps['containerapp env premium-ingress'] = """
+    type: group
+    short-summary: Configure premium ingress settings for the environment.
+    long-summary: |
+        Premium ingress settings apply to all applications in the environment. They allow moving the ingress instances to a workload profile and scaling them beyond the system defaults to enable high traffic workloads. Other settings include request idle timeouts, header count limits, and the termination grace period.
+    examples:
+    - name: Enable premium ingress for the environment.
+      text: |
+          az containerapp env premium-ingress add -g MyResourceGroup -n MyEnvironment -w WorkloadProfileName --min-replicas 2 --max-replicas 10
+"""
+
+helps['containerapp env premium-ingress add'] = """
+    type: command
+    short-summary: Enable the premium ingress settings for the environment.
+    long-summary: |
+        Unspecified optional parameters will be cleared from any existing configuration.
+    examples:
+    - name: Add the premium ingress settings for the environment.
+      text: |
+          az containerapp env premium-ingress add -g MyResourceGroup -n MyEnvironment -w WorkloadProfileName --min-replicas 2 --max-replicas 10
+"""
+
+helps['containerapp env premium-ingress update'] = """
+    type: command
+    short-summary: Update the premium ingress settings for the environment.
+    examples:
+    - name: Update the workload profile used for premium ingress.
+      text: |
+          az containerapp env premium-ingress update -g MyResourceGroup -n MyEnvironment -w WorkloadProfileName
+"""
+
+helps['containerapp env premium-ingress remove'] = """
+    type: command
+    short-summary: Remove the ingress settings and restores the system to default values.
+    examples:
+    - name: Reset the ingress settings for the environment to its default values
+      text: |
+          az containerapp env premium-ingress remove -g MyResourceGroup -n MyEnvironment
 """

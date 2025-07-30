@@ -186,6 +186,7 @@ def load_command_table(self, _):
         g.custom_command(
             "operation-abort", "aks_operation_abort", supports_no_wait=True
         )
+        g.custom_command("bastion", "aks_bastion")
 
     # AKS maintenance configuration commands
     with self.command_group(
@@ -235,6 +236,7 @@ def load_command_table(self, _):
         "aks namespace",
         managed_namespaces_sdk,
         client_factory=cf_managed_namespaces,
+        is_preview=True,
     ) as g:
         g.custom_command("add", "aks_namespace_add", supports_no_wait=True)
         g.custom_command("update", "aks_namespace_update", supports_no_wait=True)

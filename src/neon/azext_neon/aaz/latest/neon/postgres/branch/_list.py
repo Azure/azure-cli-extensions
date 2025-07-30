@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "neon postgres branch list",
 )
 class List(AAZCommand):
-    """List Branch resources by Project
+    """List all branch resources within a specific project in Neon Postgres.
 
     :example: List Branches under a Project
         az neon postgres branch list --subscription 38a546de-5736-48e8-a69a-5cc636794112 --resource-group rgneon --organization-name org-cli-test --project-id old-frost-16758796
@@ -47,24 +47,27 @@ class List(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.organization_name = AAZStrArg(
             options=["--organization-name"],
-            help="Name of the Neon Organizations resource",
+            help="Name of the Neon organization.",
             required=True,
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9][a-zA-Z0-9_\\-.: ]*$",
                 max_length=50,
                 min_length=1,
             ),
+            blank=AAZPromptInput(
+                msg="Please provide Neon Organization name:",
+            ),
         )
         _args_schema.project_id = AAZStrArg(
             options=["--project-id"],
-            help="The id of the Neon Project resource.",
+            help="Id of the Neon project",
             required=True,
             fmt=AAZStrArgFormat(
                 pattern="^\\S.{0,62}\\S$|^\\S$",
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="The name of the Azure resource group",
+            help="Name of the Azure resource group.",
             required=True,
         )
         return cls._args_schema
@@ -233,7 +236,7 @@ class List(AAZCommand):
 
             attributes = cls._schema_on_200.value.Element.properties.attributes
             attributes.Element = AAZObjectType()
-            _ListHelper._build_schema_models_attributes_read(attributes.Element)
+            _ListHelper._build_schema_attributes_read(attributes.Element)
 
             databases = cls._schema_on_200.value.Element.properties.databases
             databases.Element = AAZObjectType()
@@ -264,7 +267,7 @@ class List(AAZCommand):
 
             attributes = cls._schema_on_200.value.Element.properties.databases.Element.attributes
             attributes.Element = AAZObjectType()
-            _ListHelper._build_schema_models_attributes_read(attributes.Element)
+            _ListHelper._build_schema_attributes_read(attributes.Element)
 
             endpoints = cls._schema_on_200.value.Element.properties.endpoints
             endpoints.Element = AAZObjectType()
@@ -298,7 +301,7 @@ class List(AAZCommand):
 
             attributes = cls._schema_on_200.value.Element.properties.endpoints.Element.attributes
             attributes.Element = AAZObjectType()
-            _ListHelper._build_schema_models_attributes_read(attributes.Element)
+            _ListHelper._build_schema_attributes_read(attributes.Element)
 
             roles = cls._schema_on_200.value.Element.properties.roles
             roles.Element = AAZObjectType()
@@ -330,7 +333,7 @@ class List(AAZCommand):
 
             attributes = cls._schema_on_200.value.Element.properties.roles.Element.attributes
             attributes.Element = AAZObjectType()
-            _ListHelper._build_schema_models_attributes_read(attributes.Element)
+            _ListHelper._build_schema_attributes_read(attributes.Element)
 
             permissions = cls._schema_on_200.value.Element.properties.roles.Element.permissions
             permissions.Element = AAZStrType()
@@ -361,27 +364,27 @@ class List(AAZCommand):
 class _ListHelper:
     """Helper class for List"""
 
-    _schema_models_attributes_read = None
+    _schema_attributes_read = None
 
     @classmethod
-    def _build_schema_models_attributes_read(cls, _schema):
-        if cls._schema_models_attributes_read is not None:
-            _schema.name = cls._schema_models_attributes_read.name
-            _schema.value = cls._schema_models_attributes_read.value
+    def _build_schema_attributes_read(cls, _schema):
+        if cls._schema_attributes_read is not None:
+            _schema.name = cls._schema_attributes_read.name
+            _schema.value = cls._schema_attributes_read.value
             return
 
-        cls._schema_models_attributes_read = _schema_models_attributes_read = AAZObjectType()
+        cls._schema_attributes_read = _schema_attributes_read = AAZObjectType()
 
-        models_attributes_read = _schema_models_attributes_read
-        models_attributes_read.name = AAZStrType(
+        attributes_read = _schema_attributes_read
+        attributes_read.name = AAZStrType(
             flags={"required": True},
         )
-        models_attributes_read.value = AAZStrType(
+        attributes_read.value = AAZStrType(
             flags={"required": True},
         )
 
-        _schema.name = cls._schema_models_attributes_read.name
-        _schema.value = cls._schema_models_attributes_read.value
+        _schema.name = cls._schema_attributes_read.name
+        _schema.value = cls._schema_attributes_read.value
 
 
 __all__ = ["List"]
