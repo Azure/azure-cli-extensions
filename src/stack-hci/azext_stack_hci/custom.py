@@ -212,7 +212,7 @@ class VmConnectDisable(_VmConnectDisable):
             else:
                 return {
                     "message": (
-                        f"VM Connect provision job initiated successfully for VM: {vm_name}"
+                        f"VM Connect remove job initiated successfully for VM: {vm_name}"
                     )
                 }
         except Exception as e:
