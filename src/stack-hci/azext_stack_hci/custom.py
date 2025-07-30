@@ -134,7 +134,14 @@ class VmConnectEnable(_VmConnectEnable):
         # Make the REST API call
         try:
             response = send_raw_request(cmd.cli_ctx, "PUT", url, body=json.dumps(payload))
-            return response.json() if response.content else {"message": f"VM Connect provision job initiated successfully for VM: {vm_name}"}
+            if response.content:
+                return response.json()
+            else:
+                return {
+                    "message": (
+                        f"VM Connect provision job initiated successfully for VM: {vm_name}"
+                    )
+                }
         except Exception as e:
             from azure.cli.core.util import CLIError
             raise CLIError(f"Failed to enable VM Connect for VM '{vm_name}': {str(e)}")
@@ -200,7 +207,14 @@ class VmConnectDisable(_VmConnectDisable):
         # Make the REST API call
         try:
             response = send_raw_request(cmd.cli_ctx, "PUT", url, body=json.dumps(payload))
-            return response.json() if response.content else {"message": f"VM Connect deprovision job initiated successfully for VM: {vm_name}"}
+            if response.content:
+                return response.json()
+            else:
+                return {
+                    "message": (
+                        f"VM Connect provision job initiated successfully for VM: {vm_name}"
+                    )
+                }
         except Exception as e:
             from azure.cli.core.util import CLIError
             raise CLIError(f"Failed to disable VM Connect for VM '{vm_name}': {str(e)}")
