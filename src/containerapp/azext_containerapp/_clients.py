@@ -120,6 +120,62 @@ class ContainerAppsJobPreviewClient(ContainerAppsJobClient):
         r = send_raw_request(cmd.cli_ctx, "POST", request_url)
         return r.json()
 
+    @classmethod
+    def list_by_subscription(cls, cmd, formatter=lambda x: x):
+        app_list = []
+
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        request_url = "{}/subscriptions/{}/providers/Microsoft.App/jobs?api-version={}".format(
+            management_hostname.strip('/'),
+            sub_id,
+            cls.api_version)
+
+        r = send_raw_request(cmd.cli_ctx, "GET", request_url)
+        j = r.json()
+        for app in j["value"]:
+            formatted = formatter(app)
+            app_list.append(formatted)
+
+        while j.get("nextLink") is not None:
+            request_url = j["nextLink"]
+            r = send_raw_request(cmd.cli_ctx, "GET", request_url)
+            j = r.json()
+            for app in j["value"]:
+                formatted = formatter(app)
+                app_list.append(formatted)
+
+        return app_list
+
+    @classmethod
+    def list_by_resource_group(cls, cmd, resource_group_name, formatter=lambda x: x):
+        app_list = []
+
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/jobs?api-version={}"
+        request_url = url_fmt.format(
+            management_hostname.strip('/'),
+            sub_id,
+            resource_group_name,
+            cls.api_version)
+
+        r = send_raw_request(cmd.cli_ctx, "GET", request_url)
+        j = r.json()
+        for app in j["value"]:
+            formatted = formatter(app)
+            app_list.append(formatted)
+
+        while j.get("nextLink") is not None:
+            request_url = j["nextLink"]
+            r = send_raw_request(cmd.cli_ctx, "GET", request_url)
+            j = r.json()
+            for app in j["value"]:
+                formatted = formatter(app)
+                app_list.append(formatted)
+
+        return app_list
+
 
 class ContainerAppsResiliencyPreviewClient():
     api_version = PREVIEW_API_VERSION
