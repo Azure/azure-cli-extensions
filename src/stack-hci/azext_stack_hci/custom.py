@@ -113,7 +113,7 @@ class VmConnectEnable(_VmConnectEnable):
         path = (
             f"/subscriptions/{subscription_id}/resourceGroups/{resource_group}/"
             "providers/Microsoft.AzureStackHCI/clusters/"
-            f"{cluster_name}/jobs/VmConnectDeprovision"
+            f"{cluster_name}/jobs/VmConnectRemove"
         )
         # API version
         api_version = "2023-12-01-preview"
@@ -180,18 +180,18 @@ class VmConnectDisable(_VmConnectDisable):
 
         subscription_id = get_subscription_id(cmd.cli_ctx)
 
-        # Construct the REST API path for deprovision
+        # Construct the REST API path for Remove
         path = (
             f"/subscriptions/{subscription_id}/resourceGroups/{resource_group}/"
             "providers/Microsoft.AzureStackHCI/clusters/"
-            f"{cluster_name}/jobs/VmConnectDeprovision"
+            f"{cluster_name}/jobs/VmConnectRemove"
         )
 
         # API version
         api_version = "2023-12-01-preview"
         url = f"https://management.azure.com{path}?api-version={api_version}"
 
-        # Payload for VM Connect deprovision
+        # Payload for VM Connect Remove
         payload = {
             "properties": {
                 "jobType": "VmConnectRemove",
