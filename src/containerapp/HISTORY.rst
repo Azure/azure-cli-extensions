@@ -7,6 +7,7 @@ upcoming
 * 'az containerapp session code-interpreter execute': Extend maximum supported value of `--timeout-in-seconds` from 60 to 220.
 * 'az containerapp job create': Fix message with `--help`
 * 'az containerapp arc': Enable setup custom core dns for Openshift on Arc
+* 'az containerapp sessionpool': Support `--lifecycle-type` and `--max-alive-period` for session pool creation and update.
 
 1.2.0b1
 ++++++
