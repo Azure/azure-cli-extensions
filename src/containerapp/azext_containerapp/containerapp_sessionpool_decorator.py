@@ -530,7 +530,7 @@ class SessionPoolUpdateDecorator(SessionPoolPreviewDecorator):
 
         if self.get_argument_cooldown_period_in_seconds() is not None:
             lifecycle_config_def["lifecycleType"] = "Timed"
-            lifecycle_config_def["maxAlivePeriodInSeconds"] = self.get_argument_cooldown_period_in_seconds()
+            lifecycle_config_def["cooldownPeriodInSeconds"] = self.get_argument_cooldown_period_in_seconds()
 
         if self.get_argument_max_alive_period() is not None:
             lifecycle_config_def["lifecycleType"] = "OnContainerExit"
