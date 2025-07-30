@@ -1,16 +1,52 @@
 {
-      "stages": [
+  "stages": [
+    {
+      "name": "stage1",
+      "beforeGates": [
         {
-          "name": "stage1",
-          "groups": [
+          "displayName": "stage before gate",
+          "type": "Approval"
+        }
+      ],
+      "afterGates": [
+        {
+          "displayName": "stage after gate",
+          "type": "Approval"
+        }
+      ],
+      "groups": [
+        {
+          "name": "group1",
+          "beforeGates": [
             {
-                "name": "group1"
-            },
-            {
-                "name": "group2"
+              "displayName": "group before gate",
+              "type": "Approval"
             }
           ],
-          "afterStageWaitInSeconds": 3600
+          "afterGates": [
+            {
+              "displayName": "group after gate",
+              "type": "Approval"
+            }
+          ]
+        },
+        {
+          "name": "group2",
+          "beforeGates": [
+            {
+              "displayName": "group before gate",
+              "type": "Approval"
+            }
+          ],
+          "afterGates": [
+            {
+              "displayName": "group after gate",
+              "type": "Approval"
+            }
+          ]
         }
-      ]
+      ],
+      "afterStageWaitInSeconds": 3600
+    }
+  ]
 }
