@@ -902,6 +902,44 @@ def health_check_dp(cmd: CLICommand, config_dp_endpoint: str) -> bool:
     )
     raise CLIInternalError("Error while performing DP health check")
 
+def associate_gateway(cmd: CLICommand, subscription_id: str, resource_group: str, cluster_name: str, gateway_resource_id: str) -> bool:
+    api_version = "2024-07-31-preview"
+    url = consts.GATEWAY_ASSOCIATE_URL.format(
+        subscription_id=subscription_id,
+        resource_group=resource_group,
+        cluster_name=cluster_name,
+        api_version=api_version
+    )
+    headers = [
+        "Content-Type=application/json",
+        "Accept=application/json"
+    ]
+    if os.getenv("AZURE_ACCESS_TOKEN"):
+        headers.append(f"Authorization=Bearer {os.getenv('AZURE_ACCESS_TOKEN')}")
+    body = {
+        "properties": {
+            "gatewayProperties": {
+                "gatewayResourceId": gateway_resource_id
+            }
+        }
+    }
+    response = send_request_with_retries(
+        cmd.cli_ctx,
+        method="put",
+        url=url,
+        headers=headers,
+        fault_type=consts.Gateway_Associate_Fault_Type,
+        summary="Error while associating gateway",
+        request_body=json.dumps(body)
+    )
+    if response.status_code == 200:
+        return True
+    telemetry.set_exception(
+        exception="Error while associating gateway",
+        fault_type=consts.Gateway_Associate_Fault_Type,
+        summary="Error while associating gateway",
+    )
+    raise CLIInternalError(f"Error while associating gateway")
 
 def send_request_with_retries(
     cli_ctx: AzCli,
