@@ -17,7 +17,7 @@ from azure.cli.core.aaz import *
 class UpdateAdminState(AAZCommand):
     """Updates the Administrative state of the Network Device.
 
-    :example: Update admin state
+    :example: Update the admin state of the Network Device
         az networkfabric device update-admin-state --resource-name "example-device-name" --resource-group "example-RG" --state "UnderMaintenance"
     """
 
@@ -259,12 +259,15 @@ class _UpdateAdminStateHelper:
         additional_info.Element = AAZObjectType()
 
         _element = _schema_error_detail_read.additional_info.Element
-        _element.info = AAZFreeFormDictType(
+        _element.info = AAZDictType(
             flags={"read_only": True},
         )
         _element.type = AAZStrType(
             flags={"read_only": True},
         )
+
+        info = _schema_error_detail_read.additional_info.Element.info
+        info.Element = AAZAnyType()
 
         details = _schema_error_detail_read.details
         details.Element = AAZObjectType()

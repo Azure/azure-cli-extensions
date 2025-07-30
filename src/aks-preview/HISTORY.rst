@@ -12,6 +12,35 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+18.0.0b22
++++++++
+* Vendor new SDK and bump API version to 2025-06-02-preview.
+
+18.0.0b21
++++++++
+* Add command `az aks bastion` to enable connections to managed Kubernetes clusters via Azure Bastion.
+
+18.0.0b20
++++++++
+* Fix the bug affecting VMAS to VMS migration in the `az aks update` command using the `--migrate-vmas-to-vms` option.
+
+18.0.0b19
++++++++
+* Add support for `ManagedSystem` Agent Pool Mode.
+* Add `--localdns-config` to `az aks nodepool add` and to `az aks nodepool update` to support configuring a local DNS profile for agent pools.
+
+18.0.0b18
++++++++
+* Add validation error when neither --location or --cluster and --resource-group-name are specified for az extension type list or az extension type version list
+
+18.0.0b17
++++++++
+* Remove `__import__('pkg_resources').declare_namespace(__name__)` from `vendored_sdks/__init__.py` to fix the namespace package issue.
+
+18.0.0b16
++++++++
+* Vendor new SDK and bump API version to 2025-05-02-preview.
+
 18.0.0b15
 +++++++
 * Fixed NPE issue for `--acns-transit-encryption-type`.

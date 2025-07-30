@@ -44,7 +44,7 @@ class DockerClient:
             self._client.close()
 
 
-def case_insensitive_dict_get(dictionary, search_key) -> Any:
+def case_insensitive_dict_get(dictionary, search_key, default_value=None) -> Any:
     if not isinstance(dictionary, dict):
         return None
     # if the cases happen to match, immediately return .get() result
@@ -55,7 +55,7 @@ def case_insensitive_dict_get(dictionary, search_key) -> Any:
     for key in dictionary.keys():
         if key.lower() == search_key.lower():
             return dictionary[key]
-    return None
+    return default_value
 
 
 def deep_dict_update(source: dict, destination: dict):
@@ -1572,25 +1572,31 @@ def convert_config_v0_to_v1(old_data):
 
     # Prepare the structure of the new JSON
     new_data = {
-        config.ACI_FIELD_VERSION: old_data.get(config.ACI_FIELD_VERSION, "1.0"),  # default if missing
-        config.ACI_FIELD_CONTAINERS_REGO_FRAGMENTS: [],  # empty by default in your example
+        config.ACI_FIELD_VERSION: case_insensitive_dict_get(
+            old_data, config.ACI_FIELD_VERSION, "1.0"
+        ),  # default if missing
+        config.ACI_FIELD_CONTAINERS_REGO_FRAGMENTS: [],
         config.ACI_FIELD_CONTAINERS: []
     }
 
-    old_containers = old_data.get(config.ACI_FIELD_CONTAINERS, [])
+    old_containers = case_insensitive_dict_get(old_data, config.ACI_FIELD_CONTAINERS, [])
 
     for old_container in old_containers:
         # Build the 'environmentVariables' section in the new format
         new_envs = []
-        for env_var in old_container.get(config.ACI_FIELD_CONTAINERS_ENVS) or []:
+        for env_var in case_insensitive_dict_get(old_container, config.ACI_FIELD_CONTAINERS_ENVS) or []:
             # Decide if we need 'regex' or not, based on 'strategy' or your custom logic
             # Here we'll assume "strategy"=="re2" means 'regex' = True
             # If strategy is missing or 'string', omit 'regex' or set it to False
             env_entry = {
-                config.ACI_FIELD_CONTAINERS_ENVS_NAME: env_var.get(config.ACI_FIELD_CONTAINERS_ENVS_NAME),
-                config.ACI_FIELD_CONTAINERS_ENVS_VALUE: env_var.get(config.ACI_FIELD_CONTAINERS_ENVS_VALUE, "")
+                config.ACI_FIELD_CONTAINERS_ENVS_NAME: case_insensitive_dict_get(
+                    env_var, config.ACI_FIELD_CONTAINERS_ENVS_NAME
+                ),
+                config.ACI_FIELD_CONTAINERS_ENVS_VALUE: case_insensitive_dict_get(
+                    env_var, config.ACI_FIELD_CONTAINERS_ENVS_VALUE, ""
+                )
             }
-            strategy = env_var.get(config.ACI_FIELD_CONTAINERS_ENVS_STRATEGY)
+            strategy = case_insensitive_dict_get(env_var, config.ACI_FIELD_CONTAINERS_ENVS_STRATEGY)
             if strategy == "re2":
                 env_entry["regex"] = True
 
@@ -1598,25 +1604,25 @@ def convert_config_v0_to_v1(old_data):
 
         # Build the 'execProcesses' from the old 'command'
         exec_processes = []
-        old_command_list = old_container.get(config.ACI_FIELD_CONTAINERS_EXEC_PROCESSES, [])
+        old_command_list = case_insensitive_dict_get(old_container, config.ACI_FIELD_CONTAINERS_EXEC_PROCESSES, [])
         if old_command_list:
             exec_processes.append({config.ACI_FIELD_CONTAINERS_COMMAND: old_command_list})
 
-        command = old_container.get(config.ACI_FIELD_CONTAINERS_COMMAND)
+        command = case_insensitive_dict_get(old_container, config.ACI_FIELD_CONTAINERS_COMMAND)
 
         # Liveness probe => exec process
-        liveness_probe = old_container.get(config.ACI_FIELD_CONTAINERS_LIVENESS_PROBE, {})
-        liveness_exec = liveness_probe.get(config.ACI_FIELD_CONTAINERS_PROBE_ACTION, {})
-        liveness_command = liveness_exec.get(config.ACI_FIELD_CONTAINERS_COMMAND, [])
+        liveness_probe = case_insensitive_dict_get(old_container, config.ACI_FIELD_CONTAINERS_LIVENESS_PROBE, {})
+        liveness_exec = case_insensitive_dict_get(liveness_probe, config.ACI_FIELD_CONTAINERS_PROBE_ACTION, {})
+        liveness_command = case_insensitive_dict_get(liveness_exec, config.ACI_FIELD_CONTAINERS_COMMAND, [])
         if liveness_command:
             exec_processes.append({
                 config.ACI_FIELD_CONTAINERS_COMMAND: liveness_command
             })
 
         # Readiness probe => exec process
-        readiness_probe = old_container.get(config.ACI_FIELD_CONTAINERS_READINESS_PROBE, {})
-        readiness_exec = readiness_probe.get(config.ACI_FIELD_CONTAINERS_PROBE_ACTION, {})
-        readiness_command = readiness_exec.get(config.ACI_FIELD_CONTAINERS_COMMAND, [])
+        readiness_probe = case_insensitive_dict_get(old_container, config.ACI_FIELD_CONTAINERS_READINESS_PROBE, {})
+        readiness_exec = case_insensitive_dict_get(readiness_probe, config.ACI_FIELD_CONTAINERS_PROBE_ACTION, {})
+        readiness_command = case_insensitive_dict_get(readiness_exec, config.ACI_FIELD_CONTAINERS_COMMAND, [])
         if readiness_command:
             exec_processes.append({
                 config.ACI_FIELD_CONTAINERS_COMMAND: readiness_command
@@ -1624,47 +1630,61 @@ def convert_config_v0_to_v1(old_data):
 
         # Build the 'volumeMounts' section
         volume_mounts = []
-        for mount in old_container.get(config.ACI_FIELD_CONTAINERS_MOUNTS) or []:
+        for mount in case_insensitive_dict_get(old_container, config.ACI_FIELD_CONTAINERS_MOUNTS) or []:
             # For 'name', we can take the mountType or generate something else:
             # e.g. if mountType is "azureFile", name "azurefile"
-            mount_name = mount.get(config.ACI_FIELD_CONTAINERS_MOUNTS_TYPE, "defaultName").lower()
+            mount_name = case_insensitive_dict_get(
+                mount, config.ACI_FIELD_CONTAINERS_MOUNTS_TYPE, "defaultName"
+            ).lower()
             volume_mount = {
                 config.ACI_FIELD_CONTAINERS_ENVS_NAME: mount_name,
-                config.ACI_FIELD_TEMPLATE_MOUNTS_PATH: mount.get(config.ACI_FIELD_CONTAINERS_MOUNTS_PATH),
-                config.ACI_FIELD_TEMPLATE_MOUNTS_TYPE: mount.get(config.ACI_FIELD_CONTAINERS_MOUNTS_TYPE),
-                config.ACI_FIELD_TEMPLATE_MOUNTS_READONLY: mount.get(config.ACI_FIELD_CONTAINERS_MOUNTS_READONLY, True),
+                config.ACI_FIELD_TEMPLATE_MOUNTS_PATH: case_insensitive_dict_get(
+                    mount, config.ACI_FIELD_CONTAINERS_MOUNTS_PATH
+                ),
+                config.ACI_FIELD_TEMPLATE_MOUNTS_TYPE: case_insensitive_dict_get(
+                    mount, config.ACI_FIELD_CONTAINERS_MOUNTS_TYPE
+                ),
+                config.ACI_FIELD_TEMPLATE_MOUNTS_READONLY: case_insensitive_dict_get(
+                    mount, config.ACI_FIELD_CONTAINERS_MOUNTS_READONLY, True
+                ),
             }
             volume_mounts.append(volume_mount)
 
         # Create the container's "properties" object
         container_properties = {
-            config.ACI_FIELD_TEMPLATE_IMAGE: old_container.get(config.ACI_FIELD_CONTAINERS_CONTAINERIMAGE),
+            config.ACI_FIELD_TEMPLATE_IMAGE: case_insensitive_dict_get(
+                old_container, config.ACI_FIELD_CONTAINERS_CONTAINERIMAGE
+            ),
             config.ACI_FIELD_CONTAINERS_EXEC_PROCESSES: exec_processes,
             config.ACI_FIELD_TEMPLATE_VOLUME_MOUNTS: volume_mounts,
             config.ACI_FIELD_CONTAINERS_ENVS: new_envs,
             config.ACI_FIELD_CONTAINERS_COMMAND: command,
         }
 
-        if old_container.get(config.ACI_FIELD_TEMPLATE_SECURITY_CONTEXT) is not None:
+        if case_insensitive_dict_get(old_container, config.ACI_FIELD_TEMPLATE_SECURITY_CONTEXT) is not None:
             container_properties[
                 config.ACI_FIELD_TEMPLATE_SECURITY_CONTEXT
             ] = old_container[config.ACI_FIELD_TEMPLATE_SECURITY_CONTEXT]
 
-        if old_container.get(config.ACI_FIELD_CONTAINERS_ALLOW_ELEVATED) is not None:
+        if case_insensitive_dict_get(old_container, config.ACI_FIELD_CONTAINERS_ALLOW_ELEVATED) is not None:
             if config.ACI_FIELD_TEMPLATE_SECURITY_CONTEXT not in container_properties:
                 container_properties[config.ACI_FIELD_TEMPLATE_SECURITY_CONTEXT] = {}
             container_properties[
                 config.ACI_FIELD_TEMPLATE_SECURITY_CONTEXT
-            ][config.ACI_FIELD_CONTAINERS_PRIVILEGED] = old_container.get(config.ACI_FIELD_CONTAINERS_ALLOW_ELEVATED)
+            ][config.ACI_FIELD_CONTAINERS_PRIVILEGED] = case_insensitive_dict_get(
+                old_container, config.ACI_FIELD_CONTAINERS_ALLOW_ELEVATED
+            )
 
-        if old_container.get(config.ACI_FIELD_CONTAINERS_WORKINGDIR) is not None:
+        if case_insensitive_dict_get(old_container, config.ACI_FIELD_CONTAINERS_WORKINGDIR) is not None:
             container_properties[
                 config.ACI_FIELD_CONTAINERS_WORKINGDIR
-            ] = old_container.get(config.ACI_FIELD_CONTAINERS_WORKINGDIR)
+            ] = case_insensitive_dict_get(old_container, config.ACI_FIELD_CONTAINERS_WORKINGDIR)
 
         # Finally, assemble the new container dict
         new_container = {
-            config.ACI_FIELD_CONTAINERS_NAME: old_container.get(config.ACI_FIELD_CONTAINERS_NAME),
+            config.ACI_FIELD_CONTAINERS_NAME: case_insensitive_dict_get(
+                old_container, config.ACI_FIELD_CONTAINERS_NAME
+            ),
             config.ACI_FIELD_TEMPLATE_PROPERTIES: container_properties
         }
 
@@ -1677,8 +1697,10 @@ def detect_old_format(old_data):
     # we want to encourage customers to transition to the new format. The best way to check for the old format is
     # to see if the json is flattened. This is an appropriate check since the image name is required
     # and they are located in different places in the two formats
-    old_containers = old_data.get(config.ACI_FIELD_CONTAINERS, [])
-    if len(old_containers) > 0 and old_containers[0].get(config.ACI_FIELD_CONTAINERS_CONTAINERIMAGE) is not None:
+    old_containers = case_insensitive_dict_get(old_data, config.ACI_FIELD_CONTAINERS, [])
+    if len(old_containers) > 0 and case_insensitive_dict_get(
+        old_containers[0], config.ACI_FIELD_CONTAINERS_CONTAINERIMAGE
+    ) is not None:
         logger.warning(
             "%s %s %s",
             "(Deprecation Warning) The input format used is deprecated.",

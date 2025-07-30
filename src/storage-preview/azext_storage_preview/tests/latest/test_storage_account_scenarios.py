@@ -2,8 +2,9 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-from azure.cli.testsdk import (ScenarioTest, JMESPathCheck, JMESPathCheckExists, ResourceGroupPreparer, StorageAccountPreparer,
-                               api_version_constraint)
+from azure.cli.testsdk import (ScenarioTest, JMESPathCheck, JMESPathCheckExists, ResourceGroupPreparer,
+                               StorageAccountPreparer,
+                               api_version_constraint, record_only, live_only)
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from azure.core.exceptions import HttpResponseError
 from .storage_test_util import StorageScenarioMixin
@@ -269,59 +270,103 @@ class StorageAccountTests(StorageScenarioMixin, ScenarioTest):
         self.assertEqual(activeDirectoryProperties['forestName'], self.kwargs['forest_name'])
         self.assertEqual(activeDirectoryProperties['netBiosDomainName'], self.kwargs['net_bios_domain_name'])
 
-    @ResourceGroupPreparer(location='eastus2euap')
-    def test_storage_account_migration(self, resource_group):
-        self.kwargs.update({
-            'sa': self.create_random_name('samigration', 24)
-        })
-        self.cmd('az storage account create -n {sa} -g {rg} -l eastus2euap --sku Standard_LRS')
-        self.cmd('az storage account migration start --account-name {sa} -g {rg} --sku Standard_ZRS --no-wait')
-        # other status would take days to months
-        self.cmd('az storage account migration show -n default -g {rg} --account-name {sa}',
-                 checks=[JMESPathCheck('migrationStatus', 'SubmittedForConversion')])
-
-    @ResourceGroupPreparer(location='eastus2euap')
+    @ResourceGroupPreparer(location='eastus2', random_name_length=24)
+    @record_only()
     def test_storage_account_task_assignment(self, resource_group):
         self.kwargs.update({
             'sa': self.create_random_name('sataskassignment', 24),
             "task_name": self.create_random_name('task', 18),
-            "task_assignment_name": self.create_random_name('taskassignment', 24)
+            "task_assignment_name": self.create_random_name('taskassignment', 24),
+            "task_assignment_name_2": self.create_random_name('taskassignment', 24)
         })
-        self.cmd('az storage account create -n {sa} -g {rg} -l eastus2euap')
+        self.cmd('az storage account create -n {sa} -g {rg} -l eastus2')
 
         # need to create storage-actions task manually
-        # task_id = self.cmd("az storage-actions task create -g {rg} -n {task_name} --identity {{type:SystemAssigned}} "
-        #                    "--tags {{key1:value1}} --action {{if:{{condition:\\'
-        #                    [[equals(AccessTier,\\'/Cool\\'/)]]\\',"
+        # task_id = self.cmd("az storage-actions task create -g {rg} -n {task_name} -l eastus2 "
+        #                    "--identity {{type:SystemAssigned}} "
+        #                    "--tags {{key1:value1}} --action {{if:{{condition:\\'[[equals(AccessTier,\\'/Cool\\'/)]]\\',"
         #                    "operations:[{{name:'SetBlobTier',parameters:{{tier:'Hot'}},"
         #                    "onSuccess:'continue',onFailure:'break'}}]}},"
         #                    "else:{{operations:[{{name:'DeleteBlob',onSuccess:'continue',onFailure:'break'}}]}}}} "
-        #                    "--description StorageTask1 --enabled true").get_output_in_json()["id"]
+        #                    "--description StorageTask1 --enabled false").get_output_in_json()["id"]
         task_id = 'taskid'
         self.kwargs.update({"task_id": task_id})
-        # server error return accepted but also error
-        with self.assertRaises(HttpResponseError):
-            self.cmd("az storage account task-assignment create -g {rg} -n {task_assignment_name} --account-name {sa} "
-                     "--description 'My Storage task assignment' --enabled false --task-id '{task_id}' "
-                     "--report {{prefix:container1}} "
-                     "--execution-context {{trigger:{{type:OnSchedule,parameters:"
-                     "{{start-from:\\'2024-08-14T21:52:47Z\\',"
-                     "end-by:\\'2024-09-04T21:52:47.203074Z\\',interval:10,interval-unit:Days}}}},"
-                     "target:{{prefix:[prefix1,prefix2],exclude-prefix:[prefix3]}}}}")
-        with self.assertRaises(HttpResponseError):
-            self.cmd("az storage account task-assignment update -g {rg} -n {task_assignment_name} --account-name {sa} "
-                     "--description 'My Storage task assignment' --enabled false --task-id '{task_id}'"
-                     " --report {{prefix:container1}} "
-                     "--execution-context {{trigger:{{type:OnSchedule,parameters:"
-                     "{{start-from:\\'2024-08-15T21:52:47Z\\',"
-                     "end-by:\\'2024-09-05T21:52:47.203074Z\\',interval:10,interval-unit:Days}}}},"
-                     "target:{{prefix:[prefix1,prefix2],exclude-prefix:[prefix3]}}}}")
-        self.cmd("az storage account task-assignment show -g {rg} -n {task_assignment_name} --account-name {sa}")
-        self.cmd("az storage account task-assignment list -g {rg} --account-name {sa}")
+        # service would not work if request is directed to euap
+        self.cmd("az storage account task-assignment create -g {rg} -n {task_assignment_name} --account-name {sa} "
+                 "--description 'My Storage task assignment' --enabled false --task-id '{task_id}' "
+                 "--report {{prefix:container1}} "
+                 "--execution-context {{trigger:{{type:OnSchedule,parameters:"
+                 "{{start-from:\\'2025-08-14T21:52:47Z\\',"
+                 "end-by:\\'2025-09-04T21:52:47.203074Z\\',interval:10,interval-unit:Days}}}},"
+                 "target:{{prefix:[prefix1,prefix2],exclude-prefix:[prefix3]}}}}",
+                 checks=[JMESPathCheck('properties.taskId', task_id),
+                         JMESPathCheck('properties.enabled', False),
+                         JMESPathCheck('properties.description', 'My Storage task assignment'),
+                         JMESPathCheck('properties.report.prefix', 'container1'),
+                         JMESPathCheck('properties.executionContext.trigger.type', 'OnSchedule'),
+                         JMESPathCheck('properties.executionContext.trigger.parameters.startFrom',
+                                       '2025-08-14T21:52:47Z'),
+                         JMESPathCheck('properties.executionContext.trigger.parameters.endBy',
+                                       '2025-09-04T21:52:47Z'),
+                         JMESPathCheck('properties.executionContext.trigger.parameters.interval', 10),
+                         JMESPathCheck('properties.executionContext.trigger.parameters.intervalUnit', 'Days'),
+                         JMESPathCheck('properties.executionContext.target.prefix', ['prefix1', 'prefix2']),
+                         JMESPathCheck('properties.executionContext.target.excludePrefix', ['prefix3'])])
+
+        self.cmd("az storage account task-assignment create -g {rg} -n {task_assignment_name_2} --account-name {sa} "
+                 "--description 'My Storage task assignment 2' --enabled false --task-id '{task_id}'"
+                 " --report {{prefix:container2}} "
+                 "--execution-context {{trigger:{{type:RunOnce,parameters:"
+                 "{{start-on:\\'2025-09-15T21:52:47Z\\'}}}},"
+                 "target:{{prefix:[prefix2,prefix3],exclude-prefix:[prefix4]}}}}",
+                 checks=[JMESPathCheck('properties.taskId', task_id),
+                         JMESPathCheck('properties.enabled', False),
+                         JMESPathCheck('properties.description', 'My Storage task assignment 2'),
+                         JMESPathCheck('properties.report.prefix', 'container2'),
+                         JMESPathCheck('properties.executionContext.trigger.type', 'RunOnce'),
+                         JMESPathCheck('properties.executionContext.trigger.parameters.startOn',
+                                       '2025-09-15T21:52:47Z'),
+                         JMESPathCheck('properties.executionContext.target.prefix', ['prefix2', 'prefix3']),
+                         JMESPathCheck('properties.executionContext.target.excludePrefix', ['prefix4'])])
+
+        self.cmd("az storage account task-assignment update -g {rg} -n {task_assignment_name_2} --account-name {sa} "
+                 "--description 'My Storage task assignment 3' --enabled true --task-id '{task_id}'"
+                 " --report {{prefix:container3}} "
+                 "--execution-context {{trigger:{{type:RunOnce,parameters:"
+                 "{{start-on:\\'2025-10-15T21:52:47Z\\'}}}},"
+                 "target:{{prefix:[prefix3,prefix4],exclude-prefix:[prefix5]}}}}",
+                 checks=[JMESPathCheck('properties.taskId', task_id),
+                         JMESPathCheck('properties.enabled', True),
+                         JMESPathCheck('properties.description', 'My Storage task assignment 3'),
+                         JMESPathCheck('properties.report.prefix', 'container3'),
+                         JMESPathCheck('properties.executionContext.trigger.type', 'RunOnce'),
+                         JMESPathCheck('properties.executionContext.trigger.parameters.startOn',
+                                       '2025-10-15T21:52:47Z'), # service adding trailing zeros
+                         JMESPathCheck('properties.executionContext.target.prefix', ['prefix3', 'prefix4']),
+                         JMESPathCheck('properties.executionContext.target.excludePrefix', ['prefix5'])])
+
+        self.cmd("az storage account task-assignment show -g {rg} -n {task_assignment_name} --account-name {sa}",
+                         checks=[JMESPathCheck('properties.taskId', task_id),
+                                 JMESPathCheck('properties.enabled', False),
+                                 JMESPathCheck('properties.description', 'My Storage task assignment'),
+                                 JMESPathCheck('properties.report.prefix', 'container1'),
+                                 JMESPathCheck('properties.executionContext.trigger.type', 'OnSchedule'),
+                                 JMESPathCheck('properties.executionContext.trigger.parameters.startFrom',
+                                               '2025-08-14T21:52:47Z'),
+                                 JMESPathCheck('properties.executionContext.trigger.parameters.endBy',
+                                               '2025-09-04T21:52:47Z'),
+                                 JMESPathCheck('properties.executionContext.trigger.parameters.interval', 10),
+                                 JMESPathCheck('properties.executionContext.trigger.parameters.intervalUnit', 'Days'),
+                                 JMESPathCheck('properties.executionContext.target.prefix', ['prefix1', 'prefix2']),
+                                 JMESPathCheck('properties.executionContext.target.excludePrefix', ['prefix3'])])
+
+        self.cmd("az storage account task-assignment list -g {rg} --account-name {sa}",
+                 checks=[JMESPathCheck('length(@)', 2)])
         self.cmd("az storage account task-assignment list-report -g {rg} -n {task_assignment_name} --account-name {sa}")
-        with self.assertRaises(HttpResponseError):
-            self.cmd("az storage account task-assignment delete -g {rg} -n {task_assignment_name} --account-name {sa} "
-                     "-y")
+        self.cmd("az storage account task-assignment delete -g {rg} -n {task_assignment_name} --account-name {sa} "
+                 "-y")
+        self.cmd("az storage account task-assignment list -g {rg} --account-name {sa}",
+                 checks=[JMESPathCheck('length(@)', 1)])
 
 
 class StorageAccountLocalUserTests(StorageScenarioMixin, ScenarioTest):
@@ -421,8 +466,9 @@ class StorageAccountLocalUserTests(StorageScenarioMixin, ScenarioTest):
             JMESPathCheck('sshAuthorizedKeys', None)
         )
 
-        self.cmd('{cmd} update --account-name {sa} -g {rg} -n {username} '
-                 '--ssh-authorized-key key="ssh-rsa a2V5" ')
+        # getting service error Cannot provide sshAuthorizedKeys for NFSv3 user.
+        # self.cmd('{cmd} update --account-name {sa} -g {rg} -n {username} '
+        #          '--ssh-authorized-key key="ssh-rsa a2V5" ')
 
         self.cmd('{cmd} list-keys --account-name {sa} -g {rg} -n {username}').assert_with_checks(
             JMESPathCheck('sshAuthorizedKeys', None)

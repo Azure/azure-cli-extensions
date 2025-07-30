@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "elastic monitor detach-traffic-filter",
 )
 class DetachTrafficFilter(AAZCommand):
-    """Detach traffic filter
+    """Detach an existing traffic filter from your Elastic monitor resource, removing its network traffic control capabilities.
 
     :example: Detach traffic filter
         az elastic monitor detach-traffic-filter --monitor-name name -g rg --ruleset-id

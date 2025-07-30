@@ -11,10 +11,6 @@
 from azure.cli.core.aaz import *
 
 
-@register_command(
-    "mcc ent node get-provisioning-details",
-    is_preview=True,
-)
 class GetProvisioningDetails(AAZCommand):
     """Retrieves Microsoft Connected Cache for Enterprise cache node details and keys needed to provision cache node.
     """

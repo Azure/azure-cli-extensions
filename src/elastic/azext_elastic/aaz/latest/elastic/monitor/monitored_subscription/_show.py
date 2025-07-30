@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "elastic monitor monitored-subscription show",
 )
 class Show(AAZCommand):
-    """Get all the subscriptions currently being monitored by the Elastic monitor resource.
+    """Get detailed information about all subscriptions currently being monitored by the Elastic monitor resource.
 
     :example: Monitors_GetMonitoredSubscriptions
         az elastic monitor monitored-subscription show --resource-group myResourceGroup --monitor-name myMonitor --configuration-name default

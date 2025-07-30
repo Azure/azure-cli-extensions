@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List NetworkMonitors list by subscription GET method.
+
+    :example: List the Network Monitor
+        az networkfabric networkmonitor list
     """
 
     _aaz_info = {
