@@ -119,9 +119,7 @@ class VmConnectEnable:
         path = f"/subscriptions/{subscription_id}/resourceGroups/{resource_group}/providers/Microsoft.AzureStackHCI/clusters/{cluster_name}/jobs/VmConnectProvision"
         
         # API version
-        api_version = "2023-12-01-preview"
-        url = f"https://management.azure.com{path}?api-version={api_version}"
-        
+        url = f"https://management.azure.com{path}?api-version={API_VERSION}"
         # Default payload with VM name
         payload = {
             "properties": {
@@ -192,9 +190,9 @@ class VmConnectDisable:
         # Payload for VM Connect deprovision
         payload = {
             "properties": {
-                "jobType": "VmConnectDeprovision",
+                "jobType": "VmConnectRemove",
                 "deploymentMode": "Deploy",
-                "vmConnectProvisionJobDetails": [
+                "vmConnectRemoveJobDetails": [
                     {
                         "vmName": vm_name
                     }
