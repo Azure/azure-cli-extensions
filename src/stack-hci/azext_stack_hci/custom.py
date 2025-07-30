@@ -98,20 +98,20 @@ class VmConnectEnable(_VmConnectEnable):
             required=True
         )
         return args_schema
-    
+
     def __call__(self, cmd, **kwargs):
         from azure.cli.core.commands.client_factory import get_subscription_id
         from azure.cli.core.util import send_raw_request
         import json
-        
+
         cluster_name = kwargs.get('cluster_name')
         resource_group = kwargs.get('resource_group')
-        vm_name = kwargs.get('vm_name')      
+        vm_name = kwargs.get('vm_name')
         subscription_id = get_subscription_id(cmd.cli_ctx)
-        
+
         # Construct the REST API path
         path = f"/subscriptions/{subscription_id}/resourceGroups/{resource_group}/providers/Microsoft.AzureStackHCI/clusters/{cluster_name}/jobs/VmConnectProvision"
-        
+
         # API version
         api_version = "2023-12-01-preview"
         url = f"https://management.azure.com{path}?api-version={api_version}"
@@ -127,7 +127,7 @@ class VmConnectEnable(_VmConnectEnable):
                 ]
             }
         }
-        
+
         # Make the REST API call
         try:
             response = send_raw_request(cmd.cli_ctx, "PUT", url, body=json.dumps(payload))
@@ -158,25 +158,25 @@ class VmConnectDisable(_VmConnectDisable):
             required=True
         )
         return args_schema
-    
+
     def __call__(self, cmd, **kwargs):
         from azure.cli.core.commands.client_factory import get_subscription_id
         from azure.cli.core.util import send_raw_request
         import json
-        
+
         cluster_name = kwargs.get('cluster_name')
         resource_group = kwargs.get('resource_group')
         vm_name = kwargs.get('vm_name')
-        
+
         subscription_id = get_subscription_id(cmd.cli_ctx)
-        
+
         # Construct the REST API path for deprovision
         path = f"/subscriptions/{subscription_id}/resourceGroups/{resource_group}/providers/Microsoft.AzureStackHCI/clusters/{cluster_name}/jobs/VmConnectDeprovision"
-        
+
         # API version
         api_version = "2023-12-01-preview"
         url = f"https://management.azure.com{path}?api-version={api_version}"
-        
+
         # Payload for VM Connect deprovision
         payload = {
             "properties": {
@@ -189,7 +189,7 @@ class VmConnectDisable(_VmConnectDisable):
                 ]
             }
         }
-        
+
         # Make the REST API call
         try:
             response = send_raw_request(cmd.cli_ctx, "PUT", url, body=json.dumps(payload))
