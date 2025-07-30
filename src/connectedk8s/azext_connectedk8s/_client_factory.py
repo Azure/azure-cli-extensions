@@ -27,11 +27,11 @@ if TYPE_CHECKING:
 
     from azext_connectedk8s.vendored_sdks import ConnectedKubernetesClient
     from azext_connectedk8s.vendored_sdks.operations import ConnectedClusterOperations
-    from azext_connectedk8s.vendored_sdks.preview_2024_07_01 import (
-        ConnectedKubernetesClient as ConnectedKubernetesClient20240701,
+    from azext_connectedk8s.vendored_sdks.preview_2025_08_01 import (
+        ConnectedKubernetesClient as ConnectedKubernetesClient20250801,
     )
-    from azext_connectedk8s.vendored_sdks.preview_2024_07_01.operations import (
-        ConnectedClusterOperations as ConnectedClusterOperations20240701,
+    from azext_connectedk8s.vendored_sdks.preview_2025_08_01.operations import (
+        ConnectedClusterOperations as ConnectedClusterOperations20250801,
     )
 
 AccessToken = namedtuple("AccessToken", ["token", "expires_on"])
@@ -61,10 +61,10 @@ def cf_connected_cluster(cli_ctx: AzCli, _: Any) -> ConnectedClusterOperations:
     return cf_connectedk8s(cli_ctx).connected_cluster
 
 
-def cf_connectedk8s_prev_2024_07_01(
+def cf_connectedk8s_prev_2025_08_01(
     cli_ctx: AzCli, *_: Any
-) -> ConnectedKubernetesClient20240701:
-    from azext_connectedk8s.vendored_sdks.preview_2024_07_01 import (
+) -> ConnectedKubernetesClient20250801:
+    from azext_connectedk8s.vendored_sdks.preview_2025_08_01 import (
         ConnectedKubernetesClient,
     )
 
@@ -85,10 +85,10 @@ def cf_connectedk8s_prev_2024_07_01(
     return client
 
 
-def cf_connected_cluster_prev_2024_07_01(
+def cf_connected_cluster_prev_2025_08_01(
     cli_ctx: AzCli, _: Any
-) -> ConnectedClusterOperations20240701:
-    return cf_connectedk8s_prev_2024_07_01(cli_ctx).connected_cluster
+) -> ConnectedClusterOperations20250801:
+    return cf_connectedk8s_prev_2025_08_01(cli_ctx).connected_cluster
 
 
 def cf_connectedmachine(
