@@ -77,7 +77,10 @@ class IdentityRemove(_IdentityRemove):
             args.type = 'None'
 
 
-class VmConnectEnable(_VmConnectEnable):
+class VmConnectEnable():
+    def __init__(self, loader=None):
+        self.loader = loader
+        
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
         from azure.cli.core.aaz import AAZResourceGroupNameArg, AAZStrArg
@@ -147,7 +150,10 @@ class VmConnectEnable(_VmConnectEnable):
             raise CLIError(f"Failed to enable VM Connect for VM '{vm_name}': {str(e)}")
 
 
-class VmConnectDisable(_VmConnectDisable):
+class VmConnectDisable():
+    def __init__(self, loader=None):
+        self.loader = loader
+
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
         from azure.cli.core.aaz import AAZResourceGroupNameArg, AAZStrArg
