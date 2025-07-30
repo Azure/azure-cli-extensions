@@ -5384,7 +5384,10 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             if not self.context.get_yes() and not prompt_y_n(msg, default="n"):
                 raise DecoratorEarlyExitException()
             # Ensure we have valid vmas AP
-            if len(mc.agent_pool_profiles) == 1 and mc.agent_pool_profiles[0].type == CONST_AVAILABILITY_SET:
+            if len(mc.agent_pool_profiles) == 1 and mc.agent_pool_profiles[0].type in (
+                CONST_AVAILABILITY_SET,
+                CONST_VIRTUAL_MACHINES,
+            ):
                 mc.agent_pool_profiles[0].type = CONST_VIRTUAL_MACHINES
             else:
                 raise CLIError('This is not a valid VMAS cluster, we cannot proceed with the migration.')
