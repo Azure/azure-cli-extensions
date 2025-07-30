@@ -85,7 +85,7 @@ class VmConnectEnable:
     
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
-        from azure.cli.core.aaz import AAZResourceGroupNameArg, AAZStrArg, AAZDictArg
+        from azure.cli.core.aaz import AAZResourceGroupNameArg, AAZStrArg
         args_schema = {}
         args_schema.cluster_name = AAZStrArg(
             options=["--cluster-name", "-n"],
