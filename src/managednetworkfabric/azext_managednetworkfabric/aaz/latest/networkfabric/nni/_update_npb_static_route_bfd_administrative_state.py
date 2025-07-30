@@ -42,8 +42,8 @@ class UpdateNpbStaticRouteBfdAdministrativeState(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.network_fabric_name = AAZStrArg(
-            options=["--resource-name", "--network-fabric-name"],
+        _args_schema.fabric_name = AAZStrArg(
+            options=["--fabric", "--fabric-name"],
             help="Name of the Network Fabric.",
             required=True,
             id_part="name",
@@ -51,8 +51,8 @@ class UpdateNpbStaticRouteBfdAdministrativeState(AAZCommand):
                 pattern="^[a-zA-Z]{1}[a-zA-Z0-9-_]{2,127}$",
             ),
         )
-        _args_schema.network_to_network_interconnect_name = AAZStrArg(
-            options=["--network-to-network-interconnect-name"],
+        _args_schema.resource_name = AAZStrArg(
+            options=["--resource-name"],
             help="Name of the Network to Network Interconnect.",
             required=True,
             id_part="child_name_1",
@@ -146,11 +146,11 @@ class UpdateNpbStaticRouteBfdAdministrativeState(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "networkFabricName", self.ctx.args.network_fabric_name,
+                    "networkFabricName", self.ctx.args.fabric_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "networkToNetworkInterconnectName", self.ctx.args.network_to_network_interconnect_name,
+                    "networkToNetworkInterconnectName", self.ctx.args.resource_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
