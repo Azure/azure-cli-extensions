@@ -119,7 +119,8 @@ class VmConnectEnable:
         path = f"/subscriptions/{subscription_id}/resourceGroups/{resource_group}/providers/Microsoft.AzureStackHCI/clusters/{cluster_name}/jobs/VmConnectProvision"
         
         # API version
-        url = f"https://management.azure.com{path}?api-version={API_VERSION}"
+        api_version = "2023-12-01-preview"
+        url = f"https://management.azure.com{path}?api-version={api_version}"
         # Default payload with VM name
         payload = {
             "properties": {
