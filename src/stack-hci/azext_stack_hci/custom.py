@@ -77,16 +77,11 @@ class IdentityRemove(_IdentityRemove):
             args.type = 'None'
 
 
-class VmConnectEnable:
-    """Enable VM Connect functionality for Stack HCI cluster."""
-    
-    def __init__(self, loader=None):
-        self.loader = loader
-    
+class VmConnectEnable(_VmConnectEnable):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
         from azure.cli.core.aaz import AAZResourceGroupNameArg, AAZStrArg
-        args_schema = {}
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
         args_schema.cluster_name = AAZStrArg(
             options=["--cluster-name", "-n"],
             help="The name of the cluster.",
@@ -111,8 +106,7 @@ class VmConnectEnable:
         
         cluster_name = kwargs.get('cluster_name')
         resource_group = kwargs.get('resource_group')
-        vm_name = kwargs.get('vm_name')
-        
+        vm_name = kwargs.get('vm_name')      
         subscription_id = get_subscription_id(cmd.cli_ctx)
         
         # Construct the REST API path
@@ -143,16 +137,11 @@ class VmConnectEnable:
             raise CLIError(f"Failed to enable VM Connect for VM '{vm_name}': {str(e)}")
 
 
-class VmConnectDisable:
-    """Disable VM Connect functionality for Stack HCI cluster."""
-    
-    def __init__(self, loader=None):
-        self.loader = loader
-    
+class VmConnectDisable(_VmConnectDisable):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
         from azure.cli.core.aaz import AAZResourceGroupNameArg, AAZStrArg
-        args_schema = {}
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
         args_schema.cluster_name = AAZStrArg(
             options=["--cluster-name", "-n"],
             help="The name of the cluster.",
