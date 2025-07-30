@@ -4,6 +4,7 @@ Release History
 ===============
 upcoming
 ++++++
+* 'az containerapp env premium-ingress': deprecate `--min-replicas` and `--max-replicas` parameters, use workload profile scale instead.
 
 1.2.0b3
 ++++++
