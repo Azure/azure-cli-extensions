@@ -3694,7 +3694,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "aks create --resource-group={resource_group} --name={name} --location={location} "
             "--sku automatic "
             "--aks-custom-header AKSHTTPCustomFeatures=Microsoft.ContainerService/AutomaticSKUPreview "
-            "--enable-managed-identity "
             "--ssh-key-value={ssh_key_value}"
         )
         self.cmd(
