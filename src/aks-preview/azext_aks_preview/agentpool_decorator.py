@@ -1025,6 +1025,7 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
             vm_size,
         )
 
+
 class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
     def __init__(
         self,
@@ -1292,15 +1293,15 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
             )
         else:
             agentpool.virtual_machines_profile = self.models.VirtualMachinesProfile(
-            scale=self.models.ScaleProfile(
-                manual=[
-                    self.models.ManualScaleProfile(
-                        size=sizes[0],
-                        count=node_count,
-                    )
-                ]
+                scale=self.models.ScaleProfile(
+                    manual=[
+                        self.models.ManualScaleProfile(
+                            size=sizes[0],
+                            count=node_count,
+                        )
+                    ]
+                )
             )
-        )
 
         # properties that doesn't need to be set for virtual machines agentpool
         # they are for vmss only
@@ -1727,7 +1728,7 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
 
     def update_auto_scaler_properties(self, agentpool: AgentPool) -> AgentPool:
         """Update auto scaler related properties for vmss Agentpool object.
-        
+
         This function is for vmss agentpool only.
 
         :return: the Agentpool object
