@@ -77,7 +77,7 @@ class IdentityRemove(_IdentityRemove):
             args.type = 'None'
 
 
-def vm_connect_enable(cmd, cluster_name, resource_group, vm_name):
+def vmconnect_enable(cmd, cluster_name, resource_group, vm_name):
     """
     Enable VM Connect for a virtual machine in an Azure Stack HCI cluster.
     """
@@ -112,7 +112,7 @@ def vm_connect_enable(cmd, cluster_name, resource_group, vm_name):
         raise CLIError(f"Failed to enable VM Connect for VM '{vm_name}': {str(e)}")
 
 
-def vm_connect_disable(cmd, cluster_name, resource_group, vm_name):
+def vmconnect_disable(cmd, cluster_name, resource_group, vm_name):
     """
     Disable VM Connect for a virtual machine in an Azure Stack HCI cluster.
     """
