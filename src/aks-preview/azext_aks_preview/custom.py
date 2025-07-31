@@ -4387,8 +4387,9 @@ def aks_bastion(cmd, client, resource_group_name, name, bastion=None, port=None,
             aks_batsion_clean_up()
 
 
+# pylint: disable=unused-argument
 def aks_agent(
-        cmd, # pylint: disable=unused-argument
+        cmd,
         client,
         resource_group_name,
         name,

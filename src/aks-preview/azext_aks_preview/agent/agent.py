@@ -157,12 +157,12 @@ subscription_id: {{subscription_id}}
 
 ## Prerequisites
 ### AKS cluster name is under the resource group and subscription specified
-
 You should check if the AKS cluster {{cluster_name}} can be found under resource group {{resource_group}} and subscription {{subscription_id}}.
 If not, you should prompt to the user to specify correct cluster name, resource group and subscription ID.
 
-## AKS cluster is in the current kubeconfig context
-If the current kubeconfig context is not set to the AKS cluster {{cluster_name}}, you should download the kubeconfig credential with the cluster name {{cluster_name}}, resource group name {{resource_group}} and subscription ID {{subscription_id}}.
+### AKS cluster is in the current kubeconfig context
+Whenever start the investigation and troubleshooting, you MUST check if the current kubeconfig context is set to the AKS cluster {{cluster_name}}.
+If the current kubeconfig context is not set to the AKS cluster {{cluster_name}}, you should get the kubeconfig credential for the cluster name {{cluster_name}}, resource group name {{resource_group}} and subscription ID {{subscription_id}}
 If the current kubeconfig context is set to the AKS cluster {{cluster_name}}, you should proceed with the investigation and troubleshooting.
 """
     aks_context_prompt = load_and_render_prompt(aks_context_prompt, aks_template_context)

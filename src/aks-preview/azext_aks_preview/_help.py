@@ -3899,6 +3899,9 @@ helps['aks agent'] = """
         - name: --model
           type: string
           short-summary: Model to use for the LLM.
+        - name: --api-key
+          type: string
+          short-summary: API key to use for the LLM (if not given, uses environment variables AZURE_API_KEY, OPENAI_API_KEY).
         - name: --config-file
           type: string
           short-summary: Path to configuration file.
