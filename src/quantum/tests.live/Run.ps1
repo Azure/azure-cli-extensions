@@ -70,7 +70,7 @@ function Invoke-QuantumWorkspaceDataObfuscation {
         Write-Host "Obfuscated primary and secondary connection strings."
 
         # Obfuscate standalone ApiKey
-        $content = $content -replace 'ApiKey=[\w-]+;', 'ApiKey=REDACTED;'
+        $content = $content -replace 'ApiKey=[\w\-+=/_]+;', 'ApiKey=REDACTED;'
         Write-Host "Obfuscated standalone ApiKey values."
 
         # Obfuscate apiKeyEnabled boolean
