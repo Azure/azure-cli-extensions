@@ -80,7 +80,7 @@ class IdentityRemove(_IdentityRemove):
 class VmConnectEnable():
     def __init__(self, loader=None):
         self.loader = loader
-        
+
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
         from azure.cli.core.aaz import AAZResourceGroupNameArg, AAZStrArg
@@ -139,12 +139,11 @@ class VmConnectEnable():
             response = send_raw_request(cmd.cli_ctx, "PUT", url, body=json.dumps(payload))
             if response.content:
                 return response.json()
-            else:
-                return {
-                    "message": (
-                        f"VM Connect provision job initiated successfully for VM: {vm_name}"
-                    )
-                }
+            return {
+                "message": (
+                    f"VM Connect provision job initiated successfully for VM: {vm_name}"
+                )
+            }
         except Exception as e:
             from azure.cli.core.util import CLIError
             raise CLIError(f"Failed to enable VM Connect for VM '{vm_name}': {str(e)}")
@@ -215,12 +214,11 @@ class VmConnectDisable():
             response = send_raw_request(cmd.cli_ctx, "PUT", url, body=json.dumps(payload))
             if response.content:
                 return response.json()
-            else:
-                return {
-                    "message": (
-                        f"VM Connect remove job initiated successfully for VM: {vm_name}"
-                    )
-                }
+            return {
+                "message": (
+                    f"VM Connect remove job initiated successfully for VM: {vm_name}"
+                )
+            }
         except Exception as e:
             from azure.cli.core.util import CLIError
             raise CLIError(f"Failed to disable VM Connect for VM '{vm_name}': {str(e)}")
