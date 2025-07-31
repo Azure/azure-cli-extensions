@@ -36,7 +36,7 @@ function Invoke-APIKeyObfuscation {
         $RecordingFileName = $_.Name
         $PathToRecording = "$RecordingsFolderPath\$RecordingFileName"
         Write-Verbose -Message "Searching for API Keys in ""$PathToRecording"" and obfuscating it..."
-        (Get-Content $PathToRecording) -replace 'api_key=[\w%]+','api_key=REDACTED' | Set-Content $PathToRecording
+        (Get-Content $PathToRecording) -replace 'api_key=[\w%\-+=/_]+','api_key=REDACTED' | Set-Content $PathToRecording
     }
 }
 
