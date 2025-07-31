@@ -17,8 +17,8 @@ from azext_fleet.constants import UPGRADE_TYPE_CONTROLPLANEONLY
 from azext_fleet.constants import UPGRADE_TYPE_FULL
 from azext_fleet.constants import UPGRADE_TYPE_NODEIMAGEONLY
 from azext_fleet.constants import UPGRADE_TYPE_ERROR_MESSAGES
-from azext_fleet.constants import SUPPORTED_GATE_STATES_FILTERS
-from azext_fleet.constants import SUPPORTED_GATE_STATES_PATCH
+#from azext_fleet.constants import SUPPORTED_GATE_STATES_FILTERS
+#from azext_fleet.constants import SUPPORTED_GATE_STATES_PATCH
 
 
 # pylint: disable=too-many-locals
@@ -651,78 +651,190 @@ def generate_update_run(cmd,  # pylint: disable=unused-argument
         auto_upgrade_profile_name
     )
 
-
-def list_gates_by_fleet(cmd,  # pylint: disable=unused-argument
-                        client,
-                        resource_group_name,
-                        fleet_name,
-                        state_filter=None):
-    params = {}
-
-    if state_filter:
-        if state_filter not in SUPPORTED_GATE_STATES_FILTERS:
-            raise CLIError(
-                f"Unsupported gate state filter value: '{state_filter}'. "
-                f"Allowed values are {SUPPORTED_GATE_STATES_FILTERS}"
-            )
-
-        params["$filter"] = f"state eq {state_filter}"
-
-    return client.list_by_fleet(resource_group_name, fleet_name, params=params)
-
-
-def show_gate(cmd,  # pylint: disable=unused-argument
-              client,
-              resource_group_name,
-              fleet_name,
-              gate_name):
-    return client.get(resource_group_name, fleet_name, gate_name)
-
-
-def _patch_gate(cmd,  # pylint: disable=unused-argument
-                client,
-                resource_group_name,
-                fleet_name,
-                gate_name,
-                gate_state,
-                no_wait=False):
-    if gate_state not in SUPPORTED_GATE_STATES_PATCH:
-        raise CLIError(
-            f"Unsupported gate state value: '{gate_state}'. "
-            f"Allowed values are {SUPPORTED_GATE_STATES_PATCH}"
-        )
-
-    gate_model = cmd.get_models(
-        "GatePatch",
-        resource_type=CUSTOM_MGMT_FLEET,
-        operation_group="gates"
+# Managed namespace operations
+def create_managed_namespace(cmd,
+                           client,
+                           resource_group_name,
+                           fleet_name,
+                           managed_namespace_name,
+                           labels=None,
+                           annotations=None,
+                           no_wait=False):
+    managed_namespace_model = cmd.get_models(
+        "FleetManagedNamespace",
+        resource_type=CUSTOM_MGMT_FLEET
     )
-    gate_properties_model = cmd.get_models(
-        "GatePatchProperties",
-        resource_type=CUSTOM_MGMT_FLEET,
-        operation_group="gates"
+    
+    managed_namespace_properties_model = cmd.get_models(
+        "ManagedNamespaceProperties",
+        resource_type=CUSTOM_MGMT_FLEET
+    )
+    
+    fleet_managed_namespace_properties_model = cmd.get_models(
+        "FleetManagedNamespaceProperties",
+        resource_type=CUSTOM_MGMT_FLEET
     )
 
-    properties = gate_properties_model(state=gate_state)
-    patch_request = gate_model(properties=properties)
+    # Create the nested properties structure
+    managed_namespace_props = managed_namespace_properties_model(
+        labels=labels,
+        annotations=annotations
+    )
+    
+    fleet_managed_namespace_props = fleet_managed_namespace_properties_model(
+        managed_namespace_properties=managed_namespace_props
+    )
 
-    return sdk_no_wait(no_wait, client.begin_update, resource_group_name, fleet_name, gate_name, patch_request)
+    managed_namespace = managed_namespace_model(
+        properties=fleet_managed_namespace_props
+    )
+
+    return sdk_no_wait(
+        no_wait,
+        client.begin_create_or_update,
+        resource_group_name=resource_group_name,
+        fleet_name=fleet_name,
+        managed_namespace_name=managed_namespace_name,
+        resource=managed_namespace
+    )
 
 
-def update_gate(cmd,  # pylint: disable=unused-argument
-                client,
-                resource_group_name,
-                fleet_name,
-                gate_name,
-                gate_state=None,
-                no_wait=False):
-    return _patch_gate(cmd, client, resource_group_name, fleet_name, gate_name, gate_state, no_wait)
+def update_managed_namespace(cmd,
+                           client,
+                           resource_group_name,
+                           fleet_name,
+                           managed_namespace_name,
+                           labels=None,
+                           annotations=None,
+                           no_wait=False):
+    
+    fleet_managed_namespace_patch_model = cmd.get_models(
+        "FleetManagedNamespacePatch",
+        resource_type=CUSTOM_MGMT_FLEET
+    )
+
+    # Create a patch object with only the tags that can be updated
+    # Note: In this API version, we may only be able to update tags, not the namespace properties
+    patch = fleet_managed_namespace_patch_model()
+
+    return sdk_no_wait(
+        no_wait,
+        client.begin_update,
+        resource_group_name=resource_group_name,
+        fleet_name=fleet_name,
+        managed_namespace_name=managed_namespace_name,
+        properties=patch
+    )
 
 
-def approve_gate(cmd,  # pylint: disable=unused-argument
-                 client,
-                 resource_group_name,
-                 fleet_name,
-                 gate_name,
-                 no_wait=False):
-    return _patch_gate(cmd, client, resource_group_name, fleet_name, gate_name, "Completed", no_wait)
+def delete_managed_namespace(cmd,  # pylint: disable=unused-argument
+                           client,
+                           resource_group_name,
+                           fleet_name,
+                           managed_namespace_name,
+                           no_wait=False):
+    return sdk_no_wait(
+        no_wait,
+        client.begin_delete,
+        resource_group_name=resource_group_name,
+        fleet_name=fleet_name,
+        managed_namespace_name=managed_namespace_name
+    )
+
+
+def show_managed_namespace(cmd,  # pylint: disable=unused-argument
+                         client,
+                         resource_group_name,
+                         fleet_name,
+                         managed_namespace_name):
+    return client.get(
+        resource_group_name=resource_group_name,
+        fleet_name=fleet_name,
+        managed_namespace_name=managed_namespace_name
+    )
+
+
+def list_managed_namespaces(cmd,  # pylint: disable=unused-argument
+                           client,
+                           resource_group_name,
+                           fleet_name):
+    return client.list_by_fleet(
+        resource_group_name=resource_group_name,
+        fleet_name=fleet_name
+    )
+
+
+#def list_gates_by_fleet(cmd,  # pylint: disable=unused-argument
+#                        client,
+#                        resource_group_name,
+#                        fleet_name,
+#                        state_filter=None):
+#    params = {}
+
+#    if state_filter:
+#        if state_filter not in SUPPORTED_GATE_STATES_FILTERS:
+#            raise CLIError(
+#                f"Unsupported gate state filter value: '{state_filter}'. "
+#                f"Allowed values are {SUPPORTED_GATE_STATES_FILTERS}"
+#            )
+
+#        params["$filter"] = f"state eq {state_filter}"
+
+#    return client.list_by_fleet(resource_group_name, fleet_name, params=params)
+
+
+#def show_gate(cmd,  # pylint: disable=unused-argument
+#              client,
+#              resource_group_name,
+#              fleet_name,
+#              gate_name):
+#    return client.get(resource_group_name, fleet_name, gate_name)
+
+
+#def _patch_gate(cmd,  # pylint: disable=unused-argument
+#                client,
+#                resource_group_name,
+#                fleet_name,
+#                gate_name,
+#                gate_state,
+#                no_wait=False):
+#    if gate_state not in SUPPORTED_GATE_STATES_PATCH:
+#        raise CLIError(
+#            f"Unsupported gate state value: '{gate_state}'. "
+#            f"Allowed values are {SUPPORTED_GATE_STATES_PATCH}"
+#        )
+
+#    gate_model = cmd.get_models(
+#        "GatePatch",
+#        resource_type=CUSTOM_MGMT_FLEET,
+#        operation_group="gates"
+#    )
+#    gate_properties_model = cmd.get_models(
+#        "GatePatchProperties",
+#        resource_type=CUSTOM_MGMT_FLEET,
+#        operation_group="gates"
+#    )
+
+#    properties = gate_properties_model(state=gate_state)
+#    patch_request = gate_model(properties=properties)
+
+#    return sdk_no_wait(no_wait, client.begin_update, resource_group_name, fleet_name, gate_name, patch_request)
+
+
+#def update_gate(cmd,  # pylint: disable=unused-argument
+#                client,
+#                resource_group_name,
+#                fleet_name,
+#                gate_name,
+#                gate_state=None,
+#                no_wait=False):
+#    return _patch_gate(cmd, client, resource_group_name, fleet_name, gate_name, gate_state, no_wait)
+
+
+#def approve_gate(cmd,  # pylint: disable=unused-argument
+#                 client,
+#                 resource_group_name,
+#                 fleet_name,
+#                 gate_name,
+#                 no_wait=False):
+#    return _patch_gate(cmd, client, resource_group_name, fleet_name, gate_name, "Completed", no_wait)
