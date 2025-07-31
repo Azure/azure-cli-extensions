@@ -17,7 +17,7 @@ from azure.cli.core.aaz import *
 class Update(AAZCommand):
     """Update to update certain properties of the IP Prefix resource.
 
-    :example: Update IP prefix
+    :example: Update the Ip prefix
         az networkfabric ipprefix update  -g "example-rg" --resource-name "example-ipprefix" --ip-prefix-rules "[{action:Permit,sequenceNumber:4155123341,networkPrefix:'10.10.10.10/30',condition:GreaterThanOrEqualTo,subnetMaskLength:10}]"
     """
 

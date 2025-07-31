@@ -16,7 +16,7 @@ from azure.cli.core.aaz import *
     is_preview=True,
 )
 class List(AAZCommand):
-    """List flows in a connection.
+    """List all the flows in a connection.
 
     :example: Gets flows in a connection
         az data-transfer connection flow list --resource-group testRG --connection-name testConnection

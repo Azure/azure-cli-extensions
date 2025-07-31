@@ -29,6 +29,7 @@ from azext_aks_preview._consts import (
     CONST_NETWORK_PLUGIN_AZURE,
     CONST_NETWORK_PLUGIN_MODE_OVERLAY,
     CONST_NETWORK_POLICY_CILIUM,
+    CONST_NODEPOOL_MODE_MANAGEDSYSTEM,
     CONST_PRIVATE_DNS_ZONE_NONE,
     CONST_PRIVATE_DNS_ZONE_SYSTEM,
     CONST_ROTATION_POLL_INTERVAL,
@@ -3972,6 +3973,25 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         self.__raw_parameters = raw_parameters
         super().__init__(cmd, client, raw_parameters, resource_type)
 
+    def update_managed_system_pools(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update ManagedSystem agent pools to only include name, mode, and type fields.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        if mc.agent_pool_profiles is None:
+            return mc
+        for agentpool in mc.agent_pool_profiles:
+            # Check if agentpool is in ManagedSystem mode and handle special case
+            if agentpool.mode == CONST_NODEPOOL_MODE_MANAGEDSYSTEM:
+                # Make sure all other attributes are None
+                for attr in vars(agentpool):
+                    if attr != 'name' and attr != 'mode' and not attr.startswith('_'):
+                        if hasattr(agentpool, attr):
+                            setattr(agentpool, attr, None)
+        return mc
+
     def init_models(self) -> None:
         """Initialize an AKSManagedClusterModels object to store the models.
 
@@ -5364,7 +5384,10 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             if not self.context.get_yes() and not prompt_y_n(msg, default="n"):
                 raise DecoratorEarlyExitException()
             # Ensure we have valid vmas AP
-            if len(mc.agent_pool_profiles) == 1 and mc.agent_pool_profiles[0].type == CONST_AVAILABILITY_SET:
+            if len(mc.agent_pool_profiles) == 1 and mc.agent_pool_profiles[0].type in (
+                CONST_AVAILABILITY_SET,
+                CONST_VIRTUAL_MACHINES,
+            ):
                 mc.agent_pool_profiles[0].type = CONST_VIRTUAL_MACHINES
             else:
                 raise CLIError('This is not a valid VMAS cluster, we cannot proceed with the migration.')
@@ -5475,6 +5498,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_vmas_to_vms(mc)
         # update http proxy config
         mc = self.update_http_proxy_enabled(mc)
+        # update ManagedSystem pools, must at end
+        mc = self.update_managed_system_pools(mc)
 
         return mc
 

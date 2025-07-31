@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "mongo-db atlas organization delete",
-    is_preview=True,
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
@@ -24,9 +23,9 @@ class Delete(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-11-18-preview",
+        "version": "2025-06-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/mongodb.atlas/organizations/{}", "2024-11-18-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/mongodb.atlas/organizations/{}", "2025-06-01"],
         ]
     }
 
@@ -150,7 +149,7 @@ class Delete(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-11-18-preview",
+                    "api-version", "2025-06-01",
                     required=True,
                 ),
             }

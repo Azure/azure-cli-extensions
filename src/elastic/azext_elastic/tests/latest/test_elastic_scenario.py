@@ -126,14 +126,20 @@ class ElasticScenario(ScenarioTest):
     @ResourceGroupPreparer(name_prefix='cli_test_elastic_monitor', location='eastus')
     def test_elastic_monitor_open_ai_integration(self, resource_group):
         email = self.cmd('account show').get_output_in_json()['user']['name']
+        subscription_id = self.get_subscription_id()
+        openai_account_name = 'es-openAi-resource'
+
+        openai_resource_id = f'/subscriptions/{subscription_id}/resourceGroups/es-cloudtests-portal/providers/Microsoft.CognitiveServices/accounts/{openai_account_name}'
+        openai_resource_endpoint = 'https://es-openai-resource.openai.azure.com/openai/deployments/test1/chat/completions?api-version=2024-06-15-preview'
+
         self.kwargs.update({
             'monitor': self.create_random_name('monitor', 20),
             'rg': resource_group,
             'email': email,
             'integration_name': 'default',
             'key':'9e1bac69b92242129ad1f2373dd06939',
-            'openAIResourceId': '/subscriptions/cff37b56-870a-448f-a2fb-1a89235d4d32/resourceGroups/utkarshjain-rg/providers/Microsoft.CognitiveServices/accounts/utkarshTestResource1',
-            'openAIResourceEndpoint': 'https://utkarshtestresource1.openai.azure.com/openai/deployments/test1/chat/completions?api-version=2024-06-15-preview',
+            'openAIResourceId': openai_resource_id,
+            'openAIResourceEndpoint': openai_resource_endpoint,
         })
 
         self.cmd('elastic monitor create '
@@ -188,8 +194,8 @@ class ElasticScenario(ScenarioTest):
             'monitor': self.create_random_name('monitor', 20),
             'rg': resource_group,
             'email': email,
-            'subscription_id': 'cff37b56-870a-448f-a2fb-1a89235d4d32',
-            'subs_id': 'CFF37B56-870A-448F-A2FB-1A89235D4D32',
+            'subscription_id': 'a81c0054-6c92-41aa-a235-4f9f98f917c6',
+            'subs_id': 'A81C0054-6C92-41AA-A235-4F9F98F917C6',
             'updated_status': 'InProgress'
         })
         self.cmd('elastic monitor create '
