@@ -2384,7 +2384,7 @@ helps['containerapp env premium-ingress'] = """
     examples:
     - name: Enable premium ingress for the environment.
       text: |
-          az containerapp env premium-ingress add -g MyResourceGroup -n MyEnvironment -w WorkloadProfileName
+          az containerapp env premium-ingress add -g MyResourceGroup -n MyEnvironment -w WorkloadProfileName --min-replicas 2 --max-replicas 10
 """
 
 helps['containerapp env premium-ingress add'] = """
@@ -2395,7 +2395,7 @@ helps['containerapp env premium-ingress add'] = """
     examples:
     - name: Add the premium ingress settings for the environment.
       text: |
-          az containerapp env premium-ingress add -g MyResourceGroup -n MyEnvironment -w WorkloadProfileName
+          az containerapp env premium-ingress add -g MyResourceGroup -n MyEnvironment -w WorkloadProfileName --min-replicas 2 --max-replicas 10
 """
 
 helps['containerapp env premium-ingress update'] = """
