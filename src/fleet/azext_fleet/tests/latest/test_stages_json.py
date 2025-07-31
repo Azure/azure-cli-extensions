@@ -7,44 +7,12 @@ import unittest
 import json
 import tempfile
 import os
-from unittest.mock import Mock, patch
+from unittest.mock import MagicMock, patch
 from azext_fleet.custom import get_update_run_strategy
+from azext_fleet.vendored_sdks.v2025_04_01_preview.models import UpdateRunStrategy, UpdateStage, UpdateGroup
 from azure.cli.core.azclierror import (
     InvalidArgumentValueError,
 )
-
-
-def mock_get_file_json(file_path):
-    """Mock implementation of get_file_json."""
-    with open(file_path, 'r', encoding='utf-8') as fp:
-        return json.load(fp)
-
-
-def mock_shell_safe_json_parse(json_string):
-    """Mock implementation of shell_safe_json_parse."""
-    return json.loads(json_string)
-
-
-
-class MockUpdateGroup:
-    """Mock UpdateGroup model."""
-    def __init__(self, name):
-        self.name = name
-
-
-class MockUpdateStage:
-    """Mock UpdateStage model."""
-    def __init__(self, name, groups, after_stage_wait_in_seconds=0):
-        self.name = name
-        self.groups = groups
-        self.after_stage_wait_in_seconds = after_stage_wait_in_seconds
-
-
-class MockUpdateRunStrategy:
-    """Mock UpdateRunStrategy model."""
-    def __init__(self, stages):
-        self.stages = stages
-
 
 class TestStagesJsonHandling(unittest.TestCase):
     """Test inline JSON support for --stages argument in fleet commands."""
@@ -65,18 +33,18 @@ class TestStagesJsonHandling(unittest.TestCase):
         }
         
         # Mock cmd object that provides get_models method
-        self.mock_cmd = Mock()
+        self.mock_cmd = MagicMock()
         
         # Set up get_models to return our mock classes
         def mock_get_models(model_name, **kwargs):
             if model_name == "UpdateGroup":
-                return MockUpdateGroup
+                return UpdateGroup
             elif model_name == "UpdateStage":
-                return MockUpdateStage
+                return UpdateStage
             elif model_name == "UpdateRunStrategy":
-                return MockUpdateRunStrategy
+                return UpdateRunStrategy
             else:
-                return Mock
+                return MagicMock()
         
         self.mock_cmd.get_models = mock_get_models
 
@@ -93,18 +61,18 @@ class TestStagesJsonHandling(unittest.TestCase):
             
             # Verify the returned strategy
             self.assertIsNotNone(result)
-            self.assertIsInstance(result, MockUpdateRunStrategy)
+            self.assertIsInstance(result, UpdateRunStrategy)
             self.assertEqual(len(result.stages), 1)
             
             # Verify first stage
             stage = result.stages[0]
-            self.assertIsInstance(stage, MockUpdateStage)
+            self.assertIsInstance(stage, UpdateStage)
             self.assertEqual(stage.name, "stage1")
             self.assertEqual(stage.after_stage_wait_in_seconds, 3600)
             self.assertEqual(len(stage.groups), 2)
             
             # Verify groups
-            self.assertIsInstance(stage.groups[0], MockUpdateGroup)
+            self.assertIsInstance(stage.groups[0], UpdateGroup)
             self.assertEqual(stage.groups[0].name, "group1")
             self.assertEqual(stage.groups[1].name, "group2")
             
@@ -121,18 +89,18 @@ class TestStagesJsonHandling(unittest.TestCase):
         
         # Verify the returned strategy
         self.assertIsNotNone(result)
-        self.assertIsInstance(result, MockUpdateRunStrategy)
+        self.assertIsInstance(result, UpdateRunStrategy)
         self.assertEqual(len(result.stages), 1)
         
         # Verify first stage
         stage = result.stages[0]
-        self.assertIsInstance(stage, MockUpdateStage)
+        self.assertIsInstance(stage, UpdateStage)
         self.assertEqual(stage.name, "stage1")
         self.assertEqual(stage.after_stage_wait_in_seconds, 3600)
         self.assertEqual(len(stage.groups), 2)
         
         # Verify groups
-        self.assertIsInstance(stage.groups[0], MockUpdateGroup)
+        self.assertIsInstance(stage.groups[0], UpdateGroup)
         self.assertEqual(stage.groups[0].name, "group1")
         self.assertEqual(stage.groups[1].name, "group2")
 
