@@ -1142,7 +1142,7 @@ class AKSPreviewAgentPoolContextManagedClusterModeTestCase(
         dec.context.get_ssh_access = Mock(return_value=CONST_SSH_ACCESS_LOCALUSER)
         dec.context.get_sku_name = Mock(return_value=CONST_MANAGED_CLUSTER_SKU_NAME_BASE)
 
-        # Construct and attach the agentpool using the correct method
+        # Construct and attach the agentpool
         with patch("azext_aks_preview.agentpool_decorator.cf_agent_pools", return_value=Mock(list=Mock(return_value=[]))):
             agentpool = dec.construct_agentpool_profile_preview()
 
