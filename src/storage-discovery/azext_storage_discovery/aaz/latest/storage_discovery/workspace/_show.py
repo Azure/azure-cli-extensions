@@ -19,7 +19,7 @@ class Show(AAZCommand):
     """Get a StorageDiscoveryWorkspace
 
     :example: Get a StorageDiscoveryWorkspace
-        az storage-discovery workspace show --resource-group sample-rg --storage-discovery-workspace-name Sample-Storage-Workspace
+        az storage-discovery workspace show --resource-group myRG --name myWorkspace
     """
 
     _aaz_info = {

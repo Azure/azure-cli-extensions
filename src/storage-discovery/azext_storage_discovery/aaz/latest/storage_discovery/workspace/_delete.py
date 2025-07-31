@@ -20,7 +20,7 @@ class Delete(AAZCommand):
     """Delete a StorageDiscoveryWorkspace
 
     :example: Delete a StorageDiscoveryWorkspace
-        az storage-discovery workspace delete --resource-group sample-rg --storage-discovery-workspace-name sampleworkspace
+        az storage-discovery workspace delete --resource-group myRG --name myWorkspace
     """
 
     _aaz_info = {

@@ -20,6 +20,7 @@ class List(AAZCommand):
 
     :example: List StorageDiscoveryWorkspaces by Subscription
         az storage-discovery workspace list
+        az storage-discovery workspace list --resource-group myRG
     """
 
     _aaz_info = {
