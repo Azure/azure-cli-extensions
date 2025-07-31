@@ -4,12 +4,11 @@
 # --------------------------------------------------------------------------------------------
 
 import os
-import json
 
 from knack.util import CLIError
 
 from azure.cli.core.commands.client_factory import get_subscription_id
-from azure.cli.core.util import sdk_no_wait
+from azure.cli.core.util import sdk_no_wait, get_file_json, shell_safe_json_parse
 
 from azext_fleet._client_factory import CUSTOM_MGMT_FLEET
 from azext_fleet._helpers import print_or_merge_credentials
@@ -18,6 +17,8 @@ from azext_fleet.constants import UPGRADE_TYPE_CONTROLPLANEONLY
 from azext_fleet.constants import UPGRADE_TYPE_FULL
 from azext_fleet.constants import UPGRADE_TYPE_NODEIMAGEONLY
 from azext_fleet.constants import UPGRADE_TYPE_ERROR_MESSAGES
+from azext_fleet.constants import SUPPORTED_GATE_STATES_FILTERS
+from azext_fleet.constants import SUPPORTED_GATE_STATES_PATCH
 
 
 # pylint: disable=too-many-locals
@@ -236,13 +237,14 @@ def create_fleet_member(cmd,
                         fleet_name,
                         member_cluster_id,
                         update_group=None,
+                        member_labels=None,
                         no_wait=False):
     fleet_member_model = cmd.get_models(
         "FleetMember",
         resource_type=CUSTOM_MGMT_FLEET,
         operation_group="fleet_members"
     )
-    fleet_member = fleet_member_model(cluster_resource_id=member_cluster_id, group=update_group)
+    fleet_member = fleet_member_model(cluster_resource_id=member_cluster_id, group=update_group, labels=member_labels)
     return sdk_no_wait(no_wait, client.begin_create, resource_group_name, fleet_name, name, fleet_member)
 
 
@@ -252,13 +254,14 @@ def update_fleet_member(cmd,
                         name,
                         fleet_name,
                         update_group=None,
+                        member_labels=None,
                         no_wait=False):
     fleet_member_update_model = cmd.get_models(
         "FleetMemberUpdate",
         resource_type=CUSTOM_MGMT_FLEET,
         operation_group="fleet_members"
     )
-    properties = fleet_member_update_model(group=update_group)
+    properties = fleet_member_update_model(group=update_group, labels=member_labels)
     return sdk_no_wait(no_wait, client.begin_update, resource_group_name, fleet_name, name, properties)
 
 
@@ -458,9 +461,11 @@ def get_update_run_strategy(cmd, operation_group, stages):
     if stages is None:
         return None
 
-    with open(stages, 'r', encoding='utf-8') as fp:
-        data = json.load(fp)
-        fp.close()
+    # Check if the input is a file path or inline JSON
+    if os.path.exists(stages):
+        data = get_file_json(stages)
+    else:
+        data = shell_safe_json_parse(stages)
 
     update_group_model = cmd.get_models(
         "UpdateGroup",
@@ -479,15 +484,25 @@ def get_update_run_strategy(cmd, operation_group, stages):
     )
 
     update_stages = []
+
     for stage in data["stages"]:
         update_groups = []
         for group in stage["groups"]:
-            update_groups.append(update_group_model(name=group["name"]))
-        sec = stage.get("afterStageWaitInSeconds") or 0
+            update_groups.append(update_group_model(
+                name=group["name"],
+                before_gates=group.get("beforeGates", []),
+                after_gates=group.get("afterGates", []),
+            ))
+
+        after_wait = stage.get("afterStageWaitInSeconds") or 0
+
         update_stages.append(update_stage_model(
             name=stage["name"],
             groups=update_groups,
-            after_stage_wait_in_seconds=sec))
+            before_gates=stage.get("beforeGates", []),
+            after_gates=stage.get("afterGates", []),
+            after_stage_wait_in_seconds=after_wait
+        ))
 
     return update_run_strategy_model(stages=update_stages)
 
@@ -543,6 +558,8 @@ def create_auto_upgrade_profile(cmd,  # pylint: disable=unused-argument
                                 channel,
                                 update_strategy_id=None,
                                 node_image_selection=None,
+                                target_kubernetes_version=None,
+                                long_term_support=False,
                                 disabled=False,
                                 no_wait=False):
 
@@ -574,6 +591,8 @@ def create_auto_upgrade_profile(cmd,  # pylint: disable=unused-argument
         update_strategy_id=update_strategy_id,
         channel=upgrade_channel,
         node_image_selection=auto_upgrade_node_image_selection,
+        target_kubernetes_version=target_kubernetes_version,
+        long_term_support=long_term_support,
         disabled=disabled
     )
 
@@ -622,3 +641,79 @@ def generate_update_run(cmd,  # pylint: disable=unused-argument
         fleet_name,
         auto_upgrade_profile_name
     )
+
+
+def list_gates_by_fleet(cmd,  # pylint: disable=unused-argument
+                        client,
+                        resource_group_name,
+                        fleet_name,
+                        state_filter=None):
+    params = {}
+
+    if state_filter:
+        if state_filter not in SUPPORTED_GATE_STATES_FILTERS:
+            raise CLIError(
+                f"Unsupported gate state filter value: '{state_filter}'. "
+                f"Allowed values are {SUPPORTED_GATE_STATES_FILTERS}"
+            )
+
+        params["$filter"] = f"state eq {state_filter}"
+
+    return client.list_by_fleet(resource_group_name, fleet_name, params=params)
+
+
+def show_gate(cmd,  # pylint: disable=unused-argument
+              client,
+              resource_group_name,
+              fleet_name,
+              gate_name):
+    return client.get(resource_group_name, fleet_name, gate_name)
+
+
+def _patch_gate(cmd,  # pylint: disable=unused-argument
+                client,
+                resource_group_name,
+                fleet_name,
+                gate_name,
+                gate_state,
+                no_wait=False):
+    if gate_state not in SUPPORTED_GATE_STATES_PATCH:
+        raise CLIError(
+            f"Unsupported gate state value: '{gate_state}'. "
+            f"Allowed values are {SUPPORTED_GATE_STATES_PATCH}"
+        )
+
+    gate_model = cmd.get_models(
+        "GatePatch",
+        resource_type=CUSTOM_MGMT_FLEET,
+        operation_group="gates"
+    )
+    gate_properties_model = cmd.get_models(
+        "GatePatchProperties",
+        resource_type=CUSTOM_MGMT_FLEET,
+        operation_group="gates"
+    )
+
+    properties = gate_properties_model(state=gate_state)
+    patch_request = gate_model(properties=properties)
+
+    return sdk_no_wait(no_wait, client.begin_update, resource_group_name, fleet_name, gate_name, patch_request)
+
+
+def update_gate(cmd,  # pylint: disable=unused-argument
+                client,
+                resource_group_name,
+                fleet_name,
+                gate_name,
+                gate_state=None,
+                no_wait=False):
+    return _patch_gate(cmd, client, resource_group_name, fleet_name, gate_name, gate_state, no_wait)
+
+
+def approve_gate(cmd,  # pylint: disable=unused-argument
+                 client,
+                 resource_group_name,
+                 fleet_name,
+                 gate_name,
+                 no_wait=False):
+    return _patch_gate(cmd, client, resource_group_name, fleet_name, gate_name, "Completed", no_wait)
