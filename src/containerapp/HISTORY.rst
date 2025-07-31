@@ -4,8 +4,8 @@ Release History
 ===============
 upcoming
 ++++++
-* 'az containerapp update': Disallow changing --revisions-mode to Labels.
-* 'az containerapp up': Disallow changing --revisions-mode to Labels.
+* 'az containerapp update': Disallow changing `--revisions-mode` to Labels.
+* 'az containerapp up': Disallow changing `--revisions-mode` to Labels.
 
 1.2.0b3
 ++++++
