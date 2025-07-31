@@ -20,9 +20,9 @@ jobs:
     displayName: "Setup the VM with helm3 and kubectl"
 
   - task: UsePythonVersion@0
-    displayName: 'Use Python 3.10'
+    displayName: 'Use Python 3.13'
     inputs:
-      versionSpec: 3.10
+      versionSpec: 3.13
 
   - bash: |
       set -ev
@@ -68,7 +68,9 @@ jobs:
 
   - bash : |
       echo "Downloading the kind script"
-      curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.24.0/kind-linux-amd64
+      # Get the latest version tag and download
+      LATEST_KIND_VERSION=$(curl -s https://api.github.com/repos/kubernetes-sigs/kind/releases/latest | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
+      curl -Lo ./kind "https://kind.sigs.k8s.io/dl/${LATEST_KIND_VERSION}/kind-linux-amd64"
       chmod +x ./kind
       ./kind create cluster
     displayName: "Create and Start the Kind cluster"

@@ -65,9 +65,9 @@ stages:
       EXTENSION_NAME: "connectedk8s"
     steps:
     - task: UsePythonVersion@0
-      displayName: 'Use Python 3.10'
+      displayName: 'Use Python 3.13'
       inputs:
-        versionSpec: 3.10
+        versionSpec: 3.13
     - bash: |
         set -ev
         echo "Building extension ${EXTENSION_NAME}..."
