@@ -104,10 +104,19 @@ def create_fleet(cmd,
     elif assign_identity is not None:
         raise CLIError("Cannot assign identity without enabling managed identity.")
 
+    fleet_properties = cmd.get_models(
+        "FleetProperties",
+        resource_type=CUSTOM_MGMT_FLEET,
+        operation_group="fleets"
+    )()
+    
+    if fleet_hub_profile:
+        fleet_properties.hub_profile = fleet_hub_profile
+
     fleet = fleet_model(
         location=location,
         tags=tags,
-        hub_profile=fleet_hub_profile,
+        properties=fleet_properties,
         identity=managed_service_identity
     )
 
@@ -490,8 +499,8 @@ def get_update_run_strategy(cmd, operation_group, stages):
         for group in stage["groups"]:
             update_groups.append(update_group_model(
                 name=group["name"],
-                before_gates=group.get("beforeGates", []),
-                after_gates=group.get("afterGates", []),
+                #before_gates=group.get("beforeGates", []),
+                #after_gates=group.get("afterGates", []),
             ))
 
         after_wait = stage.get("afterStageWaitInSeconds") or 0
@@ -499,8 +508,8 @@ def get_update_run_strategy(cmd, operation_group, stages):
         update_stages.append(update_stage_model(
             name=stage["name"],
             groups=update_groups,
-            before_gates=stage.get("beforeGates", []),
-            after_gates=stage.get("afterGates", []),
+            #before_gates=stage.get("beforeGates", []),
+            #after_gates=stage.get("afterGates", []),
             after_stage_wait_in_seconds=after_wait
         ))
 
