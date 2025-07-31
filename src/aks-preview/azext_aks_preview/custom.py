@@ -4388,7 +4388,7 @@ def aks_bastion(cmd, client, resource_group_name, name, bastion=None, port=None,
 
 
 def aks_agent(
-        cmd,
+        cmd, # pylint: disable=unused-argument
         client,
         resource_group_name,
         name,
@@ -4396,10 +4396,12 @@ def aks_agent(
         model,
         max_steps,
         config_file,
+        api_key=None,
         no_interactive=False,
         no_echo_request=False,
         show_tool_output=False,
         refresh_toolsets=False,
+        custom_toolsets=None,
 ):
 
     aks_agent_internal(
@@ -4408,10 +4410,12 @@ def aks_agent(
         name,
         prompt,
         model,
+        api_key,
         max_steps,
         config_file,
         no_interactive,
         no_echo_request,
         show_tool_output,
         refresh_toolsets,
+        custom_toolsets,
     )

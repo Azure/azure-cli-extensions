@@ -3917,6 +3917,9 @@ helps['aks agent'] = """
         - name: --refresh-toolsets
           type: bool
           short-summary: Refresh the toolsets status.
+        - name: --custom-toolsets
+          type: string
+          short-summary: File path to a custom toolsets.
 
     examples:
         - name: Ask about pod issues in the cluster with Azure OpenAI
@@ -3924,20 +3927,22 @@ helps['aks agent'] = """
             export AZURE_API_BASE="https://my-azureopenai-service.openai.azure.com/"
             export AZURE_API_VERSION="2025-01-01-preview"
             export AZURE_API_KEY="sk-xxx"
-            az aks agent "Why are my pods not starting?" --model azure/my-gpt4.1-deployment
+            az aks agent "Why are my pods not starting?" --name MyManagedCluster --resource-group MyResourceGroup --model azure/my-gpt4.1-deployment
         - name: Ask about pod issues in the cluster with OpenAI
           text: |-
-            export OPENAI_API_KEY="sk-xxx" --model gpt-4o
-            az aks agent "Why are my pods not starting?"
+            export OPENAI_API_KEY="sk-xxx"
+            az aks agent "Why are my pods not starting?" --name MyManagedCluster --resource-group MyResourceGroup --model gpt-4o
           text: az aks agent "Why are my pods not starting?"
+        - name: Run in interactive mode without a question
+          text: az aks agent --name MyManagedCluster --resource-group MyResourceGroup --model azure/my-gpt4.1-deployment --api-key "sk-xxx"
         - name: Run in non-interactive batch mode
-          text: az aks agent "Diagnose networking issues" --no-interactive --max-steps 5
+          text: az aks agent "Diagnose networking issues" --name MyManagedCluster --resource-group MyResourceGroup --no-interactive --max-steps 15 --model azure/my-gpt4.1-deployment
         - name: Show detailed tool output during analysis
-          text: az aks agent "Why is my service unavailable?" --show-tool-output
+          text: az aks agent "Why is my service unavailable?" --name MyManagedCluster --resource-group MyResourceGroup --show-tool-output --model azure/my-gpt4.1-deployment
         - name: Use custom configuration file
-          text: az aks agent "Check resource usage" --config-file /path/to/custom.config
+          text: az aks agent "Check resource usage" --name MyManagedCluster --resource-group MyResourceGroup --config-file /path/to/custom.config --model azure/my-gpt4.1-deployment
         - name: Run agent with no echo of the original question
-          text: az aks agent "What is the status of my cluster?" --no-echo-request
+          text: az aks agent "What is the status of my cluster?" --name MyManagedCluster --resource-group MyResourceGroup --no-echo-request --model azure/my-gpt4.1-deployment
         - name: Refresh toolsets to get the latest available tools
-          text: az aks agent --refresh-toolsets
+          text: az aks agent --refresh-toolsets --name MyManagedCluster --resource-group MyResourceGroup --model azure/my-gpt4.1-deployment
 """

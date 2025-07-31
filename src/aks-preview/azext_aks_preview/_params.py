@@ -2774,7 +2774,7 @@ def load_arguments(self, _):
         )
 
     with self.argument_context("aks agent") as c:
-        c.positional("prompt", help="Ask any question and answer using available tools.")
+        c.positional("prompt", required=False, help="Ask any question and answer using available tools.")
         c.argument(
             "max_steps",
             type=int,
@@ -2791,6 +2791,13 @@ def load_arguments(self, _):
         c.argument(
             "model",
             help="The model to use for the LLM.",
+            required=False,
+            type=str,
+        )
+        c.argument(
+            "api-key",
+            help="API key to use for the LLM (if not given, uses environment variables AZURE_API_KEY, OPENAI_API_KEY)",
+            required=False,
             type=str,
         )
         c.argument(
@@ -2813,7 +2820,12 @@ def load_arguments(self, _):
             help="Refresh the toolsets status.",
             action='store_true',
         )
-
+        c.argument(
+            "custom-toolsets",
+            help="File path to a custom toolsets.",
+            required=False,
+            type=str,
+        )
 
 def _get_default_install_location(exe_name):
     system = platform.system()

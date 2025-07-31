@@ -12,6 +12,7 @@ import sys
 import typer
 import uuid
 
+from azure.cli.core.api import get_config_dir
 from azure.cli.core.commands.client_factory import get_subscription_id
 
 
@@ -41,12 +42,14 @@ def aks_agent(
         name,
         prompt,
         model,
+        api_key,
         max_steps,
         config_file,
         no_interactive,
         no_echo_request,
         show_tool_output,
         refresh_toolsets,
+        custom_toolsets,
 ):
     """
     Interact with the AKS agent using a prompt or piped input.
@@ -67,6 +70,8 @@ def aks_agent(
     :type show_tool_output: bool
     :param refresh_toolsets: Refresh the toolsets status.
     :type refresh_toolsets: bool
+    :param custom_toolsets: File path to a custom toolsets.
+    :type custom_toolsets: str
     """
 
     if sys.version_info < (3, 10):
@@ -78,6 +83,7 @@ def aks_agent(
 
     console = init_log()
 
+    os.environ["CONFIG_PATH_DIR"] = get_config_dir()
     # Holmes library allows the user to specify the agent name through environment variable before loading the library.
     os.environ["AGENT_NAME"] = "AKS AGENT"
 
@@ -103,17 +109,16 @@ def aks_agent(
     config = Config.load_from_file(
         config_file,
         model=model,
+        api_key=api_key,
         max_steps=max_steps,
+        custom_toolsets_from_cli=custom_toolsets
+
     )
 
     ai = config.create_console_toolcalling_llm(
         dal=None,
         refresh_toolsets=refresh_toolsets,
     )
-    template_context = {
-        "toolsets": ai.tool_executor.toolsets,
-        "runbooks": config.get_runbook_catalog(),
-    }
 
     if not prompt and not interactive and not piped_data:
         raise typer.BadParameter(
@@ -131,10 +136,6 @@ def aks_agent(
 
     if echo and not interactive and prompt:
         console.print("[bold yellow]User:[/bold yellow] " + prompt)
-
-    # TODO: extend the system prompt with AKS context
-    system_prompt = "builtin://generic_ask.jinja2"
-    system_prompt_rendered = load_and_render_prompt(system_prompt, template_context)
 
     subscription_id = get_subscription_id(cmd.cli_ctx)
 
@@ -165,7 +166,6 @@ If the current kubeconfig context is not set to the AKS cluster {{cluster_name}}
 If the current kubeconfig context is set to the AKS cluster {{cluster_name}}, you should proceed with the investigation and troubleshooting.
 """
     aks_context_prompt = load_and_render_prompt(aks_context_prompt, aks_template_context)
-    system_prompt_rendered += aks_context_prompt
 
     # Variables not exposed to the user.
     # Adds a prompt for post processing.
@@ -177,24 +177,26 @@ If the current kubeconfig context is set to the AKS cluster {{cluster_name}}, yo
         run_interactive_loop(
             ai,
             console,
-            system_prompt_rendered,
             prompt,
-            post_processing_prompt,
             include_file,
+            post_processing_prompt,
             show_tool_output=show_tool_output,
+            system_prompt_additions=aks_context_prompt,
         )
         return
 
     messages = build_initial_ask_messages(
         console,
-        system_prompt_rendered,
         prompt,
         include_file,
+        ai.tool_executor,
+        config.get_runbook_catalog(),
+        system_prompt_additions=aks_context_prompt,
     )
 
     response = ai.call(messages)
 
-    messages = response.messages  # type: ignore # Update messages with the full history
+    messages = response.messages
 
     issue = Issue(
         id=str(uuid.uuid4()),
