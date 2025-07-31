@@ -8,11 +8,11 @@ upcoming
 1.2.0b3
 ++++++
 * 'az containerapp job list': Fix only 20 items returned
+* 'az containerapp session code-interpreter': Fix `--path` in examples
 
 1.2.0b2
 ++++++
 * 'az containerapp session code-interpreter execute': Extend maximum supported value of `--timeout-in-seconds` from 60 to 220.
-* 'az containerapp session code-interpreter': Fix `--path` in examples
 * 'az containerapp job create': Fix message with `--help`
 * 'az containerapp arc': Enable setup custom core dns for Openshift on Arc
 
