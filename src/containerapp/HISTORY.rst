@@ -4,11 +4,11 @@ Release History
 ===============
 upcoming
 ++++++
+* 'az containerapp session code-interpreter': Fix `--path` in examples
 
 1.2.0b3
 ++++++
 * 'az containerapp job list': Fix only 20 items returned
-* 'az containerapp session code-interpreter': Fix `--path` in examples
 
 1.2.0b2
 ++++++
