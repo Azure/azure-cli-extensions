@@ -5,6 +5,10 @@ Release History
 upcoming
 ++++++
 
+1.2.0b4
+++++++
+* 'az containerapp job update': Fix an issue where `--min-executions 0` and `--max-executions 0` were not being applied correctly due to boolean evaluation.
+
 1.2.0b3
 ++++++
 * 'az containerapp job list': Fix only 20 items returned
