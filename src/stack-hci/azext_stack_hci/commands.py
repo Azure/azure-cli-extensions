@@ -20,7 +20,7 @@ def load_command_table(self, _):  # pylint: disable=unused-argument
         self.command_table['stack-hci cluster identity assign'] = IdentityAssign(loader=self)
         self.command_table['stack-hci cluster identity remove'] = IdentityRemove(loader=self)
 
-    with self.command_group('stack-hci vmconnect'):
+    with self.command_group('stack-hci vm-connect', ...) as g:
         from azext_stack_hci.custom import VmConnectEnable, VmConnectDisable
-        self.command_table['stack-hci vmconnect enable'] = VmConnectEnable(loader=self)
-        self.command_table['stack-hci vmconnect disable'] = VmConnectDisable(loader=self)
+        g.custom_command('enable', 'vm_connect_enable')
+        g.custom_command('disable', 'vm_connect_disable')
