@@ -94,10 +94,10 @@ function Invoke-QuantumWorkspaceDataObfuscation {
         Write-Host "Obfuscated 'WorkspaceName' in connection strings."
 
         # Obfuscate Set-Cookie headers
-        $content = $content -replace 'ApplicationGatewayAffinityCORS=[^;]+;', 'ApplicationGatewayAffinityCORS=REDACTED;'
-        $content = $content -replace 'ApplicationGatewayAffinity=[^;]+;', 'ApplicationGatewayAffinity=REDACTED;'
-        $content = $content -replace 'ARRAffinity=[^;]+;', 'ARRAffinity=REDACTED;'
-        $content = $content -replace 'ARRAffinitySameSite=[^;]+;', 'ARRAffinitySameSite=REDACTED;'
+        $content = $content -replace 'ApplicationGatewayAffinityCORS=[\w-]+;', 'ApplicationGatewayAffinityCORS=REDACTED;'
+        $content = $content -replace 'ApplicationGatewayAffinity=[\w-]+;', 'ApplicationGatewayAffinity=REDACTED;'
+        $content = $content -replace 'ARRAffinity=[\w-]+;', 'ARRAffinity=REDACTED;'
+        $content = $content -replace 'ARRAffinitySameSite=[\w-]+;', 'ARRAffinitySameSite=REDACTED;'
         Write-Host "Obfuscated sensitive Set-Cookie headers."
 
         # Save the modified content
