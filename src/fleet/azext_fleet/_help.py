@@ -432,3 +432,67 @@ helps['fleet gate approve'] = """
         - name: Approves a gate.
           text: az fleet gate approve -g MyFleetResourceGroup --fleet-name MyFleetName --gate-name 3fa85f64-5717-4562-b3fc-2c963f66afa6
 """
+
+helps['fleet managednamespace'] = """
+    type: group
+    short-summary: Commands to manage managed namespaces.
+"""
+
+helps['fleet managednamespace create'] = """
+    type: command
+    short-summary: Creates or updates a managed namespace.
+    parameters:
+        - name: --namespace-name
+          type: string
+          short-summary: The name of the Kubernetes namespace to be created on member clusters.
+        - name: --labels
+          type: string
+          short-summary: Labels to apply to the managed namespace.
+        - name: --annotations
+          type: string
+          short-summary: Annotations to apply to the managed namespace.
+    examples:
+        - name: Create a managed namespace.
+          text: az fleet managednamespace create -g MyFleetResourceGroup -f MyFleetName -n MyManagedNamespace --namespace-name my-namespace
+        - name: Create a managed namespace with labels and annotations.
+          text: az fleet managednamespace create -g MyFleetResourceGroup -f MyFleetName -n MyManagedNamespace --namespace-name my-namespace --labels env=production team=devops --annotations description="Production namespace"
+"""
+
+helps['fleet managednamespace update'] = """
+    type: command
+    short-summary: Update a managed namespace.
+    parameters:
+        - name: --labels
+          type: string
+          short-summary: Labels to apply to the managed namespace.
+        - name: --annotations
+          type: string
+          short-summary: Annotations to apply to the managed namespace.
+    examples:
+        - name: Update a managed namespace's labels.
+          text: az fleet managednamespace update -g MyFleetResourceGroup -f MyFleetName -n my-namespace --labels env=staging
+"""
+
+helps['fleet managednamespace list'] = """
+    type: command
+    short-summary: Lists a fleet's managed namespaces.
+    examples:
+        - name: List all managed namespaces for a given fleet.
+          text: az fleet managednamespace list -g MyFleetResourceGroup -f MyFleetName
+"""
+
+helps['fleet managednamespace show'] = """
+    type: command
+    short-summary: Gets a fleet managed namespace.
+    examples:
+        - name: Show the details of a specific managed namespace.
+          text: az fleet managednamespace show -g MyFleetResourceGroup -f MyFleetName -n my-namespace
+"""
+
+helps['fleet managednamespace delete'] = """
+    type: command
+    short-summary: Deletes a fleet managed namespace.
+    examples:
+        - name: Delete a specific managed namespace.
+          text: az fleet managednamespace delete -g MyFleetResourceGroup -f MyFleetName -n my-namespace
+"""

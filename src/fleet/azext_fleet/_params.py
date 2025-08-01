@@ -172,3 +172,26 @@ def load_arguments(self, _):
         c.argument('resource_group_name', options_list=['--resource-group', '-g'], help='Name of the resource group.')
         c.argument('fleet_name', options_list=['--fleet-name', '-f'], help='Name of the fleet.')
         c.argument('gate_name', options_list=['--gate-name', '--gate', '-n'], help='Name of the gate.')
+
+    # Fleet managed namespace arguments
+    with self.argument_context('fleet managednamespace') as c:
+        c.argument('resource_group_name', options_list=['--resource-group', '-g'], help='Name of the resource group.')
+        c.argument('fleet_name', options_list=['--fleet-name', '-f'], help='Name of the fleet.')
+        c.argument('managed_namespace_name', options_list=['--name', '-n'], help='Name of the managed namespace.')
+
+    with self.argument_context('fleet managednamespace create') as c:
+        c.argument('labels', labels_type, help='Labels to apply to the managed namespace.')
+        c.argument('annotations', type=validate_labels, metavar='KEY=VALUE', help='Annotations to apply to the managed namespace: key[=value] [key[=value] ...].')
+
+    with self.argument_context('fleet managednamespace update') as c:
+        c.argument('labels', labels_type, help='Labels to apply to the managed namespace.')
+        c.argument('annotations', type=validate_labels, metavar='KEY=VALUE', help='Annotations to apply to the managed namespace: key[=value] [key[=value] ...].')
+
+    with self.argument_context('fleet managednamespace delete') as c:
+        pass
+
+    with self.argument_context('fleet managednamespace show') as c:
+        pass
+
+    with self.argument_context('fleet managednamespace list') as c:
+        pass

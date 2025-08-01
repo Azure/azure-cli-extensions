@@ -111,35 +111,6 @@ class FleetUpdateStrategyProvisioningState(str, Enum, metaclass=CaseInsensitiveE
     """Resource creation was canceled."""
 
 
-class GateProvisioningState(str, Enum, metaclass=CaseInsensitiveEnumMeta):
-    """The provisioning state of the Gate resource."""
-
-    SUCCEEDED = "Succeeded"
-    """Resource has been created."""
-    FAILED = "Failed"
-    """Resource creation failed."""
-    CANCELED = "Canceled"
-    """Resource creation was canceled."""
-
-
-class GateState(str, Enum, metaclass=CaseInsensitiveEnumMeta):
-    """The state of the Gate."""
-
-    PENDING = "Pending"
-    """A Pending Gate will continue to block the staged rollout process it is controlling."""
-    SKIPPED = "Skipped"
-    """A Skipped Gate means that the staged rollout process it is controlling was skipped."""
-    COMPLETED = "Completed"
-    """An Completed Gate allows the staged rollout process to continue."""
-
-
-class GateType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
-    """The type of the Gate determines how it is completed."""
-
-    APPROVAL = "Approval"
-    """An approval gate is completed by setting its state to be Completed."""
-
-
 class ManagedClusterUpgradeType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """The type of upgrade to perform when targeting ManagedClusters."""
 
@@ -211,15 +182,6 @@ class TargetType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """Skip the update of the after stage wait of a certain stage."""
 
 
-class Timing(str, Enum, metaclass=CaseInsensitiveEnumMeta):
-    """Whether the Gate is placed before or after the target."""
-
-    BEFORE = "Before"
-    """The Gate is before the target."""
-    AFTER = "After"
-    """The Gate is after the target."""
-
-
 class UpdateRunProvisioningState(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """The provisioning state of the UpdateRun resource."""
 
@@ -246,8 +208,6 @@ class UpdateState(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """The state of an UpdateRun/UpdateStage/UpdateGroup/MemberUpdate that has been skipped."""
     FAILED = "Failed"
     """The state of an UpdateRun/UpdateStage/UpdateGroup/MemberUpdate that has failed."""
-    PENDING = "Pending"
-    """The state of an UpdateRun/UpdateStage/UpdateGroup/MemberUpdate that is pending."""
     COMPLETED = "Completed"
     """The state of an UpdateRun/UpdateStage/UpdateGroup/MemberUpdate that has completed."""
 
@@ -265,9 +225,3 @@ class UpgradeChannel(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     supported minor version."""
     NODE_IMAGE = "NodeImage"
     """Upgrade node image version of the clusters."""
-    TARGET_KUBERNETES_VERSION = "TargetKubernetesVersion"
-    """Upgrades the clusters Kubernetes version to the latest supported patch version of the specified
-    target Kubernetes version.
-      For information on the behavior of update run for Kubernetes version upgrade,
-      see
-    https://learn.microsoft.com/en-us/azure/kubernetes-fleet/update-orchestration?tabs=azure-portal"""
