@@ -74,6 +74,17 @@ class AzCLIBridge:
             return handle_help_schema(help_info)
         return None
 
+    def get_default_arguments(self, command_name: str):
+        """Get default arguments for a specific command."""
+        schema = self.get_command_arguments_schema(command_name)
+        if not schema:
+            return None
+        default_args = {}
+        for arg_name, arg_info in schema.items():
+            if 'default' in arg_info and arg_info['default'] is not None:
+                default_args[arg_name] = arg_info['default']
+        return default_args
+
     def invoke_command(self, command_name: str, arguments: dict | None = None):
         """Invoke a command with JSON-described arguments."""
         from azure.cli.core.commands import LongRunningOperation, _is_poller, _is_paged, AzCliCommandInvoker
@@ -83,6 +94,9 @@ class AzCLIBridge:
             return None
         if arguments is None:
             arguments = {}
+        default_args = self.get_default_arguments(command_name)
+        if default_args:
+            arguments = {**default_args, **arguments}
         arguments = {"cmd": command, **arguments}  # Ensure 'cmd' is passed to the command
         result = command(arguments)
         transform_op = command.command_kwargs.get('transform', None)
