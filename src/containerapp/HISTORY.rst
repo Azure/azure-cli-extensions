@@ -4,6 +4,7 @@ Release History
 ===============
 upcoming
 ++++++
+* 'az containerapp session code-interpreter': Fix `--path` in examples
 
 1.2.0b3
 ++++++
