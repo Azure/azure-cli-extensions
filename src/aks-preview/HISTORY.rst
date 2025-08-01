@@ -12,6 +12,10 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+18.0.0b24
++++++++
+* Suppress the ssh access annoying message if the cluster sku name is automatic.
+
 18.0.0b23
 +++++++
 * `az aks create`: Add new parameter `--disable-run-command` to disable run command feature for the cluster
