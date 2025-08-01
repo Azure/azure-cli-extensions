@@ -10,7 +10,7 @@ import threading
 import json
 import websockets
 from .vendored_sdks.azure_messaging_webpubsubservice import (
-    build_authentication_token
+    WebPubSubServiceClient
 )
 
 
@@ -54,7 +54,8 @@ async def connect(url):
 def start_client(client, resource_group_name, webpubsub_name, hub_name, user_id=None):
     keys = client.list_keys(resource_group_name, webpubsub_name)
     connection_string = keys.primary_connection_string
-    token = build_authentication_token(connection_string, hub_name, roles=['webpubsub.sendToGroup', 'webpubsub.joinLeaveGroup'], user=user_id)
+    service_client = WebPubSubServiceClient.from_connection_string(connection_string, hub_name)
+    token = service_client.get_client_access_token(roles=['webpubsub.sendToGroup', 'webpubsub.joinLeaveGroup'], user=user_id)
     asyncio.get_event_loop().run_until_complete(connect(token['url']))
 
 
