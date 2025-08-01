@@ -7,7 +7,7 @@
 
 from codecs import open as open1
 
-from setuptools import setup, find_packages
+from setuptools import find_packages, setup
 
 VERSION = "18.0.0b24"
 
@@ -23,7 +23,10 @@ CLASSIFIERS = [
     "License :: OSI Approved :: MIT License",
 ]
 
-DEPENDENCIES = []
+DEPENDENCIES = [
+    "holmesgpt @ git+https://github.com/robusta-dev/holmesgpt@master"
+    #"holmesgpt==0.12.3; python_version >= '3.10'",
+]
 
 with open1("README.rst", "r", encoding="utf-8") as f:
     README = f.read()
