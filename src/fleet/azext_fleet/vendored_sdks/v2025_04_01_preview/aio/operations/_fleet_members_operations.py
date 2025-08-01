@@ -31,7 +31,7 @@ from azure.mgmt.core.exceptions import ARMErrorFormat
 from azure.mgmt.core.polling.async_arm_polling import AsyncARMPolling
 
 from ... import models as _models
-from ...operations._fleet_members_operations import (
+from ...operations._operations import (
     build_create_request,
     build_delete_request,
     build_get_request,

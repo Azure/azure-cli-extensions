@@ -104,19 +104,10 @@ def create_fleet(cmd,
     elif assign_identity is not None:
         raise CLIError("Cannot assign identity without enabling managed identity.")
 
-    fleet_properties = cmd.get_models(
-        "FleetProperties",
-        resource_type=CUSTOM_MGMT_FLEET,
-        operation_group="fleets"
-    )()
-
-    if fleet_hub_profile:
-        fleet_properties.hub_profile = fleet_hub_profile
-
     fleet = fleet_model(
         location=location,
         tags=tags,
-        properties=fleet_properties,
+        hub_profile=fleet_hub_profile,
         identity=managed_service_identity
     )
 

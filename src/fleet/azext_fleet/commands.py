@@ -20,13 +20,13 @@ from azext_fleet._client_factory import (
 def load_command_table(self, _):
 
     fleets_sdk = CliCommandType(
-        operations_tmpl="azext_fleet.vendored_sdks.operations._fleets_operations#FleetsOperations.{}",
+        operations_tmpl="azext_fleet.vendored_sdks.operations._operations#FleetsOperations.{}",
         operation_group="fleets",
         client_factory=cf_fleets
     )
 
     fleet_members_sdk = CliCommandType(
-        operations_tmpl="azext_fleet.vendored_sdks.operations._fleet_members_operations#FleetMembersOperations.{}",
+        operations_tmpl="azext_fleet.vendored_sdks.operations._operations#FleetMembersOperations.{}",
         operation_group="fleet_members",
         client_factory=cf_fleet_members
     )
@@ -38,25 +38,25 @@ def load_command_table(self, _):
     )
 
     update_runs_sdk = CliCommandType(
-        operations_tmpl="azext_fleet.vendored_sdks.operations._update_runs_operations#UpdateRunsOperations.{}",
+        operations_tmpl="azext_fleet.vendored_sdks.operations._operations#UpdateRunsOperations.{}",
         operation_group="update_runs",
         client_factory=cf_update_runs
     )
 
     fleet_update_strategy_sdk = CliCommandType(
-        operations_tmpl="azext_fleet.vendored_sdks.operations._fleet_update_strategies_operations#FleetUpdateStrategiesOperations.{}",
+        operations_tmpl="azext_fleet.vendored_sdks.operations._operations#FleetUpdateStrategiesOperations.{}",
         operation_group="fleet_update_strategies",
         client_factory=cf_fleet_update_strategies
     )
 
     auto_upgrade_profiles_sdk = CliCommandType(
-        operations_tmpl="azext_fleet.vendored_sdks.operations._auto_upgrade_profiles_operations#AutoUpgradeProfilesOperations.{}",
+        operations_tmpl="azext_fleet.vendored_sdks.operations._operations#AutoUpgradeProfilesOperations.{}",
         operation_group="auto_upgrade_profiles",
         client_factory=cf_auto_upgrade_profiles
     )
 
     auto_upgrade_profile_operations_sdk = CliCommandType(
-        operations_tmpl="azext_fleet.vendored_sdks.operations._auto_upgrade_profile_operations_operations#AutoUpgradeProfileOperationsOperations.{}",
+        operations_tmpl="azext_fleet.vendored_sdks.operations._operations#AutoUpgradeProfileOperationsOperations.{}",
         operation_group="auto_upgrade_profile_operations",
         client_factory=cf_auto_upgrade_profile_operations
     )

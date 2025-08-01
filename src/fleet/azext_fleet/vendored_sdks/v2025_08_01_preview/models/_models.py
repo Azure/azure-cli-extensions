@@ -238,6 +238,8 @@ class AutoUpgradeProfile(ProxyResource):
         "node_image_selection",
         "disabled",
         "auto_upgrade_profile_status",
+        "target_kubernetes_version",
+        "long_term_support",
     ]
 
     @overload
@@ -287,7 +289,7 @@ class AutoUpgradeProfileProperties(_Model):
      specified, the auto upgrade will run on all clusters which are members of the fleet.
     :vartype update_strategy_id: str
     :ivar channel: Configures how auto-upgrade will be run. Required. Known values are: "Stable",
-     "Rapid", and "NodeImage".
+     "Rapid", "NodeImage", and "TargetKubernetesVersion".
     :vartype channel: str or ~azure.mgmt.containerservicefleet.models.UpgradeChannel
     :ivar node_image_selection: The node image upgrade to be applied to the target clusters in auto
      upgrade.
@@ -304,6 +306,23 @@ class AutoUpgradeProfileProperties(_Model):
     :ivar auto_upgrade_profile_status: The status of the auto upgrade profile.
     :vartype auto_upgrade_profile_status:
      ~azure.mgmt.containerservicefleet.models.AutoUpgradeProfileStatus
+    :ivar target_kubernetes_version:   This is the target Kubernetes version for auto-upgrade. The
+     format must be ``{major version}.{minor version}``. For example, "1.30".
+       By default, this is empty.
+       If upgrade channel is set to TargetKubernetesVersion, this field must not be empty.
+       If upgrade channel is Rapid, Stable or NodeImage, this field must be empty.
+    :vartype target_kubernetes_version: str
+    :ivar long_term_support:   If upgrade channel is not TargetKubernetesVersion, this field must
+     be False.
+       If set to True: Fleet auto upgrade will continue generate update runs for patches of minor
+     versions earlier than N-2
+       (where N is the latest supported minor version) if those minor versions support Long-Term
+     Support (LTS).
+       By default, this is set to False.
+       For more information on AKS LTS, please see
+     `https://learn.microsoft.com/en-us/azure/aks/long-term-support
+     <https://learn.microsoft.com/en-us/azure/aks/long-term-support>`_.
+    :vartype long_term_support: bool
     """
 
     provisioning_state: Optional[Union[str, "_models.AutoUpgradeProfileProvisioningState"]] = rest_field(
@@ -317,8 +336,8 @@ class AutoUpgradeProfileProperties(_Model):
     channel: Union[str, "_models.UpgradeChannel"] = rest_field(
         visibility=["read", "create", "update", "delete", "query"]
     )
-    """Configures how auto-upgrade will be run. Required. Known values are: \"Stable\", \"Rapid\", and
-     \"NodeImage\"."""
+    """Configures how auto-upgrade will be run. Required. Known values are: \"Stable\", \"Rapid\",
+     \"NodeImage\", and \"TargetKubernetesVersion\"."""
     node_image_selection: Optional["_models.AutoUpgradeNodeImageSelection"] = rest_field(
         name="nodeImageSelection", visibility=["read", "create", "update", "delete", "query"]
     )
@@ -335,6 +354,26 @@ class AutoUpgradeProfileProperties(_Model):
         name="autoUpgradeProfileStatus", visibility=["read", "create", "update", "delete", "query"]
     )
     """The status of the auto upgrade profile."""
+    target_kubernetes_version: Optional[str] = rest_field(
+        name="targetKubernetesVersion", visibility=["read", "create", "update", "delete", "query"]
+    )
+    """  This is the target Kubernetes version for auto-upgrade. The format must be ``{major
+     version}.{minor version}``. For example, \"1.30\".
+       By default, this is empty.
+       If upgrade channel is set to TargetKubernetesVersion, this field must not be empty.
+       If upgrade channel is Rapid, Stable or NodeImage, this field must be empty."""
+    long_term_support: Optional[bool] = rest_field(
+        name="longTermSupport", visibility=["read", "create", "update", "delete", "query"]
+    )
+    """  If upgrade channel is not TargetKubernetesVersion, this field must be False.
+       If set to True: Fleet auto upgrade will continue generate update runs for patches of minor
+     versions earlier than N-2
+       (where N is the latest supported minor version) if those minor versions support Long-Term
+     Support (LTS).
+       By default, this is set to False.
+       For more information on AKS LTS, please see
+     `https://learn.microsoft.com/en-us/azure/aks/long-term-support
+     <https://learn.microsoft.com/en-us/azure/aks/long-term-support>`_."""
 
     @overload
     def __init__(
@@ -345,6 +384,8 @@ class AutoUpgradeProfileProperties(_Model):
         node_image_selection: Optional["_models.AutoUpgradeNodeImageSelection"] = None,
         disabled: Optional[bool] = None,
         auto_upgrade_profile_status: Optional["_models.AutoUpgradeProfileStatus"] = None,
+        target_kubernetes_version: Optional[str] = None,
+        long_term_support: Optional[bool] = None,
     ) -> None: ...
 
     @overload
@@ -738,7 +779,7 @@ class Fleet(TrackedResource):
     def __setattr__(self, key: str, value: Any) -> None:
         if key in self.__flattened_items:
             if self.properties is None:
-                self.properties = self._attr_to_rest_field["properties"]._class_type()
+                self.properties = self._attr_to_rest_field["properties"]._class_type({})
             setattr(self.properties, key, value)
         else:
             super().__setattr__(key, value)
@@ -901,7 +942,7 @@ class FleetManagedNamespace(TrackedResource):
     def __setattr__(self, key: str, value: Any) -> None:
         if key in self.__flattened_items:
             if self.properties is None:
-                self.properties = self._attr_to_rest_field["properties"]._class_type()
+                self.properties = self._attr_to_rest_field["properties"]._class_type({})
             setattr(self.properties, key, value)
         else:
             super().__setattr__(key, value)
@@ -1052,7 +1093,7 @@ class FleetMember(ProxyResource):
      requested resource. HTTP/1.1 uses entity tags in the etag (section 14.19), If-Match (section
      14.24), If-None-Match (section 14.26), and If-Range (section 14.27) header fields."""
 
-    __flattened_items = ["cluster_resource_id", "group", "provisioning_state", "status"]
+    __flattened_items = ["cluster_resource_id", "group", "provisioning_state", "labels", "status"]
 
     @overload
     def __init__(
@@ -1084,7 +1125,7 @@ class FleetMember(ProxyResource):
     def __setattr__(self, key: str, value: Any) -> None:
         if key in self.__flattened_items:
             if self.properties is None:
-                self.properties = self._attr_to_rest_field["properties"]._class_type()
+                self.properties = self._attr_to_rest_field["properties"]._class_type({})
             setattr(self.properties, key, value)
         else:
             super().__setattr__(key, value)
@@ -1104,6 +1145,8 @@ class FleetMemberProperties(_Model):
      "Failed", "Canceled", "Joining", "Leaving", and "Updating".
     :vartype provisioning_state: str or
      ~azure.mgmt.containerservicefleet.models.FleetMemberProvisioningState
+    :ivar labels: The labels for the fleet member.
+    :vartype labels: dict[str, str]
     :ivar status: Status information of the last operation for fleet member.
     :vartype status: ~azure.mgmt.containerservicefleet.models.FleetMemberStatus
     """
@@ -1120,6 +1163,8 @@ class FleetMemberProperties(_Model):
     )
     """The status of the last operation. Known values are: \"Succeeded\", \"Failed\", \"Canceled\",
      \"Joining\", \"Leaving\", and \"Updating\"."""
+    labels: Optional[Dict[str, str]] = rest_field(visibility=["read", "create", "update", "delete", "query"])
+    """The labels for the fleet member."""
     status: Optional["_models.FleetMemberStatus"] = rest_field(visibility=["read"])
     """Status information of the last operation for fleet member."""
 
@@ -1129,6 +1174,7 @@ class FleetMemberProperties(_Model):
         *,
         cluster_resource_id: str,
         group: Optional[str] = None,
+        labels: Optional[Dict[str, str]] = None,
     ) -> None: ...
 
     @overload
@@ -1169,7 +1215,7 @@ class FleetMemberUpdate(_Model):
     )
     """The resource-specific properties for this resource."""
 
-    __flattened_items = ["group"]
+    __flattened_items = ["group", "labels"]
 
     @overload
     def __init__(
@@ -1201,7 +1247,7 @@ class FleetMemberUpdate(_Model):
     def __setattr__(self, key: str, value: Any) -> None:
         if key in self.__flattened_items:
             if self.properties is None:
-                self.properties = self._attr_to_rest_field["properties"]._class_type()
+                self.properties = self._attr_to_rest_field["properties"]._class_type({})
             setattr(self.properties, key, value)
         else:
             super().__setattr__(key, value)
@@ -1212,16 +1258,21 @@ class FleetMemberUpdateProperties(_Model):
 
     :ivar group: The group this member belongs to for multi-cluster update management.
     :vartype group: str
+    :ivar labels: The labels for the fleet member.
+    :vartype labels: dict[str, str]
     """
 
     group: Optional[str] = rest_field(visibility=["read", "create", "update", "delete", "query"])
     """The group this member belongs to for multi-cluster update management."""
+    labels: Optional[Dict[str, str]] = rest_field(visibility=["read", "create", "update", "delete", "query"])
+    """The labels for the fleet member."""
 
     @overload
     def __init__(
         self,
         *,
         group: Optional[str] = None,
+        labels: Optional[Dict[str, str]] = None,
     ) -> None: ...
 
     @overload
@@ -1393,7 +1444,7 @@ class FleetUpdateStrategy(ProxyResource):
     def __setattr__(self, key: str, value: Any) -> None:
         if key in self.__flattened_items:
             if self.properties is None:
-                self.properties = self._attr_to_rest_field["properties"]._class_type()
+                self.properties = self._attr_to_rest_field["properties"]._class_type({})
             setattr(self.properties, key, value)
         else:
             super().__setattr__(key, value)
@@ -1423,6 +1474,259 @@ class FleetUpdateStrategyProperties(_Model):
         self,
         *,
         strategy: "_models.UpdateRunStrategy",
+    ) -> None: ...
+
+    @overload
+    def __init__(self, mapping: Mapping[str, Any]) -> None:
+        """
+        :param mapping: raw JSON to initialize the model.
+        :type mapping: Mapping[str, Any]
+        """
+
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        super().__init__(*args, **kwargs)
+
+
+class Gate(ProxyResource):
+    """A Gate controls the progression during a staged rollout, e.g. in an Update Run.
+
+    :ivar id: Fully qualified resource ID for the resource. Ex -
+     /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
+    :vartype id: str
+    :ivar name: The name of the resource.
+    :vartype name: str
+    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
+     "Microsoft.Storage/storageAccounts".
+    :vartype type: str
+    :ivar system_data: Azure Resource Manager metadata containing createdBy and modifiedBy
+     information.
+    :vartype system_data: ~azure.mgmt.containerservicefleet.models.SystemData
+    :ivar properties: The resource-specific properties for this resource.
+    :vartype properties: ~azure.mgmt.containerservicefleet.models.GateProperties
+    :ivar e_tag: If eTag is provided in the response body, it may also be provided as a header per
+     the normal etag convention.  Entity tags are used for comparing two or more entities from the
+     same requested resource. HTTP/1.1 uses entity tags in the etag (section 14.19), If-Match
+     (section 14.24), If-None-Match (section 14.26), and If-Range (section 14.27) header fields.
+    :vartype e_tag: str
+    """
+
+    properties: Optional["_models.GateProperties"] = rest_field(
+        visibility=["read", "create", "update", "delete", "query"]
+    )
+    """The resource-specific properties for this resource."""
+    e_tag: Optional[str] = rest_field(name="eTag", visibility=["read"])
+    """If eTag is provided in the response body, it may also be provided as a header per the normal
+     etag convention.  Entity tags are used for comparing two or more entities from the same
+     requested resource. HTTP/1.1 uses entity tags in the etag (section 14.19), If-Match (section
+     14.24), If-None-Match (section 14.26), and If-Range (section 14.27) header fields."""
+
+    __flattened_items = ["provisioning_state", "display_name", "gate_type", "target", "state"]
+
+    @overload
+    def __init__(
+        self,
+        *,
+        properties: Optional["_models.GateProperties"] = None,
+    ) -> None: ...
+
+    @overload
+    def __init__(self, mapping: Mapping[str, Any]) -> None:
+        """
+        :param mapping: raw JSON to initialize the model.
+        :type mapping: Mapping[str, Any]
+        """
+
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        _flattened_input = {k: kwargs.pop(k) for k in kwargs.keys() & self.__flattened_items}
+        super().__init__(*args, **kwargs)
+        for k, v in _flattened_input.items():
+            setattr(self, k, v)
+
+    def __getattr__(self, name: str) -> Any:
+        if name in self.__flattened_items:
+            if self.properties is None:
+                return None
+            return getattr(self.properties, name)
+        raise AttributeError(f"'{self.__class__.__name__}' object has no attribute '{name}'")
+
+    def __setattr__(self, key: str, value: Any) -> None:
+        if key in self.__flattened_items:
+            if self.properties is None:
+                self.properties = self._attr_to_rest_field["properties"]._class_type({})
+            setattr(self.properties, key, value)
+        else:
+            super().__setattr__(key, value)
+
+
+class GateConfiguration(_Model):
+    """GateConfiguration is used to define where Gates should be placed within the Update Run.
+
+    :ivar display_name: The human-readable display name of the Gate.
+    :vartype display_name: str
+    :ivar type: The type of the Gate determines how it is completed. Required. "Approval"
+    :vartype type: str or ~azure.mgmt.containerservicefleet.models.GateType
+    """
+
+    display_name: Optional[str] = rest_field(
+        name="displayName", visibility=["read", "create", "update", "delete", "query"]
+    )
+    """The human-readable display name of the Gate."""
+    type: Union[str, "_models.GateType"] = rest_field(visibility=["read", "create", "update", "delete", "query"])
+    """The type of the Gate determines how it is completed. Required. \"Approval\""""
+
+    @overload
+    def __init__(
+        self,
+        *,
+        type: Union[str, "_models.GateType"],
+        display_name: Optional[str] = None,
+    ) -> None: ...
+
+    @overload
+    def __init__(self, mapping: Mapping[str, Any]) -> None:
+        """
+        :param mapping: raw JSON to initialize the model.
+        :type mapping: Mapping[str, Any]
+        """
+
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        super().__init__(*args, **kwargs)
+
+
+class GatePatch(_Model):
+    """Patch a Gate resource.
+
+    :ivar properties: Properties of a Gate that can be patched. Required.
+    :vartype properties: ~azure.mgmt.containerservicefleet.models.GatePatchProperties
+    """
+
+    properties: "_models.GatePatchProperties" = rest_field(visibility=["read", "create", "update", "delete", "query"])
+    """Properties of a Gate that can be patched. Required."""
+
+    @overload
+    def __init__(
+        self,
+        *,
+        properties: "_models.GatePatchProperties",
+    ) -> None: ...
+
+    @overload
+    def __init__(self, mapping: Mapping[str, Any]) -> None:
+        """
+        :param mapping: raw JSON to initialize the model.
+        :type mapping: Mapping[str, Any]
+        """
+
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        super().__init__(*args, **kwargs)
+
+
+class GatePatchProperties(_Model):
+    """Properties of a Gate that can be patched.
+
+    :ivar state: The state of the Gate. Required. Known values are: "Pending", "Skipped", and
+     "Completed".
+    :vartype state: str or ~azure.mgmt.containerservicefleet.models.GateState
+    """
+
+    state: Union[str, "_models.GateState"] = rest_field(visibility=["read", "create", "update", "delete", "query"])
+    """The state of the Gate. Required. Known values are: \"Pending\", \"Skipped\", and \"Completed\"."""
+
+    @overload
+    def __init__(
+        self,
+        *,
+        state: Union[str, "_models.GateState"],
+    ) -> None: ...
+
+    @overload
+    def __init__(self, mapping: Mapping[str, Any]) -> None:
+        """
+        :param mapping: raw JSON to initialize the model.
+        :type mapping: Mapping[str, Any]
+        """
+
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        super().__init__(*args, **kwargs)
+
+
+class GateProperties(_Model):
+    """A Gate controls the progression during a staged rollout, e.g. in an Update Run.
+
+    :ivar provisioning_state: The provisioning state of the Gate resource. Known values are:
+     "Succeeded", "Failed", and "Canceled".
+    :vartype provisioning_state: str or
+     ~azure.mgmt.containerservicefleet.models.GateProvisioningState
+    :ivar display_name: The human-readable display name of the Gate.
+    :vartype display_name: str
+    :ivar gate_type: The type of the Gate determines how it is completed. Required. "Approval"
+    :vartype gate_type: str or ~azure.mgmt.containerservicefleet.models.GateType
+    :ivar target: The target that the Gate is controlling, e.g. an Update Run. Required.
+    :vartype target: ~azure.mgmt.containerservicefleet.models.GateTarget
+    :ivar state: The state of the Gate. Required. Known values are: "Pending", "Skipped", and
+     "Completed".
+    :vartype state: str or ~azure.mgmt.containerservicefleet.models.GateState
+    """
+
+    provisioning_state: Optional[Union[str, "_models.GateProvisioningState"]] = rest_field(
+        name="provisioningState", visibility=["read"]
+    )
+    """The provisioning state of the Gate resource. Known values are: \"Succeeded\", \"Failed\", and
+     \"Canceled\"."""
+    display_name: Optional[str] = rest_field(name="displayName", visibility=["read", "create"])
+    """The human-readable display name of the Gate."""
+    gate_type: Union[str, "_models.GateType"] = rest_field(name="gateType", visibility=["read", "create"])
+    """The type of the Gate determines how it is completed. Required. \"Approval\""""
+    target: "_models.GateTarget" = rest_field(visibility=["read", "create"])
+    """The target that the Gate is controlling, e.g. an Update Run. Required."""
+    state: Union[str, "_models.GateState"] = rest_field(visibility=["read", "create", "update"])
+    """The state of the Gate. Required. Known values are: \"Pending\", \"Skipped\", and \"Completed\"."""
+
+    @overload
+    def __init__(
+        self,
+        *,
+        gate_type: Union[str, "_models.GateType"],
+        target: "_models.GateTarget",
+        state: Union[str, "_models.GateState"],
+        display_name: Optional[str] = None,
+    ) -> None: ...
+
+    @overload
+    def __init__(self, mapping: Mapping[str, Any]) -> None:
+        """
+        :param mapping: raw JSON to initialize the model.
+        :type mapping: Mapping[str, Any]
+        """
+
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        super().__init__(*args, **kwargs)
+
+
+class GateTarget(_Model):
+    """The target that the Gate is controlling, e.g. an Update Run. Exactly one of the properties
+    objects will be set.
+
+    :ivar id: The resource id that the Gate is controlling the rollout of. Required.
+    :vartype id: str
+    :ivar update_run_properties: The properties of the Update Run that the Gate is targeting.
+    :vartype update_run_properties:
+     ~azure.mgmt.containerservicefleet.models.UpdateRunGateTargetProperties
+    """
+
+    id: str = rest_field(visibility=["read", "create"])
+    """The resource id that the Gate is controlling the rollout of. Required."""
+    update_run_properties: Optional["_models.UpdateRunGateTargetProperties"] = rest_field(
+        name="updateRunProperties", visibility=["read", "create"]
+    )
+    """The properties of the Update Run that the Gate is targeting."""
+
+    @overload
+    def __init__(
+        self,
+        *,
+        id: str,  # pylint: disable=redefined-builtin
+        update_run_properties: Optional["_models.UpdateRunGateTargetProperties"] = None,
     ) -> None: ...
 
     @overload
@@ -2438,17 +2742,31 @@ class UpdateGroup(_Model):
     :ivar name: Name of the group.
      It must match a group name of an existing fleet member. Required.
     :vartype name: str
+    :ivar before_gates: A list of Gates that will be created before this Group is executed.
+    :vartype before_gates: list[~azure.mgmt.containerservicefleet.models.GateConfiguration]
+    :ivar after_gates: A list of Gates that will be created after this Group is executed.
+    :vartype after_gates: list[~azure.mgmt.containerservicefleet.models.GateConfiguration]
     """
 
     name: str = rest_field(visibility=["read", "create", "update", "delete", "query"])
     """Name of the group.
      It must match a group name of an existing fleet member. Required."""
+    before_gates: Optional[List["_models.GateConfiguration"]] = rest_field(
+        name="beforeGates", visibility=["read", "create", "update", "delete", "query"]
+    )
+    """A list of Gates that will be created before this Group is executed."""
+    after_gates: Optional[List["_models.GateConfiguration"]] = rest_field(
+        name="afterGates", visibility=["read", "create", "update", "delete", "query"]
+    )
+    """A list of Gates that will be created after this Group is executed."""
 
     @overload
     def __init__(
         self,
         *,
         name: str,
+        before_gates: Optional[List["_models.GateConfiguration"]] = None,
+        after_gates: Optional[List["_models.GateConfiguration"]] = None,
     ) -> None: ...
 
     @overload
@@ -2471,6 +2789,10 @@ class UpdateGroupStatus(_Model):
     :vartype name: str
     :ivar members: The list of member this UpdateGroup updates.
     :vartype members: list[~azure.mgmt.containerservicefleet.models.MemberUpdateStatus]
+    :ivar before_gates: The list of Gates that will run before this UpdateGroup.
+    :vartype before_gates: list[~azure.mgmt.containerservicefleet.models.UpdateRunGateStatus]
+    :ivar after_gates: The list of Gates that will run after this UpdateGroup.
+    :vartype after_gates: list[~azure.mgmt.containerservicefleet.models.UpdateRunGateStatus]
     """
 
     status: Optional["_models.UpdateStatus"] = rest_field(visibility=["read"])
@@ -2479,6 +2801,10 @@ class UpdateGroupStatus(_Model):
     """The name of the UpdateGroup."""
     members: Optional[List["_models.MemberUpdateStatus"]] = rest_field(visibility=["read"])
     """The list of member this UpdateGroup updates."""
+    before_gates: Optional[List["_models.UpdateRunGateStatus"]] = rest_field(name="beforeGates", visibility=["read"])
+    """The list of Gates that will run before this UpdateGroup."""
+    after_gates: Optional[List["_models.UpdateRunGateStatus"]] = rest_field(name="afterGates", visibility=["read"])
+    """The list of Gates that will run after this UpdateGroup."""
 
 
 class UpdateRun(ProxyResource):
@@ -2553,10 +2879,71 @@ class UpdateRun(ProxyResource):
     def __setattr__(self, key: str, value: Any) -> None:
         if key in self.__flattened_items:
             if self.properties is None:
-                self.properties = self._attr_to_rest_field["properties"]._class_type()
+                self.properties = self._attr_to_rest_field["properties"]._class_type({})
             setattr(self.properties, key, value)
         else:
             super().__setattr__(key, value)
+
+
+class UpdateRunGateStatus(_Model):
+    """The status of the Gate, as represented in the Update Run.
+
+    :ivar display_name: The human-readable display name of the Gate.
+    :vartype display_name: str
+    :ivar gate_id: The resource id of the Gate.
+    :vartype gate_id: str
+    :ivar status: The status of the Gate.
+    :vartype status: ~azure.mgmt.containerservicefleet.models.UpdateStatus
+    """
+
+    display_name: Optional[str] = rest_field(name="displayName", visibility=["read"])
+    """The human-readable display name of the Gate."""
+    gate_id: Optional[str] = rest_field(name="gateId", visibility=["read"])
+    """The resource id of the Gate."""
+    status: Optional["_models.UpdateStatus"] = rest_field(visibility=["read"])
+    """The status of the Gate."""
+
+
+class UpdateRunGateTargetProperties(_Model):
+    """The properties of the Update Run that the Gate is targeting.
+
+    :ivar name: The name of the Update Run. Required.
+    :vartype name: str
+    :ivar stage: The Update Stage of the Update Run.
+    :vartype stage: str
+    :ivar group: The Update Group of the Update Run.
+    :vartype group: str
+    :ivar timing: Whether the Gate is placed before or after the update itself. Required. Known
+     values are: "Before" and "After".
+    :vartype timing: str or ~azure.mgmt.containerservicefleet.models.Timing
+    """
+
+    name: str = rest_field(visibility=["read"])
+    """The name of the Update Run. Required."""
+    stage: Optional[str] = rest_field(visibility=["read"])
+    """The Update Stage of the Update Run."""
+    group: Optional[str] = rest_field(visibility=["read"])
+    """The Update Group of the Update Run."""
+    timing: Union[str, "_models.Timing"] = rest_field(visibility=["read", "create"])
+    """Whether the Gate is placed before or after the update itself. Required. Known values are:
+     \"Before\" and \"After\"."""
+
+    @overload
+    def __init__(
+        self,
+        *,
+        timing: Union[str, "_models.Timing"],
+    ) -> None: ...
+
+    @overload
+    def __init__(self, mapping: Mapping[str, Any]) -> None:
+        """
+        :param mapping: raw JSON to initialize the model.
+        :type mapping: Mapping[str, Any]
+        """
+
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        super().__init__(*args, **kwargs)
 
 
 class UpdateRunProperties(_Model):
@@ -2730,6 +3117,10 @@ class UpdateStage(_Model):
     :ivar after_stage_wait_in_seconds: The time in seconds to wait at the end of this stage before
      starting the next one. Defaults to 0 seconds if unspecified.
     :vartype after_stage_wait_in_seconds: int
+    :ivar before_gates: A list of Gates that will be created before this Stage is executed.
+    :vartype before_gates: list[~azure.mgmt.containerservicefleet.models.GateConfiguration]
+    :ivar after_gates: A list of Gates that will be created after this Stage is executed.
+    :vartype after_gates: list[~azure.mgmt.containerservicefleet.models.GateConfiguration]
     """
 
     name: str = rest_field(visibility=["read", "create", "update", "delete", "query"])
@@ -2744,6 +3135,14 @@ class UpdateStage(_Model):
     )
     """The time in seconds to wait at the end of this stage before starting the next one. Defaults to
      0 seconds if unspecified."""
+    before_gates: Optional[List["_models.GateConfiguration"]] = rest_field(
+        name="beforeGates", visibility=["read", "create", "update", "delete", "query"]
+    )
+    """A list of Gates that will be created before this Stage is executed."""
+    after_gates: Optional[List["_models.GateConfiguration"]] = rest_field(
+        name="afterGates", visibility=["read", "create", "update", "delete", "query"]
+    )
+    """A list of Gates that will be created after this Stage is executed."""
 
     @overload
     def __init__(
@@ -2752,6 +3151,8 @@ class UpdateStage(_Model):
         name: str,
         groups: Optional[List["_models.UpdateGroup"]] = None,
         after_stage_wait_in_seconds: Optional[int] = None,
+        before_gates: Optional[List["_models.GateConfiguration"]] = None,
+        after_gates: Optional[List["_models.GateConfiguration"]] = None,
     ) -> None: ...
 
     @overload
@@ -2774,6 +3175,10 @@ class UpdateStageStatus(_Model):
     :vartype name: str
     :ivar groups: The list of groups to be updated as part of this UpdateStage.
     :vartype groups: list[~azure.mgmt.containerservicefleet.models.UpdateGroupStatus]
+    :ivar before_gates: The list of Gates that will run before this UpdateStage.
+    :vartype before_gates: list[~azure.mgmt.containerservicefleet.models.UpdateRunGateStatus]
+    :ivar after_gates: The list of Gates that will run after this UpdateStage.
+    :vartype after_gates: list[~azure.mgmt.containerservicefleet.models.UpdateRunGateStatus]
     :ivar after_stage_wait_status: The status of the wait period configured on the UpdateStage.
     :vartype after_stage_wait_status: ~azure.mgmt.containerservicefleet.models.WaitStatus
     """
@@ -2784,6 +3189,10 @@ class UpdateStageStatus(_Model):
     """The name of the UpdateStage."""
     groups: Optional[List["_models.UpdateGroupStatus"]] = rest_field(visibility=["read"])
     """The list of groups to be updated as part of this UpdateStage."""
+    before_gates: Optional[List["_models.UpdateRunGateStatus"]] = rest_field(name="beforeGates", visibility=["read"])
+    """The list of Gates that will run before this UpdateStage."""
+    after_gates: Optional[List["_models.UpdateRunGateStatus"]] = rest_field(name="afterGates", visibility=["read"])
+    """The list of Gates that will run after this UpdateStage."""
     after_stage_wait_status: Optional["_models.WaitStatus"] = rest_field(
         name="afterStageWaitStatus", visibility=["read"]
     )
@@ -2798,7 +3207,7 @@ class UpdateStatus(_Model):
     :ivar completed_time: The time the operation or group was completed.
     :vartype completed_time: ~datetime.datetime
     :ivar state: The State of the operation or group. Known values are: "NotStarted", "Running",
-     "Stopping", "Stopped", "Skipped", "Failed", and "Completed".
+     "Stopping", "Stopped", "Skipped", "Failed", "Pending", and "Completed".
     :vartype state: str or ~azure.mgmt.containerservicefleet.models.UpdateState
     :ivar error: The error details when a failure is encountered.
     :vartype error: ~azure.mgmt.containerservicefleet.models.ErrorDetail
@@ -2812,7 +3221,7 @@ class UpdateStatus(_Model):
     """The time the operation or group was completed."""
     state: Optional[Union[str, "_models.UpdateState"]] = rest_field(visibility=["read"])
     """The State of the operation or group. Known values are: \"NotStarted\", \"Running\",
-     \"Stopping\", \"Stopped\", \"Skipped\", \"Failed\", and \"Completed\"."""
+     \"Stopping\", \"Stopped\", \"Skipped\", \"Failed\", \"Pending\", and \"Completed\"."""
     error: Optional["_models.ErrorDetail"] = rest_field(visibility=["read"])
     """The error details when a failure is encountered."""
 
