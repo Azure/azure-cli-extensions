@@ -30,9 +30,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-06-15-preview",
+        "version": "2025-07-15",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkfabrics/{}", "2024-06-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkfabrics/{}", "2025-07-15"],
         ]
     }
 
@@ -68,21 +68,21 @@ class Create(AAZCommand):
         # define Arg Group "Identity"
 
         _args_schema = cls._args_schema
-        _args_schema.mi_system_assigned = AAZStrArg(
-            options=["--system-assigned", "--mi-system-assigned"],
+        _args_schema.system_assigned = AAZStrArg(
+            options=["--system-assigned"],
             arg_group="Identity",
             help="Set the system managed identity.",
             blank="True",
         )
-        _args_schema.mi_user_assigned = AAZListArg(
-            options=["--user-assigned", "--mi-user-assigned"],
+        _args_schema.user_assigned = AAZListArg(
+            options=["--user-assigned"],
             arg_group="Identity",
             help="Set the user managed identities.",
             blank=[],
         )
 
-        mi_user_assigned = cls._args_schema.mi_user_assigned
-        mi_user_assigned.Element = AAZStrArg()
+        user_assigned = cls._args_schema.user_assigned
+        user_assigned.Element = AAZStrArg()
 
         # define Arg Group "Properties"
 
@@ -91,6 +91,11 @@ class Create(AAZCommand):
             options=["--annotation"],
             arg_group="Properties",
             help="Switch configuration description.",
+        )
+        _args_schema.authorized_transceiver = AAZObjectArg(
+            options=["--authorized-transceiver"],
+            arg_group="Properties",
+            help="Authorized transciever configuration for NetworkFabric.",
         )
         _args_schema.control_plane_acls = AAZListArg(
             options=["--control-plane-acls"],
@@ -114,6 +119,11 @@ class Create(AAZCommand):
             fmt=AAZStrArgFormat(
                 min_length=1,
             ),
+        )
+        _args_schema.feature_flags = AAZListArg(
+            options=["--feature-flags"],
+            arg_group="Properties",
+            help="NetworkFabric feature flag configuration information",
         )
         _args_schema.hardware_alert_threshold = AAZIntArg(
             options=["--hardware-alert-threshold"],
@@ -161,6 +171,11 @@ class Create(AAZCommand):
             fmt=AAZStrArgFormat(
                 min_length=1,
             ),
+        )
+        _args_schema.qos_configuration = AAZObjectArg(
+            options=["--qos-configuration"],
+            arg_group="Properties",
+            help="NetworkFabric QoS Configuration",
         )
         _args_schema.rack_count = AAZIntArg(
             options=["--rack-count"],
@@ -212,8 +227,31 @@ class Create(AAZCommand):
             help="Unique Route Distinguisher configuration",
         )
 
+        authorized_transceiver = cls._args_schema.authorized_transceiver
+        authorized_transceiver.key = AAZStrArg(
+            options=["key"],
+            help="Key that must be configured on the fabric.",
+        )
+        authorized_transceiver.vendor = AAZStrArg(
+            options=["vendor"],
+            help="Vendor of the transceiver.",
+        )
+
         control_plane_acls = cls._args_schema.control_plane_acls
         control_plane_acls.Element = AAZResourceIdArg()
+
+        feature_flags = cls._args_schema.feature_flags
+        feature_flags.Element = AAZObjectArg()
+
+        _element = cls._args_schema.feature_flags.Element
+        _element.feature_flag_name = AAZStrArg(
+            options=["feature-flag-name"],
+            help="Feature flag name.",
+        )
+        _element.feature_flag_value = AAZStrArg(
+            options=["feature-flag-value"],
+            help="Feature flag value.",
+        )
 
         management_network_configuration = cls._args_schema.management_network_configuration
         management_network_configuration.infrastructure_vpn_configuration = AAZObjectArg(
@@ -228,6 +266,14 @@ class Create(AAZCommand):
             required=True,
         )
         cls._build_args_vpn_configuration_properties_create(management_network_configuration.workload_vpn_configuration)
+
+        qos_configuration = cls._args_schema.qos_configuration
+        qos_configuration.qos_configuration_state = AAZStrArg(
+            options=["qos-configuration-state"],
+            help="QoS configuration state. Default is Disabled.",
+            default="Disabled",
+            enum={"Disabled": "Disabled", "Enabled": "Enabled"},
+        )
 
         storage_account_configuration = cls._args_schema.storage_account_configuration
         storage_account_configuration.storage_account_id = AAZResourceIdArg(
@@ -565,7 +611,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-06-15-preview",
+                    "api-version", "2025-07-15",
                     required=True,
                 ),
             }
@@ -597,8 +643,8 @@ class Create(AAZCommand):
 
             identity = _builder.get(".identity")
             if identity is not None:
-                identity.set_prop("userAssigned", AAZListType, ".mi_user_assigned", typ_kwargs={"flags": {"action": "create"}})
-                identity.set_prop("systemAssigned", AAZStrType, ".mi_system_assigned", typ_kwargs={"flags": {"action": "create"}})
+                identity.set_prop("userAssigned", AAZListType, ".user_assigned", typ_kwargs={"flags": {"action": "create"}})
+                identity.set_prop("systemAssigned", AAZStrType, ".system_assigned", typ_kwargs={"flags": {"action": "create"}})
 
             user_assigned = _builder.get(".identity.userAssigned")
             if user_assigned is not None:
@@ -607,15 +653,18 @@ class Create(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("annotation", AAZStrType, ".annotation")
+                properties.set_prop("authorizedTransceiver", AAZObjectType, ".authorized_transceiver")
                 properties.set_prop("controlPlaneAcls", AAZListType, ".control_plane_acls")
                 properties.set_prop("fabricASN", AAZIntType, ".fabric_asn", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("fabricVersion", AAZStrType, ".fabric_version")
+                properties.set_prop("featureFlags", AAZListType, ".feature_flags")
                 properties.set_prop("hardwareAlertThreshold", AAZIntType, ".hardware_alert_threshold")
                 properties.set_prop("ipv4Prefix", AAZStrType, ".ipv4_prefix", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("ipv6Prefix", AAZStrType, ".ipv6_prefix")
                 properties.set_prop("managementNetworkConfiguration", AAZObjectType, ".management_network_configuration", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("networkFabricControllerId", AAZStrType, ".network_fabric_controller_id", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("networkFabricSku", AAZStrType, ".network_fabric_sku", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("qosConfiguration", AAZObjectType, ".qos_configuration")
                 properties.set_prop("rackCount", AAZIntType, ".rack_count")
                 properties.set_prop("serverCountPerRack", AAZIntType, ".server_count_per_rack", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("storageAccountConfiguration", AAZObjectType, ".storage_account_configuration")
@@ -624,14 +673,32 @@ class Create(AAZCommand):
                 properties.set_prop("trustedIpPrefixes", AAZListType, ".trusted_ip_prefixes")
                 properties.set_prop("uniqueRdConfiguration", AAZObjectType, ".unique_rd_configuration")
 
+            authorized_transceiver = _builder.get(".properties.authorizedTransceiver")
+            if authorized_transceiver is not None:
+                authorized_transceiver.set_prop("key", AAZStrType, ".key")
+                authorized_transceiver.set_prop("vendor", AAZStrType, ".vendor")
+
             control_plane_acls = _builder.get(".properties.controlPlaneAcls")
             if control_plane_acls is not None:
                 control_plane_acls.set_elements(AAZStrType, ".")
+
+            feature_flags = _builder.get(".properties.featureFlags")
+            if feature_flags is not None:
+                feature_flags.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".properties.featureFlags[]")
+            if _elements is not None:
+                _elements.set_prop("featureFlagName", AAZStrType, ".feature_flag_name")
+                _elements.set_prop("featureFlagValue", AAZStrType, ".feature_flag_value")
 
             management_network_configuration = _builder.get(".properties.managementNetworkConfiguration")
             if management_network_configuration is not None:
                 _CreateHelper._build_schema_vpn_configuration_properties_create(management_network_configuration.set_prop("infrastructureVpnConfiguration", AAZObjectType, ".infrastructure_vpn_configuration", typ_kwargs={"flags": {"required": True}}))
                 _CreateHelper._build_schema_vpn_configuration_properties_create(management_network_configuration.set_prop("workloadVpnConfiguration", AAZObjectType, ".workload_vpn_configuration", typ_kwargs={"flags": {"required": True}}))
+
+            qos_configuration = _builder.get(".properties.qosConfiguration")
+            if qos_configuration is not None:
+                qos_configuration.set_prop("qosConfigurationState", AAZStrType, ".qos_configuration_state")
 
             storage_account_configuration = _builder.get(".properties.storageAccountConfiguration")
             if storage_account_configuration is not None:
@@ -749,6 +816,9 @@ class Create(AAZCommand):
                 flags={"read_only": True},
             )
             properties.annotation = AAZStrType()
+            properties.authorized_transceiver = AAZObjectType(
+                serialized_name="authorizedTransceiver",
+            )
             properties.configuration_state = AAZStrType(
                 serialized_name="configurationState",
                 flags={"read_only": True},
@@ -769,7 +839,6 @@ class Create(AAZCommand):
             )
             properties.feature_flags = AAZListType(
                 serialized_name="featureFlags",
-                flags={"read_only": True},
             )
             properties.hardware_alert_threshold = AAZIntType(
                 serialized_name="hardwareAlertThreshold",
@@ -809,6 +878,9 @@ class Create(AAZCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+            properties.qos_configuration = AAZObjectType(
+                serialized_name="qosConfiguration",
+            )
             properties.rack_count = AAZIntType(
                 serialized_name="rackCount",
             )
@@ -817,6 +889,10 @@ class Create(AAZCommand):
             )
             properties.router_ids = AAZListType(
                 serialized_name="routerIds",
+                flags={"read_only": True},
+            )
+            properties.secret_rotation_summary = AAZObjectType(
+                serialized_name="secretRotationSummary",
                 flags={"read_only": True},
             )
             properties.server_count_per_rack = AAZIntType(
@@ -842,6 +918,10 @@ class Create(AAZCommand):
 
             active_commit_batches = cls._schema_on_200_201.properties.active_commit_batches
             active_commit_batches.Element = AAZStrType()
+
+            authorized_transceiver = cls._schema_on_200_201.properties.authorized_transceiver
+            authorized_transceiver.key = AAZStrType()
+            authorized_transceiver.vendor = AAZStrType()
 
             control_plane_acls = cls._schema_on_200_201.properties.control_plane_acls
             control_plane_acls.Element = AAZStrType()
@@ -891,11 +971,22 @@ class Create(AAZCommand):
             )
             _CreateHelper._build_schema_vpn_configuration_properties_read(management_network_configuration.workload_vpn_configuration)
 
+            qos_configuration = cls._schema_on_200_201.properties.qos_configuration
+            qos_configuration.qos_configuration_state = AAZStrType(
+                serialized_name="qosConfigurationState",
+            )
+
             racks = cls._schema_on_200_201.properties.racks
             racks.Element = AAZStrType()
 
             router_ids = cls._schema_on_200_201.properties.router_ids
             router_ids.Element = AAZStrType()
+
+            secret_rotation_summary = cls._schema_on_200_201.properties.secret_rotation_summary
+            secret_rotation_summary.active_password_set_count = AAZIntType(
+                serialized_name="activePasswordSetCount",
+                flags={"read_only": True},
+            )
 
             storage_account_configuration = cls._schema_on_200_201.properties.storage_account_configuration
             storage_account_configuration.storage_account_id = AAZStrType(
@@ -936,11 +1027,54 @@ class Create(AAZCommand):
             terminal_server_configuration.secondary_ipv6_prefix = AAZStrType(
                 serialized_name="secondaryIpv6Prefix",
             )
+            terminal_server_configuration.secret_rotation_status = AAZListType(
+                serialized_name="secretRotationStatus",
+                flags={"read_only": True},
+            )
             terminal_server_configuration.serial_number = AAZStrType(
                 serialized_name="serialNumber",
             )
             terminal_server_configuration.username = AAZStrType(
                 flags={"required": True},
+            )
+
+            secret_rotation_status = cls._schema_on_200_201.properties.terminal_server_configuration.secret_rotation_status
+            secret_rotation_status.Element = AAZObjectType()
+
+            _element = cls._schema_on_200_201.properties.terminal_server_configuration.secret_rotation_status.Element
+            _element.last_rotation_time = AAZStrType(
+                serialized_name="lastRotationTime",
+                flags={"read_only": True},
+            )
+            _element.secret_archive_reference = AAZObjectType(
+                serialized_name="secretArchiveReference",
+                flags={"read_only": True},
+            )
+            _element.secret_type = AAZStrType(
+                serialized_name="secretType",
+                flags={"read_only": True},
+            )
+            _element.synchronization_status = AAZStrType(
+                serialized_name="synchronizationStatus",
+                flags={"read_only": True},
+            )
+
+            secret_archive_reference = cls._schema_on_200_201.properties.terminal_server_configuration.secret_rotation_status.Element.secret_archive_reference
+            secret_archive_reference.key_vault_id = AAZStrType(
+                serialized_name="keyVaultId",
+                flags={"read_only": True},
+            )
+            secret_archive_reference.key_vault_uri = AAZStrType(
+                serialized_name="keyVaultUri",
+                flags={"read_only": True},
+            )
+            secret_archive_reference.secret_name = AAZStrType(
+                serialized_name="secretName",
+                flags={"read_only": True},
+            )
+            secret_archive_reference.secret_version = AAZStrType(
+                serialized_name="secretVersion",
+                flags={"read_only": True},
             )
 
             trusted_ip_prefixes = cls._schema_on_200_201.properties.trusted_ip_prefixes

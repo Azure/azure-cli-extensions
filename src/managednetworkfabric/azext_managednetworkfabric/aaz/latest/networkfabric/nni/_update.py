@@ -25,9 +25,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-06-15-preview",
+        "version": "2025-07-15",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkfabrics/{}/networktonetworkinterconnects/{}", "2024-06-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkfabrics/{}/networktonetworkinterconnects/{}", "2025-07-15"],
         ]
     }
 
@@ -77,56 +77,47 @@ class Update(AAZCommand):
             options=["--egress-acl-id"],
             arg_group="Properties",
             help="Egress Acl. ARM resource ID of Access Control Lists.",
-            nullable=True,
         )
         _args_schema.export_route_policy = AAZObjectArg(
             options=["--export-route-policy"],
             arg_group="Properties",
             help="Export Route Policy information",
-            nullable=True,
         )
         _args_schema.import_route_policy = AAZObjectArg(
             options=["--import-route-policy"],
             arg_group="Properties",
             help="Import Route Policy information.",
-            nullable=True,
         )
         _args_schema.ingress_acl_id = AAZResourceIdArg(
             options=["--ingress-acl-id"],
             arg_group="Properties",
             help="Ingress Acl. ARM resource ID of Access Control Lists.",
-            nullable=True,
         )
         _args_schema.layer2_configuration = AAZObjectArg(
             options=["--layer2-configuration"],
             arg_group="Properties",
             help="Common properties for Layer2Configuration.",
-            nullable=True,
         )
         _args_schema.micro_bfd_state = AAZStrArg(
             options=["--micro-bfd-state"],
             arg_group="Properties",
             help="Micro BFD enabled/disabled state.",
-            nullable=True,
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
         )
         _args_schema.npb_static_route_configuration = AAZObjectArg(
             options=["--npb-static-route-configuration"],
             arg_group="Properties",
             help="NPB Static Route Configuration properties.",
-            nullable=True,
         )
         _args_schema.option_b_layer3_configuration = AAZObjectArg(
             options=["--option-b-layer3-configuration"],
             arg_group="Properties",
             help="Common properties for Layer3Configuration.",
-            nullable=True,
         )
         _args_schema.static_route_configuration = AAZObjectArg(
             options=["--static-route-configuration"],
             arg_group="Properties",
             help="Static Route Configuration.",
-            nullable=True,
         )
 
         export_route_policy = cls._args_schema.export_route_policy
@@ -177,16 +168,10 @@ class Update(AAZCommand):
         npb_static_route_configuration.ipv4_routes = AAZListArg(
             options=["ipv4-routes"],
             help="List of IPv4 Routes.",
-            fmt=AAZListArgFormat(
-                min_length=1,
-            ),
         )
         npb_static_route_configuration.ipv6_routes = AAZListArg(
             options=["ipv6-routes"],
             help="List of IPv6 Routes.",
-            fmt=AAZListArgFormat(
-                min_length=1,
-            ),
         )
 
         bfd_configuration = cls._args_schema.npb_static_route_configuration.bfd_configuration
@@ -227,9 +212,6 @@ class Update(AAZCommand):
         option_b_layer3_configuration.prefix_limits = AAZListArg(
             options=["prefix-limits"],
             help="OptionB Layer3 prefix limit configuration.",
-            fmt=AAZListArgFormat(
-                min_length=1,
-            ),
         )
         option_b_layer3_configuration.primary_ipv4_prefix = AAZStrArg(
             options=["primary-ipv4-prefix"],
@@ -443,7 +425,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-06-15-preview",
+                    "api-version", "2025-07-15",
                     required=True,
                 ),
             }
@@ -472,15 +454,15 @@ class Update(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("egressAclId", AAZStrType, ".egress_acl_id", typ_kwargs={"nullable": True})
-                properties.set_prop("exportRoutePolicy", AAZObjectType, ".export_route_policy", typ_kwargs={"nullable": True})
-                properties.set_prop("importRoutePolicy", AAZObjectType, ".import_route_policy", typ_kwargs={"nullable": True})
-                properties.set_prop("ingressAclId", AAZStrType, ".ingress_acl_id", typ_kwargs={"nullable": True})
-                properties.set_prop("layer2Configuration", AAZObjectType, ".layer2_configuration", typ_kwargs={"nullable": True})
-                properties.set_prop("microBfdState", AAZStrType, ".micro_bfd_state", typ_kwargs={"nullable": True})
-                properties.set_prop("npbStaticRouteConfiguration", AAZObjectType, ".npb_static_route_configuration", typ_kwargs={"nullable": True})
-                properties.set_prop("optionBLayer3Configuration", AAZObjectType, ".option_b_layer3_configuration", typ_kwargs={"nullable": True})
-                properties.set_prop("staticRouteConfiguration", AAZObjectType, ".static_route_configuration", typ_kwargs={"nullable": True})
+                properties.set_prop("egressAclId", AAZStrType, ".egress_acl_id")
+                properties.set_prop("exportRoutePolicy", AAZObjectType, ".export_route_policy")
+                properties.set_prop("importRoutePolicy", AAZObjectType, ".import_route_policy")
+                properties.set_prop("ingressAclId", AAZStrType, ".ingress_acl_id")
+                properties.set_prop("layer2Configuration", AAZObjectType, ".layer2_configuration")
+                properties.set_prop("microBfdState", AAZStrType, ".micro_bfd_state")
+                properties.set_prop("npbStaticRouteConfiguration", AAZObjectType, ".npb_static_route_configuration")
+                properties.set_prop("optionBLayer3Configuration", AAZObjectType, ".option_b_layer3_configuration")
+                properties.set_prop("staticRouteConfiguration", AAZObjectType, ".static_route_configuration")
 
             export_route_policy = _builder.get(".properties.exportRoutePolicy")
             if export_route_policy is not None:

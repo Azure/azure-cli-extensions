@@ -16,15 +16,12 @@ from azure.cli.core.aaz import *
 )
 class Remove(AAZCommand):
     """Remove the user or system managed identities.
-
-    :example: Remove identity on the Network Fabric
-        az networkfabric fabric identity remove --resource group example-rg --network-fabric-name example-fabric --system-assigned
     """
 
     _aaz_info = {
-        "version": "2024-06-15-preview",
+        "version": "2025-07-15",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkfabrics/{}", "2024-06-15-preview", "identity"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkfabrics/{}", "2025-07-15", "identity"],
         ]
     }
 
@@ -46,8 +43,8 @@ class Remove(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.network_fabric_name = AAZStrArg(
-            options=["-n", "--name", "--network-fabric-name"],
+        _args_schema.resource_name = AAZStrArg(
+            options=["--resource-name"],
             help="Name of the Network Fabric.",
             required=True,
             fmt=AAZStrArgFormat(
@@ -58,33 +55,33 @@ class Remove(AAZCommand):
             required=True,
         )
 
-        # define Arg Group "Resource.identity"
+        # define Arg Group "Properties.identity"
 
         _args_schema = cls._args_schema
-        _args_schema.mi_system_assigned = AAZStrArg(
-            options=["--system-assigned", "--mi-system-assigned"],
-            arg_group="Resource.identity",
+        _args_schema.system_assigned = AAZStrArg(
+            options=["--system-assigned"],
+            arg_group="Properties.identity",
             help="Set the system managed identity.",
             blank="True",
         )
-        _args_schema.mi_user_assigned = AAZListArg(
-            options=["--user-assigned", "--mi-user-assigned"],
-            arg_group="Resource.identity",
+        _args_schema.user_assigned = AAZListArg(
+            options=["--user-assigned"],
+            arg_group="Properties.identity",
             help="Set the user managed identities.",
             blank=[],
         )
 
-        mi_user_assigned = cls._args_schema.mi_user_assigned
-        mi_user_assigned.Element = AAZStrArg()
+        user_assigned = cls._args_schema.user_assigned
+        user_assigned.Element = AAZStrArg()
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
         self.NetworkFabricsGet(ctx=self.ctx)()
-        self.pre_instance_update(self.ctx.selectors.subresource.required())
+        self.pre_instance_update(self.ctx.selectors.subresource.get())
         self.InstanceUpdateByJson(ctx=self.ctx)()
-        self.post_instance_update(self.ctx.selectors.subresource.required())
-        yield self.NetworkFabricsCreate(ctx=self.ctx)()
+        self.post_instance_update(self.ctx.selectors.subresource.get())
+        yield self.NetworkFabricsUpdate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -104,7 +101,7 @@ class Remove(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.selectors.subresource.required(), client_flatten=True)
+        result = self.deserialize_output(self.ctx.selectors.subresource.get(), client_flatten=True)
         return result
 
     class SubresourceSelector(AAZJsonSelector):
@@ -148,7 +145,7 @@ class Remove(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "networkFabricName", self.ctx.args.network_fabric_name,
+                    "networkFabricName", self.ctx.args.resource_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -166,7 +163,7 @@ class Remove(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-06-15-preview",
+                    "api-version", "2025-07-15",
                     required=True,
                 ),
             }
@@ -201,7 +198,7 @@ class Remove(AAZCommand):
 
             return cls._schema_on_200
 
-    class NetworkFabricsCreate(AAZHttpOperation):
+    class NetworkFabricsUpdate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -211,18 +208,18 @@ class Remove(AAZCommand):
                 return self.client.build_lro_polling(
                     self.ctx.args.no_wait,
                     session,
-                    self.on_200_201,
+                    self.on_200,
                     self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
+                    lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
-            if session.http_response.status_code in [200, 201]:
+            if session.http_response.status_code in [200]:
                 return self.client.build_lro_polling(
                     self.ctx.args.no_wait,
                     session,
-                    self.on_200_201,
+                    self.on_200,
                     self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
+                    lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
 
@@ -237,7 +234,7 @@ class Remove(AAZCommand):
 
         @property
         def method(self):
-            return "PUT"
+            return "PATCH"
 
         @property
         def error_format(self):
@@ -247,7 +244,7 @@ class Remove(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "networkFabricName", self.ctx.args.network_fabric_name,
+                    "networkFabricName", self.ctx.args.resource_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -265,7 +262,7 @@ class Remove(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-06-15-preview",
+                    "api-version", "2025-07-15",
                     required=True,
                 ),
             }
@@ -285,37 +282,33 @@ class Remove(AAZCommand):
 
         @property
         def content(self):
-            _content_value, _builder = self.new_content_builder(
-                self.ctx.args,
-                value=self.ctx.vars.instance,
-            )
+            identity = self.serialize_content(self.ctx.selectors.subresource.required())
+            return {"identity": identity}
 
-            return self.serialize_content(_content_value)
-
-        def on_200_201(self, session):
+        def on_200(self, session):
             data = self.deserialize_http_content(session)
             self.ctx.set_var(
                 "instance",
                 data,
-                schema_builder=self._build_schema_on_200_201
+                schema_builder=self._build_schema_on_200
             )
 
-        _schema_on_200_201 = None
+        _schema_on_200 = None
 
         @classmethod
-        def _build_schema_on_200_201(cls):
-            if cls._schema_on_200_201 is not None:
-                return cls._schema_on_200_201
+        def _build_schema_on_200(cls):
+            if cls._schema_on_200 is not None:
+                return cls._schema_on_200
 
-            cls._schema_on_200_201 = AAZObjectType()
-            _RemoveHelper._build_schema_network_fabric_read(cls._schema_on_200_201)
+            cls._schema_on_200 = AAZObjectType()
+            _RemoveHelper._build_schema_network_fabric_read(cls._schema_on_200)
 
-            return cls._schema_on_200_201
+            return cls._schema_on_200
 
     class InstanceUpdateByJson(AAZJsonInstanceUpdateOperation):
 
         def __call__(self, *args, **kwargs):
-            self._update_instance(self.ctx.selectors.subresource.required())
+            self._update_instance(self.ctx.selectors.subresource.get())
 
         def _update_instance(self, instance):
             _instance_value, _builder = self.new_content_builder(
@@ -323,8 +316,8 @@ class Remove(AAZCommand):
                 value=instance,
                 typ=AAZIdentityObjectType
             )
-            _builder.set_prop("userAssigned", AAZListType, ".mi_user_assigned", typ_kwargs={"flags": {"action": "remove"}})
-            _builder.set_prop("systemAssigned", AAZStrType, ".mi_system_assigned", typ_kwargs={"flags": {"action": "remove"}})
+            _builder.set_prop("userAssigned", AAZListType, ".user_assigned", typ_kwargs={"flags": {"action": "remove"}})
+            _builder.set_prop("systemAssigned", AAZStrType, ".system_assigned", typ_kwargs={"flags": {"action": "remove"}})
 
             user_assigned = _builder.get(".userAssigned")
             if user_assigned is not None:
@@ -417,6 +410,9 @@ class _RemoveHelper:
             flags={"read_only": True},
         )
         properties.annotation = AAZStrType()
+        properties.authorized_transceiver = AAZObjectType(
+            serialized_name="authorizedTransceiver",
+        )
         properties.configuration_state = AAZStrType(
             serialized_name="configurationState",
             flags={"read_only": True},
@@ -437,7 +433,6 @@ class _RemoveHelper:
         )
         properties.feature_flags = AAZListType(
             serialized_name="featureFlags",
-            flags={"read_only": True},
         )
         properties.hardware_alert_threshold = AAZIntType(
             serialized_name="hardwareAlertThreshold",
@@ -477,6 +472,9 @@ class _RemoveHelper:
             serialized_name="provisioningState",
             flags={"read_only": True},
         )
+        properties.qos_configuration = AAZObjectType(
+            serialized_name="qosConfiguration",
+        )
         properties.rack_count = AAZIntType(
             serialized_name="rackCount",
         )
@@ -485,6 +483,10 @@ class _RemoveHelper:
         )
         properties.router_ids = AAZListType(
             serialized_name="routerIds",
+            flags={"read_only": True},
+        )
+        properties.secret_rotation_summary = AAZObjectType(
+            serialized_name="secretRotationSummary",
             flags={"read_only": True},
         )
         properties.server_count_per_rack = AAZIntType(
@@ -510,6 +512,10 @@ class _RemoveHelper:
 
         active_commit_batches = _schema_network_fabric_read.properties.active_commit_batches
         active_commit_batches.Element = AAZStrType()
+
+        authorized_transceiver = _schema_network_fabric_read.properties.authorized_transceiver
+        authorized_transceiver.key = AAZStrType()
+        authorized_transceiver.vendor = AAZStrType()
 
         control_plane_acls = _schema_network_fabric_read.properties.control_plane_acls
         control_plane_acls.Element = AAZStrType()
@@ -559,11 +565,22 @@ class _RemoveHelper:
         )
         cls._build_schema_vpn_configuration_properties_read(management_network_configuration.workload_vpn_configuration)
 
+        qos_configuration = _schema_network_fabric_read.properties.qos_configuration
+        qos_configuration.qos_configuration_state = AAZStrType(
+            serialized_name="qosConfigurationState",
+        )
+
         racks = _schema_network_fabric_read.properties.racks
         racks.Element = AAZStrType()
 
         router_ids = _schema_network_fabric_read.properties.router_ids
         router_ids.Element = AAZStrType()
+
+        secret_rotation_summary = _schema_network_fabric_read.properties.secret_rotation_summary
+        secret_rotation_summary.active_password_set_count = AAZIntType(
+            serialized_name="activePasswordSetCount",
+            flags={"read_only": True},
+        )
 
         storage_account_configuration = _schema_network_fabric_read.properties.storage_account_configuration
         storage_account_configuration.storage_account_id = AAZStrType(
@@ -604,11 +621,54 @@ class _RemoveHelper:
         terminal_server_configuration.secondary_ipv6_prefix = AAZStrType(
             serialized_name="secondaryIpv6Prefix",
         )
+        terminal_server_configuration.secret_rotation_status = AAZListType(
+            serialized_name="secretRotationStatus",
+            flags={"read_only": True},
+        )
         terminal_server_configuration.serial_number = AAZStrType(
             serialized_name="serialNumber",
         )
         terminal_server_configuration.username = AAZStrType(
             flags={"required": True},
+        )
+
+        secret_rotation_status = _schema_network_fabric_read.properties.terminal_server_configuration.secret_rotation_status
+        secret_rotation_status.Element = AAZObjectType()
+
+        _element = _schema_network_fabric_read.properties.terminal_server_configuration.secret_rotation_status.Element
+        _element.last_rotation_time = AAZStrType(
+            serialized_name="lastRotationTime",
+            flags={"read_only": True},
+        )
+        _element.secret_archive_reference = AAZObjectType(
+            serialized_name="secretArchiveReference",
+            flags={"read_only": True},
+        )
+        _element.secret_type = AAZStrType(
+            serialized_name="secretType",
+            flags={"read_only": True},
+        )
+        _element.synchronization_status = AAZStrType(
+            serialized_name="synchronizationStatus",
+            flags={"read_only": True},
+        )
+
+        secret_archive_reference = _schema_network_fabric_read.properties.terminal_server_configuration.secret_rotation_status.Element.secret_archive_reference
+        secret_archive_reference.key_vault_id = AAZStrType(
+            serialized_name="keyVaultId",
+            flags={"read_only": True},
+        )
+        secret_archive_reference.key_vault_uri = AAZStrType(
+            serialized_name="keyVaultUri",
+            flags={"read_only": True},
+        )
+        secret_archive_reference.secret_name = AAZStrType(
+            serialized_name="secretName",
+            flags={"read_only": True},
+        )
+        secret_archive_reference.secret_version = AAZStrType(
+            serialized_name="secretVersion",
+            flags={"read_only": True},
         )
 
         trusted_ip_prefixes = _schema_network_fabric_read.properties.trusted_ip_prefixes

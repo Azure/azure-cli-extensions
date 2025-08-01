@@ -36,7 +36,7 @@ def step_commit_batch_status(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric fabric commit-batch-status --network-fabric-name {commitNFName} --resource-group {commitNFRGName}"
+        "az networkfabric fabric commit-batch-status --resource-name {commitNFName} --resource-group {commitNFRGName}"
     )
 
 

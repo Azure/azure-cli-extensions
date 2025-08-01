@@ -15,4 +15,5 @@ from ._list import *
 from ._show import *
 from ._update import *
 from ._update_bfd_administrative_state import *
+from ._update_npb_static_route_bfd_administrative_state import *
 from ._wait import *

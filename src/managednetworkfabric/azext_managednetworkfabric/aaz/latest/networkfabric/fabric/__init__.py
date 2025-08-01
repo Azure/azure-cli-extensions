@@ -19,6 +19,10 @@ from ._discard_commit_batch import *
 from ._list import *
 from ._lock_fabric import *
 from ._provision import *
+from ._resync_certificate import *
+from ._resync_password import *
+from ._rotate_certificate import *
+from ._rotate_password import *
 from ._show import *
 from ._update import *
 from ._upgrade import *

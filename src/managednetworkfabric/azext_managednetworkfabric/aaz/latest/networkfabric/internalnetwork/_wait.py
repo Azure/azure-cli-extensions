@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/l3isolationdomains/{}/internalnetworks/{}", "2024-06-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/l3isolationdomains/{}/internalnetworks/{}", "2025-07-15"],
         ]
     }
 
@@ -132,7 +132,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-06-15-preview",
+                    "api-version", "2025-07-15",
                     required=True,
                 ),
             }
@@ -228,6 +228,10 @@ class Wait(AAZWaitCommand):
             properties.native_ipv6_prefix_limit = AAZObjectType(
                 serialized_name="nativeIpv6PrefixLimit",
             )
+            properties.network_fabric_id = AAZStrType(
+                serialized_name="networkFabricId",
+                flags={"read_only": True},
+            )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
@@ -289,9 +293,20 @@ class Wait(AAZWaitCommand):
             bmp_configuration.bmp_configuration_state = AAZStrType(
                 serialized_name="bmpConfigurationState",
             )
+            bmp_configuration.export_policy_configuration = AAZObjectType(
+                serialized_name="exportPolicyConfiguration",
+            )
             bmp_configuration.neighbor_ip_exclusions = AAZListType(
                 serialized_name="neighborIpExclusions",
             )
+
+            export_policy_configuration = cls._schema_on_200.properties.bgp_configuration.bmp_configuration.export_policy_configuration
+            export_policy_configuration.export_policies = AAZListType(
+                serialized_name="exportPolicies",
+            )
+
+            export_policies = cls._schema_on_200.properties.bgp_configuration.bmp_configuration.export_policy_configuration.export_policies
+            export_policies.Element = AAZStrType()
 
             neighbor_ip_exclusions = cls._schema_on_200.properties.bgp_configuration.bmp_configuration.neighbor_ip_exclusions
             neighbor_ip_exclusions.Element = AAZStrType()
