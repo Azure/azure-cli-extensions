@@ -2280,7 +2280,7 @@ def cli_begin_retrieve_sql_container_partition_throughput(client,
             resource_group_name, account_name, database_name, container_name)
     except Exception as ex:
         if ex.error.code == "NotFound":
-            raise CLIError("(NotFound) Container with name '{}' in database '{} could not be found.".format(container_name, database_name))
+            raise CLIError("(NotFound) Container with name '{}' in database '{}' could not be found.".format(container_name, database_name))
 
     if len(physical_partition_ids) == 0 and all_partitions is False:
         raise CLIError(
@@ -2381,7 +2381,7 @@ def cli_begin_redistribute_sql_container_partition_throughput(client,
             resource_group_name, account_name, database_name, container_name)
     except Exception as ex:
         if ex.error.code == "NotFound":
-            raise CLIError("(NotFound) Container with name '{}' in database '{} could not be found.".format(container_name, database_name))
+            raise CLIError("(NotFound) Container with name '{}' in database '{}' could not be found.".format(container_name, database_name))
 
     if evenly_distribute:
         redistribute_throughput_properties_resource = RedistributeThroughputPropertiesResource(
@@ -2422,7 +2422,7 @@ def cli_begin_retrieve_mongo_container_partition_throughput(client,
             resource_group_name, account_name, database_name, collection_name)
     except Exception as ex:
         if ex.error.code == "NotFound":
-            raise CLIError("(NotFound) Container with name '{}' in database '{} could not be found.".format(collection_name, database_name))
+            raise CLIError("(NotFound) Container with name '{}' in database '{}' could not be found.".format(collection_name, database_name))
 
     if len(physical_partition_ids) == 0 and all_partitions is False:
         raise CLIError(
@@ -2467,7 +2467,7 @@ def cli_begin_redistribute_mongo_container_partition_throughput(client,
             resource_group_name, account_name, database_name, collection_name)
     except Exception as ex:
         if ex.error.code == "NotFound":
-            raise CLIError("(NotFound) Container with name '{}' in database '{} could not be found.".format(collection_name, database_name))
+            raise CLIError("(NotFound) Container with name '{}' in database '{}' could not be found.".format(collection_name, database_name))
 
     if evenly_distribute:
         redistribute_throughput_properties_resource = RedistributeThroughputPropertiesResource(
