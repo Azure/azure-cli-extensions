@@ -64,6 +64,7 @@ class UseContext(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
+        print (f"Using context '{self.ctx.args.context_name}' in resource group '{self.ctx.args.resource_group}'")
         self.ContextsGet(ctx=self.ctx)()
         self.post_operations()
 
@@ -77,8 +78,14 @@ class UseContext(AAZCommand):
 
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
-        CURRENT_CONTEXT_ID = result.get('id')
+        current_context_id = result.get('id')
+        if current_context_id:
+            self.ctx.cli_ctx.config.set_value(
+                'workload_orchestration', 'context_id', current_context_id)
+            self.ctx.cli_ctx.config.set_value(
+                'workload_orchestration', 'context_name', self.ctx.args.context_name.to_serialized_data())
+            self.ctx.cli_ctx.config.set_value(
+                'workload_orchestration', 'resource_group', self.ctx.args.resource_group.to_serialized_data())
         return f"Successfully set current context to '{self.ctx.args.context_name}'"
 
     class ContextsGet(AAZHttpOperation):
