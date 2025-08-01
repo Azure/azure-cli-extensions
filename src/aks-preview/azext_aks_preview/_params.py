@@ -2774,7 +2774,22 @@ def load_arguments(self, _):
         )
 
     with self.argument_context("aks agent") as c:
-        c.positional("prompt", required=False, help="Ask any question and answer using available tools.")
+        c.positional(
+            "prompt",
+            help="Ask any question and answer using available tools.",
+        )
+        c.argument(
+            "resource_group_name",
+            options_list=["--resource-group", "-g"],
+            help="Name of resource group.",
+            required=False,
+        )
+        c.argument(
+            "name",
+            options_list=["--name", "-n"],
+            help="Name of the managed cluster.",
+            required=False,
+        )
         c.argument(
             "max_steps",
             type=int,
@@ -2803,22 +2818,22 @@ def load_arguments(self, _):
         c.argument(
             "no_interactive",
             help="Disable interactive mode. When set, the agent will not prompt for input and will run in batch mode.",
-            action='store_true',
+            action="store_true",
         )
         c.argument(
             "no_echo_request",
             help="Disable echoing back the question provided to AKS Agent in the output.",
-            action='store_true',
+            action="store_true",
         )
         c.argument(
             "show_tool_output",
             help="Show the output of each tool that was called.",
-            action='store_true',
+            action="store_true",
         )
         c.argument(
             "refresh_toolsets",
             help="Refresh the toolsets status.",
-            action='store_true',
+            action="store_true",
         )
         c.argument(
             "custom-toolsets",
@@ -2826,6 +2841,7 @@ def load_arguments(self, _):
             required=False,
             type=str,
         )
+
 
 def _get_default_install_location(exe_name):
     system = platform.system()

@@ -3,17 +3,17 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from knack.util import CLIError
 import logging
 import os
-from pathlib import Path
 import socket
 import sys
-import typer
 import uuid
+from pathlib import Path
 
+import typer
 from azure.cli.core.api import get_config_dir
 from azure.cli.core.commands.client_factory import get_subscription_id
+from knack.util import CLIError
 
 
 # NOTE(mainred): holmes leverage the log handler RichHandler to provide colorful, readable and well-formatted logs
@@ -36,20 +36,21 @@ def init_log():
     return init_logging([])
 
 
+# pylint: disable=too-many-locals
 def aks_agent(
-        cmd,
-        resource_group_name,
-        name,
-        prompt,
-        model,
-        api_key,
-        max_steps,
-        config_file,
-        no_interactive,
-        no_echo_request,
-        show_tool_output,
-        refresh_toolsets,
-        custom_toolsets,
+    cmd,
+    resource_group_name,
+    name,
+    prompt,
+    model,
+    api_key,
+    max_steps,
+    config_file,
+    no_interactive,
+    no_echo_request,
+    show_tool_output,
+    refresh_toolsets,
+    custom_toolsets,
 ):
     """
     Interact with the AKS agent using a prompt or piped input.
@@ -75,7 +76,9 @@ def aks_agent(
     """
 
     if sys.version_info < (3, 10):
-        raise CLIError("Please upgrade the python version to 3.10 or above to use aks agent.")
+        raise CLIError(
+            "Please upgrade the python version to 3.10 or above to use aks agent."
+        )
 
     # reverse the value of the variables so that
     interactive = not no_interactive
@@ -95,6 +98,8 @@ def aks_agent(
     from holmes.plugins.prompts import load_and_render_prompt
     from holmes.utils.console.result import handle_result
 
+    from .prompt import AKS_CONTEXT_PROMPT
+
     # Detect and read piped input
     piped_data = None
     if not sys.stdin.isatty():
@@ -111,8 +116,7 @@ def aks_agent(
         model=model,
         api_key=api_key,
         max_steps=max_steps,
-        custom_toolsets_from_cli=custom_toolsets
-
+        custom_toolsets_from_cli=custom_toolsets,
     )
 
     ai = config.create_console_toolcalling_llm(
@@ -145,34 +149,14 @@ def aks_agent(
         "subscription_id": subscription_id,
     }
 
-    aks_context_prompt = """
-# Azure Kubernetes Service (AKS)
-
-You are specifically working with Azure Kubernetes Service (AKS) clusters. All investigations and troubleshooting should be performed on the AKS cluster. When troubleshooting AKS, you should consider both Azure resources and Kubernetes resources.
-
-The current provided AKS context is as follow:
-cluster_name: {{cluster_name}}
-resource_group: {{resource_group}}
-subscription_id: {{subscription_id}}
-
-## Prerequisites
-### AKS cluster name is under the resource group and subscription specified
-You should check if the AKS cluster {{cluster_name}} can be found under resource group {{resource_group}} and subscription {{subscription_id}}.
-If not, you should prompt to the user to specify correct cluster name, resource group and subscription ID.
-
-### AKS cluster is in the current kubeconfig context
-Whenever start the investigation and troubleshooting, you MUST check if the current kubeconfig context is set to the AKS cluster {{cluster_name}}.
-If the current kubeconfig context is not set to the AKS cluster {{cluster_name}}, you should get the kubeconfig credential for the cluster name {{cluster_name}}, resource group name {{resource_group}} and subscription ID {{subscription_id}}
-If the current kubeconfig context is set to the AKS cluster {{cluster_name}}, you should proceed with the investigation and troubleshooting.
-"""
-    aks_context_prompt = load_and_render_prompt(aks_context_prompt, aks_template_context)
-
+    aks_context_prompt = load_and_render_prompt(
+        AKS_CONTEXT_PROMPT, aks_template_context
+    )
     # Variables not exposed to the user.
     # Adds a prompt for post processing.
     post_processing_prompt = None
     # File to append to prompt
     include_file = None
-    # TODO: add refresh-toolset to refresh the toolset if it has changed
     if interactive:
         run_interactive_loop(
             ai,

@@ -24,7 +24,7 @@ CLASSIFIERS = [
 ]
 
 DEPENDENCIES = [
-    "holmesgpt @ git+https://github.com/robusta-dev/holmesgpt@bump-azure-mgmt-sql"
+    "holmesgpt @ git+https://github.com/robusta-dev/holmesgpt@master"
     #"holmesgpt==0.12.3; python_version >= '3.10'",
 ]
 
