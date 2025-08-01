@@ -2,6 +2,10 @@
 
 Release History
 ===============
+2.0.1
++++++
+* Fixed Network manager post commit issues.
+
 2.0.0
 +++++
 * Modify cmd `az network manager routing-config`
