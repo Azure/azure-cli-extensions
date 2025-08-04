@@ -9,6 +9,7 @@
 # flake8: noqa
 
 from azure.cli.core.aaz import *
+from azure.cli.core.azclierror import CLIInternalError
 
 
 @register_command(
@@ -71,7 +72,6 @@ class Create(AAZCommand):
             options=["--context-id"],
             arg_group="Properties",
             help="ArmId of Context",
-            required=True,
         )
         _args_schema.description = AAZStrArg(
             options=["--description"],
@@ -166,7 +166,14 @@ class Create(AAZCommand):
 
     @register_callback
     def pre_operations(self):
-        pass
+        # If context_id is not provided, try to get it from config
+        if not self.ctx.args.context_id:
+            context_id = self.ctx.cli_ctx.config.get('workload_orchestration', 'context_id')
+            print("Context ID" , context_id)
+            if context_id:
+                self.ctx.args.context_id = context_id
+            else:
+                raise CLIInternalError("No context-id provided and no default context found. Please provide --context-id or use 'az workload-orchestration context use' to set a default context.")
 
     @register_callback
     def post_operations(self):
