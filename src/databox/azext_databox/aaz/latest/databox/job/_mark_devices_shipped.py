@@ -18,13 +18,16 @@ class MarkDevicesShipped(AAZCommand):
     """Request to mark devices for a given job as shipped
 
     :example: Mark devices shipped
-        az databox job mark-devices-shipped -g rg -n job-name
+        az databox job mark-devices-shipped -g rg -n job-name --deliver-package-details "{carrier-name:testCarrier,tracking-id:000000}"
+
+    :example: MarkDevicesShipped
+        az databox job mark-devices-shipped --job-name TestJobName1 --resource-group YourResourceGroupName --deliver-package-details "{carrier-name:testCarrier,tracking-id:000000}"
     """
 
     _aaz_info = {
-        "version": "2022-12-01",
+        "version": "2025-02-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.databox/jobs/{}/markdevicesshipped", "2022-12-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.databox/jobs/{}/markdevicesshipped", "2025-02-01"],
         ]
     }
 
@@ -50,7 +53,7 @@ class MarkDevicesShipped(AAZCommand):
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
-                pattern="^[-\w\.]+$",
+                pattern="^[-\\w\\.]+$",
                 max_length=24,
                 min_length=3,
             ),
@@ -141,7 +144,7 @@ class MarkDevicesShipped(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-12-01",
+                    "api-version", "2025-02-01",
                     required=True,
                 ),
             }

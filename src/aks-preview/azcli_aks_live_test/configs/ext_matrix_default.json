@@ -24,53 +24,17 @@
             "test_aks_nodepool_add_with_gpu_instance_profile",
             "test_aks_gpu_driver_type"
         ],
-        "overlay migration, missing toggle": [
-            "test_aks_azure_cni_overlay_migration"
-        ],
         "pod ip allocation mode static block, missing feature registration": [
             "test_aks_create_with_pod_ip_allocation_mode_static_block"
         ],
-        "slb to nat gateway": [
-            "test_aks_update_outbound_from_slb_to_natgateway"
-        ],
-        "v2 monitoring addon, missing namespace registration": [
-            "test_aks_create_with_azuremonitormetrics",
-            "test_aks_update_with_azuremonitormetrics"
-        ],
-        "workload runtime, missing feature registration": [
+        "[deprecated] workload runtime, missing feature registration": [
             "test_aks_nodepool_add_with_workload_runtime"
         ],
-        "artifact streaming, missing feature registration & toggle": [
-            "test_aks_nodepool_add_with_artifact_streaming",
-            "test_aks_nodepool_update_with_artifact_streaming"
-        ],
-        "ai toolchain operator, enabled in staging only": [
-            "test_aks_create_with_enable_ai_toolchain_operator",
-            "test_aks_update_with_enable_ai_toolchain_operator"
-        ],
-        "trusted launch, missing feature registration & toggle": [
-            "test_aks_create_update_secure_boot_flow",
-            "test_aks_create_update_vtpm_flow"
-        ],
-        "nodepool permanent and initialization taints, missing feature registration": [
-            "test_aks_create_cluster_with_taints"
-        ],
-        "automatic, missing feature registration & toggle": [
+        "automatic, no quota": [
             "test_aks_automatic_sku"
         ],
-        "windows annual, missing feature registration & toggle": [
-            "test_aks_nodepool_add_with_ossku_windowsannual"
-        ],
-        "mixed sku, enabled in staging only": [
-            "test_vms_agentpool_type"
-        ],
-        "fqdn policy, enabled in staging only": [
-            "test_aks_update_enable_fqdn_policy",
-            "test_aks_create_with_enable_fqdn_policy",
-            "test_aks_create_with_enable_fqdn_policy_observability",
-            "test_aks_create_with_enable_acns",
-            "test_aks_create_with_enable_acns_complex",
-            "test_aks_update_enable_acns"
+        "maxBlockedNodes, missing feature registration & toggle": [
+            "test_aks_nodepool_max_blocked_nodes"
         ]
     }
 }

@@ -1128,6 +1128,7 @@ class WindowsDefaultGen1Image(LiveScenarioTest):
         # Call Restore
         self.cmd('vm repair restore -g {rg} -n {vm} --yes')
 
+        
 @pytest.mark.RefactorSanityTest
 class WindowsResourceIdParseAfterRefactor(LiveScenarioTest):
 
@@ -1166,6 +1167,132 @@ class WindowsResourceIdParseAfterRefactor(LiveScenarioTest):
         repair_vms = self.cmd('vm list -g {repair_resource_group} -o json').get_output_in_json()
         assert len(repair_vms) == 1
         repair_vm = repair_vms[0]
+        repair_vm_id = repair_vm['id']
+        self.kwargs.update({
+            'vm': 'vm1',
+            'admin_password': secure_password,
+            'admin_username': secure_username,
+            'repair_vm_id': repair_vm_id
+        })
+        # Run a script for testing repair-vm-id
+        result_run = self.cmd('vm repair run -g {rg} -n {vm} --run-id win-hello-world --repair-vm-id {repair_vm_id} --run-on-repair -o json').get_output_in_json()
+        assert result_run['status'] == STATUS_SUCCESS, result_run['error_message']
+
+        # Call Restore
+        self.cmd('vm repair restore -g {rg} -n {vm} --yes')
+
+        
+     
+
+@pytest.mark.linuxLongParams
+class LinuxLongParametersParsing(LiveScenarioTest):
+
+    @ResourceGroupPreparer(location='westus2')
+    def test_vmrepair_LongoptionsParams(self, resource_group):
+        import uuid
+        import secrets
+        import string
+        base_password = "Passw0rd2024"
+        guid_suffix = str(uuid.uuid4())
+        secure_password = base_password + guid_suffix
+        # Username generation for linux
+        username_length = 8
+        allowed_characters = string.ascii_lowercase + string.digits  # Only lowercase letters and digits
+        secure_username = ''.join(secrets.choice(allowed_characters) for _ in range(username_length))
+
+        # Ensure username doesn't start with "-" or "$"
+        while secure_username[0] in "-$":
+            secure_username = ''.join(secrets.choice(allowed_characters) for _ in range(username_length))
+        
+        self.kwargs.update({
+            'vm': 'vm1',
+            'admin_password': secure_password,
+            'admin_username': secure_username
+        })
+        
+        # Create test VM
+        self.cmd('vm create -g {rg} -n {vm} --admin-username {admin_username} --admin-password {admin_password} --image Canonical:0001-com-ubuntu-server-jammy:22_04-lts-gen2:latest')
+        vms = self.cmd('vm list -g {rg} -o json').get_output_in_json()
+        # Something wrong with vm create command if it fails here
+        assert len(vms) == 1
+
+        # Create Repair VM
+        repair_vm = self.cmd('vm repair create -g {rg} -n {vm} --repair-username {admin_username} --repair-password {admin_password}  --yes -o json').get_output_in_json()
+        assert repair_vm['status'] == STATUS_SUCCESS, repair_vm['error_message']
+        # Check repair VM
+        self.kwargs.update({
+            'vm': 'vm1',
+            'admin_password': secure_password,
+            'admin_username': secure_username,
+            'repair_resource_group': repair_vm['repair_resource_group']
+        })
+        repair_vms = self.cmd('vm list -g {repair_resource_group} -o json').get_output_in_json()
+        assert len(repair_vms) == 1
+        repair_vm = repair_vms[0]
+        # Verify the image sku is the expected sku from source vm.
+        image_info = repair_vm['storageProfile']['imageReference']  
+        assert image_info['sku'] == "22_04-lts-gen2"
+        
+        self.kwargs.update({
+            'vm': 'vm1',
+            'admin_password': secure_password,
+            'admin_username': secure_username
+        })
+        # Run a script using long parameter parsing
+        result_run = self.cmd('vm repair run -g {rg} -n {vm} --run-on-repair --run-id linux-alar2 --parameters test ++initiator=SELFHELP -o json').get_output_in_json()
+        assert result_run['status'] == STATUS_SUCCESS, result_run['error_message']
+        log_contains_initiator_selfhelp = "initiator=selfhelp" in result_run['logs'].lower()  
+        assert log_contains_initiator_selfhelp, "The logs do not contain 'initiator=selfhelp'"  
+
+        # Call Restore
+        self.cmd('vm repair restore -g {rg} -n {vm} --yes')
+        
+        
+@pytest.mark.NonPremiumOSDisk
+class WindowsNonPremiumOSDiskRepairVM(LiveScenarioTest):
+
+    @ResourceGroupPreparer(location='westus2')
+    def test_vmrepair_WinNonPremiumOSDiskRepairVM(self, resource_group):
+        import uuid
+        import secrets
+        import string
+        base_password = "Passw0rd2024"
+        guid_suffix = str(uuid.uuid4())
+        secure_password = base_password + guid_suffix
+        username_length = 8
+        secure_username = ''.join(secrets.choice(string.ascii_letters + string.digits) for _ in range(username_length))
+        stnd_os_disk_type = "StandardSSD_LRS"
+        self.kwargs.update({
+            'vm': 'vm1',
+            'admin_password': secure_password,
+            'admin_username': secure_username,
+            'stnd_os_disk_type': stnd_os_disk_type
+        })
+
+        # Create test VM
+        self.cmd('vm create -g {rg} -n {vm} --admin-username {admin_username} --admin-password {admin_password} --image MicrosoftWindowsServer:WindowsServer:2022-datacenter-g2:latest')
+        vms = self.cmd('vm list -g {rg} -o json').get_output_in_json()
+        # Something wrong with vm create command if it fails here
+        assert len(vms) == 1
+
+        # Create Repair VM
+        repair_vm = self.cmd('vm repair create -g {rg} -n {vm} --repair-username {admin_username} --repair-password {admin_password} --yes --os-disk-type {stnd_os_disk_type} -o json').get_output_in_json()
+        assert repair_vm['status'] == STATUS_SUCCESS, repair_vm['error_message']
+        # Check repair VM
+        self.kwargs.update({
+            'vm': 'vm1',
+            'admin_password': secure_password,
+            'admin_username': secure_username,
+            'repair_resource_group': repair_vm['repair_resource_group']
+        })
+        repair_vms = self.cmd('vm list -g {repair_resource_group} -o json').get_output_in_json()
+        assert len(repair_vms) == 1
+        repair_vm = repair_vms[0]
+        repair_vm_id = repair_vm['id']
+        # Verify the image sku is the default sku
+        os_disk_type = repair_vm['storageProfile']['osDisk']['managedDisk']['storageAccountType']
+        assert os_disk_type == stnd_os_disk_type, "Os Disk Storage Account Type is not the expected value."
+          
         repair_vm_id = repair_vm['id']
         self.kwargs.update({
             'vm': 'vm1',

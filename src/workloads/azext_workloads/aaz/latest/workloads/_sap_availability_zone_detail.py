@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "workloads sap-availability-zone-detail",
-    is_preview=True,
 )
 class SapAvailabilityZoneDetail(AAZCommand):
     """Show the recommended SAP Availability Zone Pair Details for your region.
@@ -23,9 +22,9 @@ class SapAvailabilityZoneDetail(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-10-01-preview",
+        "version": "2024-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.workloads/locations/{}/sapvirtualinstancemetadata/default/getavailabilityzonedetails", "2023-10-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.workloads/locations/{}/sapvirtualinstancemetadata/default/getavailabilityzonedetails", "2024-09-01"],
         ]
     }
 
@@ -50,31 +49,34 @@ class SapAvailabilityZoneDetail(AAZCommand):
             id_part="name",
         )
 
-        # define Arg Group "SAPAvailabilityZoneDetails"
+        # define Arg Group "Body"
 
         _args_schema = cls._args_schema
         _args_schema.app_location = AAZStrArg(
             options=["--app-location"],
-            arg_group="SAPAvailabilityZoneDetails",
+            arg_group="Body",
             help="The geo-location where the SAP resources will be created.",
+            required=True,
         )
         _args_schema.database_type = AAZStrArg(
             options=["--database-type"],
-            arg_group="SAPAvailabilityZoneDetails",
+            arg_group="Body",
             help="The database type. Eg: HANA, DB2, etc",
+            required=True,
             enum={"DB2": "DB2", "HANA": "HANA"},
         )
         _args_schema.sap_product = AAZStrArg(
             options=["--sap-product"],
-            arg_group="SAPAvailabilityZoneDetails",
+            arg_group="Body",
             help="Defines the SAP Product type.",
+            required=True,
             enum={"ECC": "ECC", "Other": "Other", "S4HANA": "S4HANA"},
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.SAPAvailabilityZoneDetails(ctx=self.ctx)()
+        self.SapVirtualInstancesInvokeAvailabilityZoneDetails(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -89,7 +91,7 @@ class SapAvailabilityZoneDetail(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class SAPAvailabilityZoneDetails(AAZHttpOperation):
+    class SapVirtualInstancesInvokeAvailabilityZoneDetails(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -133,7 +135,7 @@ class SapAvailabilityZoneDetail(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-10-01-preview",
+                    "api-version", "2024-09-01",
                     required=True,
                 ),
             }
@@ -156,7 +158,7 @@ class SapAvailabilityZoneDetail(AAZCommand):
             _content_value, _builder = self.new_content_builder(
                 self.ctx.args,
                 typ=AAZObjectType,
-                typ_kwargs={"flags": {"client_flatten": True}}
+                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
             _builder.set_prop("appLocation", AAZStrType, ".app_location", typ_kwargs={"flags": {"required": True}})
             _builder.set_prop("databaseType", AAZStrType, ".database_type", typ_kwargs={"flags": {"required": True}})

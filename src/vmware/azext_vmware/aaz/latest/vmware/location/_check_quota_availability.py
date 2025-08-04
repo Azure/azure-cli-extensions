@@ -19,9 +19,9 @@ class CheckQuotaAvailability(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-09-01",
+        "version": "2024-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.avs/locations/{}/checkquotaavailability", "2023-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.avs/locations/{}/checkquotaavailability", "2024-09-01"],
         ]
     }
 
@@ -108,7 +108,7 @@ class CheckQuotaAvailability(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-09-01",
+                    "api-version", "2024-09-01",
                     required=True,
                 ),
             }
@@ -147,6 +147,7 @@ class CheckQuotaAvailability(AAZCommand):
             )
             _schema_on_200.quota_enabled = AAZStrType(
                 serialized_name="quotaEnabled",
+                flags={"read_only": True},
             )
 
             hosts_remaining = cls._schema_on_200.hosts_remaining

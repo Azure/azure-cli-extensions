@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkfabrics/{}/networktonetworkinterconnects/{}", "2024-02-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkfabrics/{}/networktonetworkinterconnects/{}", "2024-06-15-preview"],
         ]
     }
 
@@ -45,12 +45,18 @@ class Wait(AAZWaitCommand):
             help="Name of the Network Fabric.",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z]{1}[a-zA-Z0-9-_]{2,127}$",
+            ),
         )
         _args_schema.resource_name = AAZStrArg(
             options=["--resource-name"],
             help="Name of the Network to Network Interconnect.",
             required=True,
             id_part="child_name_1",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z]{1}[a-zA-Z0-9-_]{2,127}$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -126,7 +132,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-02-15-preview",
+                    "api-version", "2024-06-15-preview",
                     required=True,
                 ),
             }
@@ -181,13 +187,15 @@ class Wait(AAZWaitCommand):
                 serialized_name="administrativeState",
                 flags={"read_only": True},
             )
+            properties.conditional_default_route_configuration = AAZObjectType(
+                serialized_name="conditionalDefaultRouteConfiguration",
+            )
             properties.configuration_state = AAZStrType(
                 serialized_name="configurationState",
                 flags={"read_only": True},
             )
             properties.egress_acl_id = AAZStrType(
                 serialized_name="egressAclId",
-                nullable=True,
             )
             properties.export_route_policy = AAZObjectType(
                 serialized_name="exportRoutePolicy",
@@ -197,13 +205,19 @@ class Wait(AAZWaitCommand):
             )
             properties.ingress_acl_id = AAZStrType(
                 serialized_name="ingressAclId",
-                nullable=True,
             )
             properties.is_management_type = AAZStrType(
                 serialized_name="isManagementType",
             )
+            properties.last_operation = AAZObjectType(
+                serialized_name="lastOperation",
+                flags={"read_only": True},
+            )
             properties.layer2_configuration = AAZObjectType(
                 serialized_name="layer2Configuration",
+            )
+            properties.micro_bfd_state = AAZStrType(
+                serialized_name="microBfdState",
             )
             properties.nni_type = AAZStrType(
                 serialized_name="nniType",
@@ -218,29 +232,49 @@ class Wait(AAZWaitCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+            properties.static_route_configuration = AAZObjectType(
+                serialized_name="staticRouteConfiguration",
+            )
             properties.use_option_b = AAZStrType(
                 serialized_name="useOptionB",
                 flags={"required": True},
             )
 
+            conditional_default_route_configuration = cls._schema_on_200.properties.conditional_default_route_configuration
+            conditional_default_route_configuration.ipv4_routes = AAZListType(
+                serialized_name="ipv4Routes",
+            )
+            conditional_default_route_configuration.ipv6_routes = AAZListType(
+                serialized_name="ipv6Routes",
+            )
+
+            ipv4_routes = cls._schema_on_200.properties.conditional_default_route_configuration.ipv4_routes
+            ipv4_routes.Element = AAZObjectType()
+            _WaitHelper._build_schema_static_route_properties_read(ipv4_routes.Element)
+
+            ipv6_routes = cls._schema_on_200.properties.conditional_default_route_configuration.ipv6_routes
+            ipv6_routes.Element = AAZObjectType()
+            _WaitHelper._build_schema_static_route_properties_read(ipv6_routes.Element)
+
             export_route_policy = cls._schema_on_200.properties.export_route_policy
             export_route_policy.export_ipv4_route_policy_id = AAZStrType(
                 serialized_name="exportIpv4RoutePolicyId",
-                nullable=True,
             )
             export_route_policy.export_ipv6_route_policy_id = AAZStrType(
                 serialized_name="exportIpv6RoutePolicyId",
-                nullable=True,
             )
 
             import_route_policy = cls._schema_on_200.properties.import_route_policy
             import_route_policy.import_ipv4_route_policy_id = AAZStrType(
                 serialized_name="importIpv4RoutePolicyId",
-                nullable=True,
             )
             import_route_policy.import_ipv6_route_policy_id = AAZStrType(
                 serialized_name="importIpv6RoutePolicyId",
-                nullable=True,
+            )
+
+            last_operation = cls._schema_on_200.properties.last_operation
+            last_operation.details = AAZStrType(
+                flags={"read_only": True},
             )
 
             layer2_configuration = cls._schema_on_200.properties.layer2_configuration
@@ -254,22 +288,13 @@ class Wait(AAZWaitCommand):
             npb_static_route_configuration.bfd_configuration = AAZObjectType(
                 serialized_name="bfdConfiguration",
             )
+            _WaitHelper._build_schema_bfd_configuration_read(npb_static_route_configuration.bfd_configuration)
             npb_static_route_configuration.ipv4_routes = AAZListType(
                 serialized_name="ipv4Routes",
             )
             npb_static_route_configuration.ipv6_routes = AAZListType(
                 serialized_name="ipv6Routes",
             )
-
-            bfd_configuration = cls._schema_on_200.properties.npb_static_route_configuration.bfd_configuration
-            bfd_configuration.administrative_state = AAZStrType(
-                serialized_name="administrativeState",
-                flags={"read_only": True},
-            )
-            bfd_configuration.interval_in_milli_seconds = AAZIntType(
-                serialized_name="intervalInMilliSeconds",
-            )
-            bfd_configuration.multiplier = AAZIntType()
 
             ipv4_routes = cls._schema_on_200.properties.npb_static_route_configuration.ipv4_routes
             ipv4_routes.Element = AAZObjectType()
@@ -280,32 +305,76 @@ class Wait(AAZWaitCommand):
             _WaitHelper._build_schema_static_route_properties_read(ipv6_routes.Element)
 
             option_b_layer3_configuration = cls._schema_on_200.properties.option_b_layer3_configuration
+            option_b_layer3_configuration.bmp_configuration = AAZObjectType(
+                serialized_name="bmpConfiguration",
+            )
             option_b_layer3_configuration.fabric_asn = AAZIntType(
                 serialized_name="fabricASN",
                 flags={"read_only": True},
             )
+            option_b_layer3_configuration.pe_loopback_ip_address = AAZListType(
+                serialized_name="peLoopbackIpAddress",
+            )
             option_b_layer3_configuration.peer_asn = AAZIntType(
                 serialized_name="peerASN",
                 flags={"required": True},
+            )
+            option_b_layer3_configuration.prefix_limits = AAZListType(
+                serialized_name="prefixLimits",
             )
             option_b_layer3_configuration.primary_ipv4_prefix = AAZStrType(
                 serialized_name="primaryIpv4Prefix",
             )
             option_b_layer3_configuration.primary_ipv6_prefix = AAZStrType(
                 serialized_name="primaryIpv6Prefix",
-                nullable=True,
             )
             option_b_layer3_configuration.secondary_ipv4_prefix = AAZStrType(
                 serialized_name="secondaryIpv4Prefix",
             )
             option_b_layer3_configuration.secondary_ipv6_prefix = AAZStrType(
                 serialized_name="secondaryIpv6Prefix",
-                nullable=True,
             )
             option_b_layer3_configuration.vlan_id = AAZIntType(
                 serialized_name="vlanId",
                 flags={"required": True},
             )
+
+            bmp_configuration = cls._schema_on_200.properties.option_b_layer3_configuration.bmp_configuration
+            bmp_configuration.configuration_state = AAZStrType(
+                serialized_name="configurationState",
+                flags={"required": True},
+            )
+
+            pe_loopback_ip_address = cls._schema_on_200.properties.option_b_layer3_configuration.pe_loopback_ip_address
+            pe_loopback_ip_address.Element = AAZStrType()
+
+            prefix_limits = cls._schema_on_200.properties.option_b_layer3_configuration.prefix_limits
+            prefix_limits.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.option_b_layer3_configuration.prefix_limits.Element
+            _element.maximum_routes = AAZIntType(
+                serialized_name="maximumRoutes",
+            )
+
+            static_route_configuration = cls._schema_on_200.properties.static_route_configuration
+            static_route_configuration.bfd_configuration = AAZObjectType(
+                serialized_name="bfdConfiguration",
+            )
+            _WaitHelper._build_schema_bfd_configuration_read(static_route_configuration.bfd_configuration)
+            static_route_configuration.ipv4_routes = AAZListType(
+                serialized_name="ipv4Routes",
+            )
+            static_route_configuration.ipv6_routes = AAZListType(
+                serialized_name="ipv6Routes",
+            )
+
+            ipv4_routes = cls._schema_on_200.properties.static_route_configuration.ipv4_routes
+            ipv4_routes.Element = AAZObjectType()
+            _WaitHelper._build_schema_static_route_properties_read(ipv4_routes.Element)
+
+            ipv6_routes = cls._schema_on_200.properties.static_route_configuration.ipv6_routes
+            ipv6_routes.Element = AAZObjectType()
+            _WaitHelper._build_schema_static_route_properties_read(ipv6_routes.Element)
 
             system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(
@@ -332,6 +401,32 @@ class Wait(AAZWaitCommand):
 
 class _WaitHelper:
     """Helper class for Wait"""
+
+    _schema_bfd_configuration_read = None
+
+    @classmethod
+    def _build_schema_bfd_configuration_read(cls, _schema):
+        if cls._schema_bfd_configuration_read is not None:
+            _schema.administrative_state = cls._schema_bfd_configuration_read.administrative_state
+            _schema.interval_in_milli_seconds = cls._schema_bfd_configuration_read.interval_in_milli_seconds
+            _schema.multiplier = cls._schema_bfd_configuration_read.multiplier
+            return
+
+        cls._schema_bfd_configuration_read = _schema_bfd_configuration_read = AAZObjectType()
+
+        bfd_configuration_read = _schema_bfd_configuration_read
+        bfd_configuration_read.administrative_state = AAZStrType(
+            serialized_name="administrativeState",
+            flags={"read_only": True},
+        )
+        bfd_configuration_read.interval_in_milli_seconds = AAZIntType(
+            serialized_name="intervalInMilliSeconds",
+        )
+        bfd_configuration_read.multiplier = AAZIntType()
+
+        _schema.administrative_state = cls._schema_bfd_configuration_read.administrative_state
+        _schema.interval_in_milli_seconds = cls._schema_bfd_configuration_read.interval_in_milli_seconds
+        _schema.multiplier = cls._schema_bfd_configuration_read.multiplier
 
     _schema_static_route_properties_read = None
 

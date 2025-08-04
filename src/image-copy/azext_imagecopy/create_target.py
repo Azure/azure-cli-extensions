@@ -6,10 +6,10 @@
 import datetime
 import time
 
-from knack.util import CLIError
+from azext_imagecopy.cli_utils import (get_storage_account_id_from_blob_path,
+                                       prepare_cli_command, run_cli_command)
 from knack.log import get_logger
-
-from azext_imagecopy.cli_utils import run_cli_command, prepare_cli_command, get_storage_account_id_from_blob_path
+from knack.util import CLIError
 
 logger = get_logger(__name__)
 
@@ -36,7 +36,8 @@ def create_target_image(location, transient_resource_group_name, source_type, so
                                    '--name', target_storage_account_name,
                                    '--resource-group', transient_resource_group_name,
                                    '--location', location,
-                                   '--sku', 'Standard_LRS'],
+                                   '--sku', 'Standard_LRS',
+                                   '--min-tls-version', 'TLS1_2'],
                                   subscription=target_subscription,
                                   only_show_errors=only_show_errors)
 
@@ -72,6 +73,10 @@ def create_target_image(location, transient_resource_group_name, source_type, so
 
     sas_token = run_cli_command(cli_cmd)
     sas_token = sas_token.rstrip("\n\r")  # STRANGE
+    # Remove python related warnings from the SAS token if there are warning included in the SAS token
+    if len(sas_token.split()) > 1:
+        sas_token = sas_token.split()[-1]
+
     logger.debug("sas token: %s", sas_token)
 
     # create a container in the target blob storage account
@@ -205,7 +210,7 @@ def wait_for_blob_copy_operation(blob_name, target_container_name, target_storag
 
 
 def get_random_string(length):
-    import string
     import random
+    import string
     chars = string.ascii_lowercase + string.digits
     return ''.join(random.choice(chars) for _ in range(length))

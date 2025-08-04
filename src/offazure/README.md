@@ -1,5 +1,5 @@
 # Azure CLI offazure Extension #
-This package is for the 'offazure' extension, i.e. 'az offazure', which serves as the on-premise resources assessment tool for [Azure Migrate](https://docs.microsoft.com/en-us/azure/migrate/migrate-services-overview).
+This package is for the 'offazure' extension, i.e. 'az offazure', which serves as the on-premise resources assessment tool for [Azure Migrate](https://learn.microsoft.com/en-us/azure/migrate/migrate-services-overview).
 
 ### How to use ###
 Install this extension using the below CLI command

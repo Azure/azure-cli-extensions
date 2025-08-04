@@ -5,12 +5,9 @@ author: haroldrandom
 ms.author: jianzen
 manager: yonzhan,yungezz
 ms.date: {{ date }}
-ms.topic: article
+ms.topic: generated-reference
 ms.service: azure-cli
-ms.devlang: azure-cli
-ms.tool: azure-cli
 ms.custom: devx-track-azurecli
-keywords: az extension, azure cli extensions, azure extensions
 ---
 
 # Available Azure CLI extensions

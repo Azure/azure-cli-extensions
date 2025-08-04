@@ -140,6 +140,15 @@ class ContainerAppUpImageTest(ScenarioTest):
         memory = "1Gi"
         create_and_verify_containerapp_up_for_default_registry_image(self, resource_group=resource_group, source_path=source_path, ingress=ingress, target_port=target_port, location="eastus2", container_name=container_name, cpu=cpu, memory=memory)
 
+    @live_only()
+    @ResourceGroupPreparer(location="westus3")
+    def test_containerapp_up_foundry_model_e2e(self, resource_group):
+        model_name = "gpt2-medium"
+        model_version = "18"
+        model_registry = "azureml"
+        location = "westus3"
+        create_and_verify_containerapp_up(self, resource_group=resource_group, location=location, model_name=model_name, model_version=model_version, model_registry=model_registry)
+
 
 class ContainerappUpRegistryIdentityWithSourceTests(ScenarioTest):
     def __init__(self, *arg, **kwargs):

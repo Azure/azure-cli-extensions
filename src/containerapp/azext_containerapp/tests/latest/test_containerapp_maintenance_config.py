@@ -10,6 +10,8 @@ from azure.mgmt.core.tools import parse_resource_id
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck)
+
+from .custom_preparers import SubnetPreparer
 from .utils import create_containerapp_env, prepare_containerapp_env_for_app_e2e_tests
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
@@ -21,13 +23,14 @@ from .utils import prepare_containerapp_env_for_app_e2e_tests
 class ContainerAppMaintenanceConfigTest(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus")
-    def test_containerapp_maintenanceconfig_crudoperations_e2e(self, resource_group):
+    @SubnetPreparer(location="centralus", delegations='Microsoft.App/environments', service_endpoints="Microsoft.Storage.Global")
+    def test_containerapp_maintenanceconfig_crudoperations_e2e(self, resource_group, subnet_id):
         
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
         
         
         env_name = self.create_random_name(prefix='aca-maintenance-config-env', length=30)
-        self.cmd('containerapp env create -g {} -n {} --location {}  --logs-destination none --enable-workload-profiles'.format(resource_group, env_name, TEST_LOCATION))
+        self.cmd('containerapp env create -g {} -n {} --location {}  --logs-destination none --enable-workload-profiles -s {}'.format(resource_group, env_name, TEST_LOCATION, subnet_id))
 
         duration = 10
         weekday = "Sunday"

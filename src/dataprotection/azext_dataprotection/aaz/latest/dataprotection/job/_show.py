@@ -327,6 +327,7 @@ class Show(AAZCommand):
             )
             extended_info.target_recover_point = AAZObjectType(
                 serialized_name="targetRecoverPoint",
+                flags={"read_only": True},
             )
             _ShowHelper._build_schema_restore_job_recovery_point_details_read(extended_info.target_recover_point)
             extended_info.warning_details = AAZListType(

@@ -12,7 +12,7 @@ import unittest
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, MSGraphNameReplacer, MOCKED_USER_NAME)
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
-from .test_definitions import (test_data_source, test_data_source_different_uid, test_notification_channel, test_dashboard, test_dashboard_with_datasource, test_dashboard_with_datasource_short_uid, test_data_source_long_uid2, test_data_source_short_uid2)
+from .test_definitions import (test_data_source, test_data_source_different_uid, test_dashboard, test_dashboard_with_datasource, test_dashboard_with_datasource_short_uid, test_data_source_long_uid2, test_data_source_short_uid2)
 from .recording_processors import ApiKeyServiceAccountTokenReplacer
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))

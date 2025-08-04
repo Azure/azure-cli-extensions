@@ -140,6 +140,12 @@ def load_arguments(self, _):
             help="File path to known_hosts contents containing public SSH keys required to access private Git instances",
         )
         c.argument(
+            "provider",
+            arg_group="Git Auth",
+            arg_type=get_enum_type(["generic", "azure"]),
+            help="Name of the provider used for authentication, azure provider can be used to authenticate to Azure DevOps repositories using Managed Identity",
+        )
+        c.argument(
             "bucket_access_key",
             arg_group="Bucket Auth",
             help="Access Key ID used to authenticate with the bucket",

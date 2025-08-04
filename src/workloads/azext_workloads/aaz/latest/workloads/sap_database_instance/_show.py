@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "workloads sap-database-instance show",
-    is_preview=True,
 )
 class Show(AAZCommand):
     """Show the SAP Database Instance resource.
@@ -26,9 +25,9 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-10-01-preview",
+        "version": "2024-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.workloads/sapvirtualinstances/{}/databaseinstances/{}", "2023-10-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.workloads/sapvirtualinstances/{}/databaseinstances/{}", "2024-09-01"],
         ]
     }
 
@@ -73,7 +72,7 @@ class Show(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.SAPDatabaseInstancesGet(ctx=self.ctx)()
+        self.SapDatabaseInstancesGet(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -88,7 +87,7 @@ class Show(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class SAPDatabaseInstancesGet(AAZHttpOperation):
+    class SapDatabaseInstancesGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -140,7 +139,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-10-01-preview",
+                    "api-version", "2024-09-01",
                     required=True,
                 ),
             }

@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "elastic monitor open-ai-integration create",
 )
 class Create(AAZCommand):
-    """Create a OpenAI integration rule for a given monitor resource.
+    """Create an OpenAI integration rule for a given Elastic monitor resource, enabling advanced AI-driven observability and monitoring.
 
     :example: OpenAI_CreateOrUpdate
         az elastic monitor open-ai-integration create --resource-group myResourceGroup --monitor-name myMonitor --integration-name default

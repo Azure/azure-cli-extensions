@@ -492,6 +492,9 @@ helps['communication rooms create'] = """
       - name: Create a room with a list of participants with presenter and consumer roles
         text: |-
                az communication rooms create --presenter-participants "8:acs:xxxxxx" "8:acs:xxxxxx" --consumer-participants "8:acs:xxxxxx" "8:acs:xxxxxx"
+      - name: Create a room with a list of participants with attendee and collaborator roles
+        text: |-
+               az communication rooms create --attendee-participants "8:acs:xxxxxx" "8:acs:xxxxxx" --collaborator-participants "8:acs:xxxxxx" "8:acs:xxxxxx"
 """
 
 helps['communication rooms get'] = """

@@ -140,28 +140,26 @@ jobs:
           chmod +x env/bin/activate
           source ./env/bin/activate
           set -ev
-          git checkout "$base_branch_pre"/"$base_branch"
           mkdir "$base_meta_path"
-          for mod in ${changed_module_list[@]}
-          do
-            echo changed module: "${mod}"
-            azdev extension add "${mod}" && azdev command-change meta-export "${mod}" --meta-output-path ./"$base_meta_path"/ && azdev extension remove "${mod}"
-          done
+          mkdir "$diff_meta_path"
+
           # some module, like confcom, will change local data files, like data/rules.rego, during installation, need to reset when checkout different branch
           git checkout -f "$diff_branch"
-          mkdir "$diff_meta_path"
+          # always use the latest index.json and scripts from base branch
+          git checkout "$base_branch_pre"/"$base_branch" -- scripts
+          git checkout "$base_branch_pre"/"$base_branch" -- src/index.json 
+          
           for mod in ${changed_module_list[@]}
           do
             echo changed module: "${mod}"
             azdev extension add "${mod}" && azdev command-change meta-export "${mod}" --meta-output-path ./"$diff_meta_path"/
           done
-          ls ./"$base_meta_path"/
           ls ./"$diff_meta_path"/
+          ls ./"$base_meta_path"/
           ls "$result_path"
-          git checkout "$base_branch_pre"/"$base_branch" -- scripts
-          # use the latest index.json from base branch
-          git checkout "$base_branch_pre"/"$base_branch" -- src/index.json 
           python scripts/ci/release_version_cal.py
+          ls ./"$diff_meta_path"/
+          ls ./"$base_meta_path"/
           ls "$result_path"
           cat "$result_path"/"$remove_labels_file"
           cat "$result_path"/"$output_file"

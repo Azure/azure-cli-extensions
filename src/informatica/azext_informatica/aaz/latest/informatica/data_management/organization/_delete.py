@@ -16,10 +16,7 @@ from azure.cli.core.aaz import *
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
-    """Delete a InformaticaOrganizationResource
-
-    :example: Delete Organizations
-        az informatica data-management organization delete -n demoOrg -g demoResourceGroup --subscription ae37d5a8-dff3-49a3-bfcd-139a4f7db98x
+    """Delete an existing organization resource in Informatica via Azure.
     """
 
     _aaz_info = {
@@ -46,8 +43,8 @@ class Delete(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.org_name = AAZStrArg(
-            options=["-n", "--name", "--org-name"],
+        _args_schema.organization_name = AAZStrArg(
+            options=["-n", "--name", "--organization-name"],
             help="Name of the Organizations resource",
             required=True,
             id_part="name",
@@ -56,7 +53,6 @@ class Delete(AAZCommand):
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="Resource group name",
             required=True,
         )
         return cls._args_schema
@@ -129,7 +125,7 @@ class Delete(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "organizationName", self.ctx.args.org_name,
+                    "organizationName", self.ctx.args.organization_name,
                     required=True,
                 ),
                 **self.serialize_url_param(

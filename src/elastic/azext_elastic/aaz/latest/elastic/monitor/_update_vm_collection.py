@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "elastic monitor update-vm-collection",
 )
 class UpdateVmCollection(AAZCommand):
-    """Update the vm details that will be monitored by the Elastic monitor                                resource.
+    """Update the VM details that will be monitored by the Elastic monitor resource, ensuring optimal observability and performance.
 
     :example: Update vm collection
         az elastic monitor update-vm-collection --monitor-name monitor1 -g rg --operation-name Add --vi-resource-id id

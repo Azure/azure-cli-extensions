@@ -1,5 +1,25 @@
 # Release History
 
+## 8.0.0 (2025-07)
+
+- Bump minimum required Az CLI version to `2.70.0`
+- Upgrade default API version from `2023-09-01` to `2024-09-01`
+- Add `--management-network` and `--uplink-network` to `az vmware addon hcx create` and `az vmware addon hcx update`
+- Add `--zones` to `az vmware private-cloud create`
+- Add `az vmware script-execution get-execution-log` command
+- Add `az vmware cluster host` command group
+- Add `az vmware datastores pure-storage-volume` command group
+- Add `az vmware provisioned-network` command group
+- Add `az vmware pure-storage-policy` command group
+- Add `az vmware skus` command group
+- [BREAKING CHANGE] Remove `--nsxt-password` and `--vcenter-password` as parameters for `az vmware private-cloud create` and `az vmware private-cloud update`
+
+## 7.2.0 (2025-02)
+
+- Bump minimum required Az CLI version to `2.67.0`
+- Fix parsing errors on response for `az vmware private-cloud rotate-vcenter-password`, `az vmware private-cloud rotate-nsxt-password`, and `az vmware vm restrict-movement`
+- [BREAKING CHANGE] Remove unused arguments from `domain` and `alias` from `az vmware private-cloud delete-identity-source` command
+
 ## 7.1.0 (2024-09)
 
 - Update `--license-key` to optional for `az vmware srm create` and `az vmware srm update`

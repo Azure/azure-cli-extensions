@@ -41,8 +41,7 @@ class CommandOutputSettings:
                         args.command_output_settings.identity_resource_id,
                     )
                     args.command_output_settings.identity_resource_id = None
-
-            if args.command_output_settings.identity_type == "UserAssignedIdentity":
+            elif args.command_output_settings.identity_type == "UserAssignedIdentity":
                 if not has_value(args.command_output_settings.identity_resource_id):
                     raise InvalidArgumentValueError(
                         "User-assigned identity resource ID is missing for command output settings."

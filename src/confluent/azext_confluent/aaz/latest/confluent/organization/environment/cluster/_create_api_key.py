@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "confluent organization environment cluster create-api-key",
 )
 class CreateApiKey(AAZCommand):
-    """Creates API key for a schema registry Cluster ID or Kafka Cluster ID under a environment
+    """Create API keys for Schema Registry or Kafka clusters within an environment.
     """
 
     _aaz_info = {
@@ -60,8 +60,6 @@ class CreateApiKey(AAZCommand):
             id_part="name",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            options=["--resource-group"],
-            help="Resource group name",
             required=True,
         )
 

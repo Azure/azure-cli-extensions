@@ -9,7 +9,9 @@
 # pylint: disable=too-many-statements, protected-access
 
 from knack.log import get_logger
+from azure.cli.core.aaz import register_command
 from .aaz.latest.network.alb.association import Create as _AssociationCreate
+from .aaz.latest.network.alb.security_policy import Create as _SPCreate, Delete as _SPDelete, Update as _SPUpdate
 
 logger = get_logger(__name__)
 
@@ -29,3 +31,35 @@ class AssociationCreate(_AssociationCreate):
                      "/virtualNetworks/{vnet_name}/subnets/{}",
         )
         return args_schema
+
+
+@register_command("network alb security-policy waf create")
+class WafSecurityPolicyCreate(_SPCreate):
+    """Create a Waf SecurityPolicy
+
+    :example: Create an Application Gateway for Containers security policy resource with waf policy type
+        az network alb security-policy waf create -g test-rg --alb-name test-tc -n test-sp -l NorthCentralUS
+        --waf-policy-id "/subscriptions/subid/resourcegroups/rg1/providers/Microsoft.Networking/wafpolicy/test-wp"
+    """
+
+
+@register_command(
+    "network alb security-policy waf delete",
+    confirmation="Are you sure you want to perform this operation?",
+)
+class WafSecurityPolicyDelete(_SPDelete):
+    """Delete a Waf SecurityPolicy
+
+    :example: Delete a Waf SecurityPolicy
+        az network alb security-policy waf delete -g test-rg --alb-name test-tc -n test-sp
+    """
+
+
+@register_command("network alb security-policy waf update")
+class WafSecurityPolicyUpdate(_SPUpdate):
+    """Update a Waf SecurityPolicy
+
+    :example: Update a Waf SecurityPolicy
+        az network alb security-policy waf update -g test-rg --alb-name test-tc -n test-sp
+        --waf-policy-id "/subscriptions/subid/resourcegroups/rg1/providers/Microsoft.Networking/wafpolicy/test-wp"
+    """

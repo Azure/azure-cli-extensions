@@ -19,6 +19,7 @@ from azure.cli.core.azclierror import (InvalidArgumentValueError, AzureInternalE
                                        RequiredArgumentMissingError, ResourceNotFoundError)
 
 from .._client_factory import cf_workspaces, cf_quotas, cf_workspace, cf_offerings, _get_data_credentials
+from .._list_helper import repack_response_json
 from ..vendored_sdks.azure_mgmt_quantum.models import QuantumWorkspace
 from ..vendored_sdks.azure_mgmt_quantum.models import QuantumWorkspaceIdentity
 from ..vendored_sdks.azure_mgmt_quantum.models import Provider, APIKeys, WorkspaceResourceProperties
@@ -336,8 +337,9 @@ def quotas(cmd, resource_group_name, workspace_name, location):
     List the quotas for the given (or current) Azure Quantum workspace.
     """
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
-    client = cf_quotas(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.location)
-    return client.list()
+    client = cf_quotas(cmd.cli_ctx, info.subscription, info.location)
+    response = client.list(info.subscription, info.resource_group, info.name)
+    return repack_response_json(response)
 
 
 def set(cmd, workspace_name, resource_group_name, location):

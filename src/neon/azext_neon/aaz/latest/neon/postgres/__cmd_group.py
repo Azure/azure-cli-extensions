@@ -13,10 +13,9 @@ from azure.cli.core.aaz import *
 
 @register_command_group(
     "neon postgres",
-    is_preview=True,
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage Neon Postgres
+    """Manage Neon Serverless Postgres resources including organizations, projects, and branches.
     """
     pass
 

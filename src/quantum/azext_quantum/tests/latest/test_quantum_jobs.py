@@ -10,20 +10,28 @@ import unittest
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse, live_only
 from azure.cli.testsdk import ScenarioTest
-from azure.cli.core.azclierror import InvalidArgumentValueError, AzureInternalError
+from azure.cli.core.azclierror import InvalidArgumentValueError, RequiredArgumentMissingError, AzureInternalError
 
 from .utils import get_test_subscription_id, get_test_resource_group, get_test_workspace, get_test_workspace_location, get_test_workspace_location_for_dft, issue_cmd_with_param_missing, get_test_workspace_storage, get_test_workspace_random_name, get_test_capabilities
 from ..._client_factory import _get_data_credentials
 from ...commands import transform_output
 from ...operations.workspace import WorkspaceInfo, DEPLOYMENT_NAME_PREFIX
 from ...operations.target import TargetInfo
-from ...operations.job import _parse_blob_url, _validate_max_poll_wait_secs, _convert_numeric_params
+from ...operations.job import (
+    _parse_blob_url,
+    _validate_max_poll_wait_secs,
+    _convert_numeric_params,
+    _construct_filter_query,
+    _construct_orderby_expression,
+    ERROR_MSG_INVALID_ORDER_ARGUMENT,
+    ERROR_MSG_MISSING_ORDERBY_ARGUMENT)
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
 class QuantumJobsScenarioTest(ScenarioTest):
 
+    @live_only()
     def test_jobs(self):
         # set current workspace:
         self.cmd(f'az quantum workspace set -g {get_test_resource_group()} -w {get_test_workspace()} -l {get_test_workspace_location()}')
@@ -201,8 +209,39 @@ class QuantumJobsScenarioTest(ScenarioTest):
         test_provider_sku_list = "rigetti/azure-quantum-credits,ionq/aq-internal-testing"
         test_storage = get_test_workspace_storage()
 
-        self.cmd(f"az quantum workspace create -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage} -r {test_provider_sku_list} --skip-autoadd")
+        self.cmd(f"az quantum workspace create --auto-accept -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage} -r {test_provider_sku_list} --skip-autoadd")
         self.cmd(f"az quantum workspace set -g {test_resource_group} -w {test_workspace_temp} -l {test_location}")
+
+        # Submit a job to Rigetti and look for SAS tokens in URIs in the output
+        results = self.cmd("az quantum job submit -t rigetti.sim.qvm --job-input-format rigetti.quil.v1 -t rigetti.sim.qvm --job-input-file src/quantum/azext_quantum/tests/latest/input_data/bell-state.quil --job-output-format rigetti.quil-results.v1 -o json").get_output_in_json()
+        self.assertNotIn("?sv=", results["containerUri"])
+        self.assertNotIn("&sig=", results["containerUri"])
+
+        self.assertNotIn("?sv=", results["inputDataUri"])
+        self.assertNotIn("&sig=", results["inputDataUri"])
+
+        self.assertNotIn("?sv=", results["outputDataUri"])
+        self.assertNotIn("&sig=", results["outputDataUri"])
+
+        job = self.cmd(f"az quantum job show -j {results['id']} -o json").get_output_in_json()
+
+        self.assertIn("?sv=", job["containerUri"])
+        self.assertIn("&st=", job["containerUri"])
+        self.assertIn("&se=", job["containerUri"])
+        self.assertIn("&sp=", job["containerUri"])
+        self.assertIn("&sig=", job["containerUri"])
+
+        self.assertIn("?sv=", job["inputDataUri"])
+        self.assertIn("&st=", job["inputDataUri"])
+        self.assertIn("&se=", job["inputDataUri"])
+        self.assertIn("&sp=", job["inputDataUri"])
+        self.assertIn("&sig=", job["inputDataUri"])
+
+        self.assertIn("?sv=", job["outputDataUri"])
+        self.assertIn("&st=", job["outputDataUri"])
+        self.assertIn("&se=", job["outputDataUri"])
+        self.assertIn("&sp=", job["outputDataUri"])
+        self.assertIn("&sig=", job["outputDataUri"])
 
         # Run a Quil pass-through job on Rigetti
         results = self.cmd("az quantum run -t rigetti.sim.qvm --job-input-format rigetti.quil.v1 -t rigetti.sim.qvm --job-input-file src/quantum/azext_quantum/tests/latest/input_data/bell-state.quil --job-output-format rigetti.quil-results.v1 -o json").get_output_in_json()
@@ -211,6 +250,24 @@ class QuantumJobsScenarioTest(ScenarioTest):
         # Run a Qiskit pass-through job on IonQ
         results = self.cmd("az quantum run -t ionq.simulator --shots 100 --job-input-format ionq.circuit.v1 --job-input-file src/quantum/azext_quantum/tests/latest/input_data/Qiskit-3-qubit-GHZ-circuit.json --job-output-format ionq.quantum-results.v1 --job-params count=100 content-type=application/json -o json").get_output_in_json()
         self.assertIn("histogram", results)
+
+        # Test "az quantum job list" output, for filter-params, --skip, --top, and --orderby
+        results = self.cmd("az quantum job list --provider-id rigetti -o json").get_output_in_json()
+        self.assertIn("rigetti", str(results))
+
+        results = self.cmd("az quantum job list --target-id ionq.simulator -o json").get_output_in_json()
+        self.assertIn("ionq.simulator", str(results))
+
+        results = str(self.cmd("az quantum job list --top 1 -o json").get_output_in_json())
+        self.assertIn("rigetti", results)
+        self.assertTrue("ionq" not in results)
+
+        results = str(self.cmd("az quantum job list --skip 1 -o json").get_output_in_json())
+        self.assertIn("ionq", results)
+
+        results = str(self.cmd("az quantum job list --orderby Target --skip 1 -o json").get_output_in_json())
+        self.assertIn("rigetti", results)
+        self.assertTrue("ionq" not in results)
 
         self.cmd(f'az quantum workspace delete -g {test_resource_group} -w {test_workspace_temp}')
 
@@ -230,30 +287,122 @@ class QuantumJobsScenarioTest(ScenarioTest):
         test_provider_sku_list = f"{elements_provider_name}/elements-internal-testing"
         test_storage = get_test_workspace_storage()
 
-        self.cmd(f"az quantum workspace create -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage} -r \"{test_provider_sku_list}\" --skip-autoadd")
+        self.cmd(f"az quantum workspace create --auto-accept -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage} -r \"{test_provider_sku_list}\" --skip-autoadd")
         self.cmd(f"az quantum workspace set -g {test_resource_group} -w {test_workspace_temp} -l {test_location}")
 
         # Run a "microsoft.dft" job to test that successful job returns proper output
-        results = self.cmd("az quantum run -t microsoft.dft --job-input-format microsoft.xyz.v1 --job-output-format microsoft.dft-results.v1 --job-input-file src/quantum/azext_quantum/tests/latest/input_data/dft_molecule_success.xyz --job-params {{\\\"tasks\\\":[{{\\\"taskType\\\":\\\"spe\\\",\\\"basisSet\\\":{{\\\"name\\\":\\\"def2-svp\\\",\\\"cartesian\\\":false}},\\\"xcFunctional\\\":{{\\\"name\\\":\\\"m06-2x\\\",\\\"gridLevel\\\":4}},\\\"scf\\\":{{\\\"method\\\":\\\"rks\\\",\\\"maxSteps\\\":100,\\\"convergeThreshold\\\":1e-8}}}}]}} -o json").get_output_in_json()
+        results = self.cmd("az quantum run -t microsoft.dft --job-input-format microsoft.qc-schema.v1 --job-output-format microsoft.dft-results.v1 --job-input-file src/quantum/azext_quantum/tests/latest/input_data/dft_molecule_success.json -o json").get_output_in_json()
         self.assertIsNotNone(results["results"])
         self.assertTrue(len(results["results"]) == 1)
         self.assertTrue(results["results"][0]["success"])
 
         # Run a "microsoft.dft" job to test that failed run returns "Job"-object if job didn't produce any output
         # In the test case below the run doesn't produce any output since the job fails on input parameter validation (i.e. taskType: "invalidTask")
-        results = self.cmd("az quantum run -t microsoft.dft --job-input-format microsoft.xyz.v1 --job-output-format microsoft.dft-results.v1 --job-input-file src/quantum/azext_quantum/tests/latest/input_data/dft_molecule_success.xyz --job-params {{\\\"tasks\\\":[{{\\\"taskType\\\":\\\"invalidTask\\\",\\\"basisSet\\\":{{\\\"name\\\":\\\"def2-svp\\\",\\\"cartesian\\\":false}},\\\"xcFunctional\\\":{{\\\"name\\\":\\\"m06-2x\\\",\\\"gridLevel\\\":4}},\\\"scf\\\":{{\\\"method\\\":\\\"rks\\\",\\\"maxSteps\\\":100,\\\"convergeThreshold\\\":1e-8}}}}]}} -o json").get_output_in_json()
-        self.assertEqual("Job", results["itemType"])  # the object is a "Job"-object
-        self.assertEqual("Failed", results["status"])
-        self.assertIsNotNone(results["errorData"])
-        self.assertEqual("InvalidInputData", results["errorData"]["code"])
-        self.assertEqual("microsoft.dft", results["target"])
-
-        # Run a "microsoft.dft" job to test that failed run returns output if it was produced by the job
-        # In the test case below the job fails to converge in "maxSteps", but it still produces the output with a detailed message
-        results = self.cmd("az quantum run -t microsoft.dft --job-input-format microsoft.xyz.v1 --job-output-format microsoft.dft-results.v1 --job-input-file src/quantum/azext_quantum/tests/latest/input_data/dft_molecule_failure.xyz --job-params {{\\\"tasks\\\":[{{\\\"taskType\\\":\\\"go\\\",\\\"basisSet\\\":{{\\\"name\\\":\\\"def2-tzvpp\\\",\\\"cartesian\\\":false}},\\\"xcFunctional\\\":{{\\\"name\\\":\\\"m06-2x\\\",\\\"gridLevel\\\":4}},\\\"scf\\\":{{\\\"method\\\":\\\"rks\\\",\\\"maxSteps\\\":5,\\\"convergeThreshold\\\":1e-8}},\\\"geometryOptimization\\\":{{\\\"gdiis\\\":false}}}}]}} -o json").get_output_in_json()
-        self.assertTrue("itemType" not in results or results["itemType"] != "Job")  # the object is not a "Job"-object
+        results = self.cmd("az quantum run -t microsoft.dft --job-input-format microsoft.qc-schema.v1 --job-output-format microsoft.dft-results.v1 --job-input-file src/quantum/azext_quantum/tests/latest/input_data/dft_molecule_failure_bad_params.json  -o json").get_output_in_json()
         self.assertIsNotNone(results["results"])
         self.assertTrue(len(results["results"]) == 1)
         self.assertFalse(results["results"][0]["success"])
+        self.assertTrue(results["results"][0]["error"]["error_type"] == "input_error")
+
+        # Run a "microsoft.dft" job to test that failed run returns output if it was produced by the job
+        # In the test case below the job fails to converge in "maxSteps", but it still produces the output with a detailed message
+        results = self.cmd("az quantum run -t microsoft.dft --job-input-format microsoft.qc-schema.v1 --job-output-format microsoft.dft-results.v1 --job-input-file src/quantum/azext_quantum/tests/latest/input_data/dft_molecule_failure_no_convergence.json  -o json").get_output_in_json()
+        self.assertIsNotNone(results["results"])
+        self.assertTrue(len(results["results"]) == 1)
+        self.assertFalse(results["results"][0]["success"])
+        self.assertTrue(results["results"][0]["error"]["error_type"] == "convergence_error")
 
         self.cmd(f'az quantum workspace delete -g {test_resource_group} -w {test_workspace_temp}')
+
+    def test_job_list_param_formating(self):
+        # Validate filter query formatting for each param
+        #
+        # Should return None if params are set to None
+        job_type = None
+        item_type = None
+        provider_id = None
+        target_id = None
+        job_status = None
+        created_after = None
+        created_before = None
+        job_name = None
+        query = _construct_filter_query(job_type, item_type, provider_id, target_id, job_status, created_after, created_before, job_name)
+        assert query is None
+
+        job_type = "QuantumComputing"
+        query = _construct_filter_query(job_type, item_type, provider_id, target_id, job_status, created_after, created_before, job_name)
+        assert query == "JobType eq 'QuantumComputing'"
+        job_type = None
+
+        item_type = "job"
+        query = _construct_filter_query(job_type, item_type, provider_id, target_id, job_status, created_after, created_before, job_name)
+        assert query == "ItemType eq 'job'"
+        item_type = None
+
+        provider_id = "Microsoft"
+        query = _construct_filter_query(job_type, item_type, provider_id, target_id, job_status, created_after, created_before, job_name)
+        assert query == "ProviderId eq 'Microsoft'"
+        provider_id = None
+
+        target_id = "Awesome.Quantum.SuperComputer"
+        query = _construct_filter_query(job_type, item_type, provider_id, target_id, job_status, created_after, created_before, job_name)
+        assert query == "Target eq 'Awesome.Quantum.SuperComputer'"
+        target_id = None
+
+        job_status = "Succeeded"        
+        query = _construct_filter_query(job_type, item_type, provider_id, target_id, job_status, created_after, created_before, job_name)
+        assert query == "State eq 'Succeeded'"
+        job_status = None        
+
+        created_after = "2025-01-27"
+        query = _construct_filter_query(job_type, item_type, provider_id, target_id, job_status, created_after, created_before, job_name)
+        assert query == "CreationTime ge 2025-01-27"
+        created_after = None
+
+        created_before = "2025-01-27"
+        query = _construct_filter_query(job_type, item_type, provider_id, target_id, job_status, created_after, created_before, job_name)
+        assert query == "CreationTime le 2025-01-27"
+        created_before = None
+
+        job_name = "TestJob"
+        query = _construct_filter_query(job_type, item_type, provider_id, target_id, job_status, created_after, created_before, job_name)
+        assert query == "startswith(Name, 'TestJob')"
+        job_name = None
+
+
+        # Validate orderby expression formatting
+        # Should return None if params are set to None
+        orderby = None
+        order = None
+        orderby_expression = _construct_orderby_expression(orderby, order)
+        assert orderby_expression is None
+
+        # Test valid params
+        orderby = "Target"
+        orderby_expression = _construct_orderby_expression(orderby, order)
+        assert orderby_expression == "Target"
+
+        order = "asc"
+        orderby_expression = _construct_orderby_expression(orderby, order)
+        assert orderby_expression == "Target asc"
+
+        order = "desc"
+        orderby_expression = _construct_orderby_expression(orderby, order)
+        assert orderby_expression == "Target desc"
+
+        # Test orderby/order errors
+        orderby = "Target"
+        order = "foo"
+        try:
+            orderby_expression = _construct_orderby_expression(orderby, order)
+            assert False
+        except InvalidArgumentValueError as e:
+            assert str(e) == ERROR_MSG_INVALID_ORDER_ARGUMENT
+
+        orderby = ""
+        order = "desc"
+        try:
+            orderby_expression = _construct_orderby_expression(orderby, order)
+            assert False
+        except RequiredArgumentMissingError as e:
+            assert str(e) == ERROR_MSG_MISSING_ORDERBY_ARGUMENT

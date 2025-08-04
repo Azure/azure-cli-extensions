@@ -39,8 +39,9 @@ class PlacementPolicyVMCreate(_Create):
         vm_members = args_schema.vm_members
         vm_members.Element = AAZStrArg()
 
-        args_schema.vm_host._registered = False
-        args_schema.vm_vm._registered = False
+        setattr(args_schema.vm_host, '_registered', False)
+        setattr(args_schema.vm_vm, '_registered', False)
+        setattr(args_schema.no_wait, '_registered', False)
         return args_schema
 
     def pre_operations(self):
@@ -72,8 +73,8 @@ class PlacementPolicyVMUpdate(_Update):
             nullable=True,
         )
 
-        args_schema.vm_host._registered = False
-        args_schema.vm_vm._registered = False
+        setattr(args_schema.vm_host, '_registered', False)
+        setattr(args_schema.vm_vm, '_registered', False)
         return args_schema
 
     def pre_operations(self):
@@ -143,8 +144,9 @@ class PlacementPolicyVMHostCreate(_Create):
         vm_members = args_schema.vm_members
         vm_members.Element = AAZStrArg()
 
-        args_schema.vm_host._registered = False
-        args_schema.vm_vm._registered = False
+        setattr(args_schema.vm_host, '_registered', False)
+        setattr(args_schema.vm_vm, '_registered', False)
+        setattr(args_schema.no_wait, '_registered', False)
         return args_schema
 
     def pre_operations(self):
@@ -201,8 +203,8 @@ class PlacementPolicyVMHostUpdate(_Update):
             nullable=True,
         )
 
-        args_schema.vm_host._registered = False
-        args_schema.vm_vm._registered = False
+        setattr(args_schema.vm_host, '_registered', False)
+        setattr(args_schema.vm_vm, '_registered', False)
         return args_schema
 
     def pre_operations(self):
