@@ -84,7 +84,7 @@ class Update(AAZCommand):
             enum={"File": "File", "Inline": "Inline"},
         )
         _args_schema.control_plane_acl_configuration = AAZListArg(
-            options=["--cp-acl-config", "--control-plane-acl-configuration"],
+            options=["--control-plane-acl-configuration"],
             arg_group="Properties",
             help="Access Control List (ACL) configurations.",
         )

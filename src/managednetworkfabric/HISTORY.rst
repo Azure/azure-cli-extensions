@@ -4,18 +4,9 @@ Release History
 ===============
 9.0.0
 ++++++
-* This version requires a minimum of 2.75.0 Azure core CLI. See release notes for more details: https://github.com/MicrosoftDocs/azure-docs-cli/blob/main/docs-ref-conceptual/release-notes-azure-cli.md
 * Adds `bootstrapdevice`` and `bootstrapinterface`` resources and commands.
-* For consistency the following command parameter-names have been updated
-*   - `--nni-name network-to-network-interconnect-name` parameter on `nni update-bfd-administrative-state` has been changed to `--resource-name`.
-*   - `--network-fabric-name` parameter on `nni update-bfd-administrative-state` has been changed to `--fabric --fabric-name`.
-*   - `--network-to-network-interconnect-name` parameter on `nni update-npb-static-route-bfd-administrative-state` has been changed to `--resource-name`.
-*   - `--network-fabric-name` parameter on `nni update-npb-static-route-bfd-administrative-state` has been changed to `--fabric", "--fabric-name`.
-*   - `--network-fabric-name` parameter on `fabric arm-configuration-diff` has been changed to `--resource-name`.
-*   - `--network-fabric-name` parameter on `fabric commit-batch-status` has been changed to `--resource-name`.
-*   - `--network-fabric-name` parameter on `fabric view-device-configuration` has been changed to `--resource-name`.
-*   - `--network-fabric-name` parameter on `fabric discard-commit-batch` has been changed to `--resource-name`.
-*   - `--network-fabric-name --name -n`` parameters on `fabric identity` sub-commands `assign`, `remove`, `show`, `wait`` have been changed to `--resource-name`.
+* For consistency the `--network-fabric-name`` parameter on `nni updatebfdadminstrativestate` has been changed to `--fabric --fabric-name`.
+* For consistency the `--network-fabric-name --name -n`` parameter on `fabric identity` sub-commands `assign`, `remove`, `show`, `wait`` have been changed to `--resource-name`.
 
 8.0.0b7
 ++++++

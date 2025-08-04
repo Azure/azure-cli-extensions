@@ -66,21 +66,21 @@ class Assign(AAZCommand):
         # define Arg Group "Properties.identity"
 
         _args_schema = cls._args_schema
-        _args_schema.system_assigned = AAZStrArg(
-            options=["--system-assigned"],
+        _args_schema.mi_system_assigned = AAZStrArg(
+            options=["--system-assigned", "--mi-system-assigned"],
             arg_group="Properties.identity",
             help="Set the system managed identity.",
             blank="True",
         )
-        _args_schema.user_assigned = AAZListArg(
-            options=["--user-assigned"],
+        _args_schema.mi_user_assigned = AAZListArg(
+            options=["--user-assigned", "--mi-user-assigned"],
             arg_group="Properties.identity",
             help="Set the user managed identities.",
             blank=[],
         )
 
-        user_assigned = cls._args_schema.user_assigned
-        user_assigned.Element = AAZStrArg()
+        mi_user_assigned = cls._args_schema.mi_user_assigned
+        mi_user_assigned.Element = AAZStrArg()
         return cls._args_schema
 
     def _execute_operations(self):
@@ -332,8 +332,8 @@ class Assign(AAZCommand):
                 value=instance,
                 typ=AAZIdentityObjectType
             )
-            _builder.set_prop("userAssigned", AAZListType, ".user_assigned", typ_kwargs={"flags": {"action": "assign"}})
-            _builder.set_prop("systemAssigned", AAZStrType, ".system_assigned", typ_kwargs={"flags": {"action": "assign"}})
+            _builder.set_prop("userAssigned", AAZListType, ".mi_user_assigned", typ_kwargs={"flags": {"action": "assign"}})
+            _builder.set_prop("systemAssigned", AAZStrType, ".mi_system_assigned", typ_kwargs={"flags": {"action": "assign"}})
 
             user_assigned = _builder.get(".userAssigned")
             if user_assigned is not None:

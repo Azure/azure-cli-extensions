@@ -45,8 +45,8 @@ class ViewDeviceConfiguration(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.resource_name = AAZStrArg(
-            options=["--resource-name"],
+        _args_schema.network_fabric_name = AAZStrArg(
+            options=["--resource-name", "--network-fabric-name"],
             help="Name of the Network Fabric.",
             required=True,
             id_part="name",
@@ -122,7 +122,7 @@ class ViewDeviceConfiguration(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "networkFabricName", self.ctx.args.resource_name,
+                    "networkFabricName", self.ctx.args.network_fabric_name,
                     required=True,
                 ),
                 **self.serialize_url_param(

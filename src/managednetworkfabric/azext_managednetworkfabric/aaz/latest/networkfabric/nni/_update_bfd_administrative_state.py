@@ -54,8 +54,8 @@ class UpdateBfdAdministrativeState(AAZCommand):
                 pattern="^[a-zA-Z]{1}[a-zA-Z0-9-_]{2,127}$",
             ),
         )
-        _args_schema.resource_name = AAZStrArg(
-            options=["--resource-name"],
+        _args_schema.network_to_network_interconnect_name = AAZStrArg(
+            options=["--nni-name", "--resource-name", "--network-to-network-interconnect-name"],
             help="Name of the Network to Network Interconnect.",
             required=True,
             id_part="child_name_1",
@@ -151,7 +151,7 @@ class UpdateBfdAdministrativeState(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "networkToNetworkInterconnectName", self.ctx.args.resource_name,
+                    "networkToNetworkInterconnectName", self.ctx.args.network_to_network_interconnect_name,
                     required=True,
                 ),
                 **self.serialize_url_param(

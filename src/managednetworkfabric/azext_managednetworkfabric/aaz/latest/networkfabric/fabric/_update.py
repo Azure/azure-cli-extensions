@@ -68,6 +68,23 @@ class Update(AAZCommand):
 
         # define Arg Group "Identity"
 
+        _args_schema = cls._args_schema
+        _args_schema.mi_system_assigned = AAZStrArg(
+            options=["--system-assigned", "--mi-system-assigned"],
+            arg_group="Identity",
+            help="Set the system managed identity.",
+            blank="True",
+        )
+        _args_schema.mi_user_assigned = AAZListArg(
+            options=["--user-assigned", "--mi-user-assigned"],
+            arg_group="Identity",
+            help="Set the user managed identities.",
+            blank=[],
+        )
+
+        mi_user_assigned = cls._args_schema.mi_user_assigned
+        mi_user_assigned.Element = AAZStrArg()
+
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
@@ -304,25 +321,6 @@ class Update(AAZCommand):
 
         tags = cls._args_schema.tags
         tags.Element = AAZStrArg()
-
-        # define Arg Group "Properties.identity"
-
-        _args_schema = cls._args_schema
-        _args_schema.system_assigned = AAZStrArg(
-            options=["--system-assigned"],
-            arg_group="Properties.identity",
-            help="Set the system managed identity.",
-            blank="True",
-        )
-        _args_schema.user_assigned = AAZListArg(
-            options=["--user-assigned"],
-            arg_group="Properties.identity",
-            help="Set the user managed identities.",
-            blank=[],
-        )
-
-        user_assigned = cls._args_schema.user_assigned
-        user_assigned.Element = AAZStrArg()
         return cls._args_schema
 
     _args_vpn_configuration_patchable_properties_update = None
@@ -580,8 +578,8 @@ class Update(AAZCommand):
 
             identity = _builder.get(".identity")
             if identity is not None:
-                identity.set_prop("userAssigned", AAZListType, ".user_assigned", typ_kwargs={"flags": {"action": "create"}})
-                identity.set_prop("systemAssigned", AAZStrType, ".system_assigned", typ_kwargs={"flags": {"action": "create"}})
+                identity.set_prop("userAssigned", AAZListType, ".mi_user_assigned", typ_kwargs={"flags": {"action": "create"}})
+                identity.set_prop("systemAssigned", AAZStrType, ".mi_system_assigned", typ_kwargs={"flags": {"action": "create"}})
 
             user_assigned = _builder.get(".identity.userAssigned")
             if user_assigned is not None:
