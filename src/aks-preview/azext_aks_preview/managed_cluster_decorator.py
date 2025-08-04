@@ -1985,6 +1985,71 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             )
         return certs
 
+    def _get_enable_run_command(self, enable_validation: bool = False) -> bool:
+        """Internal function to obtain the value of enable_run_command.
+        :return: bool
+        """
+        enable_run_command = self.raw_param.get("enable_run_command")
+
+        # In create mode, try to read the property value corresponding to the parameter from the `mc` object.
+        if self.decorator_mode == DecoratorMode.CREATE:
+            if (
+                self.mc and
+                hasattr(self.mc, "api_server_access_profile") and  # backward compatibility
+                self.mc.api_server_access_profile and
+                self.mc.api_server_access_profile.disable_run_command is not None
+            ):
+                enable_run_command = not self.mc.api_server_access_profile.disable_run_command
+
+        # validation
+        if enable_validation:
+            if enable_run_command and self._get_disable_run_command(enable_validation=False):
+                raise MutuallyExclusiveArgumentError(
+                    "Cannot specify --enable-run-command and --disable-run-command at the same time."
+                )
+
+        return enable_run_command
+
+    def get_enable_run_command(self) -> bool:
+        """Obtain the value of enable_run_command.
+        This function will verify the parameter by default. If both enable_run_command and disable_run_command are
+        specified, raise a MutuallyExclusiveArgumentError.
+        :return: bool
+        """
+        return self._get_enable_run_command(enable_validation=True)
+
+    def _get_disable_run_command(self, enable_validation: bool = False) -> bool:
+        """Internal function to obtain the value of disable_run_command.
+        :return: bool
+        """
+        disable_run_command = self.raw_param.get("disable_run_command")
+
+        # In create mode, try to read the property value corresponding to the parameter from the `mc` object.
+        if self.decorator_mode == DecoratorMode.CREATE:
+            if (
+                self.mc and
+                hasattr(self.mc, "api_server_access_profile") and  # backward compatibility
+                self.mc.api_server_access_profile and
+                self.mc.api_server_access_profile.disable_run_command is not None
+            ):
+                disable_run_command = self.mc.api_server_access_profile.disable_run_command
+
+        # validation
+        if enable_validation:
+            if disable_run_command and self._get_enable_run_command(enable_validation=False):
+                raise MutuallyExclusiveArgumentError(
+                    "Cannot specify --enable-run-command and --disable-run-command at the same time."
+                )
+        return disable_run_command
+
+    def get_disable_run_command(self) -> bool:
+        """Obtain the value of disable_run_command.
+        This function will verify the parameter by default. If both enable_run_command and disable_run_command
+        are specified, raise a MutuallyExclusiveArgumentError.
+        :return: bool
+        """
+        return self._get_disable_run_command(enable_validation=True)
+
     def _get_enable_azure_monitor_metrics(self, enable_validation: bool = False) -> bool:
         """Internal function to obtain the value of enable_azure_monitor_metrics.
         This function supports the option of enable_validation. When enabled, if both enable_azure_monitor_metrics and
@@ -3035,6 +3100,26 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             network_profile.advanced_networking = acns
         return mc
 
+    def set_up_run_command(self, mc: ManagedCluster) -> ManagedCluster:
+        """Set up run command for the ManagedCluster object.
+        :return: the ManagedCluster object
+        """
+        if hasattr(super(), 'set_up_run_command'):
+            return super().set_up_run_command(mc)
+
+        self._ensure_mc(mc)
+
+        disable_run_command = self.context.get_disable_run_command()
+        if disable_run_command:
+            if mc.api_server_access_profile is None:
+                mc.api_server_access_profile = self.models.ManagedClusterAPIServerAccessProfile(
+                    disable_run_command=True
+                )
+            else:
+                mc.api_server_access_profile.disable_run_command = True
+
+        return mc
+
     def set_up_api_server_access_profile(self, mc: ManagedCluster) -> ManagedCluster:
         """Set up apiserverAccessProfile enableVnetIntegration and subnetId for the ManagedCluster object.
 
@@ -3670,6 +3755,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc = self.set_up_kube_proxy_config(mc)
         # set up custom ca trust certificates
         mc = self.set_up_custom_ca_trust_certificates(mc)
+        # set up run command
+        mc = self.set_up_run_command(mc)
         # set up node resource group profile
         mc = self.set_up_node_resource_group_profile(mc)
         # set up auto upgrade profile
@@ -4732,6 +4819,35 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         return mc
 
+    def update_run_command(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update run command for the ManagedCluster object.
+        :return: the ManagedCluster object
+        """
+        if hasattr(super(), 'update_run_command'):
+            return super().update_run_command(mc)
+
+        self._ensure_mc(mc)
+
+        enable_run_command = self.context.get_enable_run_command()
+        disable_run_command = self.context.get_disable_run_command()
+        if enable_run_command or disable_run_command:
+            if mc.api_server_access_profile is None:
+                mc.api_server_access_profile = self.models.ManagedClusterAPIServerAccessProfile(
+                    disable_run_command=(
+                        not enable_run_command
+                        if enable_run_command or disable_run_command
+                        else None
+                    )
+                )
+            else:
+                mc.api_server_access_profile.disable_run_command = (
+                    not enable_run_command
+                    if enable_run_command or disable_run_command
+                    else None
+                )
+
+        return mc
+
     def update_azure_monitor_profile(self, mc: ManagedCluster) -> ManagedCluster:
         """Update azure monitor profile for the ManagedCluster object.
         :return: the ManagedCluster object
@@ -5384,7 +5500,10 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             if not self.context.get_yes() and not prompt_y_n(msg, default="n"):
                 raise DecoratorEarlyExitException()
             # Ensure we have valid vmas AP
-            if len(mc.agent_pool_profiles) == 1 and mc.agent_pool_profiles[0].type == CONST_AVAILABILITY_SET:
+            if len(mc.agent_pool_profiles) == 1 and mc.agent_pool_profiles[0].type in (
+                CONST_AVAILABILITY_SET,
+                CONST_VIRTUAL_MACHINES,
+            ):
                 mc.agent_pool_profiles[0].type = CONST_VIRTUAL_MACHINES
             else:
                 raise CLIError('This is not a valid VMAS cluster, we cannot proceed with the migration.')
@@ -5463,6 +5582,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_kube_proxy_config(mc)
         # update custom ca trust certificates
         mc = self.update_custom_ca_trust_certificates(mc)
+        # update run command
+        mc = self.update_run_command(mc)
         # update node resource group profile
         mc = self.update_node_resource_group_profile(mc)
         # update auto upgrade profile
