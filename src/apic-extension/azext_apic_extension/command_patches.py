@@ -79,7 +79,6 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-
 class DefaultWorkspaceParameter:
     # pylint: disable=too-few-public-methods
     @classmethod
