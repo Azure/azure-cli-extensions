@@ -6,6 +6,10 @@ upcoming
 ++++++
 * 'az containerapp session code-interpreter': Fix `--path` in examples
 
+1.2.0b4
+++++++
+* 'az containerapp create': Update help text for `--kind` parameter to clarify its usage for Azure Functions.
+
 1.2.0b3
 ++++++
 * 'az containerapp job list': Fix only 20 items returned
