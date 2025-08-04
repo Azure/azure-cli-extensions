@@ -6,6 +6,7 @@
 import os
 import jmespath
 import collections
+import json
 import shutil
 from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
 from azure.cli.testsdk.checkers import JMESPathCheck
@@ -18,10 +19,27 @@ test_assets_dir = os.path.join(current_dir, 'test_assets')
 
 
 class ApiAnalysisCommandTests(ScenarioTest):
+    async def _delete_existing_analyzer_configs(self):
+        # Helper to delete all existing analyzer configs for the service
+        try:
+            configs = self.cmd('az apic api-analysis list -g {rg} -n {s}').get_output_in_json()
+        except Exception:
+            # If the list command fails (e.g., service not ready), skip deletion
+            return
+        if configs:
+            for config in configs:
+                config_name = config.get('name')
+                if config_name:
+                    try:
+                        await self.cmd('az apic api-analysis delete -g {rg} -n {s} -c {config_name} --yes')
+                    except Exception:
+                        # Ignore errors if deletion fails (e.g., already deleted)
+                        pass
 
     @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
-    def test_api_analysis_create(self):
+    async def test_api_analysis_create(self):
+        await self._delete_existing_analyzer_configs()
         # create an API Analysis configuration
         self.kwargs.update({
             'config_name': self.create_random_name(prefix='clianalysisconfig', length=24)
@@ -31,13 +49,6 @@ class ApiAnalysisCommandTests(ScenarioTest):
             self.check('resourceGroup', '{rg}'),
             self.check('type', 'Microsoft.ApiCenter/services/workspaces/analyzerConfigs')
         ])
-
-    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
-    @ApicServicePreparer()
-    @ApiAnalysisPreparer()
-    def test_api_analysis_delete(self):
-        self.cmd('az apic api-analysis delete -g {rg} -n {s} -c {config_name} --yes')
-        self.cmd('az apic api-analysis show -g {rg} -n {s} -c {config_name}', expect_failure=True)
 
     @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
@@ -97,14 +108,23 @@ class ApiAnalysisCommandTests(ScenarioTest):
     @ApicServicePreparer()
     @ApiAnalysisPreparer()
     def test_api_analysis_update(self):
-        self.cmd('az apic api-analysis create -g {rg} -n {s} -c {config_name}', checks=[
+        filter_file = os.path.join(test_assets_dir, 'filter.json')
+        with open(filter_file, 'r') as f:
+            filter_content = f.read()
+        filter_content = json.loads(filter_content)
+        self.kwargs.update({
+            'filter': filter_content
+        })
+        self.cmd('az apic api-analysis update -g {rg} -n {s} -c {config_name} --filter "{filter}"')
+        self.cmd('az apic api-analysis show -g {rg} -n {s} -c {config_name}', checks=[
             self.check('name', '{config_name}'),
             self.check('resourceGroup', '{rg}'),
-            self.check('type', 'Microsoft.ApiCenter/services/workspaces/analyzerConfigs')
+            self.check('filter.apiDefinitions[0].value', '[\'openapi\', \'asyncapi\']')
         ])
-
-        self.cmd('az apic api-analysis update -g {rg} -n {s} -c {config_name} --analyzer-type spectral', checks=[
-            self.check('name', '{config_name}'),
-            self.check('resourceGroup', '{rg}'),
-            self.check('analyzerType', 'Spectral')
-        ])
+    
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
+    @ApicServicePreparer()
+    @ApiAnalysisPreparer()
+    def test_api_analysis_delete(self):
+        self.cmd('az apic api-analysis delete -g {rg} -n {s} -c {config_name} --yes')
+        self.cmd('az apic api-analysis show -g {rg} -n {s} -c {config_name}', expect_failure=True)

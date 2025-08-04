@@ -7,6 +7,7 @@ import jmespath
 import collections
 from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
 from azure.cli.testsdk.checkers import JMESPathCheck
+import asyncio
 from azure.cli.testsdk.exceptions import JMESPathCheckAssertionError
 from .utils import ApicServicePreparer, ApimServicePreparer
 from .constants import TEST_REGION, AWS_ACCESS_KEY_LINK, AWS_SECRET_ACCESS_KEY_LINK, AWS_REGION, USERASSIGNED_IDENTITY
@@ -104,3 +105,42 @@ class IntegrationCommandTests(ScenarioTest):
                 self.check('title', 'Swagger Petstore'),
                 self.check('summary', 'A sample API that uses a petstore as an example to demonstrate features in the OpenAPI Specification.'),
             ])
+
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
+    @ApicServicePreparer()
+    @ApimServicePreparer()
+    def test_import_apim_all_apis(self):
+        # Import all APIs from APIM
+        self.cmd('az apic import apim -g {rg} -n {s} --azure-apim {apim_name} --apim-apis \'*\'')
+
+        # Verify all APIs imported
+        self.cmd('az apic api list -g {rg} -n {s}', checks=[
+            self.check('length(@)', 3)
+        ])
+
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
+    @ApicServicePreparer()
+    @ApimServicePreparer()
+    def test_import_apim_single_api(self):
+        # Import single API from APIM
+        cmd = 'az apic import apim -g {} -n {} --azure-apim {} --apim-apis echotest'.format(self.kwargs['rg'],self.kwargs['s'],self.kwargs['apim_name'])
+        print(cmd)
+        self.cmd(cmd)
+
+        # Verify single API imported
+        self.cmd('az apic api list -g {rg} -n {s}', checks=[
+            self.check('contains(@[*].title, `Echo API Test`)', True),
+        ])
+
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
+    @ApicServicePreparer()
+    @ApimServicePreparer()
+    def test_import_apim_multiple_apis(self):
+        # Import multiple APIs from APIM
+        self.cmd('az apic import apim -g {rg} -n {s} --azure-apim {apim_name} --apim-apis [echotest,footest]')
+
+        # Verify multiple APIs imported
+        self.cmd('az apic api list -g {rg} -n {s}', checks=[
+            self.check('contains(@[*].title, `Echo API Test`)', True),
+            self.check('contains(@[*].title, `Foo API Test`)', True)
+        ])

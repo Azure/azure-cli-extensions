@@ -582,6 +582,13 @@ class ImportAzureApiManagementSource(DefaultWorkspaceParameter, Import):
             required=True
         )
 
+        args_schema.apim_apis = AAZListArg(
+            options=["--apim-apis"],
+            help="The APIs to be imported.",
+            required=True
+        )
+        args_schema.apim_apis.Element = AAZStrArg()
+
         return args_schema
 
     def pre_operations(self):
@@ -589,18 +596,19 @@ class ImportAzureApiManagementSource(DefaultWorkspaceParameter, Import):
         super().pre_operations()
         args = self.ctx.args
 
-        if not is_valid_resource_id(args.azure_apim.to_serialized_data()):
-            # The APIM is in the same resource group
-            resource_group = args.resource_group
-            subscription_id = self.ctx.subscription_id
-            apim_resource_id = (f"/subscriptions/{subscription_id}/resourceGroups/{resource_group}/providers/"
-                                f"Microsoft.ApiManagement/service/{args.azure_apim}")
-        else:
-            apim_resource_id = args.azure_apim
+        resource_group = args.resource_group
+        subscription_id = self.ctx.subscription_id
+
+        source_resource_ids = []
+        for item in args.apim_apis:
+            source_resource_ids.append(
+                f"/subscriptions/{subscription_id}/resourceGroups/{resource_group}/providers/"
+                f"Microsoft.ApiManagement/service/{args.azure_apim}/apis/{item}"
+            )
 
         args.azure_api_management_source = {
             "msi_resource_id": args.msi_resource_id,
-            "apim_resource_id": apim_resource_id
+            "source_resource_ids": source_resource_ids
         }
 
         # Set api_source_type

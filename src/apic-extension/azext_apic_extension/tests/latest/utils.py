@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.testsdk.preparers import NoTrafficRecordingPreparer, SingleValueReplacer, get_dummy_cli, CliTestError, ResourceGroupPreparer
+from azure.core.exceptions import HttpResponseError
 from .constants import USERASSIGNED_IDENTITY
 
 class ApicServicePreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
@@ -424,11 +425,11 @@ class ApimServicePreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
             })
 
             # Add echo api
-            self.test_class_instance.cmd('az apim api create -g {} --service-name {} --api-id echo --display-name "Echo API" --path "/echo"'.format(group, name))
-            self.test_class_instance.cmd('az apim api operation create -g {} --service-name {} --api-id echo --url-template "/echo" --method "GET" --display-name "GetOperation"'.format(group, name))
+            self.test_class_instance.cmd('az apim api create -g {} --service-name {} --api-id echotest --display-name "Echo API Test" --path "/echotest"'.format(group, name))
+            self.test_class_instance.cmd('az apim api operation create -g {} --service-name {} --api-id echotest --url-template "/echotest" --method "GET" --display-name "GetOperation"'.format(group, name))
             # Add foo api
-            self.test_class_instance.cmd('az apim api create -g {} --service-name {} --api-id foo --display-name "Foo API" --path "/foo"'.format(group, name))
-            self.test_class_instance.cmd('az apim api operation create -g {} --service-name {} --api-id foo --url-template "/foo" --method "GET" --display-name "GetOperation"'.format(group, name))
+            self.test_class_instance.cmd('az apim api create -g {} --service-name {} --api-id footest --display-name "Foo API Test" --path "/footest"'.format(group, name))
+            self.test_class_instance.cmd('az apim api operation create -g {} --service-name {} --api-id footest --url-template "/footest" --method "GET" --display-name "GetOperation"'.format(group, name))
 
             if self.use_system_assigned_identity:
                 # Grant system assigned identity of API Center access to APIM
@@ -478,7 +479,14 @@ class ApiAnalysisPreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
         template = 'az apic api-analysis create -g {} -n {} -c {}'
         cmd = template.format(group, service, name)
         print(cmd)
-        self.live_only_execute(self.cli_ctx, cmd)
+        try:
+            self.live_only_execute(self.cli_ctx, cmd)
+        except HttpResponseError as e:
+            if e.message.startswith("(ValidationError) Number of analyzer configs for this service"):
+                configs = self.live_only_execute(self.cli_ctx, 'az apic api-analysis list -g {} -n {}'.format(group, service)).get_output_in_json()
+                config = configs[0]
+                name = config.get('name')
+                pass
 
         self.test_class_instance.kwargs[self.key] = name
         return {self.parameter_name: name}
