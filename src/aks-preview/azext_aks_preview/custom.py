@@ -683,6 +683,7 @@ def aks_create(
     enable_optimized_addon_scaling=False,
     enable_cilium_dataplane=False,
     custom_ca_trust_certificates=None,
+    disable_run_command=False,
     # advanced networking
     enable_acns=None,
     disable_acns_observability=None,
@@ -916,6 +917,8 @@ def aks_update(
     disable_optimized_addon_scaling=False,
     cluster_snapshot_id=None,
     custom_ca_trust_certificates=None,
+    enable_run_command=False,
+    disable_run_command=False,
     # safeguards parameters
     safeguards_level=None,
     safeguards_version=None,

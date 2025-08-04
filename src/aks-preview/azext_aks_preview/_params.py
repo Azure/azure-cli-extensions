@@ -863,6 +863,7 @@ def load_arguments(self, _):
             ),
         )
         c.argument("dns_zone_resource_ids", is_preview=True)
+        c.argument('disable_run_command', action='store_true')
         c.argument("enable_keda", action="store_true", is_preview=True)
         c.argument(
             "enable_vpa",
@@ -1303,6 +1304,8 @@ def load_arguments(self, _):
             validator=validate_apiserver_subnet_id,
             is_preview=True,
         )
+        c.argument('enable_run_command', action='store_true')
+        c.argument('disable_run_command', action='store_true')
         c.argument("enable_keda", action="store_true", is_preview=True)
         c.argument("disable_keda", action="store_true", is_preview=True)
         c.argument(
