@@ -67,7 +67,7 @@ from .aaz.latest.apic.api_analysis import (
 from azure.cli.core.aaz import register_command
 from azure.cli.core.aaz._arg import AAZStrArg, AAZListArg, AAZResourceIdArg
 from azure.cli.core.azclierror import FileOperationError, AzureResponseError
-from msrestazure.tools import is_valid_resource_id
+from azure.mgmt.core.tools import is_valid_resource_id
 import base64
 import zipfile
 import os

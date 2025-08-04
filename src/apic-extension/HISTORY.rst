@@ -3,7 +3,7 @@
 Release History
 ===============
 
-1.2.0b2
+1.2.0b3
 ++++++++++++++++++
 
 **New Features:**
@@ -20,6 +20,10 @@ Release History
 
 **Deprecations:**
   * Deprecated the ``az apic import-from-apim`` command and redirected it to ``az apic import apim``.
+
+1.2.0b2
+++++++++++++++++++
+* Remove msrestazure dependency
 
 1.2.0b1
 ++++++++++++++++++
