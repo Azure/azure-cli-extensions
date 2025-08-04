@@ -47,8 +47,7 @@ class StorageDiscoveryScenario(ScenarioTest):
     def test_storage_discovery_workspace_update(self):
         self.kwargs.update({
             "workspace_name": self.create_random_name('updatews', 18),
-            "discovery_scope_level1": f"/subscriptions/{self.get_subscription_id()}/resourceGroups/{self.kwargs['rg']}",
-            "discovery_scope_level2": f"/subscriptions/{self.get_subscription_id()}"
+            "discovery_scope_level1": f"/subscriptions/{self.get_subscription_id()}/resourceGroups/{self.kwargs['rg']}"
         })
         
         # Create initial workspace
@@ -70,13 +69,12 @@ class StorageDiscoveryScenario(ScenarioTest):
         self.cmd('az storage-discovery workspace update '
                  '-g {rg} -n {workspace_name} '
                  '--description "test2" --sku Free '
-                 '--workspace-roots "{discovery_scope_level2}" '
                  '--scopes "{scope2_json}" '
                  '--tags tag4=value4',
                  checks=[
                      JMESPathCheck('properties.description', "test2"),
                      JMESPathCheck('properties.sku', "Free"),
-                     JMESPathCheck('properties.workspaceRoots[0]', self.kwargs.get('discovery_scope_level2', '')),
+                     JMESPathCheck('properties.workspaceRoots[0]', self.kwargs.get('discovery_scope_level1', '')),
                      JMESPathCheck('properties.scopes[0].displayName', "test2"),
                      JMESPathCheck('properties.scopes[0].tagKeysOnly[0]', "e2etest2"),
                      JMESPathCheck('properties.scopes[0].tags.tag3', "value3"),
