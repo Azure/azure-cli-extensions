@@ -46,7 +46,7 @@ class LockFabric(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.network_fabric_name = AAZStrArg(
-            options=["--network-fabric-name"],
+            options=["--resource-name", "--network-fabric-name"],
             help="Name of the Network Fabric.",
             required=True,
             id_part="name",

@@ -2,6 +2,12 @@
 
 Release History
 ===============
+8.0.0
+++++++
+* Updating version 8-beta to stable cli version 8.x for 2024-06-15-preview.
+* Adds missing `--resource-name` to many commands to keep better consistency.
+* Removes the `fabric identity` command as GET-PATCH isn't supported for this feature.
+
 8.0.0b7
 ++++++
 * Added missing examples and updated verbiage on existing examples

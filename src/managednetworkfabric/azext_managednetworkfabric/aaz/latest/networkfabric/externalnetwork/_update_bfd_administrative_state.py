@@ -46,7 +46,7 @@ class UpdateBfdAdministrativeState(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.external_network_name = AAZStrArg(
-            options=["--external-network-name"],
+            options=["--resource-name", "--external-network-name"],
             help="Name of the External Network.",
             required=True,
             id_part="child_name_1",

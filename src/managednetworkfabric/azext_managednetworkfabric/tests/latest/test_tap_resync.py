@@ -36,7 +36,7 @@ def step_resync(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric tap resync --resource-group {rg} --network-tap-name {name}",
+        "az networkfabric tap resync --resource-group {rg} --resource-name {name}",
         checks=checks,
     )
 
