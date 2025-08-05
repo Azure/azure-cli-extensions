@@ -172,6 +172,9 @@ class SessionPoolCreateDecorator(SessionPoolPreviewDecorator):
         else:
             if environment_name is not None:
                 raise ValidationError(f"Do not pass environment name when using container type {container_type}")
+            
+        if self.get_argument_max_alive_period() is not None and self.get_argument_cooldown_period_in_seconds() is not None:
+            raise ValidationError("max_alive_period and cooldown_period cannot be set at the same time.")
 
         if self.get_argument_max_alive_period() is not None and self.get_argument_lifecycle_type() is not None and self.get_argument_lifecycle_type().lower() != "oncontainerexit":
             raise ValidationError("max_alive_period can only be set when lifecycle_type is 'OnContainerExit'.")
@@ -272,7 +275,14 @@ class SessionPoolCreateDecorator(SessionPoolPreviewDecorator):
 
     def set_up_dynamic_configuration(self):
         if self.get_argument_lifecycle_type() is None:
-            self.set_argument_lifecycle_type("Timed")
+            # Auto infer lifecycle type
+            if self.get_argument_cooldown_period_in_seconds() is not None:
+                self.set_argument_lifecycle_type("Timed")
+            elif self.get_argument_max_alive_period() is not None:
+                self.set_argument_lifecycle_type("OnContainerExit")
+            else:
+                # Default to 'Timed'
+                self.set_argument_lifecycle_type("Timed")
 
         if self.get_argument_lifecycle_type().lower() == "timed" and self.get_argument_cooldown_period_in_seconds() is None:
             self.set_argument_cooldown_period_in_seconds(300)
