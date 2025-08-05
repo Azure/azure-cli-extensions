@@ -21,3 +21,5 @@ from ._show import *
 # from ._update import *
 from ._wait import *
 from ._use_context import *
+from ._set_context import *
+from ._current_context import *
