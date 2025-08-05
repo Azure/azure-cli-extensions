@@ -520,6 +520,9 @@ helps['aks create'] = f"""
         - name: --enable-keda
           type: bool
           short-summary: Enable KEDA workload auto-scaler.
+        - name: --disable-run-command
+          type: bool
+          short-summary: Disable Run command feature for the cluster.
         - name: --enable-defender
           type: bool
           short-summary: Enable Microsoft Defender security profile.
@@ -1124,6 +1127,12 @@ helps['aks update'] = """
         - name: --disable-keda
           type: bool
           short-summary: Disable KEDA workload auto-scaler.
+        - name: --enable-run-command
+          type: bool
+          short-summary: Enable Run command feature for the cluster.
+        - name: --disable-run-command
+          type: bool
+          short-summary: Disable Run command feature for the cluster.
         - name: --enable-defender
           type: bool
           short-summary: Enable Microsoft Defender security profile.

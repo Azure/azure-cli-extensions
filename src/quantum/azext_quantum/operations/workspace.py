@@ -13,7 +13,7 @@ import time
 from azure.cli.command_modules.storage.operations.account import list_storage_accounts
 
 from azure.mgmt.resource import ResourceManagementClient
-from azure.mgmt.resource.resources.models import DeploymentMode
+from azure.mgmt.resource.deployments.models import DeploymentMode
 
 from azure.cli.core.azclierror import (InvalidArgumentValueError, AzureInternalError,
                                        RequiredArgumentMissingError, ResourceNotFoundError)
