@@ -10,10 +10,11 @@ import sys
 import uuid
 from pathlib import Path
 
-import typer
 from azure.cli.core.api import get_config_dir
 from azure.cli.core.commands.client_factory import get_subscription_id
 from knack.util import CLIError
+
+from .prompt import AKS_CONTEXT_PROMPT
 
 
 # NOTE(mainred): holmes leverage the log handler RichHandler to provide colorful, readable and well-formatted logs
@@ -32,7 +33,7 @@ def init_log():
 
     from holmes.utils.console.logging import init_logging
 
-    # TODO: make log verbose configurable, currently disbled by [].
+    # TODO: make log verbose configurable, currently disabled by [].
     return init_logging([])
 
 
@@ -98,8 +99,6 @@ def aks_agent(
     from holmes.plugins.prompts import load_and_render_prompt
     from holmes.utils.console.result import handle_result
 
-    from .prompt import AKS_CONTEXT_PROMPT
-
     # Detect and read piped input
     piped_data = None
     if not sys.stdin.isatty():
@@ -125,7 +124,7 @@ def aks_agent(
     )
 
     if not prompt and not interactive and not piped_data:
-        raise typer.BadParameter(
+        raise CLIError(
             "Either the 'prompt' argument must be provided (unless using --interactive mode)."
         )
 
