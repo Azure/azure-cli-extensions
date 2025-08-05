@@ -17,12 +17,12 @@ from .config import CONFIG
 
 
 def setup_scenario(test):
-    """Env setup_scenario1"""
+    """Env setup_scenario"""
     pass
 
 
 def cleanup_scenario(test):
-    """Env cleanup_scenario1"""
+    """Env cleanup_scenario"""
     pass
 
 
@@ -34,7 +34,7 @@ def call_scenario1(test):
 
 
 def call_scenario2(test):
-    """# Testcase: scenario1"""
+    """# Testcase: scenario2"""
     setup_scenario(test)
     step_update_bfd_admin_state_resource_name(test, checks=[])
     cleanup_scenario(test)
