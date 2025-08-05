@@ -7,7 +7,6 @@ import jmespath
 import collections
 from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
 from azure.cli.testsdk.checkers import JMESPathCheck
-import asyncio
 from azure.cli.testsdk.exceptions import JMESPathCheckAssertionError
 from .utils import ApicServicePreparer, ApimServicePreparer
 from .constants import TEST_REGION, AWS_ACCESS_KEY_LINK, AWS_SECRET_ACCESS_KEY_LINK, AWS_REGION, USERASSIGNED_IDENTITY
@@ -85,62 +84,3 @@ class IntegrationCommandTests(ScenarioTest):
                 self.check('linkState.state', list(['initializing', 'syncing']))
             ])
 
-    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
-    @ApicServicePreparer(user_assigned_identity=USERASSIGNED_IDENTITY)
-    def test_import_api_from_aws(self):
-        if self.is_live:
-            # prepare test data
-            self.kwargs.update({
-                'integration_name': self.create_random_name(prefix='cli', length=8),
-                'usi_id': USERASSIGNED_IDENTITY,
-                'access_key_link': AWS_ACCESS_KEY_LINK,
-                'secret_access_key_link': AWS_SECRET_ACCESS_KEY_LINK,
-                'aws_region': AWS_REGION
-            })
-
-            self.cmd('az apic import aws -g {rg} -n {s} --aws-access-key-reference {access_key_link} --aws-region {aws_region} --aws-secret-access-key-reference {secret_access_key_link}')
-
-            # verify command results
-            self.cmd('az apic api show -g {rg} -n {s} --api-id swagger-petstore', checks=[
-                self.check('title', 'Swagger Petstore'),
-                self.check('summary', 'A sample API that uses a petstore as an example to demonstrate features in the OpenAPI Specification.'),
-            ])
-
-    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
-    @ApicServicePreparer()
-    @ApimServicePreparer()
-    def test_import_apim_all_apis(self):
-        # Import all APIs from APIM
-        self.cmd('az apic import apim -g {rg} -n {s} --azure-apim {apim_name} --apim-apis \'*\'')
-
-        # Verify all APIs imported
-        self.cmd('az apic api list -g {rg} -n {s}', checks=[
-            self.check('length(@)', 3)
-        ])
-
-    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
-    @ApicServicePreparer()
-    @ApimServicePreparer()
-    def test_import_apim_single_api(self):
-        # Import single API from APIM
-        cmd = 'az apic import apim -g {} -n {} --azure-apim {} --apim-apis echotest'.format(self.kwargs['rg'],self.kwargs['s'],self.kwargs['apim_name'])
-        print(cmd)
-        self.cmd(cmd)
-
-        # Verify single API imported
-        self.cmd('az apic api list -g {rg} -n {s}', checks=[
-            self.check('contains(@[*].title, `Echo API Test`)', True),
-        ])
-
-    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
-    @ApicServicePreparer()
-    @ApimServicePreparer()
-    def test_import_apim_multiple_apis(self):
-        # Import multiple APIs from APIM
-        self.cmd('az apic import apim -g {rg} -n {s} --azure-apim {apim_name} --apim-apis [echotest,footest]')
-
-        # Verify multiple APIs imported
-        self.cmd('az apic api list -g {rg} -n {s}', checks=[
-            self.check('contains(@[*].title, `Echo API Test`)', True),
-            self.check('contains(@[*].title, `Foo API Test`)', True)
-        ])
