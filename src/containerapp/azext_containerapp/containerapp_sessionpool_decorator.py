@@ -172,6 +172,10 @@ class SessionPoolCreateDecorator(SessionPoolPreviewDecorator):
         else:
             if environment_name is not None:
                 raise ValidationError(f"Do not pass environment name when using container type {container_type}")
+            if self.get_argument_lifecycle_type() is not None and self.get_argument_lifecycle_type().lower() != "timed":
+                raise ValidationError(f"The container type {container_type} only supports lifecycle type 'Timed'.")
+            if self.get_argument_max_alive_period() is not None:
+                raise ValidationError(f"The container type {container_type} does not support max alive period.")
 
         if self.get_argument_max_alive_period() is not None and self.get_argument_cooldown_period_in_seconds() is not None:
             raise ValidationError("max_alive_period and cooldown_period cannot be set at the same time.")
