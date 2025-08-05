@@ -266,6 +266,7 @@ class ExportMetadataExtension(ExportMetadata):
     hide=True
 )
 class ImportFromApimExtension(ImportFromApim):
+    """Import APIs from an Azure API Management instance to the specified API Center."""
     # pylint: disable=too-few-public-methods
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
@@ -549,6 +550,7 @@ class ExportApiAnalysisRuleset(DefaultWorkspaceParameter, ExportRuleset):
         return args_schema
 
     def _output(self, *args, **kwargs):
+        # pylint: disable=C0301
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         arguments = self.ctx.args
 
