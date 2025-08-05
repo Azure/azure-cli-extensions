@@ -257,9 +257,9 @@ def expand_all_functions(func, func_map):
     source = ""
     try:
         source = textwrap.dedent(inspect.getsource(func))
-    except (OSError, TypeError):
+    except (OSError, TypeError) as e:
         # https://docs.python.org/3/library/inspect.html#inspect.getsource
-        logger.warning("Cannot retrieve the source code of %s.", func)
+        logger.warning("Cannot retrieve the source code of %s: %s", func, e)
 
     if func_map is None:
         return source
@@ -572,7 +572,7 @@ def handle_help_schema(help_info):
         if arg_info.get("default") is not None:
             arg_dict["default"] = arg_info["default"]
         if arg_info.get("options"):
-            arg_dict["options"] = str(arg_info["options"])
+            arg_dict["options"] = [str(option) for option in arg_info["options"]] if arg_info["options"] else []
         if arg_info.get("choices"):
             arg_dict["enum"] = arg_info["choices"]
         properties[arg_info["name"]] = arg_dict

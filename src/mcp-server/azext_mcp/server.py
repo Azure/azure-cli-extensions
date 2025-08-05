@@ -85,7 +85,7 @@ class AzCLIBridge:
                 default_args[arg_name] = arg_info['default']
         return default_args
 
-    def invoke_command(self, command_name: str, arguments: dict | None = None):
+    def invoke_command_by_json(self, command_name: str, arguments: dict | None = None):
         """Invoke a command with JSON-described arguments."""
         from azure.cli.core.commands import LongRunningOperation, _is_poller, _is_paged, AzCliCommandInvoker
 
@@ -98,20 +98,44 @@ class AzCLIBridge:
         if default_args:
             arguments = {**default_args, **arguments}
         arguments = {"cmd": command, **arguments}  # Ensure 'cmd' is passed to the command
-        result = command(arguments)
-        transform_op = command.command_kwargs.get('transform', None)
-        if transform_op:
-            result = transform_op(result)
+        logger.debug("Invoking command '%s' with arguments: %s", command_name, arguments)
+        try:
+            result = command(arguments)
+            transform_op = command.command_kwargs.get('transform', None)
+            if transform_op:
+                result = transform_op(result)
 
-        if _is_poller(result):
-            result = LongRunningOperation(command.cli_ctx, 'Starting {}'.format(command.name))(result)
-        elif _is_paged(result):
-            result = list(result)
+            if _is_poller(result):
+                result = LongRunningOperation(command.cli_ctx, 'Starting {}'.format(command.name))(result)
+            elif _is_paged(result):
+                result = list(result)
 
-        from azure.cli.core.util import todict
-        result = todict(result, AzCliCommandInvoker.remove_additional_prop_layer)
+            from azure.cli.core.util import todict
+            result = todict(result, AzCliCommandInvoker.remove_additional_prop_layer)
+        except Exception as e:
+            logger.error("Error invoking command '%s': %s", command_name, e, exc_info=e)
+            return {'error': str(e)}
         return {'result': result}
-
+    
+    def invoke_command_by_arguments(self, arguments: list[str]) -> dict | None:
+        """Invoke a command with a list of arguments."""
+        from azure.cli.core.commands import AzCliCommandInvoker
+        arguments = arguments or []
+        invocation = AzCliCommandInvoker(
+            cli_ctx=self.cli_ctx,
+            parser_cls=self.cli_ctx.parser_cls,
+            commands_loader_cls=self.cli_ctx.commands_loader_cls,
+            help_cls=self.cli_ctx.help_cls)
+        try:
+            result = invocation.execute(arguments)
+            return {'result': result}
+        except Exception as e:
+            logger.error("Error invoking command with arguments '%s': %s", arguments, e, exc_info=e)
+            return {'error': str(e)}
+        except SystemExit as e:
+            # Handle SystemExit raised by the CLI
+            logger.error("SystemExit raised while invoking command with arguments '%s': %s", arguments, e, exc_info=e)
+            return {'error': str(e)}
 
 class AzMCP(FastMCP):
 
@@ -155,19 +179,34 @@ class AzMCP(FastMCP):
             ),
             structured_output=True,
         )(self.get_command_schema)
+        # super().tool(
+        #     "invoke_az_cli_command",
+        #     title="Invoke Azure CLI Command",
+        #     description="Execute an Azure CLI command with specified arguments in JSON format. "
+        #         "This tool allows you to run any Azure CLI command programmatically, passing arguments as a JSON object."
+        #         "The key in arguments should match the command's argument names, instead of the options. "
+        #         "This tool must be called after the command schema tool to ensure the command is valid.",
+        #     annotations=ToolAnnotations(
+        #         title="Invoke Azure CLI Command",
+        #         destructiveHint=True,
+        #     ),
+        #     structured_output=True,
+        # )(self.invoke_command_by_json)
         super().tool(
             "invoke_az_cli_command",
             title="Invoke Azure CLI Command",
-            description="Execute an Azure CLI command with specified arguments in JSON format. "
-                "This tool allows you to run any Azure CLI command programmatically, passing arguments as a JSON object."
-                "The key in arguments should match the command's argument names, instead of the options. "
-                "This tool must be called after the command schema tool to ensure the command is valid.",
+            description="Execute an Azure CLI command with specified arguments in a list format. "
+                "The arguments should be provided as a list of strings, where each string is a separate argument part."
+                "For example, to run 'az vm create --name MyVM --resource-group MyGroup', you would provide the arguments as follows: "
+                "['vm', 'create', '--name', 'MyVM', '--resource-group', 'MyGroup']"
+                "This tool must be called after the command schema tool to ensure the command is valid."
+                "You should refer to the options in the command schema tool to ensure the parameters are correct.",
             annotations=ToolAnnotations(
                 title="Invoke Azure CLI Command",
                 destructiveHint=True,
             ),
             structured_output=True,
-        )(self.invoke_command)
+        )(self.invoke_command_by_arguments)
 
     def _register_resources(self):
         for group_name in self.az_cli_bridge.group_table.keys():
@@ -202,7 +241,7 @@ class AzMCP(FastMCP):
             command_name = command_name[3:]  # Remove 'az ' prefix if present
         return self.az_cli_bridge.get_command_arguments_schema(command_name)
 
-    async def invoke_command(self, command_name: str, arguments: dict, ctx: Context) -> dict | None:
+    async def invoke_command_by_json(self, command_name: str, arguments: dict, ctx: Context) -> dict | None:
         """Invoke a command with JSON-described arguments."""
         if command_name.startswith('az '):
             command_name = command_name[3:]
@@ -211,4 +250,14 @@ class AzMCP(FastMCP):
             result = await ctx.elicit("This is a destructive command. Do you want to continue? (y/N)", MCPConfirmation)
             if not (result.action == "accept" and result.data.confirmation.lower() in ["y", "yes"]):
                 return None
-        return self.az_cli_bridge.invoke_command(command_name, arguments)
+        return self.az_cli_bridge.invoke_command_by_json(command_name, arguments)
+    
+    async def invoke_command_by_arguments(self, arguments: list[str], ctx: Context) -> dict | None:
+        """Invoke a command with a list of arguments."""
+        if arguments and arguments[0] == "az":
+            arguments = arguments[1:]  # Remove 'az' prefix if present
+        if "list" not in arguments and "show" not in arguments:
+            result = await ctx.elicit("This is a destructive command. Do you want to continue? (y/N)", MCPConfirmation)
+            if not (result.action == "accept" and result.data.confirmation.lower() in ["y", "yes"]):
+                return None
+        return self.az_cli_bridge.invoke_command_by_arguments(arguments)
