@@ -67,15 +67,12 @@ def aks_machine_show_table_format(result):
             ipv4: ipv4,
             ipv6: ipv6,
             nodeImageVersion: nodeImageVersion,
+            provisioningState: provisioningState,
             orchestratorVersion: orchestratorVersion,
             currentOrchestratorVersion: currentOrchestratorVersion,
-            provisioningState: provisioningState,
             vmSize: vmSize,
             priority: priority,
-            mode: mode,
-            osType: osType,
-            osSku: osSku,
-            enableFIPS: enableFIPS
+            mode: mode
         }""")
         return parsed.search(entry, Options(dict_cls=OrderedDict))
     return parser(result)
