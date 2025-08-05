@@ -1935,6 +1935,25 @@ def load_arguments(self, _):
             "machine_name", help="to display specific information for all machines."
         )
 
+    with self.argument_context("aks machine add") as c:
+        c.argument(
+            "vm_size",
+            completer=get_vm_size_completion_list,
+        )
+        c.argument("os_type")
+        c.argument(
+            "machine_name", help="The machine name."
+        )
+        c.argument(
+            "os_sku", arg_type=get_enum_type(node_os_skus), validator=validate_os_sku
+        )
+        c.argument(
+            "zones",
+            zones_type,
+            options_list=["--zones", "-z"],
+            help="Space-separated list of availability zones where agent nodes will be placed.",
+        )
+
     with self.argument_context("aks operation") as c:
         c.argument(
             "nodepool_name",
