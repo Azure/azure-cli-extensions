@@ -62,10 +62,21 @@ def aks_machine_show_table_format(result):
         entry["ipv4"] = ipv4_addresses
         entry["ipv6"] = ipv6_addresses
         parsed = compile_jmes("""{
-                name: name,
-                ipv4: ipv4,
-                ipv6: ipv6
-            }""")
+            name: name,
+            zones: zones,
+            ipv4: ipv4,
+            ipv6: ipv6,
+            nodeImageVersion: nodeImageVersion,
+            orchestratorVersion: orchestratorVersion,
+            currentOrchestratorVersion: currentOrchestratorVersion,
+            provisioningState: provisioningState,
+            vmSize: vmSize,
+            priority: priority,
+            mode: mode,
+            osType: osType,
+            osSku: osSku,
+            enableFIPS: enableFIPS
+        }""")
         return parsed.search(entry, Options(dict_cls=OrderedDict))
     return parser(result)
 
