@@ -446,7 +446,7 @@ def load_arguments(self, _):
         c.argument('container_type', arg_type=get_enum_type(["CustomContainer", "PythonLTS", "NodeLTS"]), help="The pool type of the Session Pool, default='PythonLTS'")
         c.argument('lifecycle_type', arg_type=get_enum_type(["Timed", "OnContainerExit"]), help="The lifecycle type of the Session Pool, default='Timed'")
         c.argument('cooldown_period', help="Period (in seconds), after which the session will be deleted, this is only applicable for lifecycle type 'Timed', default=300")
-        c.argument('max_alive_period', help="Period (in seconds), before the session be deleted if its container was not exited earlier, this is only applicable for lifecycle type 'OnContainerExit', default=86400")
+        c.argument('max_alive_period', help="Period (in seconds), before the session be deleted if its container was not exited earlier, this is only applicable for lifecycle type 'OnContainerExit', default=3600")
         c.argument('secrets', nargs='*', options_list=['--secrets', '-s'], help="A list of secret(s) for the session pool. Space-separated values in 'key=value' format. Empty string to clear existing values.")
         c.argument('network_status', arg_type=get_enum_type(["EgressEnabled", "EgressDisabled"]), help="Egress is enabled for the Sessions or not.")
 
