@@ -292,7 +292,7 @@ class SessionPoolCreateDecorator(SessionPoolPreviewDecorator):
             self.set_argument_cooldown_period_in_seconds(300)
 
         if self.get_argument_lifecycle_type().lower() == "oncontainerexit" and self.get_argument_max_alive_period() is None:
-            self.set_argument_max_alive_period(86400)
+            self.set_argument_max_alive_period(3600)
 
         dynamic_pool_def = {}
         lifecycle_config_def = {}
