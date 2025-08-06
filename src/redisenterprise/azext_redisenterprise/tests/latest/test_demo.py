@@ -23,6 +23,7 @@ from .example_steps import step_database_update
 from .example_steps import step_database_access_policy_assignment_create
 from .example_steps import step_database_access_policy_assignment_list
 from .example_steps import step_database_access_policy_assignment_delete
+from .example_steps import step_list_skus_for_scaling
 
 from .. import (
     try_manual,
@@ -81,9 +82,8 @@ def call_scenario1(test, rg):
     step_show(test, checks=[
         test.check("name", "{cluster}"),
         test.check("resourceGroup", "{rg}"),
-        test.check("location", "West US 3"),
-        test.check("sku.name", "Enterprise_E20"),
-        test.check("sku.capacity", 4),
+        test.check("location", "Central US EUAP"),
+        test.check("sku.name", "Balanced_B10"),
         test.check("tags.tag1", "value1"),
        # test.check("zones", ["1", "2", "3"]),
         test.check("minimumTlsVersion", "1.2"),
@@ -137,7 +137,7 @@ class Redisenterprisescenario1Test(ScenarioTest):
 
     @AllowLargeResponse(size_kb=9999)
     @ResourceGroupPreparer(name_prefix='clitest-redisenterprise-rg1-', key='rg', parameter_name='rg',
-                           location='westus3', random_name_length=34)
+                           location='centraluseuap', random_name_length=34)
     def test_redisenterprise_scenario1(self, rg):
         call_scenario1(self, rg)
         calc_coverage(__file__)
@@ -161,9 +161,8 @@ def call_scenario2(test):
     step_create(test, checks=[
         test.check("name", "{cluster}"),
         test.check("resourceGroup", "{rg}"),
-        test.check("location", "West US 3"),
-        test.check("sku.name", "EnterpriseFlash_F300"),
-        test.check("sku.capacity", 3),
+        test.check("location", "Central US EUAP"),
+        test.check("sku.name", "Balanced_B10"),
         test.check("tags.tag1", "value1"),
         test.check("zones", None),
         test.check("minimumTlsVersion", "1.2"),
@@ -174,9 +173,8 @@ def call_scenario2(test):
     step_show(test,checks=[
         test.check("name", "{cluster}"),
         test.check("resourceGroup", "{rg}"),
-        test.check("location", "West US 3"),
-        test.check("sku.name", "EnterpriseFlash_F300"),
-        test.check("sku.capacity", 3),
+        test.check("location", "Central US EUAP"),
+        test.check("sku.name", "Balanced_B10"),
         test.check("tags.tag1", "value1"),
         test.check("zones", None),
         test.check("minimumTlsVersion", "1.2"),
@@ -234,7 +232,7 @@ class Redisenterprisescenario2Test(ScenarioTest):
 
     @AllowLargeResponse(size_kb=9999)
     @ResourceGroupPreparer(name_prefix='clitest-redisenterprise-rg2-', key='rg', parameter_name='rg',
-                           location='westus3', random_name_length=34)
+                           location='centraluseuap', random_name_length=34)
     def test_redisenterprise_scenario2(self):
         call_scenario2(self)
         calc_coverage(__file__)
@@ -246,7 +244,7 @@ def call_scenario3(test):
     step_create(test, checks=[
         test.check("name", "{cluster31}"),
         test.check("resourceGroup", "{rg31}"),
-        test.check("sku.name", "EnterpriseFlash_F300"),
+        test.check("sku.name", "Balanced_B10"),
         test.check("provisioningState", "Succeeded"),
         test.check("resourceState", "Running"),
         test.check("type", "Microsoft.Cache/redisEnterprise"),
@@ -296,9 +294,9 @@ class Redisenterprisescenario3Test(ScenarioTest):
             'database': 'default',
         }) 
     @ResourceGroupPreparer(name_prefix='clitest-redisenterprise-rg31-', key='rg31', parameter_name='rg31',
-                           location='westus3', random_name_length=34)
+                           location='centraluseuap', random_name_length=34)
     @ResourceGroupPreparer(name_prefix='clitest-redisenterprise-rg32-', key='rg32', parameter_name='rg32',
-                           location='westus3', random_name_length=34)
+                           location='centraluseuap', random_name_length=34)
     @AllowLargeResponse(size_kb=9999)
     def test_redisenterprise_scenario3(self):
         call_scenario3(self)
@@ -321,8 +319,8 @@ def call_scenario4(test, rg):
     step_show(test, checks=[
         test.check("name", "{cluster}"),
         test.check("resourceGroup", "{rg}"),
-        test.check("location", "West US 3"),
-        test.check("sku.name", "Balanced_B1"),
+        test.check("location", "Central US EUAP"),
+        test.check("sku.name", "Balanced_B10"),
         test.check("tags.tag1", "value1"),
         test.check("minimumTlsVersion", "1.2"),
         test.check("provisioningState", "Succeeded"),
@@ -365,7 +363,7 @@ def call_scenario4(test, rg):
         test.check("name", "defaultTestEntraApp1"),
         test.check("provisioningState", "Succeeded"),
         test.check("user.objectId", "6497c918-11ad-41e7-1b0f-7c518a87d0b0"),
-        test.check("type", "Microsoft.Cache/redisEnterprise/accessPolicyAssignments")
+        test.check("type", "Microsoft.Cache/redisEnterprise/databases/accessPolicyAssignments")
     ])
     step_database_access_policy_assignment_list(test, checks=[
         test.check("length(@)", 1)
@@ -391,7 +389,7 @@ class Redisenterprisescenario4Test(ScenarioTest):
 
     @AllowLargeResponse(size_kb=9999)
     @ResourceGroupPreparer(name_prefix='clitest-redisenterprise-rg4-', key='rg', parameter_name='rg',
-                           location='westus3', random_name_length=34)
+                           location='centraluseuap', random_name_length=34)
     def test_redisenterprise_scenario4(self, rg):
         call_scenario4(self, rg)
         calc_coverage(__file__)
@@ -491,8 +489,102 @@ class Redisenterprisescenario5Test(ScenarioTest):
 
     @AllowLargeResponse(size_kb=9999)
     @ResourceGroupPreparer(name_prefix='clitest-redisenterprise-rg5-', key='rg', parameter_name='rg',
-                           location='westus3', random_name_length=34)
+                           location='centraluseuap', random_name_length=34)
     def test_redisenterprise_scenario5(self, rg):
         call_scenario5(self, rg)
+        calc_coverage(__file__)
+        raise_if()
+
+
+# Env setup_scenario6
+@try_manual
+def setup_scenario6(test):
+    pass
+
+
+# Env cleanup_scenario6
+@try_manual
+def cleanup_scenario6(test):
+    pass
+
+# Testcase: scenario6
+def call_scenario6(test, rg):
+    setup_scenario6(test)
+    step_create(test, checks=[
+        test.check("name", "default"),
+        test.check("resourceGroup", "{rg}"),
+        test.check("clientProtocol", "Encrypted"),
+        test.check("clusteringPolicy", "NoCluster"),
+        test.check("evictionPolicy", "NoEviction"),
+        test.check("length(modules)", 3),
+        test.check("port", 10000),
+        test.check("provisioningState", "Succeeded"),
+        test.check("resourceState", "Running"),
+        test.check("type", "Microsoft.Cache/redisEnterprise/databases")
+    ])
+    step_show(test, checks=[
+        test.check("name", "{cluster}"),
+        test.check("resourceGroup", "{rg}"),
+        test.check("location", "Central US EUAP"),
+        test.check("sku.name", "Balanced_B10"),
+        test.check("tags.tag1", "value1"),
+        # test.check("zones", ["1", "2", "3"]),
+        test.check("minimumTlsVersion", "1.2"),
+        test.check("provisioningState", "Succeeded"),
+        test.check("resourceState", "Running"),
+        test.check("type", "Microsoft.Cache/redisEnterprise"),
+        test.check("databases[0].name", "default"),
+        test.check("databases[0].resourceGroup", "{rg}"),
+        test.check("databases[0].clientProtocol", "Encrypted"),
+        test.check("databases[0].clusteringPolicy", "NoCluster"),
+        test.check("databases[0].evictionPolicy", "NoEviction"),
+        test.check("length(databases[0].modules)", 3),
+        test.check("databases[0].port", 10000),
+        test.check("databases[0].provisioningState", "Succeeded"),
+        test.check("databases[0].resourceState", "Running"),
+        test.check("databases[0].type", "Microsoft.Cache/redisEnterprise/databases")
+    ])
+    step_list(test, checks=[])
+    step_list2(test, checks=[
+        test.check("length(@)", 1)
+    ])
+    step_database_show(test, checks=[
+        test.check("name", "default"),
+        test.check("resourceGroup", "{rg}"),
+        test.check("clientProtocol", "Encrypted"),
+        test.check("clusteringPolicy", "NoCluster"),
+        test.check("evictionPolicy", "NoEviction"),
+        test.check("port", 10000),
+        test.check("provisioningState", "Succeeded"),
+        test.check("resourceState", "Running"),
+        test.check("type", "Microsoft.Cache/redisEnterprise/databases")
+    ])
+    step_database_list(test, checks=[
+        test.check("length(@)", 1)
+    ])
+    step_list_skus_for_scaling(test, checks=[
+        test.check("skus[?name=='Balanced_B150'] | length(@)", 1)
+
+    ])
+    step_delete(test, checks=[])
+    cleanup_scenario6(test)
+
+
+# Test class for scenario6
+class Redisenterprisescenario6Test(ScenarioTest):
+
+    def __init__(self, *args, **kwargs):
+        super(Redisenterprisescenario6Test, self).__init__(*args, **kwargs)
+
+        self.kwargs.update({
+            'cluster': self.create_random_name(prefix='clitest-cache6-', length=21),
+            'no-cluster-policy':True
+        })
+
+    @AllowLargeResponse(size_kb=9999)
+    @ResourceGroupPreparer(name_prefix='clitest-redisenterprise-rg1-', key='rg', parameter_name='rg',
+                           location='centraluseuap', random_name_length=34)
+    def test_redisenterprise_scenario6(self, rg):
+        call_scenario6(self, rg)
         calc_coverage(__file__)
         raise_if()

@@ -20,9 +20,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-09-01",
+        "version": "2024-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}", "2023-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}", "2024-09-01"],
         ]
     }
 
@@ -48,7 +48,7 @@ class Create(AAZCommand):
             help="Name of the private cloud",
             required=True,
             fmt=AAZStrArgFormat(
-                pattern="^[-\w\._]+$",
+                pattern="^[-\\w\\._]+$",
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
@@ -105,6 +105,11 @@ class Create(AAZCommand):
             arg_group="PrivateCloud",
             help="Resource tags",
         )
+        _args_schema.zones = AAZListArg(
+            options=["--zones"],
+            arg_group="PrivateCloud",
+            help="The availability zones.",
+        )
 
         identity = cls._args_schema.identity
         identity.type = AAZStrArg(
@@ -117,9 +122,18 @@ class Create(AAZCommand):
         tags = cls._args_schema.tags
         tags.Element = AAZStrArg()
 
+        zones = cls._args_schema.zones
+        zones.Element = AAZStrArg()
+
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
+        _args_schema.dns_zone_type = AAZStrArg(
+            options=["--dns-zone-type"],
+            arg_group="Properties",
+            help="The type of DNS zone to use.",
+            enum={"Private": "Private", "Public": "Public"},
+        )
         _args_schema.extended_network_blocks = AAZListArg(
             options=["--ext-nw-blocks", "--extended-network-blocks"],
             arg_group="Properties",
@@ -136,24 +150,6 @@ class Create(AAZCommand):
             options=["--network-block"],
             arg_group="Properties",
             help="The block of addresses should be unique across VNet in your subscription as well as on-premise. Make sure the CIDR format is conformed to (A.B.C.D/X) where A,B,C,D are between 0 and 255, and X is between 0 and 22",
-        )
-        _args_schema.nsxt_password = AAZPasswordArg(
-            options=["--nsxt-password"],
-            arg_group="Properties",
-            help="Optionally, set the NSX-T Manager password when the private cloud is created",
-            blank=AAZPromptPasswordInput(
-                msg="NSX-T Manager Password:",
-                confirm=True,
-            ),
-        )
-        _args_schema.vcenter_password = AAZPasswordArg(
-            options=["--vcenter-password"],
-            arg_group="Properties",
-            help="Optionally, set the vCenter admin password when the private cloud is created",
-            blank=AAZPromptPasswordInput(
-                msg="vCenter Admin Password:",
-                confirm=True,
-            ),
         )
         _args_schema.virtual_network_id = AAZResourceIdArg(
             options=["--virtual-network-id"],
@@ -256,7 +252,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-09-01",
+                    "api-version", "2024-09-01",
                     required=True,
                 ),
             }
@@ -286,6 +282,7 @@ class Create(AAZCommand):
             _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
             _builder.set_prop("sku", AAZObjectType, ".", typ_kwargs={"flags": {"required": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
+            _builder.set_prop("zones", AAZListType, ".zones")
 
             identity = _builder.get(".identity")
             if identity is not None:
@@ -294,12 +291,11 @@ class Create(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("availability", AAZObjectType)
+                properties.set_prop("dnsZoneType", AAZStrType, ".dns_zone_type")
                 properties.set_prop("extendedNetworkBlocks", AAZListType, ".extended_network_blocks")
                 properties.set_prop("internet", AAZStrType, ".internet")
                 properties.set_prop("managementCluster", AAZObjectType, ".", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("networkBlock", AAZStrType, ".network_block", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("nsxtPassword", AAZStrType, ".nsxt_password", typ_kwargs={"flags": {"secret": True}})
-                properties.set_prop("vcenterPassword", AAZStrType, ".vcenter_password", typ_kwargs={"flags": {"secret": True}})
                 properties.set_prop("virtualNetworkId", AAZStrType, ".virtual_network_id")
 
             availability = _builder.get(".properties.availability")
@@ -323,6 +319,10 @@ class Create(AAZCommand):
             tags = _builder.get(".tags")
             if tags is not None:
                 tags.set_elements(AAZStrType, ".")
+
+            zones = _builder.get(".zones")
+            if zones is not None:
+                zones.set_elements(AAZStrType, ".")
 
             return self.serialize_content(_content_value)
 
@@ -368,6 +368,7 @@ class Create(AAZCommand):
             _schema_on_200_201.type = AAZStrType(
                 flags={"read_only": True},
             )
+            _schema_on_200_201.zones = AAZListType()
 
             identity = cls._schema_on_200_201.identity
             identity.principal_id = AAZStrType(
@@ -390,7 +391,9 @@ class Create(AAZCommand):
                 serialized_name="dnsZoneType",
             )
             properties.encryption = AAZObjectType()
-            properties.endpoints = AAZObjectType()
+            properties.endpoints = AAZObjectType(
+                flags={"read_only": True},
+            )
             properties.extended_network_blocks = AAZListType(
                 serialized_name="extendedNetworkBlocks",
             )
@@ -416,6 +419,7 @@ class Create(AAZCommand):
             )
             properties.nsx_public_ip_quota_raised = AAZStrType(
                 serialized_name="nsxPublicIpQuotaRaised",
+                flags={"read_only": True},
             )
             properties.nsxt_certificate_thumbprint = AAZStrType(
                 serialized_name="nsxtCertificateThumbprint",
@@ -476,6 +480,7 @@ class Create(AAZCommand):
             )
             key_vault_properties.key_state = AAZStrType(
                 serialized_name="keyState",
+                flags={"read_only": True},
             )
             key_vault_properties.key_vault_url = AAZStrType(
                 serialized_name="keyVaultUrl",
@@ -485,6 +490,7 @@ class Create(AAZCommand):
             )
             key_vault_properties.version_type = AAZStrType(
                 serialized_name="versionType",
+                flags={"read_only": True},
             )
 
             endpoints = cls._schema_on_200_201.properties.endpoints
@@ -594,6 +600,9 @@ class Create(AAZCommand):
 
             tags = cls._schema_on_200_201.tags
             tags.Element = AAZStrType()
+
+            zones = cls._schema_on_200_201.zones
+            zones.Element = AAZStrType()
 
             return cls._schema_on_200_201
 

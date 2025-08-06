@@ -8,9 +8,9 @@ az extension add --name desktopvirtualization
 ```
 
 ### Included Features
-The desktop virtualization is a desktop and app virtualization service that runs on the cloud. [more info](https://docs.microsoft.com/en-us/azure/virtual-desktop/overview)
+The desktop virtualization is a desktop and app virtualization service that runs on the cloud. [more info](https://learn.microsoft.com/en-us/azure/virtual-desktop/overview)
 #### Host Pool:
-Host pools are a collection of one or more identical virtual machines (VMs) within Windows Virtual Desktop environments: [more info](https://docs.microsoft.com/en-us/azure/virtual-desktop/create-host-pools-azure-marketplace)\
+Host pools are a collection of one or more identical virtual machines (VMs) within Windows Virtual Desktop environments: [more info](https://learn.microsoft.com/en-us/azure/virtual-desktop/create-host-pools-azure-marketplace)\
 *Examples:*
 ```
 az desktopvirtualization hostpool create \
@@ -29,7 +29,7 @@ az desktopvirtualization hostpool create \
 ```
 
 #### Application Group:
-Each host pool can contain an application group that users can interact with as they would on a physical desktop: [more info](https://docs.microsoft.com/en-us/azure/virtual-desktop/manage-app-groups)\
+Each host pool can contain an application group that users can interact with as they would on a physical desktop: [more info](https://learn.microsoft.com/en-us/azure/virtual-desktop/manage-app-groups)\
 *Examples:*
 ```
 az desktopvirtualization applicationgroup create \
@@ -44,7 +44,7 @@ az desktopvirtualization applicationgroup create \
 ```
 
 #### Workspace:
-An application group can be registered to a workspace: [more info](https://docs.microsoft.com/en-us/azure/virtual-desktop/create-validation-host-pool)\
+An application group can be registered to a workspace: [more info](https://learn.microsoft.com/en-us/azure/virtual-desktop/create-validation-host-pool)\
 *Examples:*
 ```
 az desktopvirtualization workspace create \

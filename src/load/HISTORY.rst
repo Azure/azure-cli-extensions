@@ -2,6 +2,42 @@
 
 Release History
 ===============
+
+2.1.0
+++++++
+* Add option for `--autostop-engine-users` to set maximum users per engine for AutoStop criteria.
+* Update API version to 2025-03-01-preview.
+
+2.0.0
+++++++
+* Add commands for creating and managing notification rules using CLI. 
+
+
+1.8.0
+++++++
+* Add commands for creating and managing schedule triggers using CLI. 
+
+
+1.7.0
+++++++
+* Add support for metrics reference identity. Metrics reference identity can be set using `--metrics-reference-identity` argument in 'az load test create' and 'az load test update' commands. Metrics reference identity set in YAML config file under key `referenceIdentities` with `kind` as `Metrics` will also be honoured.
+
+
+1.6.0
+++++++
+* Add support for engine reference identity using CLI. Engine reference identity can be set using `--engine-ref-id-type` and `--engine-ref-ids` argument in 'az load test create' and 'az load test update' commands. Engine reference identity set in YAML config file under key `referenceIdentities` with `kind` as `Engine` will also be honoured.
+
+
+1.5.0
+++++++
+* Add support for Locust based load tests.
+
+
+1.4.3
+++++++
+* Updated the vendored_sdks to include 2024-12-01-preview data plane API version.
+
+
 1.4.2
 ++++++
 * Update minimum required version of azure-cli-core to 2.66.0. This is needed to use `from azure.cli.core.util import run_az_cmd`, which is used in download-files command for high-scale load tests.

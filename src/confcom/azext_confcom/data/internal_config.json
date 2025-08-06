@@ -1,5 +1,5 @@
 {
-    "version": "1.2.1",
+    "version": "1.2.6",
     "hcsshim_config": {
         "maxVersion": "1.0.0",
         "minVersion": "0.0.1"
@@ -281,6 +281,14 @@
                 "name": "hostname",
                 "mountType": "emptyDir",
                 "mountPath": "/etc/hostname"
+            }
+        ],
+        "default_mounts_workload_identity_virtual_node": [
+            {
+                "name": "azure-tokens",
+                "mountType": "emptyDir",
+                "mountPath": "/var/run/secrets/azure/tokens",
+                "readonly": true
             }
         ]
     },

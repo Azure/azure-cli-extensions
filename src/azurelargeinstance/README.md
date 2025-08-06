@@ -2,7 +2,7 @@
 This is an extension to Azure CLI to manage Azure Large Instance resources.
 
 ## Setup:
-1. Install CLI first: https://docs.microsoft.com/en-us/cli/azure/install-azure-cli
+1. Install CLI first: https://learn.microsoft.com/en-us/cli/azure/install-azure-cli
 2. Install the extension by running `az extension add -n azurelargeinstance`
 
 ## Usage Examples:

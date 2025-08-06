@@ -108,6 +108,13 @@ class MaxSurgeNamespace:
     def __init__(self, max_surge):
         self.max_surge = max_surge
 
+class MaxUnavailableNamespace:
+    def __init__(self, max_unavailable):
+        self.max_unavailable = max_unavailable
+
+class MaxBlockedNodesNamespace:
+    def __init__(self, max_blocked_nodes):
+        self.max_blocked_nodes = max_blocked_nodes
 
 class SpotMaxPriceNamespace:
     def __init__(self, spot_max_price):
@@ -155,6 +162,37 @@ class TestMaxSurge(unittest.TestCase):
             validators.validate_max_surge(MaxSurgeNamespace("-3"))
         self.assertTrue("positive" in str(cm.exception), msg=str(cm.exception))
 
+class TestMaxUnavailable(unittest.TestCase):
+    def test_valid_cases(self):
+        valid = ["5", "33%", "1", "100%", "0"]
+        for v in valid:
+            validators.validate_max_unavailable(MaxUnavailableNamespace(v))
+
+    def test_throws_on_string(self):
+        with self.assertRaises(CLIError) as cm:
+            validators.validate_max_unavailable(MaxUnavailableNamespace("foobar"))
+        self.assertTrue("int or percentage" in str(cm.exception), msg=str(cm.exception))
+
+    def test_throws_on_negative(self):
+        with self.assertRaises(CLIError) as cm:
+            validators.validate_max_unavailable(MaxUnavailableNamespace("-3"))
+        self.assertTrue("positive" in str(cm.exception), msg=str(cm.exception))
+
+class TestMaxBlockedNodes(unittest.TestCase):
+    def test_valid_cases(self):
+        valid = ["5", "33%", "1", "100%", "0"]
+        for v in valid:
+            validators.validate_max_blocked_nodes(MaxBlockedNodesNamespace(v))
+
+    def test_throws_on_string(self):
+        with self.assertRaises(CLIError) as cm:
+            validators.validate_max_blocked_nodes(MaxBlockedNodesNamespace("foobar"))
+        self.assertTrue("int or percentage" in str(cm.exception), msg=str(cm.exception))
+
+    def test_throws_on_negative(self):
+        with self.assertRaises(CLIError) as cm:
+            validators.validate_max_blocked_nodes(MaxBlockedNodesNamespace("-3"))
+        self.assertTrue("positive" in str(cm.exception), msg=str(cm.exception))
 
 class TestSpotMaxPrice(unittest.TestCase):
     def test_valid_cases(self):
@@ -638,32 +676,94 @@ class TestValidateApplicationSecurityGroups(unittest.TestCase):
         namespace = SimpleNamespace(
             **{
                 "asg_ids": "invalid",
+                "allowed_host_ports": ["80/tcp", "443/tcp", "8080-8090/tcp", "53/udp"],
             }
         )
         with self.assertRaises(InvalidArgumentValueError):
-            validators.validate_application_security_groups(namespace)
+            validators.validate_application_security_groups(
+                namespace
+            )
+
+    def test_application_security_groups_without_allowed_host_ports(self):
+        asg_ids = ",".join([
+            "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg1/providers/Microsoft.Network/applicationSecurityGroups/asg1",
+        ])
+        namespace = SimpleNamespace(
+            **{
+                "asg_ids": asg_ids,
+                "allowed_host_ports": [],
+            }
+        )
+        with self.assertRaises(ArgumentUsageError):
+            validators.validate_application_security_groups(
+                namespace
+            )
+
+    def test_nodepool_application_security_groups_without_allowed_host_ports(self):
+        asg_ids = ",".join([
+            "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg1/providers/Microsoft.Network/applicationSecurityGroups/asg1",
+        ])
+        namespace = SimpleNamespace(
+            **{
+                "nodepool_asg_ids": asg_ids,
+                "nodepool_allowed_host_ports": [],
+            }
+        )
+        with self.assertRaises(ArgumentUsageError):
+            validators.validate_application_security_groups(
+                namespace
+            )
 
     def test_empty_application_security_groups(self):
         namespace = SimpleNamespace(
             **{
                 "asg_ids": "",
+                "allowed_host_ports": [],
             }
         )
-        validators.validate_application_security_groups(namespace)
-
-    def test_multiple_application_security_groups(self):
-        asg_ids = ",".join(
-            [
-                "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg1/providers/Microsoft.Network/applicationSecurityGroups/asg1",
-                "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg2/providers/Microsoft.Network/applicationSecurityGroups/asg2",
-            ]
+        validators.validate_application_security_groups(
+            namespace
         )
+
+    def test_empty_nodepool_application_security_groups(self):
+        namespace = SimpleNamespace(
+            **{
+                "nodepool_asg_ids": "",
+                "nodepool_allowed_host_ports": [],
+            }
+        )
+        validators.validate_application_security_groups(
+            namespace
+        )
+    def test_multiple_application_security_groups(self):
+        asg_ids = ",".join([
+            "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg1/providers/Microsoft.Network/applicationSecurityGroups/asg1",
+            "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg2/providers/Microsoft.Network/applicationSecurityGroups/asg2",
+        ])
         namespace = SimpleNamespace(
             **{
                 "asg_ids": asg_ids,
+                "allowed_host_ports": ["80/tcp", "443/tcp", "8080-8090/tcp", "53/udp"],
             }
         )
-        validators.validate_application_security_groups(namespace)
+        validators.validate_application_security_groups(
+            namespace
+        )
+
+    def test_multiple_nodepool_application_security_groups(self):
+        asg_ids = ",".join([
+            "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg1/providers/Microsoft.Network/applicationSecurityGroups/asg1",
+            "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg2/providers/Microsoft.Network/applicationSecurityGroups/asg2",
+        ])
+        namespace = SimpleNamespace(
+            **{
+                "nodepool_asg_ids": asg_ids,
+                "nodepool_allowed_host_ports": ["80/tcp", "443/tcp", "8080-8090/tcp", "53/udp"],
+            }
+        )
+        validators.validate_application_security_groups(
+            namespace
+        )
 
 
 class MaintenanceWindowNameSpace:
@@ -709,6 +809,57 @@ class TestValidateMaintenanceWindow(unittest.TestCase):
         namespace = MaintenanceWindowNameSpace(start_date="00:30")
         validators.validate_start_time(namespace)
 
+class ManagedNamespace:
+    def __init__(self, name=None, cpu_request=None, cpu_limit=None, memory_request=None, memory_limit=None):
+        self.name = name
+        self.cpu_request = cpu_request
+        self.cpu_limit = cpu_limit
+        self.memory_request = memory_request
+        self.memory_limit = memory_limit
+
+class TestValidateManagedNamespace(unittest.TestCase):
+    def test_invalid_namespace_name(self):
+        namespace = ManagedNamespace(name="Abc")
+        err = "Invalid namespace 'Abc'. Must consist of lower case alphanumeric characters or '-', and must start and end with an alphanumeric character."
+        with self.assertRaises(ValueError) as cm:
+            validators.validate_namespace_name(namespace)
+        self.assertEqual(str(cm.exception), err)
+    
+    def test_valid_namespace_name(self):
+        namespace = ManagedNamespace(name="abc")
+        validators.validate_namespace_name(namespace)
+
+    def test_invalid_cpu_request(self):
+        namespace = ManagedNamespace(cpu_request="2t")
+        err = "--cpu-request must be specified in millicores, like 200m"
+        with self.assertRaises(ValueError) as cm:
+            validators.validate_resource_quota(namespace)
+        self.assertEqual(str(cm.exception), err)
+    
+    def test_invalid_cpu_limit(self):
+        namespace = ManagedNamespace(cpu_request="200m", cpu_limit="2t")
+        err = "--cpu-limit must be specified in millicores, like 200m"
+        with self.assertRaises(ValueError) as cm:
+            validators.validate_resource_quota(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_invalid_memory_request(self):
+        namespace = ManagedNamespace(cpu_request="200m", cpu_limit="800m", memory_request="2t")
+        err = "--memory-request must be specified in the power-of-two equivalents form:Ei, Pi, Ti, Gi, Mi, Ki."
+        with self.assertRaises(ValueError) as cm:
+            validators.validate_resource_quota(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_invalid_memory_limit(self):
+        namespace = ManagedNamespace(cpu_request="200m", cpu_limit="800m", memory_request="1Gi", memory_limit="2t")
+        err = "--memory-limit must be specified in the power-of-two equivalents form:Ei, Pi, Ti, Gi, Mi, Ki."
+        with self.assertRaises(ValueError) as cm:
+            validators.validate_resource_quota(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_valid_resource_quotas(self):
+        namespace = ManagedNamespace(cpu_request="500m", cpu_limit="800m", memory_request="1Gi", memory_limit="2Gi")
+        validators.validate_resource_quota(namespace)
 
 class TestValidateDisableAzureContainerStorage(unittest.TestCase):
     def test_disable_when_extension_not_installed(self):

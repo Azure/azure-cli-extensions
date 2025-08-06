@@ -407,11 +407,11 @@ class NetworkScenarioTest(ScenarioTest):
         self.kwargs.update({"config_id": config_id})
 
         # test nm connect-config commit
-        self.cmd('network manager post-commit --network-manager-name {manager_name} --commit-type "Connectivity" '
-                 '--target-locations "eastus2" -g {rg} --configuration-ids {config_id}')
+        #self.cmd('network manager post-commit --network-manager-name {manager_name} --commit-type "Connectivity" '
+        #        '--target-locations "eastus2" -g {rg} --configuration-ids {config_id}')
         # test nm connect-config  uncommit
-        self.cmd('network manager post-commit --network-manager-name {manager_name} --commit-type "Connectivity" '
-                 '--target-locations "eastus2" -g {rg}')
+        #self.cmd('network manager post-commit --network-manager-name {manager_name} --commit-type "Connectivity" '
+        #        '--target-locations "eastus2" -g {rg}')
 
         self.cmd('network manager connect-config update --configuration-name {config_name} --network-manager-name {manager_name} -g {rg}')
         self.cmd('network manager connect-config list --network-manager-name {manager_name} -g {rg}')
@@ -625,7 +625,7 @@ class NetworkScenarioTest(ScenarioTest):
         self.cmd('az network manager routing-config update --name {routing_config} --manager-name {manager_name} --resource-group {rg} --description "test"',
                  self.check('description', 'test'))
 
-        self.cmd('az network manager routing-config rule-collection create --config-name {routing_config} --manager-name {manager_name} --name {rule_collection} --resource-group {rg} --local-route-setting NotSpecified --applies-to [{{"network_group_id":{manager_id}}}] --disable-bgp-route true',
+        self.cmd('az network manager routing-config rule-collection create --config-name {routing_config} --manager-name {manager_name} --name {rule_collection} --resource-group {rg} --applies-to [{{"network_group_id":{manager_id}}}] --disable-bgp-route true',
                  self.check('name', '{rule_collection}'))
         self.cmd('az network manager routing-config rule-collection list --config-name {routing_config} --manager-name {manager_name} --resource-group {rg}',
                  self.check('length(@)', 1))

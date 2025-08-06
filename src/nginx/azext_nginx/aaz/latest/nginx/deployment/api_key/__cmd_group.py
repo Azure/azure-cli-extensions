@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command_group(
     "nginx deployment api-key",
-    is_preview=True,
 )
 class __CMDGroup(AAZCommandGroup):
     """Managing Nginxaas deployment API Keys

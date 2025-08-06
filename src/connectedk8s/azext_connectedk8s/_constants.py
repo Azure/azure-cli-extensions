@@ -63,13 +63,13 @@ Infrastructure_Enum_Values = [
 AHB_Enum_Values = ["True", "False", "NotApplicable"]
 Feature_Values = ["cluster-connect", "azure-rbac", "custom-locations"]
 CRD_FOR_FORCE_DELETE = [
-    "arccertificates.clusterconfig.azure.com",
-    "azureclusteridentityrequests.clusterconfig.azure.com",
-    "azureextensionidentities.clusterconfig.azure.com",
-    "connectedclusters.arc.azure.com",
-    "customlocationsettings.clusterconfig.azure.com",
-    "extensionconfigs.clusterconfig.azure.com",
-    "gitconfigs.clusterconfig.azure.com",
+    "arccertificates.clusterconfig.azure",
+    "azureclusteridentityrequests.clusterconfig.azure",
+    "azureextensionidentities.clusterconfig.azure",
+    "connectedclusters.arc.azure",
+    "customlocationsettings.clusterconfig.azure",
+    "extensionconfigs.clusterconfig.azure",
+    "gitconfigs.clusterconfig.azure",
 ]
 Helm_Install_Release_Userfault_Messages = [
     "forbidden",
@@ -163,6 +163,7 @@ Download_Exe_Fault_Type = (
 Create_Directory_Fault_Type = (
     "Error while creating directory for placing the executable"
 )
+Remove_File_Fault_Type = "Error while deleting the specified file"
 Run_Clientproxy_Fault_Type = "Error while starting client proxy process."
 Post_Hybridconn_Fault_Type = (
     "Error while posting hybrid connection details to proxy process"
@@ -417,7 +418,7 @@ SigningKey_CR_Snapshot = "signingkey_cr_snapshot.txt"
 
 # Connect Precheck Diagnoser constants
 Cluster_Diagnostic_Checks_Job_Registry_Path = (
-    "mcr.microsoft.com/azurearck8s/helmchart/stable/clusterdiagnosticchecks:0.2.2"
+    "azurearck8s/helmchart/stable/clusterdiagnosticchecks:0.2.2"
 )
 Cluster_Diagnostic_Checks_Helm_Install_Failed_Fault_Type = (
     "Error while installing cluster diagnostic checks helm release"
@@ -453,6 +454,21 @@ Cluster_Diagnostic_Checks_Job_Log_Save_Failed = (
     "Failed to save cluster diagnostic checks job log"
 )
 
+Manual_Custom_Location_Oid_Warning = """Important! Custom Location feature enablement can't be validated when using a manually provided OID. If the custom location feature is not enabled, you may encounter an error when creating the custom location.
+After creating the custom location, run `az customlocation show` and check that ProvisioningState is Succeeded. If ProvisoningState is Failed, then re-try this command with a  valid custom location OID to enable the feature.
+For guidance, refer to: https://aka.ms/enable-customlocation"""
+
+Custom_Location_Enable_Failed_warning = """Important! Custom Location feature wasn't enabled due to insufficient privileges on the Service Principal Name. If the custom location feature is not enabled, you will encounter an error when creating the custom location. Refer to: https://aka.ms/enable-cl-spn"""
+
+KubeApi_Connectivity_Failed_Warning = """Unable to verify connectivity to the Kubernetes cluster.
+Please check https://learn.microsoft.com/en-us/azure/azure-arc/kubernetes/diagnose-connection-issues"""
+
+Kubeconfig_Load_Failed_Warning = """Unable to load the kubeconfig file.
+Please check https://learn.microsoft.com/en-us/azure/azure-arc/kubernetes/diagnose-connection-issues#is-kubeconfig-pointing-to-the-right-cluster"""
+
+Cluster_Already_Onboarded_Error = """The kubernetes cluster is already onboarded.
+Please check if the Kubeconfig is pointing to the correct cluster using  command: kubectl config current-context."""
+
 # Diagnostic Results Name
 Outbound_Connectivity_Check_Result_String = "Outbound Network Connectivity"
 Outbound_Connectivity_Check_Failed_For_Cluster_Connect = (
@@ -460,24 +476,21 @@ Outbound_Connectivity_Check_Failed_For_Cluster_Connect = (
 )
 DNS_Check_Result_String = "DNS Result:"
 AZ_CLI_ADAL_TO_MSAL_MIGRATE_VERSION = "2.30.0"
-CLIENT_PROXY_VERSION = "1.3.022011"
+CLIENT_PROXY_VERSION = "1.3.029301"
+CLIENT_PROXY_FOLDER = ".clientproxy"
 API_SERVER_PORT = 47011
 CLIENT_PROXY_PORT = 47010
 CLIENTPROXY_CLIENT_ID = "04b07795-8ddb-461a-bbee-02f9e1bf7b46"
 API_CALL_RETRIES = 12
 DEFAULT_REQUEST_TIMEOUT = 10  # seconds
-RELEASE_DATE_WINDOWS = "release12-01-23"
-RELEASE_DATE_LINUX = "release12-01-23"
 CSP_REFRESH_TIME = 300
 
 # Default timeout in seconds for Onboarding Helm Install
 DEFAULT_MAX_ONBOARDING_TIMEOUT_HELMVALUE_SECONDS = "1200"
 
 # URL constants
-CSP_Storage_Url = "https://k8sconnectcsp.azureedge.net"
-CSP_Storage_Url_Mooncake = "https://k8sconnectcsp.blob.core.chinacloudapi.cn"
-CSP_Storage_Url_Fairfax = "https://k8sconnectcsp.azureedge.us"
-HELM_STORAGE_URL = "https://k8connecthelm.azureedge.net"
+CLIENT_PROXY_MCR_TARGET = "azureconnectivity/proxy"
+HELM_MCR_URL = "azurearck8s/helm"
 HELM_VERSION = "v3.12.2"
 Download_And_Install_Kubectl_Fault_Type = "Failed to download and install kubectl"
 Azure_Access_Token_Variable = "AZURE_ACCESS_TOKEN"
@@ -495,17 +508,17 @@ Doc_Onboarding_PreRequisites_Url = (
 )
 Doc_Network_Requirements_Url = "https://learn.microsoft.com/en-us/azure/azure-arc/kubernetes/network-requirements?tabs=azure-cloud"
 Doc_Quick_Start_NW_Requirements_Url = (
-    "https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?"
+    "https://learn.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?"
     "tabs=azure-cli#meet-network-requirements"
 )
 Doc_Quick_Start_Outbound_Proxy_Url = (
-    "https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?"
+    "https://learn.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?"
     "tabs=azure-cli#connect-using-an-outbound-proxy-server"
 )
 Doc_Provisioned_Cluster_Delete_Url = "https://learn.microsoft.com/en-us/cli/azure/aksarc?view=azure-cli-latest#az-aksarc-delete"
 Doc_Provisioned_Cluster_Update_Url = "https://learn.microsoft.com/en-us/cli/azure/aksarc?view=azure-cli-latest#az-aksarc-update"
 Doc_Provisioned_Cluster_Upgrade_Url = "https://learn.microsoft.com/en-us/cli/azure/aksarc?view=azure-cli-latest#az-aksarc-upgrade"
-Doc_Agent_Version_Support_Policy_Url = "https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/agent-upgrade#version-support-policy"
+Doc_Agent_Version_Support_Policy_Url = "https://learn.microsoft.com/en-us/azure/azure-arc/kubernetes/agent-upgrade#version-support-policy"
 
 # Acceptable states for required RP registrations to be in
 #

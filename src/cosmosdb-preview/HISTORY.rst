@@ -1,7 +1,39 @@
 .. :changelog:
-
 Release History
 ===============
+
+1.6.1
++++++
+* Fix SQL container throughput update to preserve existing throughput buckets when not explicitly specified.
+
+1.6.0
+* Add support for Fleet/Fleetspace/FleetspaceAccount/FleetAnalytics CRUD actions.
+
++++++++
+1.5.0
+* Add support for Gremlin/Cassandra/Mongo RBAC role definition and assignment CRUD actions.
+
++++++++
+1.4.0
+*  Add support for private endpoint in VPN based datacenter deployments in managed cassandra.
+
++++++++
+1.3.0
+*  Add support for VPN cluster deployments in managed cassandra.
+
++++++++
+1.2.1
+* 'az cosmosdb restore': Remove restore validations which would cause timeouts for large restore
+
++++++++
+1.2.0
+* Add support for Table RBAC role definition and assignment CRUD actions.
+
++++++++
+1.2.0b1
+* Add support for Throughput bucketing.
+
++++++++
 1.1.0b1
 * Add support for Mongo (vCore) destination in container copy jobs.
 

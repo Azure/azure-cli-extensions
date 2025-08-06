@@ -2,6 +2,15 @@
 
 Release History
 ===============
+1.3.0
+++++++
+* `az network firewall create`: Add parameter `--edge-zone` to support extended location
+
+1.2.3
+++++++
+* `az network firewall policy draft create`: Consume Policy Properies while creating draft
+* `az network firewall policy rule collection group draft create`: Consume RCG Properies while creating RCG draft
+
 1.2.2
 ++++++
 * `az network firewall create`: add support public-ip for vhub sku firewall

@@ -1,0 +1,25 @@
+displayName: CLI-Locust-Test
+testType: Locust
+testPlan: sample-locust-file.py
+description: 'Locust Load Test created using az load test'
+engineInstances: 2
+configurationFiles:
+  - additional-data.csv
+zipArtifacts:
+   - sample-ZIP-artifact.zip
+failureCriteria:
+  - avg(requests_per_sec) > 78
+  - p75(response_time_ms) > 380
+  - p99.9(response_time_ms) > 540
+  - GetCustomerDetails: avg(latency) > 200
+env:
+  - name: 'LOCUST_USERS'
+    value: 1
+  - name: 'LOCUST_RUN_TIME'
+    value: 120
+  - name: 'LOCUST_SPAWN_RATE'
+    value: 1
+  - name: 'LOCUST_HOST'
+    value: 'https://azure.microsoft.com'
+splitAllCSVs: True
+autoStop: disable

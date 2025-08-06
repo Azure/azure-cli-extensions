@@ -19,9 +19,9 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-09-01",
+        "version": "2024-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}", "2023-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}", "2024-09-01"],
         ]
     }
 
@@ -47,7 +47,7 @@ class Show(AAZCommand):
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
-                pattern="^[-\w\._]+$",
+                pattern="^[-\\w\\._]+$",
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
@@ -120,7 +120,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-09-01",
+                    "api-version", "2024-09-01",
                     required=True,
                 ),
             }
@@ -177,6 +177,7 @@ class Show(AAZCommand):
             _schema_on_200.type = AAZStrType(
                 flags={"read_only": True},
             )
+            _schema_on_200.zones = AAZListType()
 
             identity = cls._schema_on_200.identity
             identity.principal_id = AAZStrType(
@@ -199,7 +200,9 @@ class Show(AAZCommand):
                 serialized_name="dnsZoneType",
             )
             properties.encryption = AAZObjectType()
-            properties.endpoints = AAZObjectType()
+            properties.endpoints = AAZObjectType(
+                flags={"read_only": True},
+            )
             properties.extended_network_blocks = AAZListType(
                 serialized_name="extendedNetworkBlocks",
             )
@@ -225,6 +228,7 @@ class Show(AAZCommand):
             )
             properties.nsx_public_ip_quota_raised = AAZStrType(
                 serialized_name="nsxPublicIpQuotaRaised",
+                flags={"read_only": True},
             )
             properties.nsxt_certificate_thumbprint = AAZStrType(
                 serialized_name="nsxtCertificateThumbprint",
@@ -285,6 +289,7 @@ class Show(AAZCommand):
             )
             key_vault_properties.key_state = AAZStrType(
                 serialized_name="keyState",
+                flags={"read_only": True},
             )
             key_vault_properties.key_vault_url = AAZStrType(
                 serialized_name="keyVaultUrl",
@@ -294,6 +299,7 @@ class Show(AAZCommand):
             )
             key_vault_properties.version_type = AAZStrType(
                 serialized_name="versionType",
+                flags={"read_only": True},
             )
 
             endpoints = cls._schema_on_200.properties.endpoints
@@ -403,6 +409,9 @@ class Show(AAZCommand):
 
             tags = cls._schema_on_200.tags
             tags.Element = AAZStrType()
+
+            zones = cls._schema_on_200.zones
+            zones.Element = AAZStrType()
 
             return cls._schema_on_200
 

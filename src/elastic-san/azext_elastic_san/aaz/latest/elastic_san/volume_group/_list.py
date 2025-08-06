@@ -19,12 +19,15 @@ class List(AAZCommand):
 
     :example: List Volume Groups.
         az elastic-san volume-group list -g "rg" -e "san_name"
+
+    :example: List soft-deleted volume groups
+        az elastic-san volume-group list -g rg_name -e san_name --access-soft-deleted-resources True
     """
 
     _aaz_info = {
-        "version": "2024-06-01-preview",
+        "version": "2024-07-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elasticsan/elasticsans/{}/volumegroups", "2024-06-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elasticsan/elasticsans/{}/volumegroups", "2024-07-01-preview"],
         ]
     }
 
@@ -45,6 +48,12 @@ class List(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
+        _args_schema.x_ms_access_soft_deleted_resources = AAZStrArg(
+            options=["--soft-deleted-only", "--access-soft-deleted-resources", "--x-ms-access-soft-deleted-resources"],
+            help="Optional, returns only soft deleted volume groups if set to true. If set to false or if not specified, returns only active volume groups.",
+            is_preview=True,
+            enum={"false": "false", "true": "true"},
+        )
         _args_schema.elastic_san_name = AAZStrArg(
             options=["-e", "--elastic-san", "--elastic-san-name"],
             help="The name of the ElasticSan.",
@@ -126,7 +135,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-06-01-preview",
+                    "api-version", "2024-07-01-preview",
                     required=True,
                 ),
             }
@@ -135,6 +144,9 @@ class List(AAZCommand):
         @property
         def header_parameters(self):
             parameters = {
+                **self.serialize_header_param(
+                    "x-ms-access-soft-deleted-resources", self.ctx.args.x_ms_access_soft_deleted_resources,
+                ),
                 **self.serialize_header_param(
                     "Accept", "application/json",
                 ),
@@ -172,7 +184,7 @@ class List(AAZCommand):
             _element.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.identity = AAZObjectType()
+            _element.identity = AAZIdentityObjectType()
             _element.name = AAZStrType(
                 flags={"read_only": True},
             )
@@ -218,6 +230,9 @@ class List(AAZCommand):
             )
 
             properties = cls._schema_on_200.value.Element.properties
+            properties.delete_retention_policy = AAZObjectType(
+                serialized_name="deleteRetentionPolicy",
+            )
             properties.encryption = AAZStrType()
             properties.encryption_properties = AAZObjectType(
                 serialized_name="encryptionProperties",
@@ -238,6 +253,14 @@ class List(AAZCommand):
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
+            )
+
+            delete_retention_policy = cls._schema_on_200.value.Element.properties.delete_retention_policy
+            delete_retention_policy.policy_state = AAZStrType(
+                serialized_name="policyState",
+            )
+            delete_retention_policy.retention_period_days = AAZIntType(
+                serialized_name="retentionPeriodDays",
             )
 
             encryption_properties = cls._schema_on_200.value.Element.properties.encryption_properties

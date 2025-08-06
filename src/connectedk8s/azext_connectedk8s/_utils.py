@@ -7,6 +7,7 @@ from __future__ import annotations
 import contextlib
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -55,6 +56,28 @@ logger = get_logger(__name__)
 
 # pylint: disable=line-too-long
 # pylint: disable=bare-except
+
+
+def get_mcr_path(cmd: CLICommand) -> str:
+    active_directory_array = cmd.cli_ctx.cloud.endpoints.active_directory.split(".")
+
+    # default for public, mc, ff clouds
+    mcr_postfix = active_directory_array[2]
+    # special cases for USSec, exclude part of suffix
+    if len(active_directory_array) == 4 and active_directory_array[2] == "microsoft":
+        mcr_postfix = active_directory_array[3]
+    # special case for USNat
+    elif len(active_directory_array) == 5:
+        mcr_postfix = (
+            active_directory_array[2]
+            + "."
+            + active_directory_array[3]
+            + "."
+            + active_directory_array[4]
+        )
+
+    mcr_url = f"mcr.microsoft.{mcr_postfix}"
+    return mcr_url
 
 
 def validate_connect_rp_location(cmd: CLICommand, location: str) -> None:
@@ -1032,7 +1055,7 @@ def validate_infrastructure_type(infra: str) -> str | None:
     for s in consts.Infrastructure_Enum_Values[1:]:  # First value is "auto"
         if s.lower() == infra.lower():
             return s
-    return None
+    return infra
 
 
 def get_values_file() -> str | None:
@@ -1307,6 +1330,16 @@ def helm_install_release(
     _, error_helm_install = response_helm_install.communicate()
     if response_helm_install.returncode != 0:
         helm_install_error_message = error_helm_install.decode("ascii")
+        helm_install_error_message = process_helm_error_detail(
+            helm_install_error_message
+        )
+        helm_error_detail = {
+            "Context.Default.AzureCLI.onboardingErrorType": consts.Install_HelmRelease_Fault_Type,
+            "Context.Default.AzureCLI.onboardingErrorMessage": helm_install_error_message,
+        }
+        # Replace the existing calls with the new function
+
+        telemetry.add_extension_event("connectedk8s", helm_error_detail)
         if any(
             message in helm_install_error_message
             for message in consts.Helm_Install_Release_Userfault_Messages
@@ -1321,11 +1354,61 @@ def helm_install_release(
             "Please check if the azure-arc namespace was deployed and run 'kubectl get pods -n azure-arc' "
             "to check if all the pods are in running state. A possible cause for pods stuck in pending "
             "state could be insufficient resources on the kubernetes cluster to onboard to arc."
+            " Also pod logs can be checked using kubectl logs <pod-name> -n azure-arc.\n"
         )
         logger.warning(warn_msg)
         raise CLIInternalError(
             f"Unable to install helm release: {helm_install_error_message}"
         )
+
+
+def process_helm_error_detail(helm_error_detail: str) -> str:
+    helm_error_detail = remove_rsa_private_key(helm_error_detail)
+    helm_error_detail = scrub_proxy_url(helm_error_detail)
+    helm_error_detail = redact_base64_strings(helm_error_detail)
+    helm_error_detail = redact_sensitive_fields_from_string(helm_error_detail)
+
+    return helm_error_detail
+
+
+def remove_rsa_private_key(input_text: str) -> str:
+    # Regex to identify RSA private key
+    rsa_key_pattern = re.compile(
+        r"-----BEGIN RSA PRIVATE KEY-----.*?-----END RSA PRIVATE KEY-----", re.DOTALL
+    )
+    # Search for the key in the input text
+    if rsa_key_pattern.search(input_text):
+        # Remove the RSA private key
+        return rsa_key_pattern.sub("[RSA PRIVATE KEY REMOVED]", input_text)
+    return input_text
+
+
+def scrub_proxy_url(proxy_url_str: str) -> str:
+    regex = re.compile(r"://.*?:.*?@")
+    # Replace matches with "://[REDACTED]:[REDACTED]@"
+    proxy_url_str = regex.sub("://[REDACTED]:[REDACTED]@", proxy_url_str)
+    return proxy_url_str
+
+
+def redact_base64_strings(content: str) -> str:
+    base64_pattern = r"\b[A-Za-z0-9+/=]{40,}\b"
+    return re.sub(base64_pattern, "[REDACTED]", content)
+
+
+def redact_sensitive_fields_from_string(input_text: str) -> str:
+    # Define regex patterns for keys
+    patterns = {
+        r"(username:\s*).*": r"\1[REDACTED]",
+        r"(password:\s*).*": r"\1[REDACTED]",
+        r"(token:\s*).*": r"\1[REDACTED]",
+    }
+
+    # Apply regex to redact sensitive fields
+    for pattern, replacement in patterns.items():
+        input_text = re.sub(pattern, replacement, input_text)
+
+    # Return the redacted text
+    return input_text
 
 
 def get_release_namespace(
@@ -1540,18 +1623,6 @@ def az_cli(args_str: str) -> Any:
     if cli.result.error:
         raise CLIInternalError(f"'az ${args_str}' failed: {cli.result.error}")
     return True
-
-
-# def is_cli_using_msal_auth():
-#     response_cli_version = az_cli("version --output json")
-#     try:
-#         cli_version = response_cli_version['azure-cli']
-#     except Exception as ex:
-#         raise CLIInternalError(f"Unable to decode the az cli version installed: {ex}")
-#     if version.parse(cli_version) >= version.parse(consts.AZ_CLI_ADAL_TO_MSAL_MIGRATE_VERSION):
-#         return True
-#     else:
-#         return False
 
 
 def is_cli_using_msal_auth() -> bool:

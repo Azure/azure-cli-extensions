@@ -13,7 +13,7 @@ from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
 class BastionScenario(ScenarioTest):
     @AllowLargeResponse(size_kb=9999)
-    @ResourceGroupPreparer(name_prefix="cli_test_bastion_host_", location="westus2")
+    @ResourceGroupPreparer(name_prefix="cli_test_bastion_host_", location="eastus")
     def test_bastion_host_crud(self):
         self.kwargs.update({
             "vnet_name": self.create_random_name("vnet-", 12),
@@ -27,6 +27,18 @@ class BastionScenario(ScenarioTest):
         self.cmd("network public-ip create -n {ip_name} -g {rg} --sku Standard")
         self.cmd("vm create -n {vm_name} -g {rg} --vnet-name {vnet_name} --subnet {subnet_name} --nsg-rule None --image Canonical:UbuntuServer:18.04-LTS:latest --authentication-type password --admin-username testadmin --admin-password TestPassword11!!")
         self.cmd('network vnet subnet update -g {rg} --vnet-name {vnet_name} -n {subnet_name} --default-outbound-access false')
+
+        self.cmd(
+            "network bastion create -n {bastion_name} -g {rg} --vnet-name {vnet_name} "
+            "--sku Developer --network-acls-ips \"1.1.1.1/16 1.1.1.2/16\"",
+            checks=[
+                self.check("name", "{bastion_name}"),
+                self.check("sku.name", "Developer"),
+                self.check("type", "Microsoft.Network/bastionHosts"),
+            ]
+        )
+
+        self.cmd("network bastion delete -n {bastion_name} -g {rg} -y")
 
         self.cmd(
             "network bastion create -n {bastion_name} -g {rg} --public-ip-address {ip_name} --vnet-name {vnet_name} "

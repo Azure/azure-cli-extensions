@@ -19,12 +19,18 @@ class Create(AAZCommand):
 
     :example: Create job
         az databox job create -g rg -n job-name --sku databox --contact-name 'test' --phone 14258828080 --email-list testing@microsoft.com --street-address1 "1 MICROSOFT WAY" --city Redmond --state-or-province WA --country US --postal-code 98052 --company-name Microsoft --storage-account account-id --staging-storage-account account-id --resource-group-for-managed-disk rg --transfer-type ImportToAzure --kek-type MicrosoftManaged
+
+    :example: Create job - DataboxV2
+        az databox job create -g rg -n job-name --sku databox --model AzureDataBox120 --contact-name 'test' --phone 14258828080 --email-list testing@microsoft.com --street-address1 "1 MICROSOFT WAY" --city Redmond --state-or-province WA --country US --postal-code 98052 --company-name Microsoft --storage-account account-id --staging-storage-account account-id --resource-group-for-managed-disk rg --transfer-type ImportToAzure --kek-type MicrosoftManaged
+
+    :example: JobsCreate
+        az databox job create --resource-group YourResourceGroupName --job-name TestJobName1 --transfer-type ImportToAzure --contact-name XXXX XXXX --phone 0000000000 --phone-extension  --email-list "[xxxx@xxxx.xxx]" --street-address1 XXXX XXXX --street-address2 XXXX XXXX --city XXXX XXXX --state-or-province XX --country XX --postal-code 00000 --company-name XXXX XXXX --address-type Commercial --data-import-details "[{account-details:{storageAccountId:/subscriptions/YourSubscriptionId/resourcegroups/YourResourceGroupName/providers/Microsoft.Storage/storageAccounts/YourStorageAccountName,storage-account:{storage-account-id:/subscriptions/YourSubscriptionId/resourcegroups/YourResourceGroupName/providers/Microsoft.Storage/storageAccounts/YourStorageAccountName}}}]" --location westus --sku DataBox --model DataBox
     """
 
     _aaz_info = {
-        "version": "2022-12-01",
+        "version": "2025-02-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.databox/jobs/{}", "2022-12-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.databox/jobs/{}", "2025-02-01"],
         ]
     }
 
@@ -50,7 +56,7 @@ class Create(AAZCommand):
             help="The name of the job Resource within the specified resource group. job names must be between 3 and 24 characters in length and use any alphanumeric and underscore only",
             required=True,
             fmt=AAZStrArgFormat(
-                pattern="^[-\w\.]+$",
+                pattern="^[-\\w\\.]+$",
                 max_length=24,
                 min_length=3,
             ),
@@ -128,7 +134,7 @@ class Create(AAZCommand):
         data_box = cls._args_schema.data_box
         data_box.device_password = AAZStrArg(
             options=["device-password"],
-            help="Set Device password for unlocking Databox. Should not be passed for TransferType:ExportFromAzure jobs. If this is not passed, the service will generate password itself. This will not be returned in Get Call. Password Requirements :  Password must be minimum of 12 and maximum of 64 characters. Password must have at least one uppercase alphabet, one number and one special character. Password cannot have the following characters : IilLoO0 Password can have only alphabets, numbers and these characters : @#\-$%^!+=;:_()]+",
+            help="Set Device password for unlocking Databox. Should not be passed for TransferType:ExportFromAzure jobs. If this is not passed, the service will generate password itself. This will not be returned in Get Call. Password Requirements :  Password must be minimum of 12 and maximum of 64 characters. Password must have at least one uppercase alphabet, one number and one special character. Password cannot have the following characters : IilLoO0 Password can have only alphabets, numbers and these characters : @#\\-$%^!+=;:_()]+",
         )
 
         data_box_customer_disk = cls._args_schema.data_box_customer_disk
@@ -197,7 +203,7 @@ class Create(AAZCommand):
         data_box_heavy = cls._args_schema.data_box_heavy
         data_box_heavy.device_password = AAZStrArg(
             options=["device-password"],
-            help="Set Device password for unlocking Databox Heavy. Should not be passed for TransferType:ExportFromAzure jobs. If this is not passed, the service will generate password itself. This will not be returned in Get Call. Password Requirements :  Password must be minimum of 12 and maximum of 64 characters. Password must have at least one uppercase alphabet, one number and one special character. Password cannot have the following characters : IilLoO0 Password can have only alphabets, numbers and these characters : @#\-$%^!+=;:_()]+",
+            help="Set Device password for unlocking Databox Heavy. Should not be passed for TransferType:ExportFromAzure jobs. If this is not passed, the service will generate password itself. This will not be returned in Get Call. Password Requirements :  Password must be minimum of 12 and maximum of 64 characters. Password must have at least one uppercase alphabet, one number and one special character. Password cannot have the following characters : IilLoO0 Password can have only alphabets, numbers and these characters : @#\\-$%^!+=;:_()]+",
         )
 
         data_export_details = cls._args_schema.data_export_details
@@ -230,7 +236,7 @@ class Create(AAZCommand):
         )
         account_details.share_password = AAZStrArg(
             options=["share-password"],
-            help="Password for all the shares to be created on the device. Should not be passed for TransferType:ExportFromAzure jobs. If this is not passed, the service will generate password itself. This will not be returned in Get Call. Password Requirements :  Password must be minimum of 12 and maximum of 64 characters. Password must have at least one uppercase alphabet, one number and one special character. Password cannot have the following characters : IilLoO0 Password can have only alphabets, numbers and these characters : @#\-$%^!+=;:_()]+",
+            help="Password for all the shares to be created on the device. Should not be passed for TransferType:ExportFromAzure jobs. If this is not passed, the service will generate password itself. This will not be returned in Get Call. Password Requirements :  Password must be minimum of 12 and maximum of 64 characters. Password must have at least one uppercase alphabet, one number and one special character. Password cannot have the following characters : IilLoO0 Password can have only alphabets, numbers and these characters : @#\\-$%^!+=;:_()]+",
         )
 
         managed_disk = cls._args_schema.data_export_details.Element.account_details.managed_disk
@@ -398,7 +404,7 @@ class Create(AAZCommand):
         )
         account_details.share_password = AAZStrArg(
             options=["share-password"],
-            help="Password for all the shares to be created on the device. Should not be passed for TransferType:ExportFromAzure jobs. If this is not passed, the service will generate password itself. This will not be returned in Get Call. Password Requirements :  Password must be minimum of 12 and maximum of 64 characters. Password must have at least one uppercase alphabet, one number and one special character. Password cannot have the following characters : IilLoO0 Password can have only alphabets, numbers and these characters : @#\-$%^!+=;:_()]+",
+            help="Password for all the shares to be created on the device. Should not be passed for TransferType:ExportFromAzure jobs. If this is not passed, the service will generate password itself. This will not be returned in Get Call. Password Requirements :  Password must be minimum of 12 and maximum of 64 characters. Password must have at least one uppercase alphabet, one number and one special character. Password cannot have the following characters : IilLoO0 Password can have only alphabets, numbers and these characters : @#\\-$%^!+=;:_()]+",
         )
 
         managed_disk = cls._args_schema.data_import_details.Element.account_details.managed_disk
@@ -443,15 +449,28 @@ class Create(AAZCommand):
         )
 
         identity = cls._args_schema.identity
+        identity.mi_system_assigned = AAZStrArg(
+            options=["system-assigned", "mi-system-assigned"],
+            help="Set the system managed identity.",
+            blank="True",
+        )
         identity.type = AAZStrArg(
             options=["type"],
             help="Identity type",
             default="None",
         )
+        identity.mi_user_assigned = AAZListArg(
+            options=["user-assigned", "mi-user-assigned"],
+            help="Set the user managed identities.",
+            blank=[],
+        )
         identity.user_assigned_identities = AAZDictArg(
             options=["user-assigned-identities"],
             help="User Assigned Identities",
         )
+
+        mi_user_assigned = cls._args_schema.identity.mi_user_assigned
+        mi_user_assigned.Element = AAZStrArg()
 
         user_assigned_identities = cls._args_schema.identity.user_assigned_identities
         user_assigned_identities.Element = AAZObjectArg(
@@ -561,6 +580,12 @@ class Create(AAZCommand):
         # define Arg Group "Sku"
 
         _args_schema = cls._args_schema
+        _args_schema.model = AAZStrArg(
+            options=["--model"],
+            arg_group="Sku",
+            help="The customer friendly name of the combination of version and capacity of the device. This field is necessary only at the time of ordering the newer generation device i.e. AzureDataBox120 and AzureDataBox525 as of Feb/2025",
+            enum={"AzureDataBox120": "AzureDataBox120", "AzureDataBox525": "AzureDataBox525", "DataBox": "DataBox", "DataBoxCustomerDisk": "DataBoxCustomerDisk", "DataBoxDisk": "DataBoxDisk", "DataBoxHeavy": "DataBoxHeavy"},
+        )
         _args_schema.sku = AAZStrArg(
             options=["--sku"],
             arg_group="Sku",
@@ -759,7 +784,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-12-01",
+                    "api-version", "2025-02-01",
                     required=True,
                 ),
             }
@@ -784,7 +809,7 @@ class Create(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("identity", AAZObjectType, ".identity")
+            _builder.set_prop("identity", AAZIdentityObjectType, ".identity")
             _builder.set_prop("location", AAZStrType, ".location", typ_kwargs={"flags": {"required": True}})
             _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True, "client_flatten": True}})
             _builder.set_prop("sku", AAZObjectType, ".", typ_kwargs={"flags": {"required": True}})
@@ -794,10 +819,16 @@ class Create(AAZCommand):
             if identity is not None:
                 identity.set_prop("type", AAZStrType, ".type")
                 identity.set_prop("userAssignedIdentities", AAZDictType, ".user_assigned_identities")
+                identity.set_prop("userAssigned", AAZListType, ".mi_user_assigned", typ_kwargs={"flags": {"action": "create"}})
+                identity.set_prop("systemAssigned", AAZStrType, ".mi_system_assigned", typ_kwargs={"flags": {"action": "create"}})
 
             user_assigned_identities = _builder.get(".identity.userAssignedIdentities")
             if user_assigned_identities is not None:
                 user_assigned_identities.set_elements(AAZObjectType, ".")
+
+            user_assigned = _builder.get(".identity.userAssigned")
+            if user_assigned is not None:
+                user_assigned.set_elements(AAZStrType, ".")
 
             properties = _builder.get(".properties")
             if properties is not None:
@@ -1000,7 +1031,7 @@ class Create(AAZCommand):
 
             _elements = _builder.get(".properties.details{jobDetailsType:DataBoxCustomerDisk}.importDiskDetailsCollection{}")
             if _elements is not None:
-                _elements.set_prop("bitLockerKey", AAZStrType, ".bit_locker_key", typ_kwargs={"flags": {"required": True, "secret": True}})
+                _elements.set_prop("bitLockerKey", AAZStrType, ".bit_locker_key", typ_kwargs={"flags": {"secret": True}})
                 _elements.set_prop("manifestFile", AAZStrType, ".manifest_file", typ_kwargs={"flags": {"required": True}})
                 _elements.set_prop("manifestHash", AAZStrType, ".manifest_hash", typ_kwargs={"flags": {"required": True}})
 
@@ -1025,6 +1056,7 @@ class Create(AAZCommand):
 
             sku = _builder.get(".sku")
             if sku is not None:
+                sku.set_prop("model", AAZStrType, ".model")
                 sku.set_prop("name", AAZStrType, ".sku", typ_kwargs={"flags": {"required": True}})
 
             tags = _builder.get(".tags")
@@ -1054,7 +1086,7 @@ class Create(AAZCommand):
             _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.identity = AAZObjectType()
+            _schema_on_200.identity = AAZIdentityObjectType()
             _schema_on_200.location = AAZStrType(
                 flags={"required": True},
             )
@@ -1069,6 +1101,7 @@ class Create(AAZCommand):
             )
             _schema_on_200.system_data = AAZObjectType(
                 serialized_name="systemData",
+                flags={"read_only": True},
             )
             _schema_on_200.tags = AAZDictType()
             _schema_on_200.type = AAZStrType(
@@ -1103,8 +1136,16 @@ class Create(AAZCommand):
             )
 
             properties = cls._schema_on_200.properties
+            properties.all_devices_lost = AAZBoolType(
+                serialized_name="allDevicesLost",
+                flags={"read_only": True},
+            )
             properties.cancellation_reason = AAZStrType(
                 serialized_name="cancellationReason",
+                flags={"read_only": True},
+            )
+            properties.delayed_stage = AAZStrType(
+                serialized_name="delayedStage",
                 flags={"read_only": True},
             )
             properties.delivery_info = AAZObjectType(
@@ -1114,7 +1155,9 @@ class Create(AAZCommand):
                 serialized_name="deliveryType",
             )
             properties.details = AAZObjectType()
-            properties.error = AAZObjectType()
+            properties.error = AAZObjectType(
+                flags={"read_only": True},
+            )
             _CreateHelper._build_schema_cloud_error_read(properties.error)
             properties.is_cancellable = AAZBoolType(
                 serialized_name="isCancellable",
@@ -1189,13 +1232,16 @@ class Create(AAZCommand):
             )
             details.datacenter_address = AAZObjectType(
                 serialized_name="datacenterAddress",
+                flags={"read_only": True},
             )
             details.delivery_package = AAZObjectType(
                 serialized_name="deliveryPackage",
+                flags={"read_only": True},
             )
             _CreateHelper._build_schema_package_shipping_details_read(details.delivery_package)
             details.device_erasure_details = AAZObjectType(
                 serialized_name="deviceErasureDetails",
+                flags={"read_only": True},
             )
             details.expected_data_size_in_tera_bytes = AAZIntType(
                 serialized_name="expectedDataSizeInTeraBytes",
@@ -1213,10 +1259,12 @@ class Create(AAZCommand):
             )
             details.last_mitigation_action_on_job = AAZObjectType(
                 serialized_name="lastMitigationActionOnJob",
+                flags={"read_only": True},
             )
             details.preferences = AAZObjectType()
             details.return_package = AAZObjectType(
                 serialized_name="returnPackage",
+                flags={"read_only": True},
             )
             _CreateHelper._build_schema_package_shipping_details_read(details.return_package)
             details.reverse_shipment_label_sas_key = AAZStrType(
@@ -1551,8 +1599,16 @@ class Create(AAZCommand):
             job_stages.Element = AAZObjectType()
 
             _element = cls._schema_on_200.properties.details.job_stages.Element
+            _element.delay_information = AAZListType(
+                serialized_name="delayInformation",
+                flags={"read_only": True},
+            )
             _element.display_name = AAZStrType(
                 serialized_name="displayName",
+                flags={"read_only": True},
+            )
+            _element.job_stage_details = AAZDictType(
+                serialized_name="jobStageDetails",
                 flags={"read_only": True},
             )
             _element.stage_name = AAZStrType(
@@ -1567,6 +1623,32 @@ class Create(AAZCommand):
                 serialized_name="stageTime",
                 flags={"read_only": True},
             )
+
+            delay_information = cls._schema_on_200.properties.details.job_stages.Element.delay_information
+            delay_information.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.details.job_stages.Element.delay_information.Element
+            _element.description = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.error_code = AAZStrType(
+                serialized_name="errorCode",
+                flags={"read_only": True},
+            )
+            _element.resolution_time = AAZStrType(
+                serialized_name="resolutionTime",
+                flags={"read_only": True},
+            )
+            _element.start_time = AAZStrType(
+                serialized_name="startTime",
+                flags={"read_only": True},
+            )
+            _element.status = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            job_stage_details = cls._schema_on_200.properties.details.job_stages.Element.job_stage_details
+            job_stage_details.Element = AAZAnyType()
 
             key_encryption_key = cls._schema_on_200.properties.details.key_encryption_key
             key_encryption_key.identity_properties = AAZObjectType(
@@ -1684,6 +1766,7 @@ class Create(AAZCommand):
             )
             disc_data_box_customer_disk.deliver_to_dc_package_details = AAZObjectType(
                 serialized_name="deliverToDcPackageDetails",
+                flags={"read_only": True},
             )
             disc_data_box_customer_disk.enable_manifest_backup = AAZBoolType(
                 serialized_name="enableManifestBackup",
@@ -1727,7 +1810,9 @@ class Create(AAZCommand):
                 serialized_name="directoriesErroredOut",
                 flags={"read_only": True},
             )
-            _element.error = AAZObjectType()
+            _element.error = AAZObjectType(
+                flags={"read_only": True},
+            )
             _CreateHelper._build_schema_cloud_error_read(_element.error)
             _element.files_errored_out = AAZIntType(
                 serialized_name="filesErroredOut",
@@ -1816,7 +1901,7 @@ class Create(AAZCommand):
             )
             _element.bit_locker_key = AAZStrType(
                 serialized_name="bitLockerKey",
-                flags={"required": True, "secret": True},
+                flags={"secret": True},
             )
             _element.manifest_file = AAZStrType(
                 serialized_name="manifestFile",
@@ -1872,7 +1957,9 @@ class Create(AAZCommand):
                 serialized_name="bytesCopied",
                 flags={"read_only": True},
             )
-            _element.error = AAZObjectType()
+            _element.error = AAZObjectType(
+                flags={"read_only": True},
+            )
             _CreateHelper._build_schema_cloud_error_read(_element.error)
             _element.percent_complete = AAZIntType(
                 serialized_name="percentComplete",
@@ -1944,7 +2031,9 @@ class Create(AAZCommand):
                 serialized_name="directoriesErroredOut",
                 flags={"read_only": True},
             )
-            _element.error = AAZObjectType()
+            _element.error = AAZObjectType(
+                flags={"read_only": True},
+            )
             _CreateHelper._build_schema_cloud_error_read(_element.error)
             _element.files_errored_out = AAZIntType(
                 serialized_name="filesErroredOut",
@@ -2019,6 +2108,7 @@ class Create(AAZCommand):
                 serialized_name="displayName",
             )
             sku.family = AAZStrType()
+            sku.model = AAZStrType()
             sku.name = AAZStrType(
                 flags={"required": True},
             )
@@ -2093,7 +2183,9 @@ class _CreateHelper:
             _schema.target = cls._schema_cloud_error_read.target
             return
 
-        cls._schema_cloud_error_read = _schema_cloud_error_read = AAZObjectType()
+        cls._schema_cloud_error_read = _schema_cloud_error_read = AAZObjectType(
+            flags={"read_only": True}
+        )
 
         cloud_error_read = _schema_cloud_error_read
         cloud_error_read.additional_info = AAZListType(
@@ -2111,7 +2203,11 @@ class _CreateHelper:
         additional_info.Element = AAZObjectType()
 
         _element = _schema_cloud_error_read.additional_info.Element
+        _element.info = AAZDictType()
         _element.type = AAZStrType()
+
+        info = _schema_cloud_error_read.additional_info.Element.info
+        info.Element = AAZAnyType()
 
         details = _schema_cloud_error_read.details
         details.Element = AAZObjectType()
@@ -2169,7 +2265,9 @@ class _CreateHelper:
             serialized_name="directoriesErroredOut",
             flags={"read_only": True},
         )
-        copy_progress_read.error = AAZObjectType()
+        copy_progress_read.error = AAZObjectType(
+            flags={"read_only": True},
+        )
         cls._build_schema_cloud_error_read(copy_progress_read.error)
         copy_progress_read.files_errored_out = AAZIntType(
             serialized_name="filesErroredOut",
@@ -2313,7 +2411,9 @@ class _CreateHelper:
             _schema.tracking_url = cls._schema_package_shipping_details_read.tracking_url
             return
 
-        cls._schema_package_shipping_details_read = _schema_package_shipping_details_read = AAZObjectType()
+        cls._schema_package_shipping_details_read = _schema_package_shipping_details_read = AAZObjectType(
+            flags={"read_only": True}
+        )
 
         package_shipping_details_read = _schema_package_shipping_details_read
         package_shipping_details_read.carrier_name = AAZStrType(

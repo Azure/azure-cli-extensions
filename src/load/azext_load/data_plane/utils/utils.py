@@ -20,7 +20,7 @@ from azure.cli.core.azclierror import (
 from azure.mgmt.core.tools import is_valid_resource_id, parse_resource_id
 from knack.log import get_logger
 
-from .models import IdentityType, AllowedFileTypes, AllowedTestTypes
+from .models import IdentityType, AllowedFileTypes, AllowedTestTypes, EngineIdentityType, AllowedTestPlanFileExtensions
 
 logger = get_logger(__name__)
 
@@ -274,8 +274,8 @@ def parse_env(envs):
     return env_dict
 
 
-def create_autostop_criteria_from_args(autostop, error_rate, time_window):
-    if (autostop is None and error_rate is None and time_window is None):
+def create_autostop_criteria_from_args(autostop, error_rate, time_window, max_vu_per_engine):
+    if (autostop is None and error_rate is None and time_window is None and max_vu_per_engine is None):
         return None
     autostop_criteria = {}
     autostop_criteria["autoStopDisabled"] = not autostop if autostop is not None else False
@@ -283,6 +283,8 @@ def create_autostop_criteria_from_args(autostop, error_rate, time_window):
         autostop_criteria["errorRate"] = error_rate
     if time_window is not None:
         autostop_criteria["errorRateTimeWindowInSeconds"] = time_window
+    if max_vu_per_engine is not None:
+        autostop_criteria["maximumVirtualUsersPerEngine"] = max_vu_per_engine
     return autostop_criteria
 
 
@@ -306,6 +308,8 @@ def load_yaml(file_path):
         ) from e
 
 
+# pylint: disable=line-too-long
+# Disabling this because dictionary key are too long
 def convert_yaml_to_test(cmd, data):
     new_body = {}
     if LoadTestConfigKeys.DISPLAY_NAME in data:
@@ -316,6 +320,10 @@ def convert_yaml_to_test(cmd, data):
         new_body["kind"] = data[LoadTestConfigKeys.TEST_TYPE]
     new_body["keyvaultReferenceIdentityType"] = IdentityType.SystemAssigned
     if LoadTestConfigKeys.KEYVAULT_REFERENCE_IDENTITY in data:
+        if not is_valid_resource_id(data[LoadTestConfigKeys.KEYVAULT_REFERENCE_IDENTITY]):
+            raise InvalidArgumentValueError(
+                "Key vault reference identity should be a valid resource id."
+            )
         new_body["keyvaultReferenceIdentityId"] = data[LoadTestConfigKeys.KEYVAULT_REFERENCE_IDENTITY]
         new_body["keyvaultReferenceIdentityType"] = IdentityType.UserAssigned
 
@@ -337,8 +345,65 @@ def convert_yaml_to_test(cmd, data):
         new_body["passFailCriteria"] = utils_yaml_config.yaml_parse_failure_criteria(data=data)
     if data.get(LoadTestConfigKeys.AUTOSTOP) is not None:
         new_body["autoStopCriteria"] = utils_yaml_config.yaml_parse_autostop_criteria(data=data)
+
+    utils_yaml_config.update_reference_identities(new_body, data)
     logger.debug("Converted yaml to test body: %s", new_body)
     return new_body
+# pylint: enable=line-too-long
+
+
+# pylint: disable=line-too-long
+# Disabling this because if conditions are too long
+def parse_app_comps_and_server_metrics(data):
+    app_components_yaml = data.get(LoadTestConfigKeys.APP_COMPONENTS)
+    app_components = {}
+    server_metrics = {}
+    add_defaults_to_app_components = dict()
+    if app_components_yaml is None:
+        return None, None, None
+    if not isinstance(app_components_yaml, list):
+        raise InvalidArgumentValueError("App component name should be of type list")
+    for app_component in app_components_yaml:
+        if not isinstance(app_component, dict):
+            raise InvalidArgumentValueError("App component name should be of type dictionary")
+        resource_id = app_component.get(LoadTestConfigKeys.RESOURCEID)
+        if resource_id is None:
+            raise InvalidArgumentValueError("App component name is required")
+        if not is_valid_resource_id(resource_id):
+            raise InvalidArgumentValueError("App component name is not a valid resource id")
+        if add_defaults_to_app_components.get(resource_id.lower()) is None:
+            add_defaults_to_app_components[resource_id.lower()] = app_component.get(LoadTestConfigKeys.SERVER_METRICS_APP_COMPONENTS) is None
+        else:
+            add_defaults_to_app_components[resource_id.lower()] = add_defaults_to_app_components.get(resource_id.lower()) and app_component.get(LoadTestConfigKeys.SERVER_METRICS_APP_COMPONENTS) is None
+        app_components[resource_id] = {}
+        app_components[resource_id]["resourceId"] = resource_id
+        app_components[resource_id]["resourceName"] = utils_yaml_config.get_resource_name_from_resource_id(resource_id)
+        app_components[resource_id]["resourceType"] = utils_yaml_config.get_resource_type_from_resource_id(resource_id)
+        if app_component.get(LoadTestConfigKeys.KIND) is not None:
+            app_components[resource_id]["kind"] = app_component.get(LoadTestConfigKeys.KIND)
+        if app_component.get(LoadTestConfigKeys.SERVER_METRICS_APP_COMPONENTS) is not None:
+            if not isinstance(app_component.get(LoadTestConfigKeys.SERVER_METRICS_APP_COMPONENTS), list):
+                raise InvalidArgumentValueError("Server metrics should be of type list")
+            for server_metric in app_component.get(LoadTestConfigKeys.SERVER_METRICS_APP_COMPONENTS):
+                if not isinstance(server_metric, dict):
+                    raise InvalidArgumentValueError("Server metric should be of type dictionary")
+                if server_metric.get(LoadTestConfigKeys.METRIC_NAME_SERVER_METRICS) is None or server_metric.get(LoadTestConfigKeys.AGGREGATION) is None:
+                    raise InvalidArgumentValueError("Server metric name and aggregation are required, invalid dictionary for{}".format(resource_id))
+                name_space = server_metric.get(LoadTestConfigKeys.METRIC_NAMESPACE_SERVER_METRICS) or utils_yaml_config.get_resource_type_from_resource_id(
+                    resource_id
+                )
+                metric_name = server_metric.get(LoadTestConfigKeys.METRIC_NAME_SERVER_METRICS)
+                key = "{}/{}/{}".format(resource_id, name_space, metric_name)
+                server_metrics[key] = {}
+                server_metrics[key]["name"] = metric_name
+                server_metrics[key]["metricNamespace"] = name_space
+                server_metrics[key]["resourceType"] = utils_yaml_config.get_resource_type_from_resource_id(
+                    resource_id
+                )
+                server_metrics[key]["resourceId"] = resource_id
+                server_metrics[key]["aggregation"] = server_metric.get(LoadTestConfigKeys.AGGREGATION)
+                server_metrics[key]["id"] = key
+    return app_components, add_defaults_to_app_components, server_metrics
 
 
 # pylint: disable=too-many-branches
@@ -355,11 +420,14 @@ def create_or_update_test_with_config(
     secrets=None,
     certificate=None,
     key_vault_reference_identity=None,
+    metrics_reference_identity=None,
     subnet_id=None,
     split_csv=None,
     disable_public_ip=None,
     autostop_criteria=None,
     regionwise_engines=None,
+    engine_ref_id_type=None,
+    engine_ref_ids=None,
 ):
     logger.info(
         "Creating a request body for create or update test using config and parameters."
@@ -386,12 +454,23 @@ def create_or_update_test_with_config(
             "keyvaultReferenceIdentityId"
         )
         new_body["keyvaultReferenceIdentityType"] = IdentityType.UserAssigned
-    else:
-        new_body["keyvaultReferenceIdentityType"] = IdentityType.SystemAssigned
     if new_body["keyvaultReferenceIdentityType"] == IdentityType.UserAssigned:
         if new_body["keyvaultReferenceIdentityId"].casefold() in ["null", ""]:
             new_body["keyvaultReferenceIdentityType"] = IdentityType.SystemAssigned
             new_body.pop("keyvaultReferenceIdentityId")
+    new_body["metricsReferenceIdentityType"] = IdentityType.SystemAssigned
+    if metrics_reference_identity is not None:
+        new_body["metricsReferenceIdentityId"] = metrics_reference_identity
+        new_body["metricsReferenceIdentityType"] = IdentityType.UserAssigned
+    elif yaml_test_body.get("metricsReferenceIdentityId") is not None:
+        new_body["metricsReferenceIdentityId"] = yaml_test_body.get(
+            "metricsReferenceIdentityId"
+        )
+        new_body["metricsReferenceIdentityType"] = IdentityType.UserAssigned
+    if new_body["metricsReferenceIdentityType"] == IdentityType.UserAssigned:
+        if new_body["metricsReferenceIdentityId"].casefold() in ["null", ""]:
+            new_body["metricsReferenceIdentityType"] = IdentityType.SystemAssigned
+            new_body.pop("metricsReferenceIdentityId")
     subnet_id = subnet_id or yaml_test_body.get("subnetId")
     if disable_public_ip is not None:
         new_body["publicIPDisabled"] = disable_public_ip
@@ -472,10 +551,17 @@ def create_or_update_test_with_config(
             "passFailMetrics": {
                 key: None
                 for key in existing_pass_fail_Criteria.get("passFailMetrics", {})
+            },
+            "passFailServerMetrics": {
+                key: None
+                for key in existing_pass_fail_Criteria.get("passFailServerMetrics", {})
             }
         }
         new_body["passFailCriteria"]["passFailMetrics"].update(
             yaml_pass_fail_criteria.get("passFailMetrics", {})
+        )
+        new_body["passFailCriteria"]["passFailServerMetrics"].update(
+            yaml_pass_fail_criteria.get("passFailServerMetrics", {})
         )
     if split_csv is not None:
         new_body["loadTestConfiguration"]["splitAllCSVs"] = split_csv
@@ -507,12 +593,32 @@ def create_or_update_test_with_config(
     ):
         new_body["autoStopCriteria"]["errorRateTimeWindowInSeconds"] = \
             body["autoStopCriteria"]["errorRateTimeWindowInSeconds"]
+    if (
+        new_body["autoStopCriteria"].get("maximumVirtualUsersPerEngine") is None
+        and body.get("autoStopCriteria", {}).get("maximumVirtualUsersPerEngine") is not None
+    ):
+        new_body["autoStopCriteria"]["maximumVirtualUsersPerEngine"] = \
+            body["autoStopCriteria"]["maximumVirtualUsersPerEngine"]
 
     if (new_body["autoStopCriteria"].get("autoStopDisabled") is True):
         logger.warning(
-            "Auto stop is disabled. Error rate and time window will be ignored. "
+            "Auto stop is disabled. Error rate, time window and engine users will be ignored. "
             "This can lead to incoming charges for an incorrectly configured test."
         )
+
+    # if argument is provided prefer that over yaml values
+    if engine_ref_id_type:
+        validators.validate_engine_ref_ids_and_type(engine_ref_id_type, engine_ref_ids)
+        if engine_ref_id_type:
+            new_body["engineBuiltinIdentityType"] = engine_ref_id_type
+        if engine_ref_ids:
+            new_body["engineBuiltinIdentityIds"] = engine_ref_ids
+    elif yaml_test_body.get("engineBuiltinIdentityType"):
+        new_body["engineBuiltinIdentityType"] = yaml_test_body.get("engineBuiltinIdentityType")
+        new_body["engineBuiltinIdentityIds"] = yaml_test_body.get("engineBuiltinIdentityIds")
+    else:
+        new_body["engineBuiltinIdentityType"] = body.get("engineBuiltinIdentityType")
+        new_body["engineBuiltinIdentityIds"] = body.get("engineBuiltinIdentityIds")
 
     logger.debug("Request body for create or update test: %s", new_body)
     return new_body
@@ -531,12 +637,15 @@ def create_or_update_test_without_config(
     secrets=None,
     certificate=None,
     key_vault_reference_identity=None,
+    metrics_reference_identity=None,
     subnet_id=None,
     split_csv=None,
     disable_public_ip=None,
     autostop_criteria=None,
     regionwise_engines=None,
     baseline_test_run_id=None,
+    engine_ref_id_type=None,
+    engine_ref_ids=None,
 ):
     logger.info(
         "Creating a request body for test using parameters and old test body (in case of update)."
@@ -562,6 +671,21 @@ def create_or_update_test_without_config(
         if new_body["keyvaultReferenceIdentityId"].casefold() in ["null", ""]:
             new_body["keyvaultReferenceIdentityType"] = IdentityType.SystemAssigned
             new_body.pop("keyvaultReferenceIdentityId")
+    new_body["metricsReferenceIdentityType"] = IdentityType.SystemAssigned
+    if metrics_reference_identity is not None:
+        new_body["metricsReferenceIdentityId"] = metrics_reference_identity
+        new_body["metricsReferenceIdentityType"] = IdentityType.UserAssigned
+    elif body.get("metricsReferenceIdentityId") is not None:
+        new_body["metricsReferenceIdentityId"] = body.get(
+            "metricsReferenceIdentityId"
+        )
+        new_body["metricsReferenceIdentityType"] = body.get(
+            "metricsReferenceIdentityType", IdentityType.UserAssigned
+        )
+    if new_body["metricsReferenceIdentityType"] == IdentityType.UserAssigned:
+        if new_body["metricsReferenceIdentityId"].casefold() in ["null", ""]:
+            new_body["metricsReferenceIdentityType"] = IdentityType.SystemAssigned
+            new_body.pop("metricsReferenceIdentityId")
     subnet_id = subnet_id or body.get("subnetId")
     if subnet_id:
         if subnet_id.casefold() in ["null", ""]:
@@ -633,12 +757,33 @@ def create_or_update_test_without_config(
     ):
         new_body["autoStopCriteria"]["errorRateTimeWindowInSeconds"] = \
             body["autoStopCriteria"]["errorRateTimeWindowInSeconds"]
+    if (
+        new_body["autoStopCriteria"].get("maximumVirtualUsersPerEngine") is None
+        and body.get("autoStopCriteria", {}).get("maximumVirtualUsersPerEngine") is not None
+    ):
+        new_body["autoStopCriteria"]["maximumVirtualUsersPerEngine"] = \
+            body["autoStopCriteria"]["maximumVirtualUsersPerEngine"]
     if (new_body["autoStopCriteria"].get("autoStopDisabled") is True):
         logger.warning(
-            "Auto stop is disabled. Error rate and time window will be ignored. "
+            "Auto stop is disabled. Error rate, time window and engine users will be ignored. "
             "This can lead to incoming charges for an incorrectly configured test."
         )
     new_body["baselineTestRunId"] = baseline_test_run_id if baseline_test_run_id else body.get("baselineTestRunId")
+
+    # pylint: disable=line-too-long
+    # Disabling this because dictionary key are too long
+    # raises error if engine_reference_identity_type and corresponding identities is not a valid combination
+    validators.validate_engine_ref_ids_and_type(engine_ref_id_type, engine_ref_ids, body.get("engineBuiltinIdentityType"))
+    if engine_ref_id_type:
+        new_body["engineBuiltinIdentityType"] = engine_ref_id_type
+        if engine_ref_ids:
+            new_body["engineBuiltinIdentityIds"] = engine_ref_ids
+    else:
+        new_body["engineBuiltinIdentityType"] = body.get("engineBuiltinIdentityType")
+        if engine_ref_ids and body.get("engineBuiltinIdentityType") != EngineIdentityType.UserAssigned:
+            raise InvalidArgumentValueError("Engine reference identities can only be provided when engine reference identity type is user assigned")
+        new_body["engineBuiltinIdentityIds"] = engine_ref_ids if engine_ref_ids else body.get("engineBuiltinIdentityIds")
+    # pylint: enable=line-too-long
 
     logger.debug("Request body for create or update test: %s", new_body)
     return new_body
@@ -745,10 +890,26 @@ def upload_zipped_artifacts_helper(
                 file_to_upload=zip_artifact, file_type=AllowedFileTypes.ZIPPED_ARTIFACTS,
                 wait=wait
             )
-            if wait and file_response.get("validationStatus") != "VALIDATION_SUCCESS":
+            if wait and file_response.get("validationStatus") not in ("VALIDATION_SUCCESS", "NOT_VALIDATED"):
+                # pylint: disable=line-too-long
                 raise FileOperationError(
-                    f"ZIP artifact {zip_artifact} is not valid. Please check the file and try again."
+                    "ZIP artifact {} is not valid. Please check the file and try again. Current file status is {}".format(
+                        zip_artifact, file_response.get("validationStatus")
+                    )
                 )
+
+
+def infer_test_type_from_test_plan(test_plan):
+    if test_plan is None:
+        return None
+    _, file_extension = os.path.splitext(test_plan)
+    if file_extension.casefold() == AllowedTestPlanFileExtensions.JMX.value:
+        return AllowedTestTypes.JMX.value
+    if file_extension.casefold() == AllowedTestPlanFileExtensions.URL.value:
+        return AllowedTestTypes.URL.value
+    if file_extension.casefold() == AllowedTestPlanFileExtensions.LOCUST.value:
+        return AllowedTestTypes.LOCUST.value
+    return None
 
 
 def _evaluate_file_type_for_test_script(test_type, test_plan):
@@ -797,8 +958,7 @@ def upload_test_plan_helper(
 def upload_files_helper(
     client, test_id, yaml_data, test_plan, load_test_config_file, wait, test_type
 ):
-    files = client.list_test_files(test_id)
-
+    files = list(client.list_test_files(test_id))
     upload_properties_file_helper(
         client=client,
         test_id=test_id, yaml_data=yaml_data,
@@ -878,3 +1038,26 @@ def _add_error_and_throughput_trends(trends, test_run):
     throughput = _get_metrics_from_sampler(test_run, "Total", "throughput")
     if throughput is not None:
         trends[LoadTestTrendsKeys.THROUGHPUT] = round(throughput, 2)
+
+
+def merge_existing_app_components(app_components_yaml, existing_app_components):
+    if existing_app_components is None:
+        return app_components_yaml
+    for key in existing_app_components:
+        if key not in app_components_yaml:
+            app_components_yaml[key] = None
+    return app_components_yaml
+
+
+def merge_existing_server_metrics(add_defaults_to_app_copmponents, existing_server_metrics, server_metrics_yaml):
+    if existing_server_metrics is None:
+        return server_metrics_yaml
+    for key in existing_server_metrics:
+        resourceid = (existing_server_metrics.get(key) or {}).get(LoadTestConfigKeys.RESOURCEID, "").lower()
+        if key not in server_metrics_yaml and (add_defaults_to_app_copmponents.get(resourceid) is None or add_defaults_to_app_copmponents.get(resourceid) is False):
+            server_metrics_yaml[key] = None
+    return server_metrics_yaml
+
+
+def is_not_empty_dictionary(dictionary):
+    return dictionary is not None and len(dictionary) > 0

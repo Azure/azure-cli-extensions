@@ -33,7 +33,7 @@ aks create:
     enable_vpa:
       rule_exclusions:
         - option_length_too_long
-    enable_addon_autoscaling:
+    enable_optimized_addon_scaling:
       rule_exclusions:
         - option_length_too_long
     enable_cilium_dataplane:
@@ -93,6 +93,21 @@ aks create:
     disable_acns_observability:
       rule_exclusions:  
         - option_length_too_long
+    acns_advanced_networkpolicies:
+      rule_exclusions:
+        - option_length_too_long
+    acns_transit_encryption_type:
+      rule_exclusions:
+        - option_length_too_long
+    enable_retina_flow_logs:
+      rule_exclusions:  
+        - option_length_too_long
+    node_provisioning_default_pools:
+      rule_exclusions:  
+        - option_length_too_long
+    enable_managed_system_pool:
+      rule_exclusions:
+        - option_length_too_long
 aks update:
   parameters:
     enable_pod_identity_with_kubenet:
@@ -149,10 +164,10 @@ aks update:
     disable_vpa:
       rule_exclusions:
         - option_length_too_long
-    enable_addon_autoscaling:
+    enable_optimized_addon_scaling:
       rule_exclusions:
         - option_length_too_long
-    disable_addon_autoscaling:
+    disable_optimized_addon_scaling:
       rule_exclusions:
         - option_length_too_long
     data_collection_settings:
@@ -219,6 +234,27 @@ aks update:
       rule_exclusions:
         - option_length_too_long
     disable_acns_observability:
+      rule_exclusions:  
+        - option_length_too_long
+    acns_advanced_networkpolicies:
+      rule_exclusions:
+        - option_length_too_long
+    acns_transit_encryption_type:
+      rule_exclusions:
+        - option_length_too_long
+    enable_retina_flow_logs:
+      rule_exclusions:  
+        - option_length_too_long
+    disable_retina_flow_logs:
+      rule_exclusions:  
+        - option_length_too_long
+    disable_http_proxy:
+      rule_exclusions:  
+        - option_length_too_long
+    enable_http_proxy:
+      rule_exclusions:  
+        - option_length_too_long
+    node_provisioning_default_pools:
       rule_exclusions:  
         - option_length_too_long
 aks delete:

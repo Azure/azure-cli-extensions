@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "elastic monitor open-ai-integration show",
 )
 class Show(AAZCommand):
-    """Get OpenAI integration rule for a given monitor resource.
+    """Get detailed information about OpenAI integration rules for a given Elastic monitor resource.
 
     :example: OpenAI_Get
         az elastic monitor open-ai-integration show --resource-group myResourceGroup --monitor-name myMonitor --integration-name default

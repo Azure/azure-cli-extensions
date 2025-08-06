@@ -14,15 +14,14 @@ import platform
 import re
 import shutil
 import stat
-import sys
 import tempfile
 import time
-import urllib.request
 from base64 import b64decode, b64encode
-from glob import glob
+from concurrent.futures import ThreadPoolExecutor
 from subprocess import DEVNULL, PIPE, Popen
 from typing import TYPE_CHECKING, Any, Iterable
 
+import oras.client  # type: ignore[import-untyped]
 import yaml
 from azure.cli.command_modules.role import graph_client_factory
 from azure.cli.core import get_default_cli, telemetry
@@ -36,7 +35,6 @@ from azure.cli.core.azclierror import (
     ManualInterrupt,
     MutuallyExclusiveArgumentError,
     RequiredArgumentMissingError,
-    UnclassifiedUserFault,
     ValidationError,
 )
 from azure.cli.core.commands import LongRunningOperation
@@ -53,16 +51,19 @@ from kubernetes import config
 from kubernetes.config.kube_config import KubeConfigMerger
 from packaging import version
 
-import azext_connectedk8s._clientproxyutils as clientproxyutils
 import azext_connectedk8s._constants as consts
 import azext_connectedk8s._precheckutils as precheckutils
 import azext_connectedk8s._troubleshootutils as troubleshootutils
 import azext_connectedk8s._utils as utils
+import azext_connectedk8s.clientproxyhelper._binaryutils as proxybinaryutils
+import azext_connectedk8s.clientproxyhelper._proxylogic as proxylogic
+import azext_connectedk8s.clientproxyhelper._utils as clientproxyutils
 from azext_connectedk8s._client_factory import (
     cf_connectedmachine,
     cf_resource_groups,
     resource_providers_client,
 )
+from azext_connectedk8s.clientproxyhelper._enums import ProxyStatus
 
 from .vendored_sdks.preview_2024_07_01.models import (
     ArcAgentProfile,
@@ -71,7 +72,6 @@ from .vendored_sdks.preview_2024_07_01.models import (
     ConnectedClusterIdentity,
     ConnectedClusterPatch,
     Gateway,
-    ListClusterUserCredentialProperties,
     OidcIssuerProfile,
     SecurityProfile,
     SecurityProfileWorkloadIdentity,
@@ -81,13 +81,11 @@ if TYPE_CHECKING:
     from azure.cli.core.commands import AzCliCommand
     from azure.core.polling import LROPoller
     from Crypto.PublicKey.RSA import RsaKey
-    from knack.commands import CLICommmand
+    from knack.commands import CLICommand
     from kubernetes.client import V1NodeList
     from kubernetes.config.kube_config import ConfigNode
+    from requests.models import Response
 
-    from azext_connectedk8s.vendored_sdks.preview_2024_07_01.models import (
-        CredentialResults,
-    )
     from azext_connectedk8s.vendored_sdks.preview_2024_07_01.operations import (
         ConnectedClusterOperations,
     )
@@ -101,7 +99,7 @@ logger = get_logger(__name__)
 
 
 def create_connectedk8s(
-    cmd: CLICommmand,
+    cmd: CLICommand,
     client: ConnectedClusterOperations,
     resource_group_name: str,
     cluster_name: str,
@@ -178,8 +176,10 @@ def create_connectedk8s(
         else get_subscription_id(cmd.cli_ctx)
     )
 
-    resource_id = f"/subscriptions/{subscription_id}/resourcegroups/{resource_group_name}/providers/Microsoft.\
+    resource_id = (
+        f"/subscriptions/{subscription_id}/resourcegroups/{resource_group_name}/providers/Microsoft.\
         Kubernetes/connectedClusters/{cluster_name}/location/{location}"
+    )
     telemetry.add_extension_event(
         "connectedk8s", {"Context.Default.AzureCLI.resourceid": resource_id}
     )
@@ -301,7 +301,7 @@ def create_connectedk8s(
     # Install kubectl and helm
     try:
         kubectl_client_location = install_kubectl_client()
-        helm_client_location = install_helm_client()
+        helm_client_location = install_helm_client(cmd)
     except Exception as e:
         raise CLIInternalError(
             f"An exception has occured while trying to perform kubectl or helm install: {e}"
@@ -344,6 +344,7 @@ def create_connectedk8s(
             # Performing cluster-diagnostic-checks
             diagnostic_checks, storage_space_available = (
                 precheckutils.fetch_diagnostic_checks_results(
+                    cmd,
                     api_instance,
                     batchv1_api_instance,
                     helm_client_location,
@@ -620,6 +621,7 @@ def create_connectedk8s(
                     "The kubernetes cluster you are trying to onboard is already onboarded to "
                     f"the resource group '{configmap_rg_name}' with resource name '{configmap_cluster_name}'."
                 )
+                logger.warning(consts.Cluster_Already_Onboarded_Error)
                 raise ArgumentUsageError(err_msg)
 
             # Re-put connected cluster
@@ -742,7 +744,9 @@ def create_connectedk8s(
             "Cleaning up the stale arc agents present on the cluster before starting new onboarding."
         )
         # Explicit CRD Deletion
-        crd_cleanup_force_delete(kubectl_client_location, kube_config, kube_context)
+        crd_cleanup_force_delete(
+            cmd, kubectl_client_location, kube_config, kube_context
+        )
         # Cleaning up the cluster
         utils.delete_arc_agents(
             release_namespace,
@@ -773,7 +777,9 @@ def create_connectedk8s(
             raise ArgumentUsageError(err_msg, recommendation=reco_msg)
 
         # cleanup of stuck CRD if release namespace is not present/deleted
-        crd_cleanup_force_delete(kubectl_client_location, kube_config, kube_context)
+        crd_cleanup_force_delete(
+            cmd, kubectl_client_location, kube_config, kube_context
+        )
 
     print(
         f"Step: {utils.get_utctimestring()}: Check if ResourceGroup exists.  Try to create if it doesn't"
@@ -968,7 +974,8 @@ def create_connectedk8s(
         raise CLIInternalError(
             "Timed out waiting for Agent State to reach terminal state."
         )
-
+    if cl_oid and enable_custom_locations and cl_oid == custom_locations_oid:
+        logger.warning(consts.Manual_Custom_Location_Oid_Warning)
     return put_cc_response
 
 
@@ -1042,7 +1049,7 @@ def validate_existing_provisioned_cluster_for_reput(
                 raise InvalidArgumentValueError(err_msg)
 
 
-def send_cloud_telemetry(cmd: CLICommmand) -> str:
+def send_cloud_telemetry(cmd: CLICommand) -> str:
     telemetry.add_extension_event(
         "connectedk8s", {"Context.Default.AzureCLI.AzureCloud": cmd.cli_ctx.cloud.name}
     )
@@ -1142,7 +1149,7 @@ def check_kube_connection() -> str:
         git_version: str = api_response.git_version
         return git_version
     except Exception as e:  # pylint: disable=broad-except
-        logger.warning("Unable to verify connectivity to the Kubernetes cluster.")
+        logger.warning(consts.KubeApi_Connectivity_Failed_Warning)
         utils.kubernetes_exception_handler(
             e,
             consts.Kubernetes_Connectivity_FaultType,
@@ -1152,7 +1159,7 @@ def check_kube_connection() -> str:
     assert False
 
 
-def install_helm_client() -> str:
+def install_helm_client(cmd: CLICommand) -> str:
     print(
         f"Step: {utils.get_utctimestring()}: Install Helm client if it does not exist"
     )
@@ -1169,20 +1176,23 @@ def install_helm_client() -> str:
     telemetry.add_extension_event(
         "connectedk8s", {"Context.Default.AzureCLI.MachineType": machine_type}
     )
-
     # Set helm binary download & install locations
     if operating_system == "windows":
-        download_location_string = f".azure\\helm\\{consts.HELM_VERSION}\\helm-{consts.HELM_VERSION}-{operating_system}-amd64.zip"
+        download_location_string = f".azure\\helm\\{consts.HELM_VERSION}"
+        download_file_name = f"helm-{consts.HELM_VERSION}-{operating_system}-amd64.zip"
         install_location_string = (
             f".azure\\helm\\{consts.HELM_VERSION}\\{operating_system}-amd64\\helm.exe"
         )
-        requestUri = f"{consts.HELM_STORAGE_URL}/helmsigned/helm-{consts.HELM_VERSION}-{operating_system}-amd64.zip"
+        artifactTag = f"helm-{consts.HELM_VERSION}-{operating_system}-amd64"
     elif operating_system == "linux" or operating_system == "darwin":
-        download_location_string = f".azure/helm/{consts.HELM_VERSION}/helm-{consts.HELM_VERSION}-{operating_system}-amd64.tar.gz"
+        download_location_string = f".azure/helm/{consts.HELM_VERSION}"
+        download_file_name = (
+            f"helm-{consts.HELM_VERSION}-{operating_system}-amd64.tar.gz"
+        )
         install_location_string = (
             f".azure/helm/{consts.HELM_VERSION}/{operating_system}-amd64/helm"
         )
-        requestUri = f"{consts.HELM_STORAGE_URL}/helm/helm-{consts.HELM_VERSION}-{operating_system}-amd64.tar.gz"
+        artifactTag = f"helm-{consts.HELM_VERSION}-{operating_system}-amd64"
     else:
         telemetry.set_exception(
             exception="Unsupported OS for installing helm client",
@@ -1215,11 +1225,18 @@ def install_helm_client() -> str:
         logger.warning(
             "Downloading helm client for first time. This can take few minutes..."
         )
+
+        mcr_url = utils.get_mcr_path(cmd)
+
+        client = oras.client.OrasClient(hostname=mcr_url)
         retry_count = 3
         retry_delay = 5
         for i in range(retry_count):
             try:
-                response = urllib.request.urlopen(requestUri)
+                client.pull(
+                    target=f"{mcr_url}/{consts.HELM_MCR_URL}:{artifactTag}",
+                    outdir=download_location,
+                )
                 break
             except Exception as e:
                 if i == retry_count - 1:
@@ -1236,26 +1253,13 @@ def install_helm_client() -> str:
                     )
                 time.sleep(retry_delay)
 
-        responseContent = response.read()
-        response.close()
-
-        # Creating the compressed helm binaries
-        try:
-            with open(download_location, "wb") as f:
-                f.write(responseContent)
-        except Exception as e:
-            telemetry.set_exception(
-                exception=e,
-                fault_type=consts.Create_HelmExe_Fault_Type,
-                summary="Unable to create helm executable",
-            )
-            reco_str = f"Please ensure that you delete the directory '{download_dir}' before trying again."
-            raise ClientRequestError(
-                "Failed to create helm executable." + str(e), recommendation=reco_str
-            )
         # Extract the archive.
         try:
-            shutil.unpack_archive(download_location, download_dir)
+            extract_dir = download_location
+            download_location = os.path.expanduser(
+                os.path.join(download_location, download_file_name)
+            )
+            shutil.unpack_archive(download_location, extract_dir)
             os.chmod(install_location, os.stat(install_location).st_mode | stat.S_IXUSR)
         except Exception as e:
             telemetry.set_exception(
@@ -1263,7 +1267,7 @@ def install_helm_client() -> str:
                 fault_type=consts.Extract_HelmExe_Fault_Type,
                 summary="Unable to extract helm executable",
             )
-            reco_str = f"Please ensure that you delete the directory '{download_dir}' before trying again."
+            reco_str = f"Please ensure that you delete the directory '{extract_dir}' before trying again."
             raise ClientRequestError(
                 "Failed to extract helm executable." + str(e), recommendation=reco_str
             )
@@ -1294,8 +1298,22 @@ def connected_cluster_exists(
     return True
 
 
-def get_default_config_dp_endpoint(cmd: CLICommmand, location: str) -> str:
-    cloud_based_domain = cmd.cli_ctx.cloud.endpoints.active_directory.split(".")[2]
+def get_default_config_dp_endpoint(cmd: CLICommand, location: str) -> str:
+    active_directory_array = cmd.cli_ctx.cloud.endpoints.active_directory.split(".")
+    # default for public, mc, ff clouds
+    cloud_based_domain = active_directory_array[2]
+    # special cases for USSec/USNat clouds
+    if len(active_directory_array) == 4:
+        cloud_based_domain = active_directory_array[2] + "." + active_directory_array[3]
+    elif len(active_directory_array) == 5:
+        cloud_based_domain = (
+            active_directory_array[2]
+            + "."
+            + active_directory_array[3]
+            + "."
+            + active_directory_array[4]
+        )
+
     config_dp_endpoint = (
         f"https://{location}.dp.kubernetesconfiguration.azure.{cloud_based_domain}"
     )
@@ -1303,7 +1321,7 @@ def get_default_config_dp_endpoint(cmd: CLICommmand, location: str) -> str:
 
 
 def get_config_dp_endpoint(
-    cmd: CLICommmand,
+    cmd: CLICommand,
     location: str,
     values_file: str | None,
     arm_metadata: dict[str, Any] | None = None,
@@ -1353,6 +1371,7 @@ def load_kube_config(
             fault_type=consts.Load_Kubeconfig_Fault_Type,
             summary="Problem loading the kubeconfig file",
         )
+        logger.warning(consts.Kubeconfig_Load_Failed_Warning)
         raise FileOperationError("Problem loading the kubeconfig file. " + str(e))
 
 
@@ -1361,14 +1380,16 @@ def get_private_key(key_pair: RsaKey) -> str:
     return PEM.encode(privKey_DER, "RSA PRIVATE KEY")
 
 
+# Updated function to include more Kubernetes distributions based on provided criteria
 def get_kubernetes_distro(api_response: V1NodeList) -> str:  # Heuristic
     if api_response is None:
         return "generic"
     try:
         for node in api_response.items:
-            labels = node.metadata.labels
+            labels = node.metadata.labels or {}
             provider_id = str(node.spec.provider_id)
-            annotations = node.metadata.annotations
+            annotations = node.metadata.annotations or {}
+
             if labels.get("node.openshift.io/os_id"):
                 return "openshift"
             if labels.get("kubernetes.azure.com/node-image-version"):
@@ -1393,6 +1414,28 @@ def get_kubernetes_distro(api_response: V1NodeList) -> str:  # Heuristic
                 "rke.cattle.io/internal-ip"
             ):
                 return "rancher_rke"
+            if any(label.startswith("snap.microk8s") for label in labels):
+                return "microk8s"
+            if any(label.startswith("k3os.io") for label in labels):
+                return "k3os"
+            if any(label.startswith("talos.dev") for label in labels):
+                return "talos"
+            if any(key.startswith("rke2.io") for key in annotations):
+                return "rke2"
+            if any(
+                label.startswith("node-role.kubernetes.io") for label in labels
+            ) or any(
+                key.startswith("kubeadm.alpha.kubernetes.io") for key in annotations
+            ):
+                return "kubeadm"
+            if any(label.startswith("run.tanzu.vmware.com") for label in labels):
+                return "tkg"
+            if any(label.startswith("openebs.io") for label in labels):
+                return "openebs"
+            if any(label.startswith("flatcar-linux") for label in labels):
+                return "flatcar"
+            if any(label.startswith("k0s.k0sproject.io") for label in labels):
+                return "k0s"
         return "generic"
     except Exception as e:  # pylint: disable=broad-except
         logger.debug(
@@ -1414,8 +1457,10 @@ def get_kubernetes_infra(api_response: V1NodeList) -> str:  # Heuristic
         for node in api_response.items:
             provider_id = str(node.spec.provider_id)
             infra = provider_id.split(":")[0]
-            if infra == "k3s" or infra == "kind":
-                return "generic"
+            if infra == "k3s":
+                return "k3s"
+            if infra == "kind":
+                return "kind"
             if infra == "azure":
                 return "azure"
             if infra == "gce":
@@ -1712,7 +1757,7 @@ def list_connectedk8s(
 
 
 def delete_connectedk8s(
-    cmd: CLICommmand,
+    cmd: CLICommand,
     client: ConnectedClusterOperations,
     resource_group_name: str,
     cluster_name: str,
@@ -1764,7 +1809,7 @@ def delete_connectedk8s(
     check_kube_connection()
 
     # Install helm client
-    helm_client_location = install_helm_client()
+    helm_client_location = install_helm_client(cmd)
 
     # Check Release Existance
     release_namespace = utils.get_release_namespace(
@@ -1781,10 +1826,14 @@ def delete_connectedk8s(
         print(f"Step: {utils.get_utctimestring()}: Performing Force Delete")
         kubectl_client_location = install_kubectl_client()
 
-        delete_cc_resource(client, resource_group_name, cluster_name, no_wait).result()
+        delete_cc_resource(
+            client, resource_group_name, cluster_name, no_wait, force=force_delete
+        ).result()
 
         # Explicit CRD Deletion
-        crd_cleanup_force_delete(kubectl_client_location, kube_config, kube_context)
+        crd_cleanup_force_delete(
+            cmd, kubectl_client_location, kube_config, kube_context
+        )
 
         if release_namespace:
             utils.delete_arc_agents(
@@ -1799,7 +1848,9 @@ def delete_connectedk8s(
         return
 
     if not release_namespace:
-        delete_cc_resource(client, resource_group_name, cluster_name, no_wait).result()
+        delete_cc_resource(
+            client, resource_group_name, cluster_name, no_wait, force=force_delete
+        ).result()
         return
 
     # Loading config map
@@ -1850,7 +1901,9 @@ def delete_connectedk8s(
                 recommendation=reco_str,
             )
 
-        delete_cc_resource(client, resource_group_name, cluster_name, no_wait).result()
+        delete_cc_resource(
+            client, resource_group_name, cluster_name, no_wait, force=force_delete
+        ).result()
     else:
         telemetry.set_exception(
             exception="Unable to delete connected cluster",
@@ -1931,15 +1984,26 @@ def delete_cc_resource(
     resource_group_name: str,
     cluster_name: str,
     no_wait: bool,
+    force: bool = False,
 ) -> LROPoller[None]:
     print(f"Step: {utils.get_utctimestring()}: Deleting ARM resource")
     try:
-        poller: LROPoller[None] = sdk_no_wait(
-            no_wait,
-            client.begin_delete,
-            resource_group_name=resource_group_name,
-            cluster_name=cluster_name,
-        )
+        poller: LROPoller[None]
+        if force:
+            poller = sdk_no_wait(
+                no_wait,
+                client.begin_delete,
+                resource_group_name=resource_group_name,
+                cluster_name=cluster_name,
+                params={"force": True},
+            )
+        else:
+            poller = sdk_no_wait(
+                no_wait,
+                client.begin_delete,
+                resource_group_name=resource_group_name,
+                cluster_name=cluster_name,
+            )
         return poller
     except Exception as e:
         utils.arm_exception_handler(
@@ -1974,7 +2038,7 @@ def update_connected_cluster_internal(
 
 
 def update_connected_cluster(
-    cmd: CLICommmand,
+    cmd: CLICommand,
     client: ConnectedClusterOperations,
     resource_group_name: str,
     cluster_name: str,
@@ -2137,7 +2201,7 @@ def update_connected_cluster(
     kubernetes_version = check_kube_connection()
 
     # Install helm client
-    helm_client_location = install_helm_client()
+    helm_client_location = install_helm_client(cmd)
 
     release_namespace = validate_release_namespace(
         client,
@@ -2330,7 +2394,7 @@ def update_connected_cluster(
 
 
 def upgrade_agents(
-    cmd: CLICommmand,
+    cmd: CLICommand,
     client: ConnectedClusterOperations,
     resource_group_name: str,
     cluster_name: str,
@@ -2375,7 +2439,7 @@ def upgrade_agents(
     api_instance = kube_client.CoreV1Api()
 
     # Install helm client
-    helm_client_location = install_helm_client()
+    helm_client_location = install_helm_client(cmd)
 
     # Check Release Existence
     release_namespace = utils.get_release_namespace(
@@ -2776,7 +2840,7 @@ def get_all_helm_values(
 
 
 def enable_features(
-    cmd: CLICommmand,
+    cmd: CLICommand,
     client: ConnectedClusterOperations,
     resource_group_name: str,
     cluster_name: str,
@@ -2839,16 +2903,17 @@ def enable_features(
             if custom_token_passed is True
             else get_subscription_id(cmd.cli_ctx)
         )
-        enable_cl, custom_locations_oid = check_cl_registration_and_get_oid(
+        final_enable_cl, custom_locations_oid = check_cl_registration_and_get_oid(
             cmd, cl_oid, subscription_id
         )
-        if not enable_cluster_connect and enable_cl:
+        if not enable_cluster_connect and final_enable_cl:
             enable_cluster_connect = True
             logger.warning(
                 "Enabling 'custom-locations' feature will enable 'cluster-connect' feature too."
             )
-        if not enable_cl:
+        if not final_enable_cl:
             features.remove("custom-locations")
+            logger.warning(consts.Custom_Location_Enable_Failed_warning)
             if len(features) == 0:
                 raise ClientRequestError("Failed to enable 'custom-locations' feature.")
 
@@ -2870,7 +2935,7 @@ def enable_features(
     kubernetes_version = check_kube_connection()
 
     # Install helm client
-    helm_client_location = install_helm_client()
+    helm_client_location = install_helm_client(cmd)
 
     release_namespace = validate_release_namespace(
         client,
@@ -2972,7 +3037,7 @@ def enable_features(
         cmd_helm_upgrade.extend(
             ["--set", "systemDefaultValues.clusterconnect-agent.enabled=true"]
         )
-    if enable_cl:
+    if final_enable_cl:
         cmd_helm_upgrade.extend(
             ["--set", "systemDefaultValues.customLocations.enabled=true"]
         )
@@ -3000,14 +3065,15 @@ def enable_features(
         raise CLIInternalError(
             str.format(consts.Error_enabling_Features, helm_upgrade_error_message)
         )
-
+    if cl_oid and final_enable_cl and cl_oid == custom_locations_oid:
+        logger.warning(consts.Manual_Custom_Location_Oid_Warning)
     return str.format(
         consts.Successfully_Enabled_Features, features, connected_cluster.name
     )
 
 
 def disable_features(
-    cmd: CLICommmand,
+    cmd: CLICommand,
     client: ConnectedClusterOperations,
     resource_group_name: str,
     cluster_name: str,
@@ -3062,7 +3128,7 @@ def disable_features(
     kubernetes_version = check_kube_connection()
 
     # Install helm client
-    helm_client_location = install_helm_client()
+    helm_client_location = install_helm_client(cmd)
 
     release_namespace = validate_release_namespace(
         client,
@@ -3146,7 +3212,7 @@ def disable_features(
 
 
 def get_chart_and_disable_features(
-    cmd: CLICommmand,
+    cmd: CLICommand,
     connected_cluster: ConnectedCluster,
     kube_config: str | None,
     kube_context: str | None,
@@ -3237,7 +3303,7 @@ def get_chart_and_disable_features(
 
 
 def disable_cluster_connect(
-    cmd: CLICommmand,
+    cmd: CLICommand,
     client: ConnectedClusterOperations,
     resource_group_name: str,
     cluster_name: str,
@@ -3444,7 +3510,7 @@ def handle_merge(
 
 
 def client_side_proxy_wrapper(
-    cmd: CLICommmand,
+    cmd: CLICommand,
     client: ConnectedClusterOperations,
     resource_group_name: str,
     cluster_name: str,
@@ -3474,8 +3540,8 @@ def client_side_proxy_wrapper(
         )
 
     args = []
-    operating_system = platform.system()
-    proc_name = f"arcProxy{operating_system}"
+    operating_system = proxybinaryutils._get_client_operating_system()
+    proc_name = f"arcProxy_{operating_system.lower()}"
 
     telemetry.set_debug_info("CSP Version is ", consts.CLIENT_PROXY_VERSION)
     telemetry.set_debug_info("OS is ", operating_system)
@@ -3508,102 +3574,13 @@ def client_side_proxy_wrapper(
     if port_error_string != "":
         raise ClientRequestError(port_error_string)
 
-    # Set csp url based on cloud
-    CSP_Url = consts.CSP_Storage_Url
-    if cloud == consts.Azure_ChinaCloudName:
-        CSP_Url = consts.CSP_Storage_Url_Mooncake
-    elif cloud == consts.Azure_USGovCloudName:
-        CSP_Url = consts.CSP_Storage_Url_Fairfax
+    debug_mode = False
+    if "--debug" in cmd.cli_ctx.data["safe_params"]:
+        debug_mode = True
 
-    # Creating installation location, request uri and older version exe location depending on OS
-    if operating_system == "Windows":
-        install_location_string = (
-            f".clientproxy\\arcProxy{operating_system}{consts.CLIENT_PROXY_VERSION}.exe"
-        )
-        requestUri = f"{CSP_Url}/{consts.RELEASE_DATE_WINDOWS}/arcProxy{operating_system}{consts.CLIENT_PROXY_VERSION}.exe"
-        older_version_string = f".clientproxy\\arcProxy{operating_system}*.exe"
-        creds_string = r".azure\accessTokens.json"
-
-    elif operating_system == "Linux" or operating_system == "Darwin":
-        install_location_string = (
-            f".clientproxy/arcProxy{operating_system}{consts.CLIENT_PROXY_VERSION}"
-        )
-        requestUri = f"{CSP_Url}/{consts.RELEASE_DATE_LINUX}/arcProxy{operating_system}{consts.CLIENT_PROXY_VERSION}"
-        older_version_string = f".clientproxy/arcProxy{operating_system}*"
-        creds_string = r".azure/accessTokens.json"
-
-    else:
-        telemetry.set_exception(
-            exception="Unsupported OS",
-            fault_type=consts.Unsupported_Fault_Type,
-            summary=f"{operating_system} is not supported yet",
-        )
-        raise ClientRequestError(
-            f"The {operating_system} platform is not currently supported."
-        )
-
-    install_location = os.path.expanduser(os.path.join("~", install_location_string))
+    install_location = proxybinaryutils.install_client_side_proxy(cmd, None, debug_mode)
     args.append(install_location)
     install_dir = os.path.dirname(install_location)
-
-    # If version specified by install location doesnt exist, then download the executable
-    if not os.path.isfile(install_location):
-        print("Setting up environment for first time use. This can take few minutes...")
-        # Downloading the executable
-        try:
-            response = urllib.request.urlopen(requestUri)
-        except Exception as e:
-            telemetry.set_exception(
-                exception=e,
-                fault_type=consts.Download_Exe_Fault_Type,
-                summary="Unable to download clientproxy executable.",
-            )
-            raise CLIInternalError(
-                f"Failed to download executable with client: {e}",
-                recommendation="Please check your internet connection.",
-            )
-
-        responseContent = response.read()
-        response.close()
-
-        # Creating the .clientproxy folder if it doesnt exist
-        if not os.path.exists(install_dir):
-            try:
-                os.makedirs(install_dir)
-            except Exception as e:
-                telemetry.set_exception(
-                    exception=e,
-                    fault_type=consts.Create_Directory_Fault_Type,
-                    summary="Unable to create installation directory",
-                )
-                raise ClientRequestError(
-                    "Failed to create installation directory." + str(e)
-                )
-        else:
-            older_version_string = os.path.expanduser(
-                os.path.join("~", older_version_string)
-            )
-            older_version_files = glob(older_version_string)
-
-            # Removing older executables from the directory
-            for file_ in older_version_files:
-                try:
-                    os.remove(file_)
-                except OSError:
-                    logger.warning("failed to delete older version files")
-
-        try:
-            with open(install_location, "wb") as f:
-                f.write(responseContent)
-        except Exception as e:
-            telemetry.set_exception(
-                exception=e,
-                fault_type=consts.Create_CSPExe_Fault_Type,
-                summary="Unable to create proxy executable",
-            )
-            raise ClientRequestError("Failed to create proxy executable." + str(e))
-
-        os.chmod(install_location, os.stat(install_location).st_mode | stat.S_IXUSR)
 
     # Creating config file to pass config to clientproxy
     config_file_location = os.path.join(install_dir, "config.yml")
@@ -3621,7 +3598,6 @@ def client_side_proxy_wrapper(
 
     # initializations
     user_type = "sat"
-    creds = ""
     dict_file: dict[str, Any] = {
         "server": {
             "httpPort": int(client_proxy_port),
@@ -3641,47 +3617,6 @@ def client_side_proxy_wrapper(
             dict_file["identity"]["clientID"] = consts.CLIENTPROXY_CLIENT_ID
         else:
             dict_file["identity"]["clientID"] = account["user"]["name"]
-
-        if not utils.is_cli_using_msal_auth():
-            # Fetching creds
-            creds_location = os.path.expanduser(os.path.join("~", creds_string))
-            try:
-                with open(creds_location) as f:
-                    creds_list = json.load(f)
-            except Exception as e:
-                telemetry.set_exception(
-                    exception=e,
-                    fault_type=consts.Load_Creds_Fault_Type,
-                    summary="Unable to load accessToken.json",
-                )
-                raise FileOperationError("Failed to load credentials." + str(e))
-
-            user_name = account["user"]["name"]
-
-            if user_type == "user":
-                key = "userId"
-                key2 = "refreshToken"
-            else:
-                key = "servicePrincipalId"
-                key2 = "accessToken"
-
-            for i in range(len(creds_list)):
-                creds_obj = creds_list[i]
-
-                if key in creds_obj and creds_obj[key] == user_name:
-                    creds = creds_obj[key2]
-                    break
-
-            if creds == "":
-                telemetry.set_exception(
-                    exception="Credentials of user not found.",
-                    fault_type=consts.Creds_NotFound_Fault_Type,
-                    summary="Unable to find creds of user",
-                )
-                raise UnclassifiedUserFault("Credentials of user not found.")
-
-            if user_type != "user":
-                dict_file["identity"]["clientSecret"] = creds
 
     if cloud == "DOGFOOD":
         dict_file["cloud"] = "AzureDogFood"
@@ -3726,10 +3661,8 @@ def client_side_proxy_wrapper(
     args.append("-c")
     args.append(config_file_location)
 
-    debug_mode = False
-    if "--debug" in cmd.cli_ctx.data["safe_params"]:
+    if debug_mode:
         args.append("-d")
-        debug_mode = True
 
     client_side_proxy_main(
         cmd,
@@ -3737,13 +3670,9 @@ def client_side_proxy_wrapper(
         client,
         resource_group_name,
         cluster_name,
-        0,
         args,
         client_proxy_port,
         api_server_port,
-        operating_system,
-        creds,
-        user_type,
         debug_mode,
         token=token,
         path=path,
@@ -3751,89 +3680,68 @@ def client_side_proxy_wrapper(
     )
 
 
-# Prepare data as needed by client proxy executable
-def prepare_clientproxy_data(response: CredentialResults) -> dict[str, Any]:
-    data: dict[str, Any] = {}
-    data["kubeconfigs"] = []
-    kubeconfig = {}
-    kubeconfig["name"] = "Kubeconfig"
-    kubeconfig["value"] = b64encode(response.kubeconfigs[0].value).decode("utf-8")  # type: ignore[index]
-    data["kubeconfigs"].append(kubeconfig)
-    data["hybridConnectionConfig"] = {}
-    data["hybridConnectionConfig"]["relay"] = response.hybrid_connection_config.relay  # type: ignore[attr-defined]
-    data["hybridConnectionConfig"]["hybridConnectionName"] = (
-        response.hybrid_connection_config.hybrid_connection_name  # type: ignore[attr-defined]
-    )
-    data["hybridConnectionConfig"]["token"] = response.hybrid_connection_config.token  # type: ignore[attr-defined]
-    data["hybridConnectionConfig"]["expirationTime"] = (
-        response.hybrid_connection_config.expiration_time  # type: ignore[attr-defined]
-    )
-    return data
-
-
 def client_side_proxy_main(
-    cmd: CLICommmand,
+    cmd: CLICommand,
     tenant_id: str,
     client: ConnectedClusterOperations,
     resource_group_name: str,
     cluster_name: str,
-    flag: int,
     args: list[str],
     client_proxy_port: int,
     api_server_port: int,
-    operating_system: str,
-    creds: str,
-    user_type: str,
     debug_mode: bool,
     token: str | None = None,
     path: str = os.path.join(os.path.expanduser("~"), ".kube", "config"),
     context_name: str | None = None,
 ) -> None:
-    expiry, clientproxy_process = client_side_proxy(
+    hc_expiry, at_expiry, clientproxy_process = client_side_proxy(
         cmd,
         tenant_id,
         client,
         resource_group_name,
         cluster_name,
-        0,
+        ProxyStatus.FirstRun,
         args,
         client_proxy_port,
         api_server_port,
-        operating_system,
-        creds,
-        user_type,
         debug_mode,
         token=token,
         path=path,
         context_name=context_name,
         clientproxy_process=None,
     )
-    next_refresh_time = expiry - consts.CSP_REFRESH_TIME
 
     while True:
         time.sleep(60)
         if clientproxyutils.check_if_csp_is_running(clientproxy_process):
-            if time.time() >= next_refresh_time:
-                expiry, clientproxy_process = client_side_proxy(
+            flag = None
+            if time.time() >= (hc_expiry - consts.CSP_REFRESH_TIME):
+                flag = ProxyStatus.HCTokenRefresh
+            elif time.time() >= (at_expiry - consts.CSP_REFRESH_TIME):
+                flag = ProxyStatus.AccessTokenRefresh
+
+            if flag is not None:
+                new_hc_expiry, new_at_expiry, clientproxy_process = client_side_proxy(
                     cmd,
                     tenant_id,
                     client,
                     resource_group_name,
                     cluster_name,
-                    1,
+                    flag,
                     args,
                     client_proxy_port,
                     api_server_port,
-                    operating_system,
-                    creds,
-                    user_type,
                     debug_mode,
                     token=token,
                     path=path,
                     context_name=context_name,
                     clientproxy_process=clientproxy_process,
                 )
-                next_refresh_time = expiry - consts.CSP_REFRESH_TIME
+                if flag == ProxyStatus.HCTokenRefresh:
+                    hc_expiry = new_hc_expiry
+                elif flag == ProxyStatus.AccessTokenRefresh:
+                    at_expiry = new_at_expiry
+
         else:
             telemetry.set_exception(
                 exception="Process closed externally.",
@@ -3844,48 +3752,41 @@ def client_side_proxy_main(
 
 
 def client_side_proxy(
-    cmd: CLICommmand,
+    cmd: CLICommand,
     tenant_id: str,
     client: ConnectedClusterOperations,
     resource_group_name: str,
     cluster_name: str,
-    flag: int,
+    flag: ProxyStatus,
     args: list[str],
     client_proxy_port: int,
     api_server_port: int,
-    operating_system: str,
-    creds: str,
-    user_type: str,
     debug_mode: bool,
     token: str | None = None,
     path: str = os.path.join(os.path.expanduser("~"), ".kube", "config"),
     context_name: str | None = None,
     clientproxy_process: Popen[bytes] | None = None,
-) -> tuple[int, Popen[bytes]]:
+) -> tuple[int, int, Popen[bytes]]:
     subscription_id = get_subscription_id(cmd.cli_ctx)
     auth_method = "Token" if token is not None else "AAD"
 
+    hc_expiry, at_expiry = 0, 0
+
     # Fetching hybrid connection details from Userrp
-    try:
-        list_prop = ListClusterUserCredentialProperties(
-            authentication_method=auth_method, client_proxy=True
-        )
-        cluster_user_credentials = client.list_cluster_user_credential(
-            resource_group_name, cluster_name, list_prop
-        )
-    except Exception as e:
-        if flag == 1:
-            assert clientproxy_process is not None
-            clientproxy_process.terminate()
-        utils.arm_exception_handler(
-            e,
-            consts.Get_Credentials_Failed_Fault_Type,
-            "Unable to list cluster user credentials",
-        )
-        raise CLIInternalError(f"Failed to get credentials: {e}")
+    # We do this in a separate process to avoid blocking the main thread
+    # Since we still need to bring up the proxy and make API calls to it.
+    if ProxyStatus.should_hc_token_refresh(flag):
+        with ThreadPoolExecutor() as executor:
+            future_get_cluster_user_credentials = executor.submit(
+                proxylogic.get_cluster_user_credentials,
+                client,
+                resource_group_name,
+                cluster_name,
+                auth_method,
+            )
 
     # Starting the client proxy process, if this is the first time that this function is invoked
-    if flag == 0:
+    if flag == ProxyStatus.FirstRun:
         try:
             if debug_mode:
                 clientproxy_process = Popen(args)
@@ -3901,96 +3802,43 @@ def client_side_proxy(
             )
             raise CLIInternalError(f"Failed to start proxy process: {e}")
 
-        # refresh token approach if cli is using ADAL auth (for cli < 2.30.0)
-        if (not utils.is_cli_using_msal_auth()) and user_type == "user":
-            identity_data = {}
-            identity_data["refreshToken"] = creds
-            identity_uri = f"https://localhost:{api_server_port}/identity/rt"
-
-            # Needed to prevent skip tls warning from printing to the console
-            original_stderr = sys.stderr
-            with open(os.devnull, "w") as f:
-                sys.stderr = f
-
-                clientproxyutils.make_api_call_with_retries(
-                    identity_uri,
-                    identity_data,
-                    "post",
-                    False,
-                    consts.Post_RefreshToken_Fault_Type,
-                    "Unable to post refresh token details to clientproxy",
-                    "Failed to pass refresh token details to proxy.",
-                    clientproxy_process,
-                )
-            sys.stderr = original_stderr
-
     assert clientproxy_process is not None
-    if token is None and (
-        utils.is_cli_using_msal_auth()
-    ):  # jwt token approach if cli is using MSAL. This is for cli >= 2.30.0
-        kid = clientproxyutils.fetch_pop_publickey_kid(
-            api_server_port, clientproxy_process
-        )
-        post_at_response = clientproxyutils.fetch_and_post_at_to_csp(
-            cmd, api_server_port, tenant_id, kid, clientproxy_process
+
+    if token is None and ProxyStatus.should_access_token_refresh(flag):
+        # jwt token approach if cli is using MSAL. This is for cli >= 2.30.0
+        at_expiry = proxylogic.handle_post_at_to_csp(
+            cmd, api_server_port, tenant_id, clientproxy_process
         )
 
-        if post_at_response.status_code != 200:
-            if (
-                post_at_response.status_code == 500
-                and "public key expired" in post_at_response.text
-            ):
-                # pop public key must have been rotated
-                telemetry.set_exception(
-                    exception=post_at_response.text,
-                    fault_type=consts.PoP_Public_Key_Expried_Fault_Type,
-                    summary="PoP public key has expired",
-                )
-                kid = clientproxyutils.fetch_pop_publickey_kid(
-                    api_server_port, clientproxy_process
-                )  # fetch the rotated PoP public key
-                # fetch and post the at corresponding to the new public key
-                clientproxyutils.fetch_and_post_at_to_csp(
-                    cmd, api_server_port, tenant_id, kid, clientproxy_process
-                )
-            else:
-                telemetry.set_exception(
-                    exception=post_at_response.text,
-                    fault_type=consts.Post_AT_To_ClientProxy_Failed_Fault_Type,
-                    summary="Failed to post access token to client proxy",
-                )
-                clientproxyutils.close_subprocess_and_raise_cli_error(
-                    clientproxy_process,
-                    "Failed to post access token to client proxy"
-                    + post_at_response.text,
-                )
+    # Check hybrid connection details from Userrp
+    response: Response
 
-    data = prepare_clientproxy_data(cluster_user_credentials)
-    expiry = data["hybridConnectionConfig"]["expirationTime"]
+    if ProxyStatus.should_hc_token_refresh(flag):
+        try:
+            response_data = future_get_cluster_user_credentials.result()
+        except Exception as e:
+            clientproxy_process.terminate()
+            utils.arm_exception_handler(
+                e,
+                consts.Get_Credentials_Failed_Fault_Type,
+                "Unable to list cluster user credentials",
+            )
+            raise CLIInternalError(f"Failed to get credentials: {e}")
 
-    if token is not None:
-        data["kubeconfigs"][0]["value"] = clientproxyutils.insert_token_in_kubeconfig(
-            data, token
+        data = clientproxyutils.prepare_clientproxy_data(response_data)
+        hc_expiry = data["hybridConnectionConfig"]["expirationTime"]
+
+        response = proxylogic.post_register_to_proxy(
+            data,
+            token,
+            client_proxy_port,
+            subscription_id,
+            resource_group_name,
+            cluster_name,
+            clientproxy_process,
         )
 
-    uri = (
-        f"http://localhost:{client_proxy_port}/subscriptions/{subscription_id}/resourceGroups/{resource_group_name}"
-        f"/providers/Microsoft.Kubernetes/connectedClusters/{cluster_name}/register?api-version=2020-10-01"
-    )
-
-    # Posting hybrid connection details to proxy in order to get kubeconfig
-    response = clientproxyutils.make_api_call_with_retries(
-        uri,
-        data,
-        "post",
-        False,
-        consts.Post_Hybridconn_Fault_Type,
-        "Unable to post hybrid connection details to clientproxy",
-        "Failed to pass hybrid connection details to proxy.",
-        clientproxy_process,
-    )
-
-    if flag == 0:
+    if flag == ProxyStatus.FirstRun:
         # Decoding kubeconfig into a string
         try:
             kubeconfig = json.loads(response.text)
@@ -4033,15 +3881,14 @@ def client_side_proxy(
                 clientproxy_process, "Failed to merge kubeconfig." + str(e)
             )
 
-    return expiry, clientproxy_process
+    return hc_expiry, at_expiry, clientproxy_process
 
 
 def check_cl_registration_and_get_oid(
-    cmd: CLICommmand, cl_oid: str | None, subscription_id: str | None
+    cmd: CLICommand, cl_oid: str | None, subscription_id: str | None
 ) -> tuple[bool, str]:
     print(
-        f"Step: {utils.get_utctimestring()}: Checking Microsoft.ExtendedLocation RP Registration state for this Subscription, and get OID, "
-        "if registered "
+        f"Step: {utils.get_utctimestring()}: Checking Custom Location(Microsoft.ExtendedLocation) RP Registration state for this Subscription, and attempt to get the Custom Location Object ID (OID),if registered"
     )
     enable_custom_locations = True
     custom_locations_oid = ""
@@ -4065,8 +3912,8 @@ def check_cl_registration_and_get_oid(
     except Exception as e:
         enable_custom_locations = False
         warn_msg = (
-            "Unable to fetch registration state of 'Microsoft.ExtendedLocation'. Failed to enable "
-            "'custom-locations' feature. This is fine if not required. Proceeding with helm install."
+            "The custom location feature was not enabled because the custom location OID could not be retrieved. Please refer to: https://aka.ms/enable-customlocation "
+            "Proceeding with helm install..."
         )
         logger.warning(warn_msg)
         telemetry.set_exception(
@@ -4077,7 +3924,7 @@ def check_cl_registration_and_get_oid(
     return enable_custom_locations, custom_locations_oid
 
 
-def get_custom_locations_oid(cmd: CLICommmand, cl_oid: str | None) -> str:
+def get_custom_locations_oid(cmd: CLICommand, cl_oid: str | None) -> str:
     try:
         graph_client = graph_client_factory(cmd.cli_ctx)
         app_id = "bc313c14-388c-4e7d-a58e-70017303ee3b"
@@ -4118,7 +3965,8 @@ def get_custom_locations_oid(cmd: CLICommmand, cl_oid: str | None) -> str:
         return cl_oid
     except Exception as e:
         # Encountered exeption while fetching OID, log error
-        log_string = "Unable to fetch the Object ID of the Azure AD application used by Azure Arc service. "
+        log_string = "Unable to fetch the Custom Location OID  with permissions set on this account. The account does not have sufficient permissions to fetch or validate the OID."
+
         telemetry.set_exception(
             exception=e,
             fault_type=consts.Custom_Locations_OID_Fetch_Fault_Type_Exception,
@@ -4126,17 +3974,18 @@ def get_custom_locations_oid(cmd: CLICommmand, cl_oid: str | None) -> str:
         )
         # If Cl OID was input, use that
         if cl_oid:
-            log_string += "Proceeding with the Object ID provided to enable the 'custom-locations' feature."
+            log_string += "\nProceeding with using the OID manually provided to enable the 'custom-locations' feature without validation."
+            log_string += "\nIf the manual OID is invalid, custom location may not be properly enabled."
             logger.warning(log_string)
             return cl_oid
         # If no Cl OID was input, log a Warning and return empty for OID
-        log_string += "Unable to enable the 'custom-locations' feature. " + str(e)
+        log_string += "\nException encountered: " + str(e)
         logger.warning(log_string)
         return ""
 
 
 def troubleshoot(
-    cmd: CLICommmand,
+    cmd: CLICommand,
     client: ConnectedClusterOperations,
     resource_group_name: str,
     cluster_name: str,
@@ -4179,7 +4028,7 @@ def troubleshoot(
         load_kube_config(kube_config, kube_context, skip_ssl_verification)
 
         # Install helm client
-        helm_client_location = install_helm_client()
+        helm_client_location = install_helm_client(cmd)
 
         # Install kubectl client
         kubectl_client_location = install_kubectl_client()
@@ -4586,16 +4435,36 @@ def install_kubectl_client() -> str:
 
 
 def crd_cleanup_force_delete(
-    kubectl_client_location: str, kube_config: str | None, kube_context: str | None
+    cmd: CLICommand,
+    kubectl_client_location: str,
+    kube_config: str | None,
+    kube_context: str | None,
 ) -> None:
     print(f"Step: {utils.get_utctimestring()}: Deleting Arc CRDs")
+
+    active_directory_array = cmd.cli_ctx.cloud.endpoints.active_directory.split(".")
+    # default for public, mc, ff clouds
+    cloud_based_domain = active_directory_array[2]
+    # special cases for USSec/USNat clouds
+    if len(active_directory_array) == 4:
+        cloud_based_domain = active_directory_array[2] + "." + active_directory_array[3]
+    elif len(active_directory_array) == 5:
+        cloud_based_domain = (
+            active_directory_array[2]
+            + "."
+            + active_directory_array[3]
+            + "."
+            + active_directory_array[4]
+        )
+
     timeout_for_crd_deletion = "20s"
     for crds in consts.CRD_FOR_FORCE_DELETE:
+        full_crds = f"{crds}.{cloud_based_domain}"
         cmd_helm_delete = [
             kubectl_client_location,
             "delete",
             "crds",
-            crds,
+            full_crds,
             "--ignore-not-found",
             "--wait",
             "--timeout",
@@ -4618,7 +4487,8 @@ def crd_cleanup_force_delete(
 
     # Patch if CRD is in Terminating state
     for crds in consts.CRD_FOR_FORCE_DELETE:
-        cmd = [kubectl_client_location, "get", "crd", crds, "-ojson"]
+        full_crds = f"{crds}.{cloud_based_domain}"
+        cmd = [kubectl_client_location, "get", "crd", full_crds, "-ojson"]
         if kube_config:
             cmd.extend(["--kubeconfig", kube_config])
         if kube_context:
@@ -4635,7 +4505,7 @@ def crd_cleanup_force_delete(
                     kubectl_client_location,
                     "patch",
                     "crd",
-                    crds,
+                    full_crds,
                     "--type=merge",
                     "--patch-file",
                     yaml_file_path,

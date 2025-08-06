@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkdevices/{}/networkinterfaces/{}", "2024-02-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkdevices/{}/networkinterfaces/{}", "2024-06-15-preview"],
         ]
     }
 
@@ -45,12 +45,18 @@ class Wait(AAZWaitCommand):
             help="Name of the Network Device.",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z]{1}[a-zA-Z0-9-_]{2,127}$",
+            ),
         )
         _args_schema.resource_name = AAZStrArg(
             options=["--resource-name"],
             help="Name of the Network Interface.",
             required=True,
             id_part="child_name_1",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z]{1}[a-zA-Z0-9-_]{2,127}$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -126,7 +132,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-02-15-preview",
+                    "api-version", "2024-06-15-preview",
                     required=True,
                 ),
             }
@@ -177,6 +183,9 @@ class Wait(AAZWaitCommand):
             )
 
             properties = cls._schema_on_200.properties
+            properties.additional_description = AAZStrType(
+                serialized_name="additionalDescription",
+            )
             properties.administrative_state = AAZStrType(
                 serialized_name="administrativeState",
                 flags={"read_only": True},
@@ -186,6 +195,7 @@ class Wait(AAZWaitCommand):
                 serialized_name="connectedTo",
                 flags={"read_only": True},
             )
+            properties.description = AAZStrType()
             properties.interface_type = AAZStrType(
                 serialized_name="interfaceType",
                 flags={"read_only": True},
@@ -198,12 +208,21 @@ class Wait(AAZWaitCommand):
                 serialized_name="ipv6Address",
                 flags={"read_only": True},
             )
+            properties.last_operation = AAZObjectType(
+                serialized_name="lastOperation",
+                flags={"read_only": True},
+            )
             properties.physical_identifier = AAZStrType(
                 serialized_name="physicalIdentifier",
                 flags={"read_only": True},
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+
+            last_operation = cls._schema_on_200.properties.last_operation
+            last_operation.details = AAZStrType(
                 flags={"read_only": True},
             )
 

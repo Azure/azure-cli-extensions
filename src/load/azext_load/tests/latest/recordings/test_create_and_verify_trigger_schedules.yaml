@@ -1,0 +1,1156 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azsdk-python-mgmt-loadtesting/1.0.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-schedule-000001/providers/Microsoft.LoadTestService/loadTests/clitest-schedule-000002?api-version=2022-12-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-schedule-000001/providers/Microsoft.LoadTestService/loadTests/clitest-schedule-000002","name":"clitest-schedule-000002","type":"microsoft.loadtestservice/loadtests","location":"eastus","systemData":{"createdBy":"harshanb@microsoft.com","createdByType":"User","createdAt":"2025-04-30T13:49:12.7146471Z","lastModifiedBy":"harshanb@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-04-30T13:49:12.7146471Z"},"identity":{"type":"None"},"properties":{"dataPlaneURI":"4f364d42-c151-41e4-b01a-aae7de09ebe2.eastus.cnt-prod.loadtesting.azure.com","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '669'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 30 Apr 2025 13:49:47 GMT
+      etag:
+      - '"54015463-0000-0200-0000-68122a6e0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: B488BDA291C64D858F2596D75EAAD8ED Ref B: MAA201060514033 Ref C: 2025-04-30T13:49:46Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - AZURECLI/2.71.0 azsdk-python-core/1.33.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
+    method: GET
+    uri: https://4f364d42-c151-41e4-b01a-aae7de09ebe2.eastus.cnt-prod.loadtesting.azure.com/triggers/test-trigger-id-daily?api-version=2025-03-01-preview
+  response:
+    body:
+      string: '{"error":{"code":"TriggerNotFound","message":"Trigger with Id: test-trigger-id-daily
+        not found.","target":null,"details":null}}'
+    headers:
+      api-supported-versions:
+      - 2024-07-01-preview, 2024-12-01-preview, 2025-03-01-preview
+      connection:
+      - keep-alive
+      content-type:
+      - application/json
+      date:
+      - Wed, 30 Apr 2025 13:49:48 GMT
+      mise-correlation-id:
+      - 9628b4db-e196-463e-9389-3e9cf66ed32b
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      x-azure-ref:
+      - 20250430T134948Z-r1b8575b5cbsxt98hC1BOMucx400000004q000000000742h
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-error-code:
+      - TriggerNotFound
+    status:
+      code: 404
+      message: Not Found
+- request:
+    body: '{"kind": "ScheduleTestsTrigger", "testIds": ["test-id-daily"], "recurrence":
+      {"frequency": "Daily", "interval": 1}, "startDateTime": "2025-04-30T13:34:21Z",
+      "state": "Active", "displayName": "Daily Trigger", "description": "Trigger schedule
+      for daily test case"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '262'
+      Content-Type:
+      - application/merge-patch+json
+      User-Agent:
+      - AZURECLI/2.71.0 azsdk-python-core/1.33.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
+    method: PATCH
+    uri: https://4f364d42-c151-41e4-b01a-aae7de09ebe2.eastus.cnt-prod.loadtesting.azure.com/triggers/test-trigger-id-daily?api-version=2025-03-01-preview
+  response:
+    body:
+      string: '{"testIds":["test-id-daily"],"startDateTime":"2025-04-30T13:34:21Z","recurrence":{"frequency":"Daily","interval":1},"recurrenceStatus":{"nextScheduledDateTimes":["2025-05-01T13:34:21Z"]},"kind":"ScheduleTestsTrigger","displayName":"Daily
+        Trigger","triggerId":"test-trigger-id-daily","description":"Trigger schedule
+        for daily test case","state":"Active","createdDateTime":"2025-04-30T13:49:48.871Z","createdBy":"harshanb@microsoft.com","lastModifiedDateTime":"2025-04-30T13:49:48.871Z","lastModifiedBy":"harshanb@microsoft.com"}'
+    headers:
+      api-supported-versions:
+      - 2024-07-01-preview, 2024-12-01-preview, 2025-03-01-preview
+      connection:
+      - keep-alive
+      content-length:
+      - '527'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 30 Apr 2025 13:49:48 GMT
+      location:
+      - https://4f364d42-c151-41e4-b01a-aae7de09ebe2.eastus.cnt-prod.loadtesting.azure.com/triggers/test-trigger-id-daily?api-version=2025-03-01-preview
+      mise-correlation-id:
+      - 5d5cd88e-a40d-4577-a688-ea9c6bae4e7a
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-azure-ref:
+      - 20250430T134948Z-r1b8575b5cbxs264hC1BOM2xzn00000001x0000000009uaw
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azsdk-python-mgmt-loadtesting/1.0.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-schedule-000001/providers/Microsoft.LoadTestService/loadTests/clitest-schedule-000002?api-version=2022-12-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-schedule-000001/providers/Microsoft.LoadTestService/loadTests/clitest-schedule-000002","name":"clitest-schedule-000002","type":"microsoft.loadtestservice/loadtests","location":"eastus","systemData":{"createdBy":"harshanb@microsoft.com","createdByType":"User","createdAt":"2025-04-30T13:49:12.7146471Z","lastModifiedBy":"harshanb@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-04-30T13:49:12.7146471Z"},"identity":{"type":"None"},"properties":{"dataPlaneURI":"4f364d42-c151-41e4-b01a-aae7de09ebe2.eastus.cnt-prod.loadtesting.azure.com","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '669'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 30 Apr 2025 13:49:49 GMT
+      etag:
+      - '"54015463-0000-0200-0000-68122a6e0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 18452D44BE4F4ACDAE6B4B23B7BE1781 Ref B: MAA201060516025 Ref C: 2025-04-30T13:49:49Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - AZURECLI/2.71.0 azsdk-python-core/1.33.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
+    method: GET
+    uri: https://4f364d42-c151-41e4-b01a-aae7de09ebe2.eastus.cnt-prod.loadtesting.azure.com/triggers/test-trigger-id-daily?api-version=2025-03-01-preview
+  response:
+    body:
+      string: '{"testIds":["test-id-daily"],"startDateTime":"2025-04-30T13:34:21Z","recurrence":{"frequency":"Daily","interval":1},"recurrenceStatus":{"nextScheduledDateTimes":["2025-05-01T13:34:21Z"]},"kind":"ScheduleTestsTrigger","displayName":"Daily
+        Trigger","triggerId":"test-trigger-id-daily","description":"Trigger schedule
+        for daily test case","state":"Active","createdDateTime":"2025-04-30T13:49:48.871Z","createdBy":"harshanb@microsoft.com","lastModifiedDateTime":"2025-04-30T13:49:48.871Z","lastModifiedBy":"harshanb@microsoft.com"}'
+    headers:
+      accept-ranges:
+      - bytes
+      api-supported-versions:
+      - 2024-07-01-preview, 2024-12-01-preview, 2025-03-01-preview
+      connection:
+      - keep-alive
+      content-length:
+      - '527'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 30 Apr 2025 13:49:51 GMT
+      mise-correlation-id:
+      - cdcac15f-d279-4511-bf31-bd68ad40be9b
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-azure-ref:
+      - 20250430T134949Z-r1b8575b5cbxrm8jhC1BOMtnd400000004mg000000009nu4
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azsdk-python-mgmt-loadtesting/1.0.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-schedule-000001/providers/Microsoft.LoadTestService/loadTests/clitest-schedule-000002?api-version=2022-12-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-schedule-000001/providers/Microsoft.LoadTestService/loadTests/clitest-schedule-000002","name":"clitest-schedule-000002","type":"microsoft.loadtestservice/loadtests","location":"eastus","systemData":{"createdBy":"harshanb@microsoft.com","createdByType":"User","createdAt":"2025-04-30T13:49:12.7146471Z","lastModifiedBy":"harshanb@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-04-30T13:49:12.7146471Z"},"identity":{"type":"None"},"properties":{"dataPlaneURI":"4f364d42-c151-41e4-b01a-aae7de09ebe2.eastus.cnt-prod.loadtesting.azure.com","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '669'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 30 Apr 2025 13:49:51 GMT
+      etag:
+      - '"54015463-0000-0200-0000-68122a6e0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 0F7BD28DB8AE422F86893E55666958C1 Ref B: MAA201060514039 Ref C: 2025-04-30T13:49:51Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - AZURECLI/2.71.0 azsdk-python-core/1.33.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
+    method: GET
+    uri: https://4f364d42-c151-41e4-b01a-aae7de09ebe2.eastus.cnt-prod.loadtesting.azure.com/triggers/test-trigger-id-weekly?api-version=2025-03-01-preview
+  response:
+    body:
+      string: '{"error":{"code":"TriggerNotFound","message":"Trigger with Id: test-trigger-id-weekly
+        not found.","target":null,"details":null}}'
+    headers:
+      api-supported-versions:
+      - 2024-07-01-preview, 2024-12-01-preview, 2025-03-01-preview
+      connection:
+      - keep-alive
+      content-type:
+      - application/json
+      date:
+      - Wed, 30 Apr 2025 13:49:53 GMT
+      mise-correlation-id:
+      - 3ea02171-90a6-4537-809f-e705c7273ef0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      x-azure-ref:
+      - 20250430T134952Z-r1b8575b5cbpns6nhC1BOMv1as0000000190000000005vxm
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-error-code:
+      - TriggerNotFound
+    status:
+      code: 404
+      message: Not Found
+- request:
+    body: '{"kind": "ScheduleTestsTrigger", "testIds": ["test-id-weekly"], "recurrence":
+      {"frequency": "Weekly", "interval": 1, "daysOfWeek": ["Monday"]}, "startDateTime":
+      "2025-04-30T13:34:21Z", "state": "Active", "displayName": "Weekly Trigger",
+      "description": "Trigger schedule for weekly test case"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '292'
+      Content-Type:
+      - application/merge-patch+json
+      User-Agent:
+      - AZURECLI/2.71.0 azsdk-python-core/1.33.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
+    method: PATCH
+    uri: https://4f364d42-c151-41e4-b01a-aae7de09ebe2.eastus.cnt-prod.loadtesting.azure.com/triggers/test-trigger-id-weekly?api-version=2025-03-01-preview
+  response:
+    body:
+      string: '{"testIds":["test-id-weekly"],"startDateTime":"2025-04-30T13:34:21Z","recurrence":{"frequency":"Weekly","daysOfWeek":["Monday"],"interval":1},"recurrenceStatus":{"nextScheduledDateTimes":["2025-05-05T13:34:21Z"]},"kind":"ScheduleTestsTrigger","displayName":"Weekly
+        Trigger","triggerId":"test-trigger-id-weekly","description":"Trigger schedule
+        for weekly test case","state":"Active","createdDateTime":"2025-04-30T13:49:53.6Z","createdBy":"harshanb@microsoft.com","lastModifiedDateTime":"2025-04-30T13:49:53.6Z","lastModifiedBy":"harshanb@microsoft.com"}'
+    headers:
+      api-supported-versions:
+      - 2024-07-01-preview, 2024-12-01-preview, 2025-03-01-preview
+      connection:
+      - keep-alive
+      content-length:
+      - '552'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 30 Apr 2025 13:49:53 GMT
+      location:
+      - https://4f364d42-c151-41e4-b01a-aae7de09ebe2.eastus.cnt-prod.loadtesting.azure.com/triggers/test-trigger-id-weekly?api-version=2025-03-01-preview
+      mise-correlation-id:
+      - 7743b5b6-8eb7-4916-b971-2fffc14a983b
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-azure-ref:
+      - 20250430T134953Z-r1b8575b5cb78czvhC1BOMmqv400000001z0000000004wtn
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azsdk-python-mgmt-loadtesting/1.0.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-schedule-000001/providers/Microsoft.LoadTestService/loadTests/clitest-schedule-000002?api-version=2022-12-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-schedule-000001/providers/Microsoft.LoadTestService/loadTests/clitest-schedule-000002","name":"clitest-schedule-000002","type":"microsoft.loadtestservice/loadtests","location":"eastus","systemData":{"createdBy":"harshanb@microsoft.com","createdByType":"User","createdAt":"2025-04-30T13:49:12.7146471Z","lastModifiedBy":"harshanb@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-04-30T13:49:12.7146471Z"},"identity":{"type":"None"},"properties":{"dataPlaneURI":"4f364d42-c151-41e4-b01a-aae7de09ebe2.eastus.cnt-prod.loadtesting.azure.com","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '669'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 30 Apr 2025 13:49:54 GMT
+      etag:
+      - '"54015463-0000-0200-0000-68122a6e0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 2A6AD52CB4754C5FBEC1D1D7065F9820 Ref B: MAA201060513027 Ref C: 2025-04-30T13:49:54Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - AZURECLI/2.71.0 azsdk-python-core/1.33.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
+    method: GET
+    uri: https://4f364d42-c151-41e4-b01a-aae7de09ebe2.eastus.cnt-prod.loadtesting.azure.com/triggers/test-trigger-id-weekly?api-version=2025-03-01-preview
+  response:
+    body:
+      string: '{"testIds":["test-id-weekly"],"startDateTime":"2025-04-30T13:34:21Z","recurrence":{"frequency":"Weekly","daysOfWeek":["Monday"],"interval":1},"recurrenceStatus":{"nextScheduledDateTimes":["2025-05-05T13:34:21Z"]},"kind":"ScheduleTestsTrigger","displayName":"Weekly
+        Trigger","triggerId":"test-trigger-id-weekly","description":"Trigger schedule
+        for weekly test case","state":"Active","createdDateTime":"2025-04-30T13:49:53.6Z","createdBy":"harshanb@microsoft.com","lastModifiedDateTime":"2025-04-30T13:49:53.6Z","lastModifiedBy":"harshanb@microsoft.com"}'
+    headers:
+      accept-ranges:
+      - bytes
+      api-supported-versions:
+      - 2024-07-01-preview, 2024-12-01-preview, 2025-03-01-preview
+      connection:
+      - keep-alive
+      content-length:
+      - '552'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 30 Apr 2025 13:49:55 GMT
+      mise-correlation-id:
+      - 1697c36f-67e8-41ab-9789-11a177b27040
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-azure-ref:
+      - 20250430T134954Z-r1b8575b5cbtvx42hC1BOMyay800000004u0000000001wu9
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azsdk-python-mgmt-loadtesting/1.0.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-schedule-000001/providers/Microsoft.LoadTestService/loadTests/clitest-schedule-000002?api-version=2022-12-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-schedule-000001/providers/Microsoft.LoadTestService/loadTests/clitest-schedule-000002","name":"clitest-schedule-000002","type":"microsoft.loadtestservice/loadtests","location":"eastus","systemData":{"createdBy":"harshanb@microsoft.com","createdByType":"User","createdAt":"2025-04-30T13:49:12.7146471Z","lastModifiedBy":"harshanb@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-04-30T13:49:12.7146471Z"},"identity":{"type":"None"},"properties":{"dataPlaneURI":"4f364d42-c151-41e4-b01a-aae7de09ebe2.eastus.cnt-prod.loadtesting.azure.com","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '669'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 30 Apr 2025 13:49:56 GMT
+      etag:
+      - '"54015463-0000-0200-0000-68122a6e0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 19F4055BD6624B299481E1A85B384894 Ref B: MAA201060514037 Ref C: 2025-04-30T13:49:55Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - AZURECLI/2.71.0 azsdk-python-core/1.33.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
+    method: GET
+    uri: https://4f364d42-c151-41e4-b01a-aae7de09ebe2.eastus.cnt-prod.loadtesting.azure.com/triggers/test-trigger-id-monthly-dates?api-version=2025-03-01-preview
+  response:
+    body:
+      string: '{"error":{"code":"TriggerNotFound","message":"Trigger with Id: test-trigger-id-monthly-dates
+        not found.","target":null,"details":null}}'
+    headers:
+      api-supported-versions:
+      - 2024-07-01-preview, 2024-12-01-preview, 2025-03-01-preview
+      connection:
+      - keep-alive
+      content-type:
+      - application/json
+      date:
+      - Wed, 30 Apr 2025 13:49:57 GMT
+      mise-correlation-id:
+      - 44646bac-c750-499d-81c0-a651908c7750
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      x-azure-ref:
+      - 20250430T134956Z-r1b8575b5cbkztq2hC1BOM2vxc000000044g0000000084qu
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-error-code:
+      - TriggerNotFound
+    status:
+      code: 404
+      message: Not Found
+- request:
+    body: '{"kind": "ScheduleTestsTrigger", "testIds": ["test-id-monthly-dates"],
+      "recurrence": {"frequency": "MonthlyByDates", "interval": 1, "datesInMonth":
+      [1, 15]}, "startDateTime": "2025-04-30T13:34:21Z", "state": "Active", "displayName":
+      "Monthly By Dates Trigger", "description": "Trigger schedule for monthly by
+      dates test case"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '326'
+      Content-Type:
+      - application/merge-patch+json
+      User-Agent:
+      - AZURECLI/2.71.0 azsdk-python-core/1.33.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
+    method: PATCH
+    uri: https://4f364d42-c151-41e4-b01a-aae7de09ebe2.eastus.cnt-prod.loadtesting.azure.com/triggers/test-trigger-id-monthly-dates?api-version=2025-03-01-preview
+  response:
+    body:
+      string: '{"testIds":["test-id-monthly-dates"],"startDateTime":"2025-04-30T13:34:21Z","recurrence":{"frequency":"MonthlyByDates","datesInMonth":[1,15],"interval":1},"recurrenceStatus":{"nextScheduledDateTimes":["2025-05-01T13:34:21Z"]},"kind":"ScheduleTestsTrigger","displayName":"Monthly
+        By Dates Trigger","triggerId":"test-trigger-id-monthly-dates","description":"Trigger
+        schedule for monthly by dates test case","state":"Active","createdDateTime":"2025-04-30T13:49:57.88Z","createdBy":"harshanb@microsoft.com","lastModifiedDateTime":"2025-04-30T13:49:57.88Z","lastModifiedBy":"harshanb@microsoft.com"}'
+    headers:
+      api-supported-versions:
+      - 2024-07-01-preview, 2024-12-01-preview, 2025-03-01-preview
+      connection:
+      - keep-alive
+      content-length:
+      - '594'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 30 Apr 2025 13:49:57 GMT
+      location:
+      - https://4f364d42-c151-41e4-b01a-aae7de09ebe2.eastus.cnt-prod.loadtesting.azure.com/triggers/test-trigger-id-monthly-dates?api-version=2025-03-01-preview
+      mise-correlation-id:
+      - c608e982-bac9-4faa-869b-e6b48396d3cf
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-azure-ref:
+      - 20250430T134957Z-r1b8575b5cbf2qslhC1BOMug8g000000044g000000007u10
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azsdk-python-mgmt-loadtesting/1.0.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-schedule-000001/providers/Microsoft.LoadTestService/loadTests/clitest-schedule-000002?api-version=2022-12-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-schedule-000001/providers/Microsoft.LoadTestService/loadTests/clitest-schedule-000002","name":"clitest-schedule-000002","type":"microsoft.loadtestservice/loadtests","location":"eastus","systemData":{"createdBy":"harshanb@microsoft.com","createdByType":"User","createdAt":"2025-04-30T13:49:12.7146471Z","lastModifiedBy":"harshanb@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-04-30T13:49:12.7146471Z"},"identity":{"type":"None"},"properties":{"dataPlaneURI":"4f364d42-c151-41e4-b01a-aae7de09ebe2.eastus.cnt-prod.loadtesting.azure.com","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '669'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 30 Apr 2025 13:49:59 GMT
+      etag:
+      - '"54015463-0000-0200-0000-68122a6e0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 3F1543C68C834A68A8D37816DA8D00F2 Ref B: MAA201060515037 Ref C: 2025-04-30T13:49:58Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - AZURECLI/2.71.0 azsdk-python-core/1.33.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
+    method: GET
+    uri: https://4f364d42-c151-41e4-b01a-aae7de09ebe2.eastus.cnt-prod.loadtesting.azure.com/triggers/test-trigger-id-monthly-dates?api-version=2025-03-01-preview
+  response:
+    body:
+      string: '{"testIds":["test-id-monthly-dates"],"startDateTime":"2025-04-30T13:34:21Z","recurrence":{"frequency":"MonthlyByDates","datesInMonth":[1,15],"interval":1},"recurrenceStatus":{"nextScheduledDateTimes":["2025-05-01T13:34:21Z"]},"kind":"ScheduleTestsTrigger","displayName":"Monthly
+        By Dates Trigger","triggerId":"test-trigger-id-monthly-dates","description":"Trigger
+        schedule for monthly by dates test case","state":"Active","createdDateTime":"2025-04-30T13:49:57.88Z","createdBy":"harshanb@microsoft.com","lastModifiedDateTime":"2025-04-30T13:49:57.88Z","lastModifiedBy":"harshanb@microsoft.com"}'
+    headers:
+      accept-ranges:
+      - bytes
+      api-supported-versions:
+      - 2024-07-01-preview, 2024-12-01-preview, 2025-03-01-preview
+      connection:
+      - keep-alive
+      content-length:
+      - '594'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 30 Apr 2025 13:50:00 GMT
+      mise-correlation-id:
+      - 63c0cbe3-f4cf-4d4c-ad92-3eaa3bbdfc94
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-azure-ref:
+      - 20250430T134959Z-155d6647456prq4rhC1BOMd0b8000000042g00000000hngd
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azsdk-python-mgmt-loadtesting/1.0.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-schedule-000001/providers/Microsoft.LoadTestService/loadTests/clitest-schedule-000002?api-version=2022-12-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-schedule-000001/providers/Microsoft.LoadTestService/loadTests/clitest-schedule-000002","name":"clitest-schedule-000002","type":"microsoft.loadtestservice/loadtests","location":"eastus","systemData":{"createdBy":"harshanb@microsoft.com","createdByType":"User","createdAt":"2025-04-30T13:49:12.7146471Z","lastModifiedBy":"harshanb@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-04-30T13:49:12.7146471Z"},"identity":{"type":"None"},"properties":{"dataPlaneURI":"4f364d42-c151-41e4-b01a-aae7de09ebe2.eastus.cnt-prod.loadtesting.azure.com","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '669'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 30 Apr 2025 13:50:00 GMT
+      etag:
+      - '"54015463-0000-0200-0000-68122a6e0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 668FB9EACF7D47E08F4F20BCAB488B82 Ref B: MAA201060516017 Ref C: 2025-04-30T13:50:00Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - AZURECLI/2.71.0 azsdk-python-core/1.33.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
+    method: GET
+    uri: https://4f364d42-c151-41e4-b01a-aae7de09ebe2.eastus.cnt-prod.loadtesting.azure.com/triggers/test-trigger-id-monthly-days?api-version=2025-03-01-preview
+  response:
+    body:
+      string: '{"error":{"code":"TriggerNotFound","message":"Trigger with Id: test-trigger-id-monthly-days
+        not found.","target":null,"details":null}}'
+    headers:
+      api-supported-versions:
+      - 2024-07-01-preview, 2024-12-01-preview, 2025-03-01-preview
+      connection:
+      - keep-alive
+      content-type:
+      - application/json
+      date:
+      - Wed, 30 Apr 2025 13:50:01 GMT
+      mise-correlation-id:
+      - ff806a53-690e-4ac7-afb1-7d14531f614d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      x-azure-ref:
+      - 20250430T135001Z-r1b8575b5cbvwt4xhC1BOM712g0000000210000000002ws2
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-error-code:
+      - TriggerNotFound
+    status:
+      code: 404
+      message: Not Found
+- request:
+    body: '{"kind": "ScheduleTestsTrigger", "testIds": ["test-id-monthly-days"], "recurrence":
+      {"frequency": "MonthlyByDays", "interval": 1, "weekDaysInMonth": ["Monday"],
+      "index": 1}, "startDateTime": "2025-04-30T13:34:21Z", "state": "Active", "displayName":
+      "Monthly By Days Trigger", "description": "Trigger schedule for monthly by days
+      test case"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '340'
+      Content-Type:
+      - application/merge-patch+json
+      User-Agent:
+      - AZURECLI/2.71.0 azsdk-python-core/1.33.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
+    method: PATCH
+    uri: https://4f364d42-c151-41e4-b01a-aae7de09ebe2.eastus.cnt-prod.loadtesting.azure.com/triggers/test-trigger-id-monthly-days?api-version=2025-03-01-preview
+  response:
+    body:
+      string: '{"testIds":["test-id-monthly-days"],"startDateTime":"2025-04-30T13:34:21Z","recurrence":{"frequency":"MonthlyByDays","weekDaysInMonth":["Monday"],"interval":1,"index":1},"recurrenceStatus":{"nextScheduledDateTimes":["2025-05-05T13:34:21Z"]},"kind":"ScheduleTestsTrigger","displayName":"Monthly
+        By Days Trigger","triggerId":"test-trigger-id-monthly-days","description":"Trigger
+        schedule for monthly by days test case","state":"Active","createdDateTime":"2025-04-30T13:50:03.199Z","createdBy":"harshanb@microsoft.com","lastModifiedDateTime":"2025-04-30T13:50:03.199Z","lastModifiedBy":"harshanb@microsoft.com"}'
+    headers:
+      api-supported-versions:
+      - 2024-07-01-preview, 2024-12-01-preview, 2025-03-01-preview
+      connection:
+      - keep-alive
+      content-length:
+      - '608'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 30 Apr 2025 13:50:03 GMT
+      location:
+      - https://4f364d42-c151-41e4-b01a-aae7de09ebe2.eastus.cnt-prod.loadtesting.azure.com/triggers/test-trigger-id-monthly-days?api-version=2025-03-01-preview
+      mise-correlation-id:
+      - 52b81a3a-2f30-44b3-9e06-dc053299f603
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-azure-ref:
+      - 20250430T135001Z-r1b8575b5cb525cnhC1BOM2f1000000001h0000000000tnc
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azsdk-python-mgmt-loadtesting/1.0.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-schedule-000001/providers/Microsoft.LoadTestService/loadTests/clitest-schedule-000002?api-version=2022-12-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-schedule-000001/providers/Microsoft.LoadTestService/loadTests/clitest-schedule-000002","name":"clitest-schedule-000002","type":"microsoft.loadtestservice/loadtests","location":"eastus","systemData":{"createdBy":"harshanb@microsoft.com","createdByType":"User","createdAt":"2025-04-30T13:49:12.7146471Z","lastModifiedBy":"harshanb@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-04-30T13:49:12.7146471Z"},"identity":{"type":"None"},"properties":{"dataPlaneURI":"4f364d42-c151-41e4-b01a-aae7de09ebe2.eastus.cnt-prod.loadtesting.azure.com","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '669'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 30 Apr 2025 13:50:03 GMT
+      etag:
+      - '"54015463-0000-0200-0000-68122a6e0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: AB725FB100324A4BAD72C4C9579C1C5F Ref B: MAA201060514039 Ref C: 2025-04-30T13:50:03Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - AZURECLI/2.71.0 azsdk-python-core/1.33.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
+    method: GET
+    uri: https://4f364d42-c151-41e4-b01a-aae7de09ebe2.eastus.cnt-prod.loadtesting.azure.com/triggers/test-trigger-id-monthly-days?api-version=2025-03-01-preview
+  response:
+    body:
+      string: '{"testIds":["test-id-monthly-days"],"startDateTime":"2025-04-30T13:34:21Z","recurrence":{"frequency":"MonthlyByDays","weekDaysInMonth":["Monday"],"interval":1,"index":1},"recurrenceStatus":{"nextScheduledDateTimes":["2025-05-05T13:34:21Z"]},"kind":"ScheduleTestsTrigger","displayName":"Monthly
+        By Days Trigger","triggerId":"test-trigger-id-monthly-days","description":"Trigger
+        schedule for monthly by days test case","state":"Active","createdDateTime":"2025-04-30T13:50:03.199Z","createdBy":"harshanb@microsoft.com","lastModifiedDateTime":"2025-04-30T13:50:03.199Z","lastModifiedBy":"harshanb@microsoft.com"}'
+    headers:
+      accept-ranges:
+      - bytes
+      api-supported-versions:
+      - 2024-07-01-preview, 2024-12-01-preview, 2025-03-01-preview
+      connection:
+      - keep-alive
+      content-length:
+      - '608'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 30 Apr 2025 13:50:04 GMT
+      mise-correlation-id:
+      - bba58c73-6504-48a1-b48a-c28d18669092
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-azure-ref:
+      - 20250430T135004Z-r1b8575b5cbvscv7hC1BOMnvs000000001wg000000008c80
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azsdk-python-mgmt-loadtesting/1.0.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-schedule-000001/providers/Microsoft.LoadTestService/loadTests/clitest-schedule-000002?api-version=2022-12-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-schedule-000001/providers/Microsoft.LoadTestService/loadTests/clitest-schedule-000002","name":"clitest-schedule-000002","type":"microsoft.loadtestservice/loadtests","location":"eastus","systemData":{"createdBy":"harshanb@microsoft.com","createdByType":"User","createdAt":"2025-04-30T13:49:12.7146471Z","lastModifiedBy":"harshanb@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-04-30T13:49:12.7146471Z"},"identity":{"type":"None"},"properties":{"dataPlaneURI":"4f364d42-c151-41e4-b01a-aae7de09ebe2.eastus.cnt-prod.loadtesting.azure.com","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '669'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 30 Apr 2025 13:50:05 GMT
+      etag:
+      - '"54015463-0000-0200-0000-68122a6e0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 75D6638DCF5A429DB878AA0A63FF5802 Ref B: MAA201060515017 Ref C: 2025-04-30T13:50:05Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - AZURECLI/2.71.0 azsdk-python-core/1.33.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
+    method: GET
+    uri: https://4f364d42-c151-41e4-b01a-aae7de09ebe2.eastus.cnt-prod.loadtesting.azure.com/triggers/test-trigger-id-cron?api-version=2025-03-01-preview
+  response:
+    body:
+      string: '{"error":{"code":"TriggerNotFound","message":"Trigger with Id: test-trigger-id-cron
+        not found.","target":null,"details":null}}'
+    headers:
+      api-supported-versions:
+      - 2024-07-01-preview, 2024-12-01-preview, 2025-03-01-preview
+      connection:
+      - keep-alive
+      content-type:
+      - application/json
+      date:
+      - Wed, 30 Apr 2025 13:50:06 GMT
+      mise-correlation-id:
+      - 02610330-e553-44db-a9fd-92db0a363046
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      x-azure-ref:
+      - 20250430T135006Z-r1b8575b5cbvwt4xhC1BOM712g00000001xg000000008gb6
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-error-code:
+      - TriggerNotFound
+    status:
+      code: 404
+      message: Not Found
+- request:
+    body: '{"kind": "ScheduleTestsTrigger", "testIds": ["test-id-cron"], "recurrence":
+      {"frequency": "Cron", "cronExpression": "0 0 12 * *"}, "startDateTime": "2025-04-30T13:34:21Z",
+      "state": "Active", "displayName": "Cron Trigger", "description": "Trigger schedule
+      for cron test case"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '275'
+      Content-Type:
+      - application/merge-patch+json
+      User-Agent:
+      - AZURECLI/2.71.0 azsdk-python-core/1.33.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
+    method: PATCH
+    uri: https://4f364d42-c151-41e4-b01a-aae7de09ebe2.eastus.cnt-prod.loadtesting.azure.com/triggers/test-trigger-id-cron?api-version=2025-03-01-preview
+  response:
+    body:
+      string: '{"testIds":["test-id-cron"],"startDateTime":"2025-04-30T13:34:21Z","recurrence":{"frequency":"Cron","cronExpression":"0
+        0 12 * *"},"recurrenceStatus":{"nextScheduledDateTimes":["2025-05-12T00:00:00Z"]},"kind":"ScheduleTestsTrigger","displayName":"Cron
+        Trigger","triggerId":"test-trigger-id-cron","description":"Trigger schedule
+        for cron test case","state":"Active","createdDateTime":"2025-04-30T13:50:07.368Z","createdBy":"harshanb@microsoft.com","lastModifiedDateTime":"2025-04-30T13:50:07.368Z","lastModifiedBy":"harshanb@microsoft.com"}'
+    headers:
+      api-supported-versions:
+      - 2024-07-01-preview, 2024-12-01-preview, 2025-03-01-preview
+      connection:
+      - keep-alive
+      content-length:
+      - '539'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 30 Apr 2025 13:50:07 GMT
+      location:
+      - https://4f364d42-c151-41e4-b01a-aae7de09ebe2.eastus.cnt-prod.loadtesting.azure.com/triggers/test-trigger-id-cron?api-version=2025-03-01-preview
+      mise-correlation-id:
+      - 3a36c507-13be-48aa-86da-7bc13a1e63ae
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-azure-ref:
+      - 20250430T135006Z-155d66474564dq2vhC1BOMvs5400000003hg00000000gc92
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azsdk-python-mgmt-loadtesting/1.0.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-schedule-000001/providers/Microsoft.LoadTestService/loadTests/clitest-schedule-000002?api-version=2022-12-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-schedule-000001/providers/Microsoft.LoadTestService/loadTests/clitest-schedule-000002","name":"clitest-schedule-000002","type":"microsoft.loadtestservice/loadtests","location":"eastus","systemData":{"createdBy":"harshanb@microsoft.com","createdByType":"User","createdAt":"2025-04-30T13:49:12.7146471Z","lastModifiedBy":"harshanb@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-04-30T13:49:12.7146471Z"},"identity":{"type":"None"},"properties":{"dataPlaneURI":"4f364d42-c151-41e4-b01a-aae7de09ebe2.eastus.cnt-prod.loadtesting.azure.com","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '669'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 30 Apr 2025 13:50:08 GMT
+      etag:
+      - '"54015463-0000-0200-0000-68122a6e0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 2BBEDEF5957E4F5AA517EF5DE714058D Ref B: MAA201060514019 Ref C: 2025-04-30T13:50:07Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - AZURECLI/2.71.0 azsdk-python-core/1.33.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
+    method: GET
+    uri: https://4f364d42-c151-41e4-b01a-aae7de09ebe2.eastus.cnt-prod.loadtesting.azure.com/triggers/test-trigger-id-cron?api-version=2025-03-01-preview
+  response:
+    body:
+      string: '{"testIds":["test-id-cron"],"startDateTime":"2025-04-30T13:34:21Z","recurrence":{"frequency":"Cron","cronExpression":"0
+        0 12 * *"},"recurrenceStatus":{"nextScheduledDateTimes":["2025-05-12T00:00:00Z"]},"kind":"ScheduleTestsTrigger","displayName":"Cron
+        Trigger","triggerId":"test-trigger-id-cron","description":"Trigger schedule
+        for cron test case","state":"Active","createdDateTime":"2025-04-30T13:50:07.368Z","createdBy":"harshanb@microsoft.com","lastModifiedDateTime":"2025-04-30T13:50:07.368Z","lastModifiedBy":"harshanb@microsoft.com"}'
+    headers:
+      accept-ranges:
+      - bytes
+      api-supported-versions:
+      - 2024-07-01-preview, 2024-12-01-preview, 2025-03-01-preview
+      connection:
+      - keep-alive
+      content-length:
+      - '539'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 30 Apr 2025 13:50:09 GMT
+      mise-correlation-id:
+      - 3fe16c37-3aac-4ce3-aafd-135456fb97d2
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-azure-ref:
+      - 20250430T135008Z-r1b8575b5cbfp9thhC1BOM069w0000000560000000009xx5
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+version: 1

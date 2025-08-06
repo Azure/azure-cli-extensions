@@ -11,9 +11,19 @@ workloads sap-central-instance stop:
     soft_stop_timeout_seconds:
       rule_exclusions:
       - option_length_too_long
+workloads sap-central-instance update:
+  parameters:
+    sap_virtual_instance_name:
+      rule_exclusions:
+      - option_length_too_long
 workloads sap-database-instance stop:
   parameters:
     soft_stop_timeout_seconds:
+      rule_exclusions:
+      - option_length_too_long
+workloads sap-database-instance update:
+  parameters:
+    sap_virtual_instance_name:
       rule_exclusions:
       - option_length_too_long
 workloads sap-virtual-instance stop:
@@ -24,6 +34,11 @@ workloads sap-virtual-instance stop:
 workloads sap-application-server-instance stop:
   parameters:
     soft_stop_timeout_seconds:
+      rule_exclusions:
+      - option_length_too_long
+workloads sap-application-server-instance update:
+  parameters:
+    sap_virtual_instance_name:
       rule_exclusions:
       - option_length_too_long
 workloads sap-virtual-instance create:

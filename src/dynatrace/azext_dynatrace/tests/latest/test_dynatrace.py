@@ -36,7 +36,7 @@ class DynatraceScenario(ScenarioTest):
             self.check('planData.planDetails', 'azureportalintegration_privatepreview@TIDgmz7xq9ge3py'),
             self.check('planData.usageType', 'COMMITTED'),
             self.check('userInfo.country', 'US'),
-            self.check('userInfo.emailAddress', 'agarwalshiv@microsoft.com'),
+            self.check('userInfo.emailAddress', 'test@example.com'),
             self.check('userInfo.firstName', 'Alice'),
             self.check('userInfo.lastName', 'Bobab'),
             self.check('userInfo.phoneNumber', '1234567890')
@@ -58,7 +58,7 @@ class DynatraceScenario(ScenarioTest):
             self.check('[0].planData.planDetails', 'azureportalintegration_privatepreview@TIDgmz7xq9ge3py'),
             self.check('[0].planData.usageType', 'COMMITTED'),
             self.check('[0].userInfo.country', 'US'),
-            self.check('[0].userInfo.emailAddress', 'agarwalshiv@microsoft.com'),
+            self.check('[0].userInfo.emailAddress', 'test@example.com'),
             self.check('[0].userInfo.firstName', 'Alice'),
             self.check('[0].userInfo.lastName', 'Bobab'),
             self.check('[0].userInfo.phoneNumber', '1234567890'),

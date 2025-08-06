@@ -25,10 +25,10 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-07-01",
+        "version": "2025-02-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.networkcloud/clusters", "2024-07-01"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clusters", "2024-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.networkcloud/clusters", "2025-02-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clusters", "2025-02-01"],
         ]
     }
 
@@ -115,7 +115,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-07-01",
+                    "api-version", "2025-02-01",
                     required=True,
                 ),
             }
@@ -157,6 +157,9 @@ class List(AAZCommand):
             value.Element = AAZObjectType()
 
             _element = cls._schema_on_200.value.Element
+            _element.etag = AAZStrType(
+                flags={"read_only": True},
+            )
             _element.extended_location = AAZObjectType(
                 serialized_name="extendedLocation",
                 flags={"required": True},
@@ -221,6 +224,9 @@ class List(AAZCommand):
                 flags={"required": True},
             )
             _ListHelper._build_schema_rack_definition_read(properties.aggregator_or_single_rack_definition)
+            properties.analytics_output_settings = AAZObjectType(
+                serialized_name="analyticsOutputSettings",
+            )
             properties.analytics_workspace_id = AAZStrType(
                 serialized_name="analyticsWorkspaceId",
             )
@@ -306,6 +312,9 @@ class List(AAZCommand):
             properties.secret_archive = AAZObjectType(
                 serialized_name="secretArchive",
             )
+            properties.secret_archive_settings = AAZObjectType(
+                serialized_name="secretArchiveSettings",
+            )
             properties.support_expiry_date = AAZStrType(
                 serialized_name="supportExpiryDate",
                 flags={"read_only": True},
@@ -313,10 +322,22 @@ class List(AAZCommand):
             properties.update_strategy = AAZObjectType(
                 serialized_name="updateStrategy",
             )
+            properties.vulnerability_scanning_settings = AAZObjectType(
+                serialized_name="vulnerabilityScanningSettings",
+            )
             properties.workload_resource_ids = AAZListType(
                 serialized_name="workloadResourceIds",
                 flags={"read_only": True},
             )
+
+            analytics_output_settings = cls._schema_on_200.value.Element.properties.analytics_output_settings
+            analytics_output_settings.analytics_workspace_id = AAZStrType(
+                serialized_name="analyticsWorkspaceId",
+            )
+            analytics_output_settings.associated_identity = AAZObjectType(
+                serialized_name="associatedIdentity",
+            )
+            _ListHelper._build_schema_identity_selector_read(analytics_output_settings.associated_identity)
 
             available_upgrade_versions = cls._schema_on_200.value.Element.properties.available_upgrade_versions
             available_upgrade_versions.Element = AAZObjectType()
@@ -394,17 +415,9 @@ class List(AAZCommand):
             command_output_settings.associated_identity = AAZObjectType(
                 serialized_name="associatedIdentity",
             )
+            _ListHelper._build_schema_identity_selector_read(command_output_settings.associated_identity)
             command_output_settings.container_url = AAZStrType(
                 serialized_name="containerUrl",
-            )
-
-            associated_identity = cls._schema_on_200.value.Element.properties.command_output_settings.associated_identity
-            associated_identity.identity_type = AAZStrType(
-                serialized_name="identityType",
-            )
-            associated_identity.user_assigned_identity_resource_id = AAZStrType(
-                serialized_name="userAssignedIdentityResourceId",
-                nullable=True,
             )
 
             compute_deployment_threshold = cls._schema_on_200.value.Element.properties.compute_deployment_threshold
@@ -440,6 +453,15 @@ class List(AAZCommand):
                 serialized_name="useKeyVault",
             )
 
+            secret_archive_settings = cls._schema_on_200.value.Element.properties.secret_archive_settings
+            secret_archive_settings.associated_identity = AAZObjectType(
+                serialized_name="associatedIdentity",
+            )
+            _ListHelper._build_schema_identity_selector_read(secret_archive_settings.associated_identity)
+            secret_archive_settings.vault_uri = AAZStrType(
+                serialized_name="vaultUri",
+            )
+
             update_strategy = cls._schema_on_200.value.Element.properties.update_strategy
             update_strategy.max_unavailable = AAZIntType(
                 serialized_name="maxUnavailable",
@@ -458,6 +480,11 @@ class List(AAZCommand):
             )
             update_strategy.wait_time_minutes = AAZIntType(
                 serialized_name="waitTimeMinutes",
+            )
+
+            vulnerability_scanning_settings = cls._schema_on_200.value.Element.properties.vulnerability_scanning_settings
+            vulnerability_scanning_settings.container_scan = AAZStrType(
+                serialized_name="containerScan",
             )
 
             workload_resource_ids = cls._schema_on_200.value.Element.properties.workload_resource_ids
@@ -532,7 +559,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-07-01",
+                    "api-version", "2025-02-01",
                     required=True,
                 ),
             }
@@ -574,6 +601,9 @@ class List(AAZCommand):
             value.Element = AAZObjectType()
 
             _element = cls._schema_on_200.value.Element
+            _element.etag = AAZStrType(
+                flags={"read_only": True},
+            )
             _element.extended_location = AAZObjectType(
                 serialized_name="extendedLocation",
                 flags={"required": True},
@@ -638,6 +668,9 @@ class List(AAZCommand):
                 flags={"required": True},
             )
             _ListHelper._build_schema_rack_definition_read(properties.aggregator_or_single_rack_definition)
+            properties.analytics_output_settings = AAZObjectType(
+                serialized_name="analyticsOutputSettings",
+            )
             properties.analytics_workspace_id = AAZStrType(
                 serialized_name="analyticsWorkspaceId",
             )
@@ -723,6 +756,9 @@ class List(AAZCommand):
             properties.secret_archive = AAZObjectType(
                 serialized_name="secretArchive",
             )
+            properties.secret_archive_settings = AAZObjectType(
+                serialized_name="secretArchiveSettings",
+            )
             properties.support_expiry_date = AAZStrType(
                 serialized_name="supportExpiryDate",
                 flags={"read_only": True},
@@ -730,10 +766,22 @@ class List(AAZCommand):
             properties.update_strategy = AAZObjectType(
                 serialized_name="updateStrategy",
             )
+            properties.vulnerability_scanning_settings = AAZObjectType(
+                serialized_name="vulnerabilityScanningSettings",
+            )
             properties.workload_resource_ids = AAZListType(
                 serialized_name="workloadResourceIds",
                 flags={"read_only": True},
             )
+
+            analytics_output_settings = cls._schema_on_200.value.Element.properties.analytics_output_settings
+            analytics_output_settings.analytics_workspace_id = AAZStrType(
+                serialized_name="analyticsWorkspaceId",
+            )
+            analytics_output_settings.associated_identity = AAZObjectType(
+                serialized_name="associatedIdentity",
+            )
+            _ListHelper._build_schema_identity_selector_read(analytics_output_settings.associated_identity)
 
             available_upgrade_versions = cls._schema_on_200.value.Element.properties.available_upgrade_versions
             available_upgrade_versions.Element = AAZObjectType()
@@ -811,17 +859,9 @@ class List(AAZCommand):
             command_output_settings.associated_identity = AAZObjectType(
                 serialized_name="associatedIdentity",
             )
+            _ListHelper._build_schema_identity_selector_read(command_output_settings.associated_identity)
             command_output_settings.container_url = AAZStrType(
                 serialized_name="containerUrl",
-            )
-
-            associated_identity = cls._schema_on_200.value.Element.properties.command_output_settings.associated_identity
-            associated_identity.identity_type = AAZStrType(
-                serialized_name="identityType",
-            )
-            associated_identity.user_assigned_identity_resource_id = AAZStrType(
-                serialized_name="userAssignedIdentityResourceId",
-                nullable=True,
             )
 
             compute_deployment_threshold = cls._schema_on_200.value.Element.properties.compute_deployment_threshold
@@ -857,6 +897,15 @@ class List(AAZCommand):
                 serialized_name="useKeyVault",
             )
 
+            secret_archive_settings = cls._schema_on_200.value.Element.properties.secret_archive_settings
+            secret_archive_settings.associated_identity = AAZObjectType(
+                serialized_name="associatedIdentity",
+            )
+            _ListHelper._build_schema_identity_selector_read(secret_archive_settings.associated_identity)
+            secret_archive_settings.vault_uri = AAZStrType(
+                serialized_name="vaultUri",
+            )
+
             update_strategy = cls._schema_on_200.value.Element.properties.update_strategy
             update_strategy.max_unavailable = AAZIntType(
                 serialized_name="maxUnavailable",
@@ -875,6 +924,11 @@ class List(AAZCommand):
             )
             update_strategy.wait_time_minutes = AAZIntType(
                 serialized_name="waitTimeMinutes",
+            )
+
+            vulnerability_scanning_settings = cls._schema_on_200.value.Element.properties.vulnerability_scanning_settings
+            vulnerability_scanning_settings.container_scan = AAZStrType(
+                serialized_name="containerScan",
             )
 
             workload_resource_ids = cls._schema_on_200.value.Element.properties.workload_resource_ids
@@ -952,6 +1006,29 @@ class _ListHelper:
 
         _schema.name = cls._schema_extended_location_read.name
         _schema.type = cls._schema_extended_location_read.type
+
+    _schema_identity_selector_read = None
+
+    @classmethod
+    def _build_schema_identity_selector_read(cls, _schema):
+        if cls._schema_identity_selector_read is not None:
+            _schema.identity_type = cls._schema_identity_selector_read.identity_type
+            _schema.user_assigned_identity_resource_id = cls._schema_identity_selector_read.user_assigned_identity_resource_id
+            return
+
+        cls._schema_identity_selector_read = _schema_identity_selector_read = AAZObjectType()
+
+        identity_selector_read = _schema_identity_selector_read
+        identity_selector_read.identity_type = AAZStrType(
+            serialized_name="identityType",
+        )
+        identity_selector_read.user_assigned_identity_resource_id = AAZStrType(
+            serialized_name="userAssignedIdentityResourceId",
+            nullable=True,
+        )
+
+        _schema.identity_type = cls._schema_identity_selector_read.identity_type
+        _schema.user_assigned_identity_resource_id = cls._schema_identity_selector_read.user_assigned_identity_resource_id
 
     _schema_rack_definition_read = None
 

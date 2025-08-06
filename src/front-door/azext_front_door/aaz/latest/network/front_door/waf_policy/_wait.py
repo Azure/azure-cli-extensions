@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/frontdoorwebapplicationfirewallpolicies/{}", "2024-02-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/frontdoorwebapplicationfirewallpolicies/{}", "2025-03-01"],
         ]
     }
 
@@ -119,7 +119,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-02-01",
+                    "api-version", "2025-03-01",
                     required=True,
                 ),
             }
@@ -342,6 +342,9 @@ class Wait(AAZWaitCommand):
             _WaitHelper._build_schema_managed_rule_exclusion_read(exclusions.Element)
 
             policy_settings = cls._schema_on_200.properties.policy_settings
+            policy_settings.captcha_expiration_in_minutes = AAZIntType(
+                serialized_name="captchaExpirationInMinutes",
+            )
             policy_settings.custom_block_response_body = AAZStrType(
                 serialized_name="customBlockResponseBody",
             )
@@ -356,6 +359,7 @@ class Wait(AAZWaitCommand):
             )
             policy_settings.log_scrubbing = AAZObjectType(
                 serialized_name="logScrubbing",
+                flags={"client_flatten": True},
             )
             policy_settings.mode = AAZStrType()
             policy_settings.redirect_url = AAZStrType(

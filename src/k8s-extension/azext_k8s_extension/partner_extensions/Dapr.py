@@ -23,7 +23,7 @@ logger = get_logger(__name__)
 
 class Dapr(DefaultExtension):
     def __init__(self):
-        self.TSG_LINK = "https://docs.microsoft.com/en-us/azure/aks/dapr"
+        self.TSG_LINK = "https://learn.microsoft.com/en-us/azure/aks/dapr"
         self.DEFAULT_RELEASE_NAME = 'dapr'
         self.DEFAULT_RELEASE_NAMESPACE = 'dapr-system'
         self.DEFAULT_RELEASE_TRAIN = 'stable'

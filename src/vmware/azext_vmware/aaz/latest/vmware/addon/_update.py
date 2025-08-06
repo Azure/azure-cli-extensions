@@ -16,9 +16,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-09-01",
+        "version": "2024-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}/addons/{}", "2023-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}/addons/{}", "2024-09-01"],
         ]
     }
 
@@ -47,7 +47,7 @@ class Update(AAZCommand):
             required=True,
             id_part="child_name_1",
             fmt=AAZStrArgFormat(
-                pattern="^[-\w\._]+$",
+                pattern="^[-\\w\\._]+$",
             ),
         )
         _args_schema.private_cloud = AAZStrArg(
@@ -56,7 +56,7 @@ class Update(AAZCommand):
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
-                pattern="^[-\w\._]+$",
+                pattern="^[-\\w\\._]+$",
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
@@ -95,9 +95,19 @@ class Update(AAZCommand):
         )
 
         hcx = cls._args_schema.hcx
+        hcx.management_network = AAZStrArg(
+            options=["management-network"],
+            help="HCX management network.",
+            nullable=True,
+        )
         hcx.offer = AAZStrArg(
             options=["offer"],
             help="The HCX offer, example VMware MaaS Cloud Provider (Enterprise)",
+        )
+        hcx.uplink_network = AAZStrArg(
+            options=["uplink-network"],
+            help="HCX uplink network",
+            nullable=True,
         )
 
         srm = cls._args_schema.srm
@@ -196,7 +206,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-09-01",
+                    "api-version", "2024-09-01",
                     required=True,
                 ),
             }
@@ -299,7 +309,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-09-01",
+                    "api-version", "2024-09-01",
                     required=True,
                 ),
             }
@@ -357,7 +367,7 @@ class Update(AAZCommand):
                 value=instance,
                 typ=AAZObjectType
             )
-            _builder.set_prop("properties", AAZObjectType)
+            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
 
             properties = _builder.get(".properties")
             if properties is not None:
@@ -376,7 +386,9 @@ class Update(AAZCommand):
 
             disc_hcx = _builder.get(".properties{addonType:HCX}")
             if disc_hcx is not None:
+                disc_hcx.set_prop("managementNetwork", AAZStrType, ".hcx.management_network")
                 disc_hcx.set_prop("offer", AAZStrType, ".hcx.offer", typ_kwargs={"flags": {"required": True}})
+                disc_hcx.set_prop("uplinkNetwork", AAZStrType, ".hcx.uplink_network")
 
             disc_srm = _builder.get(".properties{addonType:SRM}")
             if disc_srm is not None:
@@ -421,7 +433,9 @@ class _UpdateHelper:
         addon_read.name = AAZStrType(
             flags={"read_only": True},
         )
-        addon_read.properties = AAZObjectType()
+        addon_read.properties = AAZObjectType(
+            flags={"client_flatten": True},
+        )
         addon_read.system_data = AAZObjectType(
             serialized_name="systemData",
             flags={"read_only": True},
@@ -446,8 +460,14 @@ class _UpdateHelper:
         )
 
         disc_hcx = _schema_addon_read.properties.discriminate_by("addon_type", "HCX")
+        disc_hcx.management_network = AAZStrType(
+            serialized_name="managementNetwork",
+        )
         disc_hcx.offer = AAZStrType(
             flags={"required": True},
+        )
+        disc_hcx.uplink_network = AAZStrType(
+            serialized_name="uplinkNetwork",
         )
 
         disc_srm = _schema_addon_read.properties.discriminate_by("addon_type", "SRM")

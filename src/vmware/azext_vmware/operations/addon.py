@@ -24,8 +24,8 @@ class AddonVrShow(_AddonShow):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.addon_name._required = False
-        args_schema.addon_name._registered = False
+        setattr(args_schema.addon_name, '_required', False)
+        setattr(args_schema.addon_name, '_registered', False)
         return args_schema
 
     def pre_operations(self):
@@ -53,13 +53,13 @@ class AddonVrCreate(_AddonCreate):
             required=True,
         )
 
-        args_schema.vr._registered = False
-        args_schema.hcx._registered = False
-        args_schema.srm._registered = False
-        args_schema.arc._registered = False
+        setattr(args_schema.vr, '_registered', False)
+        setattr(args_schema.hcx, '_registered', False)
+        setattr(args_schema.srm, '_registered', False)
+        setattr(args_schema.arc, '_registered', False)
 
-        args_schema.addon_name._required = False
-        args_schema.addon_name._registered = False
+        setattr(args_schema.addon_name, '_required', False)
+        setattr(args_schema.addon_name, '_registered', False)
         return args_schema
 
     def pre_operations(self):
@@ -89,13 +89,13 @@ class AddonVrUpdate(_AddonUpdate):
             required=True,
         )
 
-        args_schema.vr._registered = False
-        args_schema.hcx._registered = False
-        args_schema.srm._registered = False
-        args_schema.arc._registered = False
+        setattr(args_schema.vr, '_registered', False)
+        setattr(args_schema.hcx, '_registered', False)
+        setattr(args_schema.srm, '_registered', False)
+        setattr(args_schema.arc, '_registered', False)
 
-        args_schema.addon_name._required = False
-        args_schema.addon_name._registered = False
+        setattr(args_schema.addon_name, '_required', False)
+        setattr(args_schema.addon_name, '_registered', False)
         return args_schema
 
     def pre_operations(self):
@@ -119,8 +119,8 @@ class AddonVrDelete(_AddonDelete):
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
 
-        args_schema.addon_name._required = False
-        args_schema.addon_name._registered = False
+        setattr(args_schema.addon_name, '_required', False)
+        setattr(args_schema.addon_name, '_registered', False)
         return args_schema
 
     def pre_operations(self):
@@ -143,8 +143,8 @@ class AddonHcxShow(_AddonShow):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.addon_name._required = False
-        args_schema.addon_name._registered = False
+        setattr(args_schema.addon_name, '_required', False)
+        setattr(args_schema.addon_name, '_registered', False)
         return args_schema
 
     def pre_operations(self):
@@ -171,14 +171,22 @@ class AddonHcxCreate(_AddonCreate):
             help="The HCX offer, example VMware MaaS Cloud Provider (Enterprise)",
             required=True,
         )
+        args_schema.management_network = AAZStrArg(
+            options=["--management-network"],
+            help="HCX management network.",
+        )
+        args_schema.uplink_network = AAZStrArg(
+            options=["--uplink-network"],
+            help="HCX uplink network.",
+        )
 
-        args_schema.vr._registered = False
-        args_schema.hcx._registered = False
-        args_schema.srm._registered = False
-        args_schema.arc._registered = False
+        setattr(args_schema.vr, '_registered', False)
+        setattr(args_schema.hcx, '_registered', False)
+        setattr(args_schema.srm, '_registered', False)
+        setattr(args_schema.arc, '_registered', False)
 
-        args_schema.addon_name._required = False
-        args_schema.addon_name._registered = False
+        setattr(args_schema.addon_name, '_required', False)
+        setattr(args_schema.addon_name, '_registered', False)
         return args_schema
 
     def pre_operations(self):
@@ -186,6 +194,8 @@ class AddonHcxCreate(_AddonCreate):
         args.addon_name = "hcx"
 
         args.hcx.offer = args.offer
+        args.hcx.management_network = args.management_network
+        args.hcx.uplink_network = args.uplink_network
 
 
 @register_command(
@@ -209,14 +219,22 @@ class AddonHcxUpdate(_AddonUpdate):
             help="The HCX offer, example VMware MaaS Cloud Provider (Enterprise)",
             required=True,
         )
+        args_schema.management_network = AAZStrArg(
+            options=["--management-network"],
+            help="HCX management network.",
+        )
+        args_schema.uplink_network = AAZStrArg(
+            options=["--uplink-network"],
+            help="HCX uplink network.",
+        )
 
-        args_schema.vr._registered = False
-        args_schema.hcx._registered = False
-        args_schema.srm._registered = False
-        args_schema.arc._registered = False
+        setattr(args_schema.vr, '_registered', False)
+        setattr(args_schema.hcx, '_registered', False)
+        setattr(args_schema.srm, '_registered', False)
+        setattr(args_schema.arc, '_registered', False)
 
-        args_schema.addon_name._required = False
-        args_schema.addon_name._registered = False
+        setattr(args_schema.addon_name, '_required', False)
+        setattr(args_schema.addon_name, '_registered', False)
         return args_schema
 
     def pre_operations(self):
@@ -224,6 +242,8 @@ class AddonHcxUpdate(_AddonUpdate):
         args.addon_name = "hcx"
 
         args.hcx.offer = args.offer
+        args.hcx.management_network = args.management_network
+        args.hcx.uplink_network = args.uplink_network
 
 
 @register_command(
@@ -241,8 +261,8 @@ class AddonHcxDelete(_AddonDelete):
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
 
-        args_schema.addon_name._required = False
-        args_schema.addon_name._registered = False
+        setattr(args_schema.addon_name, '_required', False)
+        setattr(args_schema.addon_name, '_registered', False)
         return args_schema
 
     def pre_operations(self):
@@ -267,8 +287,8 @@ class AddonSrmShow(_AddonShow):
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
 
-        args_schema.addon_name._required = False
-        args_schema.addon_name._registered = False
+        setattr(args_schema.addon_name, '_required', False)
+        setattr(args_schema.addon_name, '_registered', False)
         return args_schema
 
     def pre_operations(self):
@@ -296,13 +316,13 @@ class AddonSrmCreate(_AddonCreate):
             help="The Site Recovery Manager (SRM) license"
         )
 
-        args_schema.vr._registered = False
-        args_schema.hcx._registered = False
-        args_schema.srm._registered = False
-        args_schema.arc._registered = False
+        setattr(args_schema.vr, '_registered', False)
+        setattr(args_schema.hcx, '_registered', False)
+        setattr(args_schema.srm, '_registered', False)
+        setattr(args_schema.arc, '_registered', False)
 
-        args_schema.addon_name._required = False
-        args_schema.addon_name._registered = False
+        setattr(args_schema.addon_name, '_required', False)
+        setattr(args_schema.addon_name, '_registered', False)
         return args_schema
 
     def pre_operations(self):
@@ -332,13 +352,13 @@ class AddonSrmUpdate(_AddonUpdate):
             help="The Site Recovery Manager (SRM) license"
         )
 
-        args_schema.vr._registered = False
-        args_schema.hcx._registered = False
-        args_schema.srm._registered = False
-        args_schema.arc._registered = False
+        setattr(args_schema.vr, '_registered', False)
+        setattr(args_schema.hcx, '_registered', False)
+        setattr(args_schema.srm, '_registered', False)
+        setattr(args_schema.arc, '_registered', False)
 
-        args_schema.addon_name._required = False
-        args_schema.addon_name._registered = False
+        setattr(args_schema.addon_name, '_required', False)
+        setattr(args_schema.addon_name, '_registered', False)
         return args_schema
 
     def pre_operations(self):
@@ -363,8 +383,8 @@ class AddonSrmDelete(_AddonDelete):
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
 
-        args_schema.addon_name._required = False
-        args_schema.addon_name._registered = False
+        setattr(args_schema.addon_name, '_required', False)
+        setattr(args_schema.addon_name, '_registered', False)
         return args_schema
 
     def pre_operations(self):
@@ -389,8 +409,8 @@ class AddonArcShow(_AddonShow):
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
 
-        args_schema.addon_name._required = False
-        args_schema.addon_name._registered = False
+        setattr(args_schema.addon_name, '_required', False)
+        setattr(args_schema.addon_name, '_registered', False)
         return args_schema
 
     def pre_operations(self):
@@ -418,13 +438,13 @@ class AddonArcCreate(_AddonCreate):
             help="The VMware vCenter resource ID"
         )
 
-        args_schema.vr._registered = False
-        args_schema.hcx._registered = False
-        args_schema.srm._registered = False
-        args_schema.arc._registered = False
+        setattr(args_schema.vr, '_registered', False)
+        setattr(args_schema.hcx, '_registered', False)
+        setattr(args_schema.srm, '_registered', False)
+        setattr(args_schema.arc, '_registered', False)
 
-        args_schema.addon_name._required = False
-        args_schema.addon_name._registered = False
+        setattr(args_schema.addon_name, '_required', False)
+        setattr(args_schema.addon_name, '_registered', False)
         return args_schema
 
     def pre_operations(self):
@@ -454,13 +474,13 @@ class AddonArcUpdate(_AddonUpdate):
             help="The VMware vCenter resource ID"
         )
 
-        args_schema.vr._registered = False
-        args_schema.hcx._registered = False
-        args_schema.srm._registered = False
-        args_schema.arc._registered = False
+        setattr(args_schema.vr, '_registered', False)
+        setattr(args_schema.hcx, '_registered', False)
+        setattr(args_schema.srm, '_registered', False)
+        setattr(args_schema.arc, '_registered', False)
 
-        args_schema.addon_name._required = False
-        args_schema.addon_name._registered = False
+        setattr(args_schema.addon_name, '_required', False)
+        setattr(args_schema.addon_name, '_registered', False)
         return args_schema
 
     def pre_operations(self):
@@ -485,8 +505,8 @@ class AddonArcDelete(_AddonDelete):
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
 
-        args_schema.addon_name._required = False
-        args_schema.addon_name._registered = False
+        setattr(args_schema.addon_name, '_required', False)
+        setattr(args_schema.addon_name, '_registered', False)
         return args_schema
 
     def pre_operations(self):
