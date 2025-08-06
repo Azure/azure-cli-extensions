@@ -1,4 +1,3 @@
-# pylint: disable=line-too-long,useless-suppression
 # coding=utf-8
 # --------------------------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved.
@@ -52,7 +51,7 @@ class AutoUpgradeProfilesOperations:
         **DO NOT** instantiate this class directly.
 
         Instead, you should access the following operations through
-        :class:`~azure.mgmt.containerservicefleet.v2025_04_01_preview.aio.ContainerServiceFleetMgmtClient`'s
+        :class:`~azure.mgmt.containerservicefleet.aio.ContainerServiceFleetMgmtClient`'s
         :attr:`auto_upgrade_profiles` attribute.
     """
 
@@ -81,14 +80,14 @@ class AutoUpgradeProfilesOperations:
         :type fleet_name: str
         :return: An iterator like instance of either AutoUpgradeProfile or the result of cls(response)
         :rtype:
-         ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.containerservicefleet.v2025_04_01_preview.models.AutoUpgradeProfile]
+         ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.containerservicefleet.models.AutoUpgradeProfile]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
         api_version: str = kwargs.pop(
-            "api_version", _params.pop("api-version", self._api_version or "2025-04-01-preview")
+            "api_version", _params.pop("api-version", self._api_version or "2024-05-02-preview")
         )
         cls: ClsType[_models.AutoUpgradeProfileListResult] = kwargs.pop("cls", None)
 
@@ -169,7 +168,7 @@ class AutoUpgradeProfilesOperations:
         :param auto_upgrade_profile_name: The name of the AutoUpgradeProfile resource. Required.
         :type auto_upgrade_profile_name: str
         :return: AutoUpgradeProfile or the result of cls(response)
-        :rtype: ~azure.mgmt.containerservicefleet.v2025_04_01_preview.models.AutoUpgradeProfile
+        :rtype: ~azure.mgmt.containerservicefleet.models.AutoUpgradeProfile
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         error_map: MutableMapping = {
@@ -184,7 +183,7 @@ class AutoUpgradeProfilesOperations:
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
         api_version: str = kwargs.pop(
-            "api_version", _params.pop("api-version", self._api_version or "2025-04-01-preview")
+            "api_version", _params.pop("api-version", self._api_version or "2024-05-02-preview")
         )
         cls: ClsType[_models.AutoUpgradeProfile] = kwargs.pop("cls", None)
 
@@ -240,7 +239,7 @@ class AutoUpgradeProfilesOperations:
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
         api_version: str = kwargs.pop(
-            "api_version", _params.pop("api-version", self._api_version or "2025-04-01-preview")
+            "api_version", _params.pop("api-version", self._api_version or "2024-05-02-preview")
         )
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
         cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
@@ -323,7 +322,7 @@ class AutoUpgradeProfilesOperations:
         :param auto_upgrade_profile_name: The name of the AutoUpgradeProfile resource. Required.
         :type auto_upgrade_profile_name: str
         :param resource: Resource create parameters. Required.
-        :type resource: ~azure.mgmt.containerservicefleet.v2025_04_01_preview.models.AutoUpgradeProfile
+        :type resource: ~azure.mgmt.containerservicefleet.models.AutoUpgradeProfile
         :param if_match: The request should only proceed if an entity matches this string. Default
          value is None.
         :type if_match: str
@@ -336,7 +335,7 @@ class AutoUpgradeProfilesOperations:
         :return: An instance of AsyncLROPoller that returns either AutoUpgradeProfile or the result of
          cls(response)
         :rtype:
-         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservicefleet.v2025_04_01_preview.models.AutoUpgradeProfile]
+         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservicefleet.models.AutoUpgradeProfile]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
 
@@ -376,7 +375,7 @@ class AutoUpgradeProfilesOperations:
         :return: An instance of AsyncLROPoller that returns either AutoUpgradeProfile or the result of
          cls(response)
         :rtype:
-         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservicefleet.v2025_04_01_preview.models.AutoUpgradeProfile]
+         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservicefleet.models.AutoUpgradeProfile]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
 
@@ -402,8 +401,7 @@ class AutoUpgradeProfilesOperations:
         :type auto_upgrade_profile_name: str
         :param resource: Resource create parameters. Is either a AutoUpgradeProfile type or a IO[bytes]
          type. Required.
-        :type resource: ~azure.mgmt.containerservicefleet.v2025_04_01_preview.models.AutoUpgradeProfile
-         or IO[bytes]
+        :type resource: ~azure.mgmt.containerservicefleet.models.AutoUpgradeProfile or IO[bytes]
         :param if_match: The request should only proceed if an entity matches this string. Default
          value is None.
         :type if_match: str
@@ -413,14 +411,14 @@ class AutoUpgradeProfilesOperations:
         :return: An instance of AsyncLROPoller that returns either AutoUpgradeProfile or the result of
          cls(response)
         :rtype:
-         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservicefleet.v2025_04_01_preview.models.AutoUpgradeProfile]
+         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservicefleet.models.AutoUpgradeProfile]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
         api_version: str = kwargs.pop(
-            "api_version", _params.pop("api-version", self._api_version or "2025-04-01-preview")
+            "api_version", _params.pop("api-version", self._api_version or "2024-05-02-preview")
         )
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
         cls: ClsType[_models.AutoUpgradeProfile] = kwargs.pop("cls", None)
@@ -491,7 +489,7 @@ class AutoUpgradeProfilesOperations:
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
         api_version: str = kwargs.pop(
-            "api_version", _params.pop("api-version", self._api_version or "2025-04-01-preview")
+            "api_version", _params.pop("api-version", self._api_version or "2024-05-02-preview")
         )
         cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
 
@@ -565,7 +563,7 @@ class AutoUpgradeProfilesOperations:
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
         api_version: str = kwargs.pop(
-            "api_version", _params.pop("api-version", self._api_version or "2025-04-01-preview")
+            "api_version", _params.pop("api-version", self._api_version or "2024-05-02-preview")
         )
         cls: ClsType[None] = kwargs.pop("cls", None)
         polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
