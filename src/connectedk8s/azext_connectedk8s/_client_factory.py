@@ -28,7 +28,7 @@ if TYPE_CHECKING:
     from azext_connectedk8s.vendored_sdks import ConnectedKubernetesClient
     from azext_connectedk8s.vendored_sdks.operations import ConnectedClusterOperations
     from azext_connectedk8s.vendored_sdks.preview_2025_08_01 import (
-        ConnectedKubernetesClient as ConnectedKubernetesClient20250801,
+        KubernetesClient as ConnectedKubernetesClient20250801,
     )
     from azext_connectedk8s.vendored_sdks.preview_2025_08_01.operations import (
         ConnectedClusterOperations as ConnectedClusterOperations20250801,
@@ -65,23 +65,23 @@ def cf_connectedk8s_prev_2025_08_01(
     cli_ctx: AzCli, *_: Any
 ) -> ConnectedKubernetesClient20250801:
     from azext_connectedk8s.vendored_sdks.preview_2025_08_01 import (
-        ConnectedKubernetesClient,
+        KubernetesClient,
     )
 
-    client: ConnectedKubernetesClient
+    client: KubernetesClient
     access_token = os.getenv(consts.Azure_Access_Token_Variable)
     if access_token is not None:
         validate_custom_token()
         credential = AccessTokenCredential(access_token=access_token)
         client = get_mgmt_service_client(
             cli_ctx,
-            ConnectedKubernetesClient,
+            KubernetesClient,
             subscription_id=os.getenv("AZURE_SUBSCRIPTION_ID"),
             credential=credential,
         )
         return client
 
-    client = get_mgmt_service_client(cli_ctx, ConnectedKubernetesClient)
+    client = get_mgmt_service_client(cli_ctx, KubernetesClient)
     return client
 
 

@@ -241,7 +241,7 @@ def create_connectedk8s(
 
     gateway = None
     if gateway_resource_id != "":
-        gateway = Gateway(enabled=True, resource_id=gateway_resource_id)
+        gateway = Gateway(enabled=True)
 
     arc_agent_profile = None
     if disable_auto_upgrade:
@@ -674,6 +674,24 @@ def create_connectedk8s(
 
             # Perform helm upgrade if gateway
             if gateway is not None:
+                # If gateway is enabled, then associate the gateway with the connected cluster
+                print(
+                    f"Step: {utils.get_utctimestring()}: Associating Gateway with the Connected Cluster"
+                )
+                try:
+                    utils.update_gateway_cluster_link(
+                        cmd,
+                        location,
+                        subscription_id,
+                        resource_group_name,
+                        cluster_name,
+                        gateway_resource_id,
+                    )
+                except Exception as e:
+                    logger.warning(
+                        "Error occurred while associating gateway with connected cluster: %s\n",
+                        e,
+                    )
                 # Update arc agent configuration to include protected parameters in dp call
                 arc_agentry_configurations = generate_arc_agent_configuration(
                     configuration_settings,
@@ -880,6 +898,23 @@ def create_connectedk8s(
     enable_custom_locations, custom_locations_oid = check_cl_registration_and_get_oid(
         cmd, cl_oid, subscription_id
     )
+
+    # If gateway is enabled, then associate the gateway with the connected cluster
+    if gateway is not None:
+        print(
+            f"Step: {utils.get_utctimestring()}: Associating Gateway with the Connected Cluster"
+        )
+        try:
+            utils.update_gateway_cluster_link(
+                cmd,
+                location,
+                subscription_id,
+                resource_group_name,
+                cluster_name,
+                gateway_resource_id,
+            )
+        except Exception as e:
+            logger.warning("Error occurred while associating gateway with connected cluster: %s\n", e)
 
     # Update arc agent configuration to include protected parameters in dp call
     arc_agentry_configurations = generate_arc_agent_configuration(
@@ -1941,7 +1976,7 @@ def create_cc_resource(
     try:
         poller: LROPoller[ConnectedCluster] = sdk_no_wait(
             no_wait,
-            client.begin_create,
+            client.begin_create_or_replace,
             resource_group_name=resource_group_name,
             cluster_name=cluster_name,
             connected_cluster=cc,
@@ -2214,6 +2249,8 @@ def update_connected_cluster(
 
     # Fetch Connected Cluster for agent version
     connected_cluster = client.get(resource_group_name, cluster_name)
+    subscription_id = connected_cluster.id.split("/")[2]
+    location = connected_cluster.location
 
     kubernetes_properties = {
         "Context.Default.AzureCLI.KubernetesVersion": kubernetes_version
@@ -2243,9 +2280,31 @@ def update_connected_cluster(
     # If gateway is enabled
     gateway = None
     if gateway_resource_id != "":
-        gateway = Gateway(enabled=True, resource_id=gateway_resource_id)
+        gateway = Gateway(enabled=True)
+        print(
+            f"Step: {utils.get_utctimestring()}: Associating gateway with Connected Cluster"
+        )
+        utils.update_gateway_cluster_link(
+            cmd,
+            location,
+            subscription_id,
+            resource_group_name,
+            cluster_name,
+            gateway_resource_id,
+        )
     if disable_gateway:
         gateway = Gateway(enabled=False)
+        print(
+            f"Step: {utils.get_utctimestring()}: Disassociating gateway from Connected Cluster"
+        )
+        utils.update_gateway_cluster_link(
+            cmd,
+            location,
+            subscription_id,
+            resource_group_name,
+            cluster_name,
+            None,
+        )
 
     # Set arc agent profile when auto-upgrade is set
     arc_agent_profile = None

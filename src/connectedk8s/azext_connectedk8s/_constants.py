@@ -526,6 +526,7 @@ Doc_Agent_Version_Support_Policy_Url = "https://learn.microsoft.com/en-us/azure/
 # See https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/resource-providers-and-types#register-resource-provider
 allowed_rp_registration_states = ["Registering", "Registered"]
 
+GATEWAY_LINK_FAULT_TYPE = "gateway-link-error"
 GATEWAY_ASSOCIATE_URL = (
-    "https://management.azure.com/subscriptions/{subscription_id}/resourceGroups/{resource_group}/providers/Microsoft.Kubernetes/connectedClusters/{cluster_name}/providers/Microsoft.HybridCompute/settings/Default?api-version={api_version}"
+    "https://{location}.management.azure.com/subscriptions/{subscription_id}/resourceGroups/{resource_group}/providers/Microsoft.Kubernetes/connectedClusters/{cluster_name}/providers/Microsoft.HybridCompute/settings/Default?api-version={api_version}"
 )

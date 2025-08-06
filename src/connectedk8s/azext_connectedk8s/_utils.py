@@ -902,44 +902,72 @@ def health_check_dp(cmd: CLICommand, config_dp_endpoint: str) -> bool:
     )
     raise CLIInternalError("Error while performing DP health check")
 
-def associate_gateway(cmd: CLICommand, subscription_id: str, resource_group: str, cluster_name: str, gateway_resource_id: str) -> bool:
+
+def update_gateway_cluster_link(
+    cmd: CLICommand,
+    location: str,
+    subscription_id: str,
+    resource_group: str,
+    cluster_name: str,
+    gateway_resource_id: str = None
+) -> bool:
+    """
+    Associates or disassociates a gateway with a cluster.
+    
+    If `gateway_resource_id` is provided, performs association.
+    If `gateway_resource_id` is None, performs disassociation.
+    """
     api_version = "2024-07-31-preview"
+    is_association = gateway_resource_id is not None
+    resource = cmd.cli_ctx.cloud.endpoints.active_directory_resource_id
     url = consts.GATEWAY_ASSOCIATE_URL.format(
+        location=location,
         subscription_id=subscription_id,
         resource_group=resource_group,
         cluster_name=cluster_name,
         api_version=api_version
     )
+
     headers = [
         "Content-Type=application/json",
         "Accept=application/json"
     ]
-    if os.getenv("AZURE_ACCESS_TOKEN"):
-        headers.append(f"Authorization=Bearer {os.getenv('AZURE_ACCESS_TOKEN')}")
+
+    token = os.getenv("AZURE_ACCESS_TOKEN")
+    if token:
+        headers.append(f"Authorization=Bearer {token}")
+
+    operation_type = "association" if is_association else "disassociation"
     body = {
         "properties": {
             "gatewayProperties": {
-                "gatewayResourceId": gateway_resource_id
+                "gatewayResourceId": gateway_resource_id  # None in case of disassociation
             }
         }
     }
+    print("sending raw request to associate/disassociate gateway with cluster", url, resource)
     response = send_request_with_retries(
         cmd.cli_ctx,
         method="put",
         url=url,
         headers=headers,
-        fault_type=consts.Gateway_Associate_Fault_Type,
-        summary="Error while associating gateway",
-        request_body=json.dumps(body)
+        fault_type=consts.GATEWAY_LINK_FAULT_TYPE,
+        summary=f"Error during gateway {operation_type}",
+        request_body=json.dumps(body),
+        resource=resource
     )
+
     if response.status_code == 200:
+        logger.info(f"Gateway {operation_type} succeeded for cluster '{cluster_name}' in resource group '{resource_group}'.")
         return True
+
     telemetry.set_exception(
-        exception="Error while associating gateway",
-        fault_type=consts.Gateway_Associate_Fault_Type,
-        summary="Error while associating gateway",
+        exception=f"Gateway {operation_type} failed",
+        fault_type=consts.GATEWAY_LINK_FAULT_TYPE,
+        summary=f"Gateway {operation_type} failed"
     )
-    raise CLIInternalError(f"Error while associating gateway")
+    raise CLIInternalError(f"Gateway {operation_type} failed for cluster '{cluster_name}'.")
+
 
 def send_request_with_retries(
     cli_ctx: AzCli,
