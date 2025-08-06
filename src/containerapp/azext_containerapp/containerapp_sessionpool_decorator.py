@@ -45,6 +45,10 @@ class ContainerType(Enum):
     CustomContainer = 2
     NodeLTS = 3
 
+class LifecycleType(Enum):
+    Timed = 0
+    OnContainerExit = 1
+
 
 class SessionPoolPreviewDecorator(BaseResource):
     def __init__(self, cmd: AzCliCommand, client: Any, raw_parameters: Dict, models: str):
@@ -172,19 +176,19 @@ class SessionPoolCreateDecorator(SessionPoolPreviewDecorator):
         else:
             if environment_name is not None:
                 raise ValidationError(f"Do not pass environment name when using container type {container_type}")
-            if self.get_argument_lifecycle_type() is not None and self.get_argument_lifecycle_type().lower() != "timed":
-                raise ValidationError(f"The container type {container_type} only supports lifecycle type 'Timed'.")
+            if self.get_argument_lifecycle_type() is not None and self.get_argument_lifecycle_type().lower() != LifecycleType.Timed.name.lower():
+                raise ValidationError(f"The container type {container_type} only supports lifecycle type '{LifecycleType.Timed.name}'.")
             if self.get_argument_max_alive_period() is not None:
-                raise ValidationError(f"The container type {container_type} does not support max alive period.")
+                raise ValidationError(f"The container type {container_type} does not support --max-alive-period.")
 
         if self.get_argument_max_alive_period() is not None and self.get_argument_cooldown_period_in_seconds() is not None:
-            raise ValidationError("--max_alive_period and --cooldown_period cannot be set at the same time.")
+            raise ValidationError("--max-alive-period and --cooldown-period cannot be set at the same time.")
 
-        if self.get_argument_max_alive_period() is not None and self.get_argument_lifecycle_type() is not None and self.get_argument_lifecycle_type().lower() != "oncontainerexit":
-            raise ValidationError("--max-alive-period can only be set when --lifecycle-type is 'OnContainerExit'.")
+        if self.get_argument_max_alive_period() is not None and self.get_argument_lifecycle_type() is not None and self.get_argument_lifecycle_type().lower() != LifecycleType.OnContainerExit.name.lower():
+            raise ValidationError(f"--max-alive-period can only be set when --lifecycle-type is '{LifecycleType.OnContainerExit.name}'.")
 
-        if self.get_argument_cooldown_period_in_seconds() is not None and self.get_argument_lifecycle_type() is not None and self.get_argument_lifecycle_type().lower() != "timed":
-            raise ValidationError("--cooldown-period can only be set when --lifecycle-type is 'Timed'.")
+        if self.get_argument_cooldown_period_in_seconds() is not None and self.get_argument_lifecycle_type() is not None and self.get_argument_lifecycle_type().lower() != LifecycleType.Timed.name.lower():
+            raise ValidationError(f"--cooldown-period can only be set when --lifecycle-type is '{LifecycleType.Timed.name}'.")
 
     def construct_payload(self):
         self.session_pool_def["location"] = self.get_argument_location()
@@ -281,17 +285,18 @@ class SessionPoolCreateDecorator(SessionPoolPreviewDecorator):
         if self.get_argument_lifecycle_type() is None:
             # Auto infer lifecycle type
             if self.get_argument_cooldown_period_in_seconds() is not None:
-                self.set_argument_lifecycle_type("Timed")
+                self.set_argument_lifecycle_type(LifecycleType.Timed.name)
             elif self.get_argument_max_alive_period() is not None:
-                self.set_argument_lifecycle_type("OnContainerExit")
+                self.set_argument_lifecycle_type(LifecycleType.OnContainerExit.name)
             else:
                 # Default to 'Timed'
-                self.set_argument_lifecycle_type("Timed")
+                self.set_argument_lifecycle_type(LifecycleType.Timed.name)
 
-        if self.get_argument_lifecycle_type().lower() == "timed" and self.get_argument_cooldown_period_in_seconds() is None:
+        if self.get_argument_lifecycle_type().lower() == LifecycleType.Timed.name.lower() and self.get_argument_cooldown_period_in_seconds() is None:
             self.set_argument_cooldown_period_in_seconds(300)
 
-        if self.get_argument_lifecycle_type().lower() == "oncontainerexit" and self.get_argument_max_alive_period() is None:
+        if self.get_argument_lifecycle_type().lower() == LifecycleType.OnContainerExit.name.lower() and self.get_argument_max_alive_period() is None:
+            breakpoint()
             self.set_argument_max_alive_period(3600)
 
         dynamic_pool_def = {}
@@ -524,21 +529,21 @@ class SessionPoolUpdateDecorator(SessionPoolPreviewDecorator):
     def set_up_dynamic_configuration(self):
         lifecycle_config_def = {}
 
-        if self.get_argument_max_alive_period() is not None and self.get_argument_lifecycle_type() is not None and self.get_argument_lifecycle_type().lower() != "oncontainerexit":
-            raise ValidationError("--max-alive-period can only be set when --lifecycle-type is 'OnContainerExit'.")
+        if self.get_argument_max_alive_period() is not None and self.get_argument_lifecycle_type() is not None and self.get_argument_lifecycle_type().lower() != LifecycleType.OnContainerExit.name.lower():
+            raise ValidationError(f"--max-alive-period can only be set when --lifecycle-type is '{LifecycleType.OnContainerExit.name}'.")
 
-        if self.get_argument_cooldown_period_in_seconds() is not None and self.get_argument_lifecycle_type() is not None and self.get_argument_lifecycle_type().lower() != "timed":
-            raise ValidationError("--cooldown-period can only be set when --lifecycle-type is 'Timed'.")
+        if self.get_argument_cooldown_period_in_seconds() is not None and self.get_argument_lifecycle_type() is not None and self.get_argument_lifecycle_type().lower() != LifecycleType.Timed.name.lower():
+            raise ValidationError(f"--cooldown-period can only be set when --lifecycle-type is '{LifecycleType.Timed.name}'.")
 
         if self.get_argument_max_alive_period() is not None and self.get_argument_cooldown_period_in_seconds() is not None:
             raise ValidationError("--max-alive-period and --cooldown-period cannot be set at the same time.")
 
         if self.get_argument_cooldown_period_in_seconds() is not None:
-            lifecycle_config_def["lifecycleType"] = "Timed"
+            lifecycle_config_def["lifecycleType"] = LifecycleType.Timed.name
             lifecycle_config_def["cooldownPeriodInSeconds"] = self.get_argument_cooldown_period_in_seconds()
 
         if self.get_argument_max_alive_period() is not None:
-            lifecycle_config_def["lifecycleType"] = "OnContainerExit"
+            lifecycle_config_def["lifecycleType"] = LifecycleType.OnContainerExit.name
             lifecycle_config_def["maxAlivePeriodInSeconds"] = self.get_argument_max_alive_period()
 
         if lifecycle_config_def:
