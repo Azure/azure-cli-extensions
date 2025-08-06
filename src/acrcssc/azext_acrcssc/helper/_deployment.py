@@ -9,7 +9,7 @@ from .._client_factory import cf_resources
 from azure.cli.core.util import get_file_json
 from azure.cli.core.azclierror import AzCLIError
 from azure.cli.core.commands import LongRunningOperation
-from azure.mgmt.resource.resources.models import (
+from azure.mgmt.resource.deployments.models import (
     DeploymentExtended,
     DeploymentProperties,
     DeploymentMode,
