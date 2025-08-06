@@ -22,7 +22,7 @@ Release History
 * Added new command ``az apic import apim`` to import an API from an Azure API Management instance.
 
 **Deprecations:**
-  * Deprecated the ``az apic import-from-apim`` command and redirected it to ``az apic import apim``.
+  * Deprecated the ``az apic import-from-apim`` command.
 
 1.2.0b2
 ++++++++++++++++++
