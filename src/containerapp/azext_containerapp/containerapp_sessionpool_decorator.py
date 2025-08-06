@@ -537,12 +537,13 @@ class SessionPoolUpdateDecorator(SessionPoolPreviewDecorator):
         if self.get_argument_max_alive_period() is not None and self.get_argument_cooldown_period_in_seconds() is not None:
             raise ValidationError("--max-alive-period and --cooldown-period cannot be set at the same time.")
 
+        if self.get_argument_lifecycle_type() is not None:
+            lifecycle_config_def["lifecycleType"] = self.get_argument_lifecycle_type()
+
         if self.get_argument_cooldown_period_in_seconds() is not None:
-            lifecycle_config_def["lifecycleType"] = LifecycleType.Timed.name
             lifecycle_config_def["cooldownPeriodInSeconds"] = self.get_argument_cooldown_period_in_seconds()
 
         if self.get_argument_max_alive_period() is not None:
-            lifecycle_config_def["lifecycleType"] = LifecycleType.OnContainerExit.name
             lifecycle_config_def["maxAlivePeriodInSeconds"] = self.get_argument_max_alive_period()
 
         if lifecycle_config_def:
