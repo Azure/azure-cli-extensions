@@ -299,10 +299,12 @@ class SessionPoolCreateDecorator(SessionPoolPreviewDecorator):
                 # Default to 'Timed'
                 self.set_argument_lifecycle_type(LifecycleType.Timed.name)
 
-        if self.get_argument_lifecycle_type().lower() == LifecycleType.Timed.name.lower() and self.get_argument_cooldown_period_in_seconds() is None:
+        if self.get_argument_lifecycle_type().lower() == LifecycleType.Timed.name.lower() and \
+                self.get_argument_cooldown_period_in_seconds() is None:
             self.set_argument_cooldown_period_in_seconds(300)
 
-        if self.get_argument_lifecycle_type().lower() == LifecycleType.OnContainerExit.name.lower() and self.get_argument_max_alive_period() is None:
+        if self.get_argument_lifecycle_type().lower() == LifecycleType.OnContainerExit.name.lower() and \
+                self.get_argument_max_alive_period() is None:
             self.set_argument_max_alive_period(3600)
 
         dynamic_pool_def = {}
