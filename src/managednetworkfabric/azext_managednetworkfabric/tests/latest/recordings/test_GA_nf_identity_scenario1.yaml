@@ -11,7 +11,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --name --resource-group --system-assigned
+      - --resource-name --resource-group --system-assigned
       User-Agent:
       - AZURECLI/2.67.0 azsdk-python-core/1.32.0 Python/3.12.7 (Linux-5.15.167.4-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
@@ -76,10 +76,10 @@ interactions:
       Content-Type:
       - application/json
       ParameterSetName:
-      - --name --resource-group --system-assigned
+      - --resource-name --resource-group --system-assigned
       User-Agent:
       - AZURECLI/2.67.0 azsdk-python-core/1.32.0 Python/3.12.7 (Linux-5.15.167.4-microsoft-standard-WSL2-x86_64-with-glibc2.35)
-    method: PUT
+    method: PATCH
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-5-1/providers/Microsoft.ManagedNetworkFabric/networkFabrics/fabricidentity?api-version=2024-06-15-preview
   response:
     body:
@@ -120,8 +120,8 @@ interactions:
       x-msedge-ref:
       - 'Ref A: 9D966EF6087A4133864ADCC3FD2BE4EC Ref B: BN1AA2051014047 Ref C: 2024-11-22T22:55:07Z'
     status:
-      code: 201
-      message: Created
+      code: 202
+      message: Accepted
 - request:
     body: null
     headers:
@@ -134,7 +134,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --name --resource-group --system-assigned
+      - --resource-name --resource-group --system-assigned
       User-Agent:
       - AZURECLI/2.67.0 azsdk-python-core/1.32.0 Python/3.12.7 (Linux-5.15.167.4-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
@@ -182,7 +182,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --name --resource-group --system-assigned
+      - --resource-name --resource-group --system-assigned
       User-Agent:
       - AZURECLI/2.67.0 azsdk-python-core/1.32.0 Python/3.12.7 (Linux-5.15.167.4-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
@@ -230,7 +230,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --name --resource-group --system-assigned
+      - --resource-name --resource-group --system-assigned
       User-Agent:
       - AZURECLI/2.67.0 azsdk-python-core/1.32.0 Python/3.12.7 (Linux-5.15.167.4-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
@@ -278,7 +278,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --name --resource-group --system-assigned
+      - --resource-name --resource-group --system-assigned
       User-Agent:
       - AZURECLI/2.67.0 azsdk-python-core/1.32.0 Python/3.12.7 (Linux-5.15.167.4-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
@@ -326,7 +326,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --name --resource-group --system-assigned
+      - --resource-name --resource-group --system-assigned
       User-Agent:
       - AZURECLI/2.67.0 azsdk-python-core/1.32.0 Python/3.12.7 (Linux-5.15.167.4-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
@@ -374,7 +374,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --name --resource-group --system-assigned
+      - --resource-name --resource-group --system-assigned
       User-Agent:
       - AZURECLI/2.67.0 azsdk-python-core/1.32.0 Python/3.12.7 (Linux-5.15.167.4-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
@@ -422,7 +422,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --name --resource-group --system-assigned
+      - --resource-name --resource-group --system-assigned
       User-Agent:
       - AZURECLI/2.67.0 azsdk-python-core/1.32.0 Python/3.12.7 (Linux-5.15.167.4-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
@@ -470,7 +470,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --name --resource-group --system-assigned
+      - --resource-name --resource-group --system-assigned
       User-Agent:
       - AZURECLI/2.67.0 azsdk-python-core/1.32.0 Python/3.12.7 (Linux-5.15.167.4-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
@@ -518,7 +518,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --name --resource-group --system-assigned
+      - --resource-name --resource-group --system-assigned
       User-Agent:
       - AZURECLI/2.67.0 azsdk-python-core/1.32.0 Python/3.12.7 (Linux-5.15.167.4-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
@@ -566,7 +566,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --name --resource-group --system-assigned
+      - --resource-name --resource-group --system-assigned
       User-Agent:
       - AZURECLI/2.67.0 azsdk-python-core/1.32.0 Python/3.12.7 (Linux-5.15.167.4-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
@@ -614,7 +614,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --name --resource-group --system-assigned
+      - --resource-name --resource-group --system-assigned
       User-Agent:
       - AZURECLI/2.67.0 azsdk-python-core/1.32.0 Python/3.12.7 (Linux-5.15.167.4-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
@@ -662,7 +662,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --name --resource-group --system-assigned
+      - --resource-name --resource-group --system-assigned
       User-Agent:
       - AZURECLI/2.67.0 azsdk-python-core/1.32.0 Python/3.12.7 (Linux-5.15.167.4-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
@@ -710,7 +710,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --name --resource-group --system-assigned
+      - --resource-name --resource-group --system-assigned
       User-Agent:
       - AZURECLI/2.67.0 azsdk-python-core/1.32.0 Python/3.12.7 (Linux-5.15.167.4-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
@@ -758,7 +758,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --name --resource-group --system-assigned
+      - --resource-name --resource-group --system-assigned
       User-Agent:
       - AZURECLI/2.67.0 azsdk-python-core/1.32.0 Python/3.12.7 (Linux-5.15.167.4-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
@@ -806,7 +806,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --name --resource-group --system-assigned
+      - --resource-name --resource-group --system-assigned
       User-Agent:
       - AZURECLI/2.67.0 azsdk-python-core/1.32.0 Python/3.12.7 (Linux-5.15.167.4-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
@@ -856,7 +856,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --name --resource-group
+      - --resource-name --resource-group
       User-Agent:
       - AZURECLI/2.67.0 azsdk-python-core/1.32.0 Python/3.12.7 (Linux-5.15.167.4-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
@@ -906,7 +906,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --name --resource-group --system-assigned
+      - --resource-name --resource-group --system-assigned
       User-Agent:
       - AZURECLI/2.67.0 azsdk-python-core/1.32.0 Python/3.12.7 (Linux-5.15.167.4-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
@@ -971,10 +971,10 @@ interactions:
       Content-Type:
       - application/json
       ParameterSetName:
-      - --name --resource-group --system-assigned
+      - --resource-name --resource-group --system-assigned
       User-Agent:
       - AZURECLI/2.67.0 azsdk-python-core/1.32.0 Python/3.12.7 (Linux-5.15.167.4-microsoft-standard-WSL2-x86_64-with-glibc2.35)
-    method: PUT
+    method: PATCH
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-5-1/providers/Microsoft.ManagedNetworkFabric/networkFabrics/fabricidentity?api-version=2024-06-15-preview
   response:
     body:
@@ -1015,8 +1015,8 @@ interactions:
       x-msedge-ref:
       - 'Ref A: 9AEBF25C8DA24D549D4BE24497650019 Ref B: BN1AA2051013053 Ref C: 2024-11-22T23:01:47Z'
     status:
-      code: 201
-      message: Created
+      code: 202
+      message: Accepted
 - request:
     body: null
     headers:
@@ -1029,7 +1029,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --name --resource-group --system-assigned
+      - --resource-name --resource-group --system-assigned
       User-Agent:
       - AZURECLI/2.67.0 azsdk-python-core/1.32.0 Python/3.12.7 (Linux-5.15.167.4-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
@@ -1077,7 +1077,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --name --resource-group --system-assigned
+      - --resource-name --resource-group --system-assigned
       User-Agent:
       - AZURECLI/2.67.0 azsdk-python-core/1.32.0 Python/3.12.7 (Linux-5.15.167.4-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
@@ -1125,7 +1125,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --name --resource-group --system-assigned
+      - --resource-name --resource-group --system-assigned
       User-Agent:
       - AZURECLI/2.67.0 azsdk-python-core/1.32.0 Python/3.12.7 (Linux-5.15.167.4-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
@@ -1173,7 +1173,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --name --resource-group --system-assigned
+      - --resource-name --resource-group --system-assigned
       User-Agent:
       - AZURECLI/2.67.0 azsdk-python-core/1.32.0 Python/3.12.7 (Linux-5.15.167.4-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
@@ -1221,7 +1221,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --name --resource-group --system-assigned
+      - --resource-name --resource-group --system-assigned
       User-Agent:
       - AZURECLI/2.67.0 azsdk-python-core/1.32.0 Python/3.12.7 (Linux-5.15.167.4-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
@@ -1269,7 +1269,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --name --resource-group --system-assigned
+      - --resource-name --resource-group --system-assigned
       User-Agent:
       - AZURECLI/2.67.0 azsdk-python-core/1.32.0 Python/3.12.7 (Linux-5.15.167.4-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
@@ -1317,7 +1317,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --name --resource-group --system-assigned
+      - --resource-name --resource-group --system-assigned
       User-Agent:
       - AZURECLI/2.67.0 azsdk-python-core/1.32.0 Python/3.12.7 (Linux-5.15.167.4-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
@@ -1365,7 +1365,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --name --resource-group --system-assigned
+      - --resource-name --resource-group --system-assigned
       User-Agent:
       - AZURECLI/2.67.0 azsdk-python-core/1.32.0 Python/3.12.7 (Linux-5.15.167.4-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
@@ -1413,7 +1413,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --name --resource-group --system-assigned
+      - --resource-name --resource-group --system-assigned
       User-Agent:
       - AZURECLI/2.67.0 azsdk-python-core/1.32.0 Python/3.12.7 (Linux-5.15.167.4-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
@@ -1461,7 +1461,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --name --resource-group --system-assigned
+      - --resource-name --resource-group --system-assigned
       User-Agent:
       - AZURECLI/2.67.0 azsdk-python-core/1.32.0 Python/3.12.7 (Linux-5.15.167.4-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
@@ -1509,7 +1509,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --name --resource-group --system-assigned
+      - --resource-name --resource-group --system-assigned
       User-Agent:
       - AZURECLI/2.67.0 azsdk-python-core/1.32.0 Python/3.12.7 (Linux-5.15.167.4-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
@@ -1557,7 +1557,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --name --resource-group --system-assigned
+      - --resource-name --resource-group --system-assigned
       User-Agent:
       - AZURECLI/2.67.0 azsdk-python-core/1.32.0 Python/3.12.7 (Linux-5.15.167.4-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
@@ -1605,7 +1605,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --name --resource-group --system-assigned
+      - --resource-name --resource-group --system-assigned
       User-Agent:
       - AZURECLI/2.67.0 azsdk-python-core/1.32.0 Python/3.12.7 (Linux-5.15.167.4-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
@@ -1653,7 +1653,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --name --resource-group --system-assigned
+      - --resource-name --resource-group --system-assigned
       User-Agent:
       - AZURECLI/2.67.0 azsdk-python-core/1.32.0 Python/3.12.7 (Linux-5.15.167.4-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
@@ -1701,7 +1701,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --name --resource-group --system-assigned
+      - --resource-name --resource-group --system-assigned
       User-Agent:
       - AZURECLI/2.67.0 azsdk-python-core/1.32.0 Python/3.12.7 (Linux-5.15.167.4-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
@@ -1751,7 +1751,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --name --resource-group --user-assigned
+      - --resource-name --resource-group --user-assigned
       User-Agent:
       - AZURECLI/2.67.0 azsdk-python-core/1.32.0 Python/3.12.7 (Linux-5.15.167.4-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
@@ -1816,10 +1816,10 @@ interactions:
       Content-Type:
       - application/json
       ParameterSetName:
-      - --name --resource-group --user-assigned
+      - --resource-name --resource-group --user-assigned
       User-Agent:
       - AZURECLI/2.67.0 azsdk-python-core/1.32.0 Python/3.12.7 (Linux-5.15.167.4-microsoft-standard-WSL2-x86_64-with-glibc2.35)
-    method: PUT
+    method: PATCH
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-5-1/providers/Microsoft.ManagedNetworkFabric/networkFabrics/fabricidentity?api-version=2024-06-15-preview
   response:
     body:
@@ -1860,8 +1860,8 @@ interactions:
       x-msedge-ref:
       - 'Ref A: D3EE06C85E9841659230383053B49644 Ref B: BN1AA2051015023 Ref C: 2024-11-22T23:08:28Z'
     status:
-      code: 201
-      message: Created
+      code: 202
+      message: Accepted
 - request:
     body: null
     headers:
@@ -1874,7 +1874,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --name --resource-group --user-assigned
+      - --resource-name --resource-group --user-assigned
       User-Agent:
       - AZURECLI/2.67.0 azsdk-python-core/1.32.0 Python/3.12.7 (Linux-5.15.167.4-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
@@ -1922,7 +1922,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --name --resource-group --user-assigned
+      - --resource-name --resource-group --user-assigned
       User-Agent:
       - AZURECLI/2.67.0 azsdk-python-core/1.32.0 Python/3.12.7 (Linux-5.15.167.4-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
@@ -1970,7 +1970,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --name --resource-group --user-assigned
+      - --resource-name --resource-group --user-assigned
       User-Agent:
       - AZURECLI/2.67.0 azsdk-python-core/1.32.0 Python/3.12.7 (Linux-5.15.167.4-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
@@ -2018,7 +2018,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --name --resource-group --user-assigned
+      - --resource-name --resource-group --user-assigned
       User-Agent:
       - AZURECLI/2.67.0 azsdk-python-core/1.32.0 Python/3.12.7 (Linux-5.15.167.4-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
@@ -2066,7 +2066,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --name --resource-group --user-assigned
+      - --resource-name --resource-group --user-assigned
       User-Agent:
       - AZURECLI/2.67.0 azsdk-python-core/1.32.0 Python/3.12.7 (Linux-5.15.167.4-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
@@ -2114,7 +2114,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --name --resource-group --user-assigned
+      - --resource-name --resource-group --user-assigned
       User-Agent:
       - AZURECLI/2.67.0 azsdk-python-core/1.32.0 Python/3.12.7 (Linux-5.15.167.4-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
@@ -2162,7 +2162,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --name --resource-group --user-assigned
+      - --resource-name --resource-group --user-assigned
       User-Agent:
       - AZURECLI/2.67.0 azsdk-python-core/1.32.0 Python/3.12.7 (Linux-5.15.167.4-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
@@ -2210,7 +2210,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --name --resource-group --user-assigned
+      - --resource-name --resource-group --user-assigned
       User-Agent:
       - AZURECLI/2.67.0 azsdk-python-core/1.32.0 Python/3.12.7 (Linux-5.15.167.4-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
@@ -2258,7 +2258,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --name --resource-group --user-assigned
+      - --resource-name --resource-group --user-assigned
       User-Agent:
       - AZURECLI/2.67.0 azsdk-python-core/1.32.0 Python/3.12.7 (Linux-5.15.167.4-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
@@ -2306,7 +2306,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --name --resource-group --user-assigned
+      - --resource-name --resource-group --user-assigned
       User-Agent:
       - AZURECLI/2.67.0 azsdk-python-core/1.32.0 Python/3.12.7 (Linux-5.15.167.4-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
@@ -2354,7 +2354,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --name --resource-group --user-assigned
+      - --resource-name --resource-group --user-assigned
       User-Agent:
       - AZURECLI/2.67.0 azsdk-python-core/1.32.0 Python/3.12.7 (Linux-5.15.167.4-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
@@ -2402,7 +2402,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --name --resource-group --user-assigned
+      - --resource-name --resource-group --user-assigned
       User-Agent:
       - AZURECLI/2.67.0 azsdk-python-core/1.32.0 Python/3.12.7 (Linux-5.15.167.4-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
@@ -2450,7 +2450,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --name --resource-group --user-assigned
+      - --resource-name --resource-group --user-assigned
       User-Agent:
       - AZURECLI/2.67.0 azsdk-python-core/1.32.0 Python/3.12.7 (Linux-5.15.167.4-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
@@ -2498,7 +2498,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --name --resource-group --user-assigned
+      - --resource-name --resource-group --user-assigned
       User-Agent:
       - AZURECLI/2.67.0 azsdk-python-core/1.32.0 Python/3.12.7 (Linux-5.15.167.4-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
@@ -2546,7 +2546,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --name --resource-group --user-assigned
+      - --resource-name --resource-group --user-assigned
       User-Agent:
       - AZURECLI/2.67.0 azsdk-python-core/1.32.0 Python/3.12.7 (Linux-5.15.167.4-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
@@ -2596,7 +2596,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --name --resource-group
+      - --resource-name --resource-group
       User-Agent:
       - AZURECLI/2.67.0 azsdk-python-core/1.32.0 Python/3.12.7 (Linux-5.15.167.4-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
@@ -2646,7 +2646,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --name --resource-group --user-assigned
+      - --resource-name --resource-group --user-assigned
       User-Agent:
       - AZURECLI/2.67.0 azsdk-python-core/1.32.0 Python/3.12.7 (Linux-5.15.167.4-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
@@ -2711,10 +2711,10 @@ interactions:
       Content-Type:
       - application/json
       ParameterSetName:
-      - --name --resource-group --user-assigned
+      - --resource-name --resource-group --user-assigned
       User-Agent:
       - AZURECLI/2.67.0 azsdk-python-core/1.32.0 Python/3.12.7 (Linux-5.15.167.4-microsoft-standard-WSL2-x86_64-with-glibc2.35)
-    method: PUT
+    method: PATCH
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-5-1/providers/Microsoft.ManagedNetworkFabric/networkFabrics/fabricidentity?api-version=2024-06-15-preview
   response:
     body:
@@ -2755,8 +2755,8 @@ interactions:
       x-msedge-ref:
       - 'Ref A: 274774458D074ED38F892D3E52D71D11 Ref B: BN1AA2051013037 Ref C: 2024-11-22T23:15:11Z'
     status:
-      code: 201
-      message: Created
+      code: 202
+      message: Accepted
 - request:
     body: null
     headers:
@@ -2769,7 +2769,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --name --resource-group --user-assigned
+      - --resource-name --resource-group --user-assigned
       User-Agent:
       - AZURECLI/2.67.0 azsdk-python-core/1.32.0 Python/3.12.7 (Linux-5.15.167.4-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
@@ -2817,7 +2817,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --name --resource-group --user-assigned
+      - --resource-name --resource-group --user-assigned
       User-Agent:
       - AZURECLI/2.67.0 azsdk-python-core/1.32.0 Python/3.12.7 (Linux-5.15.167.4-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
@@ -2865,7 +2865,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --name --resource-group --user-assigned
+      - --resource-name --resource-group --user-assigned
       User-Agent:
       - AZURECLI/2.67.0 azsdk-python-core/1.32.0 Python/3.12.7 (Linux-5.15.167.4-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
@@ -2913,7 +2913,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --name --resource-group --user-assigned
+      - --resource-name --resource-group --user-assigned
       User-Agent:
       - AZURECLI/2.67.0 azsdk-python-core/1.32.0 Python/3.12.7 (Linux-5.15.167.4-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
@@ -2961,7 +2961,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --name --resource-group --user-assigned
+      - --resource-name --resource-group --user-assigned
       User-Agent:
       - AZURECLI/2.67.0 azsdk-python-core/1.32.0 Python/3.12.7 (Linux-5.15.167.4-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
@@ -3009,7 +3009,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --name --resource-group --user-assigned
+      - --resource-name --resource-group --user-assigned
       User-Agent:
       - AZURECLI/2.67.0 azsdk-python-core/1.32.0 Python/3.12.7 (Linux-5.15.167.4-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
@@ -3057,7 +3057,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --name --resource-group --user-assigned
+      - --resource-name --resource-group --user-assigned
       User-Agent:
       - AZURECLI/2.67.0 azsdk-python-core/1.32.0 Python/3.12.7 (Linux-5.15.167.4-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
@@ -3105,7 +3105,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --name --resource-group --user-assigned
+      - --resource-name --resource-group --user-assigned
       User-Agent:
       - AZURECLI/2.67.0 azsdk-python-core/1.32.0 Python/3.12.7 (Linux-5.15.167.4-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
@@ -3153,7 +3153,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --name --resource-group --user-assigned
+      - --resource-name --resource-group --user-assigned
       User-Agent:
       - AZURECLI/2.67.0 azsdk-python-core/1.32.0 Python/3.12.7 (Linux-5.15.167.4-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
@@ -3201,7 +3201,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --name --resource-group --user-assigned
+      - --resource-name --resource-group --user-assigned
       User-Agent:
       - AZURECLI/2.67.0 azsdk-python-core/1.32.0 Python/3.12.7 (Linux-5.15.167.4-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
@@ -3249,7 +3249,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --name --resource-group --user-assigned
+      - --resource-name --resource-group --user-assigned
       User-Agent:
       - AZURECLI/2.67.0 azsdk-python-core/1.32.0 Python/3.12.7 (Linux-5.15.167.4-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
@@ -3297,7 +3297,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --name --resource-group --user-assigned
+      - --resource-name --resource-group --user-assigned
       User-Agent:
       - AZURECLI/2.67.0 azsdk-python-core/1.32.0 Python/3.12.7 (Linux-5.15.167.4-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
@@ -3345,7 +3345,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --name --resource-group --user-assigned
+      - --resource-name --resource-group --user-assigned
       User-Agent:
       - AZURECLI/2.67.0 azsdk-python-core/1.32.0 Python/3.12.7 (Linux-5.15.167.4-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
@@ -3393,7 +3393,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --name --resource-group --user-assigned
+      - --resource-name --resource-group --user-assigned
       User-Agent:
       - AZURECLI/2.67.0 azsdk-python-core/1.32.0 Python/3.12.7 (Linux-5.15.167.4-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
@@ -3441,7 +3441,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --name --resource-group --user-assigned
+      - --resource-name --resource-group --user-assigned
       User-Agent:
       - AZURECLI/2.67.0 azsdk-python-core/1.32.0 Python/3.12.7 (Linux-5.15.167.4-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
@@ -3491,7 +3491,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --name --resource-group
+      - --resource-name --resource-group
       User-Agent:
       - AZURECLI/2.67.0 azsdk-python-core/1.32.0 Python/3.12.7 (Linux-5.15.167.4-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
