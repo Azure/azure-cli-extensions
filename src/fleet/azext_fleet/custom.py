@@ -749,7 +749,6 @@ def create_managed_namespace(cmd,
         resource_type=CUSTOM_MGMT_FLEET
     )
 
-    # Build resource limits if provided
     resource_limits = {}
     if cpu_requests or cpu_limits or memory_requests or memory_limits:
         if cpu_requests or memory_requests:
@@ -766,7 +765,6 @@ def create_managed_namespace(cmd,
             if memory_limits:
                 resource_limits['limits']['memory'] = memory_limits
 
-    # Process member cluster names if provided
     member_clusters = None
     if member_cluster_names:
         member_clusters = [name.strip() for name in member_cluster_names.split(',') if name.strip()]
@@ -825,7 +823,6 @@ def update_managed_namespace(cmd,
         resource_type=CUSTOM_MGMT_FLEET
     )
 
-    # Build resource limits if provided
     resource_limits = {}
     if cpu_requests or cpu_limits or memory_requests or memory_limits:
         if cpu_requests or memory_requests:
@@ -842,12 +839,10 @@ def update_managed_namespace(cmd,
             if memory_limits:
                 resource_limits['limits']['memory'] = memory_limits
 
-    # Process member cluster names if provided
     member_clusters = None
     if member_cluster_names:
         member_clusters = [name.strip() for name in member_cluster_names.split(',') if name.strip()]
 
-    # Build properties for patch
     properties = managed_namespace_properties_model(
         labels=labels,
         annotations=annotations,
