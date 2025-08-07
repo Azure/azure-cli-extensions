@@ -443,12 +443,17 @@ def load_arguments(self, _):
         c.argument('mi_user_assigned', nargs='+', help='Space-separated user identities to be assigned.')
 
     with self.argument_context('containerapp sessionpool', arg_group='Configuration') as c:
-        c.argument('container_type', arg_type=get_enum_type(["CustomContainer", "PythonLTS", "NodeLTS"]), help="The pool type of the Session Pool, default='PythonLTS'")
-        c.argument('lifecycle_type', arg_type=get_enum_type(["Timed", "OnContainerExit"]), help="The lifecycle type of the Session Pool, default='Timed'")
         c.argument('cooldown_period', help="Period (in seconds), after which the session will be deleted, this is only applicable for lifecycle type 'Timed', default=300")
         c.argument('max_alive_period', help="Period (in seconds), before the session be deleted if its container was not exited earlier, this is only applicable for lifecycle type 'OnContainerExit', default=3600")
         c.argument('secrets', nargs='*', options_list=['--secrets', '-s'], help="A list of secret(s) for the session pool. Space-separated values in 'key=value' format. Empty string to clear existing values.")
         c.argument('network_status', arg_type=get_enum_type(["EgressEnabled", "EgressDisabled"]), help="Egress is enabled for the Sessions or not.")
+
+    with self.argument_context('containerapp sessionpool create', arg_group='Configuration') as c:
+        c.argument('container_type', arg_type=get_enum_type(["CustomContainer", "PythonLTS", "NodeLTS"]), help="The pool type of the Session Pool, default='PythonLTS'")
+        c.argument('lifecycle_type', arg_type=get_enum_type(["Timed", "OnContainerExit"]), help="The lifecycle type of the Session Pool", default='Timed')
+
+    with self.argument_context('containerapp sessionpool update', arg_group='Configuration') as c:
+        c.argument('lifecycle_type', arg_type=get_enum_type(["Timed", "OnContainerExit"]), help="The lifecycle type of the Session Pool")
 
     with self.argument_context('containerapp sessionpool', arg_group='Scale') as c:
         c.argument('max_concurrent_sessions', options_list=['--max-sessions'], help="Max count of sessions can be run at the same time.", type=int)
