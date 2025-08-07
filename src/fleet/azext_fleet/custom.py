@@ -4,13 +4,17 @@
 # --------------------------------------------------------------------------------------------
 
 import os
+import re
+import yaml
+import tempfile
 
 from knack.util import CLIError
 
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.core.util import sdk_no_wait, get_file_json, shell_safe_json_parse
+from azure.cli.core import get_default_cli
 
-from azext_fleet._client_factory import CUSTOM_MGMT_FLEET
+from azext_fleet._client_factory import CUSTOM_MGMT_FLEET, cf_fleet_members, cf_fleets
 from azext_fleet._helpers import print_or_merge_credentials
 from azext_fleet._helpers import assign_network_contributor_role_to_subnet
 from azext_fleet.constants import UPGRADE_TYPE_CONTROLPLANEONLY
@@ -189,25 +193,84 @@ def delete_fleet(cmd,  # pylint: disable=unused-argument
     return sdk_no_wait(no_wait, client.begin_delete, resource_group_name, name, polling_interval=5)
 
 
-def get_credentials(cmd,  # pylint: disable=unused-argument
+def get_credentials(cmd,
                     client,
                     resource_group_name,
                     name,
-                    path=os.path.join(os.path.expanduser(
-                        '~'), '.kube', 'config'),
+                    path=os.path.join(os.path.expanduser('~'), '.kube', 'config'),
                     overwrite_existing=False,
-                    context_name=None):
-    credential_results = client.list_credentials(resource_group_name, name)
-    if not credential_results:
-        raise CLIError("No Kubernetes credentials found.")
+                    context_name=None,
+                    member_name=None):
+    
+    if member_name:
+        # Get credentials from a specific fleet member's managed cluster
+        fleet_members_client = cf_fleet_members(cmd.cli_ctx)
+        
+        try:
+            # Get the fleet member to find the associated managed cluster
+            fleet_member = fleet_members_client.get(resource_group_name, name, member_name)
+            
+            if not fleet_member or not fleet_member.cluster_resource_id:
+                raise CLIError(f"Fleet member '{member_name}' not found or has no associated cluster.")
+            
+            # Parse the cluster resource ID to extract subscription, resource group, and cluster name
+            cluster_resource_id = fleet_member.cluster_resource_id
+            
+            # Resource ID format: /subscriptions/{subscription}/resourceGroups/{rg}/providers/Microsoft.ContainerService/managedClusters/{cluster}
+            match = re.match(
+                r'/subscriptions/([^/]+)/resourceGroups/([^/]+)/providers/Microsoft\.ContainerService/managedClusters/([^/]+)',
+                cluster_resource_id
+            )
+            
+            if not match:
+                raise CLIError(f"Invalid cluster resource ID format: {cluster_resource_id}")
+            
+            cluster_subscription = match.group(1)
+            cluster_resource_group = match.group(2)
+            cluster_name = match.group(3)
+            
+            # Build the AKS get-credentials command
+            aks_command = [
+                'aks', 'get-credentials',
+                '--subscription', cluster_subscription,
+                '--resource-group', cluster_resource_group,
+                '--name', cluster_name,
+                '--user'
+            ]
+            
+            # Add optional parameters if provided
+            if path != os.path.join(os.path.expanduser('~'), '.kube', 'config'):
+                aks_command.extend(['--file', path])
+            
+            if overwrite_existing:
+                aks_command.append('--overwrite-existing')
+                
+            if context_name:
+                aks_command.extend(['--context', context_name])
+            
+            # Execute the AKS get-credentials command
+            cli = get_default_cli()
+            exit_code = cli.invoke(aks_command)
+            
+            if exit_code != 0:
+                raise CLIError(f"Failed to get credentials from managed cluster '{cluster_name}' in fleet member '{member_name}'.")
+                
+        except Exception as exc:
+            if isinstance(exc, CLIError):
+                raise
+            raise CLIError(f"Error getting credentials for fleet member '{member_name}': {str(exc)}") from exc
+    
+    else:
+        # Original fleet hub credentials behavior
+        credential_results = client.list_credentials(resource_group_name, name)
+        if not credential_results:
+            raise CLIError("No Kubernetes credentials found.")
 
-    try:
-        kubeconfig = credential_results.kubeconfigs[0].value.decode(
-            encoding='UTF-8')
-        print_or_merge_credentials(
-            path, kubeconfig, overwrite_existing, context_name)
-    except (IndexError, ValueError) as exc:
-        raise CLIError("Fail to find kubeconfig file.") from exc
+        try:
+            kubeconfig = credential_results.kubeconfigs[0].value.decode(encoding='UTF-8')
+            print_or_merge_credentials(path, kubeconfig, overwrite_existing, context_name)
+        except (IndexError, ValueError) as exc:
+            raise CLIError("Fail to find kubeconfig file.") from exc
 
 
 def reconcile_fleet(cmd,  # pylint: disable=unused-argument
@@ -897,3 +960,103 @@ def list_managed_namespaces(cmd,  # pylint: disable=unused-argument
         resource_group_name=resource_group_name,
         fleet_name=fleet_name
     )
+
+
+def get_namespace_credentials(cmd,
+                             client,  # pylint: disable=unused-argument
+                             resource_group_name,
+                             fleet_name,
+                             managed_namespace_name,
+                             path=os.path.join(os.path.expanduser('~'), '.kube', 'config'),
+                             overwrite_existing=False,
+                             context_name=None,
+                             member_name=None):
+    """
+    Get credentials for a fleet namespace by calling fleet get-credentials backend
+    and modifying the namespace in the kubeconfig.
+    """
+    
+    fleet_client = cf_fleets(cmd.cli_ctx)
+    
+    with tempfile.NamedTemporaryFile(mode='w+', suffix='.kubeconfig', delete=False) as temp_file:
+        temp_path = temp_file.name
+    
+    try:
+        get_credentials(
+            cmd=cmd,
+            client=fleet_client,
+            resource_group_name=resource_group_name,
+            name=fleet_name,
+            path=temp_path,
+            overwrite_existing=True, 
+            context_name=context_name,
+            member_name=member_name
+        )
+        
+        with open(temp_path, 'r', encoding='utf-8') as f:
+            kubeconfig_content = f.read()
+        
+        kubeconfig = yaml.safe_load(kubeconfig_content)
+        
+        if 'contexts' in kubeconfig:
+            for context in kubeconfig['contexts']:
+                if 'context' in context:
+                    context['context']['namespace'] = managed_namespace_name
+        
+        if path == '-':
+            print(yaml.dump(kubeconfig, default_flow_style=False))
+        else:
+            os.makedirs(os.path.dirname(path), exist_ok=True)
+            
+            if not overwrite_existing and os.path.exists(path):
+                with open(path, 'r', encoding='utf-8') as f:
+                    existing_config = yaml.safe_load(f.read())
+                
+                if existing_config:
+                    merged_config = existing_config.copy()
+                    
+                    if 'clusters' in kubeconfig:
+                        if 'clusters' not in merged_config:
+                            merged_config['clusters'] = []
+                        for cluster in kubeconfig['clusters']:
+                            existing_cluster = next((c for c in merged_config['clusters'] if c['name'] == cluster['name']), None)
+                            if existing_cluster:
+                                existing_cluster.update(cluster)
+                            else:
+                                merged_config['clusters'].append(cluster)
+                    
+                    if 'users' in kubeconfig:
+                        if 'users' not in merged_config:
+                            merged_config['users'] = []
+                        for user in kubeconfig['users']:
+                            existing_user = next((u for u in merged_config['users'] if u['name'] == user['name']), None)
+                            if existing_user:
+                                existing_user.update(user)
+                            else:
+                                merged_config['users'].append(user)
+                    
+                    if 'contexts' in kubeconfig:
+                        if 'contexts' not in merged_config:
+                            merged_config['contexts'] = []
+                        for context in kubeconfig['contexts']:
+                            existing_context = next((c for c in merged_config['contexts'] if c['name'] == context['name']), None)
+                            if existing_context:
+                                existing_context.update(context)
+                            else:
+                                merged_config['contexts'].append(context)
+                    
+                    if 'current-context' in kubeconfig:
+                        merged_config['current-context'] = kubeconfig['current-context']
+                    
+                    kubeconfig = merged_config
+            
+            with open(path, 'w', encoding='utf-8') as f:
+                yaml.dump(kubeconfig, f, default_flow_style=False)
+            
+            print(f"Merged kubeconfig saved to {path}")
+            if 'contexts' in kubeconfig and kubeconfig['contexts']:
+                print(f"Default namespace set to '{managed_namespace_name}' for all contexts")
+    
+    finally:
+        if os.path.exists(temp_path):
+            os.unlink(temp_path)
