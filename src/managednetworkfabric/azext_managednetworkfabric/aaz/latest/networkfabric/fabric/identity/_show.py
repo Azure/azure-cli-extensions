@@ -46,7 +46,7 @@ class Show(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.network_fabric_name = AAZStrArg(
-            options=["-n", "--name", "--resource-name", "--network-fabric-name"],
+            options=["-n", "--name", "--network-fabric-name"],
             help="Name of the Network Fabric.",
             required=True,
             fmt=AAZStrArgFormat(

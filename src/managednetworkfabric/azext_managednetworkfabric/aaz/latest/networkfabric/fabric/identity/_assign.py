@@ -18,7 +18,7 @@ class Assign(AAZCommand):
     """Assign the user or system managed identities.
 
     :example: Assign identity on the Network Fabric
-        az networkfabric fabric identity assign --resource-group example-rg --resource-name example-fabric --system-assigned
+        az networkfabric fabric identity assign --resource-group example-rg --network-fabric-name example-fabric --system-assigned
     """
 
     _aaz_info = {
@@ -47,7 +47,7 @@ class Assign(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.network_fabric_name = AAZStrArg(
-            options=["-n", "--name", "--resource-name", "--network-fabric-name"],
+            options=["-n", "--name", "--network-fabric-name"],
             help="Name of the Network Fabric.",
             required=True,
             fmt=AAZStrArgFormat(
@@ -58,18 +58,18 @@ class Assign(AAZCommand):
             required=True,
         )
 
-        # define Arg Group "Properties.identity"
+        # define Arg Group "Resource.identity"
 
         _args_schema = cls._args_schema
         _args_schema.mi_system_assigned = AAZStrArg(
             options=["--system-assigned", "--mi-system-assigned"],
-            arg_group="Properties.identity",
+            arg_group="Resource.identity",
             help="Set the system managed identity.",
             blank="True",
         )
         _args_schema.mi_user_assigned = AAZListArg(
             options=["--user-assigned", "--mi-user-assigned"],
-            arg_group="Properties.identity",
+            arg_group="Resource.identity",
             help="Set the user managed identities.",
             blank=[],
         )
@@ -81,10 +81,10 @@ class Assign(AAZCommand):
     def _execute_operations(self):
         self.pre_operations()
         self.NetworkFabricsGet(ctx=self.ctx)()
-        self.pre_instance_update(self.ctx.selectors.subresource.get())
+        self.pre_instance_update(self.ctx.selectors.subresource.required())
         self.InstanceUpdateByJson(ctx=self.ctx)()
-        self.post_instance_update(self.ctx.selectors.subresource.get())
-        yield self.NetworkFabricsUpdate(ctx=self.ctx)()
+        self.post_instance_update(self.ctx.selectors.subresource.required())
+        yield self.NetworkFabricsCreate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -104,7 +104,7 @@ class Assign(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.selectors.subresource.get(), client_flatten=True)
+        result = self.deserialize_output(self.ctx.selectors.subresource.required(), client_flatten=True)
         return result
 
     class SubresourceSelector(AAZJsonSelector):
@@ -201,7 +201,7 @@ class Assign(AAZCommand):
 
             return cls._schema_on_200
 
-    class NetworkFabricsUpdate(AAZHttpOperation):
+    class NetworkFabricsCreate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -211,18 +211,18 @@ class Assign(AAZCommand):
                 return self.client.build_lro_polling(
                     self.ctx.args.no_wait,
                     session,
-                    self.on_200,
+                    self.on_200_201,
                     self.on_error,
-                    lro_options={"final-state-via": "location"},
+                    lro_options={"final-state-via": "azure-async-operation"},
                     path_format_arguments=self.url_parameters,
                 )
-            if session.http_response.status_code in [200]:
+            if session.http_response.status_code in [200, 201]:
                 return self.client.build_lro_polling(
                     self.ctx.args.no_wait,
                     session,
-                    self.on_200,
+                    self.on_200_201,
                     self.on_error,
-                    lro_options={"final-state-via": "location"},
+                    lro_options={"final-state-via": "azure-async-operation"},
                     path_format_arguments=self.url_parameters,
                 )
 
@@ -237,7 +237,7 @@ class Assign(AAZCommand):
 
         @property
         def method(self):
-            return "PATCH"
+            return "PUT"
 
         @property
         def error_format(self):
@@ -285,33 +285,37 @@ class Assign(AAZCommand):
 
         @property
         def content(self):
-            identity = self.serialize_content(self.ctx.selectors.subresource.required())
-            return {"identity": identity}
+            _content_value, _builder = self.new_content_builder(
+                self.ctx.args,
+                value=self.ctx.vars.instance,
+            )
 
-        def on_200(self, session):
+            return self.serialize_content(_content_value)
+
+        def on_200_201(self, session):
             data = self.deserialize_http_content(session)
             self.ctx.set_var(
                 "instance",
                 data,
-                schema_builder=self._build_schema_on_200
+                schema_builder=self._build_schema_on_200_201
             )
 
-        _schema_on_200 = None
+        _schema_on_200_201 = None
 
         @classmethod
-        def _build_schema_on_200(cls):
-            if cls._schema_on_200 is not None:
-                return cls._schema_on_200
+        def _build_schema_on_200_201(cls):
+            if cls._schema_on_200_201 is not None:
+                return cls._schema_on_200_201
 
-            cls._schema_on_200 = AAZObjectType()
-            _AssignHelper._build_schema_network_fabric_read(cls._schema_on_200)
+            cls._schema_on_200_201 = AAZObjectType()
+            _AssignHelper._build_schema_network_fabric_read(cls._schema_on_200_201)
 
-            return cls._schema_on_200
+            return cls._schema_on_200_201
 
     class InstanceUpdateByJson(AAZJsonInstanceUpdateOperation):
 
         def __call__(self, *args, **kwargs):
-            self._update_instance(self.ctx.selectors.subresource.get())
+            self._update_instance(self.ctx.selectors.subresource.required())
 
         def _update_instance(self, instance):
             _instance_value, _builder = self.new_content_builder(
