@@ -758,7 +758,7 @@ def create_managed_namespace(cmd,
                 resource_limits['requests']['cpu'] = cpu_requests
             if memory_requests:
                 resource_limits['requests']['memory'] = memory_requests
-        
+
         if cpu_limits or memory_limits:
             resource_limits['limits'] = {}
             if cpu_limits:
@@ -834,7 +834,7 @@ def update_managed_namespace(cmd,
                 resource_limits['requests']['cpu'] = cpu_requests
             if memory_requests:
                 resource_limits['requests']['memory'] = memory_requests
-        
+
         if cpu_limits or memory_limits:
             resource_limits['limits'] = {}
             if cpu_limits:
