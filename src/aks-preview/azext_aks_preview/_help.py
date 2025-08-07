@@ -2370,6 +2370,36 @@ helps['aks machine'] = """
    short-summary: Get information about machines in a nodepool of a managed clusters
 """
 
+helps['aks machine add'] = """
+   type: command
+   short-summary: Add a machine to the spcified node pool
+   parameters:
+       - name: --cluster-name
+         type: string
+         short-summary: Name of the managed cluster
+       - name: --nodepool-name
+         type: string
+         short-summary: Name of the agentpool of a managed cluster
+       - name: --machine-name
+         type: string
+         short-summary: Host name of the machine
+       - name: --zones -z
+         type: string array
+         short-summary: Space-separated list of availability zones where a machine will be placed
+       - name: --vm-size
+         type: string
+         short-summary: The size of the machine
+       - name: --os-type
+         type: string
+         short-summary: The operating system type of the machine
+       - name: --os-sku
+         type: string
+         short-summary: The os-sku of the agent node pool
+       - name: --kubernetes-version
+         type: string
+         short-summary: Version of Kubernetes to use for creating the machine, such as "1.7.12" or "1.8.7".
+"""
+
 helps['aks machine list'] = """
    type: command
    short-summary: Get information about IP Addresses, Hostname for all machines in an agentpool
