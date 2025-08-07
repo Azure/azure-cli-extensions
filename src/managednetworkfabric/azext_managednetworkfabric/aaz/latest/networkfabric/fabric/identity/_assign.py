@@ -18,7 +18,7 @@ class Assign(AAZCommand):
     """Assign the user or system managed identities.
 
     :example: Assign identity on the Network Fabric
-        az networkfabric fabric identity assign --resource-group example-rg --network-fabric-name example-fabric --system-assigned
+        az networkfabric fabric identity assign --resource-group example-rg --resource-name example-fabric --system-assigned
     """
 
     _aaz_info = {
