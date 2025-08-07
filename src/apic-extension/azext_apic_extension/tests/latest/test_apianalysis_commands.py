@@ -35,7 +35,7 @@ class ApiAnalysisCommandTests(ScenarioTest):
     @ApiAnalysisPreparer()
     def test_api_analysis_list(self):
         self.cmd('az apic api-analysis list -g {rg} -n {s}', checks=[
-            self.check('[0].name', '{config_name}'),
+            self.check('length(@)', 1),  # Should have exactly one config
             self.check('[0].resourceGroup', '{rg}'),
             self.check('[0].type', 'Microsoft.ApiCenter/services/workspaces/analyzerConfigs')
         ])

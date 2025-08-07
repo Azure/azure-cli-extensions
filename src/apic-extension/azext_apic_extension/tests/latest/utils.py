@@ -505,20 +505,21 @@ class ApiAnalysisPreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
             print(cmd)
             self.live_only_execute(self.cli_ctx, cmd)
         else:
-            # For other tests, just use existing config or create if none exists
+            # For other tests, use any existing config or create our default one
             try:
                 configs = self.live_only_execute(self.cli_ctx, 'az apic api-analysis list -g {} -n {}'.format(group, service)).get_output_in_json()
                 if configs:
-                    # Use the first existing config
+                    # Use the first existing config (could be service default or our default)
                     name = configs[0].get('name')
+                    print(f"Using existing analyzer config: {name}")
                 else:
-                    # No configs exist, create one
+                    # No configs exist, create our default one
                     template = 'az apic api-analysis create -g {} -n {} -c {}'
                     cmd = template.format(group, service, name)
                     print(cmd)
                     self.live_only_execute(self.cli_ctx, cmd)
             except Exception:
-                # If listing fails, try to create
+                # If listing fails, try to create our default config
                 template = 'az apic api-analysis create -g {} -n {} -c {}'
                 cmd = template.format(group, service, name)
                 print(cmd)
@@ -530,6 +531,7 @@ class ApiAnalysisPreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
                         configs = self.live_only_execute(self.cli_ctx, 'az apic api-analysis list -g {} -n {}'.format(group, service)).get_output_in_json()
                         if configs:
                             name = configs[0].get('name')
+                            print(f"Using existing analyzer config due to limit: {name}")
                         else:
                             raise
                     else:
