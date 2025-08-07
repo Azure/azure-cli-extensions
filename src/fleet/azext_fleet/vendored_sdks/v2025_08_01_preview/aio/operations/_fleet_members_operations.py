@@ -1,3 +1,4 @@
+# pylint: disable=line-too-long,useless-suppression
 # coding=utf-8
 # --------------------------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved.
@@ -52,7 +53,7 @@ class FleetMembersOperations:
         **DO NOT** instantiate this class directly.
 
         Instead, you should access the following operations through
-        :class:`~azure.mgmt.containerservicefleet.aio.ContainerServiceFleetMgmtClient`'s
+        :class:`~azure.mgmt.containerservicefleet.v2025_08_01_preview.aio.ContainerServiceFleetMgmtClient`'s
         :attr:`fleet_members` attribute.
     """
 
@@ -81,13 +82,15 @@ class FleetMembersOperations:
         :type fleet_name: str
         :return: An iterator like instance of either FleetMember or the result of cls(response)
         :rtype:
-         ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.containerservicefleet.models.FleetMember]
+         ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.containerservicefleet.v2025_08_01_preview.models.FleetMember]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._api_version or "2024-04-01"))
+        api_version: str = kwargs.pop(
+            "api_version", _params.pop("api-version", self._api_version or "2025-08-01-preview")
+        )
         cls: ClsType[_models.FleetMemberListResult] = kwargs.pop("cls", None)
 
         error_map: MutableMapping = {
@@ -167,7 +170,7 @@ class FleetMembersOperations:
         :param fleet_member_name: The name of the Fleet member resource. Required.
         :type fleet_member_name: str
         :return: FleetMember or the result of cls(response)
-        :rtype: ~azure.mgmt.containerservicefleet.models.FleetMember
+        :rtype: ~azure.mgmt.containerservicefleet.v2025_08_01_preview.models.FleetMember
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         error_map: MutableMapping = {
@@ -181,7 +184,9 @@ class FleetMembersOperations:
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._api_version or "2024-04-01"))
+        api_version: str = kwargs.pop(
+            "api_version", _params.pop("api-version", self._api_version or "2025-08-01-preview")
+        )
         cls: ClsType[_models.FleetMember] = kwargs.pop("cls", None)
 
         _request = build_get_request(
@@ -235,7 +240,9 @@ class FleetMembersOperations:
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._api_version or "2024-04-01"))
+        api_version: str = kwargs.pop(
+            "api_version", _params.pop("api-version", self._api_version or "2025-08-01-preview")
+        )
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
         cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
 
@@ -314,7 +321,7 @@ class FleetMembersOperations:
         :param fleet_member_name: The name of the Fleet member resource. Required.
         :type fleet_member_name: str
         :param resource: Resource create parameters. Required.
-        :type resource: ~azure.mgmt.containerservicefleet.models.FleetMember
+        :type resource: ~azure.mgmt.containerservicefleet.v2025_08_01_preview.models.FleetMember
         :param if_match: The request should only proceed if an entity matches this string. Default
          value is None.
         :type if_match: str
@@ -327,7 +334,7 @@ class FleetMembersOperations:
         :return: An instance of AsyncLROPoller that returns either FleetMember or the result of
          cls(response)
         :rtype:
-         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservicefleet.models.FleetMember]
+         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservicefleet.v2025_08_01_preview.models.FleetMember]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
 
@@ -367,7 +374,7 @@ class FleetMembersOperations:
         :return: An instance of AsyncLROPoller that returns either FleetMember or the result of
          cls(response)
         :rtype:
-         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservicefleet.models.FleetMember]
+         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservicefleet.v2025_08_01_preview.models.FleetMember]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
 
@@ -393,7 +400,8 @@ class FleetMembersOperations:
         :type fleet_member_name: str
         :param resource: Resource create parameters. Is either a FleetMember type or a IO[bytes] type.
          Required.
-        :type resource: ~azure.mgmt.containerservicefleet.models.FleetMember or IO[bytes]
+        :type resource: ~azure.mgmt.containerservicefleet.v2025_08_01_preview.models.FleetMember or
+         IO[bytes]
         :param if_match: The request should only proceed if an entity matches this string. Default
          value is None.
         :type if_match: str
@@ -403,13 +411,15 @@ class FleetMembersOperations:
         :return: An instance of AsyncLROPoller that returns either FleetMember or the result of
          cls(response)
         :rtype:
-         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservicefleet.models.FleetMember]
+         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservicefleet.v2025_08_01_preview.models.FleetMember]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._api_version or "2024-04-01"))
+        api_version: str = kwargs.pop(
+            "api_version", _params.pop("api-version", self._api_version or "2025-08-01-preview")
+        )
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
         cls: ClsType[_models.FleetMember] = kwargs.pop("cls", None)
         polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
@@ -479,7 +489,9 @@ class FleetMembersOperations:
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._api_version or "2024-04-01"))
+        api_version: str = kwargs.pop(
+            "api_version", _params.pop("api-version", self._api_version or "2025-08-01-preview")
+        )
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
         cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
 
@@ -557,7 +569,8 @@ class FleetMembersOperations:
         :param fleet_member_name: The name of the Fleet member resource. Required.
         :type fleet_member_name: str
         :param properties: The resource properties to be updated. Required.
-        :type properties: ~azure.mgmt.containerservicefleet.models.FleetMemberUpdate
+        :type properties:
+         ~azure.mgmt.containerservicefleet.v2025_08_01_preview.models.FleetMemberUpdate
         :param if_match: The request should only proceed if an entity matches this string. Default
          value is None.
         :type if_match: str
@@ -567,7 +580,7 @@ class FleetMembersOperations:
         :return: An instance of AsyncLROPoller that returns either FleetMember or the result of
          cls(response)
         :rtype:
-         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservicefleet.models.FleetMember]
+         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservicefleet.v2025_08_01_preview.models.FleetMember]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
 
@@ -603,7 +616,7 @@ class FleetMembersOperations:
         :return: An instance of AsyncLROPoller that returns either FleetMember or the result of
          cls(response)
         :rtype:
-         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservicefleet.models.FleetMember]
+         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservicefleet.v2025_08_01_preview.models.FleetMember]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
 
@@ -628,20 +641,23 @@ class FleetMembersOperations:
         :type fleet_member_name: str
         :param properties: The resource properties to be updated. Is either a FleetMemberUpdate type or
          a IO[bytes] type. Required.
-        :type properties: ~azure.mgmt.containerservicefleet.models.FleetMemberUpdate or IO[bytes]
+        :type properties:
+         ~azure.mgmt.containerservicefleet.v2025_08_01_preview.models.FleetMemberUpdate or IO[bytes]
         :param if_match: The request should only proceed if an entity matches this string. Default
          value is None.
         :type if_match: str
         :return: An instance of AsyncLROPoller that returns either FleetMember or the result of
          cls(response)
         :rtype:
-         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservicefleet.models.FleetMember]
+         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservicefleet.v2025_08_01_preview.models.FleetMember]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._api_version or "2024-04-01"))
+        api_version: str = kwargs.pop(
+            "api_version", _params.pop("api-version", self._api_version or "2025-08-01-preview")
+        )
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
         cls: ClsType[_models.FleetMember] = kwargs.pop("cls", None)
         polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
@@ -709,7 +725,9 @@ class FleetMembersOperations:
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._api_version or "2024-04-01"))
+        api_version: str = kwargs.pop(
+            "api_version", _params.pop("api-version", self._api_version or "2025-08-01-preview")
+        )
         cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
 
         _request = build_delete_request(
@@ -781,7 +799,9 @@ class FleetMembersOperations:
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._api_version or "2024-04-01"))
+        api_version: str = kwargs.pop(
+            "api_version", _params.pop("api-version", self._api_version or "2025-08-01-preview")
+        )
         cls: ClsType[None] = kwargs.pop("cls", None)
         polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
         lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)

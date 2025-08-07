@@ -55,7 +55,7 @@ class UpdateRunsOperations:
         **DO NOT** instantiate this class directly.
 
         Instead, you should access the following operations through
-        :class:`~azure.mgmt.containerservicefleet.aio.ContainerServiceFleetMgmtClient`'s
+        :class:`~azure.mgmt.containerservicefleet.v2025_08_01_preview.aio.ContainerServiceFleetMgmtClient`'s
         :attr:`update_runs` attribute.
     """
 
@@ -84,13 +84,15 @@ class UpdateRunsOperations:
         :type fleet_name: str
         :return: An iterator like instance of either UpdateRun or the result of cls(response)
         :rtype:
-         ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.containerservicefleet.models.UpdateRun]
+         ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.containerservicefleet.v2025_08_01_preview.models.UpdateRun]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._api_version or "2024-04-01"))
+        api_version: str = kwargs.pop(
+            "api_version", _params.pop("api-version", self._api_version or "2025-08-01-preview")
+        )
         cls: ClsType[_models.UpdateRunListResult] = kwargs.pop("cls", None)
 
         error_map: MutableMapping = {
@@ -170,7 +172,7 @@ class UpdateRunsOperations:
         :param update_run_name: The name of the UpdateRun resource. Required.
         :type update_run_name: str
         :return: UpdateRun or the result of cls(response)
-        :rtype: ~azure.mgmt.containerservicefleet.models.UpdateRun
+        :rtype: ~azure.mgmt.containerservicefleet.v2025_08_01_preview.models.UpdateRun
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         error_map: MutableMapping = {
@@ -184,7 +186,9 @@ class UpdateRunsOperations:
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._api_version or "2024-04-01"))
+        api_version: str = kwargs.pop(
+            "api_version", _params.pop("api-version", self._api_version or "2025-08-01-preview")
+        )
         cls: ClsType[_models.UpdateRun] = kwargs.pop("cls", None)
 
         _request = build_get_request(
@@ -238,7 +242,9 @@ class UpdateRunsOperations:
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._api_version or "2024-04-01"))
+        api_version: str = kwargs.pop(
+            "api_version", _params.pop("api-version", self._api_version or "2025-08-01-preview")
+        )
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
         cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
 
@@ -317,7 +323,7 @@ class UpdateRunsOperations:
         :param update_run_name: The name of the UpdateRun resource. Required.
         :type update_run_name: str
         :param resource: Resource create parameters. Required.
-        :type resource: ~azure.mgmt.containerservicefleet.models.UpdateRun
+        :type resource: ~azure.mgmt.containerservicefleet.v2025_08_01_preview.models.UpdateRun
         :param if_match: The request should only proceed if an entity matches this string. Default
          value is None.
         :type if_match: str
@@ -329,7 +335,8 @@ class UpdateRunsOperations:
         :paramtype content_type: str
         :return: An instance of AsyncLROPoller that returns either UpdateRun or the result of
          cls(response)
-        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservicefleet.models.UpdateRun]
+        :rtype:
+         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservicefleet.v2025_08_01_preview.models.UpdateRun]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
 
@@ -368,7 +375,8 @@ class UpdateRunsOperations:
         :paramtype content_type: str
         :return: An instance of AsyncLROPoller that returns either UpdateRun or the result of
          cls(response)
-        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservicefleet.models.UpdateRun]
+        :rtype:
+         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservicefleet.v2025_08_01_preview.models.UpdateRun]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
 
@@ -394,7 +402,8 @@ class UpdateRunsOperations:
         :type update_run_name: str
         :param resource: Resource create parameters. Is either a UpdateRun type or a IO[bytes] type.
          Required.
-        :type resource: ~azure.mgmt.containerservicefleet.models.UpdateRun or IO[bytes]
+        :type resource: ~azure.mgmt.containerservicefleet.v2025_08_01_preview.models.UpdateRun or
+         IO[bytes]
         :param if_match: The request should only proceed if an entity matches this string. Default
          value is None.
         :type if_match: str
@@ -403,13 +412,16 @@ class UpdateRunsOperations:
         :type if_none_match: str
         :return: An instance of AsyncLROPoller that returns either UpdateRun or the result of
          cls(response)
-        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservicefleet.models.UpdateRun]
+        :rtype:
+         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservicefleet.v2025_08_01_preview.models.UpdateRun]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._api_version or "2024-04-01"))
+        api_version: str = kwargs.pop(
+            "api_version", _params.pop("api-version", self._api_version or "2025-08-01-preview")
+        )
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
         cls: ClsType[_models.UpdateRun] = kwargs.pop("cls", None)
         polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
@@ -478,7 +490,9 @@ class UpdateRunsOperations:
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._api_version or "2024-04-01"))
+        api_version: str = kwargs.pop(
+            "api_version", _params.pop("api-version", self._api_version or "2025-08-01-preview")
+        )
         cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
 
         _request = build_delete_request(
@@ -550,7 +564,9 @@ class UpdateRunsOperations:
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._api_version or "2024-04-01"))
+        api_version: str = kwargs.pop(
+            "api_version", _params.pop("api-version", self._api_version or "2025-08-01-preview")
+        )
         cls: ClsType[None] = kwargs.pop("cls", None)
         polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
         lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
@@ -611,7 +627,9 @@ class UpdateRunsOperations:
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._api_version or "2024-04-01"))
+        api_version: str = kwargs.pop(
+            "api_version", _params.pop("api-version", self._api_version or "2025-08-01-preview")
+        )
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
         cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
 
@@ -689,7 +707,7 @@ class UpdateRunsOperations:
         :param update_run_name: The name of the UpdateRun resource. Required.
         :type update_run_name: str
         :param body: The content of the action request. Required.
-        :type body: ~azure.mgmt.containerservicefleet.models.SkipProperties
+        :type body: ~azure.mgmt.containerservicefleet.v2025_08_01_preview.models.SkipProperties
         :param if_match: The request should only proceed if an entity matches this string. Default
          value is None.
         :type if_match: str
@@ -698,7 +716,8 @@ class UpdateRunsOperations:
         :paramtype content_type: str
         :return: An instance of AsyncLROPoller that returns either UpdateRun or the result of
          cls(response)
-        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservicefleet.models.UpdateRun]
+        :rtype:
+         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservicefleet.v2025_08_01_preview.models.UpdateRun]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
 
@@ -733,7 +752,8 @@ class UpdateRunsOperations:
         :paramtype content_type: str
         :return: An instance of AsyncLROPoller that returns either UpdateRun or the result of
          cls(response)
-        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservicefleet.models.UpdateRun]
+        :rtype:
+         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservicefleet.v2025_08_01_preview.models.UpdateRun]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
 
@@ -758,19 +778,23 @@ class UpdateRunsOperations:
         :type update_run_name: str
         :param body: The content of the action request. Is either a SkipProperties type or a IO[bytes]
          type. Required.
-        :type body: ~azure.mgmt.containerservicefleet.models.SkipProperties or IO[bytes]
+        :type body: ~azure.mgmt.containerservicefleet.v2025_08_01_preview.models.SkipProperties or
+         IO[bytes]
         :param if_match: The request should only proceed if an entity matches this string. Default
          value is None.
         :type if_match: str
         :return: An instance of AsyncLROPoller that returns either UpdateRun or the result of
          cls(response)
-        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservicefleet.models.UpdateRun]
+        :rtype:
+         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservicefleet.v2025_08_01_preview.models.UpdateRun]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._api_version or "2024-04-01"))
+        api_version: str = kwargs.pop(
+            "api_version", _params.pop("api-version", self._api_version or "2025-08-01-preview")
+        )
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
         cls: ClsType[_models.UpdateRun] = kwargs.pop("cls", None)
         polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
@@ -837,7 +861,9 @@ class UpdateRunsOperations:
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._api_version or "2024-04-01"))
+        api_version: str = kwargs.pop(
+            "api_version", _params.pop("api-version", self._api_version or "2025-08-01-preview")
+        )
         cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
 
         _request = build_start_request(
@@ -904,13 +930,16 @@ class UpdateRunsOperations:
         :type if_match: str
         :return: An instance of AsyncLROPoller that returns either UpdateRun or the result of
          cls(response)
-        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservicefleet.models.UpdateRun]
+        :rtype:
+         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservicefleet.v2025_08_01_preview.models.UpdateRun]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._api_version or "2024-04-01"))
+        api_version: str = kwargs.pop(
+            "api_version", _params.pop("api-version", self._api_version or "2025-08-01-preview")
+        )
         cls: ClsType[_models.UpdateRun] = kwargs.pop("cls", None)
         polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
         lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
@@ -974,7 +1003,9 @@ class UpdateRunsOperations:
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._api_version or "2024-04-01"))
+        api_version: str = kwargs.pop(
+            "api_version", _params.pop("api-version", self._api_version or "2025-08-01-preview")
+        )
         cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
 
         _request = build_stop_request(
@@ -1041,13 +1072,16 @@ class UpdateRunsOperations:
         :type if_match: str
         :return: An instance of AsyncLROPoller that returns either UpdateRun or the result of
          cls(response)
-        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservicefleet.models.UpdateRun]
+        :rtype:
+         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservicefleet.v2025_08_01_preview.models.UpdateRun]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._api_version or "2024-04-01"))
+        api_version: str = kwargs.pop(
+            "api_version", _params.pop("api-version", self._api_version or "2025-08-01-preview")
+        )
         cls: ClsType[_models.UpdateRun] = kwargs.pop("cls", None)
         polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
         lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)

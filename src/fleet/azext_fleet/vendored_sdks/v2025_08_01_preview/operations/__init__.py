@@ -14,6 +14,10 @@ if TYPE_CHECKING:
 
 from ._operations import Operations  # type: ignore
 from ._fleets_operations import FleetsOperations  # type: ignore
+from ._auto_upgrade_profiles_operations import AutoUpgradeProfilesOperations  # type: ignore
+from ._auto_upgrade_profile_operations_operations import AutoUpgradeProfileOperationsOperations  # type: ignore
+from ._gates_operations import GatesOperations  # type: ignore
+from ._fleet_managed_namespaces_operations import FleetManagedNamespacesOperations  # type: ignore
 from ._fleet_members_operations import FleetMembersOperations  # type: ignore
 from ._update_runs_operations import UpdateRunsOperations  # type: ignore
 from ._fleet_update_strategies_operations import FleetUpdateStrategiesOperations  # type: ignore
@@ -25,6 +29,10 @@ from ._patch import patch_sdk as _patch_sdk
 __all__ = [
     "Operations",
     "FleetsOperations",
+    "AutoUpgradeProfilesOperations",
+    "AutoUpgradeProfileOperationsOperations",
+    "GatesOperations",
+    "FleetManagedNamespacesOperations",
     "FleetMembersOperations",
     "UpdateRunsOperations",
     "FleetUpdateStrategiesOperations",
