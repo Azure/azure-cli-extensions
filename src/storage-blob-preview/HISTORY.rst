@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.0.0b3
+++++++
+* Bump main cli version requirement to 2.75.0
+
 1.0.0b2
 ++++++
 * Remove DATA_COSMOS_TABLE and DATA_STORAGE references

@@ -103,6 +103,7 @@ class Update(AAZCommand):
             help="target spec",
         )
 
+
         capabilities = cls._args_schema.capabilities
         capabilities.Element = AAZStrArg(
             nullable=True,
@@ -464,6 +465,10 @@ class _UpdateHelper:
         )
         properties.hierarchy_level = AAZStrType(
             serialized_name="hierarchyLevel",
+            flags={"required": True},
+        )
+        properties.context_id = AAZStrType(
+            serialized_name="contextId",
             flags={"required": True},
         )
         properties.provisioning_state = AAZStrType(

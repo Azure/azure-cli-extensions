@@ -20,7 +20,7 @@ from ._validators import (validate_env_name_or_id, validate_build_env_vars,
                           validate_custom_location_name_or_id, validate_env_name_or_id_for_up,
                           validate_otlp_headers, validate_target_port_range, validate_session_timeout_in_seconds)
 from ._constants import (MAXIMUM_CONTAINER_APP_NAME_LENGTH, MAXIMUM_APP_RESILIENCY_NAME_LENGTH, MAXIMUM_COMPONENT_RESILIENCY_NAME_LENGTH,
-                         AKS_AZURE_LOCAL_DISTRO)
+                         AKS_AZURE_LOCAL_DISTRO, OPENSHIFT_DISTRO)
 
 
 def load_arguments(self, _):
@@ -378,7 +378,7 @@ def load_arguments(self, _):
         c.argument('yaml', type=file_type, help='Path to a .yaml file with the configuration of a Dapr component. All other parameters will be ignored. For an example, see https://learn.microsoft.com/en-us/azure/container-apps/dapr-overview?tabs=bicep1%2Cyaml#component-schema')
 
     with self.argument_context('containerapp arc setup-core-dns') as c:
-        c.argument('distro', arg_type=get_enum_type([AKS_AZURE_LOCAL_DISTRO]), required=True, help="The distro supported to setup CoreDNS.")
+        c.argument('distro', arg_type=get_enum_type([AKS_AZURE_LOCAL_DISTRO, OPENSHIFT_DISTRO]), required=True, help="The distro supported to setup CoreDNS.")
         c.argument('kube_config', help="Path to the kube config file.")
         c.argument('kube_context', help="Kube context from current machine.")
         c.argument('skip_ssl_verification', help="Skip SSL verification for any cluster connection.")
@@ -515,8 +515,6 @@ def load_arguments(self, _):
         c.argument('resource_group_name', arg_type=resource_group_name_type, id_part=None)
         c.argument('name', options_list=['--name', '-n'], help="The name of the managed environment.")
         c.argument('workload_profile_name', options_list=['--workload-profile-name', '-w'], help="The workload profile to run ingress replicas on. This profile must not be shared with any container app or job.")
-        c.argument('min_replicas', options_list=['--min-replicas'], type=int, help="Minimum number of replicas to run. Default 2, minimum 2.")
-        c.argument('max_replicas', options_list=['--max-replicas'], type=int, help="Maximum number of replicas to run. Default 10. The upper limit is the maximum cores available in the workload profile.")
         c.argument('termination_grace_period', options_list=['--termination-grace-period', '-t'], type=int, help="Time in seconds to drain requests during ingress shutdown. Default 500, minimum 0, maximum 3600.")
         c.argument('request_idle_timeout', options_list=['--request-idle-timeout'], type=int, help="Timeout in minutes for idle requests. Default 4, minimum 1.")
         c.argument('header_count_limit', options_list=['--header-count-limit'], type=int, help="Limit of http headers per request. Default 100, minimum 1.")
