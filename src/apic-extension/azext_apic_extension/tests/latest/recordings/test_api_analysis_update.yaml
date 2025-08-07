@@ -13,23 +13,23 @@ interactions:
       ParameterSetName:
       - -g -n -c --filter
       User-Agent:
-      - AZURECLI/2.63.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/analyzerConfigs/clianalysisconfig000003?api-version=2024-06-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/analyzerConfigs/spectral-config?api-version=2024-06-01-preview
   response:
     body:
-      string: '{"type":"Microsoft.ApiCenter/services/workspaces/analyzerConfigs","properties":{"title":"clianalysisconfig000003","analyzerType":"Spectral","state":"inactive"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/analyzerConfigs/clianalysisconfig000003","name":"clianalysisconfig000003"}'
+      string: '{"type":"Microsoft.ApiCenter/services/workspaces/analyzerConfigs","properties":{"title":"spectral-config","analyzerType":"Spectral","state":"inactive"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/analyzerConfigs/spectral-config","name":"spectral-config"}'
     headers:
       api-supported-versions:
       - 2023-07-01-preview, 2024-03-01, 2024-03-15-preview, 2024-06-01-preview
       cache-control:
       - no-cache
       content-length:
-      - '391'
+      - '367'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 26 May 2025 07:35:54 GMT
+      - Thu, 07 Aug 2025 02:41:57 GMT
       expires:
       - '-1'
       pragma:
@@ -43,11 +43,11 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=33608faa-33a6-4705-beb1-c8904392c4a4/southeastasia/b98966a0-142a-41ea-859c-a2ef8ac058e7
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=33608faa-33a6-4705-beb1-c8904392c4a4/southeastasia/082d74ca-0b40-4dd3-b637-1b2ec0be020e
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: E84DCDB43FE14188877DF622002888E4 Ref B: MAA201060513047 Ref C: 2025-05-26T07:35:53Z'
+      - 'Ref A: C9DC371C0A0040D6AEEF6DAC115320DB Ref B: MAA201060513051 Ref C: 2025-08-07T02:41:56Z'
       x-powered-by:
       - ASP.NET
     status:
@@ -58,7 +58,7 @@ interactions:
       [{"property": "specification/name", "value": ["openapi", "asyncapi"], "operator":
       "contains"}], "apiVersions": [{"property": "lifecycleStage", "value": "Production",
       "operator": "Equals"}], "apis": [{"property": "kind", "value": "REST", "operator":
-      "Equals"}]}, "title": "clianalysisconfig000003"}}'
+      "Equals"}]}, "title": "spectral-config"}}'
     headers:
       Accept:
       - application/json
@@ -69,29 +69,29 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '371'
+      - '363'
       Content-Type:
       - application/json
       ParameterSetName:
       - -g -n -c --filter
       User-Agent:
-      - AZURECLI/2.63.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/analyzerConfigs/clianalysisconfig000003?api-version=2024-06-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/analyzerConfigs/spectral-config?api-version=2024-06-01-preview
   response:
     body:
-      string: '{"type":"Microsoft.ApiCenter/services/workspaces/analyzerConfigs","properties":{"title":"clianalysisconfig000003","analyzerType":"Spectral","state":"inactive","filter":{"apis":[{"property":"kind","value":"REST","operator":"equals"}],"apiVersions":[{"property":"lifecycleStage","value":"Production","operator":"equals"}],"apiDefinitions":[{"property":"specification/name","value":["openapi","asyncapi"],"operator":"contains"}]}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/analyzerConfigs/clianalysisconfig000003","name":"clianalysisconfig000003"}'
+      string: '{"type":"Microsoft.ApiCenter/services/workspaces/analyzerConfigs","properties":{"title":"spectral-config","analyzerType":"Spectral","state":"inactive","filter":{"apis":[{"property":"kind","value":"REST","operator":"equals"}],"apiVersions":[{"property":"lifecycleStage","value":"Production","operator":"equals"}],"apiDefinitions":[{"property":"specification/name","value":["openapi","asyncapi"],"operator":"contains"}]}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/analyzerConfigs/spectral-config","name":"spectral-config"}'
     headers:
       api-supported-versions:
       - 2023-07-01-preview, 2024-03-01, 2024-03-15-preview, 2024-06-01-preview
       cache-control:
       - no-cache
       content-length:
-      - '659'
+      - '635'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 26 May 2025 07:35:56 GMT
+      - Thu, 07 Aug 2025 02:42:00 GMT
       expires:
       - '-1'
       pragma:
@@ -105,13 +105,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=33608faa-33a6-4705-beb1-c8904392c4a4/southeastasia/94c591e0-0ee6-4b59-9cd6-65c88a206cb8
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=33608faa-33a6-4705-beb1-c8904392c4a4/southeastasia/6e63d10b-8c8b-4ad8-b9ad-52eacc339736
       x-ms-ratelimit-remaining-subscription-global-writes:
       - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
       - '799'
       x-msedge-ref:
-      - 'Ref A: 88B05D49BF8C4F3BA9F7337B94F5F1CC Ref B: MAA201060513047 Ref C: 2025-05-26T07:35:54Z'
+      - 'Ref A: DA97A9347D804BCB89322FE32CD55144 Ref B: MAA201060516031 Ref C: 2025-08-07T02:41:58Z'
       x-powered-by:
       - ASP.NET
     status:
@@ -131,23 +131,23 @@ interactions:
       ParameterSetName:
       - -g -n -c
       User-Agent:
-      - AZURECLI/2.63.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/analyzerConfigs/clianalysisconfig000003?api-version=2024-06-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/analyzerConfigs/spectral-config?api-version=2024-06-01-preview
   response:
     body:
-      string: '{"type":"Microsoft.ApiCenter/services/workspaces/analyzerConfigs","properties":{"title":"clianalysisconfig000003","analyzerType":"Spectral","state":"inactive","filter":{"apis":[{"property":"kind","value":"REST","operator":"equals"}],"apiVersions":[{"property":"lifecycleStage","value":"Production","operator":"equals"}],"apiDefinitions":[{"property":"specification/name","value":["openapi","asyncapi"],"operator":"contains"}]}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/analyzerConfigs/clianalysisconfig000003","name":"clianalysisconfig000003"}'
+      string: '{"type":"Microsoft.ApiCenter/services/workspaces/analyzerConfigs","properties":{"title":"spectral-config","analyzerType":"Spectral","state":"inactive","filter":{"apis":[{"property":"kind","value":"REST","operator":"equals"}],"apiVersions":[{"property":"lifecycleStage","value":"Production","operator":"equals"}],"apiDefinitions":[{"property":"specification/name","value":["openapi","asyncapi"],"operator":"contains"}]}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/analyzerConfigs/spectral-config","name":"spectral-config"}'
     headers:
       api-supported-versions:
       - 2023-07-01-preview, 2024-03-01, 2024-03-15-preview, 2024-06-01-preview
       cache-control:
       - no-cache
       content-length:
-      - '659'
+      - '635'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 26 May 2025 07:35:57 GMT
+      - Thu, 07 Aug 2025 02:42:01 GMT
       expires:
       - '-1'
       pragma:
@@ -161,11 +161,11 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=33608faa-33a6-4705-beb1-c8904392c4a4/southeastasia/0e343a7e-5e93-4020-827e-359466887d0f
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=33608faa-33a6-4705-beb1-c8904392c4a4/southeastasia/63bc6acf-d350-4f6c-a5cc-0ea76bdeed5a
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: 7371583C9DEB4B618221A857DFE11C4B Ref B: MAA201060513039 Ref C: 2025-05-26T07:35:57Z'
+      - 'Ref A: 8DC24194C44B487AB2513DA418E8CD53 Ref B: MAA201060513017 Ref C: 2025-08-07T02:42:01Z'
       x-powered-by:
       - ASP.NET
     status:

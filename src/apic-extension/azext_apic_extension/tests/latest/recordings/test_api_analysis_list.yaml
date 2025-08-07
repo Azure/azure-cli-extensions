@@ -13,23 +13,23 @@ interactions:
       ParameterSetName:
       - -g -n
       User-Agent:
-      - AZURECLI/2.63.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/analyzerConfigs?api-version=2024-06-01-preview
   response:
     body:
-      string: '{"value":[{"type":"Microsoft.ApiCenter/services/workspaces/analyzerConfigs","properties":{"title":"clianalysisconfig000003","analyzerType":"Spectral","state":"inactive"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/analyzerConfigs/clianalysisconfig000003","name":"clianalysisconfig000003"}]}'
+      string: '{"value":[{"type":"Microsoft.ApiCenter/services/workspaces/analyzerConfigs","properties":{"title":"spectral-openapi","analyzerType":"Spectral","state":"active","filter":{"apis":[],"apiVersions":[],"apiDefinitions":[{"property":"specification/name","value":["openapi","asyncapi"],"operator":"contains"}]}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/analyzerConfigs/spectral-openapi","name":"spectral-openapi"}]}'
     headers:
       api-supported-versions:
       - 2023-07-01-preview, 2024-03-01, 2024-03-15-preview, 2024-06-01-preview
       cache-control:
       - no-cache
       content-length:
-      - '403'
+      - '524'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 06 Aug 2025 02:25:47 GMT
+      - Thu, 07 Aug 2025 02:50:23 GMT
       expires:
       - '-1'
       pragma:
@@ -43,11 +43,11 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=33608faa-33a6-4705-beb1-c8904392c4a4/southeastasia/a9d8fbd3-9fc0-41c7-8e52-48044b3717d1
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=33608faa-33a6-4705-beb1-c8904392c4a4/southeastasia/94f0a2e1-7f06-49a4-8cf3-bfc060fe2605
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: 8B7BE35D91C64308A7269F7D12C33EB1 Ref B: MAA201060514011 Ref C: 2025-08-06T02:25:46Z'
+      - 'Ref A: 0E6AD2EA18D946E2A92404EFB4546FAC Ref B: MAA201060514047 Ref C: 2025-08-07T02:50:22Z'
       x-powered-by:
       - ASP.NET
     status:

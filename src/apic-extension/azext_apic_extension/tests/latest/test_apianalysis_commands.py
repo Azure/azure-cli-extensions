@@ -11,7 +11,7 @@ import shutil
 from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
 from azure.cli.testsdk.checkers import JMESPathCheck
 from azure.cli.testsdk.exceptions import JMESPathCheckAssertionError
-from .utils import ApicServicePreparer, ApiAnalysisPreparer
+from .utils import ApicServicePreparer, ApiAnalysisPreparer, ApiAnalysisCreatePreparer
 from .constants import TEST_REGION, AWS_ACCESS_KEY_LINK, AWS_SECRET_ACCESS_KEY_LINK, AWS_REGION, USERASSIGNED_IDENTITY
 
 current_dir = os.path.dirname(os.path.realpath(__file__))
@@ -19,32 +19,12 @@ test_assets_dir = os.path.join(current_dir, 'test_assets')
 
 
 class ApiAnalysisCommandTests(ScenarioTest):
-    async def _delete_existing_analyzer_configs(self):
-        # Helper to delete all existing analyzer configs for the service
-        try:
-            configs = self.cmd('az apic api-analysis list -g {rg} -n {s}').get_output_in_json()
-        except Exception:
-            # If the list command fails (e.g., service not ready), skip deletion
-            return
-        if configs:
-            for config in configs:
-                config_name = config.get('name')
-                if config_name:
-                    try:
-                        await self.cmd('az apic api-analysis delete -g {rg} -n {s} -c {config_name} --yes')
-                    except Exception:
-                        # Ignore errors if deletion fails (e.g., already deleted)
-                        pass
-
     @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
-    async def test_api_analysis_create(self):
-        await self._delete_existing_analyzer_configs()
-        # create an API Analysis configuration
-        self.kwargs.update({
-            'config_name': self.create_random_name(prefix='clianalysisconfig', length=24)
-        })
-        self.cmd('az apic api-analysis create -g {rg} -n {s} -c {config_name}', checks=[
+    @ApiAnalysisCreatePreparer()
+    def test_api_analysis_create(self):
+        # Verify the creation was successful - the preparer handles cleanup and creation
+        self.cmd('az apic api-analysis show -g {rg} -n {s} -c {config_name}', checks=[
             self.check('name', '{config_name}'),
             self.check('resourceGroup', '{rg}'),
             self.check('type', 'Microsoft.ApiCenter/services/workspaces/analyzerConfigs')

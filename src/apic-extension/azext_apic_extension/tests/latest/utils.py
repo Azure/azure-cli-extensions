@@ -464,29 +464,76 @@ class ApimServicePreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
 
 
 class ApiAnalysisPreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
-    def __init__(self, name_prefix='clianalysisconfig', parameter_name='config_name', resource_group_parameter_name='resource_group', api_service_parameter_name='service_name', random_name_length=24):
-        super(ApiAnalysisPreparer, self).__init__(name_prefix, random_name_length)
+    def __init__(self, config_name='spectral-config', parameter_name='config_name', resource_group_parameter_name='resource_group', api_service_parameter_name='service_name', ensure_clean=False):
+        # Use a shorter prefix and set appropriate length to avoid validation errors
+        super(ApiAnalysisPreparer, self).__init__('spec', 24)  # Short prefix with standard length
         self.cli_ctx = get_dummy_cli()
         self.parameter_name = parameter_name
         self.resource_group_parameter_name = resource_group_parameter_name
         self.api_service_parameter_name = api_service_parameter_name
         self.key = parameter_name
+        self.fixed_name = config_name
+        self.ensure_clean = ensure_clean  # Flag to determine if we should delete existing configs
 
     def create_resource(self, name, **kwargs):
         group = self._get_resource_group(**kwargs)
         service = self._get_apic_service(**kwargs)
+        
+        # Always use the fixed name for consistency
+        name = self.fixed_name
 
-        template = 'az apic api-analysis create -g {} -n {} -c {}'
-        cmd = template.format(group, service, name)
-        print(cmd)
-        try:
-            self.live_only_execute(self.cli_ctx, cmd)
-        except HttpResponseError as e:
-            if e.message.startswith("(ValidationError) Number of analyzer configs for this service"):
+        # Check if we need to ensure a clean state (for create tests)
+        if self.ensure_clean:
+            # Delete all existing analyzer configs first
+            try:
                 configs = self.live_only_execute(self.cli_ctx, 'az apic api-analysis list -g {} -n {}'.format(group, service)).get_output_in_json()
-                config = configs[0]
-                name = config.get('name')
+                for config in configs:
+                    config_name = config.get('name')
+                    if config_name:
+                        try:
+                            self.live_only_execute(self.cli_ctx, 'az apic api-analysis delete -g {} -n {} -c {} --yes'.format(group, service, config_name))
+                        except Exception:
+                            # Ignore errors if deletion fails
+                            pass
+            except Exception:
+                # If listing fails, continue anyway
                 pass
+
+            # Now create the new analyzer config
+            template = 'az apic api-analysis create -g {} -n {} -c {}'
+            cmd = template.format(group, service, name)
+            print(cmd)
+            self.live_only_execute(self.cli_ctx, cmd)
+        else:
+            # For other tests, just use existing config or create if none exists
+            try:
+                configs = self.live_only_execute(self.cli_ctx, 'az apic api-analysis list -g {} -n {}'.format(group, service)).get_output_in_json()
+                if configs:
+                    # Use the first existing config
+                    name = configs[0].get('name')
+                else:
+                    # No configs exist, create one
+                    template = 'az apic api-analysis create -g {} -n {} -c {}'
+                    cmd = template.format(group, service, name)
+                    print(cmd)
+                    self.live_only_execute(self.cli_ctx, cmd)
+            except Exception:
+                # If listing fails, try to create
+                template = 'az apic api-analysis create -g {} -n {} -c {}'
+                cmd = template.format(group, service, name)
+                print(cmd)
+                try:
+                    self.live_only_execute(self.cli_ctx, cmd)
+                except HttpResponseError as e:
+                    if "Number of analyzer configs for this service" in str(e):
+                        # If creation fails due to limit, list and use existing
+                        configs = self.live_only_execute(self.cli_ctx, 'az apic api-analysis list -g {} -n {}'.format(group, service)).get_output_in_json()
+                        if configs:
+                            name = configs[0].get('name')
+                        else:
+                            raise
+                    else:
+                        raise
 
         self.test_class_instance.kwargs[self.key] = name
         return {self.parameter_name: name}
@@ -510,3 +557,9 @@ class ApiAnalysisPreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
             template = 'To create an API Analysis configuration, an API Center service is required. Please add ' \
                        'decorator @{} in front of this preparer.'
             raise CliTestError(template.format(ApicServicePreparer.__name__))
+
+
+class ApiAnalysisCreatePreparer(ApiAnalysisPreparer):
+    """Special preparer for create tests that ensures clean state"""
+    def __init__(self, config_name='spectral-config', parameter_name='config_name', resource_group_parameter_name='resource_group', api_service_parameter_name='service_name'):
+        super().__init__(config_name, parameter_name, resource_group_parameter_name, api_service_parameter_name, ensure_clean=True)
