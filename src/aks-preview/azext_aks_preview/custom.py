@@ -2066,10 +2066,7 @@ def aks_machine_add(
     cluster_name,
     nodepool_name,
     machine_name,
-    kubernetes_version=None,
-    vm_size=None,
-    os_type=None,
-    os_sku=None,
+    no_wait=False,
 ):
     existedMachine = None
     try:
@@ -2083,8 +2080,23 @@ def aks_machine_add(
         )
     
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
-    raw_parameters = locals()
-    return aks_managed_namespace_add(cmd, client, raw_parameters, headers, no_wait)
+    # raw_parameters = locals()
+    Machine = cmd.get_models(
+        "Machine", 
+        resource_type=CUSTOM_MGMT_AKS_PREVIEW,
+        operation_group="machines"
+    )
+    machine = Machine()
+
+    return sdk_no_wait(
+        no_wait,
+        client.begin_create_or_update,
+        resource_group_name,
+        cluster_name,
+        nodepool_name,
+        machine_name,
+        machine,
+    )
     
 
 

@@ -1,4 +1,4 @@
-from azure.cli.core.util import sdk_no_wait
+'''from azure.cli.core.util import sdk_no_wait
 
 def add_machine(cmd, client, raw_parameters, no_wait):
     resource_group_name = raw_parameters.get("resource_group_name")
@@ -64,3 +64,4 @@ def set_vm_size(raw_parameters):
     )
     mhp = MachineHardwareProfile(vm_size=vm_size)
     return mhp
+'''
