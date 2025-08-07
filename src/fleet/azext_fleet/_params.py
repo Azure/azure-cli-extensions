@@ -172,3 +172,44 @@ def load_arguments(self, _):
         c.argument('resource_group_name', options_list=['--resource-group', '-g'], help='Name of the resource group.')
         c.argument('fleet_name', options_list=['--fleet-name', '-f'], help='Name of the fleet.')
         c.argument('gate_name', options_list=['--gate-name', '--gate', '-n'], help='Name of the gate.')
+
+    with self.argument_context('fleet namespace') as c:
+        c.argument('resource_group_name', options_list=['--resource-group', '-g'], help='Name of the resource group.')
+        c.argument('fleet_name', options_list=['--fleet-name', '-f'], help='Name of the fleet.')
+        c.argument('managed_namespace_name', options_list=['--name', '-n'], help='Name of the managed namespace.')
+
+    with self.argument_context('fleet namespace create') as c:
+        c.argument('managed_namespace_name', options_list=['--name', '-n'], help='The name of the Kubernetes namespace to be created on member clusters.')
+        c.argument('labels', labels_type, help='Labels to apply to the managed namespace.')
+        c.argument('annotations', type=validate_labels, metavar='KEY=VALUE', help='Annotations to apply to the managed namespace: key[=value] [key[=value] ...].')
+        c.argument('cpu_requests', options_list=['--cpu-requests'], help='CPU requests for the namespace.')
+        c.argument('cpu_limits', options_list=['--cpu-limits'], help='CPU limits for the namespace.')
+        c.argument('memory_requests', options_list=['--memory-requests'], help='Memory requests for the namespace.')
+        c.argument('memory_limits', options_list=['--memory-limits'], help='Memory limits for the namespace.')
+        c.argument('ingress_policy', options_list=['--ingress-policy'], help='Ingress policy for the namespace.')
+        c.argument('egress_policy', options_list=['--egress-policy'], help='Egress policy for the namespace.')
+        c.argument('delete_policy', options_list=['--delete-policy'], help='Delete policy for the namespace.')
+        c.argument('adoption_policy', options_list=['--adoption-policy'], help='Adoption policy for the namespace.')
+        c.argument('member_cluster_names', options_list=['--member-cluster-names'], help='Comma-separated list of member cluster names to apply the namespace to.')
+
+    with self.argument_context('fleet namespace update') as c:
+        c.argument('labels', labels_type, help='Labels to apply to the managed namespace.')
+        c.argument('annotations', type=validate_labels, metavar='KEY=VALUE', help='Annotations to apply to the managed namespace: key[=value] [key[=value] ...].')
+        c.argument('cpu_requests', options_list=['--cpu-requests'], help='CPU requests for the namespace.')
+        c.argument('cpu_limits', options_list=['--cpu-limits'], help='CPU limits for the namespace.')
+        c.argument('memory_requests', options_list=['--memory-requests'], help='Memory requests for the namespace.')
+        c.argument('memory_limits', options_list=['--memory-limits'], help='Memory limits for the namespace.')
+        c.argument('ingress_policy', options_list=['--ingress-policy'], help='Ingress policy for the namespace.')
+        c.argument('egress_policy', options_list=['--egress-policy'], help='Egress policy for the namespace.')
+        c.argument('delete_policy', options_list=['--delete-policy'], help='Delete policy for the namespace.')
+        c.argument('adoption_policy', options_list=['--adoption-policy'], help='Adoption policy for the namespace.')
+        c.argument('member_cluster_names', options_list=['--member-cluster-names'], help='Comma-separated list of member cluster names to apply the namespace to.')
+
+    with self.argument_context('fleet namespace delete') as c:
+        pass
+
+    with self.argument_context('fleet namespace show') as c:
+        pass
+
+    with self.argument_context('fleet namespace list') as c:
+        pass

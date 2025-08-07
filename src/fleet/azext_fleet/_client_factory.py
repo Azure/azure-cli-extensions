@@ -28,6 +28,8 @@ def cf_fleet_members(cli_ctx, *_):
 def cf_gates(cli_ctx, *_):
     return get_container_service_client(cli_ctx).gates
 
+def cf_managed_namespaces(cli_ctx, *_):
+    return get_container_service_client(cli_ctx).fleet_managed_namespaces
 
 def cf_update_runs(cli_ctx, *_):
     return get_container_service_client(cli_ctx).update_runs

@@ -206,6 +206,21 @@ class ContainerServiceFleetMgmtClient(MultiApiClientMixin, _SDKClient):
         return OperationClass(self._client, self._config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)), api_version)
 
     @property
+    def fleet_managed_namespaces(self):
+        """Instance depends on the API version:
+
+           * 2025-08-01-preview: :class:`FleetManagedNamespacesOperations<azure.mgmt.containerservicefleet.v2025_08_01_preview.operations.FleetManagedNamespacesOperations>`
+
+        """
+        api_version = self._get_api_version('fleet_managed_namespaces')
+        if api_version == '2025-08-01-preview':
+            from .v2025_08_01_preview.operations import FleetManagedNamespacesOperations as OperationClass
+        else:
+            raise ValueError("API version {} does not have operation group 'fleet_managed_namespaces'".format(api_version))
+        self._config.api_version = api_version
+        return OperationClass(self._client, self._config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)), api_version)
+
+    @property
     def fleet_members(self):
         """Instance depends on the API version:
 
