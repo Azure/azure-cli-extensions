@@ -1,3 +1,4 @@
+# pylint: disable=line-too-long,useless-suppression
 # coding=utf-8
 # --------------------------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved.
@@ -51,7 +52,7 @@ class FleetUpdateStrategiesOperations:
         **DO NOT** instantiate this class directly.
 
         Instead, you should access the following operations through
-        :class:`~azure.mgmt.containerservicefleet.aio.ContainerServiceFleetMgmtClient`'s
+        :class:`~azure.mgmt.containerservicefleet.v2025_08_01_preview.aio.ContainerServiceFleetMgmtClient`'s
         :attr:`fleet_update_strategies` attribute.
     """
 
@@ -80,13 +81,15 @@ class FleetUpdateStrategiesOperations:
         :type fleet_name: str
         :return: An iterator like instance of either FleetUpdateStrategy or the result of cls(response)
         :rtype:
-         ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.containerservicefleet.models.FleetUpdateStrategy]
+         ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.containerservicefleet.v2025_08_01_preview.models.FleetUpdateStrategy]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._api_version or "2024-04-01"))
+        api_version: str = kwargs.pop(
+            "api_version", _params.pop("api-version", self._api_version or "2025-08-01-preview")
+        )
         cls: ClsType[_models.FleetUpdateStrategyListResult] = kwargs.pop("cls", None)
 
         error_map: MutableMapping = {
@@ -166,7 +169,7 @@ class FleetUpdateStrategiesOperations:
         :param update_strategy_name: The name of the UpdateStrategy resource. Required.
         :type update_strategy_name: str
         :return: FleetUpdateStrategy or the result of cls(response)
-        :rtype: ~azure.mgmt.containerservicefleet.models.FleetUpdateStrategy
+        :rtype: ~azure.mgmt.containerservicefleet.v2025_08_01_preview.models.FleetUpdateStrategy
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         error_map: MutableMapping = {
@@ -180,7 +183,9 @@ class FleetUpdateStrategiesOperations:
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._api_version or "2024-04-01"))
+        api_version: str = kwargs.pop(
+            "api_version", _params.pop("api-version", self._api_version or "2025-08-01-preview")
+        )
         cls: ClsType[_models.FleetUpdateStrategy] = kwargs.pop("cls", None)
 
         _request = build_get_request(
@@ -234,7 +239,9 @@ class FleetUpdateStrategiesOperations:
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._api_version or "2024-04-01"))
+        api_version: str = kwargs.pop(
+            "api_version", _params.pop("api-version", self._api_version or "2025-08-01-preview")
+        )
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
         cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
 
@@ -313,7 +320,8 @@ class FleetUpdateStrategiesOperations:
         :param update_strategy_name: The name of the UpdateStrategy resource. Required.
         :type update_strategy_name: str
         :param resource: Resource create parameters. Required.
-        :type resource: ~azure.mgmt.containerservicefleet.models.FleetUpdateStrategy
+        :type resource:
+         ~azure.mgmt.containerservicefleet.v2025_08_01_preview.models.FleetUpdateStrategy
         :param if_match: The request should only proceed if an entity matches this string. Default
          value is None.
         :type if_match: str
@@ -326,7 +334,7 @@ class FleetUpdateStrategiesOperations:
         :return: An instance of AsyncLROPoller that returns either FleetUpdateStrategy or the result of
          cls(response)
         :rtype:
-         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservicefleet.models.FleetUpdateStrategy]
+         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservicefleet.v2025_08_01_preview.models.FleetUpdateStrategy]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
 
@@ -366,7 +374,7 @@ class FleetUpdateStrategiesOperations:
         :return: An instance of AsyncLROPoller that returns either FleetUpdateStrategy or the result of
          cls(response)
         :rtype:
-         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservicefleet.models.FleetUpdateStrategy]
+         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservicefleet.v2025_08_01_preview.models.FleetUpdateStrategy]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
 
@@ -392,7 +400,8 @@ class FleetUpdateStrategiesOperations:
         :type update_strategy_name: str
         :param resource: Resource create parameters. Is either a FleetUpdateStrategy type or a
          IO[bytes] type. Required.
-        :type resource: ~azure.mgmt.containerservicefleet.models.FleetUpdateStrategy or IO[bytes]
+        :type resource:
+         ~azure.mgmt.containerservicefleet.v2025_08_01_preview.models.FleetUpdateStrategy or IO[bytes]
         :param if_match: The request should only proceed if an entity matches this string. Default
          value is None.
         :type if_match: str
@@ -402,13 +411,15 @@ class FleetUpdateStrategiesOperations:
         :return: An instance of AsyncLROPoller that returns either FleetUpdateStrategy or the result of
          cls(response)
         :rtype:
-         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservicefleet.models.FleetUpdateStrategy]
+         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservicefleet.v2025_08_01_preview.models.FleetUpdateStrategy]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._api_version or "2024-04-01"))
+        api_version: str = kwargs.pop(
+            "api_version", _params.pop("api-version", self._api_version or "2025-08-01-preview")
+        )
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
         cls: ClsType[_models.FleetUpdateStrategy] = kwargs.pop("cls", None)
         polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
@@ -477,7 +488,9 @@ class FleetUpdateStrategiesOperations:
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._api_version or "2024-04-01"))
+        api_version: str = kwargs.pop(
+            "api_version", _params.pop("api-version", self._api_version or "2025-08-01-preview")
+        )
         cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
 
         _request = build_delete_request(
@@ -549,7 +562,9 @@ class FleetUpdateStrategiesOperations:
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._api_version or "2024-04-01"))
+        api_version: str = kwargs.pop(
+            "api_version", _params.pop("api-version", self._api_version or "2025-08-01-preview")
+        )
         cls: ClsType[None] = kwargs.pop("cls", None)
         polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
         lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
