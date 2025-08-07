@@ -3165,6 +3165,7 @@ def update_session_pool(cmd,
         raw_parameters=raw_parameters,
         models=CONTAINER_APPS_SDK_MODELS
     )
+    session_pool_decorator.validate_arguments()
     session_pool_decorator.construct_payload()
     r = session_pool_decorator.update()
 
