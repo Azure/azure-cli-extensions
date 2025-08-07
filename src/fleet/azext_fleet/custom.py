@@ -890,9 +890,9 @@ def show_managed_namespace(cmd,  # pylint: disable=unused-argument
 
 
 def list_managed_namespaces(cmd,  # pylint: disable=unused-argument
-                             client,
-                             resource_group_name,
-                             fleet_name):
+                            client,
+                            resource_group_name,
+                            fleet_name):
     return client.list_by_fleet(
         resource_group_name=resource_group_name,
         fleet_name=fleet_name
