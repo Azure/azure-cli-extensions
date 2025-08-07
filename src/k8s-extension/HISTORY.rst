@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.6.7
++++++++++++++++++++
+* microsoft.azuremonitor.containers: Extend ContainerInsights Extension for high log scale mode support.
+
 1.6.6
 ++++++++++++++++++
 * microsoft.entraworkloadiam: Remove code that is no longer in use.
