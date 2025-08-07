@@ -18,7 +18,7 @@ class UpdateBfdAdministrativeState(AAZCommand):
     """BFD administrative state for either static or bgp for internalNetwork.
 
     :example: Update bfd admin state of External Network
-        az networkfabric externalnetwork update-bfd-administrative-state --resource-group example-rg --l3-isolation-domain-name example-externalnetwork --external-network-name example-ext --route-type Static --administrative-state Enable
+        az networkfabric externalnetwork update-bfd-administrative-state --resource-group example-rg --l3-isolation-domain-name example-externalnetwork --resource-name example-ext --route-type Static --administrative-state Enable
     """
 
     _aaz_info = {

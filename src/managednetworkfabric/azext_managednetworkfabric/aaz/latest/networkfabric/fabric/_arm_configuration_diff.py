@@ -18,7 +18,7 @@ class ArmConfigurationDiff(AAZCommand):
     """Post action: Triggers diff of NetworkFabric ARM Configuration.
 
     :example: Run arm configuration diff on the Network Fabric
-        az networkfabric fabric arm-configuration-diff --resource-group example-rg --network-fabric-name example-fabric
+        az networkfabric fabric arm-configuration-diff --resource-group example-rg --resource-name example-fabric
     """
 
     _aaz_info = {

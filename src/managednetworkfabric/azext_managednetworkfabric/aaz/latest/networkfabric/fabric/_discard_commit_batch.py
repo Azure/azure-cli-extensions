@@ -18,7 +18,7 @@ class DiscardCommitBatch(AAZCommand):
     """Post action: Discards a Batch operation in progress.
 
     :example: Run discard commit batch on the Network Fabric
-        az networkfabric fabric discard-commit-batch --resource-group example-rg --network-fabric-name example-fabric --commit-batch-id batchId1
+        az networkfabric fabric discard-commit-batch --resource-group example-rg --resource-name example-fabric --commit-batch-id batchId1
     """
 
     _aaz_info = {

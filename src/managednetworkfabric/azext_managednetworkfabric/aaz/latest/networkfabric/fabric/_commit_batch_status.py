@@ -18,7 +18,7 @@ class CommitBatchStatus(AAZCommand):
     """Post action: Returns a status of commit batch operation.
 
     :example: Run commit batch status on the Network Fabric
-        az networkfabric fabric commit-batch-status --resource-group example-rg --network-fabric-name example-fabric --commit-batch-id batch-id
+        az networkfabric fabric commit-batch-status --resource-group example-rg --resource-name example-fabric --commit-batch-id batch-id
     """
 
     _aaz_info = {
