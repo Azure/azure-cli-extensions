@@ -718,22 +718,23 @@ def approve_gate(cmd,  # pylint: disable=unused-argument
                  no_wait=False):
     return _patch_gate(cmd, client, resource_group_name, fleet_name, gate_name, "Completed", no_wait)
 
+
 def create_managed_namespace(cmd,
-                           client,
-                           resource_group_name,
-                           fleet_name,
-                           managed_namespace_name,
-                           labels=None,
-                           annotations=None,
-                           cpu_requests=None,
-                           cpu_limits=None,
-                           memory_requests=None,
-                           memory_limits=None,
-                           ingress_policy=None,
-                           egress_policy=None,
-                           delete_policy=None,
-                           adoption_policy=None,
-                           member_cluster_names=None):
+                             client,
+                             resource_group_name,
+                             fleet_name,
+                             managed_namespace_name,
+                             labels=None,
+                             annotations=None,
+                             cpu_requests=None,
+                             cpu_limits=None,
+                             memory_requests=None,
+                             memory_limits=None,
+                             ingress_policy=None,
+                             egress_policy=None,
+                             delete_policy=None,
+                             adoption_policy=None,
+                             member_cluster_names=None):
     managed_namespace_model = cmd.get_models(
         "FleetManagedNamespace",
         resource_type=CUSTOM_MGMT_FLEET
@@ -797,21 +798,21 @@ def create_managed_namespace(cmd,
 
 
 def update_managed_namespace(cmd,
-                           client,
-                           resource_group_name,
-                           fleet_name,
-                           managed_namespace_name,
-                           labels=None,
-                           annotations=None,
-                           cpu_requests=None,
-                           cpu_limits=None,
-                           memory_requests=None,
-                           memory_limits=None,
-                           ingress_policy=None,
-                           egress_policy=None,
-                           delete_policy=None,
-                           adoption_policy=None,
-                           member_cluster_names=None):
+                             client,
+                             resource_group_name,
+                             fleet_name,
+                             managed_namespace_name,
+                             labels=None,
+                             annotations=None,
+                             cpu_requests=None,
+                             cpu_limits=None,
+                             memory_requests=None,
+                             memory_limits=None,
+                             ingress_policy=None,
+                             egress_policy=None,
+                             delete_policy=None,
+                             adoption_policy=None,
+                             member_cluster_names=None):
 
     fleet_managed_namespace_patch_model = cmd.get_models(
         "FleetManagedNamespacePatch",
@@ -865,10 +866,10 @@ def update_managed_namespace(cmd,
 
 
 def delete_managed_namespace(cmd,  # pylint: disable=unused-argument
-                           client,
-                           resource_group_name,
-                           fleet_name,
-                           managed_namespace_name):
+                             client,
+                             resource_group_name,
+                             fleet_name,
+                             managed_namespace_name):
     return client.begin_delete(
         resource_group_name=resource_group_name,
         fleet_name=fleet_name,
@@ -877,10 +878,10 @@ def delete_managed_namespace(cmd,  # pylint: disable=unused-argument
 
 
 def show_managed_namespace(cmd,  # pylint: disable=unused-argument
-                         client,
-                         resource_group_name,
-                         fleet_name,
-                         managed_namespace_name):
+                           client,
+                           resource_group_name,
+                           fleet_name,
+                           managed_namespace_name):
     return client.get(
         resource_group_name=resource_group_name,
         fleet_name=fleet_name,
@@ -889,9 +890,9 @@ def show_managed_namespace(cmd,  # pylint: disable=unused-argument
 
 
 def list_managed_namespaces(cmd,  # pylint: disable=unused-argument
-                           client,
-                           resource_group_name,
-                           fleet_name):
+                             client,
+                             resource_group_name,
+                             fleet_name):
     return client.list_by_fleet(
         resource_group_name=resource_group_name,
         fleet_name=fleet_name
