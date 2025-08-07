@@ -115,7 +115,9 @@ def aks_agent(
         model=model,
         api_key=api_key,
         max_steps=max_steps,
-        custom_toolsets_from_cli=custom_toolsets,
+        custom_toolsets_from_cli=(
+            [custom_toolsets] if custom_toolsets is not None else None
+        ),
     )
 
     ai = config.create_console_toolcalling_llm(
