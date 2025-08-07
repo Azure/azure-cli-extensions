@@ -35,7 +35,7 @@ class QuantumCommandsLoader(AzCommandsLoader):
 
         # Only when formatted output (https://learn.microsoft.com/en-us/cli/azure/format-output-azure-cli?view=azure-cli-latest&tabs=bash) is NOT requested,
         # we can produce the "new version is available" tip as it may interfere with the output format (ex. JSON).
-        if not "--output" in args and not "--out" in args and not "-o" in args:
+        if "--output" not in args and "--out" not in args and "-o" not in args:
             message = check_version(self.cli_ctx_config, CLI_REPORTED_VERSION, str(
                 datetime.today()).split(' ', maxsplit=1)[0])
 
