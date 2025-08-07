@@ -2,6 +2,24 @@
 
 Release History
 ===============
+1.2.0b3
+++++++++++++++++++
+
+**New Features:**
+
+* Added new command ``az apic api-analysis`` to manage API analysis in Azure API Center.
+  * Added ``az apic api-analysis create`` to create an API analysis.
+  * Added ``az apic api-analysis delete`` to delete an API analysis.
+  * Added ``az apic api-analysis list`` to list all API analyses.
+  * Added ``az apic api-analysis show`` to show details of an API analysis.
+  * Added ``az apic api-analysis update`` to update an API analysis.
+  * Added ``az apic api-analysis import-ruleset`` to import an API analysis ruleset.
+  * Added ``az apic api-analysis export-ruleset`` to export an API analysis ruleset.
+* Added new command ``az apic import apim`` to import an API from an Azure API Management instance.
+
+**Deprecations:**
+  * Deprecated the ``az apic import-from-apim`` command.
+
 1.2.0b2
 ++++++++++++++++++
 * Remove msrestazure dependency

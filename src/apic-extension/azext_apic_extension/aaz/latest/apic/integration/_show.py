@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "apic integration show",
-    is_preview=True,
 )
 class Show(AAZCommand):
     """Get details of the API source.

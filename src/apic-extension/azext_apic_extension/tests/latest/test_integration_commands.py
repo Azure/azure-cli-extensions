@@ -84,23 +84,3 @@ class IntegrationCommandTests(ScenarioTest):
                 self.check('linkState.state', list(['initializing', 'syncing']))
             ])
 
-    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
-    @ApicServicePreparer(user_assigned_identity=USERASSIGNED_IDENTITY)
-    def test_import_api_from_aws(self):
-        if self.is_live:
-            # prepare test data
-            self.kwargs.update({
-                'integration_name': self.create_random_name(prefix='cli', length=8),
-                'usi_id': USERASSIGNED_IDENTITY,
-                'access_key_link': AWS_ACCESS_KEY_LINK,
-                'secret_access_key_link': AWS_SECRET_ACCESS_KEY_LINK,
-                'aws_region': AWS_REGION
-            })
-
-            self.cmd('az apic import aws -g {rg} -n {s} --aws-access-key-reference {access_key_link} --aws-region {aws_region} --aws-secret-access-key-reference {secret_access_key_link}')
-
-            # verify command results
-            self.cmd('az apic api show -g {rg} -n {s} --api-id swagger-petstore', checks=[
-                self.check('title', 'Swagger Petstore'),
-                self.check('summary', 'A sample API that uses a petstore as an example to demonstrate features in the OpenAPI Specification.'),
-            ])
