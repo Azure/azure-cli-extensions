@@ -5,7 +5,7 @@ Release History
 upcoming
 ++++++
 * 'az containerapp session code-interpreter': Fix `--path` in examples
-* 'az containerapp sessionpool': Support `--lifecycle-type` and `--max-alive-period` for session pool creation and update.
+* 'az containerapp sessionpool create/update': Support `--lifecycle-type` and `--max-alive-period`
 
 1.2.0b3
 ++++++
