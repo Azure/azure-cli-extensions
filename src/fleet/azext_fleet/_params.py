@@ -59,6 +59,7 @@ def load_arguments(self, _):
                    help='With --enable-managed-identity, enable user assigned managed identity (MSI) on the Fleet resource. Specify the existing user assigned identity resource.')
 
     with self.argument_context('fleet get-credentials') as c:
+        c.argument('member_name', options_list=['--member', '-m'], help='Specify the fleet member name to get credentials from its associated managed cluster.')
         c.argument('context_name', options_list=['--context'], help='If specified, overwrite the default context name.')
         c.argument('path', options_list=['--file', '-f'], type=file_type, completer=FilesCompleter(),
                    default=os.path.join(os.path.expanduser('~'), '.kube', 'config'))
@@ -213,3 +214,11 @@ def load_arguments(self, _):
 
     with self.argument_context('fleet namespace list') as c:
         pass
+
+    with self.argument_context('fleet namespace get-credentials') as c:
+        c.argument('managed_namespace_name', options_list=['--name', '-n'], help='Specify the managed namespace name.')
+        c.argument('member_name', options_list=['--member', '-m'], help='Specify the fleet member name to get credentials from its associated managed cluster.')
+        c.argument('context_name', options_list=['--context'], help='If specified, overwrite the default context name.')
+        c.argument('overwrite_existing', help='Overwrite any existing cluster entry with the same name.')
+        c.argument('path', options_list=['--file'], type=file_type, completer=FilesCompleter(),
+                   default=os.path.join(os.path.expanduser('~'), '.kube', 'config'))

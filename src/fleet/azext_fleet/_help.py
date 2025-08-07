@@ -71,8 +71,11 @@ helps['fleet delete'] = """
 
 helps['fleet get-credentials'] = """
     type: command
-    short-summary: For hubful fleets, gets the kubeconfig for the fleet's hub cluster.
+    short-summary: For hubful fleets, gets the kubeconfig for the fleet's hub cluster. For fleet members, gets kubeconfig from the member's managed cluster.
     parameters:
+    - name: --member -m
+      type: string
+      short-summary: Specify the fleet member name to get credentials from its associated managed cluster.
     - name: --overwrite-existing
       type: bool
       short-summary: Overwrite any existing cluster entry with the same name.
@@ -84,6 +87,8 @@ helps['fleet get-credentials'] = """
           text: az fleet get-credentials -g MyFleetResourceGroup -n MyFleetName
         - name: Get a fleet's hub cluster kubeconfig, and save it to a specific file.
           text: az fleet get-credentials -g MyFleetResourceGroup -n MyFleetName -f ~/mykubeconfigfile.txt
+        - name: Get kubeconfig from a specific fleet member's managed cluster.
+          text: az fleet get-credentials -g MyFleetResourceGroup -n MyFleetName --member MyFleetMember
 """
 
 helps['fleet reconcile'] = """
@@ -482,4 +487,29 @@ helps['fleet namespace delete'] = """
     examples:
         - name: Delete a specific managed namespace.
           text: az fleet namespace delete -g MyFleetResourceGroup -f MyFleetName -n MyManagedNamespace
+"""
+
+helps['fleet namespace get-credentials'] = """
+    type: command
+    short-summary: Get kubeconfig for a fleet namespace, with the namespace context pre-configured.
+    parameters:
+    - name: --member -m
+      type: string
+      short-summary: Specify the fleet member name to get credentials from its associated managed cluster.
+    - name: --context
+      type: string
+      short-summary: If specified, overwrite the default context name.
+    - name: --overwrite-existing
+      type: bool
+      short-summary: Overwrite any existing cluster entry with the same name.
+    - name: --file
+      type: string
+      short-summary: Kubernetes configuration file to update. Use "-" to print YAML to stdout instead.
+    examples:
+        - name: Get kubeconfig for a fleet namespace from the hub cluster.
+          text: az fleet namespace get-credentials -g MyFleetResourceGroup -f MyFleetName -n MyManagedNamespace
+        - name: Get kubeconfig for a fleet namespace from a specific fleet member.
+          text: az fleet namespace get-credentials -g MyFleetResourceGroup -f MyFleetName -n MyManagedNamespace --member MyFleetMember
+        - name: Save kubeconfig to a specific file.
+          text: az fleet namespace get-credentials -g MyFleetResourceGroup -f MyFleetName -n MyManagedNamespace --file ~/my-namespace-config
 """

@@ -133,3 +133,4 @@ def load_command_table(self, _):
         g.custom_command("delete", "delete_managed_namespace", confirmation=True)
         g.custom_command("list", "list_managed_namespaces")
         g.custom_show_command("show", "show_managed_namespace")
+        g.custom_command("get-credentials", "get_namespace_credentials")
