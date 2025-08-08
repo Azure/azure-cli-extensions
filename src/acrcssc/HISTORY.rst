@@ -2,6 +2,11 @@
 
 Release History
 ===============
+
+1.0.0b4
++++++++
+* Fix resource SDK import error
+
 1.0.0b3
 +++++++
 * Remove msrestazure dependency

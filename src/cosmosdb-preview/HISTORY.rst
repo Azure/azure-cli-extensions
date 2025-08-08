@@ -1,6 +1,11 @@
 .. :changelog:
 Release History
 ===============
+
+1.6.1
++++++
+* Fix SQL container throughput update to preserve existing throughput buckets when not explicitly specified.
+
 1.6.0
 * Add support for Fleet/Fleetspace/FleetspaceAccount/FleetAnalytics CRUD actions.
 

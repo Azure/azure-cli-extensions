@@ -12,6 +12,27 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+18.0.0b25
++++++++
+* Update for `az aks machine show` and `az aks machine list` to show more details about the machine.
+
+18.0.0b24
++++++++
+* Suppress the ssh access annoying message if the cluster sku name is automatic.
+
+18.0.0b23
++++++++
+* `az aks create`: Add new parameter `--disable-run-command` to disable run command feature for the cluster
+* `az aks update`: Add  new parameters `--disable-run-command` and `--enable-run-command` to toggle the run command feature on or off
+
+18.0.0b22
++++++++
+* Vendor new SDK and bump API version to 2025-06-02-preview.
+
+18.0.0b21
++++++++
+* Add command `az aks bastion` to enable connections to managed Kubernetes clusters via Azure Bastion.
+
 18.0.0b20
 +++++++
 * Fix the bug affecting VMAS to VMS migration in the `az aks update` command using the `--migrate-vmas-to-vms` option.

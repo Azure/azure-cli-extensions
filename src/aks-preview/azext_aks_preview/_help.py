@@ -520,6 +520,9 @@ helps['aks create'] = f"""
         - name: --enable-keda
           type: bool
           short-summary: Enable KEDA workload auto-scaler.
+        - name: --disable-run-command
+          type: bool
+          short-summary: Disable Run command feature for the cluster.
         - name: --enable-defender
           type: bool
           short-summary: Enable Microsoft Defender security profile.
@@ -1124,6 +1127,12 @@ helps['aks update'] = """
         - name: --disable-keda
           type: bool
           short-summary: Disable KEDA workload auto-scaler.
+        - name: --enable-run-command
+          type: bool
+          short-summary: Enable Run command feature for the cluster.
+        - name: --disable-run-command
+          type: bool
+          short-summary: Disable Run command feature for the cluster.
         - name: --enable-defender
           type: bool
           short-summary: Enable Microsoft Defender security profile.
@@ -2363,7 +2372,7 @@ helps['aks machine'] = """
 
 helps['aks machine list'] = """
    type: command
-   short-summary: Get information about IP Addresses, Hostname for all machines in an agentpool
+   short-summary: List the details for all machines in an agentpool
    parameters:
        - name: --cluster-name
          type: string
@@ -2371,14 +2380,14 @@ helps['aks machine list'] = """
        - name: --nodepool-name
          type: string
          short-summary: Name of the agentpool of a managed cluster
-   exmaples:
-       - name: Get information about IP Addresses, Hostname for all machines in an agentpool
-         text: az aks machine list --cluster-name <clusterName> --nodepool-name <apName>
+   examples:
+       - name: List the details for all machines in an agentpool
+         text: az aks machine list --resource-group <resourceGroupName> --cluster-name <clusterName> --nodepool-name <apName>
 """
 
 helps['aks machine show'] = """
    type: command
-   short-summary: Show IP Addresses, Hostname for a specific machine in an agentpool for a managedcluster.
+   short-summary: Show the details of a specific machine in an agentpool of a managedcluster.
    parameters:
        - name: --cluster-name
          type: string
@@ -2388,10 +2397,10 @@ helps['aks machine show'] = """
          short-summary: Name of the agentpool of a managed cluster
        - name: --machine-name
          type: string
-         short-summary: Get IP Addresses, Hostname for a specific machine in an agentpool
-   exmaples:
-       - name: Get IP Addresses, Hostname for a specific machine in an agentpool
-         text: az aks machine show --cluster-name <clusterName> --nodepool-name <apName> --machine-name <machineName>
+         short-summary: Name of the machine
+   examples:
+       - name: Show the details of a specific machine in an agentpool of a managedcluster.
+         text: az aks machine show --resource-group <resourceGroupName> --cluster-name <clusterName> --nodepool-name <apName> --machine-name <machineName>
 """
 
 helps['aks operation'] = """
@@ -3863,4 +3872,25 @@ helps['aks loadbalancer show'] = """
           text: az aks loadbalancer show -g MyResourceGroup -n secondary --cluster-name MyManagedCluster
         - name: Show details of a load balancer configuration in table format
           text: az aks loadbalancer show -g MyResourceGroup -n kubernetes --cluster-name MyManagedCluster -o table
+"""
+
+helps['aks bastion'] = """
+    type: command
+    short-summary: Connect to a managed Kubernetes cluster using Azure Bastion.
+    long-summary: The command will launch a subshell with the kubeconfig set to connect to the cluster via Bastion. Use exit or Ctrl-D (i.e. EOF) to exit the subshell.
+    parameters:
+        - name: --bastion
+          type: string
+          short-summary: The name or resource ID of a pre-deployed Bastion resource configured to connect to the current AKS cluster.
+          long-summary: If not specified, the command will try to identify an existing Bastion resource within the cluster's node resource group.
+        - name: --port
+          type: int
+          short-summary: The local port number used for the bastion connection.
+          long-summary: If not provided, a random port will be used.
+        - name: --admin
+          type: bool
+          short-summary: Use the cluster admin credentials to connect to the bastion.
+    examples:
+        - name: Connect to a managed Kubernetes cluster using Azure Bastion with custom port and admin credentials.
+          text: az aks bastion -g MyResourceGroup --name MyManagedCluster --bastion MyBastionResource --port 50001 --admin
 """

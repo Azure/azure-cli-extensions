@@ -111,15 +111,7 @@ class AKSPreviewManagedClusterModelsTestCase(unittest.TestCase):
         models = AKSPreviewManagedClusterModels(self.cmd, CUSTOM_MGMT_AKS_PREVIEW)
 
         # load models directly (instead of through the `get_sdk` method provided by the cli component)
-        from azure.cli.core.profiles._shared import AZURE_API_PROFILES
-
-        sdk_profile = AZURE_API_PROFILES["latest"][CUSTOM_MGMT_AKS_PREVIEW]
-        api_version = sdk_profile.default_api_version
-        module_name = (
-            "azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks.v{}.models".format(
-                api_version.replace("-", "_")
-            )
-        )
+        module_name = "azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks.models"
         module = importlib.import_module(module_name)
 
         # pod identity models
@@ -3004,6 +2996,65 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         with self.assertRaises(MutuallyExclusiveArgumentError):
             ctx_5.get_disable_keda()
 
+    def test_get_enable_run_command(self):
+        ctx_1 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"enable_run_command": False}),
+            self.models,
+            DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_1.get_enable_run_command(), False)
+        mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            api_server_access_profile=self.models.ManagedClusterAPIServerAccessProfile(
+                disable_run_command=False
+            )
+        )
+        ctx_1.attach_mc(mc_1)
+        self.assertEqual(ctx_1.get_enable_run_command(), True)
+
+        ctx_2 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"enable_run_command": True, "disable_run_command": True}),
+            self.models,
+            DecoratorMode.CREATE,
+        )
+        # fail on mutually exclusive enable_run_command and disable_run_command
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            self.assertEqual(ctx_2.get_enable_run_command(), True)
+
+        ctx_3 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"enable_run_command": True}),
+            self.models,
+            DecoratorMode.UPDATE,
+        )
+        mc_3 = self.models.ManagedCluster(
+            location="test_location",
+            api_server_access_profile=self.models.ManagedClusterAPIServerAccessProfile(
+                disable_run_command=True
+            )
+        )
+        ctx_3.attach_mc(mc_3)
+        self.assertEqual(ctx_3.get_enable_run_command(), True)
+
+    def test_get_disable_run_command(self):
+        ctx_1 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"disable_run_command": False}),
+            self.models,
+            DecoratorMode.UPDATE,
+        )
+        self.assertEqual(ctx_1.get_disable_run_command(), False)
+        mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            api_server_access_profile=self.models.ManagedClusterAPIServerAccessProfile(
+                disable_run_command=True
+            )
+        )
+        ctx_1.attach_mc(mc_1)
+        self.assertEqual(ctx_1.get_disable_run_command(), False)
+
     def test_get_defender_config(self):
         ctx_1 = AKSPreviewManagedClusterContext(
             self.cmd,
@@ -4881,6 +4932,24 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         )
         ground_truth_mc_1 = self.models.ManagedCluster(
             location="test_location", security_profile=sec_profile
+        )
+        self.assertEqual(dec_mc_1, ground_truth_mc_1)
+
+    def test_set_up_run_command(self):
+        dec_1 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {"disable_run_command": True},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_1 = self.models.ManagedCluster(location="test_location")
+        dec_1.context.attach_mc(mc_1)
+        dec_mc_1 = dec_1.set_up_run_command(mc_1)
+        ground_truth_mc_1 = self.models.ManagedCluster(
+            location="test_location",
+                api_server_access_profile=self.models.ManagedClusterAPIServerAccessProfile(
+                    disable_run_command=True
+                )
         )
         self.assertEqual(dec_mc_1, ground_truth_mc_1)
 
@@ -7402,6 +7471,76 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             ),
         )
         self.assertEqual(dec_mc_2, ground_truth_mc_2)
+
+    def test_update_run_command(self):
+        dec_1 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "disable_run_command": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_1 = self.models.ManagedCluster(location="test_location")
+        dec_1.context.attach_mc(mc_1)
+        dec_mc_1 = dec_1.update_run_command(mc_1)
+
+        ground_truth_mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            api_server_access_profile=self.models.ManagedClusterAPIServerAccessProfile(
+                disable_run_command=True
+            )
+        )
+        self.assertEqual(dec_mc_1, ground_truth_mc_1)
+
+        dec_2 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_run_command": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_2 = self.models.ManagedCluster(
+            location="test_location",
+            api_server_access_profile=self.models.ManagedClusterAPIServerAccessProfile(
+                disable_run_command=True
+            )
+        )
+        dec_2.context.attach_mc(mc_2)
+        dec_mc_2 = dec_2.update_run_command(mc_2)
+        ground_truth_mc_2 = self.models.ManagedCluster(
+            location="test_location",
+            api_server_access_profile=self.models.ManagedClusterAPIServerAccessProfile(
+                disable_run_command=False
+            )
+        )
+        self.assertEqual(dec_mc_2, ground_truth_mc_2)
+
+        dec_3 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_run_command": False,
+                "disable_run_command": False,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_3 = self.models.ManagedCluster(
+            location="test_location",
+            api_server_access_profile=self.models.ManagedClusterAPIServerAccessProfile(
+                disable_run_command=True
+            )
+        )
+        dec_3.context.attach_mc(mc_3)
+        dec_mc_3 = dec_3.update_run_command(mc_3)
+        ground_truth_mc_3 = self.models.ManagedCluster(
+            location="test_location",
+            api_server_access_profile=self.models.ManagedClusterAPIServerAccessProfile(
+                disable_run_command=True
+            )
+        )
+        self.assertEqual(dec_mc_3, ground_truth_mc_3)
 
     def test_update_vpa(self):
         dec_1 = AKSPreviewManagedClusterUpdateDecorator(
