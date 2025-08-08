@@ -206,7 +206,7 @@ class QuantumJobsScenarioTest(ScenarioTest):
         test_location = get_test_workspace_location()
         test_resource_group = get_test_resource_group()
         test_workspace_temp = get_test_workspace_random_name()
-        test_provider_sku_list = "rigetti/azure-quantum-credits,ionq/aq-internal-testing"
+        test_provider_sku_list = "rigetti/azure-basic-qvm-only-unlimited,ionq/aq-internal-testing"
         test_storage = get_test_workspace_storage()
 
         self.cmd(f"az quantum workspace create --auto-accept -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage} -r {test_provider_sku_list} --skip-autoadd")
