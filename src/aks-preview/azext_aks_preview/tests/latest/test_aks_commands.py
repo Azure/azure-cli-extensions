@@ -2560,8 +2560,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "--nodepool-name={node_pool_name} --machine-name={machine_name} -o json"
         )
         machine_show = self.cmd(show_cmd).get_output_in_json()
-        assert machine_show["name"] == machine_name
         print(machine_show)
+        assert machine_show["name"] == machine_name
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
