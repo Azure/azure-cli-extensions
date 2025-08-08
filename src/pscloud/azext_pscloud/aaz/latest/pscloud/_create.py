@@ -11,10 +11,6 @@
 from azure.cli.core.aaz import *
 
 
-@register_command(
-    "pscloud create",
-    is_preview=True,
-)
 class Create(AAZCommand):
     """Create a reservation
     """

@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List reservations by Azure subscription ID
+
+    :example: Reservations_ListBySubscription
+        az pscloud list
     """
 
     _aaz_info = {

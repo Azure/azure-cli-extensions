@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List storage pools by Azure subscription ID
+
+    :example: StoragePools_ListBySubscription
+        az pscloud pool list
     """
 
     _aaz_info = {

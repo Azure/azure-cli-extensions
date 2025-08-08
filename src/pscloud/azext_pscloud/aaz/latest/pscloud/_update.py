@@ -11,10 +11,6 @@
 from azure.cli.core.aaz import *
 
 
-@register_command(
-    "pscloud update",
-    is_preview=True,
-)
 class Update(AAZCommand):
     """Update a reservation
     """
