@@ -71,8 +71,11 @@ helps['fleet delete'] = """
 
 helps['fleet get-credentials'] = """
     type: command
-    short-summary: For hubful fleets, gets the kubeconfig for the fleet's hub cluster.
+    short-summary: For hubful fleets, gets the kubeconfig for the fleet's hub cluster. For fleet members, gets kubeconfig from the member's managed cluster.
     parameters:
+    - name: --member -m
+      type: string
+      short-summary: Specify the fleet member name to get credentials from its associated managed cluster.
     - name: --overwrite-existing
       type: bool
       short-summary: Overwrite any existing cluster entry with the same name.
@@ -84,6 +87,8 @@ helps['fleet get-credentials'] = """
           text: az fleet get-credentials -g MyFleetResourceGroup -n MyFleetName
         - name: Get a fleet's hub cluster kubeconfig, and save it to a specific file.
           text: az fleet get-credentials -g MyFleetResourceGroup -n MyFleetName -f ~/mykubeconfigfile.txt
+        - name: Get kubeconfig from a specific fleet member's managed cluster.
+          text: az fleet get-credentials -g MyFleetResourceGroup -n MyFleetName --member MyFleetMember
 """
 
 helps['fleet reconcile'] = """
@@ -431,4 +436,80 @@ helps['fleet gate approve'] = """
     examples:
         - name: Approves a gate.
           text: az fleet gate approve -g MyFleetResourceGroup --fleet-name MyFleetName --gate-name 3fa85f64-5717-4562-b3fc-2c963f66afa6
+"""
+
+helps['fleet namespace'] = """
+    type: group
+    short-summary: Commands to manage fleet managed namespaces.
+"""
+
+helps['fleet namespace create'] = """
+    type: command
+    short-summary: Creates a fleet managed namespace.
+    examples:
+        - name: Create a basic fleet managed namespace.
+          text: az fleet namespace create -g MyFleetResourceGroup -f MyFleetName --name MyManagedNamespace
+        - name: Create a fleet managed namespace with resource limits and policies.
+          text: az fleet namespace create -g MyFleetResourceGroup -f MyFleetName --name contoso-retail --annotations annotation1=value1 --labels team=contoso --cpu-requests 1m --cpu-limits 4m --memory-requests 1Mi --memory-limits 4Mi --ingress-policy allow-all-traffic --egress-policy allow-all-traffic --delete-policy keep --adoption-policy never
+        - name: Create a fleet managed namespace on specific member clusters.
+          text: az fleet namespace create -g MyFleetResourceGroup -f MyFleetName --name contoso-retail --member-cluster-names contoso-prod-01,contoso-prod-02,contoso-test-01,contoso-dev-01
+"""
+
+helps['fleet namespace update'] = """
+    type: command
+    short-summary: Updates a fleet managed namespace.
+    examples:
+        - name: Updates a fleet managed namespace.
+          text: az fleet namespace update -g MyFleetResourceGroup -f MyFleetName -n MyManagedNamespace
+        - name: Update member clusters for a fleet managed namespace.
+          text: az fleet namespace update -g MyFleetResourceGroup -f MyFleetName --name contoso-retail --member-cluster-names contoso-prod-01,contoso-prod-02,contoso-test-01,contoso-dev-01
+"""
+
+helps['fleet namespace list'] = """
+    type: command
+    short-summary: Lists a fleet's managed namespaces.
+    examples:
+        - name: List all managed namespaces for a given fleet.
+          text: az fleet namespace list -g MyFleetResourceGroup -f MyFleetName
+"""
+
+helps['fleet namespace show'] = """
+    type: command
+    short-summary: Gets a fleet managed namespace.
+    examples:
+        - name: Show the details of a specific managed namespace.
+          text: az fleet namespace show -g MyFleetResourceGroup -f MyFleetName -n MyManagedNamespace
+"""
+
+helps['fleet namespace delete'] = """
+    type: command
+    short-summary: Deletes a fleet managed namespace.
+    examples:
+        - name: Delete a specific managed namespace.
+          text: az fleet namespace delete -g MyFleetResourceGroup -f MyFleetName -n MyManagedNamespace
+"""
+
+helps['fleet namespace get-credentials'] = """
+    type: command
+    short-summary: Get kubeconfig for a fleet namespace, with the namespace context pre-configured.
+    parameters:
+    - name: --member -m
+      type: string
+      short-summary: Specify the fleet member name to get credentials from its associated managed cluster.
+    - name: --context
+      type: string
+      short-summary: If specified, overwrite the default context name.
+    - name: --overwrite-existing
+      type: bool
+      short-summary: Overwrite any existing cluster entry with the same name.
+    - name: --file
+      type: string
+      short-summary: Kubernetes configuration file to update. Use "-" to print YAML to stdout instead.
+    examples:
+        - name: Get kubeconfig for a fleet namespace from the hub cluster.
+          text: az fleet namespace get-credentials -g MyFleetResourceGroup -f MyFleetName -n MyManagedNamespace
+        - name: Get kubeconfig for a fleet namespace from a specific fleet member.
+          text: az fleet namespace get-credentials -g MyFleetResourceGroup -f MyFleetName -n MyManagedNamespace --member MyFleetMember
+        - name: Save kubeconfig to a specific file.
+          text: az fleet namespace get-credentials -g MyFleetResourceGroup -f MyFleetName -n MyManagedNamespace --file ~/my-namespace-config
 """
