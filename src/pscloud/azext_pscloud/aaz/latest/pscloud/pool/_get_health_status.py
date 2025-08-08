@@ -203,24 +203,24 @@ class GetHealthStatus(AAZCommand):
             )
 
             bandwidth_usage = cls._schema_on_200.health.bandwidth_usage
-            bandwidth_usage.current = AAZIntType(
+            bandwidth_usage.current = AAZFloatType(
                 flags={"required": True},
             )
-            bandwidth_usage.max = AAZIntType(
+            bandwidth_usage.max = AAZFloatType(
                 flags={"required": True},
             )
-            bandwidth_usage.provisioned = AAZIntType(
+            bandwidth_usage.provisioned = AAZFloatType(
                 flags={"required": True},
             )
 
             iops_usage = cls._schema_on_200.health.iops_usage
-            iops_usage.current = AAZIntType(
+            iops_usage.current = AAZFloatType(
                 flags={"required": True},
             )
-            iops_usage.max = AAZIntType(
+            iops_usage.max = AAZFloatType(
                 flags={"required": True},
             )
-            iops_usage.provisioned = AAZIntType(
+            iops_usage.provisioned = AAZFloatType(
                 flags={"required": True},
             )
 
