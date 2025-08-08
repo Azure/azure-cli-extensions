@@ -213,7 +213,8 @@ def get_credentials(cmd,
 
             cluster_resource_id = fleet_member.cluster_resource_id
 
-            # Resource ID format: /subscriptions/{subscription}/resourceGroups/{rg}/providers/Microsoft.ContainerService/managedClusters/{cluster}
+            # Resource ID format: /subscriptions/{subscription}/resourceGroups/{rg}/
+            # providers/Microsoft.ContainerService/managedClusters/{cluster}
             pattern = (r'/subscriptions/([^/]+)/resourceGroups/([^/]+)/providers/'
                       r'Microsoft\.ContainerService/managedClusters/([^/]+)')
             match = re.match(pattern, cluster_resource_id)
@@ -972,16 +973,16 @@ def _merge_kubeconfig_section(merged_config, new_config, section_name):
 def _merge_kubeconfigs(existing_config, new_config):
     """Helper function to merge two kubeconfig dictionaries."""
     merged_config = existing_config.copy()
-    
+
     # Merge clusters, users, and contexts
     _merge_kubeconfig_section(merged_config, new_config, 'clusters')
     _merge_kubeconfig_section(merged_config, new_config, 'users')
     _merge_kubeconfig_section(merged_config, new_config, 'contexts')
-    
+
     # Set current context if specified
     if 'current-context' in new_config:
         merged_config['current-context'] = new_config['current-context']
-    
+
     return merged_config
 
 
