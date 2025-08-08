@@ -8,6 +8,7 @@ from __future__ import unicode_literals
 import os
 import os.path
 import re
+import yaml
 from ipaddress import ip_network
 from math import isclose, isnan
 
@@ -977,3 +978,42 @@ def validate_location_resource_group_cluster_parameters(namespace):
         raise MutuallyExclusiveArgumentError(
             "Cannot specify --location and --resource-group and --cluster at the same time."
         )
+
+def _validate_param_yaml_file(yaml_path, param_name):
+    if not yaml_path:
+        return
+    if not os.path.exists(yaml_path):
+        raise InvalidArgumentValueError(
+            f"--{param_name}={yaml_path}: file is not found."
+        )
+    if not os.access(yaml_path, os.R_OK):
+        raise InvalidArgumentValueError(
+            f"--{param_name}={yaml_path}: file is not readable."
+        )
+    try:
+        with open(yaml_path, "r") as file:
+            yaml.safe_load(file)
+    except yaml.YAMLError as e:
+        raise InvalidArgumentValueError(
+            f"--{param_name}={yaml_path}: file is not a valid YAML file: {e}"
+        )
+    except Exception as e:
+        raise InvalidArgumentValueError(
+            f"--{param_name}={yaml_path}: An error occurred while reading the config file: {e}"
+        )
+
+
+def validate_agent_config_file(namespace):
+    config_file = namespace.config_file
+    if not config_file:
+        return
+
+    _validate_param_yaml_file(config_file, "config-file")
+
+
+def validate_agent_custom_toolsets(namespace):
+    custom_toolsets = namespace.custom_toolsets
+    if not custom_toolsets:
+        return
+    _validate_param_yaml_file(custom_toolsets, "custom-toolsets")
+
