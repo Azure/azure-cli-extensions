@@ -32,10 +32,11 @@ class QuantumCommandsLoader(AzCommandsLoader):
         from ._version_check_helper import check_version
         from .operations.workspace import _show_tip
         from datetime import datetime
+        from collections.abc import Iterable
 
         # Only when formatted output (https://learn.microsoft.com/en-us/cli/azure/format-output-azure-cli?view=azure-cli-latest&tabs=bash) is NOT requested,
         # we can produce the "new version is available" tip as it may interfere with the output format (ex. JSON).
-        if "--output" not in args and "--out" not in args and "-o" not in args:
+        if isinstance(args, Iterable) and "--output" not in args and "--out" not in args and "-o" not in args:
             message = check_version(self.cli_ctx_config, CLI_REPORTED_VERSION, str(
                 datetime.today()).split(' ', maxsplit=1)[0])
 
