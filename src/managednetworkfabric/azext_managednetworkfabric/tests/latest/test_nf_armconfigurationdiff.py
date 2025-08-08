@@ -36,7 +36,7 @@ def step_arm_configuration_diff(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric fabric arm-configuration-diff --network-fabric-name {commitNFName} --resource-group {commitNFRGName}"
+        "az networkfabric fabric arm-configuration-diff --resource-name {commitNFName} --resource-group {commitNFRGName}"
     )
 
 

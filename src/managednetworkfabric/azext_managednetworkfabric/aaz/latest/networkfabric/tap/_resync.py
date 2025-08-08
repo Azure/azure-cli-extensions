@@ -46,7 +46,7 @@ class Resync(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.network_tap_name = AAZStrArg(
-            options=["--network-tap-name"],
+            options=["--resource-name", "--network-tap-name"],
             help="Name of the Network Tap.",
             required=True,
             id_part="name",

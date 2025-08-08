@@ -36,7 +36,7 @@ def step_discard_commit_batch(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric fabric discard-commit-batch --network-fabric-name {commitNFName} --resource-group {commitNFRGName}"
+        "az networkfabric fabric discard-commit-batch --resource-name {commitNFName} --resource-group {commitNFRGName}"
     )
 
 

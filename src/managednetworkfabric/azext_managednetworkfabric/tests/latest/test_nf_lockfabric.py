@@ -36,7 +36,7 @@ def step_lock_fabric(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric fabric lock-fabric --network-fabric-name {commitNFName} --resource-group {commitNFRGName}"
+        "az networkfabric fabric lock-fabric --resource-name {commitNFName} --resource-group {commitNFRGName}"
     )
 
 

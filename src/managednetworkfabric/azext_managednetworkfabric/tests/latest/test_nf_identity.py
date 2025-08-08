@@ -40,7 +40,7 @@ def call_scenario1(test):
 def step_assign_system_assigned_identity(test):
     """fabric identity assign system-assigned operation"""
     test.cmd(
-        "az networkfabric fabric identity assign --name {name} --resource-group {rg} --system-assigned",
+        "az networkfabric fabric identity assign --resource-name {name} --resource-group {rg} --system-assigned",
         checks=[test.check("type", "SystemAssigned")],
     )
 
@@ -48,7 +48,7 @@ def step_assign_system_assigned_identity(test):
 def step_assign_user_assigned_identity(test):
     """fabric identity assign user-assigned operation"""
     test.cmd(
-        "az networkfabric fabric identity assign --name {name} --resource-group {rg} --user-assigned {userAssignedIdentity}",
+        "az networkfabric fabric identity assign --resource-name {name} --resource-group {rg} --user-assigned {userAssignedIdentity}",
         checks=[test.check("type", "UserAssigned")],
     )
 
@@ -56,7 +56,7 @@ def step_assign_user_assigned_identity(test):
 def step_remove_system_assigned_identity(test):
     """fabric identity remove system-assigned operation"""
     test.cmd(
-        "az networkfabric fabric identity remove --name {name} --resource-group {rg} --system-assigned",
+        "az networkfabric fabric identity remove --resource-name {name} --resource-group {rg} --system-assigned",
         checks=[],
     )
 
@@ -64,7 +64,7 @@ def step_remove_system_assigned_identity(test):
 def step_remove_user_assigned_identity(test):
     """fabric identity remove user-assigned operation"""
     test.cmd(
-        "az networkfabric fabric identity remove --name {name} --resource-group {rg} --user-assigned {userAssignedIdentity}",
+        "az networkfabric fabric identity remove --resource-name {name} --resource-group {rg} --user-assigned {userAssignedIdentity}",
         checks=[],
     )
 
@@ -72,7 +72,7 @@ def step_remove_user_assigned_identity(test):
 def step_show(test):
     """fabric identity show operation"""
     test.cmd(
-        "az networkfabric fabric identity show --name {name} --resource-group {rg}",
+        "az networkfabric fabric identity show --resource-name {name} --resource-group {rg}",
         checks=[],
     )
 

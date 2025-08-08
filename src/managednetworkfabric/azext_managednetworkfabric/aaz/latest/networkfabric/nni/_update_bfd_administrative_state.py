@@ -18,7 +18,7 @@ class UpdateBfdAdministrativeState(AAZCommand):
     """Updates the Admin State.
 
     :example: Update bfd admin state of the Network To Network Interconnect
-        az networkfabric nni update-bfd-administrative-state --resource-group example-rg --network-fabric-name example-nf --network-to-network-interconnect-name example-nni --route-type Static --administrative-state Enable
+        az networkfabric nni update-bfd-administrative-state --resource-group example-rg --network-fabric-name example-nf --resource-name example-nni --route-type Static --administrative-state Enable
     """
 
     _aaz_info = {
@@ -55,7 +55,7 @@ class UpdateBfdAdministrativeState(AAZCommand):
             ),
         )
         _args_schema.network_to_network_interconnect_name = AAZStrArg(
-            options=["--nni-name", "--network-to-network-interconnect-name"],
+            options=["--nni-name", "--resource-name", "--network-to-network-interconnect-name"],
             help="Name of the Network to Network Interconnect.",
             required=True,
             id_part="child_name_1",
