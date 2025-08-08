@@ -13,6 +13,7 @@ from ipaddress import ip_network
 from math import isclose, isnan
 
 from azure.cli.core import keys
+from azure.cli.core.api import get_config_dir
 from azure.cli.core.azclierror import (
     ArgumentUsageError,
     InvalidArgumentValueError,
@@ -36,6 +37,7 @@ from azext_aks_preview._consts import (
     CONST_NETWORK_POD_IP_ALLOCATION_MODE_STATIC_BLOCK,
     CONST_NODEPOOL_MODE_GATEWAY,
     CONST_AZURE_SERVICE_MESH_MAX_EGRESS_NAME_LENGTH,
+    CONST_AGENT_CONFIG_FILE_NAME,
 )
 from azext_aks_preview._helpers import _fuzzy_match
 from knack.log import get_logger
@@ -979,6 +981,7 @@ def validate_location_resource_group_cluster_parameters(namespace):
             "Cannot specify --location and --resource-group and --cluster at the same time."
         )
 
+
 def _validate_param_yaml_file(yaml_path, param_name):
     if not yaml_path:
         return
@@ -1007,6 +1010,9 @@ def validate_agent_config_file(namespace):
     config_file = namespace.config_file
     if not config_file:
         return
+    default_config_path = os.path.join(get_config_dir(), CONST_AGENT_CONFIG_FILE_NAME)
+    if config_file == default_config_path and not os.path.exists(config_file):
+        return
 
     _validate_param_yaml_file(config_file, "config-file")
 
@@ -1016,4 +1022,3 @@ def validate_agent_custom_toolsets(namespace):
     if not custom_toolsets:
         return
     _validate_param_yaml_file(custom_toolsets, "custom-toolsets")
-

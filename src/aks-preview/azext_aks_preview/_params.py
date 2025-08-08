@@ -2842,7 +2842,7 @@ def load_arguments(self, _):
             action="store_true",
         )
         c.argument(
-            "custom-toolsets",
+            "custom_toolsets",
             help="File path to a custom toolsets.",
             validator=validate_agent_custom_toolsets,
             required=False,

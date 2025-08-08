@@ -10,6 +10,12 @@ import sys
 import uuid
 from pathlib import Path
 
+from azext_aks_preview._consts import (
+    CONST_AGENT_CONFIG_FILE_NAME,
+    CONST_AGENT_CONFIG_PATH_DIR_ENV_KEY,
+    CONST_AGENT_NAME,
+    CONST_AGENT_NAME_ENV_KEY,
+)
 from azure.cli.core.api import get_config_dir
 from azure.cli.core.commands.client_factory import get_subscription_id
 from knack.util import CLIError
@@ -87,9 +93,9 @@ def aks_agent(
 
     console = init_log()
 
-    os.environ["CONFIG_PATH_DIR"] = get_config_dir()
+    os.environ[CONST_AGENT_CONFIG_PATH_DIR_ENV_KEY] = get_config_dir()
     # Holmes library allows the user to specify the agent name through environment variable before loading the library.
-    os.environ["AGENT_NAME"] = "AKS AGENT"
+    os.environ[CONST_AGENT_NAME_ENV_KEY] = CONST_AGENT_NAME
 
     from holmes.config import Config
     from holmes.core.prompt import build_initial_ask_messages
@@ -109,15 +115,19 @@ def aks_agent(
             )
             interactive = False
 
-    config_file = Path(config_file)
+    expanded_config_file = Path(os.path.expanduser(config_file))
+    expanded_custom_toolsets_list = (
+        [Path(os.path.expanduser(custom_toolsets))]
+        if custom_toolsets is not None
+        else None
+    )
+
     config = Config.load_from_file(
-        config_file,
+        expanded_config_file,
         model=model,
         api_key=api_key,
         max_steps=max_steps,
-        custom_toolsets_from_cli=(
-            [custom_toolsets] if custom_toolsets is not None else None
-        ),
+        custom_toolsets_from_cli=expanded_custom_toolsets_list,
     )
 
     ai = config.create_console_toolcalling_llm(
