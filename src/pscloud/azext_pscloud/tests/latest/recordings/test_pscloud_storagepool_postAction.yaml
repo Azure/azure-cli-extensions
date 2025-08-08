@@ -1,0 +1,114 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - pscloud pool get-health-status
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --resource-group --storage-pool-name
+      User-Agent:
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.11 (Linux-6.8.0-1030-azure-x86_64-with-glibc2.36)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/06June2025/providers/PureStorage.Block/storagePools/mochauhan-bug255/getHealthStatus?api-version=2024-11-01
+  response:
+    body:
+      string: '{"health":{"usedCapacityPercentage":0.0,"bandwidthUsage":{"current":0.0,"provisioned":861929472.0,"max":2147483648.0},"iopsUsage":{"current":0.0,"provisioned":51762.0,"max":150000.0},"space":{"totalUsed":558536704,"unique":0,"snapshots":0,"shared":558536704},"dataReductionRatio":1.0,"estimatedMaxCapacity":0},"alerts":[]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '322'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 08 Aug 2025 14:03:24 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 1c76681b-d4ea-4213-a630-88f1a8db37f4
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - appId=91a99062-ab22-4fd2-a3b2-766d55d6f5c5,tenantId=888d76fa-54b2-4ced-8ee5-aac1585adee7,objectId=d72e9d00-2ae6-4216-9c0f-ef425c71a2bc/northcentralus/f55d8b1c-85ed-4c00-91a2-90a3f445260d
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: 6010BDEB7B1143EFB49EDA09C738F3B8 Ref B: PNQ231110907060 Ref C: 2025-08-08T14:03:17Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - pscloud pool get-avs-status
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --resource-group --storage-pool-name
+      User-Agent:
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.11 (Linux-6.8.0-1030-azure-x86_64-with-glibc2.36)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/06June2025/providers/PureStorage.Block/storagePools/mochauhan-bug255/getAvsStatus?api-version=2024-11-01
+  response:
+    body:
+      string: '{"avsEnabled":false,"currentConnectionStatus":"NoAVS","sddcResourceId":""}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '74'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 08 Aug 2025 14:03:30 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - b11225bb-ff9d-47a5-8f8a-7e8f94b84c46
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - appId=91a99062-ab22-4fd2-a3b2-766d55d6f5c5,tenantId=888d76fa-54b2-4ced-8ee5-aac1585adee7,objectId=d72e9d00-2ae6-4216-9c0f-ef425c71a2bc/westindia/47a2d13d-d9fc-4310-9777-cb20d0e464bf
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: 69A230654E984E82BEA634ABCECF1435 Ref B: PNQ231110908025 Ref C: 2025-08-08T14:03:25Z'
+    status:
+      code: 200
+      message: OK
+version: 1
