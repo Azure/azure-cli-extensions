@@ -19,7 +19,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/qw-e2e-tests-wus2?api-version=2023-11-13-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/Workspaces/qw-e2e-tests-wus2","name":"qw-e2e-tests-wus2","type":"microsoft.quantum/workspaces","location":"westus2","tags":{},"systemData":{"createdBy":"kikomiss@microsoft.com","createdByType":"User","createdAt":"2025-05-27T23:54:26.8142313Z","lastModifiedBy":"kikomiss@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-05-28T19:44:06.7333917Z"},"identity":{"principalId":"0cd1ce3b-9e5a-4b0c-8cc2-63f3c2b71838","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"},"properties":{"providers":[{"providerId":"quantinuum","providerSku":"credits1","applicationName":"qw-e2e-tests-wus2-quantinuum","provisioningState":"Succeeded","resourceUsageId":"04eb2813-62b2-480e-98c1-097f45d2d326"},{"providerId":"ionq","providerSku":"aq-internal-testing","applicationName":"qw-e2e-tests-wus2-ionq","provisioningState":"Succeeded","resourceUsageId":"993900d4-06ed-4325-8462-ead8932a4ee4"},{"providerId":"rigetti","providerSku":"azure-quantum-credits","applicationName":"qw-e2e-tests-wus2-rigetti","provisioningState":"Succeeded","resourceUsageId":"46a79460-9643-4978-86cb-361703e21207"}],"provisioningState":"Succeeded","usable":"Yes","storageAccount":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/qwe2etestswus2","endpointUri":"https://qw-e2e-tests-wus2.westus2.quantum.azure.com","apiKeyEnabled":false}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/Workspaces/qw-e2e-tests-wus2","name":"qw-e2e-tests-wus2","type":"microsoft.quantum/workspaces","location":"westus2","tags":{},"systemData":{"createdBy":"kikomiss@microsoft.com","createdByType":"User","createdAt":"2025-05-27T23:54:26.8142313Z","lastModifiedBy":"kikomiss@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-05-28T19:44:06.7333917Z"},"identity":{"principalId":"0cd1ce3b-9e5a-4b0c-8cc2-63f3c2b71838","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"},"properties":{"providers":[{"providerId":"quantinuum","providerSku":"credits1","applicationName":"qw-e2e-tests-wus2-quantinuum","provisioningState":"Succeeded","resourceUsageId":"04eb2813-62b2-480e-98c1-097f45d2d326"},{"providerId":"ionq","providerSku":"aq-internal-testing","applicationName":"qw-e2e-tests-wus2-ionq","provisioningState":"Succeeded","resourceUsageId":"993900d4-06ed-4325-8462-ead8932a4ee4"},{"providerId":"rigetti","providerSku":"azure-quantum-credits","applicationName":"qw-e2e-tests-wus2-rigetti","provisioningState":"Succeeded","resourceUsageId":"46a79460-9643-4978-86cb-361703e21207"}],"provisioningState":"Succeeded","usable":"Yes","storageAccount":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/qwe2etestswus2","endpointUri":"https://qw-e2e-tests-wus2.westus2.quantum.azure.com","apiKeyEnabled":REDACTED}}'
     headers:
       cache-control:
       - no-cache
@@ -82,11 +82,11 @@ interactions:
       server:
       - Microsoft-IIS/10.0
       set-cookie:
-      - ApplicationGatewayAffinityCORS=f41f4d84e6de1cfe7357bf648ccde6bc; Path=/; SameSite=None;
+      - ApplicationGatewayAffinityCORS=REDACTED; Path=/; SameSite=None;
         Secure
-      - ApplicationGatewayAffinity=f41f4d84e6de1cfe7357bf648ccde6bc; Path=/
-      - ARRAffinity=06c56b8471ef26f13c61783eeb00d8e15bf74407238d9c8d8936521d5d5d2dd0;Path=/;HttpOnly;Secure;Domain=app-jobscheduler-westus2-003.ase-jobscheduler-westus2-003.appserviceenvironment.net
-      - ARRAffinitySameSite=06c56b8471ef26f13c61783eeb00d8e15bf74407238d9c8d8936521d5d5d2dd0;Path=/;HttpOnly;SameSite=None;Secure;Domain=app-jobscheduler-westus2-003.ase-jobscheduler-westus2-003.appserviceenvironment.net
+      - ApplicationGatewayAffinity=REDACTED; Path=/
+      - ARRAffinity=REDACTED;Path=/;HttpOnly;Secure;Domain=app-jobscheduler-westus2-003.ase-jobscheduler-westus2-003.appserviceenvironment.net
+      - ARRAffinitySameSite=REDACTED;Path=/;HttpOnly;SameSite=None;Secure;Domain=app-jobscheduler-westus2-003.ase-jobscheduler-westus2-003.appserviceenvironment.net
       strict-transport-security:
       - max-age=2592000; includeSubDomains
       transfer-encoding:
@@ -99,3 +99,4 @@ interactions:
       code: 200
       message: OK
 version: 1
+
