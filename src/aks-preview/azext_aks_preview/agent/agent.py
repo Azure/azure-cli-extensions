@@ -11,7 +11,6 @@ import uuid
 from pathlib import Path
 
 from azext_aks_preview._consts import (
-    CONST_AGENT_CONFIG_FILE_NAME,
     CONST_AGENT_CONFIG_PATH_DIR_ENV_KEY,
     CONST_AGENT_NAME,
     CONST_AGENT_NAME_ENV_KEY,
@@ -95,6 +94,7 @@ def aks_agent(
 
     os.environ[CONST_AGENT_CONFIG_PATH_DIR_ENV_KEY] = get_config_dir()
     # Holmes library allows the user to specify the agent name through environment variable before loading the library.
+
     os.environ[CONST_AGENT_NAME_ENV_KEY] = CONST_AGENT_NAME
 
     from holmes.config import Config
@@ -133,6 +133,9 @@ def aks_agent(
     ai = config.create_console_toolcalling_llm(
         dal=None,
         refresh_toolsets=refresh_toolsets,
+    )
+    console.print(
+        "[bold yellow]This tool uses AI to generate responses and may not always be accurate[bold yellow]"
     )
 
     if not prompt and not interactive and not piped_data:
