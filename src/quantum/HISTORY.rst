@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.0.0b8
+++++++
+* Update minCliCoreVersion
+
 1.0.0b7
 ++++++
 * Fix import resource SDK error
