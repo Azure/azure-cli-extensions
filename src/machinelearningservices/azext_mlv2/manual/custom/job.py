@@ -18,11 +18,8 @@ from azure.ai.ml.entities._builders.base_node import BaseNode
 from azure.ai.ml.entities._load_functions import load_job
 from azure.ai.ml.entities._validate_funcs import validate_job
 from azure.ai.ml.exceptions import (
-    ComponentException,
     ErrorCategory,
     ErrorTarget,
-    JobException,
-    MlException,
     PipelineChildJobError,
     ValidationErrorType,
     ValidationException,
@@ -40,7 +37,7 @@ module_logger = get_logger(__name__)
 
 def _dump_job_with_warnings(job: Job):
     if isinstance(job, BaseNode):
-        job = job._to_job()
+        job = job._to_job()  # pylint: disable=protected-access
 
     return _dump_entity_with_warnings(job)
 
@@ -100,7 +97,7 @@ def ml_job_create(
         return _dump_job_with_warnings(job)
 
     except Exception as err:
-        yaml_operation = True if file else False
+        yaml_operation = bool(file)
         log_and_raise_error(err, debug, yaml_operation=yaml_operation)
 
 
@@ -181,7 +178,7 @@ def ml_job_list_private_preview(
     parent_job_name=None,
     include_archived=False,
     archived_only=False,
-    **kwargs,
+    **kwargs,  # pylint: disable=unused-argument
 ):
     ml_client, debug = get_ml_client(
         cli_ctx=cmd.cli_ctx, resource_group_name=resource_group_name, workspace_name=workspace_name
@@ -194,7 +191,7 @@ def ml_job_list_private_preview(
 
     try:
         ret_list = []
-        private_features_enabled = getenv(AZUREML_PRIVATE_FEATURES_ENV_VAR)
+        private_features_enabled = getenv(AZUREML_PRIVATE_FEATURES_ENV_VAR)  # pylint: disable=unused-variable
         list_view_type = get_list_view_type(include_archived=include_archived, archived_only=archived_only)
         if max_results:
             results = islice(
@@ -242,7 +239,8 @@ def ml_job_list(
     )
 
 
-def ml_job_download(cmd, resource_group_name, workspace_name, name, download_path=None, output_name=None, all=False):
+def ml_job_download(cmd, resource_group_name, workspace_name, name, download_path=None, output_name=None, all_results=False):
+    # pylint: disable=redefined-builtin
 
     ml_client, debug = get_ml_client(
         cli_ctx=cmd.cli_ctx, resource_group_name=resource_group_name, workspace_name=workspace_name
@@ -251,7 +249,7 @@ def ml_job_download(cmd, resource_group_name, workspace_name, name, download_pat
     try:
         if not download_path:
             download_path = cmd.cli_ctx.local_context.current_dir
-        return ml_client.jobs.download(name=name, download_path=download_path, output_name=output_name, all=all)
+        return ml_client.jobs.download(name=name, download_path=download_path, output_name=output_name, all=all_results)
     except Exception as err:
         log_and_raise_error(err, debug)
 
@@ -335,7 +333,7 @@ def _ml_job_update(cmd, resource_group_name, workspace_name, web=False, paramete
             raise PipelineChildJobError(job_id=parameters["id"].lstrip("azureml:"))  # remove leading "azureml:" in id
 
         # Set unknown to EXCLUDE so that marshmallow doesn't raise on dump only fields.
-        job = Job._load(data=parameters, unknown=EXCLUDE)
+        job = Job._load(data=parameters, unknown=EXCLUDE)  # pylint: disable=protected-access
 
         updated_job = ml_client.jobs.create_or_update(job=job)
         updated_job = filter_job_tags(updated_job)

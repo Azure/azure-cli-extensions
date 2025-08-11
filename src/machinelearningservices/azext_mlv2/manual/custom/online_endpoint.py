@@ -54,7 +54,7 @@ def _ml_online_endpoint_show(cmd, resource_group_name, workspace_name, name=None
             return ml_client.online_endpoints.get(name=name, local=local)
         except Exception as err:  # pylint: disable=broad-exception-caught
             if is_not_found_error(err):
-                raise Exception("Endpoint does not exist.") from err
+                raise ValueError("Endpoint does not exist.") from err
             raise err
     except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
@@ -71,7 +71,7 @@ def ml_online_endpoint_create(
     no_wait=False,
     params_override=None,
     web: bool = False,
-    **kwargs,
+    **kwargs,  # pylint: disable=unused-argument
 ):
     ml_client, debug = get_ml_client(
         cli_ctx=cmd.cli_ctx, resource_group_name=resource_group_name, workspace_name=workspace_name
@@ -110,8 +110,11 @@ def ml_online_endpoint_create(
                     error_category=ErrorCategory.USER_ERROR,
                 )
         else:
-            msg = """(UserError) An endpoint with this name already exists. If you are trying to create a new endpoint, use a
-different name. If you are trying to update an existing endpoint, use `az ml online-endpoint update` instead."""
+            msg = (
+                "(UserError) An endpoint with this name already exists. If you are trying to create a new "
+                "endpoint, use a different name. If you are trying to update an existing endpoint, use "
+                "`az ml online-endpoint update` instead."
+            )
             raise ValidationException(
                 message=msg,
                 no_personal_data_message=msg,
@@ -123,7 +126,7 @@ different name. If you are trying to update an existing endpoint, use `az ml onl
         if no_wait:
             module_logger.warning(
                 "Endpoint create request initiated. "
-                f"Status can be checked using `az ml online-endpoint show -n {endpoint_name}`\n"
+                "Status can be checked using `az ml online-endpoint show -n %s`\n", endpoint_name
             )
         else:
             endpoint = wrap_lro(cmd.cli_ctx, endpoint)
@@ -132,7 +135,7 @@ different name. If you are trying to update an existing endpoint, use `az ml onl
                 open_online_endpoint_in_browser(endpoint)
             return endpoint.dump()
     except Exception as err:  # pylint: disable=broad-exception-caught
-        yaml_operation = True if file else False
+        yaml_operation = bool(file)
         log_and_raise_error(err, debug, yaml_operation=yaml_operation)
 
 
@@ -151,7 +154,7 @@ def ml_online_endpoint_delete(
         ml_client.online_endpoints.get(name=name, local=local)
     except Exception as err:  # pylint: disable=broad-exception-caught
         if is_not_found_error(err):
-            raise Exception(f"Online endpoint {name} does not exist.") from err
+            raise ValueError(f"Online endpoint {name} does not exist.") from err
 
     try:
         if local and no_wait:
@@ -232,7 +235,7 @@ def ml_online_endpoint_update(
                 ml_client.online_endpoints.get(name=name, local=local)
             except Exception as err:  # pylint: disable=broad-exception-caught
                 if is_not_found_error(err):
-                    raise Exception("Endpoint does not exist") from err
+                    raise ValueError("Endpoint does not exist") from err
         if name:
             parameters.name = name
 
@@ -240,7 +243,7 @@ def ml_online_endpoint_update(
             traffic = convert_str_to_dict(traffic)
             for key in traffic:
                 if not traffic[key].isnumeric():
-                    raise Exception("Do not add a delimiter between traffic variables")
+                    raise ValueError("Do not add a delimiter between traffic variables")
             parameters.traffic = traffic
         if mirror_traffic and isinstance(mirror_traffic, str):
             mirror_traffic = convert_str_to_dict(mirror_traffic)
