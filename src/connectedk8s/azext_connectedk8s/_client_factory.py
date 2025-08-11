@@ -67,6 +67,12 @@ def cf_connectedk8s_prev_2025_08_01(
     from azext_connectedk8s.vendored_sdks.preview_2025_08_01 import (
         KubernetesClient,
     )
+    from azure.core.pipeline.policies import HeadersPolicy
+
+    # Create custom headers policy for PUT requests
+    headers_policy = HeadersPolicy({
+        "x-ms-k8srp-cli-client": "true"
+    })
 
     client: KubernetesClient
     access_token = os.getenv(consts.Azure_Access_Token_Variable)
@@ -78,10 +84,17 @@ def cf_connectedk8s_prev_2025_08_01(
             KubernetesClient,
             subscription_id=os.getenv("AZURE_SUBSCRIPTION_ID"),
             credential=credential,
+            base_url="https://centraluseuap.management.azure.com",
+            per_call_policies=[headers_policy],
         )
         return client
 
-    client = get_mgmt_service_client(cli_ctx, KubernetesClient)
+    client = get_mgmt_service_client(
+        cli_ctx,
+        KubernetesClient,
+        base_url="https://centraluseuap.management.azure.com",
+        per_call_policies=[headers_policy],
+    )
     return client
 
 

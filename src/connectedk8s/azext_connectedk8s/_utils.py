@@ -48,7 +48,7 @@ if TYPE_CHECKING:
     from kubernetes.client import CoreV1Api, V1NodeList
     from requests import Response
 
-    from azext_connectedk8s.vendored_sdks.preview_2024_07_01.models import (
+    from azext_connectedk8s.vendored_sdks.preview_2025_08_01.models import (
         ConnectedCluster,
     )
 
@@ -823,7 +823,7 @@ def get_helm_values(
     chart_location_url = f"{config_dp_endpoint}/{chart_location_url_segment}"
     dp_request_identity = connected_cluster.identity
     identity = connected_cluster.id
-    request_dict = connected_cluster.serialize()
+    request_dict = connected_cluster.as_dict()
     request_dict["identity"]["tenantId"] = dp_request_identity.tenant_id
     request_dict["identity"]["principalId"] = dp_request_identity.principal_id
     request_dict["id"] = identity
