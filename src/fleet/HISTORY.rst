@@ -134,3 +134,7 @@ Release History
 * Add Fleet Gates support
 * Add TargetKubernetesVersion channel support
 * Add Fleet Member labels support
+
+1.6.1
+++++++
+* Modified parameter handling to accept both file paths and inline JSON strings for the --stages argument

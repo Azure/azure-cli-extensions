@@ -1,0 +1,125 @@
+interactions:
+- request:
+    body: '{"location": "francecentral", "properties": {"description": "123", "scopes":
+      [{"displayName": "test1", "resourceTypes": ["Microsoft.Storage/storageAccounts"],
+      "tagKeysOnly": ["e2etest1"], "tags": {"tag1": "value1", "tag2": "value2"}}],
+      "sku": "Standard", "workspaceRoots": ["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001"]}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage-discovery workspace create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '362'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --location --description --sku --workspace-roots --scopes
+      User-Agent:
+      - AZURECLI/2.75.0 azsdk-python-core/1.35.0 Python/3.12.11 (Linux-6.8.0-1030-azure-x86_64-with-glibc2.36)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageDiscovery/storageDiscoveryWorkspaces/clitest000002?api-version=2025-06-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageDiscovery/storageDiscoveryWorkspaces/clitest000002","name":"clitest000002","type":"microsoft.storagediscovery/storagediscoveryworkspaces","location":"francecentral","tags":{"team":"Discovery"},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-08-04T23:29:28.1808107Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-08-04T23:29:28.1808107Z"},"properties":{"sku":"Standard","workspaceRoots":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001"],"description":"123","scopes":[{"displayName":"test1","resourceTypes":["Microsoft.Storage/storageAccounts"],"tagKeysOnly":["e2etest1"],"tags":{"tag1":"value1","tag2":"value2"}}],"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '881'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 04 Aug 2025 23:29:30 GMT
+      etag:
+      - '"090059b8-0000-0e00-0000-689142590000"'
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - fac33fd9-8aa1-4496-89b0-6af67af1888d
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2968a26f-a796-4124-8684-894f8a239db2/westus2/4e992be2-4596-4c39-95e1-97adf9548c55
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '12000'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '800'
+      x-msedge-ref:
+      - 'Ref A: AC03343244A64C4FB3B2828575B28EB1 Ref B: MWH011020806034 Ref C: 2025-08-04T23:29:23Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage-discovery workspace delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g -n -y
+      User-Agent:
+      - AZURECLI/2.75.0 azsdk-python-core/1.35.0 Python/3.12.11 (Linux-6.8.0-1030-azure-x86_64-with-glibc2.36)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageDiscovery/storageDiscoveryWorkspaces/clitest000002?api-version=2025-06-01-preview
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Mon, 04 Aug 2025 23:29:32 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - acdfb41a-4273-454b-b469-7663f8488611
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2968a26f-a796-4124-8684-894f8a239db2/francecentral/eb34bd5a-f682-480d-826c-a928dd78a13c
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '799'
+      x-ms-ratelimit-remaining-subscription-global-deletes:
+      - '11999'
+      x-msedge-ref:
+      - 'Ref A: 310594CEBFF04E7B9C181863183270B8 Ref B: MWH011020806054 Ref C: 2025-08-04T23:29:30Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+version: 1
