@@ -8,9 +8,9 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-from azext_mlv2.generated._help import helps  # pylint: disable=unused-import
-
 from azure.cli.core import AzCommandsLoader
+
+from azext_mlv2.generated._help import helps  # pylint: disable=unused-import
 
 try:
     from azext_mlv2.manual._help import helps  # pylint: disable=reimported

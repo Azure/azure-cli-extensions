@@ -10,7 +10,7 @@ from ._common_params import (
 def load_workspace_outbound_rule_params(self):
     with self.argument_context("ml workspace outbound-rule list") as c:
         add_common_params(c)
-    
+
     with self.argument_context("ml workspace outbound-rule show") as c:
         add_common_params(c)
         c.argument(
@@ -44,45 +44,56 @@ def load_workspace_outbound_rule_params(self):
         c.argument(
             "destination",
             options_list=["--destination"],
-            help="For FQDN rules: Fully qualified domain name to which outbound connections are allowed, required for fqdn outbound rule.",
+            help="For FQDN rules: Fully qualified domain name to which outbound connections are allowed, "
+            "required for fqdn outbound rule.",
         )
         c.argument(
             "service_tag",
             options_list=["--service-tag"],
-            help="For ServiceTag rules: Service Tag of an Azure service that maps to predefined IP addresses for its service endpoints, required for service_tag outbound rule.",
+            help="For ServiceTag rules: Service Tag of an Azure service that maps to predefined IP addresses "
+            "for its service endpoints, required for service_tag outbound rule.",
         )
         c.argument(
             "address_prefixes",
             options_list=["--address-prefixes"],
-            help="For ServiceTag rules: [Optional] list of CIDR prefixes or IP ranges, when provided, --service-tag will be ignored and --address-prefixes will be used instead.",
+            help="For ServiceTag rules: [Optional] list of CIDR prefixes or IP ranges, when provided, "
+            "--service-tag will be ignored and --address-prefixes will be used instead.",
         )
         c.argument(
             "protocol",
             options_list=["--protocol"],
-            help="For ServiceTag rules: Allowed transport protocol, can be TCP, UDP, ICMP or * for all supported protocols, required for service_tag outbound rule.",
+            help="For ServiceTag rules: Allowed transport protocol, can be TCP, UDP, ICMP or * for all "
+            "supported protocols, required for service_tag outbound rule.",
         )
         c.argument(
             "port_ranges",
             options_list=["--port-ranges"],
-            help="For ServiceTag rules: A comma-separated list of single ports and/or range of ports, such as \"80,1024-65535\" that traffics are allowed, required for service_tag outbound rule.",
+            help="For ServiceTag rules: A comma-separated list of single ports and/or range of ports, "
+            "such as \"80,1024-65535\" that traffics are allowed, required for service_tag outbound rule.",
         )
         c.argument(
             "service_resource_id",
             options_list=["--service-resource-id"],
-            help="For PrivateEndpoint rules: The resource URI of the root service that supports creation of the private link, required for private_endpoint outbound rule.",
+            help="For PrivateEndpoint rules: The resource URI of the root service that supports creation "
+            "of the private link, required for private_endpoint outbound rule.",
         )
         c.argument(
             "subresource_target",
             options_list=["--subresource-target"],
-            help="For PrivateEndpoint rules: The target endpoint of the subresource of the service, required for private_endpoint outbound rule.",
+            help="For PrivateEndpoint rules: The target endpoint of the subresource of the service, "
+            "required for private_endpoint outbound rule.",
         )
         c.argument(
             "spark_enabled",
             options_list=["--spark-enabled"],
-            help="For PrivateEndpoint rules: Indicates if the private endpoint can be used for Spark jobs, default is false, required for private_endpoint outbound rule.",
+            help="For PrivateEndpoint rules: Indicates if the private endpoint can be used for Spark jobs, "
+            "default is false, required for private_endpoint outbound rule.",
         )
         c.argument(
             "fqdns",
             options_list=["--fqdns"],
-            help="For PrivateEndpoint rules: [Optional] A comma-separated list of FQDNs particular to the Private Endpoint resource creation. For application gateway PEs, this is the FQDN which will resolve to the private IP of the application gateway PE inside the workspace's managed network. For example: \"contoso.com,contoso2.com\"",
+            help="For PrivateEndpoint rules: [Optional] A comma-separated list of FQDNs particular to the "
+            "Private Endpoint resource creation. For application gateway PEs, this is the FQDN which will "
+            "resolve to the private IP of the application gateway PE inside the workspace's managed network. "
+            "For example: \"contoso.com,contoso2.com\"",
         )

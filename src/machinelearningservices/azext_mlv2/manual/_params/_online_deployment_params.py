@@ -48,7 +48,8 @@ def load_online_deployment_params(self):
         )
         c.argument(
             "all_traffic",
-            help="Sets endpoint traffic 100% to this deployment after successful creation, does not work with --no-wait",
+            help="Sets endpoint traffic 100% to this deployment after successful creation, "
+            "does not work with --no-wait",
         )
         c.argument(
             "vscode_debug",
@@ -72,7 +73,8 @@ def load_online_deployment_params(self):
         c.argument(
             "package_model",
             #is_preview=True,
-            help="[THIS IS IN PREVIEW] Create packaged environment from the deployment yaml and use the packaged environment for the deployment.",
+            help="[THIS IS IN PREVIEW] Create packaged environment from the deployment yaml "
+            "and use the packaged environment for the deployment.",
             default=False, #is_preview is still not working need to investigate
         )
 
@@ -158,5 +160,6 @@ def load_online_deployment_params(self):
         c.argument(
             "container",
             options_list=["--container", "-c"],
-            help="The type of container from which to retrieve logs. Allowed values: inference-server, storage-initializer.",
+            help="The type of container from which to retrieve logs. "
+            "Allowed values: inference-server, storage-initializer.",
         )

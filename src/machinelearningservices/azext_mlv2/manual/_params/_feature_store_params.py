@@ -29,7 +29,8 @@ def load_feature_store_params(self):
         add_override_param(c)
         add_lro_param(c)
         add_file_param(c, "feature_store", YAMLRefDocLinks.FEATURE_STORE)
-        # Feature store create command doesn't use add_feature_store_common_params() as --names doesn't tie to az defaults for the feature store create command
+        # Feature store create command doesn't use add_feature_store_common_params() as --names doesn't tie to 
+        # az defaults for the feature store create command
         c.argument("name", options_list=["--name", "-n"], type=str, help="Name of the feature store.")
         c.argument(
             "offline_store",
@@ -51,7 +52,8 @@ def load_feature_store_params(self):
         c.argument(
             "image_build_compute",
             options_list=["--image-build-compute", "-i"],
-            help="The name of the compute target to use for building environment Docker images when the container registry is behind a VNet.",
+            help="The name of the compute target to use for building environment Docker images "
+            "when the container registry is behind a VNet.",
         )
         c.argument(
             "public_network_access",
@@ -61,7 +63,10 @@ def load_feature_store_params(self):
         c.argument(
             "update_dependent_resources",
             options_list=["--update-dependent-resources", "-u"],
-            help="Specifying --update_dependent_resources, gives your consent to update the feature store dependent resources. Updating the workspace-attached Azure Container Registry or Application Insights resource may break lineage of previous jobs, deployed inference endpoints, or your ability to rerun earlier jobs in this feature store.",
+            help="Specifying --update_dependent_resources, gives your consent to update the feature store "
+            "dependent resources. Updating the workspace-attached Azure Container Registry or Application "
+            "Insights resource may break lineage of previous jobs, deployed inference endpoints, or your "
+            "ability to rerun earlier jobs in this feature store.",
         )
         c.argument(
             "application_insights",
@@ -76,12 +81,14 @@ def load_feature_store_params(self):
         c.argument(
             "primary_user_assigned_identity",
             options_list=["--primary-user-assigned-identity", "-p"],
-            help="ARM identifier of primary user assigned managed identity, in case multiple ones are specified. Also the default managed identity for clusterless compute.",
+            help="ARM identifier of primary user assigned managed identity, in case multiple ones are "
+            "specified. Also the default managed identity for clusterless compute.",
         )
         c.argument(
             "not_grant_materialization_identity_permissions",
             options_list=["--not-grant-permissions"],
-            help="Specifying --not-grant-permissions, to not grant materializtion identity permission to feature store (workspace, offline store and online store). Default is False",
+            help="Specifying --not-grant-permissions, to not grant materializtion identity permission to "
+            "feature store (workspace, offline store and online store). Default is False",
         )
         c.argument(
             "managed_network",
@@ -101,7 +108,8 @@ def load_feature_store_params(self):
         add_lro_param(c)
         c.argument(
             "all_resources",
-            help="Delete all the dependent resources associated with the feature store (Azure Storage account, Azure Container Registry, Azure Application Insights, Azure Key Vault).",
+            help="Delete all the dependent resources associated with the feature store "
+            "(Azure Storage account, Azure Container Registry, Azure Application Insights, Azure Key Vault).",
         )
 
     with self.argument_context("ml feature-store update") as c:
@@ -119,7 +127,8 @@ def load_feature_store_params(self):
         c.argument(
             "image_build_compute",
             options_list=["--image-build-compute", "-i"],
-            help="The name of the compute target to use for building environment Docker images when the container registry is behind a VNet.",
+            help="The name of the compute target to use for building environment Docker images "
+            "when the container registry is behind a VNet.",
         )
         c.argument(
             "public_network_access",
@@ -129,7 +138,10 @@ def load_feature_store_params(self):
         c.argument(
             "update_dependent_resources",
             options_list=["--update-dependent-resources", "-u"],
-            help="Specifying --update_dependent_resources, gives your consent to update the workspace dependent resources. Updating the workspace-attached Azure Container Registry or Application Insights resource may break lineage of previous jobs, deployed inference endpoints, or your ability to rerun earlier jobs in this workspace.",
+            help="Specifying --update_dependent_resources, gives your consent to update the workspace "
+            "dependent resources. Updating the workspace-attached Azure Container Registry or Application "
+            "Insights resource may break lineage of previous jobs, deployed inference endpoints, or your "
+            "ability to rerun earlier jobs in this workspace.",
         )
         c.argument(
             "application_insights",
@@ -149,7 +161,8 @@ def load_feature_store_params(self):
         c.argument(
             "not_grant_materialization_identity_permissions",
             options_list=["--not-grant-permissions"],
-            help="Specifying --not-grant-permissions, to not grant materializtion identity permission to feature store (workspace, offline store and online store). Default is False",
+            help="Specifying --not-grant-permissions, to not grant materializtion identity permission to "
+            "feature store (workspace, offline store and online store). Default is False",
         )
         c.argument(
             "managed_network",
@@ -163,7 +176,8 @@ def load_feature_store_params(self):
         c.argument(
             "resource_group",
             options_list=["--resource-group ", "-g"],
-            help="Name of resource group. You can configure the default group using az configure --defaults group=<name>.",
+            help="Name of resource group. You can configure the default group using "
+            "az configure --defaults group=<name>.",
         )
         c.argument(
             "include_spark",

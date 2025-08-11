@@ -57,18 +57,22 @@ def load_compute_params(self):
         c.argument("vnet_name", help="Name of the virtual network.")
         c.argument(
             "subnet",
-            help="Name of the subnet. Can also reference a subnet in an existing vnet by ID instead of name. If subnet ID is specified then vnet-name will be ignored. Subnet ID can refer to a vnet/subnet in another RG by specifying the fully qualified subnet ID. Required when vnet name is specified.",
+            help="Name of the subnet. Can also reference a subnet in an existing vnet by ID instead of name. "
+            "If subnet ID is specified then vnet-name will be ignored. Subnet ID can refer to a vnet/subnet "
+            "in another RG by specifying the fully qualified subnet ID. Required when vnet name is specified.",
         )
         c.argument(
             "type",
             options_list=["--type", "-t"],
-            help="The type of compute target. Required if --file/-f is not provided. Allowed values: AmlCompute, ComputeInstance.",
+            help="The type of compute target. Required if --file/-f is not provided. "
+            "Allowed values: AmlCompute, ComputeInstance.",
         )
         add_description_param(c, help_message="Description of the compute target.")
         add_tags_param(c)
         c.argument(
             "size",
-            help="VM size to use for the compute target. More details can be found here: https://aka.ms/azureml-vm-details.",
+            help="VM size to use for the compute target. More details can be found here: "
+            "https://aka.ms/azureml-vm-details.",
         )
         c.argument(
             "identity_type",
@@ -77,7 +81,8 @@ def load_compute_params(self):
         c.argument(
             "user_assigned_identities",
             options_list=["--user-assigned-identities", "-i"],
-            help="Use '[system]' to set a system assigned identity else input resource IDs separated by commas (ie `<ResourceID1>,<ResourceID2>`) to set user assigned identities.",
+            help="Use '[system]' to set a system assigned identity else input resource IDs separated by commas "
+            "(ie `<ResourceID1>,<ResourceID2>`) to set user assigned identities.",
         )
         c.argument(
             "enable_node_public_ip",
@@ -175,7 +180,8 @@ def load_compute_params(self):
         c.argument(
             "user_assigned_identities",
             options_list=["--user-assigned-identities", "-i"],
-            help="Use '[system]' to set a system assigned identity else input resource IDs separated by commas (ie `<ResourceID1>,<ResourceID2>`) to set user assigned identities.",
+            help="Use '[system]' to set a system assigned identity else input resource IDs separated by commas "
+            "(ie `<ResourceID1>,<ResourceID2>`) to set user assigned identities.",
         )
         c.argument("min_instances", help="Minimum number of nodes to use. Default: 0.")
         c.argument("max_instances", help="Maximum number of nodes to use. Default: 4.")
@@ -205,7 +211,8 @@ def load_compute_params(self):
         )
         c.argument(
             "resource_id",
-            help="The fully qualified ID of the resource, including the resource name and resource type (Required if not specified in the yaml file).",
+            help="The fully qualified ID of the resource, including the resource name and resource type "
+            "(Required if not specified in the yaml file).",
         )
         c.argument("identity_type", help="The type of manged identity. Allowed values: SystemAssigned, UserAssigned.")
         c.argument(
@@ -216,7 +223,8 @@ def load_compute_params(self):
 
     with self.argument_context("ml compute attach", arg_group="VirtualMachine") as c:
         c.argument(
-            "admin_username", help="Name of the administrator user account that can be used to SSH into the node(s)."
+            "admin_username", 
+            help="Name of the administrator user account that can be used to SSH into the node(s)."
         )
         c.argument("admin_password", help="The administrator user password that can be used to SSH into the node(s).")
         c.argument(
