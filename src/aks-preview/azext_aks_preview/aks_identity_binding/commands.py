@@ -22,7 +22,6 @@ def aks_ib_cmd_create(
             )
         )
     )
-    instance.name = name
 
     return sdk_no_wait(
         no_wait,
