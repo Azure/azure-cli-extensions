@@ -16,27 +16,37 @@ def add_name_param(c):
     c.argument("name", options_list=["--name", "-n"], type=str, help="Name of the data asset.")
 
 def add_name_required_param(c):
-    c.argument("name", options_list=["--name", "-n"], type=str, help="Name of the data asset. Required if --registry-name is provided.")
+    c.argument("name", options_list=["--name", "-n"], type=str, 
+               help="Name of the data asset. Required if --registry-name is provided.")
 
 def add_version_param(c):
     c.argument("version", options_list=["--version", "-v"], help="Version of the data asset.")
 
 def add_version_required_param(c):
-    c.argument("version", options_list=["--version", "-v"], help="Version of the data asset. Required if --registry-name is provided.")
+    c.argument("version", options_list=["--version", "-v"], 
+               help="Version of the data asset. Required if --registry-name is provided.")
 
 def add_version_and_label_params(c):
-    c.argument("version", options_list=["--version", "-v"], help="Version of the data asset. Mutually exclusive with label.")
-    c.argument("label", options_list=["--label", "-l"], help="Label of the data asset. Mutually exclusive with version.")
+    c.argument("version", options_list=["--version", "-v"], 
+               help="Version of the data asset. Mutually exclusive with label.")
+    c.argument("label", options_list=["--label", "-l"], 
+               help="Label of the data asset. Mutually exclusive with version.")
 
 def add_version_or_label_required_params(c):
-    c.argument("version", options_list=["--version", "-v"], help="Version of the data asset. Must be provided, if label is not provided. Mutually exclusive with label.")
-    c.argument("label", options_list=["--label", "-l"], help="Label of the data asset. Must be provided, if version is not provided. Mutually exclusive with version.")
+    c.argument("version", options_list=["--version", "-v"], 
+               help="Version of the data asset. Must be provided, if label is not provided. "
+                    "Mutually exclusive with label.")
+    c.argument("label", options_list=["--label", "-l"], 
+               help="Label of the data asset. Must be provided, if version is not provided. "
+                    "Mutually exclusive with version.")
 
 def add_registry_param(c):
     c.argument(
         "registry_name",
         options_list=["--registry-name"],
-        help="If provided, the command will target the registry instead of a workspace. Hence resource group and workspace won't be required. Must be provided if --workspace-name and --resource-group are not provided ",
+        help="If provided, the command will target the registry instead of a workspace. "
+             "Hence resource group and workspace won't be required. Must be provided if "
+             "--workspace-name and --resource-group are not provided ",
     )
 
 def load_data_params(self):
@@ -46,7 +56,8 @@ def load_data_params(self):
             "name",
             options_list=["--name", "-n"],
             type=str,
-            help="Name of the data asset. If provided, all the data versions under this name will be returned.",
+            help="Name of the data asset. If provided, all the data versions under this name "
+                 "will be returned.",
         )
         add_include_archived_param(c, help_message="List archived data assets and active data assets.")
         add_archived_only_param(c, help_message="List archived data assets only.")
@@ -95,7 +106,8 @@ def load_data_params(self):
         c.argument(
             "skip_validation",
             options_list=["--skip-validation"],
-            help="Skip validation of compute resource referenced by underlying data import materialization job.",
+            help="Skip validation of compute resource referenced by underlying data import "
+                 "materialization job.",
         )
         c.argument("path", options_list=["--path", "-p"], help="Path to the data asset on cloud storage.")
         c.argument(
@@ -120,7 +132,8 @@ def load_data_params(self):
             "name",
             options_list=["--name", "-p"],
             type=str,
-            help="Name of the asset. Will list all materialization jobs that create versions of the asset matching the given name.",
+            help="Name of the asset. Will list all materialization jobs that create versions "
+                 "of the asset matching the given name.",
         )
 
     with self.argument_context("ml data update") as c:
@@ -150,6 +163,7 @@ def load_data_params(self):
     with self.argument_context("ml data mount") as c:
         add_common_params(c)
         c.argument("mount_point", help="A local path used as mount point.")
-        c.argument("path", help="The data asset path to mount, in the form of `azureml:<name>` or `azureml:<name>:<version>`")
+        c.argument("path", help="The data asset path to mount, in the form of `azureml:<name>` "
+                            "or `azureml:<name>:<version>`")
         c.argument("mode", help="Mount mode. Only `ro_mount` (read-only) is supported for data asset mount.")
-        c.argument("persistent", help=f"Make mount persist across reboots. Supported only on Compute Instance.")
+        c.argument("persistent", help="Make mount persist across reboots. Supported only on Compute Instance.")

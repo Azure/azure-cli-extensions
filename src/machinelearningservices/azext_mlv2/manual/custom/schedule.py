@@ -71,17 +71,17 @@ def ml_schedule_update(cmd, resource_group_name, workspace_name, parameters: Dic
     try:
         # 1. load parameters into schedule entity
         # Set unknown to EXCLUDE so that marshmallow doesn't raise on dump only fields.
-        schedule_class, _ = Schedule._resolve_cls_and_type(parameters, [])
+        schedule_class, _ = Schedule._resolve_cls_and_type(parameters, [])  # pylint: disable=protected-access
         if schedule_class == JobSchedule:
-            schedule = JobSchedule._load_from_rest_dict(data=parameters, unknown=EXCLUDE)
+            schedule = JobSchedule._load_from_rest_dict(data=parameters, unknown=EXCLUDE)  # pylint: disable=protected-access
         else:
-            schedule = schedule_class._load(parameters)
+            schedule = schedule_class._load(parameters)  # pylint: disable=protected-access
         # 2. update the schedule
         result = ml_client.begin_create_or_update(schedule)
         if not no_wait:
             result = LongRunningOperation(cmd.cli_ctx)(result)
         return _dump_entity_with_warnings(result)
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -94,7 +94,7 @@ def ml_schedule_disable(cmd, resource_group_name, workspace_name, name, no_wait=
         if not no_wait:
             result = LongRunningOperation(cmd.cli_ctx)(result)
         return _dump_entity_with_warnings(result)
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -107,7 +107,7 @@ def ml_schedule_enable(cmd, resource_group_name, workspace_name, name, no_wait=F
         if not no_wait:
             result = LongRunningOperation(cmd.cli_ctx)(result)
         return _dump_entity_with_warnings(result)
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -120,7 +120,7 @@ def ml_schedule_delete(cmd, resource_group_name, workspace_name, name, no_wait=F
         if not no_wait:
             result = LongRunningOperation(cmd.cli_ctx)(result)
         return result
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -130,17 +130,17 @@ def ml_schedule_trigger(cmd, resource_group_name, workspace_name, name):
     )
     try:
         result = ml_client.schedules.trigger(name=name)
-        return result._to_dict()
-    except Exception as err:
+        return result._to_dict()  # pylint: disable=protected-access
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
 def get_schedule_list_view_type(include_disabled: bool, disabled_only: bool) -> ScheduleListViewType:
     if include_disabled and disabled_only:
-        raise Exception("Cannot provide both disabled-only and include-disabled.")
+        raise ValueError("Cannot provide both disabled-only and include-disabled.")
     if include_disabled:
         return ScheduleListViewType.ALL
-    elif disabled_only:
+    if disabled_only:
         return ScheduleListViewType.DISABLED_ONLY
     return ScheduleListViewType.ENABLED_ONLY
 
@@ -169,9 +169,9 @@ def _ml_schedule_list(
             )
         else:
             results = ml_client.schedules.list(list_view_type=list_view_type)
-        return list(map(lambda x: _dump_entity_with_warnings(x), results))
+        return [_dump_entity_with_warnings(x) for x in results]
 
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -185,7 +185,7 @@ def _ml_schedule_show(cmd, resource_group_name, name, workspace_name=None):
     try:
         schedule = ml_client.schedules.get(name=name)
         return _dump_entity_with_warnings(schedule)
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -220,7 +220,7 @@ def _ml_schedule_create(cmd, file, resource_group_name, params_override, name, w
         if not no_wait:
             result = LongRunningOperation(cmd.cli_ctx)(result)
         return _dump_entity_with_warnings(result)
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
     finally:
         telemetry_log_info(schedule_info.__dict__)

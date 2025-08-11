@@ -96,7 +96,7 @@ def ml_job_create(
 
         return _dump_job_with_warnings(job)
 
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         yaml_operation = bool(file)
         log_and_raise_error(err, debug, yaml_operation=yaml_operation)
 
@@ -109,7 +109,7 @@ def ml_job_validate(cmd, file, resource_group_name, workspace_name, params_overr
 
     try:
         return _dump_entity_with_warnings(validate_job(path=file, ml_client=ml_client, params_override=params_override))
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -125,7 +125,7 @@ def ml_job_show(cmd, resource_group_name, workspace_name, name, web=False):
             open_job_in_browser(job)
 
         return _dump_job_with_warnings(job)
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -142,7 +142,7 @@ def ml_job_show_services(cmd, resource_group_name, workspace_name, name, node_in
 
     try:
         return ml_client.jobs.show_services(name, node_index)
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -165,7 +165,7 @@ def ml_job_cancel_private_preview(cmd, resource_group_name, workspace_name, name
                 # TODO: Any better Strategy to return List of LROPoller?
                 return [LongRunningOperation(cmd.cli_ctx)(poller) for poller in outcome]
         return outcome
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -211,7 +211,7 @@ def ml_job_list_private_preview(
             job = filter_job_tags(job)
             ret_list.append(_dump_job_with_warnings(job))
         return ret_list
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -239,7 +239,8 @@ def ml_job_list(
     )
 
 
-def ml_job_download(cmd, resource_group_name, workspace_name, name, download_path=None, output_name=None, all_results=False):
+def ml_job_download(cmd, resource_group_name, workspace_name, name, download_path=None, 
+                    output_name=None, all_results=False):
     # pylint: disable=redefined-builtin
 
     ml_client, debug = get_ml_client(
@@ -250,7 +251,7 @@ def ml_job_download(cmd, resource_group_name, workspace_name, name, download_pat
         if not download_path:
             download_path = cmd.cli_ctx.local_context.current_dir
         return ml_client.jobs.download(name=name, download_path=download_path, output_name=output_name, all=all_results)
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -264,7 +265,7 @@ def ml_job_stream(cmd, resource_group_name, workspace_name, name):
         ml_client.jobs.stream(name=name)
     except PipelineChildJobError as err:
         log_and_raise_error(PipelineChildJobError(job_id=err.job_id, command="stream", prompt_studio_ui=True), debug)
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -276,7 +277,7 @@ def ml_job_archive(cmd, resource_group_name, workspace_name, name):
         ml_client.jobs.archive(name=name)
     except PipelineChildJobError as err:
         log_and_raise_error(PipelineChildJobError(job_id=err.job_id, command="archive"), debug)
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -288,7 +289,7 @@ def ml_job_restore(cmd, resource_group_name, workspace_name, name):
         ml_client.jobs.restore(name=name)
     except PipelineChildJobError as err:
         log_and_raise_error(PipelineChildJobError(job_id=err.job_id, command="restore"), debug)
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -316,7 +317,7 @@ def ml_job_connect_ssh(cmd, resource_group_name, workspace_name, name, node_inde
             module_logger.error(ssh_connector_file_path_space_message())
         else:
             subprocess.call(ssh_command, shell=True)
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -343,5 +344,5 @@ def _ml_job_update(cmd, resource_group_name, workspace_name, web=False, paramete
         return _dump_job_with_warnings(updated_job)
     except PipelineChildJobError as err:
         log_and_raise_error(PipelineChildJobError(job_id=err.job_id, command="update", prompt_studio_ui=True), debug)
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
