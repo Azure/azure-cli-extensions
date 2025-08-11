@@ -4,8 +4,6 @@
 
 from itertools import islice
 
-from azure.ai.ml.constants._common import AzureMLResourceType
-
 from azure.ai.ml.entities._assets import Model
 from azure.ai.ml.entities._load_functions import load_model, load_model_package
 from azure.ai.ml.exceptions import ErrorCategory, ErrorTarget, ValidationErrorType, ValidationException
@@ -157,7 +155,7 @@ def _ml_model_update(cmd, resource_group_name, parameters, workspace_name=None, 
         params_override.append({"stage": stage})
     # The State of Assets specifies the only difference for PrP in update is that update cannot create a new model.
     ml_client, debug = get_ml_client(
-        cli_ctx=cmd.cli_ctx, resource_group_name=resource_group_name, 
+        cli_ctx=cmd.cli_ctx, resource_group_name=resource_group_name,
         workspace_name=workspace_name, registry_name=registry_name
     )
 
@@ -170,30 +168,30 @@ def _ml_model_update(cmd, resource_group_name, parameters, workspace_name=None, 
         log_and_raise_error(err, debug)
 
 
-def ml_model_archive(cmd, name, resource_group_name=None, workspace_name=None, 
+def ml_model_archive(cmd, name, resource_group_name=None, workspace_name=None,
                      registry_name=None, version=None, label=None):
     ml_client, _ = get_ml_client(
-        cli_ctx=cmd.cli_ctx, resource_group_name=resource_group_name, 
+        cli_ctx=cmd.cli_ctx, resource_group_name=resource_group_name,
         workspace_name=workspace_name, registry_name=registry_name
     )
 
     return ml_client.models.archive(name=name, version=version, label=label)
 
 
-def ml_model_restore(cmd, name, resource_group_name=None, workspace_name=None, 
+def ml_model_restore(cmd, name, resource_group_name=None, workspace_name=None,
                      registry_name=None, version=None, label=None):
     ml_client, _ = get_ml_client(
-        cli_ctx=cmd.cli_ctx, resource_group_name=resource_group_name, 
+        cli_ctx=cmd.cli_ctx, resource_group_name=resource_group_name,
         workspace_name=workspace_name,  registry_name=registry_name
     )
 
     return ml_client.models.restore(name=name, version=version, label=label)
 
 
-def _ml_model_show(cmd, resource_group_name, name, workspace_name=None, 
+def _ml_model_show(cmd, resource_group_name, name, workspace_name=None,
                    registry_name=None, version=None, label=None):
     ml_client, debug = get_ml_client(
-        cli_ctx=cmd.cli_ctx, resource_group_name=resource_group_name, 
+        cli_ctx=cmd.cli_ctx, resource_group_name=resource_group_name,
         workspace_name=workspace_name, registry_name=registry_name
     )
 
@@ -228,7 +226,7 @@ def ml_model_show(
 
 
 def ml_model_package(
-    cmd, name, file, version, workspace_name=None, resource_group_name=None, 
+    cmd, name, file, version, workspace_name=None, resource_group_name=None,
     registry_name=None):
     if workspace_name and registry_name:
         workspace_reference=workspace_name
@@ -250,16 +248,16 @@ def ml_model_package(
     except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
-def ml_model_share(cmd, name, version, share_with_name, share_with_version, 
+def ml_model_share(cmd, name, version, share_with_name, share_with_version,
                    registry_name, resource_group_name=None, workspace_name=None):
     ml_client, _ = get_ml_client(
-        cli_ctx=cmd.cli_ctx, resource_group_name=resource_group_name, 
+        cli_ctx=cmd.cli_ctx, resource_group_name=resource_group_name,
         workspace_name=workspace_name
     )
 
     model_info = ModelInfo()
     model_info.scenario = "promote"
-    model = ml_client.models.share(name=name, version=version, registry_name=registry_name, 
-                                  share_with_name=share_with_name, 
+    model = ml_client.models.share(name=name, version=version, registry_name=registry_name,
+                                  share_with_name=share_with_name,
                                   share_with_version=share_with_version)
     return _dump_entity_with_warnings(model)

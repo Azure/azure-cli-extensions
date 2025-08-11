@@ -112,7 +112,7 @@ def ml_feature_store_create(
         if not no_wait:
             feature_store_poller = LongRunningOperation(cmd.cli_ctx)(feature_store_poller)
             return _dump_entity_with_warnings(feature_store_poller)
-        
+
         module_logger.warning(
             "FeatureStore create request initiated. Status can be checked using `az ml feature-store show --name %s`",
             feature_store.name,
@@ -191,7 +191,7 @@ def ml_feature_store_update(
         if not no_wait:
             feature_store_poller = LongRunningOperation(cmd.cli_ctx)(feature_store_poller)
             return _dump_entity_with_warnings(feature_store_poller)
-        
+
         module_logger.warning(
             "FeatureStore update request initiated. Status can be checked using `az ml feature-store show --name %s`",
             feature_store.name,

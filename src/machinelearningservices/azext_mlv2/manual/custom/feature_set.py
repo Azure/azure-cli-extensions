@@ -99,8 +99,8 @@ def ml_feature_set_create(
                 "`az ml feature-set show --name %s --version %s`", feature_set.name, feature_set.version
             )
         return _dump_entity_with_warnings(feature_set)
-    except Exception as err:
-        yaml_operation = True if file else False
+    except Exception as err:  # pylint: disable=broad-exception-caught
+        yaml_operation = bool(file)
         log_and_raise_error(err, debug, yaml_operation=yaml_operation)
 
 
@@ -126,8 +126,7 @@ def _ml_feature_set_show(cmd, resource_group_name, workspace_name, file=None, na
     if file:
         # Do not make a GET call when users provide a YAML file.
         return {}
-    else:
-        return ml_feature_set_show(cmd, name, version, resource_group_name, workspace_name)
+    return ml_feature_set_show(cmd, name, version, resource_group_name, workspace_name)
 
 
 def ml_feature_set_update(
@@ -137,18 +136,18 @@ def ml_feature_set_update(
         cli_ctx=cmd.cli_ctx, resource_group_name=resource_group_name, workspace_name=workspace_name
     )
     if file:
-        feature_set_dict = load_feature_set(source=file, params_override=parameters)._to_dict()
+        feature_set_dict = load_feature_set(source=file, params_override=parameters)._to_dict()  # pylint: disable=protected-access
     else:
         feature_set_dict = parameters
 
-    feature_set_obj = FeatureSet._load(data=feature_set_dict, yaml_path=file)
+    feature_set_obj = FeatureSet._load(data=feature_set_dict, yaml_path=file)  # pylint: disable=protected-access
     # Check if feature set exists
     if file:
         try:
             ml_client.feature_sets.get(name=feature_set_obj.name, version=feature_set_obj.version)
         except Exception as err:  # pylint: disable=broad-exception-caught
             if isinstance(err, ResourceNotFoundError):
-                raise Exception(
+                raise ValueError(
                     f"Feature set {feature_set_obj.name}:{feature_set_obj.version} does not exist"
                 ) from err
 
@@ -157,11 +156,10 @@ def ml_feature_set_update(
         if not no_wait:
             feature_set = LongRunningOperation(cmd.cli_ctx)(feature_set_poller)
             return _dump_entity_with_warnings(feature_set)
-        else:
-            module_logger.warning(
-                "Feature set update request initiated. Status can be checked using "
-                "`az ml feature-set show --name %s --version %s`", name, version
-            )
+        module_logger.warning(
+            "Feature set update request initiated. Status can be checked using "
+            "`az ml feature-set show --name %s --version %s`", name, version
+        )
     except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
@@ -215,7 +213,10 @@ def ml_feature_set_backfill(
     if description:
         params_override.append({"description": description})
     if feature_window_start_time or feature_window_end_time:
-        feature_window = {"feature_window_end": feature_window_end_time, "feature_window_start": feature_window_start_time}
+        feature_window = {
+            "feature_window_end": feature_window_end_time,
+            "feature_window_start": feature_window_start_time
+        }
         params_override.append({"feature_window": feature_window})
     if tags:
         params_override.append({"tags": json.loads(tags)})

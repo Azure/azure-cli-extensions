@@ -150,7 +150,9 @@ def _get_ml_client(
     # Removing or changing this will break the correlation.
     kwargs.update({"request_id": client_request_id})
 
-    ml_client = get_mgmt_service_client(cli_ctx, MLClient._ml_client_cli, subscription_id=subscription_id, **kwargs)
+    ml_client = get_mgmt_service_client(
+        cli_ctx, MLClient._ml_client_cli, subscription_id=subscription_id, **kwargs  # pylint: disable=protected-access
+    )
 
     return ml_client
 
@@ -225,7 +227,7 @@ def validate_and_split_output_path(output_path: str) -> AzureMLDatastorePathUri:
     if output_path.startswith(ARM_ID_PREFIX):
         datastore_path = AzureMLDatastorePathUri(output_path)
         return datastore_path
-    raise Exception("Not a valid output_path, it should start with 'azureml:'")
+    raise ValueError("Not a valid output_path, it should start with 'azureml:'")
 
 
 def convert_str_to_dict(input_str: str) -> Dict[str, str]:
@@ -424,6 +426,7 @@ def _parse_registered_asset_path(asset_path: str, assetType: AzureMLResourceType
             "asset_version": resource_group_id_match.group(5),
             "match_type": "resource_group_id_match",
         }
+    asset_regex_match = None
     if assetType == AzureMLResourceType.MODEL:
         asset_regex_match = re.match(MODEL_ID_REGEX_FORMAT, asset_path)
     elif assetType == AzureMLResourceType.DATA:
@@ -456,7 +459,7 @@ def modify_sys_path_for_rslex_mount(allow_rslex_not_installed: bool = False):
     if (not allow_rslex_not_installed) and (
         not path.exists(path.join(python_path, "azureml", "dataprep", "rslex_fuse_subprocess_wrapper"))
     ):
-        raise Exception(
+        raise ImportError(
             "Cannot mount since `azureml-dataprep-rslex` is not installed. "
             + "It is required for `az ml data mount` and `az ml data mount` to work."
             + "To install, run: `$ pip install --target $(eval echo $(az extension show -n ml "

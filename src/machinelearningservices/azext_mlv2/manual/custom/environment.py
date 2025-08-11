@@ -67,7 +67,7 @@ def ml_environment_create(
 
 
 def ml_environment_show(
-    cmd, name, resource_group_name=None, workspace_name=None, registry_name=None, 
+    cmd, name, resource_group_name=None, workspace_name=None, registry_name=None,
     version=None, label=None
 ):
     ml_client, debug = get_ml_client(
@@ -164,7 +164,7 @@ def ml_environment_restore(
         log_and_raise_error(err, debug)
 
 
-def _ml_environment_show(cmd, resource_group_name, name, version=None, label=None, 
+def _ml_environment_show(cmd, resource_group_name, name, version=None, label=None,
                         workspace_name=None, registry_name=None):
     ml_client, debug = get_ml_client(
         cli_ctx=cmd.cli_ctx,

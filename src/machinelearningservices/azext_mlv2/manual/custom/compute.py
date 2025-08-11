@@ -342,7 +342,7 @@ def _ml_compute_update(
         log_and_raise_error(err, debug)
 
 
-def _validate_identity(identity_type, user_assigned_identities):
+def _validate_identity(identity_type, user_assigned_identities):  # pylint: disable=unused-argument
     if identity_type:
         if identity_type not in ["SystemAssigned", "UserAssigned", "None"]:
             raise ValueError(IDENTITY_ERROR)
