@@ -19,7 +19,7 @@ def ml_datastore_delete(cmd, resource_group_name, workspace_name, name):
 
     try:
         return ml_client.datastores.delete(name)
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -29,8 +29,8 @@ def ml_datastore_show(cmd, resource_group_name, workspace_name, name):
     )
 
     try:
-        return ml_client.datastores.get(name, include_secrets=False)._to_dict()
-    except Exception as err:
+        return ml_client.datastores.get(name, include_secrets=False)._to_dict()  # pylint: disable=protected-access
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -40,10 +40,9 @@ def _ml_datastore_show(cmd, resource_group_name, workspace_name, file=None, name
             params_override = []
             if name:
                 params_override = [{"name": name}]
-            return load_datastore(file, params_override=params_override)._to_dict()
-        else:
-            return ml_datastore_show(cmd, resource_group_name, workspace_name, name)
-    except Exception as err:
+            return load_datastore(file, params_override=params_override)._to_dict()  # pylint: disable=protected-access
+        return ml_datastore_show(cmd, resource_group_name, workspace_name, name)
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err)
 
 
@@ -57,8 +56,8 @@ def ml_datastore_list(cmd, resource_group_name, workspace_name, max_results=None
             results = islice(ml_client.datastores.list(include_secrets=False), int(max_results))
         else:
             results = ml_client.datastores.list(include_secrets=False)
-        return list(map(lambda x: _dump_entity_with_warnings(x), results))
-    except Exception as err:
+        return [_dump_entity_with_warnings(x) for x in results]
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -73,9 +72,9 @@ def ml_datastore_create(cmd, resource_group_name, workspace_name, file, name=Non
 
     try:
         datastore = load_datastore(file, params_override=params_override)
-        return ml_client.datastores.create_or_update(datastore)._to_dict()
-    except Exception as err:
-        yaml_operation = True if file else False
+        return ml_client.datastores.create_or_update(datastore)._to_dict()  # pylint: disable=protected-access
+    except Exception as err:  # pylint: disable=broad-exception-caught
+        yaml_operation = bool(file)
         log_and_raise_error(err, debug, yaml_operation=yaml_operation)
 
 
@@ -85,9 +84,9 @@ def ml_datastore_update(cmd, resource_group_name, workspace_name, parameters: Di
     )
 
     try:
-        datastore = Datastore._load(parameters)
-        return ml_client.datastores.create_or_update(datastore)._to_dict()
-    except Exception as err:
+        datastore = Datastore._load(parameters)  # pylint: disable=protected-access
+        return ml_client.datastores.create_or_update(datastore)._to_dict()  # pylint: disable=protected-access
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 def ml_datastore_mount(cmd,

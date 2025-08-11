@@ -5,13 +5,12 @@
 
 from itertools import islice
 
-from azure.ai.ml._version import VERSION
 from azure.ai.ml.constants._common import Scope
 from azure.ai.ml.entities import Registry
 from azure.ai.ml.entities._load_functions import load_registry
 
 from .raise_error import log_and_raise_error
-from .utils import _dump_entity_with_warnings, get_ml_client, is_not_found_error
+from .utils import _dump_entity_with_warnings, get_ml_client
 
 
 def ml_registry_list(cmd, *, resource_group_name=None, max_results=None):
@@ -26,8 +25,8 @@ def ml_registry_list(cmd, *, resource_group_name=None, max_results=None):
             results = islice(ml_client.registries.list(scope=scope), int(max_results))
         else:
             results = ml_client.registries.list(scope=scope)
-        return list(map(lambda x: _dump_entity_with_warnings(x), results))
-    except Exception as err:
+        return [_dump_entity_with_warnings(x) for x in results]
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -37,7 +36,7 @@ def ml_registry_show(cmd, resource_group_name, name):
     try:
         reg = ml_client.registries.get(name)
         return _dump_entity_with_warnings(reg)
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -59,7 +58,7 @@ def _ml_registry_show(cmd, resource_group_name, name=None, file=None):
 
     try:
         return ml_client.registries.get(name)
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -94,7 +93,7 @@ def ml_registry_create(
 
         reg = ml_client.registries.begin_create(registry=registry, no_wait=no_wait)
         return _dump_entity_with_warnings(reg) if reg else None
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -136,7 +135,7 @@ def ml_registry_update(
             registry = parameters
         reg = ml_client.registries.begin_create(registry=registry, no_wait=no_wait)
         return _dump_entity_with_warnings(reg) if reg else None
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -145,5 +144,5 @@ def ml_registry_delete(cmd, resource_group_name=None, name=None):
 
     try:
         return ml_client.registries.begin_delete(name=name)
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
