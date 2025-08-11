@@ -282,11 +282,11 @@ interactions:
       request-context:
       - appId=cid-v1:4d6ac272-7369-45c6-9036-63d733c8519f
       set-cookie:
-      - ApplicationGatewayAffinityCORS=603e5b8f036e9d7293f296757c2a91e3; Path=/; SameSite=None;
+      - ApplicationGatewayAffinityCORS=REDACTED; Path=/; SameSite=None;
         Secure
-      - ApplicationGatewayAffinity=603e5b8f036e9d7293f296757c2a91e3; Path=/
-      - ARRAffinity=4499273ad285e4d7b1881fbf565006bfb09596e14c43b72eb983b5cedd67a379;Path=/;HttpOnly;Secure;Domain=app-cp-westus2.azurewebsites.net
-      - ARRAffinitySameSite=4499273ad285e4d7b1881fbf565006bfb09596e14c43b72eb983b5cedd67a379;Path=/;HttpOnly;SameSite=None;Secure;Domain=app-cp-westus2.azurewebsites.net
+      - ApplicationGatewayAffinity=REDACTED; Path=/
+      - ARRAffinity=REDACTED;Path=/;HttpOnly;Secure;Domain=app-cp-westus2.azurewebsites.net
+      - ARRAffinitySameSite=REDACTED;Path=/;HttpOnly;SameSite=None;Secure;Domain=app-cp-westus2.azurewebsites.net
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       vary:
@@ -474,7 +474,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/e2e-scenarios/providers/Microsoft.Resources/deployments/mock-deployment?api-version=2024-11-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Resources/deployments/Microsoft.AzureQuantum-e2e-test-w1037143","name":"Microsoft.AzureQuantum-e2e-test-w1037143","type":"Microsoft.Resources/deployments","properties":{"templateHash":"1029235462670623033","parameters":{"quantumWorkspaceName":{"type":"String","value":"e2e-test-w1037143"},"location":{"type":"String","value":"westus2"},"tags":{"type":"Object","value":{}},"providers":{"type":"Array","value":[{"providerId":"quantinuum","providerSku":"credits1"}]},"storageAccountName":{"type":"String","value":"qwe2etestswus2"},"storageAccountId":{"type":"String","value":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/qwe2etestswus2"},"storageAccountLocation":{"type":"String","value":"westus2"},"storageAccountSku":{"type":"String","value":"Standard_LRS"},"storageAccountKind":{"type":"String","value":"StorageV2"},"storageAccountDeploymentName":{"type":"String","value":"Microsoft.StorageAccount-28-May-2025-22-02-24"}},"mode":"Incremental","provisioningState":"Accepted","timestamp":"2025-05-28T22:02:27.2256676Z","duration":"PT0.0008552S","correlationId":"da754930-ca43-4352-90db-dabdc9979b2c","providers":[{"namespace":"Microsoft.Quantum","resourceTypes":[{"resourceType":"workspaces","locations":["westus2"]}]},{"namespace":"Microsoft.Resources","resourceTypes":[{"resourceType":"deployments","locations":[null]}]}],"dependencies":[{"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/Workspaces/e2e-test-w1037143","resourceType":"Microsoft.Quantum/Workspaces","resourceName":"e2e-test-w1037143"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w1037143","resourceType":"Microsoft.Quantum/workspaces","resourceName":"e2e-test-w1037143","apiVersion":"2019-11-04-preview"}],"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Resources/deployments/Microsoft.StorageAccount-28-May-2025-22-02-24","resourceType":"Microsoft.Resources/deployments","resourceName":"Microsoft.StorageAccount-28-May-2025-22-02-24"}]}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Resources/deployments/Microsoft.AzureQuantum-e2e-test-w1037143","name":"Microsoft.AzureQuantum-e2e-test-w1037143","type":"Microsoft.Resources/deployments","properties":{"templateHash":"1029235462670623033","parameters":{"quantumWorkspaceName":{"type":"String","value":"REDACTED"},"location":{"type":"String","value":"REDACTED"},"tags":{"type":"Object","value":{}},"providers":{"type":"Array","value":[{"providerId":"quantinuum","providerSku":"credits1"}]},"storageAccountName":{"type":"String","value":"qwe2etestswus2"},"storageAccountId":{"type":"String","value":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/qwe2etestswus2"},"storageAccountLocation":{"type":"String","value":"REDACTED"},"storageAccountSku":{"type":"String","value":"Standard_LRS"},"storageAccountKind":{"type":"String","value":"StorageV2"},"storageAccountDeploymentName":{"type":"String","value":"Microsoft.StorageAccount-28-May-2025-22-02-24"}},"mode":"Incremental","provisioningState":"Accepted","timestamp":"2025-05-28T22:02:27.2256676Z","duration":"PT0.0008552S","correlationId":"da754930-ca43-4352-90db-dabdc9979b2c","providers":[{"namespace":"Microsoft.Quantum","resourceTypes":[{"resourceType":"workspaces","locations":["westus2"]}]},{"namespace":"Microsoft.Resources","resourceTypes":[{"resourceType":"deployments","locations":[null]}]}],"dependencies":[{"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/Workspaces/e2e-test-w1037143","resourceType":"Microsoft.Quantum/Workspaces","resourceName":"REDACTED"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w1037143","resourceType":"Microsoft.Quantum/workspaces","resourceName":"REDACTED","apiVersion":"2019-11-04-preview"}],"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Resources/deployments/Microsoft.StorageAccount-28-May-2025-22-02-24","resourceType":"Microsoft.Resources/deployments","resourceName":"REDACTED"}]}}'
     headers:
       azure-asyncoperation:
       - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/e2e-scenarios/providers/Microsoft.Resources/deployments/Microsoft.AzureQuantum-e2e-test-w1037143/operationStatuses/08584531371382373798?api-version=2024-11-01&t=638840665477881675&c=MIIHpTCCBo2gAwIBAgITOgWZuFmLREgOyTdeugAEBZm4WTANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSU5GUkEgQ0EgMDEwHhcNMjUwNDE5MTQyMjI3WhcNMjUxMDE2MTQyMjI3WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAPxDlNdj6r6H0vTzKfz228nqLQPXYSxPqEGQSSSCczQcCX3f_Xtnvc-lFdoleay-OVQlgfbWiMkGazl2q7FVj9BZUHJ3KXFg833nlMDzzIkfrA17t4t3OW-6po21aPw9TdEBtH-GReYxdd8YmK-hHhKfpllLkKKn29Z8r3ecn-VJ1URRr4gV1Dnhd8h62eio4oVWmqq_9ITkiyfphE8gKB3n-2ZGTlftv1uEX4hpgnUbyhP4GBPp9Ni0RdYmpukMEr1-GI3W5OnXgKOvoCRB0HZQKU-5u630M-76UA_GFyALd1X_xQwHcCHKvtBzX5EEcQ4AOj_B540c3Mp0HnljQsECAwEAAaOCBJIwggSOMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHaBggrBgEFBQcBAQSCAcwwggHIMGYGCCsGAQUFBzAChlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQlkyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMElORlJBJTIwQ0ElMjAwMSg0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JZMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CWTJQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSU5GUkElMjBDQSUyMDAxKDQpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDMuYW1lLmdibC9haWEvQlkyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMElORlJBJTIwQ0ElMjAwMSg0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JZMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3J0MB0GA1UdDgQWBBRgocSx-jjjSuZiJXHuNlAhZPhmbjAOBgNVHQ8BAf8EBAMCBaAwggE1BgNVHR8EggEsMIIBKDCCASSgggEgoIIBHIZCaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBTl2Ztn_PjsurvwwKidileIud8-YzAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAK5mT0Rrym5x1NF2yah7nxZLo1y0madgpRkCREZyGAoW02DZD68DX6wagq4RbcOr_MAlhvWOTjVB8J52ZIsydOGq5NSpxte9Cy10m7-zSXWMn0yNE8YUToarDNRzmshQ5pEBXhjU6kSMEvqeNG8Fr3KrDZEVieQc5By_ZV8F9vtuv90XjrjiLw1qOrPVVvUFOTx-JlUR4aErF4Jldd_YA0aWCiYbvu3Bd1vWtXdnrkJSX-natlKNqGimVnj86nKEao8ktK5pKaHq6C8vbOLeNreXRy5C2fC1tgiZ00V2pHuk1qbOdhlzTDv8G0HZLm_T7_s92OBqMAwBJ1uChKnQm6M&s=tV9I48_9wM2-DSIjVkqSAgsORATpV1JyE6y87R27i2P5JZyQdSV9aeVK2fd22pOmhZsN7pUe_RvcCgb4FUvGVtBzqp2zq9tEDMY-vVo7GEQly2EPWaM8n47aVbBmbimNUl47OWLl9eTOKYMyUKOH8gcf8LzA84-y3mO8IRX3VU50sK7lhOLLzRjVUH4t0EZymLahFUMcjil0z6QJa94uDrjlDylFDENaMszRiOs2AocQFVnQNXJPWP-ObLswBtiHKcq8roA4JxIh-xLo5Wz5cP4L7v93FrDMdm7LzV3R_lGwmQVZVf5xlAG0Rd3_iHSTJaMSY6XP18ZL9GKXR250_g&h=kQB2azB7d6N95JoHb9MhwIpvDlaSEoXICYdMMsRse9I
@@ -774,7 +774,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/e2e-scenarios/providers/Microsoft.Resources/deployments/mock-deployment?api-version=2024-11-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Resources/deployments/Microsoft.AzureQuantum-e2e-test-w1037143","name":"Microsoft.AzureQuantum-e2e-test-w1037143","type":"Microsoft.Resources/deployments","properties":{"templateHash":"1029235462670623033","parameters":{"quantumWorkspaceName":{"type":"String","value":"e2e-test-w1037143"},"location":{"type":"String","value":"westus2"},"tags":{"type":"Object","value":{}},"providers":{"type":"Array","value":[{"providerId":"quantinuum","providerSku":"credits1"}]},"storageAccountName":{"type":"String","value":"qwe2etestswus2"},"storageAccountId":{"type":"String","value":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/qwe2etestswus2"},"storageAccountLocation":{"type":"String","value":"westus2"},"storageAccountSku":{"type":"String","value":"Standard_LRS"},"storageAccountKind":{"type":"String","value":"StorageV2"},"storageAccountDeploymentName":{"type":"String","value":"Microsoft.StorageAccount-28-May-2025-22-02-24"}},"mode":"Incremental","provisioningState":"Succeeded","timestamp":"2025-05-28T22:04:57.9846331Z","duration":"PT2M30.7589655S","correlationId":"da754930-ca43-4352-90db-dabdc9979b2c","providers":[{"namespace":"Microsoft.Quantum","resourceTypes":[{"resourceType":"workspaces","locations":["westus2"]}]},{"namespace":"Microsoft.Resources","resourceTypes":[{"resourceType":"deployments","locations":[null]}]}],"dependencies":[{"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/Workspaces/e2e-test-w1037143","resourceType":"Microsoft.Quantum/Workspaces","resourceName":"e2e-test-w1037143"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w1037143","resourceType":"Microsoft.Quantum/workspaces","resourceName":"e2e-test-w1037143","apiVersion":"2019-11-04-preview"}],"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Resources/deployments/Microsoft.StorageAccount-28-May-2025-22-02-24","resourceType":"Microsoft.Resources/deployments","resourceName":"Microsoft.StorageAccount-28-May-2025-22-02-24"}],"outputs":{},"outputResources":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w1037143"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/qwe2etestswus2"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/qwe2etestswus2/fileServices/default"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/qwe2etestswus2/providers/Microsoft.Authorization/roleAssignments/2f174ef4-1af0-5d4c-ac92-72656bafdea0"}]}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Resources/deployments/Microsoft.AzureQuantum-e2e-test-w1037143","name":"Microsoft.AzureQuantum-e2e-test-w1037143","type":"Microsoft.Resources/deployments","properties":{"templateHash":"1029235462670623033","parameters":{"quantumWorkspaceName":{"type":"String","value":"REDACTED"},"location":{"type":"String","value":"REDACTED"},"tags":{"type":"Object","value":{}},"providers":{"type":"Array","value":[{"providerId":"quantinuum","providerSku":"credits1"}]},"storageAccountName":{"type":"String","value":"qwe2etestswus2"},"storageAccountId":{"type":"String","value":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/qwe2etestswus2"},"storageAccountLocation":{"type":"String","value":"REDACTED"},"storageAccountSku":{"type":"String","value":"Standard_LRS"},"storageAccountKind":{"type":"String","value":"StorageV2"},"storageAccountDeploymentName":{"type":"String","value":"Microsoft.StorageAccount-28-May-2025-22-02-24"}},"mode":"Incremental","provisioningState":"Succeeded","timestamp":"2025-05-28T22:04:57.9846331Z","duration":"PT2M30.7589655S","correlationId":"da754930-ca43-4352-90db-dabdc9979b2c","providers":[{"namespace":"Microsoft.Quantum","resourceTypes":[{"resourceType":"workspaces","locations":["westus2"]}]},{"namespace":"Microsoft.Resources","resourceTypes":[{"resourceType":"deployments","locations":[null]}]}],"dependencies":[{"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/Workspaces/e2e-test-w1037143","resourceType":"Microsoft.Quantum/Workspaces","resourceName":"REDACTED"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w1037143","resourceType":"Microsoft.Quantum/workspaces","resourceName":"REDACTED","apiVersion":"2019-11-04-preview"}],"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Resources/deployments/Microsoft.StorageAccount-28-May-2025-22-02-24","resourceType":"Microsoft.Resources/deployments","resourceName":"REDACTED"}],"outputs":{},"outputResources":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w1037143"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/qwe2etestswus2"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/qwe2etestswus2/fileServices/default"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/qwe2etestswus2/providers/Microsoft.Authorization/roleAssignments/2f174ef4-1af0-5d4c-ac92-72656bafdea0"}]}}'
     headers:
       cache-control:
       - no-cache
@@ -821,7 +821,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w1037143?api-version=2023-11-13-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w1037143","name":"e2e-test-w1037143","type":"microsoft.quantum/workspaces","location":"westus2","tags":{},"systemData":{"createdBy":"kikomiss@microsoft.com","createdByType":"User","createdAt":"2025-05-28T22:02:30.8590276Z","lastModifiedBy":"kikomiss@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-05-28T22:02:30.8590276Z"},"identity":{"principalId":"ea604dbf-e31e-4da5-b492-108487653ed9","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"},"properties":{"providers":[{"providerId":"quantinuum","providerSku":"credits1","applicationName":"e2e-test-w1037143-quantinuum","provisioningState":"Succeeded","resourceUsageId":"6df36964-67bd-4abc-a025-3119a52cabfa"}],"provisioningState":"Succeeded","usable":"Yes","storageAccount":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/qwe2etestswus2","apiKeyEnabled":false,"endpointUri":"https://e2e-test-w1037143.westus2.quantum.azure.com"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w1037143","name":"e2e-test-w1037143","type":"microsoft.quantum/workspaces","location":"westus2","tags":{},"systemData":{"createdBy":"kikomiss@microsoft.com","createdByType":"User","createdAt":"2025-05-28T22:02:30.8590276Z","lastModifiedBy":"kikomiss@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-05-28T22:02:30.8590276Z"},"identity":{"principalId":"ea604dbf-e31e-4da5-b492-108487653ed9","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"},"properties":{"providers":[{"providerId":"quantinuum","providerSku":"credits1","applicationName":"e2e-test-w1037143-quantinuum","provisioningState":"Succeeded","resourceUsageId":"6df36964-67bd-4abc-a025-3119a52cabfa"}],"provisioningState":"Succeeded","usable":"Yes","storageAccount":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/qwe2etestswus2","apiKeyEnabled":REDACTED,"endpointUri":"https://e2e-test-w1037143.westus2.quantum.azure.com"}}'
     headers:
       cache-control:
       - no-cache
@@ -872,7 +872,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w1037143?api-version=2023-11-13-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w1037143","name":"e2e-test-w1037143","type":"microsoft.quantum/workspaces","location":"westus2","tags":{},"systemData":{"createdBy":"kikomiss@microsoft.com","createdByType":"User","createdAt":"2025-05-28T22:02:30.8590276Z","lastModifiedBy":"kikomiss@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-05-28T22:02:30.8590276Z"},"identity":{"principalId":"ea604dbf-e31e-4da5-b492-108487653ed9","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"},"properties":{"providers":[{"providerId":"quantinuum","providerSku":"credits1","applicationName":"e2e-test-w1037143-quantinuum","provisioningState":"Succeeded","resourceUsageId":"6df36964-67bd-4abc-a025-3119a52cabfa"}],"provisioningState":"Succeeded","usable":"Yes","storageAccount":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/qwe2etestswus2","apiKeyEnabled":false,"endpointUri":"https://e2e-test-w1037143.westus2.quantum.azure.com"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w1037143","name":"e2e-test-w1037143","type":"microsoft.quantum/workspaces","location":"westus2","tags":{},"systemData":{"createdBy":"kikomiss@microsoft.com","createdByType":"User","createdAt":"2025-05-28T22:02:30.8590276Z","lastModifiedBy":"kikomiss@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-05-28T22:02:30.8590276Z"},"identity":{"principalId":"ea604dbf-e31e-4da5-b492-108487653ed9","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"},"properties":{"providers":[{"providerId":"quantinuum","providerSku":"credits1","applicationName":"e2e-test-w1037143-quantinuum","provisioningState":"Succeeded","resourceUsageId":"6df36964-67bd-4abc-a025-3119a52cabfa"}],"provisioningState":"Succeeded","usable":"Yes","storageAccount":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/qwe2etestswus2","apiKeyEnabled":REDACTED,"endpointUri":"https://e2e-test-w1037143.westus2.quantum.azure.com"}}'
     headers:
       cache-control:
       - no-cache
@@ -908,7 +908,7 @@ interactions:
       "quantinuum", "providerSku": "credits1", "applicationName": "e2e-test-w1037143-quantinuum",
       "provisioningState": "Succeeded", "resourceUsageId": "6df36964-67bd-4abc-a025-3119a52cabfa"}],
       "storageAccount": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/qwe2etestswus2",
-      "apiKeyEnabled": true}, "identity": {"type": "SystemAssigned"}}'
+      "apiKeyEnabled":REDACTED}, "identity": {"type": "SystemAssigned"}}'
     headers:
       Accept:
       - application/json
@@ -931,7 +931,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w1037143?api-version=2023-11-13-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w1037143","name":"e2e-test-w1037143","type":"microsoft.quantum/workspaces","location":"westus2","tags":{},"systemData":{"createdBy":"kikomiss@microsoft.com","createdByType":"User","createdAt":"2025-05-28T22:02:30.8590276Z","lastModifiedBy":"kikomiss@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-05-28T22:05:02.6757536Z"},"identity":{"principalId":"ea604dbf-e31e-4da5-b492-108487653ed9","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"},"properties":{"endpointUri":"https://e2e-test-w1037143.westus2.quantum.azure.com","providers":[{"providerId":"quantinuum","providerSku":"credits1","applicationName":"e2e-test-w1037143-quantinuum","provisioningState":"Succeeded","resourceUsageId":"6df36964-67bd-4abc-a025-3119a52cabfa"}],"storageAccount":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/qwe2etestswus2","apiKeyEnabled":true,"provisioningState":"Accepted"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w1037143","name":"e2e-test-w1037143","type":"microsoft.quantum/workspaces","location":"westus2","tags":{},"systemData":{"createdBy":"kikomiss@microsoft.com","createdByType":"User","createdAt":"2025-05-28T22:02:30.8590276Z","lastModifiedBy":"kikomiss@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-05-28T22:05:02.6757536Z"},"identity":{"principalId":"ea604dbf-e31e-4da5-b492-108487653ed9","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"},"properties":{"endpointUri":"https://e2e-test-w1037143.westus2.quantum.azure.com","providers":[{"providerId":"quantinuum","providerSku":"credits1","applicationName":"e2e-test-w1037143-quantinuum","provisioningState":"Succeeded","resourceUsageId":"6df36964-67bd-4abc-a025-3119a52cabfa"}],"storageAccount":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/qwe2etestswus2","apiKeyEnabled":REDACTED,"provisioningState":"Accepted"}}'
     headers:
       azure-asyncoperation:
       - https://management.azure.com/providers/Microsoft.Quantum/locations/WESTUS2/operationStatuses/425856ce-3cd0-4c46-9703-34ab24575b32*D089E8841C956C745F40A6157388D9EA157873F19A4DBF81AE73D167E0442870?api-version=2023-11-13-preview&t=638840667131602629&c=MIIHpTCCBo2gAwIBAgITOgWZuFmLREgOyTdeugAEBZm4WTANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSU5GUkEgQ0EgMDEwHhcNMjUwNDE5MTQyMjI3WhcNMjUxMDE2MTQyMjI3WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAPxDlNdj6r6H0vTzKfz228nqLQPXYSxPqEGQSSSCczQcCX3f_Xtnvc-lFdoleay-OVQlgfbWiMkGazl2q7FVj9BZUHJ3KXFg833nlMDzzIkfrA17t4t3OW-6po21aPw9TdEBtH-GReYxdd8YmK-hHhKfpllLkKKn29Z8r3ecn-VJ1URRr4gV1Dnhd8h62eio4oVWmqq_9ITkiyfphE8gKB3n-2ZGTlftv1uEX4hpgnUbyhP4GBPp9Ni0RdYmpukMEr1-GI3W5OnXgKOvoCRB0HZQKU-5u630M-76UA_GFyALd1X_xQwHcCHKvtBzX5EEcQ4AOj_B540c3Mp0HnljQsECAwEAAaOCBJIwggSOMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHaBggrBgEFBQcBAQSCAcwwggHIMGYGCCsGAQUFBzAChlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQlkyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMElORlJBJTIwQ0ElMjAwMSg0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JZMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CWTJQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSU5GUkElMjBDQSUyMDAxKDQpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDMuYW1lLmdibC9haWEvQlkyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMElORlJBJTIwQ0ElMjAwMSg0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JZMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3J0MB0GA1UdDgQWBBRgocSx-jjjSuZiJXHuNlAhZPhmbjAOBgNVHQ8BAf8EBAMCBaAwggE1BgNVHR8EggEsMIIBKDCCASSgggEgoIIBHIZCaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBTl2Ztn_PjsurvwwKidileIud8-YzAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAK5mT0Rrym5x1NF2yah7nxZLo1y0madgpRkCREZyGAoW02DZD68DX6wagq4RbcOr_MAlhvWOTjVB8J52ZIsydOGq5NSpxte9Cy10m7-zSXWMn0yNE8YUToarDNRzmshQ5pEBXhjU6kSMEvqeNG8Fr3KrDZEVieQc5By_ZV8F9vtuv90XjrjiLw1qOrPVVvUFOTx-JlUR4aErF4Jldd_YA0aWCiYbvu3Bd1vWtXdnrkJSX-natlKNqGimVnj86nKEao8ktK5pKaHq6C8vbOLeNreXRy5C2fC1tgiZ00V2pHuk1qbOdhlzTDv8G0HZLm_T7_s92OBqMAwBJ1uChKnQm6M&s=0om--JGeRGZYk0vpHAUOTyMprpzfstMTQAmGwQEWCzopcren-ae_G2lPLRHI-u3UEJCt4hJ6ATi_TM2haukdBx5DBoK-1c5nFtBI1LDzu_Dw0qI6Quw_sqjb-xWBbLn6o-YK-D7L2y-cN2TadvF6avskK7328LVOVRD_WxzFshXX0LeriDDc8gQofLbQTWUKAk6dLlmfx9MBPOGOuhG8qDRB8LISt2VAUbukbdGkKv-BqvEJ829-82qFPLRmsqrv2Bslr3rAevjEHJlzHT0Q2P3shoCA3vxyjEhzXtYkg7SwSvgBW8aXUNnR3ZnGEplRiXVggwwXeBNRhBu7i1LMdQ&h=PQXNqtLKbLCyi7xSLXFvCYj0gNLV0m0UpH-kF6Kplw8
@@ -954,11 +954,11 @@ interactions:
       request-context:
       - appId=cid-v1:4d6ac272-7369-45c6-9036-63d733c8519f
       set-cookie:
-      - ApplicationGatewayAffinityCORS=603e5b8f036e9d7293f296757c2a91e3; Path=/; SameSite=None;
+      - ApplicationGatewayAffinityCORS=REDACTED; Path=/; SameSite=None;
         Secure
-      - ApplicationGatewayAffinity=603e5b8f036e9d7293f296757c2a91e3; Path=/
-      - ARRAffinity=4499273ad285e4d7b1881fbf565006bfb09596e14c43b72eb983b5cedd67a379;Path=/;HttpOnly;Secure;Domain=app-cp-westus2.azurewebsites.net
-      - ARRAffinitySameSite=4499273ad285e4d7b1881fbf565006bfb09596e14c43b72eb983b5cedd67a379;Path=/;HttpOnly;SameSite=None;Secure;Domain=app-cp-westus2.azurewebsites.net
+      - ApplicationGatewayAffinity=REDACTED; Path=/
+      - ARRAffinity=REDACTED;Path=/;HttpOnly;Secure;Domain=app-cp-westus2.azurewebsites.net
+      - ARRAffinitySameSite=REDACTED;Path=/;HttpOnly;SameSite=None;Secure;Domain=app-cp-westus2.azurewebsites.net
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       vary:
@@ -994,7 +994,7 @@ interactions:
       Connection:
       - keep-alive
       Cookie:
-      - ApplicationGatewayAffinityCORS=603e5b8f036e9d7293f296757c2a91e3; ApplicationGatewayAffinity=603e5b8f036e9d7293f296757c2a91e3
+      - ApplicationGatewayAffinityCORS=REDACTED; ApplicationGatewayAffinity=603e5b8f036e9d7293f296757c2a91e3
       ParameterSetName:
       - --enable-api-key -o
       User-Agent:
@@ -1045,7 +1045,7 @@ interactions:
       Connection:
       - keep-alive
       Cookie:
-      - ApplicationGatewayAffinityCORS=603e5b8f036e9d7293f296757c2a91e3; ApplicationGatewayAffinity=603e5b8f036e9d7293f296757c2a91e3
+      - ApplicationGatewayAffinityCORS=REDACTED; ApplicationGatewayAffinity=603e5b8f036e9d7293f296757c2a91e3
       ParameterSetName:
       - --enable-api-key -o
       User-Agent:
@@ -1096,7 +1096,7 @@ interactions:
       Connection:
       - keep-alive
       Cookie:
-      - ApplicationGatewayAffinityCORS=603e5b8f036e9d7293f296757c2a91e3; ApplicationGatewayAffinity=603e5b8f036e9d7293f296757c2a91e3
+      - ApplicationGatewayAffinityCORS=REDACTED; ApplicationGatewayAffinity=603e5b8f036e9d7293f296757c2a91e3
       ParameterSetName:
       - --enable-api-key -o
       User-Agent:
@@ -1106,7 +1106,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w1037143?api-version=2023-11-13-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w1037143","name":"e2e-test-w1037143","type":"microsoft.quantum/workspaces","location":"westus2","tags":{},"systemData":{"createdBy":"kikomiss@microsoft.com","createdByType":"User","createdAt":"2025-05-28T22:02:30.8590276Z","lastModifiedBy":"kikomiss@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-05-28T22:05:02.6757536Z"},"identity":{"principalId":"ea604dbf-e31e-4da5-b492-108487653ed9","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"},"properties":{"providers":[{"providerId":"quantinuum","providerSku":"credits1","applicationName":"e2e-test-w1037143-quantinuum","provisioningState":"Succeeded","resourceUsageId":"6df36964-67bd-4abc-a025-3119a52cabfa"}],"provisioningState":"Succeeded","usable":"Yes","storageAccount":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/qwe2etestswus2","endpointUri":"https://e2e-test-w1037143.westus2.quantum.azure.com","apiKeyEnabled":true}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w1037143","name":"e2e-test-w1037143","type":"microsoft.quantum/workspaces","location":"westus2","tags":{},"systemData":{"createdBy":"kikomiss@microsoft.com","createdByType":"User","createdAt":"2025-05-28T22:02:30.8590276Z","lastModifiedBy":"kikomiss@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-05-28T22:05:02.6757536Z"},"identity":{"principalId":"ea604dbf-e31e-4da5-b492-108487653ed9","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"},"properties":{"providers":[{"providerId":"quantinuum","providerSku":"credits1","applicationName":"e2e-test-w1037143-quantinuum","provisioningState":"Succeeded","resourceUsageId":"6df36964-67bd-4abc-a025-3119a52cabfa"}],"provisioningState":"Succeeded","usable":"Yes","storageAccount":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/qwe2etestswus2","endpointUri":"https://e2e-test-w1037143.westus2.quantum.azure.com","apiKeyEnabled":REDACTED}}'
     headers:
       cache-control:
       - no-cache
@@ -1159,7 +1159,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w1037143/listKeys?api-version=2023-11-13-preview
   response:
     body:
-      string: '{"apiKeyEnabled":true,"primaryKey":{"createdAt":"2025-05-28T22:05:18Z","key":"CDRu3NC-5MSrOdbC__R36VQeM-Ra98YrYJzSiL_7VA_ibUNDppTlxYOGvIYCgNEMZNmDEmyVhM-rAZQU55VIRg"},"secondaryKey":{"createdAt":"2025-05-28T22:05:18Z","key":"QZ92xkR2CxkHBDeSqskMx714gBAQLsbr8aZuEjOdzteveIkYC2LYOiLtL3eGIO-JbF7EmXaREKsYAZQUrE7eHg"},"primaryConnectionString":"SubscriptionId=1916d14f-6594-4756-955d-9b95970a73a8;ResourceGroupName=e2e-scenarios;WorkspaceName=e2e-test-w1037143;ApiKey=CDRu3NC-5MSrOdbC__R36VQeM-Ra98YrYJzSiL_7VA_ibUNDppTlxYOGvIYCgNEMZNmDEmyVhM-rAZQU55VIRg;QuantumEndpoint=https://westus2.quantum.azure.com/;","secondaryConnectionString":"SubscriptionId=1916d14f-6594-4756-955d-9b95970a73a8;ResourceGroupName=e2e-scenarios;WorkspaceName=e2e-test-w1037143;ApiKey=QZ92xkR2CxkHBDeSqskMx714gBAQLsbr8aZuEjOdzteveIkYC2LYOiLtL3eGIO-JbF7EmXaREKsYAZQUrE7eHg;QuantumEndpoint=https://westus2.quantum.azure.com/;"}'
+      string: '{"apiKeyEnabled":REDACTED,"primaryKey":{"key":"REDACTED"},"secondaryKey":{"key":"REDACTED"},"primaryConnectionString":"SubscriptionId=REDACTED;ResourceGroupName=REDACTED;WorkspaceName=REDACTED;ApiKey=REDACTED;QuantumEndpoint=REDACTED","secondaryConnectionString":"SubscriptionId=REDACTED;ResourceGroupName=REDACTED;WorkspaceName=REDACTED;ApiKey=REDACTED;QuantumEndpoint=REDACTED"}'
     headers:
       cache-control:
       - no-cache
@@ -1178,11 +1178,11 @@ interactions:
       request-context:
       - appId=cid-v1:4d6ac272-7369-45c6-9036-63d733c8519f
       set-cookie:
-      - ApplicationGatewayAffinityCORS=603e5b8f036e9d7293f296757c2a91e3; Path=/; SameSite=None;
+      - ApplicationGatewayAffinityCORS=REDACTED; Path=/; SameSite=None;
         Secure
-      - ApplicationGatewayAffinity=603e5b8f036e9d7293f296757c2a91e3; Path=/
-      - ARRAffinity=4499273ad285e4d7b1881fbf565006bfb09596e14c43b72eb983b5cedd67a379;Path=/;HttpOnly;Secure;Domain=app-cp-westus2.azurewebsites.net
-      - ARRAffinitySameSite=4499273ad285e4d7b1881fbf565006bfb09596e14c43b72eb983b5cedd67a379;Path=/;HttpOnly;SameSite=None;Secure;Domain=app-cp-westus2.azurewebsites.net
+      - ApplicationGatewayAffinity=REDACTED; Path=/
+      - ARRAffinity=REDACTED;Path=/;HttpOnly;Secure;Domain=app-cp-westus2.azurewebsites.net
+      - ARRAffinitySameSite=REDACTED;Path=/;HttpOnly;SameSite=None;Secure;Domain=app-cp-westus2.azurewebsites.net
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       vary:
@@ -1247,11 +1247,11 @@ interactions:
       request-context:
       - appId=cid-v1:4d6ac272-7369-45c6-9036-63d733c8519f
       set-cookie:
-      - ApplicationGatewayAffinityCORS=603e5b8f036e9d7293f296757c2a91e3; Path=/; SameSite=None;
+      - ApplicationGatewayAffinityCORS=REDACTED; Path=/; SameSite=None;
         Secure
-      - ApplicationGatewayAffinity=603e5b8f036e9d7293f296757c2a91e3; Path=/
-      - ARRAffinity=4499273ad285e4d7b1881fbf565006bfb09596e14c43b72eb983b5cedd67a379;Path=/;HttpOnly;Secure;Domain=app-cp-westus2.azurewebsites.net
-      - ARRAffinitySameSite=4499273ad285e4d7b1881fbf565006bfb09596e14c43b72eb983b5cedd67a379;Path=/;HttpOnly;SameSite=None;Secure;Domain=app-cp-westus2.azurewebsites.net
+      - ApplicationGatewayAffinity=REDACTED; Path=/
+      - ARRAffinity=REDACTED;Path=/;HttpOnly;Secure;Domain=app-cp-westus2.azurewebsites.net
+      - ARRAffinitySameSite=REDACTED;Path=/;HttpOnly;SameSite=None;Secure;Domain=app-cp-westus2.azurewebsites.net
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-cache:
@@ -1314,11 +1314,11 @@ interactions:
       request-context:
       - appId=cid-v1:4d6ac272-7369-45c6-9036-63d733c8519f
       set-cookie:
-      - ApplicationGatewayAffinityCORS=603e5b8f036e9d7293f296757c2a91e3; Path=/; SameSite=None;
+      - ApplicationGatewayAffinityCORS=REDACTED; Path=/; SameSite=None;
         Secure
-      - ApplicationGatewayAffinity=603e5b8f036e9d7293f296757c2a91e3; Path=/
-      - ARRAffinity=4499273ad285e4d7b1881fbf565006bfb09596e14c43b72eb983b5cedd67a379;Path=/;HttpOnly;Secure;Domain=app-cp-westus2.azurewebsites.net
-      - ARRAffinitySameSite=4499273ad285e4d7b1881fbf565006bfb09596e14c43b72eb983b5cedd67a379;Path=/;HttpOnly;SameSite=None;Secure;Domain=app-cp-westus2.azurewebsites.net
+      - ApplicationGatewayAffinity=REDACTED; Path=/
+      - ARRAffinity=REDACTED;Path=/;HttpOnly;Secure;Domain=app-cp-westus2.azurewebsites.net
+      - ARRAffinitySameSite=REDACTED;Path=/;HttpOnly;SameSite=None;Secure;Domain=app-cp-westus2.azurewebsites.net
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-cache:
@@ -1381,11 +1381,11 @@ interactions:
       request-context:
       - appId=cid-v1:4d6ac272-7369-45c6-9036-63d733c8519f
       set-cookie:
-      - ApplicationGatewayAffinityCORS=603e5b8f036e9d7293f296757c2a91e3; Path=/; SameSite=None;
+      - ApplicationGatewayAffinityCORS=REDACTED; Path=/; SameSite=None;
         Secure
-      - ApplicationGatewayAffinity=603e5b8f036e9d7293f296757c2a91e3; Path=/
-      - ARRAffinity=4499273ad285e4d7b1881fbf565006bfb09596e14c43b72eb983b5cedd67a379;Path=/;HttpOnly;Secure;Domain=app-cp-westus2.azurewebsites.net
-      - ARRAffinitySameSite=4499273ad285e4d7b1881fbf565006bfb09596e14c43b72eb983b5cedd67a379;Path=/;HttpOnly;SameSite=None;Secure;Domain=app-cp-westus2.azurewebsites.net
+      - ApplicationGatewayAffinity=REDACTED; Path=/
+      - ARRAffinity=REDACTED;Path=/;HttpOnly;Secure;Domain=app-cp-westus2.azurewebsites.net
+      - ARRAffinitySameSite=REDACTED;Path=/;HttpOnly;SameSite=None;Secure;Domain=app-cp-westus2.azurewebsites.net
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-cache:
@@ -1427,7 +1427,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w1037143?api-version=2023-11-13-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w1037143","name":"e2e-test-w1037143","type":"microsoft.quantum/workspaces","location":"westus2","tags":{},"systemData":{"createdBy":"kikomiss@microsoft.com","createdByType":"User","createdAt":"2025-05-28T22:02:30.8590276Z","lastModifiedBy":"kikomiss@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-05-28T22:05:02.6757536Z"},"identity":{"principalId":"ea604dbf-e31e-4da5-b492-108487653ed9","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"},"properties":{"providers":[{"providerId":"quantinuum","providerSku":"credits1","applicationName":"e2e-test-w1037143-quantinuum","provisioningState":"Succeeded","resourceUsageId":"6df36964-67bd-4abc-a025-3119a52cabfa"}],"provisioningState":"Succeeded","usable":"Yes","storageAccount":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/qwe2etestswus2","endpointUri":"https://e2e-test-w1037143.westus2.quantum.azure.com","apiKeyEnabled":true}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w1037143","name":"e2e-test-w1037143","type":"microsoft.quantum/workspaces","location":"westus2","tags":{},"systemData":{"createdBy":"kikomiss@microsoft.com","createdByType":"User","createdAt":"2025-05-28T22:02:30.8590276Z","lastModifiedBy":"kikomiss@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-05-28T22:05:02.6757536Z"},"identity":{"principalId":"ea604dbf-e31e-4da5-b492-108487653ed9","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"},"properties":{"providers":[{"providerId":"quantinuum","providerSku":"credits1","applicationName":"e2e-test-w1037143-quantinuum","provisioningState":"Succeeded","resourceUsageId":"6df36964-67bd-4abc-a025-3119a52cabfa"}],"provisioningState":"Succeeded","usable":"Yes","storageAccount":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/qwe2etestswus2","endpointUri":"https://e2e-test-w1037143.westus2.quantum.azure.com","apiKeyEnabled":REDACTED}}'
     headers:
       cache-control:
       - no-cache
@@ -1463,7 +1463,7 @@ interactions:
       "quantinuum", "providerSku": "credits1", "applicationName": "e2e-test-w1037143-quantinuum",
       "provisioningState": "Succeeded", "resourceUsageId": "6df36964-67bd-4abc-a025-3119a52cabfa"}],
       "storageAccount": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/qwe2etestswus2",
-      "apiKeyEnabled": false}, "identity": {"type": "SystemAssigned"}}'
+      "apiKeyEnabled":REDACTED}, "identity": {"type": "SystemAssigned"}}'
     headers:
       Accept:
       - application/json
@@ -1486,7 +1486,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w1037143?api-version=2023-11-13-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w1037143","name":"e2e-test-w1037143","type":"microsoft.quantum/workspaces","location":"westus2","tags":{},"systemData":{"createdBy":"kikomiss@microsoft.com","createdByType":"User","createdAt":"2025-05-28T22:02:30.8590276Z","lastModifiedBy":"kikomiss@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-05-28T22:05:49.607286Z"},"identity":{"principalId":"ea604dbf-e31e-4da5-b492-108487653ed9","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"},"properties":{"endpointUri":"https://e2e-test-w1037143.westus2.quantum.azure.com","providers":[{"providerId":"quantinuum","providerSku":"credits1","applicationName":"e2e-test-w1037143-quantinuum","provisioningState":"Succeeded","resourceUsageId":"6df36964-67bd-4abc-a025-3119a52cabfa"}],"storageAccount":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/qwe2etestswus2","apiKeyEnabled":false,"provisioningState":"Accepted"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w1037143","name":"e2e-test-w1037143","type":"microsoft.quantum/workspaces","location":"westus2","tags":{},"systemData":{"createdBy":"kikomiss@microsoft.com","createdByType":"User","createdAt":"2025-05-28T22:02:30.8590276Z","lastModifiedBy":"kikomiss@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-05-28T22:05:49.607286Z"},"identity":{"principalId":"ea604dbf-e31e-4da5-b492-108487653ed9","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"},"properties":{"endpointUri":"https://e2e-test-w1037143.westus2.quantum.azure.com","providers":[{"providerId":"quantinuum","providerSku":"credits1","applicationName":"e2e-test-w1037143-quantinuum","provisioningState":"Succeeded","resourceUsageId":"6df36964-67bd-4abc-a025-3119a52cabfa"}],"storageAccount":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/qwe2etestswus2","apiKeyEnabled":REDACTED,"provisioningState":"Accepted"}}'
     headers:
       azure-asyncoperation:
       - https://management.azure.com/providers/Microsoft.Quantum/locations/WESTUS2/operationStatuses/27351598-3be3-4d56-a75d-427542ed68d9*D089E8841C956C745F40A6157388D9EA157873F19A4DBF81AE73D167E0442870?api-version=2023-11-13-preview&t=638840667498729189&c=MIIHpTCCBo2gAwIBAgITOgWZuFmLREgOyTdeugAEBZm4WTANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSU5GUkEgQ0EgMDEwHhcNMjUwNDE5MTQyMjI3WhcNMjUxMDE2MTQyMjI3WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAPxDlNdj6r6H0vTzKfz228nqLQPXYSxPqEGQSSSCczQcCX3f_Xtnvc-lFdoleay-OVQlgfbWiMkGazl2q7FVj9BZUHJ3KXFg833nlMDzzIkfrA17t4t3OW-6po21aPw9TdEBtH-GReYxdd8YmK-hHhKfpllLkKKn29Z8r3ecn-VJ1URRr4gV1Dnhd8h62eio4oVWmqq_9ITkiyfphE8gKB3n-2ZGTlftv1uEX4hpgnUbyhP4GBPp9Ni0RdYmpukMEr1-GI3W5OnXgKOvoCRB0HZQKU-5u630M-76UA_GFyALd1X_xQwHcCHKvtBzX5EEcQ4AOj_B540c3Mp0HnljQsECAwEAAaOCBJIwggSOMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHaBggrBgEFBQcBAQSCAcwwggHIMGYGCCsGAQUFBzAChlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQlkyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMElORlJBJTIwQ0ElMjAwMSg0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JZMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CWTJQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSU5GUkElMjBDQSUyMDAxKDQpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDMuYW1lLmdibC9haWEvQlkyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMElORlJBJTIwQ0ElMjAwMSg0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JZMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3J0MB0GA1UdDgQWBBRgocSx-jjjSuZiJXHuNlAhZPhmbjAOBgNVHQ8BAf8EBAMCBaAwggE1BgNVHR8EggEsMIIBKDCCASSgggEgoIIBHIZCaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBTl2Ztn_PjsurvwwKidileIud8-YzAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAK5mT0Rrym5x1NF2yah7nxZLo1y0madgpRkCREZyGAoW02DZD68DX6wagq4RbcOr_MAlhvWOTjVB8J52ZIsydOGq5NSpxte9Cy10m7-zSXWMn0yNE8YUToarDNRzmshQ5pEBXhjU6kSMEvqeNG8Fr3KrDZEVieQc5By_ZV8F9vtuv90XjrjiLw1qOrPVVvUFOTx-JlUR4aErF4Jldd_YA0aWCiYbvu3Bd1vWtXdnrkJSX-natlKNqGimVnj86nKEao8ktK5pKaHq6C8vbOLeNreXRy5C2fC1tgiZ00V2pHuk1qbOdhlzTDv8G0HZLm_T7_s92OBqMAwBJ1uChKnQm6M&s=khRHvZLVk7LpfbVtO1yfapzLsDU4chd0-HARNTEdsTrOyrL-331_P_UCj7lSSqaKjoy_G7Xv4MPnKCfuxlFNKkP4ZRjTdCM1PWp_UONyunB1_MTp1UXp0u0PBm852kDSOQPgewDwcUBK0NOiOc2sZkMDtbrOLWKJNqPQIdIQh-kgwZl7_tOBUFhwKw-jQQurcTjPKyagxFirwX_3yD6THEWItGXxbZmq6DRbdaRYZZqBixXcEqE_A6btt3d2PtQ2WwTKJPwosy441ikMJpU-dCOxQ3v5vTBxw6j-tVPCqLnPattGzHdlsm34jTG7DbhkkEUzFCjzx6ly7kGNtM4ViA&h=WW8e3pRYWY5OI5aD55sFY-rZrV8ZtSocLI7IFqXS5V8
@@ -1509,11 +1509,11 @@ interactions:
       request-context:
       - appId=cid-v1:4d6ac272-7369-45c6-9036-63d733c8519f
       set-cookie:
-      - ApplicationGatewayAffinityCORS=603e5b8f036e9d7293f296757c2a91e3; Path=/; SameSite=None;
+      - ApplicationGatewayAffinityCORS=REDACTED; Path=/; SameSite=None;
         Secure
-      - ApplicationGatewayAffinity=603e5b8f036e9d7293f296757c2a91e3; Path=/
-      - ARRAffinity=4499273ad285e4d7b1881fbf565006bfb09596e14c43b72eb983b5cedd67a379;Path=/;HttpOnly;Secure;Domain=app-cp-westus2.azurewebsites.net
-      - ARRAffinitySameSite=4499273ad285e4d7b1881fbf565006bfb09596e14c43b72eb983b5cedd67a379;Path=/;HttpOnly;SameSite=None;Secure;Domain=app-cp-westus2.azurewebsites.net
+      - ApplicationGatewayAffinity=REDACTED; Path=/
+      - ARRAffinity=REDACTED;Path=/;HttpOnly;Secure;Domain=app-cp-westus2.azurewebsites.net
+      - ARRAffinitySameSite=REDACTED;Path=/;HttpOnly;SameSite=None;Secure;Domain=app-cp-westus2.azurewebsites.net
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       vary:
@@ -1549,7 +1549,7 @@ interactions:
       Connection:
       - keep-alive
       Cookie:
-      - ApplicationGatewayAffinityCORS=603e5b8f036e9d7293f296757c2a91e3; ApplicationGatewayAffinity=603e5b8f036e9d7293f296757c2a91e3
+      - ApplicationGatewayAffinityCORS=REDACTED; ApplicationGatewayAffinity=603e5b8f036e9d7293f296757c2a91e3
       ParameterSetName:
       - --enable-api-key -o
       User-Agent:
@@ -1600,7 +1600,7 @@ interactions:
       Connection:
       - keep-alive
       Cookie:
-      - ApplicationGatewayAffinityCORS=603e5b8f036e9d7293f296757c2a91e3; ApplicationGatewayAffinity=603e5b8f036e9d7293f296757c2a91e3
+      - ApplicationGatewayAffinityCORS=REDACTED; ApplicationGatewayAffinity=603e5b8f036e9d7293f296757c2a91e3
       ParameterSetName:
       - --enable-api-key -o
       User-Agent:
@@ -1651,7 +1651,7 @@ interactions:
       Connection:
       - keep-alive
       Cookie:
-      - ApplicationGatewayAffinityCORS=603e5b8f036e9d7293f296757c2a91e3; ApplicationGatewayAffinity=603e5b8f036e9d7293f296757c2a91e3
+      - ApplicationGatewayAffinityCORS=REDACTED; ApplicationGatewayAffinity=603e5b8f036e9d7293f296757c2a91e3
       ParameterSetName:
       - --enable-api-key -o
       User-Agent:
@@ -1661,7 +1661,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w1037143?api-version=2023-11-13-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w1037143","name":"e2e-test-w1037143","type":"microsoft.quantum/workspaces","location":"westus2","tags":{},"systemData":{"createdBy":"kikomiss@microsoft.com","createdByType":"User","createdAt":"2025-05-28T22:02:30.8590276Z","lastModifiedBy":"kikomiss@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-05-28T22:05:49.607286Z"},"identity":{"principalId":"ea604dbf-e31e-4da5-b492-108487653ed9","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"},"properties":{"providers":[{"providerId":"quantinuum","providerSku":"credits1","applicationName":"e2e-test-w1037143-quantinuum","provisioningState":"Succeeded","resourceUsageId":"6df36964-67bd-4abc-a025-3119a52cabfa"}],"provisioningState":"Succeeded","usable":"Yes","storageAccount":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/qwe2etestswus2","endpointUri":"https://e2e-test-w1037143.westus2.quantum.azure.com","apiKeyEnabled":false}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w1037143","name":"e2e-test-w1037143","type":"microsoft.quantum/workspaces","location":"westus2","tags":{},"systemData":{"createdBy":"kikomiss@microsoft.com","createdByType":"User","createdAt":"2025-05-28T22:02:30.8590276Z","lastModifiedBy":"kikomiss@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-05-28T22:05:49.607286Z"},"identity":{"principalId":"ea604dbf-e31e-4da5-b492-108487653ed9","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"},"properties":{"providers":[{"providerId":"quantinuum","providerSku":"credits1","applicationName":"e2e-test-w1037143-quantinuum","provisioningState":"Succeeded","resourceUsageId":"6df36964-67bd-4abc-a025-3119a52cabfa"}],"provisioningState":"Succeeded","usable":"Yes","storageAccount":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/qwe2etestswus2","endpointUri":"https://e2e-test-w1037143.westus2.quantum.azure.com","apiKeyEnabled":REDACTED}}'
     headers:
       cache-control:
       - no-cache
@@ -1714,7 +1714,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w1037143/listKeys?api-version=2023-11-13-preview
   response:
     body:
-      string: '{"apiKeyEnabled":false,"primaryKey":{"createdAt":"2025-05-28T22:05:48Z","key":"uK-NPvoUYzxj0Dzcrl3oJ7lNTmMATIaNpg7AkimWwZOHjj3rYPJoFAYEGnGH7LYHE3HNwVjbc0PQAZQUhd6cIQ"},"secondaryKey":{"createdAt":"2025-05-28T22:05:48Z","key":"x71rOQjdvBW7PrjFTQ4h6Ue0JczyiOpCn2DNIbcoOcrK2fzL6ulFSIP65-ydXqjHafYmOQwkOwMYAZQUboj_aQ"},"primaryConnectionString":"SubscriptionId=1916d14f-6594-4756-955d-9b95970a73a8;ResourceGroupName=e2e-scenarios;WorkspaceName=e2e-test-w1037143;ApiKey=uK-NPvoUYzxj0Dzcrl3oJ7lNTmMATIaNpg7AkimWwZOHjj3rYPJoFAYEGnGH7LYHE3HNwVjbc0PQAZQUhd6cIQ;QuantumEndpoint=https://westus2.quantum.azure.com/;","secondaryConnectionString":"SubscriptionId=1916d14f-6594-4756-955d-9b95970a73a8;ResourceGroupName=e2e-scenarios;WorkspaceName=e2e-test-w1037143;ApiKey=x71rOQjdvBW7PrjFTQ4h6Ue0JczyiOpCn2DNIbcoOcrK2fzL6ulFSIP65-ydXqjHafYmOQwkOwMYAZQUboj_aQ;QuantumEndpoint=https://westus2.quantum.azure.com/;"}'
+      string: '{"apiKeyEnabled":REDACTED,"primaryKey":{"key":"REDACTED"},"secondaryKey":{"key":"REDACTED"},"primaryConnectionString":"SubscriptionId=REDACTED;ResourceGroupName=REDACTED;WorkspaceName=REDACTED;ApiKey=REDACTED;QuantumEndpoint=REDACTED","secondaryConnectionString":"SubscriptionId=REDACTED;ResourceGroupName=REDACTED;WorkspaceName=REDACTED;ApiKey=REDACTED;QuantumEndpoint=REDACTED"}'
     headers:
       cache-control:
       - no-cache
@@ -1733,11 +1733,11 @@ interactions:
       request-context:
       - appId=cid-v1:4d6ac272-7369-45c6-9036-63d733c8519f
       set-cookie:
-      - ApplicationGatewayAffinityCORS=603e5b8f036e9d7293f296757c2a91e3; Path=/; SameSite=None;
+      - ApplicationGatewayAffinityCORS=REDACTED; Path=/; SameSite=None;
         Secure
-      - ApplicationGatewayAffinity=603e5b8f036e9d7293f296757c2a91e3; Path=/
-      - ARRAffinity=4499273ad285e4d7b1881fbf565006bfb09596e14c43b72eb983b5cedd67a379;Path=/;HttpOnly;Secure;Domain=app-cp-westus2.azurewebsites.net
-      - ARRAffinitySameSite=4499273ad285e4d7b1881fbf565006bfb09596e14c43b72eb983b5cedd67a379;Path=/;HttpOnly;SameSite=None;Secure;Domain=app-cp-westus2.azurewebsites.net
+      - ApplicationGatewayAffinity=REDACTED; Path=/
+      - ARRAffinity=REDACTED;Path=/;HttpOnly;Secure;Domain=app-cp-westus2.azurewebsites.net
+      - ARRAffinitySameSite=REDACTED;Path=/;HttpOnly;SameSite=None;Secure;Domain=app-cp-westus2.azurewebsites.net
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       vary:
@@ -1842,7 +1842,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w1037143?api-version=2023-11-13-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w1037143","name":"e2e-test-w1037143","type":"microsoft.quantum/workspaces","location":"westus2","tags":{},"systemData":{"createdBy":"kikomiss@microsoft.com","createdByType":"User","createdAt":"2025-05-28T22:02:30.8590276Z","lastModifiedBy":"kikomiss@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-05-28T22:05:49.607286Z"},"identity":{"principalId":"ea604dbf-e31e-4da5-b492-108487653ed9","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"},"properties":{"providers":[{"providerId":"quantinuum","providerSku":"credits1","applicationName":"e2e-test-w1037143-quantinuum","provisioningState":"Succeeded","resourceUsageId":"6df36964-67bd-4abc-a025-3119a52cabfa"}],"provisioningState":"Deleting","usable":"Yes","storageAccount":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/qwe2etestswus2","endpointUri":"https://e2e-test-w1037143.westus2.quantum.azure.com","apiKeyEnabled":false}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w1037143","name":"e2e-test-w1037143","type":"microsoft.quantum/workspaces","location":"westus2","tags":{},"systemData":{"createdBy":"kikomiss@microsoft.com","createdByType":"User","createdAt":"2025-05-28T22:02:30.8590276Z","lastModifiedBy":"kikomiss@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-05-28T22:05:49.607286Z"},"identity":{"principalId":"ea604dbf-e31e-4da5-b492-108487653ed9","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"},"properties":{"providers":[{"providerId":"quantinuum","providerSku":"credits1","applicationName":"e2e-test-w1037143-quantinuum","provisioningState":"Succeeded","resourceUsageId":"6df36964-67bd-4abc-a025-3119a52cabfa"}],"provisioningState":"Deleting","usable":"Yes","storageAccount":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/qwe2etestswus2","endpointUri":"https://e2e-test-w1037143.westus2.quantum.azure.com","apiKeyEnabled":REDACTED}}'
     headers:
       cache-control:
       - no-cache
@@ -1874,3 +1874,4 @@ interactions:
       code: 200
       message: OK
 version: 1
+

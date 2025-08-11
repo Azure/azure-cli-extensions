@@ -11,14 +11,21 @@
 from azure.cli.core.aaz import *
 
 
-class Import(AAZCommand):
-    """Imports from the API source (one-time import).
+@register_command(
+    "apic api-analysis import-ruleset",
+    is_preview=True,
+)
+class ImportRuleset(AAZCommand):
+    """Imports the API analyzer ruleset.
+
+    :example: Import an API Analysis ruleset
+        az apic api-analysis import-ruleset -g contoso-resources -n contoso -c spectral-openapi --path '\\path\\to\\ruleset\\folder'
     """
 
     _aaz_info = {
         "version": "2024-06-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.apicenter/services/{}/workspaces/{}/importapisource", "2024-06-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.apicenter/services/{}/workspaces/{}/analyzerconfigs/{}/importruleset", "2024-06-01-preview"],
         ]
     }
 
@@ -39,6 +46,17 @@ class Import(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
+        _args_schema.analyzer_config_name = AAZStrArg(
+            options=["-c", "--config-name", "--analyzer-config-name"],
+            help="The name of the configuration.",
+            required=True,
+            id_part="child_name_2",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9-]{3,90}$",
+                max_length=90,
+                min_length=1,
+            ),
+        )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
@@ -64,72 +82,26 @@ class Import(AAZCommand):
                 min_length=1,
             ),
         )
-        _args_schema.amazon_api_gateway_source = AAZObjectArg(
-            options=["--amazon-api-gateway-source"],
-            help="API source configuration for Amazon API Gateway.",
-        )
-        _args_schema.api_source_type = AAZStrArg(
-            options=["--api-source-type"],
-            help="API source type",
-            required=True,
-            enum={"AmazonApiGateway": "AmazonApiGateway", "AzureApiManagement": "AzureApiManagement"},
-        )
-        _args_schema.azure_api_management_source = AAZObjectArg(
-            options=["--azure-api-management-source"],
-            help="API source configuration for Azure API Management.",
-        )
-        _args_schema.import_specification = AAZStrArg(
-            options=["--import-specification"],
-            help="Indicates if the specification should be imported along with metadata.",
-            default="always",
-            enum={"always": "always", "never": "never", "ondemand": "ondemand"},
-        )
-        _args_schema.target_environment_id = AAZResourceIdArg(
-            options=["--target-environment-id"],
-            help="The target environment resource ID.",
-        )
-        _args_schema.target_lifecycle_stage = AAZStrArg(
-            options=["--target-lifecycle-stage"],
-            help="The target lifecycle stage.",
-            enum={"deprecated": "deprecated", "design": "design", "development": "development", "preview": "preview", "production": "production", "retired": "retired", "testing": "testing"},
-        )
 
-        amazon_api_gateway_source = cls._args_schema.amazon_api_gateway_source
-        amazon_api_gateway_source.access_key = AAZStrArg(
-            options=["access-key"],
-            help="Amazon API Gateway Access Key. Must be an Azure Key Vault secret reference.",
-            required=True,
-        )
-        amazon_api_gateway_source.msi_resource_id = AAZResourceIdArg(
-            options=["msi-resource-id"],
-            help="(Optional) The resource ID of the managed identity that has access to the Azure Key Vault secrets.",
-        )
-        amazon_api_gateway_source.region_name = AAZStrArg(
-            options=["region-name"],
-            help="Amazon API Gateway Region (ex. us-east-2).",
-            required=True,
-        )
-        amazon_api_gateway_source.secret_access_key = AAZStrArg(
-            options=["secret-access-key"],
-            help="Amazon API Gateway Secret Access Key. Must be an Azure Key Vault secret reference.",
-            required=True,
-        )
+        # define Arg Group "Body"
 
-        azure_api_management_source = cls._args_schema.azure_api_management_source
-        azure_api_management_source.msi_resource_id = AAZResourceIdArg(
-            options=["msi-resource-id"],
-            help="(Optional) The resource ID of the managed identity that has access to the API Management instance.",
+        _args_schema = cls._args_schema
+        _args_schema.format = AAZStrArg(
+            options=["--format"],
+            arg_group="Body",
+            help="Format of the ruleset source.",
+            enum={"inline-json": "inline-json", "inline-yaml": "inline-yaml", "inline-zip": "inline-zip", "link-zip": "link-zip"},
         )
-        azure_api_management_source.resource_id = AAZResourceIdArg(
-            options=["resource-id"],
-            help="API Management service resource ID.",
-            required=True,
+        _args_schema.value = AAZStrArg(
+            options=["--value"],
+            arg_group="Body",
+            help="Value of the ruleset source.",
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.WorkspacesImportApiSource(ctx=self.ctx)()
+        yield self.AnalyzerConfigsImportRuleset(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -144,7 +116,7 @@ class Import(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class WorkspacesImportApiSource(AAZHttpOperation):
+    class AnalyzerConfigsImportRuleset(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -174,7 +146,7 @@ class Import(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ApiCenter/services/{serviceName}/workspaces/{workspaceName}/importApiSource",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ApiCenter/services/{serviceName}/workspaces/{workspaceName}/analyzerConfigs/{analyzerConfigName}/importRuleset",
                 **self.url_parameters
             )
 
@@ -189,6 +161,10 @@ class Import(AAZCommand):
         @property
         def url_parameters(self):
             parameters = {
+                **self.serialize_url_param(
+                    "analyzerConfigName", self.ctx.args.analyzer_config_name,
+                    required=True,
+                ),
                 **self.serialize_url_param(
                     "resourceGroupName", self.ctx.args.resource_group,
                     required=True,
@@ -237,24 +213,8 @@ class Import(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("amazonApiGatewaySource", AAZObjectType, ".amazon_api_gateway_source")
-            _builder.set_prop("apiSourceType", AAZStrType, ".api_source_type", typ_kwargs={"flags": {"required": True}})
-            _builder.set_prop("azureApiManagementSource", AAZObjectType, ".azure_api_management_source")
-            _builder.set_prop("importSpecification", AAZStrType, ".import_specification")
-            _builder.set_prop("targetEnvironmentId", AAZStrType, ".target_environment_id")
-            _builder.set_prop("targetLifecycleStage", AAZStrType, ".target_lifecycle_stage")
-
-            amazon_api_gateway_source = _builder.get(".amazonApiGatewaySource")
-            if amazon_api_gateway_source is not None:
-                amazon_api_gateway_source.set_prop("accessKey", AAZStrType, ".access_key", typ_kwargs={"flags": {"required": True}})
-                amazon_api_gateway_source.set_prop("msiResourceId", AAZStrType, ".msi_resource_id")
-                amazon_api_gateway_source.set_prop("regionName", AAZStrType, ".region_name", typ_kwargs={"flags": {"required": True}})
-                amazon_api_gateway_source.set_prop("secretAccessKey", AAZStrType, ".secret_access_key", typ_kwargs={"flags": {"required": True}})
-
-            azure_api_management_source = _builder.get(".azureApiManagementSource")
-            if azure_api_management_source is not None:
-                azure_api_management_source.set_prop("msiResourceId", AAZStrType, ".msi_resource_id")
-                azure_api_management_source.set_prop("resourceId", AAZStrType, ".resource_id", typ_kwargs={"flags": {"required": True}})
+            _builder.set_prop("format", AAZStrType, ".format")
+            _builder.set_prop("value", AAZStrType, ".value")
 
             return self.serialize_content(_content_value)
 
@@ -274,13 +234,13 @@ class Import(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _ImportHelper._build_schema_operation_status_result_read(cls._schema_on_200)
+            _ImportRulesetHelper._build_schema_operation_status_result_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
 
-class _ImportHelper:
-    """Helper class for Import"""
+class _ImportRulesetHelper:
+    """Helper class for ImportRuleset"""
 
     _schema_error_detail_read = None
 
@@ -391,4 +351,4 @@ class _ImportHelper:
         _schema.status = cls._schema_operation_status_result_read.status
 
 
-__all__ = ["Import"]
+__all__ = ["ImportRuleset"]
