@@ -4,6 +4,7 @@ Release History
 ===============
 upcoming
 ++++++
+* 'az containerapp session code-interpreter': Fix `--path` in examples
 * 'az containerapp env premium-ingress': Deprecate `--min-replicas` and `--max-replicas` parameters, use workload profile scale instead.
 
 1.2.0b3

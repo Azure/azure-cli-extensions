@@ -520,6 +520,9 @@ helps['aks create'] = f"""
         - name: --enable-keda
           type: bool
           short-summary: Enable KEDA workload auto-scaler.
+        - name: --disable-run-command
+          type: bool
+          short-summary: Disable Run command feature for the cluster.
         - name: --enable-defender
           type: bool
           short-summary: Enable Microsoft Defender security profile.
@@ -1124,6 +1127,12 @@ helps['aks update'] = """
         - name: --disable-keda
           type: bool
           short-summary: Disable KEDA workload auto-scaler.
+        - name: --enable-run-command
+          type: bool
+          short-summary: Enable Run command feature for the cluster.
+        - name: --disable-run-command
+          type: bool
+          short-summary: Disable Run command feature for the cluster.
         - name: --enable-defender
           type: bool
           short-summary: Enable Microsoft Defender security profile.
@@ -2363,7 +2372,7 @@ helps['aks machine'] = """
 
 helps['aks machine list'] = """
    type: command
-   short-summary: Get information about IP Addresses, Hostname for all machines in an agentpool
+   short-summary: List the details for all machines in an agentpool
    parameters:
        - name: --cluster-name
          type: string
@@ -2371,14 +2380,14 @@ helps['aks machine list'] = """
        - name: --nodepool-name
          type: string
          short-summary: Name of the agentpool of a managed cluster
-   exmaples:
-       - name: Get information about IP Addresses, Hostname for all machines in an agentpool
-         text: az aks machine list --cluster-name <clusterName> --nodepool-name <apName>
+   examples:
+       - name: List the details for all machines in an agentpool
+         text: az aks machine list --resource-group <resourceGroupName> --cluster-name <clusterName> --nodepool-name <apName>
 """
 
 helps['aks machine show'] = """
    type: command
-   short-summary: Show IP Addresses, Hostname for a specific machine in an agentpool for a managedcluster.
+   short-summary: Show the details of a specific machine in an agentpool of a managedcluster.
    parameters:
        - name: --cluster-name
          type: string
@@ -2388,10 +2397,10 @@ helps['aks machine show'] = """
          short-summary: Name of the agentpool of a managed cluster
        - name: --machine-name
          type: string
-         short-summary: Get IP Addresses, Hostname for a specific machine in an agentpool
-   exmaples:
-       - name: Get IP Addresses, Hostname for a specific machine in an agentpool
-         text: az aks machine show --cluster-name <clusterName> --nodepool-name <apName> --machine-name <machineName>
+         short-summary: Name of the machine
+   examples:
+       - name: Show the details of a specific machine in an agentpool of a managedcluster.
+         text: az aks machine show --resource-group <resourceGroupName> --cluster-name <clusterName> --nodepool-name <apName> --machine-name <machineName>
 """
 
 helps['aks operation'] = """
