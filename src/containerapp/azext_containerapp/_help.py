@@ -163,7 +163,7 @@ helps['containerapp up'] = """
             az containerapp up -n my-containerapp -l westus3 --model-registry azureml --model-name Phi-4 --model-version 7
     - name: Create a container app with kind as functionapp
       text: |
-            az containerapp create -n my-containerapp --image my-app:v1.0 --kind functionapp
+            az containerapp up -n my-containerapp --image my-app:v1.0 --kind functionapp
 """
 
 
