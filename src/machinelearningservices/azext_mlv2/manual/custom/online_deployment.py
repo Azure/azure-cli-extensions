@@ -51,7 +51,7 @@ def ml_online_deployment_create(
     web: bool = False,
     skip_script_validation: bool = False,
     package_model: bool = False,
-    **kwargs,
+    **kwargs,  # pylint: disable=unused-argument
 ):
     params_override = params_override or []
     online_deployment_info = OnlineDeploymentInfo()
@@ -74,19 +74,22 @@ def ml_online_deployment_create(
             registry_reference = deployment.model.split("/")[3]
 
         online_deployment_info = _generate_deployment_telemetry_log(online_deployment_info, deployment)
-        
+
         ml_client, debug = get_ml_client(
-            cli_ctx=cmd.cli_ctx, resource_group_name=resource_group_name, workspace_name=workspace_name, registry_reference=registry_reference,
+            cli_ctx=cmd.cli_ctx,
+            resource_group_name=resource_group_name,
+            workspace_name=workspace_name,
+            registry_reference=registry_reference,
         )
         try:
             ml_client.online_deployments.get(name=deployment.name, endpoint_name=deployment.endpoint_name, local=local)
-        except Exception as err:
+        except Exception as err:  # pylint: disable=broad-exception-caught
             if is_not_found_error(err):
                 pass
             else:
-                raise Exception(
+                raise ValueError(
                     "Unexpected error verifying a deployment with the provided name does not exist on this endpoint."
-                )
+                ) from err
 
         else:
             msg = """(UserError) A deployment with this name already exists. If you are trying to create a new deployment, use a
@@ -101,12 +104,16 @@ different name. If you are trying to update an existing deployment, use `az ml o
         if all_traffic:
             if no_wait:
                 module_logger.warning(
-                    f"All traffic won't be set to deployment {deployment.name} since no_wait option was provided. You can try to set all the traffic to this deployment once its has completed."
+                    "All traffic won't be set to deployment %s since no_wait option was provided. "
+                    "You can try to set all the traffic to this deployment once its has completed.",
+                    deployment.name
                 )
             else:
                 module_logger.warning(
-                    f"All traffic will be set to deployment {deployment.name} once it has been provisioned.\n"
-                    + "If you interrupt this command or it times out while waiting for the provisioning, you can try to set all the traffic to this deployment later once its has been provisioned."
+                    "All traffic will be set to deployment %s once it has been provisioned.\n"
+                    "If you interrupt this command or it times out while waiting for the provisioning, "
+                    "you can try to set all the traffic to this deployment later once its has been provisioned.",
+                    deployment.name
                 )
 
         if web:
@@ -116,7 +123,12 @@ different name. If you are trying to update an existing deployment, use `az ml o
         if not private_features_enabled():
             package_model = False
         deployment = ml_client.begin_create_or_update(
-            deployment, local=local, local_enable_gpu=local_enable_gpu, vscode_debug=vscode_debug, skip_script_validation=skip_script_validation, package_model=package_model
+            deployment,
+            local=local,
+            local_enable_gpu=local_enable_gpu,
+            vscode_debug=vscode_debug,
+            skip_script_validation=skip_script_validation,
+            package_model=package_model
         )
         if no_wait:
             return _dump_entity_with_warnings(deployment)
@@ -127,8 +139,8 @@ different name. If you are trying to update an existing deployment, use `az ml o
             endpoint = ml_client.begin_create_or_update(endpoint, local=local)
             endpoint = wrap_lro(cmd.cli_ctx, endpoint)
         return _dump_entity_with_warnings(deployment)
-    except Exception as err:
-        yaml_operation = True if file else False
+    except Exception as err:  # pylint: disable=broad-exception-caught
+        yaml_operation = bool(file)
         log_and_raise_error(err, debug, yaml_operation=yaml_operation)
     finally:
         telemetry_log_info(online_deployment_info.__dict__)
@@ -158,8 +170,8 @@ def ml_online_deployment_update(
             # the parameters dict that we received to include the OnlineDeployment properties
             # from the YAML file
             parameters = _update_deployment_parameters(parameters, file)
-        OnlineDeployment._set_scale_settings(data=parameters)
-        deployment = OnlineDeployment._load(data=parameters, yaml_path=file)
+        OnlineDeployment._set_scale_settings(data=parameters)  # pylint: disable=protected-access
+        deployment = OnlineDeployment._load(data=parameters, yaml_path=file)  # pylint: disable=protected-access
         if local and no_wait:
             msg = '"no_wait" and "local" options are mutually exclusive. Set only one option and try again.'
             raise UserErrorException(
@@ -174,21 +186,25 @@ def ml_online_deployment_update(
                 ml_client.online_deployments.get(
                     name=deployment.name, endpoint_name=deployment.endpoint_name, local=local
                 )
-            except Exception as err:
+            except Exception as err:  # pylint: disable=broad-exception-caught
                 if is_not_found_error(err):
-                    raise Exception("Deployment does not exist")
+                    raise ValueError("Deployment does not exist") from err
         endpointName = deployment.endpoint_name
         if web and endpointName:
             endpoint = ml_client.online_endpoints.get(endpointName, local=local)
             open_online_endpoint_in_browser(endpoint)
         deployment = ml_client.begin_create_or_update(
-            deployment, local=local, local_enable_gpu=local_enable_gpu, vscode_debug=vscode_debug, skip_script_validation=skip_script_validation
+            deployment,
+            local=local,
+            local_enable_gpu=local_enable_gpu,
+            vscode_debug=vscode_debug,
+            skip_script_validation=skip_script_validation
         )
         if not no_wait:
             deployment = wrap_lro(cmd.cli_ctx, deployment)
         if deployment:  # TODO: https://msdata.visualstudio.com/Vienna/_workitems/edit/1252491/
             return _dump_entity_with_warnings(deployment)
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -205,12 +221,12 @@ def ml_online_deployment_show(
             if web:
                 endpoint = ml_client.online_endpoints.get(endpoint_name, local=local)
                 open_online_endpoint_in_browser(endpoint)
-        except Exception as err:
+        except Exception as err:  # pylint: disable=broad-exception-caught
             if is_not_found_error(err):
-                raise Exception("Deployment does not exist.")
+                raise ValueError("Deployment does not exist.") from err
             raise err
         return _dump_entity_with_warnings(deployment)
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -228,8 +244,7 @@ def _ml_online_deployment_show(
         # We should only keep track of the values the users want to overwrite.
         # In this case the only values users can specify are name and endpoint_name
         return params_override
-    else:
-        return ml_online_deployment_show(cmd, resource_group_name, workspace_name, name, endpoint_name, local)
+    return ml_online_deployment_show(cmd, resource_group_name, workspace_name, name, endpoint_name, local)
 
 
 def ml_online_deployment_delete(
@@ -257,7 +272,7 @@ def ml_online_deployment_delete(
         if not no_wait:
             result = wrap_lro(cmd.cli_ctx, result)
         return _dump_entity_with_warnings(result)
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -266,13 +281,11 @@ def ml_online_deployment_list(cmd, resource_group_name, workspace_name, endpoint
         cli_ctx=cmd.cli_ctx, resource_group_name=resource_group_name, workspace_name=workspace_name
     )
     try:
-        return list(
-            map(
-                lambda deployment: _dump_entity_with_warnings(deployment),
-                ml_client.online_deployments.list(endpoint_name, local=local),
-            )
-        )
-    except Exception as err:
+        return [
+            _dump_entity_with_warnings(deployment)
+            for deployment in ml_client.online_deployments.list(endpoint_name, local=local)
+        ]
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -292,7 +305,7 @@ def ml_online_deployment_get_logs(
     try:
         logs = ml_client.online_deployments.get_logs(name, endpoint_name, lines, container_type=container, local=local)
         print(logs.replace("\\n", "\n"))
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -328,4 +341,4 @@ def _update_deployment_parameters(parameters, file):
     for k, v in parameters.items():
         if k != "params_override":
             params_override.append({k: v})
-    return load_online_deployment(source=file, params_override=params_override)._to_dict()
+    return load_online_deployment(source=file, params_override=params_override)._to_dict()  # pylint: disable=protected-access
