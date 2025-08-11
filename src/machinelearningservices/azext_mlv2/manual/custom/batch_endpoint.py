@@ -36,7 +36,7 @@ def ml_batch_endpoint_show(cmd, resource_group_name, workspace_name, name):
     try:
         endpoint = ml_client.batch_endpoints.get(name=name)
         return endpoint.dump()
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -52,12 +52,12 @@ def _ml_batch_endpoint_show(cmd, resource_group_name, workspace_name, name=None,
         if file:
             return load_batch_endpoint(source=file, params_override=[{"name": name.lower()}])
         return ml_client.batch_endpoints.get(name=name)
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
 def ml_batch_endpoint_create(
-    cmd, resource_group_name, workspace_name, file=None, name=None, no_wait=False, params_override=None, **kwargs
+    cmd, resource_group_name, workspace_name, file=None, name=None, no_wait=False, params_override=None, **kwargs  # pylint: disable=unused-argument
 ):
     ml_client, debug = get_ml_client(
         cli_ctx=cmd.cli_ctx, resource_group_name=resource_group_name, workspace_name=workspace_name
@@ -74,14 +74,14 @@ def ml_batch_endpoint_create(
         if no_wait:
             module_logger.warning(
                 "Batch endpoint update/create request initiated. "
-                f"Status can be checked using `az ml batch-endpoint show -n {endpoint.name}`\n"
+                "Status can be checked using `az ml batch-endpoint show -n %s`\n", endpoint.name
             )
         else:
             endpoint = LongRunningOperation(cmd.cli_ctx)(endpoint_poller)
         if isinstance(endpoint, BatchEndpoint):
             return _dump_entity_with_warnings(endpoint)
-    except Exception as err:
-        yaml_operation = True if file else False
+    except Exception as err:  # pylint: disable=broad-exception-caught
+        yaml_operation = bool(file)
         log_and_raise_error(err, debug, yaml_operation=yaml_operation)
 
 
@@ -101,13 +101,13 @@ def ml_batch_endpoint_delete(
         result = ml_client.batch_endpoints.begin_delete(name=name)
         if no_wait:
             module_logger.warning(
-                f"Delete request initiated. Status can be checked using `az ml batch-endpoint show -n {name}`\n"
+                "Delete request initiated. Status can be checked using `az ml batch-endpoint show -n %s`\n", name
             )
         else:
-            msg = f"Deleting batch endpoint {name} "
+            msg = "Deleting batch endpoint %s " % name
             return polling_wait(result, msg, start_time)
         return result
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -118,8 +118,8 @@ def ml_batch_endpoint_list(cmd, resource_group_name, workspace_name):
 
     try:
         results = ml_client.batch_endpoints.list()
-        return list(map(lambda x: _dump_entity_with_warnings(x), results))
-    except Exception as err:
+        return [_dump_entity_with_warnings(x) for x in results]
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -129,10 +129,10 @@ def ml_batch_endpoint_update(
     workspace_name,
     defaults=None,
     name=None,
-    file=None,
+    file=None,  # pylint: disable=unused-argument
     no_wait=False,
     parameters=None,
-    **kwargs,
+    **kwargs,  # pylint: disable=unused-argument
 ) -> None:
     ml_client, debug = get_ml_client(
         cli_ctx=cmd.cli_ctx, resource_group_name=resource_group_name, workspace_name=workspace_name
@@ -151,26 +151,25 @@ def ml_batch_endpoint_update(
         if no_wait:
             module_logger.warning(
                 "Batch endpoint update/create request initiated. "
-                f"Status can be checked using `az ml batch-endpoint show -n {parameters.name}`\n"
+                "Status can be checked using `az ml batch-endpoint show -n %s`\n", parameters.name
             )
         else:
             endpoint_return = LongRunningOperation(cmd.cli_ctx)(endpoint_return)
 
         if isinstance(endpoint_return, Endpoint):
             return _dump_entity_with_warnings(endpoint_return)
-        else:
-            return endpoint_return
+        return endpoint_return
 
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
-def ml_batch_endpoint_invoke(
+def ml_batch_endpoint_invoke(  # pylint: disable=too-many-locals,too-many-branches
     cmd,
     resource_group_name,
     workspace_name,
     name,
-    input=None,
+    input=None,  # pylint: disable=redefined-builtin
     batch_deployment_name=None,
     input_type=None,  # uri_file, uri_folder
     output_path=None,  # --output-path azureml://datastores/<datastore-name>/<path-on-datastore>
@@ -190,7 +189,9 @@ def ml_batch_endpoint_invoke(
 
     try:
         if batch_deployment_name:
-            ml_client.batch_endpoints._validate_deployment_name(name, batch_deployment_name)
+            ml_client.batch_endpoints._validate_deployment_name(  # pylint: disable=protected-access
+                name, batch_deployment_name
+            )
 
         if file:
             batch_endpoint_invocation = _try_load_yaml_dict(file)
@@ -231,7 +232,7 @@ def ml_batch_endpoint_invoke(
                             "(with the type of either `uri_file` or `uri_folder`). Refer to how-to guide for "
                             "batch endpoint for more information on supported input data types."
                         )
-                        raise Exception(msg)
+                        raise ValueError(msg)
                 else:  # ./path
                     input = Input(type=AssetTypes.URI_FOLDER, path=input)
             elif input_type == AssetTypes.URI_FOLDER:  # --input-type uri_folder
@@ -239,8 +240,9 @@ def ml_batch_endpoint_invoke(
             elif input_type == AssetTypes.URI_FILE:  # --input-type uri_file
                 input = Input(type=AssetTypes.URI_FILE, path=input)
             else:
-                raise Exception(
-                    "Unsupported input please use either a path on the datastore, public URI, a registered data asset, or a local folder path."
+                raise ValueError(
+                    "Unsupported input please use either a path on the datastore, public URI, "
+                    "a registered data asset, or a local folder path."
                 )
 
         if params_override:
@@ -250,10 +252,10 @@ def ml_batch_endpoint_invoke(
                 remove_params.append(params)
                 inputs_override = params.get("inputs", None)
                 if inputs_override:
-                    if type(inputs_override) is dict:
+                    if isinstance(inputs_override, dict):
                         inputs = _parse_inputs(inputs_override)
                     else:
-                        raise Exception(
+                        raise ValueError(
                             "Unsupported 'inputs' type, it should be a dictionary. Example: inputs.keyName=value"
                         )
                 outputs_override = params.get("outputs", None)
@@ -300,11 +302,11 @@ def ml_batch_endpoint_invoke(
             params_override=params_override,
             **kwargs,
         )
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         # Bug for service side fix: https://msdata.visualstudio.com/Vienna/_workitems/edit/1413104
         # Once service throws correct exception we will remove this exception handling.
         if isinstance(err, ResourceNotFoundError) and batch_deployment_name is None:
-            log_and_raise_error(f"Set a default deployment or provide a deployment name through cli command.")
+            log_and_raise_error("Set a default deployment or provide a deployment name through cli command.")
         else:
             log_and_raise_error(err, debug)
 
@@ -313,13 +315,13 @@ def _parse_inputs(inputs_dict):
     inputs = {}
     if inputs_dict:
         for key, data in inputs_dict.items():
-            if type(data) is str:
+            if isinstance(data, str):
                 inputs[key] = Input(type=InputTypes.STRING, default=data)
-            elif type(data) is bool:
+            elif isinstance(data, bool):
                 inputs[key] = Input(type=InputTypes.BOOLEAN, default=data)
-            elif type(data) is int:
+            elif isinstance(data, int):
                 inputs[key] = Input(type=InputTypes.INTEGER, default=data)
-            elif type(data) is float:
+            elif isinstance(data, float):
                 inputs[key] = Input(type=InputTypes.NUMBER, default=data)
             else:
 
@@ -351,5 +353,5 @@ def ml_batch_endpoint_list_jobs(cmd, resource_group_name, workspace_name, name):
 
     try:
         return ml_client.batch_endpoints.list_jobs(endpoint_name=name)
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)

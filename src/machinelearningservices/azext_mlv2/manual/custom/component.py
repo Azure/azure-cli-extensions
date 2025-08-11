@@ -8,7 +8,6 @@ from msrest.exceptions import ClientRequestError
 from azure.ai.ml import load_component
 from azure.ai.ml.entities import Component
 from azure.ai.ml.entities._validate_funcs import validate_component
-from azure.ai.ml._utils._experimental import experimental
 
 from .raise_error import log_and_raise_error
 from .utils import _dump_entity_with_warnings, get_list_view_type, get_ml_client
@@ -40,9 +39,9 @@ def ml_component_list(
             )
         else:
             results = ml_client.components.list(name=name, list_view_type=list_view_type)
-        return list(map(lambda x: _dump_entity_with_warnings(x), results))
+        return [_dump_entity_with_warnings(x) for x in results]
 
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -57,12 +56,12 @@ def ml_component_show(
     )
 
     if not version and not label:
-        err = ClientRequestError(message=f"Must provide either version or label.")
+        err = ClientRequestError(message="Must provide either version or label.")
         log_and_raise_error(err, debug)
     try:
         component = ml_client.components.get(name=name, version=version, label=label)
         return _dump_entity_with_warnings(component)
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -74,7 +73,7 @@ def ml_component_validate(cmd, file, resource_group_name, workspace_name=None, p
 
     try:
         return _dump_entity_with_warnings(validate_component(file, ml_client, params_override))
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -108,64 +107,73 @@ def ml_component_create(
         # 3. create component
         result = ml_client.create_or_update(component, skip_validation=skip_validation)
         return _dump_entity_with_warnings(result)
-    except Exception as err:
-        yaml_operation = True if file else False
+    except Exception as err:  # pylint: disable=broad-exception-caught
+        yaml_operation = bool(file)
         log_and_raise_error(err, debug, yaml_operation=yaml_operation)
 
 
 def ml_component_update(cmd, resource_group_name, workspace_name, parameters: Dict = None, registry_name=None):
     ml_client, debug = get_ml_client(
-        cli_ctx=cmd.cli_ctx, resource_group_name=resource_group_name, workspace_name=workspace_name, registry_name=registry_name
+        cli_ctx=cmd.cli_ctx, resource_group_name=resource_group_name,
+        workspace_name=workspace_name, registry_name=registry_name
     )
 
     try:
         # 1. load parameters into component entity
-        component_entity = Component._load(data=parameters, yaml_path=".")
+        component_entity = Component._load(data=parameters, yaml_path=".")  # pylint: disable=protected-access
         # 2. update the component
         result = ml_client.create_or_update(component_entity)
         return _dump_entity_with_warnings(result)
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
-def ml_component_archive(cmd, name, resource_group_name=None, workspace_name=None, registry_name=None, version=None, label=None):
+def ml_component_archive(cmd, name, resource_group_name=None, workspace_name=None,
+                        registry_name=None, version=None, label=None):
     ml_client, debug = get_ml_client(
-        cli_ctx=cmd.cli_ctx, resource_group_name=resource_group_name, workspace_name=workspace_name, registry_name=registry_name
+        cli_ctx=cmd.cli_ctx, resource_group_name=resource_group_name,
+        workspace_name=workspace_name, registry_name=registry_name
     )
     try:
         ml_client.components.archive(name=name, version=version, label=label)
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
-def ml_component_restore(cmd, name, resource_group_name=None, workspace_name=None, registry_name=None, version=None, label=None):
+def ml_component_restore(cmd, name, resource_group_name=None, workspace_name=None,
+                        registry_name=None, version=None, label=None):
     ml_client, debug = get_ml_client(
-        cli_ctx=cmd.cli_ctx, resource_group_name=resource_group_name, workspace_name=workspace_name, registry_name=registry_name
+        cli_ctx=cmd.cli_ctx, resource_group_name=resource_group_name,
+        workspace_name=workspace_name, registry_name=registry_name
     )
     try:
         ml_client.components.restore(name=name, version=version, label=label)
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
-def _ml_component_show(cmd, resource_group_name, workspace_name, name, version=None, label=None, registry_name=None):
+def _ml_component_show(cmd, resource_group_name, workspace_name, name,
+                      version=None, label=None, registry_name=None):
     ml_client, debug = get_ml_client(
-        cli_ctx=cmd.cli_ctx, resource_group_name=resource_group_name, workspace_name=workspace_name, registry_name=registry_name
+        cli_ctx=cmd.cli_ctx, resource_group_name=resource_group_name,
+        workspace_name=workspace_name, registry_name=registry_name
     )
 
     try:
         component = ml_client.components.get(name=name, version=version, label=label)
         return _dump_entity_with_warnings(component)
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
-def ml_component_prepare_for_sign(cmd, file,  resource_group_name=None, workspace_name=None, registry_name=None):
+def ml_component_prepare_for_sign(cmd, file,  resource_group_name=None,
+                                 workspace_name=None, registry_name=None):
     ml_client, debug = get_ml_client(
-        cli_ctx=cmd.cli_ctx, resource_group_name=resource_group_name, workspace_name=workspace_name, registry_name=registry_name
+        cli_ctx=cmd.cli_ctx, resource_group_name=resource_group_name,
+        workspace_name=workspace_name, registry_name=registry_name
     )
     try:
         component = load_component(source=file)
         ml_client.components.prepare_for_sign(component)
-    except Exception as err:
-        yaml_operation = True if file else False
+    except Exception as err:  # pylint: disable=broad-exception-caught
+        yaml_operation = bool(file)
         log_and_raise_error(err, debug, yaml_operation=yaml_operation)
