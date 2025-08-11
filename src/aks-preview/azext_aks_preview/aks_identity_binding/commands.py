@@ -32,6 +32,7 @@ def aks_ib_cmd_create(
         instance,
     )
 
+
 # `az aks identity-binding delete` command
 def aks_ib_cmd_delete(
     cmd, client,
