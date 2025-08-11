@@ -6,6 +6,7 @@ upcoming
 ++++++
 * 'az containerapp update': Disallow changing `--revisions-mode` to Labels.
 * 'az containerapp up': Disallow changing `--revisions-mode` to Labels.
+* 'az containerapp session code-interpreter': Fix `--path` in examples
 
 1.2.0b3
 ++++++

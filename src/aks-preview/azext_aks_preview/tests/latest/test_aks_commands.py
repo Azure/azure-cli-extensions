@@ -2560,8 +2560,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "--nodepool-name={node_pool_name} --machine-name={machine_name} -o json"
         )
         machine_show = self.cmd(show_cmd).get_output_in_json()
-        assert machine_show["name"] == machine_name
         print(machine_show)
+        assert machine_show["name"] == machine_name
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
@@ -16717,6 +16717,50 @@ spec:
         os.environ["AKS_BASTION_TEST_HOOK"] = kubectl_path
         bastion_cmd = f"aks bastion -g {resource_group} -n {aks_name}"
         self.cmd(bastion_cmd, checks=[self.is_empty()])
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix="clitest", location="westus2")
+    def test_aks_update_run_command(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name("cliakstest", 16)
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "location": resource_group_location,
+                "ssh_key_value": self.generate_ssh_keys(),
+            }
+        )
+
+        # create
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} --location={location} "
+            "--ssh-key-value={ssh_key_value}"
+        )
+        self.cmd(
+            create_cmd,
+            checks=[
+                self.check('provisioningState', 'Succeeded'),
+            ],
+        )
+
+        # update -- disable run command
+        update_cmd = (
+            "aks update --resource-group {resource_group} --name {name} "
+            "--disable-run-command"
+        )
+        self.cmd(update_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('apiServerAccessProfile.disableRunCommand', True),
+        ])
+
+        # update -- enable run command
+        update_cmd = (
+            "aks update --resource-group {resource_group} --name {name} "
+            "--enable-run-command"
+        )
+        mc = self.cmd(update_cmd).get_output_in_json()
+        if mc['apiServerAccessProfile'] is not None:
+            assert mc['apiServerAccessProfile']['disableRunCommand'] == False
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
