@@ -61,18 +61,15 @@ def _dump_entity_with_warnings(entity: "Resource") -> Dict:
             entity, (BatchJobResource, AzureOpenAIDeployment, ServerlessEndpoint, MarketplaceSubscription)
         ):
             return entity.as_dict()
-        return entity._to_dict()  # type: ignore
-    except Exception as err:
-        module_logger.warning("Failed to deserialize response: " + str(err))
+        return entity._to_dict()  # type: ignore  # pylint: disable=protected-access
+    except Exception as err:  # pylint: disable=broad-exception-caught
+        module_logger.warning("Failed to deserialize response: %s", str(err))
         module_logger.warning(str(entity))
         module_logger.debug(traceback.format_exc())
 
 
 def _is_debug_set(cli_context):
-    if "--debug" in cli_context.data["safe_params"]:
-        return True
-    else:
-        return False
+    return "--debug" in cli_context.data["safe_params"]
 
 
 def check_private_feature_enabled_and_exit():
@@ -219,17 +216,16 @@ def get_ml_client(
 
 
 def reset_anonymous_asset(asset: Union[str, Asset]) -> None:
-    if asset and isinstance(asset, Asset) and asset._is_anonymous:
+    if asset and isinstance(asset, Asset) and asset._is_anonymous:  # pylint: disable=protected-access
         asset.name = None
         asset.version = None
 
 
-def validate_and_split_output_path(path: str) -> AzureMLDatastorePathUri:
-    if path.startswith(ARM_ID_PREFIX):
-        datastore_path = AzureMLDatastorePathUri(path)
+def validate_and_split_output_path(output_path: str) -> AzureMLDatastorePathUri:
+    if output_path.startswith(ARM_ID_PREFIX):
+        datastore_path = AzureMLDatastorePathUri(output_path)
         return datastore_path
-    else:
-        raise Exception("Not a valid output_path, it should start with 'azureml:'")
+    raise Exception("Not a valid output_path, it should start with 'azureml:'")
 
 
 def convert_str_to_dict(input_str: str) -> Dict[str, str]:
@@ -238,7 +234,8 @@ def convert_str_to_dict(input_str: str) -> Dict[str, str]:
 
 def merged_nested_dictionaries(dictionaries: [Dict[str, str]]) -> [Dict[str, str]]:
     """
-    Example: dictionaries = [{'inputs.key1.nestedKey1':'val1'}, {'inputs.key1.nestedKey2':'val2'}, {'otherKey': 'newValue'}]
+    Example: dictionaries = [{'inputs.key1.nestedKey1':'val1'}, {'inputs.key1.nestedKey2':'val2'}, 
+    {'otherKey': 'newValue'}]
     merged_nested_dictionaries(dictionaries) =>
     [{'inputs': {key1: {'nestedKey': 'val1', 'nestedKey2':'val2'}}} , {'otherKey':'newValue'}]
     """
@@ -272,7 +269,7 @@ def deep_get(d, keys, default=None):
         deep_get(d, ['missingkey', 'status_code'])       # => None
         deep_get(d, ['meta', 'missingkey'], default='-') # => '-'
     """
-    assert type(keys) is list
+    assert isinstance(keys, list)
     if d is None:
         return default
     if not keys:
@@ -282,13 +279,12 @@ def deep_get(d, keys, default=None):
 
 def get_list_view_type(include_archived: bool, archived_only: bool) -> ListViewType:
     if include_archived and archived_only:
-        raise Exception("Cannot provide both archived-only and include-archived.")
+        raise ValueError("Cannot provide both archived-only and include-archived.")
     if include_archived:
         return ListViewType.ALL
-    elif archived_only:
+    if archived_only:
         return ListViewType.ARCHIVED_ONLY
-    else:
-        return ListViewType.ACTIVE_ONLY
+    return ListViewType.ACTIVE_ONLY
 
 
 def is_env_var_enabled(env_var_name):
@@ -302,12 +298,12 @@ def open_online_endpoint_in_browser(endpoint: OnlineEndpoint):
         identity = endpoint.identity
         tenantId = identity.tenant_id
         name = endpoint.name
-        id = endpoint.id
-        idSplit = id.split("/onlineEndpoints")
-        wsid = idSplit[0]
+        endpoint_id = endpoint.id
+        id_split = endpoint_id.split("/onlineEndpoints")
+        wsid = id_split[0]
         uri = f"{resource_id}/endpoints/realtime/{name}/detail?wsid={wsid}&tid={tenantId}"
         open_new_tab(uri)
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         module_logger.warning(err)
 
 
@@ -378,30 +374,30 @@ def _get_ml_client_for_workspace(cmd, asset_params, resource_group, workspace_na
             workspace_name=workspace_name,
         )
         return ml_client
-    else:
-        msg = "Please provide a valid workspace name"
-        raise ValidationException(
-            message=msg,
-            no_personal_data_message=msg,
-            target=ErrorTarget.ASSET,
-            error_category=ErrorCategory.USER_ERROR,
-            error_type=ValidationErrorType.RESOURCE_NOT_FOUND,
-        )
+    msg = "Please provide a valid workspace name"
+    raise ValidationException(
+        message=msg,
+        no_personal_data_message=msg,
+        target=ErrorTarget.ASSET,
+        error_category=ErrorCategory.USER_ERROR,
+        error_type=ValidationErrorType.RESOURCE_NOT_FOUND,
+    )
 
 
-def _parse_registered_asset_path(path: str, assetType: AzureMLResourceType = None) -> Dict[str, str]:
+def _parse_registered_asset_path(asset_path: str, assetType: AzureMLResourceType = None) -> Dict[str, str]:
     """Extracts resource group, workspace name, asset name and
     model version from specific path. This is mainly used to promote
     registered asset to registry
 
-    :param path: Asset path
-    :type path: str
+    :param asset_path: Asset path
+    :type asset_path: str
     Examples of valid path format:
-    azureml://subscriptions/<subscriptionID>/resourcegroup/<resourceGroupName>/assets/<asset-name>/versions/<asset-version>
+    azureml://subscriptions/<subscriptionID>/resourcegroup/<resourceGroupName>/assets/<asset-name>/
+    versions/<asset-version>
     azureml://resourcegroup/<resourceGroupName>/assets/<asset-name>/versions/<asset-version>
     azureml://assets/<asset-name>/versions/<asset-version>
     """
-    asset_arm_id_match = re.match(ASSET_ARM_ID_REGEX_FORMAT, path)
+    asset_arm_id_match = re.match(ASSET_ARM_ID_REGEX_FORMAT, asset_path)
     if asset_arm_id_match:
         return {
             "resource_group": asset_arm_id_match.group(2),
@@ -419,7 +415,7 @@ def _parse_registered_asset_path(path: str, assetType: AzureMLResourceType = Non
             "asset_version": asset_id_match.group(6),
             "match_type": "asset_id_match",
         }
-    resource_group_id_match = re.match(ASSET_ID_RESOURCE_REGEX_FORMAT, path)
+    resource_group_id_match = re.match(ASSET_ID_RESOURCE_REGEX_FORMAT, asset_path)
     if resource_group_id_match:
         return {
             "resource_group": resource_group_id_match.group(1),
@@ -429,16 +425,16 @@ def _parse_registered_asset_path(path: str, assetType: AzureMLResourceType = Non
             "match_type": "resource_group_id_match",
         }
     if assetType == AzureMLResourceType.MODEL:
-        asset_regex_match = re.match(MODEL_ID_REGEX_FORMAT, path)
+        asset_regex_match = re.match(MODEL_ID_REGEX_FORMAT, asset_path)
     elif assetType == AzureMLResourceType.DATA:
-        asset_regex_match = re.match(DATA_ID_REGEX_FORMAT, path)
+        asset_regex_match = re.match(DATA_ID_REGEX_FORMAT, asset_path)
     if asset_regex_match:
         return {
             "asset_name": asset_regex_match.group(1),
             "asset_version": asset_regex_match.group(2),
             "match_type": "asset_regex_match",
         }
-    msg = "Unsupported `path` value for asset promotion"
+    msg = "Unsupported `asset_path` value for asset promotion"
     raise ValidationException(
         message=msg,
         no_personal_data_message=msg,
@@ -463,6 +459,7 @@ def modify_sys_path_for_rslex_mount(allow_rslex_not_installed: bool = False):
         raise Exception(
             "Cannot mount since `azureml-dataprep-rslex` is not installed. "
             + "It is required for `az ml data mount` and `az ml data mount` to work."
-            + "To install, run: `$ pip install --target $(eval echo $(az extension show -n ml --query path)) azureml-dataprep-rslex`"
+            + "To install, run: `$ pip install --target $(eval echo $(az extension show -n ml "
+            + "--query path)) azureml-dataprep-rslex`"
         )
     sys.path = [python_path] + sys.path

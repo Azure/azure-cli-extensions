@@ -35,7 +35,7 @@ def ml_online_endpoint_show(cmd, resource_group_name, workspace_name, name, loca
         if web:
             open_online_endpoint_in_browser(endpoint)
         return endpoint.dump()
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -52,11 +52,11 @@ def _ml_online_endpoint_show(cmd, resource_group_name, workspace_name, name=None
             return load_online_endpoint(source=file, params_override=[{"name": name.lower()}])
         try:
             return ml_client.online_endpoints.get(name=name, local=local)
-        except Exception as err:
+        except Exception as err:  # pylint: disable=broad-exception-caught
             if is_not_found_error(err):
-                raise Exception("Endpoint does not exist.")
+                raise Exception("Endpoint does not exist.") from err
             raise err
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -95,14 +95,14 @@ def ml_online_endpoint_create(
         endpoint = load_online_endpoint(source=file, params_override=params_override)
         try:
             ml_client.online_endpoints.get(name=endpoint.name, local=local)
-        except Exception as err:
+        except Exception as err:  # pylint: disable=broad-exception-caught
             if is_not_found_error(err):
                 pass
             else:
-                msg = f"""Unexpected error verifying an endpoint with the provided name doesn't exist
-                        Full error can be found here:
-                        {err}
-                """
+                msg = (
+                    "Unexpected error verifying an endpoint with the provided name doesn't exist "
+                    f"Full error can be found here: {err}"
+                )
                 raise ValidationException(
                     message=msg,
                     no_personal_data_message=msg,
@@ -131,7 +131,7 @@ different name. If you are trying to update an existing endpoint, use `az ml onl
             if web:
                 open_online_endpoint_in_browser(endpoint)
             return endpoint.dump()
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         yaml_operation = True if file else False
         log_and_raise_error(err, debug, yaml_operation=yaml_operation)
 
@@ -149,9 +149,9 @@ def ml_online_endpoint_delete(
     )
     try:
         ml_client.online_endpoints.get(name=name, local=local)
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         if is_not_found_error(err):
-            raise Exception(f"Online endpoint {name} does not exist.")
+            raise Exception(f"Online endpoint {name} does not exist.") from err
 
     try:
         if local and no_wait:
@@ -168,13 +168,14 @@ def ml_online_endpoint_delete(
             )
         else:
             module_logger.warning(
-                f"Delete request initiated. If you interrupt this command or it times out while waiting for deletion to complete, status can be checked using `az ml online-endpoint show -n {name}`\n"
+                "Delete request initiated. If you interrupt this command or it times out while waiting for "
+                "deletion to complete, status can be checked using `az ml online-endpoint show -n %s`\n", name
             )
         delete_result = ml_client.online_endpoints.begin_delete(name=name, local=local)
         if not no_wait:
             delete_result = wrap_lro(cmd.cli_ctx, delete_result)
         return _dump_entity_with_warnings(delete_result)
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -184,7 +185,7 @@ def ml_online_endpoint_get_credentials(cmd, resource_group_name, workspace_name,
     )
     try:
         return ml_client.online_endpoints.get_keys(name=name)
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -194,8 +195,8 @@ def ml_online_endpoint_list(cmd, resource_group_name, workspace_name, local: boo
     )
     try:
         results = ml_client.online_endpoints.list(local=local)
-        return list(map(lambda x: _dump_entity_with_warnings(x), results))
-    except Exception as err:
+        return [_dump_entity_with_warnings(x) for x in results]
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -229,9 +230,9 @@ def ml_online_endpoint_update(
             # Check if endpoint exists
             try:
                 ml_client.online_endpoints.get(name=name, local=local)
-            except Exception as err:
+            except Exception as err:  # pylint: disable=broad-exception-caught
                 if is_not_found_error(err):
-                    raise Exception("Endpoint does not exist")
+                    raise Exception("Endpoint does not exist") from err
         if name:
             parameters.name = name
 
@@ -264,7 +265,7 @@ def ml_online_endpoint_update(
         else:
             return endpoint_return
 
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -295,7 +296,7 @@ def ml_online_endpoint_invoke(
             local=local,
             **kwargs,
         )
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -311,5 +312,5 @@ def ml_online_endpoint_regenerate_keys(
         if not no_wait:
             keys = LongRunningOperation(cmd.cli_ctx)(keys)
         return keys
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)

@@ -27,7 +27,7 @@ def ml_marketplace_subscription_show(cmd, resource_group_name, workspace_name, n
     try:
         endpoint = ml_client.marketplace_subscriptions.get(name=name)
         return endpoint.as_dict()
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -39,7 +39,6 @@ def ml_marketplace_subscription_create(
     name=None,
     no_wait=False,
     params_override=None,
-    **kwargs,
 ):
     ml_client, debug = get_ml_client(
         cli_ctx=cmd.cli_ctx, resource_group_name=resource_group_name, workspace_name=workspace_name
@@ -56,13 +55,14 @@ def ml_marketplace_subscription_create(
         if no_wait:
             module_logger.warning(
                 "Marketplace subscription create request initiated. "
-                f"Status can be checked using `az ml marketplace-subscription show -n {marketplace_subscription_name}`\n"
+                "Status can be checked using `az ml marketplace-subscription show -n %s`",
+                marketplace_subscription_name,
             )
         else:
             marketplace_subscription = wrap_lro(cmd.cli_ctx, marketplace_subscription)
             return marketplace_subscription.as_dict()
-    except Exception as err:
-        yaml_operation = True if file else False
+    except Exception as err:  # pylint: disable=broad-exception-caught
+        yaml_operation = bool(file)
         log_and_raise_error(err, debug, yaml_operation=yaml_operation)
 
 
@@ -78,16 +78,16 @@ def ml_marketplace_subscription_delete(
     )
     try:
         ml_client.marketplace_subscriptions.get(name=name)
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         if is_not_found_error(err):
-            raise Exception(f"Marketplace subscription {name} does not exist.")
+            raise ValueError(f"Marketplace subscription {name} does not exist.") from err
 
     try:
         delete_result = ml_client.marketplace_subscriptions.begin_delete(name=name)
         if not no_wait:
             delete_result = wrap_lro(cmd.cli_ctx, delete_result)
         return _dump_entity_with_warnings(delete_result)
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -97,6 +97,6 @@ def ml_marketplace_subscription_list(cmd, resource_group_name, workspace_name):
     )
     try:
         results = ml_client.marketplace_subscriptions.list()
-        return list(map(lambda x: _dump_entity_with_warnings(x), results))
-    except Exception as err:
+        return [_dump_entity_with_warnings(x) for x in results]
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)

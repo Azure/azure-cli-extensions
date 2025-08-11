@@ -4,8 +4,6 @@
 
 from itertools import islice
 import os
-import pathlib
-import platform
 import subprocess
 from typing import Dict, List
 
@@ -32,18 +30,18 @@ module_logger = get_logger(__name__)
 IDENTITY_ERROR = "Identity_type can only be either of 'SystemAssigned', 'UserAssigned'"
 
 
-def ml_compute_list(cmd, resource_group_name, workspace_name, type=None, max_results=None):
+def ml_compute_list(cmd, resource_group_name, workspace_name, compute_type=None, max_results=None):
     ml_client, debug = get_ml_client(
         cli_ctx=cmd.cli_ctx, resource_group_name=resource_group_name, workspace_name=workspace_name
     )
 
     try:
         if max_results:
-            results = islice(ml_client.compute.list(compute_type=type), int(max_results))
+            results = islice(ml_client.compute.list(compute_type=compute_type), int(max_results))
         else:
-            results = ml_client.compute.list(compute_type=type)
-        return list(map(lambda x: _dump_entity_with_warnings(x), results))
-    except Exception as err:
+            results = ml_client.compute.list(compute_type=compute_type)
+        return [_dump_entity_with_warnings(x) for x in results]
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -54,7 +52,7 @@ def ml_compute_show(cmd, resource_group_name, workspace_name, name):
 
     try:
         return _dump_entity_with_warnings(ml_client.compute.get(name=name))
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -65,8 +63,8 @@ def ml_compute_list_nodes(cmd, resource_group_name, workspace_name, name):
 
     try:
         nodes = ml_client.compute.list_nodes(name=name)
-        return list(map(lambda x: _dump_entity_with_warnings(x), nodes))
-    except Exception as err:
+        return [_dump_entity_with_warnings(x) for x in nodes]
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -75,7 +73,7 @@ def ml_compute_create(
     resource_group_name,
     workspace_name,
     name=None,
-    type=None,
+    compute_type=None,
     vnet_name=None,
     subnet=None,
     admin_username=None,
@@ -98,7 +96,7 @@ def ml_compute_create(
     tags=None,
     location=None,
     params_override=None,
-):
+):  # pylint: disable=too-many-locals,too-many-branches
     ml_client, debug = get_ml_client(
         cli_ctx=cmd.cli_ctx, resource_group_name=resource_group_name, workspace_name=workspace_name
     )
@@ -106,8 +104,8 @@ def ml_compute_create(
 
     if name:
         params_override.append({"name": name})
-    if type:
-        params_override.append({"type": type.lower()})
+    if compute_type:
+        params_override.append({"type": compute_type.lower()})
     if vnet_name:
         params_override.append({"network_settings.vnet_name": vnet_name})
     if subnet:
@@ -151,14 +149,15 @@ def ml_compute_create(
     try:
         compute = load_compute(source=file, params_override=params_override)
         if compute.type == "synapsespark":
-            raise Exception(
-                "Create operation not supported for synapsespark compute type. Please try attach operation for attaching synapsespark compute"
+            raise ValueError(
+                "Create operation not supported for synapsespark compute type. "
+                "Please try attach operation for attaching synapsespark compute"
             )
         compute = ml_client.begin_create_or_update(compute)
         if not no_wait:
             compute = LongRunningOperation(cmd.cli_ctx)(compute)
         return _dump_entity_with_warnings(compute)
-    except Exception as e:
+    except Exception as e:  # pylint: disable=broad-exception-caught
         log_and_raise_error(e, debug)
 
 
@@ -172,7 +171,7 @@ def ml_compute_delete(cmd, resource_group_name, workspace_name, name, no_wait=Fa
         if not no_wait:
             compute = LongRunningOperation(cmd.cli_ctx)(compute)
         return compute
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -186,7 +185,7 @@ def ml_compute_start(cmd, resource_group_name, workspace_name, name, no_wait=Fal
         if not no_wait:
             compute = LongRunningOperation(cmd.cli_ctx)(compute)
         return compute
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -200,7 +199,7 @@ def ml_compute_stop(cmd, resource_group_name, workspace_name, name, no_wait=Fals
         if not no_wait:
             compute = LongRunningOperation(cmd.cli_ctx)(compute)
         return compute
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -214,19 +213,19 @@ def ml_compute_restart(cmd, resource_group_name, workspace_name, name, no_wait=F
         if not no_wait:
             compute = LongRunningOperation(cmd.cli_ctx)(compute)
         return compute
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
-def ml_compute_list_sizes(cmd, resource_group_name, workspace_name, location=None, type=None):
+def ml_compute_list_sizes(cmd, resource_group_name, workspace_name, location=None, compute_type=None):
     ml_client, debug = get_ml_client(
         cli_ctx=cmd.cli_ctx, resource_group_name=resource_group_name, workspace_name=workspace_name
     )
 
     try:
-        list_sizes = ml_client.compute.list_sizes(location=location, compute_type=type)
-        return list(map(lambda x: _dump_entity_with_warnings(x), list_sizes))
-    except Exception as err:
+        list_sizes = ml_client.compute.list_sizes(location=location, compute_type=compute_type)
+        return [_dump_entity_with_warnings(x) for x in list_sizes]
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -238,10 +237,10 @@ def ml_compute_list_usage(cmd, resource_group_name, workspace_name, location=Non
     try:
         usagelist = ml_client.compute.list_usage(location=location)
         result = []
-        for y, x in enumerate(usagelist):
+        for x in usagelist:
             result.append(_dump_entity_with_warnings(x))
         return result
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -281,7 +280,7 @@ def ml_compute_connect_ssh(cmd, resource_group_name, workspace_name, name, priva
             module_logger.error(ssh_connector_file_path_space_message())
         else:
             subprocess.call(ssh_command, shell=True)
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -294,7 +293,7 @@ def _ml_compute_update(
     min_instances=None,
     idle_time_before_scale_down=None,
     identity_type=None,
-    user_assigned_identities=None,
+    user_assigned_identities=None,  # pylint: disable=unused-argument
     tags=None,
     parameters: Dict = None,
     no_wait: bool = False,
@@ -339,7 +338,7 @@ def _ml_compute_update(
         if not no_wait:
             compute = LongRunningOperation(cmd.cli_ctx)(compute)
         return _dump_entity_with_warnings(compute)
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -359,7 +358,7 @@ def ml_compute_attach(
     resource_group_name,
     workspace_name,
     name=None,
-    type=None,
+    compute_type=None,
     resource_id=None,
     admin_username=None,
     admin_password=None,
@@ -387,8 +386,8 @@ def ml_compute_attach(
         params_override.append({"ssh_settings.admin_password": admin_password})
     if ssh_port:
         params_override.append({"ssh_settings.ssh_port": ssh_port})
-    if type:
-        params_override.append({"type": type})
+    if compute_type:
+        params_override.append({"type": compute_type})
     if resource_id:
         params_override.append({"resource_id": resource_id})
     if namespace:
@@ -402,14 +401,14 @@ def ml_compute_attach(
         compute = load_compute(source=file, params_override=params_override)
         if compute.type == "kubernetes" or compute.type == "synapsespark":
             if not compute.resource_id:
-                raise Exception(
+                raise ValueError(
                     'The "resource_id" is a required parameter for attaching a kubernetes or synapse compute!'
                 )
         compute = ml_client.begin_create_or_update(compute)
         if not no_wait:
             compute = LongRunningOperation(cmd.cli_ctx)(compute)
         return _dump_entity_with_warnings(compute)
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -427,15 +426,16 @@ def ml_compute_detach(cmd, resource_group_name, workspace_name, name, no_wait=Fa
             compute = LongRunningOperation(cmd.cli_ctx)(compute)
         return _dump_entity_with_warnings(compute)
 
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
+
 
 def ml_compute_enable_sso(
     cmd,
     resource_group_name,
     workspace_name,
     name,
-    disable:bool = False
+    disable: bool = False
 ):
     ml_client, debug = get_ml_client(
         cli_ctx=cmd.cli_ctx, resource_group_name=resource_group_name, workspace_name=workspace_name
@@ -445,5 +445,5 @@ def ml_compute_enable_sso(
             ml_client.compute.enable_sso(name=name, enable_sso=False)
         else:
             ml_client.compute.enable_sso(name=name)
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)

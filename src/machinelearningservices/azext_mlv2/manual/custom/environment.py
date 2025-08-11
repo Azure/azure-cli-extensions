@@ -61,13 +61,14 @@ def ml_environment_create(
         environment = load_environment(source=file, params_override=params_override)
         environment = ml_client.create_or_update(environment)
         return _dump_entity_with_warnings(environment)
-    except Exception as err:
-        yaml_operation = True if file else False
+    except Exception as err:  # pylint: disable=broad-exception-caught
+        yaml_operation = bool(file)
         log_and_raise_error(err, debug, yaml_operation=yaml_operation)
 
 
 def ml_environment_show(
-    cmd, name, resource_group_name=None, workspace_name=None, registry_name=None, version=None, label=None
+    cmd, name, resource_group_name=None, workspace_name=None, registry_name=None, 
+    version=None, label=None
 ):
     ml_client, debug = get_ml_client(
         cli_ctx=cmd.cli_ctx,
@@ -79,7 +80,7 @@ def ml_environment_show(
     try:
         environment = ml_client.environments.get(name=name, version=version, label=label)
         return _dump_entity_with_warnings(environment)
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -109,8 +110,8 @@ def ml_environment_list(
             )
         else:
             results = ml_client.environments.list(name=name, list_view_type=list_view_type)
-        return list(map(lambda x: _dump_entity_with_warnings(x), results))
-    except Exception as err:
+        return [_dump_entity_with_warnings(x) for x in results]
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -126,10 +127,10 @@ def _ml_environment_update(
 
     try:
         # Set unknown to EXCLUDE so that marshallow doesn't raise on dump only fields.
-        environment = Environment._load(data=parameters)
+        environment = Environment._load(data=parameters)  # pylint: disable=protected-access
         updated_environment = ml_client.create_or_update(environment)
         return _dump_entity_with_warnings(updated_environment)
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -144,7 +145,7 @@ def ml_environment_archive(
     )
     try:
         return ml_client.environments.archive(name=name, version=version, label=label)
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -159,11 +160,12 @@ def ml_environment_restore(
     )
     try:
         return ml_client.environments.restore(name=name, version=version, label=label)
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
-def _ml_environment_show(cmd, resource_group_name, name, version=None, label=None, workspace_name=None, registry_name=None):
+def _ml_environment_show(cmd, resource_group_name, name, version=None, label=None, 
+                        workspace_name=None, registry_name=None):
     ml_client, debug = get_ml_client(
         cli_ctx=cmd.cli_ctx,
         resource_group_name=resource_group_name,
@@ -174,7 +176,7 @@ def _ml_environment_show(cmd, resource_group_name, name, version=None, label=Non
     try:
         environment = ml_client.environments.get(name=name, version=version, label=label)
         return _dump_entity_with_warnings(environment)
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 

@@ -22,7 +22,7 @@ def ml_connection_show(cmd, resource_group_name, workspace_name, name, populate_
     try:
         ws = ml_client.connections.get(name, populate_secrets=populate_secrets)
         return _dump_entity_with_warnings(ws)
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -49,7 +49,7 @@ def ml_connection_create(
         connection = load_connection(source=file, params_override=params_override)
         ws = ml_client.connections.create_or_update(connection, populate_secrets=populate_secrets)
         return _dump_entity_with_warnings(ws)
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -61,7 +61,7 @@ def ml_connection_delete(cmd, resource_group_name, workspace_name, name):
     )
     try:
         return ml_client.connections.delete(name)
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -79,8 +79,8 @@ def ml_connection_list(
             results = islice(ml_client.connections.list(connection_type=connection_type), int(max_results))
         else:
             results = ml_client.connections.list(connection_type=connection_type, populate_secrets=populate_secrets)
-        return list(map(lambda x: _dump_entity_with_warnings(x), results))
-    except Exception as err:
+        return [_dump_entity_with_warnings(x) for x in results]
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -93,8 +93,8 @@ def _ml_connection_update(cmd, resource_group_name, workspace_name, parameters: 
 
     try:
         # Set unknown to EXCLUDE so that marshallow doesn't raise on dump only fields.
-        connection = WorkspaceConnection._load(data=parameters)
+        connection = WorkspaceConnection._load(data=parameters)  # pylint: disable=protected-access
         updated_connection = ml_client.connections.create_or_update(connection, populate_secrets=populate_secrets)
         return _dump_entity_with_warnings(updated_connection)
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)

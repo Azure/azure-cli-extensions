@@ -4,14 +4,15 @@
 
 from itertools import islice
 
-from azure.ai.ml.constants._common import  ARM_ID_PREFIX, AzureMLResourceType
+from azure.ai.ml.constants._common import AzureMLResourceType
 
 from azure.ai.ml.entities._assets import Model
 from azure.ai.ml.entities._load_functions import load_model, load_model_package
 from azure.ai.ml.exceptions import ErrorCategory, ErrorTarget, ValidationErrorType, ValidationException
 
 from .raise_error import log_and_raise_error
-from .utils import _dump_entity_with_warnings, get_list_view_type, get_ml_client, _get_ml_client_for_workspace, _parse_registered_asset_path, telemetry_log_info
+from .utils import (_dump_entity_with_warnings, get_list_view_type, get_ml_client,
+                   telemetry_log_info)
 from ._telemetry.structure import ModelInfo
 from ._telemetry._util import _set_path_type
 
@@ -24,14 +25,14 @@ def ml_model_create(
     version=None,
     file=None,
     path=None,
-    type=None,
+    model_type=None,
     description=None,
     tags=None,
     stage=None,
     registry_name=None,
     params_override=None,
     datastore=None,
-    no_wait=None,
+    no_wait=None,  # pylint: disable=unused-argument
 ):
     ml_client, debug = get_ml_client(
         cli_ctx=cmd.cli_ctx,
@@ -47,8 +48,8 @@ def ml_model_create(
         params_override.append({"version": version})
     if path:
         params_override.append({"path": path})
-    if type:
-        params_override.append({"type": type})
+    if model_type:
+        params_override.append({"type": model_type})
     if description:
         params_override.append({"description": description})
     if tags:
@@ -62,7 +63,7 @@ def ml_model_create(
     try:
         if file:
             model = load_model(source=file, params_override=params_override)
-            if model and model.type:          
+            if model and model.type:
                 model_info.model_type = model.type
             if model and model.path:
                 model_info.path_type = _set_path_type(model.path)
@@ -75,7 +76,7 @@ def ml_model_create(
                 description=description,
                 tags=tags,
                 stage=stage,
-                type=type,
+                type=model_type,
                 datastore=datastore,
             )
             if model and model.type:
@@ -93,8 +94,8 @@ def ml_model_create(
             )
         model = ml_client.create_or_update(model)
         return _dump_entity_with_warnings(model)
-    except Exception as err:
-        yaml_operation = True if file else False
+    except Exception as err:  # pylint: disable=broad-exception-caught
+        yaml_operation = bool(file)
         log_and_raise_error(err, debug, yaml_operation=yaml_operation)
     finally:
         telemetry_log_info(model_info.__dict__)
@@ -114,7 +115,7 @@ def ml_model_download(
         if not download_path:
             download_path = cmd.cli_ctx.local_context.current_dir
         ml_client.models.download(name=name, version=version, download_path=download_path)
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -145,8 +146,8 @@ def ml_model_list(
             )
         else:
             results = ml_client.models.list(name=name, stage=stage, list_view_type=list_view_type)
-        return list(map(lambda x: _dump_entity_with_warnings(x), results))
-    except Exception as err:
+        return [_dump_entity_with_warnings(x) for x in results]
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -156,43 +157,50 @@ def _ml_model_update(cmd, resource_group_name, parameters, workspace_name=None, 
         params_override.append({"stage": stage})
     # The State of Assets specifies the only difference for PrP in update is that update cannot create a new model.
     ml_client, debug = get_ml_client(
-        cli_ctx=cmd.cli_ctx, resource_group_name=resource_group_name, workspace_name=workspace_name, registry_name=registry_name
+        cli_ctx=cmd.cli_ctx, resource_group_name=resource_group_name, 
+        workspace_name=workspace_name, registry_name=registry_name
     )
 
     try:
         # Set unknown to EXCLUDE so that marshmallow doesn't raise on dump only fields.
-        model = Model._load(data=parameters, params_override=params_override)
+        model = Model._load(data=parameters, params_override=params_override)  # pylint: disable=protected-access
         updated_model = ml_client.create_or_update(model)
         return _dump_entity_with_warnings(updated_model)
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
-def ml_model_archive(cmd, name, resource_group_name=None, workspace_name=None, registry_name=None, version=None, label=None):
+def ml_model_archive(cmd, name, resource_group_name=None, workspace_name=None, 
+                     registry_name=None, version=None, label=None):
     ml_client, _ = get_ml_client(
-        cli_ctx=cmd.cli_ctx, resource_group_name=resource_group_name, workspace_name=workspace_name, registry_name=registry_name
+        cli_ctx=cmd.cli_ctx, resource_group_name=resource_group_name, 
+        workspace_name=workspace_name, registry_name=registry_name
     )
 
     return ml_client.models.archive(name=name, version=version, label=label)
 
 
-def ml_model_restore(cmd, name, resource_group_name=None, workspace_name=None, registry_name=None, version=None, label=None):
+def ml_model_restore(cmd, name, resource_group_name=None, workspace_name=None, 
+                     registry_name=None, version=None, label=None):
     ml_client, _ = get_ml_client(
-        cli_ctx=cmd.cli_ctx, resource_group_name=resource_group_name, workspace_name=workspace_name,  registry_name=registry_name
+        cli_ctx=cmd.cli_ctx, resource_group_name=resource_group_name, 
+        workspace_name=workspace_name,  registry_name=registry_name
     )
 
     return ml_client.models.restore(name=name, version=version, label=label)
 
 
-def _ml_model_show(cmd, resource_group_name, name, workspace_name=None, registry_name=None, version=None, label=None):
+def _ml_model_show(cmd, resource_group_name, name, workspace_name=None, 
+                   registry_name=None, version=None, label=None):
     ml_client, debug = get_ml_client(
-        cli_ctx=cmd.cli_ctx, resource_group_name=resource_group_name, workspace_name=workspace_name, registry_name=registry_name
+        cli_ctx=cmd.cli_ctx, resource_group_name=resource_group_name, 
+        workspace_name=workspace_name, registry_name=registry_name
     )
 
     try:
         model = ml_client.models.get(name=name, version=version, label=label)
         return _dump_entity_with_warnings(model)
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -213,19 +221,20 @@ def ml_model_show(
         if model and model.type:
             model_info.model_type = model.type
         return _dump_entity_with_warnings(model)
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
     finally:
         telemetry_log_info(model_info.__dict__)
 
 
 def ml_model_package(
-    cmd, name, file, version, workspace_name=None, resource_group_name=None, registry_name=None):
+    cmd, name, file, version, workspace_name=None, resource_group_name=None, 
+    registry_name=None):
     if workspace_name and registry_name:
         workspace_reference=workspace_name
     else:
         workspace_reference=None
-    
+
     ml_client, debug = get_ml_client(
         cli_ctx=cmd.cli_ctx,
         resource_group_name=resource_group_name,
@@ -238,15 +247,19 @@ def ml_model_package(
         model_pack = load_model_package(source=file)
         model = ml_client.models.package(name=name, package_request=model_pack, version=version)
         return _dump_entity_with_warnings(model)
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
-def ml_model_share(cmd, name, version, share_with_name, share_with_version, registry_name, resource_group_name=None, workspace_name=None):
+def ml_model_share(cmd, name, version, share_with_name, share_with_version, 
+                   registry_name, resource_group_name=None, workspace_name=None):
     ml_client, _ = get_ml_client(
-        cli_ctx=cmd.cli_ctx, resource_group_name=resource_group_name, workspace_name=workspace_name
+        cli_ctx=cmd.cli_ctx, resource_group_name=resource_group_name, 
+        workspace_name=workspace_name
     )
 
     model_info = ModelInfo()
     model_info.scenario = "promote"
-    model = ml_client.models.share(name=name, version=version, registry_name=registry_name, share_with_name=share_with_name, share_with_version=share_with_version)
+    model = ml_client.models.share(name=name, version=version, registry_name=registry_name, 
+                                  share_with_name=share_with_name, 
+                                  share_with_version=share_with_version)
     return _dump_entity_with_warnings(model)

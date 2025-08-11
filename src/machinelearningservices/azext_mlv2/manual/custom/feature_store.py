@@ -27,8 +27,8 @@ def ml_feature_store_list(cmd, resource_group_name=None, max_results=None):
             results = islice(ml_client.feature_stores.list(scope=scope), int(max_results))
         else:
             results = ml_client.feature_stores.list(scope=scope)
-        return list(map(lambda x: _dump_entity_with_warnings(x), results))
-    except Exception as err:
+        return [_dump_entity_with_warnings(x) for x in results]
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -38,7 +38,7 @@ def ml_feature_store_show(cmd, resource_group_name, name):
     try:
         feature_store = ml_client.feature_stores.get(name)
         return _dump_entity_with_warnings(feature_store)
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -97,7 +97,8 @@ def ml_feature_store_create(
     if managed_network:
         if managed_network not in ["disabled", "allow_internet_outbound", "allow_only_approved_outbound"]:
             log_and_raise_error(
-                "allowed values for managed-network are disabled, allow_internet_outbound, allow_only_approved_outbound"
+                "allowed values for managed-network are disabled, allow_internet_outbound, "
+                "allow_only_approved_outbound"
             )
         params_override.append({"managed_network": {"isolation_mode": managed_network}})
 
@@ -111,12 +112,13 @@ def ml_feature_store_create(
         if not no_wait:
             feature_store_poller = LongRunningOperation(cmd.cli_ctx)(feature_store_poller)
             return _dump_entity_with_warnings(feature_store_poller)
-        else:
-            module_logger.warning(
-                f"FeatureStore create request initiated. Status can be checked using `az ml feature-store show --name {feature_store.name}`"
-            )
+        
+        module_logger.warning(
+            "FeatureStore create request initiated. Status can be checked using `az ml feature-store show --name %s`",
+            feature_store.name,
+        )
         return feature_store_poller
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -169,7 +171,8 @@ def ml_feature_store_update(
     if managed_network:
         if managed_network not in ["disabled", "allow_internet_outbound", "allow_only_approved_outbound"]:
             log_and_raise_error(
-                "allowed values for managed-network are disabled, allow_internet_outbound, allow_only_approved_outbound"
+                "allowed values for managed-network are disabled, allow_internet_outbound, "
+                "allow_only_approved_outbound"
             )
         params_override.append({"managed_network": {"isolation_mode": managed_network}})
 
@@ -188,12 +191,13 @@ def ml_feature_store_update(
         if not no_wait:
             feature_store_poller = LongRunningOperation(cmd.cli_ctx)(feature_store_poller)
             return _dump_entity_with_warnings(feature_store_poller)
-        else:
-            module_logger.warning(
-                f"FeatureStore update request initiated. Status can be checked using `az ml feature-store show --name {feature_store.name}`"
-            )
+        
+        module_logger.warning(
+            "FeatureStore update request initiated. Status can be checked using `az ml feature-store show --name %s`",
+            feature_store.name,
+        )
         return feature_store_poller
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -205,7 +209,7 @@ def ml_feature_store_delete(cmd, resource_group_name, name, all_resources=False,
         if not no_wait:
             del_result = LongRunningOperation(cmd.cli_ctx)(del_result)
         return del_result
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -219,5 +223,5 @@ def ml_feature_store_provision_network(cmd, resource_group_name, name, include_s
         if not no_wait:
             provision_network_result = LongRunningOperation(cmd.cli_ctx)(provision_network_result)
         return provision_network_result
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)

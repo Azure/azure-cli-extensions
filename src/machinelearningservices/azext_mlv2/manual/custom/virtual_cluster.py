@@ -11,8 +11,8 @@ def ml_virtual_cluster_list(cmd):
     ml_client, debug = get_ml_client(cli_ctx=cmd.cli_ctx)
 
     try:
-        return  ml_client._virtual_clusters.list()
-    except Exception as err:
+        return  ml_client._virtual_clusters.list()  # pylint: disable=protected-access
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -23,6 +23,6 @@ def ml_virtual_cluster_show(cmd, name, resource_group_name=None):
     )
 
     try:
-        return ml_client._virtual_clusters.get(name=name)
-    except Exception as err:
+        return ml_client._virtual_clusters.get(name=name)  # pylint: disable=protected-access
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)

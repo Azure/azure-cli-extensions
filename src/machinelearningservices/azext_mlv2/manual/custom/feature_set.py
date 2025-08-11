@@ -8,7 +8,7 @@ from typing import Optional, List
 
 from knack.log import get_logger
 
-from azure.ai.ml.entities import FeatureSet, MaterializationComputeResource
+from azure.ai.ml.entities import FeatureSet
 from azure.ai.ml.entities._load_functions import load_feature_set, load_feature_set_backfill_request
 from azure.ai.ml.exceptions import ErrorCategory, ErrorTarget, UserErrorException
 from azure.cli.core.commands import LongRunningOperation
@@ -41,8 +41,8 @@ def ml_feature_set_list(
             )
         else:
             results = ml_client.feature_sets.list(name=name, list_view_type=list_view_type)
-        return list(map(lambda x: _dump_entity_with_warnings(x), results))
-    except Exception as err:
+        return [_dump_entity_with_warnings(x) for x in results]
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -54,7 +54,7 @@ def ml_feature_set_show(cmd, name, version, resource_group_name=None, workspace_
     try:
         feature_set = ml_client.feature_sets.get(name=name, version=version)
         return _dump_entity_with_warnings(feature_set)
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -95,7 +95,8 @@ def ml_feature_set_create(
             feature_set = LongRunningOperation(cmd.cli_ctx)(feature_set_poller)
         else:
             module_logger.warning(
-                f"Feature set create request initiated. Status can be checked using `az ml feature-set show --name {feature_set.name} --version {feature_set.version}`"
+                "Feature set create request initiated. Status can be checked using "
+                "`az ml feature-set show --name %s --version %s`", feature_set.name, feature_set.version
             )
         return _dump_entity_with_warnings(feature_set)
     except Exception as err:
@@ -145,9 +146,11 @@ def ml_feature_set_update(
     if file:
         try:
             ml_client.feature_sets.get(name=feature_set_obj.name, version=feature_set_obj.version)
-        except Exception as err:
+        except Exception as err:  # pylint: disable=broad-exception-caught
             if isinstance(err, ResourceNotFoundError):
-                raise Exception(f"Feature set {feature_set_obj.name}:{feature_set_obj.version} does not exist")
+                raise Exception(
+                    f"Feature set {feature_set_obj.name}:{feature_set_obj.version} does not exist"
+                ) from err
 
     try:
         feature_set_poller = ml_client.feature_sets.begin_create_or_update(feature_set_obj)
@@ -156,9 +159,10 @@ def ml_feature_set_update(
             return _dump_entity_with_warnings(feature_set)
         else:
             module_logger.warning(
-                f"Feature set update request initiated. Status can be checked using `az ml feature-set show --name {name} --version {version}`"
+                "Feature set update request initiated. Status can be checked using "
+                "`az ml feature-set show --name %s --version %s`", name, version
             )
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -168,7 +172,7 @@ def ml_feature_set_archive(cmd, name, version, resource_group_name=None, workspa
     )
     try:
         return ml_client.feature_sets.archive(name=name, version=version)
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -178,7 +182,7 @@ def ml_feature_set_restore(cmd, name, version, resource_group_name=None, workspa
     )
     try:
         return ml_client.feature_sets.restore(name=name, version=version)
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -240,7 +244,7 @@ def ml_feature_set_backfill(
             spark_configuration=feature_set_backfill_data.spark_configuration,
             data_status=feature_set_backfill_data.data_status,
             job_id=feature_set_backfill_data.job_id)
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -265,7 +269,7 @@ def ml_feature_set_list_materialization_operation(
             feature_window_end_time=feature_window_end_time,
             filters=filters,
         )
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -275,7 +279,7 @@ def ml_feature_set_list_features(cmd, name, version, feature_name=None, resource
     )
     try:
         return ml_client.feature_sets.list_features(feature_set_name=name, version=version, feature_name=feature_name)
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -285,5 +289,5 @@ def ml_feature_set_show_feature(cmd, name, version, feature_name, resource_group
     )
     try:
         return ml_client.feature_sets.get_feature(feature_set_name=name, version=version, feature_name=feature_name)
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)

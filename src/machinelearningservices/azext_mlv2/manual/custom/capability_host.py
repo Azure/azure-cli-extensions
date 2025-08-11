@@ -3,7 +3,6 @@
 # ---------------------------------------------------------
 
 import logging
-from itertools import islice
 from azure.ai.ml.entities._load_functions import load_capability_host
 from azure.ai.ml.entities._workspace._ai_workspaces.capability_host import (
     CapabilityHost,
@@ -28,7 +27,7 @@ def ml_capability_host_show(cmd, name, resource_group_name, workspace_name):
     try:
         capability_host = ml_client.capability_hosts.get(name=name)
         return _dump_entity_with_warnings(capability_host)
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -73,15 +72,16 @@ def ml_capability_host_create(
         if no_wait:
             module_logger.warning(
                 "Capability host create request initiated. "
-                f"Status can be checked using `az ml capability-host show -n {capability_host.name}`\n"
+                "Status can be checked using `az ml capability-host show -n %s`",
+                capability_host.name,
             )
         else:
             capability_host = LongRunningOperation(cmd.cli_ctx)(result)
         if isinstance(capability_host, CapabilityHost):
             return _dump_entity_with_warnings(capability_host)
 
-    except Exception as err:
-        yaml_operation = True if file else False
+    except Exception as err:  # pylint: disable=broad-exception-caught
+        yaml_operation = bool(file)
         log_and_raise_error(err, debug, yaml_operation=yaml_operation)
 
 
@@ -103,5 +103,5 @@ def ml_capability_host_delete(
         if not no_wait:
             delete_result = wrap_lro(cmd.cli_ctx, delete_result)
         return _dump_entity_with_warnings(delete_result)
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)

@@ -37,8 +37,8 @@ def ml_feature_store_entity_list(
             )
         else:
             results = ml_client.feature_store_entities.list(name=name, list_view_type=list_view_type)
-        return list(map(lambda x: _dump_entity_with_warnings(x), results))
-    except Exception as err:
+        return [_dump_entity_with_warnings(x) for x in results]
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -50,7 +50,7 @@ def ml_feature_store_entity_show(cmd, name, version, resource_group_name=None, w
     try:
         feature_store_entity = ml_client.feature_store_entities.get(name=name, version=version)
         return _dump_entity_with_warnings(feature_store_entity)
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -85,11 +85,13 @@ def ml_feature_store_entity_create(
             feature_store_entity = LongRunningOperation(cmd.cli_ctx)(feature_store_entity_poller)
         else:
             module_logger.warning(
-                f"Feature store entity create request initiated. Status can be checked using `az ml feature-store-entity show --name {feature_store_entity.name} --version {feature_store_entity.version}`"
+                "Feature store entity create request initiated. Status can be checked using "
+                "`az ml feature-store-entity show --name %s --version %s`",
+                feature_store_entity.name, feature_store_entity.version
             )
         return _dump_entity_with_warnings(feature_store_entity)
-    except Exception as err:
-        yaml_operation = True if file else False
+    except Exception as err:  # pylint: disable=broad-exception-caught
+        yaml_operation = bool(file)
         log_and_raise_error(err, debug, yaml_operation=yaml_operation)
 
 
@@ -100,7 +102,7 @@ def _ml_feature_store_entity_show(cmd, resource_group_name, workspace_name, name
     )
     try:
         return ml_client.feature_store_entities.get(name=name, version=version)
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -117,11 +119,12 @@ def _ml_feature_store_entity_update(cmd, resource_group_name, workspace_name, na
         if not no_wait:
             feature_store_entity = LongRunningOperation(cmd.cli_ctx)(feature_store_entity_poller)
             return _dump_entity_with_warnings(feature_store_entity)
-        else:
-            module_logger.warning(
-                f"Feature store entity update request initiated. Status can be checked using `az ml feature-store-entity show --name {name} --version {version}`"
-            )
-    except Exception as err:
+        module_logger.warning(
+            "Feature store entity update request initiated. Status can be checked using "
+            "`az ml feature-store-entity show --name %s --version %s`",
+            name, version
+        )
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -131,7 +134,7 @@ def ml_feature_store_entity_archive(cmd, name, version, resource_group_name=None
     )
     try:
         return ml_client.feature_store_entities.archive(name=name, version=version)
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -141,5 +144,5 @@ def ml_feature_store_entity_restore(cmd, name, version, resource_group_name=None
     )
     try:
         return ml_client.feature_store_entities.restore(name=name, version=version)
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
