@@ -5,16 +5,16 @@
 from itertools import islice
 from typing import Optional
 
-from azure.ai.ml.constants._common import (
-    MLTABLE_METADATA_SCHEMA_URL_FALLBACK, MAX_LIST_CLI_RESULTS, ARM_ID_PREFIX,
-    ASSET_ARM_ID_REGEX_FORMAT, ASSET_ID_REGEX_FORMAT,
-    ASSET_ID_RESOURCE_REGEX_FORMAT, DATA_ID_REGEX_FORMAT, AzureMLResourceType)
+from azure.ai.ml.constants._common import MLTABLE_METADATA_SCHEMA_URL_FALLBACK, MAX_LIST_CLI_RESULTS
 from azure.ai.ml.entities._load_functions import load_data
-from azure.ai.ml.exceptions import ErrorCategory, ErrorTarget, ValidationErrorType, ValidationException
+
 from .raise_error import log_and_raise_error, print_limited_result_set_warning
-from .utils import _dump_entity_with_warnings, get_list_view_type, get_ml_client, _get_ml_client_for_workspace, _parse_registered_asset_path, modify_sys_path_for_rslex_mount
-import re
-from typing import Dict
+from .utils import (
+    _dump_entity_with_warnings,
+    get_list_view_type,
+    get_ml_client,
+    modify_sys_path_for_rslex_mount,
+)
 
 
 def ml_data_list(cmd,
@@ -40,8 +40,8 @@ def ml_data_list(cmd,
         else:
             results = ml_client.data.list(name=name,
                                           list_view_type=list_view_type)
-        return list(map(lambda x: _dump_entity_with_warnings(x), results))
-    except Exception as err:
+        return [_dump_entity_with_warnings(x) for x in results]
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -60,7 +60,7 @@ def ml_data_show(cmd,
     try:
         data = ml_client.data.get(name=name, version=version, label=label)
         return _dump_entity_with_warnings(data)
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -74,10 +74,10 @@ def ml_data_create(cmd,
                    version: Optional[str] = None,
                    skip_validation: bool = False,
                    params_override: Optional[list] = None,
-                   type: Optional[str] = None,
+                   data_type: Optional[str] = None,  # pylint: disable=redefined-builtin
                    path: Optional[str] = None,
                    datastore: Optional[str] = None,
-                   no_wait: Optional[bool] = False):
+                   no_wait: Optional[bool] = False):  # pylint: disable=unused-argument
     ml_client, debug = get_ml_client(
         cli_ctx=cmd.cli_ctx,
         resource_group_name=resource_group_name,
@@ -95,8 +95,8 @@ def ml_data_create(cmd,
         params_override.append({"description": description})
     if version:
         params_override.append({"version": version})
-    if type:
-        params_override.append({"type": type})
+    if data_type:
+        params_override.append({"type": data_type})
     if path:
         params_override.append({"path": path})
     if datastore:
@@ -104,12 +104,12 @@ def ml_data_create(cmd,
 
     try:
         data = load_data(source=file, params_override=params_override)
-        data._skip_validation = skip_validation
-        data._mltable_schema_url = mltable_schema_url
+        data._skip_validation = skip_validation  # pylint: disable=protected-access
+        data._mltable_schema_url = mltable_schema_url  # pylint: disable=protected-access
         data = ml_client.data.create_or_update(data)
         return _dump_entity_with_warnings(data)
-    except Exception as err:
-        yaml_operation = True if file else False
+    except Exception as err:  # pylint: disable=broad-exception-caught
+        yaml_operation = bool(file)
         log_and_raise_error(err, debug, yaml_operation=yaml_operation)
 
 
@@ -123,7 +123,7 @@ def ml_data_import(
     version: Optional[str] = None,
     skip_validation: bool = False,
     params_override: Optional[list] = None,
-    type: Optional[str] = None,
+    data_type: Optional[str] = None,  # pylint: disable=redefined-builtin
     path: Optional[str] = None,
     datastore: Optional[str] = None,
     **kwargs,
@@ -139,8 +139,8 @@ def ml_data_import(
         params_override.append({"description": description})
     if version:
         params_override.append({"version": version})
-    if type:
-        params_override.append({"type": type})
+    if data_type:
+        params_override.append({"type": data_type})
     if path:
         params_override.append({"path": path})
     if datastore:
@@ -148,16 +148,24 @@ def ml_data_import(
 
     try:
         data_import = load_data(source=file, params_override=params_override)
-        data_import._skip_validation = skip_validation
+        data_import._skip_validation = skip_validation  # pylint: disable=protected-access
         job = ml_client.data.import_data(data_import, **kwargs)
         return _dump_entity_with_warnings(job)
-    except Exception as err:
-        yaml_operation = True if file else False
+    except Exception as err:  # pylint: disable=broad-exception-caught
+        yaml_operation = bool(file)
         log_and_raise_error(err, debug, yaml_operation=yaml_operation)
 
 
 def ml_data_list_materialization_status(
-    cmd, resource_group_name, workspace_name, name=None, max_results=MAX_LIST_CLI_RESULTS, all_results=False, include_archived=False, archived_only=False, **kwargs
+    cmd,
+    resource_group_name,
+    workspace_name,
+    name=None,
+    max_results=MAX_LIST_CLI_RESULTS,
+    all_results=False,
+    include_archived=False,
+    archived_only=False,
+    **kwargs
 ):
     ml_client, debug = get_ml_client(
         cli_ctx=cmd.cli_ctx, resource_group_name=resource_group_name, workspace_name=workspace_name
@@ -177,8 +185,8 @@ def ml_data_list_materialization_status(
             )
         else:
             results = ml_client.data.list_materialization_status(name=name, list_view_type=list_view_type, **kwargs)
-        return list(map(lambda x: _dump_entity_with_warnings(x), results))
-    except Exception as err:
+        return [_dump_entity_with_warnings(x) for x in results]
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -196,7 +204,7 @@ def _ml_data_show(cmd,
                                      registry_name=registry_name)
     try:
         return ml_client.data.get(name=name, version=version, label=label)
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -218,7 +226,7 @@ def _ml_data_update(cmd,
     try:
         data = ml_client.data.create_or_update(data_obj)
         return _dump_entity_with_warnings(data)
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -233,7 +241,7 @@ def ml_data_archive(cmd,
                                      workspace_name=workspace_name)
     try:
         return ml_client.data.archive(name=name, version=version, label=label)
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -248,24 +256,41 @@ def ml_data_restore(cmd,
                                      workspace_name=workspace_name)
     try:
         return ml_client.data.restore(name=name, version=version, label=label)
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
-def ml_data_share(cmd, name, version, share_with_name, share_with_version, registry_name, resource_group_name, workspace_name):
+def ml_data_share(
+    cmd,
+    name,
+    version,
+    share_with_name,
+    share_with_version,
+    registry_name,
+    resource_group_name,
+    workspace_name
+):
     ml_client, _ = get_ml_client(
         cli_ctx=cmd.cli_ctx, resource_group_name=resource_group_name, workspace_name=workspace_name
     )
 
-    model = ml_client.data.share(name=name, version=version, registry_name=registry_name, share_with_name=share_with_name, share_with_version=share_with_version)
+    model = ml_client.data.share(
+        name=name,
+        version=version,
+        registry_name=registry_name,
+        share_with_name=share_with_name,
+        share_with_version=share_with_version
+    )
     return _dump_entity_with_warnings(model)
 
-def ml_data_mount(cmd,
-                  path,
-                  mount_point='/home/azureuser/mount/data',
-                  resource_group_name=None,
-                  workspace_name=None,
-                  mode='ro_mount',
-                  persistent=False):
+def ml_data_mount(
+    cmd,
+    path,
+    mount_point='/home/azureuser/mount/data',
+    resource_group_name=None,
+    workspace_name=None,
+    mode='ro_mount',
+    persistent=False
+):
 
     ml_client, debug = get_ml_client(
         cli_ctx=cmd.cli_ctx, resource_group_name=resource_group_name, workspace_name=workspace_name

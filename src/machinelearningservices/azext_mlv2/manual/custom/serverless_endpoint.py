@@ -13,10 +13,8 @@ from azure.cli.core.commands import LongRunningOperation
 from .raise_error import log_and_raise_error
 from .utils import (
     _dump_entity_with_warnings,
-    convert_str_to_dict,
     get_ml_client,
     is_not_found_error,
-    open_online_endpoint_in_browser,
     wrap_lro,
 )
 
@@ -32,7 +30,7 @@ def ml_serverless_endpoint_show(cmd, resource_group_name, workspace_name, name):
     try:
         endpoint = ml_client.serverless_endpoints.get(name=name)
         return endpoint.as_dict()
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -44,7 +42,7 @@ def ml_serverless_endpoint_create(
     name=None,
     no_wait=False,
     params_override=None,
-    **kwargs,
+    **kwargs,  # pylint: disable=unused-argument
 ):
     ml_client, debug = get_ml_client(
         cli_ctx=cmd.cli_ctx, resource_group_name=resource_group_name, workspace_name=workspace_name
@@ -61,13 +59,13 @@ def ml_serverless_endpoint_create(
         if no_wait:
             module_logger.warning(
                 "Endpoint create request initiated. "
-                f"Status can be checked using `az ml serverless-endpoint show -n {endpoint_name}`\n"
+                "Status can be checked using `az ml serverless-endpoint show -n %s`\n", endpoint_name
             )
         else:
             endpoint = wrap_lro(cmd.cli_ctx, endpoint)
             return endpoint.as_dict()
-    except Exception as err:
-        yaml_operation = True if file else False
+    except Exception as err:  # pylint: disable=broad-exception-caught
+        yaml_operation = bool(file)
         log_and_raise_error(err, debug, yaml_operation=yaml_operation)
 
 
@@ -83,16 +81,16 @@ def ml_serverless_endpoint_delete(
     )
     try:
         ml_client.serverless_endpoints.get(name=name)
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         if is_not_found_error(err):
-            raise Exception(f"Serverless endpoint {name} does not exist.")
+            raise ValueError(f"Serverless endpoint {name} does not exist.") from err
 
     try:
         delete_result = ml_client.serverless_endpoints.begin_delete(name=name)
         if not no_wait:
             delete_result = wrap_lro(cmd.cli_ctx, delete_result)
         return _dump_entity_with_warnings(delete_result)
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -102,7 +100,7 @@ def ml_serverless_endpoint_get_credentials(cmd, resource_group_name, workspace_n
     )
     try:
         return ml_client.serverless_endpoints.get_keys(name=name)
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -112,8 +110,8 @@ def ml_serverless_endpoint_list(cmd, resource_group_name, workspace_name):
     )
     try:
         results = ml_client.serverless_endpoints.list()
-        return list(map(lambda x: _dump_entity_with_warnings(x), results))
-    except Exception as err:
+        return [_dump_entity_with_warnings(x) for x in results]
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -123,30 +121,30 @@ def _ml_serverless_endpoint_update(
     workspace_name,
     parameters=None,
     no_wait=False,
-    **kwargs,
+    **kwargs,  # pylint: disable=unused-argument
 ) -> None:
     ml_client, debug = get_ml_client(
         cli_ctx=cmd.cli_ctx, resource_group_name=resource_group_name, workspace_name=workspace_name
     )
     try:
         endpoint = ServerlessEndpoint(parameters)
-        endpoint._validate()
+        endpoint._validate()  # pylint: disable=protected-access
         ml_client.serverless_endpoints.begin_create_or_update(endpoint)
         if no_wait:
             module_logger.warning(
                 "Endpoint update request initiated. "
-                f"Status can be checked using `az ml serverless-endpoint show -n {parameters.name}`\n"
+                "Status can be checked using `az ml serverless-endpoint show -n %s`\n", parameters.name
             )
         else:
             endpoint_return = wrap_lro(cmd.cli_ctx, endpoint_return)
             return endpoint_return.as_dict()
 
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
 def ml_serverless_endpoint_regenerate_keys(
-    cmd, resource_group_name, workspace_name, name, key_type=EndpointKeyType.PRIMARY_KEY_TYPE, no_wait: bool = False
+    cmd, resource_group_name, workspace_name, name, key_type=EndpointKeyType.PRIMARY_KEY_TYPE, no_wait: bool = False  # pylint: disable=unused-argument
 ):
     ml_client, debug = get_ml_client(
         cli_ctx=cmd.cli_ctx, resource_group_name=resource_group_name, workspace_name=workspace_name
@@ -157,5 +155,5 @@ def ml_serverless_endpoint_regenerate_keys(
         if not no_wait:
             keys = LongRunningOperation(cmd.cli_ctx)(keys)
         return keys
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
