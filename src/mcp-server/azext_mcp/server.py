@@ -146,13 +146,19 @@ class AzMCP(FastMCP):
             instructions: str | None = None,
             event_store: EventStore | None = None,
             *,
-            tools: list[Tool] | None = None):
+            tools: list[Tool] | None = None,
+            enable_elicit: bool = True,
+    ):
+        """
+        Initialize the AzMCP server with the given CLI context and optional parameters.
+        """
         super().__init__(
             name or "AZ MCP",
             instructions,
             event_store,
             tools=tools)
         self.cli_ctx = cli_ctx
+        self.enable_elicit = enable_elicit
         self.az_cli_bridge = AzCLIBridge(self.cli_ctx)
         self._register_primitives()
         # self._register_resources()
@@ -179,34 +185,34 @@ class AzMCP(FastMCP):
             ),
             structured_output=True,
         )(self.get_command_schema)
-        # super().tool(
-        #     "invoke_az_cli_command",
-        #     title="Invoke Azure CLI Command",
-        #     description="Execute an Azure CLI command with specified arguments in JSON format. "
-        #         "This tool allows you to run any Azure CLI command programmatically, passing arguments as a JSON object."
-        #         "The key in arguments should match the command's argument names, instead of the options. "
-        #         "This tool must be called after the command schema tool to ensure the command is valid.",
-        #     annotations=ToolAnnotations(
-        #         title="Invoke Azure CLI Command",
-        #         destructiveHint=True,
-        #     ),
-        #     structured_output=True,
-        # )(self.invoke_command_by_json)
         super().tool(
             "invoke_az_cli_command",
             title="Invoke Azure CLI Command",
-            description="Execute an Azure CLI command with specified arguments in a list format. "
-                "The arguments should be provided as a list of strings, where each string is a separate argument part."
-                "For example, to run 'az vm create --name MyVM --resource-group MyGroup', you would provide the arguments as follows: "
-                "['vm', 'create', '--name', 'MyVM', '--resource-group', 'MyGroup']"
-                "This tool must be called after the command schema tool to ensure the command is valid."
-                "You should refer to the options in the command schema tool to ensure the parameters are correct.",
+            description="Execute an Azure CLI command with specified arguments in JSON format. "
+                "This tool allows you to run any Azure CLI command programmatically, passing arguments as a JSON object."
+                "The key in arguments should match the command's argument names, instead of the options. "
+                "This tool must be called after the command schema tool to ensure the command is valid.",
             annotations=ToolAnnotations(
                 title="Invoke Azure CLI Command",
                 destructiveHint=True,
             ),
             structured_output=True,
-        )(self.invoke_command_by_arguments)
+        )(self.invoke_command_by_json)
+        # super().tool(
+        #     "invoke_az_cli_command",
+        #     title="Invoke Azure CLI Command",
+        #     description="Execute an Azure CLI command with specified arguments in a list format. "
+        #         "The arguments should be provided as a list of strings, where each string is a separate argument part."
+        #         "For example, to run 'az vm create --name MyVM --resource-group MyGroup', you would provide the arguments as follows: "
+        #         "['vm', 'create', '--name', 'MyVM', '--resource-group', 'MyGroup']"
+        #         "This tool must be called after the command schema tool to ensure the command is valid."
+        #         "You should refer to the options in the command schema tool to ensure the parameters are correct.",
+        #     annotations=ToolAnnotations(
+        #         title="Invoke Azure CLI Command",
+        #         destructiveHint=True,
+        #     ),
+        #     structured_output=True,
+        # )(self.invoke_command_by_arguments)
 
     def _register_resources(self):
         for group_name in self.az_cli_bridge.group_table.keys():
@@ -246,7 +252,7 @@ class AzMCP(FastMCP):
         if command_name.startswith('az '):
             command_name = command_name[3:]
         verb = command_name.split()[-1]
-        if verb not in ['list', 'show']:
+        if self.enable_elicit and verb not in ['list', 'show']:
             result = await ctx.elicit("This is a destructive command. Do you want to continue? (y/N)", MCPConfirmation)
             if not (result.action == "accept" and result.data.confirmation.lower() in ["y", "yes"]):
                 return None
@@ -256,7 +262,7 @@ class AzMCP(FastMCP):
         """Invoke a command with a list of arguments."""
         if arguments and arguments[0] == "az":
             arguments = arguments[1:]  # Remove 'az' prefix if present
-        if "list" not in arguments and "show" not in arguments:
+        if self.enable_elicit and "list" not in arguments and "show" not in arguments:
             result = await ctx.elicit("This is a destructive command. Do you want to continue? (y/N)", MCPConfirmation)
             if not (result.action == "accept" and result.data.confirmation.lower() in ["y", "yes"]):
                 return None
