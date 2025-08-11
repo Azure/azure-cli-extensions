@@ -4357,6 +4357,7 @@ def aks_loadbalancer_rebalance_nodes(
 
     return aks_loadbalancer_rebalance_internal(managed_clusters_client, parameters)
 
+
 def aks_bastion(cmd, client, resource_group_name, name, bastion=None, port=None, admin=False, yes=False):
     import asyncio
     import tempfile
