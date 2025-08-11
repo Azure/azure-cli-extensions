@@ -22,20 +22,30 @@ The `acrcache` extension adds support for managing Azure Container Registry (ACR
 1. Install Python (minimum supported version is 3.6; Python 3.12 is recommended) from http://python.org.
 2. Fork and clone the required repo's
     - Azure CLI Repo : https://github.com/Azure/azure-cli  
-    - Azure CLI Extensions Repo : https://github.com/AzureCR/azure-cli-extensions. Note: ACR cache extension is in feature/artifactcache branch.
+    - Azure CLI Extensions Repo : https://github.com/AzureCR/azure-cli-extensions. 
 
-  After forking `azure-cli`, follow the below commands to setup
+- Note: ACR cache extension is in feature/artifactcache branch.
+
+    After forking `azure-cli`, follow the below commands to setup
 
     # Clone your forked repository
+
     git clone https://github.com/<your-github-name>/azure-cli.git
 
     cd azure-cli
+
     # Add the Azure/azure-cli repository as upstream
+
     git remote add upstream https://github.com/Azure/azure-cli.git
+
     git fetch upstream
+
     # Reset the default dev branch to track dev branch of Azure/azure-cli so you can use it to track the latest azure-cli code.
+
     git branch dev --set-upstream-to upstream/dev
+
     # Develop with a new branch
+
     git checkout -b <feature_branch>
 
   Do the same for `azure-cli-extensions` except that the default branch for it is main, run git branch main --set-upstream-to upstream/main instead.
@@ -66,7 +76,9 @@ The `acrcache` extension adds support for managing Azure Container Registry (ACR
       python -m pip install -U pip
       ```
       Due to a known issue, the Azure CLI currently requires an older version of setuptools (70.0.0) and wheel (0.30.0) because newer versions are incompatible and may cause installation or build failures. For more details, see the related issue: https://github.com/Azure/azure-cli/issues/29467
+     
       pip install setuptools==70.0.0 	
+
       pip install --force-reinstall wheel==0.30.0
 
     Install azdev
@@ -84,6 +96,7 @@ Developing with the ACR Cache Extension
 ==========================================  
 
 Please write the description of changes which can be perceived by customers into HISTORY.rst.
+
 If you want to release a new extension version, please update the version in setup.py as well.
 
 If you make changes to the extension, you can test it by running:
