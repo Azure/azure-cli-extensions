@@ -178,9 +178,6 @@ class ContainerServiceClient:  # pylint: disable=too-many-instance-attributes
         self.identity_bindings = IdentityBindingsOperations(
             self._client, self._config, self._serialize, self._deserialize
         )
-        self.identity_bindings = IdentityBindingsOperations(
-            self._client, self._config, self._serialize, self._deserialize, "2025-04-02-preview"
-        )
 
     def _send_request(
         self, request: HttpRequest, *, stream: bool = False, **kwargs: Any
