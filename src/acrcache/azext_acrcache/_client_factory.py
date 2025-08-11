@@ -4,14 +4,16 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long
 
-
 def cf_acrcache(cli_ctx, *_):
-    from azure.cli.core.commands.client_factory import get_mgmt_service_client
-    from azext_acrcache.vendored_sdks.containerregistry.v2023_11_01_preview._container_registry_management_client import ContainerRegistryManagementClient
-    return get_mgmt_service_client(cli_ctx, ContainerRegistryManagementClient).cache_rules
+    from azure.cli.core.commands.client_factory import get_mgmt_service_client, get_subscription_id
+    from azext_acrcache.vendored_sdks.containerregistry.v2025_07_01_preview.generated.container_registry_management_client import ContainerRegistryManagementClient
 
+    subscription_id = get_subscription_id(cli_ctx)
+    return get_mgmt_service_client(cli_ctx, ContainerRegistryManagementClient, subscription_id=subscription_id).cache_rules
 
 def cf_acrreg(cli_ctx, *_):
-    from azure.cli.core.commands.client_factory import get_mgmt_service_client
-    from azext_acrcache.vendored_sdks.containerregistry.v2023_11_01_preview._container_registry_management_client import ContainerRegistryManagementClient
-    return get_mgmt_service_client(cli_ctx, ContainerRegistryManagementClient)
+    from azure.cli.core.commands.client_factory import get_mgmt_service_client, get_subscription_id
+    from azext_acrcache.vendored_sdks.containerregistry.v2025_07_01_preview.generated.container_registry_management_client import ContainerRegistryManagementClient
+
+    subscription_id = get_subscription_id(cli_ctx)
+    return get_mgmt_service_client(cli_ctx, ContainerRegistryManagementClient, subscription_id=subscription_id).registries

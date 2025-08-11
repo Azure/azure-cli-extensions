@@ -117,6 +117,7 @@ class ContainerRegistryManagementClient(MultiApiClientMixin, _SDKClient):
         * 2023-07-01: :mod:`v2023_07_01.models<azure.mgmt.containerregistry.v2023_07_01.models>`
         * 2023-08-01-preview: :mod:`v2023_08_01_preview.models<azure.mgmt.containerregistry.v2023_08_01_preview.models>`
         * 2023-11-01-preview: :mod:`v2023_11_01_preview.models<azure.mgmt.containerregistry.v2023_11_01_preview.models>`
+        * 2025-07-01-preview: :mod:`v2025_07_01_preview.models<azure.mgmt.containerregistry.v2025_07_01_preview.models>`
         """
         if api_version == "2017-03-01":
             from .v2017_03_01 import models
@@ -202,6 +203,10 @@ class ContainerRegistryManagementClient(MultiApiClientMixin, _SDKClient):
             from .v2023_11_01_preview import models
 
             return models
+        elif api_version == "2025-07-01-preview":
+            from .v2025_07_01_preview import models
+
+            return models    
         raise ValueError("API version {} is not available".format(api_version))
 
     @property
@@ -345,6 +350,7 @@ class ContainerRegistryManagementClient(MultiApiClientMixin, _SDKClient):
         * 2023-07-01: :class:`CacheRulesOperations<azure.mgmt.containerregistry.v2023_07_01.operations.CacheRulesOperations>`
         * 2023-08-01-preview: :class:`CacheRulesOperations<azure.mgmt.containerregistry.v2023_08_01_preview.operations.CacheRulesOperations>`
         * 2023-11-01-preview: :class:`CacheRulesOperations<azure.mgmt.containerregistry.v2023_11_01_preview.operations.CacheRulesOperations>`
+        
         """
         api_version = self._get_api_version("cache_rules")
         if api_version == "2023-01-01-preview":
