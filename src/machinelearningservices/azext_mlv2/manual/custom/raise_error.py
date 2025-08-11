@@ -49,8 +49,8 @@ def _extract_error_from_details(error_details):
             json_error = json.loads(error_details)
         formatted_error = ODataV4Format(json_object=json_error)
         return formatted_error.message_details()
-    except Exception:
-        module_logger.debug(f"Error parsing details of deployment failed error : {error_details.message}")
+    except Exception:  # pylint: disable=broad-exception-caught
+        module_logger.debug("Error parsing details of deployment failed error : %s", error_details.message)
         return error_details.message_details()
 
 
@@ -76,9 +76,10 @@ def log_and_raise_error(error, debug=False, yaml_operation=False):
     custom_properties_error = {
         "ml.cli.event": {
             "error_code": "",
-            # TODO: as the security team detected and raised the concern that `raw_msg` may contain sensitive information,
-            #       e.g. storage key, when some of the developers made mistake, this field will be set as empty string until
-            #       we figure out a reliable way to mask/filter the sensitive information.
+            # TODO: as the security team detected and raised the concern that `raw_msg` may contain
+            #       sensitive information, e.g. storage key, when some of the developers made mistake,
+            #       this field will be set as empty string until we figure out a reliable way to
+            #       mask/filter the sensitive information.
             "raw_msg": "",
         }
     }
@@ -88,7 +89,7 @@ def log_and_raise_error(error, debug=False, yaml_operation=False):
         module_logger.error(traceback.print_exc())
 
     if isinstance(error, HttpResponseError):
-        module_logger.debug(f"Received HttpResponseError: {traceback.format_exc()}")
+        module_logger.debug("Received HttpResponseError: %s", traceback.format_exc())
 
         if error.error and isinstance(error.error, ODataV4Format):
             if error.error and error.error.code and error.error.code == "DeploymentFailed":

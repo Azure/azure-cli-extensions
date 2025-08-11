@@ -4,7 +4,6 @@
 
 import time
 from typing import Dict
-from marshmallow.exceptions import ValidationError
 
 from knack.log import get_logger
 
@@ -12,7 +11,10 @@ from azure.ai.ml._utils._endpoint_utils import get_duration
 from azure.ai.ml.entities._deployment.batch_deployment import BatchDeployment
 from azure.ai.ml.entities._deployment.model_batch_deployment import ModelBatchDeployment
 from azure.ai.ml.entities._deployment.pipeline_component_batch_deployment import PipelineComponentBatchDeployment
-from azure.ai.ml.entities._load_functions import load_batch_deployment, _try_load_yaml_dict, load_pipeline_component_batch_deployment, load_model_batch_deployment
+from azure.ai.ml.entities._load_functions import (
+    load_batch_deployment, _try_load_yaml_dict, load_pipeline_component_batch_deployment, 
+    load_model_batch_deployment
+)
 from azure.ai.ml.constants._deployment import BatchDeploymentType
 from azure.cli.core.commands import LongRunningOperation
 
@@ -33,7 +35,7 @@ def ml_batch_deployment_create(
     set_default=False,
     params_override=None,
     skip_script_validation: bool = False,
-    **kwargs,
+    **kwargs,  # pylint: disable=unused-argument
 ):
     ml_client, debug = get_ml_client(
         cli_ctx=cmd.cli_ctx, resource_group_name=resource_group_name, workspace_name=workspace_name
@@ -59,7 +61,8 @@ def ml_batch_deployment_create(
         if no_wait:
             module_logger.warning(
                 "Batch deployment update/create request initiated. "
-                f"Status can be checked using `az ml batch-deployment show -e {deployment.endpoint_name} -n {deployment.name}`\n"
+                "Status can be checked using `az ml batch-deployment show -e %s -n %s`\n",
+                deployment.endpoint_name, deployment.name
             )
         else:
             deployment_result = LongRunningOperation(cmd.cli_ctx)(deployment_result)
@@ -70,8 +73,8 @@ def ml_batch_deployment_create(
             endpoint = ml_client.begin_create_or_update(entity=endpoint)
             endpoint = LongRunningOperation(cmd.cli_ctx)(endpoint)
         return _dump_entity_with_warnings(deployment_result)
-    except Exception as err:
-        yaml_operation = True if file else False
+    except Exception as err:  # pylint: disable=broad-exception-caught
+        yaml_operation = bool(file)
         log_and_raise_error(err, debug, yaml_operation=yaml_operation)
 
 
@@ -83,7 +86,7 @@ def ml_batch_deployment_show(cmd, resource_group_name, workspace_name, name, end
     try:
         deployment = ml_client.batch_deployments.get(name, endpoint_name)
         return _dump_entity_with_warnings(deployment)
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -104,15 +107,16 @@ def ml_batch_deployment_delete(
         result = ml_client.batch_deployments.begin_delete(name, endpoint_name)
         if no_wait:
             module_logger.warning(
-                f"Delete request initiated. Status can be checked using `az ml batch-deployment show -e {endpoint_name} -n {name}`\n"
+                "Delete request initiated. Status can be checked using "
+                "`az ml batch-deployment show -e %s -n %s`\n", endpoint_name, name
             )
         else:
-            module_logger.warning(f"Deleting batch deployment {name} ")
+            module_logger.warning("Deleting batch deployment %s ", name)
             result = LongRunningOperation(cmd.cli_ctx)(result)
             module_logger.warning("Done ")
             get_duration(start_time)
         return result
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -122,13 +126,11 @@ def ml_batch_deployment_list(cmd, resource_group_name, workspace_name, endpoint_
     )
 
     try:
-        return list(
-            map(
-                lambda deployment: _dump_entity_with_warnings(deployment),
-                ml_client.batch_deployments.list(endpoint_name),
-            )
-        )
-    except Exception as err:
+        return [
+            _dump_entity_with_warnings(deployment)
+            for deployment in ml_client.batch_deployments.list(endpoint_name)
+        ]
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -139,8 +141,8 @@ def ml_batch_deployment_list_jobs(cmd, resource_group_name, workspace_name, name
 
     try:
         results = ml_client.batch_deployments.list_jobs(endpoint_name=endpoint_name, name=name)
-        return list(map(lambda deployment: _dump_entity_with_warnings(deployment), results))
-    except Exception as err:
+        return [_dump_entity_with_warnings(deployment) for deployment in results]
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -159,23 +161,24 @@ def ml_batch_deployment_update(
     yaml_dict = _try_load_yaml_dict(file)
     try:
         if yaml_dict.get('type') == BatchDeploymentType.MODEL:
-            deployment = ModelBatchDeployment._load(data=parameters, yaml_path=file)
+            deployment = ModelBatchDeployment._load(data=parameters, yaml_path=file)  # pylint: disable=protected-access
         elif yaml_dict.get('type') == BatchDeploymentType.PIPELINE:
-            deployment = PipelineComponentBatchDeployment._load(data=parameters, yaml_path=file)
+            deployment = PipelineComponentBatchDeployment._load(data=parameters, yaml_path=file)  # pylint: disable=protected-access
         else:
-            deployment = BatchDeployment._load(data=parameters, yaml_path=file)
+            deployment = BatchDeployment._load(data=parameters, yaml_path=file)  # pylint: disable=protected-access
         deployment_result = ml_client.begin_create_or_update(entity=deployment)
 
         if no_wait:
             module_logger.warning(
                 "Batch deployment update/create request initiated. "
-                f"Status can be checked using `az ml batch-deployment show -e {deployment.endpoint_name} -n {deployment.name}`\n"
+                "Status can be checked using `az ml batch-deployment show -e %s -n %s`\n",
+                deployment.endpoint_name, deployment.name
             )
         else:
             deployment_result = LongRunningOperation(cmd.cli_ctx)(deployment_result)
         if deployment_result:  # TODO: https://msdata.visualstudio.com/Vienna/_workitems/edit/1252491/
             return _dump_entity_with_warnings(deployment_result)
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -189,10 +192,8 @@ def _ml_batch_deployment_show(cmd, resource_group_name, workspace_name, name=Non
     if file:
         yaml_dict = _try_load_yaml_dict(file)
         if yaml_dict.get('type') == BatchDeploymentType.MODEL:
-            return load_model_batch_deployment(source=file, params_override=params_override)._to_dict()
-        elif yaml_dict.get('type') == BatchDeploymentType.PIPELINE:
-            return load_pipeline_component_batch_deployment(source=file, params_override=params_override)._to_dict()
-        else:
-            return load_batch_deployment(file, params_override=params_override)._to_dict()
-    else:
-        return ml_batch_deployment_show(cmd, resource_group_name, workspace_name, name, endpoint_name)
+            return load_model_batch_deployment(source=file, params_override=params_override)._to_dict()  # pylint: disable=protected-access
+        if yaml_dict.get('type') == BatchDeploymentType.PIPELINE:
+            return load_pipeline_component_batch_deployment(source=file, params_override=params_override)._to_dict()  # pylint: disable=protected-access
+        return load_batch_deployment(file, params_override=params_override)._to_dict()  # pylint: disable=protected-access
+    return ml_batch_deployment_show(cmd, resource_group_name, workspace_name, name, endpoint_name)
