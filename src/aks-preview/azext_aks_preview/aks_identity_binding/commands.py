@@ -60,7 +60,7 @@ def aks_ib_cmd_delete(
 
 # `az aks identity-binding show` command
 def aks_ib_cmd_show(
-    cmd, client, # pylint: disable=unused-argument
+    cmd, client,  # pylint: disable=unused-argument
     resource_group_name: str,
     cluster_name: str,
     name: str,
