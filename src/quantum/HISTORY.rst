@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.0.0b9
+++++++
+* Update minCliCoreVersion
+
 1.0.0b8
 ++++++
 * Fix advertisement of newer version breaking -o output.
