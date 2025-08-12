@@ -119,12 +119,15 @@ def load_job_params(self):
         c.argument(
             "download_path",
             options_list=["--download-path", "-p"],
-            help="Path to download the job files to. If omitted, job files will be downloaded to the current directory.",
+            help="Path to download the job files to. If omitted, job files will be downloaded to the "
+                 "current directory.",
         )
         c.argument(
             "output_name",
             options_list=["--output-name"],
-            help="The name of the user-defined output to download. This should correspond to a key in the outputs dictionary of a job. If omitted, the job's default artifact output files will be downloaded.",
+            help="The name of the user-defined output to download. This should correspond to a key in the "
+                 "outputs dictionary of a job. If omitted, the job's default artifact output files will "
+                 "be downloaded.",
         )
         c.argument("all", options_list=["--all"], help="Download all the outputs of the job.")
 

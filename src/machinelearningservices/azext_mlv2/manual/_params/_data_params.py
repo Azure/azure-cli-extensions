@@ -16,27 +16,27 @@ def add_name_param(c):
     c.argument("name", options_list=["--name", "-n"], type=str, help="Name of the data asset.")
 
 def add_name_required_param(c):
-    c.argument("name", options_list=["--name", "-n"], type=str, 
+    c.argument("name", options_list=["--name", "-n"], type=str,
                help="Name of the data asset. Required if --registry-name is provided.")
 
 def add_version_param(c):
     c.argument("version", options_list=["--version", "-v"], help="Version of the data asset.")
 
 def add_version_required_param(c):
-    c.argument("version", options_list=["--version", "-v"], 
+    c.argument("version", options_list=["--version", "-v"],
                help="Version of the data asset. Required if --registry-name is provided.")
 
 def add_version_and_label_params(c):
-    c.argument("version", options_list=["--version", "-v"], 
+    c.argument("version", options_list=["--version", "-v"],
                help="Version of the data asset. Mutually exclusive with label.")
-    c.argument("label", options_list=["--label", "-l"], 
+    c.argument("label", options_list=["--label", "-l"],
                help="Label of the data asset. Mutually exclusive with version.")
 
 def add_version_or_label_required_params(c):
-    c.argument("version", options_list=["--version", "-v"], 
+    c.argument("version", options_list=["--version", "-v"],
                help="Version of the data asset. Must be provided, if label is not provided. "
                     "Mutually exclusive with label.")
-    c.argument("label", options_list=["--label", "-l"], 
+    c.argument("label", options_list=["--label", "-l"],
                help="Label of the data asset. Must be provided, if version is not provided. "
                     "Mutually exclusive with version.")
 

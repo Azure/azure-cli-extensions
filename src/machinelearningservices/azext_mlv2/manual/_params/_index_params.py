@@ -42,7 +42,8 @@ def load_index_params(self):
         c.argument(
             "path",
             options_list=["--path", "-p"],
-            help="Path to the index file(s). This can be either a local or a remote location. If specified, --name/-n must also be provided.",
+            help="Path to the index file(s). This can be either a local or a remote location. "
+                 "If specified, --name/-n must also be provided.",
         )
         add_description_param(c, help_message="Description of the index.")
 

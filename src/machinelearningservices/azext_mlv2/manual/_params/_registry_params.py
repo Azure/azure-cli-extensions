@@ -6,7 +6,6 @@ from azure.ai.ml.constants._common import YAMLRefDocLinks
 from azure.cli.core.commands.parameters import ALL, LocalContextAction, LocalContextAttribute, resource_group_name_type
 
 from ._common_params import (
-    add_description_param,
     add_file_param,
     add_lro_param,
     add_max_results_params,
@@ -28,7 +27,8 @@ def load_registry_params(self):
         c.argument("resource_group_name", resource_group_name_type)
         add_override_param(c)
         add_lro_param(c)
-        # registry create command doesn't use add_registry_common_params() as --names doesn't tie to az defaults for the registry create command
+        # registry create command doesn't use add_registry_common_params() as --names doesn't tie to
+        # az defaults for the registry create command
         c.argument("name", options_list=["--name", "-n"], type=str, help="Name of the Azure ML registry.")
         add_file_param(c, "registry", YAMLRefDocLinks.REGISTRY)
         c.argument(
@@ -43,12 +43,7 @@ def load_registry_params(self):
     with self.argument_context("ml registry list") as c:
         c.argument("resource_group_name", resource_group_name_type)
         add_max_results_params(c)
-        # Removed until we determine and offically spec-out a solution to the scope problem.
-        """c.argument(
-            "scope",
-            options_list=["--scope"],
-            help=f"Controls the scope of this operation to a single resource group, or all resource groups within a subscription. Can be either '{Scope.SUBSCRIPTION}' or '{Scope.RESOURCE_GROUP}'.",
-        )"""
+        # Removed until we determine and officially spec-out a solution to the scope problem.
 
     with self.argument_context("ml registry show") as c:
         add_registry_common_params(c)
@@ -60,7 +55,8 @@ def load_registry_params(self):
     with self.argument_context("ml registry update") as c:
         c.argument("resource_group_name", resource_group_name_type)
         add_lro_param(c)
-        # registry create command doesn't use add_registry_common_params() as --names doesn't tie to az defaults for the registry create command
+        # registry create command doesn't use add_registry_common_params() as --names doesn't tie to
+        # az defaults for the registry create command
         c.argument("name", options_list=["--name", "-n"], type=str, help="Name of the Azure ML registry.")
         add_file_param(c, "registry", YAMLRefDocLinks.REGISTRY)
         c.argument(
