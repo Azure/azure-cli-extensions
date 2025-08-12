@@ -13,24 +13,24 @@ interactions:
       ParameterSetName:
       - -g -w -l
       User-Agent:
-      - AZURECLI/2.73.0 azsdk-python-core/1.34.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
-        az-cli-ext/1.0.0b6
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.11 (Linux-6.8.0-1030-azure-x86_64-with-glibc2.36)
+        az-cli-ext/1.0.0b8
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/qw-e2e-tests-wus2?api-version=2023-11-13-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/qw-e2e-tests-eus?api-version=2023-11-13-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/Workspaces/qw-e2e-tests-wus2","name":"qw-e2e-tests-wus2","type":"microsoft.quantum/workspaces","location":"westus2","tags":{},"systemData":{"createdBy":"kikomiss@microsoft.com","createdByType":"User","createdAt":"2025-05-27T23:54:26.8142313Z","lastModifiedBy":"kikomiss@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-05-28T19:44:06.7333917Z"},"identity":{"principalId":"0cd1ce3b-9e5a-4b0c-8cc2-63f3c2b71838","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"},"properties":{"providers":[{"providerId":"quantinuum","providerSku":"credits1","applicationName":"qw-e2e-tests-wus2-quantinuum","provisioningState":"Succeeded","resourceUsageId":"04eb2813-62b2-480e-98c1-097f45d2d326"},{"providerId":"ionq","providerSku":"aq-internal-testing","applicationName":"qw-e2e-tests-wus2-ionq","provisioningState":"Succeeded","resourceUsageId":"993900d4-06ed-4325-8462-ead8932a4ee4"},{"providerId":"rigetti","providerSku":"azure-quantum-credits","applicationName":"qw-e2e-tests-wus2-rigetti","provisioningState":"Succeeded","resourceUsageId":"46a79460-9643-4978-86cb-361703e21207"}],"provisioningState":"Succeeded","usable":"Yes","storageAccount":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/qwe2etestswus2","endpointUri":"https://qw-e2e-tests-wus2.westus2.quantum.azure.com","apiKeyEnabled":false}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/Workspaces/qw-e2e-tests-eus","name":"qw-e2e-tests-eus","type":"microsoft.quantum/workspaces","location":"eastus","tags":{},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-08-11T05:17:16.6934983Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-08-11T05:17:16.6934983Z"},"identity":{"principalId":"38802181-cf51-49d2-866d-49bc7579f26a","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"},"properties":{"providers":[{"providerId":"quantinuum","providerSku":"test1","applicationName":"qw-e2e-tests-eus-quantinuum","provisioningState":"Succeeded","resourceUsageId":"4928534f-d9ef-4a5e-be8a-52b92b2585c8"},{"providerId":"rigetti","providerSku":"azure-basic-qvm-only-unlimited","applicationName":"qw-e2e-tests-eus-rigetti","provisioningState":"Succeeded","resourceUsageId":"3af39643-a66d-46e7-b2d4-06cfb1e4485c"},{"providerId":"ionq","providerSku":"aq-internal-testing","applicationName":"qw-e2e-tests-eus-ionq","provisioningState":"Succeeded","resourceUsageId":"f4365b8d-2f8b-446a-8a5a-249bae180057"}],"provisioningState":"Succeeded","usable":"Yes","storageAccount":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/qwe2etestswus2","apiKeyEnabled":REDACTED,"endpointUri":"https://qw-e2e-tests-eus.eastus.quantum.azure.com"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1522'
+      - '1507'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 28 May 2025 22:02:20 GMT
+      - Mon, 11 Aug 2025 05:32:49 GMT
       etag:
-      - '"4400b23e-0000-0700-0000-6837679b0000"'
+      - '"07007cbd-0000-0700-0000-68997e200000"'
       expires:
       - '-1'
       pragma:
@@ -46,7 +46,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: 3370D0338AD14714B455B5173B7FEB66 Ref B: MWH011020809029 Ref C: 2025-05-28T22:02:20Z'
+      - 'Ref A: 6AE8CD69F16045A39BFFC57B942F9E98 Ref B: CO6AA3150218047 Ref C: 2025-08-11T05:32:49Z'
     status:
       code: 200
       message: OK
@@ -60,33 +60,33 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - azsdk-python-quantum/0.0.1 Python/3.11.9 (Windows-10-10.0.26100-SP0)
+      - azsdk-python-quantum/0.0.1 Python/3.12.11 (Linux-6.8.0-1030-azure-x86_64-with-glibc2.36)
     method: GET
-    uri: https://westus2.quantum.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/qw-e2e-tests-wus2/providerStatus?api-version=2024-10-01-preview
+    uri: https://eastus.quantum.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/qw-e2e-tests-eus/providerStatus?api-version=2024-10-01-preview
   response:
     body:
-      string: '{"value":[{"id":"quantinuum","currentAvailability":"Available","targets":[{"id":"quantinuum.qpu.h1-1","currentAvailability":"Available","averageQueueTime":92176,"statusPage":"https://calendar.qapi.quantinuum.com/?target=H1-1&key=hRMwLRetpNSTgYOMdWrhkOoY2dC4xSa9Z37vgS7J5cjNIx0xvr"},{"id":"quantinuum.sim.h1-1sc","currentAvailability":"Available","averageQueueTime":1,"statusPage":"https://calendar.qapi.quantinuum.com/?target=H1-1SC&key=jzpvIvjeIy5eogGcaaQtQqbK81xCl0xPVRISmcWqSmSbcaqFQp"},{"id":"quantinuum.sim.h1-1e","currentAvailability":"Available","averageQueueTime":8050,"statusPage":"https://calendar.qapi.quantinuum.com/?target=H1-1E&key=0EbSgtSobDTSguxQQngBO2E8KZIXp6zpImpIRYLc4T0ZNBFkP4"}]},{"id":"ionq","currentAvailability":"Available","targets":[{"id":"ionq.qpu.aria-1","currentAvailability":"Unavailable","averageQueueTime":0,"statusPage":"https://status.ionq.co"},{"id":"ionq.qpu.aria-2","currentAvailability":"Unavailable","averageQueueTime":0,"statusPage":"https://status.ionq.co"},{"id":"ionq.simulator","currentAvailability":"Available","averageQueueTime":0,"statusPage":"https://status.ionq.co"}]},{"id":"rigetti","currentAvailability":"Available","targets":[{"id":"rigetti.sim.qvm","currentAvailability":"Available","averageQueueTime":5,"statusPage":"https://rigetti.statuspage.io/"},{"id":"rigetti.qpu.ankaa-3","currentAvailability":"Available","averageQueueTime":5,"statusPage":"https://rigetti.statuspage.io/"}]}],"nextLink":null}'
+      string: '{"value":[{"id":"quantinuum","currentAvailability":"Available","targets":[{"id":"quantinuum.qpu.h1-1","currentAvailability":"Degraded","averageQueueTime":0,"statusPage":"https://calendar.qapi.quantinuum.com/?target=H1-1&key=5tdh3KrPDyntHABE7euRjMAqsowkgwj5scczpbLJanOMiUYwf9"},{"id":"quantinuum.sim.h1-1sc","currentAvailability":"Available","averageQueueTime":3,"statusPage":"https://calendar.qapi.quantinuum.com/?target=H1-1SC&key=79L0vAFdk6AAZGLWZgos2kB2fVW2sHC7lcYV97fIMzhGhQqGOK"},{"id":"quantinuum.sim.h1-1e","currentAvailability":"Available","averageQueueTime":1246,"statusPage":"https://calendar.qapi.quantinuum.com/?target=H1-1E&key=7sAfHdCsHaPm36Azd9Z8xoHHsxuQCIGzGnRGvnbCm7FeCniQ54"},{"id":"quantinuum.qpu.h2-1","currentAvailability":"Available","averageQueueTime":386835,"statusPage":"https://calendar.qapi.quantinuum.com/?target=H2-1&key=8ojm8QJHpykgQdjFtXRcNV1HR5vqNATBiYQpcpr63Jk7MIVmrl"},{"id":"quantinuum.sim.h2-1sc","currentAvailability":"Available","averageQueueTime":0,"statusPage":"https://calendar.qapi.quantinuum.com/?target=H2-1SC&key=7OgrkLcSFN50YFXZi4lyXG6UBInO75QB5zbyVQt0jZawhyhjNP"},{"id":"quantinuum.sim.h2-1e","currentAvailability":"Available","averageQueueTime":5,"statusPage":"https://calendar.qapi.quantinuum.com/?target=H2-1E&key=OwDmZ2tAXojFQNvmnwNlukMoGAhjFLZStBXctNv6RDaphJELQf"},{"id":"quantinuum.qpu.h2-2","currentAvailability":"Unavailable","averageQueueTime":0,"statusPage":"https://calendar.qapi.quantinuum.com/?target=H2-2&key=OkK6NU4vhurczxX1n5dVymJ6kdt3XxzNmEF5q2x6zXT4SFQzu7"},{"id":"quantinuum.sim.h2-2sc","currentAvailability":"Available","averageQueueTime":0,"statusPage":"https://calendar.qapi.quantinuum.com/?target=H2-2SC&key=iMrcS01QFHeUkOdzahJKkmrRj17FNFmLliTXPSobjxtMkdTuAD"},{"id":"quantinuum.sim.h2-2e","currentAvailability":"Available","averageQueueTime":0,"statusPage":"https://calendar.qapi.quantinuum.com/?target=H2-2E&key=CxAP3gQUqk6R2305O39WgJsaCq6NoGdEaLowVSpnil2ss4tuLX"},{"id":"quantinuum.sim.h1-1sc-preview","currentAvailability":"Available","averageQueueTime":3,"statusPage":"https://calendar.qapi.quantinuum.com/?target=H1-1SC&key=79L0vAFdk6AAZGLWZgos2kB2fVW2sHC7lcYV97fIMzhGhQqGOK"},{"id":"quantinuum.sim.h1-1e-preview","currentAvailability":"Available","averageQueueTime":1246,"statusPage":"https://calendar.qapi.quantinuum.com/?target=H1-1E&key=7sAfHdCsHaPm36Azd9Z8xoHHsxuQCIGzGnRGvnbCm7FeCniQ54"},{"id":"quantinuum.sim.h1-2e-preview","currentAvailability":"Available","averageQueueTime":0,"statusPage":"https://calendar.qapi.quantinuum.com/?target=H1-2E-PREVIEW&key=Rb87uWeA8Mk4EXwHFYwScHJ1hfExiKB3DklTUfi9eMUUSinPU5"},{"id":"quantinuum.qpu.h1-1-preview","currentAvailability":"Degraded","averageQueueTime":0,"statusPage":"https://calendar.qapi.quantinuum.com/?target=H1-1&key=5tdh3KrPDyntHABE7euRjMAqsowkgwj5scczpbLJanOMiUYwf9"}]},{"id":"rigetti","currentAvailability":"Available","targets":[{"id":"rigetti.sim.qvm","currentAvailability":"Available","averageQueueTime":5,"statusPage":"https://rigetti.statuspage.io/"}]},{"id":"ionq","currentAvailability":"Available","targets":[{"id":"ionq.qpu.aria-1","currentAvailability":"Available","averageQueueTime":0,"statusPage":"https://status.ionq.co"},{"id":"ionq.qpu.aria-2","currentAvailability":"Unavailable","averageQueueTime":0,"statusPage":"https://status.ionq.co"},{"id":"ionq.simulator","currentAvailability":"Available","averageQueueTime":1,"statusPage":"https://status.ionq.co"}]}],"nextLink":null}'
     headers:
       connection:
       - keep-alive
       content-length:
-      - '1454'
+      - '3426'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 28 May 2025 22:02:23 GMT
+      - Mon, 11 Aug 2025 05:32:50 GMT
       mise-correlation-id:
-      - 8e70580e-be55-491d-bb95-c3e2dbef6818
+      - 1628f6ab-a160-4373-b0cc-6e2e6838c3df
       request-context:
       - appId=cid-v1:4d6ac272-7369-45c6-9036-63d733c8519f
       server:
       - Microsoft-IIS/10.0
       set-cookie:
-      - ApplicationGatewayAffinityCORS=f41f4d84e6de1cfe7357bf648ccde6bc; Path=/; SameSite=None;
+      - ApplicationGatewayAffinityCORS=REDACTED; Path=/; SameSite=None;
         Secure
-      - ApplicationGatewayAffinity=f41f4d84e6de1cfe7357bf648ccde6bc; Path=/
-      - ARRAffinity=06c56b8471ef26f13c61783eeb00d8e15bf74407238d9c8d8936521d5d5d2dd0;Path=/;HttpOnly;Secure;Domain=app-jobscheduler-westus2-003.ase-jobscheduler-westus2-003.appserviceenvironment.net
-      - ARRAffinitySameSite=06c56b8471ef26f13c61783eeb00d8e15bf74407238d9c8d8936521d5d5d2dd0;Path=/;HttpOnly;SameSite=None;Secure;Domain=app-jobscheduler-westus2-003.ase-jobscheduler-westus2-003.appserviceenvironment.net
+      - ApplicationGatewayAffinity=REDACTED; Path=/
+      - ARRAffinity=REDACTED;Path=/;HttpOnly;Secure;Domain=app-jobscheduler-westus-003.ase-jobscheduler-westus-003.appserviceenvironment.net
+      - ARRAffinitySameSite=REDACTED;Path=/;HttpOnly;SameSite=None;Secure;Domain=app-jobscheduler-westus-003.ase-jobscheduler-westus-003.appserviceenvironment.net
       strict-transport-security:
       - max-age=2592000; includeSubDomains
       transfer-encoding:
@@ -99,3 +99,4 @@ interactions:
       code: 200
       message: OK
 version: 1
+

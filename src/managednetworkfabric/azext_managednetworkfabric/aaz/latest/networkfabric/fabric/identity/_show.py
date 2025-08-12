@@ -18,7 +18,7 @@ class Show(AAZCommand):
     """Show the details of managed identities.
 
     :example: Show identity on the Network Fabric
-        az networkfabric fabric identity show --resource-group example-rg --network-fabric-name example-fabric
+        az networkfabric fabric identity show --resource-group example-rg --resource-name example-fabric
     """
 
     _aaz_info = {
@@ -46,7 +46,7 @@ class Show(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.network_fabric_name = AAZStrArg(
-            options=["-n", "--name", "--network-fabric-name"],
+            options=["-n", "--name", "--resource-name", "--network-fabric-name"],
             help="Name of the Network Fabric.",
             required=True,
             fmt=AAZStrArgFormat(

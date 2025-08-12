@@ -18,7 +18,7 @@ class LockFabric(AAZCommand):
     """Post action: Triggers network fabric lock operation.
 
     :example: Run lock fabric on the Network Fabric
-        az networkfabric fabric lock-fabric --resource-group example-rg --network-fabric-name example-networkFabric --lock-type Administrative --action Lock
+        az networkfabric fabric lock-fabric --resource-group example-rg --resource-name example-networkFabric --lock-type Administrative --action Lock
     """
 
     _aaz_info = {
@@ -46,7 +46,7 @@ class LockFabric(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.network_fabric_name = AAZStrArg(
-            options=["--network-fabric-name"],
+            options=["--resource-name", "--network-fabric-name"],
             help="Name of the Network Fabric.",
             required=True,
             id_part="name",
