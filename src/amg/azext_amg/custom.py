@@ -538,7 +538,8 @@ def test_notification_channel(cmd, grafana_name, notification_channel, resource_
     return json.loads(response.content)
 
 
-def create_folder(cmd, grafana_name, title, parent_folder_uid=None, resource_group_name=None, api_key_or_token=None, subscription=None):
+def create_folder(cmd, grafana_name, title, parent_folder_uid=None, resource_group_name=None, api_key_or_token=None,
+                  subscription=None):
     payload = {
         "title": title,
     }
@@ -552,7 +553,7 @@ def create_folder(cmd, grafana_name, title, parent_folder_uid=None, resource_gro
 
 def list_folders(cmd, grafana_name, resource_group_name=None, api_key_or_token=None, subscription=None):
     endpoint, headers = _get_grafana_request_context(cmd, resource_group_name, grafana_name, subscription,
-                                                    api_key_or_token=api_key_or_token)
+                                                     api_key_or_token=api_key_or_token)
 
     status, content = search_folders(
         grafana_url=endpoint,
@@ -589,7 +590,7 @@ def delete_folder(cmd, grafana_name, folder, resource_group_name=None, api_key_o
 def _find_folder(cmd, resource_group_name, grafana_name, folder, api_key_or_token=None):
     folders = list_folders(cmd, grafana_name, resource_group_name=resource_group_name,
                            api_key_or_token=api_key_or_token)
-    
+
     # try uid first
     match = next((f for f in folders if f['uid'] == folder), None)
     if match:

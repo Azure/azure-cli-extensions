@@ -151,3 +151,4 @@ Release History
 * `az grafana folder create`: support parent folder uid argument for nested folder creation
 * `az grafana folder list`: support nested folders
 * `az grafana folder show`: support nested folders
+* `az grafana backup`: include corresponding nested folders when individual folders are specified
