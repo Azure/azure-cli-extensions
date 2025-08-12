@@ -54,7 +54,7 @@ def open_job_in_browser(job):
         else:
             module_logger.warning("Option --web was specified, but no studio URI was found in the list of services.")
 
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         module_logger.warning(err)
 
 
@@ -239,7 +239,7 @@ def ml_job_list(
     )
 
 
-def ml_job_download(cmd, resource_group_name, workspace_name, name, download_path=None, 
+def ml_job_download(cmd, resource_group_name, workspace_name, name, download_path=None,
                     output_name=None, all_results=False):
     # pylint: disable=redefined-builtin
 

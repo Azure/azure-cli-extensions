@@ -167,7 +167,7 @@ def ml_online_endpoint_delete(
             )
         if no_wait:
             module_logger.info(
-                f"Delete request initiated. Status can be checked using `az ml online-endpoint show -n {name}`\n"
+                "Delete request initiated. Status can be checked using `az ml online-endpoint show -n %s`\n", name
             )
         else:
             module_logger.warning(
@@ -215,7 +215,7 @@ def ml_online_endpoint_update(
     no_wait=False,
     mirror_traffic=None,
     web: bool = False,
-    **kwargs,
+    **kwargs,  # pylint: disable=unused-argument
 ) -> None:
     ml_client, debug = get_ml_client(
         cli_ctx=cmd.cli_ctx, resource_group_name=resource_group_name, workspace_name=workspace_name
@@ -256,7 +256,7 @@ def ml_online_endpoint_update(
         if no_wait:
             module_logger.warning(
                 "Endpoint create request initiated. "
-                f"Status can be checked using `az ml online-endpoint show -n {parameters.name}`\n"
+                "Status can be checked using `az ml online-endpoint show -n %s`\n", parameters.name
             )
         else:
             endpoint_return = wrap_lro(cmd.cli_ctx, endpoint_return)
@@ -265,8 +265,7 @@ def ml_online_endpoint_update(
             if web:
                 open_online_endpoint_in_browser(endpoint_return)
             return endpoint_return.dump()
-        else:
-            return endpoint_return
+        return endpoint_return
 
     except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)

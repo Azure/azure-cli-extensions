@@ -221,11 +221,11 @@ def ml_feature_set_backfill(
     if tags:
         params_override.append({"tags": json.loads(tags)})
     if compute_resource:
-        params_override.append({"Resource": compute_resource._to_rest_object()})
+        params_override.append({"Resource": compute_resource._to_rest_object()})  # pylint: disable=protected-access
     if spark_configuration:
         params_override.append({"spark_configuration": json.loads(spark_configuration)})
     if by_data_status:
-        params_override.append({"data_status": eval(by_data_status)})
+        params_override.append({"data_status": json.loads(by_data_status)})
     if by_job_id:
         params_override.append({"job_id": by_job_id})
 
