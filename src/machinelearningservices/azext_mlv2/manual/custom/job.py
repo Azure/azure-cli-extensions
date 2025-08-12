@@ -5,14 +5,13 @@
 import os
 import subprocess
 from itertools import islice
-from os import getenv
 from typing import Dict
 from webbrowser import open_new_tab
 
 from knack.log import get_logger
 from marshmallow.utils import EXCLUDE
 
-from azure.ai.ml.constants._common import AZUREML_PRIVATE_FEATURES_ENV_VAR, MAX_LIST_CLI_RESULTS, CommonYamlFields
+from azure.ai.ml.constants._common import MAX_LIST_CLI_RESULTS, CommonYamlFields
 from azure.ai.ml.entities import Job
 from azure.ai.ml.entities._builders.base_node import BaseNode
 from azure.ai.ml.entities._load_functions import load_job

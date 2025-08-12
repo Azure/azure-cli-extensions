@@ -62,7 +62,7 @@ def load_datastore_params(self):
         add_common_params(c)
         c.argument("mount_point", help="A local path used as mount point.")
         c.argument(
-            "path", 
+            "path",
             help="The datastore path to mount, in the form of `<datastore_name>` or "
                  "`azureml://datastores/<datastore_name>`"
         )

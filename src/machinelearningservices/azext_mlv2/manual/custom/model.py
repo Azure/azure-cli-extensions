@@ -226,8 +226,8 @@ def ml_model_show(
 
 
 def ml_model_package(
-    cmd, name, file, version, workspace_name=None, resource_group_name=None,
-    registry_name=None):
+        cmd, name, file, version, workspace_name=None, resource_group_name=None,
+        registry_name=None):
     if workspace_name and registry_name:
         workspace_reference = workspace_name
     else:
