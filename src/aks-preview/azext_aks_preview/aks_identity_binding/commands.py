@@ -6,7 +6,7 @@
 
 # `az aks identity-binding create` command
 def aks_ib_cmd_create(
-    cmd, client, # pylint: disable=unused-argument
+    cmd, client,  # pylint: disable=unused-argument
     resource_group_name: str,
     cluster_name: str,
     name: str,
@@ -41,7 +41,7 @@ def aks_ib_cmd_create(
 
 # `az aks identity-binding delete` command
 def aks_ib_cmd_delete(
-    cmd, client, # pylint: disable=unused-argument
+    cmd, client,  # pylint: disable=unused-argument
     resource_group_name: str,
     cluster_name: str,
     name: str,
