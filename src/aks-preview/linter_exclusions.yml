@@ -384,3 +384,8 @@ aks nodepool delete:
     ignore_pod_disruption_budget:
       rule_exclusions:
         - option_length_too_long
+aks identity-binding create:
+  parameters:
+    managed_identity_resource_id:
+      rule_exclusions:
+        - option_length_too_long

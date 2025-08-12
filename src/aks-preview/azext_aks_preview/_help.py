@@ -3894,3 +3894,52 @@ helps['aks bastion'] = """
         - name: Connect to a managed Kubernetes cluster using Azure Bastion with custom port and admin credentials.
           text: az aks bastion -g MyResourceGroup --name MyManagedCluster --bastion MyBastionResource --port 50001 --admin
 """
+
+helps['aks identity-binding'] = """
+    type: group
+    short-summary: Commands to manage identity bindings in Azure Kubernetes Service.
+"""
+helps['aks identity-binding show'] = """
+    type: command
+    short-summary: Show details of a specific identity binding in a managed Kubernetes cluster.
+    parameters:
+        - name: --cluster-name
+          type: string
+          short-summary: Name of the managed Kubernetes cluster.
+        - name: --name -n
+          type: string
+          short-summary: Name of the identity binding to show.
+"""
+helps['aks identity-binding list'] = """
+    type: command
+    short-summary: List all identity bindings under a managed Kubernetes cluster.
+    parameters:
+        - name: --cluster-name
+          type: string
+          short-summary: Name of the managed Kubernetes cluster.
+"""
+helps['aks identity-binding create'] = """
+    type: command
+    short-summary: Create a new identity binding in a managed Kubernetes cluster.
+    parameters:
+        - name: --cluster-name
+          type: string
+          short-summary: Name of the managed Kubernetes cluster.
+        - name: --name -n
+          type: string
+          short-summary: Name of the identity binding to show.
+        - name: --managed-identity-resource-id
+          type: string
+          short-summary: The resource ID of the managed identity to use.
+"""
+helps['aks identity-binding delete'] = """
+    type: command
+    short-summary: Delete a specific identity binding in a managed Kubernetes cluster.
+    parameters:
+        - name: --cluster-name
+          type: string
+          short-summary: Name of the managed Kubernetes cluster.
+        - name: --name -n
+          type: string
+          short-summary: Name of the identity binding to show.
+"""
