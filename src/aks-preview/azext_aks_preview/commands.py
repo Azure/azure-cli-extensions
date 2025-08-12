@@ -62,16 +62,14 @@ def transform_mc_objects_with_custom_cas(result):
     def _patch_custom_cas_in_security_profile(security_profile):
         # modify custom_ca_trust_certificates in-place
         # security_profile shouldn't be None
-        custom_cas = getattr(
-            security_profile, "custom_ca_trust_certificates", None)
+        custom_cas = getattr(security_profile, "custom_ca_trust_certificates", None)
         if custom_cas:
             decoded_custom_cas = []
             for custom_ca in custom_cas:
                 try:
                     decoded_custom_ca = custom_ca.decode("utf-8")
                 except Exception:  # pylint: disable=broad-except
-                    logger.warning(
-                        "failed to decode customCaTrustCertificates")
+                    logger.warning("failed to decode customCaTrustCertificates")
                     decoded_custom_ca = None
                 decoded_custom_cas.append(decoded_custom_ca)
             security_profile.custom_ca_trust_certificates = decoded_custom_cas
@@ -160,17 +158,13 @@ def load_command_table(self, _):
         )
         g.custom_command("upgrade", "aks_upgrade", supports_no_wait=True)
         g.custom_command("scale", "aks_scale", supports_no_wait=True)
-        g.command("delete", "begin_delete",
-                  supports_no_wait=True, confirmation=True)
+        g.command("delete", "begin_delete", supports_no_wait=True, confirmation=True)
         g.custom_show_command(
             "show", "aks_show", table_transformer=aks_show_table_format
         )
-        g.custom_command("list", "aks_list",
-                         table_transformer=aks_list_table_format)
-        g.custom_command("enable-addons", "aks_enable_addons",
-                         supports_no_wait=True)
-        g.custom_command("disable-addons", "aks_disable_addons",
-                         supports_no_wait=True)
+        g.custom_command("list", "aks_list", table_transformer=aks_list_table_format)
+        g.custom_command("enable-addons", "aks_enable_addons", supports_no_wait=True)
+        g.custom_command("disable-addons", "aks_disable_addons", supports_no_wait=True)
         g.custom_command("get-credentials", "aks_get_credentials")
         g.custom_command(
             "rotate-certs",
@@ -246,13 +240,10 @@ def load_command_table(self, _):
         is_preview=True,
     ) as g:
         g.custom_command("add", "aks_namespace_add", supports_no_wait=True)
-        g.custom_command("update", "aks_namespace_update",
-                         supports_no_wait=True)
+        g.custom_command("update", "aks_namespace_update", supports_no_wait=True)
         g.custom_show_command("show", "aks_namespace_show")
-        g.custom_command("list", "aks_namespace_list",
-                         table_transformer=aks_namespace_list_table_format)
-        g.custom_command("delete", "aks_namespace_delete",
-                         supports_no_wait=True)
+        g.custom_command("list", "aks_namespace_list", table_transformer=aks_namespace_list_table_format)
+        g.custom_command("delete", "aks_namespace_delete", supports_no_wait=True)
         g.custom_command("get-credentials", "aks_namespace_get_credentials")
 
     # AKS agent pool commands
@@ -271,12 +262,9 @@ def load_command_table(self, _):
         )
         g.custom_command("add", "aks_agentpool_add", supports_no_wait=True)
         g.custom_command("scale", "aks_agentpool_scale", supports_no_wait=True)
-        g.custom_command("upgrade", "aks_agentpool_upgrade",
-                         supports_no_wait=True)
-        g.custom_command("update", "aks_agentpool_update",
-                         supports_no_wait=True)
-        g.custom_command("delete", "aks_agentpool_delete",
-                         supports_no_wait=True)
+        g.custom_command("upgrade", "aks_agentpool_upgrade", supports_no_wait=True)
+        g.custom_command("update", "aks_agentpool_update", supports_no_wait=True)
+        g.custom_command("delete", "aks_agentpool_delete", supports_no_wait=True)
         g.custom_command("get-upgrades", "aks_agentpool_get_upgrade_profile")
         g.custom_command("stop", "aks_agentpool_stop", supports_no_wait=True)
         g.custom_command("start", "aks_agentpool_start", supports_no_wait=True)
@@ -291,12 +279,9 @@ def load_command_table(self, _):
     with self.command_group(
         "aks nodepool manual-scale", managed_clusters_sdk, client_factory=cf_agent_pools
     ) as g:
-        g.custom_command(
-            "add", "aks_agentpool_manual_scale_add", supports_no_wait=True)
-        g.custom_command(
-            "update", "aks_agentpool_manual_scale_update", supports_no_wait=True)
-        g.custom_command(
-            "delete", "aks_agentpool_manual_scale_delete", supports_no_wait=True)
+        g.custom_command("add", "aks_agentpool_manual_scale_add", supports_no_wait=True)
+        g.custom_command("update", "aks_agentpool_manual_scale_update", supports_no_wait=True)
+        g.custom_command("delete", "aks_agentpool_manual_scale_delete", supports_no_wait=True)
 
     with self.command_group(
         "aks machine", machines_sdk, client_factory=cf_machines
@@ -399,10 +384,8 @@ def load_command_table(self, _):
             "aks_snapshot_show",
             table_transformer=aks_show_snapshot_table_format,
         )
-        g.custom_command("create", "aks_snapshot_create",
-                         supports_no_wait=True)
-        g.custom_command("delete", "aks_snapshot_delete",
-                         supports_no_wait=True)
+        g.custom_command("create", "aks_snapshot_create", supports_no_wait=True)
+        g.custom_command("delete", "aks_snapshot_delete", supports_no_wait=True)
 
     # AKS mesh commands
     with self.command_group(
@@ -453,20 +436,16 @@ def load_command_table(self, _):
     with self.command_group(
         "aks mesh upgrade", managed_clusters_sdk, client_factory=cf_managed_clusters
     ) as g:
-        g.custom_command("start", "aks_mesh_upgrade_start",
-                         supports_no_wait=True)
-        g.custom_command(
-            "complete", "aks_mesh_upgrade_complete", supports_no_wait=True)
-        g.custom_command(
-            "rollback", "aks_mesh_upgrade_rollback", supports_no_wait=True)
+        g.custom_command("start", "aks_mesh_upgrade_start", supports_no_wait=True)
+        g.custom_command("complete", "aks_mesh_upgrade_complete", supports_no_wait=True)
+        g.custom_command("rollback", "aks_mesh_upgrade_rollback", supports_no_wait=True)
 
     # AKS approuting commands
     with self.command_group(
         "aks approuting", managed_clusters_sdk, client_factory=cf_managed_clusters
     ) as g:
         g.custom_command("enable", "aks_approuting_enable")
-        g.custom_command("disable", "aks_approuting_disable",
-                         confirmation=True)
+        g.custom_command("disable", "aks_approuting_disable", confirmation=True)
         g.custom_command("update", "aks_approuting_update")
 
     # AKS approuting dns-zone commands
@@ -474,8 +453,7 @@ def load_command_table(self, _):
         "aks approuting zone", managed_clusters_sdk, client_factory=cf_managed_clusters
     ) as g:
         g.custom_command("add", "aks_approuting_zone_add")
-        g.custom_command(
-            "delete", "aks_approuting_zone_delete", confirmation=True)
+        g.custom_command("delete", "aks_approuting_zone_delete", confirmation=True)
         g.custom_command("update", "aks_approuting_zone_update")
         g.custom_command("list", "aks_approuting_zone_list")
 
@@ -488,10 +466,8 @@ def load_command_table(self, _):
     with self.command_group(
         "aks extension", managed_clusters_sdk, client_factory=cf_managed_clusters
     ) as g:
-        g.custom_command('create', 'create_k8s_extension',
-                         supports_no_wait=True)
-        g.custom_command('delete', 'delete_k8s_extension',
-                         supports_no_wait=True)
+        g.custom_command('create', 'create_k8s_extension', supports_no_wait=True)
+        g.custom_command('delete', 'delete_k8s_extension', supports_no_wait=True)
         g.custom_command(
             'list',
             'list_k8s_extension',
@@ -502,8 +478,7 @@ def load_command_table(self, _):
             'show_k8s_extension',
             table_transformer=aks_extension_show_table_format
         )
-        g.custom_command('update', 'update_k8s_extension',
-                         supports_no_wait=True)
+        g.custom_command('update', 'update_k8s_extension', supports_no_wait=True)
 
     with self.command_group(
         "aks extension type", managed_clusters_sdk, client_factory=cf_managed_clusters
@@ -533,7 +508,7 @@ def load_command_table(self, _):
             table_transformer=aks_extension_type_versions_list_table_format
         )
 
-    # AKS identity binding commands
+# AKS identity binding commands
     with self.command_group(
         "aks identity-binding", managed_clusters_sdk, client_factory=cf_identity_bindings
     ) as g:
