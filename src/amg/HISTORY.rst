@@ -142,3 +142,10 @@ Release History
 2.6.1
 ++++++
 * Remove msrestazure dependency
+
+
+2.6.2
+++++++
+* `az grafana folder create`: support parent folder uid argument for nested folder creation
+* `az grafana folder list`: support nested folders
+* `az grafana folder show`: support nested folders
