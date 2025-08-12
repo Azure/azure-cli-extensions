@@ -12,9 +12,9 @@ def get_capability_host_help():
         type: group
         short-summary: The Capability Host enables the Hub and Project to seamlessly interact with the Azure AI Agent Service.
         long-summary: >
-            The Capability Host on Hub/Project enables users to interact with Azure AI Agent Enterprise tools, 
-            such as File Search, Code Interpreter, and Azure Fabric Skills, while providing customers with 
-            enterprise-grade security through Bring Your Own (BYO) Storage and BYO Search Service.  
+            The Capability Host on Hub/Project enables users to interact with Azure AI Agent Enterprise tools,
+            such as File Search, Code Interpreter, and Azure Fabric Skills, while providing customers with
+            enterprise-grade security through Bring Your Own (BYO) Storage and BYO Search Service.
     """
     helps[
         "ml capability-host show"
@@ -40,8 +40,8 @@ def get_capability_host_help():
         type: command
         short-summary: Create a capability host.
         long-summary: >
-            Azure ML capability host initiative focuses on creating a new generation of AI applications 
-            poised to revolutionize application development in the upcoming decade. 
+            Azure ML capability host initiative focuses on creating a new generation of AI applications
+            poised to revolutionize application development in the upcoming decade.
         examples:
         - name: Create a capability host in Hub/Project from a YAML specification file.
           text: az ml capability-host create --file caphost.yml --resource-group my-resource-group --workspace-name my-workspace

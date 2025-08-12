@@ -41,7 +41,7 @@ def get_workspace_outbound_rule_help():
         long-summary: >
             This command can be used to specify an outbound rule for the managed network of the
             workspace. The needed parameters are defined by --type.
-            
+
             For --type service_tag use
                         --service-tag, --port-ranges, --protocol, [Optional] --address-prefixes
             For --type fqdn use

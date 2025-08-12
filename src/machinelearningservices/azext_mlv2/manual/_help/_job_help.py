@@ -149,10 +149,10 @@ def get_job_help():
         type: command
         short-summary: Validate a job. This command works for pipeline jobs only for now.
         long-summary: >
-            This command will validate a YAML specification file to check if it is valid for job 
-            creation, and return all issues that were found. Validation mainly includes local 
+            This command will validate a YAML specification file to check if it is valid for job
+            creation, and return all issues that were found. Validation mainly includes local
             checking for schema, like missing fields, environment without version specified,
-            code referred to an non-existent local path; it will also check for the existence of 
+            code referred to an non-existent local path; it will also check for the existence of
             referenced compute targets in the target workspace.
             Validation result will be printed to the console, including both errors and warnings.
             Only errors will cause the validation to fail.

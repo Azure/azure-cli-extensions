@@ -115,8 +115,8 @@ def get_workspace_help():
         type: command
         short-summary: Provision workspace managed network.
         long-summary: >
-            Triggers the workspace to provision the managed network. Specifying spark enabled flag prepares the 
-            workspace managed network for supporting Spark. The default is false if not specified but can be 
+            Triggers the workspace to provision the managed network. Specifying spark enabled flag prepares the
+            workspace managed network for supporting Spark. The default is false if not specified but can be
             enabled later by running this command again with this flag. Once enabled it cannot be disabled.
         examples:
         - name: provision managed network.

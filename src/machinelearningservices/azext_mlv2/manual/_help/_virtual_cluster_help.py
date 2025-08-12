@@ -13,8 +13,8 @@ def get_virtualcluster_help():
         short-summary: Manage Azure ML virtual clusters.
         long-summary: >
             An Azure ML virtualcluster is a top-level resource for Azure Machine
-            Learning. Virtual clusters are not tied to a single workspace. 
-            A user can submit jobs to a virtual cluster from any workspaces. 
+            Learning. Virtual clusters are not tied to a single workspace.
+            A user can submit jobs to a virtual cluster from any workspaces.
     """
     helps[
         "ml virtualcluster list"
@@ -34,4 +34,3 @@ def get_virtualcluster_help():
         - name: Show details of a virtualcluster that is in the specified resource group and subscription.
           text: az ml virtualcluster show --resource-group my-resource-group --subscription my-subscription-id --name my-vc-name
     """
-  

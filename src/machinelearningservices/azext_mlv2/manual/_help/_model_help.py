@@ -126,7 +126,7 @@ def get_model_help():
         type: command
         short-summary: Share a specific model from workspace to registry.
         long-summary: >
-          Copy an existing model from a workspace to a registry for cross-workspace reuse. 
+          Copy an existing model from a workspace to a registry for cross-workspace reuse.
         examples:
         - name: Share an existing environment from workspace to registry
           text: az ml model share --name my-model --version my-version --resource-group my-resource-group --workspace-name my-workspace --share-with-name new-name-in-registry --share-with-version new-version-in-registry --registry-name my-registry

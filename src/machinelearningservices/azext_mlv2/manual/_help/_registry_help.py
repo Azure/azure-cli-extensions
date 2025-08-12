@@ -53,7 +53,7 @@ def get_registry_help():
             used by registry get created by default, specifically an Azure Storage and
             Azure Container Registry. Using existing Azure
             resource instances for those when creating the registry is not supported.
-          
+
         examples:
         - name: Create a registry from a YAML specification file.
           text: az ml registry create --resource-group my-resource-group --file registry.yml
