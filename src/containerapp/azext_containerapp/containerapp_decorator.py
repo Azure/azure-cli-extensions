@@ -50,7 +50,7 @@ from knack.util import CLIError
 
 from msrest.exceptions import DeserializationError
 
-from ._clients import ManagedEnvironmentClient, ConnectedEnvironmentClient, ManagedEnvironmentPreviewClient, ContainerAppPreviewClient
+from ._clients import ManagedEnvironmentClient, ConnectedEnvironmentClient, ManagedEnvironmentPreviewClient
 from ._client_factory import handle_raw_exception, handle_non_404_status_code_exception, get_linker_client
 from ._models import (
     RegistryCredentials as RegistryCredentialsModel,
@@ -145,10 +145,11 @@ class ContainerAppUpdateDecorator(BaseContainerAppDecorator):
 
         # Transitioning into labels mode is complicated and we don't want to combine it with other updates.
         # If the app was not previously in labels mode throw an error saying to use Set-Mode instead.
-        if (self.get_argument_revisions_mode() and self.get_argument_revisions_mode().lower() == "labels"
-            and safe_get(self.containerapp_def, "properties", "configuration", "activeRevisionsMode").lower() != "labels"):
+        if (self.get_argument_revisions_mode()
+                and self.get_argument_revisions_mode().lower() == "labels"
+                and safe_get(self.containerapp_def, "properties", "configuration", "activeRevisionsMode").lower() != "labels"):
             raise ArgumentUsageError("The containerapp '{}' is not in labels mode. Please use `az containerapp revision set-mode` to switch to labels mode first.".format(
-                    self.get_argument_name()))
+                self.get_argument_name()))
 
         validate_revision_suffix(self.get_argument_revision_suffix())
         # Validate that max_replicas is set to 0-1000
