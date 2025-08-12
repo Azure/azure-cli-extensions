@@ -191,7 +191,6 @@ def ml_job_list_private_preview(
 
     try:
         ret_list = []
-        private_features_enabled = getenv(AZUREML_PRIVATE_FEATURES_ENV_VAR)  # pylint: disable=unused-variable
         list_view_type = get_list_view_type(include_archived=include_archived, archived_only=archived_only)
         if max_results:
             results = islice(

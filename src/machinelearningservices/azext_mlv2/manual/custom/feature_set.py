@@ -187,9 +187,9 @@ def ml_feature_set_restore(cmd, name, version, resource_group_name=None, workspa
 def ml_feature_set_backfill(
     cmd,
     name: Optional[str] = None,
-    version:  Optional[str] = None,
-    feature_window_start_time:  Optional[str] = None,
-    feature_window_end_time:  Optional[str] = None,
+    version: Optional[str] = None,
+    feature_window_start_time: Optional[str] = None,
+    feature_window_end_time: Optional[str] = None,
     resource_group_name=None,
     workspace_name=None,
     file: Optional[str] = None,

@@ -49,7 +49,7 @@ from .raise_error import log_and_raise_error
 module_logger = get_logger(__name__)
 
 
-def _dump_entity_with_warnings(entity: "Resource") -> Dict:
+def _dump_entity_with_warnings(entity) -> Dict:
     if not entity:
         return
     if isinstance(entity, LROPoller):
@@ -236,7 +236,7 @@ def convert_str_to_dict(input_str: str) -> Dict[str, str]:
 
 def merged_nested_dictionaries(dictionaries: [Dict[str, str]]) -> [Dict[str, str]]:
     """
-    Example: dictionaries = [{'inputs.key1.nestedKey1':'val1'}, {'inputs.key1.nestedKey2':'val2'}, 
+    Example: dictionaries = [{'inputs.key1.nestedKey1':'val1'}, {'inputs.key1.nestedKey2':'val2'},
     {'otherKey': 'newValue'}]
     merged_nested_dictionaries(dictionaries) =>
     [{'inputs': {key1: {'nestedKey': 'val1', 'nestedKey2':'val2'}}} , {'otherKey':'newValue'}]

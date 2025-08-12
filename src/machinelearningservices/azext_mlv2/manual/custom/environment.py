@@ -165,7 +165,7 @@ def ml_environment_restore(
 
 
 def _ml_environment_show(cmd, resource_group_name, name, version=None, label=None,
-                        workspace_name=None, registry_name=None):
+                         workspace_name=None, registry_name=None):
     ml_client, debug = get_ml_client(
         cli_ctx=cmd.cli_ctx,
         resource_group_name=resource_group_name,

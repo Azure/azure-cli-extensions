@@ -10,7 +10,7 @@ from azure.ai.ml.exceptions import ErrorCategory, ErrorTarget, ValidationErrorTy
 
 from .raise_error import log_and_raise_error
 from .utils import (_dump_entity_with_warnings, get_list_view_type, get_ml_client,
-                   telemetry_log_info)
+                    telemetry_log_info)
 from ._telemetry.structure import ModelInfo
 from ._telemetry._util import _set_path_type
 
@@ -182,7 +182,7 @@ def ml_model_restore(cmd, name, resource_group_name=None, workspace_name=None,
                      registry_name=None, version=None, label=None):
     ml_client, _ = get_ml_client(
         cli_ctx=cmd.cli_ctx, resource_group_name=resource_group_name,
-        workspace_name=workspace_name,  registry_name=registry_name
+        workspace_name=workspace_name, registry_name=registry_name
     )
 
     return ml_client.models.restore(name=name, version=version, label=label)
@@ -229,9 +229,9 @@ def ml_model_package(
     cmd, name, file, version, workspace_name=None, resource_group_name=None,
     registry_name=None):
     if workspace_name and registry_name:
-        workspace_reference=workspace_name
+        workspace_reference = workspace_name
     else:
-        workspace_reference=None
+        workspace_reference = None
 
     ml_client, debug = get_ml_client(
         cli_ctx=cmd.cli_ctx,
@@ -248,6 +248,7 @@ def ml_model_package(
     except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
+
 def ml_model_share(cmd, name, version, share_with_name, share_with_version,
                    registry_name, resource_group_name=None, workspace_name=None):
     ml_client, _ = get_ml_client(
@@ -258,6 +259,6 @@ def ml_model_share(cmd, name, version, share_with_name, share_with_version,
     model_info = ModelInfo()
     model_info.scenario = "promote"
     model = ml_client.models.share(name=name, version=version, registry_name=registry_name,
-                                  share_with_name=share_with_name,
-                                  share_with_version=share_with_version)
+                                   share_with_name=share_with_name,
+                                   share_with_version=share_with_version)
     return _dump_entity_with_warnings(model)

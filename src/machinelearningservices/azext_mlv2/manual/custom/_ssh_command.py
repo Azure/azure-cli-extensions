@@ -112,7 +112,7 @@ def has_ssh_dependencies_installed() -> boolean:
 def ssh_connector_file_path_space_message():
     return """
     File path for _ssh_connector.py has space, unfortunately which will not work with ProxyCommand. To work
-    around this you can copy the _ssh_connector.py file from the location above (see ssh_command) to the 
+    around this you can copy the _ssh_connector.py file from the location above (see ssh_command) to the
     current working directory and run ssh_command output above, swapping the new ssh_connector file path:
 
             ssh -v -o ProxyCommand="... _ssh_connector.py ..."""

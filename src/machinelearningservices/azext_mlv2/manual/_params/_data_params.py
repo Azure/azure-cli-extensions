@@ -171,6 +171,6 @@ def load_data_params(self):
         add_common_params(c)
         c.argument("mount_point", help="A local path used as mount point.")
         c.argument("path", help="The data asset path to mount, in the form of `azureml:<name>` "
-                               "or `azureml:<name>:<version>`")
+                           "or `azureml:<name>:<version>`")
         c.argument("mode", help="Mount mode. Only `ro_mount` (read-only) is supported for data asset mount.")
         c.argument("persistent", help="Make mount persist across reboots. Supported only on Compute Instance.")

@@ -234,7 +234,7 @@ def ml_workspace_update(
                 "default_action": "Deny",
                 "ip_rules": [{"value": ip} for ip in ip_allowlist]
             }
-        elif(network_acls.lower() == "none"):
+        elif (network_acls.lower() == "none"):
             # Reset network_acls if an empty string with spaces is passed
             network_acls = {
                 "default_action": "Allow",

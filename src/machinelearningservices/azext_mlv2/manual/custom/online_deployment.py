@@ -69,7 +69,7 @@ def ml_online_deployment_create(
         if endpoint_name:
             params_override.append({"endpoint_name": endpoint_name})
         deployment = load_online_deployment(source=file, params_override=params_override)
-        registry_reference=None
+        registry_reference = None
         if isinstance(deployment.model, str) and deployment.model.startswith(REGISTRY_URI_FORMAT):
             registry_reference = deployment.model.split("/")[3]
 

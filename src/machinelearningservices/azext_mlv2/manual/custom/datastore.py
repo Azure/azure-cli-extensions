@@ -89,13 +89,14 @@ def ml_datastore_update(cmd, resource_group_name, workspace_name, parameters: Di
     except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
+
 def ml_datastore_mount(cmd,
-                  path,
-                  mount_point='/home/azureuser/mount/data',
-                  resource_group_name=None,
-                  workspace_name=None,
-                  mode='ro_mount',
-                  persistent=False):
+                       path,
+                       mount_point='/home/azureuser/mount/data',
+                       resource_group_name=None,
+                       workspace_name=None,
+                       mode='ro_mount',
+                       persistent=False):
 
     ml_client, debug = get_ml_client(
         cli_ctx=cmd.cli_ctx, resource_group_name=resource_group_name, workspace_name=workspace_name

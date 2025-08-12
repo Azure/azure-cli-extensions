@@ -129,7 +129,7 @@ def ml_component_update(cmd, resource_group_name, workspace_name, parameters: Di
 
 
 def ml_component_archive(cmd, name, resource_group_name=None, workspace_name=None,
-                        registry_name=None, version=None, label=None):
+                         registry_name=None, version=None, label=None):
     ml_client, debug = get_ml_client(
         cli_ctx=cmd.cli_ctx, resource_group_name=resource_group_name,
         workspace_name=workspace_name, registry_name=registry_name
@@ -141,7 +141,7 @@ def ml_component_archive(cmd, name, resource_group_name=None, workspace_name=Non
 
 
 def ml_component_restore(cmd, name, resource_group_name=None, workspace_name=None,
-                        registry_name=None, version=None, label=None):
+                         registry_name=None, version=None, label=None):
     ml_client, debug = get_ml_client(
         cli_ctx=cmd.cli_ctx, resource_group_name=resource_group_name,
         workspace_name=workspace_name, registry_name=registry_name
@@ -153,7 +153,7 @@ def ml_component_restore(cmd, name, resource_group_name=None, workspace_name=Non
 
 
 def _ml_component_show(cmd, resource_group_name, workspace_name, name,
-                      version=None, label=None, registry_name=None):
+                       version=None, label=None, registry_name=None):
     ml_client, debug = get_ml_client(
         cli_ctx=cmd.cli_ctx, resource_group_name=resource_group_name,
         workspace_name=workspace_name, registry_name=registry_name
@@ -165,8 +165,9 @@ def _ml_component_show(cmd, resource_group_name, workspace_name, name,
     except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
-def ml_component_prepare_for_sign(cmd, file,  resource_group_name=None,
-                                 workspace_name=None, registry_name=None):
+
+def ml_component_prepare_for_sign(cmd, file, resource_group_name=None,
+                                  workspace_name=None, registry_name=None):
     ml_client, debug = get_ml_client(
         cli_ctx=cmd.cli_ctx, resource_group_name=resource_group_name,
         workspace_name=workspace_name, registry_name=registry_name

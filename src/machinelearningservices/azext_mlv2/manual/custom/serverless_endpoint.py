@@ -129,7 +129,7 @@ def _ml_serverless_endpoint_update(
     try:
         endpoint = ServerlessEndpoint(parameters)
         endpoint._validate()  # pylint: disable=protected-access
-        ml_client.serverless_endpoints.begin_create_or_update(endpoint)
+        endpoint_return = ml_client.serverless_endpoints.begin_create_or_update(endpoint)
         if no_wait:
             module_logger.warning(
                 "Endpoint update request initiated. "

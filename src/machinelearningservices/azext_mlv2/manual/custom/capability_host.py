@@ -37,7 +37,7 @@ def ml_capability_host_create(
     workspace_name,
     name=None,
     description=None,
-    capability_host_kind:str='Agents',
+    capability_host_kind: str = 'Agents',
     vector_store_connections=None,
     storage_connections=None,
     ai_services_connections=None,

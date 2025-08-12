@@ -259,6 +259,7 @@ def ml_data_restore(cmd,
     except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
+
 def ml_data_share(
     cmd,
     name,
@@ -281,6 +282,7 @@ def ml_data_share(
         share_with_version=share_with_version
     )
     return _dump_entity_with_warnings(model)
+
 
 def ml_data_mount(
     cmd,

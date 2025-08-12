@@ -456,7 +456,6 @@ def load_command_table(self, _):
         g.custom_command("create", "ml_capability_host_create", supports_no_wait=True)
         g.custom_command("delete", "ml_capability_host_delete", supports_no_wait=True)
 
-
     with self.command_group("ml marketplace-subscription", client_factory=cf_ml_cl, is_preview=True) as g:
         custom_tmpl = "azext_mlv2.manual.custom.marketplace_subscription#{}"
         custom_feature_set = CliCommandType(operations_tmpl=custom_tmpl)
