@@ -130,7 +130,8 @@ def add_registry_param(c):
     c.argument(
         "registry_name",
         options_list=["--registry-name"],
-        help="If provided, the command will target the registry instead of a workspace. Hence resource group and workspace won't be required.",
+        help="If provided, the command will target the registry instead of a workspace. "
+             "Hence resource group and workspace won't be required.",
     )
 
 

@@ -29,7 +29,7 @@ def load_feature_store_params(self):
         add_override_param(c)
         add_lro_param(c)
         add_file_param(c, "feature_store", YAMLRefDocLinks.FEATURE_STORE)
-        # Feature store create command doesn't use add_feature_store_common_params() as --names doesn't tie to 
+        # Feature store create command doesn't use add_feature_store_common_params() as --names doesn't tie to
         # az defaults for the feature store create command
         c.argument("name", options_list=["--name", "-n"], type=str, help="Name of the feature store.")
         c.argument(
@@ -182,7 +182,9 @@ def load_feature_store_params(self):
         c.argument(
             "include_spark",
             options_list=["--include-spark"],
-            help="Boolean [true/false] for if managed network should be provisioned to account for spark jobs. The default is false if flag not set. It can be enabled later by running this command again with this flag.",  # pylint: disable=line-too-long
+            help="Boolean [true/false] for if managed network should be provisioned to account for spark jobs. "
+                 "The default is false if flag not set. It can be enabled later by running this command again "
+                 "with this flag.",
         )
 
 

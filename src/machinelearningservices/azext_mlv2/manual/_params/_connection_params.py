@@ -14,7 +14,8 @@ def add_populate_secrets_param(c):
         "populate_secrets",
         options_list=["--populate-secrets", "-p"],
         action="store_true",
-        help="For API key-based connections, try to populate the returned credentials with the actual secret value. Does nothing for non-API key-based connections.",
+        help="For API key-based connections, try to populate the returned credentials with the actual "
+             "secret value. Does nothing for non-API key-based connections.",
     )
 
 

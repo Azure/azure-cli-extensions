@@ -44,21 +44,21 @@ def _set_egress_public_network_access(deployment):
         return deployment.egress_public_network_access
 
 
-def _set_asset_reference_type(deployment_asset, asset_type):
+def _set_asset_reference_type(deployment_asset, asset_type):  # pylint: disable=too-many-return-statements
     """
     Used to determine the type of the asset reference:
     version, label, inline, registry
     """
     if isinstance(deployment_asset, str) and deployment_asset.startswith(REGISTRY_URI_FORMAT):
         return "registry"
-    elif isinstance(deployment_asset, str) and ":" in deployment_asset:
+    if isinstance(deployment_asset, str) and ":" in deployment_asset:
         return "version"
-    elif isinstance(deployment_asset, str) and "@" in deployment_asset:
+    if isinstance(deployment_asset, str) and "@" in deployment_asset:
         return "label"
-    elif isinstance(deployment_asset, asset_type):
-        if deployment_asset._auto_increment_version:
+    if isinstance(deployment_asset, asset_type):
+        if deployment_asset._auto_increment_version:  # pylint: disable=protected-access
             return "inline_next_version"
-        elif deployment_asset._is_anonymous:
+        if deployment_asset._is_anonymous:  # pylint: disable=protected-access
             return "inline_anonymous"
         return "inline"
     return
@@ -67,8 +67,8 @@ def _set_asset_reference_type(deployment_asset, asset_type):
 def _set_code_reference_type(deployment_code):
     if deployment_code.code and deployment_code.code.startswith(REGISTRY_URI_FORMAT):
         return "registry"
-    elif deployment_code.code and deployment_code.code.startswith("azureml:/subscriptions"):
+    if deployment_code.code and deployment_code.code.startswith("azureml:/subscriptions"):
         return "id"
-    elif deployment_code.code and ":" in deployment_code.code:
+    if deployment_code.code and ":" in deployment_code.code:
         return "name:version"
     return "inline"

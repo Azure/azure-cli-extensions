@@ -26,7 +26,8 @@ def load_batch_deployment_params(self):
         add_file_param(c, "batch-deployment", YAMLRefDocLinks.BATCH_DEPLOYMENT)
         c.argument(
             "set_default",
-            help="Sets endpoint defaults.deployment_name to this deployment after successful creation, does not work with --no-wait",
+            help="Sets endpoint defaults.deployment_name to this deployment after successful creation, "
+                 "does not work with --no-wait",
         )
         add_override_param(c)
         c.argument(

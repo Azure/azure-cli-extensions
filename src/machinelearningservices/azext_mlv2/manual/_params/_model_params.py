@@ -45,12 +45,14 @@ def load_model_params(self):
         c.argument(
             "path",
             options_list=["--path", "-p"],
-            help="Path to the model file(s). This can be either a local or a remote location. If specified, --name/-n and --version/-v must also be provided.",
+            help="Path to the model file(s). This can be either a local or a remote location. "
+                 "If specified, --name/-n and --version/-v must also be provided.",
         )
         c.argument(
             "type",
             options_list=["--type", "-t"],
-            help="Type of the model, allowed values are custom_model, mlflow_model and triton_model. The default type is custom_model.",
+            help="Type of the model, allowed values are custom_model, mlflow_model and triton_model. "
+                 "The default type is custom_model.",
         )
         add_description_param(c, help_message="Description of the model.")
 
@@ -128,4 +130,3 @@ def load_model_params(self):
         c.argument("share_with_name", help="Name  of the model to be created with.")
         c.argument("share_with_version", help="Version  of the model to be created with.")
         c.argument("registry_name", help="Destination registry.")
-

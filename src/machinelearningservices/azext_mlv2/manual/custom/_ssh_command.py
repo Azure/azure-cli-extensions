@@ -14,7 +14,10 @@ from azure.ai.ml.exceptions import ErrorCategory, ErrorTarget, JobException, Val
 
 
 def get_ssh_command(
-    services_dict: Dict[str, ServiceInstance], node_index: int, private_key_file_path: str, ssh_args: Optional[Sequence[str]] = None
+    services_dict: Dict[str, ServiceInstance],
+    node_index: int,
+    private_key_file_path: str,
+    ssh_args: Optional[Sequence[str]] = None
 ) -> Tuple[bool, str]:
     proxyEndpoint = _get_proxy_endpoint(services_dict, node_index).replace("<nodeIndex>", str(node_index))
     connect_ssh_path = pathlib.Path(__file__).parent / "_ssh_connector.py"
