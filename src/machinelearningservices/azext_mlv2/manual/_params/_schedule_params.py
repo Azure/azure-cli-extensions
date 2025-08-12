@@ -64,7 +64,7 @@ def load_schedule_params(self):
     with self.argument_context("ml schedule delete") as c:
         add_common_params(c)
         add_name_param(c)
-    
+
     with self.argument_context("ml schedule trigger") as c:
         add_common_params(c)
         add_name_param(c)

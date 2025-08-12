@@ -3,7 +3,7 @@
 # ---------------------------------------------------------
 
 
-class ModelInfo:
+class ModelInfo:  # pylint: disable=too-few-public-methods
     """
     Model info for telemetry.
     This enforced structure will help to write the Kusto query
@@ -16,7 +16,7 @@ class ModelInfo:
         self.promo_match = None  # type of workspace path match is used model promotion.
 
 
-class OnlineDeploymentInfo:
+class OnlineDeploymentInfo:  # pylint: disable=too-few-public-methods,too-many-instance-attributes
     """
     Online deployment info for telemetry.
     This enforced structure will help to write the Kusto query
@@ -33,7 +33,7 @@ class OnlineDeploymentInfo:
         self.model_reference_type = None  # values: version, label, inline, registry
 
 
-class ScheduleInfo:
+class ScheduleInfo:  # pylint: disable=too-few-public-methods
     """
     Schedule info for telemetry when monitoring is set.
     This enforced structure will help to write the Kusto query

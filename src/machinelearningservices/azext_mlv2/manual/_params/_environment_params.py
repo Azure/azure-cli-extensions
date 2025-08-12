@@ -49,17 +49,20 @@ def load_environment_params(self):
         c.argument(
             "conda_file",
             options_list=["--conda-file", "-c"],
-            help="Local path to a conda specification file. --image/-i must also be specified if this argument is used.",
+            help="Local path to a conda specification file. --image/-i must also be specified if "
+                 "this argument is used.",
         )
         c.argument(
             "build_context",
             options_list=["--build-context", "-b"],
-            help="Local path to the directory to use as a Docker build context. --build-context/-b and --image/-i are mutually exclusive arguments.",
+            help="Local path to the directory to use as a Docker build context. --build-context/-b and "
+                 "--image/-i are mutually exclusive arguments.",
         )
         c.argument(
             "dockerfile_path",
             options_list=["--dockerfile-path", "-d"],
-            help="Relative path to the Dockerfile within the directory specified by --build-context/-b. If omitted, './Dockerfile' is used.",
+            help="Relative path to the Dockerfile within the directory specified by --build-context/-b. "
+                 "If omitted, './Dockerfile' is used.",
         )
         c.argument(
             "os_type",
@@ -69,7 +72,8 @@ def load_environment_params(self):
         c.argument(
             "path",
             options_list=["--path", "-p"],
-            help="Path of the environment asset in the workspace that will be copied to the registry, only applicable with --registry-name parameter, else it will be ignored.",
+            help="Path of the environment asset in the workspace that will be copied to the registry, "
+                 "only applicable with --registry-name parameter, else it will be ignored.",
         )
 
     with self.argument_context("ml environment show") as c:

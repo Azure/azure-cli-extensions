@@ -229,7 +229,8 @@ def load_compute_params(self):
         c.argument("admin_password", help="The administrator user password that can be used to SSH into the node(s).")
         c.argument(
             "ssh_port",
-            help="The port number that can be used to SSH into the node(s). If not specified, the default (port 22) will be used.",
+            help="The port number that can be used to SSH into the node(s). If not specified, the default "
+                 "(port 22) will be used.",
         )
         c.argument(
             "ssh_private_key_file", help="The file containing the SSH private key of the administrator user account."
