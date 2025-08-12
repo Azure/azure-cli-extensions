@@ -3906,10 +3906,7 @@ helps['aks identity-binding show'] = """
         - name: --cluster-name
           type: string
           short-summary: Name of the managed Kubernetes cluster.
-        - name: --resource-group
-          type: string
-          short-summary: Name of the resource group containing the managed Kubernetes cluster.
-        - name: -n --identity-binding-name
+        - name: --name -n
           type: string
           short-summary: Name of the identity binding to show.
 """
@@ -3920,9 +3917,6 @@ helps['aks identity-binding list'] = """
         - name: --cluster-name
           type: string
           short-summary: Name of the managed Kubernetes cluster.
-        - name: --resource-group
-          type: string
-          short-summary: Name of the resource group containing the managed Kubernetes cluster.
 """
 helps['aks identity-binding create'] = """
     type: command
@@ -3931,10 +3925,7 @@ helps['aks identity-binding create'] = """
         - name: --cluster-name
           type: string
           short-summary: Name of the managed Kubernetes cluster.
-        - name: --resource-group
-          type: string
-          short-summary: Name of the resource group containing the managed Kubernetes cluster.
-        - name: -n --identity-binding-name
+        - name: --name -n
           type: string
           short-summary: Name of the identity binding to show.
         - name: --managed-identity-resource-id
@@ -3948,10 +3939,7 @@ helps['aks identity-binding delete'] = """
         - name: --cluster-name
           type: string
           short-summary: Name of the managed Kubernetes cluster.
-        - name: --resource-group
-          type: string
-          short-summary: Name of the resource group containing the managed Kubernetes cluster.
-        - name: -n --identity-binding-name
+        - name: --name -n
           type: string
           short-summary: Name of the identity binding to show.
 """
