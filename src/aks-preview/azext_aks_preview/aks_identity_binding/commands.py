@@ -74,7 +74,7 @@ def aks_ib_cmd_show(
 
 # `az aks identity-binding list` command
 def aks_ib_cmd_list(
-    cmd, client, # pylint: disable=unused-argument
+    cmd, client,  # pylint: disable=unused-argument
     resource_group_name: str,
     cluster_name: str,
 ):
