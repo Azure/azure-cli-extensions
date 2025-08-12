@@ -41,7 +41,7 @@ def ml_workspace_outbound_rule_set(
     resource_group_name,
     workspace_name,
     rule,
-    rule_type,  # pylint: disable=redefined-builtin
+    type,  # pylint: disable=redefined-builtin
     destination=None,
     service_tag=None,
     protocol=None,
@@ -54,7 +54,7 @@ def ml_workspace_outbound_rule_set(
     no_wait=False
 ):
     ml_client, debug = get_ml_client(cli_ctx=cmd.cli_ctx, resource_group_name=resource_group_name)
-    if rule_type == "fqdn":
+    if type == "fqdn":
         # Check required and forbidden parameters for fqdn type
         required_params = destination is not None
         forbidden_params = (
@@ -65,7 +65,7 @@ def ml_workspace_outbound_rule_set(
         if not required_params or forbidden_params:
             log_and_raise_error('fqdn outbound rule should specify the following parameter: "--destination"')
         rule = FqdnDestination(name=rule, destination=destination)
-    elif rule_type == "service_tag":
+    elif type == "service_tag":
         # Check required and forbidden parameters for service_tag type
         required_params = (
             service_tag is not None and protocol is not None and port_ranges is not None
@@ -88,7 +88,7 @@ def ml_workspace_outbound_rule_set(
             port_ranges=port_ranges,
             address_prefixes=address_prefixes
         )
-    elif rule_type == "private_endpoint":
+    elif type == "private_endpoint":
         # Check required and forbidden parameters for private_endpoint type
         required_params = (
             service_resource_id is not None and subresource_target is not None

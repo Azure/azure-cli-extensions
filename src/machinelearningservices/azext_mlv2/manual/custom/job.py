@@ -238,8 +238,7 @@ def ml_job_list(
 
 
 def ml_job_download(cmd, resource_group_name, workspace_name, name, download_path=None,
-                    output_name=None, all_results=False):
-    # pylint: disable=redefined-builtin
+                    output_name=None, all=False):  # pylint: disable=redefined-builtin
 
     ml_client, debug = get_ml_client(
         cli_ctx=cmd.cli_ctx, resource_group_name=resource_group_name, workspace_name=workspace_name
@@ -248,7 +247,7 @@ def ml_job_download(cmd, resource_group_name, workspace_name, name, download_pat
     try:
         if not download_path:
             download_path = cmd.cli_ctx.local_context.current_dir
-        return ml_client.jobs.download(name=name, download_path=download_path, output_name=output_name, all=all_results)
+        return ml_client.jobs.download(name=name, download_path=download_path, output_name=output_name, all=all)
     except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 

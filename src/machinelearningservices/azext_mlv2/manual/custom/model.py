@@ -23,7 +23,7 @@ def ml_model_create(
     version=None,
     file=None,
     path=None,
-    model_type=None,
+    type=None,  # pylint: disable=redefined-builtin
     description=None,
     tags=None,
     stage=None,
@@ -46,8 +46,8 @@ def ml_model_create(
         params_override.append({"version": version})
     if path:
         params_override.append({"path": path})
-    if model_type:
-        params_override.append({"type": model_type})
+    if type:
+        params_override.append({"type": type})
     if description:
         params_override.append({"description": description})
     if tags:
@@ -74,7 +74,7 @@ def ml_model_create(
                 description=description,
                 tags=tags,
                 stage=stage,
-                type=model_type,
+                type=type,
                 datastore=datastore,
             )
             if model and model.type:

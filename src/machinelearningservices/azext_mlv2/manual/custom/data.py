@@ -74,7 +74,7 @@ def ml_data_create(cmd,
                    version: Optional[str] = None,
                    skip_validation: bool = False,
                    params_override: Optional[list] = None,
-                   data_type: Optional[str] = None,  # pylint: disable=redefined-builtin
+                   type: Optional[str] = None,  # pylint: disable=redefined-builtin
                    path: Optional[str] = None,
                    datastore: Optional[str] = None,
                    no_wait: Optional[bool] = False):  # pylint: disable=unused-argument
@@ -95,8 +95,8 @@ def ml_data_create(cmd,
         params_override.append({"description": description})
     if version:
         params_override.append({"version": version})
-    if data_type:
-        params_override.append({"type": data_type})
+    if type:
+        params_override.append({"type": type})
     if path:
         params_override.append({"path": path})
     if datastore:
@@ -123,7 +123,7 @@ def ml_data_import(
     version: Optional[str] = None,
     skip_validation: bool = False,
     params_override: Optional[list] = None,
-    data_type: Optional[str] = None,  # pylint: disable=redefined-builtin
+    type: Optional[str] = None,  # pylint: disable=redefined-builtin
     path: Optional[str] = None,
     datastore: Optional[str] = None,
     **kwargs,
@@ -139,8 +139,8 @@ def ml_data_import(
         params_override.append({"description": description})
     if version:
         params_override.append({"version": version})
-    if data_type:
-        params_override.append({"type": data_type})
+    if type:
+        params_override.append({"type": type})
     if path:
         params_override.append({"path": path})
     if datastore:
