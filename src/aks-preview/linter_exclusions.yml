@@ -108,6 +108,9 @@ aks create:
     enable_managed_system_pool:
       rule_exclusions:
         - option_length_too_long
+    node_resource_group:
+      rule_exclusions:  
+        - parameter_should_not_end_in_resource_group
 aks update:
   parameters:
     enable_pod_identity_with_kubenet:
