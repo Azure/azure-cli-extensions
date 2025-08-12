@@ -2372,7 +2372,7 @@ helps['aks machine'] = """
 
 helps['aks machine list'] = """
    type: command
-   short-summary: Get information about IP Addresses, Hostname for all machines in an agentpool
+   short-summary: List the details for all machines in an agentpool
    parameters:
        - name: --cluster-name
          type: string
@@ -2380,14 +2380,14 @@ helps['aks machine list'] = """
        - name: --nodepool-name
          type: string
          short-summary: Name of the agentpool of a managed cluster
-   exmaples:
-       - name: Get information about IP Addresses, Hostname for all machines in an agentpool
-         text: az aks machine list --cluster-name <clusterName> --nodepool-name <apName>
+   examples:
+       - name: List the details for all machines in an agentpool
+         text: az aks machine list --resource-group <resourceGroupName> --cluster-name <clusterName> --nodepool-name <apName>
 """
 
 helps['aks machine show'] = """
    type: command
-   short-summary: Show IP Addresses, Hostname for a specific machine in an agentpool for a managedcluster.
+   short-summary: Show the details of a specific machine in an agentpool of a managedcluster.
    parameters:
        - name: --cluster-name
          type: string
@@ -2397,10 +2397,10 @@ helps['aks machine show'] = """
          short-summary: Name of the agentpool of a managed cluster
        - name: --machine-name
          type: string
-         short-summary: Get IP Addresses, Hostname for a specific machine in an agentpool
-   exmaples:
-       - name: Get IP Addresses, Hostname for a specific machine in an agentpool
-         text: az aks machine show --cluster-name <clusterName> --nodepool-name <apName> --machine-name <machineName>
+         short-summary: Name of the machine
+   examples:
+       - name: Show the details of a specific machine in an agentpool of a managedcluster.
+         text: az aks machine show --resource-group <resourceGroupName> --cluster-name <clusterName> --nodepool-name <apName> --machine-name <machineName>
 """
 
 helps['aks operation'] = """
@@ -3893,4 +3893,53 @@ helps['aks bastion'] = """
     examples:
         - name: Connect to a managed Kubernetes cluster using Azure Bastion with custom port and admin credentials.
           text: az aks bastion -g MyResourceGroup --name MyManagedCluster --bastion MyBastionResource --port 50001 --admin
+"""
+
+helps['aks identity-binding'] = """
+    type: group
+    short-summary: Commands to manage identity bindings in Azure Kubernetes Service.
+"""
+helps['aks identity-binding show'] = """
+    type: command
+    short-summary: Show details of a specific identity binding in a managed Kubernetes cluster.
+    parameters:
+        - name: --cluster-name
+          type: string
+          short-summary: Name of the managed Kubernetes cluster.
+        - name: --name -n
+          type: string
+          short-summary: Name of the identity binding to show.
+"""
+helps['aks identity-binding list'] = """
+    type: command
+    short-summary: List all identity bindings under a managed Kubernetes cluster.
+    parameters:
+        - name: --cluster-name
+          type: string
+          short-summary: Name of the managed Kubernetes cluster.
+"""
+helps['aks identity-binding create'] = """
+    type: command
+    short-summary: Create a new identity binding in a managed Kubernetes cluster.
+    parameters:
+        - name: --cluster-name
+          type: string
+          short-summary: Name of the managed Kubernetes cluster.
+        - name: --name -n
+          type: string
+          short-summary: Name of the identity binding to show.
+        - name: --managed-identity-resource-id
+          type: string
+          short-summary: The resource ID of the managed identity to use.
+"""
+helps['aks identity-binding delete'] = """
+    type: command
+    short-summary: Delete a specific identity binding in a managed Kubernetes cluster.
+    parameters:
+        - name: --cluster-name
+          type: string
+          short-summary: Name of the managed Kubernetes cluster.
+        - name: --name -n
+          type: string
+          short-summary: Name of the identity binding to show.
 """

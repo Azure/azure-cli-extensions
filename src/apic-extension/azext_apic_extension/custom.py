@@ -228,7 +228,7 @@ def register_apic(cmd, api_location, resource_group, service_name, environment_i
         first_key, first_value = list(data.items())[0]
         if first_key in ['swagger', 'openapi']:
             extracted_definition_name = 'openapi'
-            extracted_definition_version = first_value.replace(".", "-").lower()
+            extracted_definition_version = first_value.lower()
             extracted_api_kind = 'rest'  # TODO determine kind from spec
         else:
             extracted_definition_name = 'default'
