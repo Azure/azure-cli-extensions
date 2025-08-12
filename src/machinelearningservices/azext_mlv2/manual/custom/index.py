@@ -54,7 +54,7 @@ def ml_index_create(
             load_index(source=file or io.StringIO("{}"), params_override=params_override)
         )
         return _dump_entity_with_warnings(index)
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug, yaml_operation=bool(file))
 
 
@@ -80,7 +80,7 @@ def ml_index_list(
             results = islice(results, int(max_results))
 
         return [_dump_entity_with_warnings(x) for x in results]
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
 
@@ -96,5 +96,5 @@ def ml_index_show(
 
     try:
         return _dump_entity_with_warnings(ml_client.indexes.get(name=name, version=version, label=label))
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)

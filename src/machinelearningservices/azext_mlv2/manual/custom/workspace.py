@@ -241,7 +241,10 @@ def ml_workspace_update(
                 "ip_rules": []
             }
         else:
-            log_and_raise_error("Invalid value for network_acls. Please provide a comma-separated list of IPs/IP ranges in CIDR notation or None.")
+            log_and_raise_error(
+                "Invalid value for network_acls. Please provide a comma-separated list of IPs/IP ranges "
+                "in CIDR notation or None."
+            )
         params_override.append({"network_acls": network_acls})
 
     workspace = load_workspace(file, params_override=params_override)

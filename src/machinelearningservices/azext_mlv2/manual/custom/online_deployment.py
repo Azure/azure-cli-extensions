@@ -92,8 +92,11 @@ def ml_online_deployment_create(
                 ) from err
 
         else:
-            msg = """(UserError) A deployment with this name already exists. If you are trying to create a new deployment, use a
-different name. If you are trying to update an existing deployment, use `az ml online-deployment update` instead."""
+            msg = (
+                "(UserError) A deployment with this name already exists. If you are trying to create a new "
+                "deployment, use a different name. If you are trying to update an existing deployment, use "
+                "`az ml online-deployment update` instead."
+            )
             raise ValidationException(
                 message=msg,
                 no_personal_data_message=msg,

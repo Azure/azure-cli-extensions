@@ -12,7 +12,7 @@ from azure.ai.ml.entities._deployment.batch_deployment import BatchDeployment
 from azure.ai.ml.entities._deployment.model_batch_deployment import ModelBatchDeployment
 from azure.ai.ml.entities._deployment.pipeline_component_batch_deployment import PipelineComponentBatchDeployment
 from azure.ai.ml.entities._load_functions import (
-    load_batch_deployment, _try_load_yaml_dict, load_pipeline_component_batch_deployment, 
+    load_batch_deployment, _try_load_yaml_dict, load_pipeline_component_batch_deployment,
     load_model_batch_deployment
 )
 from azure.ai.ml.constants._deployment import BatchDeploymentType

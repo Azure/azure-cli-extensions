@@ -15,11 +15,9 @@ def ml_azure_openai_deployment_list(cmd, resource_group_name, workspace_name, co
     )
 
     try:
-        return list(
-            map(
-                lambda deployment: _dump_entity_with_warnings(deployment),
-                ml_client.azure_openai_deployments.list(connection_name),
-            )
-        )
-    except Exception as err:
+        return [
+            _dump_entity_with_warnings(deployment)
+            for deployment in ml_client.azure_openai_deployments.list(connection_name)
+        ]
+    except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)

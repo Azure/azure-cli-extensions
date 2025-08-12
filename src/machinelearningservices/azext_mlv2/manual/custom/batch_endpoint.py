@@ -187,7 +187,7 @@ def ml_batch_endpoint_invoke(  # pylint: disable=too-many-locals,too-many-branch
     )
     params_override = params_override or []
 
-    try:
+    try:  # pylint: disable=too-many-nested-blocks
         if batch_deployment_name:
             ml_client.batch_endpoints._validate_deployment_name(  # pylint: disable=protected-access
                 name, batch_deployment_name
