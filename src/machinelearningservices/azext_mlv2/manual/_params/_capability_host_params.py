@@ -29,17 +29,17 @@ def add_capability_host_common_params(c):
     )
     c.argument(
         "vector_store_connections",
-        options_list=["--vector-store-connections","-v"],
+        options_list=["--vector-store-connections", "-v"],
         help="List of vector store (AISearch) connections names.",
     )
     c.argument(
         "storage_connections",
-        options_list=["--storage-connections","-s"],
+        options_list=["--storage-connections", "-s"],
         help="List of storage connections names.",
     )
     c.argument(
         "ai_services_connections",
-        options_list=["--ai-services-connections","-a"],
+        options_list=["--ai-services-connections", "-a"],
         help="List of Open AIServices connections names.",
     )
     c.argument(

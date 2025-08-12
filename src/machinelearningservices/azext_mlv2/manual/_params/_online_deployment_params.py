@@ -72,10 +72,10 @@ def load_online_deployment_params(self):
         )
         c.argument(
             "package_model",
-            #is_preview=True,
+            # is_preview=True,
             help="[THIS IS IN PREVIEW] Create packaged environment from the deployment yaml "
             "and use the packaged environment for the deployment.",
-            default=False, #is_preview is still not working need to investigate
+            default=False,  # is_preview is still not working need to investigate
         )
 
     with self.argument_context("ml online-deployment update") as c:

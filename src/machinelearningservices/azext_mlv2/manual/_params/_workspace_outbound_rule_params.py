@@ -3,9 +3,10 @@
 # ---------------------------------------------------------
 
 from ._common_params import (
-    add_lro_param, # adds no-wait
-    add_common_params # adds resource-group and workspace-name
+    add_lro_param,  # adds no-wait
+    add_common_params  # adds resource-group and workspace-name
 )
+
 
 def load_workspace_outbound_rule_params(self):
     with self.argument_context("ml workspace outbound-rule list") as c:

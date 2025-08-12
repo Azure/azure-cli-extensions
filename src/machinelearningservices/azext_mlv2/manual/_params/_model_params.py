@@ -118,10 +118,10 @@ def load_model_params(self):
         add_version_param(c)
         add_registry_param(c)
         c.argument(
-        "file",
-        options_list=["--file", "-f"],
-        help="Local path to the YAML file containing the model package definition."
-    )
+            "file",
+            options_list=["--file", "-f"],
+            help="Local path to the YAML file containing the model package definition."
+        )
 
     with self.argument_context("ml model share") as c:
         add_common_params(c)

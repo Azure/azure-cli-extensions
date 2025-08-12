@@ -223,7 +223,7 @@ def load_compute_params(self):
 
     with self.argument_context("ml compute attach", arg_group="VirtualMachine") as c:
         c.argument(
-            "admin_username", 
+            "admin_username",
             help="Name of the administrator user account that can be used to SSH into the node(s)."
         )
         c.argument("admin_password", help="The administrator user password that can be used to SSH into the node(s).")
@@ -241,6 +241,6 @@ def load_compute_params(self):
         compute_param(c)
         c.argument(
             "disable",
-            options_list =["--disable"],
+            options_list=["--disable"],
             help="Disable Single sign-on. Default: False."
         )

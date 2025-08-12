@@ -15,22 +15,27 @@ from ._common_params import (add_archived_only_param, add_common_params,
 def add_name_param(c):
     c.argument("name", options_list=["--name", "-n"], type=str, help="Name of the data asset.")
 
+
 def add_name_required_param(c):
     c.argument("name", options_list=["--name", "-n"], type=str,
                help="Name of the data asset. Required if --registry-name is provided.")
 
+
 def add_version_param(c):
     c.argument("version", options_list=["--version", "-v"], help="Version of the data asset.")
+
 
 def add_version_required_param(c):
     c.argument("version", options_list=["--version", "-v"],
                help="Version of the data asset. Required if --registry-name is provided.")
+
 
 def add_version_and_label_params(c):
     c.argument("version", options_list=["--version", "-v"],
                help="Version of the data asset. Mutually exclusive with label.")
     c.argument("label", options_list=["--label", "-l"],
                help="Label of the data asset. Mutually exclusive with version.")
+
 
 def add_version_or_label_required_params(c):
     c.argument("version", options_list=["--version", "-v"],
@@ -40,6 +45,7 @@ def add_version_or_label_required_params(c):
                help="Label of the data asset. Must be provided, if version is not provided. "
                     "Mutually exclusive with version.")
 
+
 def add_registry_param(c):
     c.argument(
         "registry_name",
@@ -48,6 +54,7 @@ def add_registry_param(c):
              "Hence resource group and workspace won't be required. Must be provided if "
              "--workspace-name and --resource-group are not provided ",
     )
+
 
 def load_data_params(self):
     with self.argument_context("ml data list") as c:
@@ -164,6 +171,6 @@ def load_data_params(self):
         add_common_params(c)
         c.argument("mount_point", help="A local path used as mount point.")
         c.argument("path", help="The data asset path to mount, in the form of `azureml:<name>` "
-                            "or `azureml:<name>:<version>`")
+                               "or `azureml:<name>:<version>`")
         c.argument("mode", help="Mount mode. Only `ro_mount` (read-only) is supported for data asset mount.")
         c.argument("persistent", help="Make mount persist across reboots. Supported only on Compute Instance.")
