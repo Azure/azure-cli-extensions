@@ -30,16 +30,16 @@ module_logger = get_logger(__name__)
 IDENTITY_ERROR = "Identity_type can only be either of 'SystemAssigned', 'UserAssigned'"
 
 
-def ml_compute_list(cmd, resource_group_name, workspace_name, compute_type=None, max_results=None):
+def ml_compute_list(cmd, resource_group_name, workspace_name, type=None, max_results=None):  # pylint: disable=redefined-builtin
     ml_client, debug = get_ml_client(
         cli_ctx=cmd.cli_ctx, resource_group_name=resource_group_name, workspace_name=workspace_name
     )
 
     try:
         if max_results:
-            results = islice(ml_client.compute.list(compute_type=compute_type), int(max_results))
+            results = islice(ml_client.compute.list(compute_type=type), int(max_results))
         else:
-            results = ml_client.compute.list(compute_type=compute_type)
+            results = ml_client.compute.list(compute_type=type)
         return [_dump_entity_with_warnings(x) for x in results]
     except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
@@ -73,7 +73,7 @@ def ml_compute_create(
     resource_group_name,
     workspace_name,
     name=None,
-    compute_type=None,
+    type=None,  # pylint: disable=redefined-builtin
     vnet_name=None,
     subnet=None,
     admin_username=None,
@@ -104,8 +104,8 @@ def ml_compute_create(
 
     if name:
         params_override.append({"name": name})
-    if compute_type:
-        params_override.append({"type": compute_type.lower()})
+    if type:
+        params_override.append({"type": type.lower()})
     if vnet_name:
         params_override.append({"network_settings.vnet_name": vnet_name})
     if subnet:
@@ -217,13 +217,13 @@ def ml_compute_restart(cmd, resource_group_name, workspace_name, name, no_wait=F
         log_and_raise_error(err, debug)
 
 
-def ml_compute_list_sizes(cmd, resource_group_name, workspace_name, location=None, compute_type=None):
+def ml_compute_list_sizes(cmd, resource_group_name, workspace_name, location=None, type=None):  # pylint: disable=redefined-builtin
     ml_client, debug = get_ml_client(
         cli_ctx=cmd.cli_ctx, resource_group_name=resource_group_name, workspace_name=workspace_name
     )
 
     try:
-        list_sizes = ml_client.compute.list_sizes(location=location, compute_type=compute_type)
+        list_sizes = ml_client.compute.list_sizes(location=location, compute_type=type)
         return [_dump_entity_with_warnings(x) for x in list_sizes]
     except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
@@ -358,7 +358,7 @@ def ml_compute_attach(
     resource_group_name,
     workspace_name,
     name=None,
-    compute_type=None,
+    type=None,  # pylint: disable=redefined-builtin
     resource_id=None,
     admin_username=None,
     admin_password=None,
@@ -386,8 +386,8 @@ def ml_compute_attach(
         params_override.append({"ssh_settings.admin_password": admin_password})
     if ssh_port:
         params_override.append({"ssh_settings.ssh_port": ssh_port})
-    if compute_type:
-        params_override.append({"type": compute_type})
+    if type:
+        params_override.append({"type": type})
     if resource_id:
         params_override.append({"resource_id": resource_id})
     if namespace:
