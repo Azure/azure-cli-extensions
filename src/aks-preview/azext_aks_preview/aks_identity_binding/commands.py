@@ -1,6 +1,12 @@
+# --------------------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License. See License.txt in the project root for license information.
+# --------------------------------------------------------------------------------------------
+
+
 # `az aks identity-binding create` command
 def aks_ib_cmd_create(
-    cmd, client,
+    cmd, client, # pylint: disable=unused-argument
     resource_group_name: str,
     cluster_name: str,
     name: str,
@@ -35,7 +41,7 @@ def aks_ib_cmd_create(
 
 # `az aks identity-binding delete` command
 def aks_ib_cmd_delete(
-    cmd, client,
+    cmd, client, # pylint: disable=unused-argument
     resource_group_name: str,
     cluster_name: str,
     name: str,
@@ -54,7 +60,7 @@ def aks_ib_cmd_delete(
 
 # `az aks identity-binding show` command
 def aks_ib_cmd_show(
-    cmd, client,
+    cmd, client, # pylint: disable=unused-argument
     resource_group_name: str,
     cluster_name: str,
     name: str,
@@ -68,7 +74,7 @@ def aks_ib_cmd_show(
 
 # `az aks identity-binding list` command
 def aks_ib_cmd_list(
-    cmd, client,
+    cmd, client, # pylint: disable=unused-argument
     resource_group_name: str,
     cluster_name: str,
 ):
