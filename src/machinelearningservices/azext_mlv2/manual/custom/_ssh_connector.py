@@ -13,9 +13,9 @@ import sys
 import typing
 from typing import TYPE_CHECKING
 
-import websockets
-import websockets.client
-import websockets.exceptions
+import websockets  # pylint: disable=import-error
+import websockets.client  # pylint: disable=import-error
+import websockets.exceptions  # pylint: disable=import-error
 
 from azure.cli.core import get_default_cli
 
@@ -24,19 +24,19 @@ def run_az_cli(args):
     cli = get_default_cli()
     cli.invoke(args)
     if not cli.result:
-        raise Exception("az cli failed")
+        raise Exception("az cli failed")  # pylint: disable=broad-exception-raised
     if cli.result.result:
         return cli.result.result
     if cli.result.error:
         raise cli.result.error
-    raise Exception("az cli failed")
+    raise Exception("az cli failed")  # pylint: disable=broad-exception-raised
 
 
 if TYPE_CHECKING:
     from azure.ai.ml.operations import DatastoreOperations
 
 
-class SshConnector:
+class SshConnector:  # pylint: disable=too-few-public-methods
     def connect_ssh(self) -> None:
         if os.name == "nt":
             # On Windows, the ProactorEventLoop is necessary to listen on pipes
@@ -54,7 +54,7 @@ class SshConnector:
                 "The command line argument to get proxy_endpoint is empty or whitespace. "
                 "Example: python _ssh_connector.py <proxy_endpoint>"
             )
-            raise Exception(msg)
+            raise Exception(msg)  # pylint: disable=broad-exception-raised
         proxy_endpoint = sys.argv[1]
         mgtScope = ["https://management.core.windows.net/.default"]
 

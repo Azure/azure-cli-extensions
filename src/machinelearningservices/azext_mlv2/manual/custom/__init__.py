@@ -14,38 +14,39 @@ try:
 except ExtensionNotInstalledException:
     logging.warning("Either ml extension is not installed or you are running ml extension in dev mode")
 
-from azext_mlv2.manual.custom import utils
+from azext_mlv2.manual.custom import utils  # pylint: disable=wrong-import-position
 
 # set caller info to current telemetry session
-from azure.cli.core import telemetry
+from azure.cli.core import telemetry  # pylint: disable=wrong-import-position,ungrouped-imports
 
 telemetry.set_debug_info("SystemInvoker", utils.get_cli_system_executed())
 
-from ._telemetry import *
-from .azure_openai_deployment import *
-from .batch_deployment import *
-from .batch_endpoint import *
-from .component import *
-from .compute import *
-from .connection import *
-from .data import *
-from .datastore import *
-from .environment import *
-from .feature_set import *
-from .feature_store import *
-from .feature_store_entity import *
-from .index import *
-from .job import *
-from .marketplace_subscription import *
-from .model import *
-from .online_deployment import *
-from .online_endpoint import *
-from .registry import *
-from .schedule import *
-from .serverless_endpoint import *
-from .virtual_cluster import *
-from .workspace import *
-from .workspace_outbound_rule import *
-from .capability_host import *
+# pylint: disable=unused-wildcard-import,wildcard-import
+from ._telemetry import *  # pylint: disable=wrong-import-position
+from .azure_openai_deployment import *  # pylint: disable=wrong-import-position
+from .batch_deployment import *  # pylint: disable=wrong-import-position
+from .batch_endpoint import *  # pylint: disable=wrong-import-position
+from .component import *  # pylint: disable=wrong-import-position
+from .compute import *  # pylint: disable=wrong-import-position
+from .connection import *  # pylint: disable=wrong-import-position
+from .data import *  # pylint: disable=wrong-import-position
+from .datastore import *  # pylint: disable=wrong-import-position
+from .environment import *  # pylint: disable=wrong-import-position
+from .feature_set import *  # pylint: disable=wrong-import-position
+from .feature_store import *  # pylint: disable=wrong-import-position,unused-wildcard-import
+from .feature_store_entity import *  # pylint: disable=wrong-import-position,unused-wildcard-import
+from .index import *  # pylint: disable=wrong-import-position,unused-wildcard-import
+from .job import *  # pylint: disable=wrong-import-position,unused-wildcard-import
+from .marketplace_subscription import *  # pylint: disable=wrong-import-position,unused-wildcard-import
+from .model import *  # pylint: disable=wrong-import-position,unused-wildcard-import
+from .online_deployment import *  # pylint: disable=wrong-import-position,unused-wildcard-import
+from .online_endpoint import *  # pylint: disable=wrong-import-position,unused-wildcard-import
+from .registry import *  # pylint: disable=wrong-import-position,unused-wildcard-import
+from .schedule import *  # pylint: disable=wrong-import-position,unused-wildcard-import
+from .serverless_endpoint import *  # pylint: disable=wrong-import-position,unused-wildcard-import
+from .virtual_cluster import *  # pylint: disable=wrong-import-position,unused-wildcard-import
+from .workspace import *  # pylint: disable=wrong-import-position,unused-wildcard-import
+from .workspace_outbound_rule import *  # pylint: disable=wrong-import-position,unused-wildcard-import
+from .capability_host import *  # pylint: disable=wrong-import-position,unused-wildcard-import
 
 # nopycln: file

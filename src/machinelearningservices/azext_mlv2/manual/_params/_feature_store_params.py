@@ -188,7 +188,8 @@ def load_feature_store_params(self):
         )
 
 
-# Feature store commands' common paramaters differ from rest of the commands because it takes --name instead of --workspace-name as the workspace name.
+# Feature store commands' common parameters differ from rest of the commands because it takes
+# --name instead of --workspace-name as the workspace name.
 def add_feature_store_common_params(c):
     c.argument("resource_group_name", resource_group_name_type)
     c.argument(
