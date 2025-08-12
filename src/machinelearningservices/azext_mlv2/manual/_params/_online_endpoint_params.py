@@ -111,7 +111,8 @@ def load_online_endpoint_params(self):
         add_common_params(c)
         add_online_endpoint_common_param(
             c,
-            local_help_message="Invoke local endpoint. This will only work if a local deployment has been created for this endpoint.",
+            local_help_message="Invoke local endpoint. This will only work if a local deployment has "
+                               "been created for this endpoint.",
         )
         add_override_param(c)
         c.argument(

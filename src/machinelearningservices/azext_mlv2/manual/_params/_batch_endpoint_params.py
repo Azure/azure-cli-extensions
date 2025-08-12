@@ -54,11 +54,13 @@ def load_batch_endpoint_params(self):
         )
         c.argument(
             "input",
-            help="Reference to input data to use for batch inferencing. It can be a path on the datastore, public URI, a registered data asset, or a local folder path.",
+            help="Reference to input data to use for batch inferencing. It can be a path on the datastore, "
+                 "public URI, a registered data asset, or a local folder path.",
         )
         c.argument(
             "input_type",
-            help="Type of the input, specifying whether it's a file or a folder. Use this when you are using a path on datastore or public URI. Supported values: uri_folder, uri_file.",
+            help="Type of the input, specifying whether it's a file or a folder. Use this when you are "
+                 "using a path on datastore or public URI. Supported values: uri_folder, uri_file.",
         )
         c.argument(
             "output_path",

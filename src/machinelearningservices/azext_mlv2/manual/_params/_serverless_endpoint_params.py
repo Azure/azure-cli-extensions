@@ -5,7 +5,6 @@ from azext_mlv2.manual._params._common_params import (
     add_max_results_params,
     add_override_param,
 )
-from azure.ai.ml.constants._common import YAMLRefDocLinks
 
 
 def add_name_param(c):

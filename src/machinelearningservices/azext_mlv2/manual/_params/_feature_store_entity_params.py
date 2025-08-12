@@ -30,7 +30,8 @@ def load_feature_store_entity_params(self):
             "name",
             options_list=["--name", "-n"],
             type=str,
-            help="Name of the feature store entity. If provided, all the feature store entity versions under this name will be returned.",
+            help="Name of the feature store entity. If provided, all the feature store entity versions "
+                 "under this name will be returned.",
         )
         add_include_archived_param(
             c, help_message="List archived feature store entity assets and active feature store entity assets."

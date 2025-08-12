@@ -8,7 +8,6 @@ from ._common_params import (
     add_lro_param,
     add_file_param,
     add_override_param,
-    add_max_results_params,
 )
 
 
