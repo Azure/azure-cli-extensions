@@ -4,7 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 
-from azure.cli.testsdk import ScenarioTest
+from azure.cli.testsdk import ScenarioTest, live_only
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
 from azext_aks_preview.tests.latest.recording_processors import KeyReplacer
@@ -22,6 +22,7 @@ class IdentityBindingTestCases(ScenarioTest):
         )
 
     @AllowLargeResponse()
+    @live_only()
     @AKSCustomResourceGroupPreparer(
         random_name_length=17,
         name_prefix="clitest",
