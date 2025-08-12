@@ -1,5 +1,5 @@
-# Azure CLI Managednetworkfabric Extension #
-This is an extension to Azure CLI to manage Managednetworkfabric resources.
+# Azure CLI Nexus Network Fabric Extension #
+This is an extension to Azure CLI to manage Nexus Network Fabric resources.
 
 ## How to use ##
 

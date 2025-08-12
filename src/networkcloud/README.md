@@ -1,4 +1,4 @@
-# Azure CLI Networkcloud Extension #
+# Azure CLI AFOI-Network Cloud Extension #
 
 This is an extension to Azure CLI to manage Azure Operator Nexus - Network Cloud on-premises clusters and their resources, such as racks, bare metal hosts, virtual machines, workload networks and more.
 

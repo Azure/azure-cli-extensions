@@ -16,30 +16,49 @@ from azure.cli.testsdk import ScenarioTest
 from .config import CONFIG
 
 
-def setup_scenario1(test):
-    """Env setup_scenario1"""
+def setup_scenario(test):
+    """Env setup_scenario"""
     pass
 
 
-def cleanup_scenario1(test):
-    """Env cleanup_scenario1"""
+def cleanup_scenario(test):
+    """Env cleanup_scenario"""
     pass
 
 
 def call_scenario1(test):
     """# Testcase: scenario1"""
-    setup_scenario1(test)
-    step_update_bfd_admin_state(test, checks=[])
-    cleanup_scenario1(test)
+    setup_scenario(test)
+    step_update_bfd_admin_state_nf_name(test, checks=[])
+    cleanup_scenario(test)
 
 
-def step_update_bfd_admin_state(test, checks=None):
+def call_scenario2(test):
+    """# Testcase: scenario2"""
+    setup_scenario(test)
+    step_update_bfd_admin_state_resource_name(test, checks=[])
+    cleanup_scenario(test)
+
+
+def step_update_bfd_admin_state_nf_name(test, checks=None):
     """nni run Update BFD Admin State operation"""
     if checks is None:
         checks = []
     test.cmd(
         "az networkfabric nni update-bfd-administrative-state  --network-fabric-name {fabric} --nni-name {name}"
-        " --resource-group {rg} --administrative-state {administrativeState} --route-type {routeType}"
+        " --resource-group {rg} --administrative-state {administrativeState} --route-type {routeType}",
+        checks=checks,
+    )
+
+
+def step_update_bfd_admin_state_resource_name(test, checks=None):
+    """nni run Update BFD Admin State operation"""
+    if checks is None:
+        checks = []
+    test.cmd(
+        "az networkfabric nni update-bfd-administrative-state  --network-fabric-name {fabric} --resource-name {name}"
+        " --resource-group {rg} --administrative-state {administrativeState} --route-type {routeType}",
+        checks=checks,
     )
 
 

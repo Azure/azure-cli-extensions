@@ -38,7 +38,7 @@ def step_update_bfd_admin_state(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric externalnetwork update-bfd-administrative-state --l3domain {l3Domain} --external-network-name {name}"
+        "az networkfabric externalnetwork update-bfd-administrative-state --l3domain {l3Domain} --resource-name {name}"
         " --resource-group {rg} --administrative-state {administrativeState} --route-type {routeType}"
     )
 

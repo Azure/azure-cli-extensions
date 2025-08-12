@@ -36,7 +36,7 @@ def step_view_device_configuration(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric fabric view-device-configuration --network-fabric-name {commitNFName} --resource-group {commitNFRGName}"
+        "az networkfabric fabric view-device-configuration --resource-name {commitNFName} --resource-group {commitNFRGName}"
     )
 
 
