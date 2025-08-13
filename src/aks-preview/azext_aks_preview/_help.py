@@ -3934,9 +3934,6 @@ helps[
         - name: --refresh-toolsets
           type: bool
           short-summary: Refresh the toolsets status.
-        - name: --custom-toolsets
-          type: string
-          short-summary: File path to a custom toolsets.
 
     examples:
         - name: Ask about pod issues in the cluster with Azure OpenAI
@@ -3961,5 +3958,36 @@ helps[
         - name: Run agent with no echo of the original question
           text: az aks agent "What is the status of my cluster?" --no-echo-request --model azure/my-gpt4.1-deployment
         - name: Refresh toolsets to get the latest available tools
-          text: az aks agent "What is the status of my cluster?" --refresh-toolsets --model azure/my-gpt4.1-deployment
+          text: az aks agent "What is the status of my cluster?" --refresh-toolsets --model azure/my-gpt4.1-deploymen
+        - name: Run agent with config file
+          text: |
+            az aks agent "Check kubernetes pod resource usage" --config-file /path/to/custom.config
+            Here is an example of config file:
+            ```json
+            model: "gpt-4o"
+            api_key: "..."
+            # define a list of mcp servers, mcp server can be defined
+            mcp_servers:
+              aks_mcp:
+                description: "The AKS-MCP is a Model Context Protocol (MCP) server that enables AI assistants to interact with Azure Kubernetes Service (AKS) clusters"
+                url: "http://localhost:8003/sse"
+
+            # try adding your own tools or toggle the built-in toolsets here
+            # e.g. query company-specific data, fetch logs from your existing observability tools, etc
+            # To check how to add a customized toolset, please refer to https://docs.robusta.dev/master/configuration/holmesgpt/custom_toolsets.html#custom-toolsets
+            # To find all built-in toolsets, please refer to https://docs.robusta.dev/master/configuration/holmesgpt/builtin_toolsets.html
+            toolsets:
+              # add a new json processor toolset
+              json_processor:
+                description: "A toolset for processing JSON data using jq"
+                prerequisites:
+                  - command: "jq --version"  # Ensure jq is installed
+                tools:
+                  - name: "process_json"
+                    description: "A tool that uses jq to process JSON input"
+                    command: "echo '{{ json_input }}' | jq '.'"  # Example jq command to format JSON
+              # disable a built-in toolsets
+              aks/core:
+                enabled: false
+              ```
 """

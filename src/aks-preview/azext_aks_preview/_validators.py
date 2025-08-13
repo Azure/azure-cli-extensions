@@ -1015,10 +1015,3 @@ def validate_agent_config_file(namespace):
         return
 
     _validate_param_yaml_file(config_file, "config-file")
-
-
-def validate_agent_custom_toolsets(namespace):
-    custom_toolsets = namespace.custom_toolsets
-    if not custom_toolsets:
-        return
-    _validate_param_yaml_file(custom_toolsets, "custom-toolsets")

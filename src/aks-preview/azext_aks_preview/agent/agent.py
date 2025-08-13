@@ -56,7 +56,6 @@ def aks_agent(
     no_echo_request,
     show_tool_output,
     refresh_toolsets,
-    custom_toolsets,
 ):
     """
     Interact with the AKS agent using a prompt or piped input.
@@ -77,8 +76,6 @@ def aks_agent(
     :type show_tool_output: bool
     :param refresh_toolsets: Refresh the toolsets status.
     :type refresh_toolsets: bool
-    :param custom_toolsets: File path to a custom toolsets.
-    :type custom_toolsets: str
     """
 
     if sys.version_info < (3, 10):
@@ -116,18 +113,12 @@ def aks_agent(
             interactive = False
 
     expanded_config_file = Path(os.path.expanduser(config_file))
-    expanded_custom_toolsets_list = (
-        [Path(os.path.expanduser(custom_toolsets))]
-        if custom_toolsets is not None
-        else None
-    )
 
     config = Config.load_from_file(
         expanded_config_file,
         model=model,
         api_key=api_key,
         max_steps=max_steps,
-        custom_toolsets_from_cli=expanded_custom_toolsets_list,
     )
 
     ai = config.create_console_toolcalling_llm(
@@ -135,7 +126,7 @@ def aks_agent(
         refresh_toolsets=refresh_toolsets,
     )
     console.print(
-        "[bold yellow]This tool uses AI to generate responses and may not always be accurate[bold yellow]"
+        "[bold yellow]This tool uses AI to generate responses and may not always be accurate.[bold yellow]"
     )
 
     if not prompt and not interactive and not piped_data:

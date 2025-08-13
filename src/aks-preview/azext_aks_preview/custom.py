@@ -4405,7 +4405,6 @@ def aks_agent(
     no_echo_request=False,
     show_tool_output=False,
     refresh_toolsets=False,
-    custom_toolsets=None,
 ):
 
     aks_agent_internal(
@@ -4421,5 +4420,4 @@ def aks_agent(
         no_echo_request,
         show_tool_output,
         refresh_toolsets,
-        custom_toolsets,
     )

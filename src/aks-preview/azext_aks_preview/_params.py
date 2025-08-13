@@ -225,7 +225,6 @@ from azext_aks_preview._validators import (
     validate_resource_group_parameter,
     validate_location_resource_group_cluster_parameters,
     validate_agent_config_file,
-    validate_agent_custom_toolsets,
 )
 from azext_aks_preview.azurecontainerstorage._consts import (
     CONST_ACSTOR_ALL,
@@ -2840,13 +2839,6 @@ def load_arguments(self, _):
             "refresh_toolsets",
             help="Refresh the toolsets status.",
             action="store_true",
-        )
-        c.argument(
-            "custom_toolsets",
-            help="File path to a custom toolsets.",
-            validator=validate_agent_custom_toolsets,
-            required=False,
-            type=str,
         )
 
 
