@@ -102,6 +102,7 @@ def load_arguments(self, _):
 
     with self.argument_context("grafana folder") as c:
         c.argument("title", help="title of the folder")
+        c.argument("parent_folder", options_list=["--parent-folder"], help="Name or uid of the parent folder, if any")
 
     with self.argument_context("grafana user") as c:
         c.argument("user", help="user login name or email")
