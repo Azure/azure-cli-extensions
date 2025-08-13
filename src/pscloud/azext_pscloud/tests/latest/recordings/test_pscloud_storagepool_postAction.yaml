@@ -1,0 +1,160 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - pscloud pool get-health-status
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --resource-group --storage-pool-name
+      User-Agent:
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.11 (Linux-6.8.0-1030-azure-x86_64-with-glibc2.36)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aaa/providers/PureStorage.Block/storagePools/cliTestSPCUS/getHealthStatus?api-version=2024-11-01
+  response:
+    body:
+      string: '{"health":{"usedCapacityPercentage":0.0,"bandwidthUsage":{"current":0.0,"provisioned":1040187392.0,"max":2147483648.0},"iopsUsage":{"current":0.0,"provisioned":65384.0,"max":150000.0},"space":{"totalUsed":29437952,"unique":0,"snapshots":0,"shared":29437952},"dataReductionRatio":1.0,"estimatedMaxCapacity":0},"alerts":[]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '321'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 11 Aug 2025 07:34:41 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 2a117433-4a2e-4fda-b192-bbe9467851ae
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - appId=91a99062-ab22-4fd2-a3b2-766d55d6f5c5,tenantId=888d76fa-54b2-4ced-8ee5-aac1585adee7,objectId=d72e9d00-2ae6-4216-9c0f-ef425c71a2bc/southindia/2861fa0e-f0fa-48a6-9f54-a98b52d8f734
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: CB4F23C0F21744B28145478F3733ADB9 Ref B: PNQ231110909052 Ref C: 2025-08-11T07:34:37Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - pscloud pool get-avs-status
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --resource-group --storage-pool-name
+      User-Agent:
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.11 (Linux-6.8.0-1030-azure-x86_64-with-glibc2.36)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aaa/providers/PureStorage.Block/storagePools/cliTestSPCUS/getAvsStatus?api-version=2024-11-01
+  response:
+    body:
+      string: '{"avsEnabled":false,"currentConnectionStatus":"NoAVS","sddcResourceId":""}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '74'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 11 Aug 2025 07:34:43 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - e9241dc7-2bf4-4e10-93cd-c13e96631923
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - appId=91a99062-ab22-4fd2-a3b2-766d55d6f5c5,tenantId=888d76fa-54b2-4ced-8ee5-aac1585adee7,objectId=d72e9d00-2ae6-4216-9c0f-ef425c71a2bc/centralindia/40a1ebc2-5671-46dc-8c0e-cfbf21bf5e31
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: 8C28F9A2EDA242C8ACB95921D3A3898C Ref B: PNQ231110906025 Ref C: 2025-08-11T07:34:42Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - pscloud pool delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --resource-group --storage-pool-name --yes
+      User-Agent:
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.11 (Linux-6.8.0-1030-azure-x86_64-with-glibc2.36)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/S1RG1/providers/PureStorage.Block/storagePools/cliTestStoragePool8?api-version=2024-11-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      date:
+      - Mon, 11 Aug 2025 07:34:44 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '199'
+      x-ms-ratelimit-remaining-subscription-global-deletes:
+      - '2999'
+      x-msedge-ref:
+      - 'Ref A: 6E0C7FFAD97742BEB711FA8D5BF1F2F6 Ref B: PNQ231110909040 Ref C: 2025-08-11T07:34:44Z'
+    status:
+      code: 204
+      message: No Content
+version: 1

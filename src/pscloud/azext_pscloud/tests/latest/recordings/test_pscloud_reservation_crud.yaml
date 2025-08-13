@@ -1,0 +1,108 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - pscloud list
+      Connection:
+      - keep-alive
+      User-Agent:
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.11 (Linux-6.8.0-1030-azure-x86_64-with-glibc2.36)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/PureStorage.Block/reservations?api-version=2024-11-01
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aaa/providers/PureStorage.Block/reservations/cliTestReservationCUS","name":"cliTestReservationCUS","type":"purestorage.block/reservations","location":"Central
+        US","tags":{},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-08-08T13:18:04.7080941Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-08-08T13:18:04.7080941Z"},"properties":{"reservationInternalId":"4bd52cb0-745a-11f0-ae52-b65160902b53","marketplace":{"subscriptionId":"d7237cea-28c7-44c3-cba8-81f452e3fa2d","subscriptionStatus":"Subscribed","offerDetails":{"publisherId":"purestoragemarketplaceadmin","offerId":"krypton_3_plan","planId":"private_preview_zero","planName":"Preview
+        Plan","termUnit":"P1M","termId":"gmz7xq9ge3py"}},"user":{"firstName":"cli-test-deepak","lastName":"Diagnostics","emailAddress":"test@example.com","companyDetails":{"companyName":"Microsoft
+        Customer Led","address":{"addressLine1":"123213 daasd  ","addressLine2":"dddd,
+        dd","city":"Redmond","state":"wa","postalCode":"98052-8300","country":"US"}}},"provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/S1RG1/providers/PureStorage.Block/reservations/tempReservation2","name":"tempReservation2","type":"purestorage.block/reservations","location":"East
+        US 2 EUAP","tags":{},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2024-12-04T10:26:28.1607248Z","lastModifiedBy":"2ac806ef-bfc3-487f-b66a-ec5023c35730","lastModifiedByType":"Application","lastModifiedAt":"2024-12-04T10:34:48.3602751Z"},"properties":{"reservationInternalId":"424e84ac-6192-49c7-8bc3-35f04f8572e5","marketplace":{"subscriptionId":"0b66d8f8-1865-46fb-cc36-128799c89fb6","subscriptionStatus":"Subscribed","offerDetails":{"publisherId":"purestoragemarketplaceadmin","offerId":"krypton_3_plan","planId":"private_preview_zero","termUnit":"P1M","termId":"gmz7xq9ge3py"}},"user":{"firstName":"asd","lastName":"dsa","emailAddress":"test@example.com","companyDetails":{"companyName":"as","address":{"addressLine1":"Street123","addressLine2":"","city":"Redmond","state":"wa","postalCode":"98052-8300","country":"US"}}},"provisioningState":"Failed"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2296'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 08 Aug 2025 14:04:58 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-original-request-ids:
+      - 1531919a-81ca-48f7-99b0-15189aa59468
+      - 67dd2562-9a5f-4c47-b65b-2339bf33cca6
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: FC65FC472D9747CD9385E74F25E46466 Ref B: PNQ231110907060 Ref C: 2025-08-08T14:04:57Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - pscloud show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --reservation-name
+      User-Agent:
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.11 (Linux-6.8.0-1030-azure-x86_64-with-glibc2.36)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aaa/providers/PureStorage.Block/reservations/cliTestReservationCUS?api-version=2024-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aaa/providers/PureStorage.Block/reservations/cliTestReservationCUS","name":"cliTestReservationCUS","type":"purestorage.block/reservations","location":"Central
+        US","tags":{},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-08-08T13:18:04.7080941Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-08-08T13:18:04.7080941Z"},"properties":{"reservationInternalId":"4bd52cb0-745a-11f0-ae52-b65160902b53","marketplace":{"subscriptionId":"d7237cea-28c7-44c3-cba8-81f452e3fa2d","subscriptionStatus":"Subscribed","offerDetails":{"publisherId":"purestoragemarketplaceadmin","offerId":"krypton_3_plan","planId":"private_preview_zero","planName":"Preview
+        Plan","termUnit":"P1M","termId":"gmz7xq9ge3py"}},"user":{"firstName":"cli-test-deepak","lastName":"Diagnostics","emailAddress":"test@example.com","companyDetails":{"companyName":"Microsoft
+        Customer Led","address":{"addressLine1":"123213 daasd  ","addressLine2":"dddd,
+        dd","city":"Redmond","state":"wa","postalCode":"98052-8300","country":"US"}}},"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1171'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 08 Aug 2025 14:04:58 GMT
+      etag:
+      - '"240069c1-0000-0100-0000-6895fa090000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 6FBEAD35763A419FAE1B0DBBB55E42D5 Ref B: PNQ231110908025 Ref C: 2025-08-08T14:04:58Z'
+    status:
+      code: 200
+      message: OK
+version: 1
