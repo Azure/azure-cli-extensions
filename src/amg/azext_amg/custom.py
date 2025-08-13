@@ -538,13 +538,14 @@ def test_notification_channel(cmd, grafana_name, notification_channel, resource_
     return json.loads(response.content)
 
 
-def create_folder(cmd, grafana_name, title, parent_folder_uid=None, resource_group_name=None, api_key_or_token=None,
+def create_folder(cmd, grafana_name, title, parent_folder=None, resource_group_name=None, api_key_or_token=None,
                   subscription=None):
     payload = {
         "title": title,
     }
-    if parent_folder_uid:
-        payload["parentUid"] = parent_folder_uid
+    if parent_folder:
+        data = _find_folder(cmd, resource_group_name, grafana_name, parent_folder, api_key_or_token=api_key_or_token)
+        payload["parentUid"] = data["uid"]
 
     response = _send_request(cmd, resource_group_name, grafana_name, "post", "/api/folders", payload,
                              api_key_or_token=api_key_or_token, subscription=subscription)
