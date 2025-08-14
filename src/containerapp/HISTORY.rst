@@ -4,6 +4,7 @@ Release History
 ===============
 upcoming
 ++++++
+* 'az containerapp update/up': Disallow changing `--revisions-mode` to Labels.
 * 'az containerapp session code-interpreter': Fix `--path` in examples
 * 'az containerapp env premium-ingress': Deprecate `--min-replicas` and `--max-replicas` parameters, use workload profile scale instead.
 

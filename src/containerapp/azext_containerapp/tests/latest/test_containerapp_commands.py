@@ -1678,6 +1678,35 @@ class ContainerappRevisionTests(ScenarioTest):
         self.assertEqual(traffic_weight[0]["weight"], 100)
         self.assertEqual(len(traffic_weight), 1)
 
+
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="northeurope")
+    def test_containerapp_update_mode_e2e(self, resource_group):
+        self.cmd(f"configure --defaults location={TEST_LOCATION}")
+
+        ca_name = self.create_random_name(prefix='containerapp', length=24)
+
+        env = prepare_containerapp_env_for_app_e2e_tests(self)
+
+        self.cmd(f"containerapp create -g {resource_group} -n {ca_name} --environment {env} --image mcr.microsoft.com/k8se/quickstart:latest --ingress external --target-port 80",
+                 checks=[
+                    JMESPathCheck('properties.configuration.activeRevisionsMode', "Single"),                     
+                 ])
+
+        try:
+            # Switch to Labels mode
+            self.cmd(f"containerapp update -g {resource_group} -n {ca_name} --revisions-mode labels --target-label label0")
+            self.fail("Expected an error when trying to update to labels mode with `containerapp update` command.")
+        except Exception as e:
+            self.assertIn("is not in labels mode", str(e))
+
+        try:
+            # Switch to Labels mode
+            self.cmd(f"containerapp up -g {resource_group} -n {ca_name} --revisions-mode labels --target-label label0 --image mcr.microsoft.com/k8se/quickstart:latest")
+            self.fail("Expected an error when trying to update to labels mode with `containerapp up` command.")
+        except Exception as e:
+            self.assertIn("is not in labels mode", str(e))
+
 class ContainerappAnonymousRegistryTests(ScenarioTest):
     def __init__(self, *arg, **kwargs):
         super().__init__(*arg, random_config_dir=True, **kwargs)
