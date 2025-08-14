@@ -1340,19 +1340,7 @@ interactions:
       code: 200
       message: OK
 - request:
-    body: '{"location": "eastus", "properties": {"associatedRulestack": {"location":
-      "eastus", "resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_firewall000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/testlrs"},
-      "dnsSettings": {"enableDnsProxy": "DISABLED", "enabledDnsType": "CUSTOM"}, "isPanoramaManaged":
-      "FALSE", "marketplaceDetails": {"marketplaceSubscriptionStatus": "Subscribed",
-      "offerId": "pan_swfw_cloud_ngfw", "publisherId": "paloaltonetworks"}, "networkProfile":
-      {"egressNatIp": [], "enableEgressNat": "DISABLED", "networkType": "VNET", "publicIps":
-      [{"address": "20.112.141.94", "resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rheaTerraformTest/providers/Microsoft.Network/publicIPAddresses/fw0718-public-ip"}],
-      "vnetConfiguration": {"ipOfTrustSubnetForUdr": {"address": "10.0.0.0/16"}, "trustSubnet":
-      {"resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_firewall000001/providers/Microsoft.Network/virtualNetworks/vnet000004/subnets/subnet2000006"},
-      "unTrustSubnet": {"resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_firewall000001/providers/Microsoft.Network/virtualNetworks/vnet000004/subnets/subnet1000005"},
-      "vnet": {"resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_firewall000001/providers/Microsoft.Network/virtualNetworks/vnet000004"}}},
-      "planData": {"billingCycle": "MONTHLY", "planId": "panw-cloud-ngfw-payg", "usageType":
-      "PAYG"}}}'
+    body: '{"location":"eastus","properties":{"associatedRulestack":{"location":"eastus","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_firewall000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/testlrs"},"dnsSettings":{"enableDnsProxy":"DISABLED","enabledDnsType":"CUSTOM"},"isPanoramaManaged":"FALSE","marketplaceDetails":{"marketplaceSubscriptionStatus":"Subscribed","offerId":"pan_swfw_cloud_ngfw","publisherId":"paloaltonetworks"},"networkProfile":{"egressNatIp":[],"enableEgressNat":"DISABLED","trustedRanges":["10.20.20.30"],"networkType":"VNET","publicIps":[{"address":"20.112.141.94","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rheaTerraformTest/providers/Microsoft.Network/publicIPAddresses/fw0718-public-ip"}],"vnetConfiguration":{"ipOfTrustSubnetForUdr":{"address":"10.0.0.0/16"},"trustSubnet":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_firewall000001/providers/Microsoft.Network/virtualNetworks/vnet000004/subnets/subnet2000006"},"unTrustSubnet":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_firewall000001/providers/Microsoft.Network/virtualNetworks/vnet000004/subnets/subnet1000005"},"vnet":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_firewall000001/providers/Microsoft.Network/virtualNetworks/vnet000004"}}},"planData":{"billingCycle":"MONTHLY","planId":"panw-cloud-ngfw-payg","usageType":"PAYG"}}}'
     headers:
       Accept:
       - application/json
