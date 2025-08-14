@@ -188,6 +188,9 @@ class Show(AAZCommand):
                 serialized_name="appliesToGroups",
                 flags={"required": True},
             )
+            properties.connectivity_capabilities = AAZObjectType(
+                serialized_name="connectivityCapabilities",
+            )
             properties.connectivity_topology = AAZStrType(
                 serialized_name="connectivityTopology",
                 flags={"required": True},
@@ -202,6 +205,10 @@ class Show(AAZCommand):
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+            properties.resource_guid = AAZStrType(
+                serialized_name="resourceGuid",
                 flags={"read_only": True},
             )
 
@@ -222,6 +229,17 @@ class Show(AAZCommand):
             )
             _element.use_hub_gateway = AAZStrType(
                 serialized_name="useHubGateway",
+            )
+
+            connectivity_capabilities = cls._schema_on_200.properties.connectivity_capabilities
+            connectivity_capabilities.connected_group_address_overlap = AAZStrType(
+                serialized_name="connectedGroupAddressOverlap",
+            )
+            connectivity_capabilities.connected_group_private_endpoints_scale = AAZStrType(
+                serialized_name="connectedGroupPrivateEndpointsScale",
+            )
+            connectivity_capabilities.peering_enforcement = AAZStrType(
+                serialized_name="peeringEnforcement",
             )
 
             hubs = cls._schema_on_200.properties.hubs

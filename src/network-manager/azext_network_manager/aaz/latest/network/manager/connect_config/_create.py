@@ -97,6 +97,35 @@ class Create(AAZCommand):
             enum={"False": "False", "True": "True"},
         )
 
+        # define Arg Group "ConnectivityCapabilities"
+
+        _args_schema = cls._args_schema
+        _args_schema.connectivity_capabilities = AAZObjectArg(
+            options=["--connectivity-capabilities"],
+            arg_group="ConnectivityCapabilities",
+            help="Collection of additional settings to enhance specific topology behaviors of the connectivity configuration resource.",
+        )
+
+        connectivity_capabilities = cls._args_schema.connectivity_capabilities
+        connectivity_capabilities.connected_group_address_overlap = AAZStrArg(
+            options=["connected-group-address-overlap"],
+            help="Behavior to handle overlapped IP address space among members of the connected group.",
+            enum={"Allowed": "Allowed", "Disallowed": "Disallowed"},
+            default="Allowed",
+        )
+        connectivity_capabilities.connected_group_private_endpoints_scale = AAZStrArg(
+            options=["connected-group-private-endpoints-scale"],
+            help="Option indicating the scale of private endpoints allowed in the connected group.",
+            enum={"Standard": "Standard", "HighScale": "HighScale"},
+            default="Standard",
+        )
+        connectivity_capabilities.peering_enforcement = AAZStrArg(
+            options=["peering-enforcement"],
+            help="Option indicating enforcement of peerings created by the connectivity configuration.",
+            enum={"Unenforced": "Unenforced", "Enforced": "Enforced"},
+            default="Unenforced",
+        )
+
         applies_to_groups = cls._args_schema.applies_to_groups
         applies_to_groups.Element = AAZObjectArg()
 
@@ -236,6 +265,7 @@ class Create(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("appliesToGroups", AAZListType, ".applies_to_groups", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("connectivityCapabilities", AAZObjectType, ".connectivity_capabilities")
                 properties.set_prop("connectivityTopology", AAZStrType, ".connectivity_topology", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("deleteExistingPeering", AAZStrType, ".delete_existing_peering")
                 properties.set_prop("description", AAZStrType, ".description")
@@ -252,6 +282,12 @@ class Create(AAZCommand):
                 _elements.set_prop("isGlobal", AAZStrType, ".is_global")
                 _elements.set_prop("networkGroupId", AAZStrType, ".network_group_id", typ_kwargs={"flags": {"required": True}})
                 _elements.set_prop("useHubGateway", AAZStrType, ".use_hub_gateway")
+
+            connectivity_capabilities = _builder.get(".properties.connectivityCapabilities")
+            if connectivity_capabilities is not None:
+                connectivity_capabilities.set_prop("connectedGroupAddressOverlap", AAZStrType, ".connected_group_address_overlap")
+                connectivity_capabilities.set_prop("connectedGroupPrivateEndpointsScale", AAZStrType, ".connected_group_private_endpoints_scale")
+                connectivity_capabilities.set_prop("peeringEnforcement", AAZStrType, ".peering_enforcement")
 
             hubs = _builder.get(".properties.hubs")
             if hubs is not None:
@@ -307,6 +343,9 @@ class Create(AAZCommand):
                 serialized_name="appliesToGroups",
                 flags={"required": True},
             )
+            properties.connectivity_capabilities = AAZObjectType(
+                serialized_name="connectivityCapabilities",
+            )
             properties.connectivity_topology = AAZStrType(
                 serialized_name="connectivityTopology",
                 flags={"required": True},
@@ -321,6 +360,10 @@ class Create(AAZCommand):
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+            properties.resource_guid = AAZStrType(
+                serialized_name="resourceGuid",
                 flags={"read_only": True},
             )
 
@@ -341,6 +384,17 @@ class Create(AAZCommand):
             )
             _element.use_hub_gateway = AAZStrType(
                 serialized_name="useHubGateway",
+            )
+
+            connectivity_capabilities = cls._schema_on_200_201.properties.connectivity_capabilities
+            connectivity_capabilities.connected_group_address_overlap = AAZStrType(
+                serialized_name="connectedGroupAddressOverlap",
+            )
+            connectivity_capabilities.connected_group_private_endpoints_scale = AAZStrType(
+                serialized_name="connectedGroupPrivateEndpointsScale",
+            )
+            connectivity_capabilities.peering_enforcement = AAZStrType(
+                serialized_name="peeringEnforcement",
             )
 
             hubs = cls._schema_on_200_201.properties.hubs
