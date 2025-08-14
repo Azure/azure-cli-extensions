@@ -10,6 +10,7 @@ import shlex
 import json
 import zipfile
 
+from azdev.operations.extensions.metadata import pkginfo_to_dict
 from subprocess import check_output
 
 logger = logging.getLogger(__name__)
@@ -53,8 +54,7 @@ def _get_azext_metadata(ext_dir):
 
 
 def get_ext_metadata(ext_dir, ext_file, ext_name):
-    # Modification of https://github.com/Azure/azure-cli/blob/dev/src/azure-cli-core/azure/cli/core/extension.py#L89
-    WHL_METADATA_FILENAME = 'metadata.json'
+    generated_metadata = pkginfo_to_dict(ext_file)
     zip_ref = zipfile.ZipFile(ext_file, 'r')
     zip_ref.extractall(ext_dir)
     zip_ref.close()
@@ -71,10 +71,7 @@ def get_ext_metadata(ext_dir, ext_file, ext_name):
     for dist_info_dirname in dist_info_dirs:
         parsed_dist_info_dir = WHEEL_INFO_RE(dist_info_dirname)
         if parsed_dist_info_dir and parsed_dist_info_dir.groupdict().get('name') == ext_name.replace('-', '_'):
-            whl_metadata_filepath = os.path.join(ext_dir, dist_info_dirname, WHL_METADATA_FILENAME)
-            if os.path.isfile(whl_metadata_filepath):
-                with open(whl_metadata_filepath) as f:
-                    metadata.update(json.load(f))
+            metadata.update(generated_metadata)
     return metadata
 
 
