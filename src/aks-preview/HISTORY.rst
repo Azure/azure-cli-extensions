@@ -11,10 +11,15 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* Add interactive AI-powered debugging tool az aks agent.
+
+18.0.0b26
++++++++
+* Add `az aks identity-binding` command group for identity binding feature.
 
 18.0.0b25
 +++++++
-* Add interactive AI-powered debugging tool az aks agent.
+* Update for `az aks machine show` and `az aks machine list` to show more details about the machine.
 
 18.0.0b24
 +++++++

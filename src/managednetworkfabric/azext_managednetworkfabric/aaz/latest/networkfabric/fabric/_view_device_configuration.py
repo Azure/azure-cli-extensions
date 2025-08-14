@@ -18,7 +18,7 @@ class ViewDeviceConfiguration(AAZCommand):
     """Post action: Triggers view of network fabric configuration.
 
     :example: View device configuration on the Network Fabric
-        az networkfabric fabric view-device-configuration --resource-group example-rg --network-fabric-name example-fabric
+        az networkfabric fabric view-device-configuration --resource-group example-rg --resource-name example-fabric
     """
 
     _aaz_info = {
@@ -46,7 +46,7 @@ class ViewDeviceConfiguration(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.network_fabric_name = AAZStrArg(
-            options=["--network-fabric-name"],
+            options=["--resource-name", "--network-fabric-name"],
             help="Name of the Network Fabric.",
             required=True,
             id_part="name",

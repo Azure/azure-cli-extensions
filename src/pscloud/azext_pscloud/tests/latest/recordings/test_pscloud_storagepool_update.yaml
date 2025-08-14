@@ -1,0 +1,402 @@
+interactions:
+- request:
+    body: '{"properties": {"provisionedBandwidthMbPerSec": 1094}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - pscloud pool update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '54'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-group --name --provisioned-bandwidth
+      User-Agent:
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.11 (Linux-6.8.0-1030-azure-x86_64-with-glibc2.36)
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aaa/providers/PureStorage.Block/storagePools/cliTestSPCUS?api-version=2024-11-01
+  response:
+    body:
+      string: 'null'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/providers/PureStorage.Block/locations/CENTRALUS/operationStatuses/2e62bf4a-aba9-4752-b565-08c72f0865a0*C28813252D1DBFE77E36A05733E74ECDEB286B041894A412C179856E5BEEF7FE?api-version=2024-11-01&t=638905018225258743&c=MIIHhzCCBm-gAwIBAgITfAiHD7dirx6ymfDGiQAACIcPtzANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjUwNzIwMTkyMzQ5WhcNMjYwMTE2MTkyMzQ5WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAM3pYlgN6iA7g1hE4pMHsPZYJ2UfubecYM51CKgOdSMiRbSKH-qucwMQ33llyWcvBwP0A7wwMgSASiggXzR_ebFaR1mUXsf67UOrzT_55xet5rOJD1RJCxo9LMLCoJPLI0wTezgMWVzbpKC7a7aoH8S_QUiTfMcfymKuZ6zTu5f2k993pLObgbfcza4X7nvzUC3OHl8sQ7zzdtyouTdeRDDZOw5gVb9x55-tVChL9z_YmPVntBmdDXUJnzE-7rUgYDEN5FL80k_AB55NuNhXT6AeScFeYzaBN6jVtAfw4976Rd2G_HV1RbGO4evspgG_Ae0JGpA4c6Goh6WwvDTajvkCAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBTCk9Ddk5AwFujw3xF1Sqo5oNLXajAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBACMp2LmlUT4li6sJ8ltgjUCCZQWtfH4EoeksFywQEFyz9djYtOc8j5g4BWk0kWlGNow9FouDtBToeTS9YOjGRBjNfBxZ2o-Vqll7-oR0JX4oL_F6aCyGORvNi_6PoIu84pzVHAiWOshD0uKBxp66UpaAHfBwBpOjATzzDJ2R5kKhUmKcIM1TWN30JYrvI0NFL_64GYRQPFAorvYIkhJ1-6rzU_vYhIW_mhHwuQfdg0ZyxptyXXJT7l4AgQJTg2Io4Gop17FtrKjFBrI5_VzvnXLYl-XfPz_wVqRf9OIkHz-yYaa0KMO8IByIgSAF-ydJmeEx4WiZ9JLaVwaOizoXRpM&s=Ezn0i5kh_1BuaL0t2LEmuXqx3wVTeu3bzkFqaYqt8mDH1b_9zy0wnQw6yI8FLMg7mRAz6QPt3Q0QxI2gt1hjzI8xJhM1YBj3-rxiNcHjT6HppVfb9swQ0098tCbxamnQWxBvlzSdOdDJGAGm8TMWTPOrtb0LxWNb9j8BhCg9xdeReDlD33oqT22DSgARkV8EQfVxSJI57BCBfrLgeqAMiykcd0o5jFX7p_hv2u3OFw_nDP_Ba-4qW_PRH00FMlAULXV8Ge-_lk8LcpcFjbhnM88PUs7fH4STSrqqk-RZUheb3ZlYtagSykwKlMz-NxObAEKIWR11EOPng9nO8d3lzQ&h=MC8MDRMwrMG0iP9myq__XDarsSKWtauzepKmP27C-nE
+      cache-control:
+      - no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 11 Aug 2025 09:37:01 GMT
+      etag:
+      - '"40001e59-0000-0300-0000-6899b9be0000"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/providers/PureStorage.Block/locations/CENTRALUS/operationStatuses/2e62bf4a-aba9-4752-b565-08c72f0865a0*C28813252D1DBFE77E36A05733E74ECDEB286B041894A412C179856E5BEEF7FE?api-version=2024-11-01&t=638905018225414988&c=MIIHhzCCBm-gAwIBAgITfAiHD7dirx6ymfDGiQAACIcPtzANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjUwNzIwMTkyMzQ5WhcNMjYwMTE2MTkyMzQ5WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAM3pYlgN6iA7g1hE4pMHsPZYJ2UfubecYM51CKgOdSMiRbSKH-qucwMQ33llyWcvBwP0A7wwMgSASiggXzR_ebFaR1mUXsf67UOrzT_55xet5rOJD1RJCxo9LMLCoJPLI0wTezgMWVzbpKC7a7aoH8S_QUiTfMcfymKuZ6zTu5f2k993pLObgbfcza4X7nvzUC3OHl8sQ7zzdtyouTdeRDDZOw5gVb9x55-tVChL9z_YmPVntBmdDXUJnzE-7rUgYDEN5FL80k_AB55NuNhXT6AeScFeYzaBN6jVtAfw4976Rd2G_HV1RbGO4evspgG_Ae0JGpA4c6Goh6WwvDTajvkCAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBTCk9Ddk5AwFujw3xF1Sqo5oNLXajAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBACMp2LmlUT4li6sJ8ltgjUCCZQWtfH4EoeksFywQEFyz9djYtOc8j5g4BWk0kWlGNow9FouDtBToeTS9YOjGRBjNfBxZ2o-Vqll7-oR0JX4oL_F6aCyGORvNi_6PoIu84pzVHAiWOshD0uKBxp66UpaAHfBwBpOjATzzDJ2R5kKhUmKcIM1TWN30JYrvI0NFL_64GYRQPFAorvYIkhJ1-6rzU_vYhIW_mhHwuQfdg0ZyxptyXXJT7l4AgQJTg2Io4Gop17FtrKjFBrI5_VzvnXLYl-XfPz_wVqRf9OIkHz-yYaa0KMO8IByIgSAF-ydJmeEx4WiZ9JLaVwaOizoXRpM&s=ewa0rYBtElGxM5YJtxq89sdBcLkSAZX0xOddMPGKSuyH82PL7cAETHZVZt-coXXUIRThlnbXljDfbgTVHQGw7eeCLTZmyYWQfWyYcmZylXnHRvqTGQHFhtAZzxTu0iGvV8ioLnaDBhsoptoZAfCip1jBoOPK0wPR177Gy_wJqqCqh3Ktu7Am1hPxCemwx9Fweeiv2h6DVupkC9uB32KIyiaI8T1CwUTiXLJ0ej8kv0WwEDLcKkAVfnUF7y82HmDVWtqt6W9TQfmFSXY3MzQ9z3r68shJz7s5pkSArmyLZ2tmbmOAvoxDUH2WhzWrTDU9VnLO510tU-5zwlg_Ptsi8A&h=iXL7hjIAG8JRHDn4MYz9F1gQXANFM0hRpedMqo0U204
+      mise-correlation-id:
+      - 4ce46adc-d678-42aa-8040-c530155257b8
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-async-operation-timeout:
+      - P6D
+      x-ms-operation-identifier:
+      - appId=91a99062-ab22-4fd2-a3b2-766d55d6f5c5,tenantId=888d76fa-54b2-4ced-8ee5-aac1585adee7,objectId=d72e9d00-2ae6-4216-9c0f-ef425c71a2bc/westindia/9d5e31f4-6b73-402d-91b4-89dc02ec88e2
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: 902ACDB8BEF3493496079A4EF61E8882 Ref B: PNQ231110909052 Ref C: 2025-08-11T09:36:55Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - pscloud pool update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --provisioned-bandwidth
+      User-Agent:
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.11 (Linux-6.8.0-1030-azure-x86_64-with-glibc2.36)
+    method: GET
+    uri: https://management.azure.com/providers/PureStorage.Block/locations/CENTRALUS/operationStatuses/2e62bf4a-aba9-4752-b565-08c72f0865a0*C28813252D1DBFE77E36A05733E74ECDEB286B041894A412C179856E5BEEF7FE?api-version=2024-11-01&t=638905018225258743&c=MIIHhzCCBm-gAwIBAgITfAiHD7dirx6ymfDGiQAACIcPtzANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjUwNzIwMTkyMzQ5WhcNMjYwMTE2MTkyMzQ5WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAM3pYlgN6iA7g1hE4pMHsPZYJ2UfubecYM51CKgOdSMiRbSKH-qucwMQ33llyWcvBwP0A7wwMgSASiggXzR_ebFaR1mUXsf67UOrzT_55xet5rOJD1RJCxo9LMLCoJPLI0wTezgMWVzbpKC7a7aoH8S_QUiTfMcfymKuZ6zTu5f2k993pLObgbfcza4X7nvzUC3OHl8sQ7zzdtyouTdeRDDZOw5gVb9x55-tVChL9z_YmPVntBmdDXUJnzE-7rUgYDEN5FL80k_AB55NuNhXT6AeScFeYzaBN6jVtAfw4976Rd2G_HV1RbGO4evspgG_Ae0JGpA4c6Goh6WwvDTajvkCAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBTCk9Ddk5AwFujw3xF1Sqo5oNLXajAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBACMp2LmlUT4li6sJ8ltgjUCCZQWtfH4EoeksFywQEFyz9djYtOc8j5g4BWk0kWlGNow9FouDtBToeTS9YOjGRBjNfBxZ2o-Vqll7-oR0JX4oL_F6aCyGORvNi_6PoIu84pzVHAiWOshD0uKBxp66UpaAHfBwBpOjATzzDJ2R5kKhUmKcIM1TWN30JYrvI0NFL_64GYRQPFAorvYIkhJ1-6rzU_vYhIW_mhHwuQfdg0ZyxptyXXJT7l4AgQJTg2Io4Gop17FtrKjFBrI5_VzvnXLYl-XfPz_wVqRf9OIkHz-yYaa0KMO8IByIgSAF-ydJmeEx4WiZ9JLaVwaOizoXRpM&s=Ezn0i5kh_1BuaL0t2LEmuXqx3wVTeu3bzkFqaYqt8mDH1b_9zy0wnQw6yI8FLMg7mRAz6QPt3Q0QxI2gt1hjzI8xJhM1YBj3-rxiNcHjT6HppVfb9swQ0098tCbxamnQWxBvlzSdOdDJGAGm8TMWTPOrtb0LxWNb9j8BhCg9xdeReDlD33oqT22DSgARkV8EQfVxSJI57BCBfrLgeqAMiykcd0o5jFX7p_hv2u3OFw_nDP_Ba-4qW_PRH00FMlAULXV8Ge-_lk8LcpcFjbhnM88PUs7fH4STSrqqk-RZUheb3ZlYtagSykwKlMz-NxObAEKIWR11EOPng9nO8d3lzQ&h=MC8MDRMwrMG0iP9myq__XDarsSKWtauzepKmP27C-nE
+  response:
+    body:
+      string: '{"id":"/providers/PureStorage.Block/locations/CENTRALUS/operationStatuses/2e62bf4a-aba9-4752-b565-08c72f0865a0*C28813252D1DBFE77E36A05733E74ECDEB286B041894A412C179856E5BEEF7FE","name":"2e62bf4a-aba9-4752-b565-08c72f0865a0*C28813252D1DBFE77E36A05733E74ECDEB286B041894A412C179856E5BEEF7FE","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aaa/providers/PureStorage.Block/storagePools/cliTestSPCUS","status":"Accepted","startTime":"2025-08-11T09:36:59.9740339Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '491'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 11 Aug 2025 09:37:03 GMT
+      etag:
+      - '"4e008f36-0000-0300-0000-6899b9bc0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - ''
+      x-msedge-ref:
+      - 'Ref A: 38909CC3DCBA4351B3C9B1D7286FCEA3 Ref B: PNQ231110907023 Ref C: 2025-08-11T09:37:02Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - pscloud pool update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --provisioned-bandwidth
+      User-Agent:
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.11 (Linux-6.8.0-1030-azure-x86_64-with-glibc2.36)
+    method: GET
+    uri: https://management.azure.com/providers/PureStorage.Block/locations/CENTRALUS/operationStatuses/2e62bf4a-aba9-4752-b565-08c72f0865a0*C28813252D1DBFE77E36A05733E74ECDEB286B041894A412C179856E5BEEF7FE?api-version=2024-11-01&t=638905018225258743&c=MIIHhzCCBm-gAwIBAgITfAiHD7dirx6ymfDGiQAACIcPtzANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjUwNzIwMTkyMzQ5WhcNMjYwMTE2MTkyMzQ5WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAM3pYlgN6iA7g1hE4pMHsPZYJ2UfubecYM51CKgOdSMiRbSKH-qucwMQ33llyWcvBwP0A7wwMgSASiggXzR_ebFaR1mUXsf67UOrzT_55xet5rOJD1RJCxo9LMLCoJPLI0wTezgMWVzbpKC7a7aoH8S_QUiTfMcfymKuZ6zTu5f2k993pLObgbfcza4X7nvzUC3OHl8sQ7zzdtyouTdeRDDZOw5gVb9x55-tVChL9z_YmPVntBmdDXUJnzE-7rUgYDEN5FL80k_AB55NuNhXT6AeScFeYzaBN6jVtAfw4976Rd2G_HV1RbGO4evspgG_Ae0JGpA4c6Goh6WwvDTajvkCAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBTCk9Ddk5AwFujw3xF1Sqo5oNLXajAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBACMp2LmlUT4li6sJ8ltgjUCCZQWtfH4EoeksFywQEFyz9djYtOc8j5g4BWk0kWlGNow9FouDtBToeTS9YOjGRBjNfBxZ2o-Vqll7-oR0JX4oL_F6aCyGORvNi_6PoIu84pzVHAiWOshD0uKBxp66UpaAHfBwBpOjATzzDJ2R5kKhUmKcIM1TWN30JYrvI0NFL_64GYRQPFAorvYIkhJ1-6rzU_vYhIW_mhHwuQfdg0ZyxptyXXJT7l4AgQJTg2Io4Gop17FtrKjFBrI5_VzvnXLYl-XfPz_wVqRf9OIkHz-yYaa0KMO8IByIgSAF-ydJmeEx4WiZ9JLaVwaOizoXRpM&s=Ezn0i5kh_1BuaL0t2LEmuXqx3wVTeu3bzkFqaYqt8mDH1b_9zy0wnQw6yI8FLMg7mRAz6QPt3Q0QxI2gt1hjzI8xJhM1YBj3-rxiNcHjT6HppVfb9swQ0098tCbxamnQWxBvlzSdOdDJGAGm8TMWTPOrtb0LxWNb9j8BhCg9xdeReDlD33oqT22DSgARkV8EQfVxSJI57BCBfrLgeqAMiykcd0o5jFX7p_hv2u3OFw_nDP_Ba-4qW_PRH00FMlAULXV8Ge-_lk8LcpcFjbhnM88PUs7fH4STSrqqk-RZUheb3ZlYtagSykwKlMz-NxObAEKIWR11EOPng9nO8d3lzQ&h=MC8MDRMwrMG0iP9myq__XDarsSKWtauzepKmP27C-nE
+  response:
+    body:
+      string: '{"id":"/providers/PureStorage.Block/locations/CENTRALUS/operationStatuses/2e62bf4a-aba9-4752-b565-08c72f0865a0*C28813252D1DBFE77E36A05733E74ECDEB286B041894A412C179856E5BEEF7FE","name":"2e62bf4a-aba9-4752-b565-08c72f0865a0*C28813252D1DBFE77E36A05733E74ECDEB286B041894A412C179856E5BEEF7FE","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aaa/providers/PureStorage.Block/storagePools/cliTestSPCUS","status":"Accepted","startTime":"2025-08-11T09:36:59.9740339Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '491'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 11 Aug 2025 09:37:33 GMT
+      etag:
+      - '"4e008f36-0000-0300-0000-6899b9bc0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - ''
+      x-msedge-ref:
+      - 'Ref A: 7D92077ACC4E4B448A1200112B87257E Ref B: PNQ231110909054 Ref C: 2025-08-11T09:37:33Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - pscloud pool update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --provisioned-bandwidth
+      User-Agent:
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.11 (Linux-6.8.0-1030-azure-x86_64-with-glibc2.36)
+    method: GET
+    uri: https://management.azure.com/providers/PureStorage.Block/locations/CENTRALUS/operationStatuses/2e62bf4a-aba9-4752-b565-08c72f0865a0*C28813252D1DBFE77E36A05733E74ECDEB286B041894A412C179856E5BEEF7FE?api-version=2024-11-01&t=638905018225258743&c=MIIHhzCCBm-gAwIBAgITfAiHD7dirx6ymfDGiQAACIcPtzANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjUwNzIwMTkyMzQ5WhcNMjYwMTE2MTkyMzQ5WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAM3pYlgN6iA7g1hE4pMHsPZYJ2UfubecYM51CKgOdSMiRbSKH-qucwMQ33llyWcvBwP0A7wwMgSASiggXzR_ebFaR1mUXsf67UOrzT_55xet5rOJD1RJCxo9LMLCoJPLI0wTezgMWVzbpKC7a7aoH8S_QUiTfMcfymKuZ6zTu5f2k993pLObgbfcza4X7nvzUC3OHl8sQ7zzdtyouTdeRDDZOw5gVb9x55-tVChL9z_YmPVntBmdDXUJnzE-7rUgYDEN5FL80k_AB55NuNhXT6AeScFeYzaBN6jVtAfw4976Rd2G_HV1RbGO4evspgG_Ae0JGpA4c6Goh6WwvDTajvkCAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBTCk9Ddk5AwFujw3xF1Sqo5oNLXajAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBACMp2LmlUT4li6sJ8ltgjUCCZQWtfH4EoeksFywQEFyz9djYtOc8j5g4BWk0kWlGNow9FouDtBToeTS9YOjGRBjNfBxZ2o-Vqll7-oR0JX4oL_F6aCyGORvNi_6PoIu84pzVHAiWOshD0uKBxp66UpaAHfBwBpOjATzzDJ2R5kKhUmKcIM1TWN30JYrvI0NFL_64GYRQPFAorvYIkhJ1-6rzU_vYhIW_mhHwuQfdg0ZyxptyXXJT7l4AgQJTg2Io4Gop17FtrKjFBrI5_VzvnXLYl-XfPz_wVqRf9OIkHz-yYaa0KMO8IByIgSAF-ydJmeEx4WiZ9JLaVwaOizoXRpM&s=Ezn0i5kh_1BuaL0t2LEmuXqx3wVTeu3bzkFqaYqt8mDH1b_9zy0wnQw6yI8FLMg7mRAz6QPt3Q0QxI2gt1hjzI8xJhM1YBj3-rxiNcHjT6HppVfb9swQ0098tCbxamnQWxBvlzSdOdDJGAGm8TMWTPOrtb0LxWNb9j8BhCg9xdeReDlD33oqT22DSgARkV8EQfVxSJI57BCBfrLgeqAMiykcd0o5jFX7p_hv2u3OFw_nDP_Ba-4qW_PRH00FMlAULXV8Ge-_lk8LcpcFjbhnM88PUs7fH4STSrqqk-RZUheb3ZlYtagSykwKlMz-NxObAEKIWR11EOPng9nO8d3lzQ&h=MC8MDRMwrMG0iP9myq__XDarsSKWtauzepKmP27C-nE
+  response:
+    body:
+      string: '{"id":"/providers/PureStorage.Block/locations/CENTRALUS/operationStatuses/2e62bf4a-aba9-4752-b565-08c72f0865a0*C28813252D1DBFE77E36A05733E74ECDEB286B041894A412C179856E5BEEF7FE","name":"2e62bf4a-aba9-4752-b565-08c72f0865a0*C28813252D1DBFE77E36A05733E74ECDEB286B041894A412C179856E5BEEF7FE","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aaa/providers/PureStorage.Block/storagePools/cliTestSPCUS","status":"Accepted","startTime":"2025-08-11T09:36:59.9740339Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '491'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 11 Aug 2025 09:38:04 GMT
+      etag:
+      - '"4e008f36-0000-0300-0000-6899b9bc0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - ''
+      x-msedge-ref:
+      - 'Ref A: E0C6D370B42641B59A49F3B43BAF6B4E Ref B: PNQ231110906054 Ref C: 2025-08-11T09:38:04Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - pscloud pool update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --provisioned-bandwidth
+      User-Agent:
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.11 (Linux-6.8.0-1030-azure-x86_64-with-glibc2.36)
+    method: GET
+    uri: https://management.azure.com/providers/PureStorage.Block/locations/CENTRALUS/operationStatuses/2e62bf4a-aba9-4752-b565-08c72f0865a0*C28813252D1DBFE77E36A05733E74ECDEB286B041894A412C179856E5BEEF7FE?api-version=2024-11-01&t=638905018225258743&c=MIIHhzCCBm-gAwIBAgITfAiHD7dirx6ymfDGiQAACIcPtzANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjUwNzIwMTkyMzQ5WhcNMjYwMTE2MTkyMzQ5WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAM3pYlgN6iA7g1hE4pMHsPZYJ2UfubecYM51CKgOdSMiRbSKH-qucwMQ33llyWcvBwP0A7wwMgSASiggXzR_ebFaR1mUXsf67UOrzT_55xet5rOJD1RJCxo9LMLCoJPLI0wTezgMWVzbpKC7a7aoH8S_QUiTfMcfymKuZ6zTu5f2k993pLObgbfcza4X7nvzUC3OHl8sQ7zzdtyouTdeRDDZOw5gVb9x55-tVChL9z_YmPVntBmdDXUJnzE-7rUgYDEN5FL80k_AB55NuNhXT6AeScFeYzaBN6jVtAfw4976Rd2G_HV1RbGO4evspgG_Ae0JGpA4c6Goh6WwvDTajvkCAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBTCk9Ddk5AwFujw3xF1Sqo5oNLXajAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBACMp2LmlUT4li6sJ8ltgjUCCZQWtfH4EoeksFywQEFyz9djYtOc8j5g4BWk0kWlGNow9FouDtBToeTS9YOjGRBjNfBxZ2o-Vqll7-oR0JX4oL_F6aCyGORvNi_6PoIu84pzVHAiWOshD0uKBxp66UpaAHfBwBpOjATzzDJ2R5kKhUmKcIM1TWN30JYrvI0NFL_64GYRQPFAorvYIkhJ1-6rzU_vYhIW_mhHwuQfdg0ZyxptyXXJT7l4AgQJTg2Io4Gop17FtrKjFBrI5_VzvnXLYl-XfPz_wVqRf9OIkHz-yYaa0KMO8IByIgSAF-ydJmeEx4WiZ9JLaVwaOizoXRpM&s=Ezn0i5kh_1BuaL0t2LEmuXqx3wVTeu3bzkFqaYqt8mDH1b_9zy0wnQw6yI8FLMg7mRAz6QPt3Q0QxI2gt1hjzI8xJhM1YBj3-rxiNcHjT6HppVfb9swQ0098tCbxamnQWxBvlzSdOdDJGAGm8TMWTPOrtb0LxWNb9j8BhCg9xdeReDlD33oqT22DSgARkV8EQfVxSJI57BCBfrLgeqAMiykcd0o5jFX7p_hv2u3OFw_nDP_Ba-4qW_PRH00FMlAULXV8Ge-_lk8LcpcFjbhnM88PUs7fH4STSrqqk-RZUheb3ZlYtagSykwKlMz-NxObAEKIWR11EOPng9nO8d3lzQ&h=MC8MDRMwrMG0iP9myq__XDarsSKWtauzepKmP27C-nE
+  response:
+    body:
+      string: '{"id":"/providers/PureStorage.Block/locations/CENTRALUS/operationStatuses/2e62bf4a-aba9-4752-b565-08c72f0865a0*C28813252D1DBFE77E36A05733E74ECDEB286B041894A412C179856E5BEEF7FE","name":"2e62bf4a-aba9-4752-b565-08c72f0865a0*C28813252D1DBFE77E36A05733E74ECDEB286B041894A412C179856E5BEEF7FE","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aaa/providers/PureStorage.Block/storagePools/cliTestSPCUS","status":"Accepted","startTime":"2025-08-11T09:36:59.9740339Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '491'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 11 Aug 2025 09:38:35 GMT
+      etag:
+      - '"4e008f36-0000-0300-0000-6899b9bc0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - ''
+      x-msedge-ref:
+      - 'Ref A: CD30652943B242D392B35FB1FDF997C3 Ref B: PNQ231110909052 Ref C: 2025-08-11T09:38:35Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - pscloud pool update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --provisioned-bandwidth
+      User-Agent:
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.11 (Linux-6.8.0-1030-azure-x86_64-with-glibc2.36)
+    method: GET
+    uri: https://management.azure.com/providers/PureStorage.Block/locations/CENTRALUS/operationStatuses/2e62bf4a-aba9-4752-b565-08c72f0865a0*C28813252D1DBFE77E36A05733E74ECDEB286B041894A412C179856E5BEEF7FE?api-version=2024-11-01&t=638905018225258743&c=MIIHhzCCBm-gAwIBAgITfAiHD7dirx6ymfDGiQAACIcPtzANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjUwNzIwMTkyMzQ5WhcNMjYwMTE2MTkyMzQ5WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAM3pYlgN6iA7g1hE4pMHsPZYJ2UfubecYM51CKgOdSMiRbSKH-qucwMQ33llyWcvBwP0A7wwMgSASiggXzR_ebFaR1mUXsf67UOrzT_55xet5rOJD1RJCxo9LMLCoJPLI0wTezgMWVzbpKC7a7aoH8S_QUiTfMcfymKuZ6zTu5f2k993pLObgbfcza4X7nvzUC3OHl8sQ7zzdtyouTdeRDDZOw5gVb9x55-tVChL9z_YmPVntBmdDXUJnzE-7rUgYDEN5FL80k_AB55NuNhXT6AeScFeYzaBN6jVtAfw4976Rd2G_HV1RbGO4evspgG_Ae0JGpA4c6Goh6WwvDTajvkCAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBTCk9Ddk5AwFujw3xF1Sqo5oNLXajAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBACMp2LmlUT4li6sJ8ltgjUCCZQWtfH4EoeksFywQEFyz9djYtOc8j5g4BWk0kWlGNow9FouDtBToeTS9YOjGRBjNfBxZ2o-Vqll7-oR0JX4oL_F6aCyGORvNi_6PoIu84pzVHAiWOshD0uKBxp66UpaAHfBwBpOjATzzDJ2R5kKhUmKcIM1TWN30JYrvI0NFL_64GYRQPFAorvYIkhJ1-6rzU_vYhIW_mhHwuQfdg0ZyxptyXXJT7l4AgQJTg2Io4Gop17FtrKjFBrI5_VzvnXLYl-XfPz_wVqRf9OIkHz-yYaa0KMO8IByIgSAF-ydJmeEx4WiZ9JLaVwaOizoXRpM&s=Ezn0i5kh_1BuaL0t2LEmuXqx3wVTeu3bzkFqaYqt8mDH1b_9zy0wnQw6yI8FLMg7mRAz6QPt3Q0QxI2gt1hjzI8xJhM1YBj3-rxiNcHjT6HppVfb9swQ0098tCbxamnQWxBvlzSdOdDJGAGm8TMWTPOrtb0LxWNb9j8BhCg9xdeReDlD33oqT22DSgARkV8EQfVxSJI57BCBfrLgeqAMiykcd0o5jFX7p_hv2u3OFw_nDP_Ba-4qW_PRH00FMlAULXV8Ge-_lk8LcpcFjbhnM88PUs7fH4STSrqqk-RZUheb3ZlYtagSykwKlMz-NxObAEKIWR11EOPng9nO8d3lzQ&h=MC8MDRMwrMG0iP9myq__XDarsSKWtauzepKmP27C-nE
+  response:
+    body:
+      string: '{"id":"/providers/PureStorage.Block/locations/CENTRALUS/operationStatuses/2e62bf4a-aba9-4752-b565-08c72f0865a0*C28813252D1DBFE77E36A05733E74ECDEB286B041894A412C179856E5BEEF7FE","name":"2e62bf4a-aba9-4752-b565-08c72f0865a0*C28813252D1DBFE77E36A05733E74ECDEB286B041894A412C179856E5BEEF7FE","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aaa/providers/PureStorage.Block/storagePools/cliTestSPCUS","status":"Succeeded","startTime":"2025-08-11T09:36:59.9740339Z","endTime":"2025-08-11T09:38:58.8272221Z","error":{},"properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '562'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 11 Aug 2025 09:39:06 GMT
+      etag:
+      - '"4e00df3c-0000-0300-0000-6899ba330000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - ''
+      x-msedge-ref:
+      - 'Ref A: 27F6F0C05158469691776396AE597D0D Ref B: PNQ231110907023 Ref C: 2025-08-11T09:39:06Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - pscloud pool update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --provisioned-bandwidth
+      User-Agent:
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.11 (Linux-6.8.0-1030-azure-x86_64-with-glibc2.36)
+    method: GET
+    uri: https://management.azure.com/providers/PureStorage.Block/locations/CENTRALUS/operationStatuses/2e62bf4a-aba9-4752-b565-08c72f0865a0*C28813252D1DBFE77E36A05733E74ECDEB286B041894A412C179856E5BEEF7FE?api-version=2024-11-01&t=638905018225414988&c=MIIHhzCCBm-gAwIBAgITfAiHD7dirx6ymfDGiQAACIcPtzANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjUwNzIwMTkyMzQ5WhcNMjYwMTE2MTkyMzQ5WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAM3pYlgN6iA7g1hE4pMHsPZYJ2UfubecYM51CKgOdSMiRbSKH-qucwMQ33llyWcvBwP0A7wwMgSASiggXzR_ebFaR1mUXsf67UOrzT_55xet5rOJD1RJCxo9LMLCoJPLI0wTezgMWVzbpKC7a7aoH8S_QUiTfMcfymKuZ6zTu5f2k993pLObgbfcza4X7nvzUC3OHl8sQ7zzdtyouTdeRDDZOw5gVb9x55-tVChL9z_YmPVntBmdDXUJnzE-7rUgYDEN5FL80k_AB55NuNhXT6AeScFeYzaBN6jVtAfw4976Rd2G_HV1RbGO4evspgG_Ae0JGpA4c6Goh6WwvDTajvkCAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBTCk9Ddk5AwFujw3xF1Sqo5oNLXajAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBACMp2LmlUT4li6sJ8ltgjUCCZQWtfH4EoeksFywQEFyz9djYtOc8j5g4BWk0kWlGNow9FouDtBToeTS9YOjGRBjNfBxZ2o-Vqll7-oR0JX4oL_F6aCyGORvNi_6PoIu84pzVHAiWOshD0uKBxp66UpaAHfBwBpOjATzzDJ2R5kKhUmKcIM1TWN30JYrvI0NFL_64GYRQPFAorvYIkhJ1-6rzU_vYhIW_mhHwuQfdg0ZyxptyXXJT7l4AgQJTg2Io4Gop17FtrKjFBrI5_VzvnXLYl-XfPz_wVqRf9OIkHz-yYaa0KMO8IByIgSAF-ydJmeEx4WiZ9JLaVwaOizoXRpM&s=ewa0rYBtElGxM5YJtxq89sdBcLkSAZX0xOddMPGKSuyH82PL7cAETHZVZt-coXXUIRThlnbXljDfbgTVHQGw7eeCLTZmyYWQfWyYcmZylXnHRvqTGQHFhtAZzxTu0iGvV8ioLnaDBhsoptoZAfCip1jBoOPK0wPR177Gy_wJqqCqh3Ktu7Am1hPxCemwx9Fweeiv2h6DVupkC9uB32KIyiaI8T1CwUTiXLJ0ej8kv0WwEDLcKkAVfnUF7y82HmDVWtqt6W9TQfmFSXY3MzQ9z3r68shJz7s5pkSArmyLZ2tmbmOAvoxDUH2WhzWrTDU9VnLO510tU-5zwlg_Ptsi8A&h=iXL7hjIAG8JRHDn4MYz9F1gQXANFM0hRpedMqo0U204
+  response:
+    body:
+      string: '{"id":"/providers/PureStorage.Block/locations/CENTRALUS/operationStatuses/2e62bf4a-aba9-4752-b565-08c72f0865a0*C28813252D1DBFE77E36A05733E74ECDEB286B041894A412C179856E5BEEF7FE","name":"2e62bf4a-aba9-4752-b565-08c72f0865a0*C28813252D1DBFE77E36A05733E74ECDEB286B041894A412C179856E5BEEF7FE","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aaa/providers/PureStorage.Block/storagePools/cliTestSPCUS","status":"Succeeded","startTime":"2025-08-11T09:36:59.9740339Z","endTime":"2025-08-11T09:38:58.8272221Z","error":{},"properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '562'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 11 Aug 2025 09:39:07 GMT
+      etag:
+      - '"4e00df3c-0000-0300-0000-6899ba330000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - ''
+      x-msedge-ref:
+      - 'Ref A: 5059E3CFB7164200879CBDE90CC74D53 Ref B: PNQ231110909054 Ref C: 2025-08-11T09:39:07Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - pscloud pool delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --resource-group --storage-pool-name --yes
+      User-Agent:
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.11 (Linux-6.8.0-1030-azure-x86_64-with-glibc2.36)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/S1RG1/providers/PureStorage.Block/storagePools/cliTestStoragePool8?api-version=2024-11-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      date:
+      - Mon, 11 Aug 2025 09:39:08 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '199'
+      x-ms-ratelimit-remaining-subscription-global-deletes:
+      - '2999'
+      x-msedge-ref:
+      - 'Ref A: AAC5DC3FD6CA4E938C67695D799AA447 Ref B: PNQ231110907029 Ref C: 2025-08-11T09:39:08Z'
+    status:
+      code: 204
+      message: No Content
+version: 1
