@@ -2065,6 +2065,46 @@ def aks_machine_list(cmd, client, resource_group_name, cluster_name, nodepool_na
 def aks_machine_show(cmd, client, resource_group_name, cluster_name, nodepool_name, machine_name):
     return client.get(resource_group_name, cluster_name, nodepool_name, machine_name)
 
+def aks_machine_add(
+    cmd,
+    client,
+    resource_group_name,
+    cluster_name,
+    nodepool_name,
+    machine_name,
+    no_wait=False,
+):
+    existedMachine = None
+    try:
+        existedMachine = client.get(resource_group_name, cluster_name, nodepool_name, machine_name)
+    except ResourceNotFoundError:
+        pass
+
+    if existedMachine:
+        raise ClientRequestError(
+            f"Machine '{machine_name}' already exists. Please use 'az aks machine update' to update it."
+        )
+    
+    # DO NOT MOVE: get all the original parameters and save them as a dictionary
+    # raw_parameters = locals()
+    Machine = cmd.get_models(
+        "Machine", 
+        resource_type=CUSTOM_MGMT_AKS_PREVIEW,
+        operation_group="machines"
+    )
+    machine = Machine()
+
+    return sdk_no_wait(
+        no_wait,
+        client.begin_create_or_update,
+        resource_group_name,
+        cluster_name,
+        nodepool_name,
+        machine_name,
+        machine,
+    )
+    
+
 
 def aks_addon_list_available():
     available_addons = []
