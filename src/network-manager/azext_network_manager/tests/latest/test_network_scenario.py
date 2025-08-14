@@ -421,6 +421,61 @@ class NetworkScenarioTest(ScenarioTest):
         self.cmd('network manager delete --resource-group {rg} --name {manager_name} --force --yes')
 
     @serial_test()
+    @ResourceGroupPreparer(name_prefix='test_network_manager_connect_config_with_capabilities', location='eastus2')
+    @VirtualNetworkPreparer()
+    def test_network_manager_connect_config_with_capabilities(self, virtual_network, resource_group):
+        """Test connectivity configuration with new 2024-07-01 API capabilities"""
+        self.kwargs.update({
+            'config_name': 'myTestConnectConfigWithCapabilities',
+            'manager_name': 'TestNetworkManager',
+            'group_name': 'TestNetworkGroup',
+            'description': '"A sample policy with capabilities"',
+            'sub': '/subscriptions/{}'.format(self.get_subscription_id()),
+            'virtual_network': virtual_network,
+            'name': 'TestStaticMember'
+        })
+
+        self.cmd('network manager create --name {manager_name} --description "My Test Network Manager" '
+                 '--scope-accesses "SecurityAdmin" "Connectivity" '
+                 '--network-manager-scopes '
+                 ' subscriptions={sub} '
+                 '-l eastus2 '
+                 '--resource-group {rg}')
+
+        self.cmd('network manager group create --name {group_name} --network-manager-name {manager_name} --description {description} '
+                 ' -g {rg} ')
+
+        self.cmd('network manager group static-member create --name {name} --network-group-name {group_name} --network-manager-name {manager_name} '
+                 '--resource-id="{sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualnetworks/{virtual_network}"  -g {rg} ')
+
+        # Test connectivity configuration with new connectivityCapabilities fields
+        self.cmd('network manager connect-config create --configuration-name {config_name} --network-manager-name {manager_name} -g {rg} '
+                 '--applies-to-group group-connectivity="None" network-group-id={sub}/resourceGroups/{rg}/providers/Microsoft.Network/networkManagers/{manager_name}/networkGroups/{group_name} '
+                 'is-global=false use-hub-gateway=true --connectivity-topology "HubAndSpoke" --delete-existing-peering true --hub '
+                 'resource-id={sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualnetworks/{virtual_network} '
+                 'resource-type="Microsoft.Network/virtualNetworks" --description "Sample Configuration with Capabilities" --is-global true '
+                 '--connectivity-capabilities connected-group-private-endpoints-scale="HighScale" connected-group-address-overlap="Disallowed" peering-enforcement="Enforced"')
+        
+        # Verify the connectivity configuration was created with the new fields
+        config_output = self.cmd('network manager connect-config show --configuration-name {config_name} --network-manager-name {manager_name} -g {rg}').get_output_in_json()
+        
+        # Check that the new fields are present in the response
+        self.assertIn('connectivityCapabilities', config_output['properties'])
+        capabilities = config_output['properties']['connectivityCapabilities']
+        self.assertEqual(capabilities['connectedGroupPrivateEndpointsScale'], 'HighScale')
+        self.assertEqual(capabilities['connectedGroupAddressOverlap'], 'Disallowed')
+        self.assertEqual(capabilities['peeringEnforcement'], 'Enforced')
+        
+        # Check that resourceGuid is present
+        self.assertIn('resourceGuid', config_output['properties'])
+        self.assertIsNotNone(config_output['properties']['resourceGuid'])
+
+        self.cmd('network manager connect-config delete --configuration-name {config_name} --network-manager-name {manager_name} -g {rg} --force --yes')
+
+        self.cmd('network manager group delete -g {rg} --name {group_name} --network-manager-name {manager_name} --force --yes')
+        self.cmd('network manager delete --resource-group {rg} --name {manager_name} --force --yes')
+
+    @serial_test()
     @ResourceGroupPreparer(name_prefix='test_network_manager_list_queries', location='eastus2')
     @VirtualNetworkPreparer()
     def test_network_manager_list_queries(self, virtual_network, resource_group):
