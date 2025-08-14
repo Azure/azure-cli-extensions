@@ -1,0 +1,475 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.16.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.11.7 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/models/00000000-0000-0000-0000-000000000000/versions?api-version=0000-00-00&$orderBy=createdtime%20desc&$top=1
+  response:
+    body:
+      string: '{"error": {"code": "UserError", "message": "The specified resource
+        was not found.", "details": [{"code": "ModelNotFound", "message": "Model container
+        with name: test-model-000003 not found.", "details": [], "additionalInfo":
+        []}], "additionalInfo": [{"type": "ComponentName", "info": {"value": "managementfrontend"}},
+        {"type": "Correlation", "info": {"value": {"operation": "949984ee7e295690886b2358b01564db",
+        "request": "afaf7818df563613"}}}, {"type": "Environment", "info": {"value":
+        "eastus2"}}, {"type": "Location", "info": {"value": "eastus2"}}, {"type":
+        "Time", "info": {"value": "2024-05-09T19:30:07.9714721+00:00"}}]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '626'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 09 May 2024 19:30:07 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-02
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - error
+      x-msedge-ref:
+      - 'Ref A: FA257A16AFC14361B5808AAA8E721827 Ref B: CO6AA3150220019 Ref C: 2024-05-09T19:30:07Z'
+      x-request-time:
+      - '0.076'
+    status:
+      code: 404
+      message: The specified resource was not found.
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.16.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.11.7 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/datastores/workspaceblobstore?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/nirovins-ws-eastus/datastores/workspaceblobstore",
+        "name": "workspaceblobstore", "type": "Microsoft.MachineLearningServices/workspaces/datastores",
+        "properties": {"description": null, "tags": null, "properties": null, "isDefault":
+        true, "credentials": {"credentialsType": "AccountKey"}, "intellectualProperty":
+        null, "subscriptionId": "6a6fff00-4464-4eab-a6b1-0b533c7202e0", "resourceGroup":
+        "nirovins-rg-eastus", "datastoreType": "AzureBlob", "accountName": "nirovinswseast5028951403",
+        "containerName": "azureml-blobstore-a1391af3-9f38-48e8-862f-db3846e81dd4",
+        "endpoint": "core.windows.net", "protocol": "https", "serviceDataAccessAuthIdentity":
+        "WorkspaceSystemAssignedIdentity"}, "systemData": {"createdAt": "2024-01-19T20:15:50.0791508+00:00",
+        "createdBy": "779301c0-18b2-4cdc-801b-a0a3368fee0a", "createdByType": "Application",
+        "lastModifiedAt": "2024-01-19T20:15:50.6629868+00:00", "lastModifiedBy": "779301c0-18b2-4cdc-801b-a0a3368fee0a",
+        "lastModifiedByType": "Application"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1130'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 09 May 2024 19:30:08 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-02
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-msedge-ref:
+      - 'Ref A: F6DCF42AC72247EFBFB0FE009887BF2B Ref B: CO6AA3150220035 Ref C: 2024-05-09T19:30:08Z'
+      x-request-time:
+      - '0.064'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.16.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.11.7 (Windows-10-10.0.22631-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/datastores/workspaceblobstore/listSecrets?api-version=0000-00-00
+  response:
+    body:
+      string: '{"secretsType": "AccountKey", "key": "061ffd0d49c641cf444b1d73c44a822f181446e407330aaa82f4436d2d601f00"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '104'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 09 May 2024 19:30:08 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aml-cluster:
+      - vienna-eastus2-02
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-ms-response-type:
+      - standard
+      x-msedge-ref:
+      - 'Ref A: D0BE3AB9B1EF403B893216ED0837DABA Ref B: CO6AA3150220035 Ref C: 2024-05-09T19:30:08Z'
+      x-request-time:
+      - '0.066'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/xml
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azsdk-python-storage-blob/12.19.1 Python/3.11.7 (Windows-10-10.0.22631-SP0)
+      x-ms-date:
+      - Thu, 09 May 2024 19:30:09 GMT
+      x-ms-version:
+      - '2023-11-03'
+    method: HEAD
+    uri: https://xxxxxxxxxxxxxxxxxxxxxx.blob.core.windows.net/azureml-blobstore-00000000-0000-0000-0000-000000000000/xxxxx/00000000-0000-0000-0000-00000000000/lightgbm_mlflow_model/MLmodel
+  response:
+    body:
+      string: ''
+    headers:
+      accept-ranges:
+      - bytes
+      content-length:
+      - '1544'
+      content-type:
+      - application/octet-stream
+      date:
+      - Thu, 09 May 2024 19:30:09 GMT
+      etag:
+      - '"0x8DC705E6384A6D7"'
+      last-modified:
+      - Thu, 09 May 2024 19:29:47 GMT
+      server:
+      - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
+      vary:
+      - Origin
+      x-ms-access-tier:
+      - Hot
+      x-ms-access-tier-inferred:
+      - 'true'
+      x-ms-blob-type:
+      - BlockBlob
+      x-ms-creation-time:
+      - Thu, 09 May 2024 19:28:59 GMT
+      x-ms-lease-state:
+      - available
+      x-ms-lease-status:
+      - unlocked
+      x-ms-meta-name:
+      - mir_test_model
+      x-ms-meta-upload_status:
+      - completed
+      x-ms-meta-version:
+      - '3'
+      x-ms-server-encrypted:
+      - 'true'
+      x-ms-version:
+      - '2023-11-03'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/xml
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azsdk-python-storage-blob/12.19.1 Python/3.11.7 (Windows-10-10.0.22631-SP0)
+      x-ms-date:
+      - Thu, 09 May 2024 19:30:10 GMT
+      x-ms-version:
+      - '2023-11-03'
+    method: HEAD
+    uri: https://xxxxxxxxxxxxxxxxxxxxxx.blob.core.windows.net/azureml-blobstore-00000000-0000-0000-0000-000000000000/xxxxx/00000000-0000-0000-0000-00000000000/lightgbm_mlflow_model/MLmodel
+  response:
+    body:
+      string: ''
+    headers:
+      date:
+      - Thu, 09 May 2024 19:30:09 GMT
+      server:
+      - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
+      transfer-encoding:
+      - chunked
+      vary:
+      - Origin
+      x-ms-error-code:
+      - BlobNotFound
+      x-ms-version:
+      - '2023-11-03'
+    status:
+      code: 404
+      message: The specified blob does not exist.
+- request:
+    body: '{"properties": {"description": "this is my test model", "properties": {},
+      "tags": {"foo": "bar", "abc": "123"}, "isAnonymous": false, "isArchived": false,
+      "flavors": {"sklearn": {"data": {"sklearn_version": "0.23.2"}}, "python_function":
+      {"data": {"loader_module": "office.plrmodel", "python_version": "3.8.5"}}},
+      "modelType": "mlflow_model", "modelUri": "azureml://subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/nirovins-rg-eastus/workspaces/nirovins-ws-eastus/datastores/workspaceblobstore/paths/LocalUpload/89c03137b7ab042f146843cdf8ec4e64/lightgbm_mlflow_model"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '586'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.16.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.11.7 (Windows-10-10.0.22631-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/models/00000000-0000-0000-0000-000000000000/versions/3?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/nirovins-ws-eastus/models/test-model-000003/versions/3",
+        "name": "3", "type": "Microsoft.MachineLearningServices/workspaces/models/versions",
+        "properties": {"description": "this is my test model", "tags": {"foo": "bar",
+        "abc": "123"}, "properties": {}, "isArchived": false, "isAnonymous": false,
+        "autoDeleteSetting": null, "flavors": {"sklearn": {"data": {"sklearn_version":
+        "0.23.2"}}, "python_function": {"data": {"loader_module": "office.plrmodel",
+        "python_version": "3.8.5"}}}, "modelType": "mlflow_model", "modelUri": "azureml://subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/workspaces/nirovins-ws-eastus/datastores/workspaceblobstore/paths/LocalUpload/89c03137b7ab042f146843cdf8ec4e64/lightgbm_mlflow_model",
+        "jobName": null, "provisioningState": "Succeeded", "stage": "Development",
+        "intellectualProperty": null}, "systemData": {"createdAt": "2024-05-09T19:30:11.4842348+00:00",
+        "createdBy": "Nikolay Rovinskiy", "createdByType": "User", "lastModifiedAt":
+        "2024-05-09T19:30:11.4842348+00:00", "lastModifiedBy": "Nikolay Rovinskiy",
+        "lastModifiedByType": "User"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1251'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 09 May 2024 19:30:10 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nirovins-rg-eastus/providers/Microsoft.MachineLearningServices/workspaces/nirovins-ws-eastus/models/test-model-000003/versions/3?api-version=2023-08-01-preview
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aml-cluster:
+      - vienna-eastus2-01
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-ms-response-type:
+      - standard
+      x-msedge-ref:
+      - 'Ref A: 3C0F0D7779CF421C9448F4034854AC6D Ref B: CO6AA3150220019 Ref C: 2024-05-09T19:30:10Z'
+      x-request-time:
+      - '0.509'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.16.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.11.7 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/models/00000000-0000-0000-0000-000000000000/versions?api-version=0000-00-00&$orderBy=createdtime%20desc&$top=1
+  response:
+    body:
+      string: '{"error": {"code": "UserError", "message": "The specified resource
+        was not found.", "details": [{"code": "ModelNotFound", "message": "Model container
+        with name: test-model2-000001 not found.", "details": [], "additionalInfo":
+        []}], "additionalInfo": [{"type": "ComponentName", "info": {"value": "managementfrontend"}},
+        {"type": "Correlation", "info": {"value": {"operation": "8ea086759b7068d0f8b0f8d2866d56e6",
+        "request": "c605b4255f6267e5"}}}, {"type": "Environment", "info": {"value":
+        "eastus2"}}, {"type": "Location", "info": {"value": "eastus2"}}, {"type":
+        "Time", "info": {"value": "2024-05-09T19:30:12.5818713+00:00"}}]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '627'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 09 May 2024 19:30:12 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-02
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - error
+      x-msedge-ref:
+      - 'Ref A: 7405511C8DE44782993791E85126C58D Ref B: CO6AA3150220011 Ref C: 2024-05-09T19:30:12Z'
+      x-request-time:
+      - '0.073'
+    status:
+      code: 404
+      message: The specified resource was not found.
+- request:
+    body: '{"properties": {"description": "this is my test model", "properties": {},
+      "tags": {"foo": "bar", "abc": "123"}, "isAnonymous": false, "isArchived": false,
+      "flavors": {"sklearn": {"data": {"sklearn_version": "0.23.2"}}, "python_function":
+      {"data": {"loader_module": "office.plrmodel", "python_version": "3.8.5"}}},
+      "modelType": "custom_model", "modelUri": "azureml://subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/nirovins-rg-eastus/workspaces/nirovins-ws-eastus/datastores/workspaceblobstore/paths/LocalUpload/89c03137b7ab042f146843cdf8ec4e64/lightgbm_mlflow_model"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '586'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.16.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.11.7 (Windows-10-10.0.22631-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/models/00000000-0000-0000-0000-000000000000/versions/3?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/nirovins-ws-eastus/models/test-model2-000001/versions/3",
+        "name": "3", "type": "Microsoft.MachineLearningServices/workspaces/models/versions",
+        "properties": {"description": "this is my test model", "tags": {"foo": "bar",
+        "abc": "123"}, "properties": {}, "isArchived": false, "isAnonymous": false,
+        "autoDeleteSetting": null, "flavors": {"sklearn": {"data": {"sklearn_version":
+        "0.23.2"}}, "python_function": {"data": {"loader_module": "office.plrmodel",
+        "python_version": "3.8.5"}}}, "modelType": "custom_model", "modelUri": "azureml://subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/workspaces/nirovins-ws-eastus/datastores/workspaceblobstore/paths/LocalUpload/89c03137b7ab042f146843cdf8ec4e64/lightgbm_mlflow_model",
+        "jobName": null, "provisioningState": "Succeeded", "stage": "Development",
+        "intellectualProperty": null}, "systemData": {"createdAt": "2024-05-09T19:30:13.6817907+00:00",
+        "createdBy": "Nikolay Rovinskiy", "createdByType": "User", "lastModifiedAt":
+        "2024-05-09T19:30:13.6817907+00:00", "lastModifiedBy": "Nikolay Rovinskiy",
+        "lastModifiedByType": "User"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1252'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 09 May 2024 19:30:13 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nirovins-rg-eastus/providers/Microsoft.MachineLearningServices/workspaces/nirovins-ws-eastus/models/test-model2-000001/versions/3?api-version=2023-08-01-preview
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aml-cluster:
+      - vienna-eastus2-01
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-ms-response-type:
+      - standard
+      x-msedge-ref:
+      - 'Ref A: 56809C761EEE49FDBCC33AC77055E070 Ref B: CO6AA3150220011 Ref C: 2024-05-09T19:30:12Z'
+      x-request-time:
+      - '0.654'
+    status:
+      code: 201
+      message: Created
+version: 1
