@@ -782,6 +782,7 @@ def create_managed_namespace(cmd,
                              resource_group_name,
                              fleet_name,
                              managed_namespace_name,
+                             tags=None,
                              labels=None,
                              annotations=None,
                              cpu_requests=None,
@@ -793,58 +794,89 @@ def create_managed_namespace(cmd,
                              delete_policy=None,
                              adoption_policy=None,
                              member_cluster_names=None):
+    # Get models
     managed_namespace_model = cmd.get_models(
         "FleetManagedNamespace",
-        resource_type=CUSTOM_MGMT_FLEET
+        resource_type=CUSTOM_MGMT_FLEET,
+        operation_group="fleet_managed_namespaces"
     )
 
     managed_namespace_properties_model = cmd.get_models(
         "ManagedNamespaceProperties",
-        resource_type=CUSTOM_MGMT_FLEET
+        resource_type=CUSTOM_MGMT_FLEET,
+        operation_group="fleet_managed_namespaces"
     )
 
-    fleet_managed_namespace_properties_model = cmd.get_models(
-        "FleetManagedNamespaceProperties",
-        resource_type=CUSTOM_MGMT_FLEET
+    resource_quota_model = cmd.get_models(
+        "ResourceQuota",
+        resource_type=CUSTOM_MGMT_FLEET,
+        operation_group="fleet_managed_namespaces"
     )
 
-    resource_limits = {}
+    network_policy_model = cmd.get_models(
+        "NetworkPolicy",
+        resource_type=CUSTOM_MGMT_FLEET,
+        operation_group="fleet_managed_namespaces"
+    )
+
+    propagation_policy_model = cmd.get_models(
+        "PropagationPolicy",
+        resource_type=CUSTOM_MGMT_FLEET,
+        operation_group="fleet_managed_namespaces"
+    )
+
+    # Get the fleet to determine location
+    fleet_client = cf_fleets(cmd.cli_ctx)
+    fleet = fleet_client.get(resource_group_name, fleet_name)
+
+    # Create resource quota if any resource limits are specified
+    default_resource_quota = None
     if cpu_requests or cpu_limits or memory_requests or memory_limits:
-        if cpu_requests or memory_requests:
-            resource_limits['requests'] = {}
-            if cpu_requests:
-                resource_limits['requests']['cpu'] = cpu_requests
-            if memory_requests:
-                resource_limits['requests']['memory'] = memory_requests
+        default_resource_quota = resource_quota_model(
+            cpu_request=cpu_requests,
+            cpu_limit=cpu_limits,
+            memory_request=memory_requests,
+            memory_limit=memory_limits
+        )
 
-        if cpu_limits or memory_limits:
-            resource_limits['limits'] = {}
-            if cpu_limits:
-                resource_limits['limits']['cpu'] = cpu_limits
-            if memory_limits:
-                resource_limits['limits']['memory'] = memory_limits
+    # Create network policy if ingress or egress policies are specified
+    default_network_policy = None
+    if ingress_policy or egress_policy:
+        default_network_policy = network_policy_model(
+            ingress=ingress_policy,
+            egress=egress_policy
+        )
 
-    member_clusters = None
-    if member_cluster_names:
-        member_clusters = [name.strip() for name in member_cluster_names.split(',') if name.strip()]
-
+    # Create managed namespace properties
     managed_namespace_props = managed_namespace_properties_model(
         labels=labels,
         annotations=annotations,
-        resource_quota=resource_limits if resource_limits else None,
-        ingress_policy=ingress_policy,
-        egress_policy=egress_policy,
-        delete_policy=delete_policy,
-        adoption_policy=adoption_policy,
-        member_clusters=member_clusters
+        default_resource_quota=default_resource_quota,
+        default_network_policy=default_network_policy
     )
 
-    fleet_managed_namespace_props = fleet_managed_namespace_properties_model(
-        managed_namespace_properties=managed_namespace_props
-    )
+    # Create propagation policy if member cluster names are specified
+    propagation_policy = None
+    if member_cluster_names:
+        placement_profile_model = cmd.get_models(
+            "PlacementProfile",
+            resource_type=CUSTOM_MGMT_FLEET,
+            operation_group="fleet_managed_namespaces"
+        )
+        placement_profile = placement_profile_model(target_clusters=member_cluster_names)
+        propagation_policy = propagation_policy_model(
+            type="Placement",
+            placement_profile=placement_profile
+        )
 
+    # Create the managed namespace
     managed_namespace = managed_namespace_model(
-        properties=fleet_managed_namespace_props
+        location=fleet.location,
+        tags=tags,
+        managed_namespace_properties=managed_namespace_props,
+        adoption_policy=adoption_policy,
+        delete_policy=delete_policy,
+        propagation_policy=propagation_policy
     )
 
     return client.begin_create_or_update(
@@ -860,60 +892,17 @@ def update_managed_namespace(cmd,
                              resource_group_name,
                              fleet_name,
                              managed_namespace_name,
-                             labels=None,
-                             annotations=None,
-                             cpu_requests=None,
-                             cpu_limits=None,
-                             memory_requests=None,
-                             memory_limits=None,
-                             ingress_policy=None,
-                             egress_policy=None,
-                             delete_policy=None,
-                             adoption_policy=None,
-                             member_cluster_names=None):
-
+                             tags=None):
+    """
+    Update a fleet managed namespace. Currently only supports updating tags.
+    """
     fleet_managed_namespace_patch_model = cmd.get_models(
         "FleetManagedNamespacePatch",
-        resource_type=CUSTOM_MGMT_FLEET
+        resource_type=CUSTOM_MGMT_FLEET,
+        operation_group="fleet_managed_namespaces"
     )
 
-    managed_namespace_properties_model = cmd.get_models(
-        "ManagedNamespaceProperties",
-        resource_type=CUSTOM_MGMT_FLEET
-    )
-
-    resource_limits = {}
-    if cpu_requests or cpu_limits or memory_requests or memory_limits:
-        if cpu_requests or memory_requests:
-            resource_limits['requests'] = {}
-            if cpu_requests:
-                resource_limits['requests']['cpu'] = cpu_requests
-            if memory_requests:
-                resource_limits['requests']['memory'] = memory_requests
-
-        if cpu_limits or memory_limits:
-            resource_limits['limits'] = {}
-            if cpu_limits:
-                resource_limits['limits']['cpu'] = cpu_limits
-            if memory_limits:
-                resource_limits['limits']['memory'] = memory_limits
-
-    member_clusters = None
-    if member_cluster_names:
-        member_clusters = [name.strip() for name in member_cluster_names.split(',') if name.strip()]
-
-    properties = managed_namespace_properties_model(
-        labels=labels,
-        annotations=annotations,
-        resource_quota=resource_limits if resource_limits else None,
-        ingress_policy=ingress_policy,
-        egress_policy=egress_policy,
-        delete_policy=delete_policy,
-        adoption_policy=adoption_policy,
-        member_clusters=member_clusters
-    )
-
-    patch = fleet_managed_namespace_patch_model(properties=properties)
+    patch = fleet_managed_namespace_patch_model(tags=tags)
 
     return client.begin_update(
         resource_group_name=resource_group_name,
