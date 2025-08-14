@@ -1154,6 +1154,29 @@ class AzureFirewallScenario(ScenarioTest):
         self.cmd("network firewall policy delete -n {policy} -g {rg}")
 
 
+    @ResourceGroupPreparer(name_prefix='cli_test_azfw_packet_capture', location='westus',)
+    def test_azure_firewall_packet_capture(self, resource_group):
+        self.kwargs.update({
+            'rg': resource_group,
+            'location': 'westus',
+            'firewall': 'firewall',
+            'public_ip': 'publicip',
+        })
+
+        self.cmd('network public-ip create -g {rg} -n {public_ip} --allocation-method Static --sku standard')
+        self.cmd('network firewall create -g {rg} -n {firewall} -l {location}')
+        self.cmd('network firewall packet-capture create -g {rg} --firewall-name {firewall} --duration-in-seconds 300 --packets 5000 '
+                 '--sas-url ValidSasUrl --file-name AzFwPacketCapture --protocol Any '
+                 '--flags [0].type=syn [1].type=ack '
+                 '--filters '
+                 '[0].destination-ports[0]="80" [0].destination-ports[1]="443" '
+                 '[0].sources[0]="10.0.0.2" [0].sources[1]="192.123.12.1" '
+                 '[0].destinations[0]="172.32.1.2" '
+                 '[1].destination-ports[0]="80" [1].destination-ports[1]="443" '
+                 '[1].sources[0]="10.0.0.5" '
+                 '[1].destinations[0]="172.20.10.2"')
+
+
     @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_policy_app_rules_with_custom_headers_', location="westus2")
     def test_azure_firewall_policy_app_rules_with_custom_headers(self, resource_group):
         self.kwargs.update({
