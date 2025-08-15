@@ -127,10 +127,11 @@ def load_command_table(self, _):
         g.custom_command("approve", "approve_gate")
 
     # fleet namespaces command group
-    with self.command_group("fleet namespace", managed_namespaces_sdk, client_factory=cf_fleet_managed_namespaces) as g:
-        g.custom_command("create", "create_managed_namespace")
-        g.custom_command("update", "update_managed_namespace")
-        g.custom_command("delete", "delete_managed_namespace", confirmation=True)
+    with self.command_group("fleet namespace", managed_namespaces_sdk, client_factory=cf_fleet_managed_namespaces, is_preview=True) as g:
+        g.custom_command("create", "create_managed_namespace", supports_no_wait=True)
+        g.custom_command("update", "update_managed_namespace", supports_no_wait=True)
+        g.custom_command("delete", "delete_managed_namespace", supports_no_wait=True, confirmation=True)
         g.custom_command("list", "list_managed_namespaces")
         g.custom_show_command("show", "show_managed_namespace")
         g.custom_command("get-credentials", "get_namespace_credentials")
+        g.wait_command("wait")
