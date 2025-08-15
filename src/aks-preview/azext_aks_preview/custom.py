@@ -865,6 +865,7 @@ def aks_update(
     azure_keyvault_kms_key_id=None,
     azure_keyvault_kms_key_vault_network_access=None,
     azure_keyvault_kms_key_vault_resource_id=None,
+    kms_infrastructure_encryption=None,
     http_proxy_config=None,
     disable_http_proxy=False,
     enable_http_proxy=False,
