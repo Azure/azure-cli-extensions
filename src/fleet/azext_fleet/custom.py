@@ -5,12 +5,16 @@
 
 import os
 import re
+import sys
 import yaml
 import tempfile
+from io import StringIO
 
 from knack.util import CLIError
 
 from azure.cli.core.commands.client_factory import get_subscription_id
+from azure.mgmt.core.tools import parse_resource_id
+
 from azure.cli.core.util import sdk_no_wait, get_file_json, shell_safe_json_parse
 from azure.cli.core import get_default_cli
 
@@ -202,54 +206,42 @@ def get_credentials(cmd,
                     context_name=None,
                     member_name=None):
 
+    # If a member name is given, we use the cluster resource ID from the fleet member to get that member cluster's credentials
+    # Otherwise, we get the credentials for the fleet hub 
     if member_name:
         fleet_members_client = cf_fleet_members(cmd.cli_ctx)
 
         try:
             fleet_member = fleet_members_client.get(resource_group_name, name, member_name)
+            if not fleet_member:
+                raise CLIError(f"Fleet member '{member_name}' not found in fleet '{name}'.")
 
-            if not fleet_member or not fleet_member.cluster_resource_id:
-                raise CLIError(f"Fleet member '{member_name}' not found or has no associated cluster.")
+            parsed_id = parse_resource_id(fleet_member.cluster_resource_id)
+            string_io = StringIO()
+            old_stdout = sys.stdout
+            sys.stdout = string_io
+            
+            try:
+                exit_code = get_default_cli().invoke([
+                    'aks', 'get-credentials',
+                    '--subscription', parsed_id['subscription'],
+                    '--resource-group', parsed_id['resource_group'],
+                    '--name', parsed_id['resource_name'],
+                    '--file', '-'
+                ])
 
-            cluster_resource_id = fleet_member.cluster_resource_id
+                sys.stdout = old_stdout
 
-            # Resource ID format: /subscriptions/{subscription}/resourceGroups/{rg}/
-            # providers/Microsoft.ContainerService/managedClusters/{cluster}
-            pattern = (r'/subscriptions/([^/]+)/resourceGroups/([^/]+)/providers/'
-                      r'Microsoft\.ContainerService/managedClusters/([^/]+)')
-            match = re.match(pattern, cluster_resource_id)
+                if exit_code != 0 or not (kubeconfig := string_io.getvalue()):
+                    error_msg = (f"Failed to get credentials from managed cluster '{parsed_id['resource_name']}' "
+                               f"for fleet member '{member_name}'")
+                    raise CLIError(error_msg)
 
-            if not match:
-                raise CLIError(f"Invalid cluster resource ID format: {cluster_resource_id}")
+                print_or_merge_credentials(path, kubeconfig, overwrite_existing, context_name)
 
-            cluster_subscription = match.group(1)
-            cluster_resource_group = match.group(2)
-            cluster_name = match.group(3)
-
-            aks_command = [
-                'aks', 'get-credentials',
-                '--subscription', cluster_subscription,
-                '--resource-group', cluster_resource_group,
-                '--name', cluster_name,
-                '--user'
-            ]
-
-            if path != os.path.join(os.path.expanduser('~'), '.kube', 'config'):
-                aks_command.extend(['--file', path])
-
-            if overwrite_existing:
-                aks_command.append('--overwrite-existing')
-
-            if context_name:
-                aks_command.extend(['--context', context_name])
-
-            cli = get_default_cli()
-            exit_code = cli.invoke(aks_command)
-
-            if exit_code != 0:
-                error_msg = (f"Failed to get credentials from managed cluster '{cluster_name}' "
-                           f"in fleet member '{member_name}'.")
-                raise CLIError(error_msg)
+            finally:
+                if sys.stdout is string_io:
+                    sys.stdout = old_stdout
 
         except Exception as exc:
             if isinstance(exc, CLIError):
@@ -945,36 +937,6 @@ def list_managed_namespaces(cmd,  # pylint: disable=unused-argument
         fleet_name=fleet_name
     )
 
-
-def _merge_kubeconfig_section(merged_config, new_config, section_name):
-    """Helper function to merge a specific section of kubeconfig."""
-    if section_name in new_config:
-        if section_name not in merged_config:
-            merged_config[section_name] = []
-        for item in new_config[section_name]:
-            existing_item = next((i for i in merged_config[section_name] if i['name'] == item['name']), None)
-            if existing_item:
-                existing_item.update(item)
-            else:
-                merged_config[section_name].append(item)
-
-
-def _merge_kubeconfigs(existing_config, new_config):
-    """Helper function to merge two kubeconfig dictionaries."""
-    merged_config = existing_config.copy()
-
-    # Merge clusters, users, and contexts
-    _merge_kubeconfig_section(merged_config, new_config, 'clusters')
-    _merge_kubeconfig_section(merged_config, new_config, 'users')
-    _merge_kubeconfig_section(merged_config, new_config, 'contexts')
-
-    # Set current context if specified
-    if 'current-context' in new_config:
-        merged_config['current-context'] = new_config['current-context']
-
-    return merged_config
-
-
 def get_namespace_credentials(cmd,
                              client,  # pylint: disable=unused-argument
                              resource_group_name,
@@ -985,12 +947,9 @@ def get_namespace_credentials(cmd,
                              context_name=None,
                              member_name=None):
     """
-    Get credentials for a fleet namespace by calling fleet get-credentials backend
-    and modifying the namespace in the kubeconfig.
+    Get credentials for a fleet hub or managed cluster and modifies the kubeconfig to set the default namespace.
     """
-
     fleet_client = cf_fleets(cmd.cli_ctx)
-
     with tempfile.NamedTemporaryFile(mode='w+', suffix='.kubeconfig', delete=False) as temp_file:
         temp_path = temp_file.name
 
@@ -1007,34 +966,18 @@ def get_namespace_credentials(cmd,
         )
 
         with open(temp_path, 'r', encoding='utf-8') as f:
-            kubeconfig_content = f.read()
+            kubeconfig = yaml.safe_load(f.read())
 
-        kubeconfig = yaml.safe_load(kubeconfig_content)
-
-        if 'contexts' in kubeconfig:
+        current_context_name = kubeconfig.get('current-context')
+        if 'contexts' in kubeconfig and current_context_name:
             for context in kubeconfig['contexts']:
-                if 'context' in context:
+                if context.get('name') == current_context_name and 'context' in context:
                     context['context']['namespace'] = managed_namespace_name
+                    break
 
-        if path == '-':
-            print(yaml.dump(kubeconfig, default_flow_style=False))
-        else:
-            os.makedirs(os.path.dirname(path), exist_ok=True)
-
-            if not overwrite_existing and os.path.exists(path):
-                with open(path, 'r', encoding='utf-8') as f:
-                    existing_config = yaml.safe_load(f.read())
-
-                if existing_config:
-                    kubeconfig = _merge_kubeconfigs(existing_config, kubeconfig)
-
-            with open(path, 'w', encoding='utf-8') as f:
-                yaml.dump(kubeconfig, f, default_flow_style=False)
-
-            print(f"Merged kubeconfig saved to {path}")
-            if 'contexts' in kubeconfig and kubeconfig['contexts']:
-                msg = f"Default namespace set to '{managed_namespace_name}' for all contexts"
-                print(msg)
+        modified_kubeconfig = yaml.dump(kubeconfig, default_flow_style=False)
+        print_or_merge_credentials(path, modified_kubeconfig, overwrite_existing, context_name)
+        print(f"Default namespace set to '{managed_namespace_name}' for context '{current_context_name}'")
 
     finally:
         if os.path.exists(temp_path):
