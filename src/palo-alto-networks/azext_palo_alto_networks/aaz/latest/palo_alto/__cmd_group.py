@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "palo-alto",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage palo-alto networks resource
+    """Manage Palo Alto Networks resources within the Azure CLI.
     """
     pass
 

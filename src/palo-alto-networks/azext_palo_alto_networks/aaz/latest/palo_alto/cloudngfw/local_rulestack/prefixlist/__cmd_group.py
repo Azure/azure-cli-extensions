@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "palo-alto cloudngfw local-rulestack prefixlist",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage local-rulestack prefixlist resource
+    """Manage prefixlist resource for a Palo Alto Networks local rulestack.
     """
     pass
 
