@@ -207,7 +207,7 @@ def get_credentials(cmd,
                     member_name=None):
 
     # If a member name is given, we use the cluster resource ID from the fleet member to get that member cluster's credentials
-    # Otherwise, we get the credentials for the fleet hub 
+    # Otherwise, we get the credentials for the fleet hub
     if member_name:
         fleet_members_client = cf_fleet_members(cmd.cli_ctx)
 
@@ -831,7 +831,6 @@ def create_managed_namespace(cmd,
             resource_limits['limits']['cpu'] = cpu_limits
         if memory_limits:
             resource_limits['limits']['memory'] = memory_limits
-            
         default_resource_quota = resource_quota_model(**resource_limits)
 
     default_network_policy = None
@@ -938,15 +937,16 @@ def list_managed_namespaces(cmd,  # pylint: disable=unused-argument
         fleet_name=fleet_name
     )
 
+
 def get_namespace_credentials(cmd,
-                             client,  # pylint: disable=unused-argument
-                             resource_group_name,
-                             fleet_name,
-                             managed_namespace_name,
-                             path=os.path.join(os.path.expanduser('~'), '.kube', 'config'),
-                             overwrite_existing=False,
-                             context_name=None,
-                             member_name=None):
+                            client,  # pylint: disable=unused-argument
+                            resource_group_name,
+                            fleet_name,
+                            managed_namespace_name,
+                            path=os.path.join(os.path.expanduser('~'), '.kube', 'config'),
+                            overwrite_existing=False,
+                            context_name=None,
+                            member_name=None):
     """
     Get credentials for a fleet hub or managed cluster and modifies the kubeconfig to set the default namespace.
     """
