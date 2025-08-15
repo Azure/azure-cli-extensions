@@ -45,8 +45,8 @@ class Reboot(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.resource_name = AAZStrArg(
-            options=["--resource-name"],
+        _args_schema.network_device_name = AAZStrArg(
+            options=["--resource-name", "--network-device-name"],
             help="Name of the Network Device.",
             required=True,
             id_part="name",
@@ -132,7 +132,7 @@ class Reboot(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "networkDeviceName", self.ctx.args.resource_name,
+                    "networkDeviceName", self.ctx.args.network_device_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
