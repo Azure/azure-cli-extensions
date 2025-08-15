@@ -786,7 +786,7 @@ def create_managed_namespace(cmd,
                              delete_policy=None,
                              adoption_policy=None,
                              member_cluster_names=None):
-    # Get models
+
     managed_namespace_model = cmd.get_models(
         "FleetManagedNamespace",
         resource_type=CUSTOM_MGMT_FLEET,
@@ -817,29 +817,32 @@ def create_managed_namespace(cmd,
         operation_group="fleet_managed_namespaces"
     )
 
-    # Get the fleet to determine location
     fleet_client = cf_fleets(cmd.cli_ctx)
     fleet = fleet_client.get(resource_group_name, fleet_name)
 
-    # Create resource quota if any resource limits are specified
     default_resource_quota = None
     if cpu_requests or cpu_limits or memory_requests or memory_limits:
-        default_resource_quota = resource_quota_model(
-            cpu_request=cpu_requests,
-            cpu_limit=cpu_limits,
-            memory_request=memory_requests,
-            memory_limit=memory_limits
-        )
+        resource_limits = {'requests': {}, 'limits': {}}
+        if cpu_requests:
+            resource_limits['requests']['cpu'] = cpu_requests
+        if memory_requests:
+            resource_limits['requests']['memory'] = memory_requests
+        if cpu_limits:
+            resource_limits['limits']['cpu'] = cpu_limits
+        if memory_limits:
+            resource_limits['limits']['memory'] = memory_limits
+            
+        default_resource_quota = resource_quota_model(**resource_limits)
 
-    # Create network policy if ingress or egress policies are specified
     default_network_policy = None
     if ingress_policy or egress_policy:
-        default_network_policy = network_policy_model(
-            ingress=ingress_policy,
-            egress=egress_policy
-        )
+        network_policies = {}
+        if ingress_policy:
+            network_policies['ingress'] = ingress_policy
+        if egress_policy:
+            network_policies['egress'] = egress_policy
+        default_network_policy = network_policy_model(**network_policies)
 
-    # Create managed namespace properties
     managed_namespace_props = managed_namespace_properties_model(
         labels=labels,
         annotations=annotations,
@@ -847,7 +850,6 @@ def create_managed_namespace(cmd,
         default_network_policy=default_network_policy
     )
 
-    # Create propagation policy if member cluster names are specified
     propagation_policy = None
     if member_cluster_names:
         placement_profile_model = cmd.get_models(
@@ -861,7 +863,6 @@ def create_managed_namespace(cmd,
             placement_profile=placement_profile
         )
 
-    # Create the managed namespace
     managed_namespace = managed_namespace_model(
         location=fleet.location,
         tags=tags,
