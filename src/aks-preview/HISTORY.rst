@@ -11,6 +11,10 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+
+18.0.0b27
++++++++
+* Add interactive AI-powered debugging tool `az aks agent`.
 * Add framework for interactive AI-powered debugging tool.
 
 18.0.0b26
