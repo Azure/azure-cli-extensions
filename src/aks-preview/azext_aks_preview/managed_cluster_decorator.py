@@ -1231,6 +1231,16 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
 
         return disable_image_integrity
 
+    def get_kms_infrastructure_encryption(self) -> str:
+        """Obtain the value of kms_infrastructure_encryption.
+
+        :return: str
+        """
+        # read the original value passed by the command
+        kms_infrastructure_encryption = self.raw_param.get("kms_infrastructure_encryption")
+
+        return kms_infrastructure_encryption
+
     def get_cluster_snapshot_id(self) -> Union[str, None]:
         """Obtain the values of cluster_snapshot_id.
 
@@ -3250,6 +3260,30 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
 
         return mc
 
+    def set_up_kms_infrastructure_encryption(self, mc: ManagedCluster) -> ManagedCluster:
+        """Set up security profile KubernetesResourceObjectEncryptionProfile for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        kms_infrastructure_encryption = self.context.get_kms_infrastructure_encryption()
+        if kms_infrastructure_encryption and kms_infrastructure_encryption != "Disabled":
+            if mc.security_profile is None:
+                mc.security_profile = self.models.ManagedClusterSecurityProfile()  # pylint: disable=no-member
+
+            # Set or update the kubernetes resource object encryption profile
+            if mc.security_profile.kubernetes_resource_object_encryption_profile is None:
+                mc.security_profile.kubernetes_resource_object_encryption_profile = (
+                    self.models.KubernetesResourceObjectEncryptionProfile()  # pylint: disable=no-member
+                )
+
+            # Set infrastructure encryption
+            # pylint: disable=line-too-long
+            mc.security_profile.kubernetes_resource_object_encryption_profile.infrastructure_encryption = kms_infrastructure_encryption
+
+        return mc
+
     def set_up_creationdata_of_cluster_snapshot(self, mc: ManagedCluster) -> ManagedCluster:
         """Set up creationData of cluster snapshot for the ManagedCluster object.
 
@@ -3784,6 +3818,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc = self.set_up_image_cleaner(mc)
         # set up image integrity
         mc = self.set_up_image_integrity(mc)
+        # set up KMS infrastructure encryption
+        mc = self.set_up_kms_infrastructure_encryption(mc)
         # set up cluster snapshot
         mc = self.set_up_creationdata_of_cluster_snapshot(mc)
         # set up app routing profile
