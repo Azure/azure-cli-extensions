@@ -13,15 +13,16 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud clustermanager identity assign",
+    is_preview=True,
 )
 class Assign(AAZCommand):
     """Assign the user or system managed identities.
     """
 
     _aaz_info = {
-        "version": "2025-02-01",
+        "version": "2025-07-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clustermanagers/{}", "2025-02-01", "identity"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clustermanagers/{}", "2025-07-01-preview", "identity"],
         ]
     }
 
@@ -171,7 +172,7 @@ class Assign(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-02-01",
+                    "api-version", "2025-07-01-preview",
                     required=True,
                 ),
             }
@@ -270,7 +271,7 @@ class Assign(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-02-01",
+                    "api-version", "2025-07-01-preview",
                     required=True,
                 ),
             }
