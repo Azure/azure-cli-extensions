@@ -143,17 +143,17 @@ class Create(AAZCommand):
             ),
         )
         _args_schema.native_ipv4_prefix_limit = AAZObjectArg(
-            options=["--native-ipv4-prefix-limit"],
+            options=["--nat-ipv4-prefix-limit", "--native-ipv4-prefix-limit"],
             arg_group="Properties",
             help="Native IPv4 Prefix Limit Configuration properties.",
         )
         _args_schema.native_ipv6_prefix_limit = AAZObjectArg(
-            options=["--native-ipv6-prefix-limit"],
+            options=["--nat-ipv6-prefix-limit", "--native-ipv6-prefix-limit"],
             arg_group="Properties",
             help="Native IPv6 Prefix Limit Configuration properties.",
         )
         _args_schema.static_route_configuration = AAZObjectArg(
-            options=["--static-route-configuration"],
+            options=["--static-route-config", "--static-route-configuration"],
             arg_group="Properties",
             help="Static Route Configuration properties.",
         )

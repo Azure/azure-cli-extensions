@@ -83,7 +83,7 @@ class Create(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.aggregate_route_configuration = AAZObjectArg(
-            options=["--aggregate-route-configuration"],
+            options=["--aggr-route-config", "--aggregate-route-configuration"],
             arg_group="Properties",
             help="Aggregate route configurations.",
         )
@@ -93,12 +93,12 @@ class Create(AAZCommand):
             help="Switch configuration description.",
         )
         _args_schema.connected_subnet_route_policy = AAZObjectArg(
-            options=["--connected-subnet-route-policy"],
+            options=["--cs-route-policy", "--connected-subnet-route-policy"],
             arg_group="Properties",
             help="Connected Subnet RoutePolicy",
         )
-        _args_schema.export_policy_configuration = AAZObjectArg(
-            options=["--export-policy-configuration"],
+        _args_schema.export_policy_config = AAZObjectArg(
+            options=["--export-policy-config"],
             arg_group="Properties",
             help="BMP Export Policy configuration.",
         )
@@ -109,21 +109,21 @@ class Create(AAZCommand):
             required=True,
         )
         _args_schema.redistribute_connected_subnets = AAZStrArg(
-            options=["--redistribute-connected-subnets"],
+            options=["--redist-conn-subnets", "--redistribute-connected-subnets"],
             arg_group="Properties",
             help="Advertise Connected Subnets. Ex: \"True\" | \"False\".",
             default="True",
             enum={"False": "False", "True": "True"},
         )
         _args_schema.redistribute_static_routes = AAZStrArg(
-            options=["--redistribute-static-routes"],
+            options=["--redist-static-routes", "--redistribute-static-routes"],
             arg_group="Properties",
             help="Advertise Static Routes. Ex: \"True\" | \"False\".",
             default="False",
             enum={"False": "False", "True": "True"},
         )
         _args_schema.static_route_route_policy = AAZObjectArg(
-            options=["--static-route-route-policy"],
+            options=["--sr-route-policy", "--static-route-route-policy"],
             arg_group="Properties",
             help="Static Route - route policy.",
         )
@@ -180,8 +180,8 @@ class Create(AAZCommand):
             help="ARM Resource ID of the RoutePolicy.",
         )
 
-        export_policy_configuration = cls._args_schema.export_policy_configuration
-        export_policy_configuration.export_policies = AAZListArg(
+        export_policy_config = cls._args_schema.export_policy_config
+        export_policy_config.export_policies = AAZListArg(
             options=["export-policies"],
             help="Export Policy for the BGP Monitoring Protocol (BMP) Configuration.",
             fmt=AAZListArgFormat(
@@ -189,7 +189,7 @@ class Create(AAZCommand):
             ),
         )
 
-        export_policies = cls._args_schema.export_policy_configuration.export_policies
+        export_policies = cls._args_schema.export_policy_config.export_policies
         export_policies.Element = AAZStrArg(
             enum={"All": "All", "LocalRib": "LocalRib", "Post-Policy": "Post-Policy", "Pre-Policy": "Pre-Policy"},
         )
@@ -417,7 +417,7 @@ class Create(AAZCommand):
                 properties.set_prop("aggregateRouteConfiguration", AAZObjectType, ".aggregate_route_configuration")
                 properties.set_prop("annotation", AAZStrType, ".annotation")
                 properties.set_prop("connectedSubnetRoutePolicy", AAZObjectType, ".connected_subnet_route_policy")
-                properties.set_prop("exportPolicyConfiguration", AAZObjectType, ".export_policy_configuration")
+                properties.set_prop("exportPolicyConfiguration", AAZObjectType, ".export_policy_config")
                 properties.set_prop("networkFabricId", AAZStrType, ".network_fabric_id", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("redistributeConnectedSubnets", AAZStrType, ".redistribute_connected_subnets")
                 properties.set_prop("redistributeStaticRoutes", AAZStrType, ".redistribute_static_routes")

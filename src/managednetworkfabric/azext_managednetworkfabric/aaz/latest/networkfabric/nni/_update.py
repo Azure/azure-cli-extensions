@@ -94,7 +94,7 @@ class Update(AAZCommand):
             help="Ingress Acl. ARM resource ID of Access Control Lists.",
         )
         _args_schema.layer2_configuration = AAZObjectArg(
-            options=["--layer2-configuration"],
+            options=["--l2-config", "--layer2-configuration"],
             arg_group="Properties",
             help="Common properties for Layer2Configuration.",
         )
@@ -105,17 +105,17 @@ class Update(AAZCommand):
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
         )
         _args_schema.npb_static_route_configuration = AAZObjectArg(
-            options=["--npb-static-route-configuration"],
+            options=["--npb-static-route-conf", "--npb-static-route-configuration"],
             arg_group="Properties",
             help="NPB Static Route Configuration properties.",
         )
         _args_schema.option_b_layer3_configuration = AAZObjectArg(
-            options=["--option-b-layer3-configuration"],
+            options=["--option-b-l3-config", "--option-b-layer3-configuration"],
             arg_group="Properties",
             help="Common properties for Layer3Configuration.",
         )
         _args_schema.static_route_configuration = AAZObjectArg(
-            options=["--static-route-configuration"],
+            options=["--static-route-config", "--static-route-configuration"],
             arg_group="Properties",
             help="Static Route Configuration.",
         )

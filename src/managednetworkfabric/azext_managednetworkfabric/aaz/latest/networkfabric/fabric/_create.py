@@ -126,7 +126,7 @@ class Create(AAZCommand):
             help="NetworkFabric feature flag configuration information",
         )
         _args_schema.hardware_alert_threshold = AAZIntArg(
-            options=["--hardware-alert-threshold"],
+            options=["--ha-threshold", "--hardware-alert-threshold"],
             arg_group="Properties",
             help="Hardware alert threshold percentage. Possible values are from 20 to 100.",
             fmt=AAZIntArgFormat(
@@ -197,7 +197,7 @@ class Create(AAZCommand):
             ),
         )
         _args_schema.storage_account_configuration = AAZObjectArg(
-            options=["--storage-account-configuration"],
+            options=["--storage-account-config", "--storage-account-configuration"],
             arg_group="Properties",
             help="Bring your own storage account configurations for Network Fabric.",
         )
@@ -222,7 +222,7 @@ class Create(AAZCommand):
             help="Trusted IP Prefixes ARM resource IDs.",
         )
         _args_schema.unique_rd_configuration = AAZObjectArg(
-            options=["--unique-rd-configuration"],
+            options=["--unique-rd-config", "--unique-rd-configuration"],
             arg_group="Properties",
             help="Unique Route Distinguisher configuration",
         )

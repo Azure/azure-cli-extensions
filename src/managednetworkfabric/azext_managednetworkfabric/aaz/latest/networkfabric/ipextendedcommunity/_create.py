@@ -69,7 +69,7 @@ class Create(AAZCommand):
             help="Switch configuration description.",
         )
         _args_schema.ip_extended_community_rules = AAZListArg(
-            options=["--ip-extended-community-rules"],
+            options=["--ip-ext-community-rules", "--ip-extended-community-rules"],
             arg_group="Properties",
             help="List of IP Extended Community Rules.",
             required=True,

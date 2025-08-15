@@ -62,7 +62,7 @@ class Update(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.internet_gateway_rule_id = AAZResourceIdArg(
-            options=["--internet-gateway-rule-id"],
+            options=["--gateway-rule-id", "--internet-gateway-rule-id"],
             arg_group="Properties",
             help="ARM Resource ID of the Internet Gateway Rule.",
         )

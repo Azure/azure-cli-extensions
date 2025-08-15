@@ -72,7 +72,7 @@ class Create(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.conditional_default_route_configuration = AAZObjectArg(
-            options=["--conditional-default-route-configuration"],
+            options=["--cond-df-route-config", "--conditional-default-route-configuration"],
             arg_group="Properties",
             help="Conditional Default Route Configuration properties.",
         )
@@ -104,7 +104,7 @@ class Create(AAZCommand):
             enum={"False": "False", "True": "True"},
         )
         _args_schema.layer2_configuration = AAZObjectArg(
-            options=["--layer2-configuration"],
+            options=["--l2-config", "--layer2-configuration"],
             arg_group="Properties",
             help="Common properties for Layer2 Configuration.",
         )
@@ -122,17 +122,17 @@ class Create(AAZCommand):
             enum={"CE": "CE", "NPB": "NPB"},
         )
         _args_schema.npb_static_route_configuration = AAZObjectArg(
-            options=["--npb-static-route-configuration"],
+            options=["--npb-static-route-conf", "--npb-static-route-configuration"],
             arg_group="Properties",
             help="NPB Static Route Configuration properties.",
         )
         _args_schema.option_b_layer3_configuration = AAZObjectArg(
-            options=["--option-b-layer3-configuration"],
+            options=["--option-b-l3-config", "--option-b-layer3-configuration"],
             arg_group="Properties",
             help="Common properties for Layer3Configuration.",
         )
         _args_schema.static_route_configuration = AAZObjectArg(
-            options=["--static-route-configuration"],
+            options=["--static-route-config", "--static-route-configuration"],
             arg_group="Properties",
             help="Static Route Configuration.",
         )

@@ -95,12 +95,12 @@ class Update(AAZCommand):
             enum={"File": "File", "Inline": "Inline"},
         )
         _args_schema.dynamic_match_configurations = AAZListArg(
-            options=["--dynamic-match-configurations"],
+            options=["--dynamic-match-configs", "--dynamic-match-configurations"],
             arg_group="Properties",
             help="List of dynamic match configurations.",
         )
         _args_schema.global_network_tap_rule_actions = AAZObjectArg(
-            options=["--global-network-tap-rule-actions"],
+            options=["--global-ntr-actions", "--global-network-tap-rule-actions"],
             arg_group="Properties",
             help="Global network tap rule actions",
         )

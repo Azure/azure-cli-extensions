@@ -112,7 +112,7 @@ class Create(AAZCommand):
             enum={"OptionA": "OptionA", "OptionB": "OptionB"},
         )
         _args_schema.static_route_configuration = AAZObjectArg(
-            options=["--static-route-configuration"],
+            options=["--static-route-config", "--static-route-configuration"],
             arg_group="Properties",
             help="Static Route Configuration.",
         )

@@ -111,7 +111,7 @@ class Create(AAZCommand):
             ),
         )
         _args_schema.is_workload_management_network_enabled = AAZStrArg(
-            options=["--is-workload-management-network-enabled"],
+            options=["--wl-mgt-net-enabled", "--is-workload-management-network-enabled"],
             arg_group="Properties",
             help="A workload management network is required for all the tenant (workload) traffic. This traffic is only dedicated for Tenant workloads which are required to access internet or any other MSFT/Public endpoints.",
             default="True",
@@ -130,7 +130,7 @@ class Create(AAZCommand):
             enum={"Basic": "Basic", "HighPerformance": "HighPerformance", "Standard": "Standard"},
         )
         _args_schema.workload_express_route_connections = AAZListArg(
-            options=["--workload-er-connections", "--workload-express-route-connections"],
+            options=["--wl-er-connections", "--workload-er-connections", "--workload-express-route-connections"],
             arg_group="Properties",
             help="As part of an update, the workload ExpressRoute CircuitID should be provided to create and Provision a NFC. This Express route is dedicated for Workload services. (This is a Mandatory attribute).",
         )

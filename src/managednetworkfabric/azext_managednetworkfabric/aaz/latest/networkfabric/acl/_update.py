@@ -84,7 +84,7 @@ class Update(AAZCommand):
             enum={"File": "File", "Inline": "Inline"},
         )
         _args_schema.control_plane_acl_configuration = AAZListArg(
-            options=["--control-plane-acl-configuration"],
+            options=["--cp-acl-config", "--control-plane-acl-configuration"],
             arg_group="Properties",
             help="Access Control List (ACL) configurations.",
         )
@@ -101,7 +101,7 @@ class Update(AAZCommand):
             enum={"CE": "CE", "ManagementSwitch": "ManagementSwitch", "NPB": "NPB", "ToR": "ToR"},
         )
         _args_schema.dynamic_match_configurations = AAZListArg(
-            options=["--dynamic-match-configurations"],
+            options=["--dynamic-match-configs", "--dynamic-match-configurations"],
             arg_group="Properties",
             help="List of dynamic match configurations.",
             fmt=AAZListArgFormat(
@@ -109,12 +109,12 @@ class Update(AAZCommand):
             ),
         )
         _args_schema.global_access_control_list_actions = AAZObjectArg(
-            options=["--global-access-control-list-actions"],
+            options=["--global-acl-actions", "--global-access-control-list-actions"],
             arg_group="Properties",
             help="Global Access Control List (ACL) actions",
         )
         _args_schema.match_configurations = AAZListArg(
-            options=["--match-configurations"],
+            options=["--match-configs", "--match-configurations"],
             arg_group="Properties",
             help="List of match configurations.",
             fmt=AAZListArgFormat(
