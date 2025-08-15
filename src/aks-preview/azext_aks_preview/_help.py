@@ -3995,7 +3995,6 @@ helps[
           text: |-
             export OPENAI_API_KEY="sk-xxx"
             az aks agent "Why are my pods not starting?" --name MyManagedCluster --resource-group MyResourceGroup --model gpt-4o
-          text: az aks agent "Why are my pods not starting?"
         - name: Run in interactive mode without a question
           text: az aks agent "Check the pod status in my cluster" --name MyManagedCluster --resource-group MyResourceGroup --model azure/my-gpt4.1-deployment --api-key "sk-xxx"
         - name: Run in non-interactive batch mode
@@ -4007,7 +4006,7 @@ helps[
         - name: Run agent with no echo of the original question
           text: az aks agent "What is the status of my cluster?" --no-echo-request --model azure/my-gpt4.1-deployment
         - name: Refresh toolsets to get the latest available tools
-          text: az aks agent "What is the status of my cluster?" --refresh-toolsets --model azure/my-gpt4.1-deploymen
+          text: az aks agent "What is the status of my cluster?" --refresh-toolsets --model azure/my-gpt4.1-deployment
         - name: Run agent with config file
           text: |
             az aks agent "Check kubernetes pod resource usage" --config-file /path/to/custom.config

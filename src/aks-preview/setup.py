@@ -9,7 +9,7 @@ from codecs import open as open1
 
 from setuptools import find_packages, setup
 
-VERSION = "18.0.0b26"
+VERSION = "18.0.0b27"
 
 CLASSIFIERS = [
     "Development Status :: 4 - Beta",
@@ -24,7 +24,7 @@ CLASSIFIERS = [
 ]
 
 DEPENDENCIES = [
-    "holmesgpt==0.12.4; python_version >= '3.10'",
+    "holmesgpt==0.12.5; python_version >= '3.10'",
 ]
 
 with open1("README.rst", "r", encoding="utf-8") as f:
