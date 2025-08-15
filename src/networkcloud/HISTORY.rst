@@ -16,7 +16,7 @@ Release History
 * Virtual machine create command is updated to support user-data-content and network-data-content parameters, which are treated as secrets. These parameters should be used instead of now deprecated user-data and network-data, which store and return information in a clear text.
 * Volume create command is updated to support allocation at the desired storage appliance.
 * All list commands are updated to support the `--top` parameter, which allows limiting the number of items returned in the API response. When provided, the CLI will retrieve the max of `--top` results at a time and iterate over the paginated response using `nextLink` until all retrieved.
-* This version requires a minimum of 2.70 Azure core CLI. See release notes for more details: https://github.com/MicrosoftDocs/azure-docs-cli/blob/main/docs-ref-conceptual/release-notes-azure-cli.md
+* This version requires a minimum of 2.75 Azure core CLI. See release notes for more details: https://github.com/MicrosoftDocs/azure-docs-cli/blob/main/docs-ref-conceptual/Latest-version/release-notes-azure-cli.md
 * This version upgrades the internal generation tool aaz-dev-tools to 4.2.0. Refer to the release notes for more details: https://github.com/Azure/aaz-dev-tools/releases/tag/v4.2.0.
 
 3.0.0
