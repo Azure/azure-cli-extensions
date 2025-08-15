@@ -233,7 +233,7 @@ def get_credentials(cmd,
 
                 if exit_code != 0 or not (kubeconfig := string_io.getvalue()):
                     error_msg = (f"Failed to get credentials from managed cluster '{parsed_id['resource_name']}' "
-                               f"for fleet member '{member_name}'")
+                                 f"for fleet member '{member_name}'")
                     raise CLIError(error_msg)
 
                 print_or_merge_credentials(path, kubeconfig, overwrite_existing, context_name)
@@ -938,14 +938,14 @@ def list_managed_namespaces(cmd,  # pylint: disable=unused-argument
 
 
 def get_namespace_credentials(cmd,
-                                 client,  # pylint: disable=unused-argument
-                                 resource_group_name,
-                                 fleet_name,
-                                 managed_namespace_name,
-                                 path=os.path.join(os.path.expanduser('~'), '.kube', 'config'),
-                                 overwrite_existing=False,
-                                 context_name=None,
-                                 member_name=None):
+                              client,  # pylint: disable=unused-argument
+                              resource_group_name,
+                              fleet_name,
+                              managed_namespace_name,
+                              path=os.path.join(os.path.expanduser('~'), '.kube', 'config'),
+                              overwrite_existing=False,
+                              context_name=None,
+                              member_name=None):
     """
     Get credentials for a fleet hub or managed cluster and modifies the kubeconfig to set the default namespace.
     """
