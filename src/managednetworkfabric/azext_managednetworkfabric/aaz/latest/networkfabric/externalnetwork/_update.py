@@ -28,9 +28,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-07-15",
+        "version": "2024-06-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/l3isolationdomains/{}/externalnetworks/{}", "2025-07-15"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/l3isolationdomains/{}/externalnetworks/{}", "2024-06-15-preview"],
         ]
     }
 
@@ -80,42 +80,50 @@ class Update(AAZCommand):
             options=["--annotation"],
             arg_group="Properties",
             help="Switch configuration description.",
+            nullable=True,
         )
         _args_schema.export_route_policy = AAZObjectArg(
             options=["--export-route-policy"],
             arg_group="Properties",
             help="Export Route Policy either IPv4 or IPv6.",
+            nullable=True,
         )
         _args_schema.import_route_policy = AAZObjectArg(
             options=["--import-route-policy"],
             arg_group="Properties",
             help="Import Route Policy either IPv4 or IPv6.",
+            nullable=True,
         )
         _args_schema.network_to_network_interconnect_id = AAZResourceIdArg(
             options=["--nni-id", "--network-to-network-interconnect-id"],
             arg_group="Properties",
             help="ARM Resource ID of the networkToNetworkInterconnectId of the ExternalNetwork resource.",
+            nullable=True,
         )
         _args_schema.option_a_properties = AAZObjectArg(
             options=["--option-a-properties"],
             arg_group="Properties",
             help="option A properties object",
+            nullable=True,
         )
         _args_schema.option_b_properties = AAZObjectArg(
             options=["--option-b-properties"],
             arg_group="Properties",
             help="option B properties object",
+            nullable=True,
         )
         _args_schema.peering_option = AAZStrArg(
             options=["--peering-option"],
             arg_group="Properties",
             help="Peering option list.",
+            nullable=True,
             enum={"OptionA": "OptionA", "OptionB": "OptionB"},
         )
         _args_schema.static_route_configuration = AAZObjectArg(
-            options=["--static-route-config", "--static-route-configuration"],
+            options=["--static-route-configuration"],
             arg_group="Properties",
             help="Static Route Configuration.",
+            nullable=True,
         )
 
         export_route_policy = cls._args_schema.export_route_policy
@@ -235,6 +243,9 @@ class Update(AAZCommand):
         native_ipv4_prefix_limit.prefix_limits = AAZListArg(
             options=["prefix-limits"],
             help="Prefix limits",
+            fmt=AAZListArgFormat(
+                min_length=1,
+            ),
         )
 
         prefix_limits = cls._args_schema.option_a_properties.native_ipv4_prefix_limit.prefix_limits
@@ -245,6 +256,9 @@ class Update(AAZCommand):
         native_ipv6_prefix_limit.prefix_limits = AAZListArg(
             options=["prefix-limits"],
             help="Prefix limits",
+            fmt=AAZListArgFormat(
+                min_length=1,
+            ),
         )
 
         prefix_limits = cls._args_schema.option_a_properties.native_ipv6_prefix_limit.prefix_limits
@@ -499,7 +513,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-07-15",
+                    "api-version", "2024-06-15-preview",
                     required=True,
                 ),
             }
@@ -524,18 +538,18 @@ class Update(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
+            _builder.set_prop("properties", AAZObjectType)
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("annotation", AAZStrType, ".annotation")
-                properties.set_prop("exportRoutePolicy", AAZObjectType, ".export_route_policy")
-                properties.set_prop("importRoutePolicy", AAZObjectType, ".import_route_policy")
-                properties.set_prop("networkToNetworkInterconnectId", AAZStrType, ".network_to_network_interconnect_id")
-                properties.set_prop("optionAProperties", AAZObjectType, ".option_a_properties")
-                properties.set_prop("optionBProperties", AAZObjectType, ".option_b_properties")
-                properties.set_prop("peeringOption", AAZStrType, ".peering_option")
-                properties.set_prop("staticRouteConfiguration", AAZObjectType, ".static_route_configuration")
+                properties.set_prop("annotation", AAZStrType, ".annotation", typ_kwargs={"nullable": True})
+                properties.set_prop("exportRoutePolicy", AAZObjectType, ".export_route_policy", typ_kwargs={"nullable": True})
+                properties.set_prop("importRoutePolicy", AAZObjectType, ".import_route_policy", typ_kwargs={"nullable": True})
+                properties.set_prop("networkToNetworkInterconnectId", AAZStrType, ".network_to_network_interconnect_id", typ_kwargs={"nullable": True})
+                properties.set_prop("optionAProperties", AAZObjectType, ".option_a_properties", typ_kwargs={"nullable": True})
+                properties.set_prop("optionBProperties", AAZObjectType, ".option_b_properties", typ_kwargs={"nullable": True})
+                properties.set_prop("peeringOption", AAZStrType, ".peering_option", typ_kwargs={"nullable": True})
+                properties.set_prop("staticRouteConfiguration", AAZObjectType, ".static_route_configuration", typ_kwargs={"nullable": True})
 
             export_route_policy = _builder.get(".properties.exportRoutePolicy")
             if export_route_policy is not None:
@@ -696,10 +710,6 @@ class Update(AAZCommand):
             )
             properties.last_operation = AAZObjectType(
                 serialized_name="lastOperation",
-                flags={"read_only": True},
-            )
-            properties.network_fabric_id = AAZStrType(
-                serialized_name="networkFabricId",
                 flags={"read_only": True},
             )
             properties.network_to_network_interconnect_id = AAZStrType(

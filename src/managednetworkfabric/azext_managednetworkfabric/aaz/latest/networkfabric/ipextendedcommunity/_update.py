@@ -22,9 +22,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-07-15",
+        "version": "2024-06-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/ipextendedcommunities/{}", "2025-07-15"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/ipextendedcommunities/{}", "2024-06-15-preview"],
         ]
     }
 
@@ -65,11 +65,13 @@ class Update(AAZCommand):
             options=["--annotation"],
             arg_group="Properties",
             help="Switch configuration description.",
+            nullable=True,
         )
         _args_schema.ip_extended_community_rules = AAZListArg(
-            options=["--ip-ext-community-rules", "--ip-extended-community-rules"],
+            options=["--ip-extended-community-rules"],
             arg_group="Properties",
             help="List of IP Extended Community Rules.",
+            nullable=True,
         )
         _args_schema.tags = AAZDictArg(
             options=["--tags"],
@@ -193,7 +195,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-07-15",
+                    "api-version", "2024-06-15-preview",
                     required=True,
                 ),
             }
@@ -218,13 +220,13 @@ class Update(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
+            _builder.set_prop("properties", AAZObjectType)
             _builder.set_prop("tags", AAZDictType, ".tags")
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("annotation", AAZStrType, ".annotation")
-                properties.set_prop("ipExtendedCommunityRules", AAZListType, ".ip_extended_community_rules")
+                properties.set_prop("annotation", AAZStrType, ".annotation", typ_kwargs={"nullable": True})
+                properties.set_prop("ipExtendedCommunityRules", AAZListType, ".ip_extended_community_rules", typ_kwargs={"nullable": True})
 
             ip_extended_community_rules = _builder.get(".properties.ipExtendedCommunityRules")
             if ip_extended_community_rules is not None:

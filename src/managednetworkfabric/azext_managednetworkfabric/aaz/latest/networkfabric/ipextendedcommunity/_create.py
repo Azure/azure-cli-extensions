@@ -25,9 +25,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-07-15",
+        "version": "2024-06-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/ipextendedcommunities/{}", "2025-07-15"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/ipextendedcommunities/{}", "2024-06-15-preview"],
         ]
     }
 
@@ -69,7 +69,7 @@ class Create(AAZCommand):
             help="Switch configuration description.",
         )
         _args_schema.ip_extended_community_rules = AAZListArg(
-            options=["--ip-ext-community-rules", "--ip-extended-community-rules"],
+            options=["--ip-extended-community-rules"],
             arg_group="Properties",
             help="List of IP Extended Community Rules.",
             required=True,
@@ -208,7 +208,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-07-15",
+                    "api-version", "2024-06-15-preview",
                     required=True,
                 ),
             }

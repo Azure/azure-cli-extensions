@@ -22,10 +22,10 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-07-15",
+        "version": "2024-06-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.managednetworkfabric/networkmonitors", "2025-07-15"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkmonitors", "2025-07-15"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.managednetworkfabric/networkmonitors", "2024-06-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkmonitors", "2024-06-15-preview"],
         ]
     }
 
@@ -112,7 +112,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-07-15",
+                    "api-version", "2024-06-15-preview",
                     required=True,
                 ),
             }
@@ -203,9 +203,6 @@ class List(AAZCommand):
             bmp_configuration.export_policy = AAZStrType(
                 serialized_name="exportPolicy",
             )
-            bmp_configuration.export_policy_configuration = AAZObjectType(
-                serialized_name="exportPolicyConfiguration",
-            )
             bmp_configuration.monitored_address_families = AAZListType(
                 serialized_name="monitoredAddressFamilies",
             )
@@ -236,14 +233,6 @@ class List(AAZCommand):
             bmp_configuration.station_port = AAZIntType(
                 serialized_name="stationPort",
             )
-
-            export_policy_configuration = cls._schema_on_200.value.Element.properties.bmp_configuration.export_policy_configuration
-            export_policy_configuration.export_policies = AAZListType(
-                serialized_name="exportPolicies",
-            )
-
-            export_policies = cls._schema_on_200.value.Element.properties.bmp_configuration.export_policy_configuration.export_policies
-            export_policies.Element = AAZStrType()
 
             monitored_address_families = cls._schema_on_200.value.Element.properties.bmp_configuration.monitored_address_families
             monitored_address_families.Element = AAZStrType()
@@ -336,7 +325,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-07-15",
+                    "api-version", "2024-06-15-preview",
                     required=True,
                 ),
             }
@@ -427,9 +416,6 @@ class List(AAZCommand):
             bmp_configuration.export_policy = AAZStrType(
                 serialized_name="exportPolicy",
             )
-            bmp_configuration.export_policy_configuration = AAZObjectType(
-                serialized_name="exportPolicyConfiguration",
-            )
             bmp_configuration.monitored_address_families = AAZListType(
                 serialized_name="monitoredAddressFamilies",
             )
@@ -460,14 +446,6 @@ class List(AAZCommand):
             bmp_configuration.station_port = AAZIntType(
                 serialized_name="stationPort",
             )
-
-            export_policy_configuration = cls._schema_on_200.value.Element.properties.bmp_configuration.export_policy_configuration
-            export_policy_configuration.export_policies = AAZListType(
-                serialized_name="exportPolicies",
-            )
-
-            export_policies = cls._schema_on_200.value.Element.properties.bmp_configuration.export_policy_configuration.export_policies
-            export_policies.Element = AAZStrType()
 
             monitored_address_families = cls._schema_on_200.value.Element.properties.bmp_configuration.monitored_address_families
             monitored_address_families.Element = AAZStrType()

@@ -84,7 +84,7 @@ class GA_NFIdentityScenarioTest1(ScenarioTest):
         super().__init__(*args, **kwargs)
         self.kwargs.update(
             {
-                "name": CONFIG.get("NETWORK_FABRIC", "name"),
+                "name": CONFIG.get("NETWORK_FABRIC", "identity_nf_name"),
                 "rg": CONFIG.get("NETWORK_FABRIC", "resource_group"),
                 "userAssignedIdentity": CONFIG.get(
                     "NETWORK_FABRIC", "user_assigned_identity"

@@ -22,9 +22,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-07-15",
+        "version": "2024-06-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/ipcommunities/{}", "2025-07-15"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/ipcommunities/{}", "2024-06-15-preview"],
         ]
     }
 
@@ -65,6 +65,7 @@ class Update(AAZCommand):
             options=["--ip-community-rules"],
             arg_group="Properties",
             help="List of IP Community Rules.",
+            nullable=True,
         )
         _args_schema.tags = AAZDictArg(
             options=["--tags"],
@@ -197,7 +198,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-07-15",
+                    "api-version", "2024-06-15-preview",
                     required=True,
                 ),
             }
@@ -222,12 +223,12 @@ class Update(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
+            _builder.set_prop("properties", AAZObjectType)
             _builder.set_prop("tags", AAZDictType, ".tags")
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("ipCommunityRules", AAZListType, ".ip_community_rules")
+                properties.set_prop("ipCommunityRules", AAZListType, ".ip_community_rules", typ_kwargs={"nullable": True})
 
             ip_community_rules = _builder.get(".properties.ipCommunityRules")
             if ip_community_rules is not None:

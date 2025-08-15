@@ -25,10 +25,10 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-07-15",
+        "version": "2024-06-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.managednetworkfabric/networkfabrics", "2025-07-15"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkfabrics", "2025-07-15"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.managednetworkfabric/networkfabrics", "2024-06-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkfabrics", "2024-06-15-preview"],
         ]
     }
 
@@ -115,7 +115,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-07-15",
+                    "api-version", "2024-06-15-preview",
                     required=True,
                 ),
             }
@@ -222,9 +222,6 @@ class List(AAZCommand):
                 flags={"read_only": True},
             )
             properties.annotation = AAZStrType()
-            properties.authorized_transceiver = AAZObjectType(
-                serialized_name="authorizedTransceiver",
-            )
             properties.configuration_state = AAZStrType(
                 serialized_name="configurationState",
                 flags={"read_only": True},
@@ -245,6 +242,7 @@ class List(AAZCommand):
             )
             properties.feature_flags = AAZListType(
                 serialized_name="featureFlags",
+                flags={"read_only": True},
             )
             properties.hardware_alert_threshold = AAZIntType(
                 serialized_name="hardwareAlertThreshold",
@@ -284,9 +282,6 @@ class List(AAZCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
-            properties.qos_configuration = AAZObjectType(
-                serialized_name="qosConfiguration",
-            )
             properties.rack_count = AAZIntType(
                 serialized_name="rackCount",
             )
@@ -295,10 +290,6 @@ class List(AAZCommand):
             )
             properties.router_ids = AAZListType(
                 serialized_name="routerIds",
-                flags={"read_only": True},
-            )
-            properties.secret_rotation_summary = AAZObjectType(
-                serialized_name="secretRotationSummary",
                 flags={"read_only": True},
             )
             properties.server_count_per_rack = AAZIntType(
@@ -324,10 +315,6 @@ class List(AAZCommand):
 
             active_commit_batches = cls._schema_on_200.value.Element.properties.active_commit_batches
             active_commit_batches.Element = AAZStrType()
-
-            authorized_transceiver = cls._schema_on_200.value.Element.properties.authorized_transceiver
-            authorized_transceiver.key = AAZStrType()
-            authorized_transceiver.vendor = AAZStrType()
 
             control_plane_acls = cls._schema_on_200.value.Element.properties.control_plane_acls
             control_plane_acls.Element = AAZStrType()
@@ -377,22 +364,11 @@ class List(AAZCommand):
             )
             _ListHelper._build_schema_vpn_configuration_properties_read(management_network_configuration.workload_vpn_configuration)
 
-            qos_configuration = cls._schema_on_200.value.Element.properties.qos_configuration
-            qos_configuration.qos_configuration_state = AAZStrType(
-                serialized_name="qosConfigurationState",
-            )
-
             racks = cls._schema_on_200.value.Element.properties.racks
             racks.Element = AAZStrType()
 
             router_ids = cls._schema_on_200.value.Element.properties.router_ids
             router_ids.Element = AAZStrType()
-
-            secret_rotation_summary = cls._schema_on_200.value.Element.properties.secret_rotation_summary
-            secret_rotation_summary.active_password_set_count = AAZIntType(
-                serialized_name="activePasswordSetCount",
-                flags={"read_only": True},
-            )
 
             storage_account_configuration = cls._schema_on_200.value.Element.properties.storage_account_configuration
             storage_account_configuration.storage_account_id = AAZStrType(
@@ -433,54 +409,11 @@ class List(AAZCommand):
             terminal_server_configuration.secondary_ipv6_prefix = AAZStrType(
                 serialized_name="secondaryIpv6Prefix",
             )
-            terminal_server_configuration.secret_rotation_status = AAZListType(
-                serialized_name="secretRotationStatus",
-                flags={"read_only": True},
-            )
             terminal_server_configuration.serial_number = AAZStrType(
                 serialized_name="serialNumber",
             )
             terminal_server_configuration.username = AAZStrType(
                 flags={"required": True},
-            )
-
-            secret_rotation_status = cls._schema_on_200.value.Element.properties.terminal_server_configuration.secret_rotation_status
-            secret_rotation_status.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.value.Element.properties.terminal_server_configuration.secret_rotation_status.Element
-            _element.last_rotation_time = AAZStrType(
-                serialized_name="lastRotationTime",
-                flags={"read_only": True},
-            )
-            _element.secret_archive_reference = AAZObjectType(
-                serialized_name="secretArchiveReference",
-                flags={"read_only": True},
-            )
-            _element.secret_type = AAZStrType(
-                serialized_name="secretType",
-                flags={"read_only": True},
-            )
-            _element.synchronization_status = AAZStrType(
-                serialized_name="synchronizationStatus",
-                flags={"read_only": True},
-            )
-
-            secret_archive_reference = cls._schema_on_200.value.Element.properties.terminal_server_configuration.secret_rotation_status.Element.secret_archive_reference
-            secret_archive_reference.key_vault_id = AAZStrType(
-                serialized_name="keyVaultId",
-                flags={"read_only": True},
-            )
-            secret_archive_reference.key_vault_uri = AAZStrType(
-                serialized_name="keyVaultUri",
-                flags={"read_only": True},
-            )
-            secret_archive_reference.secret_name = AAZStrType(
-                serialized_name="secretName",
-                flags={"read_only": True},
-            )
-            secret_archive_reference.secret_version = AAZStrType(
-                serialized_name="secretVersion",
-                flags={"read_only": True},
             )
 
             trusted_ip_prefixes = cls._schema_on_200.value.Element.properties.trusted_ip_prefixes
@@ -570,7 +503,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-07-15",
+                    "api-version", "2024-06-15-preview",
                     required=True,
                 ),
             }
@@ -677,9 +610,6 @@ class List(AAZCommand):
                 flags={"read_only": True},
             )
             properties.annotation = AAZStrType()
-            properties.authorized_transceiver = AAZObjectType(
-                serialized_name="authorizedTransceiver",
-            )
             properties.configuration_state = AAZStrType(
                 serialized_name="configurationState",
                 flags={"read_only": True},
@@ -700,6 +630,7 @@ class List(AAZCommand):
             )
             properties.feature_flags = AAZListType(
                 serialized_name="featureFlags",
+                flags={"read_only": True},
             )
             properties.hardware_alert_threshold = AAZIntType(
                 serialized_name="hardwareAlertThreshold",
@@ -739,9 +670,6 @@ class List(AAZCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
-            properties.qos_configuration = AAZObjectType(
-                serialized_name="qosConfiguration",
-            )
             properties.rack_count = AAZIntType(
                 serialized_name="rackCount",
             )
@@ -750,10 +678,6 @@ class List(AAZCommand):
             )
             properties.router_ids = AAZListType(
                 serialized_name="routerIds",
-                flags={"read_only": True},
-            )
-            properties.secret_rotation_summary = AAZObjectType(
-                serialized_name="secretRotationSummary",
                 flags={"read_only": True},
             )
             properties.server_count_per_rack = AAZIntType(
@@ -779,10 +703,6 @@ class List(AAZCommand):
 
             active_commit_batches = cls._schema_on_200.value.Element.properties.active_commit_batches
             active_commit_batches.Element = AAZStrType()
-
-            authorized_transceiver = cls._schema_on_200.value.Element.properties.authorized_transceiver
-            authorized_transceiver.key = AAZStrType()
-            authorized_transceiver.vendor = AAZStrType()
 
             control_plane_acls = cls._schema_on_200.value.Element.properties.control_plane_acls
             control_plane_acls.Element = AAZStrType()
@@ -832,22 +752,11 @@ class List(AAZCommand):
             )
             _ListHelper._build_schema_vpn_configuration_properties_read(management_network_configuration.workload_vpn_configuration)
 
-            qos_configuration = cls._schema_on_200.value.Element.properties.qos_configuration
-            qos_configuration.qos_configuration_state = AAZStrType(
-                serialized_name="qosConfigurationState",
-            )
-
             racks = cls._schema_on_200.value.Element.properties.racks
             racks.Element = AAZStrType()
 
             router_ids = cls._schema_on_200.value.Element.properties.router_ids
             router_ids.Element = AAZStrType()
-
-            secret_rotation_summary = cls._schema_on_200.value.Element.properties.secret_rotation_summary
-            secret_rotation_summary.active_password_set_count = AAZIntType(
-                serialized_name="activePasswordSetCount",
-                flags={"read_only": True},
-            )
 
             storage_account_configuration = cls._schema_on_200.value.Element.properties.storage_account_configuration
             storage_account_configuration.storage_account_id = AAZStrType(
@@ -888,54 +797,11 @@ class List(AAZCommand):
             terminal_server_configuration.secondary_ipv6_prefix = AAZStrType(
                 serialized_name="secondaryIpv6Prefix",
             )
-            terminal_server_configuration.secret_rotation_status = AAZListType(
-                serialized_name="secretRotationStatus",
-                flags={"read_only": True},
-            )
             terminal_server_configuration.serial_number = AAZStrType(
                 serialized_name="serialNumber",
             )
             terminal_server_configuration.username = AAZStrType(
                 flags={"required": True},
-            )
-
-            secret_rotation_status = cls._schema_on_200.value.Element.properties.terminal_server_configuration.secret_rotation_status
-            secret_rotation_status.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.value.Element.properties.terminal_server_configuration.secret_rotation_status.Element
-            _element.last_rotation_time = AAZStrType(
-                serialized_name="lastRotationTime",
-                flags={"read_only": True},
-            )
-            _element.secret_archive_reference = AAZObjectType(
-                serialized_name="secretArchiveReference",
-                flags={"read_only": True},
-            )
-            _element.secret_type = AAZStrType(
-                serialized_name="secretType",
-                flags={"read_only": True},
-            )
-            _element.synchronization_status = AAZStrType(
-                serialized_name="synchronizationStatus",
-                flags={"read_only": True},
-            )
-
-            secret_archive_reference = cls._schema_on_200.value.Element.properties.terminal_server_configuration.secret_rotation_status.Element.secret_archive_reference
-            secret_archive_reference.key_vault_id = AAZStrType(
-                serialized_name="keyVaultId",
-                flags={"read_only": True},
-            )
-            secret_archive_reference.key_vault_uri = AAZStrType(
-                serialized_name="keyVaultUri",
-                flags={"read_only": True},
-            )
-            secret_archive_reference.secret_name = AAZStrType(
-                serialized_name="secretName",
-                flags={"read_only": True},
-            )
-            secret_archive_reference.secret_version = AAZStrType(
-                serialized_name="secretVersion",
-                flags={"read_only": True},
             )
 
             trusted_ip_prefixes = cls._schema_on_200.value.Element.properties.trusted_ip_prefixes

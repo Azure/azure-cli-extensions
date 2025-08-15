@@ -22,9 +22,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-07-15",
+        "version": "2024-06-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/ipprefixes/{}", "2025-07-15"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/ipprefixes/{}", "2024-06-15-preview"],
         ]
     }
 
@@ -65,11 +65,13 @@ class Update(AAZCommand):
             options=["--annotation"],
             arg_group="Properties",
             help="Switch configuration description.",
+            nullable=True,
         )
         _args_schema.ip_prefix_rules = AAZListArg(
             options=["--ip-prefix-rules"],
             arg_group="Properties",
             help="The list of IP Prefix Rules.",
+            nullable=True,
         )
         _args_schema.tags = AAZDictArg(
             options=["--tags"],
@@ -196,7 +198,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-07-15",
+                    "api-version", "2024-06-15-preview",
                     required=True,
                 ),
             }
@@ -221,13 +223,13 @@ class Update(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
+            _builder.set_prop("properties", AAZObjectType)
             _builder.set_prop("tags", AAZDictType, ".tags")
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("annotation", AAZStrType, ".annotation")
-                properties.set_prop("ipPrefixRules", AAZListType, ".ip_prefix_rules")
+                properties.set_prop("annotation", AAZStrType, ".annotation", typ_kwargs={"nullable": True})
+                properties.set_prop("ipPrefixRules", AAZListType, ".ip_prefix_rules", typ_kwargs={"nullable": True})
 
             ip_prefix_rules = _builder.get(".properties.ipPrefixRules")
             if ip_prefix_rules is not None:

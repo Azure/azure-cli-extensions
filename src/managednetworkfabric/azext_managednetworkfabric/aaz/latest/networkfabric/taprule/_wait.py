@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networktaprules/{}", "2025-07-15"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networktaprules/{}", "2024-06-15-preview"],
         ]
     }
 
@@ -119,7 +119,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-07-15",
+                    "api-version", "2024-06-15-preview",
                     required=True,
                 ),
             }
@@ -155,7 +155,6 @@ class Wait(AAZWaitCommand):
             _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.identity = AAZIdentityObjectType()
             _schema_on_200.location = AAZStrType(
                 flags={"required": True},
             )
@@ -171,37 +170,6 @@ class Wait(AAZWaitCommand):
             )
             _schema_on_200.tags = AAZDictType()
             _schema_on_200.type = AAZStrType(
-                flags={"read_only": True},
-            )
-
-            identity = cls._schema_on_200.identity
-            identity.principal_id = AAZStrType(
-                serialized_name="principalId",
-                flags={"read_only": True},
-            )
-            identity.tenant_id = AAZStrType(
-                serialized_name="tenantId",
-                flags={"read_only": True},
-            )
-            identity.type = AAZStrType(
-                flags={"required": True},
-            )
-            identity.user_assigned_identities = AAZDictType(
-                serialized_name="userAssignedIdentities",
-            )
-
-            user_assigned_identities = cls._schema_on_200.identity.user_assigned_identities
-            user_assigned_identities.Element = AAZObjectType(
-                nullable=True,
-            )
-
-            _element = cls._schema_on_200.identity.user_assigned_identities.Element
-            _element.client_id = AAZStrType(
-                serialized_name="clientId",
-                flags={"read_only": True},
-            )
-            _element.principal_id = AAZStrType(
-                serialized_name="principalId",
                 flags={"read_only": True},
             )
 
@@ -225,9 +193,6 @@ class Wait(AAZWaitCommand):
             properties.global_network_tap_rule_actions = AAZObjectType(
                 serialized_name="globalNetworkTapRuleActions",
             )
-            properties.identity_selector = AAZObjectType(
-                serialized_name="identitySelector",
-            )
             properties.last_operation = AAZObjectType(
                 serialized_name="lastOperation",
                 flags={"read_only": True},
@@ -239,12 +204,8 @@ class Wait(AAZWaitCommand):
             properties.match_configurations = AAZListType(
                 serialized_name="matchConfigurations",
             )
-            properties.network_fabric_ids = AAZListType(
-                serialized_name="networkFabricIds",
-                flags={"read_only": True},
-            )
-            properties.network_tap_ids = AAZListType(
-                serialized_name="networkTapIds",
+            properties.network_tap_id = AAZStrType(
+                serialized_name="networkTapId",
                 flags={"read_only": True},
             )
             properties.polling_interval_in_seconds = AAZIntType(
@@ -312,15 +273,6 @@ class Wait(AAZWaitCommand):
                 serialized_name="enableCount",
             )
             global_network_tap_rule_actions.truncate = AAZStrType()
-
-            identity_selector = cls._schema_on_200.properties.identity_selector
-            identity_selector.identity_type = AAZStrType(
-                serialized_name="identityType",
-                flags={"required": True},
-            )
-            identity_selector.user_assigned_identity_resource_id = AAZStrType(
-                serialized_name="userAssignedIdentityResourceId",
-            )
 
             last_operation = cls._schema_on_200.properties.last_operation
             last_operation.details = AAZStrType(
@@ -438,12 +390,6 @@ class Wait(AAZWaitCommand):
 
             vlans = cls._schema_on_200.properties.match_configurations.Element.match_conditions.Element.vlan_match_condition.vlans
             vlans.Element = AAZStrType()
-
-            network_fabric_ids = cls._schema_on_200.properties.network_fabric_ids
-            network_fabric_ids.Element = AAZStrType()
-
-            network_tap_ids = cls._schema_on_200.properties.network_tap_ids
-            network_tap_ids.Element = AAZStrType()
 
             system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(

@@ -42,7 +42,7 @@ def step_create(test, checks=None):
         "az networkfabric l3domain create --resource-group {rg} --resource-name {name} --location {location} --nf-id {nfId}"
         " --redistribute-connected-subnets {redistributeConnectedSubnets} --redistribute-static-routes {redistributeStaticRoutes}"
         " --aggregate-route-configuration {aggregateRouteConf} --connected-subnet-route-policy {connectedSubnetRoutePolicy}"
-        " --static-route-route-policy {staticRouteRoutePolicy}",
+        " --route-prefix-limit {routePrefixLimit} --static-route-route-policy {staticRouteRoutePolicy}",
         checks=checks,
     )
 
@@ -95,6 +95,9 @@ class GA_L3DomainScenarioTest1(ScenarioTest):
                 ),
                 "updatedAggregateRouteConf": CONFIG.get(
                     "L3_ISOLATION_DOMAIN", "updated_aggregate_route_conf"
+                ),
+                "routePrefixLimit": CONFIG.get(
+                    "L3_ISOLATION_DOMAIN", "route_prefix_limit"
                 ),
                 "staticRouteRoutePolicy": CONFIG.get(
                     "L3_ISOLATION_DOMAIN", "static_route_route_policy"

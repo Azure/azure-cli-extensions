@@ -22,9 +22,9 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-07-15",
+        "version": "2024-06-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/l3isolationdomains/{}/externalnetworks", "2025-07-15"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/l3isolationdomains/{}/externalnetworks", "2024-06-15-preview"],
         ]
     }
 
@@ -124,7 +124,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-07-15",
+                    "api-version", "2024-06-15-preview",
                     required=True,
                 ),
             }
@@ -203,10 +203,6 @@ class List(AAZCommand):
             )
             properties.last_operation = AAZObjectType(
                 serialized_name="lastOperation",
-                flags={"read_only": True},
-            )
-            properties.network_fabric_id = AAZStrType(
-                serialized_name="networkFabricId",
                 flags={"read_only": True},
             )
             properties.network_to_network_interconnect_id = AAZStrType(

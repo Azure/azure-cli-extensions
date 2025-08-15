@@ -25,9 +25,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-07-15",
+        "version": "2024-06-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/routepolicies/{}", "2025-07-15"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/routepolicies/{}", "2024-06-15-preview"],
         ]
     }
 
@@ -68,12 +68,14 @@ class Update(AAZCommand):
             options=["--default-action"],
             arg_group="Properties",
             help="Default action that needs to be applied when no condition is matched. Example: Permit | Deny.",
+            nullable=True,
             enum={"Deny": "Deny", "Permit": "Permit"},
         )
         _args_schema.statements = AAZListArg(
             options=["--statements"],
             arg_group="Properties",
             help="Route Policy statements.",
+            nullable=True,
         )
         _args_schema.tags = AAZDictArg(
             options=["--tags"],
@@ -319,7 +321,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-07-15",
+                    "api-version", "2024-06-15-preview",
                     required=True,
                 ),
             }
@@ -344,13 +346,13 @@ class Update(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
+            _builder.set_prop("properties", AAZObjectType)
             _builder.set_prop("tags", AAZDictType, ".tags")
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("defaultAction", AAZStrType, ".default_action")
-                properties.set_prop("statements", AAZListType, ".statements")
+                properties.set_prop("defaultAction", AAZStrType, ".default_action", typ_kwargs={"nullable": True})
+                properties.set_prop("statements", AAZListType, ".statements", typ_kwargs={"nullable": True})
 
             statements = _builder.get(".properties.statements")
             if statements is not None:
