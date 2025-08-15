@@ -20,6 +20,7 @@ from azure.cli.core.commands.client_factory import get_subscription_id
 from knack.util import CLIError
 
 from .prompt import AKS_CONTEXT_PROMPT
+from .telemetry import CLITelemetryClient
 
 
 # NOTE(mainred): holmes leverage the log handler RichHandler to provide colorful, readable and well-formatted logs
@@ -77,129 +78,133 @@ def aks_agent(
     :param refresh_toolsets: Refresh the toolsets status.
     :type refresh_toolsets: bool
     """
+    with CLITelemetryClient():
 
-    if sys.version_info < (3, 10):
-        raise CLIError(
-            "Please upgrade the python version to 3.10 or above to use aks agent."
-        )
-
-    # reverse the value of the variables so that
-    interactive = not no_interactive
-    echo = not no_echo_request
-
-    console = init_log()
-
-    os.environ[CONST_AGENT_CONFIG_PATH_DIR_ENV_KEY] = get_config_dir()
-    # Holmes library allows the user to specify the agent name through environment variable before loading the library.
-
-    os.environ[CONST_AGENT_NAME_ENV_KEY] = CONST_AGENT_NAME
-
-    from holmes.config import Config
-    from holmes.core.prompt import build_initial_ask_messages
-    from holmes.interactive import run_interactive_loop
-    from holmes.plugins.destinations import DestinationType
-    from holmes.plugins.interfaces import Issue
-    from holmes.plugins.prompts import load_and_render_prompt
-    from holmes.utils.console.result import handle_result
-
-    # Detect and read piped input
-    piped_data = None
-    if not sys.stdin.isatty():
-        piped_data = sys.stdin.read().strip()
-        if interactive:
-            console.print(
-                "[bold yellow]Interactive mode disabled when reading piped input[/bold yellow]"
+        if sys.version_info < (3, 10):
+            raise CLIError(
+                "Please upgrade the python version to 3.10 or above to use aks agent."
             )
-            interactive = False
 
-    expanded_config_file = Path(os.path.expanduser(config_file))
+        # reverse the value of the variables so that
+        interactive = not no_interactive
+        echo = not no_echo_request
 
-    config = Config.load_from_file(
-        expanded_config_file,
-        model=model,
-        api_key=api_key,
-        max_steps=max_steps,
-    )
+        console = init_log()
 
-    ai = config.create_console_toolcalling_llm(
-        dal=None,
-        refresh_toolsets=refresh_toolsets,
-    )
-    console.print(
-        "[bold yellow]This tool uses AI to generate responses and may not always be accurate.[bold yellow]"
-    )
+        os.environ[CONST_AGENT_CONFIG_PATH_DIR_ENV_KEY] = get_config_dir()
+        # Holmes library allows the user to specify the agent name through environment variable
+        # before loading the library.
 
-    if not prompt and not interactive and not piped_data:
-        raise CLIError(
-            "Either the 'prompt' argument must be provided (unless using --interactive mode)."
+        os.environ[CONST_AGENT_NAME_ENV_KEY] = CONST_AGENT_NAME
+
+        from holmes.config import Config
+        from holmes.core.prompt import build_initial_ask_messages
+        from holmes.interactive import run_interactive_loop
+        from holmes.plugins.destinations import DestinationType
+        from holmes.plugins.interfaces import Issue
+        from holmes.plugins.prompts import load_and_render_prompt
+        from holmes.utils.console.result import handle_result
+
+        # Detect and read piped input
+        piped_data = None
+        if not sys.stdin.isatty():
+            piped_data = sys.stdin.read().strip()
+            if interactive:
+                console.print(
+                    "[bold yellow]Interactive mode disabled when reading piped input[/bold yellow]"
+                )
+                interactive = False
+
+        expanded_config_file = Path(os.path.expanduser(config_file))
+
+        config = Config.load_from_file(
+            expanded_config_file,
+            model=model,
+            api_key=api_key,
+            max_steps=max_steps,
         )
 
-    # Handle piped data
-    if piped_data:
-        if prompt:
-            # User provided both piped data and a prompt
-            prompt = f"Here's some piped output:\n\n{piped_data}\n\n{prompt}"
-        else:
-            # Only piped data, no prompt - ask what to do with it
-            prompt = f"Here's some piped output:\n\n{piped_data}\n\nWhat can you tell me about this output?"
+        ai = config.create_console_toolcalling_llm(
+            dal=None,
+            refresh_toolsets=refresh_toolsets,
+        )
+        console.print(
+            "[bold yellow]This tool uses AI to generate responses and may not always be accurate.[bold yellow]"
+        )
 
-    if echo and not interactive and prompt:
-        console.print("[bold yellow]User:[/bold yellow] " + prompt)
+        if not prompt and not interactive and not piped_data:
+            raise CLIError(
+                "Either the 'prompt' argument must be provided (unless using --interactive mode)."
+            )
 
-    subscription_id = get_subscription_id(cmd.cli_ctx)
+        # Handle piped data
+        if piped_data:
+            if prompt:
+                # User provided both piped data and a prompt
+                prompt = f"Here's some piped output:\n\n{piped_data}\n\n{prompt}"
+            else:
+                # Only piped data, no prompt - ask what to do with it
+                prompt = f"Here's some piped output:\n\n{piped_data}\n\nWhat can you tell me about this output?"
 
-    aks_template_context = {
-        "cluster_name": name,
-        "resource_group": resource_group_name,
-        "subscription_id": subscription_id,
-    }
+        if echo and not interactive and prompt:
+            console.print("[bold yellow]User:[/bold yellow] " + prompt)
 
-    aks_context_prompt = load_and_render_prompt(
-        AKS_CONTEXT_PROMPT, aks_template_context
-    )
-    # Variables not exposed to the user.
-    # Adds a prompt for post processing.
-    post_processing_prompt = None
-    # File to append to prompt
-    include_file = None
-    if interactive:
-        run_interactive_loop(
-            ai,
+        subscription_id = get_subscription_id(cmd.cli_ctx)
+
+        aks_template_context = {
+            "cluster_name": name,
+            "resource_group": resource_group_name,
+            "subscription_id": subscription_id,
+        }
+
+        aks_context_prompt = load_and_render_prompt(
+            AKS_CONTEXT_PROMPT, aks_template_context
+        )
+
+        # Variables not exposed to the user.
+        # Adds a prompt for post processing.
+        post_processing_prompt = None
+        # File to append to prompt
+
+        include_file = None
+        if interactive:
+            run_interactive_loop(
+                ai,
+                console,
+                prompt,
+                include_file,
+                post_processing_prompt,
+                show_tool_output=show_tool_output,
+                system_prompt_additions=aks_context_prompt,
+            )
+            return
+
+        messages = build_initial_ask_messages(
             console,
             prompt,
             include_file,
-            post_processing_prompt,
-            show_tool_output=show_tool_output,
+            ai.tool_executor,
+            config.get_runbook_catalog(),
             system_prompt_additions=aks_context_prompt,
         )
-        return
 
-    messages = build_initial_ask_messages(
-        console,
-        prompt,
-        include_file,
-        ai.tool_executor,
-        config.get_runbook_catalog(),
-        system_prompt_additions=aks_context_prompt,
-    )
+        response = ai.call(messages)
 
-    response = ai.call(messages)
+        messages = response.messages
 
-    messages = response.messages
-
-    issue = Issue(
-        id=str(uuid.uuid4()),
-        name=prompt,
-        source_type="holmes-ask",
-        raw={"prompt": prompt, "full_conversation": messages},
-        source_instance_id=socket.gethostname(),
-    )
-    handle_result(
-        response,
-        console,
-        DestinationType.CLI,
-        config,
-        issue,
-        show_tool_output,
-        False,
-    )
+        issue = Issue(
+            id=str(uuid.uuid4()),
+            name=prompt,
+            source_type="holmes-ask",
+            raw={"prompt": prompt, "full_conversation": messages},
+            source_instance_id=socket.gethostname(),
+        )
+        handle_result(
+            response,
+            console,
+            DestinationType.CLI,
+            config,
+            issue,
+            show_tool_output,
+            False,
+        )
