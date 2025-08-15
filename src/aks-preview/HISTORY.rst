@@ -13,6 +13,11 @@ Pending
 +++++++
 * Add framework for interactive AI-powered debugging tool.
 
+18.0.0b27
++++++++
+* Add interactive AI-powered debugging tool `az aks agent`.
+* Add framework for interactive AI-powered debugging tool.
+
 18.0.0b26
 +++++++
 * Add `az aks identity-binding` command group for identity binding feature.
