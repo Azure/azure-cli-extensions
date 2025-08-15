@@ -22,9 +22,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-06-15-preview",
+        "version": "2025-07-15",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/l2isolationdomains/{}", "2024-06-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/l2isolationdomains/{}", "2025-07-15"],
         ]
     }
 
@@ -58,6 +58,25 @@ class Update(AAZCommand):
             required=True,
         )
 
+        # define Arg Group "Identity"
+
+        _args_schema = cls._args_schema
+        _args_schema.mi_system_assigned = AAZStrArg(
+            options=["--system-assigned", "--mi-system-assigned"],
+            arg_group="Identity",
+            help="Set the system managed identity.",
+            blank="True",
+        )
+        _args_schema.mi_user_assigned = AAZListArg(
+            options=["--user-assigned", "--mi-user-assigned"],
+            arg_group="Identity",
+            help="Set the user managed identities.",
+            blank=[],
+        )
+
+        mi_user_assigned = cls._args_schema.mi_user_assigned
+        mi_user_assigned.Element = AAZStrArg()
+
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
@@ -65,20 +84,17 @@ class Update(AAZCommand):
             options=["--annotation"],
             arg_group="Properties",
             help="Switch configuration description.",
-            nullable=True,
         )
         _args_schema.extended_vlan = AAZStrArg(
             options=["--extended-vlan"],
             arg_group="Properties",
             help="Extended VLAN status.",
-            nullable=True,
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
         )
         _args_schema.mtu = AAZIntArg(
             options=["--mtu"],
             arg_group="Properties",
             help="Maximum transmission unit. Default value is 1500.",
-            nullable=True,
             fmt=AAZIntArgFormat(
                 maximum=9200,
                 minimum=64,
@@ -88,7 +104,6 @@ class Update(AAZCommand):
             options=["--nni-id", "--network-to-network-interconnect-id"],
             arg_group="Properties",
             help="ARM Resource ID of the networkToNetworkInterconnectId of the L2 ISD resource.",
-            nullable=True,
         )
         _args_schema.tags = AAZDictArg(
             options=["--tags"],
@@ -181,7 +196,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-06-15-preview",
+                    "api-version", "2025-07-15",
                     required=True,
                 ),
             }
@@ -206,15 +221,25 @@ class Update(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("properties", AAZObjectType)
+            _builder.set_prop("identity", AAZIdentityObjectType)
+            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
+
+            identity = _builder.get(".identity")
+            if identity is not None:
+                identity.set_prop("userAssigned", AAZListType, ".mi_user_assigned", typ_kwargs={"flags": {"action": "create"}})
+                identity.set_prop("systemAssigned", AAZStrType, ".mi_system_assigned", typ_kwargs={"flags": {"action": "create"}})
+
+            user_assigned = _builder.get(".identity.userAssigned")
+            if user_assigned is not None:
+                user_assigned.set_elements(AAZStrType, ".")
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("annotation", AAZStrType, ".annotation", typ_kwargs={"nullable": True})
-                properties.set_prop("extendedVlan", AAZStrType, ".extended_vlan", typ_kwargs={"nullable": True})
-                properties.set_prop("mtu", AAZIntType, ".mtu", typ_kwargs={"nullable": True})
-                properties.set_prop("networkToNetworkInterconnectId", AAZStrType, ".network_to_network_interconnect_id", typ_kwargs={"nullable": True})
+                properties.set_prop("annotation", AAZStrType, ".annotation")
+                properties.set_prop("extendedVlan", AAZStrType, ".extended_vlan")
+                properties.set_prop("mtu", AAZIntType, ".mtu")
+                properties.set_prop("networkToNetworkInterconnectId", AAZStrType, ".network_to_network_interconnect_id")
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -243,6 +268,7 @@ class Update(AAZCommand):
             _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
+            _schema_on_200.identity = AAZIdentityObjectType()
             _schema_on_200.location = AAZStrType(
                 flags={"required": True},
             )
@@ -258,6 +284,37 @@ class Update(AAZCommand):
             )
             _schema_on_200.tags = AAZDictType()
             _schema_on_200.type = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            identity = cls._schema_on_200.identity
+            identity.principal_id = AAZStrType(
+                serialized_name="principalId",
+                flags={"read_only": True},
+            )
+            identity.tenant_id = AAZStrType(
+                serialized_name="tenantId",
+                flags={"read_only": True},
+            )
+            identity.type = AAZStrType(
+                flags={"required": True},
+            )
+            identity.user_assigned_identities = AAZDictType(
+                serialized_name="userAssignedIdentities",
+            )
+
+            user_assigned_identities = cls._schema_on_200.identity.user_assigned_identities
+            user_assigned_identities.Element = AAZObjectType(
+                nullable=True,
+            )
+
+            _element = cls._schema_on_200.identity.user_assigned_identities.Element
+            _element.client_id = AAZStrType(
+                serialized_name="clientId",
+                flags={"read_only": True},
+            )
+            _element.principal_id = AAZStrType(
+                serialized_name="principalId",
                 flags={"read_only": True},
             )
 
