@@ -57,9 +57,9 @@ jobs:
     name: ${{ variables.ubuntu_pool }}
   steps:
   - task: UsePythonVersion@0
-    displayName: 'Use Python 3.12'
+    displayName: 'Use Python 3.13'
     inputs:
-      versionSpec: 3.12
+      versionSpec: 3.13
   - template: .azure-pipelines/templates/azdev_setup.yml
   - bash: |
       #!/usr/bin/env bash
@@ -73,9 +73,9 @@ jobs:
     name: ${{ variables.ubuntu_pool }}
   steps:
   - task: UsePythonVersion@0
-    displayName: 'Use Python 3.12'
+    displayName: 'Use Python 3.13'
     inputs:
-      versionSpec: 3.12
+      versionSpec: 3.13
   - bash: |
       #!/usr/bin/env bash
       set -ev
@@ -98,6 +98,8 @@ jobs:
         python.version: '3.11'
       Python312:
         python.version: '3.12'
+      Python313:
+        python.version: '3.13'
   steps:
     - task: UsePythonVersion@0
       displayName: 'Use Python $(python.version)'
@@ -125,9 +127,9 @@ jobs:
     name: ${{ variables.ubuntu_pool }}
   steps:
     - task: UsePythonVersion@0
-      displayName: 'Use Python 3.12'
+      displayName: 'Use Python 3.13'
       inputs:
-        versionSpec: 3.12
+        versionSpec: 3.13
     - template: .azure-pipelines/templates/azdev_setup.yml
     - bash: |
         #!/usr/bin/env bash
@@ -149,9 +151,9 @@ jobs:
     name: ${{ variables.ubuntu_pool }}
   steps:
     - task: UsePythonVersion@0
-      displayName: 'Use Python 3.12'
+      displayName: 'Use Python 3.13'
       inputs:
-        versionSpec: 3.12
+        versionSpec: 3.13
     - template: .azure-pipelines/templates/azdev_setup.yml
     - bash: |
         #!/usr/bin/env bash
@@ -234,9 +236,9 @@ jobs:
 #    name: ${{ variables.ubuntu_pool }}
 #  steps:
 #  - task: UsePythonVersion@0
-#    displayName: 'Use Python 3.12'
+#    displayName: 'Use Python 3.13'
 #    inputs:
-#      versionSpec: 3.12
+#      versionSpec: 3.13
 #  - bash: pip install wheel==0.30.0
 #    displayName: 'Install wheel==0.30.0'
 #  - task: Bash@3
