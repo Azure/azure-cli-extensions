@@ -260,6 +260,7 @@ def load_arguments(self, _):
                    validator=validate_build_env_vars, is_preview=True)
         c.argument('custom_location_id', options_list=['--custom-location'], help="Resource ID of custom location. List using 'az customlocation list'.", is_preview=True)
         c.argument('connected_cluster_id', help="Resource ID of connected cluster. List using 'az connectedk8s list'.", configured_default='connected_cluster_id', is_preview=True)
+        c.argument('kind', type=str, help="Set the kind property to 'functionapp' when deploying Azure Functions container images to Azure Container Apps. This configuration enables built-in support and autoscaling capabilities.", is_preview=True)
         c.argument('revisions_mode', arg_type=get_enum_type(['single', 'multiple', 'labels']), help="The active revisions mode for the container app.")
         c.argument('target_label', help="The label to apply to new revisions. Required for revisions-mode 'labels'.", is_preview=True)
 
