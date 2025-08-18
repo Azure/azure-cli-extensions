@@ -2,7 +2,7 @@
 
 Release History
 ===============
-8.0.1
+8.1.0
 ++++++
 * Adding breaking change notices for the following items that will be included in the upcoming 2025-07-15-stable CLI (9.0.x).
 * [Breaking Change] Command group `fabric identity` will be removed as current az-cli-core does not support GET-PATCH. This includes the `assign`, `remove`, `show` sub-commands.
