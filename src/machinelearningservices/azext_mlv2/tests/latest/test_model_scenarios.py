@@ -1,4 +1,4 @@
-﻿# --------------------------------------------------------------------------
+# --------------------------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for
 # license information.
@@ -22,7 +22,7 @@ from ..util import private_flag
 
 class ModelScenarioTest(MLBaseScenarioTest):
     def test_model_no_workspace_no_registry(self) -> None:
-        for base_command in ["az ml model list", "az ml model show -n abc", "az ml model create -n abc"]:
+        for base_command in ["az ml model list -g testrg -w testworkspace", "az ml model show -n abc -g testrg -w testworkspace", "az ml model create -n abc -g testrg -w testworkspace"]:
             with pytest.raises(Exception) as exp:
                 dep_obj = self.cmd(f'{base_command} --workspace-name="" --registry-name=""')
             assert "one the following arguments are required: [--workspace-name/-w, --registry-name]" in str(exp.value)
@@ -31,7 +31,7 @@ class ModelScenarioTest(MLBaseScenarioTest):
     @pytest.mark.skip(reason="Recording and replay not working.")
     def test_model(self) -> None:
         model_obj = self.cmd(
-            "az ml model create --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/model/model_full.yml --name {modelName} --tags abc=456 foo=bar"
+            "az ml model create --file ./src/machinelearningservices/azext_mlv2/tests/test_configs/model/model_full.yml --name {modelName} --tags abc=456 foo=bar -g testrg -w testworkspace"
         )
         model_obj = yaml.safe_load(model_obj.output)
         assert model_obj["name"] == self.kwargs.get("modelName", None)
@@ -41,45 +41,45 @@ class ModelScenarioTest(MLBaseScenarioTest):
         assert model_obj["tags"]["abc"] == "456"
         assert model_obj["tags"]["foo"] == "bar"
 
-        model_show_job = self.cmd("az ml model show --name {modelName} --version 3")
+        model_show_job = self.cmd("az ml model show --name {modelName} --version 3 -g testrg -w testworkspace")
         model_show_job = yaml.safe_load(model_show_job.output)
         assert_same(model_obj, model_show_job)
 
         model_local_obj = self.cmd(
-            "az ml model create --path ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/model/model.pkl --name {modelName} --version 5 --tags abc=789"
+            "az ml model create --path ./src/machinelearningservices/azext_mlv2/tests/test_configs/model/model.pkl --name {modelName} --version 5 --tags abc=789 -g testrg -w testworkspace"
         )
         model_local_obj = yaml.safe_load(model_local_obj.output)
         assert model_local_obj["name"] == self.kwargs.get("modelName", None)
         assert "model.pkl" in model_local_obj["path"]
         assert model_local_obj["tags"]["abc"] == "789"
 
-        model_local_show_job = self.cmd("az ml model show --name {modelName} --version 5")
+        model_local_show_job = self.cmd("az ml model show --name {modelName} --version 5 -g testrg -w testworkspace")
         model_local_show_job = yaml.safe_load(model_local_show_job.output)
         assert_same(model_local_obj, model_local_show_job)
 
         # list model
-        model = self.cmd("az ml model list --max-results 1")
+        model = self.cmd("az ml model list --max-results 1 -g testrg -w testworkspace")
         assert len(yaml.safe_load(model.output)) == 1
 
         # archive and restore model version
-        model_archive_obj = self.cmd("az ml model archive --name {modelName} --version 3")
+        model_archive_obj = self.cmd("az ml model archive --name {modelName} --version 3 -g testrg -w testworkspace")
         assert model_archive_obj.output == ""
 
-        model_restore_obj = self.cmd("az ml model restore --name {modelName} --version 3")
+        model_restore_obj = self.cmd("az ml model restore --name {modelName} --version 3 -g testrg -w testworkspace")
         assert model_restore_obj.output == ""
 
         # archive and restore model
-        model_archive_obj = self.cmd("az ml model archive --name {modelName}")
+        model_archive_obj = self.cmd("az ml model archive --name {modelName} -g testrg -w testworkspace")
         assert model_archive_obj.output == ""
 
-        model_restore_obj = self.cmd("az ml model restore --name {modelName}")
+        model_restore_obj = self.cmd("az ml model restore --name {modelName} -g testrg -w testworkspace")
         assert model_restore_obj.output == ""
 
     # This test is not working. TODO: https://dev.azure.com/msdata/Vienna/_workitems/edit/3372868
     @pytest.mark.skip(reason="Recording and replay not working.")
     def test_model_with_stage(self) -> None:
         model_obj = self.cmd(
-            "az ml model create --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/model/model_with_stage.yml --name {modelName} --tags abc=456 foo=bar"
+            "az ml model create --file ./src/machinelearningservices/azext_mlv2/tests/test_configs/model/model_with_stage.yml --name {modelName} --tags abc=456 foo=bar -g testrg -w testworkspace"
         )
         model_obj = yaml.safe_load(model_obj.output)
         assert model_obj["name"] == self.kwargs.get("modelName", None)
@@ -90,12 +90,12 @@ class ModelScenarioTest(MLBaseScenarioTest):
         assert model_obj["tags"]["abc"] == "456"
         assert model_obj["tags"]["foo"] == "bar"
 
-        model_show_job = self.cmd("az ml model show --name {modelName} --version 3")
+        model_show_job = self.cmd("az ml model show --name {modelName} --version 3 -g testrg -w testworkspace")
         model_show_job = yaml.safe_load(model_show_job.output)
         assert_same(model_obj, model_show_job)
 
         # list model
-        models = self.cmd("az ml model list --name {modelName} --stage Production")
+        models = self.cmd("az ml model list --name {modelName} --stage Production -g testrg -w testworkspace")
         models = yaml.safe_load(models.output)
         assert len(models) == 1
         model = models[0]
@@ -103,7 +103,7 @@ class ModelScenarioTest(MLBaseScenarioTest):
         assert model["stage"] == "Production"
 
     def test_model_list(self) -> None:
-        models = self.cmd("az ml model list")
+        models = self.cmd("az ml model list -g testrg -w testworkspace")
         models = yaml.safe_load(models.output)
         for model in models:
             assert len(model.keys()) == 9
@@ -118,7 +118,7 @@ class ModelScenarioTest(MLBaseScenarioTest):
         if len(models) > 0:
             first_model = models[0]
             model_name = first_model["name"]
-            model_name_obj = self.cmd(f"az ml model list --name {model_name}")
+            model_name_obj = self.cmd(f"az ml model list --name {model_name} -g testrg -w testworkspace")
             model_name_obj = yaml.safe_load(model_name_obj.output)
             assert "name" in model_name_obj[0]
             assert "version" in model_name_obj[0]
@@ -135,12 +135,12 @@ class ModelScenarioTest(MLBaseScenarioTest):
     @pytest.mark.skip(reason="Recording and replay not working.")
     def test_model_remote_path(self) -> None:
         model_obj = self.cmd(
-            "az ml model create --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/model/model_full.yml --name {modelName}"
+            "az ml model create --file ./src/machinelearningservices/azext_mlv2/tests/test_configs/model/model_full.yml --name {modelName} -g testrg -w testworkspace"
         )
         model_obj = yaml.safe_load(model_obj.output)
         self.kwargs.update({"path": model_obj["path"]})
         model_remote_obj = self.cmd(
-            "az ml model create --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/model/model_path.yml --name {modelName2} --set path={path}"
+            "az ml model create --file ./src/machinelearningservices/azext_mlv2/tests/test_configs/model/model_path.yml --name {modelName2} --set path={path} -g testrg -w testworkspace"
         )
         model_remote_obj = yaml.safe_load(model_remote_obj.output)
         model_remote_obj["path"] == model_obj["path"]
@@ -150,7 +150,7 @@ class ModelScenarioTest(MLBaseScenarioTest):
     def test_model_without_yml(self) -> None:
 
         model_obj = self.cmd(
-            "az ml model create --name {modelName} --path ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/model/model.pkl --version 1 --description bla"
+            "az ml model create --name {modelName} --path ./src/machinelearningservices/azext_mlv2/tests/test_configs/model/model.pkl --version 1 --description bla -g testrg -w testworkspace"
         )
         model_obj = yaml.safe_load(model_obj.output)
         assert model_obj["name"] == self.kwargs.get("modelName", None)
@@ -158,7 +158,7 @@ class ModelScenarioTest(MLBaseScenarioTest):
         assert ARTIFACT_ORIGIN in model_obj["path"]
         assert model_obj["description"] == "bla"
 
-        model_show_job = self.cmd("az ml model show --name {modelName} --version 1")
+        model_show_job = self.cmd("az ml model show --name {modelName} --version 1 -g testrg -w testworkspace")
         model_show_job = yaml.safe_load(model_show_job.output)
         assert_same(model_obj, model_show_job)
 
@@ -167,7 +167,7 @@ class ModelScenarioTest(MLBaseScenarioTest):
     def test_model_update_stage(self) -> None:
 
         model_obj = self.cmd(
-            "az ml model create --name {modelName} --path ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/model/model.pkl --version 1 --stage Development"
+            "az ml model create --name {modelName} --path ./src/machinelearningservices/azext_mlv2/tests/test_configs/model/model.pkl --version 1 --stage Development -g testrg -w testworkspace"
         )
         model_obj = yaml.safe_load(model_obj.output)
         assert model_obj["name"] == self.kwargs.get("modelName", None)
@@ -175,18 +175,18 @@ class ModelScenarioTest(MLBaseScenarioTest):
         assert ARTIFACT_ORIGIN in model_obj["path"]
         assert model_obj["stage"] == "Development"
 
-        model_show_job = self.cmd("az ml model show --name {modelName} --version 1")
+        model_show_job = self.cmd("az ml model show --name {modelName} --version 1 -g testrg -w testworkspace")
         model_show_job = yaml.safe_load(model_show_job.output)
         assert_same(model_obj, model_show_job)
 
         model_obj = self.cmd(
-            "az ml model update --name {modelName} --version 1 --stage Production"
+            "az ml model update --name {modelName} --version 1 --stage Production -g testrg -w testworkspace"
         )
         model_obj = yaml.safe_load(model_obj.output)
         assert model_obj["name"] == self.kwargs.get("modelName", None)
         assert model_obj["stage"] == "Production"
 
-        model_show_job = self.cmd("az ml model show --name {modelName} --version 1")
+        model_show_job = self.cmd("az ml model show --name {modelName} --version 1 -g testrg -w testworkspace")
         model_show_job = yaml.safe_load(model_show_job.output)
         assert_same(model_obj, model_show_job)
 
@@ -210,22 +210,22 @@ class ModelScenarioTest(MLBaseScenarioTest):
             }
         )
         model_obj_folder = self.cmd(
-            "az ml model create --name {modelNameFolder} --version {folderVersion} --path  azureml://datastores/workspaceartifactstore/paths/ExperimentRun/dcid.quirky_knee_46ds1xhcgt_1/outputs"
+            "az ml model create --name {modelNameFolder} --version {folderVersion} --path  azureml://datastores/workspaceartifactstore/paths/ExperimentRun/dcid.quirky_knee_46ds1xhcgt_1/outputs -g testrg -w testworkspace"
         )
         model_obj_folder = yaml.safe_load(model_obj_folder.output)
         assert model_obj_folder["name"] == self.kwargs.get("modelNameFolder", None)
         assert model_obj_folder["type"] == AssetTypes.CUSTOM_MODEL
-        model_show_job_folder = self.cmd("az ml model show --name {modelNameFolder} --version {folderVersion}")
+        model_show_job_folder = self.cmd("az ml model show --name {modelNameFolder} --version {folderVersion} -g testrg -w testworkspace")
         model_show_job_folder = yaml.safe_load(model_show_job_folder.output)
         assert_same(model_obj_folder, model_show_job_folder)
 
         model_obj_file = self.cmd(
-            "az ml model create --name {modelNameFile} --version {fileVersion} --path azureml://datastores/workspaceartifactstore/paths/ExperimentRun/dcid.quirky_knee_46ds1xhcgt_1/outputs/model.pkl"
+            "az ml model create --name {modelNameFile} --version {fileVersion} --path azureml://datastores/workspaceartifactstore/paths/ExperimentRun/dcid.quirky_knee_46ds1xhcgt_1/outputs/model.pkl -g testrg -w testworkspace"
         )
         model_obj_file = yaml.safe_load(model_obj_file.output)
         assert model_obj_file["name"] == self.kwargs.get("modelNameFile", None)
         assert model_obj_file["type"] == AssetTypes.CUSTOM_MODEL
-        model_show_job_file = self.cmd("az ml model show --name {modelNameFile} --version {fileVersion}")
+        model_show_job_file = self.cmd("az ml model show --name {modelNameFile} --version {fileVersion} -g testrg -w testworkspace")
         model_show_job_file = yaml.safe_load(model_show_job_file.output)
         assert_same(model_obj_file, model_show_job_file)
 
@@ -243,22 +243,22 @@ class ModelScenarioTest(MLBaseScenarioTest):
             {"modelNameFolder": modelNameFolder, "modelNameFile": modelNameFile, "folderVersion": 2, "fileVersion": 1}
         )
         model_obj_folder = self.cmd(
-            "az ml model create --name {modelNameFolder} --version {folderVersion} --path azureml://jobs/quirky_knee_46ds1xhcgt_1/outputs/artifacts"
+            "az ml model create --name {modelNameFolder} --version {folderVersion} --path azureml://jobs/quirky_knee_46ds1xhcgt_1/outputs/artifacts -g testrg -w testworkspace"
         )
         model_obj_folder = yaml.safe_load(model_obj_folder.output)
         assert model_obj_folder["name"] == self.kwargs.get("modelNameFolder", None)
         assert model_obj_folder["type"] == AssetTypes.CUSTOM_MODEL
-        model_show_job_folder = self.cmd("az ml model show --name {modelNameFolder} --version {folderVersion}")
+        model_show_job_folder = self.cmd("az ml model show --name {modelNameFolder} --version {folderVersion} -g testrg -w testworkspace")
         model_show_job_folder = yaml.safe_load(model_show_job_folder.output)
         assert_same(model_obj_folder, model_show_job_folder)
 
         model_obj_file = self.cmd(
-            "az ml model create --name {modelNameFile} --version {fileVersion} --path azureml://jobs/quirky_knee_46ds1xhcgt_1/outputs/artifacts/outputs/model.pkl"
+            "az ml model create --name {modelNameFile} --version {fileVersion} --path azureml://jobs/quirky_knee_46ds1xhcgt_1/outputs/artifacts/outputs/model.pkl -g testrg -w testworkspace"
         )
         model_obj_file = yaml.safe_load(model_obj_file.output)
         assert model_obj_file["name"] == self.kwargs.get("modelNameFile", None)
         assert model_obj_file["type"] == AssetTypes.CUSTOM_MODEL
-        model_show_job_file = self.cmd("az ml model show --name {modelNameFile} --version {fileVersion}")
+        model_show_job_file = self.cmd("az ml model show --name {modelNameFile} --version {fileVersion} -g testrg -w testworkspace")
         model_show_job_file = yaml.safe_load(model_show_job_file.output)
         assert_same(model_obj_file, model_show_job_file)
 
@@ -277,12 +277,12 @@ class ModelScenarioTest(MLBaseScenarioTest):
             }
         )
         model_obj_folder = self.cmd(
-            "az ml model create --name {modelNameFolder} --version {folderVersion} --path runs:/quirky_knee_46ds1xhcgt_1/outputs --type mlflow_model"
+            "az ml model create --name {modelNameFolder} --version {folderVersion} --path runs:/quirky_knee_46ds1xhcgt_1/outputs --type mlflow_model -g testrg -w testworkspace"
         )
         model_obj_folder = yaml.safe_load(model_obj_folder.output)
         assert model_obj_folder["name"] == self.kwargs.get("modelNameFolder", None)
         assert model_obj_folder["type"] == AssetTypes.MLFLOW_MODEL
-        model_show_job_folder = self.cmd("az ml model show --name {modelNameFolder} --version {folderVersion}")
+        model_show_job_folder = self.cmd("az ml model show --name {modelNameFolder} --version {folderVersion} -g testrg -w testworkspace")
         model_show_job_folder = yaml.safe_load(model_show_job_folder.output)
         assert_same(model_obj_folder, model_show_job_folder)
 
@@ -290,9 +290,9 @@ class ModelScenarioTest(MLBaseScenarioTest):
     @pytest.mark.skip(reason="Recording and replay not working.")
     def test_model_download_mlflow(self) -> None:
         self.cmd(
-            "az ml model create --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/model/model_full.yml --name lightgbm_predict --tags abc=456 foo=bar"
+            "az ml model create --file ./src/machinelearningservices/azext_mlv2/tests/test_configs/model/model_full.yml --name lightgbm_predict --tags abc=456 foo=bar -g testrg -w testworkspace"
         )
-        model_dowload_cmd = self.cmd("az ml model download -n lightgbm_predict -v 3 -p downloaded")
+        model_dowload_cmd = self.cmd("az ml model download -n lightgbm_predict -v 3 -p downloaded -g testrg -w testworkspace")
         download_cmd_out = yaml.safe_load(model_dowload_cmd.output)
         assert download_cmd_out is None
         wd = os.path.join(os.getcwd(), "downloaded/lightgbm_predict")
@@ -304,9 +304,9 @@ class ModelScenarioTest(MLBaseScenarioTest):
     @pytest.mark.skip(reason="Recording and replay not working.")
     def test_model_download_local_upload_singlefile(self) -> None:
         self.cmd(
-            "az ml model create --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/model/model_full.yml --name mir_test_model --tags abc=456 foo=bar"
+            "az ml model create --file ./src/machinelearningservices/azext_mlv2/tests/test_configs/model/model_full.yml --name mir_test_model --tags abc=456 foo=bar -g testrg -w testworkspace"
         )
-        model_dowload_cmd = self.cmd("az ml model download -n mir_test_model -v 3 -p downloaded")
+        model_dowload_cmd = self.cmd("az ml model download -n mir_test_model -v 3 -p downloaded -g testrg -w testworkspace")
         download_cmd_out = yaml.safe_load(model_dowload_cmd.output)
         wd = os.path.join(os.getcwd(), "downloaded/mir_test_model")
         files = next(os.walk(wd))
@@ -318,13 +318,13 @@ class ModelScenarioTest(MLBaseScenarioTest):
     def test_model_anon_with_batch(self) -> None:
         """
         To re record this test please create the batch endpoint bla1 and underlying compute.
-        az ml compute create -n cpu-cluster -t AmlCompute --size Standard_DS11_v2
-        az ml batch-endpoint create -n bla1
+        az ml compute create -n cpu-cluster -t AmlCompute --size Standard_DS11_v2 -g testrg -w testworkspace
+        az ml batch-endpoint create -n bla1 -g testrg -w testworkspace
         **Note:** This test may fail because of code hash mismatch. It is normal, because hash is calculated from
         the full file path. Just see, what hash is in failed test on the gate and set it in the cassette file.
         """
         model_cmd = self.cmd(
-            "az ml batch-deployment create -n batch-dep1 -e bla1 --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/batch/batch_deployment_anon_model.yaml"
+            "az ml batch-deployment create -n batch-dep1 -e bla1 --file ./src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/batch/batch_deployment_anon_model.yaml -g testrg -w testworkspace"
         )
         model_cmd_out = yaml.safe_load(model_cmd.output)
         assert "bd64529f9a171e743eea068b71027c76" in model_cmd_out["model"]
@@ -339,18 +339,18 @@ class ModelScenarioTest(MLBaseScenarioTest):
         To avoid thread competition, the model_full.yml was replaced by model_minimal.yml.
         """
         model_obj = self.cmd(
-            "az ml model create -n model_version_e2e10  -v 14 -f ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/model/model_minimal.yml --registry-name testFeed"
+            "az ml model create -n model_version_e2e10  -v 14 -f ./src/machinelearningservices/azext_mlv2/tests/test_configs/model/model_minimal.yml --registry-name testFeed -g testrg -w testworkspace"
         )
         model_obj = yaml.safe_load(model_obj.output)
         assert len(model_obj) > 1
 
     def test_model_show_and_list_in_registry(self) -> None:
-        model_obj_get = self.cmd("az ml model show -n model_version_e2e -v 1 --registry-name testFeed")
+        model_obj_get = self.cmd("az ml model show -n model_version_e2e -v 1 --registry-name testFeed -g testrg -w testworkspace")
         model_obj_get = yaml.safe_load(model_obj_get.output)
         assert len(model_obj_get) > 1
         assert model_obj_get["id"] == "azureml://registries/testFeed/models/model_version_e2e/versions/1"
 
-        model_obj_list = self.cmd("az ml model list -o table --registry-name testFeed")
+        model_obj_list = self.cmd("az ml model list -o table --registry-name testFeed -g testrg -w testworkspace")
         model_obj_list = yaml.safe_load(model_obj_list.output)
         assert len(model_obj_list) > 1
 
@@ -359,7 +359,7 @@ class ModelScenarioTest(MLBaseScenarioTest):
         # and then use that registry
         try:
             model_obj = self.cmd(
-                "az ml model create -n model_version_e2e10  -v 2 -f ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/model/model_full.yml --registry-name registry-nostore"
+                "az ml model create -n model_version_e2e10  -v 2 -f ./src/machinelearningservices/azext_mlv2/tests/test_configs/model/model_full.yml --registry-name registry-nostore -g testrg -w testworkspace"
             )
         except:
             assert True
@@ -369,13 +369,19 @@ class ModelScenarioTest(MLBaseScenarioTest):
     def test_model_archive_in_registry(self) -> None:
 
         env_archive_obj = self.cmd(
-            "az ml model archive  -n model_version_e2e -v 1  --registry-name dsvm-test"
+            "az ml model archive  -n model_version_e2e -v 1  --registry-name dsvm-test -g testrg -w testworkspace"
         )
         assert env_archive_obj.output == ""
 
     def test_model_restore_in_registry(self) -> None:
 
         env_restore_obj = self.cmd(
-            "az ml model restore  -n model_version_e2e -v 1  --registry-name dsvm-test"
+            "az ml model restore  -n model_version_e2e -v 1  --registry-name dsvm-test -g testrg -w testworkspace"
         )
         assert env_restore_obj.output == ""
+
+
+
+
+
+

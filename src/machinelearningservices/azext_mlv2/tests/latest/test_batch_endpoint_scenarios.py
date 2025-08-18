@@ -24,7 +24,7 @@ class BatchEndpointScenarioTest(MLBaseScenarioTest):
             self.kwargs.get("batchEndpointName", None), endpoint_name_suffix
         )
         batch_endpoint_create = self.cmd(
-            "az ml batch-endpoint create --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/batch/batch_endpoint.yaml --name {batch_endpoint_name_1}"
+            "az ml batch-endpoint create --file ./src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/batch/batch_endpoint.yaml --name {batch_endpoint_name_1} -g testrg -w testworkspace"
         )
         batch_endpoint = yaml.safe_load(batch_endpoint_create.output)
         assert batch_endpoint["name"] == self.kwargs.get("batch_endpoint_name_1", None)
@@ -33,26 +33,26 @@ class BatchEndpointScenarioTest(MLBaseScenarioTest):
         # Bug in MFE that batch endpoint properties are not preserved, uncomment after fixed
         # assert batch_endpoint["properties"] == {"p1": "v1", "p2": "v2"}
 
-        batch_endpoint_show = self.cmd("az ml batch-endpoint show --name {batch_endpoint_name_1}")
+        batch_endpoint_show = self.cmd("az ml batch-endpoint show --name {batch_endpoint_name_1} -g testrg -w testworkspace")
         batch_endpoint_show = yaml.safe_load(batch_endpoint_show.output)
 
         assert_same(batch_endpoint, batch_endpoint_show)
 
-        batch_endpoint_update = self.cmd("az ml batch-endpoint update -n {batch_endpoint_name_1} --set tags.abc=456")
+        batch_endpoint_update = self.cmd("az ml batch-endpoint update -n {batch_endpoint_name_1} --set tags.abc=456 -g testrg -w testworkspace")
         batch_endpoint_update = yaml.safe_load(batch_endpoint_update.output)
         assert batch_endpoint_update["tags"]["abc"] == "456"
 
-        batch_endpoint_list = self.cmd("az ml batch-endpoint list")
+        batch_endpoint_list = self.cmd("az ml batch-endpoint list -g testrg -w testworkspace")
         batch_endpoint_list = yaml.safe_load(batch_endpoint_list.output)
 
-        batch_endpoint_list_jobs = self.cmd("az ml batch-endpoint list-jobs -n {batch_endpoint_name_1}")
+        batch_endpoint_list_jobs = self.cmd("az ml batch-endpoint list-jobs -n {batch_endpoint_name_1} -g testrg -w testworkspace")
         batch_endpoint_list_jobs = yaml.safe_load(batch_endpoint_list_jobs.output)
 
-        batch_endpoint_delete = self.cmd("az ml batch-endpoint delete -n {batch_endpoint_name_1} -y")
+        batch_endpoint_delete = self.cmd("az ml batch-endpoint delete -n {batch_endpoint_name_1} -y -g testrg -w testworkspace")
         assert batch_endpoint_delete.output == ""
         # SystemExit 3 'not found'
         with self.assertRaisesRegex(SystemExit, "3"):
-            self.cmd("az ml batch-endpoint show -n {batch_endpoint_name_1}")
+            self.cmd("az ml batch-endpoint show -n {batch_endpoint_name_1} -g testrg -w testworkspace")
         # Delete a key regardless of whether it is in the dictionary for the new name
         self.kwargs.pop("batch_endpoint_name_1", None)
 
@@ -68,31 +68,31 @@ class BatchEndpointScenarioTest(MLBaseScenarioTest):
             self.kwargs.get("batchDeploymentName", None), endpoint_name_suffix
         )
         batch_endpoint_create = self.cmd(
-            "az ml batch-endpoint create -f ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/batch/simple_batch_endpoint.yaml -n {batch_endpoint_name_2}"
+            "az ml batch-endpoint create -f ./azext_mlv2/tests/test_configs/endpoints/batch/simple_batch_endpoint.yaml -n {batch_endpoint_name_2} -g testrg -w testworkspace"
         )
         batch_endpoint = yaml.safe_load(batch_endpoint_create.output)
         assert batch_endpoint["name"] == self.kwargs.get("batch_endpoint_name_2", None)
         assert batch_endpoint["auth_mode"] == "aad_token"
 
         batch_deployment_create = self.cmd(
-            "az ml batch-deployment create -f ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/batch/batch_deployment_3.yaml -n {batch_deployment_name_2} -e {batch_endpoint_name_2}"
+            "az ml batch-deployment create -f ./azext_mlv2/tests/test_configs/deployments/batch/batch_deployment_3.yaml -n {batch_deployment_name_2} -e {batch_endpoint_name_2} -g testrg -w testworkspace"
         )
         batch_deployment = yaml.safe_load(batch_deployment_create.output)
         assert batch_deployment["name"] == self.kwargs.get("batch_deployment_name_2", None)
         assert batch_deployment["endpoint_name"] == self.kwargs.get("batch_endpoint_name_2", None)
 
         batch_show_deployment = self.cmd(
-            "az ml batch-deployment show -n {batch_deployment_name_2} -e {batch_endpoint_name_2}"
+            "az ml batch-deployment show -n {batch_deployment_name_2} -e {batch_endpoint_name_2} -g testrg -w testworkspace"
         )
         batch_show_deployment = yaml.safe_load(batch_show_deployment.output)
 
         batch_update_deployment = self.cmd(
-            "az ml batch-deployment update -f ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/batch/batch_deployment_3.yaml -n {batch_deployment_name_2} -e {batch_endpoint_name_2} --set resources.instance_count=3"
+            "az ml batch-deployment update -f ./azext_mlv2/tests/test_configs/deployments/batch/batch_deployment_3.yaml -n {batch_deployment_name_2} -e {batch_endpoint_name_2} --set resources.instance_count=3 -g testrg -w testworkspace"
         )
         batch_update_deployment = yaml.safe_load(batch_update_deployment.output)
         assert batch_update_deployment["resources"]["instance_count"] == 3
 
-        batch_list_deployments = self.cmd("az ml batch-deployment list -e {batch_endpoint_name_2}")
+        batch_list_deployments = self.cmd("az ml batch-deployment list -e {batch_endpoint_name_2} -g testrg -w testworkspace")
         batch_list_deployments = yaml.safe_load(batch_list_deployments.output)
 
         batch_list_jobs_deployments = self.cmd(
@@ -100,16 +100,16 @@ class BatchEndpointScenarioTest(MLBaseScenarioTest):
         )
         batch_list_jobs_deployments = yaml.safe_load(batch_list_jobs_deployments.output)
 
-        self.cmd("az ml batch-deployment delete -n {batch_deployment_name_2} -e {batch_endpoint_name_2} -y")
+        self.cmd("az ml batch-deployment delete -n {batch_deployment_name_2} -e {batch_endpoint_name_2} -y -g testrg -w testworkspace")
         # SystemExit 3 'not found'
         if not self.is_live:
             from time import sleep
 
             sleep(30)  # This sleep is only required for fresh recording of cassette
         with self.assertRaisesRegex(SystemExit, "3"):
-            self.cmd("az ml batch-deployment show -n {batch_deployment_name_2} -e {batch_endpoint_name_2}")
+            self.cmd("az ml batch-deployment show -n {batch_deployment_name_2} -e {batch_endpoint_name_2} -g testrg -w testworkspace")
         # batch-endpoint delete fails with error: https://msdata.visualstudio.com/Vienna/_workitems/edit/1705216
-        self.cmd("az ml batch-endpoint delete -n {batch_endpoint_name_2} -y")
+        self.cmd("az ml batch-endpoint delete -n {batch_endpoint_name_2} -y -g testrg -w testworkspace")
         # Delete a key regardless of whether it is in the dictionary for the new name
         self.kwargs.pop("batch_endpoint_name_2", None)
         self.kwargs.pop("batch_deployment_name_2", None)
@@ -130,7 +130,7 @@ class BatchEndpointScenarioTest(MLBaseScenarioTest):
         )
 
         batch_endpoint_create = self.cmd(
-            "az ml batch-endpoint create -f ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/batch/simple_batch_endpoint.yaml -n {batch_endpoint_name_3}"
+            "az ml batch-endpoint create -f ./azext_mlv2/tests/test_configs/endpoints/batch/simple_batch_endpoint.yaml -n {batch_endpoint_name_3} -g testrg -w testworkspace"
         )
 
         batch_endpoint = yaml.safe_load(batch_endpoint_create.output)
@@ -138,24 +138,24 @@ class BatchEndpointScenarioTest(MLBaseScenarioTest):
         assert batch_endpoint["auth_mode"] == "aad_token"
 
         batch_deployment_create = self.cmd(
-            "az ml batch-deployment create -f ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/batch/batch_deployment_3.yaml -n {batch_deployment_name_3} -e {batch_endpoint_name_3_all_caps}"
+            "az ml batch-deployment create -f ./azext_mlv2/tests/test_configs/deployments/batch/batch_deployment_3.yaml -n {batch_deployment_name_3} -e {batch_endpoint_name_3_all_caps} -g testrg -w testworkspace"
         )
         batch_deployment = yaml.safe_load(batch_deployment_create.output)
         assert batch_deployment["name"] == self.kwargs.get("batch_deployment_name_3", None)
         assert batch_deployment["endpoint_name"] == self.kwargs.get("batch_endpoint_name_3", None)
 
         batch_show_deployment = self.cmd(
-            "az ml batch-deployment show -n {batch_deployment_name_3} -e {batch_endpoint_name_3_all_caps}"
+            "az ml batch-deployment show -n {batch_deployment_name_3} -e {batch_endpoint_name_3_all_caps} -g testrg -w testworkspace"
         )
         batch_show_deployment = yaml.safe_load(batch_show_deployment.output)
 
         batch_update_deployment = self.cmd(
-            "az ml batch-deployment update -f ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/batch/batch_deployment_3.yaml -n {batch_deployment_name_3} -e {batch_endpoint_name_3_all_caps} --set resources.instance_count=3"
+            "az ml batch-deployment update -f ./azext_mlv2/tests/test_configs/deployments/batch/batch_deployment_3.yaml -n {batch_deployment_name_3} -e {batch_endpoint_name_3_all_caps} --set resources.instance_count=3 -g testrg -w testworkspace"
         )
         batch_update_deployment = yaml.safe_load(batch_update_deployment.output)
         assert batch_update_deployment["resources"]["instance_count"] == 3
 
-        batch_list_deployments = self.cmd("az ml batch-deployment list -e {batch_endpoint_name_3_all_caps}")
+        batch_list_deployments = self.cmd("az ml batch-deployment list -e {batch_endpoint_name_3_all_caps} -g testrg -w testworkspace")
         batch_list_deployments = yaml.safe_load(batch_list_deployments.output)
 
         batch_list_jobs_deployments = self.cmd(
@@ -163,12 +163,12 @@ class BatchEndpointScenarioTest(MLBaseScenarioTest):
         )
         batch_list_jobs_deployments = yaml.safe_load(batch_list_jobs_deployments.output)
 
-        self.cmd("az ml batch-deployment delete -n {batch_deployment_name_3} -e {batch_endpoint_name_3_all_caps} -y")
+        self.cmd("az ml batch-deployment delete -n {batch_deployment_name_3} -e {batch_endpoint_name_3_all_caps} -y -g testrg -w testworkspace")
 
         # SystemExit 3 'not found'
         with self.assertRaisesRegex(SystemExit, "3"):
-            self.cmd("az ml batch-deployment show -n {batch_deployment_name_3} -e {batch_endpoint_name_3_all_caps}")
-        self.cmd("az ml batch-endpoint delete -n {batch_endpoint_name_3_all_caps} -y")
+            self.cmd("az ml batch-deployment show -n {batch_deployment_name_3} -e {batch_endpoint_name_3_all_caps} -g testrg -w testworkspace")
+        self.cmd("az ml batch-endpoint delete -n {batch_endpoint_name_3_all_caps} -y -g testrg -w testworkspace")
         self.kwargs.pop("batch_endpoint_name_3_all_caps", None)
         self.kwargs.pop("batch_endpoint_name_3", None)
         self.kwargs.pop("batch_deployment_name_3", None)
@@ -184,28 +184,28 @@ class BatchEndpointScenarioTest(MLBaseScenarioTest):
             self.kwargs.get("batchDeploymentName", None), endpoint_name_suffix
         )
         self.cmd(
-            "az ml batch-endpoint create -f ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/batch/simple_batch_endpoint.yaml -n {batch_endpoint_name_4}"
+            "az ml batch-endpoint create -f ./azext_mlv2/tests/test_configs/endpoints/batch/simple_batch_endpoint.yaml -n {batch_endpoint_name_4} -g testrg -w testworkspace"
         )
         batch_deployment_create_file = self.cmd(
-            "az ml batch-deployment create -f ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/batch/batch_deployment_1.yaml -n {batch_deployment_name_4} -e {batch_endpoint_name_4}"
+            "az ml batch-deployment create -f ./azext_mlv2/tests/test_configs/deployments/batch/batch_deployment_1.yaml -n {batch_deployment_name_4} -e {batch_endpoint_name_4} -g testrg -w testworkspace"
         )
         batch_deployment_file = yaml.safe_load(batch_deployment_create_file.output)
         assert batch_deployment_file["output_file_name"] == "append_row.txt"
 
         batch_deployment_create_no_file = self.cmd(
-            "az ml batch-deployment create -f ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/batch/batch_deployment_no_file.yaml -n {batch_deployment_name_4} -e {batch_endpoint_name_4}"
+            "az ml batch-deployment create -f ./azext_mlv2/tests/test_configs/deployments/batch/batch_deployment_no_file.yaml -n {batch_deployment_name_4} -e {batch_endpoint_name_4} -g testrg -w testworkspace"
         )
         batch_deployment_no_file = yaml.safe_load(batch_deployment_create_no_file.output)
         assert batch_deployment_no_file["output_file_name"] == "predictions.csv"
         assert batch_deployment_no_file["output_action"] == "append_row"
 
         batch_deployment_create_no_action = self.cmd(
-            "az ml batch-deployment create -f ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/batch/batch_deployment_no_action.yaml -n {batch_deployment_name_4} -e {batch_endpoint_name_4}"
+            "az ml batch-deployment create -f ./azext_mlv2/tests/test_configs/deployments/batch/batch_deployment_no_action.yaml -n {batch_deployment_name_4} -e {batch_endpoint_name_4} -g testrg -w testworkspace"
         )
         batch_deployment_no_action = yaml.safe_load(batch_deployment_create_no_action.output)
         assert batch_deployment_no_action["output_file_name"] == "append_row.txt"
         assert batch_deployment_no_action["output_action"] == "append_row"
-        self.cmd("az ml batch-endpoint delete -n {batch_endpoint_name_4} -y")
+        self.cmd("az ml batch-endpoint delete -n {batch_endpoint_name_4} -y -g testrg -w testworkspace")
         self.kwargs.pop("batch_endpoint_name_4", None)
         self.kwargs.pop("batch_deployment_name_4", None)
 
@@ -222,25 +222,25 @@ class BatchEndpointScenarioTest(MLBaseScenarioTest):
         )
 
         self.cmd(
-            "az ml batch-endpoint create -f ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/batch/simple_batch_endpoint.yaml -n {batch_endpoint_name_5}"
+            "az ml batch-endpoint create -f ./azext_mlv2/tests/test_configs/endpoints/batch/simple_batch_endpoint.yaml -n {batch_endpoint_name_5} -g testrg -w testworkspace"
         )
-        # self.cmd("az ml batch-endpoint show -n {batch_endpoint_name_5}")
+        # self.cmd("az ml batch-endpoint show -n {batch_endpoint_name_5} -g testrg -w testworkspace")
         self.cmd(
-            "az ml batch-deployment create -f ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/batch/batch_deployment_3.yaml -n {batch_deployment_name_5} -e {batch_endpoint_name_5}"
+            "az ml batch-deployment create -f ./azext_mlv2/tests/test_configs/deployments/batch/batch_deployment_3.yaml -n {batch_deployment_name_5} -e {batch_endpoint_name_5} -g testrg -w testworkspace"
         )
         batch_endpoint_update = self.cmd(
-            "az ml batch-endpoint update --name {batch_endpoint_name_5} --set defaults.deployment_name={batch_deployment_name_5}"
+            "az ml batch-endpoint update --name {batch_endpoint_name_5} --set defaults.deployment_name={batch_deployment_name_5} -g testrg -w testworkspace"
         )
         batch_endpoint_update = yaml.safe_load(batch_endpoint_update.output)
         assert batch_endpoint_update["defaults"]["deployment_name"] == self.kwargs.get("batch_deployment_name_5", None)
         # TODO: data input is temporarily unavailable while transitioning to data asset v2 api
         # # Create a data asset.
         # self.cmd(
-        #     "az ml data create --name data-batch --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/dataset/data_local_path.yaml --version 1"
+        #     "az ml data create --name data-batch --file ./azext_mlv2/tests/test_configs/dataset/data_local_path.yaml --version 1"
         # )
         # # Invoke with a pre-registered data asset as the input
         # batch_job_invoke1 = self.cmd(
-        #     "az ml batch-endpoint invoke --name {batch_endpoint_name_5} --input-data azureml:data-batch:1"
+        #     "az ml batch-endpoint invoke --name {batch_endpoint_name_5} --input-data azureml:data-batch:1 -g testrg -w testworkspace"
         # )
         # batch_job1 = yaml.safe_load(batch_job_invoke1.output)
         # # sub, rg and ws will be replaced, so only asserting the last part of the arm id
@@ -248,7 +248,7 @@ class BatchEndpointScenarioTest(MLBaseScenarioTest):
 
         # Invoke with a public uri as the input
         batch_job_invoke2 = self.cmd(
-            "az ml batch-endpoint invoke --name {batch_endpoint_name_5} -d {batch_deployment_name_5} --input-type uri_file --input https://pipelinedata.blob.core.windows.net/sampledata/mnist/ --set error_threshold=10 output_file_name=test1.txt"
+            "az ml batch-endpoint invoke --name {batch_endpoint_name_5} -d {batch_deployment_name_5} --input-type uri_file --input https://pipelinedata.blob.core.windows.net/sampledata/mnist/ --set error_threshold=10 output_file_name=test1.txt -g testrg -w testworkspace"
         )
         batch_job2 = yaml.safe_load(batch_job_invoke2.output)
         assert batch_job2["properties"]["errorThreshold"] == 10
@@ -256,13 +256,13 @@ class BatchEndpointScenarioTest(MLBaseScenarioTest):
 
         # Invoke with a local directory as the input
         batch_job_invoke3 = self.cmd(
-            "az ml batch-endpoint invoke  --name {batch_endpoint_name_5} -d {batch_deployment_name_5} --input-type uri_folder --input ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/data --instance-count 2 --mini-batch-size 5 --output-path azureml://datastores/workspaceblobstore/paths/tests1/output"
+            "az ml batch-endpoint invoke  --name {batch_endpoint_name_5} -d {batch_deployment_name_5} --input-type uri_folder --input ./azext_mlv2/tests/test_configs/data --instance-count 2 --mini-batch-size 5 --output-path azureml://datastores/workspaceblobstore/paths/tests1/output -g testrg -w testworkspace"
         )
         batch_job3 = yaml.safe_load(batch_job_invoke3.output)
         assert batch_job3["properties"]["outputDataset"]["path"] == "tests1/output"
         assert batch_job3["properties"]["miniBatchSize"] == 5
         assert batch_job3["properties"]["compute"]["instanceCount"] == 2
-        self.cmd("az ml batch-endpoint delete -n {batch_endpoint_name_5} -y")
+        self.cmd("az ml batch-endpoint delete -n {batch_endpoint_name_5} -y -g testrg -w testworkspace")
         # Delete a key regardless of whether it is in the dictionary for the new name
         self.kwargs.pop("batch_endpoint_name_5", None)
         self.kwargs.pop("batch_deployment_name_5", None)
@@ -275,22 +275,22 @@ class BatchEndpointScenarioTest(MLBaseScenarioTest):
             self.kwargs.get("batchEndpointName", None), endpoint_name_suffix
         )
         simple_batch_endpoint = self.cmd(
-            "az ml batch-endpoint create -f ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/batch/simple_batch_endpoint.yaml -n {batch_endpoint_name_6}"
+            "az ml batch-endpoint create -f ./azext_mlv2/tests/test_configs/endpoints/batch/simple_batch_endpoint.yaml -n {batch_endpoint_name_6} -g testrg -w testworkspace"
         )
         simple_batch_endpoint = yaml.safe_load(simple_batch_endpoint.output)
         assert len(simple_batch_endpoint["tags"]) == 0
         assert simple_batch_endpoint["description"] == "my sample batch endpoint"
         assert simple_batch_endpoint["name"] == self.kwargs.get("batch_endpoint_name_6", None)
 
-        # self.cmd("az ml batch-endpoint show -n {batch_endpoint_name_6}")
+        # self.cmd("az ml batch-endpoint show -n {batch_endpoint_name_6} -g testrg -w testworkspace")
         self.cmd(
-            "az ml batch-deployment create -f ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/batch/batch_deployment_1.yaml -n red -e {batch_endpoint_name_6}"
+            "az ml batch-deployment create -f ./azext_mlv2/tests/test_configs/deployments/batch/batch_deployment_1.yaml -n red -e {batch_endpoint_name_6} -g testrg -w testworkspace"
         )
         self.cmd(
-            "az ml batch-deployment create -f ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/batch/batch_deployment_1.yaml -n not-red -e {batch_endpoint_name_6}"
+            "az ml batch-deployment create -f ./azext_mlv2/tests/test_configs/deployments/batch/batch_deployment_1.yaml -n not-red -e {batch_endpoint_name_6} -g testrg -w testworkspace"
         )
         update_defaults_file = self.cmd(
-            "az ml batch-endpoint update -n {batch_endpoint_name_6} -f ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/batch/batch_endpoint.yaml"
+            "az ml batch-endpoint update -n {batch_endpoint_name_6} -f ./azext_mlv2/tests/test_configs/endpoints/batch/batch_endpoint.yaml -g testrg -w testworkspace"
         )
         update_defaults_file_out = yaml.safe_load(update_defaults_file.output)
         assert update_defaults_file_out["name"] == self.kwargs.get("batch_endpoint_name_6", None)
@@ -299,17 +299,17 @@ class BatchEndpointScenarioTest(MLBaseScenarioTest):
         assert len(update_defaults_file_out["defaults"]) == 0
 
         update_set_cmd = self.cmd(
-            "az ml batch-endpoint update -n {batch_endpoint_name_6} --set defaults.deployment_name=not-red"
+            "az ml batch-endpoint update -n {batch_endpoint_name_6} --set defaults.deployment_name=not-red -g testrg -w testworkspace"
         )
         update_set_cmd_out = yaml.safe_load(update_set_cmd.output)
         assert update_set_cmd_out["defaults"]["deployment_name"] == "not-red"
 
         update_defaults_cmd = self.cmd(
-            "az ml batch-endpoint update -n {batch_endpoint_name_6} --defaults deployment_name=red "
+            "az ml batch-endpoint update -n {batch_endpoint_name_6} --defaults deployment_name=red  -g testrg -w testworkspace"
         )
         update_defaults_cmd_out = yaml.safe_load(update_defaults_cmd.output)
         assert update_defaults_cmd_out["defaults"]["deployment_name"] == "red"
-        self.cmd("az ml batch-endpoint delete -n {batch_endpoint_name_6} -y")
+        self.cmd("az ml batch-endpoint delete -n {batch_endpoint_name_6} -y -g testrg -w testworkspace")
         # Delete a key regardless of whether it is in the dictionary for the new name
         self.kwargs.pop("batch_endpoint_name_6", None)
 
@@ -325,23 +325,23 @@ class BatchEndpointScenarioTest(MLBaseScenarioTest):
         self.kwargs["batch_endpoint_name_7"] = "{}{}".format(
             self.kwargs.get("batchEndpointName", None), endpoint_name_suffix
         )
-        # self.cmd("az ml batch-endpoint create -f ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/batch/simple_batch_endpoint.yaml -n {batch_endpoint_name_7}")
-        # self.cmd("az ml batch-deployment create -f ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/batch/batch_deployment_1.yaml -n red -e {batch_endpoint_name_7}")
-        batch_deployment = self.cmd("az ml batch-deployment show -n red -e {batch_endpoint_name_7}")
+        # self.cmd("az ml batch-endpoint create -f ./azext_mlv2/tests/test_configs/endpoints/batch/simple_batch_endpoint.yaml -n {batch_endpoint_name_7} -g testrg -w testworkspace")
+        # self.cmd("az ml batch-deployment create -f ./azext_mlv2/tests/test_configs/deployments/batch/batch_deployment_1.yaml -n red -e {batch_endpoint_name_7} -g testrg -w testworkspace")
+        batch_deployment = self.cmd("az ml batch-deployment show -n red -e {batch_endpoint_name_7} -g testrg -w testworkspace")
         batch_deployment = yaml.safe_load(batch_deployment.output)
         assert batch_deployment["name"] == "red"
         assert batch_deployment["resources"]["instance_count"] == 2
         assert len(batch_deployment["tags"]) == 0
         # Update batch deployment
         command_file_update = self.cmd(
-            "az ml batch-deployment update -n red  -e {batch_endpoint_name_7} --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/batch/batch_deployment_1.yaml --set resources.instance_count=3"
+            "az ml batch-deployment update -n red  -e {batch_endpoint_name_7} --file ./azext_mlv2/tests/test_configs/deployments/batch/batch_deployment_1.yaml --set resources.instance_count=3 -g testrg -w testworkspace"
         )
         command_file_update = yaml.safe_load(command_file_update.output)
         assert command_file_update["name"] == "red"
         assert command_file_update["resources"]["instance_count"] == 3
         assert len(command_file_update["tags"]) == 0
 
-        self.cmd("az ml batch-endpoint delete -n {batch_endpoint_name_7} -y")
+        self.cmd("az ml batch-endpoint delete -n {batch_endpoint_name_7} -y -g testrg -w testworkspace")
         # Delete a key regardless of whether it is in the dictionary for the new name
         self.kwargs.pop("batch_endpoint_name_7", None)
 
@@ -355,25 +355,25 @@ class BatchEndpointScenarioTest(MLBaseScenarioTest):
             self.kwargs.get("batchDeploymentName", None), endpoint_name_suffix
         )
         self.cmd(
-            "az ml batch-endpoint create -f ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/batch/simple_batch_endpoint.yaml -n {batch_endpoint_name_8}"
+            "az ml batch-endpoint create -f ./src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/batch/simple_batch_endpoint.yaml -n {batch_endpoint_name_8} -g testrg -w testworkspace"
         )
         with pytest.raises(Exception) as exp:
             dep_obj = self.cmd(
-                "az ml batch-endpoint invoke --name {batch_endpoint_name_8} --deployment-name {batch_deployment_name_8} --input-type uri_file --input https://pipelinedata.blob.core.windows.net/sampledata/nytaxi/taxi-tip-data.csv  --output-path azureml://datastores/workspaceblobstore/paths/testfolder --set output_file_name=mypredictions1.csv"
+                "az ml batch-endpoint invoke --name {batch_endpoint_name_8} --deployment-name {batch_deployment_name_8} --input-type uri_file --input https://pipelinedata.blob.core.windows.net/sampledata/nytaxi/taxi-tip-data.csv  --output-path azureml://datastores/workspaceblobstore/paths/testfolder --set output_file_name=mypredictions1.csv -g testrg -w testworkspace"
             )
         assert "not found for this endpoint" in str(exp.value)
-        self.cmd("az ml batch-endpoint delete -n {batch_endpoint_name_8} -y")
+        self.cmd("az ml batch-endpoint delete -n {batch_endpoint_name_8} -y -g testrg -w testworkspace")
         self.kwargs.pop("batch_endpoint_name_8", None)
         self.kwargs.pop("batch_deployment_name_8", None)
 
     def test_batch_deployment_wrong_endpoint(self) -> None:
         with pytest.raises(Exception):
             self.cmd(
-                "az ml batch-deployment create -f ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/batch/batch_deployment_1.yaml -n {batchDeploymentName} -e {environmentName}"
+                "az ml batch-deployment create -f ./src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/batch/batch_deployment_1.yaml -n {batchDeploymentName} -e {environmentName} -g testrg -w testworkspace"
             )
 
     def test_batch_endpoint_list(self) -> None:
-        batch_endpoint_list = self.cmd("az ml batch-endpoint list")
+        batch_endpoint_list = self.cmd("az ml batch-endpoint list -g testrg -w testworkspace")
         batch_endpoint_list = yaml.safe_load(batch_endpoint_list.output)
         for endpoint in batch_endpoint_list:
             assert "auth_mode" in endpoint
@@ -391,7 +391,7 @@ class BatchEndpointScenarioTest(MLBaseScenarioTest):
             assert "tags" not in endpoint
 
     def test_batch_deployment_list(self) -> None:
-        batch_deployment_list = self.cmd("az ml batch-deployment list -e batch-endpoint-test")
+        batch_deployment_list = self.cmd("az ml batch-deployment list -e batch-endpoint-test -g testrg -w testworkspace")
         batch_deployment_list = yaml.safe_load(batch_deployment_list.output)
         for deployment in batch_deployment_list:
             assert "code" in deployment
@@ -418,7 +418,7 @@ class BatchEndpointScenarioTest(MLBaseScenarioTest):
             assert "retry_settings" not in deployment
 
     def test_batch_deployment_list_jobs(self) -> None:
-        batch_deployment_list_jobs = self.cmd("az ml batch-deployment list-jobs -e bla1 --name blue")
+        batch_deployment_list_jobs = self.cmd("az ml batch-deployment list-jobs -g testrg -w testworkspace -e bla1 --name blue")
         batch_deployment_list_jobs = yaml.safe_load(batch_deployment_list_jobs.output)
         for deployment in batch_deployment_list_jobs:
             assert "name" in deployment
@@ -438,7 +438,7 @@ class BatchEndpointScenarioTest(MLBaseScenarioTest):
             self.kwargs.get("batchEndpointName", None), endpoint_name_suffix
         )
         batch_endpoint_create = self.cmd(
-            "az ml batch-endpoint create --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/batch/simple_batch_endpoint.yaml --name {batch_endpoint_name_9}"
+            "az ml batch-endpoint create --file ./src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/batch/simple_batch_endpoint.yaml --name {batch_endpoint_name_9} -g testrg -w testworkspace"
         )
         batch_endpoint = yaml.safe_load(batch_endpoint_create.output)
         assert batch_endpoint["name"] == self.kwargs.get("batch_endpoint_name_9", None)
@@ -447,13 +447,13 @@ class BatchEndpointScenarioTest(MLBaseScenarioTest):
         assert len(batch_endpoint["tags"]) == 0
 
         batch_endpoint_update = self.cmd(
-            "az ml batch-endpoint update -n {batch_endpoint_name_9} --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/batch/batch_endpoint.yaml --set tags.abc=456 tags.t1=v2"
+            "az ml batch-endpoint update -n {batch_endpoint_name_9} --file ./src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/batch/batch_endpoint.yaml --set tags.abc=456 tags.t1=v2 -g testrg -w testworkspace"
         )
         batch_endpoint_update = yaml.safe_load(batch_endpoint_update.output)
         assert batch_endpoint_update["tags"]["abc"] == "456"
         assert batch_endpoint_update["tags"]["t1"] == "v2"
 
-        batch_endpoint_delete = self.cmd("az ml batch-endpoint delete -n {batch_endpoint_name_9} -y")
+        batch_endpoint_delete = self.cmd("az ml batch-endpoint delete -n {batch_endpoint_name_9} -y -g testrg -w testworkspace")
         assert batch_endpoint_delete.output == ""
         # Delete a key regardless of whether it is in the dictionary for the new name
         self.kwargs.pop("batch_endpoint_name_9", None)
@@ -462,7 +462,7 @@ class BatchEndpointScenarioTest(MLBaseScenarioTest):
         with pytest.raises(
             Exception, match=r"Message: The Resource.*test-batch.* under resource group .* was not found."
         ) as exp:
-            batch_endpoint_update = self.cmd("az ml batch-endpoint update -n test-batch --set tags.abc=456 tags.t1=v2")
+            batch_endpoint_update = self.cmd("az ml batch-endpoint update -n test-batch --set tags.abc=456 tags.t1=v2 -g testrg -w testworkspace")
         assert "Code: ResourceNotFound" in str(exp.value)
 
     @pytest.mark.skip(reason="Can't re-record due to invalid EnvironmentId (2376035)")
@@ -477,14 +477,14 @@ class BatchEndpointScenarioTest(MLBaseScenarioTest):
         )
 
         self.cmd(
-            "az ml batch-endpoint create -f ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/batch/simple_batch_endpoint.yaml -n {batch_endpoint_name_10}"
+            "az ml batch-endpoint create -f ./src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/batch/simple_batch_endpoint.yaml -n {batch_endpoint_name_10} -g testrg -w testworkspace"
         )
         self.cmd(
-            "az ml batch-deployment create -f ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/batch/batch_deployment_1.yaml -n {batch_deployment_name_10} -e {batch_endpoint_name_10}"
+            "az ml batch-deployment create -f ./src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/batch/batch_deployment_1.yaml -n {batch_deployment_name_10} -e {batch_endpoint_name_10} -g testrg -w testworkspace"
         )
 
         batch_job_invoke = self.cmd(
-            "az ml batch-endpoint invoke --name {batch_endpoint_name_10} -d {batch_deployment_name_10} --input-type uri_file --input https://pipelinedata.blob.core.windows.net/sampledata/mnist/0.png --instance-count 2 --mini-batch-size 5"
+            "az ml batch-endpoint invoke --name {batch_endpoint_name_10} -d {batch_deployment_name_10} --input-type uri_file --input https://pipelinedata.blob.core.windows.net/sampledata/mnist/0.png --instance-count 2 --mini-batch-size 5 -g testrg -w testworkspace"
         )
         batch_job_invoke = yaml.safe_load(batch_job_invoke.output)
         assert batch_job_invoke["properties"]["miniBatchSize"] == 5
@@ -496,7 +496,7 @@ class BatchEndpointScenarioTest(MLBaseScenarioTest):
             == "https://pipelinedata.blob.core.windows.net/sampledata/mnist/0.png"
         )
 
-        self.cmd("az ml batch-endpoint delete -n {batch_endpoint_name_10} -y")
+        self.cmd("az ml batch-endpoint delete -n {batch_endpoint_name_10} -y -g testrg -w testworkspace")
         # Delete key regardless of whether it is in the dictionary for the new name
         self.kwargs.pop("batch_endpoint_name_10", None)
         self.kwargs.pop("batch_deployment_name_10", None)
@@ -513,14 +513,14 @@ class BatchEndpointScenarioTest(MLBaseScenarioTest):
         )
 
         self.cmd(
-            "az ml batch-endpoint create -f ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/batch/simple_batch_endpoint.yaml -n {batch_endpoint_name_11}"
+            "az ml batch-endpoint create -f ./src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/batch/simple_batch_endpoint.yaml -n {batch_endpoint_name_11} -g testrg -w testworkspace"
         )
         self.cmd(
-            "az ml batch-deployment create -f ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/batch/batch_deployment_1.yaml -n {batch_deployment_name_11} -e {batch_endpoint_name_11}"
+            "az ml batch-deployment create -f ./src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/batch/batch_deployment_1.yaml -n {batch_deployment_name_11} -e {batch_endpoint_name_11} -g testrg -w testworkspace"
         )
 
         batch_job_invoke = self.cmd(
-            "az ml batch-endpoint invoke --name {batch_endpoint_name_11} -d {batch_deployment_name_11} --input-type uri_folder --input https://pipelinedata.blob.core.windows.net/sampledata/mnist --instance-count 2 --mini-batch-size 5"
+            "az ml batch-endpoint invoke --name {batch_endpoint_name_11} -d {batch_deployment_name_11} --input-type uri_folder --input https://pipelinedata.blob.core.windows.net/sampledata/mnist --instance-count 2 --mini-batch-size 5 -g testrg -w testworkspace"
         )
         batch_job_invoke = yaml.safe_load(batch_job_invoke.output)
         assert batch_job_invoke["properties"]["miniBatchSize"] == 5
@@ -531,7 +531,7 @@ class BatchEndpointScenarioTest(MLBaseScenarioTest):
             == "https://pipelinedata.blob.core.windows.net/sampledata/mnist"
         )
 
-        self.cmd("az ml batch-endpoint delete -n {batch_endpoint_name_11} -y")
+        self.cmd("az ml batch-endpoint delete -n {batch_endpoint_name_11} -y -g testrg -w testworkspace")
         # Delete key regardless of whether it is in the dictionary for the new name
         self.kwargs.pop("batch_endpoint_name_11", None)
         self.kwargs.pop("batch_deployment_name_11", None)
@@ -548,19 +548,19 @@ class BatchEndpointScenarioTest(MLBaseScenarioTest):
         )
 
         self.cmd(
-            "az ml batch-endpoint create -f ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/batch/simple_batch_endpoint.yaml -n {batch_endpoint_name_12}"
+            "az ml batch-endpoint create -f ./src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/batch/simple_batch_endpoint.yaml -n {batch_endpoint_name_12} -g testrg -w testworkspace"
         )
         self.cmd(
-            "az ml batch-deployment create -f ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/batch/batch_deployment_1.yaml -n {batch_deployment_name_12} -e {batch_endpoint_name_12}"
+            "az ml batch-deployment create -f ./src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/batch/batch_deployment_1.yaml -n {batch_deployment_name_12} -e {batch_endpoint_name_12} -g testrg -w testworkspace"
         )
 
         # Raise exception with invalid input type
         with pytest.raises(Exception) as exp:
             self.cmd(
-                "az ml batch-endpoint invoke --name {batch_endpoint_name_12} -d {batch_deployment_name_12} --input-type not_valid --input https://pipelinedata.blob.core.windows.net/sampledata/mnist --instance-count 2 --mini-batch-size 5"
+                "az ml batch-endpoint invoke --name {batch_endpoint_name_12} -d {batch_deployment_name_12} --input-type not_valid --input https://pipelinedata.blob.core.windows.net/sampledata/mnist --instance-count 2 --mini-batch-size 5 -g testrg -w testworkspace"
             )
 
-        self.cmd("az ml batch-endpoint delete -n {batch_endpoint_name_12} -y")
+        self.cmd("az ml batch-endpoint delete -n {batch_endpoint_name_12} -y -g testrg -w testworkspace")
         # Delete key regardless of whether it is in the dictionary for the new name
         self.kwargs.pop("batch_endpoint_name_12", None)
         self.kwargs.pop("batch_deployment_name_12", None)
@@ -576,16 +576,16 @@ class BatchEndpointScenarioTest(MLBaseScenarioTest):
         )
 
         endpoint = self.cmd(
-            "az ml batch-endpoint create -f ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/batch/simple_batch_endpoint.yaml -n {batch_endpoint_name_13}"
+            "az ml batch-endpoint create -f ./azext_mlv2/tests/test_configs/endpoints/batch/simple_batch_endpoint.yaml -n {batch_endpoint_name_13} -g testrg -w testworkspace"
         )
 
         deployment = self.cmd(
-            "az ml batch-deployment create -f ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/batch/batch_deployment_3.yaml -n {batch_deployment_name_13} -e {batch_endpoint_name_13}"
+            "az ml batch-deployment create -f ./azext_mlv2/tests/test_configs/deployments/batch/batch_deployment_3.yaml -n {batch_deployment_name_13} -e {batch_endpoint_name_13} -g testrg -w testworkspace"
         )
 
         # Batch invoke using uri_file short path to datastore
         batch_job_invoke = self.cmd(
-            "az ml batch-endpoint invoke --name {batch_endpoint_name_13} -d {batch_deployment_name_13} --input-type uri_file --input azureml://datastores/workspaceblobstore/paths/UI/08-13-2022_011115_UTC/0.png --instance-count 2 --mini-batch-size 5"
+            "az ml batch-endpoint invoke --name {batch_endpoint_name_13} -d {batch_deployment_name_13} --input-type uri_file --input azureml://datastores/workspaceblobstore/paths/UI/08-13-2022_011115_UTC/0.png --instance-count 2 --mini-batch-size 5 -g testrg -w testworkspace"
         )
         batch_job_invoke = yaml.safe_load(batch_job_invoke.output)
         assert batch_job_invoke["properties"]["miniBatchSize"] == 5
@@ -598,7 +598,7 @@ class BatchEndpointScenarioTest(MLBaseScenarioTest):
 
         # Batch invoke using uri_folder short path to datastore
         batch_job_invoke2 = self.cmd(
-            "az ml batch-endpoint invoke --name {batch_endpoint_name_13} -d {batch_deployment_name_13} --input-type uri_folder --input azureml://datastores/workspaceblobstore/paths/UI/08-13-2022_011115_UTC --instance-count 2 --mini-batch-size 5"
+            "az ml batch-endpoint invoke --name {batch_endpoint_name_13} -d {batch_deployment_name_13} --input-type uri_folder --input azureml://datastores/workspaceblobstore/paths/UI/08-13-2022_011115_UTC --instance-count 2 --mini-batch-size 5 -g testrg -w testworkspace"
         )
         batch_job_invoke2 = yaml.safe_load(batch_job_invoke2.output)
         assert batch_job_invoke2["properties"]["miniBatchSize"] == 5
@@ -609,7 +609,7 @@ class BatchEndpointScenarioTest(MLBaseScenarioTest):
             == "azureml://datastores/workspaceblobstore/paths/UI/08-13-2022_011115_UTC"
         )
 
-        self.cmd("az ml batch-endpoint delete -n {batch_endpoint_name_13} -y")
+        self.cmd("az ml batch-endpoint delete -n {batch_endpoint_name_13} -y -g testrg -w testworkspace")
         # Delete key regardless of whether it is in the dictionary for the new name
         self.kwargs.pop("batch_endpoint_name_13", None)
         self.kwargs.pop("batch_deployment_name_13", None)
@@ -625,12 +625,12 @@ class BatchEndpointScenarioTest(MLBaseScenarioTest):
             self.kwargs.get("batchDeploymentName", None), endpoint_name_suffix
         )
         self.cmd(
-            "az ml batch-endpoint create -f ./src/cli/src/machinelearningservices/azext_mlv2//tests/test_configs/endpoints/batch/simple_batch_endpoint.yaml -n {batch_endpoint_name_14}"
+            "az ml batch-endpoint create -f ./src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/batch/simple_batch_endpoint.yaml -n {batch_endpoint_name_14} -g testrg -w testworkspace"
         )
         with pytest.raises(CLIError) as ex:
 
             self.cmd(
-                "az ml batch-deployment create -f ./src/cli/src/machinelearningservices/azext_mlv2//tests/test_configs/deployments/batch/batch_deployment_ast_validation.yaml -n {batch_deployment_name_14} -e {batch_endpoint_name_14}"
+                "az ml batch-deployment create -f ./src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/batch/batch_deployment_ast_validation.yaml -n {batch_deployment_name_14} -e {batch_endpoint_name_14} -g testrg -w testworkspace"
             )
         err_msg = ex.value
         deployment_name = self.kwargs.get("batch_deployment_name_14", None)
@@ -640,18 +640,18 @@ class BatchEndpointScenarioTest(MLBaseScenarioTest):
         )
 
         self.cmd(
-            "az ml batch-deployment create -f ./src/cli/src/machinelearningservices/azext_mlv2//tests/test_configs/deployments/batch/batch_deployment_ast_validation.yaml -n {batch_deployment_name_14} -e {batch_endpoint_name_14} --skip-script-validation --no-wait"
+            "az ml batch-deployment create -f ./src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/batch/batch_deployment_ast_validation.yaml -n {batch_deployment_name_14} -e {batch_endpoint_name_14} --skip-script-validation --no-wait -g testrg -w testworkspace"
         )
 
         deployment_show = self.cmd(
-            "az ml batch-deployment show -n {batch_deployment_name_14} -e {batch_endpoint_name_14}"
+            "az ml batch-deployment show -n {batch_deployment_name_14} -e {batch_endpoint_name_14} -g testrg -w testworkspace"
         )
 
         deployment_show_out = yaml.safe_load(deployment_show.output)
 
         assert deployment_show_out
 
-        cmd_delete = self.cmd("az ml batch-endpoint delete -n {batch_endpoint_name_14} --no-wait -y")
+        cmd_delete = self.cmd("az ml batch-endpoint delete -n {batch_endpoint_name_14} --no-wait -y -g testrg -w testworkspace")
         # Delete a key regardless of whether it is in the dictionary for the new name
         self.kwargs.pop("batch_deployment_name_14", None)
         self.kwargs.pop("batch_endpoint_name_14", None)
@@ -668,18 +668,18 @@ class BatchEndpointScenarioTest(MLBaseScenarioTest):
         )
 
         self.cmd(
-            "az ml batch-endpoint create -f ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/batch/simple_batch_endpoint.yaml -n {batch_endpoint_name_15}"
+            "az ml batch-endpoint create -f ./azext_mlv2/tests/test_configs/endpoints/batch/simple_batch_endpoint.yaml -n {batch_endpoint_name_15} -g testrg -w testworkspace"
         )
         self.cmd(
-            "az ml batch-deployment create -f ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/batch/batch_deployment_1.yaml -n {batch_deployment_name_15} -e {batch_endpoint_name_15}"
+            "az ml batch-deployment create -f ./azext_mlv2/tests/test_configs/deployments/batch/batch_deployment_1.yaml -n {batch_deployment_name_15} -e {batch_endpoint_name_15} -g testrg -w testworkspace"
         )
 
         with pytest.raises(Exception) as err:
             batch_job_invoke = self.cmd(
-                "az ml batch-endpoint invoke --name {batch_endpoint_name_15} -d {batch_deployment_name_15} --input-type uri_file --input https://pipelinedata.blob.core.windows.net/sampledata/mnist/0.png --output-path azureml://datastores/worksapceblobstore/paths/tests1/output"
+                "az ml batch-endpoint invoke --name {batch_endpoint_name_15} -d {batch_deployment_name_15} --input-type uri_file --input https://pipelinedata.blob.core.windows.net/sampledata/mnist/0.png --output-path azureml://datastores/worksapceblobstore/paths/tests1/output -g testrg -w testworkspace"
             )
 
-            self.cmd("az ml batch-endpoint delete -n {batch_endpoint_name_15} -y")
+            self.cmd("az ml batch-endpoint delete -n {batch_endpoint_name_15} -y -g testrg -w testworkspace")
 
         assert "Could not find datastore: worksapceblobstore." in str(err.value)
 
@@ -699,11 +699,11 @@ class BatchEndpointScenarioTest(MLBaseScenarioTest):
         )
 
         self.cmd(
-            "az ml batch-endpoint create -n {batch_endpoint_name_16} -f ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/batch/batch_endpoint_deployment_component.yaml"
+            "az ml batch-endpoint create -n {batch_endpoint_name_16} -f ./azext_mlv2/tests/test_configs/endpoints/batch/batch_endpoint_deployment_component.yaml -g testrg -w testworkspace"
         )
 
         create_cmd = self.cmd(
-            "az ml batch-deployment create -f ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/batch/batch_deployment_component.yaml -n {batch_deployment_name_16} -e {batch_endpoint_name_16}"
+            "az ml batch-deployment create -f ./azext_mlv2/tests/test_configs/deployments/batch/batch_deployment_component.yaml -n {batch_deployment_name_16} -e {batch_endpoint_name_16} -g testrg -w testworkspace"
         )
         create_cmd = yaml.safe_load(create_cmd.output)
         # assert create_cmd["job_definition"]["component_id"] is not None
@@ -711,7 +711,7 @@ class BatchEndpointScenarioTest(MLBaseScenarioTest):
         # assert create_cmd["job_definition"]["settings"]["continue_on_step_failure"] == "False"
         # assert create_cmd["job_definition"]["name"] == "helloworld_pipeline_component"
 
-        show_cmd = self.cmd("az ml batch-deployment show -n {batch_deployment_name_16} -e {batch_endpoint_name_16}")
+        show_cmd = self.cmd("az ml batch-deployment show -n {batch_deployment_name_16} -e {batch_endpoint_name_16} -g testrg -w testworkspace")
 
         show_output = yaml.safe_load(show_cmd.output)
         # assert show_output["job_definition"]["component_id"] is not None
@@ -719,7 +719,7 @@ class BatchEndpointScenarioTest(MLBaseScenarioTest):
         # assert show_output["job_definition"]["settings"]["continue_on_step_failure"] == "False"
         # assert show_output["job_definition"]["name"] == "helloworld_pipeline_component"
 
-        self.cmd("az ml batch-endpoint delete -n {batch_endpoint_name_16} -y")
+        self.cmd("az ml batch-endpoint delete -n {batch_endpoint_name_16} -y -g testrg -w testworkspace")
 
         # Delete key regardless of whether it is in the dictionary for the new name
         self.kwargs.pop("batch_endpoint_name_16", None)
@@ -737,11 +737,11 @@ class BatchEndpointScenarioTest(MLBaseScenarioTest):
         )
 
         self.cmd(
-            "az ml batch-endpoint create -n {batch_endpoint_name_17} -f ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/batch/batch_endpoint_deployment_component.yaml"
+            "az ml batch-endpoint create -n {batch_endpoint_name_17} -f ./azext_mlv2/tests/test_configs/endpoints/batch/batch_endpoint_deployment_component.yaml -g testrg -w testworkspace"
         )
 
         create_cmd = self.cmd(
-            "az ml batch-deployment create -f ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/batch/batch_deployment_component.yaml -n {batch_deployment_name_17} -e {batch_endpoint_name_17}"
+            "az ml batch-deployment create -f ./azext_mlv2/tests/test_configs/deployments/batch/batch_deployment_component.yaml -n {batch_deployment_name_17} -e {batch_endpoint_name_17} -g testrg -w testworkspace"
         )
         create_cmd = yaml.safe_load(create_cmd.output)
         # assert create_cmd["job_definition"]["component_id"] is not None
@@ -749,7 +749,7 @@ class BatchEndpointScenarioTest(MLBaseScenarioTest):
         # assert create_cmd["job_definition"]["settings"]["continue_on_step_failure"] == "False"
         # assert create_cmd["job_definition"]["name"] == "helloworld_pipeline_component"
 
-        show_cmd = self.cmd("az ml batch-deployment show -n {batch_deployment_name_17} -e {batch_endpoint_name_17}")
+        show_cmd = self.cmd("az ml batch-deployment show -n {batch_deployment_name_17} -e {batch_endpoint_name_17} -g testrg -w testworkspace")
 
         show_output = yaml.safe_load(show_cmd.output)
         # assert show_output["job_definition"]["component_id"] is not None
@@ -759,21 +759,21 @@ class BatchEndpointScenarioTest(MLBaseScenarioTest):
 
         # Create job. YAML file assumes that data: pipelinedata version: 1 exists.
         job = self.cmd(
-            "az ml batch-endpoint invoke -n {batch_endpoint_name_17} -d {batch_deployment_name_17} --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/batch/batch_endpoint_invoke_id.yaml"
+            "az ml batch-endpoint invoke -n {batch_endpoint_name_17} -d {batch_deployment_name_17} --file ./azext_mlv2/tests/test_configs/endpoints/batch/batch_endpoint_invoke_id.yaml -g testrg -w testworkspace"
         )
         assert job
 
         job = self.cmd(
-            "az ml batch-endpoint invoke -n {batch_endpoint_name_17} -d {batch_deployment_name_17} --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/batch/batch_endpoint_invoke_datastore.yaml"
+            "az ml batch-endpoint invoke -n {batch_endpoint_name_17} -d {batch_deployment_name_17} --file ./azext_mlv2/tests/test_configs/endpoints/batch/batch_endpoint_invoke_datastore.yaml -g testrg -w testworkspace"
         )
         assert job
 
         job = self.cmd(
-            "az ml batch-endpoint invoke -n {batch_endpoint_name_17} -d {batch_deployment_name_17} --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/batch/batch_endpoint_invoke_short_form.yaml"
+            "az ml batch-endpoint invoke -n {batch_endpoint_name_17} -d {batch_deployment_name_17} --file ./azext_mlv2/tests/test_configs/endpoints/batch/batch_endpoint_invoke_short_form.yaml -g testrg -w testworkspace"
         )
         assert job
 
-        self.cmd("az ml batch-endpoint delete -n {batch_endpoint_name_17} -y")
+        self.cmd("az ml batch-endpoint delete -n {batch_endpoint_name_17} -y -g testrg -w testworkspace")
 
         # Delete key regardless of whether it is in the dictionary for the new name
         self.kwargs.pop("batch_endpoint_name_17", None)
@@ -791,10 +791,10 @@ class BatchEndpointScenarioTest(MLBaseScenarioTest):
             )
 
             self.cmd(
-                "az ml batch-endpoint create -n {batch_endpoint_name_18} -f ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/batch/batch_endpoint_deployment_component.yaml"
+                "az ml batch-endpoint create -n {batch_endpoint_name_18} -f ./src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/batch/batch_endpoint_deployment_component.yaml -g testrg -w testworkspace"
             )
             create_cmd = self.cmd(
-                "az ml batch-deployment create -f ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/batch/batch_deployment_local_pipeline_component.yml -n {batch_deployment_name_18} -e {batch_endpoint_name_18}"
+                "az ml batch-deployment create -f ./src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/batch/batch_deployment_local_pipeline_component.yml -n {batch_deployment_name_18} -e {batch_endpoint_name_18} -g testrg -w testworkspace"
             )
 
             create_cmd = yaml.safe_load(create_cmd.output)
@@ -802,21 +802,21 @@ class BatchEndpointScenarioTest(MLBaseScenarioTest):
             assert create_cmd['tags']['PipelineDeployment.ComponentId'] is not None
             assert create_cmd['component'] is not None
 
-            show_cmd = self.cmd("az ml batch-deployment show -n {batch_deployment_name_18} -e {batch_endpoint_name_18}")
+            show_cmd = self.cmd("az ml batch-deployment show -n {batch_deployment_name_18} -e {batch_endpoint_name_18} -g testrg -w testworkspace")
 
             show_output = yaml.safe_load(show_cmd.output)
 
             assert show_output['tags']['PipelineDeployment.ComponentId'] is not None
 
             update_cmd =  self.cmd(
-                "az ml batch-deployment create -f ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/batch/batch_deployment_local_pipeline_component.yml -n {batch_deployment_name_18} -e {batch_endpoint_name_18}"
+                "az ml batch-deployment create -f ./src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/batch/batch_deployment_local_pipeline_component.yml -n {batch_deployment_name_18} -e {batch_endpoint_name_18} -g testrg -w testworkspace"
             )
 
             update_output = yaml.safe_load(update_cmd.output)
 
             assert update_output is not None
 
-            self.cmd("az ml batch-endpoint delete -n {batch_endpoint_name_18} -y")
+            self.cmd("az ml batch-endpoint delete -n {batch_endpoint_name_18} -y -g testrg -w testworkspace")
 
             # Delete key regardless of whether it is in the dictionary for the new name
             self.kwargs.pop("batch_endpoint_name_18", None)
@@ -834,11 +834,11 @@ class BatchEndpointScenarioTest(MLBaseScenarioTest):
         )
 
         self.cmd(
-            "az ml batch-endpoint create -n {batch_endpoint_name_19} -f ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/batch/batch_endpoint_deployment_component.yaml"
+            "az ml batch-endpoint create -n {batch_endpoint_name_19} -f ./src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/batch/batch_endpoint_deployment_component.yaml -g testrg -w testworkspace"
         )
 
         create_cmd = self.cmd(
-            "az ml batch-deployment create -f ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/batch/batch_deployment_component.yaml -n {batch_deployment_name_19} -e {batch_endpoint_name_19}"
+            "az ml batch-deployment create -f ./azext_mlv2/tests/test_configs/deployments/batch/batch_deployment_component.yaml -n {batch_deployment_name_19} -e {batch_endpoint_name_19} -g testrg -w testworkspace"
         )
         create_cmd = yaml.safe_load(create_cmd.output)
         # assert create_cmd["job_definition"]["component_id"] is not None
@@ -846,7 +846,7 @@ class BatchEndpointScenarioTest(MLBaseScenarioTest):
         # assert create_cmd["job_definition"]["settings"]["continue_on_step_failure"] == "False"
         # assert create_cmd["job_definition"]["name"] == "helloworld_pipeline_component"
 
-        show_cmd = self.cmd("az ml batch-deployment show -n {batch_deployment_name_19} -e {batch_endpoint_name_19}")
+        show_cmd = self.cmd("az ml batch-deployment show -n {batch_deployment_name_19} -e {batch_endpoint_name_19} -g testrg -w testworkspace")
 
         show_output = yaml.safe_load(show_cmd.output)
         # assert show_output["job_definition"]["component_id"] is not None
@@ -856,12 +856,14 @@ class BatchEndpointScenarioTest(MLBaseScenarioTest):
 
         # Create job. YAML file assumes that data: pipelinedata version: 1 exists.
         job = self.cmd(
-            "az ml batch-endpoint invoke -n {batch_endpoint_name_19} -d {batch_deployment_name_19} --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/batch/batch_endpoint_invoke_multiple_types.yaml"
+            "az ml batch-endpoint invoke -n {batch_endpoint_name_19} -d {batch_deployment_name_19} --file ./azext_mlv2/tests/test_configs/endpoints/batch/batch_endpoint_invoke_multiple_types.yaml -g testrg -w testworkspace"
         )
         assert job
 
-        self.cmd("az ml batch-endpoint delete -n {batch_endpoint_name_19} -y")
+        self.cmd("az ml batch-endpoint delete -n {batch_endpoint_name_19} -y -g testrg -w testworkspace")
 
         # Delete key regardless of whether it is in the dictionary for the new name
         self.kwargs.pop("batch_endpoint_name_19", None)
         self.kwargs.pop("batch_deployment_name_19", None)
+
+

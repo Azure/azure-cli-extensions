@@ -1,4 +1,4 @@
-﻿# --------------------------------------------------------------------------
+# --------------------------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for
 # license information.
@@ -18,7 +18,7 @@ class CapabilityHostScenarioTest(MLBaseScenarioTest):
         self.kwargs["cap_host_name"] = "test_host_hub"
 
         self.cmd(
-            "az ml capability-host create --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/ai_workspaces/capability_host_hub.yaml --no-wait"
+            "az ml capability-host create -g testrg -w workspace --file ./src/machinelearningservices/azext_mlv2/tests/test_configs/ai_workspaces/capability_host_hub.yaml --no-wait"
         )
         if not self.is_live:
             from time import sleep
@@ -26,7 +26,7 @@ class CapabilityHostScenarioTest(MLBaseScenarioTest):
             sleep(120)  # This sleep is only required for fresh recording of cassette
 
         capability_host_obj_show = self.cmd(
-            "az ml capability-host show -n {cap_host_name}"
+            "az ml capability-host show -g testrg -w workspace -n {cap_host_name}"
         )
 
         capability_host_obj_show = yaml.safe_load(capability_host_obj_show.output)
@@ -36,7 +36,7 @@ class CapabilityHostScenarioTest(MLBaseScenarioTest):
         assert "ai_services_connections" not in capability_host_obj_show
         assert "storage_connections" not in capability_host_obj_show
 
-        self.cmd("az ml capability-host delete -n {cap_host_name}")
+        self.cmd("az ml capability-host delete -g testrg -w workspace -n {cap_host_name}")
         # Delete a key regardless of whether it is in the dictionary for the new name
         self.kwargs.pop("cap_host_name", None)
 
@@ -45,7 +45,7 @@ class CapabilityHostScenarioTest(MLBaseScenarioTest):
         self.kwargs["cap_host_name"] = "test_host_project"
 
         self.cmd(
-            "az ml capability-host create --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/ai_workspaces/capability_host_project.yaml --no-wait"
+            "az ml capability-host create -g testrg -w workspace --file ./src/machinelearningservices/azext_mlv2/tests/test_configs/ai_workspaces/capability_host_project.yaml --no-wait"
         )
         if not self.is_live:
             from time import sleep
@@ -53,7 +53,7 @@ class CapabilityHostScenarioTest(MLBaseScenarioTest):
             sleep(120)  # This sleep is only required for fresh recording of cassette
 
         capability_host_obj_show = self.cmd(
-            "az ml capability-host show -n {cap_host_name}"
+            "az ml capability-host show -g tsetrg -w workspacename -n {cap_host_name}"
         )
 
         capability_host_obj_show = yaml.safe_load(capability_host_obj_show.output)
@@ -75,6 +75,8 @@ class CapabilityHostScenarioTest(MLBaseScenarioTest):
             and storage_connections[0] == "workspaceblobstore"
         )
 
-        self.cmd("az ml capability-host delete -n {cap_host_name}")
+        self.cmd("az ml capability-host delete -g testrg -w workspace -n {cap_host_name}")
         # Delete a key regardless of whether it is in the dictionary for the new name
         self.kwargs.pop("cap_host_name", None)
+
+

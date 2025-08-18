@@ -1,4 +1,4 @@
-﻿# --------------------------------------------------------------------------
+# --------------------------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for
 # license information.
@@ -17,7 +17,7 @@ class FeatureStoreScenarioTest(MLBaseScenarioTest):
         self.kwargs["resourceGroup"] = "test-rg-000006"
 
         fs_obj = self.cmd(
-            "az ml feature-store create -n {workspaceName} --resource-group {resourceGroup} --subscription {subscription} --no-wait -f ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/featurestore/featurestore.yaml"
+            "az ml feature-store create -n {workspaceName} --resource-group {resourceGroup} --subscription {subscription} --no-wait -f ./src/machinelearningservices/azext_mlv2/tests/test_configs/featurestore/featurestore.yaml"
         )
         self.assertEqual(fs_obj.output, "")
         if not self.is_live:
@@ -122,3 +122,5 @@ class FeatureStoreScenarioTest(MLBaseScenarioTest):
             f"az ml feature-store delete --resource-group {resourceGroup} --subscription {subscription} --name {workspaceName} --yes --no-wait"
         )
         self.assertEqual(fs_obj_delete.output, "")
+
+

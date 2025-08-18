@@ -1,4 +1,4 @@
-﻿# --------------------------------------------------------------------------
+# --------------------------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for
 # license information.
@@ -18,7 +18,7 @@ class WorkspaceScenarioTest(MLBaseScenarioTest):
         workspaceName = self.kwargs.get("workspaceName", None)
         workspaceName += "_full"
         ws_obj = self.cmd(
-            f"az ml workspace create -f ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/workspace/workspace_full.yaml -n {workspaceName} --no-wait"
+            f"az ml workspace create -g testrg -f ./src/machinelearningservices/azext_mlv2/tests/test_configs/workspace/workspace_full.yaml -n {workspaceName} --no-wait"
         )
         assert ws_obj.output == ""
         if not self.is_live:
@@ -26,7 +26,7 @@ class WorkspaceScenarioTest(MLBaseScenarioTest):
 
             sleep(1200)  # This sleep is only required for fresh recording of cassette
 
-        ws_obj_s = self.cmd(f"az ml workspace show -n {workspaceName}")
+        ws_obj_s = self.cmd(f"az ml workspace show -g testrg -n {workspaceName}")
         ws_obj_s = yaml.safe_load(ws_obj_s.output)
         assert ws_obj_s["name"] == workspaceName
         assert ws_obj_s["display_name"] is not None
@@ -46,7 +46,7 @@ class WorkspaceScenarioTest(MLBaseScenarioTest):
         assert ws_obj_s["allow_roleassignment_on_rg"] == False
         assert ws_obj_s["provision_network_now"] == False
 
-        diagnose_obj_s = self.cmd(f"az ml workspace diagnose --name {workspaceName} --no-wait")
+        diagnose_obj_s = self.cmd(f"az ml workspace diagnose -g testrg --name {workspaceName} --no-wait")
         assert diagnose_obj_s.output == ""
 
         workspaceDescription = "description2"
@@ -55,7 +55,7 @@ class WorkspaceScenarioTest(MLBaseScenarioTest):
         imageBuildCompute = "some_compute_name_to_update"
         allowRoleAssignmentOnRG = True
         ws_obj_update = self.cmd(
-            f"az ml workspace update -n {workspaceName} --description {workspaceDescription} --display-name {workspaceDisplayName} --public-network-access {publicNetworkAccess} --allow-roleassignment-on-rg {allowRoleAssignmentOnRG} --image-build-compute {imageBuildCompute} --no-wait"
+            f"az ml workspace update -g testrg -n {workspaceName} --description {workspaceDescription} --display-name {workspaceDisplayName} --public-network-access {publicNetworkAccess} --allow-roleassignment-on-rg {allowRoleAssignmentOnRG} --image-build-compute {imageBuildCompute} --no-wait"
         )
         assert ws_obj_update.output == ""
         if not self.is_live:
@@ -63,7 +63,7 @@ class WorkspaceScenarioTest(MLBaseScenarioTest):
 
             sleep(100)  # This sleep is only required for fresh recording of cassette
 
-        ws_obj_s = self.cmd(f"az ml workspace show -n {workspaceName}")
+        ws_obj_s = self.cmd(f"az ml workspace show -g testrg -n {workspaceName}")
         ws_obj_s = yaml.safe_load(ws_obj_s.output)
         assert ws_obj_s["description"] == workspaceDescription
         assert ws_obj_s["display_name"] == workspaceDisplayName
@@ -72,13 +72,13 @@ class WorkspaceScenarioTest(MLBaseScenarioTest):
         assert ws_obj_s["system_datastores_auth_mode"] is not None
         assert ws_obj_s["allow_roleassignment_on_rg"] is not None
 
-        ws_obj_s = self.cmd("az ml workspace list")
+        ws_obj_s = self.cmd("az ml workspace list -g testrg")
         assert len(ws_obj_s.output) > 0
 
-        ws_obj_s = self.cmd(f"az ml workspace sync-keys -n {workspaceName} --no-wait")
+        ws_obj_s = self.cmd(f"az ml workspace sync-keys -g testrg -n {workspaceName} --no-wait")
         assert ws_obj_s.output == ""
 
-        ws_obj_del = self.cmd(f"az ml workspace delete -n {workspaceName} --no-wait -y -p")
+        ws_obj_del = self.cmd(f"az ml workspace delete -g testrg -n {workspaceName} --no-wait -y -p")
         assert ws_obj_del.output == ""
         '''
 
@@ -86,7 +86,7 @@ class WorkspaceScenarioTest(MLBaseScenarioTest):
         workspaceName = self.kwargs.get("workspaceName", None)
         workspaceName += "_mvnet"
         ws_obj = self.cmd(
-            f"az ml workspace create -f ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/workspace/workspace_mvnet.yaml -n {workspaceName} --no-wait"
+            f"az ml workspace create -g testrg -f ./src/machinelearningservices/azext_mlv2/tests/test_configs/workspace/workspace_mvnet.yaml -n {workspaceName} --no-wait"
         )
         assert ws_obj.output == ""
         if not self.is_live:
@@ -94,7 +94,7 @@ class WorkspaceScenarioTest(MLBaseScenarioTest):
 
             sleep(120)  # This sleep is only required for fresh recording of cassette
 
-        ws_obj_s = self.cmd(f"az ml workspace show -n {workspaceName}")
+        ws_obj_s = self.cmd(f"az ml workspace show -g testrg -n {workspaceName}")
         ws_obj_s = yaml.safe_load(ws_obj_s.output)
         assert ws_obj_s["name"] == workspaceName
         assert ws_obj_s["storage_account"] is not None
@@ -106,7 +106,7 @@ class WorkspaceScenarioTest(MLBaseScenarioTest):
         assert ws_obj_s["managed_network"]["isolation_mode"] == "allow_only_approved_outbound"
 
         # test list outbound rules
-        rules_obj_s = self.cmd(f"az ml workspace outbound-rule list --workspace-name {workspaceName}")
+        rules_obj_s = self.cmd(f"az ml workspace  outbound-rule list -g testrg --workspace-name {workspaceName}")
         rules_obj_s = yaml.safe_load(rules_obj_s.output)
         rule_names = [rule["name"] for rule in rules_obj_s]
         assert "pytorch" in rule_names
@@ -115,7 +115,7 @@ class WorkspaceScenarioTest(MLBaseScenarioTest):
 
         # test service tag rule show that uses address prefixes properties
         rule_obj_s = self.cmd(
-            f"az ml workspace outbound-rule show -w {workspaceName} --rule custom-address-prefixes-rule"
+            f"az ml workspace outbound-rule show -g testrg  -w {workspaceName} --rule custom-address-prefixes-rule"
         )
         rule_obj_s = yaml.safe_load(rule_obj_s.output)
         assert rule_obj_s["name"] == "custom-address-prefixes-rule"
@@ -126,7 +126,7 @@ class WorkspaceScenarioTest(MLBaseScenarioTest):
 
         # test service_tag outbound rule with address_prefixes update
         rule = self.cmd(
-            f"az ml workspace outbound-rule set --workspace-name {workspaceName} --rule custom-address-prefixes-rule --type service_tag --port-ranges 10,20-30 --protocol TCP --service-tag AzureMonitor --address-prefixes 10.0.0.0/24,10.1.0.0/24"
+            f"az ml workspace outbound-rule set -g testrg  --workspace-name {workspaceName} --rule custom-address-prefixes-rule --type service_tag --port-ranges 10,20-30 --protocol TCP --service-tag AzureMonitor --address-prefixes 10.0.0.0/24,10.1.0.0/24"
         )
         rule_obj_s = yaml.safe_load(rule.output)
         assert rule_obj_s["name"] == "custom-address-prefixes-rule"
@@ -137,7 +137,7 @@ class WorkspaceScenarioTest(MLBaseScenarioTest):
         assert "10.1.0.0/24" in rule_obj_s["destination"]["address_prefixes"]
 
         # test private endpoint rule creation that uses fqdns properties
-        rule_obj_s = self.cmd(f"az ml workspace outbound-rule show -w {workspaceName} --rule app-gw-pe-rule")
+        rule_obj_s = self.cmd(f"az ml workspace outbound-rule show -g testrg -w {workspaceName} --rule app-gw-pe-rule")
         rule_obj_s = yaml.safe_load(rule_obj_s.output)
         assert (
             "providers/Microsoft.Network/applicationGateways/mvnettestappgw"
@@ -152,7 +152,7 @@ class WorkspaceScenarioTest(MLBaseScenarioTest):
 
         # test private_endpoint outbound rule with fqdns update
         rule = self.cmd(
-            f"az ml workspace outbound-rule set --workspace-name {workspaceName} --rule app-gw-pe-rule --type private_endpoint --service-resource-id {service_id} --subresource-target appGwPrivateFrontendIpIPv4 --fqdns contoso.a.com,contoso.b.com,contoso.c.com"
+            f"az ml workspace outbound-rule set -g testrg --workspace-name {workspaceName} --rule app-gw-pe-rule --type private_endpoint --service-resource-id {service_id} --subresource-target appGwPrivateFrontendIpIPv4 --fqdns contoso.a.com,contoso.b.com,contoso.c.com"
         )
         rule_obj_s = yaml.safe_load(rule.output)
         assert (
@@ -168,7 +168,7 @@ class WorkspaceScenarioTest(MLBaseScenarioTest):
 
         # test add outbound rules with workspace update
         ws_obj = self.cmd(
-            f"az ml workspace update -f ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/workspace/workspace_update_mvnet.yaml -n {workspaceName} --no-wait"
+            f"az ml workspace update -g testrg -f ./src/machinelearningservices/azext_mlv2/tests/test_configs/workspace/workspace_update_mvnet.yaml -n {workspaceName} --no-wait"
         )
         assert ws_obj.output == ""
         if not self.is_live:
@@ -178,19 +178,19 @@ class WorkspaceScenarioTest(MLBaseScenarioTest):
 
         # test show added outbound rules
         # FQDN
-        rule_obj_s = self.cmd(f"az ml workspace outbound-rule show -w {workspaceName} --rule added-fqdnrule")
+        rule_obj_s = self.cmd(f"az ml workspace outbound-rule show -g testrg -w {workspaceName} --rule added-fqdnrule")
         rule_obj_s = yaml.safe_load(rule_obj_s.output)
         assert rule_obj_s["name"] == "added-fqdnrule"
         assert rule_obj_s["destination"] == "test.com"
         # ServiceTag
-        rule_obj_s = self.cmd(f"az ml workspace outbound-rule show -w {workspaceName} --rule added-servicetagrule")
+        rule_obj_s = self.cmd(f"az ml workspace outbound-rule show -g testrg  -w {workspaceName} --rule added-servicetagrule")
         rule_obj_s = yaml.safe_load(rule_obj_s.output)
         assert rule_obj_s["name"] == "added-servicetagrule"
         assert rule_obj_s["destination"]["port_ranges"] == "80, 8080-8089"
         assert rule_obj_s["destination"]["protocol"] == "TCP"
         assert rule_obj_s["destination"]["service_tag"] == "DataFactory"
         # PrivateEndpoint
-        rule_obj_s = self.cmd(f"az ml workspace outbound-rule show -w {workspaceName} --rule added-perule")
+        rule_obj_s = self.cmd(f"az ml workspace outbound-rule show -g testrg -w {workspaceName} --rule added-perule")
         rule_obj_s = yaml.safe_load(rule_obj_s.output)
         assert (
             "providers/Microsoft.Storage/storageAccounts/mvnetteststorage"
@@ -202,7 +202,7 @@ class WorkspaceScenarioTest(MLBaseScenarioTest):
 
         # test update added outbound rules with workspace update
         ws_obj = self.cmd(
-            f"az ml workspace update -f ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/workspace/workspace_2nd_update_mvnet.yaml -n {workspaceName} --no-wait"
+            f"az ml workspace update -g testrg -f ./src/machinelearningservices/azext_mlv2/tests/test_configs/workspace/workspace_2nd_update_mvnet.yaml -n {workspaceName} --no-wait"
         )
         assert ws_obj.output == ""
         if not self.is_live:
@@ -212,18 +212,18 @@ class WorkspaceScenarioTest(MLBaseScenarioTest):
 
         # test show updated outbound rules
         # FQDN
-        rule_obj_s = self.cmd(f"az ml workspace outbound-rule show -w {workspaceName} --rule added-fqdnrule")
+        rule_obj_s = self.cmd(f"az ml workspace outbound-rule show -g testrg -w {workspaceName} --rule added-fqdnrule")
         rule_obj_s = yaml.safe_load(rule_obj_s.output)
         assert rule_obj_s["name"] == "added-fqdnrule"
         assert rule_obj_s["destination"] == "test2.com"
         # ServiceTag
-        rule_obj_s = self.cmd(f"az ml workspace outbound-rule show -w {workspaceName} --rule added-servicetagrule")
+        rule_obj_s = self.cmd(f"az ml workspace outbound-rule show -g testrg -w {workspaceName} --rule added-servicetagrule")
         rule_obj_s = yaml.safe_load(rule_obj_s.output)
         assert rule_obj_s["name"] == "added-servicetagrule"
         assert rule_obj_s["destination"]["port_ranges"] == "80, 8080"
 
         # test make sure existing outbound rules still there
-        rules_obj_s = self.cmd(f"az ml workspace outbound-rule list --workspace-name {workspaceName}")
+        rules_obj_s = self.cmd(f"az ml workspace outbound-rule list -g testrg --workspace-name {workspaceName}")
         rules_obj_s = yaml.safe_load(rules_obj_s.output)
         rule_names = [rule["name"] for rule in rules_obj_s]
         assert "pytorch" in rule_names
@@ -232,7 +232,7 @@ class WorkspaceScenarioTest(MLBaseScenarioTest):
 
         # test service tag outbound rule add
         rule = self.cmd(
-            f"az ml workspace outbound-rule set --workspace-name {workspaceName} --rule testServiceTagRule --type service_tag --port-ranges 80 --protocol UDP --service-tag DataFactory"
+            f"az ml workspace outbound-rule set -g testrg --workspace-name {workspaceName} --rule testServiceTagRule --type service_tag --port-ranges 80 --protocol UDP --service-tag DataFactory"
         )
         rule_obj_s = yaml.safe_load(rule.output)
         assert rule_obj_s["destination"]["port_ranges"] == "80"
@@ -241,7 +241,7 @@ class WorkspaceScenarioTest(MLBaseScenarioTest):
 
         # test service tag outbound rule update
         rule = self.cmd(
-            f"az ml workspace outbound-rule set --workspace-name {workspaceName} --rule testServiceTagRule --type service_tag --port-ranges 443 --protocol TCP --service-tag DataFactory"
+            f"az ml workspace outbound-rule set -g testrg --workspace-name {workspaceName} --rule testServiceTagRule --type service_tag --port-ranges 443 --protocol TCP --service-tag DataFactory"
         )
         rule_obj_s = yaml.safe_load(rule.output)
         assert rule_obj_s["destination"]["port_ranges"] == "443"
@@ -250,29 +250,29 @@ class WorkspaceScenarioTest(MLBaseScenarioTest):
 
         # test remove outbound rules
         rule_obj_del = self.cmd(
-            f"az ml workspace outbound-rule remove --workspace-name {workspaceName} --rule added-fqdnrule -y"
+            f"az ml workspace outbound-rule remove -g testrg --workspace-name {workspaceName} --rule added-fqdnrule -y"
         )
         assert rule_obj_del.output == ""
 
         rule_obj_del = self.cmd(
-            f"az ml workspace outbound-rule remove --workspace-name {workspaceName} --rule added-servicetagrule -y"
+            f"az ml workspace outbound-rule remove -g testrg --workspace-name {workspaceName} --rule added-servicetagrule -y"
         )
         assert rule_obj_del.output == ""
 
         rule_obj_del = self.cmd(
-            f"az ml workspace outbound-rule remove --workspace-name {workspaceName} --rule added-perule -y"
+            f"az ml workspace outbound-rule remove -g testrg --workspace-name {workspaceName} --rule added-perule -y"
         )
         assert rule_obj_del.output == ""
 
         # test list outbound rules, make sure rules removed
-        rules_obj_s = self.cmd(f"az ml workspace outbound-rule list --workspace-name {workspaceName}")
+        rules_obj_s = self.cmd(f"az ml workspace outbound-rule list -g testrg --workspace-name {workspaceName}")
         rules_obj_s = yaml.safe_load(rules_obj_s.output)
         rule_names = [rule["name"] for rule in rules_obj_s]
         assert not ("added-fqdnrule" in rule_names)
         assert not ("added-servicetagrule" in rule_names)
         assert not ("added-perule" in rule_names)
 
-        ws_obj_del = self.cmd(f"az ml workspace delete -n {workspaceName} --no-wait -y")
+        ws_obj_del = self.cmd(f"az ml workspace delete -g testrg -n {workspaceName} --no-wait -y")
         assert ws_obj_del.output == ""
 
     '''
@@ -280,7 +280,7 @@ class WorkspaceScenarioTest(MLBaseScenarioTest):
         workspaceName = self.kwargs.get("workspaceName", None)
         workspaceName += "_mvnetprov"
         ws_obj = self.cmd(
-            f"az ml workspace create -n {workspaceName} --managed-network allow_internet_outbound --no-wait --location centraluseuap"
+            f"az ml workspace create -g testrg -n {workspaceName} --managed-network allow_internet_outbound --no-wait --location centraluseuap"
         )
         assert ws_obj.output == ""
         if not self.is_live:
@@ -288,7 +288,7 @@ class WorkspaceScenarioTest(MLBaseScenarioTest):
 
             sleep(120)  # This sleep is only required for fresh recording of cassette
 
-        ws_obj_s = self.cmd(f"az ml workspace show -n {workspaceName}")
+        ws_obj_s = self.cmd(f"az ml workspace show -g testrg -n {workspaceName}")
         ws_obj_s = yaml.safe_load(ws_obj_s.output)
         assert ws_obj_s["name"] == workspaceName
         assert isinstance(ws_obj_s["storage_account"], str)
@@ -302,14 +302,16 @@ class WorkspaceScenarioTest(MLBaseScenarioTest):
         for rule in rules:
             assert rule["status"] == "Inactive"
 
-        prov_obj = self.cmd(f"az ml workspace provision-network -n {workspaceName}")
+        prov_obj = self.cmd(f"az ml workspace provision-network -g testrg -n {workspaceName}")
         prov_obj = yaml.safe_load(prov_obj.output)
         assert prov_obj["status"] == "Active"
         assert prov_obj["sparkReady"] == False
 
-        ws_obj_s = self.cmd(f"az ml workspace show -n {workspaceName}")
+        ws_obj_s = self.cmd(f"az ml workspace show -g testrg -n {workspaceName}")
         ws_obj_s = yaml.safe_load(ws_obj_s.output)
         rules = [rule for rule in ws_obj_s["managed_network"]["outbound_rules"]]
         for rule in rules:
             assert rule["status"] == "Active"
         '''
+
+

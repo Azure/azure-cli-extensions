@@ -1,4 +1,4 @@
-﻿# --------------------------------------------------------------------------
+# --------------------------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for
 # license information.
@@ -25,7 +25,7 @@ class OnlineEndpointScenarioTest(MLBaseScenarioTest):
 
     def test_endpoint_properties(self) -> None:
         cmd_create = self.cmd(
-            "az ml online-deployment show  -n data-t-t  -e bani-e2e-1"
+            "az ml online-deployment show  -n data-t-t  -e bani-e2e-1 -g testrg -w testworkspace"
         )
         cmd_create = yaml.safe_load(cmd_create.output)
         assert cmd_create["provisioning_state"] is not None
@@ -42,7 +42,7 @@ class OnlineEndpointScenarioTest(MLBaseScenarioTest):
             self.kwargs.get("onlineEndpointName", None), endpoint_name_suffix
         )
         cmd_create = self.cmd(
-            "az ml online-endpoint create -n {online_endpoint_name_1} --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/online/online_endpoint_create_mir.yml"
+            "az ml online-endpoint create -n {online_endpoint_name_1} --file src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/online/online_endpoint_create_mir.yml -g testrg -w testworkspace"
         )
         cmd_create = yaml.safe_load(cmd_create.output)
         assert cmd_create["name"] == self.kwargs.get("online_endpoint_name_1", None)
@@ -50,13 +50,13 @@ class OnlineEndpointScenarioTest(MLBaseScenarioTest):
         assert cmd_create["provisioning_state"] != ""
         assert len(cmd_create["traffic"]) == 0
         assert cmd_create["id"] is not None
-        cmd_show = self.cmd("az ml online-endpoint show -n {online_endpoint_name_1}")
+        cmd_show = self.cmd("az ml online-endpoint show -n {online_endpoint_name_1} -g testrg -w testworkspace")
         cmd_show = yaml.safe_load(cmd_show.output)
         assert cmd_show["name"] == self.kwargs.get("online_endpoint_name_1", None)
-        cmd_update = self.cmd("az ml online-endpoint update -n {online_endpoint_name_1}  --set tags.new_tag=new_val")
+        cmd_update = self.cmd("az ml online-endpoint update -n {online_endpoint_name_1}  --set tags.new_tag=new_val -g testrg -w testworkspace")
         cmd_update = yaml.safe_load(cmd_update.output)
         assert cmd_update["tags"]["new_tag"] == "new_val"
-        cmd_delete = self.cmd("az ml online-endpoint delete -n {online_endpoint_name_1} --no-wait -y")
+        cmd_delete = self.cmd("az ml online-endpoint delete -n {online_endpoint_name_1} --no-wait -y -g testrg -w testworkspace")
         assert cmd_delete.output == ""
         # Delete a key regardless of whether it is in the dictionary for the new name
         self.kwargs.pop("online_endpoint_name_1", None)
@@ -71,20 +71,20 @@ class OnlineEndpointScenarioTest(MLBaseScenarioTest):
             self.kwargs.get("onlineDeploymentName", None), endpoint_name_suffix
         )
         cmd_create = self.cmd(
-            "az ml online-endpoint create -n {online_endpoint_name_2} --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/online/online_endpoint_create_mir.yml"
+            "az ml online-endpoint create -n {online_endpoint_name_2} --file src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/online/online_endpoint_create_mir.yml -g testrg -w testworkspace"
         )
         cmd_create = yaml.safe_load(cmd_create.output)
         assert cmd_create["name"] == self.kwargs.get("online_endpoint_name_2", None)
         # an error should be raised if the endpoint is created again
         try:
             cmd_create = self.cmd(
-                "az ml online-endpoint create -n {online_endpoint_name_2} --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/online/online_endpoint_create_mir.yml"
+                "az ml online-endpoint create -n {online_endpoint_name_2} --file src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/online/online_endpoint_create_mir.yml -g testrg -w testworkspace"
             )
         except:
             assert True
         else:
             assert False
-        cmd_delete = self.cmd("az ml online-endpoint delete -n {online_endpoint_name_2} --no-wait -y")
+        cmd_delete = self.cmd("az ml online-endpoint delete -n {online_endpoint_name_2} --no-wait -y -g testrg -w testworkspace")
         assert cmd_delete.output == ""
         # Delete a key regardless of whether it is in the dictionary for the new name
         self.kwargs.pop("online_endpoint_name_2", None)
@@ -108,12 +108,12 @@ class OnlineEndpointScenarioTest(MLBaseScenarioTest):
             patcher = patch.object(OperationScope, "resource_group_name", "000000000000000")
             patcher.start()
         self.cmd(
-            "az ml online-endpoint create -n {online_endpoint_name_4} --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/online/online_endpoint_create_mir.yml"
+            "az ml online-endpoint create -n {online_endpoint_name_4} --file src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/online/online_endpoint_create_mir.yml -g testrg -w testworkspace"
         )
         self.cmd(
-            "az ml online-deployment create -n {online_deployment_name_4} -e {online_endpoint_name_4} --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/online/online_deployment_1.yaml"
+            "az ml online-deployment create -n {online_deployment_name_4} -e {online_endpoint_name_4} --file src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/online/online_deployment_1.yaml -g testrg -w testworkspace"
         )
-        cmd2 = "az ml online-deployment show -n {online_deployment_name_4} -e {online_endpoint_name_4}"
+        cmd2 = "az ml online-deployment show -n {online_deployment_name_4} -e {online_endpoint_name_4} -g testrg -w testworkspace"
         onl_mgr_dpt_obj_show = self.cmd(cmd2)
         onl_mgr_dpt_obj_show = yaml.safe_load(onl_mgr_dpt_obj_show.output)
         assert onl_mgr_dpt_obj_show["instance_type"] == "Standard_DS2_V2"
@@ -129,7 +129,7 @@ class OnlineEndpointScenarioTest(MLBaseScenarioTest):
         assert onl_mgr_dpt_obj_show["code_configuration"]
         assert onl_mgr_dpt_obj_show["model"]
         assert onl_mgr_dpt_obj_show["environment"]
-        self.cmd("az ml online-endpoint delete -n {online_endpoint_name_4} --no-wait -y")
+        self.cmd("az ml online-endpoint delete -n {online_endpoint_name_4} --no-wait -y -g testrg -w testworkspace")
         # Delete a key regardless of whether it is in the dictionary for the new name
         self.kwargs.pop("online_endpoint_name_4", None)
         self.kwargs.pop("online_deployment_name_4", None)
@@ -147,18 +147,18 @@ class OnlineEndpointScenarioTest(MLBaseScenarioTest):
             patcher = patch.object(OperationScope, "resource_group_name", "000000000000000")
             patcher.start()
         self.cmd(
-            "az ml online-endpoint create -n {online_endpoint_name_22} --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/online/online_endpoint_create_mir.yml"
+            "az ml online-endpoint create -n {online_endpoint_name_22} --file src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/online/online_endpoint_create_mir.yml -g testrg -w testworkspace"
         )
         self.cmd(
-            "az ml online-deployment create -n {online_deployment_name_22} -e {online_endpoint_name_22} --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/online/online_deployment_runs_path.yaml"
+            "az ml online-deployment create -n {online_deployment_name_22} -e {online_endpoint_name_22} --file src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/online/online_deployment_runs_path.yaml -g testrg -w testworkspace"
         )
         deployment_cmd = self.cmd(
-            "az ml online-deployment show -n {online_deployment_name_22} -e {online_endpoint_name_22}"
+            "az ml online-deployment show -n {online_deployment_name_22} -e {online_endpoint_name_22} -g testrg -w testworkspace"
         )
         deployment_cmd_out = yaml.safe_load(deployment_cmd.output)
         assert deployment_cmd_out["name"] == self.kwargs.get("online_deployment_name_22")
 
-        cmd_delete = self.cmd("az ml online-endpoint delete -n {online_endpoint_name_22} --no-wait -y")
+        cmd_delete = self.cmd("az ml online-endpoint delete -n {online_endpoint_name_22} --no-wait -y -g testrg -w testworkspace")
         assert cmd_delete.output == ""
 
         self.kwargs.pop("online_endpoint_name_22", None)
@@ -177,19 +177,19 @@ class OnlineEndpointScenarioTest(MLBaseScenarioTest):
             patcher = patch.object(OperationScope, "resource_group_name", "000000000000000")
             patcher.start()
         self.cmd(
-            "az ml online-endpoint create -n {online_endpoint_name_21} --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/online/online_endpoint_create_mir.yml"
+            "az ml online-endpoint create -n {online_endpoint_name_21} --file src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/online/online_endpoint_create_mir.yml -g testrg -w testworkspace"
         )
         self.cmd(
-            "az ml online-deployment create -n {online_deployment_name_21} -e {online_endpoint_name_21} --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/online/online_deployment_datastore_path.yaml"
+            "az ml online-deployment create -n {online_deployment_name_21} -e {online_endpoint_name_21} --file src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/online/online_deployment_datastore_path.yaml -g testrg -w testworkspace"
         )
         deployment_cmd = self.cmd(
-            "az ml online-deployment show -n {online_deployment_name_21} -e {online_endpoint_name_21}"
+            "az ml online-deployment show -n {online_deployment_name_21} -e {online_endpoint_name_21} -g testrg -w testworkspace"
         )
         deployment_cmd_out = yaml.safe_load(deployment_cmd.output)
 
         assert deployment_cmd_out["name"] == self.kwargs.get("online_deployment_name_21")
 
-        cmd_delete = self.cmd("az ml online-endpoint delete -n {online_endpoint_name_21} --no-wait -y")
+        cmd_delete = self.cmd("az ml online-endpoint delete -n {online_endpoint_name_21} --no-wait -y -g testrg -w testworkspace")
         assert cmd_delete.output == ""
 
         self.kwargs.pop("online_endpoint_name_21", None)
@@ -208,19 +208,19 @@ class OnlineEndpointScenarioTest(MLBaseScenarioTest):
             patcher = patch.object(OperationScope, "resource_group_name", "000000000000000")
             patcher.start()
         self.cmd(
-            "az ml online-endpoint create -n {online_endpoint_name_20} --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/online/online_endpoint_create_mir.yml"
+            "az ml online-endpoint create -n {online_endpoint_name_20} --file src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/online/online_endpoint_create_mir.yml -g testrg -w testworkspace"
         )
         self.cmd(
-            "az ml online-deployment create -n {online_deployment_name_20} -e {online_endpoint_name_20} --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/online/online_deployment_job_path.yaml"
+            "az ml online-deployment create -n {online_deployment_name_20} -e {online_endpoint_name_20} --file src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/online/online_deployment_job_path.yaml -g testrg -w testworkspace"
         )
         deployment_cmd = self.cmd(
-            "az ml online-deployment show -n {online_deployment_name_20} -e {online_endpoint_name_20}"
+            "az ml online-deployment show -n {online_deployment_name_20} -e {online_endpoint_name_20} -g testrg -w testworkspace"
         )
         deployment_cmd_out = yaml.safe_load(deployment_cmd.output)
 
         assert deployment_cmd_out["name"] == self.kwargs.get("online_deployment_name_20")
 
-        cmd_delete = self.cmd("az ml online-endpoint delete -n {online_endpoint_name_20} --no-wait -y")
+        cmd_delete = self.cmd("az ml online-endpoint delete -n {online_endpoint_name_20} --no-wait -y -g testrg -w testworkspace")
         assert cmd_delete.output == ""
 
         self.kwargs.pop("online_endpoint_name_20", None)
@@ -240,19 +240,19 @@ class OnlineEndpointScenarioTest(MLBaseScenarioTest):
             patcher = patch.object(OperationScope, "resource_group_name", "000000000000000")
             patcher.start()
         self.cmd(
-            "az ml online-endpoint create -n {online_endpoint_name_19} --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/online/online_endpoint_create_mir.yml"
+            "az ml online-endpoint create -n {online_endpoint_name_19} --file src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/online/online_endpoint_create_mir.yml -g testrg -w testworkspace"
         )
         self.cmd(
-            "az ml online-deployment create -n {online_deployment_name_19} -e {online_endpoint_name_19} --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/online/online_deployment_1.yaml --all-traffic"
+            "az ml online-deployment create -n {online_deployment_name_19} -e {online_endpoint_name_19} --file src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/online/online_deployment_1.yaml --all-traffic -g testrg -w testworkspace"
         )
-        endpoint_show_output = self.cmd("az ml online-endpoint show -n {online_endpoint_name_19}")
+        endpoint_show_output = self.cmd("az ml online-endpoint show -n {online_endpoint_name_19} -g testrg -w testworkspace")
         endpoint_output = yaml.safe_load(endpoint_show_output.output)
         assert endpoint_output["traffic"][self.kwargs["online_deployment_name_19"]] == 100
-        cmd2 = "az ml online-deployment show -n {online_deployment_name_19} -e {online_endpoint_name_19}"
+        cmd2 = "az ml online-deployment show -n {online_deployment_name_19} -e {online_endpoint_name_19} -g testrg -w testworkspace"
         onl_mgr_dpt_obj_show = self.cmd(cmd2)
         onl_mgr_dpt_obj_show = yaml.safe_load(onl_mgr_dpt_obj_show.output)
 
-        self.cmd("az ml online-endpoint delete -n {online_endpoint_name_19} --no-wait -y")
+        self.cmd("az ml online-endpoint delete -n {online_endpoint_name_19} --no-wait -y -g testrg -w testworkspace")
         # Delete a key regardless of whether it is in the dictionary for the new name
         self.kwargs.pop("online_endpoint_name_19", None)
         self.kwargs.pop("online_deployment_name_19", None)
@@ -268,14 +268,14 @@ class OnlineEndpointScenarioTest(MLBaseScenarioTest):
             self.kwargs.get("onlineDeploymentName", None), endpoint_name_suffix
         )
         self.cmd(
-            "az ml online-endpoint create -n {online_endpoint_name_5} --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/online/online_endpoint_create_mir.yml"
+            "az ml online-endpoint create -n {online_endpoint_name_5} --file src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/online/online_endpoint_create_mir.yml -g testrg -w testworkspace"
         )
         self.cmd(
-            "az ml online-deployment create -n {online_deployment_name_5} -e {online_endpoint_name_5} --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/online/online_deployment_1.yaml"
+            "az ml online-deployment create -n {online_deployment_name_5} -e {online_endpoint_name_5} --file src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/online/online_deployment_1.yaml -g testrg -w testworkspace"
         )
-        cmd3 = "az ml online-deployment update -n {online_deployment_name_5} -e {online_endpoint_name_5} --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/online/online_deployment_1_update.yaml"
+        cmd3 = "az ml online-deployment update -n {online_deployment_name_5} -e {online_endpoint_name_5} --file src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/online/online_deployment_1_update.yaml -g testrg -w testworkspace"
         self.cmd(cmd3)
-        cmd4 = "az ml online-deployment show -n {online_deployment_name_5} -e {online_endpoint_name_5}"
+        cmd4 = "az ml online-deployment show -n {online_deployment_name_5} -e {online_endpoint_name_5} -g testrg -w testworkspace"
         onl_mgr_dpt_obj_update_show = self.cmd(cmd4)
         onl_mgr_dpt_obj_update_show = yaml.safe_load(onl_mgr_dpt_obj_update_show.output)
 
@@ -294,7 +294,7 @@ class OnlineEndpointScenarioTest(MLBaseScenarioTest):
         assert onl_mgr_dpt_obj_update_show["environment"]
         assert "versions/2" in onl_mgr_dpt_obj_update_show["model"]
         assert "versions/3" in onl_mgr_dpt_obj_update_show["environment"]
-        self.cmd("az ml online-endpoint delete -n {online_endpoint_name_5} --no-wait -y")
+        self.cmd("az ml online-endpoint delete -n {online_endpoint_name_5} --no-wait -y -g testrg -w testworkspace")
         # Delete a key regardless of whether it is in the dictionary for the new name
         self.kwargs.pop("online_endpoint_name_5", None)
         self.kwargs.pop("online_deployment_name_5", None)
@@ -307,15 +307,15 @@ class OnlineEndpointScenarioTest(MLBaseScenarioTest):
             self.kwargs.get("onlineEndpointName", None), endpoint_name_suffix
         )
         self.cmd(
-            "az ml online-endpoint create -n {online_endpoint_name_6} --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/online/online_endpoint_create_mir.yml"
+            "az ml online-endpoint create -n {online_endpoint_name_6} --file src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/online/online_endpoint_create_mir.yml -g testrg -w testworkspace"
         )
         self.cmd(
-            "az ml online-deployment create -n green -e {online_endpoint_name_6} --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/online/online_deployment_1.yaml"
+            "az ml online-deployment create -n green -e {online_endpoint_name_6} --file src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/online/online_deployment_1.yaml -g testrg -w testworkspace"
         )
-        self.cmd("az ml online-deployment delete -n green -e {online_endpoint_name_6} -y")
+        self.cmd("az ml online-deployment delete -n green -e {online_endpoint_name_6} -y -g testrg -w testworkspace")
         # SystemExit 3 'not found'
         with pytest.raises(Exception) as exp:
-            self.cmd("az ml online-deployment show -n green -e {online_endpoint_name_6}")
+            self.cmd("az ml online-deployment show -n green -e {online_endpoint_name_6} -g testrg -w testworkspace")
         # Delete a key regardless of whether it is in the dictionary for the new name
         self.kwargs.pop("online_endpoint_name_6", None)
 
@@ -326,14 +326,14 @@ class OnlineEndpointScenarioTest(MLBaseScenarioTest):
             self.kwargs.get("onlineEndpointName", None), endpoint_name_suffix
         )
         self.cmd(
-            "az ml online-endpoint create -n {online_endpoint_name_7} --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/online/online_endpoint_minimal.yaml"
+            "az ml online-endpoint create -n {online_endpoint_name_7} --file src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/online/online_endpoint_minimal.yaml -g testrg -w testworkspace"
         )
         with pytest.raises(Exception) as exp:
             dep_obj = self.cmd(
-                "az ml online-endpoint invoke -n {online_endpoint_name_7} -d blah  --request-file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/model-1/sample-request.json"
+                "az ml online-endpoint invoke -n {online_endpoint_name_7} -d blah  --request-file src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/model-1/sample-request.json -g testrg -w testworkspace"
             )
         assert "not found for this endpoint" in str(exp.value)
-        self.cmd("az ml online-endpoint delete -n {online_endpoint_name_7} --no-wait -y")
+        self.cmd("az ml online-endpoint delete -n {online_endpoint_name_7} --no-wait -y -g testrg -w testworkspace")
         # Delete a key regardless of whether it is in the dictionary for the new name
         self.kwargs.pop("online_endpoint_name_7", None)
 
@@ -348,7 +348,7 @@ class OnlineEndpointScenarioTest(MLBaseScenarioTest):
         )
         with pytest.raises(Exception):
             self.cmd(
-                "az ml online-deployment create -n {online_deployment_name_8} -e {online_endpoint_name_8} --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/online_deployment_1.yaml"
+                "az ml online-deployment create -n {online_deployment_name_8} -e {online_endpoint_name_8} --file src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/online_deployment_1.yaml -g testrg -w testworkspace"
             )
         # Delete a key regardless of whether it is in the dictionary for the new name
         self.kwargs.pop("online_endpoint_name_8", None)
@@ -362,46 +362,46 @@ class OnlineEndpointScenarioTest(MLBaseScenarioTest):
             self.kwargs.get("onlineEndpointName", None), endpoint_name_suffix
         )
         self.cmd(
-            "az ml online-endpoint create -n {online_endpoint_name_9} --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/online/online_endpoint_create_mir.yml"
+            "az ml online-endpoint create -n {online_endpoint_name_9} --file src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/online/online_endpoint_create_mir.yml -g testrg -w testworkspace"
         )
-        self.cmd("az ml online-endpoint show -n {online_endpoint_name_9}")
+        self.cmd("az ml online-endpoint show -n {online_endpoint_name_9} -g testrg -w testworkspace")
         self.cmd(
-            "az ml online-deployment create -n green -e {online_endpoint_name_9} --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/online/online_deployment_1.yaml"
+            "az ml online-deployment create -n green -e {online_endpoint_name_9} --file src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/online/online_deployment_1.yaml -g testrg -w testworkspace"
         )
-        self.cmd("az ml online-deployment show -n green -e {online_endpoint_name_9}")
+        self.cmd("az ml online-deployment show -n green -e {online_endpoint_name_9} -g testrg -w testworkspace")
         self.cmd(
-            "az ml online-deployment create -n not-green -e {online_endpoint_name_9} --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/online/online_deployment_1.yaml"
+            "az ml online-deployment create -n not-green -e {online_endpoint_name_9} --file src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/online/online_deployment_1.yaml -g testrg -w testworkspace"
         )
-        self.cmd("az ml online-deployment show -n not-green -e {online_endpoint_name_9}")
+        self.cmd("az ml online-deployment show -n not-green -e {online_endpoint_name_9} -g testrg -w testworkspace")
 
         update_traffic_file = self.cmd(
-            "az ml online-endpoint update -n {online_endpoint_name_9} -f ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/online/online_endpoint_update_mir.yml"
+            "az ml online-endpoint update -n {online_endpoint_name_9} -f src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/online/online_endpoint_update_mir.yml -g testrg -w testworkspace"
         )
         update_traffic_file_out = yaml.safe_load(update_traffic_file.output)
         assert update_traffic_file_out["traffic"]["green"] == update_traffic_file_out["traffic"]["not-green"]
         update_set_cmd = self.cmd(
-            "az ml online-endpoint update -n {online_endpoint_name_9} --set traffic.not-green=90 traffic.green=10 "
+            "az ml online-endpoint update -n {online_endpoint_name_9} --set traffic.not-green=90 traffic.green=10  -g testrg -w testworkspace"
         )
         update_set_cmd_out = yaml.safe_load(update_set_cmd.output)
         assert update_set_cmd_out["traffic"]["green"] == 10
         assert update_set_cmd_out["traffic"]["not-green"] == 90
         update_traffic_cmd = self.cmd(
-            "az ml online-endpoint update -n {online_endpoint_name_9} --traffic 'green=100 not-green=0' "
+            "az ml online-endpoint update -n {online_endpoint_name_9} --traffic 'green=100 not-green=0'  -g testrg -w testworkspace"
         )
         update_traffic_cmd_out = yaml.safe_load(update_traffic_cmd.output)
         assert update_traffic_cmd_out["traffic"]["green"] == 100
         assert not "not-green" in update_traffic_cmd_out["traffic"]
         update_mirror_trafic_cmd = self.cmd(
-            "az ml online-endpoint update -n {online_endpoint_name_9} --mirror-traffic 'not-green=50' "
+            "az ml online-endpoint update -n {online_endpoint_name_9} --mirror-traffic 'not-green=50'  -g testrg -w testworkspace"
         )
         update_mirror_trafic_cmd_out = yaml.safe_load(update_mirror_trafic_cmd.output)
         assert update_mirror_trafic_cmd_out["mirror_traffic"]["not-green"] == 50
         update_mirror_trafic_cmd = self.cmd(
-            "az ml online-endpoint update -n {online_endpoint_name_9} --mirror-traffic 'not-green=0' "
+            "az ml online-endpoint update -n {online_endpoint_name_9} --mirror-traffic 'not-green=0'  -g testrg -w testworkspace"
         )
         update_mirror_trafic_cmd_out = yaml.safe_load(update_mirror_trafic_cmd.output)
         assert not "not-green" in update_traffic_cmd_out["mirror_traffic"]
-        self.cmd("az ml online-endpoint delete -n {online_endpoint_name_9} --no-wait -y")
+        self.cmd("az ml online-endpoint delete -n {online_endpoint_name_9} --no-wait -y -g testrg -w testworkspace")
         # Delete a key regardless of whether it is in the dictionary for the new name
         self.kwargs.pop("online_endpoint_name_9", None)
 
@@ -413,19 +413,19 @@ class OnlineEndpointScenarioTest(MLBaseScenarioTest):
             self.kwargs.get("onlineEndpointName", None), endpoint_name_suffix
         )
         self.cmd(
-            "az ml online-endpoint create -n {online_endpoint_name_10} --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/online/online_endpoint_minimal.yaml"
+            "az ml online-endpoint create -n {online_endpoint_name_10} --file src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/online/online_endpoint_minimal.yaml -g testrg -w testworkspace"
         )
         self.cmd(
-            "az ml online-deployment create -n green -e {online_endpoint_name_10} --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/online/online_deployment_1.yaml"
+            "az ml online-deployment create -n green -e {online_endpoint_name_10} --file src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/online/online_deployment_1.yaml -g testrg -w testworkspace"
         )
         self.cmd(
-            "az ml online-endpoint invoke --name {online_endpoint_name_10} --deployment-name green --request-file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/model-2/sample-request.json"
+            "az ml online-endpoint invoke --name {online_endpoint_name_10} --deployment-name green --request-file src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/model-2/sample-request.json -g testrg -w testworkspace"
         )
         invoke_cmd = self.cmd(
-            "az ml online-endpoint invoke --name {online_endpoint_name_10} --request-file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/model-2/sample-request.json"
+            "az ml online-endpoint invoke --name {online_endpoint_name_10} --request-file src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/model-2/sample-request.json -g testrg -w testworkspace"
         )
         assert invoke_cmd.exit_code == 0
-        self.cmd("az ml online-endpoint delete -n {online_endpoint_name_10} --no-wait -y")
+        self.cmd("az ml online-endpoint delete -n {online_endpoint_name_10} --no-wait -y -g testrg -w testworkspace")
         # Delete a key regardless of whether it is in the dictionary for the new name
         self.kwargs.pop("online_endpoint_name_10", None)
 
@@ -439,28 +439,28 @@ class OnlineEndpointScenarioTest(MLBaseScenarioTest):
 
         os.environ["AZURE_ML_CLI_PRIVATE_FEATURES_ENABLED"] = "true"
         self.cmd(
-            "az ml online-endpoint create -n {online_endpoint_name_11} --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/online/online_endpoint_create_mir_private.yml"
+            "az ml online-endpoint create -n {online_endpoint_name_11} --file src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/online/online_endpoint_create_mir_private.yml -g testrg -w testworkspace"
         )
-        command_show_endpoint_set = self.cmd("az ml online-endpoint show -n {online_endpoint_name_11}")
+        command_show_endpoint_set = self.cmd("az ml online-endpoint show -n {online_endpoint_name_11} -g testrg -w testworkspace")
         command_show_out_endpoint_set = yaml.safe_load(command_show_endpoint_set.output)
         assert command_show_out_endpoint_set["public_network_access"] == "disabled"
 
         self.cmd(
-            "az ml online-deployment create -n randm -e {online_endpoint_name_11} --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/online/online_deployment_mir_private.yaml"
+            "az ml online-deployment create -n randm -e {online_endpoint_name_11} --file src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/online/online_deployment_mir_private.yaml -g testrg -w testworkspace"
         )
-        command_show_deployment_set = self.cmd("az ml online-deployment show -n randm -e {online_endpoint_name_11}")
+        command_show_deployment_set = self.cmd("az ml online-deployment show -n randm -e {online_endpoint_name_11} -g testrg -w testworkspace")
         command_show_out_deployment_set = yaml.safe_load(command_show_deployment_set.output)
         assert command_show_out_deployment_set["egress_public_network_access"] == "disabled"
         assert command_show_out_deployment_set["private_network_connection"] is True
         os.environ["AZURE_ML_CLI_PRIVATE_FEATURES_ENABLED"] = "false"
-        command_show_endpoint_not_set = self.cmd("az ml online-endpoint show -n {online_endpoint_name_11}")
+        command_show_endpoint_not_set = self.cmd("az ml online-endpoint show -n {online_endpoint_name_11} -g testrg -w testworkspace")
         command_show_out_endpoint_not_set = yaml.safe_load(command_show_endpoint_not_set.output)
         assert "public_network_access" not in command_show_out_endpoint_not_set.keys()
-        command_show_deployment_not_set = self.cmd("az ml online-deployment show -n randm -e {online_endpoint_name_11}")
+        command_show_deployment_not_set = self.cmd("az ml online-deployment show -n randm -e {online_endpoint_name_11} -g testrg -w testworkspace")
         command_show_out_deployment_not_set = yaml.safe_load(command_show_deployment_not_set.output)
         assert "egress_public_network_access" not in command_show_out_deployment_not_set.keys()
         assert "private_network_connection" not in command_show_out_deployment_not_set.keys()
-        self.cmd("az ml online-endpoint delete -n {online_endpoint_name_11} --no-wait -y")
+        self.cmd("az ml online-endpoint delete -n {online_endpoint_name_11} --no-wait -y -g testrg -w testworkspace")
         # Delete a key regardless of whether it is in the dictionary for the new name
         self.kwargs.pop("online_endpoint_name_11", None)
         self.kwargs.pop("online_deployment_name_11", None)
@@ -473,24 +473,24 @@ class OnlineEndpointScenarioTest(MLBaseScenarioTest):
             self.kwargs.get("onlineEndpointName", None), endpoint_name_suffix
         )
         self.cmd(
-            "az ml online-endpoint create -n {online_endpoint_name_12} --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/online/online_endpoint_create_mir.yml"
+            "az ml online-endpoint create -n {online_endpoint_name_12} --file src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/online/online_endpoint_create_mir.yml -g testrg -w testworkspace"
         )
         self.cmd(
-            "az ml online-deployment create -n not-green -e {online_endpoint_name_12} --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/online/online_deployment_1.yaml"
+            "az ml online-deployment create -n not-green -e {online_endpoint_name_12} --file src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/online/online_deployment_1.yaml -g testrg -w testworkspace"
         )
         # check instance count and tag
         command_update = self.cmd(
-            "az ml online-deployment update -n not-green -e {online_endpoint_name_12} --set instance_count=2 --set tags.newtag=value"
+            "az ml online-deployment update -n not-green -e {online_endpoint_name_12} --set instance_count=2 --set tags.newtag=value -g testrg -w testworkspace"
         )
         if not self.is_live:
             from time import sleep
 
             sleep(600)  # This sleep is only required for fresh recording of cassette
-        command_show = self.cmd("az ml online-deployment show -n not-green -e {online_endpoint_name_12}")
+        command_show = self.cmd("az ml online-deployment show -n not-green -e {online_endpoint_name_12} -g testrg -w testworkspace")
         command_show_out = yaml.safe_load(command_show.output)
         assert command_show_out["instance_count"] == 2
         assert command_show_out["tags"]["newtag"] == "value"
-        self.cmd("az ml online-endpoint delete -n {online_endpoint_name_12} --no-wait -y")
+        self.cmd("az ml online-endpoint delete -n {online_endpoint_name_12} --no-wait -y -g testrg -w testworkspace")
         # Delete a key regardless of whether it is in the dictionary for the new name
         self.kwargs.pop("online_endpoint_name_12", None)
 
@@ -505,36 +505,36 @@ class OnlineEndpointScenarioTest(MLBaseScenarioTest):
             self.kwargs.get("onlineDeploymentName", None), endpoint_name_suffix
         )
         self.cmd(
-            "az ml online-endpoint create -n {online_endpoint_name_13} --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/online/online_endpoint_minimal.yaml"
+            "az ml online-endpoint create -n {online_endpoint_name_13} --file src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/online/online_endpoint_minimal.yaml -g testrg -w testworkspace"
         )
         self.cmd(
-            "az ml online-deployment create -n {online_deployment_name_13} -e {online_endpoint_name_13} --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/online/online_deployment_1.yaml"
+            "az ml online-deployment create -n {online_deployment_name_13} -e {online_endpoint_name_13} --file src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/online/online_deployment_1.yaml -g testrg -w testworkspace"
         )
         self.cmd(
-            "az ml online-endpoint invoke --name {online_endpoint_name_13} --deployment-name {online_deployment_name_13} --request-file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/model-2/sample-request.json"
+            "az ml online-endpoint invoke --name {online_endpoint_name_13} --deployment-name {online_deployment_name_13} --request-file src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/model-2/sample-request.json -g testrg -w testworkspace"
         )
         cmd_get_logs_storage = self.cmd(
-            "az ml online-deployment get-logs -n {online_deployment_name_13} -e {online_endpoint_name_13} -c storage-initializer"
+            "az ml online-deployment get-logs -n {online_deployment_name_13} -e {online_endpoint_name_13} -c storage-initializer -g testrg -w testworkspace"
         )
         assert cmd_get_logs_storage.exit_code == 0
 
         cmd_get_logs_inference = self.cmd(
-            "az ml online-deployment get-logs -n {online_deployment_name_13} -e {online_endpoint_name_13} -c inference-server"
+            "az ml online-deployment get-logs -n {online_deployment_name_13} -e {online_endpoint_name_13} -c inference-server -g testrg -w testworkspace"
         )
         assert cmd_get_logs_inference.exit_code == 0
 
         cmd_get_logs_default = self.cmd(
-            "az ml online-deployment get-logs -n {online_deployment_name_13} -e {online_endpoint_name_13}"
+            "az ml online-deployment get-logs -n {online_deployment_name_13} -e {online_endpoint_name_13} -g testrg -w testworkspace"
         )
         assert cmd_get_logs_default.exit_code == 0
-        self.cmd("az ml online-endpoint delete -n {online_endpoint_name_13} --no-wait -y")
+        self.cmd("az ml online-endpoint delete -n {online_endpoint_name_13} --no-wait -y -g testrg -w testworkspace")
         # Delete a key regardless of whether it is in the dictionary for the new name
         self.kwargs.pop("online_endpoint_name_13", None)
         self.kwargs.pop("online_deployment_name_13", None)
 
     def test_online_endpoint_delete_nonexisting_endpoint(self) -> None:
         with pytest.raises(Exception) as exp:
-            self.cmd("az ml online-endpoint delete -n online-endpoint-nonexisting --no-wait -y")
+            self.cmd("az ml online-endpoint delete -n online-endpoint-nonexisting --no-wait -y -g testrg -w testworkspace")
         # Assert error message when users try to delete a nonexisting online endpoint
         assert f"Online endpoint online-endpoint-nonexisting does not exist." in str(exp.value)
 
@@ -546,20 +546,20 @@ class OnlineEndpointScenarioTest(MLBaseScenarioTest):
             self.kwargs.get("onlineEndpointName", None), endpoint_name_suffix
         )
         self.cmd(
-            "az ml online-endpoint create -n {online_endpoint_name_14} --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/online/online_endpoint_create_mir.yml"
+            "az ml online-endpoint create -n {online_endpoint_name_14} --file src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/online/online_endpoint_create_mir.yml -g testrg -w testworkspace"
         )
 
         # Update online endpoint using -f/--file and --set.
         # --set values should overwrite the values in the yaml file.
         update_traffic_file = self.cmd(
-            "az ml online-endpoint update -n {online_endpoint_name_14} -f ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/online/online_endpoint_update_tags.yml --set tags.new_tag=new_val tags.endpointkey1=value2"
+            "az ml online-endpoint update -n {online_endpoint_name_14} -f src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/online/online_endpoint_update_tags.yml --set tags.new_tag=new_val tags.endpointkey1=value2 -g testrg -w testworkspace"
         )
 
         update_traffic_file_out = yaml.safe_load(update_traffic_file.output)
         assert update_traffic_file_out["tags"]["endpointkey1"] == "value2"
         assert update_traffic_file_out["tags"]["new_tag"] == "new_val"
 
-        self.cmd("az ml online-endpoint delete -n {online_endpoint_name_14} --no-wait -y")
+        self.cmd("az ml online-endpoint delete -n {online_endpoint_name_14} --no-wait -y -g testrg -w testworkspace")
         # Delete a key regardless of whether it is in the dictionary for the new name
         self.kwargs.pop("online_endpoint_name_14", None)
 
@@ -570,7 +570,7 @@ class OnlineEndpointScenarioTest(MLBaseScenarioTest):
             self.kwargs.get("onlineEndpointName", None), endpoint_name_suffix
         )
         cmd_create = self.cmd(
-            "az ml online-endpoint create -n {online_endpoint_name_15} --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/online/online_endpoint_create_mir.yml"
+            "az ml online-endpoint create -n {online_endpoint_name_15} --file src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/online/online_endpoint_create_mir.yml -g testrg -w testworkspace"
         )
         cmd_create = yaml.safe_load(cmd_create.output)
         assert cmd_create["name"] == self.kwargs.get("online_endpoint_name_15", None)
@@ -583,7 +583,7 @@ class OnlineEndpointScenarioTest(MLBaseScenarioTest):
         # are setting the endpoint name with -n/--name flag we are able to update it and overwrite the current
         # online endpoint properties with what is the file
         update_file = self.cmd(
-            "az ml online-endpoint update -n {online_endpoint_name_15} -f ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/online/online_endpoint_update_incomplete.yml"
+            "az ml online-endpoint update -n {online_endpoint_name_15} -f src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/online/online_endpoint_update_incomplete.yml -g testrg -w testworkspace"
         )
         update_file_out = yaml.safe_load(update_file.output)
         assert update_file_out["name"] == self.kwargs.get("online_endpoint_name_15", None)
@@ -591,7 +591,7 @@ class OnlineEndpointScenarioTest(MLBaseScenarioTest):
         # New tag len is zero because file does not have any tags
         assert len(update_file_out["tags"]) == 0
 
-        self.cmd("az ml online-endpoint delete -n {online_endpoint_name_15} --no-wait -y")
+        self.cmd("az ml online-endpoint delete -n {online_endpoint_name_15} --no-wait -y -g testrg -w testworkspace")
         # Delete a key regardless of whether it is in the dictionary for the new name
         self.kwargs.pop("online_endpoint_name_15", None)
 
@@ -606,17 +606,17 @@ class OnlineEndpointScenarioTest(MLBaseScenarioTest):
             self.kwargs.get("onlineDeploymentName", None), endpoint_name_suffix
         )
         self.cmd(
-            "az ml online-endpoint create -n {online_endpoint_name_16} --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/online/online_endpoint_create_mir.yml"
+            "az ml online-endpoint create -n {online_endpoint_name_16} --file src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/online/online_endpoint_create_mir.yml -g testrg -w testworkspace"
         )
         self.cmd(
-            "az ml online-deployment create -n {online_deployment_name_16} -e {online_endpoint_name_16} --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/online/online_deployment_1.yaml"
+            "az ml online-deployment create -n {online_deployment_name_16} -e {online_endpoint_name_16} --file src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/online/online_deployment_1.yaml -g testrg -w testworkspace"
         )
 
         # Update online deployment using -f/--file and --set.
         # --set values should overwrite the values in the yaml file.
-        cmd3 = "az ml online-deployment update -n {online_deployment_name_16} -e {online_endpoint_name_16} --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/online/online_deployment_1_update.yaml --set description=new_description"
+        cmd3 = "az ml online-deployment update -n {online_deployment_name_16} -e {online_endpoint_name_16} --file src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/online/online_deployment_1_update.yaml --set description=new_description -g testrg -w testworkspace"
         self.cmd(cmd3)
-        cmd4 = "az ml online-deployment show -n {online_deployment_name_16} -e {online_endpoint_name_16}"
+        cmd4 = "az ml online-deployment show -n {online_deployment_name_16} -e {online_endpoint_name_16} -g testrg -w testworkspace"
         onl_mgr_dpt_obj_update_show = self.cmd(cmd4)
         onl_mgr_dpt_obj_update_show = yaml.safe_load(onl_mgr_dpt_obj_update_show.output)
 
@@ -633,7 +633,7 @@ class OnlineEndpointScenarioTest(MLBaseScenarioTest):
         assert "versions/2" in onl_mgr_dpt_obj_update_show["model"]
         assert "versions/3" in onl_mgr_dpt_obj_update_show["environment"]
 
-        self.cmd("az ml online-endpoint delete -n {online_endpoint_name_16} --no-wait -y")
+        self.cmd("az ml online-endpoint delete -n {online_endpoint_name_16} --no-wait -y -g testrg -w testworkspace")
         # Delete a key regardless of whether it is in the dictionary for the new name
         self.kwargs.pop("online_endpoint_name_16", None)
         self.kwargs.pop("online_deployment_name_16", None)
@@ -649,17 +649,17 @@ class OnlineEndpointScenarioTest(MLBaseScenarioTest):
             self.kwargs.get("onlineDeploymentName", None), endpoint_name_suffix
         )
         self.cmd(
-            "az ml online-endpoint create -n {online_endpoint_name_25} --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/online/online_endpoint_create_mir.yml"
+            "az ml online-endpoint create -n {online_endpoint_name_25} --file src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/online/online_endpoint_create_mir.yml -g testrg -w testworkspace"
         )
 
         self.cmd(
-            "az ml online-deployment create -n {online_deployment_name_25} -e {online_endpoint_name_25} --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/online/online_deployment_4.yaml"
+            "az ml online-deployment create -n {online_deployment_name_25} -e {online_endpoint_name_25} --file src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/online/online_deployment_4.yaml -g testrg -w testworkspace"
         )
 
         # Update online endpoint using -f/--file and --set.
         # --set values should overwrite the values in the yaml file.
         update_deployment = self.cmd(
-            "az ml online-deployment update -n {online_deployment_name_25} -e {online_endpoint_name_25} --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/online/online_deployment_invalid_model.yaml --set model=azureml:test_model:1"
+            "az ml online-deployment update -n {online_deployment_name_25} -e {online_endpoint_name_25} --file src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/online/online_deployment_invalid_model.yaml --set model=azureml:test_model:1 -g testrg -w testworkspace"
         )
         update_deployment = yaml.safe_load(update_deployment.output)
         assert update_deployment["name"] == self.kwargs.get("online_deployment_name_25", None)
@@ -670,14 +670,14 @@ class OnlineEndpointScenarioTest(MLBaseScenarioTest):
         # Raise Exception when we try to update an online deployment with a file that does not have a valid value for model
         with pytest.raises(Exception) as exp:
             self.cmd(
-                "az ml online-deployment update -n {online_deployment_name_25} -e {online_endpoint_name_25} --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/online/online_deployment_invalid_model.yaml"
+                "az ml online-deployment update -n {online_deployment_name_25} -e {online_endpoint_name_25} --file src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/online/online_deployment_invalid_model.yaml -g testrg -w testworkspace"
             )
         assert (
             "In order to specify an existing models, please provide either of the following prefixed with 'azureml:"
             in str(exp.value)
         )
 
-        self.cmd("az ml online-endpoint delete -n {online_endpoint_name_25} --no-wait -y")
+        self.cmd("az ml online-endpoint delete -n {online_endpoint_name_25} --no-wait -y -g testrg -w testworkspace")
         # Delete a key regardless of whether it is in the dictionary for the new name
         self.kwargs.pop("online_endpoint_name_25", None)
         self.kwargs.pop("online_deployment_name_25", None)
@@ -693,20 +693,20 @@ class OnlineEndpointScenarioTest(MLBaseScenarioTest):
             self.kwargs.get("onlineDeploymentName", None), endpoint_name_suffix
         )
         self.cmd(
-            "az ml online-endpoint create -n {online_endpoint_name_17} --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/online/online_endpoint_create_mir.yml"
+            "az ml online-endpoint create -n {online_endpoint_name_17} --file src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/online/online_endpoint_create_mir.yml -g testrg -w testworkspace"
         )
         self.cmd(
-            "az ml online-deployment create -n {online_deployment_name_17} -e {online_endpoint_name_17} --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/online/online_deployment_1.yaml"
+            "az ml online-deployment create -n {online_deployment_name_17} -e {online_endpoint_name_17} --file src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/online/online_deployment_1.yaml -g testrg -w testworkspace"
         )
 
         # Raise Exception when we try to update an online deployment with a file that does not have all the required fields
         with pytest.raises(Exception) as exp:
             self.cmd(
-                "az ml online-deployment update -n {online_deployment_name_17} -e {online_endpoint_name_17} --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/online/online_deployment_1_update_incomplete.yaml"
+                "az ml online-deployment update -n {online_deployment_name_17} -e {online_endpoint_name_17} --file src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/online/online_deployment_1_update_incomplete.yaml -g testrg -w testworkspace"
             )
         assert "Missing data for required field." in str(exp.value)
 
-        self.cmd("az ml online-endpoint delete -n {online_endpoint_name_17} --no-wait -y")
+        self.cmd("az ml online-endpoint delete -n {online_endpoint_name_17} --no-wait -y -g testrg -w testworkspace")
         # Delete a key regardless of whether it is in the dictionary for the new name
         self.kwargs.pop("online_endpoint_name_17", None)
         self.kwargs.pop("online_deployment_name_17", None)
@@ -723,24 +723,24 @@ class OnlineEndpointScenarioTest(MLBaseScenarioTest):
         )
 
         self.cmd(
-            "az ml online-endpoint create -n {online_endpoint_name_18} --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/online/online_endpoint_create_mir.yml"
+            "az ml online-endpoint create -n {online_endpoint_name_18} --file src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/online/online_endpoint_create_mir.yml -g testrg -w testworkspace"
         )
 
         # Throw an error when we try to update a non-existing online deployment with --set
         with pytest.raises(Exception) as exp:
             self.cmd(
-                "az ml online-deployment update -n {online_deployment_name_18} -e {online_endpoint_name_18} --set tags.new_tag=new_val"
+                "az ml online-deployment update -n {online_deployment_name_18} -e {online_endpoint_name_18} --set tags.new_tag=new_val -g testrg -w testworkspace"
             )
         assert "Deployment does not exist" in str(exp.value)
 
         # Throw an error when we try to update a non-existing online deployment with --file/-f
         with pytest.raises(Exception) as exp:
             self.cmd(
-                "az ml online-deployment update -n {online_deployment_name_18} -e {online_endpoint_name_18} --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/online/online_deployment_1_update.yaml"
+                "az ml online-deployment update -n {online_deployment_name_18} -e {online_endpoint_name_18} --file src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/online/online_deployment_1_update.yaml -g testrg -w testworkspace"
             )
         assert "Deployment does not exist" in str(exp.value)
 
-        self.cmd("az ml online-endpoint delete -n {online_endpoint_name_18} --no-wait -y")
+        self.cmd("az ml online-endpoint delete -n {online_endpoint_name_18} --no-wait -y -g testrg -w testworkspace")
         # Delete a key regardless of whether it is in the dictionary for the new name
         self.kwargs.pop("online_endpoint_name_18", None)
         self.kwargs.pop("online_deployment_name_18", None)
@@ -756,11 +756,11 @@ class OnlineEndpointScenarioTest(MLBaseScenarioTest):
             self.kwargs.get("onlineDeploymentName", None), endpoint_name_suffix
         )
 
-        endpoint = self.cmd("az ml online-endpoint create -n {online_endpoint_name_23}")
+        endpoint = self.cmd("az ml online-endpoint create -n {online_endpoint_name_23} -g testrg -w testworkspace")
 
         # Create online deployment without scale settings value
         deployment = self.cmd(
-            "az ml online-deployment create -n {online_deployment_name_23} -e {online_endpoint_name_23} --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/online/online_deployment_2.yaml"
+            "az ml online-deployment create -n {online_deployment_name_23} -e {online_endpoint_name_23} --file src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/online/online_deployment_2.yaml -g testrg -w testworkspace"
         )
         deployment = yaml.safe_load(deployment.output)
         assert deployment["instance_count"] == 1
@@ -768,16 +768,16 @@ class OnlineEndpointScenarioTest(MLBaseScenarioTest):
         # Update online deployment that does not have scale settings
         # Updating only instance count value
         deployment_updated = self.cmd(
-            "az ml online-deployment update -n {online_deployment_name_23} -e {online_endpoint_name_23} --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/online/online_deployment_3.yaml"
+            "az ml online-deployment update -n {online_deployment_name_23} -e {online_endpoint_name_23} --file src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/online/online_deployment_3.yaml -g testrg -w testworkspace"
         )
 
         deployment_show = self.cmd(
-            "az ml online-deployment show -n {online_deployment_name_23} -e {online_endpoint_name_23}"
+            "az ml online-deployment show -n {online_deployment_name_23} -e {online_endpoint_name_23} -g testrg -w testworkspace"
         )
         deployment_show = yaml.safe_load(deployment_show.output)
         assert deployment_show["instance_count"] == 3
 
-        self.cmd("az ml online-endpoint delete -n {online_endpoint_name_23} --no-wait -y")
+        self.cmd("az ml online-endpoint delete -n {online_endpoint_name_23} --no-wait -y -g testrg -w testworkspace")
 
         # Delete a key regardless of whether it is in the dictionary for the new name
         self.kwargs.pop("online_endpoint_name_23", None)
@@ -792,13 +792,13 @@ class OnlineEndpointScenarioTest(MLBaseScenarioTest):
 
         # Throw an error when we try to update a non-existing online endpoint with --set
         with pytest.raises(Exception) as exp:
-            self.cmd("az ml online-endpoint update -n {online_endpoint_name_19} --set tags.new_tag=new_val")
+            self.cmd("az ml online-endpoint update -n {online_endpoint_name_19} --set tags.new_tag=new_val -g testrg -w testworkspace")
         assert "Endpoint does not exist" in str(exp.value)
 
         # Throw an error when we try to update a non-existing online endpoint with --file/-f
         with pytest.raises(Exception) as exp:
             self.cmd(
-                "az ml online-endpoint update -n {online_endpoint_name_19} --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/online/online_endpoint_update_mir.yml"
+                "az ml online-endpoint update -n {online_endpoint_name_19} --file src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/online/online_endpoint_update_mir.yml -g testrg -w testworkspace"
             )
         assert "Endpoint does not exist" in str(exp.value)
 
@@ -813,9 +813,9 @@ class OnlineEndpointScenarioTest(MLBaseScenarioTest):
         )
         # delimiter between traffic variables should raise an error
         with pytest.raises(Exception) as exp:
-            self.cmd("az ml online-endpoint update -n {online_endpoint_name_20} --traffic 't1=50, t2=50'")
+            self.cmd("az ml online-endpoint update -n {online_endpoint_name_20} --traffic 't1=50, t2=50' -g testrg -w testworkspace")
         assert "Do not add a delimiter" in str(exp.value)
-        self.cmd("az ml online-endpoint delete -n {online_endpoint_name_20} --no-wait -y")
+        self.cmd("az ml online-endpoint delete -n {online_endpoint_name_20} --no-wait -y -g testrg -w testworkspace")
         # Delete a key regardless of whether it is in the dictionary for the new name
         self.kwargs.pop("online_endpoint_name_20", None)
 
@@ -832,18 +832,18 @@ class OnlineEndpointScenarioTest(MLBaseScenarioTest):
         )
 
         self.cmd(
-            "az ml online-endpoint create -n {online_endpoint_name_23} --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/online/online_endpoint_create_mir.yml"
+            "az ml online-endpoint create -n {online_endpoint_name_23} --file src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/online/online_endpoint_create_mir.yml -g testrg -w testworkspace"
         )
 
         deployment = self.cmd(
-            "az ml online-deployment create -n {online_deployment_name_23} -e {online_endpoint_name_23} --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/online/online_deployment_code_asset_id.yaml"
+            "az ml online-deployment create -n {online_deployment_name_23} -e {online_endpoint_name_23} --file src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/online/online_deployment_code_asset_id.yaml -g testrg -w testworkspace"
         )
 
         deployment_obj = yaml.safe_load(deployment.output)
         assert deployment_obj["name"] == self.kwargs.get("online_deployment_name_23", None)
         assert "codes/82ffabb8-ea16-4f6b-85b4-88df37bd44f8/versions/1" in deployment_obj["code_configuration"]["code"]
 
-        self.cmd("az ml online-endpoint delete -n {online_endpoint_name_23} --no-wait -y")
+        self.cmd("az ml online-endpoint delete -n {online_endpoint_name_23} --no-wait -y -g testrg -w testworkspace")
         # Delete a key regardless of whether it is in the dictionary for the new name
         self.kwargs.pop("online_endpoint_name_23", None)
         self.kwargs.pop("online_deployment_name_23", None)
@@ -861,24 +861,24 @@ class OnlineEndpointScenarioTest(MLBaseScenarioTest):
         )
 
         self.cmd(
-            "az ml online-endpoint create -n {online_endpoint_name_24} --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/online/online_endpoint_create_mir.yml"
+            "az ml online-endpoint create -n {online_endpoint_name_24} --file src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/online/online_endpoint_create_mir.yml -g testrg -w testworkspace"
         )
 
         deployment = self.cmd(
-            "az ml online-deployment create -n {online_deployment_name_24} -e {online_endpoint_name_24} --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/online/online_deployment_code_name_version.yaml"
+            "az ml online-deployment create -n {online_deployment_name_24} -e {online_endpoint_name_24} --file src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/online/online_deployment_code_name_version.yaml -g testrg -w testworkspace"
         )
 
         deployment_obj = yaml.safe_load(deployment.output)
         assert deployment_obj["name"] == self.kwargs.get("online_deployment_name_24", None)
         assert "codes/82ffabb8-ea16-4f6b-85b4-88df37bd44f8/versions/1" in deployment_obj["code_configuration"]["code"]
 
-        self.cmd("az ml online-endpoint delete -n {online_endpoint_name_24} --no-wait -y")
+        self.cmd("az ml online-endpoint delete -n {online_endpoint_name_24} --no-wait -y -g testrg -w testworkspace")
         # Delete a key regardless of whether it is in the dictionary for the new name
         self.kwargs.pop("online_endpoint_name_24", None)
         self.kwargs.pop("online_deployment_name_24", None)
 
     def test_online_endpoint_list(self) -> None:
-        online_endpoint_obj = self.cmd("az ml online-endpoint list")
+        online_endpoint_obj = self.cmd("az ml online-endpoint list -g testrg -w testworkspace")
         online_endpoint_obj = yaml.safe_load(online_endpoint_obj.output)
         for online_endpoint in online_endpoint_obj:
             assert "name" in online_endpoint
@@ -896,7 +896,7 @@ class OnlineEndpointScenarioTest(MLBaseScenarioTest):
 
     @pytest.mark.skip(reason="Failing in playback")
     def test_online_deployment_list(self) -> None:
-        online_deployment_obj = self.cmd("az ml online-deployment list -e mir-endpoint")
+        online_deployment_obj = self.cmd("az ml online-deployment list -e mir-endpoint -g testrg -w testworkspace")
         online_deployment_obj = yaml.safe_load(online_deployment_obj.output)
         for online_deployment in online_deployment_obj:
             assert "endpoint_name" in online_deployment
@@ -938,12 +938,12 @@ class OnlineEndpointScenarioTest(MLBaseScenarioTest):
             patcher = patch.object(OperationScope, "resource_group_name", "000000000000000")
             patcher.start()
         self.cmd(
-            "az ml online-endpoint create -n {online_endpoint_name_21} --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/online/online_endpoint_create_mir.yml"
+            "az ml online-endpoint create -n {online_endpoint_name_21} --file src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/online/online_endpoint_create_mir.yml -g testrg -w testworkspace"
         )
         self.cmd(
-            "az ml online-deployment create -n {online_deployment_name_21} -e {online_endpoint_name_21} --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/online/online_deployment_registry.yaml"
+            "az ml online-deployment create -n {online_deployment_name_21} -e {online_endpoint_name_21} --file src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/online/online_deployment_registry.yaml -g testrg -w testworkspace"
         )
-        cmd2 = "az ml online-deployment show -n {online_deployment_name_21} -e {online_endpoint_name_21}"
+        cmd2 = "az ml online-deployment show -n {online_deployment_name_21} -e {online_endpoint_name_21} -g testrg -w testworkspace"
         onl_mgr_dpt_obj_show = self.cmd(cmd2)
         onl_mgr_dpt_obj_show = yaml.safe_load(onl_mgr_dpt_obj_show.output)
 
@@ -965,7 +965,7 @@ class OnlineEndpointScenarioTest(MLBaseScenarioTest):
             onl_mgr_dpt_obj_show["environment"]
             == "azureml://registries/UnsecureTest-mirv2reg/environments/integration-test-env-cli/versions/1"
         )
-        self.cmd("az ml online-endpoint delete -n {online_endpoint_name_21} --no-wait -y")
+        self.cmd("az ml online-endpoint delete -n {online_endpoint_name_21} --no-wait -y -g testrg -w testworkspace")
         # Delete a key regardless of whether it is in the dictionary for the new name
         self.kwargs.pop("online_endpoint_name_21", None)
         self.kwargs.pop("online_deployment_name_21", None)
@@ -979,7 +979,7 @@ class OnlineEndpointScenarioTest(MLBaseScenarioTest):
             "uai"
         ] = "/subscriptions/b17253fa-f327-42d6-9686-f3e553e24763/resourcegroups/dsvm_master/providers/Microsoft.ManagedIdentity/userAssignedIdentities/test_uai"
         endpoint = self.cmd(
-            "az ml online-endpoint create -f ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/online/online_endpoint_create_mir.yml  --set identity.user_assigned_identities[0].resource_id={uai}"
+            "az ml online-endpoint create -f src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/online/online_endpoint_create_mir.yml  --set identity.user_assigned_identities[0].resource_id={uai} -g testrg -w testworkspace"
         )
         endpoint = yaml.safe_load(endpoint.output)
         endpoint["identity"]["user_assigned_identities"][0]["resource_id"] == self.kwargs.pop("uai", None)
@@ -993,11 +993,11 @@ class OnlineEndpointScenarioTest(MLBaseScenarioTest):
             self.kwargs.get("onlineEndpointName", None), endpoint_name_suffix
         )
         self.cmd(
-            "az ml online-endpoint create -n {online_endpoint_name_22} --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/online/online_endpoint_create_mir.yml"
+            "az ml online-endpoint create -n {online_endpoint_name_22} --file src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/online/online_endpoint_create_mir.yml -g testrg -w testworkspace"
         )
 
         deployment = self.cmd(
-            "az ml online-deployment create -e {online_endpoint_name_22} --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/online/online_deployment_1.yaml"
+            "az ml online-deployment create -e {online_endpoint_name_22} --file src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/online/online_deployment_1.yaml -g testrg -w testworkspace"
         )
 
         deployment = yaml.safe_load(deployment.output)
@@ -1008,13 +1008,13 @@ class OnlineEndpointScenarioTest(MLBaseScenarioTest):
         # Deployment created under the same endpoint should have a unique naming.
         try:
             self.cmd(
-                "az ml online-deployment create -e {online_endpoint_name_22} --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/online/online_deployment_1.yaml"
+                "az ml online-deployment create -e {online_endpoint_name_22} --file src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/online/online_deployment_1.yaml -g testrg -w testworkspace"
             )
         except:
             assert True
         else:
             assert False
-        self.cmd("az ml online-endpoint delete -n {online_endpoint_name_22} --no-wait -y")
+        self.cmd("az ml online-endpoint delete -n {online_endpoint_name_22} --no-wait -y -g testrg -w testworkspace")
         # Delete a key regardless of whether it is in the dictionary for the new name
         self.kwargs.pop("online_endpoint_name_22", None)
 
@@ -1034,15 +1034,15 @@ class OnlineEndpointScenarioTest(MLBaseScenarioTest):
         )
 
         self.cmd(
-            "az ml online-endpoint create -n {online_endpoint_name_23} --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/online/online_endpoint_create_mir.yml"
+            "az ml online-endpoint create -n {online_endpoint_name_23} --file src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/online/online_endpoint_create_mir.yml -g testrg -w testworkspace"
         )
 
         self.cmd(
-            "az ml online-deployment create  -n {online_deployment_name_23} -e {online_endpoint_name_23} --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/online/online_deployment_data_storage_basic.yaml"
+            "az ml online-deployment create  -n {online_deployment_name_23} -e {online_endpoint_name_23} --file src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/online/online_deployment_data_storage_basic.yaml -g testrg -w testworkspace"
         )
 
         deployment_show = self.cmd(
-            "az ml online-deployment show -n {online_deployment_name_23} -e {online_endpoint_name_23}"
+            "az ml online-deployment show -n {online_deployment_name_23} -e {online_endpoint_name_23} -g testrg -w testworkspace"
         )
 
         deployment_show_out = yaml.safe_load(deployment_show.output)
@@ -1072,7 +1072,7 @@ class OnlineEndpointScenarioTest(MLBaseScenarioTest):
         os.environ["AZURE_ML_CLI_PRIVATE_FEATURES_ENABLED"] = "false"
 
         deployment_show = self.cmd(
-            "az ml online-deployment show -n {online_deployment_name_23} -e {online_endpoint_name_23}"
+            "az ml online-deployment show -n {online_deployment_name_23} -e {online_endpoint_name_23} -g testrg -w testworkspace"
         )
 
         deployment_show_out = yaml.safe_load(deployment_show.output)
@@ -1083,7 +1083,7 @@ class OnlineEndpointScenarioTest(MLBaseScenarioTest):
         else:
             assert False
 
-        cmd_delete = self.cmd("az ml online-endpoint delete -n {online_endpoint_name_23} --no-wait -y")
+        cmd_delete = self.cmd("az ml online-endpoint delete -n {online_endpoint_name_23} --no-wait -y -g testrg -w testworkspace")
         # Delete a key regardless of whether it is in the dictionary for the new name
         self.kwargs.pop("online_deployment_name_23", None)
         self.kwargs.pop("online_endpoint_name_23", None)
@@ -1104,15 +1104,15 @@ class OnlineEndpointScenarioTest(MLBaseScenarioTest):
             )
 
             self.cmd(
-                "az ml online-endpoint create -n {online_endpoint_name_24} --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/online/online_endpoint_create_mir.yml"
+                "az ml online-endpoint create -n {online_endpoint_name_24} --file src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/online/online_endpoint_create_mir.yml -g testrg -w testworkspace"
             )
 
             self.cmd(
-                "az ml online-deployment create  -n {online_deployment_name_24} -e {online_endpoint_name_24} --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/online/online_deployment_data_storage_standard.yaml"
+                "az ml online-deployment create  -n {online_deployment_name_24} -e {online_endpoint_name_24} --file src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/online/online_deployment_data_storage_standard.yaml -g testrg -w testworkspace"
             )
 
             deployment_show = self.cmd(
-                "az ml online-deployment show -n {online_deployment_name_24} -e {online_endpoint_name_24}"
+                "az ml online-deployment show -n {online_deployment_name_24} -e {online_endpoint_name_24} -g testrg -w testworkspace"
             )
 
             deployment_show_out = yaml.safe_load(deployment_show.output)
@@ -1150,7 +1150,7 @@ class OnlineEndpointScenarioTest(MLBaseScenarioTest):
         os.environ["AZURE_ML_CLI_PRIVATE_FEATURES_ENABLED"] = "false"
 
         deployment_show = self.cmd(
-            "az ml online-deployment show -n {online_deployment_name_24} -e {online_endpoint_name_24}"
+            "az ml online-deployment show -n {online_deployment_name_24} -e {online_endpoint_name_24} -g testrg -w testworkspace"
         )
 
         deployment_show_out = yaml.safe_load(deployment_show.output)
@@ -1161,7 +1161,7 @@ class OnlineEndpointScenarioTest(MLBaseScenarioTest):
         else:
             assert False
 
-        cmd_delete = self.cmd("az ml online-endpoint delete -n {online_endpoint_name_24} --no-wait -y")
+        cmd_delete = self.cmd("az ml online-endpoint delete -n {online_endpoint_name_24} --no-wait -y -g testrg -w testworkspace")
         # Delete a key regardless of whether it is in the dictionary for the new name
         self.kwargs.pop("online_deployment_name_24", None)
         self.kwargs.pop("online_endpoint_name_24", None)
@@ -1180,11 +1180,11 @@ class OnlineEndpointScenarioTest(MLBaseScenarioTest):
         )
 
         self.cmd(
-            "az ml online-endpoint create -n {online_endpoint_name_26} --file ./src/cli/src/machinelearningservices/azext_mlv2//tests/test_configs/endpoints/online/online_endpoint_create_mir.yml"
+            "az ml online-endpoint create -n {online_endpoint_name_26} --file src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/online/online_endpoint_create_mir.yml -g testrg -w testworkspace"
         )
         with pytest.raises(CLIError) as ex:
             self.cmd(
-                "az ml online-deployment create  -n {online_deployment_name_26} -e {online_endpoint_name_26} --file ./src/cli/src/machinelearningservices/azext_mlv2//tests/test_configs/deployments/online/online_deployment_scoring_syntax_failure.yaml"
+                "az ml online-deployment create  -n {online_deployment_name_26} -e {online_endpoint_name_26} --file src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/online/online_deployment_scoring_syntax_failure.yaml -g testrg -w testworkspace"
             )
         err_msg = ex.value
         deployment_name = self.kwargs.get("online_deployment_name_26", None)
@@ -1194,18 +1194,24 @@ class OnlineEndpointScenarioTest(MLBaseScenarioTest):
         )
 
         self.cmd(
-            "az ml online-deployment create  -n {online_deployment_name_26} -e {online_endpoint_name_26} --file ./src/cli/src/machinelearningservices/azext_mlv2//tests/test_configs/deployments/online/online_deployment_scoring_syntax_failure.yaml --skip-script-validation --no-wait"
+            "az ml online-deployment create  -n {online_deployment_name_26} -e {online_endpoint_name_26} --file src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/online/online_deployment_scoring_syntax_failure.yaml --skip-script-validation --no-wait -g testrg -w testworkspace"
         )
 
         deployment_show = self.cmd(
-            "az ml online-deployment show -n {online_deployment_name_26} -e {online_endpoint_name_26}"
+            "az ml online-deployment show -n {online_deployment_name_26} -e {online_endpoint_name_26} -g testrg -w testworkspace"
         )
 
         deployment_show_out = yaml.safe_load(deployment_show.output)
 
         assert deployment_show_out
 
-        cmd_delete = self.cmd("az ml online-endpoint delete -n {online_endpoint_name_26} --no-wait -y")
+        cmd_delete = self.cmd("az ml online-endpoint delete -n {online_endpoint_name_26} --no-wait -y -g testrg -w testworkspace")
         # Delete a key regardless of whether it is in the dictionary for the new name
         self.kwargs.pop("online_deployment_name_26", None)
         self.kwargs.pop("online_endpoint_name_26", None)
+
+
+
+
+
+

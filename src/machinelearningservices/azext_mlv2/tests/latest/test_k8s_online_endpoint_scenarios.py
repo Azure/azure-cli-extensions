@@ -1,4 +1,4 @@
-﻿# --------------------------------------------------------------------------
+# --------------------------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for
 # license information.
@@ -23,7 +23,7 @@ class K8SOnlineEndpointScenarioTest(MLBaseScenarioTest):
             self.kwargs.get("onlineEndpointName", None), endpoint_name_suffix
         )
         cmd_create = self.cmd(
-            "az ml online-endpoint create -n {online_endpoint_name} --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/online/online_endpoint_create_k8s.yml"
+            "az ml online-endpoint create -n {online_endpoint_name} --file src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/online/online_endpoint_create_k8s.yml -g testrg -w testworkspace"
         )
         cmd_create = yaml.safe_load(cmd_create.output)
         assert cmd_create["name"] == self.kwargs.get("online_endpoint_name", None)
@@ -31,13 +31,13 @@ class K8SOnlineEndpointScenarioTest(MLBaseScenarioTest):
         assert cmd_create["provisioning_state"] != ""
         assert cmd_create["compute"] != ""
         assert cmd_create["id"] is not None
-        cmd_show = self.cmd("az ml online-endpoint show -n {online_endpoint_name}")
+        cmd_show = self.cmd("az ml online-endpoint show -n {online_endpoint_name} -g testrg -w testworkspace")
         cmd_show = yaml.safe_load(cmd_show.output)
         assert cmd_show["name"] == self.kwargs.get("online_endpoint_name", None)
-        cmd_update = self.cmd("az ml online-endpoint update -n {online_endpoint_name}  --set tags.new_tag=new_val")
+        cmd_update = self.cmd("az ml online-endpoint update -n {online_endpoint_name}  --set tags.new_tag=new_val -g testrg -w testworkspace")
         cmd_update = yaml.safe_load(cmd_update.output)
         assert cmd_update["tags"]["new_tag"] == "new_val"
-        cmd_delete = self.cmd("az ml online-endpoint delete -n {online_endpoint_name} --no-wait -y")
+        cmd_delete = self.cmd("az ml online-endpoint delete -n {online_endpoint_name} --no-wait -y -g testrg -w testworkspace")
         assert cmd_delete.output == ""
         self.kwargs.pop("online_endpoint_name", None)
 
@@ -47,7 +47,7 @@ class K8SOnlineEndpointScenarioTest(MLBaseScenarioTest):
             self.kwargs.get("onlineEndpointName", None), endpoint_name_suffix
         )
         cmd_create = self.cmd(
-            "az ml online-endpoint create -n {online_endpoint_name_2} --set compute=azureml:inferencecompute"
+            "az ml online-endpoint create -n {online_endpoint_name_2} --set compute=azureml:inferencecompute -g testrg -w testworkspace"
         )
         cmd_create = yaml.safe_load(cmd_create.output)
         assert cmd_create["name"] == self.kwargs.get("online_endpoint_name_2", None)
@@ -55,10 +55,10 @@ class K8SOnlineEndpointScenarioTest(MLBaseScenarioTest):
         assert cmd_create["provisioning_state"] != ""
         assert "inferencecompute" in cmd_create["compute"]
         assert cmd_create["id"] is not None
-        cmd_show = self.cmd("az ml online-endpoint show -n {online_endpoint_name_2}")
+        cmd_show = self.cmd("az ml online-endpoint show -n {online_endpoint_name_2} -g testrg -w testworkspace")
         cmd_show = yaml.safe_load(cmd_show.output)
         assert cmd_show["name"] == self.kwargs.get("online_endpoint_name_2", None)
-        cmd_delete = self.cmd("az ml online-endpoint delete -n {online_endpoint_name_2} --no-wait -y")
+        cmd_delete = self.cmd("az ml online-endpoint delete -n {online_endpoint_name_2} --no-wait -y -g testrg -w testworkspace")
         assert cmd_delete.output == ""
         self.kwargs.pop("online_endpoint_name_2", None)
 
@@ -77,23 +77,23 @@ class K8SOnlineEndpointScenarioTest(MLBaseScenarioTest):
 
         # create endpoint with cpu instance type
         self.cmd(
-            "az ml online-endpoint create -n {online_endpoint_name_cpu} --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/online/online_endpoint_create_k8s.yml"
+            "az ml online-endpoint create -n {online_endpoint_name_cpu} --file src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/online/online_endpoint_create_k8s.yml -g testrg -w testworkspace"
         )
 
         # create deployment with unknown setting
         with pytest.raises(Exception):
             self.cmd(
-                "az ml online-deployment create -n {online_deployment_name_cpu} -e {online_endpoint_name_cpu} --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/online/online_deployment_blue.yaml --set unknown=value"
+                "az ml online-deployment create -n {online_deployment_name_cpu} -e {online_endpoint_name_cpu} --file src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/online/online_deployment_blue.yaml --set unknown=value -g testrg -w testworkspace"
             )
 
         # create deployment with all traffic setting
         self.cmd(
-            "az ml online-deployment create -n {online_deployment_name_cpu} -e {online_endpoint_name_cpu} --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/online/online_deployment_blue.yaml --all-traffic"
+            "az ml online-deployment create -n {online_deployment_name_cpu} -e {online_endpoint_name_cpu} --file src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/online/online_deployment_blue.yaml --all-traffic -g testrg -w testworkspace"
         )
 
         # verify deployment settings
         deployment = self.cmd(
-            "az ml online-deployment show -n {online_deployment_name_cpu} -e {online_endpoint_name_cpu}"
+            "az ml online-deployment show -n {online_deployment_name_cpu} -e {online_endpoint_name_cpu} -g testrg -w testworkspace"
         )
         deployment = yaml.safe_load(deployment.output)
         scale_settings = {
@@ -113,7 +113,7 @@ class K8SOnlineEndpointScenarioTest(MLBaseScenarioTest):
         assert deployment["environment"]
 
         # assert traffic is 100
-        endpoint = self.cmd("az ml online-endpoint show -n {online_endpoint_name_cpu}")
+        endpoint = self.cmd("az ml online-endpoint show -n {online_endpoint_name_cpu} -g testrg -w testworkspace")
         endpoint = yaml.safe_load(endpoint.output)
         assert endpoint["traffic"] == {self.kwargs["online_deployment_name_cpu"]: 100}
 
@@ -121,7 +121,7 @@ class K8SOnlineEndpointScenarioTest(MLBaseScenarioTest):
         # comment this test out for bug: https://msdata.visualstudio.com/DefaultCollection/Vienna/_workitems/edit/1791755/
         """
         invoke_cmd = self.cmd(
-           "az ml online-endpoint invoke --name {online_endpoint_name_cpu} -d {online_deployment_name_cpu} --request-file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/model-1/sample-request.json"
+           "az ml online-endpoint invoke --name {online_endpoint_name_cpu} -d {online_deployment_name_cpu} --request-file src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/model-1/sample-request.json -g testrg -w testworkspace"
         )
         assert invoke_cmd.exit_code == 0
         result = yaml.safe_load(invoke_cmd.output)
@@ -131,18 +131,18 @@ class K8SOnlineEndpointScenarioTest(MLBaseScenarioTest):
 
         # get logs
         logs = self.cmd(
-            "az ml online-deployment get-logs -n {online_deployment_name_cpu} -e {online_endpoint_name_cpu}"
+            "az ml online-deployment get-logs -n {online_deployment_name_cpu} -e {online_endpoint_name_cpu} -g testrg -w testworkspace"
         )
         assert logs.exit_code == 0
 
         # can't delete deployment if traffic rule is not zero
         with pytest.raises(Exception):
-            self.cmd("az ml online-deployment delete -n {online_deployment_name_cpu} -e {online_endpoint_name_cpu} -y")
+            self.cmd("az ml online-deployment delete -n {online_deployment_name_cpu} -e {online_endpoint_name_cpu} -y -g testrg -w testworkspace")
         # update endpoint with set arguments: traffic to zero
-        self.cmd('az ml online-endpoint update -n {online_endpoint_name_cpu} -r "{online_deployment_name_cpu}=0"')
+        self.cmd('az ml online-endpoint update -n {online_endpoint_name_cpu} -r "{online_deployment_name_cpu}=0" -g testrg -w testworkspace')
 
         # assert traffic is 0
-        endpoint = self.cmd("az ml online-endpoint show -n {online_endpoint_name_cpu}")
+        endpoint = self.cmd("az ml online-endpoint show -n {online_endpoint_name_cpu} -g testrg -w testworkspace")
         endpoint = yaml.safe_load(endpoint.output)
         assert endpoint["traffic"] == {self.kwargs["online_deployment_name_cpu"]: 0}
 
@@ -150,14 +150,14 @@ class K8SOnlineEndpointScenarioTest(MLBaseScenarioTest):
         # comment this out as this should throw exception, but no during the case autorun.
         # with pytest.raises(Exception):
         #    self.cmd(
-        #        "az ml online-endpoint invoke -n {online_endpoint_name_cpu} --request-file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/model-1/sample-request.json"
+        #        "az ml online-endpoint invoke -n {online_endpoint_name_cpu} --request-file src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/model-1/sample-request.json -g testrg -w testworkspace"
         #    )
 
         # invoke endpoint with specific deployment
         # comment this test out for bug: https://msdata.visualstudio.com/DefaultCollection/Vienna/_workitems/edit/1791755/
         """
         invoke_cmd = self.cmd(
-           "az ml online-endpoint invoke --name {online_endpoint_name_cpu} -d {online_deployment_name_cpu} --request-file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/model-1/sample-request.json"
+           "az ml online-endpoint invoke --name {online_endpoint_name_cpu} -d {online_deployment_name_cpu} --request-file src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/model-1/sample-request.json -g testrg -w testworkspace"
         )
         assert invoke_cmd.exit_code == 0
         result = yaml.safe_load(invoke_cmd.output)
@@ -168,22 +168,22 @@ class K8SOnlineEndpointScenarioTest(MLBaseScenarioTest):
         # update deployment with set arguments: scale type to default
         # commet this test out for bug https://msdata.visualstudio.com/Vienna/_workitems/edit/1760899
         """
-        self.cmd("az ml online-deployment update -n {online_deployment_name_cpu} -e {online_endpoint_name_cpu} --set instance_count=2 --set scale_settings.type=\"default\"")
+        self.cmd("az ml online-deployment update -n {online_deployment_name_cpu} -e {online_endpoint_name_cpu} --set instance_count=2 --set scale_settings.type=\"default\" -g testrg -w testworkspace")
         # assert scale type and instance count
-        deployment = self.cmd("az ml online-deployment show -n {online_deployment_name_cpu} -e {online_endpoint_name_cpu}")
+        deployment = self.cmd("az ml online-deployment show -n {online_deployment_name_cpu} -e {online_endpoint_name_cpu} -g testrg -w testworkspace")
         deployment = yaml.safe_load(deployment.output)
         assert deployment["scale_settings"]["type"] == "default"
         assert deployment["instance_count"] == 2
         """
         # delete deployment as traffic rule is zero now
-        self.cmd("az ml online-deployment delete -n {online_deployment_name_cpu} -e {online_endpoint_name_cpu} -y")
+        self.cmd("az ml online-deployment delete -n {online_deployment_name_cpu} -e {online_endpoint_name_cpu} -y -g testrg -w testworkspace")
 
         # verify deployment has been deleted
         with pytest.raises(Exception) as exp:
-            self.cmd("az ml online-deployment show -n {online_deployment_name_cpu} -e {online_endpoint_name_cpu}")
+            self.cmd("az ml online-deployment show -n {online_deployment_name_cpu} -e {online_endpoint_name_cpu} -g testrg -w testworkspace")
 
         # delete endpoint
-        self.cmd("az ml online-endpoint delete -n {online_endpoint_name_cpu} -y")
+        self.cmd("az ml online-endpoint delete -n {online_endpoint_name_cpu} -y -g testrg -w testworkspace")
 
         self.kwargs.pop("online_endpoint_name_cpu", None)
         self.kwargs.pop("online_deployment_name_cpu", None)
@@ -199,15 +199,15 @@ class K8SOnlineEndpointScenarioTest(MLBaseScenarioTest):
         )
         # create endpoint with gpu instance type
         self.cmd(
-            "az ml online-endpoint create -n {online_endpoint_name_gpu} --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/online/online_endpoint_create_k8s.yml"
+            "az ml online-endpoint create -n {online_endpoint_name_gpu} --file src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/online/online_endpoint_create_k8s.yml -g testrg -w testworkspace"
         )
 
         # create deployment with yaml file
         self.cmd(
-            "az ml online-deployment create -n {online_deployment_name_gpu} -e {online_endpoint_name_gpu} --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/online/online_deployment_k8s.yaml"
+            "az ml online-deployment create -n {online_deployment_name_gpu} -e {online_endpoint_name_gpu} --file src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/online/online_deployment_k8s.yaml -g testrg -w testworkspace"
         )
 
-        cmd2 = "az ml online-deployment show -n {online_deployment_name_gpu} -e {online_endpoint_name_gpu}"
+        cmd2 = "az ml online-deployment show -n {online_deployment_name_gpu} -e {online_endpoint_name_gpu} -g testrg -w testworkspace"
         onl_mgr_dpt_obj_show = self.cmd(cmd2)
         onl_mgr_dpt_obj_show = yaml.safe_load(onl_mgr_dpt_obj_show.output)
         assert onl_mgr_dpt_obj_show["instance_type"] == "gpuinstance"
@@ -215,10 +215,10 @@ class K8SOnlineEndpointScenarioTest(MLBaseScenarioTest):
         assert onl_mgr_dpt_obj_show["instance_count"] == 1
 
         # update deployment with yaml file
-        cmd3 = "az ml online-deployment update -n {online_deployment_name_gpu} -e {online_endpoint_name_gpu} --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/online/online_deployment_k8s_1.yaml"
+        cmd3 = "az ml online-deployment update -n {online_deployment_name_gpu} -e {online_endpoint_name_gpu} --file src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/online/online_deployment_k8s_1.yaml -g testrg -w testworkspace"
         self.cmd(cmd3)
 
-        cmd4 = "az ml online-deployment show -n {online_deployment_name_gpu} -e {online_endpoint_name_gpu}"
+        cmd4 = "az ml online-deployment show -n {online_deployment_name_gpu} -e {online_endpoint_name_gpu} -g testrg -w testworkspace"
         deployment = self.cmd(cmd4)
         deployment = yaml.safe_load(deployment.output)
 
@@ -258,7 +258,7 @@ class K8SOnlineEndpointScenarioTest(MLBaseScenarioTest):
         }
         assert deployment["resources"] == resource_settings
 
-        self.cmd("az ml online-endpoint delete -n {online_endpoint_name_gpu} --no-wait -y")
+        self.cmd("az ml online-endpoint delete -n {online_endpoint_name_gpu} --no-wait -y -g testrg -w testworkspace")
 
         self.kwargs.pop("online_endpoint_name_gpu", None)
         self.kwargs.pop("online_deployment_name_gpu", None)
@@ -275,33 +275,35 @@ class K8SOnlineEndpointScenarioTest(MLBaseScenarioTest):
 
         # create endpoint with gpu instance type
         self.cmd(
-            "az ml online-endpoint create -n {online_endpoint_name_update} --file ./tests/test_configs/endpoints/online/online_endpoint_create_k8s.yml"
+            "az ml online-endpoint create -n {online_endpoint_name_update} --file src/machinelearningservices/azext_mlv2/tests/test_configs/endpoints/online/online_endpoint_create_k8s.yml -g testrg -w testworkspace"
         )
 
         # create deployment with yaml file
         self.cmd(
-            "az ml online-deployment create -n {online_deployment_name_update} -e {online_endpoint_name_update} --file tests/test_configs/deployments/online/online_deployment_k8s.yaml"
+            "az ml online-deployment create -n {online_deployment_name_update} -e {online_endpoint_name_update} --file src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/online/online_deployment_k8s.yaml -g testrg -w testworkspace"
         )
 
         # update scale setting type to target utilization
-        cmd1 = "az ml online-deployment update -n {online_deployment_name_update} -e {online_endpoint_name_update} --set scale_settings.type=target_utilization"
+        cmd1 = "az ml online-deployment update -n {online_deployment_name_update} -e {online_endpoint_name_update} --set scale_settings.type=target_utilization -g testrg -w testworkspace"
         self.cmd(cmd1)
 
-        cmd2 = "az ml online-deployment show -n {online_deployment_name_update} -e {online_endpoint_name_update}"
+        cmd2 = "az ml online-deployment show -n {online_deployment_name_update} -e {online_endpoint_name_update} -g testrg -w testworkspace"
         cmd2_show = self.cmd(cmd2)
         cmd2_show = yaml.safe_load(cmd2_show.output)
         assert cmd2_show["scale_settings"]["type"] == "target_utilization"
 
         # update scale setting type to default
-        cmd3 = "az ml online-deployment update -n {online_deployment_name_update} -e {online_endpoint_name_update} --set scale_settings.type=default"
+        cmd3 = "az ml online-deployment update -n {online_deployment_name_update} -e {online_endpoint_name_update} --set scale_settings.type=default -g testrg -w testworkspace"
         self.cmd(cmd3)
 
-        cmd4 = "az ml online-deployment show -n {online_deployment_name_update} -e {online_endpoint_name_update}"
+        cmd4 = "az ml online-deployment show -n {online_deployment_name_update} -e {online_endpoint_name_update} -g testrg -w testworkspace"
         cmd4_show = self.cmd(cmd4)
         cmd4_show = yaml.safe_load(cmd4_show.output)
         assert cmd4_show["scale_settings"]["type"] == "default"
 
-        self.cmd("az ml online-endpoint delete -n {online_endpoint_name_update} --no-wait -y")
+        self.cmd("az ml online-endpoint delete -n {online_endpoint_name_update} --no-wait -y -g testrg -w testworkspace")
 
         self.kwargs.pop("online_endpoint_name_update", None)
         self.kwargs.pop("online_deployment_name_update", None)
+
+

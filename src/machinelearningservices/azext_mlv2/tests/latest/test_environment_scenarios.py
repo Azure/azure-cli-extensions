@@ -18,7 +18,7 @@ class EnvironmentScenarioTest(MLBaseScenarioTest):
 
     def test_environment(self) -> None:
         env_obj = self.cmd(
-            "az ml environment create --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/environment/environment_conda.yml --name {environmentName} --set version=1 --tags test=test"
+            "az ml environment create --file ./src/machinelearningservices/azext_mlv2/tests/test_configs/environment/environment_conda.yml --name {environmentName} --set version=1 --tags test=test -g testrg -w testworkspace"
         )
         env_obj = yaml.safe_load(env_obj.output)
         assert env_obj["name"] == self.kwargs.get("environmentName", None)
@@ -26,11 +26,11 @@ class EnvironmentScenarioTest(MLBaseScenarioTest):
         assert "image" in env_obj
         assert "conda_file" in env_obj
         assert env_obj["tags"]["test"] == "test"
-        env_show_obj = self.cmd("az ml environment show --name {environmentName} --version 1")
+        env_show_obj = self.cmd("az ml environment show -g testrg -w testworkspace --name {environmentName} --version 1")
         env_show_obj = yaml.safe_load(env_show_obj.output)
         assert_same(env_obj, env_show_obj, filter=["creation_context"])
         # list environments
-        environments = self.cmd("az ml environment list --max-results 1")
+        environments = self.cmd("az ml environment list -g testrg -w testworkspace --max-results 1")
         assert len(yaml.safe_load(environments.output)) == 1
         """
         Bug in line 249 environment.py
@@ -41,23 +41,23 @@ class EnvironmentScenarioTest(MLBaseScenarioTest):
         # assert env_update_obj["tags"]["name"] == "test_tag"
 
         # archive environment version
-        env_archive_obj = self.cmd("az ml environment archive -n {environmentName} -v 1")
+        env_archive_obj = self.cmd("az ml environment archive -g testrg -w testworkspace -n {environmentName} -v 1")
         assert env_archive_obj.output == ""
 
         # restore environment version
-        env_restore_obj = self.cmd("az ml environment restore -n {environmentName} -v 1")
+        env_restore_obj = self.cmd("az ml environment restore -g testrg -w testworkspace -n {environmentName} -v 1")
         assert env_restore_obj.output == ""
 
         # archive environment
-        env_archive_obj = self.cmd("az ml environment archive -n {environmentName}")
+        env_archive_obj = self.cmd("az ml environment archive -g testrg -w testworkspace -n {environmentName}")
         assert env_archive_obj.output == ""
 
         # restore environment
-        env_restore_obj = self.cmd("az ml environment restore -n {environmentName}")
+        env_restore_obj = self.cmd("az ml environment restore -g testrg -w testworkspace -n {environmentName}")
         assert env_restore_obj.output == ""
 
     def test_environment_list(self) -> None:
-        env_list_obj = self.cmd("az ml environment list")
+        env_list_obj = self.cmd("az ml environment list -g testrg -w testworkspace")
         env_list_obj = yaml.safe_load(env_list_obj.output)
         for env in env_list_obj:
             assert env["name"]
@@ -67,7 +67,7 @@ class EnvironmentScenarioTest(MLBaseScenarioTest):
 
         if len(env_list_obj) > 0:
             env_name = env_list_obj[0]["name"]
-            env_name_obj = self.cmd(f"az ml environment list --name {env_name}")
+            env_name_obj = self.cmd(f"az ml environment list -g testrg -w testworkspace --name {env_name}")
             env_name_obj = yaml.safe_load(env_name_obj.output)
             assert "name" in env_name_obj[0]
             assert "version" in env_name_obj[0]
@@ -78,7 +78,7 @@ class EnvironmentScenarioTest(MLBaseScenarioTest):
     @pytest.mark.skip(reason="Recording and replay not working.")
     def test_environment_with_docker_context(self) -> None:
         env_obj = self.cmd(
-            "az ml environment create --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/environment/environment_docker_context.yml --name {environmentName} --set version=1"
+            "az ml environment create --file ./src/machinelearningservices/azext_mlv2/tests/test_configs/environment/environment_docker_context.yml --name {environmentName} --set version=1 -g testrg -w testworkspace"
         )
         env_obj = yaml.safe_load(env_obj.output)
         assert env_obj["name"] == self.kwargs.get("environmentName", None)
@@ -99,7 +99,7 @@ class EnvironmentScenarioTest(MLBaseScenarioTest):
     @pytest.mark.skip(reason="Recording and replay not working.")
     def test_environment_build_context(self) -> None:
         env_obj = self.cmd(
-            "az ml environment create --build-context ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/environment/environment_docker_context.yml --name {environmentName} --set version=5"
+            "az ml environment create --build-context ./src/machinelearningservices/azext_mlv2/tests/test_configs/environment/environment_docker_context.yml --name {environmentName} --set version=5 -g testrg -w testworkspace"
         )
         env_obj = yaml.safe_load(env_obj.output)
         assert env_obj["name"] == self.kwargs.get("environmentName", None)
@@ -114,7 +114,7 @@ class EnvironmentScenarioTest(MLBaseScenarioTest):
 
     def test_environment_with_image(self) -> None:
         env_obj = self.cmd(
-            "az ml environment create --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/environment/environment_docker_image.yml --name {environmentName} --version 1 --image pytorch.pytorch --conda-file endpoint_conda.yml"
+            "az ml environment create --file ./src/machinelearningservices/azext_mlv2/tests/test_configs/environment/environment_docker_image.yml --name {environmentName} --version 1 --image pytorch.pytorch --conda-file endpoint_conda.yml -g testrg -w testworkspace"
         )
         env_obj = yaml.safe_load(env_obj.output)
         assert env_obj["image"] == "pytorch.pytorch"
@@ -122,7 +122,7 @@ class EnvironmentScenarioTest(MLBaseScenarioTest):
 
     def test_environment_params_override(self) -> None:
         env_obj = self.cmd(
-            "az ml environment create --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/environment/environment_conda_name_version.yml --name {environmentName} --description bla --os-type windows --version 2"
+            "az ml environment create --file ./src/machinelearningservices/azext_mlv2/tests/test_configs/environment/environment_conda_name_version.yml --name {environmentName} --description bla --os-type windows --version 2 -g testrg -w testworkspace"
         )
         env_obj = yaml.safe_load(env_obj.output)
         assert env_obj["description"] == "bla"
@@ -131,7 +131,7 @@ class EnvironmentScenarioTest(MLBaseScenarioTest):
 
     def test_environment_with_no_file(self) -> None:
         env_obj = self.cmd(
-            "az ml environment create --name {environmentName} --version 1 --image pytorch.pytorch --conda-file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/environment/endpoint_conda.yml"
+            "az ml environment create --name {environmentName} --version 1 --image pytorch.pytorch --conda-file ./src/machinelearningservices/azext_mlv2/tests/test_configs/environment/endpoint_conda.yml -g testrg -w testworkspace"
         )
         env_obj = yaml.safe_load(env_obj.output)
         assert env_obj["image"] == "pytorch.pytorch"
@@ -140,7 +140,7 @@ class EnvironmentScenarioTest(MLBaseScenarioTest):
     @pytest.mark.skip(reason="Test depends on batch endpoint that is never defined in the test configs")
     def test_environment_anonymous_env_with_image(self) -> None:
         env_obj = self.cmd(
-            "az ml batch-deployment create -n batch-dep1 -e batendp1 --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/batch/batch_deployment_anon_env_with_image.yaml"
+            "az ml batch-deployment create -n batch-dep1 -e batendp1 --file ./src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/batch/batch_deployment_anon_env_with_image.yaml"
         )
         env_obj = yaml.safe_load(env_obj.output)
         anon_environment = env_obj.get("environment").split("/")
@@ -150,7 +150,7 @@ class EnvironmentScenarioTest(MLBaseScenarioTest):
     @pytest.mark.skip(reason="Test depends on batch endpoint that is never defined in the test configs")
     def test_environment_anonymous_env_with_docker(self) -> None:
         env_obj = self.cmd(
-            "az ml batch-deployment create -n batch-dep1 -e batendp1 --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/batch/batch_deployment_anon_env_with_docker.yaml"
+            "az ml batch-deployment create -n batch-dep1 -e batendp1 --file ./src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/batch/batch_deployment_anon_env_with_docker.yaml"
         )
         env_obj = yaml.safe_load(env_obj.output)
         anon_environment = env_obj.get("environment").split("/")
@@ -160,7 +160,7 @@ class EnvironmentScenarioTest(MLBaseScenarioTest):
     @pytest.mark.skip(reason="Test depends on batch endpoint that is never defined in the test configs")
     def test_environment_anonymous_env_with_conda(self) -> None:
         env_obj = self.cmd(
-            "az ml batch-deployment create -n batch-dep1 -e batendp1 --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/batch/batch_deployment_anon_env_with_conda.yaml"
+            "az ml batch-deployment create -n batch-dep1 -e batendp1 --file ./src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/batch/batch_deployment_anon_env_with_conda.yaml"
         )
         env_obj = yaml.safe_load(env_obj.output)
         anon_environment = env_obj.get("environment").split("/")
@@ -187,12 +187,12 @@ class EnvironmentScenarioTest(MLBaseScenarioTest):
     def test_environment_create_in_registry(self) -> None:
 
         env_obj = self.cmd(
-            "az ml environment create -n conda_name_version_e2e  -v 2 -f ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/environment/environment_conda_name_version.yml --registry-name testFeed"
+            "az ml environment create -n conda_name_version_e2e  -v 2 -f ./src/machinelearningservices/azext_mlv2/tests/test_configs/environment/environment_conda_name_version.yml --registry-name testFeed"
         )
         env_obj = yaml.safe_load(env_obj.output)
         assert len(env_obj) > 1
         env_obj_1 = self.cmd(
-            "az ml environment create -n docker_image_e2e  -v 2 -f ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/environment/environment_docker_image.yml --registry-name testFeed"
+            "az ml environment create -n docker_image_e2e  -v 2 -f ./src/machinelearningservices/azext_mlv2/tests/test_configs/environment/environment_docker_image.yml --registry-name testFeed"
         )
         env_obj_1 = yaml.safe_load(env_obj_1.output)
         assert len(env_obj_1) > 1
@@ -214,7 +214,9 @@ class EnvironmentScenarioTest(MLBaseScenarioTest):
 
     def test_environment_update(self) -> None:
         env_obj = self.cmd(
-            "az ml environment update -n online-endpoint-mir-test -v 3 --set tags.nn=kkk"
+            "az ml environment update -n online-endpoint-mir-test -v 3 --set tags.nn=kkk -g testrg -w testworkspace"
         )
         env_obj = yaml.safe_load(env_obj.output)
         assert env_obj["tags"]["nn"] == "kkk"
+
+

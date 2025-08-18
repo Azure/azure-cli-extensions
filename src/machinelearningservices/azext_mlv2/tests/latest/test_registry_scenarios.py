@@ -1,4 +1,4 @@
-﻿# --------------------------------------------------------------------------
+# --------------------------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for
 # license information.
@@ -15,12 +15,12 @@ from azure.ai.ml import load_registry
 
 class RegistryScenarioTest(MLBaseScenarioTest):
     def test_registry_list(self):
-        env_obj = self.cmd("az ml registry list --resource-group registry-testing-rg")
+        env_obj = self.cmd("az ml registry list -g testrg")
         env_obj = yaml.safe_load(env_obj.output)
         assert env_obj[0]["container_registry"]["acr_account_sku"] == "premium"
 
     def test_registry_show(self):
-        env_obj = self.cmd("az ml registry show --resource-group registry-testing-rg --name testregistry")
+        env_obj = self.cmd("az ml registry show -g testrg --name testregistry")
         env_obj = yaml.safe_load(env_obj.output)
         assert env_obj["replication_locations"][0]["location"] == "eastus"
 
@@ -28,12 +28,12 @@ class RegistryScenarioTest(MLBaseScenarioTest):
     # This might happen if the test fails in a live run before the delete operation occurs.
     def test_registry_create_and_delete(self):
         target_yaml = (
-            "./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/registry/registry_valid_cli_test.yaml"
+            "./src/machinelearningservices/azext_mlv2/tests/test_configs/registry/registry_valid_cli_test.yaml"
         )
         reg = load_registry(source=target_yaml)
         # Try getting registry to ensure that it doesn't already exist.
         env_obj = self.cmd(
-            f"az ml registry show --resource-group registry-testing-rg --name {reg.name}", expect_failure=True
+            f"az ml registry show -g testrg --name {reg.name}", expect_failure=True
         )
         if env_obj.output != "":
             raise ValueError(
@@ -41,7 +41,7 @@ class RegistryScenarioTest(MLBaseScenarioTest):
             )
 
         # Create registry
-        env_obj = self.cmd(f"az ml registry create --resource-group registry-testing-rg --file {target_yaml}")
+        env_obj = self.cmd(f"az ml registry create -g testrg --file {target_yaml}")
         env_obj = yaml.safe_load(env_obj.output)
         assert (
             env_obj["discoveryUrl"]
@@ -54,47 +54,49 @@ class RegistryScenarioTest(MLBaseScenarioTest):
             sleep(30)  # This sleep is only required for fresh recording of cassette
 
         # delete registry
-        del_result = self.cmd(f"az ml registry delete --debug --resource-group registry-testing-rg --name {reg.name}")
+        del_result = self.cmd(f"az ml registry delete --debug -g testrg --name {reg.name}")
         assert del_result.output == ""
 
     def test_registry_update_with_file(self) -> None:
         # create a registry to start
         env_obj = self.cmd(
-            "az ml registry create --resource-group registry-testing-rg --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/registry/registry_valid_cli_to_be_updated.yaml"
+            "az ml registry create -g testrg --file ./src/machinelearningservices/azext_mlv2/tests/test_configs/registry/registry_valid_cli_to_be_updated.yaml"
         )
         env_obj = yaml.safe_load(env_obj.output)
         env_obj["tags"]["version"] == "original"
 
         # test file-based update
         updated_obj = self.cmd(
-            "az ml registry update --resource-group registry-testing-rg --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/registry/registry_valid_cli_test_updated.yaml"
+            "az ml registry update -g testrg --file ./src/machinelearningservices/azext_mlv2/tests/test_configs/registry/registry_valid_cli_test_updated.yaml"
         )
         updated_obj = yaml.safe_load(updated_obj.output)
         updated_obj["tags"]["version"] == "updated"
 
         # normal CLargs overriding file update
         updated_obj = self.cmd(
-            "az ml registry update --resource-group registry-testing-rg --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/registry/registry_valid_cli_test_updated.yaml --tags version=updatedAgain"
+            "az ml registry update -g testrg --file ./src/machinelearningservices/azext_mlv2/tests/test_configs/registry/registry_valid_cli_test_updated.yaml --tags version=updatedAgain"
         )
         updated_obj = yaml.safe_load(updated_obj.output)
         updated_obj["tags"]["version"] == "updatedAgain"
 
         # Failure test to ensure mutex of --file and --set
         updated_obj = self.cmd(
-            "az ml registry update --resource-group registry-testing-rg --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/registry/registry_valid_cli_test_updated.yaml  --set tags.version=notUpdated"
+            "az ml registry update -g testrg --file ./src/machinelearningservices/azext_mlv2/tests/test_configs/registry/registry_valid_cli_test_updated.yaml  --set tags.version=notUpdated"
         )
         updated_obj = yaml.safe_load(updated_obj.output)
         updated_obj["tags"]["version"] == "updatedAgain"
 
         # No-file update using --set
         updated_obj = self.cmd(
-            "az ml registry update --resource-group registry-testing-rg --name registryUpdateTest  --set tags.version=updatedYetAgain"
+            "az ml registry update -g testrg --name registryUpdateTest  --set tags.version=updatedYetAgain"
         )
         updated_obj = yaml.safe_load(updated_obj.output)
         updated_obj["tags"]["version"] == "updatedYetAgain"
 
         # delete registry
         del_result = self.cmd(
-            f"az ml registry delete --debug --resource-group registry-testing-rg --name registryUpdateTest"
+            f"az ml registry delete --debug -g testrg --name registryUpdateTest"
         )
         assert del_result.output == ""
+
+

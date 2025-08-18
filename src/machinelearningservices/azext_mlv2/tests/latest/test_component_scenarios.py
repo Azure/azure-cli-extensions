@@ -1,4 +1,4 @@
-﻿# --------------------------------------------------------------------------
+# --------------------------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for
 # license information.
@@ -46,7 +46,7 @@ class ComponentScenarioTest(MLBaseScenarioTest):
 
     def assert_component_create_get_list(self, path, version, _type):
         component_obj = self.cmd(
-            f"az ml component create --file {path} --name {{componentName}} --set display_name={{componentName}}"
+            f"az ml component create --file {path} --name {{componentName}} --set display_name={{componentName}} -g testrg -w testworkspace"
         )
         component_obj = yaml.safe_load(component_obj.output)
         assert component_obj["version"] == version
@@ -57,25 +57,25 @@ class ComponentScenarioTest(MLBaseScenarioTest):
         assert "creation_context" in component_obj
 
         # show component
-        component_show_obj = self.cmd(f"az ml component show --name {{componentName}} --version {version}")
+        component_show_obj = self.cmd(f"az ml component show --name {{componentName}} --version {version} -g testrg -w testworkspace")
         component_show_obj = yaml.safe_load(component_show_obj.output)
         assert component_obj == component_show_obj
         assert "creation_context" in component_obj
 
         # list components
-        components = self.cmd("az ml component list --max-results 1")
+        components = self.cmd("az ml component list --max-results 1 -g testrg -w testworkspace")
         assert len(yaml.safe_load(components.output)) != 0
         return component_obj
 
     @AllowLargeResponse()
     def test_component(self):
         component_obj = self.assert_component_create_get_list(
-            path="./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/components/helloworld_component.yml",
+            path="./src/machinelearningservices/azext_mlv2/tests/test_configs/components/helloworld_component.yml",
             version="0.0.1",
             _type="command",
         )
         # list component versions
-        component_versions = self.cmd("az ml component list --name {componentName}")
+        component_versions = self.cmd("az ml component list --name {componentName} -g testrg -w testworkspace")
         component_versions = yaml.safe_load(component_versions.output)
         assert len(component_versions) == 1
         component_list_obj = component_versions[0]
@@ -83,31 +83,31 @@ class ComponentScenarioTest(MLBaseScenarioTest):
 
         # update component
         component_update_obj = self.cmd(
-            "az ml component update --name {componentName} -v 0.0.1 --set display_name=NewComponent --verbose"
+            "az ml component update --name {componentName} -v 0.0.1 --set display_name=NewComponent --verbose -g testrg -w testworkspace"
         )
         component_update_obj = yaml.safe_load(component_update_obj.output)
         assert component_update_obj["display_name"] == "NewComponent"
 
         # archive component version
-        component_archive_obj = self.cmd("az ml component archive -n {componentName} -v 0.0.1")
+        component_archive_obj = self.cmd("az ml component archive -n {componentName} -v 0.0.1 -g testrg -w testworkspace")
         assert component_archive_obj.output == ""
 
         # restore component version
-        component_restore_obj = self.cmd("az ml component restore -n {componentName} -v 0.0.1")
+        component_restore_obj = self.cmd("az ml component restore -n {componentName} -v 0.0.1 -g testrg -w testworkspace")
         assert component_restore_obj.output == ""
 
         # archive component
-        component_archive_obj = self.cmd("az ml component archive -n {componentName}")
+        component_archive_obj = self.cmd("az ml component archive -n {componentName} -g testrg -w testworkspace")
         assert component_archive_obj.output == ""
 
         # restore component
-        component_restore_obj = self.cmd("az ml component restore -n {componentName}")
+        component_restore_obj = self.cmd("az ml component restore -n {componentName} -g testrg -w testworkspace")
         assert component_restore_obj.output == ""
 
     @AllowLargeResponse()
     def test_automl_component(self):
         self.assert_component_create_get_list(
-            path="./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/components/automl/classification.yaml",
+            path="./src/machinelearningservices/azext_mlv2/tests/test_configs/components/automl/classification.yaml",
             version="1.0",
             _type="automl",
         )
@@ -154,49 +154,49 @@ class ComponentScenarioTest(MLBaseScenarioTest):
         for target_file, target_field, target_message in [
             # on load
             (
-                "./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/components/invalid/no_file.yml",
+                "./src/machinelearningservices/azext_mlv2/tests/test_configs/components/invalid/no_file.yml",
                 "*",
                 "No such file or directory",
             ),
             (
-                "./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/components/invalid/non_dict.yml",
+                "./src/machinelearningservices/azext_mlv2/tests/test_configs/components/invalid/non_dict.yml",
                 "*",
                 "Expect dict but get <class 'str'> after parsing yaml file",
             ),
         ]:
             with pytest.raises((ValidationException, CLIError)) as err:
-                self.cmd("az ml component validate --file {}".format(target_file))
+                self.cmd("az ml component validate -g testrg -w testworkspace --file {}".format(target_file))
             assert target_message in str(err.value)
 
     def test_component_validate(self) -> None:
         for target_file, target_field, target_message in [
             (
-                "./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/components/invalid/helloworld_component_with_blank_input_names.yml",
+                "./src/machinelearningservices/azext_mlv2/tests/test_configs/components/invalid/helloworld_component_with_blank_input_names.yml",
                 "inputs.have blank",
                 "'have blank' is not a valid parameter name",
             ),
             (
-                "./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/components/invalid/helloworld_component_conflict_input_names.yml",
+                "./src/machinelearningservices/azext_mlv2/tests/test_configs/components/invalid/helloworld_component_conflict_input_names.yml",
                 "inputs.COMPONENT_IN_NUMBER",
                 "which are equal ignore case.",
             ),
             (
-                "./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/components/invalid/name_none.yml",
+                "./src/machinelearningservices/azext_mlv2/tests/test_configs/components/invalid/name_none.yml",
                 "name",
                 "Field may not be null.",
             ),
             (
-                "./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/components/invalid/combo.yml",
+                "./src/machinelearningservices/azext_mlv2/tests/test_configs/components/invalid/combo.yml",
                 "name",
                 "Field may not be null.",
             ),
             (
-                "./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/components/invalid/combo.yml",
+                "./src/machinelearningservices/azext_mlv2/tests/test_configs/components/invalid/combo.yml",
                 "code",
                 "",
             ),
         ]:
-            error_msg_on_validate = self.get_result_obj(f"az ml component validate --file {target_file} -o json")
+            error_msg_on_validate = self.get_result_obj(f"az ml component validate -g testrg -w testworkspace --file {target_file} -o json")
             messages = error_msg_on_validate["errors"]
             target_field_found = False
             for message in messages:
@@ -209,7 +209,7 @@ class ComponentScenarioTest(MLBaseScenarioTest):
         with private_flag():
             with pytest.raises((ValidationException, CLIError)) as exc_info:
                 self.cmd(
-                    "az ml component create  -f ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/components/helloworld_component_registry_asset.yml -v 6 --registry-name testfeed"
+                    "az ml component create  -f ./src/machinelearningservices/azext_mlv2/tests/test_configs/components/helloworld_component_registry_asset.yml -v 6 --registry-name testfeed"
                 )
             exception_raised = exc_info.value
             assert (
@@ -220,7 +220,7 @@ class ComponentScenarioTest(MLBaseScenarioTest):
     def test_component_git_path(self) -> None:
         with private_flag():
             component_obj = self.cmd(
-                "az ml component create --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/components/component_git_path.yml --name {componentName} --set display_name={componentName}"
+                "az ml component create --file ./src/machinelearningservices/azext_mlv2/tests/test_configs/components/component_git_path.yml --name {componentName} --set display_name={componentName} -g testrg -w testworkspace"
             )
             component_obj = yaml.safe_load(component_obj.output)
             assert "version" in component_obj
@@ -232,7 +232,7 @@ class ComponentScenarioTest(MLBaseScenarioTest):
             assert "code" in component_obj
 
     def test_component_create_skip_validation(self) -> None:
-        create_component_command = "az ml component create -f ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/components/helloworld_component.yml"
+        create_component_command = "az ml component create -f ./src/machinelearningservices/azext_mlv2/tests/test_configs/components/helloworld_component.yml -g testrg -w testworkspace"
 
         from azure.ai.ml.operations import ComponentOperations
 
@@ -247,8 +247,8 @@ class ComponentScenarioTest(MLBaseScenarioTest):
         from azure.ai.ml.dsl._utils import environment_variable_overwrite
 
         cmd_str = (
-            "az ml component validate --file "
-            "./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/internal/helloworld_component_scope.yml"
+            "az ml component validate -g testrg -w testworkspace --file "
+            "./src/machinelearningservices/azext_mlv2/tests/test_configs/internal/helloworld_component_scope.yml"
             " -o json"
         )
         with environment_variable_overwrite(AZUREML_INTERNAL_COMPONENTS_ENV_VAR, "False"):
@@ -273,13 +273,13 @@ class ComponentScenarioTest(MLBaseScenarioTest):
 
         with environment_variable_overwrite(AZUREML_INTERNAL_COMPONENTS_ENV_VAR, "True"):
             component_obj_output = self.cmd(
-                "az ml component create --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/internal/helloworld_component_scope.yml"
+                "az ml component create --file ./src/machinelearningservices/azext_mlv2/tests/test_configs/internal/helloworld_component_scope.yml -g testrg -w testworkspace"
             )
             component_obj = yaml.safe_load(component_obj_output.output)
             assert component_obj["type"] == "ScopeComponent"
 
             loaded_component_obj_output = self.cmd(
-                "az ml component show --name {} --version {}".format(component_obj["name"], component_obj["version"])
+                "az ml component show --name {} --version {} -g testrg -w testworkspace".format(component_obj["name"], component_obj["version"])
             )
             loaded_component_obj = yaml.safe_load(loaded_component_obj_output.output)
             assert loaded_component_obj["type"] == "ScopeComponent"
@@ -290,7 +290,7 @@ class ComponentScenarioTest(MLBaseScenarioTest):
                 match="Internal components is a private feature in v2, please set " "environment variable",
             ):
                 self.cmd(
-                    "az ml component show --name {} --version {}".format(
+                    "az ml component show --name {} --version {} -g testrg -w testworkspace".format(
                         component_obj["name"], component_obj["version"]
                     )
                 )
@@ -299,7 +299,9 @@ class ComponentScenarioTest(MLBaseScenarioTest):
     def test_create_pipeline_component(self):
         self.cassette.allow_playback_repeats = True
         self.assert_component_create_get_list(
-            path="./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/components/helloworld_inline_pipeline_component.yml",
+            path="./src/machinelearningservices/azext_mlv2/tests/test_configs/components/helloworld_inline_pipeline_component.yml",
             version="1",
             _type="pipeline",
         )
+
+

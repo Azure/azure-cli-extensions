@@ -1,4 +1,4 @@
-﻿# --------------------------------------------------------------------------
+# --------------------------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for
 # license information.
@@ -51,10 +51,10 @@ class JobScenarioTest(MLBaseScenarioTest):
         job_name_suffix = "-1"
         # Updating dictionary with the job name
         self.kwargs["command_job_name1"] = "{}{}".format(self.kwargs.get("commandJobName", None), job_name_suffix)
-        create_job = "az ml job create --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/command_job/command_job_test.yml --name {command_job_name1}"
+        create_job = "az ml job create --file ./src/machinelearningservices/azext_mlv2/tests/test_configs/command_job/command_job_test.yml --name {command_job_name1} -g testrg -w testworkspace"
         job_obj = self.cmd(create_job)
 
-        # show_job = "az ml job show --name {command_job_name1}"
+        # show_job = "az ml job show --name {command_job_name1} -g testrg -w testworkspace"
         # job_obj = self.cmd(show_job)
 
         job_obj = yaml.safe_load(job_obj.output)
@@ -65,7 +65,7 @@ class JobScenarioTest(MLBaseScenarioTest):
         assert job_obj["experiment_name"] == "mfe-test1"
         assert job_obj["command"] == "pip freeze"
 
-        show_job = "az ml job show --name {command_job_name1}"
+        show_job = "az ml job show --name {command_job_name1} -g testrg -w testworkspace"
         job_show_obj = self.cmd(show_job)
         job_show_obj = yaml.safe_load(job_show_obj.output)
         assert_same(
@@ -82,13 +82,13 @@ class JobScenarioTest(MLBaseScenarioTest):
         # TODO: why does creation_context differs in the output of creation and show?
         # Ignoring properties ProcessStatusFile and ProcessInfoFile, present only after the job is running
 
-        stream_job = "az ml job stream --name {command_job_name1}"
+        stream_job = "az ml job stream --name {command_job_name1} -g testrg -w testworkspace"
         self.cmd(stream_job)
 
         with TemporaryDirectory() as tmp_path:
             root = Path(tmp_path)
 
-            download_job = "az ml job download --name {command_job_name1} --download-path '" + tmp_path + "'"
+            download_job = "az ml job download --name {command_job_name1} --download-path '" + tmp_path + "' -g testrg -w testworkspace"
             print(download_job)
             self.cmd(download_job)
             std_log_file = root / "artifacts/user_logs/std_log.txt"
@@ -97,7 +97,7 @@ class JobScenarioTest(MLBaseScenarioTest):
         import json
 
         print(json.dumps(job_show_obj, indent=4))
-        updated_job_command = "az ml job update --name {command_job_name1} --set description=bla"
+        updated_job_command = "az ml job update --name {command_job_name1} --set description=bla -g testrg -w testworkspace"
         updated_job_obj = self.cmd(updated_job_command)
         updated_job = yaml.safe_load(updated_job_obj.output)
 
@@ -114,7 +114,7 @@ class JobScenarioTest(MLBaseScenarioTest):
                 "description",
             ],
         )
-        cancel_job = "az ml job cancel --name {command_job_name1}"
+        cancel_job = "az ml job cancel --name {command_job_name1} -g testrg -w testworkspace"
         self.cmd(cancel_job)
         # Delete a key regardless of whether it is in the dictionary for the new name
         self.kwargs.pop("command_job_name1", None)
@@ -124,17 +124,17 @@ class JobScenarioTest(MLBaseScenarioTest):
     def test_job_command_job_show_to_asset_create(self) -> None:
         job_name_suffix = "-2"
         self.kwargs["command_job_name2"] = "{}{}".format(self.kwargs.get("commandJobName", None), job_name_suffix)
-        create_job_command = "az ml job create --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/command_job/command_job_output.yml --name {command_job_name2}"
+        create_job_command = "az ml job create --file ./src/machinelearningservices/azext_mlv2/tests/test_configs/command_job/command_job_output.yml --name {command_job_name2} -g testrg -w testworkspace"
         job_obj = self.cmd(create_job_command)
 
-        show_job_command = "az ml job show --name {command_job_name2}"
+        show_job_command = "az ml job show --name {command_job_name2} -g testrg -w testworkspace"
         job_obj = self.cmd(show_job_command)
 
         job_obj = yaml.safe_load(job_obj.output)
 
-        show_job_stream_command = "az ml job stream --name {command_job_name2}"
+        show_job_stream_command = "az ml job stream --name {command_job_name2} -g testrg -w testworkspace"
         self.cmd(show_job_stream_command)
-        show_job_command = "az ml job show --name {command_job_name2}"
+        show_job_command = "az ml job show --name {command_job_name2} -g testrg -w testworkspace"
         job_out_obj = self.cmd(show_job_command)
         job_out_obj = yaml.safe_load(job_out_obj.output)
         job_output_uri = job_out_obj["outputs"]["default"]["path"]
@@ -156,21 +156,21 @@ class JobScenarioTest(MLBaseScenarioTest):
         job_name_suffix = "jobNameNumber_"
         total_jobs = 4
         for i in range(total_jobs):
-            # self.cmd(f"az ml job delete --name {job_name_suffix}{i}")
+            # self.cmd(f"az ml job delete --name {job_name_suffix}{i} -g testrg -w testworkspace")
             self.cmd(
-                f"az ml job create --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/command_job/command_job_test.yml --name {job_name_suffix}{i}"
+                f"az ml job create --file ./src/machinelearningservices/azext_mlv2/tests/test_configs/command_job/command_job_test.yml --name {job_name_suffix}{i} -g testrg -w testworkspace"
             )
 
-        job_list_obj = self.cmd("az ml job list --max-results 2")
+        job_list_obj = self.cmd("az ml job list --max-results 2 -g testrg -w testworkspace")
         job_list_yml = yaml.safe_load(job_list_obj.output)
         assert len(job_list_yml) == 2
 
         # cli.azure.cli.core.azclierror: (ServiceError) InternalServerError
-        all_job_list_obj = self.cmd("az ml job list --all-results")
+        all_job_list_obj = self.cmd("az ml job list --all-results -g testrg -w testworkspace")
         all_job_list_yml = yaml.safe_load(all_job_list_obj.output)
         assert len(all_job_list_yml) >= total_jobs
 
-        default_job_list_obj = self.cmd("az ml job list")
+        default_job_list_obj = self.cmd("az ml job list -g testrg -w testworkspace")
         default_job_list_yml = yaml.safe_load(default_job_list_obj.output)
         # If no max-results is provided, we should get at least the jobs that we submitted BUT not more than the default max
         assert len(default_job_list_yml) >= total_jobs
@@ -181,7 +181,7 @@ class JobScenarioTest(MLBaseScenarioTest):
             job_name_suffix = "-4"
             self.kwargs["command_job_name4"] = "{}{}".format(self.kwargs.get("commandJobName", None), job_name_suffix)
             job_obj = self.cmd(
-                "az ml job create --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/command_job/command_job_git_path.yml --name {command_job_name4}"
+                "az ml job create --file ./src/machinelearningservices/azext_mlv2/tests/test_configs/command_job/command_job_git_path.yml --name {command_job_name4} -g testrg -w testworkspace"
             )
             job_obj = yaml.safe_load(job_obj.output)
             assert "outputs" in job_obj
@@ -204,7 +204,7 @@ class JobScenarioTest(MLBaseScenarioTest):
     def test_job_command_job_create_skip_validation(self) -> None:
         job_name_suffix = "-5"
         self.kwargs["command_job_name3"] = "{}{}".format(self.kwargs.get("commandJobName", None), job_name_suffix)
-        create_job_command = "az ml job create --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/command_job/command_job_test.yml --name {command_job_name3}"
+        create_job_command = "az ml job create --file ./src/machinelearningservices/azext_mlv2/tests/test_configs/command_job/command_job_test.yml --name {command_job_name3} -g testrg -w testworkspace"
         from azure.ai.ml.operations import JobOperations
 
         with patch.object(JobOperations, "_validate") as mock_validate:
@@ -218,20 +218,20 @@ class JobScenarioTest(MLBaseScenarioTest):
     def test_job_command_job_archive_restore(self) -> None:
         job_name_suffix = "-3"
         self.kwargs["command_job_name3"] = "{}{}".format(self.kwargs.get("commandJobName", None), job_name_suffix)
-        create_job_command = "az ml job create --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/command_job/command_job_test.yml --name {command_job_name3}"
+        create_job_command = "az ml job create --file ./src/machinelearningservices/azext_mlv2/tests/test_configs/command_job/command_job_test.yml --name {command_job_name3} -g testrg -w testworkspace"
         job_obj = self.cmd(create_job_command)
 
-        # show_job_command = "az ml job show --name {command_job_name3}"
+        # show_job_command = "az ml job show --name {command_job_name3} -g testrg -w testworkspace"
         # job_obj = self.cmd(show_job_command)
 
         job_obj = yaml.safe_load(job_obj.output)
         assert job_obj["name"] == self.kwargs.get("command_job_name3", None)
 
-        archive_job_command = "az ml job archive -n {command_job_name3}"
+        archive_job_command = "az ml job archive -n {command_job_name3} -g testrg -w testworkspace"
         job_archive_obj = self.cmd(archive_job_command)
         assert job_archive_obj.output == ""
 
-        restore_job_command = "az ml job restore -n {command_job_name3}"
+        restore_job_command = "az ml job restore -n {command_job_name3} -g testrg -w testworkspace"
         job_restore_obj = self.cmd(restore_job_command)
         assert job_restore_obj.output == ""
         # Delete a key regardless of whether it is in the dictionary for the new name
@@ -239,12 +239,12 @@ class JobScenarioTest(MLBaseScenarioTest):
 
     def test_job_environment_version(self) -> None:
         self.cmd(
-            "az ml environment create --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/environment/environment_colon_version.yml"
+            "az ml environment create --file ./src/machinelearningservices/azext_mlv2/tests/test_configs/environment/environment_colon_version.yml -g testrg -w testworkspace"
         )
-        self.cmd("az ml compute create --name testCompute --type AmlCompute --no-wait")
+        self.cmd("az ml compute create --name testCompute --type AmlCompute --no-wait -g testrg -w testworkspace")
         job_name_suffix = "-4"
         self.kwargs["job_name1"] = "{}{}".format(self.kwargs.get("environmentName", None), job_name_suffix)
-        create_job = "az ml job create --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/command_job/command_job_environment_version.yml --name {job_name1}"
+        create_job = "az ml job create --file ./src/machinelearningservices/azext_mlv2/tests/test_configs/command_job/command_job_environment_version.yml --name {job_name1} -g testrg -w testworkspace"
         job_obj = self.cmd(create_job)
         job_obj = yaml.safe_load(job_obj.output)
         assert "18.04:2022" in job_obj["environment"]
@@ -259,7 +259,7 @@ class JobScenarioTest(MLBaseScenarioTest):
             job_name_suffix = "50"
             # Updating dictionary with the job name
             self.kwargs["command_job_name"] = "{}{}".format(self.kwargs.get("commandJobName", None), job_name_suffix)
-            create_job = "az ml job create --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/command_job/command_job_registry.yml --name {command_job_name}"
+            create_job = "az ml job create --file ./src/machinelearningservices/azext_mlv2/tests/test_configs/command_job/command_job_registry.yml --name {command_job_name} -g testrg -w testworkspace"
             job_obj = self.cmd(create_job)
             job_obj = yaml.safe_load(job_obj.output)
             assert CURATED_ENV_PREFIX in job_obj["environment"]
@@ -270,10 +270,10 @@ class JobScenarioTest(MLBaseScenarioTest):
     def test_job_sweep_job(self) -> None:
         job_name_suffix = "2"
         self.kwargs["sweep_job_name1"] = "{}{}".format(self.kwargs.get("sweepJobName", None), job_name_suffix)
-        create_job_command = "az ml job create --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/sweep_job/sweep_job_test.yaml --name {sweep_job_name1}"
+        create_job_command = "az ml job create --file ./src/machinelearningservices/azext_mlv2/tests/test_configs/sweep_job/sweep_job_test.yaml --name {sweep_job_name1} -g testrg -w testworkspace"
         job_obj = self.cmd(create_job_command)
 
-        # show_job_command = "az ml job show --name {sweep_job_name1}"
+        # show_job_command = "az ml job show --name {sweep_job_name1} -g testrg -w testworkspace"
         # job_obj = self.cmd(show_job_command)
 
         job_obj = yaml.safe_load(job_obj.output)
@@ -281,7 +281,7 @@ class JobScenarioTest(MLBaseScenarioTest):
         assert "testCompute" in job_obj["compute"]
         assert job_obj["experiment_name"] == "sdk-cli-v2"
         with open(
-            "./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/sweep_job/sweep_job_test.yaml", "r"
+            "./src/machinelearningservices/azext_mlv2/tests/test_configs/sweep_job/sweep_job_test.yaml", "r"
         ) as f:
             file_obj = yaml.safe_load(f)
 
@@ -309,7 +309,7 @@ class JobScenarioTest(MLBaseScenarioTest):
     def test_job_sweep_job_registry(self) -> None:
         job_name_suffix = "90"
         self.kwargs["sweep_job_name"] = "{}{}".format(self.kwargs.get("sweepJobName", None), job_name_suffix)
-        create_job_command = "az ml job create --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/sweep_job/sweep_job_test_registry.yaml --name {sweep_job_name}"
+        create_job_command = "az ml job create --file ./src/machinelearningservices/azext_mlv2/tests/test_configs/sweep_job/sweep_job_test_registry.yaml --name {sweep_job_name} -g testrg -w testworkspace"
         job_obj = self.cmd(create_job_command)
         job_obj = yaml.safe_load(job_obj.output)
         assert REGISTRY_URI_FORMAT in job_obj["trial"]["environment"]
@@ -321,10 +321,10 @@ class JobScenarioTest(MLBaseScenarioTest):
     def test_job_pipeline_job_settings_simple(self) -> None:
         job_name_suffix = "-1"
         self.kwargs["pipeline_job_name1"] = "{}{}".format(self.kwargs.get("pipelineJobName", None), job_name_suffix)
-        create_job_command = "az ml job create --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/pipeline_jobs/helloworld_pipeline_job_defaults_e2e.yml --name {pipeline_job_name1}"
+        create_job_command = "az ml job create --file ./src/machinelearningservices/azext_mlv2/tests/test_configs/pipeline_jobs/helloworld_pipeline_job_defaults_e2e.yml --name {pipeline_job_name1} -g testrg -w testworkspace"
         job_obj = self.cmd(create_job_command)
 
-        # show_job_command = "az ml job show --name {pipeline_job_name1}"
+        # show_job_command = "az ml job show --name {pipeline_job_name1} -g testrg -w testworkspace"
         # job_obj = self.cmd(show_job_command)
 
         job_obj = yaml.safe_load(job_obj.output)
@@ -347,7 +347,7 @@ class JobScenarioTest(MLBaseScenarioTest):
 
     @pytest.mark.skip(reason="Unable to get authority configuration for login")
     def test_cli_error(self) -> None:
-        create_job_command = "az ml job create --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/pipeline_jobs/invalid/with_invalid_component.yml"
+        create_job_command = "az ml job create --file ./src/machinelearningservices/azext_mlv2/tests/test_configs/pipeline_jobs/invalid/with_invalid_component.yml -g testrg -w testworkspace"
         with pytest.raises(ValidationError) as e:
             self.cmd(create_job_command)
         assert "Validation for PipelineJobSchema failed:" in str(e.value)
@@ -358,15 +358,15 @@ class JobScenarioTest(MLBaseScenarioTest):
     def test_job_pipeline_job_input_paths(self) -> None:
         job_name_suffix = "-3"
         self.kwargs["pipeline_job_name2"] = "{}{}".format(self.kwargs.get("pipelineJobName", None), job_name_suffix)
-        create_job_command = "az ml job create --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/pipeline_jobs/helloworld_pipeline_job_with_component_output.yml --name {pipeline_job_name2}"
+        create_job_command = "az ml job create --file ./src/machinelearningservices/azext_mlv2/tests/test_configs/pipeline_jobs/helloworld_pipeline_job_with_component_output.yml --name {pipeline_job_name2} -g testrg -w testworkspace"
         job_obj = self.cmd(create_job_command)
 
-        # show_job_command = "az ml job show --name {pipeline_job_name2}"
+        # show_job_command = "az ml job show --name {pipeline_job_name2} -g testrg -w testworkspace"
         # job_obj = self.cmd(show_job_command)
 
         job_obj = yaml.safe_load(job_obj.output)
         with open(
-            "./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/pipeline_jobs/helloworld_pipeline_job_with_component_output.yml",
+            "./src/machinelearningservices/azext_mlv2/tests/test_configs/pipeline_jobs/helloworld_pipeline_job_with_component_output.yml",
             "r",
         ) as f:
             file_obj = yaml.safe_load(f)
@@ -431,16 +431,16 @@ class JobScenarioTest(MLBaseScenarioTest):
     def test_job_pipeline_job_translated_from_command_job(self) -> None:
         job_name_suffix = "-4"
         self.kwargs["pipeline_job_name3"] = "{}{}".format(self.kwargs.get("pipelineJobName", None), job_name_suffix)
-        create_job_command = "az ml job create --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/pipeline_jobs/helloworld_pipeline_job_defaults_with_command_job_e2e.yml --name {pipeline_job_name3}"
+        create_job_command = "az ml job create --file ./src/machinelearningservices/azext_mlv2/tests/test_configs/pipeline_jobs/helloworld_pipeline_job_defaults_with_command_job_e2e.yml --name {pipeline_job_name3} -g testrg -w testworkspace"
         job_obj = self.cmd(create_job_command)
 
-        # show_job_command = "az ml job show --name {pipeline_job_name3}"
+        # show_job_command = "az ml job show --name {pipeline_job_name3} -g testrg -w testworkspace"
         # job_obj = self.cmd(show_job_command)
 
         job_obj = yaml.safe_load(job_obj.output)
         print(job_obj)
         with open(
-            "./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/pipeline_jobs/helloworld_pipeline_job_defaults_with_command_job_e2e.yml",
+            "./src/machinelearningservices/azext_mlv2/tests/test_configs/pipeline_jobs/helloworld_pipeline_job_defaults_with_command_job_e2e.yml",
             "r",
         ) as f:
             file_obj = yaml.safe_load(f)
@@ -478,7 +478,7 @@ class JobScenarioTest(MLBaseScenarioTest):
         import json
 
         error_msg_on_validate = self.cmd(
-            "az ml job validate --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/pipeline_jobs/invalid/combo.yml -o json"
+            "az ml job validate --file ./src/machinelearningservices/azext_mlv2/tests/test_configs/pipeline_jobs/invalid/combo.yml -o json -g testrg -w testworkspace"
         )
         result = json.loads(error_msg_on_validate.output)
         assert pydash.omit(result, "errors.0.location", "warnings.0.location") == {
@@ -503,13 +503,13 @@ class JobScenarioTest(MLBaseScenarioTest):
     @pytest.mark.skip(reason="Recording and replay not working.")
     def test_automl_tabular_classification_job(self) -> None:
         classification_job_name = "{}{}".format(self.kwargs.get("automlClassificationJobName", None), "-1")
-        create_job_command = f"az ml job create --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/automl_job/e2e_configs/automl_classification_job.yaml --name {classification_job_name}"
+        create_job_command = f"az ml job create --file ./src/machinelearningservices/azext_mlv2/tests/test_configs/automl_job/e2e_configs/automl_classification_job.yaml --name {classification_job_name} -g testrg -w testworkspace"
         job_obj = self.cmd(create_job_command)
         job_obj = yaml.safe_load(job_obj.output)
         assert job_obj["name"] == classification_job_name
 
         with open(
-            "./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/automl_job/e2e_configs/automl_classification_job.yaml",
+            "./src/machinelearningservices/azext_mlv2/tests/test_configs/automl_job/e2e_configs/automl_classification_job.yaml",
             "r",
         ) as f:
             file_obj = yaml.safe_load(f)
@@ -519,13 +519,13 @@ class JobScenarioTest(MLBaseScenarioTest):
     @pytest.mark.skip(reason="Recording and replay not working.")
     def test_automl_tabular_forecasting_job(self) -> None:
         forecasting_job_name = "{}{}".format(self.kwargs.get("automlForecastingJobName", None), "-1")
-        create_job_command = f"az ml job create --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/automl_job/e2e_configs/automl_forecasting_job.yaml --name {forecasting_job_name}"
+        create_job_command = f"az ml job create --file ./src/machinelearningservices/azext_mlv2/tests/test_configs/automl_job/e2e_configs/automl_forecasting_job.yaml --name {forecasting_job_name} -g testrg -w testworkspace"
         job_obj = self.cmd(create_job_command)
         job_obj = yaml.safe_load(job_obj.output)
         assert job_obj["name"] == forecasting_job_name
 
         with open(
-            "./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/automl_job/e2e_configs/automl_forecasting_job.yaml",
+            "./src/machinelearningservices/azext_mlv2/tests/test_configs/automl_job/e2e_configs/automl_forecasting_job.yaml",
             "r",
         ) as f:
             file_obj = yaml.safe_load(f)
@@ -542,13 +542,13 @@ class JobScenarioTest(MLBaseScenarioTest):
     @pytest.mark.skip(reason="Recording and replay not working.")
     def test_automl_tabular_regression_job(self) -> None:
         regression_job_name = "{}{}".format(self.kwargs.get("automlRegressionJobName", None), "-1")
-        create_job_command = f"az ml job create --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/automl_job/e2e_configs/automl_regression_job.yaml --name {regression_job_name}"
+        create_job_command = f"az ml job create --file ./src/machinelearningservices/azext_mlv2/tests/test_configs/automl_job/e2e_configs/automl_regression_job.yaml --name {regression_job_name} -g testrg -w testworkspace"
         job_obj = self.cmd(create_job_command)
         job_obj = yaml.safe_load(job_obj.output)
         assert job_obj["name"] == regression_job_name
 
         with open(
-            "./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/automl_job/e2e_configs/automl_regression_job.yaml",
+            "./src/machinelearningservices/azext_mlv2/tests/test_configs/automl_job/e2e_configs/automl_regression_job.yaml",
             "r",
         ) as f:
             file_obj = yaml.safe_load(f)
@@ -557,13 +557,13 @@ class JobScenarioTest(MLBaseScenarioTest):
     @pytest.mark.skip(reason="Tests always fail.")
     def test_automl_image_classification_job(self) -> None:
         image_classification_job_name = "{}{}".format(self.kwargs.get("automlImageClassificationJobName", None), "-2")
-        create_job_command = f"az ml job create --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/automl_job/e2e_configs/automl_image_classification_job.yaml --name {image_classification_job_name}"
+        create_job_command = f"az ml job create --file ./src/machinelearningservices/azext_mlv2/tests/test_configs/automl_job/e2e_configs/automl_image_classification_job.yaml --name {image_classification_job_name} -g testrg -w testworkspace"
         job_obj = self.cmd(create_job_command)
         job_obj = yaml.safe_load(job_obj.output)
         assert job_obj["name"] == image_classification_job_name
 
         with open(
-            "./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/automl_job/e2e_configs/automl_image_classification_job.yaml",
+            "./src/machinelearningservices/azext_mlv2/tests/test_configs/automl_job/e2e_configs/automl_image_classification_job.yaml",
             "r",
         ) as f:
             file_obj = yaml.safe_load(f)
@@ -578,13 +578,13 @@ class JobScenarioTest(MLBaseScenarioTest):
         image_classification_automode_job_name = "{}{}".format(
             self.kwargs.get("automlImageClassificationAutoModeJobName", None), "-1"
         )
-        create_job_command = f"az ml job create --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/automl_job/e2e_configs/automl_image_classification_automode_job.yaml --name {image_classification_automode_job_name}"
+        create_job_command = f"az ml job create --file ./src/machinelearningservices/azext_mlv2/tests/test_configs/automl_job/e2e_configs/automl_image_classification_automode_job.yaml --name {image_classification_automode_job_name} -g testrg -w testworkspace"
         job_obj = self.cmd(create_job_command)
         job_obj = yaml.safe_load(job_obj.output)
         assert job_obj["name"] == image_classification_automode_job_name
 
         with open(
-            "./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/automl_job/e2e_configs/automl_image_classification_automode_job.yaml",
+            "./src/machinelearningservices/azext_mlv2/tests/test_configs/automl_job/e2e_configs/automl_image_classification_automode_job.yaml",
             "r",
         ) as f:
             file_obj = yaml.safe_load(f)
@@ -598,13 +598,13 @@ class JobScenarioTest(MLBaseScenarioTest):
         image_classification_multilabel_job_name = "{}{}".format(
             self.kwargs.get("automlImageClassificationMultilabelJobName", None), "-2"
         )
-        create_job_command = f"az ml job create --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/automl_job/e2e_configs/automl_image_classification_multilabel_job.yaml --name {image_classification_multilabel_job_name}"
+        create_job_command = f"az ml job create --file ./src/machinelearningservices/azext_mlv2/tests/test_configs/automl_job/e2e_configs/automl_image_classification_multilabel_job.yaml --name {image_classification_multilabel_job_name} -g testrg -w testworkspace"
         job_obj = self.cmd(create_job_command)
         job_obj = yaml.safe_load(job_obj.output)
         assert job_obj["name"] == image_classification_multilabel_job_name
 
         with open(
-            "./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/automl_job/e2e_configs/automl_image_classification_multilabel_job.yaml",
+            "./src/machinelearningservices/azext_mlv2/tests/test_configs/automl_job/e2e_configs/automl_image_classification_multilabel_job.yaml",
             "r",
         ) as f:
             file_obj = yaml.safe_load(f)
@@ -619,13 +619,13 @@ class JobScenarioTest(MLBaseScenarioTest):
         image_classification_multilabel_automode_job_name = "{}{}".format(
             self.kwargs.get("automlImageClassificationMultilabelAutoModeJobName", None), "-1"
         )
-        create_job_command = f"az ml job create --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/automl_job/e2e_configs/automl_image_classification_multilabel_automode_job.yaml --name {image_classification_multilabel_automode_job_name}"
+        create_job_command = f"az ml job create --file ./src/machinelearningservices/azext_mlv2/tests/test_configs/automl_job/e2e_configs/automl_image_classification_multilabel_automode_job.yaml --name {image_classification_multilabel_automode_job_name} -g testrg -w testworkspace"
         job_obj = self.cmd(create_job_command)
         job_obj = yaml.safe_load(job_obj.output)
         assert job_obj["name"] == image_classification_multilabel_automode_job_name
 
         with open(
-            "./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/automl_job/e2e_configs/automl_image_classification_multilabel_automode_job.yaml",
+            "./src/machinelearningservices/azext_mlv2/tests/test_configs/automl_job/e2e_configs/automl_image_classification_multilabel_automode_job.yaml",
             "r",
         ) as f:
             file_obj = yaml.safe_load(f)
@@ -639,13 +639,13 @@ class JobScenarioTest(MLBaseScenarioTest):
         image_instance_segmentation_job_name = "{}{}".format(
             self.kwargs.get("automlImageInstanceSegmentationJobName", None), "-2"
         )
-        create_job_command = f"az ml job create --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/automl_job/e2e_configs/automl_image_instance_segmentation_job.yaml --name {image_instance_segmentation_job_name}"
+        create_job_command = f"az ml job create --file ./src/machinelearningservices/azext_mlv2/tests/test_configs/automl_job/e2e_configs/automl_image_instance_segmentation_job.yaml --name {image_instance_segmentation_job_name} -g testrg -w testworkspace"
         job_obj = self.cmd(create_job_command)
         job_obj = yaml.safe_load(job_obj.output)
         assert job_obj["name"] == image_instance_segmentation_job_name
 
         with open(
-            "./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/automl_job/e2e_configs/automl_image_instance_segmentation_job.yaml",
+            "./src/machinelearningservices/azext_mlv2/tests/test_configs/automl_job/e2e_configs/automl_image_instance_segmentation_job.yaml",
             "r",
         ) as f:
             file_obj = yaml.safe_load(f)
@@ -660,13 +660,13 @@ class JobScenarioTest(MLBaseScenarioTest):
         image_instance_segmentation_automode_job_name = "{}{}".format(
             self.kwargs.get("automlImageInstanceSegmentationAutoModeJobName", None), "-1"
         )
-        create_job_command = f"az ml job create --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/automl_job/e2e_configs/automl_image_instance_segmentation_automode_job.yaml --name {image_instance_segmentation_automode_job_name}"
+        create_job_command = f"az ml job create --file ./src/machinelearningservices/azext_mlv2/tests/test_configs/automl_job/e2e_configs/automl_image_instance_segmentation_automode_job.yaml --name {image_instance_segmentation_automode_job_name} -g testrg -w testworkspace"
         job_obj = self.cmd(create_job_command)
         job_obj = yaml.safe_load(job_obj.output)
         assert job_obj["name"] == image_instance_segmentation_automode_job_name
 
         with open(
-            "./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/automl_job/e2e_configs/automl_image_instance_segmentation_automode_job.yaml",
+            "./src/machinelearningservices/azext_mlv2/tests/test_configs/automl_job/e2e_configs/automl_image_instance_segmentation_automode_job.yaml",
             "r",
         ) as f:
             file_obj = yaml.safe_load(f)
@@ -680,13 +680,13 @@ class JobScenarioTest(MLBaseScenarioTest):
         image_object_detection_job_name = "{}{}".format(
             self.kwargs.get("automlImageObjectDetectionJobName", None), "-2"
         )
-        create_job_command = f"az ml job create --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/automl_job/e2e_configs/automl_image_object_detection_job.yaml --name {image_object_detection_job_name}"
+        create_job_command = f"az ml job create --file ./src/machinelearningservices/azext_mlv2/tests/test_configs/automl_job/e2e_configs/automl_image_object_detection_job.yaml --name {image_object_detection_job_name} -g testrg -w testworkspace"
         job_obj = self.cmd(create_job_command)
         job_obj = yaml.safe_load(job_obj.output)
         assert job_obj["name"] == image_object_detection_job_name
 
         with open(
-            "./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/automl_job/e2e_configs/automl_image_object_detection_job.yaml",
+            "./src/machinelearningservices/azext_mlv2/tests/test_configs/automl_job/e2e_configs/automl_image_object_detection_job.yaml",
             "r",
         ) as f:
             file_obj = yaml.safe_load(f)
@@ -701,13 +701,13 @@ class JobScenarioTest(MLBaseScenarioTest):
         image_object_detection_automode_job_name = "{}{}".format(
             self.kwargs.get("automlImageObjectDetectionAutoModeJobName", None), "-1"
         )
-        create_job_command = f"az ml job create --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/automl_job/e2e_configs/automl_image_object_detection_automode_job.yaml --name {image_object_detection_automode_job_name}"
+        create_job_command = f"az ml job create --file ./src/machinelearningservices/azext_mlv2/tests/test_configs/automl_job/e2e_configs/automl_image_object_detection_automode_job.yaml --name {image_object_detection_automode_job_name} -g testrg -w testworkspace"
         job_obj = self.cmd(create_job_command)
         job_obj = yaml.safe_load(job_obj.output)
         assert job_obj["name"] == image_object_detection_automode_job_name
 
         with open(
-            "./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/automl_job/e2e_configs/automl_image_object_detection_automode_job.yaml",
+            "./src/machinelearningservices/azext_mlv2/tests/test_configs/automl_job/e2e_configs/automl_image_object_detection_automode_job.yaml",
             "r",
         ) as f:
             file_obj = yaml.safe_load(f)
@@ -719,13 +719,13 @@ class JobScenarioTest(MLBaseScenarioTest):
     @pytest.mark.skip(reason="Tests always fail.")
     def test_automl_image_job_limits_outside_sweep(self) -> None:
         image_job_name = "{}{}".format(self.kwargs.get("automlImageObjectDetectionJobName", None), "-1")
-        create_job_command = f"az ml job create --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/automl_job/automl_image_job_limits_outside_sweep_mock.yml --name {image_job_name}"
+        create_job_command = f"az ml job create --file ./src/machinelearningservices/azext_mlv2/tests/test_configs/automl_job/automl_image_job_limits_outside_sweep_mock.yml --name {image_job_name} -g testrg -w testworkspace"
         job_obj = self.cmd(create_job_command)
         job_obj = yaml.safe_load(job_obj.output)
         assert job_obj["name"] == image_job_name
 
         with open(
-            "./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/automl_job/automl_image_job_limits_outside_sweep_mock.yml",
+            "./src/machinelearningservices/azext_mlv2/tests/test_configs/automl_job/automl_image_job_limits_outside_sweep_mock.yml",
             "r",
         ) as f:
             file_obj = yaml.safe_load(f)
@@ -811,7 +811,7 @@ class JobScenarioTest(MLBaseScenarioTest):
     def test_automl_text_classification_job(self) -> None:
         job_name = "{}{}".format(self.kwargs.get("automlTextClassificationJobName", None), "-1")
         create_job_command = (
-            f"az ml job create --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/automl_job/e2e_configs/"
+            f"az ml job create --file ./src/machinelearningservices/azext_mlv2/tests/test_configs/automl_job/e2e_configs/ -g testrg -w testworkspace"
             f"automl_text_classification_job.yaml --name {job_name}"
         )
         job_obj = self.cmd(create_job_command)
@@ -819,7 +819,7 @@ class JobScenarioTest(MLBaseScenarioTest):
         assert job_obj["name"] == job_name
 
         with open(
-            "./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/automl_job/e2e_configs/automl_text_classification_job.yaml",
+            "./src/machinelearningservices/azext_mlv2/tests/test_configs/automl_job/e2e_configs/automl_text_classification_job.yaml",
             "r",
         ) as f:
             file_obj = yaml.safe_load(f)
@@ -829,7 +829,7 @@ class JobScenarioTest(MLBaseScenarioTest):
     def test_automl_text_classification_multilabel_job(self) -> None:
         job_name = "{}{}".format(self.kwargs.get("automlTextMultilabelJobName", None), "-1")
         create_job_command = (
-            f"az ml job create --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/automl_job/e2e_configs/"
+            f"az ml job create --file ./src/machinelearningservices/azext_mlv2/tests/test_configs/automl_job/e2e_configs/ -g testrg -w testworkspace"
             f"automl_text_classification_multilabel_job.yaml --name {job_name}"
         )
         job_obj = self.cmd(create_job_command)
@@ -837,7 +837,7 @@ class JobScenarioTest(MLBaseScenarioTest):
         assert job_obj["name"] == job_name
 
         with open(
-            "./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/automl_job/e2e_configs/automl_text_classification_multilabel_job.yaml",
+            "./src/machinelearningservices/azext_mlv2/tests/test_configs/automl_job/e2e_configs/automl_text_classification_multilabel_job.yaml",
             "r",
         ) as f:
             file_obj = yaml.safe_load(f)
@@ -847,7 +847,7 @@ class JobScenarioTest(MLBaseScenarioTest):
     def test_automl_text_ner_job(self) -> None:
         job_name = "{}{}".format(self.kwargs.get("automlTextNERJobName", None), "-1")
         create_job_command = (
-            f"az ml job create --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/automl_job/e2e_configs/"
+            f"az ml job create --file ./src/machinelearningservices/azext_mlv2/tests/test_configs/automl_job/e2e_configs/ -g testrg -w testworkspace"
             f"automl_text_ner_job.yaml --name {job_name}"
         )
         job_obj = self.cmd(create_job_command)
@@ -855,7 +855,7 @@ class JobScenarioTest(MLBaseScenarioTest):
         assert job_obj["name"] == job_name
 
         with open(
-            "./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/automl_job/e2e_configs/automl_text_ner_job.yaml",
+            "./src/machinelearningservices/azext_mlv2/tests/test_configs/automl_job/e2e_configs/automl_text_ner_job.yaml",
             "r",
         ) as f:
             file_obj = yaml.safe_load(f)
@@ -865,14 +865,14 @@ class JobScenarioTest(MLBaseScenarioTest):
     @pytest.mark.public_preview_only
     def test_job_automl_job_public_preview_sanity(self) -> None:
         with pytest.raises(CLIError) as ex:
-            self.cmd("az ml job create -n automl-sanity-test -f ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/jobs/automl_job_mock.yaml")
+            self.cmd("az ml job create -n automl-sanity-test -f ./src/machinelearningservices/azext_mlv2/tests/test_configs/jobs/automl_job_mock.yaml -g testrg -w testworkspace")
         assert "Unsupported job type: automl_job" in str(ex)
     """
 
     @pytest.mark.skip(reason="TODO: 1788034, could not re-record this test")
     def test_component_job_with_registry_uri(self):
         component_obj = self.cmd(
-            "az ml job create --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/pipeline_jobs/component_from_registry.yml -n {componentName}"
+            "az ml job create --file ./src/machinelearningservices/azext_mlv2/tests/test_configs/pipeline_jobs/component_from_registry.yml -n {componentName} -g testrg -w testworkspace"
         )
         component_create_obj = yaml.safe_load(component_obj.output)
         assert (
@@ -884,14 +884,14 @@ class JobScenarioTest(MLBaseScenarioTest):
     def test_pipeline_job_with_automl_node(self):
         job_name_suffix = "-11"
         self.kwargs["pipeline_job_name11"] = "{}{}".format(self.kwargs.get("pipelineJobName", None), job_name_suffix)
-        create_job_command = "az ml job create --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/pipeline_jobs/jobs_with_automl_nodes/onejob_automl_regression.yml --name {pipeline_job_name11}"
+        create_job_command = "az ml job create --file ./src/machinelearningservices/azext_mlv2/tests/test_configs/pipeline_jobs/jobs_with_automl_nodes/onejob_automl_regression.yml --name {pipeline_job_name11} -g testrg -w testworkspace"
         # check if pipeline with automl node can submit
         job_obj = self.cmd(create_job_command)
         job_obj = yaml.safe_load(job_obj.output)
         assert job_obj["name"] == self.kwargs["pipeline_job_name11"]
 
         with open(
-            "./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/pipeline_jobs/jobs_with_automl_nodes/onejob_automl_regression.yml",
+            "./src/machinelearningservices/azext_mlv2/tests/test_configs/pipeline_jobs/jobs_with_automl_nodes/onejob_automl_regression.yml",
             "r",
         ) as f:
             file_obj = yaml.safe_load(f)
@@ -906,7 +906,7 @@ class JobScenarioTest(MLBaseScenarioTest):
     def test_pipeline_job_with_parallel_node(self):
         job_name_suffix = "-12"
         self.kwargs["pipeline_job_name12"] = "{}{}".format(self.kwargs.get("pipelineJobName", None), job_name_suffix)
-        create_job_command = "az ml job create --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/pipeline_jobs/helloworld_pipeline_job_defaults_with_parallel_job_file_dataset_input_e2e.yml --name {pipeline_job_name12}"
+        create_job_command = "az ml job create --file ./src/machinelearningservices/azext_mlv2/tests/test_configs/pipeline_jobs/helloworld_pipeline_job_defaults_with_parallel_job_file_dataset_input_e2e.yml --name {pipeline_job_name12} -g testrg -w testworkspace"
         # check if pipeline with parallel node can submit
         job_obj = self.cmd(create_job_command)
         job_obj = yaml.safe_load(job_obj.output)
@@ -916,7 +916,7 @@ class JobScenarioTest(MLBaseScenarioTest):
     def test_pipeline_job_with_registry_env(self):
         job_name_suffix = "-14"
         self.kwargs["pipeline_job_name14"] = "{}{}".format(self.kwargs.get("pipelineJobName", None), job_name_suffix)
-        create_job_command = "az ml job create -f ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/pipeline_jobs/hello-pipeline-abc.yml --name {pipeline_job_name14} --set jobs.a.environment=azureml://registries/azureml-dev/environments/sklearn-10-ubuntu2004-py38-cpu/versions/19.dev6"
+        create_job_command = "az ml job create -f ./src/machinelearningservices/azext_mlv2/tests/test_configs/pipeline_jobs/hello-pipeline-abc.yml --name {pipeline_job_name14} --set jobs.a.environment=azureml://registries/azureml-dev/environments/sklearn-10-ubuntu2004-py38-cpu/versions/19.dev6 -g testrg -w testworkspace"
         # check if pipeline with parallel node can submit
         job_obj = self.cmd(create_job_command)
         job_obj = yaml.safe_load(job_obj.output)
@@ -926,7 +926,7 @@ class JobScenarioTest(MLBaseScenarioTest):
     def test_pipeline_job_with_pipeline_node(self):
         job_name_suffix = "-15"
         self.kwargs["pipeline_job_name15"] = "{}{}".format(self.kwargs.get("pipelineJobName", None), job_name_suffix)
-        create_job_command = "az ml job create -f ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/pipeline_jobs/pipeline_job_with_pipeline_component.yml --name {pipeline_job_name15}"
+        create_job_command = "az ml job create -f ./src/machinelearningservices/azext_mlv2/tests/test_configs/pipeline_jobs/pipeline_job_with_pipeline_component.yml --name {pipeline_job_name15} -g testrg -w testworkspace"
         # check if pipeline with pipeline node can submit
         job_obj = self.cmd(create_job_command)
         job_obj = yaml.safe_load(job_obj.output)
@@ -936,7 +936,7 @@ class JobScenarioTest(MLBaseScenarioTest):
     def test_pipeline_job_with_parameter_group(self):
         job_name_suffix = "-16"
         self.kwargs["pipeline_job_name16"] = "{}{}".format(self.kwargs.get("pipelineJobName", None), job_name_suffix)
-        create_job_command = "az ml job create -f ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/pipeline_jobs/pipeline_job_with_parameter_group.yml --name {pipeline_job_name16}"
+        create_job_command = "az ml job create -f ./src/machinelearningservices/azext_mlv2/tests/test_configs/pipeline_jobs/pipeline_job_with_parameter_group.yml --name {pipeline_job_name16} -g testrg -w testworkspace"
         # check if pipeline with parallel node can submit
         job_obj = self.cmd(create_job_command)
         job_obj = yaml.safe_load(job_obj.output)
@@ -946,7 +946,7 @@ class JobScenarioTest(MLBaseScenarioTest):
     def test_custom_property_logging(self) -> None:
         job_name_suffix = "-17"
         self.kwargs["command_job_name5"] = "{}{}".format(self.kwargs.get("commandJobName", None), job_name_suffix)
-        create_job_command = "az ml job create --file ./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/command_job/command_job_test.yml --name {command_job_name5} --set compute=diondra"
+        create_job_command = "az ml job create --file ./src/machinelearningservices/azext_mlv2/tests/test_configs/command_job/command_job_test.yml --name {command_job_name5} --set compute=diondra -g testrg -w testworkspace"
         with patch("azure.cli.core.azclierror.telemetry.add_extension_event") as mock_add_event:
             self.cmd(create_job_command)
             mock_custom_properties_error = {"ml.cli.event": {"error_code": "UserError", "raw_msg": ""}}
@@ -959,11 +959,11 @@ class JobPrivatePreviewScenarioTest(MLBaseScenarioTest):
     @pytest.mark.skip(reason="TODO: 1796036, does not complete when recorded")
     def test_pipeline_job_private_preview_features(self):
         test_paths = [
-            "./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/pipeline_jobs/jobs_with_automl_nodes/onejob_automl_regression.yml",
-            "./src/cli/src/machinelearningservices/azext_mlv2/tests/test_configs/pipeline_jobs/helloworld_pipeline_job_defaults_with_parallel_job_file_component_input_e2e.yml",
+            "./src/machinelearningservices/azext_mlv2/tests/test_configs/pipeline_jobs/jobs_with_automl_nodes/onejob_automl_regression.yml",
+            "./src/machinelearningservices/azext_mlv2/tests/test_configs/pipeline_jobs/helloworld_pipeline_job_defaults_with_parallel_job_file_component_input_e2e.yml",
         ]
         for test_path in test_paths:
-            create_job_command = "az ml job create --file {}".format(test_path)
+            create_job_command = "az ml job create --file {} -g testrg -w testworkspace".format(test_path)
             error_msg = (
                 "is a private preview feature, "
                 "please set environment variable AZURE_ML_CLI_PRIVATE_FEATURES_ENABLED to true to use it."
@@ -971,3 +971,5 @@ class JobPrivatePreviewScenarioTest(MLBaseScenarioTest):
             with pytest.raises(UserErrorException) as e:
                 self.cmd(create_job_command)
             assert error_msg in str(e.value)
+
+
