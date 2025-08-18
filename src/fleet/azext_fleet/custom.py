@@ -26,6 +26,14 @@ from azext_fleet.constants import UPGRADE_TYPE_NODEIMAGEONLY
 from azext_fleet.constants import UPGRADE_TYPE_ERROR_MESSAGES
 from azext_fleet.constants import SUPPORTED_GATE_STATES_FILTERS
 from azext_fleet.constants import SUPPORTED_GATE_STATES_PATCH
+from azext_fleet.vendored_sdks.v2025_08_01_preview.models import (
+    PropagationPolicy,
+    PlacementProfile,
+    PlacementV1ClusterResourcePlacementSpec,
+    PlacementV1PlacementPolicy,
+    PropagationType,
+    PlacementType
+)
 
 
 # pylint: disable=too-many-locals
@@ -810,12 +818,6 @@ def create_managed_namespace(cmd,
         operation_group="fleet_managed_namespaces"
     )
 
-    propagation_policy_model = cmd.get_models(
-        "PropagationPolicy",
-        resource_type=CUSTOM_MGMT_FLEET,
-        operation_group="fleet_managed_namespaces"
-    )
-
     fleet_client = cf_fleets(cmd.cli_ctx)
     fleet = fleet_client.get(resource_group_name, fleet_name)
 
@@ -850,14 +852,18 @@ def create_managed_namespace(cmd,
 
     propagation_policy = None
     if member_cluster_names:
-        placement_profile_model = cmd.get_models(
-            "PlacementProfile",
-            resource_type=CUSTOM_MGMT_FLEET,
-            operation_group="fleet_managed_namespaces"
+        placement_policy = PlacementV1PlacementPolicy(
+            placement_type=PlacementType.pick_fixed,
+            cluster_names=member_cluster_names
         )
-        placement_profile = placement_profile_model(target_clusters=member_cluster_names)
-        propagation_policy = propagation_policy_model(
-            type="Placement",
+        placement_spec = PlacementV1ClusterResourcePlacementSpec(
+            policy=placement_policy
+        )
+        placement_profile = PlacementProfile(
+            default_cluster_resource_placement=placement_spec
+        )
+        propagation_policy = PropagationPolicy(
+            type=PropagationType.placement,
             placement_profile=placement_profile
         )
 
