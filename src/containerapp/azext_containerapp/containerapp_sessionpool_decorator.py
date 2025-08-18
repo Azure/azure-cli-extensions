@@ -448,7 +448,7 @@ class SessionPoolUpdateDecorator(SessionPoolPreviewDecorator):
         if ((self.get_argument_container_type() is not None and safe_get(self.existing_pool_def, "properties", "containerType").lower() == self.get_argument_container_type().lower()) or
                 (self.get_argument_managed_env() is not None and safe_get(self.existing_pool_def, "properties", "environmentId").lower() == self.get_argument_managed_env().lower())):
             raise ValidationError("containerType and environmentId cannot be updated.")
-        
+
         # Validate unsupported arguments with a certain lifecycle type
         if self.get_argument_max_alive_period() is not None and \
                 self.get_argument_lifecycle_type() is not None and \
