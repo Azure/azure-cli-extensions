@@ -3496,7 +3496,8 @@ class ContainerappOtherPropertyTests(ScenarioTest):
         ])
 
     @AllowLargeResponse(8192)
-    @ResourceGroupPreparer(location="centraluseuap")
+    @live_only()
+    @ResourceGroupPreparer(location="eastus2")
     def test_containerapp_up_kind_functionapp(self, resource_group):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
