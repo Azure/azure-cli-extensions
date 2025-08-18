@@ -85,6 +85,8 @@ from azext_aks_preview.addonconfiguration import (
     add_virtual_node_role_assignment,
     enable_addons,
 )
+from azext_aks_preview.agent.agent import aks_agent as aks_agent_internal
+
 from azext_aks_preview.aks_diagnostics import aks_kanalyze_cmd, aks_kollect_cmd
 from azext_aks_preview.aks_draft.commands import (
     aks_draft_cmd_create,
@@ -103,6 +105,12 @@ from azext_aks_preview.bastion.bastion import (
 )
 from azext_aks_preview.maintenanceconfiguration import (
     aks_maintenanceconfiguration_update_internal,
+)
+from azext_aks_preview.aks_identity_binding.commands import (
+    aks_ib_cmd_create,
+    aks_ib_cmd_delete,
+    aks_ib_cmd_show,
+    aks_ib_cmd_list,
 )
 from azext_aks_preview.managednamespace import (
     aks_managed_namespace_add,
@@ -4386,3 +4394,42 @@ def aks_bastion(cmd, client, resource_group_name, name, bastion=None, port=None,
             )
         finally:
             aks_batsion_clean_up()
+
+
+aks_identity_binding_create = aks_ib_cmd_create
+aks_identity_binding_delete = aks_ib_cmd_delete
+aks_identity_binding_show = aks_ib_cmd_show
+aks_identity_binding_list = aks_ib_cmd_list
+
+
+# pylint: disable=unused-argument
+def aks_agent(
+    cmd,
+    client,
+    prompt,
+    model,
+    max_steps,
+    config_file,
+    resource_group_name=None,
+    name=None,
+    api_key=None,
+    no_interactive=False,
+    no_echo_request=False,
+    show_tool_output=False,
+    refresh_toolsets=False,
+):
+
+    aks_agent_internal(
+        cmd,
+        resource_group_name,
+        name,
+        prompt,
+        model,
+        api_key,
+        max_steps,
+        config_file,
+        no_interactive,
+        no_echo_request,
+        show_tool_output,
+        refresh_toolsets,
+    )

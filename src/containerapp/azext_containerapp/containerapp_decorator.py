@@ -143,6 +143,14 @@ class ContainerAppUpdateDecorator(BaseContainerAppDecorator):
         if not self.containerapp_def:
             raise ResourceNotFoundError("The containerapp '{}' does not exist".format(self.get_argument_name()))
 
+        # Transitioning into labels mode is complicated and we don't want to combine it with other updates.
+        # If the app was not previously in labels mode throw an error saying to use Set-Mode instead.
+        if (self.get_argument_revisions_mode()
+                and self.get_argument_revisions_mode().lower() == "labels"
+                and safe_get(self.containerapp_def, "properties", "configuration", "activeRevisionsMode").lower() != "labels"):
+            raise ArgumentUsageError("The containerapp '{}' is not in labels mode. Please use `az containerapp revision set-mode` to switch to labels mode first.".format(
+                self.get_argument_name()))
+
         validate_revision_suffix(self.get_argument_revision_suffix())
         # Validate that max_replicas is set to 0-1000
         if self.get_argument_max_replicas() is not None:
