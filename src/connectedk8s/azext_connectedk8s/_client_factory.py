@@ -69,9 +69,11 @@ def cf_connectedk8s_prev_2025_08_01(
     )
     from azure.core.pipeline.policies import HeadersPolicy
 
+    portal_request = os.getenv("PORTAL_REQUEST", "false")
+
     # Create custom headers policy for PUT requests
     headers_policy = HeadersPolicy({
-        "x-ms-k8srp-cli-client": "true"
+        "x-ms-azurearc-cli": "false" if portal_request == "true" else "true"
     })
 
     client: KubernetesClient

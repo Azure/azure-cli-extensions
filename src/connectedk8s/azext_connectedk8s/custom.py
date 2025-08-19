@@ -2340,14 +2340,17 @@ def update_connected_cluster(
         print(
             f"Step: {utils.get_utctimestring()}: Associating gateway with Connected Cluster"
         )
-        utils.update_gateway_cluster_link(
-            cmd,
-            location,
-            subscription_id,
-            resource_group_name,
-            cluster_name,
-            gateway_resource_id,
-        )
+
+        gw_associate_test = os.getenv("TEST_GW", "false")
+        if gw_associate_test.lower() == "false":
+            utils.update_gateway_cluster_link(
+                cmd,
+                location,
+                subscription_id,
+                resource_group_name,
+                cluster_name,
+                gateway_resource_id,
+            )
     if disable_gateway:
         gateway = Gateway(enabled=False)
         print(
@@ -2404,7 +2407,7 @@ def update_connected_cluster(
         client, resource_group_name, cluster_name, cc, False
     )
     dp_request_payload = reput_cc_poller.result()
-    reput_connected_cluster = LongRunningOperation(cmd.cli_ctx)(reput_cc_poller)
+    _ = LongRunningOperation(cmd.cli_ctx)(reput_cc_poller)
 
     # Before proceeding, we prefer to see agent state settle - updating the helm chart
     # while things are happening risks race conditions.  Eg
@@ -2412,16 +2415,20 @@ def update_connected_cluster(
     #
     # If we don't see a terminal state, we'll go ahead and update the helm chart anyway,
     # and throw an error later.
-    # print(
-    #     f"Step: {utils.get_utctimestring()}: Wait for Agent State to reach terminal state, with timeout of {consts.Agent_State_Timeout}"
-    # )
-    # terminal_agent_state, connected_cluster = poll_for_agent_state(
-    #     client, resource_group_name, cluster_name
-    # )
-    # maybe_has = "has" if terminal_agent_state else "has not"
-    # print(
-    #     f"Step: {utils.get_utctimestring()}: Agent state {maybe_has} reached terminal state."
-    # )
+    print(
+        f"Step: {utils.get_utctimestring()}: Wait for Agent State to reach terminal state, with timeout of {consts.Agent_State_Timeout}"
+    )
+    terminal_agent_state, connected_cluster = poll_for_agent_state(
+        client, resource_group_name, cluster_name
+    )
+    maybe_has = "has" if terminal_agent_state else "has not"
+    print(
+        f"Step: {utils.get_utctimestring()}: Agent state {maybe_has} reached terminal state."
+    )
+
+    portal_request = os.getenv("PORTAL_REQUEST", "false")
+    if portal_request.lower() == "true":
+        return connected_cluster
 
     # Adding helm repo
     if os.getenv("HELMREPONAME") and os.getenv("HELMREPOURL"):
