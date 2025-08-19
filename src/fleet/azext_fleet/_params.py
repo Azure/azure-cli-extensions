@@ -181,7 +181,7 @@ def load_arguments(self, _):
 
     with self.argument_context('fleet namespace create') as c:
         c.argument('managed_namespace_name', options_list=['--name', '-n'], help='The name of the Kubernetes namespace to be created on member clusters.')
-        c.argument('tags', tags_type, help='Resource tags to apply to the managed namespace.')
+        c.argument('tags', tags_type)
         c.argument('labels', labels_type, help='Labels to apply to the managed namespace.')
         c.argument('annotations', type=validate_labels, metavar='KEY=VALUE', help='Annotations to apply to the managed namespace: key[=value] [key[=value] ...].')
         c.argument('cpu_requests', options_list=['--cpu-requests'], help='CPU requests for the namespace.')
@@ -190,12 +190,12 @@ def load_arguments(self, _):
         c.argument('memory_limits', options_list=['--memory-limits'], help='Memory limits for the namespace.')
         c.argument('ingress_policy', options_list=['--ingress-policy'], help='Ingress policy for the namespace.')
         c.argument('egress_policy', options_list=['--egress-policy'], help='Egress policy for the namespace.')
-        c.argument('delete_policy', options_list=['--delete-policy'], help='Delete policy for the namespace.')
-        c.argument('adoption_policy', options_list=['--adoption-policy'], help='Adoption policy for the namespace.')
+        c.argument('delete_policy', options_list=['--delete-policy'], help='Delete policy for the namespace.', default='Keep')
+        c.argument('adoption_policy', options_list=['--adoption-policy'], help='Adoption policy for the namespace.', default='Never')
         c.argument('member_cluster_names', nargs='*', options_list=['--member-cluster-names'], help='Space-separated list of member cluster names to apply the namespace to.')
 
     with self.argument_context('fleet namespace update') as c:
-        c.argument('tags', tags_type, help='Resource tags to apply to the managed namespace.')
+        c.argument('tags', tags_type)
 
     with self.argument_context('fleet namespace get-credentials') as c:
         c.argument('managed_namespace_name', options_list=['--name', '-n'], help='Specify the managed namespace name.')
