@@ -150,7 +150,8 @@ from azext_aks_preview._consts import (
     CONST_ADVANCED_NETWORKPOLICIES_FQDN,
     CONST_ADVANCED_NETWORKPOLICIES_L7,
     CONST_TRANSIT_ENCRYPTION_TYPE_NONE,
-    CONST_TRANSIT_ENCRYPTION_TYPE_WIREGUARD
+    CONST_TRANSIT_ENCRYPTION_TYPE_WIREGUARD,
+    CONST_AGENT_CONFIG_FILE_NAME,
 )
 
 from azext_aks_preview._validators import (
@@ -2803,7 +2804,7 @@ def load_arguments(self, _):
         )
         c.argument(
             "config_file",
-            default=os.path.join(get_config_dir(), "aksAgent.config"),
+            default=os.path.join(get_config_dir(), CONST_AGENT_CONFIG_FILE_NAME),
             validator=validate_agent_config_file,
             required=False,
             help="Path to the config file.",
