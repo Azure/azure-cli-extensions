@@ -452,11 +452,11 @@ helps['fleet namespace create'] = """
         - name: Create a basic fleet managed namespace.
           text: az fleet namespace create -g MyFleetResourceGroup -f MyFleetName -n MyManagedNamespace
         - name: Create a fleet managed namespace with tags.
-          text: az fleet namespace create -g MyFleetResourceGroup -f MyFleetName -n MyManagedNamespace --tags environment=production team=contoso
+          text: az fleet namespace create -g MyFleetResourceGroup -f MyFleetName -n MyManagedNamespace --tags environment=production key=value
         - name: Create a fleet managed namespace with resource limits and policies.
-          text: az fleet namespace create -g MyFleetResourceGroup -f MyFleetName -n MyManagedNamespace --annotations annotation1=value1 --labels team=contoso --cpu-requests 1m --cpu-limits 4m --memory-requests 1Mi --memory-limits 4Mi --ingress-policy allow-all-traffic --egress-policy allow-all-traffic --delete-policy keep --adoption-policy never
+          text: az fleet namespace create -g MyFleetResourceGroup -f MyFleetName -n MyManagedNamespace --annotations key=value --labels key=value --cpu-requests 1m --cpu-limits 4m --memory-requests 1Mi --memory-limits 4Mi --ingress-policy AllowAll --egress-policy DenyAll --delete-policy Keep --adoption-policy Never
         - name: Create a fleet managed namespace on specific member clusters.
-          text: az fleet namespace create -g MyFleetResourceGroup -f MyFleetName -n MyManagedNamespace --member-cluster-names contoso-prod-01 contoso-prod-02 contoso-test-01 contoso-dev-01
+          text: az fleet namespace create -g MyFleetResourceGroup -f MyFleetName -n MyManagedNamespace --member-cluster-names team-01 team-02 team-03 team-04
 """
 
 helps['fleet namespace update'] = """
@@ -466,7 +466,7 @@ helps['fleet namespace update'] = """
         - name: Updates a fleet managed namespace.
           text: az fleet namespace update -g MyFleetResourceGroup -f MyFleetName -n MyManagedNamespace
         - name: Update tags for a fleet managed namespace.
-          text: az fleet namespace update -g MyFleetResourceGroup -f MyFleetName -n MyManagedNamespace --tags environment=production team=contoso
+          text: az fleet namespace update -g MyFleetResourceGroup -f MyFleetName -n MyManagedNamespace --tags environment=production
 """
 
 helps['fleet namespace list'] = """

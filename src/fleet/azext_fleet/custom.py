@@ -823,15 +823,15 @@ def create_managed_namespace(cmd,
 
     default_resource_quota = None
     if cpu_requests or cpu_limits or memory_requests or memory_limits:
-        resource_limits = {'requests': {}, 'limits': {}}
+        resource_limits = {}
         if cpu_requests:
-            resource_limits['requests']['cpu'] = cpu_requests
+            resource_limits['cpu_request'] = cpu_requests
         if memory_requests:
-            resource_limits['requests']['memory'] = memory_requests
+            resource_limits['memory_request'] = memory_requests
         if cpu_limits:
-            resource_limits['limits']['cpu'] = cpu_limits
+            resource_limits['cpu_limit'] = cpu_limits
         if memory_limits:
-            resource_limits['limits']['memory'] = memory_limits
+            resource_limits['memory_limit'] = memory_limits
         default_resource_quota = resource_quota_model(**resource_limits)
 
     default_network_policy = None
