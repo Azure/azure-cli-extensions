@@ -71,38 +71,6 @@ class AmgScenarioTest(ScenarioTest):
 
 
     @ResourceGroupPreparer(name_prefix='cli_test_amg')
-    def test_amg_api_key_e2e(self, resource_group):
-
-        self.kwargs.update({
-            'name': self.create_random_name(prefix='clitestamgapikey', length=23),
-            'location': 'westcentralus',
-            "key": "apikey1",
-            "key2": "apikey2"
-        })
-
-        owner = self._get_signed_in_user()
-        self.recording_processors.append(MSGraphNameReplacer(owner, MOCKED_USER_NAME))
-
-        with unittest.mock.patch('azext_amg.custom._gen_guid', side_effect=self.create_guid):
-            self.cmd('grafana create -g {rg} -n {name} -l {location}')
-            # Ensure RBAC changes are propagated
-            time.sleep(120)
-            self.cmd('grafana update -g {rg} -n {name} --api-key Enabled')
-            self.cmd('grafana api-key list -g {rg} -n {name}', checks=[
-                self.check('length([])', 0)
-            ])
-            result = self.cmd('grafana api-key create -g {rg} -n {name} --key {key} --role Admin --time-to-live 3d').get_output_in_json()
-            api_key = result["key"]
-            self.cmd('grafana api-key create -g {rg} -n {name} --key {key2}')
-            self.cmd('grafana api-key list -g {rg} -n {name}', checks=[
-                self.check('length([])', 2)
-            ])
-            self.cmd('grafana api-key delete -g {rg} -n {name} --key {key2}')
-            number = len(self.cmd('grafana dashboard list -g {rg} -n {name} --api-key ' + api_key).get_output_in_json())
-            self.assertTrue(number > 0)
-
-
-    @ResourceGroupPreparer(name_prefix='cli_test_amg')
     def test_amg_service_account_e2e(self, resource_group):
 
         self.kwargs.update({

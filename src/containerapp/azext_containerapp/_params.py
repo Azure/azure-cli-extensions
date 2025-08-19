@@ -36,7 +36,7 @@ def load_arguments(self, _):
         c.argument('build_env_vars', nargs='*', help="A list of environment variable(s) for the build. Space-separated values in 'key=value' format.",
                    validator=validate_build_env_vars, is_preview=True)
         c.argument('max_inactive_revisions', type=int, help="Max inactive revisions a Container App can have.", is_preview=True)
-        c.argument('kind', type=str, help="Set to 'functionapp' to get built in support and autoscaling to run Azure functions on Azure Container apps", is_preview=True)
+        c.argument('kind', type=str, help="Set to 'functionapp' to enable built-in support and autoscaling for Azure Functions on Azure Container Apps.", is_preview=True)
         c.argument('registry_identity', help="The managed identity with which to authenticate to the Azure Container Registry (instead of username/password). Use 'system' for a system-defined identity, Use 'system-environment' for an environment level system-defined identity or a resource id for a user-defined environment/containerapp level identity. The managed identity should have been assigned acrpull permissions on the ACR before deployment (use 'az role assignment create --role acrpull ...').")
         c.argument('target_label', help="The label to apply to new revisions. Required for revisions-mode 'labels'.", is_preview=True)
 
@@ -515,8 +515,8 @@ def load_arguments(self, _):
         c.argument('resource_group_name', arg_type=resource_group_name_type, id_part=None)
         c.argument('name', options_list=['--name', '-n'], help="The name of the managed environment.")
         c.argument('workload_profile_name', options_list=['--workload-profile-name', '-w'], help="The workload profile to run ingress replicas on. This profile must not be shared with any container app or job.")
-        c.argument('min_replicas', options_list=['--min-replicas'], type=int, help="Minimum number of replicas to run. Default 2, minimum 2.")
-        c.argument('max_replicas', options_list=['--max-replicas'], type=int, help="Maximum number of replicas to run. Default 10. The upper limit is the maximum cores available in the workload profile.")
+        c.argument('min_replicas', options_list=['--min-replicas'], type=int, deprecate_info=c.deprecate(hide=True, expiration='2.78.0'), help="The workload profile minimum instances is used instead.")
+        c.argument('max_replicas', options_list=['--max-replicas'], type=int, deprecate_info=c.deprecate(hide=True, expiration='2.78.0'), help="The workload profile maximum instances is used instead.")
         c.argument('termination_grace_period', options_list=['--termination-grace-period', '-t'], type=int, help="Time in seconds to drain requests during ingress shutdown. Default 500, minimum 0, maximum 3600.")
         c.argument('request_idle_timeout', options_list=['--request-idle-timeout'], type=int, help="Timeout in minutes for idle requests. Default 4, minimum 1.")
         c.argument('header_count_limit', options_list=['--header-count-limit'], type=int, help="Limit of http headers per request. Default 100, minimum 1.")
