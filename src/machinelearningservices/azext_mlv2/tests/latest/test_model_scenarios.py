@@ -21,8 +21,9 @@ from ..util import private_flag
 
 
 class ModelScenarioTest(MLBaseScenarioTest):
+    @pytest.mark.skip(reason="Recording and replay not working.")
     def test_model_no_workspace_no_registry(self) -> None:
-        for base_command in ["az ml model list -g testrg -w testworkspace", "az ml model show -n abc -g testrg -w testworkspace", "az ml model create -n abc -g testrg -w testworkspace"]:
+        for base_command in ["az ml model list", "az ml model show -n abc", "az ml model create -n abc"]:
             with pytest.raises(Exception) as exp:
                 dep_obj = self.cmd(f'{base_command} --workspace-name="" --registry-name=""')
             assert "one the following arguments are required: [--workspace-name/-w, --registry-name]" in str(exp.value)

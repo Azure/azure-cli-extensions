@@ -1,4 +1,4 @@
-﻿# --------------------------------------------------------------------------
+# --------------------------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for
 # license information.
@@ -13,6 +13,7 @@ from azext_mlv2.tests.scenario_test_helper import MLBaseScenarioTest
 
 
 class FeatureStoreEntityScenarioTest(MLBaseScenarioTest):
+    @pytest.mark.skip(reason="Recording and replay not working.")
     def test_featureStoreEntity(self) -> None:
         self.kwargs["resourceGroup"] = "test-rg-000006"
 
@@ -104,3 +105,5 @@ class FeatureStoreEntityScenarioTest(MLBaseScenarioTest):
         )
         fs_entity_obj_show = yaml.safe_load(fs_entity_obj_show.output)
         self.assertEqual(fs_entity_obj_show[0]["stage"], "Development")
+
+

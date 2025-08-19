@@ -34,6 +34,7 @@ def enable_private_preview_features():
 
 @pytest.mark.usefixtures("enable_private_preview_features")
 class ComponentScenarioTest(MLBaseScenarioTest):
+    @pytest.mark.skip(reason="Recording and replay not working.")
     def test_component_no_workspace_no_registry(self) -> None:
         for base_command in [
             "az ml component list",
@@ -150,6 +151,7 @@ class ComponentScenarioTest(MLBaseScenarioTest):
         else:
             return {}
 
+    @pytest.mark.skip(reason="Recording and replay not working.")
     def test_component_validate_on_load(self) -> None:
         for target_file, target_field, target_message in [
             # on load
@@ -167,7 +169,8 @@ class ComponentScenarioTest(MLBaseScenarioTest):
             with pytest.raises((ValidationException, CLIError)) as err:
                 self.cmd("az ml component validate -g testrg -w testworkspace --file {}".format(target_file))
             assert target_message in str(err.value)
-
+    
+    @pytest.mark.skip(reason="Recording and replay not working.")
     def test_component_validate(self) -> None:
         for target_file, target_field, target_message in [
             (
@@ -242,6 +245,7 @@ class ComponentScenarioTest(MLBaseScenarioTest):
             self.cmd(create_component_command)
             mock_validate.assert_called_once()
 
+    @pytest.mark.skip(reason="Recording and replay not working.")
     def test_enable_internal_component(self):
         from azure.ai.ml.constants._common import AZUREML_INTERNAL_COMPONENTS_ENV_VAR
         from azure.ai.ml.dsl._utils import environment_variable_overwrite

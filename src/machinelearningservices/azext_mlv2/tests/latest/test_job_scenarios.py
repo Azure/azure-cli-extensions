@@ -474,6 +474,7 @@ class JobScenarioTest(MLBaseScenarioTest):
         # Delete a key regardless of whether it is in the dictionary for the new name
         self.kwargs.pop("pipeline_job_name3", None)
 
+    @pytest.mark.skip(reason="Recording and replay not working.")
     def test_pipeline_job_validate(self) -> None:
         import json
 
