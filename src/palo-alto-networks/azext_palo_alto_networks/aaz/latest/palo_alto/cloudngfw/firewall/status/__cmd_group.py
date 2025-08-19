@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "palo-alto cloudngfw firewall status",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage cloudngfw firewall status resource
+    """Manage status resources for Palo Alto Networks cloudngfw firewalls.
     """
     pass
 
