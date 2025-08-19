@@ -116,6 +116,14 @@ jobs:
       env:
         ADO_PULL_REQUEST_LATEST_COMMIT: HEAD
         ADO_PULL_REQUEST_TARGET_BRANCH: $(System.PullRequest.TargetBranch)
+        WHEELS_OUTPUT_DIR: $(Build.ArtifactStagingDirectory)/wheels-$(python.version)
+
+    - task: PublishPipelineArtifact@1
+      displayName: 'Publish wheels artifacts from tests'
+      inputs:
+        targetPath: '$(Build.ArtifactStagingDirectory)/wheels-$(python.version)'
+        artifact: 'wheels-$(python.version)'
+        publishLocation: 'pipeline'
 
 - job: AzdevStyleModifiedExtensions
   displayName: "azdev style on Modified Extensions"
