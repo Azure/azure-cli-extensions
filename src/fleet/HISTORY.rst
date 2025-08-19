@@ -138,3 +138,7 @@ Release History
 1.6.1
 ++++++
 * Modified parameter handling to accept both file paths and inline JSON strings for the --stages argument
+
+1.6.2
+++++++
+* Updated help text for new supported member cluster type.
