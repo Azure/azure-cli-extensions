@@ -11,10 +11,10 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
-* Add framework for interactive AI-powered debugging tool.
 
 18.0.0b27
 +++++++
+* Add framework for interactive AI-powered debugging tool.
 - Add `--enable-upstream-kubescheduler-user-configuration` to `az aks create` and `az aks update`.
 - Add `--disable-upstream-kubescheduler-user-configuration` to `az aks update`.
 
