@@ -792,7 +792,8 @@ def create_managed_namespace(cmd,
                              egress_policy=None,
                              delete_policy=None,
                              adoption_policy=None,
-                             member_cluster_names=None):
+                             member_cluster_names=None,
+                             no_wait=False):
 
     managed_namespace_model = cmd.get_models(
         "FleetManagedNamespace",
@@ -876,11 +877,14 @@ def create_managed_namespace(cmd,
         propagation_policy=propagation_policy
     )
 
-    return client.begin_create_or_update(
-        resource_group_name=resource_group_name,
-        fleet_name=fleet_name,
-        managed_namespace_name=managed_namespace_name,
-        resource=managed_namespace
+    return sdk_no_wait(
+        no_wait,
+        client.begin_create_or_update,
+        resource_group_name,
+        fleet_name,
+        managed_namespace_name,
+        managed_namespace,
+        polling_interval=5
     )
 
 
@@ -913,11 +917,15 @@ def delete_managed_namespace(cmd,  # pylint: disable=unused-argument
                              client,
                              resource_group_name,
                              fleet_name,
-                             managed_namespace_name):
-    return client.begin_delete(
-        resource_group_name=resource_group_name,
-        fleet_name=fleet_name,
-        managed_namespace_name=managed_namespace_name
+                             managed_namespace_name,
+                             no_wait=False):
+    return sdk_no_wait(
+        no_wait,
+        client.begin_delete,
+        resource_group_name,
+        fleet_name,
+        managed_namespace_name,
+        polling_interval=5
     )
 
 
