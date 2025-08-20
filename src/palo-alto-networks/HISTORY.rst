@@ -2,7 +2,7 @@
 
 Release History
 ===============
-1.1.3b1
+1.1.2b2
 ++++++
 * Further Updates to CLI descriptions.
 
