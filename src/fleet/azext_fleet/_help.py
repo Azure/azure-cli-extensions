@@ -111,13 +111,15 @@ helps['fleet member create'] = """
     parameters:
         - name: --member-cluster-id
           type: string
-          short-summary: ID of the managed cluster.
+          short-summary: The ARM resource ID of the cluster.
         - name: --update-group
           type: string
           short-summary: Update group of the member.
     examples:
-        - name: Create a member and assign it to an update group.
-          text: az fleet member create -g MyFleetResourceGroup -f MyFleetName -n NameOfMember --update-group group1 --member-cluster-id "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyFleetResourceGroup/providers/Microsoft.ContainerService/managedClusters/MyManagedCluster"
+        - name: Create an AKS Cluster member and assign it to an update group.
+          text: az fleet member create -g MyFleetResourceGroup -f MyFleetName -n NameOfMember --update-group group1 --member-cluster-id "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ClusterResourceGroupName/providers/Microsoft.ContainerService/managedClusters/ClusterName"
+        - name: Create an Arc Cluster member and assign it to an update group.
+          text: az fleet member create -g MyFleetResourceGroup -f MyFleetName -n NameOfMember --update-group group1 --member-cluster-id "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ClusterResourceGroupName/providers/Microsoft.Kubernetes/connectedClusters/ClusterName"
 """
 
 helps['fleet member update'] = """
