@@ -17,7 +17,7 @@ from azure.cli.core.aaz import *
 class Delete(AAZCommand):
     """Delete an existing Palo Alto Networks Cloud NGFW on Azure
 
-    :example: Delete a Palo Alto Networks Cloud NGFW
+    :example: Delete an existing Palo Alto Networks Cloud NGFW on Azure
         az palo-alto cloudngfw firewall delete --resource-group MyResourceGroup -n MyCloudngfwFirewall
     """
 
