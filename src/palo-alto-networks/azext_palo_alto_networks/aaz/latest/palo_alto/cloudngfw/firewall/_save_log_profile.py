@@ -15,9 +15,9 @@ from azure.cli.core.aaz import *
     "palo-alto cloudngfw firewall save-log-profile",
 )
 class SaveLogProfile(AAZCommand):
-    """Save Log Profile for Firewall
+    """Save log profile settings for a Palo Alto Networks Cloud NGFW on Azure.
 
-    :example: Save Log Profile for Firewall
+    :example: Save log profile settings for a Palo Alto Networks Cloud NGFW on Azure.
         az palo-alto cloudngfw firewall save-log-profile --resource-group MyResourceGroup -n MyCloudngfwFirewall --log-option "SAME_DESTINATION" --log-type "TRAFFIC"
     """
 

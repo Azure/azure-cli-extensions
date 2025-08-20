@@ -15,9 +15,9 @@ from azure.cli.core.aaz import *
     "palo-alto cloudngfw local-rulestack fqdnlist delete",
 )
 class Delete(AAZCommand):
-    """Delete a FqdnListLocalRulestackResource
+    """Delete an existing FQDN list resource for a Palo Alto Networks local rulestack.
 
-    :example: Delete a FqdnListLocalRulestackResource
+    :example: Delete an existing FQDN list resource for a Palo Alto Networks local rulestack.
         az palo-alto cloudngfw local-rulestack fqdnlist delete  -g MyResourceGroup --local-rulestack-name MyLocalRulestacks --name MyFqdnlist
     """
 

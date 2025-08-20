@@ -15,9 +15,9 @@ from azure.cli.core.aaz import *
     "palo-alto cloudngfw local-rulestack certificate show",
 )
 class Show(AAZCommand):
-    """Get a CertificateObjectLocalRulestackResource
+    """Retrieve details of a specific certificate for a Palo Alto Networks local rulestack.
 
-    :example: Get a CertificateObjectLocalRulestackResource
+    :example: Retrieve details of a specific certificate for a Palo Alto Networks local rulestack.
         az palo-alto cloudngfw local-rulestack certificate show -g MyResourceGroup --local-rulestack-name MyLocalRulestacks --name MyCertificate
     """
 

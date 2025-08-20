@@ -15,9 +15,9 @@ from azure.cli.core.aaz import *
     "palo-alto cloudngfw firewall status default show",
 )
 class Show(AAZCommand):
-    """Get a FirewallStatusResource
+    """Retrieve details of a specific firewall status resource in Palo Alto Networks.
 
-    :example: Get a FirewallStatusResource
+    :example: Retrieve details of a specific firewall status resource in Palo Alto Networks.
         az palo-alto cloudngfw firewall status default show --resource-group MyResourceGroup -n MyCloudngfwFirewall
     """
 

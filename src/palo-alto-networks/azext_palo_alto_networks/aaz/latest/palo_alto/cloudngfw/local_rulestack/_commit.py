@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "palo-alto cloudngfw local-rulestack commit",
 )
 class Commit(AAZCommand):
-    """Commit rulestack configuration
+    """Commit configuration changes to a Palo Alto Networks local rulestack.
     """
 
     _aaz_info = {
