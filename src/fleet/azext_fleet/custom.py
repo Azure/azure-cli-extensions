@@ -4,10 +4,8 @@
 # --------------------------------------------------------------------------------------------
 
 import os
-import sys
 import yaml
 import tempfile
-from io import StringIO
 
 from knack.util import CLIError
 
@@ -221,34 +219,29 @@ def get_credentials(cmd,
 
         try:
             fleet_member = fleet_members_client.get(resource_group_name, name, member_name)
-            if not fleet_member:
-                raise CLIError(f"Fleet member '{member_name}' not found in fleet '{name}'.")
 
             parsed_id = parse_resource_id(fleet_member.cluster_resource_id)
-            string_io = StringIO()
-            old_stdout = sys.stdout
-            sys.stdout = string_io
-            try:
-                exit_code = get_default_cli().invoke([
-                    'aks', 'get-credentials',
-                    '--subscription', parsed_id['subscription'],
-                    '--resource-group', parsed_id['resource_group'],
-                    '--name', parsed_id['resource_name'],
-                    '--file', '-'
-                ])
+            if parsed_id.get('resource_type') != 'managedclusters' or parsed_id.get('namespace') != 'microsoft.containerservice':
+                raise CLIError(f"Fleet member '{member_name}' is not associated with an AKS managed cluster. "
+                               f"Currently, only AKS managed clusters are supported for this command.")
 
-                sys.stdout = old_stdout
+            args = [
+                'aks', 'get-credentials',
+                '--subscription', parsed_id['subscription'],
+                '--resource-group', parsed_id['resource_group'],
+                '--name', parsed_id['resource_name'],
+                '--context', context_name or member_name,
+                '--file', path,
+            ]
 
-                if exit_code != 0 or not (kubeconfig := string_io.getvalue()):
-                    error_msg = (f"Failed to get credentials from managed cluster '{parsed_id['resource_name']}' "
-                                 f"for fleet member '{member_name}'")
-                    raise CLIError(error_msg)
+            if overwrite_existing:
+                args.append("--overwrite-existing")
 
-                print_or_merge_credentials(path, kubeconfig, overwrite_existing, context_name)
-
-            finally:
-                if sys.stdout is string_io:
-                    sys.stdout = old_stdout
+            exit_code = get_default_cli().invoke(args)
+            if exit_code != 0:
+                error_msg = (f"Failed to get credentials from managed cluster '{parsed_id['resource_name']}' "
+                             f"for fleet member '{member_name}'")
+                raise CLIError(error_msg)
 
         except Exception as exc:
             if isinstance(exc, CLIError):
@@ -957,42 +950,32 @@ def get_namespace_credentials(cmd,
                               fleet_name,
                               managed_namespace_name,
                               path=os.path.join(os.path.expanduser('~'), '.kube', 'config'),
-                              overwrite_existing=False,
+                              overwrite_existing=True,
                               context_name=None,
                               member_name=None):
     """
     Get credentials for a fleet hub or managed cluster and modifies the kubeconfig to set the default namespace.
     """
     fleet_client = cf_fleets(cmd.cli_ctx)
-    with tempfile.NamedTemporaryFile(mode='w+', suffix='.kubeconfig', delete=False) as temp_file:
-        temp_path = temp_file.name
-
-    try:
+    with tempfile.NamedTemporaryFile(mode='w+', suffix='.kubeconfig') as temp_file:
         get_credentials(
             cmd=cmd,
             client=fleet_client,
             resource_group_name=resource_group_name,
             name=fleet_name,
-            path=temp_path,
-            overwrite_existing=True,
+            path=temp_file.name,
+            overwrite_existing=overwrite_existing,
             context_name=context_name,
             member_name=member_name
         )
 
-        with open(temp_path, 'r', encoding='utf-8') as f:
+        with open(temp_file.name, 'r', encoding='utf-8') as f:
             kubeconfig = yaml.safe_load(f.read())
 
-        current_context_name = kubeconfig.get('current-context')
-        if 'contexts' in kubeconfig and current_context_name:
-            for context in kubeconfig['contexts']:
-                if context.get('name') == current_context_name and 'context' in context:
-                    context['context']['namespace'] = managed_namespace_name
-                    break
+        ctx = next(ctx for ctx in kubeconfig['contexts']
+                  if ctx['name'] == kubeconfig['current-context'])
+        ctx['context']['namespace'] = managed_namespace_name
 
         modified_kubeconfig = yaml.dump(kubeconfig, default_flow_style=False)
         print_or_merge_credentials(path, modified_kubeconfig, overwrite_existing, context_name)
-        print(f"Default namespace set to '{managed_namespace_name}' for context '{current_context_name}'")
-
-    finally:
-        if os.path.exists(temp_path):
-            os.unlink(temp_path)
+        print(f"Default namespace set to '{managed_namespace_name}' for context '{kubeconfig.get('current-context')}'")
