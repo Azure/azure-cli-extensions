@@ -18,7 +18,7 @@ from ..vendored_sdks.models import (
 if TYPE_CHECKING:
     from subprocess import Popen
 
-    from knack.commands import CLICommmand
+    from knack.commands import CLICommand
     from requests.models import Response
 
     from azext_connectedk8s.vendored_sdks.preview_2024_07_01.models import (
@@ -30,7 +30,7 @@ if TYPE_CHECKING:
 
 
 def handle_post_at_to_csp(
-    cmd: CLICommmand,
+    cmd: CLICommand,
     api_server_port: int,
     tenant_id: str,
     clientproxy_process: Popen[bytes],
