@@ -29,7 +29,7 @@ class NetworkScenarioTest(ScenarioTest):
     def __init__(self, *args, **kwargs):
         super(NetworkScenarioTest, self).__init__(*args, **kwargs)
 
-    @unittest.skip('skip')
+    
     @serial_test()
     @ResourceGroupPreparer(name_prefix='test_network_manager_crud', location='eastus2')
     def test_network_manager_crud(self, resource_group):
@@ -54,7 +54,7 @@ class NetworkScenarioTest(ScenarioTest):
 
         self.cmd('network manager delete --resource-group {rg} --name {name} --force --yes')
 
-    @unittest.skip('skip')
+    
     @serial_test()
     @ResourceGroupPreparer(name_prefix='test_network_manager_group', location='eastus2')
     def test_network_manager_group_crud(self, resource_group):
@@ -83,7 +83,7 @@ class NetworkScenarioTest(ScenarioTest):
         self.cmd('network manager group delete -g {rg} --name {name} --network-manager-name {manager_name} --force --yes')
         self.cmd('network manager delete --resource-group {rg} --name {manager_name} --force --yes')
 
-    @unittest.skip('skip')
+    
     @serial_test()
     @ResourceGroupPreparer(name_prefix='test_network_manager_static_member', location='eastus2')
     @VirtualNetworkPreparer()
@@ -119,7 +119,7 @@ class NetworkScenarioTest(ScenarioTest):
         self.cmd('network manager group delete -g {rg} --name {group_name} --network-manager-name {manager_name} --force --yes')
         self.cmd('network manager delete --resource-group {rg} --name {manager_name} --force --yes')
 
-    @unittest.skip('skip')
+    
     @ResourceGroupPreparer(name_prefix='test_network_manager_security_user_config', location='eastus2')
     def test_network_manager_security_user_config_crud(self, resource_group):
 
@@ -146,7 +146,7 @@ class NetworkScenarioTest(ScenarioTest):
         self.cmd('network manager security-user-config show --configuration-name {name} --network-manager-name {manager_name} -g {rg}')
         self.cmd('network manager security-user-config delete --configuration-name {name} --network-manager-name {manager_name} -g {rg} --yes')
 
-    @unittest.skip('skip')
+    
     @serial_test()
     @ResourceGroupPreparer(name_prefix='test_network_manager_security_admin_config', location='eastus2')
     def test_network_manager_security_admin_config_crud(self, resource_group):
@@ -180,7 +180,7 @@ class NetworkScenarioTest(ScenarioTest):
         self.cmd('network manager security-admin-config delete --configuration-name {name} --network-manager-name {manager_name} -g {rg} --force --yes')
         self.cmd('network manager delete --resource-group {rg} --name {manager_name} --force --yes')
 
-    @unittest.skip('skip')
+    
     @serial_test()
     @ResourceGroupPreparer(name_prefix='test_network_manager_admin_rule_crud', location='eastus2')
     @VirtualNetworkPreparer()
@@ -244,7 +244,7 @@ class NetworkScenarioTest(ScenarioTest):
         self.cmd('network manager group delete -g {rg} --name {group_name} --network-manager-name {manager_name} --force --yes')
         self.cmd('network manager delete --resource-group {rg} --name {manager_name} --force --yes')
 
-    @unittest.skip('skip')
+    
     @serial_test()
     @ResourceGroupPreparer(name_prefix='test_network_manager_admin_rule_collection_crud', location='eastus2')
     @VirtualNetworkPreparer()
@@ -292,7 +292,7 @@ class NetworkScenarioTest(ScenarioTest):
         self.cmd('network manager group delete -g {rg} --name {group_name} --network-manager-name {manager_name} --force --yes')
         self.cmd('network manager delete --resource-group {rg} --name {manager_name} --force --yes')
 
-    @unittest.skip('skip')
+    
     @ResourceGroupPreparer(name_prefix='test_network_manager_user_rule_crud', location='eastus2')
     @VirtualNetworkPreparer()
     def test_network_manager_user_rule_crud(self, virtual_network, resource_group):
@@ -335,7 +335,7 @@ class NetworkScenarioTest(ScenarioTest):
         self.cmd('network manager security-user-config rule-collection rule list -g {rg} --network-manager-name {manager_name} --configuration-name {config_name} --rule-collection-name {collection_name}')
         self.cmd('network manager security-user-config rule-collection rule delete -g {rg} --network-manager-name {manager_name} --configuration-name {config_name} --rule-collection-name {collection_name} --rule-name {rule_name} --yes')
 
-    @unittest.skip('skip')
+    
     @ResourceGroupPreparer(name_prefix='test_network_manager_user_rule_collection_crud', location='eastus2')
     @VirtualNetworkPreparer()
     def test_network_manager_user_rule_collection_crud(self, virtual_network, resource_group):
@@ -377,7 +377,7 @@ class NetworkScenarioTest(ScenarioTest):
         self.cmd('network manager security-user-config delete --configuration-name {config_name} --network-manager-name {manager_name} -g {rg} --yes')
         self.cmd('network manager group delete -g {rg} --name {group_name} --network-manager-name {manager_name} --force --yes')
 
-    @unittest.skip('skip')
+    
     @serial_test()
     @ResourceGroupPreparer(name_prefix='test_network_manager_connect_config_crud', location='eastus2')
     @VirtualNetworkPreparer()
@@ -445,7 +445,7 @@ class NetworkScenarioTest(ScenarioTest):
                  '--scope-accesses "Connectivity" '
                  '--network-manager-scopes '
                  ' subscriptions={sub} '
-                 '-l centraluseuap '
+                 '-l eastus2euap '
                  '--resource-group {rg}')
 
         self.cmd('network manager group create --name {group_name} --network-manager-name {manager_name} --description {description} '
@@ -457,7 +457,7 @@ class NetworkScenarioTest(ScenarioTest):
             'is-global=false use-hub-gateway=true --connectivity-topology "HubAndSpoke" --delete-existing-peering true --hub '
             'resource-id={sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualnetworks/{virtual_network} '
             'resource-type="Microsoft.Network/virtualNetworks" --description "Sample Configuration with Capabilities" --is-global true '
-            '--connectivity-capabilities connected-group-private-endpoints-scale="HighScale" connected-group-address-overlap="Disallowed"')
+            '--connectivity-capabilities connected-group-private-endpoints-scale="HighScale" connected-group-address-overlap="Disallowed" peering-enforcement="Enforced"')
 
         # Verify the connectivity configuration was created with the new fields
         config_output = self.cmd('network manager connect-config show --configuration-name {config_name} --network-manager-name {manager_name} -g {rg}').get_output_in_json()
@@ -466,11 +466,12 @@ class NetworkScenarioTest(ScenarioTest):
         capabilities = config_output['connectivityCapabilities']
         self.assertEqual(capabilities['connectedGroupPrivateEndpointsScale'], 'HighScale')
         self.assertEqual(capabilities['connectedGroupAddressOverlap'], 'Disallowed')
+        self.assertEqual(capabilities['peeringEnforcement'], 'Enforced')
+
         self.cmd('network manager connect-config delete --configuration-name {config_name} --network-manager-name {manager_name} -g {rg} --force --yes')
         self.cmd('network manager group delete -g {rg} --name {group_name} --network-manager-name {manager_name} --force --yes')
         self.cmd('network manager delete --resource-group {rg} --name {manager_name} --force --yes')
 
-    @unittest.skip('skip')
     @serial_test()
     @ResourceGroupPreparer(name_prefix='test_network_manager_list_queries', location='eastus2')
     @VirtualNetworkPreparer()
@@ -512,7 +513,6 @@ class NetworkScenarioTest(ScenarioTest):
         self.cmd('network manager group delete -g {rg} --name {group_name} --network-manager-name {manager_name} --force --yes')
         self.cmd('network manager delete --resource-group {rg} --name {manager_name} --force --yes')
 
-    @unittest.skip('skip')
     @serial_test()
     @ResourceGroupPreparer(name_prefix='test_network_manager_scope_connection', location='eastus2')
     def test_network_manager_scope_connection(self, resource_group):
@@ -546,7 +546,7 @@ class NetworkScenarioTest(ScenarioTest):
 
         self.cmd('network manager delete --resource-group {rg} --name {manager_name} --force --yes')
 
-    @unittest.skip('skip')
+    
     @serial_test()
     @ResourceGroupPreparer(name_prefix='test_network_manager_connection_subscription', location='eastus2')
     def test_network_manager_connection_subscription(self, resource_group):
@@ -576,7 +576,7 @@ class NetworkScenarioTest(ScenarioTest):
         self.cmd('network manager connection subscription delete --connection-name {connection_name} --yes')
         self.cmd('network manager delete --resource-group {rg} --name {manager_name} --force --yes')
 
-    @unittest.skip('skip')
+    
     @serial_test()
     @ResourceGroupPreparer(name_prefix='test_network_manager_connection_management', location='eastus2')
     def test_network_manager_connection_management(self, resource_group):
@@ -609,7 +609,7 @@ class NetworkScenarioTest(ScenarioTest):
                  '--management-group-id {mg} --yes')
         self.cmd('network manager delete --resource-group {rg} --name {manager_name} --force --yes')
 
-    @unittest.skip('skip')
+    
     @serial_test()
     @ResourceGroupPreparer(name_prefix='test_network_manager_security_admin_config_v2', location='eastus2')
     def test_network_manager_security_admin_config_v2(self, resource_group):
@@ -646,7 +646,7 @@ class NetworkScenarioTest(ScenarioTest):
         self.cmd('network manager security-admin-config delete --configuration-name {name} --network-manager-name {manager_name} -g {rg} --force --yes')
         self.cmd('network manager delete --resource-group {rg} --name {manager_name} --force --yes')
 
-    @unittest.skip('skip')
+    
     @serial_test()
     @ResourceGroupPreparer(name_prefix='test_network_manager_routing_config_crud', location='eastus2')
     def test_network_manager_routing_config_crud(self, resource_group):
@@ -705,7 +705,7 @@ class NetworkScenarioTest(ScenarioTest):
 
         self.cmd('network manager delete --resource-group {rg} --name {manager_name} --force --yes')
 
-    @unittest.skip('skip')
+    
     @serial_test()
     @AllowLargeResponse()
     @ResourceGroupPreparer(name_prefix='test_network_manager_static_cidr_crud', location='eastus2')
@@ -755,7 +755,7 @@ class NetworkScenarioTest(ScenarioTest):
         
         self.cmd('az group delete --name {rg} --yes --no-wait')
 
-    @unittest.skip('skip')
+    
     @serial_test()
     @AllowLargeResponse()
     @ResourceGroupPreparer(name_prefix='test_network_manager_reachability_analysis_run', location='eastus2')
