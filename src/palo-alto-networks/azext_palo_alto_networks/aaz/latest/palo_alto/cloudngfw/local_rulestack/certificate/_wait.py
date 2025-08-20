@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "palo-alto cloudngfw local-rulestack certificate wait",
 )
 class Wait(AAZWaitCommand):
-    """Place the CLI in a waiting state until a condition is met.
+    """Wait until a specified condition is met for the Palo Alto Networks local rulestack certificate operation to complete.
     """
 
     _aaz_info = {
