@@ -5480,12 +5480,10 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         if enable_gateway_api or disable_gateway_api:
             if mc.ingress_profile is None:
                 mc.ingress_profile = self.models.ManagedClusterIngressProfile()  # pylint: disable=no-member
-            
             if mc.ingress_profile.gateway_api is None:
                 mc.ingress_profile.gateway_api = (
                     self.models.ManagedClusterIngressProfileGatewayConfiguration()  # pylint: disable=no-member
                 )
-
             if enable_gateway_api:
                 from azext_aks_preview._consts import CONST_MANAGED_GATEWAY_INSTALLATION_STANDARD
                 mc.ingress_profile.gateway_api.installation = CONST_MANAGED_GATEWAY_INSTALLATION_STANDARD
