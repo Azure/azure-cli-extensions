@@ -93,7 +93,7 @@ class Create(AAZCommand):
         _args_schema.configurations = AAZFileArg(
             options=["--config-template-file","--configuration-template-file","-f"],
             help="Link to File containing Config expressions  for this solution version",
-            required=False,
+            required=True,
         )
     
         _args_schema.specification = AAZFreeFormDictArg(

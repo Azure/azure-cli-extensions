@@ -67,6 +67,7 @@ class Create(AAZCommand):
             options=["--capabilities"],
             arg_group="Properties",
             help="List of capabilities",
+            required=True
         )
         _args_schema.context_id = AAZResourceIdArg(
             options=["--context-id"],
