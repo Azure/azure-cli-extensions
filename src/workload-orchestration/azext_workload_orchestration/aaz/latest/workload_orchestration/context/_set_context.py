@@ -54,7 +54,6 @@ class SetContext(AAZCommand):
         context_name = parts[8]
         resource_group = parts[4]
         
-        print(f"Setting context '{context_name}' from resource group '{resource_group}'")
         self.post_operations()
 
     @register_callback

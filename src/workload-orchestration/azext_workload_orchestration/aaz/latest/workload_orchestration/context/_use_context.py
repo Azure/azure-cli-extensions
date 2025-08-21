@@ -64,7 +64,6 @@ class UseContext(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        print (f"Using context '{self.ctx.args.context_name}' in resource group '{self.ctx.args.resource_group}'")
         self.ContextsGet(ctx=self.ctx)()
         self.post_operations()
 

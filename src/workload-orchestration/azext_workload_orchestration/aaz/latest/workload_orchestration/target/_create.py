@@ -169,7 +169,6 @@ class Create(AAZCommand):
         # If context_id is not provided, try to get it from config
         if not self.ctx.args.context_id:
             context_id = self.ctx.cli_ctx.config.get('workload_orchestration', 'context_id')
-            print("Context ID" , context_id)
             if context_id:
                 self.ctx.args.context_id = context_id
             else:
