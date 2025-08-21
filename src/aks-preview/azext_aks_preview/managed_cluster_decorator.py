@@ -43,6 +43,8 @@ from azext_aks_preview._consts import (
     CONST_IMDS_RESTRICTION_DISABLED,
     CONST_AVAILABILITY_SET,
     CONST_VIRTUAL_MACHINES,
+    CONST_MANAGED_GATEWAY_INSTALLATION_STANDARD,
+    CONST_MANAGED_GATEWAY_INSTALLATION_DISABLED,
 )
 from azext_aks_preview._helpers import (
     check_is_apiserver_vnet_integration_cluster,
@@ -3333,7 +3335,6 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             if mc.ingress_profile is None:
                 mc.ingress_profile = self.models.ManagedClusterIngressProfile()  # pylint: disable=no-member
             if mc.ingress_profile.gateway_api is None:
-                from azext_aks_preview._consts import CONST_MANAGED_GATEWAY_INSTALLATION_STANDARD
                 mc.ingress_profile.gateway_api = (
                     self.models.ManagedClusterIngressProfileGatewayConfiguration(  # pylint: disable=no-member
                         installation=CONST_MANAGED_GATEWAY_INSTALLATION_STANDARD
@@ -5485,10 +5486,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                     self.models.ManagedClusterIngressProfileGatewayConfiguration()  # pylint: disable=no-member
                 )
             if enable_gateway_api:
-                from azext_aks_preview._consts import CONST_MANAGED_GATEWAY_INSTALLATION_STANDARD
                 mc.ingress_profile.gateway_api.installation = CONST_MANAGED_GATEWAY_INSTALLATION_STANDARD
             elif disable_gateway_api:
-                from azext_aks_preview._consts import CONST_MANAGED_GATEWAY_INSTALLATION_DISABLED
                 mc.ingress_profile.gateway_api.installation = CONST_MANAGED_GATEWAY_INSTALLATION_DISABLED
 
         return mc
