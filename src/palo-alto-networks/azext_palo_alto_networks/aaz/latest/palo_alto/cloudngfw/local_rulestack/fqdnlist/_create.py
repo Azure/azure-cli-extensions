@@ -15,9 +15,9 @@ from azure.cli.core.aaz import *
     "palo-alto cloudngfw local-rulestack fqdnlist create",
 )
 class Create(AAZCommand):
-    """Create a FqdnListLocalRulestackResource
+    """Create a new FQDN list resource for a Palo Alto Networks local rulestack.
 
-    :example: Create a FqdnListLocalRulestackResource
+    :example: Create a new FQDN list resource for a Palo Alto Networks local rulestack.
         az palo-alto cloudngfw local-rulestack fqdnlist create -g MyResourceGroup --local-rulestack-name MyLocalRulestacks --name MyFqdnlist --audit-comment "string" --description "description" --fqdn-list "string1" "string2"
     """
 
