@@ -15,9 +15,9 @@ from azure.cli.core.aaz import *
     "palo-alto cloudngfw firewall show",
 )
 class Show(AAZCommand):
-    """Get a FirewallResource
+    """Retrieve details of a specific Palo Alto Networks Cloud NGFW on Azure resource.
 
-    :example: Get a FirewallResource
+    :example: Retrieve details of a specific Palo Alto Networks Cloud NGFW on Azure resource.
         az palo-alto cloudngfw firewall show --name MyCloudngfwFirewall -g MyResourceGroup
     """
 

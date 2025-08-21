@@ -12,9 +12,15 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+18.0.0b27
++++++++
+* Add framework for interactive AI-powered debugging tool.
+- Add `--enable-upstream-kubescheduler-user-configuration` to `az aks create` and `az aks update`.
+- Add `--disable-upstream-kubescheduler-user-configuration` to `az aks update`.
+
 18.0.0b26
 +++++++
-* Add `az aks identity-binding` command group for identity binding feataure.
+* Add `az aks identity-binding` command group for identity binding feature.
 
 18.0.0b25
 +++++++

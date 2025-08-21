@@ -15,9 +15,9 @@ from azure.cli.core.aaz import *
     "palo-alto cloudngfw local-rulestack create",
 )
 class Create(AAZCommand):
-    """Create a LocalRulestackResource
+    """Create a new Palo Alto Networks local rulestack resource.
 
-    :example: Create a LocalRulestackResource
+    :example: Create a new Palo Alto Networks local rulestack resource.
         az palo-alto cloudngfw local-rulestack create -g MyResourceGroup -n MyLocalRulestacks --identity "{type:None}" --location eastus --default-mode IPS --description "local rulestacks" --min-app-id-version "8595-7473" --scope "LOCAL" --security-services "{vulnerability-profile:BestPractice,anti-spyware-profile:BestPractice,anti-virus-profile:BestPractice,url-filtering-profile:BestPractice,file-blocking-profile:BestPractice,dns-subscription:BestPractice}"
     """
 
