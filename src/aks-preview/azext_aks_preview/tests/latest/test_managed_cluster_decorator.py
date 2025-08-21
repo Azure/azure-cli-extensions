@@ -38,6 +38,8 @@ from azext_aks_preview._consts import (
     CONST_LOAD_BALANCER_BACKEND_POOL_TYPE_NODE_IP,
     CONST_LOAD_BALANCER_SKU_STANDARD,
     CONST_LOAD_BALANCER_SKU_BASIC,
+    CONST_MANAGED_GATEWAY_INSTALLATION_DISABLED,
+    CONST_MANAGED_GATEWAY_INSTALLATION_STANDARD,
     CONST_MONITORING_ADDON_NAME,
     CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID,
     CONST_MONITORING_USING_AAD_MSI_AUTH,
@@ -4112,6 +4114,68 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         expect_outbound_type_4 = CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY
         self.assertEqual(outbound_type_4,expect_outbound_type_4)
 
+    def test_get_enable_gateway_api(self):
+        # default value
+        ctx_1 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        gateway_api_1 = ctx_1.get_enable_gateway_api()
+        self.assertEqual(gateway_api_1, False)
+
+        # custom value
+        ctx_2 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"enable_gateway_api": True}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        gateway_api_2 = ctx_2.get_enable_gateway_api()
+        self.assertEqual(gateway_api_2, True)
+
+        # custom value
+        ctx_3 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"enable_gateway_api": False}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        gateway_api_3 = ctx_3.get_enable_gateway_api()
+        self.assertEqual(gateway_api_3, False)
+
+    def test_get_disable_gateway_api(self):
+        # default value
+        ctx_1 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        disable_gateway_api_1 = ctx_1.get_disable_gateway_api()
+        self.assertEqual(disable_gateway_api_1, False)
+
+        # custom value
+        ctx_2 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"disable_gateway_api": True}),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        disable_gateway_api_2 = ctx_2.get_disable_gateway_api()
+        self.assertEqual(disable_gateway_api_2, True)
+
+        # custom value
+        ctx_3 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"disable_gateway_api": False}),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        disable_gateway_api_3 = ctx_3.get_disable_gateway_api()
+        self.assertEqual(disable_gateway_api_3, False)
+
 class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
     def setUp(self):
         # manually register CUSTOM_MGMT_AKS_PREVIEW
@@ -4980,6 +5044,56 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             location="test_location", ingress_profile=ground_truth_ingress_profile_1
         )
         self.assertEqual(dec_mc_1, ground_truth_mc_1)
+
+    def test_set_up_ingress_profile_gateway_api(self):
+        # Test with enable_gateway_api parameter
+        dec_1 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {"enable_gateway_api": True},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_1 = self.models.ManagedCluster(location="test_location")
+        dec_1.context.attach_mc(mc_1)
+        dec_mc_1 = dec_1.set_up_ingress_profile_gateway_api(mc_1)
+        
+        ground_truth_ingress_profile_1 = self.models.ManagedClusterIngressProfile(
+            gateway_api=self.models.ManagedClusterIngressProfileGatewayConfiguration(
+                installation=CONST_MANAGED_GATEWAY_INSTALLATION_STANDARD
+            )
+        )
+        ground_truth_mc_1 = self.models.ManagedCluster(
+            location="test_location", ingress_profile=ground_truth_ingress_profile_1
+        )
+        self.assertEqual(dec_mc_1, ground_truth_mc_1)
+
+        # Test without enable_gateway_api parameter (should not set gateway_api)
+        dec_2 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_2 = self.models.ManagedCluster(location="test_location")
+        dec_2.context.attach_mc(mc_2)
+        dec_mc_2 = dec_2.set_up_ingress_profile_gateway_api(mc_2)
+        
+        ground_truth_mc_2 = self.models.ManagedCluster(location="test_location")
+        self.assertEqual(dec_mc_2, ground_truth_mc_2)
+
+        # Test with enable_gateway_api=False (should not set gateway_api)
+        dec_3 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {"enable_gateway_api": False},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_3 = self.models.ManagedCluster(location="test_location")
+        dec_3.context.attach_mc(mc_3)
+        dec_mc_3 = dec_3.set_up_ingress_profile_gateway_api(mc_3)
+        
+        ground_truth_mc_3 = self.models.ManagedCluster(location="test_location")
+        self.assertEqual(dec_mc_3, ground_truth_mc_3)
 
     def test_set_up_workload_auto_scaler_profile(self):
         # Throws exception when incorrect mc object is passed.
@@ -9996,6 +10110,135 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                     )
                 )
             ),
+        )
+        self.assertEqual(dec_mc_5, ground_truth_mc_5)
+
+    def test_update_ingress_profile_gateway_api(self):
+        # Test enabling Gateway API
+        dec_1 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"enable_gateway_api": True},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_1 = self.models.ManagedCluster(location="test_location")
+        dec_1.context.attach_mc(mc_1)
+        dec_mc_1 = dec_1.update_ingress_profile_gateway_api(mc_1)
+        
+        ground_truth_ingress_profile_1 = self.models.ManagedClusterIngressProfile(
+            gateway_api=self.models.ManagedClusterIngressProfileGatewayConfiguration(
+                installation=CONST_MANAGED_GATEWAY_INSTALLATION_STANDARD
+            )
+        )
+        ground_truth_mc_1 = self.models.ManagedCluster(
+            location="test_location", ingress_profile=ground_truth_ingress_profile_1
+        )
+        self.assertEqual(dec_mc_1, ground_truth_mc_1)
+
+        # Test with existing ingress profile and web_app_routing enabled
+        dec_2 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"enable_gateway_api": True},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_2 = self.models.ManagedCluster(
+            location="test_location",
+            ingress_profile=self.models.ManagedClusterIngressProfile(
+                web_app_routing=self.models.ManagedClusterIngressProfileWebAppRouting(enabled=True)
+            )
+        )
+        dec_2.context.attach_mc(mc_2)
+        dec_mc_2 = dec_2.update_ingress_profile_gateway_api(mc_2)
+        
+        ground_truth_ingress_profile_2 = self.models.ManagedClusterIngressProfile(
+            web_app_routing=self.models.ManagedClusterIngressProfileWebAppRouting(enabled=True),
+            gateway_api=self.models.ManagedClusterIngressProfileGatewayConfiguration(
+                installation=CONST_MANAGED_GATEWAY_INSTALLATION_STANDARD
+            )
+        )
+        ground_truth_mc_2 = self.models.ManagedCluster(
+            location="test_location", ingress_profile=ground_truth_ingress_profile_2
+        )
+        self.assertEqual(dec_mc_2, ground_truth_mc_2)
+
+        # Test disable_gateway_api parameter
+        dec_3 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"disable_gateway_api": True},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_3 = self.models.ManagedCluster(
+            location="test_location",
+            ingress_profile=self.models.ManagedClusterIngressProfile(
+                gateway_api=self.models.ManagedClusterIngressProfileGatewayConfiguration(
+                    installation=CONST_MANAGED_GATEWAY_INSTALLATION_STANDARD
+                )
+            )
+        )
+        dec_3.context.attach_mc(mc_3)
+        dec_mc_3 = dec_3.update_ingress_profile_gateway_api(mc_3)
+        
+        ground_truth_ingress_profile_3 = self.models.ManagedClusterIngressProfile(
+            gateway_api=self.models.ManagedClusterIngressProfileGatewayConfiguration(
+                installation=CONST_MANAGED_GATEWAY_INSTALLATION_DISABLED
+            )
+        )
+        ground_truth_mc_3 = self.models.ManagedCluster(
+            location="test_location", ingress_profile=ground_truth_ingress_profile_3
+        )
+        self.assertEqual(dec_mc_3, ground_truth_mc_3)
+
+        # Test mutual exclusion - both enable and disable should raise exception
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            AKSPreviewManagedClusterUpdateDecorator(
+                self.cmd,
+                self.client,
+                {"enable_gateway_api": True, "disable_gateway_api": True},
+                CUSTOM_MGMT_AKS_PREVIEW,
+            )
+
+        # Test without any gateway_api parameters (should not modify anything)
+        dec_4 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_4 = self.models.ManagedCluster(location="test_location")
+        dec_4.context.attach_mc(mc_4)
+        dec_mc_4 = dec_4.update_ingress_profile_gateway_api(mc_4)
+        
+        ground_truth_mc_4 = self.models.ManagedCluster(location="test_location")
+        self.assertEqual(dec_mc_4, ground_truth_mc_4)
+
+        # Test without any gateway_api parameters but with existing gateway_api configuration (should not modify)
+        dec_5 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_5 = self.models.ManagedCluster(
+            location="test_location",
+            ingress_profile=self.models.ManagedClusterIngressProfile(
+                gateway_api=self.models.ManagedClusterIngressProfileGatewayConfiguration(
+                    installation=CONST_MANAGED_GATEWAY_INSTALLATION_STANDARD
+                )
+            )
+        )
+        dec_5.context.attach_mc(mc_5)
+        dec_mc_5 = dec_5.update_ingress_profile_gateway_api(mc_5)
+        
+        # Should remain unchanged
+        ground_truth_mc_5 = self.models.ManagedCluster(
+            location="test_location",
+            ingress_profile=self.models.ManagedClusterIngressProfile(
+                gateway_api=self.models.ManagedClusterIngressProfileGatewayConfiguration(
+                    installation=CONST_MANAGED_GATEWAY_INSTALLATION_STANDARD
+                )
+            )
         )
         self.assertEqual(dec_mc_5, ground_truth_mc_5)
 

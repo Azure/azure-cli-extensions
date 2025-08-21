@@ -1536,6 +1536,12 @@ def load_arguments(self, _):
             action="store_true",
             help="Enable managed installation of Gateway API CRDs from the standard release channel."
         )
+        c.argument(
+            "disable_gateway_api",
+            options_list=["--disable-gateway-api"],
+            action="store_true",
+            help="Disable managed installation of Gateway API CRDs."
+        )
 
     with self.argument_context("aks upgrade") as c:
         c.argument("kubernetes_version", completer=get_k8s_upgrades_completion_list)

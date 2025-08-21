@@ -2976,6 +2976,13 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         """
         return self.raw_param.get("enable_gateway_api", False)
 
+    def get_disable_gateway_api(self) -> bool:
+        """Obtain the value of disable_gateway_api.
+
+        :return: bool
+        """
+        return self.raw_param.get("disable_gateway_api", False)
+
 # pylint: disable=too-many-public-methods
 class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
     def __init__(
@@ -3325,11 +3332,11 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             if mc.ingress_profile is None:
                 mc.ingress_profile = self.models.ManagedClusterIngressProfile()  # pylint: disable=no-member
             
-            if mc.ingress_profile.gateway_configuration is None:
+            if mc.ingress_profile.gateway_api is None:
                 from azext_aks_preview._consts import CONST_MANAGED_GATEWAY_INSTALLATION_STANDARD
-                mc.ingress_profile.gateway_configuration = (
+                mc.ingress_profile.gateway_api = (
                     self.models.ManagedClusterIngressProfileGatewayConfiguration(  # pylint: disable=no-member
-                        installation_mode=CONST_MANAGED_GATEWAY_INSTALLATION_STANDARD
+                        installation=CONST_MANAGED_GATEWAY_INSTALLATION_STANDARD
                     )
                 )
 
@@ -5461,17 +5468,30 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         """
         self._ensure_mc(mc)
 
-        if self.context.get_enable_gateway_api():
+        enable_gateway_api = self.context.get_enable_gateway_api()
+        disable_gateway_api = self.context.get_disable_gateway_api()
+
+        # Check for mutually exclusive arguments
+        if enable_gateway_api and disable_gateway_api:
+            raise MutuallyExclusiveArgumentError(
+                "Cannot specify --enable-gateway-api and --disable-gateway-api at the same time."
+            )
+
+        if enable_gateway_api or disable_gateway_api:
             if mc.ingress_profile is None:
                 mc.ingress_profile = self.models.ManagedClusterIngressProfile()  # pylint: disable=no-member
             
-            if mc.ingress_profile.gateway_configuration is None:
-                from azext_aks_preview._consts import CONST_MANAGED_GATEWAY_INSTALLATION_STANDARD
-                mc.ingress_profile.gateway_configuration = (
-                    self.models.ManagedClusterIngressProfileGatewayConfiguration(  # pylint: disable=no-member
-                        installation_mode=CONST_MANAGED_GATEWAY_INSTALLATION_STANDARD
-                    )
+            if mc.ingress_profile.gateway_api is None:
+                mc.ingress_profile.gateway_api = (
+                    self.models.ManagedClusterIngressProfileGatewayConfiguration()  # pylint: disable=no-member
                 )
+
+            if enable_gateway_api:
+                from azext_aks_preview._consts import CONST_MANAGED_GATEWAY_INSTALLATION_STANDARD
+                mc.ingress_profile.gateway_api.installation = CONST_MANAGED_GATEWAY_INSTALLATION_STANDARD
+            elif disable_gateway_api:
+                from azext_aks_preview._consts import CONST_MANAGED_GATEWAY_INSTALLATION_DISABLED
+                mc.ingress_profile.gateway_api.installation = CONST_MANAGED_GATEWAY_INSTALLATION_DISABLED
 
         return mc
 

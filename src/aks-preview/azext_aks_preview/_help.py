@@ -1315,6 +1315,9 @@ helps['aks update'] = """
         - name: --enable-gateway-api
           type: bool
           short-summary: Enable managed installation of Gateway API CRDs from the standard release channel. Requires at least one managed Gateway API ingress provider to be enabled.
+        - name: --disable-gateway-api
+          type: bool
+          short-summary: Disable managed installation of Gateway API CRDs.
     examples:
       - name: Reconcile the cluster back to its current state.
         text: az aks update -g MyResourceGroup -n MyManagedCluster
@@ -1382,6 +1385,8 @@ helps['aks update'] = """
         text: az aks update -g MyResourceGroup -n MyManagedCluster --safeguards-excluded-ns ""
       - name: Update a kubernetes cluster to enable a managed installation of Gateway API CRDs from the standard release channel.
         text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-gateway-api
+      - name: Update a kubernetes cluster to disable the managed installation of Gateway API CRDs.
+        text: az aks update -g MyResourceGroup -n MyManagedCluster --disable-gateway-api
 """
 
 helps['aks kollect'] = """
