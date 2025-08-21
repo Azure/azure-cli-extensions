@@ -10192,12 +10192,17 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
 
         # Test mutual exclusion - both enable and disable should raise exception
         with self.assertRaises(MutuallyExclusiveArgumentError):
-            AKSPreviewManagedClusterUpdateDecorator(
+            dec = AKSPreviewManagedClusterUpdateDecorator(
                 self.cmd,
                 self.client,
                 {"enable_gateway_api": True, "disable_gateway_api": True},
                 CUSTOM_MGMT_AKS_PREVIEW,
             )
+            mc = self.models.ManagedCluster(
+                location="test_location",
+            )
+            dec.context.attach_mc(mc)
+            dec_mc = dec.update_ingress_profile_gateway_api(mc)
 
         # Test without any gateway_api parameters (should not modify anything)
         dec_4 = AKSPreviewManagedClusterUpdateDecorator(
