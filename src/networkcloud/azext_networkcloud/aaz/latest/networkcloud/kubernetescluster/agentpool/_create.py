@@ -147,7 +147,7 @@ class Create(AAZCommand):
             help="The configurations that will be applied to each agent in this agent pool.",
         )
         _args_schema.attached_network_configuration = AAZObjectArg(
-            options=["--attached-network-configuration"],
+            options=["--attached-net-config", "--attached-network-configuration"],
             arg_group="Properties",
             help="The configuration of networks being attached to the agent pool for use by the workloads that run on this Kubernetes cluster. These networks are in addition to the networks connected in the Kubernetes cluster attached network configuration.",
         )

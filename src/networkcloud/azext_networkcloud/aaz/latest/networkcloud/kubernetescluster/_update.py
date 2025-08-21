@@ -111,7 +111,7 @@ class Update(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.control_plane_node_configuration = AAZObjectArg(
-            options=["--control-plane-node-configuration"],
+            options=["--cp-node-config", "--control-plane-node-configuration"],
             arg_group="Properties",
             help="The defining characteristics of the control plane that can be patched for this Kubernetes cluster.",
         )

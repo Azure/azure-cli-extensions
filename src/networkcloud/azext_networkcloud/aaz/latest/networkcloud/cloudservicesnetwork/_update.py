@@ -83,12 +83,12 @@ class Update(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.additional_egress_endpoints = AAZListArg(
-            options=["--additional-egress-endpoints"],
+            options=["--additional-endpoints", "--additional-egress-endpoints"],
             arg_group="Properties",
             help="The list of egress endpoints. This allows for connection from a Hybrid AKS cluster to the specified endpoint.",
         )
         _args_schema.enable_default_egress_endpoints = AAZStrArg(
-            options=["--enable-default-egress-endpoints"],
+            options=["--enable-endpoints", "--enable-default-egress-endpoints"],
             arg_group="Properties",
             help="The indicator of whether the platform default endpoints are allowed for the egress traffic.",
             enum={"False": "False", "True": "True"},

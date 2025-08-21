@@ -74,14 +74,13 @@ def call_scenario2(test):
             test.check("provisioningState", "Succeeded"),
         ],
     )
-    # TODO :Revisit this once the VM bug is fixed
-    # step_update_UA_to_SA_managedidentity(
-    #     test,
-    #     checks=[
-    #         test.check("tags", "{tagsUpdate}"),
-    #         test.check("provisioningState", "Succeeded"),
-    #     ],
-    # )
+    step_update_UA_to_SA_managedidentity(
+        test,
+        checks=[
+            test.check("tags", "{tagsUpdate}"),
+            test.check("provisioningState", "Succeeded"),
+        ],
+    )
     step_update(
         test,
         checks=[

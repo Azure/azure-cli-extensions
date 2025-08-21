@@ -150,7 +150,7 @@ class Create(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.aggregator_or_single_rack_definition = AAZObjectArg(
-            options=["--aggregator-or-single-rack-definition"],
+            options=["--aggregator-or-single", "--aggregator-or-single-rack-definition"],
             arg_group="Properties",
             help="The rack definition that is intended to reflect only a single rack in a single rack cluster, or an aggregator rack in a multi-rack cluster.",
             required=True,
@@ -170,7 +170,7 @@ class Create(AAZCommand):
             ),
         )
         _args_schema.cluster_service_principal = AAZObjectArg(
-            options=["--cluster-service-principal"],
+            options=["--cluster-sp", "--cluster-service-principal"],
             arg_group="Properties",
             help="Field Deprecated: Use managed identity to provide cluster privileges. The service principal to be used by the cluster during Arc Appliance installation.",
         )
@@ -193,12 +193,12 @@ class Create(AAZCommand):
             help="The settings for commands run in this cluster, such as bare metal machine run read only commands and data extracts.",
         )
         _args_schema.compute_deployment_threshold = AAZObjectArg(
-            options=["--compute-deployment-threshold"],
+            options=["--compute-dt", "--compute-deployment-threshold"],
             arg_group="Properties",
             help="The validation threshold indicating the allowable failures of compute machines during environment validation and deployment.",
         )
         _args_schema.compute_rack_definitions = AAZListArg(
-            options=["--compute-rack-definitions"],
+            options=["--compute-rack-def", "--compute-rack-definitions"],
             arg_group="Properties",
             help="The list of rack definitions for the compute racks in a multi-rack cluster, or an empty list in a single-rack cluster.",
         )

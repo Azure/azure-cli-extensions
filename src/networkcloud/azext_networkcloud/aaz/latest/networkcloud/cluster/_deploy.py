@@ -66,7 +66,7 @@ class Deploy(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.skip_validations_for_machines = AAZListArg(
-            options=["--skip-validations-for-machines"],
+            options=["--skip-val-machines", "--skip-validations-for-machines"],
             arg_group="ClusterDeployParameters",
             help="The names of bare metal machines in the cluster that should be skipped during environment validation.",
         )

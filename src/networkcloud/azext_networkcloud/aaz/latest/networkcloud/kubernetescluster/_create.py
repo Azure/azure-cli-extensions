@@ -131,13 +131,13 @@ class Create(AAZCommand):
             help="The Azure Active Directory Integration properties.",
         )
         _args_schema.control_plane_node_configuration = AAZObjectArg(
-            options=["--control-plane-node-configuration"],
+            options=["--cp-node-config", "--control-plane-node-configuration"],
             arg_group="Properties",
             help="The defining characteristics of the control plane for this Kubernetes Cluster.",
             required=True,
         )
         _args_schema.initial_agent_pool_configurations = AAZListArg(
-            options=["--initial-agent-pool-configurations"],
+            options=["--initial-ap-config", "--initial-agent-pool-configurations"],
             arg_group="Properties",
             help="The agent pools that are created with this Kubernetes cluster for running critical system services and workloads. This data in this field is only used during creation, and the field will be empty following the creation of the Kubernetes Cluster. After creation, the management of agent pools is done using the agentPools sub-resource.",
             required=True,
