@@ -954,6 +954,7 @@ def validate_gateway_prefix_size(namespace):
             raise CLIError("--gateway-prefix-size must be in the range [28, 31]")
 
 
+
 def validate_resource_group_parameter(namespace):
     """Validates that if the user specified the cluster name, resource group name is also specified and vice versa"""
     if namespace.resource_group_name and not namespace.cluster_name:
