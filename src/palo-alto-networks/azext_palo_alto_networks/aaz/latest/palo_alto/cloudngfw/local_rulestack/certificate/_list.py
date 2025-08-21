@@ -15,9 +15,9 @@ from azure.cli.core.aaz import *
     "palo-alto cloudngfw local-rulestack certificate list",
 )
 class List(AAZCommand):
-    """List CertificateObjectLocalRulestackResource resources by LocalRulestacks
+    """List all certificates linked with the Palo Alto Networks local rulestacks.
 
-    :example: List CertificateObjectLocalRulestackResource resources by LocalRulestacks
+    :example: List all certificates linked with the Palo Alto Networks local rulestacks.
         az palo-alto cloudngfw local-rulestack certificate list -g MyResourceGroup --local-rulestack-name MyLocalRulestacks
     """
 

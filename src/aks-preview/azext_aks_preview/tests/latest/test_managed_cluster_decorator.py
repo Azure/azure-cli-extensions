@@ -9785,6 +9785,220 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         with self.assertRaises(CLIInternalError):
             dec_7.update_managed_system_pools(None)
 
+    def test_set_up_upstream_kubescheduler_user_configuration(self):
+        # Test default behavior - no configuration
+        dec_0 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_0 = self.models.ManagedCluster(location="test_location")
+        dec_0.context.attach_mc(mc_0)
+        dec_mc_0 = dec_0.set_up_upstream_kubescheduler_user_configuration(mc_0)
+        ground_truth_mc_0 = self.models.ManagedCluster(location="test_location")
+        self.assertEqual(dec_mc_0, ground_truth_mc_0)
+
+        # Test enabling upstream kubescheduler user configuration
+        dec_1 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_upstream_kubescheduler_user_configuration": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_1 = self.models.ManagedCluster(location="test_location")
+        dec_1.context.attach_mc(mc_1)
+        dec_mc_1 = dec_1.set_up_upstream_kubescheduler_user_configuration(mc_1)
+        ground_truth_mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            scheduler_profile=self.models.SchedulerProfile(
+                scheduler_instance_profiles=self.models.SchedulerProfileSchedulerInstanceProfiles(
+                    upstream=self.models.SchedulerInstanceProfile(
+                        scheduler_config_mode=self.models.SchedulerConfigMode.MANAGED_BY_CRD
+                    )
+                )
+            ),
+        )
+        self.assertEqual(dec_mc_1, ground_truth_mc_1)
+
+        # Test with existing scheduler profile
+        dec_2 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_upstream_kubescheduler_user_configuration": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_2 = self.models.ManagedCluster(
+            location="test_location",
+            scheduler_profile=self.models.SchedulerProfile(
+                scheduler_instance_profiles=self.models.SchedulerProfileSchedulerInstanceProfiles(
+                    upstream=self.models.SchedulerInstanceProfile(
+                        scheduler_config_mode=self.models.SchedulerConfigMode.DEFAULT
+                    )
+                )
+            ),
+        )
+        dec_2.context.attach_mc(mc_2)
+        dec_mc_2 = dec_2.set_up_upstream_kubescheduler_user_configuration(mc_2)
+        ground_truth_mc_2 = self.models.ManagedCluster(
+            location="test_location",
+            scheduler_profile=self.models.SchedulerProfile(
+                scheduler_instance_profiles=self.models.SchedulerProfileSchedulerInstanceProfiles(
+                    upstream=self.models.SchedulerInstanceProfile(
+                        scheduler_config_mode=self.models.SchedulerConfigMode.MANAGED_BY_CRD
+                    )
+                )
+            ),
+        )
+        self.assertEqual(dec_mc_2, ground_truth_mc_2)
+
+    def test_update_upstream_kubescheduler_user_configuration(self):
+        # Test default behavior - no configuration change
+        dec_0 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_0 = self.models.ManagedCluster(location="test_location")
+        dec_0.context.attach_mc(mc_0)
+        dec_mc_0 = dec_0.update_upstream_kubescheduler_user_configuration(mc_0)
+        ground_truth_mc_0 = self.models.ManagedCluster(location="test_location")
+        self.assertEqual(dec_mc_0, ground_truth_mc_0)
+
+        # Test enabling upstream kubescheduler user configuration
+        dec_1 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_upstream_kubescheduler_user_configuration": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_1 = self.models.ManagedCluster(location="test_location")
+        dec_1.context.attach_mc(mc_1)
+        dec_mc_1 = dec_1.update_upstream_kubescheduler_user_configuration(mc_1)
+        ground_truth_mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            scheduler_profile=self.models.SchedulerProfile(
+                scheduler_instance_profiles=self.models.SchedulerProfileSchedulerInstanceProfiles(
+                    upstream=self.models.SchedulerInstanceProfile(
+                        scheduler_config_mode=self.models.SchedulerConfigMode.MANAGED_BY_CRD
+                    )
+                )
+            ),
+        )
+        self.assertEqual(dec_mc_1, ground_truth_mc_1)
+
+        # Test disabling upstream kubescheduler user configuration
+        dec_2 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "disable_upstream_kubescheduler_user_configuration": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_2 = self.models.ManagedCluster(location="test_location")
+        dec_2.context.attach_mc(mc_2)
+        dec_mc_2 = dec_2.update_upstream_kubescheduler_user_configuration(mc_2)
+        ground_truth_mc_2 = self.models.ManagedCluster(
+            location="test_location",
+            scheduler_profile=self.models.SchedulerProfile(
+                scheduler_instance_profiles=self.models.SchedulerProfileSchedulerInstanceProfiles(
+                    upstream=self.models.SchedulerInstanceProfile(
+                        scheduler_config_mode=self.models.SchedulerConfigMode.DEFAULT
+                    )
+                )
+            ),
+        )
+        self.assertEqual(dec_mc_2, ground_truth_mc_2)
+
+        # Test mutual exclusivity - should raise exception when both enable and disable are specified
+        dec_3 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_upstream_kubescheduler_user_configuration": True,
+                "disable_upstream_kubescheduler_user_configuration": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_3 = self.models.ManagedCluster(location="test_location")
+        dec_3.context.attach_mc(mc_3)
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            dec_3.update_upstream_kubescheduler_user_configuration(mc_3)
+
+        # Test enabling with existing scheduler profile being updated
+        dec_4 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_upstream_kubescheduler_user_configuration": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_4 = self.models.ManagedCluster(
+            location="test_location",
+            scheduler_profile=self.models.SchedulerProfile(
+                scheduler_instance_profiles=self.models.SchedulerProfileSchedulerInstanceProfiles(
+                    upstream=self.models.SchedulerInstanceProfile(
+                        scheduler_config_mode=self.models.SchedulerConfigMode.DEFAULT
+                    )
+                )
+            ),
+        )
+        dec_4.context.attach_mc(mc_4)
+        dec_mc_4 = dec_4.update_upstream_kubescheduler_user_configuration(mc_4)
+        ground_truth_mc_4 = self.models.ManagedCluster(
+            location="test_location",
+            scheduler_profile=self.models.SchedulerProfile(
+                scheduler_instance_profiles=self.models.SchedulerProfileSchedulerInstanceProfiles(
+                    upstream=self.models.SchedulerInstanceProfile(
+                        scheduler_config_mode=self.models.SchedulerConfigMode.MANAGED_BY_CRD
+                    )
+                )
+            ),
+        )
+        self.assertEqual(dec_mc_4, ground_truth_mc_4)
+
+        # Test disabling with existing scheduler profile being updated
+        dec_5 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "disable_upstream_kubescheduler_user_configuration": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_5 = self.models.ManagedCluster(
+            location="test_location",
+            scheduler_profile=self.models.SchedulerProfile(
+                scheduler_instance_profiles=self.models.SchedulerProfileSchedulerInstanceProfiles(
+                    upstream=self.models.SchedulerInstanceProfile(
+                        scheduler_config_mode=self.models.SchedulerConfigMode.MANAGED_BY_CRD
+                    )
+                )
+            ),
+        )
+        dec_5.context.attach_mc(mc_5)
+        dec_mc_5 = dec_5.update_upstream_kubescheduler_user_configuration(mc_5)
+        ground_truth_mc_5 = self.models.ManagedCluster(
+            location="test_location",
+            scheduler_profile=self.models.SchedulerProfile(
+                scheduler_instance_profiles=self.models.SchedulerProfileSchedulerInstanceProfiles(
+                    upstream=self.models.SchedulerInstanceProfile(
+                        scheduler_config_mode=self.models.SchedulerConfigMode.DEFAULT
+                    )
+                )
+            ),
+        )
+        self.assertEqual(dec_mc_5, ground_truth_mc_5)
+
 
 if __name__ == "__main__":
     unittest.main()
