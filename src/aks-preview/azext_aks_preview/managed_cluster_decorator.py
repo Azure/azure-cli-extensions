@@ -2983,6 +2983,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         """
         return self.raw_param.get("disable_gateway_api", False)
 
+
 # pylint: disable=too-many-public-methods
 class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
     def __init__(
@@ -3331,7 +3332,6 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         if self.context.get_enable_gateway_api():
             if mc.ingress_profile is None:
                 mc.ingress_profile = self.models.ManagedClusterIngressProfile()  # pylint: disable=no-member
-            
             if mc.ingress_profile.gateway_api is None:
                 from azext_aks_preview._consts import CONST_MANAGED_GATEWAY_INSTALLATION_STANDARD
                 mc.ingress_profile.gateway_api = (
