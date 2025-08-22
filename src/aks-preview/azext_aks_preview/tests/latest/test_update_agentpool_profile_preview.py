@@ -130,6 +130,7 @@ class TestUpdateAgentPoolProfilePreview(unittest.TestCase):
         decorator.update_fips_image = Mock(return_value=agentpool)
         decorator.update_ssh_access = Mock(return_value=agentpool)
         decorator.update_localdns_profile = Mock(return_value=agentpool)
+        decorator.update_auto_scaler_properties_vms = Mock(return_value=agentpool)
 
         # Act
         result = decorator.update_agentpool_profile_preview()
@@ -150,6 +151,7 @@ class TestUpdateAgentPoolProfilePreview(unittest.TestCase):
         decorator.update_fips_image.assert_called_once_with(agentpool)
         decorator.update_ssh_access.assert_called_once_with(agentpool)
         decorator.update_localdns_profile.assert_called_once_with(agentpool)
+        decorator.update_auto_scaler_properties_vms.assert_called_once_with(agentpool)
 
     def test_update_agentpool_profile_preview_with_agentpools_parameter(self):
         """Test update_agentpool_profile_preview with agentpools parameter."""
@@ -188,6 +190,7 @@ class TestUpdateAgentPoolProfilePreview(unittest.TestCase):
         decorator.update_fips_image = Mock(return_value=agentpool)
         decorator.update_ssh_access = Mock(return_value=agentpool)
         decorator.update_localdns_profile = Mock(return_value=agentpool)
+        decorator.update_auto_scaler_properties_vms = Mock(return_value=agentpool)
 
         # Act
         result = decorator.update_agentpool_profile_preview(agentpools)
@@ -237,6 +240,7 @@ class TestUpdateAgentPoolProfilePreview(unittest.TestCase):
         decorator.update_fips_image = Mock()
         decorator.update_ssh_access = Mock()
         decorator.update_localdns_profile = Mock()
+        decorator.update_auto_scaler_properties_vms = Mock()
 
         # Act
         result = decorator.update_agentpool_profile_preview()
@@ -263,6 +267,7 @@ class TestUpdateAgentPoolProfilePreview(unittest.TestCase):
         decorator.update_fips_image.assert_not_called()
         decorator.update_ssh_access.assert_not_called()
         decorator.update_localdns_profile.assert_not_called()
+        decorator.update_auto_scaler_properties_vms.assert_not_called()
 
     def test_update_agentpool_profile_preview_managed_system_mode_with_agentpools(self):
         """Test update_agentpool_profile_preview with ManagedSystem mode and agentpools parameter."""
@@ -339,6 +344,7 @@ class TestUpdateAgentPoolProfilePreview(unittest.TestCase):
         decorator.update_fips_image = Mock(return_value=agentpool)
         decorator.update_ssh_access = Mock(return_value=agentpool)
         decorator.update_localdns_profile = Mock(return_value=agentpool)
+        decorator.update_auto_scaler_properties_vms = Mock(return_value=agentpool)
 
         # Act
         result = decorator.update_agentpool_profile_preview()
@@ -357,6 +363,7 @@ class TestUpdateAgentPoolProfilePreview(unittest.TestCase):
         decorator.update_fips_image.assert_called_once_with(agentpool)
         decorator.update_ssh_access.assert_called_once_with(agentpool)
         decorator.update_localdns_profile.assert_called_once_with(agentpool)
+        decorator.update_auto_scaler_properties_vms.assert_called_once_with(agentpool)
 
     def test_update_agentpool_profile_preview_execution_order(self):
         """Test that update methods are called in the correct order."""
@@ -400,6 +407,7 @@ class TestUpdateAgentPoolProfilePreview(unittest.TestCase):
         decorator.update_fips_image = create_mock_update_method("update_fips_image")
         decorator.update_ssh_access = create_mock_update_method("update_ssh_access")
         decorator.update_localdns_profile = create_mock_update_method("update_localdns_profile")
+        decorator.update_auto_scaler_properties_vms = create_mock_update_method("update_auto_scaler_properties_vms")
 
         # Act
         decorator.update_agentpool_profile_preview()
@@ -414,7 +422,8 @@ class TestUpdateAgentPoolProfilePreview(unittest.TestCase):
             "update_os_sku",
             "update_fips_image",
             "update_ssh_access",
-            "update_localdns_profile"
+            "update_localdns_profile",
+            "update_auto_scaler_properties_vms"
         ]
         self.assertEqual(call_order, expected_order)
 
@@ -460,6 +469,7 @@ class TestUpdateAgentPoolProfilePreview(unittest.TestCase):
         decorator.update_fips_image = create_tracking_mock("update_fips_image")
         decorator.update_ssh_access = create_tracking_mock("update_ssh_access")
         decorator.update_localdns_profile = create_tracking_mock("update_localdns_profile")
+        decorator.update_auto_scaler_properties_vms = create_tracking_mock("update_auto_scaler_properties_vms")
 
         # Act
         result = decorator.update_agentpool_profile_preview()
@@ -521,7 +531,7 @@ class TestUpdateAgentPoolProfilePreview(unittest.TestCase):
                 update_methods = [
                     'update_custom_ca_trust', 'update_network_profile', 'update_artifact_streaming',
                     'update_secure_boot', 'update_vtpm', 'update_os_sku', 'update_fips_image',
-                    'update_ssh_access', 'update_localdns_profile'
+                    'update_ssh_access', 'update_localdns_profile', 'update_auto_scaler_properties_vms',
                 ]
 
                 for method_name in update_methods:
@@ -591,6 +601,7 @@ class TestUpdateAgentPoolProfilePreviewManagedClusterMode(TestUpdateAgentPoolPro
         decorator.update_fips_image = Mock(return_value=agentpool)
         decorator.update_ssh_access = Mock(return_value=agentpool)
         decorator.update_localdns_profile = Mock(return_value=agentpool)
+        decorator.update_auto_scaler_properties_vms = Mock(return_value=agentpool)
 
         # Act
         result = decorator.update_agentpool_profile_preview(agentpools)
