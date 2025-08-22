@@ -30,8 +30,10 @@ CLASSIFIERS = [
     "License :: OSI Approved :: MIT License",
 ]
 
-# TODO: Add any additional SDK dependencies here
-DEPENDENCIES = []
+DEPENDENCIES = [
+    "kubernetes==24.2.0",
+    "oras==0.2.25",
+]
 
 VERSION = "1.6.7"
 

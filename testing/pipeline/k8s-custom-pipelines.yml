@@ -55,6 +55,10 @@ stages:
     parameters:
       jobName: Flux
       path: ./test/extensions/public/Flux.Tests.ps1
+  - template: ./templates/run-test.yml
+    parameters:
+      jobName: Troubleshoot
+      path: ./test/extensions/public/Troubleshoot.Tests.ps1
   - job: BuildPublishExtension
     pool:
       vmImage: 'ubuntu-latest'
@@ -82,9 +86,9 @@ stages:
       vmImage: 'ubuntu-latest'
     steps:
     - task: UsePythonVersion@0
-      displayName: 'Use Python 3.10'
+      displayName: 'Use Python 3.12'
       inputs:
-        versionSpec: 3.10
+        versionSpec: 3.12
     - bash: |
         set -ev
 
