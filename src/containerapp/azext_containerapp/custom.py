@@ -3096,7 +3096,9 @@ def create_session_pool(cmd,
                         location=None,
                         managed_env=None,
                         container_type=None,
+                        lifecycle_type=None,
                         cooldown_period=None,
+                        max_alive_period=None,
                         secrets=None,
                         network_status=None,
                         max_concurrent_sessions=None,
@@ -3135,7 +3137,9 @@ def update_session_pool(cmd,
                         name,
                         resource_group_name,
                         location=None,
+                        lifecycle_type=None,
                         cooldown_period=None,
+                        max_alive_period=None,
                         secrets=None,
                         network_status=None,
                         max_concurrent_sessions=None,
@@ -3161,6 +3165,7 @@ def update_session_pool(cmd,
         raw_parameters=raw_parameters,
         models=CONTAINER_APPS_SDK_MODELS
     )
+    session_pool_decorator.validate_arguments()
     session_pool_decorator.construct_payload()
     r = session_pool_decorator.update()
 
