@@ -1460,7 +1460,7 @@ def aks_agentpool_add(
     )
     try:
         # construct agentpool profile
-        # ximeng add
+        # get mc
         mc_client = cf_managed_clusters(cmd.cli_ctx)
         mc = mc_client.get(resource_group_name, cluster_name)
         agentpool = aks_agentpool_add_decorator.construct_agentpool_profile_preview(mc)
