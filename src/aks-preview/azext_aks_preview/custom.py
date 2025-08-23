@@ -1450,6 +1450,7 @@ def aks_agentpool_add(
     # decorator pattern
     from azure.cli.command_modules.acs._consts import AgentPoolDecoratorMode, DecoratorEarlyExitException
     from azext_aks_preview.agentpool_decorator import AKSPreviewAgentPoolAddDecorator
+    from azext_aks_preview._client_factory import cf_managed_clusters
     aks_agentpool_add_decorator = AKSPreviewAgentPoolAddDecorator(
         cmd=cmd,
         client=client,
@@ -1459,7 +1460,10 @@ def aks_agentpool_add(
     )
     try:
         # construct agentpool profile
-        agentpool = aks_agentpool_add_decorator.construct_agentpool_profile_preview()
+        # ximeng add
+        mc_client = cf_managed_clusters(cmd.cli_ctx)
+        mc = mc_client.get(resource_group_name, cluster_name)
+        agentpool = aks_agentpool_add_decorator.construct_agentpool_profile_preview(mc)
     except DecoratorEarlyExitException:
         # exit gracefully
         return None
