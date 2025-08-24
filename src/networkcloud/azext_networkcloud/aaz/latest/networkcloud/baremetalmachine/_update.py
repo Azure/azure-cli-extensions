@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud baremetalmachine update",
+    is_preview=True,
 )
 class Update(AAZCommand):
     """Update properties of the provided bare metal machine, or update tags associated with the bare metal machine. Properties and tag updates can be done independently.
@@ -22,9 +23,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-02-01",
+        "version": "2025-07-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/baremetalmachines/{}", "2025-02-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/baremetalmachines/{}", "2025-07-01-preview"],
         ]
     }
 
@@ -172,7 +173,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-02-01",
+                    "api-version", "2025-07-01-preview",
                     required=True,
                 ),
             }
@@ -296,6 +297,10 @@ class _UpdateHelper:
         )
 
         properties = _schema_bare_metal_machine_read.properties
+        properties.action_states = AAZListType(
+            serialized_name="actionStates",
+            flags={"read_only": True},
+        )
         properties.associated_resource_ids = AAZListType(
             serialized_name="associatedResourceIds",
             flags={"read_only": True},
@@ -315,6 +320,10 @@ class _UpdateHelper:
         properties.boot_mac_address = AAZStrType(
             serialized_name="bootMacAddress",
             flags={"required": True},
+        )
+        properties.ca_certificate = AAZObjectType(
+            serialized_name="caCertificate",
+            flags={"read_only": True},
         )
         properties.cluster_id = AAZStrType(
             serialized_name="clusterId",
@@ -424,6 +433,60 @@ class _UpdateHelper:
             flags={"read_only": True},
         )
 
+        action_states = _schema_bare_metal_machine_read.properties.action_states
+        action_states.Element = AAZObjectType()
+
+        _element = _schema_bare_metal_machine_read.properties.action_states.Element
+        _element.action_type = AAZStrType(
+            serialized_name="actionType",
+            flags={"read_only": True},
+        )
+        _element.correlation_id = AAZStrType(
+            serialized_name="correlationId",
+            flags={"read_only": True},
+        )
+        _element.end_time = AAZStrType(
+            serialized_name="endTime",
+            flags={"read_only": True},
+        )
+        _element.message = AAZStrType(
+            flags={"read_only": True},
+        )
+        _element.start_time = AAZStrType(
+            serialized_name="startTime",
+            flags={"read_only": True},
+        )
+        _element.status = AAZStrType(
+            flags={"read_only": True},
+        )
+        _element.step_states = AAZListType(
+            serialized_name="stepStates",
+            flags={"read_only": True},
+        )
+
+        step_states = _schema_bare_metal_machine_read.properties.action_states.Element.step_states
+        step_states.Element = AAZObjectType()
+
+        _element = _schema_bare_metal_machine_read.properties.action_states.Element.step_states.Element
+        _element.end_time = AAZStrType(
+            serialized_name="endTime",
+            flags={"read_only": True},
+        )
+        _element.message = AAZStrType(
+            flags={"read_only": True},
+        )
+        _element.start_time = AAZStrType(
+            serialized_name="startTime",
+            flags={"read_only": True},
+        )
+        _element.status = AAZStrType(
+            flags={"read_only": True},
+        )
+        _element.step_name = AAZStrType(
+            serialized_name="stepName",
+            flags={"read_only": True},
+        )
+
         associated_resource_ids = _schema_bare_metal_machine_read.properties.associated_resource_ids
         associated_resource_ids.Element = AAZStrType()
 
@@ -433,6 +496,14 @@ class _UpdateHelper:
         )
         bmc_credentials.username = AAZStrType(
             flags={"required": True},
+        )
+
+        ca_certificate = _schema_bare_metal_machine_read.properties.ca_certificate
+        ca_certificate.hash = AAZStrType(
+            flags={"read_only": True},
+        )
+        ca_certificate.value = AAZStrType(
+            flags={"read_only": True},
         )
 
         hardware_inventory = _schema_bare_metal_machine_read.properties.hardware_inventory
@@ -566,6 +637,10 @@ class _UpdateHelper:
         secret_archive_reference = _schema_bare_metal_machine_read.properties.secret_rotation_status.Element.secret_archive_reference
         secret_archive_reference.key_vault_id = AAZStrType(
             serialized_name="keyVaultId",
+            flags={"read_only": True},
+        )
+        secret_archive_reference.key_vault_uri = AAZStrType(
+            serialized_name="keyVaultUri",
             flags={"read_only": True},
         )
         secret_archive_reference.secret_name = AAZStrType(
