@@ -3495,6 +3495,31 @@ class ContainerappOtherPropertyTests(ScenarioTest):
             JMESPathCheck("kind", "functionapp")
         ])
 
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="centraluseuap")
+    def test_containerapp_up_kind_functionapp(self, resource_group):
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+
+        app = self.create_random_name(prefix='aca-up', length=24)
+        image = "mcr.microsoft.com/k8se/quickstart:latest"
+
+        self.cmd(f'containerapp up -g {resource_group} -n {app} --image {image} --ingress external --target-port 80', checks=[
+            JMESPathCheck("properties.provisioningState", "Succeeded"),
+            JMESPathCheck("kind", None)
+        ])
+
+        self.cmd(f'containerapp delete -g {resource_group} -n {app} --yes')
+
+        self.cmd(f'containerapp up -g {resource_group} -n {app} --image {image} --ingress external --target-port 80 --kind functionapp', checks=[
+            JMESPathCheck("properties.provisioningState", "Succeeded"),
+            JMESPathCheck("kind", "functionapp")
+        ])
+
+        self.cmd(f'containerapp up -g {resource_group} -n {app} --image {image} --ingress external --target-port 80', checks=[
+            JMESPathCheck("properties.provisioningState", "Succeeded"),
+            JMESPathCheck("kind", "functionapp")
+        ])
+
 class ContainerappRuntimeTests(ScenarioTest):
     def __init__(self, *arg, **kwargs):
         super().__init__(*arg, random_config_dir=True, **kwargs)
