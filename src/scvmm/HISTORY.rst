@@ -5,6 +5,10 @@ Release History
 1.2.0
 * Add command `az scvmm vm create-from-machines`.
 
+1.2.0
+++++++
+* Bump API version to stable/2025-03-13.
+
 1.1.2
 ++++++
 * Security upgrades and fixes - Drop `msrestazure` dependency.

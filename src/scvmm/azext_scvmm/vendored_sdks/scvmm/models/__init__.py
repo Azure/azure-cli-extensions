@@ -174,7 +174,7 @@ from ._sc_vmm_mgmt_client_enums import (
     Origin,
     OsType,
     ProvisioningAction,
-    ResourceProvisioningState,
+    ProvisioningState,
     SkipShutdown,
 )
 
@@ -268,6 +268,6 @@ __all__ = [
     'Origin',
     'OsType',
     'ProvisioningAction',
-    'ResourceProvisioningState',
+    'ProvisioningState',
     'SkipShutdown',
 ]

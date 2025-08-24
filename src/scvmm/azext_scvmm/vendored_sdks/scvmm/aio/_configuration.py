@@ -19,7 +19,7 @@ if TYPE_CHECKING:
     from azure.core.credentials_async import AsyncTokenCredential
 
 
-class ScVmmMgmtClientConfiguration(Configuration):  # pylint: disable=too-many-instance-attributes
+class ScVmmMgmtClientConfiguration(Configuration):
     """Configuration for ScVmmMgmtClient.
 
     Note that all parameters used to create this instance are saved as instance
@@ -29,8 +29,7 @@ class ScVmmMgmtClientConfiguration(Configuration):  # pylint: disable=too-many-i
     :type credential: ~azure.core.credentials_async.AsyncTokenCredential
     :param subscription_id: The ID of the target subscription. The value must be an UUID.
     :type subscription_id: str
-    :keyword api_version: Api Version. The default value is "2023-10-07". Note that overriding this
-     default value may result in unsupported behavior.
+    :keyword api_version: Api Version. The default value is "2025-03-13". Note that overriding this default value may result in unsupported behavior.
     :paramtype api_version: str
     """
 
@@ -41,7 +40,7 @@ class ScVmmMgmtClientConfiguration(Configuration):  # pylint: disable=too-many-i
         **kwargs: Any
     ) -> None:
         super(ScVmmMgmtClientConfiguration, self).__init__(**kwargs)
-        api_version = kwargs.pop('api_version', "2023-10-07")  # type: str
+        api_version = kwargs.pop('api_version', "2025-03-13")  # type: str
 
         if credential is None:
             raise ValueError("Parameter 'credential' must not be None.")

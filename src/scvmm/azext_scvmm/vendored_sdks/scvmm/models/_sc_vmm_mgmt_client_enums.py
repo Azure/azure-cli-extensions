@@ -138,7 +138,7 @@ class ProvisioningAction(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
     #: Repair guest agent.
     REPAIR = "repair"
 
-class ResourceProvisioningState(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
+class ProvisioningState(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
     """The provisioning state of the resource.
     """
 
