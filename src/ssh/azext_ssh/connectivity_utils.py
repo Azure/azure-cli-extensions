@@ -219,7 +219,7 @@ def _handle_relay_connection_delay(cmd, message):
 
 
 # Downloads client side proxy to connect to Arc Connectivity Platform
-def install_client_side_proxy(arc_proxy_folder):
+def install_client_side_proxy(cmd, arc_proxy_folder):
 
     client_operating_system = _get_client_operating_system()
     client_architecture = _get_client_architeture()
@@ -241,14 +241,36 @@ def install_client_side_proxy(arc_proxy_folder):
             for f in older_version_files:
                 file_utils.delete_file(f, f"failed to delete older version file {f}", warning=True)
 
-        _download_proxy_from_MCR(install_dir, proxy_name, client_operating_system, client_architecture)
+        _download_proxy_from_MCR(cmd, install_dir, proxy_name, client_operating_system, client_architecture)
         _check_proxy_installation(install_dir, proxy_name)
 
     return install_location
 
 
-def _download_proxy_from_MCR(dest_dir, proxy_name, operating_system, architecture):
-    mar_target = f"{consts.CLIENT_PROXY_MCR_TARGET}/{operating_system.lower()}/{architecture}/ssh-proxy"
+def _download_proxy_from_MCR(cmd, dest_dir, proxy_name, operating_system, architecture):
+    # active_directory in public cloud is login.microsoftonline.com
+    # the logic below dynamically creates the MCR url using a multi-part suffix for Airgapped clouds
+    # NST team has determined that these suffixes should be not exposed to customers
+    active_directory_array = cmd.cli_ctx.cloud.endpoints.active_directory.split(".")
+    # default for public, mc, ff clouds
+    mcr_postfix = active_directory_array[2]
+    # special cases for USSec, exclude part of suffix
+    if (
+        len(active_directory_array) == 4
+        and active_directory_array[2] == "microsoft"
+    ):
+        mcr_postfix = active_directory_array[3]
+    # special case for USNat
+    elif len(active_directory_array) == 5:
+        mcr_postfix = (
+            active_directory_array[2]
+            + "."
+            + active_directory_array[3]
+            + "."
+            + active_directory_array[4]
+        )
+    mcr_url = f"mcr.microsoft.{mcr_postfix}"
+    mar_target = f"{mcr_url}/{consts.CLIENT_PROXY_MCR_TARGET}/{operating_system.lower()}/{architecture}/ssh-proxy"    
     logger.debug("Downloading Arc Connectivity Proxy from %s in Microsoft Artifact Regristy.", mar_target)
 
     client = oras.client.OrasClient()
