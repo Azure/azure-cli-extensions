@@ -86,6 +86,7 @@ from azext_aks_preview._consts import (
     CONST_NODEPOOL_MODE_USER,
     CONST_NODEPOOL_MODE_GATEWAY,
     CONST_NODEPOOL_MODE_MANAGEDSYSTEM,
+    CONST_NODEPOOL_MODE_MACHINES,
     CONST_NONE_UPGRADE_CHANNEL,
     CONST_NRG_LOCKDOWN_RESTRICTION_LEVEL_READONLY,
     CONST_NRG_LOCKDOWN_RESTRICTION_LEVEL_UNRESTRICTED,
@@ -267,6 +268,7 @@ node_mode_types = [
     CONST_NODEPOOL_MODE_USER,
     CONST_NODEPOOL_MODE_GATEWAY,
     CONST_NODEPOOL_MODE_MANAGEDSYSTEM,
+    CONST_NODEPOOL_MODE_MACHINES,
 ]
 node_os_skus_create = [
     CONST_OS_SKU_AZURELINUX,
@@ -1938,6 +1940,25 @@ def load_arguments(self, _):
     with self.argument_context("aks machine show") as c:
         c.argument(
             "machine_name", help="to display specific information for all machines."
+        )
+
+    with self.argument_context("aks machine add") as c:
+        c.argument(
+            "vm_size",
+            completer=get_vm_size_completion_list,
+        )
+        c.argument("os_type")
+        c.argument(
+            "machine_name", help="The machine name."
+        )
+        c.argument(
+            "os_sku", arg_type=get_enum_type(node_os_skus), validator=validate_os_sku
+        )
+        c.argument(
+            "zones",
+            zones_type,
+            options_list=["--zones", "-z"],
+            help="Space-separated list of availability zones where agent nodes will be placed.",
         )
 
     with self.argument_context("aks operation") as c:
