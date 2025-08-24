@@ -183,6 +183,10 @@ helps['network vwan'] = """
 helps['network vwan create'] = """
     type: command
     short-summary: Create a virtual WAN.
+    examples:
+      - name: Create a virtual WAN.
+        text: |
+            az network vwan create -g MyRG -n MyVwan
 """
 
 helps['network vwan list'] = """
