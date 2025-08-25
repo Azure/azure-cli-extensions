@@ -7,7 +7,7 @@ import base64
 import os
 from azure.cli.core.util import get_file_json
 from types import SimpleNamespace
-from typing import Dict, TypeVar, Union, List
+from typing import Dict, TypeVar, Union, List, Optional
 
 from azure.cli.command_modules.acs._consts import AgentPoolDecoratorMode, DecoratorMode, DecoratorEarlyExitException
 from azure.cli.command_modules.acs.agentpool_decorator import (
@@ -58,6 +58,7 @@ AgentPool = TypeVar("AgentPool")
 AgentPoolsOperations = TypeVar("AgentPoolsOperations")
 PortRange = TypeVar("PortRange")
 IPTag = TypeVar("IPTag")
+ManagedCluster = TypeVar("ManagedCluster")
 
 
 # pylint: disable=too-few-public-methods
@@ -982,17 +983,19 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
             agentpool.artifact_streaming_profile.enabled = True
         return agentpool
 
-    def set_up_ssh_access(self, agentpool: AgentPool) -> AgentPool:
+    def set_up_ssh_access(self, agentpool: AgentPool, mc: Optional[ManagedCluster] = None) -> AgentPool:
         self._ensure_agentpool(agentpool)
 
         ssh_access = self.context.get_ssh_access()
         sku_name = self.context.get_sku_name()
+        if not sku_name and mc is not None and mc.sku is not None:
+            sku_name = mc.sku.name
         if ssh_access is not None:
             if agentpool.security_profile is None:
                 agentpool.security_profile = self.models.AgentPoolSecurityProfile()  # pylint: disable=no-member
             agentpool.security_profile.ssh_access = ssh_access
             if ssh_access == CONST_SSH_ACCESS_LOCALUSER:
-                if sku_name == CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC:
+                if sku_name and sku_name.lower() == CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC:
                     logger.warning("SSH access is in preview")
                 else:
                     logger.warning(
@@ -1178,7 +1181,7 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
             )
         return agentpool
 
-    def construct_agentpool_profile_preview(self) -> AgentPool:
+    def construct_agentpool_profile_preview(self, mc: Optional[ManagedCluster] = None) -> AgentPool:
         """The overall controller used to construct the preview AgentPool profile.
 
         The completely constructed AgentPool object will later be passed as a parameter to the underlying SDK
@@ -1219,7 +1222,7 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         # set up driver_type
         agentpool = self.set_up_driver_type(agentpool)
         # set up agentpool ssh access
-        agentpool = self.set_up_ssh_access(agentpool)
+        agentpool = self.set_up_ssh_access(agentpool, mc)
         # set up agentpool pod ip allocation mode
         agentpool = self.set_up_pod_ip_allocation_mode(agentpool)
         # set up secure boot
