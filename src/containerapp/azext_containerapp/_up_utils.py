@@ -430,6 +430,7 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
         target_label=None,
         cpu=None,
         memory=None,
+        kind=None,
     ):
 
         super().__init__(cmd, name, resource_group, exists)
@@ -451,6 +452,7 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
 
         self.cpu = cpu
         self.memory = memory
+        self.kind = kind
 
         self.should_create_acr = False
         self.acr: "AzureContainerRegistry" = None
@@ -492,6 +494,7 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
             target_label=self.target_label,
             cpu=self.cpu,
             memory=self.memory,
+            kind=self.kind,
         )
 
     def set_force_single_container_updates(self, force_single_container_updates):

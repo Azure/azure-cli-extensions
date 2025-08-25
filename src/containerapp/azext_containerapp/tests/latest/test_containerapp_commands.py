@@ -3495,6 +3495,38 @@ class ContainerappOtherPropertyTests(ScenarioTest):
             JMESPathCheck("kind", "functionapp")
         ])
 
+    @AllowLargeResponse(8192)
+    @live_only()
+    @ResourceGroupPreparer(location="eastus2")
+    def test_containerapp_up_kind_functionapp(self, resource_group):
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+
+        app = self.create_random_name(prefix='aca-up', length=24)
+        image = "mcr.microsoft.com/k8se/quickstart:latest"
+
+        # Test containerapp up without kind parameter - should have no kind set
+        self.cmd(f'containerapp up -g {resource_group} -n {app} --image {image} --ingress external --target-port 80')
+        self.cmd(f'containerapp show -g {resource_group} -n {app}', checks=[
+            JMESPathCheck("properties.provisioningState", "Succeeded"),
+            JMESPathCheck("kind", None)
+        ])
+
+        self.cmd(f'containerapp delete -g {resource_group} -n {app} --yes')
+
+        # Test containerapp up with kind parameter - should have kind set to functionapp
+        self.cmd(f'containerapp up -g {resource_group} -n {app} --image {image} --ingress external --target-port 80 --kind functionapp')
+        self.cmd(f'containerapp show -g {resource_group} -n {app}', checks=[
+            JMESPathCheck("properties.provisioningState", "Succeeded"),
+            JMESPathCheck("kind", "functionapp")
+        ])
+
+        # Test containerapp up again (update scenario) - should preserve the kind
+        self.cmd(f'containerapp up -g {resource_group} -n {app} --image {image} --ingress external --target-port 80')
+        self.cmd(f'containerapp show -g {resource_group} -n {app}', checks=[
+            JMESPathCheck("properties.provisioningState", "Succeeded"),
+            JMESPathCheck("kind", "functionapp")
+        ])
+
 class ContainerappRuntimeTests(ScenarioTest):
     def __init__(self, *arg, **kwargs):
         super().__init__(*arg, random_config_dir=True, **kwargs)
