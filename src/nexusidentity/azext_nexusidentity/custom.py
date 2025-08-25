@@ -18,15 +18,9 @@ def generate_nexus_identity_keys(algorithm=None):
 
     import os
     import subprocess
-    import asyncio
     import sys
-
-    from azure.identity import AzureCliCredential
-    from msgraph import GraphServiceClient
-    from msgraph.generated.models.open_type_extension import OpenTypeExtension
-    from msgraph.generated.models.extension import Extension
-    from azure.core.exceptions import ClientAuthenticationError, HttpResponseError
-    from msgraph.generated.models.o_data_errors.o_data_error import ODataError
+    import requests
+    import json
 
     # Generate SSH key
     if sys.platform.startswith("win") or sys.platform.startswith("linux"):
@@ -84,66 +78,86 @@ def generate_nexus_identity_keys(algorithm=None):
             raise CLIError(f"Unexpected error reading public key: {e}") from e
 
         try:
-            credential = AzureCliCredential()
-            scopes = ["https://graph.microsoft.com//.default"]
-            graph_client = GraphServiceClient(credentials=credential, scopes=scopes)
-
-        except ClientAuthenticationError as e:
-            logger.error("Authentication failed: %s", e)
-            raise CLIError(f"Authentication failed: {e}") from e
+            # Get access token using Azure CLI
+            if sys.platform.startswith("win"):
+                az_cmd = "az account get-access-token --resource https://graph.microsoft.com --output json"
+                token_result = subprocess.run(
+                    az_cmd,
+                    capture_output=True,
+                    text=True,
+                    check=True,
+                    shell=True,
+                )
+            else:
+                token_result = subprocess.run(
+                    ["az", "account", "get-access-token", "--resource", "https://graph.microsoft.com", "--output", "json"],
+                    capture_output=True,
+                    text=True,
+                    check=True,
+                )
+            token_json = json.loads(token_result.stdout)
+            access_token = token_json["accessToken"]
         except Exception as e:
-            logger.error("An unexpected error occurred: %s", e)
-            raise CLIError(f"An unexpected error occurred: {e}") from e
+            print("Exception to fetch bearer token:", e)
+            logger.error("Failed to obtain access token: %s", e)
+            raise CLIError(f"Failed to obtain access token: {e}") from e
 
-        async def me():
-            extension_id = "com.nexusidentity.keys"
+        headers = {
+            "Authorization": f"Bearer {access_token}",
+            "Content-Type": "application/json"
+        }
 
-            # Get user object
-            user = await graph_client.me.get()
+        extension_id = "com.nexusidentity.keys"
+        graph_base = "https://graph.microsoft.com/v1.0"
 
-            # Get extensions associated with the user
-            extensions = await graph_client.me.extensions.get()
+        try:
+            # Get user info
+            user_resp = requests.get(f"{graph_base}/me", headers=headers)
+            user_resp.raise_for_status()
+            user = user_resp.json()
+            user_mail = user.get("mail") or user.get("userPrincipalName")
 
-            extension_exists = any(
-                extension.id == extension_id for extension in extensions.value
-            )
+            # Get extensions
+            ext_resp = requests.get(f"{graph_base}/me/extensions", headers=headers)
+            ext_resp.raise_for_status()
+            extensions = ext_resp.json().get("value", [])
+            extension_exists = any(ext.get("id") == extension_id for ext in extensions)
 
-            try:
-                # Update or create extension
-                if extension_exists:
-                    request_body = Extension(
-                        odata_type="microsoft.graph.openTypeExtension",
-                        additional_data={
-                            "extension_name": extension_id,
-                            "publicKey": public_key,
-                        },
-                    )
-                    await graph_client.me.extensions.by_extension_id(
-                        extension_id
-                    ).patch(request_body)
+            if extension_exists:
+                # Update extension
+                patch_body = {
+                    "@odata.type": "microsoft.graph.openTypeExtension",
+                    "extensionName": extension_id,
+                    "publicKey": public_key
+                }
+                patch_resp = requests.patch(
+                    f"{graph_base}/me/extensions/{extension_id}",
+                    headers=headers,
+                    data=json.dumps(patch_body)
+                )
+                patch_resp.raise_for_status()
+                print(f"Successfully updated public key to Microsoft Entra Id account {user_mail}")
+            else:
+                # Create extension
+                post_body = {
+                    "@odata.type": "microsoft.graph.openTypeExtension",
+                    "extensionName": extension_id,
+                    "publicKey": public_key
+                }
+                post_resp = requests.post(
+                    f"{graph_base}/me/extensions",
+                    headers=headers,
+                    data=json.dumps(post_body)
+                )
+                post_resp.raise_for_status()
+                print(f"Successfully uploaded public key to Microsoft Entra Id account {user_mail}")
 
-                    print(
-                        f"Successfully updated public key to Microsoft Entra Id account {user.mail}"
-                    )
-                else:
-                    request_body = OpenTypeExtension(
-                        odata_type="microsoft.graph.openTypeExtension",
-                        extension_name=extension_id,
-                        additional_data={"publicKey": public_key},
-                    )
-                    await graph_client.me.extensions.post(request_body)
-
-                    print(
-                        f"Successfully uploaded public key to Microsoft Entra Id account {user.mail}"
-                    )
-            except ODataError as e:
-                logger.error("Error updating extension: %s", e)
-                raise CLIError(f"Error updating extension: {e}") from e
-            except HttpResponseError as e:
-                logger.error("Failed to update or create extension: %s", e)
-                raise CLIError(f"Failed to update or create extension: {e}") from e
-
-        asyncio.run(me())
+        except requests.HTTPError as e:
+            logger.error("HTTP error: %s", e)
+            raise CLIError(f"HTTP error: {e}") from e
+        except Exception as e:
+            logger.error("Unexpected error: %s", e)
+            raise CLIError(f"Unexpected error: {e}") from e
     else:
         logger.warning(
             "This command is currently supported only on Windows and linux platforms"
