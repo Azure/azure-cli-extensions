@@ -1,0 +1,1224 @@
+interactions:
+- request:
+    body: '{"properties": {"description": "account  entity", "properties": {}, "tags":
+      {}, "isAnonymous": false, "isArchived": false, "indexColumns": [{"columnName":
+      "accountID", "dataType": "String"}], "stage": "Development"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '216'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.10.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.17 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/featurestoreEntities/account/versions/1?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli_fs/featurestoreEntities/account/versions/1",
+        "name": "1", "type": "Microsoft.MachineLearningServices/workspaces/featurestoreEntities/versions",
+        "properties": {"description": "account  entity", "tags": {}, "properties":
+        {}, "isArchived": false, "isAnonymous": false, "autoDeleteSetting": null,
+        "indexColumns": [{"dataType": "String", "columnName": "accountID"}], "stage":
+        "Development", "provisioningState": "Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '580'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 13 Sep 2023 22:55:55 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/alanpoblette-test/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli_fs/featurestoreEntities/account/versions/1?api-version=2023-04-01-preview
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aml-cluster:
+      - vienna-westus-01
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-ms-response-type:
+      - standard
+      x-msedge-ref:
+      - 'Ref A: 7EEBB1F1578A47F7AC9B21108746CB28 Ref B: CO6AA3150220033 Ref C: 2023-09-13T22:55:51Z'
+      x-request-time:
+      - '3.712'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.10.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.17 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/featurestoreEntities/account/versions/1?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli_fs/featurestoreEntities/account/versions/1",
+        "name": "1", "type": "Microsoft.MachineLearningServices/workspaces/featurestoreEntities/versions",
+        "properties": {"description": "account  entity", "tags": {}, "properties":
+        null, "isArchived": false, "isAnonymous": false, "autoDeleteSetting": null,
+        "indexColumns": [{"dataType": "String", "columnName": "accountID"}], "stage":
+        "Development", "provisioningState": "Succeeded"}, "systemData": {"createdAt":
+        "2023-09-13T22:05:36.7211359+00:00", "createdBy": "Alan Poblette"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '678'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 13 Sep 2023 22:55:55 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-aml-cluster:
+      - vienna-westus-02
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-msedge-ref:
+      - 'Ref A: 236648577A564666B7C609C5E103FF98 Ref B: CO6AA3150220033 Ref C: 2023-09-13T22:55:55Z'
+      x-request-time:
+      - '0.125'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.10.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.17 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/featurestoreEntities/account/versions/1?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli_fs/featurestoreEntities/account/versions/1",
+        "name": "1", "type": "Microsoft.MachineLearningServices/workspaces/featurestoreEntities/versions",
+        "properties": {"description": "account  entity", "tags": {}, "properties":
+        null, "isArchived": false, "isAnonymous": false, "autoDeleteSetting": null,
+        "indexColumns": [{"dataType": "String", "columnName": "accountID"}], "stage":
+        "Development", "provisioningState": "Succeeded"}, "systemData": {"createdAt":
+        "2023-09-13T22:05:36.7211359+00:00", "createdBy": "Alan Poblette"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '678'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 13 Sep 2023 22:55:55 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-aml-cluster:
+      - vienna-westus-01
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-msedge-ref:
+      - 'Ref A: 3BC9C505169C4E74A61077EBCCF02E53 Ref B: CO6AA3150218029 Ref C: 2023-09-13T22:55:56Z'
+      x-request-time:
+      - '0.073'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.10.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.17 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/featurestoreEntities/account/versions/1?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli_fs/featurestoreEntities/account/versions/1",
+        "name": "1", "type": "Microsoft.MachineLearningServices/workspaces/featurestoreEntities/versions",
+        "properties": {"description": "account  entity", "tags": {}, "properties":
+        null, "isArchived": false, "isAnonymous": false, "autoDeleteSetting": null,
+        "indexColumns": [{"dataType": "String", "columnName": "accountID"}], "stage":
+        "Development", "provisioningState": "Succeeded"}, "systemData": {"createdAt":
+        "2023-09-13T22:05:36.7211359+00:00", "createdBy": "Alan Poblette"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '678'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 13 Sep 2023 22:55:57 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-aml-cluster:
+      - vienna-westus-01
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-msedge-ref:
+      - 'Ref A: D3B32B23ECD9466E96ED0132FC4EA69F Ref B: CO6AA3150220027 Ref C: 2023-09-13T22:55:57Z'
+      x-request-time:
+      - '0.070'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"description": "description2", "properties": {}, "tags":
+      {}, "isAnonymous": false, "isArchived": false, "indexColumns": [{"columnName":
+      "accountID", "dataType": "String"}], "stage": "Development"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '213'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.10.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.17 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/featurestoreEntities/account/versions/1?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli_fs/featurestoreEntities/account/versions/1",
+        "name": "1", "type": "Microsoft.MachineLearningServices/workspaces/featurestoreEntities/versions",
+        "properties": {"description": "description2", "tags": {}, "properties": {},
+        "isArchived": false, "isAnonymous": false, "autoDeleteSetting": null, "indexColumns":
+        [{"dataType": "String", "columnName": "accountID"}], "stage": "Development",
+        "provisioningState": "Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '577'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 13 Sep 2023 22:56:01 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/alanpoblette-test/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli_fs/featurestoreEntities/account/versions/1?api-version=2023-04-01-preview
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aml-cluster:
+      - vienna-westus-02
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-ms-response-type:
+      - standard
+      x-msedge-ref:
+      - 'Ref A: 3FC44E81F5D646A2B0C79D71D8AAFABC Ref B: CO6AA3150218035 Ref C: 2023-09-13T22:55:58Z'
+      x-request-time:
+      - '3.291'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.10.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.17 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/featurestoreEntities/account/versions/1?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli_fs/featurestoreEntities/account/versions/1",
+        "name": "1", "type": "Microsoft.MachineLearningServices/workspaces/featurestoreEntities/versions",
+        "properties": {"description": "description2", "tags": {}, "properties": null,
+        "isArchived": false, "isAnonymous": false, "autoDeleteSetting": null, "indexColumns":
+        [{"dataType": "String", "columnName": "accountID"}], "stage": "Development",
+        "provisioningState": "Succeeded"}, "systemData": {"createdAt": "2023-09-13T22:05:36.7211359+00:00",
+        "createdBy": "Alan Poblette"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '675'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 13 Sep 2023 22:56:01 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-aml-cluster:
+      - vienna-westus-01
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-msedge-ref:
+      - 'Ref A: B5C53B94B5C44FC9A7F884E045C769DC Ref B: CO6AA3150218035 Ref C: 2023-09-13T22:56:01Z'
+      x-request-time:
+      - '0.044'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.10.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.17 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/featurestoreEntities/account/versions/1?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli_fs/featurestoreEntities/account/versions/1",
+        "name": "1", "type": "Microsoft.MachineLearningServices/workspaces/featurestoreEntities/versions",
+        "properties": {"description": "description2", "tags": {}, "properties": null,
+        "isArchived": false, "isAnonymous": false, "autoDeleteSetting": null, "indexColumns":
+        [{"dataType": "String", "columnName": "accountID"}], "stage": "Development",
+        "provisioningState": "Succeeded"}, "systemData": {"createdAt": "2023-09-13T22:05:36.7211359+00:00",
+        "createdBy": "Alan Poblette"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '675'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 13 Sep 2023 22:56:02 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-aml-cluster:
+      - vienna-westus-01
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-msedge-ref:
+      - 'Ref A: 54AC8367712541A487E78FBB088E3559 Ref B: CO6AA3150218009 Ref C: 2023-09-13T22:56:03Z'
+      x-request-time:
+      - '0.074'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"description": "description2", "properties": {}, "tags":
+      {}, "isAnonymous": false, "isArchived": false, "indexColumns": [{"columnName":
+      "accountID", "dataType": "String"}], "stage": "Production"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '212'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.10.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.17 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/featurestoreEntities/account/versions/1?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli_fs/featurestoreEntities/account/versions/1",
+        "name": "1", "type": "Microsoft.MachineLearningServices/workspaces/featurestoreEntities/versions",
+        "properties": {"description": "description2", "tags": {}, "properties": {},
+        "isArchived": false, "isAnonymous": false, "autoDeleteSetting": null, "indexColumns":
+        [{"dataType": "String", "columnName": "accountID"}], "stage": "Production",
+        "provisioningState": "Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '576'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 13 Sep 2023 22:56:07 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/alanpoblette-test/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli_fs/featurestoreEntities/account/versions/1?api-version=2023-04-01-preview
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aml-cluster:
+      - vienna-westus-02
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-ms-response-type:
+      - standard
+      x-msedge-ref:
+      - 'Ref A: 77AEB58F40E74687BC178ECB34B1A9C9 Ref B: CO6AA3150217029 Ref C: 2023-09-13T22:56:03Z'
+      x-request-time:
+      - '3.212'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.10.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.17 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/featurestoreEntities/account/versions/1?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli_fs/featurestoreEntities/account/versions/1",
+        "name": "1", "type": "Microsoft.MachineLearningServices/workspaces/featurestoreEntities/versions",
+        "properties": {"description": "description2", "tags": {}, "properties": null,
+        "isArchived": false, "isAnonymous": false, "autoDeleteSetting": null, "indexColumns":
+        [{"dataType": "String", "columnName": "accountID"}], "stage": "Production",
+        "provisioningState": "Succeeded"}, "systemData": {"createdAt": "2023-09-13T22:05:36.7211359+00:00",
+        "createdBy": "Alan Poblette"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '674'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 13 Sep 2023 22:56:07 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-aml-cluster:
+      - vienna-westus-01
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-msedge-ref:
+      - 'Ref A: ABE6AEAFDF74439CA416CF6D455DDFC0 Ref B: CO6AA3150217029 Ref C: 2023-09-13T22:56:07Z'
+      x-request-time:
+      - '0.066'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.10.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.17 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/featurestoreEntities/account/versions/1?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli_fs/featurestoreEntities/account/versions/1",
+        "name": "1", "type": "Microsoft.MachineLearningServices/workspaces/featurestoreEntities/versions",
+        "properties": {"description": "description2", "tags": {}, "properties": null,
+        "isArchived": false, "isAnonymous": false, "autoDeleteSetting": null, "indexColumns":
+        [{"dataType": "String", "columnName": "accountID"}], "stage": "Production",
+        "provisioningState": "Succeeded"}, "systemData": {"createdAt": "2023-09-13T22:05:36.7211359+00:00",
+        "createdBy": "Alan Poblette"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '674'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 13 Sep 2023 22:56:08 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-aml-cluster:
+      - vienna-westus-01
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-msedge-ref:
+      - 'Ref A: BCC866EEB03641C59E6822D8AE6CB6B3 Ref B: CO6AA3150219035 Ref C: 2023-09-13T22:56:07Z'
+      x-request-time:
+      - '0.056'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.10.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.17 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/featurestoreEntities?api-version=0000-00-00&listViewType=ActiveOnly&pageSize=20
+  response:
+    body:
+      string: '{"value": [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli_fs/featurestoreEntities/account",
+        "name": "account", "type": "Microsoft.MachineLearningServices/workspaces/featurestoreEntities",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "1", "nextVersion": "2023-09-13-22-56-08-9182477",
+        "provisioningState": "Succeeded"}, "systemData": {"createdAt": "2023-09-13T22:05:36.7720487+00:00",
+        "createdBy": "Alan Poblette"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '586'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 13 Sep 2023 22:56:08 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-aml-cluster:
+      - vienna-westus-01
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-msedge-ref:
+      - 'Ref A: 6BCDEAA778BD45E697093E1703F23C5B Ref B: CO6AA3150220027 Ref C: 2023-09-13T22:56:08Z'
+      x-request-time:
+      - '0.120'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.10.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.17 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/featurestoreEntities?api-version=0000-00-00&listViewType=All&pageSize=20
+  response:
+    body:
+      string: '{"value": [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli_fs/featurestoreEntities/account",
+        "name": "account", "type": "Microsoft.MachineLearningServices/workspaces/featurestoreEntities",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": "1", "nextVersion": "2023-09-13-22-56-09-8843756",
+        "provisioningState": "Succeeded"}, "systemData": {"createdAt": "2023-09-13T22:05:36.7720487+00:00",
+        "createdBy": "Alan Poblette"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '586'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 13 Sep 2023 22:56:09 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-aml-cluster:
+      - vienna-westus-02
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-msedge-ref:
+      - 'Ref A: B520ECFE923A46C38A9258BC1A0D28D2 Ref B: CO6AA3150217021 Ref C: 2023-09-13T22:56:09Z'
+      x-request-time:
+      - '0.137'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.10.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.17 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/featurestoreEntities?api-version=0000-00-00&listViewType=ArchivedOnly&pageSize=20
+  response:
+    body:
+      string: '{"value": []}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '13'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 13 Sep 2023 22:56:10 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aml-cluster:
+      - vienna-westus-01
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-msedge-ref:
+      - 'Ref A: BCF95DF73225422E934786053E02C7B2 Ref B: CO6AA3150218027 Ref C: 2023-09-13T22:56:10Z'
+      x-request-time:
+      - '0.069'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.10.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.17 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/featurestoreEntities/account/versions/1?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli_fs/featurestoreEntities/account/versions/1",
+        "name": "1", "type": "Microsoft.MachineLearningServices/workspaces/featurestoreEntities/versions",
+        "properties": {"description": "description2", "tags": {}, "properties": null,
+        "isArchived": false, "isAnonymous": false, "autoDeleteSetting": null, "indexColumns":
+        [{"dataType": "String", "columnName": "accountID"}], "stage": "Production",
+        "provisioningState": "Succeeded"}, "systemData": {"createdAt": "2023-09-13T22:05:36.7211359+00:00",
+        "createdBy": "Alan Poblette"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '674'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 13 Sep 2023 22:56:11 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-aml-cluster:
+      - vienna-westus-01
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-msedge-ref:
+      - 'Ref A: FBD994BC5BF14A249EEB82573E5A2709 Ref B: CO6AA3150219027 Ref C: 2023-09-13T22:56:11Z'
+      x-request-time:
+      - '0.052'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"description": "description2", "tags": {}, "isAnonymous":
+      false, "isArchived": true, "indexColumns": [{"columnName": "accountID", "dataType":
+      "String"}], "stage": "Archived"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '191'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.10.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.17 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/featurestoreEntities/account/versions/1?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli_fs/featurestoreEntities/account/versions/1",
+        "name": "1", "type": "Microsoft.MachineLearningServices/workspaces/featurestoreEntities/versions",
+        "properties": {"description": "description2", "tags": {}, "properties": null,
+        "isArchived": false, "isAnonymous": false, "autoDeleteSetting": null, "indexColumns":
+        [{"dataType": "String", "columnName": "accountID"}], "stage": "Archived",
+        "provisioningState": "Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '576'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 13 Sep 2023 22:56:14 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/alanpoblette-test/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli_fs/featurestoreEntities/account/versions/1?api-version=2023-04-01-preview
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aml-cluster:
+      - vienna-westus-02
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-ms-response-type:
+      - standard
+      x-msedge-ref:
+      - 'Ref A: 93E029E54A0D47E49ADF1F0FCE5514FE Ref B: CO6AA3150219027 Ref C: 2023-09-13T22:56:11Z'
+      x-request-time:
+      - '3.341'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.10.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.17 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/featurestoreEntities/account/versions/1?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli_fs/featurestoreEntities/account/versions/1",
+        "name": "1", "type": "Microsoft.MachineLearningServices/workspaces/featurestoreEntities/versions",
+        "properties": {"description": "description2", "tags": {}, "properties": null,
+        "isArchived": false, "isAnonymous": false, "autoDeleteSetting": null, "indexColumns":
+        [{"dataType": "String", "columnName": "accountID"}], "stage": "Archived",
+        "provisioningState": "Succeeded"}, "systemData": {"createdAt": "2023-09-13T22:05:36.7211359+00:00",
+        "createdBy": "Alan Poblette"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '672'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 13 Sep 2023 22:56:15 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-aml-cluster:
+      - vienna-westus-02
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-msedge-ref:
+      - 'Ref A: CCA3F536C2444CF7BBC21E7D54F035D1 Ref B: CO6AA3150219027 Ref C: 2023-09-13T22:56:15Z'
+      x-request-time:
+      - '0.122'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.10.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.17 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/featurestoreEntities/account/versions/1?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli_fs/featurestoreEntities/account/versions/1",
+        "name": "1", "type": "Microsoft.MachineLearningServices/workspaces/featurestoreEntities/versions",
+        "properties": {"description": "description2", "tags": {}, "properties": null,
+        "isArchived": false, "isAnonymous": false, "autoDeleteSetting": null, "indexColumns":
+        [{"dataType": "String", "columnName": "accountID"}], "stage": "Archived",
+        "provisioningState": "Succeeded"}, "systemData": {"createdAt": "2023-09-13T22:05:36.7211359+00:00",
+        "createdBy": "Alan Poblette"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '672'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 13 Sep 2023 22:56:15 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-aml-cluster:
+      - vienna-westus-01
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-msedge-ref:
+      - 'Ref A: 6D5163CF0D114C95A1A9F2F361323277 Ref B: CO6AA3150218049 Ref C: 2023-09-13T22:56:15Z'
+      x-request-time:
+      - '0.052'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.10.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.17 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/featurestoreEntities/account/versions/1?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli_fs/featurestoreEntities/account/versions/1",
+        "name": "1", "type": "Microsoft.MachineLearningServices/workspaces/featurestoreEntities/versions",
+        "properties": {"description": "description2", "tags": {}, "properties": null,
+        "isArchived": false, "isAnonymous": false, "autoDeleteSetting": null, "indexColumns":
+        [{"dataType": "String", "columnName": "accountID"}], "stage": "Archived",
+        "provisioningState": "Succeeded"}, "systemData": {"createdAt": "2023-09-13T22:05:36.7211359+00:00",
+        "createdBy": "Alan Poblette"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '672'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 13 Sep 2023 22:56:15 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-aml-cluster:
+      - vienna-westus-01
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-msedge-ref:
+      - 'Ref A: DD28AA52B4484C4EAFA5D556B4EC6702 Ref B: CO6AA3150220051 Ref C: 2023-09-13T22:56:16Z'
+      x-request-time:
+      - '0.073'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"description": "description2", "tags": {}, "isAnonymous":
+      false, "isArchived": false, "indexColumns": [{"columnName": "accountID", "dataType":
+      "String"}], "stage": "Development"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '195'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.10.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.17 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/featurestoreEntities/account/versions/1?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli_fs/featurestoreEntities/account/versions/1",
+        "name": "1", "type": "Microsoft.MachineLearningServices/workspaces/featurestoreEntities/versions",
+        "properties": {"description": "description2", "tags": {}, "properties": null,
+        "isArchived": false, "isAnonymous": false, "autoDeleteSetting": null, "indexColumns":
+        [{"dataType": "String", "columnName": "accountID"}], "stage": "Development",
+        "provisioningState": "Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '579'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 13 Sep 2023 22:56:19 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/alanpoblette-test/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli_fs/featurestoreEntities/account/versions/1?api-version=2023-04-01-preview
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aml-cluster:
+      - vienna-westus-02
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-ms-response-type:
+      - standard
+      x-msedge-ref:
+      - 'Ref A: 6C5902E0B7BA45959CFBC35A8FD71ADF Ref B: CO6AA3150220051 Ref C: 2023-09-13T22:56:16Z'
+      x-request-time:
+      - '3.234'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.10.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.17 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/featurestoreEntities/account/versions/1?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli_fs/featurestoreEntities/account/versions/1",
+        "name": "1", "type": "Microsoft.MachineLearningServices/workspaces/featurestoreEntities/versions",
+        "properties": {"description": "description2", "tags": {}, "properties": null,
+        "isArchived": false, "isAnonymous": false, "autoDeleteSetting": null, "indexColumns":
+        [{"dataType": "String", "columnName": "accountID"}], "stage": "Development",
+        "provisioningState": "Succeeded"}, "systemData": {"createdAt": "2023-09-13T22:05:36.7211359+00:00",
+        "createdBy": "Alan Poblette"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '675'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 13 Sep 2023 22:56:19 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-aml-cluster:
+      - vienna-westus-02
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-msedge-ref:
+      - 'Ref A: C375FBBFDC1E4089998251490BF396B6 Ref B: CO6AA3150220051 Ref C: 2023-09-13T22:56:20Z'
+      x-request-time:
+      - '0.062'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.10.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.17 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/featurestoreEntities/account/versions?api-version=0000-00-00&listViewType=ActiveOnly&pageSize=20
+  response:
+    body:
+      string: '{"value": [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli_fs/featurestoreEntities/account/versions/1",
+        "name": "1", "type": "Microsoft.MachineLearningServices/workspaces/featurestoreEntities/versions",
+        "properties": {"description": "description2", "tags": {}, "properties": null,
+        "isArchived": false, "isAnonymous": false, "autoDeleteSetting": null, "indexColumns":
+        [{"dataType": "String", "columnName": "accountID"}], "stage": "Development",
+        "provisioningState": "Succeeded"}, "systemData": {"createdAt": "2023-09-13T22:05:36.7211359+00:00",
+        "createdBy": "Alan Poblette"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '688'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 13 Sep 2023 22:56:20 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-aml-cluster:
+      - vienna-westus-01
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-msedge-ref:
+      - 'Ref A: BFA2BD36CEA348F8B714EB8813F7EE86 Ref B: CO6AA3150218009 Ref C: 2023-09-13T22:56:20Z'
+      x-request-time:
+      - '0.083'
+    status:
+      code: 200
+      message: OK
+version: 1
