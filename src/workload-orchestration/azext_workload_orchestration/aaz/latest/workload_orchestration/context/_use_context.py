@@ -10,14 +10,15 @@
 
 from azure.cli.core.aaz import *
 
+from azure.cli.core.azclierror import CLIInternalError
 
 @register_command(
-    "workload-orchestration context show",
+    "workload-orchestration context use",
 )
-class Show(AAZCommand):
-    """Get Context Resource
-    :example: Show a Context
-        az workload-orchestration context show -n myContext -g myResourceGroup
+class UseContext(AAZCommand):
+    """Use Context by name
+    :example: Use a Context
+        az workload-orchestration context use -n myContext -g myResourceGroup
     """
 
     _aaz_info = {
@@ -44,7 +45,7 @@ class Show(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.context_name = AAZStrArg(
-            options=["-n", "--name", "--context-name"],
+            options=["-n", "--name"],
             help="The name of the Context.",
             required=True,
             id_part="name",
@@ -55,13 +56,14 @@ class Show(AAZCommand):
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
+            options=["-g", "--resource-group"],
+            help="Name of resource group.",
             required=True,
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-
         self.ContextsGet(ctx=self.ctx)()
         self.post_operations()
 
@@ -75,7 +77,15 @@ class Show(AAZCommand):
 
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
-        return result
+        current_context_id = result.get('id')
+        if current_context_id:
+            self.ctx.cli_ctx.config.set_value(
+                'workload_orchestration', 'context_id', current_context_id)
+            self.ctx.cli_ctx.config.set_value(
+                'workload_orchestration', 'context_name', self.ctx.args.context_name.to_serialized_data())
+            self.ctx.cli_ctx.config.set_value(
+                'workload_orchestration', 'resource_group', self.ctx.args.resource_group.to_serialized_data())
+        return f"Successfully set current context to '{self.ctx.args.context_name}'"
 
     class ContextsGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
@@ -111,7 +121,7 @@ class Show(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "resourceGroupName", self.ctx.args.resource_group,
+                    "resourceGroupName", self.ctx.args.resource_group or "default",
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -161,85 +171,13 @@ class Show(AAZCommand):
             _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.location = AAZStrType(
-                flags={"required": True},
-            )
             _schema_on_200.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.properties = AAZObjectType()
-            _schema_on_200.system_data = AAZObjectType(
-                serialized_name="systemData",
-                flags={"read_only": True},
-            )
-            _schema_on_200.tags = AAZDictType()
-            _schema_on_200.type = AAZStrType(
-                flags={"read_only": True},
-            )
-
-            properties = cls._schema_on_200.properties
-            properties.capabilities = AAZListType(
-                flags={"required": True},
-            )
-            properties.hierarchies = AAZListType(
-                flags={"required": True},
-            )
-            properties.provisioning_state = AAZStrType(
-                serialized_name="provisioningState",
-                flags={"read_only": True},
-            )
-
-            capabilities = cls._schema_on_200.properties.capabilities
-            capabilities.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.properties.capabilities.Element
-            _element.description = AAZStrType(
-                flags={"required": True},
-            )
-            _element.name = AAZStrType(
-                flags={"required": True},
-            )
-            _element.state = AAZStrType()
-
-            hierarchies = cls._schema_on_200.properties.hierarchies
-            hierarchies.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.properties.hierarchies.Element
-            _element.description = AAZStrType(
-                flags={"required": True},
-            )
-            _element.name = AAZStrType(
-                flags={"required": True},
-            )
-
-            system_data = cls._schema_on_200.system_data
-            system_data.created_at = AAZStrType(
-                serialized_name="createdAt",
-            )
-            system_data.created_by = AAZStrType(
-                serialized_name="createdBy",
-            )
-            system_data.created_by_type = AAZStrType(
-                serialized_name="createdByType",
-            )
-            system_data.last_modified_at = AAZStrType(
-                serialized_name="lastModifiedAt",
-            )
-            system_data.last_modified_by = AAZStrType(
-                serialized_name="lastModifiedBy",
-            )
-            system_data.last_modified_by_type = AAZStrType(
-                serialized_name="lastModifiedByType",
-            )
-
-            tags = cls._schema_on_200.tags
-            tags.Element = AAZStrType()
 
             return cls._schema_on_200
 
+class _UseContextHelper:
+    """Helper class for UseContext"""
 
-class _ShowHelper:
-    """Helper class for Show"""
-
-
-__all__ = ["Show"]
+__all__ = ["UseContext"]
