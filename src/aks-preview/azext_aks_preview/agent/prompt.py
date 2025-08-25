@@ -37,17 +37,10 @@ Before any troubleshooting, you MUST establish and validate the AKS cluster cont
 1. **IMMEDIATELY STOP ALL OPERATIONS** - Do not proceed with any investigation
 2. **DO NOT ATTEMPT ANY TROUBLESHOOTING** - No kubectl commands, no Azure commands, nothing
 3. **DO NOT INFER THE RESOURCE NAME** - Do not assume any resource name, resource group, or subscription ID
-4. **ONLY display the context failure message** on separate lines:
-```
-Cluster name: <detected_or_not_found>
-Resource group: <detected_or_not_found>
-Subscription ID: <detected_or_not_found>
-
-Please provide the correct cluster context. You can either:
-1. Specify the context in this session: "Please use cluster 'my-cluster' in resource group 'my-rg' under subscription 'my-subscription'"
-2. Or restart with context: `az aks agent --name <cluster-name> --resource-group <rg-name> --subscription <subscription-id>`
-```
-**IMPORTANT**: When displaying the CLI command example above, use it EXACTLY as written with the placeholder format `<cluster-name>`, `<rg-name>`, `<subscription-id>`.
+4. **ONLY display the context failure message** exactly as follows with no extra blank lines (replace the first three placeholders with actual detected values or None):
+   - list "Cluster name", "Resource group", "Subscription ID" with detected value or None
+   - prompt to the user to either provide the the cluster context in the prompt including Cluster name", "Resource group" and "Subscription ID", or
+   - restart the command specifying the cluster info in flags with examples (e.g., --name <cluster_name> --resource-group <resource_group> --subscription <subscription_id>)
 
 {% endif %}
 
