@@ -945,7 +945,6 @@ def update_gateway_cluster_link(
             }
         }
     }
-    print("sending raw request to associate/disassociate gateway with cluster", url, resource)
     response = send_request_with_retries(
         cmd.cli_ctx,
         method="put",

@@ -2340,17 +2340,14 @@ def update_connected_cluster(
         print(
             f"Step: {utils.get_utctimestring()}: Associating gateway with Connected Cluster"
         )
-
-        gw_associate_test = os.getenv("TEST_GW", "false")
-        if gw_associate_test.lower() == "false":
-            utils.update_gateway_cluster_link(
-                cmd,
-                location,
-                subscription_id,
-                resource_group_name,
-                cluster_name,
-                gateway_resource_id,
-            )
+        utils.update_gateway_cluster_link(
+            cmd,
+            location,
+            subscription_id,
+            resource_group_name,
+            cluster_name,
+            gateway_resource_id,
+        )
     if disable_gateway:
         gateway = Gateway(enabled=False)
         print(
