@@ -1,6 +1,8 @@
 ## Azure Machine Learning CLI (v2) (unreleased)
 - `az ml compute update`
   - Fix a bug compute update which caused Enable SSO property to reset.
+- `az ml compute connect-ssh`
+  - Fix proxy endpoint path
 
 ## 2025-05-15
 

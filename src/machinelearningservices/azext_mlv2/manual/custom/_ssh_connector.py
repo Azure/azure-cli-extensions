@@ -63,7 +63,6 @@ class SshConnector:  # pylint: disable=too-few-public-methods
         proxy_endpoint = sys.argv[1]
 
         is_compute = len(sys.argv) > 2 and sys.argv[2] == "--is-compute"
-        
         uri = f"{proxy_endpoint}/nbip/v1.0/ws-tcp"
         if is_compute:
             uri += "/port/22"
