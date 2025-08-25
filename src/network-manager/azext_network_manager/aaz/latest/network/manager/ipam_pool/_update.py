@@ -18,13 +18,13 @@ class Update(AAZCommand):
     """Update the Pool resource.
 
     :example: IpamPools_Update
-        az network manager ipam-pool update --name "myIpamPool" --network-manager-name "myAVNM" --resource-group "myAVNMResourceGroup" --subscription "00000000-0000-0000-0000-000000000000" --display-name "myIpamPoolDisplayName" --description "New Description" --tags ""
+        az network manager ipam-pool update --name "myIpamPool" --network-manager-name "myAVNM" --resource-group "myAVNMResourceGroup" --subscription "00000000-0000-0000-0000-000000000000" --display-name "myIpamPoolDisplayName" --description --address-prefixes "['10.0.0.0/16']" "New Description" --tags ""
     """
 
     _aaz_info = {
-        "version": "2024-05-01",
+        "version": "2024-07-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networkmanagers/{}/ipampools/{}", "2024-05-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networkmanagers/{}/ipampools/{}", "2024-07-01"],
         ]
     }
 
@@ -47,6 +47,10 @@ class Update(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
+        _args_schema.if_match = AAZStrArg(
+            options=["--if-match"],
+            help="The entity state (ETag) version of the pool to update. This value can be omitted or set to \"*\" to apply the operation unconditionally.",
+        )
         _args_schema.network_manager_name = AAZStrArg(
             options=["--manager-name", "--network-manager-name"],
             help="The name of the network manager.",
@@ -87,6 +91,11 @@ class Update(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
+        _args_schema.address_prefixes = AAZListArg(
+            options=["--address-prefixes"],
+            arg_group="Properties",
+            help="List of IP address prefixes of the resource.",
+        )
         _args_schema.description = AAZStrArg(
             options=["--description"],
             arg_group="Properties",
@@ -98,6 +107,16 @@ class Update(AAZCommand):
             arg_group="Properties",
             help="String representing a friendly name for the resource.",
             nullable=True,
+        )
+        _args_schema.parent_pool_name = AAZStrArg(
+            options=["--parent-pool-name"],
+            arg_group="Properties",
+            help="String representing parent IpamPool resource name. If empty the IpamPool will be a root pool.",
+            nullable=True,
+        )
+
+        address_prefixes = cls._args_schema.address_prefixes
+        address_prefixes.Element = AAZStrArg(
         )
         return cls._args_schema
 
@@ -183,7 +202,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-05-01",
+                    "api-version", "2024-07-01",
                     required=True,
                 ),
             }
@@ -286,7 +305,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-05-01",
+                    "api-version", "2024-07-01",
                     required=True,
                 ),
             }
@@ -295,6 +314,9 @@ class Update(AAZCommand):
         @property
         def header_parameters(self):
             parameters = {
+                **self.serialize_header_param(
+                    "If-Match", self.ctx.args.if_match,
+                ),
                 **self.serialize_header_param(
                     "Content-Type", "application/json",
                 ),
@@ -349,8 +371,14 @@ class Update(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
+                properties.set_prop("addressPrefixes", AAZListType, ".address_prefixes", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("description", AAZStrType, ".description")
                 properties.set_prop("displayName", AAZStrType, ".display_name")
+                properties.set_prop("parentPoolName", AAZStrType, ".parent_pool_name")
+
+            address_prefixes = _builder.get(".properties.addressPrefixes")
+            if address_prefixes is not None:
+                address_prefixes.set_elements(AAZStrType, ".")
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -375,6 +403,7 @@ class _UpdateHelper:
     @classmethod
     def _build_schema_ipam_pool_read(cls, _schema):
         if cls._schema_ipam_pool_read is not None:
+            _schema.etag = cls._schema_ipam_pool_read.etag
             _schema.id = cls._schema_ipam_pool_read.id
             _schema.location = cls._schema_ipam_pool_read.location
             _schema.name = cls._schema_ipam_pool_read.name
@@ -387,6 +416,9 @@ class _UpdateHelper:
         cls._schema_ipam_pool_read = _schema_ipam_pool_read = AAZObjectType()
 
         ipam_pool_read = _schema_ipam_pool_read
+        ipam_pool_read.etag = AAZStrType(
+            flags={"read_only": True},
+        )
         ipam_pool_read.id = AAZStrType(
             flags={"read_only": True},
         )
@@ -458,6 +490,7 @@ class _UpdateHelper:
         tags = _schema_ipam_pool_read.tags
         tags.Element = AAZStrType()
 
+        _schema.etag = cls._schema_ipam_pool_read.etag
         _schema.id = cls._schema_ipam_pool_read.id
         _schema.location = cls._schema_ipam_pool_read.location
         _schema.name = cls._schema_ipam_pool_read.name
