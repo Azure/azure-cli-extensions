@@ -1,0 +1,9 @@
+$schema: http://azureml/sdk-2-0/ModelVersionPackage.json
+target_environment_name: diabetes-online-triton
+inferencing_server: 
+    type: triton
+    online_inference_configuration:
+        configuration:
+            max_batch_size: 5
+model_configuration: 
+    mode: readonly_mount

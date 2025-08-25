@@ -1,0 +1,83 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate, br
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.9.7 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/onlineEndpoints/mir-endpoint/deployments?api-version=0000-00-00
+  response:
+    body:
+      string: '{"value": [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/onlineEndpoints/mir-endpoint/deployments/test-mir",
+        "name": "test-mir", "type": "Microsoft.MachineLearningServices/workspaces/onlineEndpoints/deployments",
+        "properties": {"description": "description for online deployment", "properties":
+        {"AzureAsyncOperationUri": "https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2euap/mfeOperationsStatus/od:5df3993b-f946-42d0-91e1-a6428188495a:5f293f17-43bf-41f1-ba0c-f26f15226244?api-version=2021-10-01"},
+        "codeConfiguration": {"codeId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/codes/51c3adc1-e98d-44b3-aac8-3e4cc2dd96cc/versions/1",
+        "scoringScript": "score.py"}, "environmentId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/environments/online-endpoint-mir-test/versions/3",
+        "environmentVariables": {}, "scaleSettings": {"scaleType": "Default"}, "requestSettings":
+        {"maxQueueWait": "PT0S", "requestTimeout": "PT5S", "maxConcurrentRequestsPerInstance":
+        1}, "modelMountPath": null, "appInsightsEnabled": false, "livenessProbe":
+        {"failureThreshold": 30, "successThreshold": 1, "timeout": "PT2S", "period":
+        "PT10S", "initialDelay": "PT10S"}, "readinessProbe": {"failureThreshold":
+        30, "successThreshold": 1, "timeout": "PT2S", "period": "PT10S", "initialDelay":
+        "PT10S"}, "provisioningState": "Succeeded", "instanceType": "Standard_DS2_V2",
+        "model": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/models/mir_test_model/versions/1",
+        "endpointComputeType": "Managed"}, "systemData": {"createdAt": "2022-03-18T00:40:39.5359297Z",
+        "createdBy": "Taji Harris", "lastModifiedAt": "2022-03-18T00:40:39.5359297Z"},
+        "tags": {}, "location": "eastus2euap", "kind": "Managed", "sku": {"name":
+        "Default", "tier": "Standard", "capacity": 1}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/onlineEndpoints/mir-endpoint/deployments/test-blue",
+        "name": "test-blue", "type": "Microsoft.MachineLearningServices/workspaces/onlineEndpoints/deployments",
+        "properties": {"description": "description for online deployment", "properties":
+        {"AzureAsyncOperationUri": "https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2euap/mfeOperationsStatus/od:5df3993b-f946-42d0-91e1-a6428188495a:65a70093-8344-4799-8461-4042608a2c7b?api-version=2021-10-01"},
+        "codeConfiguration": {"codeId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/codes/51c3adc1-e98d-44b3-aac8-3e4cc2dd96cc/versions/1",
+        "scoringScript": "score.py"}, "environmentId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/environments/online-endpoint-mir-test/versions/3",
+        "environmentVariables": {}, "scaleSettings": {"scaleType": "Default"}, "requestSettings":
+        {"maxQueueWait": "PT0S", "requestTimeout": "PT5S", "maxConcurrentRequestsPerInstance":
+        1}, "modelMountPath": null, "appInsightsEnabled": false, "livenessProbe":
+        {"failureThreshold": 30, "successThreshold": 1, "timeout": "PT2S", "period":
+        "PT10S", "initialDelay": "PT10S"}, "readinessProbe": {"failureThreshold":
+        30, "successThreshold": 1, "timeout": "PT2S", "period": "PT10S", "initialDelay":
+        "PT10S"}, "provisioningState": "Succeeded", "instanceType": "Standard_DS2_V2",
+        "model": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/models/mir_test_model/versions/1",
+        "endpointComputeType": "Managed"}, "systemData": {"createdAt": "2022-03-18T00:21:22.4158531Z",
+        "createdBy": "Taji Harris", "lastModifiedAt": "2022-03-18T00:21:22.4158531Z"},
+        "tags": {}, "location": "eastus2euap", "kind": "Managed", "sku": {"name":
+        "Default", "tier": "Standard", "capacity": 1}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '4495'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 22 Mar 2022 18:27:09 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:17d65b70-e9ce-4ed5-9347-1f660ec782e9
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.882'
+    status:
+      code: 200
+      message: OK
+version: 1

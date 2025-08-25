@@ -1,0 +1,566 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.10 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/datastores/workspaceblobstore?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/ShubhamWorkspace/datastores/workspaceblobstore",
+        "name": "workspaceblobstore", "type": "Microsoft.MachineLearningServices/workspaces/datastores",
+        "properties": {"description": null, "tags": null, "properties": null, "isDefault":
+        true, "credentials": {"credentialsType": "AccountKey"}, "datastoreType": "AzureBlob",
+        "accountName": "shubhamworkspa7987778940", "containerName": "azureml-blobstore-9088eb47-d1d3-49b9-b9f4-da2bbcf66573",
+        "endpoint": "core.windows.net", "protocol": "https", "serviceDataAccessAuthIdentity":
+        "WorkspaceSystemAssignedIdentity"}, "systemData": {"createdAt": "2022-03-22T08:15:48.8695478+00:00",
+        "createdBy": "779301c0-18b2-4cdc-801b-a0a3368fee0a", "createdByType": "Application",
+        "lastModifiedAt": "2022-03-22T08:15:49.6727201+00:00", "lastModifiedBy": "779301c0-18b2-4cdc-801b-a0a3368fee0a",
+        "lastModifiedByType": "Application"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1001'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 19 Sep 2022 11:56:25 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-15716a93cba27d57bc4d0fa4dba37881-d69c58eff1f3915d-01"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.121'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.10 (Windows-10-10.0.22000-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/datastores/workspaceblobstore/listSecrets?api-version=0000-00-00
+  response:
+    body:
+      string: '{"secretsType": "AccountKey", "key": "d1d4e4e82190dea46e9aa54d3de4e1583be423390f757f5c4f7dd000045cbf05"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '104'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 19 Sep 2022 11:56:26 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-2a95250f886e9a4ac7ea72744d342d5f-094f9d8265a9ae48-01"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus-01
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.132'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/xml
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azsdk-python-storage-blob/12.12.0 Python/3.7.10 (Windows-10-10.0.22000-SP0)
+      x-ms-date:
+      - Mon, 19 Sep 2022 11:56:26 GMT
+      x-ms-version:
+      - '2021-06-08'
+    method: HEAD
+    uri: https://xxxxxxxxxxxxxxxxxxxxxx.blob.core.windows.net/azureml-blobstore-00000000-0000-0000-0000-000000000000/xxxxx/00000000-0000-0000-0000-00000000000/train/MLTable
+  response:
+    body:
+      string: ''
+    headers:
+      accept-ranges:
+      - bytes
+      content-length:
+      - '264'
+      content-type:
+      - application/octet-stream
+      date:
+      - Mon, 19 Sep 2022 11:56:27 GMT
+      etag:
+      - '"0x8DA9A2FC7AC1F27"'
+      last-modified:
+      - Mon, 19 Sep 2022 11:12:03 GMT
+      server:
+      - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
+      vary:
+      - Origin
+      x-ms-access-tier:
+      - Hot
+      x-ms-access-tier-inferred:
+      - 'true'
+      x-ms-blob-type:
+      - BlockBlob
+      x-ms-creation-time:
+      - Mon, 19 Sep 2022 11:12:02 GMT
+      x-ms-lease-state:
+      - available
+      x-ms-lease-status:
+      - unlocked
+      x-ms-meta-name:
+      - c7bd7cb9-c95e-4af0-8f94-27e3da2161d6
+      x-ms-meta-upload_status:
+      - completed
+      x-ms-meta-version:
+      - d795ea6f-54ef-416e-bada-790a44ed99a3
+      x-ms-server-encrypted:
+      - 'true'
+      x-ms-version:
+      - '2021-06-08'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/xml
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azsdk-python-storage-blob/12.12.0 Python/3.7.10 (Windows-10-10.0.22000-SP0)
+      x-ms-date:
+      - Mon, 19 Sep 2022 11:56:27 GMT
+      x-ms-version:
+      - '2021-06-08'
+    method: HEAD
+    uri: https://xxxxxxxxxxxxxxxxxxxxxx.blob.core.windows.net/azureml-blobstore-00000000-0000-0000-0000-000000000000/xxxxx/00000000-0000-0000-0000-00000000000/train/MLTable
+  response:
+    body:
+      string: ''
+    headers:
+      date:
+      - Mon, 19 Sep 2022 11:56:28 GMT
+      server:
+      - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
+      transfer-encoding:
+      - chunked
+      vary:
+      - Origin
+      x-ms-error-code:
+      - BlobNotFound
+      x-ms-version:
+      - '2021-06-08'
+    status:
+      code: 404
+      message: The specified blob does not exist.
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.10 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/datastores/workspaceblobstore?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/ShubhamWorkspace/datastores/workspaceblobstore",
+        "name": "workspaceblobstore", "type": "Microsoft.MachineLearningServices/workspaces/datastores",
+        "properties": {"description": null, "tags": null, "properties": null, "isDefault":
+        true, "credentials": {"credentialsType": "AccountKey"}, "datastoreType": "AzureBlob",
+        "accountName": "shubhamworkspa7987778940", "containerName": "azureml-blobstore-9088eb47-d1d3-49b9-b9f4-da2bbcf66573",
+        "endpoint": "core.windows.net", "protocol": "https", "serviceDataAccessAuthIdentity":
+        "WorkspaceSystemAssignedIdentity"}, "systemData": {"createdAt": "2022-03-22T08:15:48.8695478+00:00",
+        "createdBy": "779301c0-18b2-4cdc-801b-a0a3368fee0a", "createdByType": "Application",
+        "lastModifiedAt": "2022-03-22T08:15:49.6727201+00:00", "lastModifiedBy": "779301c0-18b2-4cdc-801b-a0a3368fee0a",
+        "lastModifiedByType": "Application"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1001'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 19 Sep 2022 11:56:28 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-a6e3e239c82974b99952676055c80bad-e246679373f1827d-01"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.089'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.10 (Windows-10-10.0.22000-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/datastores/workspaceblobstore/listSecrets?api-version=0000-00-00
+  response:
+    body:
+      string: '{"secretsType": "AccountKey", "key": "d1d4e4e82190dea46e9aa54d3de4e1583be423390f757f5c4f7dd000045cbf05"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '104'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 19 Sep 2022 11:56:29 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-f3ec252188bbd36ce068fe42f8754220-90b8d271dc5b7030-01"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus-01
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.110'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/xml
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azsdk-python-storage-blob/12.12.0 Python/3.7.10 (Windows-10-10.0.22000-SP0)
+      x-ms-date:
+      - Mon, 19 Sep 2022 11:56:29 GMT
+      x-ms-version:
+      - '2021-06-08'
+    method: HEAD
+    uri: https://xxxxxxxxxxxxxxxxxxxxxx.blob.core.windows.net/azureml-blobstore-00000000-0000-0000-0000-000000000000/xxxxx/00000000-0000-0000-0000-00000000000/valid/MLTable
+  response:
+    body:
+      string: ''
+    headers:
+      accept-ranges:
+      - bytes
+      content-length:
+      - '269'
+      content-type:
+      - application/octet-stream
+      date:
+      - Mon, 19 Sep 2022 11:56:30 GMT
+      etag:
+      - '"0x8DA9A2FC969464F"'
+      last-modified:
+      - Mon, 19 Sep 2022 11:12:05 GMT
+      server:
+      - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
+      vary:
+      - Origin
+      x-ms-access-tier:
+      - Hot
+      x-ms-access-tier-inferred:
+      - 'true'
+      x-ms-blob-type:
+      - BlockBlob
+      x-ms-creation-time:
+      - Mon, 19 Sep 2022 11:12:05 GMT
+      x-ms-lease-state:
+      - available
+      x-ms-lease-status:
+      - unlocked
+      x-ms-meta-name:
+      - 462ee90b-b151-4c32-84ad-87beb4b3df59
+      x-ms-meta-upload_status:
+      - completed
+      x-ms-meta-version:
+      - ff3b6cfe-d763-4865-b246-766f4990718b
+      x-ms-server-encrypted:
+      - 'true'
+      x-ms-version:
+      - '2021-06-08'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/xml
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azsdk-python-storage-blob/12.12.0 Python/3.7.10 (Windows-10-10.0.22000-SP0)
+      x-ms-date:
+      - Mon, 19 Sep 2022 11:56:30 GMT
+      x-ms-version:
+      - '2021-06-08'
+    method: HEAD
+    uri: https://xxxxxxxxxxxxxxxxxxxxxx.blob.core.windows.net/azureml-blobstore-00000000-0000-0000-0000-000000000000/xxxxx/00000000-0000-0000-0000-00000000000/valid/MLTable
+  response:
+    body:
+      string: ''
+    headers:
+      date:
+      - Mon, 19 Sep 2022 11:56:30 GMT
+      server:
+      - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
+      transfer-encoding:
+      - chunked
+      vary:
+      - Origin
+      x-ms-error-code:
+      - BlobNotFound
+      x-ms-version:
+      - '2021-06-08'
+    status:
+      code: 404
+      message: The specified blob does not exist.
+- request:
+    body: '{"properties": {"properties": {"mlflow.source.git.repoURL": "https://msdata.visualstudio.com/DefaultCollection/Vienna/_git/sdk-cli-v2",
+      "mlflow.source.git.branch": "madhumaddi/extract_sweeplimits", "mlflow.source.git.commit":
+      "d37dcad4e885b84730bf359f6fbf2bc531672822", "azureml.git.dirty": "True"}, "tags":
+      {}, "computeId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/resourceShubham/providers/Microsoft.MachineLearningServices/workspaces/ShubhamWorkspace/computes/gpu-cluster",
+      "displayName": "test-amlforimageobjdetectjob-000024-2", "experimentName": "automl-image-object-detection-e2e-cli-test",
+      "isArchived": false, "jobType": "AutoML", "outputs": {}, "taskDetails": {"limitSettings":
+      {"maxConcurrentTrials": 2, "maxTrials": 10, "timeout": "PT1H"}, "sweepSettings":
+      {"earlyTermination": {"delayEvaluation": 6, "evaluationInterval": 2, "policyType":
+      "Bandit", "slackAmount": 0.0, "slackFactor": 0.2}, "limits": {}, "samplingAlgorithm":
+      "random"}, "validationData": {"uri": "azureml://datastores/workspaceblobstore/paths/LocalUpload/01a754b7ebfda8d68f0d2b54b83d6694/valid",
+      "jobInputType": "mltable"}, "modelSettings": {"earlyStopping": true, "evaluationFrequency":
+      1}, "searchSpace": [{"learningRate": "uniform(0.0001,0.01)", "modelName": "choice(''yolov5'')",
+      "modelSize": "choice(''small'',''medium'')"}, {"learningRate": "uniform(0.0001,0.001)",
+      "modelName": "choice(''fasterrcnn_resnet50_fpn'')", "optimizer": "choice(''sgd'',''adam'',''adamw'')",
+      "minSize": "choice(600,800)"}], "logVerbosity": "Debug", "targetColumnName":
+      "label", "taskType": "ImageObjectDetection", "trainingData": {"uri": "azureml://datastores/workspaceblobstore/paths/LocalUpload/766748a3e7646c754c017a5795b4320a/train",
+      "jobInputType": "mltable"}, "primaryMetric": "MeanAveragePrecision"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1782'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.10 (Windows-10-10.0.22000-SP0)
+      x-azureml-token:
+      - <dummyToken>
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/jobs/test-amlforimageobjdetectjob-000024-2?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/ShubhamWorkspace/jobs/test-amlforimageobjdetectjob-000024-2",
+        "name": "test-amlforimageobjdetectjob-000024-2", "type": "Microsoft.MachineLearningServices/workspaces/jobs",
+        "properties": {"description": null, "tags": {}, "properties": {"mlflow.source.git.repoURL":
+        "https://msdata.visualstudio.com/DefaultCollection/Vienna/_git/sdk-cli-v2",
+        "mlflow.source.git.branch": "madhumaddi/extract_sweeplimits", "mlflow.source.git.commit":
+        "d37dcad4e885b84730bf359f6fbf2bc531672822", "azureml.git.dirty": "True"},
+        "displayName": "test-amlforimageobjdetectjob-000024-2", "status": "NotStarted",
+        "experimentName": "automl-image-object-detection-e2e-cli-test", "services":
+        {"Tracking": {"jobServiceType": "Tracking", "port": null, "endpoint": "azureml://eastus.api.azureml.ms/mlflow/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/ShubhamWorkspace?",
+        "status": null, "errorMessage": null, "properties": null}, "Studio": {"jobServiceType":
+        "Studio", "port": null, "endpoint": "https://ml.azure.com/runs/test-amlforimageobjdetectjob-000024-2?wsid=/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/resourceShubham/workspaces/ShubhamWorkspace",
+        "status": null, "errorMessage": null, "properties": null}}, "computeId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/ShubhamWorkspace/computes/gpu-cluster",
+        "isArchived": false, "identity": null, "componentId": null, "jobType": "AutoML",
+        "resources": {"instanceCount": 1, "instanceType": null, "properties": null,
+        "shmSize": "2g", "dockerArgs": null}, "environmentId": null, "environmentVariables":
+        null, "taskDetails": {"logVerbosity": "Debug", "trainingData": {"description":
+        null, "uri": "azureml://datastores/workspaceblobstore/paths/LocalUpload/766748a3e7646c754c017a5795b4320a/train",
+        "mode": "ReadOnlyMount", "jobInputType": "mltable"}, "targetColumnName": "label",
+        "limitSettings": {"maxTrials": 10, "timeout": "PT1H", "maxConcurrentTrials":
+        2}, "sweepSettings": {"limits": {"maxTrials": null, "maxConcurrentTrials":
+        null}, "samplingAlgorithm": "Random", "earlyTermination": {"evaluationInterval":
+        2, "delayEvaluation": 6, "policyType": "Bandit", "slackFactor": 0.2, "slackAmount":
+        0.0}}, "validationData": {"description": null, "uri": "azureml://datastores/workspaceblobstore/paths/LocalUpload/01a754b7ebfda8d68f0d2b54b83d6694/valid",
+        "mode": "ReadOnlyMount", "jobInputType": "mltable"}, "validationDataSize":
+        null, "modelSettings": {"amsGradient": null, "advancedSettings": null, "augmentations":
+        null, "beta1": null, "beta2": null, "checkpointFrequency": null, "checkpointRunId":
+        null, "checkpointModel": null, "distributed": null, "earlyStopping": true,
+        "earlyStoppingDelay": null, "earlyStoppingPatience": null, "evaluationFrequency":
+        1, "enableOnnxNormalization": null, "gradientAccumulationStep": null, "layersToFreeze":
+        null, "learningRate": null, "learningRateScheduler": "None", "modelName":
+        null, "momentum": null, "nesterov": null, "numberOfEpochs": null, "numberOfWorkers":
+        null, "optimizer": "None", "randomSeed": null, "stepLRGamma": null, "stepLRStepSize":
+        null, "trainingBatchSize": null, "validationBatchSize": null, "warmupCosineLRCycles":
+        null, "warmupCosineLRWarmupEpochs": null, "weightDecay": null, "boxDetectionsPerImage":
+        null, "boxScoreThreshold": null, "imageSize": null, "maxSize": null, "minSize":
+        null, "modelSize": "None", "multiScale": null, "nmsIouThreshold": null, "tileGridSize":
+        null, "tileOverlapRatio": null, "tilePredictionsNmsThreshold": null, "validationIouThreshold":
+        null, "validationMetricType": "None"}, "searchSpace": [{"amsGradient": null,
+        "augmentations": null, "beta1": null, "beta2": null, "distributed": null,
+        "earlyStopping": null, "earlyStoppingDelay": null, "earlyStoppingPatience":
+        null, "evaluationFrequency": null, "enableOnnxNormalization": null, "gradientAccumulationStep":
+        null, "layersToFreeze": null, "learningRate": "uniform(0.0001,0.01)", "learningRateScheduler":
+        null, "modelName": "choice(''yolov5'')", "momentum": null, "nesterov": null,
+        "numberOfEpochs": null, "numberOfWorkers": null, "optimizer": null, "randomSeed":
+        null, "stepLRGamma": null, "stepLRStepSize": null, "trainingBatchSize": null,
+        "validationBatchSize": null, "warmupCosineLRCycles": null, "warmupCosineLRWarmupEpochs":
+        null, "weightDecay": null, "boxDetectionsPerImage": null, "boxScoreThreshold":
+        null, "imageSize": null, "maxSize": null, "minSize": null, "modelSize": "choice(''small'',''medium'')",
+        "multiScale": null, "nmsIouThreshold": null, "tileGridSize": null, "tileOverlapRatio":
+        null, "tilePredictionsNmsThreshold": null, "validationIouThreshold": null,
+        "validationMetricType": null}, {"amsGradient": null, "augmentations": null,
+        "beta1": null, "beta2": null, "distributed": null, "earlyStopping": null,
+        "earlyStoppingDelay": null, "earlyStoppingPatience": null, "evaluationFrequency":
+        null, "enableOnnxNormalization": null, "gradientAccumulationStep": null, "layersToFreeze":
+        null, "learningRate": "uniform(0.0001,0.001)", "learningRateScheduler": null,
+        "modelName": "choice(''fasterrcnn_resnet50_fpn'')", "momentum": null, "nesterov":
+        null, "numberOfEpochs": null, "numberOfWorkers": null, "optimizer": "choice(''sgd'',''adam'',''adamw'')",
+        "randomSeed": null, "stepLRGamma": null, "stepLRStepSize": null, "trainingBatchSize":
+        null, "validationBatchSize": null, "warmupCosineLRCycles": null, "warmupCosineLRWarmupEpochs":
+        null, "weightDecay": null, "boxDetectionsPerImage": null, "boxScoreThreshold":
+        null, "imageSize": null, "maxSize": null, "minSize": "choice(600,800)", "modelSize":
+        null, "multiScale": null, "nmsIouThreshold": null, "tileGridSize": null, "tileOverlapRatio":
+        null, "tilePredictionsNmsThreshold": null, "validationIouThreshold": null,
+        "validationMetricType": null}], "taskType": "ImageObjectDetection", "primaryMetric":
+        "MeanAveragePrecision"}, "outputs": {}}, "systemData": {"createdAt": "2022-09-19T11:56:35.7110654+00:00",
+        "createdBy": "Shubham Soni", "createdByType": "User"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '6220'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 19 Sep 2022 11:56:36 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/resourceShubham/providers/Microsoft.MachineLearningServices/workspaces/ShubhamWorkspace/jobs/test-amlforimageobjdetectjob-000024-2?api-version=2022-06-01-preview
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-dbf57d253cbb91e3ca7102880b130753-2820222c6869c089-01"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aml-cluster:
+      - vienna-eastus-01
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '2.167'
+    status:
+      code: 201
+      message: Created
+version: 1

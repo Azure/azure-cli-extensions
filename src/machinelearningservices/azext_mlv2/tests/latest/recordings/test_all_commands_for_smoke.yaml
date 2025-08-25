@@ -1,0 +1,374 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+    method: GET
+    uri: https://raw.githubusercontent.com/Azure/azure-cli/main/src/azure-cli-core/setup.py
+  response:
+    body:
+      string: "#!/usr/bin/env python\n\n# --------------------------------------------------------------------------------------------\n#
+        Copyright (c) Microsoft Corporation. All rights reserved.\n# Licensed under
+        the MIT License. See License.txt in the project root for license information.\n#
+        --------------------------------------------------------------------------------------------\n\nfrom
+        codecs import open\nfrom setuptools import setup, find_packages\n\nVERSION
+        = \"2.74.0\"\n\n# If we have source, validate that our version numbers match\n#
+        This should prevent uploading releases with mismatched versions.\ntry:\n    with
+        open('azure/cli/core/__init__.py', 'r', encoding='utf-8') as f:\n        content
+        = f.read()\nexcept OSError:\n    pass\nelse:\n    import re\n    import sys\n\n
+        \   m = re.search(r'__version__\\s*=\\s*[\\'\"](.+?)[\\'\"]', content)\n    if
+        not m:\n        print('Could not find __version__ in azure/cli/core/__init__.py')\n
+        \       sys.exit(1)\n    if m.group(1) != VERSION:\n        print('Expected
+        __version__ = \"{}\"; found \"{}\"'.format(VERSION, m.group(1)))\n        sys.exit(1)\n\nCLASSIFIERS
+        = [\n    'Development Status :: 5 - Production/Stable',\n    'Intended Audience
+        :: Developers',\n    'Intended Audience :: System Administrators',\n    'Programming
+        Language :: Python',\n    'Programming Language :: Python :: 3',\n    'Programming
+        Language :: Python :: 3.9',\n    'Programming Language :: Python :: 3.10',\n
+        \   'Programming Language :: Python :: 3.11',\n    'Programming Language ::
+        Python :: 3.12',\n    'License :: OSI Approved :: MIT License',\n]\n\nDEPENDENCIES
+        = [\n    'argcomplete~=3.5.2',\n    'azure-cli-telemetry==1.1.0.*',\n    'azure-mgmt-core>=1.2.0,<2',\n
+        \   'cryptography',\n    # On Linux, the distribution (Ubuntu, Debian, etc)
+        and version are logged in telemetry\n    'distro; sys_platform == \"linux\"',\n
+        \   'humanfriendly~=10.0',\n    'jmespath',\n    'knack~=0.11.0',\n    'microsoft-security-utilities-secret-masker~=1.0.0b4',\n
+        \   'msal-extensions==1.2.0',\n    'msal[broker]==1.32.3',\n 
+        \   'packaging>=20.9',\n    'pkginfo>=1.5.0.1',\n    # psutil can't install
+        on cygwin: https://github.com/Azure/azure-cli/issues/9399\n    'psutil>=5.9;
+        sys_platform != \"cygwin\"',\n    'PyJWT>=2.1.0',\n    'pyopenssl>=17.1.0',
+        \ # https://github.com/pyca/pyopenssl/pull/612\n    'py-deviceid',\n    'requests[socks]',\n]\n\nwith
+        open('README.rst', 'r', encoding='utf-8') as f:\n    README = f.read()\n\nsetup(\n
+        \   name='azure-cli-core',\n    version=VERSION,\n    description='Microsoft
+        Azure Command-Line Tools Core Module',\n    long_description=README,\n    license='MIT',\n
+        \   author='Microsoft Corporation',\n    author_email='azpycli@microsoft.com',\n
+        \   url='https://github.com/Azure/azure-cli',\n    zip_safe=False,\n    classifiers=CLASSIFIERS,\n
+        \   packages=find_packages(exclude=[\"*.tests\", \"*.tests.*\", \"tests.*\",
+        \"tests\", \"azure\", \"azure.cli\"]),\n    install_requires=DEPENDENCIES,\n
+        \   python_requires='>=3.9.0',\n    package_data={'azure.cli.core': ['auth/landing_pages/*.html']}\n)\n"
+    headers:
+      accept-ranges:
+      - bytes
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - max-age=300
+      connection:
+      - keep-alive
+      content-length:
+      - '2969'
+      content-security-policy:
+      - default-src 'none'; style-src 'unsafe-inline'; sandbox
+      content-type:
+      - text/plain; charset=utf-8
+      cross-origin-resource-policy:
+      - cross-origin
+      date:
+      - Wed, 25 Jun 2025 07:01:02 GMT
+      etag:
+      - W/"791f7c41e9643bf6e712df0ba27b98972976950b43b65f7bde60965040ac0c37"
+      expires:
+      - Mon, 23 Jun 2025 21:44:54 GMT
+      source-age:
+      - '46'
+      strict-transport-security:
+      - max-age=31536000
+      vary:
+      - Authorization,Accept-Encoding
+      via:
+      - 1.1 varnish, 1.1 varnish
+      x-cache:
+      - HIT, HIT
+      x-cache-hits:
+      - 0, 1
+      x-content-type-options:
+      - nosniff
+      x-fastly-request-id:
+      - 90374e4d249c9ab46dd9be40354a026082a966e0
+      x-frame-options:
+      - deny
+      x-github-request-id:
+      - 89C7:2A64B5:231FA6:66E447:68597B6F
+      x-served-by:
+      - cache-maa10243-MAA, cache-maa10248-MAA
+      x-timer:
+      - S1750834863.647667,VS0,VE1
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+    method: GET
+    uri: https://raw.githubusercontent.com/Azure/azure-cli/main/src/azure-cli-telemetry/setup.py
+  response:
+    body:
+      string: "#!/usr/bin/env python\n\n# --------------------------------------------------------------------------------------------\n#
+        Copyright (c) Microsoft Corporation. All rights reserved.\n# Licensed under
+        the MIT License. See License.txt in the project root for license information.\n#
+        --------------------------------------------------------------------------------------------\n\nfrom
+        codecs import open\nfrom setuptools import setup\n\nVERSION = \"1.1.0\"\n\nCLASSIFIERS
+        = [\n    'Development Status :: 5 - Production/Stable',\n    'Intended Audience
+        :: Developers',\n    'Intended Audience :: System Administrators',\n    'Programming
+        Language :: Python',\n    'Programming Language :: Python :: 3',\n    'Programming
+        Language :: Python :: 3.9',\n    'Programming Language :: Python :: 3.10',\n
+        \   'Programming Language :: Python :: 3.11',\n    'Programming Language ::
+        Python :: 3.12',\n    'License :: OSI Approved :: MIT License',\n]\n\nwith
+        open('README.rst', 'r', encoding='utf-8') as f:\n    README = f.read()\nwith
+        open('HISTORY.rst', 'r', encoding='utf-8') as f:\n    HISTORY = f.read()\n\nsetup(\n
+        \   name='azure-cli-telemetry',\n    version=VERSION,\n    description='Microsoft
+        Azure CLI Telemetry Package',\n    long_description=README + '\\n\\n' + HISTORY,\n
+        \   license='MIT',\n    author='Microsoft Corporation',\n    author_email='azpycli@microsoft.com',\n
+        \   url='https://github.com/Azure/azure-cli',\n    zip_safe=False,\n    classifiers=CLASSIFIERS,\n
+        \   install_requires=[\n        'applicationinsights>=0.11.1,<0.12',\n        'portalocker>=1.6,<3',\n
+        \   ],\n    packages=[\n        'azure.cli.telemetry',\n        'azure.cli.telemetry.components'\n
+        \   ]\n)\n"
+    headers:
+      accept-ranges:
+      - bytes
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - max-age=300
+      connection:
+      - keep-alive
+      content-length:
+      - '1622'
+      content-security-policy:
+      - default-src 'none'; style-src 'unsafe-inline'; sandbox
+      content-type:
+      - text/plain; charset=utf-8
+      cross-origin-resource-policy:
+      - cross-origin
+      date:
+      - Wed, 25 Jun 2025 07:01:02 GMT
+      etag:
+      - W/"5c7c21646135ba552fd00e1ff28c6484e28f4707110dcccebfde3b9ce271fc3e"
+      expires:
+      - Sun, 22 Jun 2025 15:18:56 GMT
+      source-age:
+      - '211'
+      strict-transport-security:
+      - max-age=31536000
+      vary:
+      - Authorization,Accept-Encoding
+      via:
+      - 1.1 varnish, 1.1 varnish
+      x-cache:
+      - HIT, HIT
+      x-cache-hits:
+      - 0, 0
+      x-content-type-options:
+      - nosniff
+      x-fastly-request-id:
+      - 7fce5caef8030d4c97d324006b93c5d1661837f4
+      x-frame-options:
+      - deny
+      x-github-request-id:
+      - 3350:24823E:6B511:17595E:68560DAA
+      x-served-by:
+      - cache-maa10236-MAA, cache-maa10238-MAA
+      x-timer:
+      - S1750834863.773740,VS0,VE1
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+    method: GET
+    uri: https://raw.githubusercontent.com/Azure/azure-cli/main/src/azure-cli-core/setup.py
+  response:
+    body:
+      string: "#!/usr/bin/env python\n\n# --------------------------------------------------------------------------------------------\n#
+        Copyright (c) Microsoft Corporation. All rights reserved.\n# Licensed under
+        the MIT License. See License.txt in the project root for license information.\n#
+        --------------------------------------------------------------------------------------------\n\nfrom
+        codecs import open\nfrom setuptools import setup, find_packages\n\nVERSION
+        = \"2.74.0\"\n\n# If we have source, validate that our version numbers match\n#
+        This should prevent uploading releases with mismatched versions.\ntry:\n    with
+        open('azure/cli/core/__init__.py', 'r', encoding='utf-8') as f:\n        content
+        = f.read()\nexcept OSError:\n    pass\nelse:\n    import re\n    import sys\n\n
+        \   m = re.search(r'__version__\\s*=\\s*[\\'\"](.+?)[\\'\"]', content)\n    if
+        not m:\n        print('Could not find __version__ in azure/cli/core/__init__.py')\n
+        \       sys.exit(1)\n    if m.group(1) != VERSION:\n        print('Expected
+        __version__ = \"{}\"; found \"{}\"'.format(VERSION, m.group(1)))\n        sys.exit(1)\n\nCLASSIFIERS
+        = [\n    'Development Status :: 5 - Production/Stable',\n    'Intended Audience
+        :: Developers',\n    'Intended Audience :: System Administrators',\n    'Programming
+        Language :: Python',\n    'Programming Language :: Python :: 3',\n    'Programming
+        Language :: Python :: 3.9',\n    'Programming Language :: Python :: 3.10',\n
+        \   'Programming Language :: Python :: 3.11',\n    'Programming Language ::
+        Python :: 3.12',\n    'License :: OSI Approved :: MIT License',\n]\n\nDEPENDENCIES
+        = [\n    'argcomplete~=3.5.2',\n    'azure-cli-telemetry==1.1.0.*',\n    'azure-mgmt-core>=1.2.0,<2',\n
+        \   'cryptography',\n    # On Linux, the distribution (Ubuntu, Debian, etc)
+        and version are logged in telemetry\n    'distro; sys_platform == \"linux\"',\n
+        \   'humanfriendly~=10.0',\n    'jmespath',\n    'knack~=0.11.0',\n    'microsoft-security-utilities-secret-masker~=1.0.0b4',\n
+        \   'msal-extensions==1.2.0',\n    'msal[broker]==1.32.3',\n
+        \   'packaging>=20.9',\n    'pkginfo>=1.5.0.1',\n    # psutil can't install
+        on cygwin: https://github.com/Azure/azure-cli/issues/9399\n    'psutil>=5.9;
+        sys_platform != \"cygwin\"',\n    'PyJWT>=2.1.0',\n    'pyopenssl>=17.1.0',
+        \ # https://github.com/pyca/pyopenssl/pull/612\n    'py-deviceid',\n    'requests[socks]',\n]\n\nwith
+        open('README.rst', 'r', encoding='utf-8') as f:\n    README = f.read()\n\nsetup(\n
+        \   name='azure-cli-core',\n    version=VERSION,\n    description='Microsoft
+        Azure Command-Line Tools Core Module',\n    long_description=README,\n    license='MIT',\n
+        \   author='Microsoft Corporation',\n    author_email='azpycli@microsoft.com',\n
+        \   url='https://github.com/Azure/azure-cli',\n    zip_safe=False,\n    classifiers=CLASSIFIERS,\n
+        \   packages=find_packages(exclude=[\"*.tests\", \"*.tests.*\", \"tests.*\",
+        \"tests\", \"azure\", \"azure.cli\"]),\n    install_requires=DEPENDENCIES,\n
+        \   python_requires='>=3.9.0',\n    package_data={'azure.cli.core': ['auth/landing_pages/*.html']}\n)\n"
+    headers:
+      accept-ranges:
+      - bytes
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - max-age=300
+      connection:
+      - keep-alive
+      content-length:
+      - '2969'
+      content-security-policy:
+      - default-src 'none'; style-src 'unsafe-inline'; sandbox
+      content-type:
+      - text/plain; charset=utf-8
+      cross-origin-resource-policy:
+      - cross-origin
+      date:
+      - Wed, 25 Jun 2025 07:01:08 GMT
+      etag:
+      - W/"791f7c41e9643bf6e712df0ba27b98972976950b43b65f7bde60965040ac0c37"
+      expires:
+      - Mon, 23 Jun 2025 21:44:54 GMT
+      source-age:
+      - '53'
+      strict-transport-security:
+      - max-age=31536000
+      vary:
+      - Authorization,Accept-Encoding
+      via:
+      - 1.1 varnish, 1.1 varnish
+      x-cache:
+      - HIT, HIT
+      x-cache-hits:
+      - 0, 1
+      x-content-type-options:
+      - nosniff
+      x-fastly-request-id:
+      - 9b12bc2f955e5bec9caef911fc28c5cc39b2b9be
+      x-frame-options:
+      - deny
+      x-github-request-id:
+      - 89C7:2A64B5:231FA6:66E447:68597B6F
+      x-served-by:
+      - cache-maa10243-MAA, cache-maa10234-MAA
+      x-timer:
+      - S1750834869.710638,VS0,VE1
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+    method: GET
+    uri: https://raw.githubusercontent.com/Azure/azure-cli/main/src/azure-cli-telemetry/setup.py
+  response:
+    body:
+      string: "#!/usr/bin/env python\n\n# --------------------------------------------------------------------------------------------\n#
+        Copyright (c) Microsoft Corporation. All rights reserved.\n# Licensed under
+        the MIT License. See License.txt in the project root for license information.\n#
+        --------------------------------------------------------------------------------------------\n\nfrom
+        codecs import open\nfrom setuptools import setup\n\nVERSION = \"1.1.0\"\n\nCLASSIFIERS
+        = [\n    'Development Status :: 5 - Production/Stable',\n    'Intended Audience
+        :: Developers',\n    'Intended Audience :: System Administrators',\n    'Programming
+        Language :: Python',\n    'Programming Language :: Python :: 3',\n    'Programming
+        Language :: Python :: 3.9',\n    'Programming Language :: Python :: 3.10',\n
+        \   'Programming Language :: Python :: 3.11',\n    'Programming Language ::
+        Python :: 3.12',\n    'License :: OSI Approved :: MIT License',\n]\n\nwith
+        open('README.rst', 'r', encoding='utf-8') as f:\n    README = f.read()\nwith
+        open('HISTORY.rst', 'r', encoding='utf-8') as f:\n    HISTORY = f.read()\n\nsetup(\n
+        \   name='azure-cli-telemetry',\n    version=VERSION,\n    description='Microsoft
+        Azure CLI Telemetry Package',\n    long_description=README + '\\n\\n' + HISTORY,\n
+        \   license='MIT',\n    author='Microsoft Corporation',\n    author_email='azpycli@microsoft.com',\n
+        \   url='https://github.com/Azure/azure-cli',\n    zip_safe=False,\n    classifiers=CLASSIFIERS,\n
+        \   install_requires=[\n        'applicationinsights>=0.11.1,<0.12',\n        'portalocker>=1.6,<3',\n
+        \   ],\n    packages=[\n        'azure.cli.telemetry',\n        'azure.cli.telemetry.components'\n
+        \   ]\n)\n"
+    headers:
+      accept-ranges:
+      - bytes
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - max-age=300
+      connection:
+      - keep-alive
+      content-length:
+      - '1622'
+      content-security-policy:
+      - default-src 'none'; style-src 'unsafe-inline'; sandbox
+      content-type:
+      - text/plain; charset=utf-8
+      cross-origin-resource-policy:
+      - cross-origin
+      date:
+      - Wed, 25 Jun 2025 07:01:08 GMT
+      etag:
+      - W/"5c7c21646135ba552fd00e1ff28c6484e28f4707110dcccebfde3b9ce271fc3e"
+      expires:
+      - Sun, 22 Jun 2025 15:18:56 GMT
+      source-age:
+      - '217'
+      strict-transport-security:
+      - max-age=31536000
+      vary:
+      - Authorization,Accept-Encoding
+      via:
+      - 1.1 varnish, 1.1 varnish
+      x-cache:
+      - HIT, HIT
+      x-cache-hits:
+      - 0, 1
+      x-content-type-options:
+      - nosniff
+      x-fastly-request-id:
+      - 465819034d2fc50dff168ebccb7830dcc44408bd
+      x-frame-options:
+      - deny
+      x-github-request-id:
+      - 3350:24823E:6B511:17595E:68560DAA
+      x-served-by:
+      - cache-maa10236-MAA, cache-maa10225-MAA
+      x-timer:
+      - S1750834869.815071,VS0,VE1
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+version: 1

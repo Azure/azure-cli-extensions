@@ -1,0 +1,443 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.9.6 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/computes/cpu-cluster?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/junqitest/computes/cpu-cluster",
+        "name": "cpu-cluster", "type": "Microsoft.MachineLearningServices/workspaces/computes",
+        "location": "centraluseuap", "tags": {}, "properties": {"createdOn": "2022-04-25T23:03:28.5405367+00:00",
+        "modifiedOn": "2022-05-20T14:59:45.9452733+00:00", "disableLocalAuth": false,
+        "description": null, "resourceId": null, "computeType": "AmlCompute", "computeLocation":
+        "centraluseuap", "provisioningState": "Succeeded", "provisioningErrors": null,
+        "isAttachedCompute": false, "properties": {"vmSize": "STANDARD_DS11_V2", "vmPriority":
+        "LowPriority", "scaleSettings": {"maxNodeCount": 6, "minNodeCount": 1, "nodeIdleTimeBeforeScaleDown":
+        "PT2M"}, "subnet": null, "currentNodeCount": 1, "targetNodeCount": 1, "nodeStateCounts":
+        {"preparingNodeCount": 0, "runningNodeCount": 0, "idleNodeCount": 1, "unusableNodeCount":
+        0, "leavingNodeCount": 0, "preemptedNodeCount": 0}, "allocationState": "Steady",
+        "allocationStateTransitionTime": "2022-05-20T18:31:42.715+00:00", "errors":
+        null, "remoteLoginPortPublicAccess": "Enabled", "osType": "Linux", "virtualMachineImage":
+        null, "isolatedNetwork": false, "propertyBag": {}}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1286'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 26 May 2022 16:59:33 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:512cc15a-13b5-415b-bfd0-dce7accb6bb1
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-test-westus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.249'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.9.6 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/datastores/workspaceblobstore?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/junqitest/datastores/workspaceblobstore",
+        "name": "workspaceblobstore", "type": "Microsoft.MachineLearningServices/workspaces/datastores",
+        "properties": {"description": null, "tags": null, "properties": null, "isDefault":
+        true, "credentials": {"credentialsType": "AccountKey"}, "datastoreType": "AzureBlob",
+        "accountName": "junqitest5221778348", "containerName": "azureml-blobstore-ad5aa6f5-be89-4aa5-b6fe-1c5c64eee55b",
+        "endpoint": "core.windows.net", "protocol": "https", "serviceDataAccessAuthIdentity":
+        "WorkspaceSystemAssignedIdentity"}, "systemData": {"createdAt": "2022-04-25T22:41:40.3106482Z",
+        "createdBy": "779301c0-18b2-4cdc-801b-a0a3368fee0a", "createdByType": "Application",
+        "lastModifiedAt": "2022-04-25T22:41:41.1849842Z", "lastModifiedBy": "779301c0-18b2-4cdc-801b-a0a3368fee0a",
+        "lastModifiedByType": "Application"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '979'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 26 May 2022 16:59:33 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:512cc15a-13b5-415b-bfd0-dce7accb6bb1
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-test-westus2-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.944'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.9.6 (Windows-10-10.0.19044-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/datastores/workspaceblobstore/listSecrets?api-version=0000-00-00
+  response:
+    body:
+      string: '{"secretsType": "AccountKey", "key": "201b07f7abdf4c6af220c99490bea35d87213fd108e0d3dc1461718938db127b"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '104'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 26 May 2022 16:59:34 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:512cc15a-13b5-415b-bfd0-dce7accb6bb1
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aml-cluster:
+      - vienna-test-westus2-01
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.514'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azsdk-python-storage-blob/12.5.0 Python/3.9.6 (Windows-10-10.0.19044-SP0)
+      x-ms-date:
+      - Thu, 26 May 2022 16:59:35 GMT
+      x-ms-version:
+      - '2019-12-12'
+    method: HEAD
+    uri: https://xxxxxxxxxxxxxxxxxxxxxx.blob.core.windows.net/azureml-blobstore-00000000-0000-0000-0000-000000000000/xxxxx/00000000-0000-0000-0000-00000000000/python/sample1.csv
+  response:
+    body:
+      string: ''
+    headers:
+      accept-ranges:
+      - bytes
+      content-length:
+      - '508'
+      content-type:
+      - application/octet-stream
+      date:
+      - Thu, 26 May 2022 16:59:35 GMT
+      etag:
+      - '"0x8DA39040E0A6862"'
+      last-modified:
+      - Wed, 18 May 2022 19:24:40 GMT
+      server:
+      - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
+      vary:
+      - Origin
+      x-ms-access-tier:
+      - Hot
+      x-ms-access-tier-inferred:
+      - 'true'
+      x-ms-blob-type:
+      - BlockBlob
+      x-ms-creation-time:
+      - Wed, 18 May 2022 19:24:40 GMT
+      x-ms-lease-state:
+      - available
+      x-ms-lease-status:
+      - unlocked
+      x-ms-meta-name:
+      - da38fa6a-903a-4a04-b913-de1d24c6c643
+      x-ms-meta-upload_status:
+      - completed
+      x-ms-meta-version:
+      - '1'
+      x-ms-server-encrypted:
+      - 'true'
+      x-ms-version:
+      - '2019-12-12'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azsdk-python-storage-blob/12.5.0 Python/3.9.6 (Windows-10-10.0.19044-SP0)
+      x-ms-date:
+      - Thu, 26 May 2022 16:59:36 GMT
+      x-ms-version:
+      - '2019-12-12'
+    method: HEAD
+    uri: https://xxxxxxxxxxxxxxxxxxxxxx.blob.core.windows.net/azureml-blobstore-00000000-0000-0000-0000-000000000000/xxxxx/00000000-0000-0000-0000-00000000000/python/sample1.csv
+  response:
+    body:
+      string: ''
+    headers:
+      date:
+      - Thu, 26 May 2022 16:59:35 GMT
+      server:
+      - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
+      transfer-encoding:
+      - chunked
+      vary:
+      - Origin
+      x-ms-error-code:
+      - BlobNotFound
+      x-ms-version:
+      - '2019-12-12'
+    status:
+      code: 404
+      message: The specified blob does not exist.
+- request:
+    body: '{"properties": {"isAnonymous": true, "isArchived": false, "codeUri": "https://junqitest5221778348.blob.core.windows.net/azureml-blobstore-ad5aa6f5-be89-4aa5-b6fe-1c5c64eee55b/LocalUpload/963b31004fb12a50ef7f62e734e6e841/python"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '229'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.9.6 (Windows-10-10.0.19044-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/codes/000000000000000/versions/1?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/junqitest/codes/da38fa6a-903a-4a04-b913-de1d24c6c643/versions/1",
+        "name": "1", "type": "Microsoft.MachineLearningServices/workspaces/codes/versions",
+        "properties": {"description": null, "tags": {}, "properties": {}, "isArchived":
+        false, "isAnonymous": false, "codeUri": "https://junqitest5221778348.blob.core.windows.net/azureml-blobstore-ad5aa6f5-be89-4aa5-b6fe-1c5c64eee55b/LocalUpload/963b31004fb12a50ef7f62e734e6e841/python"},
+        "systemData": {"createdAt": "2022-05-18T19:24:42.6010991Z", "createdBy": "Aditi
+        Singhal", "createdByType": "User", "lastModifiedAt": "2022-05-26T16:59:37.8771222Z",
+        "lastModifiedBy": "Aditi Singhal", "lastModifiedByType": "User"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '807'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 26 May 2022 16:59:37 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:512cc15a-13b5-415b-bfd0-dce7accb6bb1
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-test-westus2-01
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '1.133'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"properties": {"mlflow.source.git.repoURL": "https://msdata.visualstudio.com/DefaultCollection/Vienna/_git/sdk-cli-v2",
+      "mlflow.source.git.branch": "adsingha/support-registry-str-jobs", "mlflow.source.git.commit":
+      "ee1609b4ce11d89cf2b2a5a9d555fb13693e8877", "azureml.git.dirty": "True"}, "tags":
+      {}, "computeId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/junqitest-rg/providers/Microsoft.MachineLearningServices/workspaces/junqitest/computes/cpu-cluster",
+      "displayName": "test-sjob-00001290", "experimentName": "sdk-cli-v2_v1", "isArchived":
+      false, "jobType": "Sweep", "earlyTermination": {"delayEvaluation": 200, "evaluationInterval":
+      100, "policyType": "TruncationSelection", "truncationPercentage": 40}, "inputs":
+      {}, "limits": {"jobLimitsType": "Sweep", "timeout": "PT1M", "maxConcurrentTrials":
+      10, "maxTotalTrials": 1}, "objective": {"goal": "maximize", "primaryMetric":
+      "accuracy"}, "outputs": {}, "samplingAlgorithm": {"samplingAlgorithmType": "Random"},
+      "searchSpace": {"lr": ["uniform", [0.001, 0.1]], "conv_size": ["choice", [[2,
+      5, 7]]], "dropout_rate": ["uniform", [0.1, 0.5]]}, "trial": {"codeId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/junqitest-rg/providers/Microsoft.MachineLearningServices/workspaces/junqitest/codes/da38fa6a-903a-4a04-b913-de1d24c6c643/versions/1",
+      "command": "python ./sweep_script.py --lr ${{search_space.lr}} --conv_size ${{search_space.conv_size}}
+      --dropout_rate ${{search_space.dropout_rate}}", "environmentId": "azureml://registries/CuratedRegistry/environments/AzureML-minimal-ubuntu18.04-py37-cpu-inference/versions/34",
+      "environmentVariables": {"test_var1": "set", "AZUREML_COMPUTE_USE_COMMON_RUNTIME":
+      "false"}}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1730'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.9.6 (Windows-10-10.0.19044-SP0)
+      x-azureml-token:
+      - <dummyToken>
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/jobs/test-sjob-00001290?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/junqitest/jobs/test-sjob-00001290",
+        "name": "test-sjob-00001290", "type": "Microsoft.MachineLearningServices/workspaces/jobs",
+        "properties": {"description": null, "tags": {"_aml_system_max_concurrent_jobs":
+        "10", "_aml_system_max_total_jobs": "1", "_aml_system_max_duration_minutes":
+        "1", "_aml_system_policy_config": "{\"name\":\"TruncationSelection\",\"properties\":{\"evaluation_interval\":100,\"delay_evaluation\":200,\"truncation_percentage\":40,\"exclude_finished_jobs\":false}}",
+        "_aml_system_generator_config": "{\"name\":\"RANDOM\",\"parameter_space\":{\"lr\":[\"uniform\",[0.001,0.1]],\"conv_size\":[\"choice\",[[2,5,7]]],\"dropout_rate\":[\"uniform\",[0.1,0.5]]},\"properties\":{\"rule\":\"Random\",\"seed\":null}}",
+        "_aml_system_primary_metric_config": "{\"name\":\"accuracy\",\"goal\":\"maximize\"}",
+        "_aml_system_platform_config": "{\"ServiceAddress\":\"https://master.api.azureml-test.ms\",\"SubscriptionId\":\"ea4faa5b-5e44-4236-91f6-5483d5b17d14\",\"ResourceGroupName\":\"junqitest-rg\",\"WorkspaceName\":\"junqitest\",\"ExperimentName\":\"sdk-cli-v2_v1\",\"Definition\":{\"Configuration\":null,\"Attribution\":null,\"TelemetryValues\":null,\"Overrides\":{\"Script\":null,\"Command\":\"python
+        ./sweep_script.py --lr ${{search_space.lr}} --conv_size ${{search_space.conv_size}}
+        --dropout_rate ${{search_space.dropout_rate}}\",\"UseAbsolutePath\":true,\"Arguments\":[],\"SourceDirectoryDataStore\":null,\"Framework\":0,\"Target\":\"cpu-cluster\",\"DataReferences\":{},\"Data\":{},\"OutputData\":{},\"Datacaches\":[],\"JobName\":null,\"MaxRunDurationSeconds\":null,\"NodeCount\":1,\"InstanceTypes\":[],\"Priority\":null,\"CredentialPassthrough\":false,\"Identity\":null,\"Environment\":{\"Name\":\"azureml://registries/CuratedRegistry/environments/AzureML-minimal-ubuntu18.04-py37-cpu-inference/versions/34\",\"Python\":{\"InterpreterPath\":null,\"UserManagedDependencies\":false,\"CondaDependencies\":null,\"BaseCondaEnvironment\":null},\"EnvironmentVariables\":{},\"Docker\":{\"BaseImage\":null,\"Platform\":{\"Os\":\"Linux\",\"Architecture\":\"amd64\"},\"BaseDockerfile\":null,\"BaseImageRegistry\":null},\"Spark\":{\"Repositories\":[],\"Packages\":[],\"PrecachePackages\":true},\"InferencingStackVersion\":null},\"History\":{\"OutputCollection\":true,\"DirectoriesToWatch\":[\"logs\"],\"EnableMLflowTracking\":true},\"Spark\":{\"Configuration\":{}},\"ParallelTask\":{\"MaxRetriesPerWorker\":0,\"WorkerCountPerNode\":1,\"TerminalExitCodes\":null,\"Configuration\":{}},\"BatchAi\":{\"NodeCount\":0},\"AmlCompute\":{\"Name\":null,\"VmSize\":null,\"RetainCluster\":false,\"ClusterMaxNodeCount\":null},\"AISuperComputer\":{\"InstanceType\":\"D2\",\"FrameworkImage\":null,\"ImageVersion\":\"pytorch-1.7.0\",\"Location\":null,\"AISuperComputerStorageData\":null,\"Interactive\":false,\"ScalePolicy\":null,\"VirtualClusterArmId\":null,\"TensorboardLogDirectory\":null,\"SSHPublicKey\":null,\"SSHPublicKeys\":null,\"EnableAzmlInt\":true,\"Priority\":\"Medium\",\"SLATier\":\"Standard\",\"UserAlias\":null},\"KubernetesCompute\":{\"InstanceType\":null},\"Tensorflow\":{\"WorkerCount\":0,\"ParameterServerCount\":0},\"Mpi\":{\"ProcessCountPerNode\":0},\"PyTorch\":{\"CommunicationBackend\":null,\"ProcessCount\":null},\"Hdi\":{\"YarnDeployMode\":0},\"ContainerInstance\":{\"Region\":null,\"CpuCores\":2.0,\"MemoryGb\":3.5},\"ExposedPorts\":null,\"Docker\":{\"UseDocker\":true,\"SharedVolumes\":null,\"ShmSize\":null,\"Arguments\":null},\"Cmk8sCompute\":{\"Configuration\":{}},\"CommandReturnCodeConfig\":{\"ReturnCode\":0,\"SuccessfulReturnCodes\":[]},\"EnvironmentVariables\":{\"test_var1\":\"set\",\"AZUREML_COMPUTE_USE_COMMON_RUNTIME\":\"false\"},\"ApplicationEndpoints\":{},\"Parameters\":[]},\"SnapshotId\":\"6df41ecd-cc1b-48af-afbc-cc34537fbe83\",\"Snapshots\":[],\"SourceCodeDataReference\":null,\"ParentRunId\":null,\"DataContainerId\":null,\"RunType\":null,\"DisplayName\":\"test-sjob-00001290\",\"EnvironmentAssetId\":\"azureml://registries/CuratedRegistry/environments/AzureML-minimal-ubuntu18.04-py37-cpu-inference/versions/34\",\"Properties\":{\"mlflow.source.git.repoURL\":\"https://msdata.visualstudio.com/DefaultCollection/Vienna/_git/sdk-cli-v2\",\"mlflow.source.git.branch\":\"adsingha/support-registry-str-jobs\",\"mlflow.source.git.commit\":\"ee1609b4ce11d89cf2b2a5a9d555fb13693e8877\",\"azureml.git.dirty\":\"True\"},\"Tags\":{},\"AggregatedArtifactPath\":null},\"ParentRunId\":\"test-sjob-00001290\"}",
+        "_aml_system_resume_child_runs": "null", "_aml_system_all_jobs_generated":
+        "false", "_aml_system_cancellation_requested": "false"}, "properties": {"primary_metric_config":
+        "{\"name\":\"accuracy\",\"goal\":\"maximize\"}", "resume_from": "null", "runTemplate":
+        "HyperDrive", "azureml.runsource": "hyperdrive", "platform": "AML", "ContentSnapshotId":
+        "6df41ecd-cc1b-48af-afbc-cc34537fbe83", "user_agent": "managementfrontend/32b69a8b74c7718167d59cd42cfa0653e6721f34",
+        "landmark_points": "null", "mlflow.source.git.repoURL": "https://msdata.visualstudio.com/DefaultCollection/Vienna/_git/sdk-cli-v2",
+        "mlflow.source.git.branch": "adsingha/support-registry-str-jobs", "mlflow.source.git.commit":
+        "ee1609b4ce11d89cf2b2a5a9d555fb13693e8877", "azureml.git.dirty": "True"},
+        "displayName": "test-sjob-00001290", "status": "Running", "experimentName":
+        "sdk-cli-v2_v1", "services": {"Studio": {"jobServiceType": "Studio", "port":
+        null, "endpoint": "https://ml.azure.com/runs/test-sjob-00001290?wsid=/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/junqitest-rg/workspaces/junqitest",
+        "status": null, "errorMessage": null, "properties": null}}, "computeId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/junqitest/computes/cpu-cluster",
+        "isArchived": false, "schedule": null, "identity": null, "jobType": "Sweep",
+        "searchSpace": {"lr": ["uniform", [0.001, 0.1]], "conv_size": ["choice", [[2,
+        5, 7]]], "dropout_rate": ["uniform", [0.1, 0.5]]}, "samplingAlgorithm": {"samplingAlgorithmType":
+        "Random", "seed": null, "rule": "Random"}, "limits": {"timeout": "PT1M", "jobLimitsType":
+        "Sweep", "maxTotalTrials": 1, "maxConcurrentTrials": 10, "trialTimeout": null},
+        "earlyTermination": {"evaluationInterval": 100, "delayEvaluation": 200, "policyType":
+        "TruncationSelection", "truncationPercentage": 40}, "objective": {"primaryMetric":
+        "accuracy", "goal": "Maximize"}, "trial": {"codeId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/junqitest/codes/da38fa6a-903a-4a04-b913-de1d24c6c643/versions/1",
+        "command": "python ./sweep_script.py --lr ${{search_space.lr}} --conv_size
+        ${{search_space.conv_size}} --dropout_rate ${{search_space.dropout_rate}}",
+        "environmentId": "azureml://registries/CuratedRegistry/environments/AzureML-minimal-ubuntu18.04-py37-cpu-inference/versions/34",
+        "environmentVariables": {"test_var1": "set", "AZUREML_COMPUTE_USE_COMMON_RUNTIME":
+        "false"}, "distribution": null, "resources": {"instanceCount": 1, "instanceType":
+        null, "properties": null}}, "inputs": {}, "outputs": {"default": {"description":
+        null, "uri": "azureml://datastores/workspaceartifactstore/ExperimentRun/dcid.test-sjob-00001290",
+        "mode": "ReadWriteMount", "jobOutputType": "uri_folder"}}}, "systemData": {"createdAt":
+        "2022-05-26T16:59:42.417937Z", "createdBy": "Aditi Singhal", "createdByType":
+        "User"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '7560'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 26 May 2022 16:59:42 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/junqitest-rg/providers/Microsoft.MachineLearningServices/workspaces/junqitest/jobs/test-sjob-00001290?api-version=2022-02-01-preview
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:512cc15a-13b5-415b-bfd0-dce7accb6bb1
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aml-cluster:
+      - vienna-test-westus2-01
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '2.118'
+    status:
+      code: 201
+      message: Created
+version: 1

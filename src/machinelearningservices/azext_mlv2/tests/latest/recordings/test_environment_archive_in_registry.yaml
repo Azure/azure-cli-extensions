@@ -1,0 +1,162 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json, text/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0 Python/3.10.8
+        (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://eastus.api.azureml.ms/registrymanagement/v1.0/registries/dsvm-test/discovery
+  response:
+    body:
+      string: '{"registryId": "0b6229f6-570d-4378-aa08-158500c5638b", "registryName":
+        "dsvm-test", "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47", "primaryRegion":
+        "eastus", "regions": ["eastus"], "subscriptionId": "b17253fa-f327-42d6-9686-f3e553e24763",
+        "resourceGroup": "dsvm_master", "workspaceName": null, "primaryRegionResourceProviderUri":
+        "https://cert-eastus.experiments.azureml.net/", "registryFqdns": {"eastus":
+        {"uri": "https://0b6229f6-570d-4378-aa08-158500c5638b.registry.eastus.privatelink.api.azureml.ms"}}}'
+    headers:
+      connection:
+      - keep-alive
+      content-length:
+      - '511'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 18 Jan 2023 18:10:30 GMT
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=15724800; includeSubDomains; preload
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.016'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0 Python/3.10.8
+        (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://cert-eastus.experiments.azureml.net/mferp/managementfrontend/subscriptions/b17253fa-f327-42d6-9686-f3e553e24763/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/registries/dsvm-test/environments/bani_env/versions/1?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "azureml://registries/dsvm-test/environments/bani_env/versions/1",
+        "name": "1", "type": "environments", "properties": {"description": null, "tags":
+        {}, "properties": {}, "isArchived": false, "isAnonymous": false, "environmentType":
+        "UserCreated", "image": "mcr.microsoft.com/azureml/openmpi3.1.2-ubuntu18.04",
+        "condaFile": "{\n  \"channels\": [\n    \"conda-forge\"\n  ],\n  \"dependencies\":
+        [\n    \"python=3.8\",\n    \"pip\",\n    {\n      \"pip\": [\n        \"nbgitpuller\",\n        \"sphinx-gallery\",\n        \"pandas\",\n        \"matplotlib\"\n      ]\n    }\n  ],\n  \"name\":
+        \"example-environment\"\n}", "osType": "Linux"}, "systemData": {"createdAt":
+        "2022-10-20T00:17:45.1351596+00:00", "createdBy": "Banibrata De", "createdByType":
+        "User", "lastModifiedAt": "2022-10-20T00:17:45.1351596+00:00", "lastModifiedBy":
+        "Banibrata De", "lastModifiedByType": "User"}}'
+    headers:
+      connection:
+      - keep-alive
+      content-length:
+      - '884'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 18 Jan 2023 18:10:31 GMT
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-52e45b3de3d91229fba5b97b3c2f95ab-0c44822970b03eb5-00"
+      strict-transport-security:
+      - max-age=15724800; includeSubDomains; preload
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus-01
+      x-content-type-options:
+      - nosniff
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.365'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"properties": {}, "tags": {}, "isAnonymous": false, "isArchived":
+      true, "condaFile": "{\n  \"channels\": [\n    \"conda-forge\"\n  ],\n  \"dependencies\":
+      [\n    \"python=3.8\",\n    \"pip\",\n    {\n      \"pip\": [\n        \"nbgitpuller\",\n        \"sphinx-gallery\",\n        \"pandas\",\n        \"matplotlib\"\n      ]\n    }\n  ],\n  \"name\":
+      \"example-environment\"\n}", "image": "mcr.microsoft.com/azureml/openmpi3.1.2-ubuntu18.04",
+      "osType": "Linux"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '479'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0 Python/3.10.8
+        (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://cert-eastus.experiments.azureml.net/mferp/managementfrontend/subscriptions/b17253fa-f327-42d6-9686-f3e553e24763/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/registries/dsvm-test/environments/bani_env/versions/1?api-version=0000-00-00
+  response:
+    body:
+      string: 'null'
+    headers:
+      connection:
+      - keep-alive
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 18 Jan 2023 18:10:32 GMT
+      location:
+      - https://eastus.api.azureml.ms/environment/v1.0/operations/dsvm-test_bani_env_1_a1c71f32-b443-431d-867f-68d0b66a8e58
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=15724800; includeSubDomains; preload
+      x-aml-cluster:
+      - vienna-eastus-01
+      x-content-type-options:
+      - nosniff
+      x-ms-async-operation-timeout:
+      - PT1H
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '1.130'
+    status:
+      code: 202
+      message: Accepted
+version: 1

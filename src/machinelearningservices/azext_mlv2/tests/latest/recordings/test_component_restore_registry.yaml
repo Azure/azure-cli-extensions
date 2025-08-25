@@ -1,0 +1,187 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json, text/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0 Python/3.10.8
+        (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://eastus.api.azureml.ms/registrymanagement/v1.0/registries/bani-reg-wentral/discovery
+  response:
+    body:
+      string: '{"registryId": "77a4b826-8bce-49fa-9c04-7f84598c474f", "registryName":
+        "bani-reg-wentral", "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47", "primaryRegion":
+        "westcentralus", "regions": ["westcentralus"], "subscriptionId": "2d385bf4-0756-4a76-aa95-28bf9ed3b625",
+        "resourceGroup": "bani-reg-ws", "workspaceName": null, "primaryRegionResourceProviderUri":
+        "https://cert-westcentralus.experiments.azureml.net/", "registryFqdns": {"westcentralus":
+        {"uri": "https://77a4b826-8bce-49fa-9c04-7f84598c474f.registry.westcentralus.privatelink.api.azureml.ms"}}}'
+    headers:
+      connection:
+      - keep-alive
+      content-length:
+      - '553'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 06 Dec 2022 21:39:50 GMT
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=15724800; includeSubDomains; preload
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.501'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0 Python/3.10.8
+        (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://cert-westcentralus.experiments.azureml.net/mferp/managementfrontend/subscriptions/2d385bf4-0756-4a76-aa95-28bf9ed3b625/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/registries/bani-reg-wentral/components/000000000000000/versions/1.0.12?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "azureml://registries/bani-reg-wentral/components/batchscore/versions/1.0.12",
+        "name": "1.0.12", "type": "Microsoft.MachineLearningServices/registries/components/versions",
+        "properties": {"description": null, "tags": {}, "properties": {}, "isArchived":
+        true, "isAnonymous": false, "componentSpec": {"name": "batchscore", "version":
+        "1.0.12", "display_name": "Batch scoring component", "is_deterministic": "False",
+        "type": "parallel", "description": "A parallel component for batch scroing",
+        "inputs": {"job_data_path": {"type": "mltable", "optional": "False", "description":
+        "The data to be split and scored in parallel."}, "online_endpoint_url": {"type":
+        "string", "optional": "False"}, "azureml_model_deployment": {"type": "string",
+        "optional": "False"}, "debug_mode": {"type": "boolean", "optional": "False",
+        "default": "False"}}, "outputs": {"job_out_path": {"type": "uri_file"}}, "task":
+        {"code": "azureml://registries/bani-reg-wentral/codes/e5d984a2-a1d5-4838-836e-ef0405655615/versions/1",
+        "environment": "azureml://registries/bani-reg-wentral/environments/my-env/versions/1",
+        "program_arguments": "--debug_mode ${{inputs.debug_mode}} --online_endpoint_url
+        ${{inputs.online_endpoint_url}} --azureml_model_deployment ${{inputs.azureml_model_deployment}}",
+        "entry_script": "parallel_score.py", "type": "run_function", "append_row_to":
+        "${{outputs.job_out_path}}"}, "input_data": "${{inputs.job_data_path}}", "error_threshold":
+        "-1", "logging_level": "DEBUG", "max_concurrency_per_instance": "16", "mini_batch_error_threshold":
+        "5", "mini_batch_size": "3072", "retry_settings": {"max_retries": "2", "timeout":
+        "600"}, "$schema": "http://azureml/sdk-2-0/ParallelComponent.json"}}, "systemData":
+        {"createdAt": "2022-11-21T22:42:49.1292965+00:00", "createdBy": "Banibrata
+        De", "createdByType": "User", "lastModifiedAt": "2022-12-06T21:14:53.0599011+00:00",
+        "lastModifiedBy": "Banibrata De", "lastModifiedByType": "User"}}'
+    headers:
+      connection:
+      - keep-alive
+      content-length:
+      - '1929'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 06 Dec 2022 21:39:52 GMT
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-80ead52c4c0435d596b67e70e6c90a3d-f122ddb21ee9cc29-00"
+      strict-transport-security:
+      - max-age=15724800; includeSubDomains; preload
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aml-cluster:
+      - vienna-westcentralus-02
+      x-content-type-options:
+      - nosniff
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.920'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"properties": {}, "tags": {}, "isAnonymous": false, "isArchived":
+      false, "componentSpec": {"name": "batchscore", "version": "1.0.12", "display_name":
+      "Batch scoring component", "is_deterministic": "False", "type": "parallel",
+      "description": "A parallel component for batch scroing", "inputs": {"job_data_path":
+      {"type": "mltable", "optional": "False", "description": "The data to be split
+      and scored in parallel."}, "online_endpoint_url": {"type": "string", "optional":
+      "False"}, "azureml_model_deployment": {"type": "string", "optional": "False"},
+      "debug_mode": {"type": "boolean", "optional": "False", "default": "False"}},
+      "outputs": {"job_out_path": {"type": "uri_file"}}, "task": {"code": "azureml://registries/bani-reg-wentral/codes/e5d984a2-a1d5-4838-836e-ef0405655615/versions/1",
+      "environment": "azureml://registries/bani-reg-wentral/environments/my-env/versions/1",
+      "program_arguments": "--debug_mode ${{inputs.debug_mode}} --online_endpoint_url
+      ${{inputs.online_endpoint_url}} --azureml_model_deployment ${{inputs.azureml_model_deployment}}",
+      "entry_script": "parallel_score.py", "type": "run_function", "append_row_to":
+      "${{outputs.job_out_path}}"}, "input_data": "${{inputs.job_data_path}}", "error_threshold":
+      "-1", "logging_level": "DEBUG", "max_concurrency_per_instance": "16", "mini_batch_error_threshold":
+      "5", "mini_batch_size": "3072", "retry_settings": {"max_retries": "2", "timeout":
+      "600"}, "$schema": "http://azureml/sdk-2-0/ParallelComponent.json"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1491'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0 Python/3.10.8
+        (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://cert-westcentralus.experiments.azureml.net/mferp/managementfrontend/subscriptions/2d385bf4-0756-4a76-aa95-28bf9ed3b625/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/registries/bani-reg-wentral/components/000000000000000/versions/1.0.12?api-version=0000-00-00
+  response:
+    body:
+      string: 'null'
+    headers:
+      connection:
+      - keep-alive
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 06 Dec 2022 21:39:53 GMT
+      location:
+      - https://westcentralus.api.azureml.ms/assetstore/v1.0/operations/RCxLxfdWsDMb5HLgwXSfotuM_-dAtZ7Iiv62D3DCjw4
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=15724800; includeSubDomains; preload
+      x-aml-cluster:
+      - vienna-westcentralus-02
+      x-content-type-options:
+      - nosniff
+      x-ms-async-operation-timeout:
+      - PT1H
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '1.676'
+    status:
+      code: 202
+      message: Accepted
+version: 1

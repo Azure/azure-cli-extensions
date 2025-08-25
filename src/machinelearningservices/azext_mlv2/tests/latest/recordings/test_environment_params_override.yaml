@@ -1,0 +1,70 @@
+interactions:
+- request:
+    body: '{"properties": {"description": "bla", "isAnonymous": false, "isArchived":
+      false, "condaFile": "name: example-environment\nchannels:\n- conda-forge\ndependencies:\n-
+      python=3.6.1\n- pip\n- pip:\n  - nbgitpuller\n  - sphinx-gallery\n  - pandas\n  -
+      matplotlib\n", "image": "mcr.microsoft.com/azureml/openmpi3.1.2-ubuntu18.04",
+      "osType": "windows"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '346'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.11 (Windows-10-10.0.22000-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/environments/000000000000000/versions/2?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/test-environment-000004/versions/2",
+        "name": "2", "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
+        "properties": {"description": "bla", "tags": {}, "properties": {}, "isArchived":
+        false, "isAnonymous": false, "environmentType": "UserCreated", "image": "mcr.microsoft.com/azureml/openmpi3.1.2-ubuntu18.04",
+        "condaFile": "{\n  \"channels\": [\n    \"conda-forge\"\n  ],\n  \"dependencies\":
+        [\n    \"python=3.6.1\",\n    \"pip\",\n    {\n      \"pip\": [\n        \"nbgitpuller\",\n        \"sphinx-gallery\",\n        \"pandas\",\n        \"matplotlib\"\n      ]\n    }\n  ],\n  \"name\":
+        \"azureml_8f1d4517a9cdadbbbe72ab7c4b058009\"\n}", "osType": "Windows"}, "systemData":
+        {"createdAt": "2022-03-16T05:25:43.084822Z", "createdBy": "Harneet Virk",
+        "createdByType": "User", "lastModifiedAt": "2022-03-16T05:25:43.084822Z",
+        "lastModifiedBy": "Harneet Virk", "lastModifiedByType": "User"}}'
+    headers:
+      build-id:
+      - cas
+      cache-control:
+      - no-cache
+      content-length:
+      - '1101'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 16 Mar 2022 05:25:53 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/v2testharnvir-rg/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/test-environment-000004/versions/2?api-version=2022-02-01-preview
+      log-url:
+      - https://eusmanaged110.blob.core.windows.net/375482830f3244efa346b4700fa3541c-esglfuuoey/logs/cas/rawtext.log?sv=2018-03-28&sr=b&sig=***&se=2022-03-16T07%3A05%3A46Z&sp=r
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:512cc15a-13b5-415b-bfd0-dce7accb6bb1
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '11.408'
+    status:
+      code: 201
+      message: Created
+version: 1
