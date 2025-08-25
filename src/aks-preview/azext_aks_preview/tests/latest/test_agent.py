@@ -31,6 +31,12 @@ sys.modules['holmes.utils.console.logging'] = Mock()
 sys.modules['holmes.utils.console.result'] = Mock()
 
 
+def setUpModule():
+    # Skip all tests in this module for Python versions below 3.10
+    if sys.version_info < (3, 10):
+        raise unittest.SkipTest("Tests in this module require Python >= 3.10")
+
+
 class TestInitLog(unittest.TestCase):
     """Test cases for init_log function"""
 
