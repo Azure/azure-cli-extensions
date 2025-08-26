@@ -12,6 +12,10 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+18.0.0b28
++++++++
+* Suppress enable ssh message when adding a new nodepool to the existed automatic cluster.
+
 18.0.0b27
 +++++++
 * Add framework for interactive AI-powered debugging tool.
