@@ -44,6 +44,7 @@ class FleetHubfulScenarioTest(ScenarioTest):
         self.kwargs.update({
             'fleet_name': self.create_random_name(prefix='fl-', length=7),
             'member_name': self.create_random_name(prefix='flmc-', length=9),
+            'namespace_name': self.create_random_name(prefix='flns-', length=9),
             'ssh_key_value': self.generate_ssh_keys(),
             'vm_size': 'Standard_A8_v2'
         })
@@ -78,6 +79,28 @@ class FleetHubfulScenarioTest(ScenarioTest):
         self.cmd('aks wait -g {rg} -n {member_name} --created', checks=[self.is_empty()])
 
         self.cmd('fleet member wait -g {rg} --fleet-name {fleet_name} --fleet-member-name {member_name} --created', checks=[self.is_empty()])
+
+        self.cmd('fleet namespace create -g {rg} --fleet-name {fleet_name} -n {namespace_name} '
+                 '--adoption-policy Never --delete-policy Delete '
+                 '--member-cluster-names {member_name}',
+                 checks=[
+                     self.check('name', '{namespace_name}'),
+                     self.check('adoptionPolicy', 'Never'),
+                     self.check('deletePolicy', 'Delete'),
+                     self.check('memberClusters[0].name', '{member_name}')
+                 ])
+        
+        self.cmd('fleet namespace wait -g {rg} --fleet-name {fleet_name} -n {namespace_name} --created', checks=[
+            self.check('name', '{namespace_name}')
+        ])
+
+        self.cmd('fleet namespace show -g {rg} --fleet-name {fleet_name} -n {namespace_name}', checks=[
+            self.check('name', '{namespace_name}')
+        ])
+
+        self.cmd('fleet namespace delete -g {rg} --fleet-name {fleet_name} -n {namespace_name}', checks=[
+            self.check('name', '{namespace_name}')
+        ])
 
         self.cmd('fleet member delete -g {rg} --fleet-name {fleet_name} -n {member_name} --yes')
 
