@@ -85,6 +85,8 @@ from azext_aks_preview.addonconfiguration import (
     add_virtual_node_role_assignment,
     enable_addons,
 )
+from azext_aks_preview.agent.agent import aks_agent as aks_agent_internal
+
 from azext_aks_preview.aks_diagnostics import aks_kanalyze_cmd, aks_kollect_cmd
 from azext_aks_preview.aks_draft.commands import (
     aks_draft_cmd_create,
@@ -93,8 +95,22 @@ from azext_aks_preview.aks_draft.commands import (
     aks_draft_cmd_up,
     aks_draft_cmd_update,
 )
+from azext_aks_preview.bastion.bastion import (
+    aks_bastion_parse_bastion_resource,
+    aks_bastion_get_local_port,
+    aks_bastion_extension,
+    aks_bastion_set_kubeconfig,
+    aks_bastion_runner,
+    aks_batsion_clean_up
+)
 from azext_aks_preview.maintenanceconfiguration import (
     aks_maintenanceconfiguration_update_internal,
+)
+from azext_aks_preview.aks_identity_binding.commands import (
+    aks_ib_cmd_create,
+    aks_ib_cmd_delete,
+    aks_ib_cmd_show,
+    aks_ib_cmd_list,
 )
 from azext_aks_preview.managednamespace import (
     aks_managed_namespace_add,
@@ -673,6 +689,7 @@ def aks_create(
     enable_optimized_addon_scaling=False,
     enable_cilium_dataplane=False,
     custom_ca_trust_certificates=None,
+    disable_run_command=False,
     # advanced networking
     enable_acns=None,
     disable_acns_observability=None,
@@ -734,6 +751,7 @@ def aks_create(
     enable_imds_restriction=False,
     # managed system pool
     enable_managed_system_pool=False,
+    enable_upstream_kubescheduler_user_configuration=False,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -906,6 +924,8 @@ def aks_update(
     disable_optimized_addon_scaling=False,
     cluster_snapshot_id=None,
     custom_ca_trust_certificates=None,
+    enable_run_command=False,
+    disable_run_command=False,
     # safeguards parameters
     safeguards_level=None,
     safeguards_version=None,
@@ -947,6 +967,8 @@ def aks_update(
     enable_imds_restriction=False,
     disable_imds_restriction=False,
     migrate_vmas_to_vms=False,
+    enable_upstream_kubescheduler_user_configuration=False,
+    disable_upstream_kubescheduler_user_configuration=False,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -1419,6 +1441,8 @@ def aks_agentpool_add(
     gateway_prefix_size=None,
     # virtualmachines
     vm_sizes=None,
+    # local DNS
+    localdns_config=None,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -1486,6 +1510,8 @@ def aks_agentpool_update(
     if_none_match=None,
     enable_fips_image=False,
     disable_fips_image=False,
+    # local DNS
+    localdns_config=None,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -4335,3 +4361,78 @@ def aks_loadbalancer_rebalance_nodes(
     }
 
     return aks_loadbalancer_rebalance_internal(managed_clusters_client, parameters)
+
+
+def aks_bastion(cmd, client, resource_group_name, name, bastion=None, port=None, admin=False, yes=False):
+    import asyncio
+    import tempfile
+
+    from azure.cli.command_modules.acs._consts import DecoratorEarlyExitException
+
+    try:
+        aks_bastion_extension(yes)
+    except DecoratorEarlyExitException as ex:
+        logger.error(ex)
+        return
+
+    with tempfile.TemporaryDirectory() as temp_dir:
+        logger.info("creating temporary directory: %s", temp_dir)
+        try:
+            kubeconfig_path = os.path.join(temp_dir, ".kube", "config")
+            mc = client.get(resource_group_name, name)
+            mc_id = mc.id
+            nrg = mc.node_resource_group
+            bastion_resource = aks_bastion_parse_bastion_resource(bastion, [nrg])
+            port = aks_bastion_get_local_port(port)
+            aks_get_credentials(cmd, client, resource_group_name, name, admin=admin, path=kubeconfig_path)
+            aks_bastion_set_kubeconfig(kubeconfig_path, port)
+            asyncio.run(
+                aks_bastion_runner(
+                    bastion_resource,
+                    port,
+                    mc_id,
+                    kubeconfig_path,
+                    test_hook=os.getenv("AKS_BASTION_TEST_HOOK"),
+                )
+            )
+        finally:
+            aks_batsion_clean_up()
+
+
+aks_identity_binding_create = aks_ib_cmd_create
+aks_identity_binding_delete = aks_ib_cmd_delete
+aks_identity_binding_show = aks_ib_cmd_show
+aks_identity_binding_list = aks_ib_cmd_list
+
+
+# pylint: disable=unused-argument
+def aks_agent(
+    cmd,
+    client,
+    prompt,
+    model,
+    max_steps,
+    config_file,
+    resource_group_name=None,
+    name=None,
+    api_key=None,
+    no_interactive=False,
+    no_echo_request=False,
+    show_tool_output=False,
+    refresh_toolsets=False,
+):
+
+    aks_agent_internal(
+        cmd,
+        resource_group_name,
+        name,
+        prompt,
+        model,
+        api_key,
+        max_steps,
+        config_file,
+        no_interactive,
+        no_echo_request,
+        show_tool_output,
+        refresh_toolsets,
+    )

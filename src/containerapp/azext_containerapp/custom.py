@@ -3096,7 +3096,9 @@ def create_session_pool(cmd,
                         location=None,
                         managed_env=None,
                         container_type=None,
+                        lifecycle_type=None,
                         cooldown_period=None,
+                        max_alive_period=None,
                         secrets=None,
                         network_status=None,
                         max_concurrent_sessions=None,
@@ -3135,7 +3137,9 @@ def update_session_pool(cmd,
                         name,
                         resource_group_name,
                         location=None,
+                        lifecycle_type=None,
                         cooldown_period=None,
+                        max_alive_period=None,
                         secrets=None,
                         network_status=None,
                         max_concurrent_sessions=None,
@@ -3161,6 +3165,7 @@ def update_session_pool(cmd,
         raw_parameters=raw_parameters,
         models=CONTAINER_APPS_SDK_MODELS
     )
+    session_pool_decorator.validate_arguments()
     session_pool_decorator.construct_payload()
     r = session_pool_decorator.update()
 
@@ -3844,7 +3849,7 @@ def show_environment_premium_ingress(cmd, name, resource_group_name):
         handle_raw_exception(e)
 
 
-def add_environment_premium_ingress(cmd, name, resource_group_name, workload_profile_name, min_replicas, max_replicas, termination_grace_period=None, request_idle_timeout=None, header_count_limit=None, no_wait=False):
+def add_environment_premium_ingress(cmd, name, resource_group_name, workload_profile_name, min_replicas=None, max_replicas=None, termination_grace_period=None, request_idle_timeout=None, header_count_limit=None, no_wait=False):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     try:
@@ -3852,13 +3857,9 @@ def add_environment_premium_ingress(cmd, name, resource_group_name, workload_pro
         env_patch = {}
         ingress_config = {}
         safe_set(env_patch, "properties", "ingressConfiguration", value=ingress_config)
-        scale = {}
-        ingress_config["scale"] = scale
 
         # Required
         ingress_config["workloadProfileName"] = workload_profile_name
-        scale["minReplicas"] = min_replicas
-        scale["maxReplicas"] = max_replicas
         # Optional, remove if None
         ingress_config["terminationGracePeriodSeconds"] = termination_grace_period
         ingress_config["requestIdleTimeout"] = request_idle_timeout
@@ -3885,16 +3886,9 @@ def update_environment_premium_ingress(cmd, name, resource_group_name, workload_
         ManagedEnvironmentPreviewClient.show(cmd, resource_group_name, name)
         env_patch = {}
         ingress_config = {}
-        scale = {}
 
         if workload_profile_name is not None:
             ingress_config["workloadProfileName"] = workload_profile_name
-        if min_replicas is not None:
-            ingress_config["scale"] = scale
-            scale["minReplicas"] = min_replicas
-        if max_replicas is not None:
-            ingress_config["scale"] = scale
-            scale["maxReplicas"] = max_replicas
         if termination_grace_period is not None:
             ingress_config["terminationGracePeriodSeconds"] = termination_grace_period
         if request_idle_timeout is not None:

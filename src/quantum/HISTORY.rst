@@ -3,6 +3,18 @@
 Release History
 ===============
 
+1.0.0b9
+++++++
+* Update minCliCoreVersion
+
+1.0.0b8
+++++++
+* Fix advertisement of newer version breaking -o output.
+
+1.0.0b7
+++++++
+* Fix import resource SDK error
+
 1.0.0b6
 ++++++
 * [2025-03-19] Version intended to work with QDK version 1.14.0

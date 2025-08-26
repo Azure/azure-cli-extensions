@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class LockFabric(AAZCommand):
     """Post action: Triggers network fabric lock operation.
+
+    :example: Run lock fabric on the Network Fabric
+        az networkfabric fabric lock-fabric --resource-group example-rg --resource-name example-networkFabric --lock-type Administrative --action Lock
     """
 
     _aaz_info = {
@@ -43,7 +46,7 @@ class LockFabric(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.network_fabric_name = AAZStrArg(
-            options=["--network-fabric-name"],
+            options=["--resource-name", "--network-fabric-name"],
             help="Name of the Network Fabric.",
             required=True,
             id_part="name",
@@ -250,12 +253,15 @@ class _LockFabricHelper:
         additional_info.Element = AAZObjectType()
 
         _element = _schema_error_detail_read.additional_info.Element
-        _element.info = AAZFreeFormDictType(
+        _element.info = AAZDictType(
             flags={"read_only": True},
         )
         _element.type = AAZStrType(
             flags={"read_only": True},
         )
+
+        info = _schema_error_detail_read.additional_info.Element.info
+        info.Element = AAZAnyType()
 
         details = _schema_error_detail_read.details
         details.Element = AAZObjectType()
