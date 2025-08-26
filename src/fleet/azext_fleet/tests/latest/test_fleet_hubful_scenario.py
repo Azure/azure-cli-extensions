@@ -81,7 +81,7 @@ class FleetHubfulScenarioTest(ScenarioTest):
         self.cmd('fleet member wait -g {rg} --fleet-name {fleet_name} --fleet-member-name {member_name} --created', checks=[self.is_empty()])
 
         self.cmd('fleet namespace create -g {rg} --fleet-name {fleet_name} -n {namespace_name} '
-                 '--adoption-policy Never --delete-policy Delete '
+                 '--adoption-policy Always --delete-policy Delete '
                  '--member-cluster-names {member_name}',
                  checks=[
                      self.check('name', '{namespace_name}'),
@@ -97,6 +97,8 @@ class FleetHubfulScenarioTest(ScenarioTest):
         self.cmd('fleet namespace show -g {rg} --fleet-name {fleet_name} -n {namespace_name}', checks=[
             self.check('name', '{namespace_name}')
         ])
+
+        self.cmd('fleet namespace get-credentials -g {rg} -n {fleet_name} --member {member_name} --overwrite-existing')
 
         self.cmd('fleet namespace delete -g {rg} --fleet-name {fleet_name} -n {namespace_name}', checks=[
             self.check('name', '{namespace_name}')
