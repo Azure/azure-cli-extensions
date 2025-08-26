@@ -5,7 +5,6 @@
 
 import unittest
 from unittest.mock import Mock, patch
-from typing import TypeVar
 
 from azext_aks_preview.__init__ import register_aks_preview_resource_type
 from azext_aks_preview._client_factory import CUSTOM_MGMT_AKS_PREVIEW
@@ -52,7 +51,6 @@ from azure.cli.core.azclierror import (
 )
 from deepdiff import DeepDiff
 
-ManagedCluster = TypeVar("ManagedCluster")
 
 class AKSPreviewAgentPoolContextCommonTestCase(unittest.TestCase):
     def _remove_defaults_in_agentpool(self, agentpool):
