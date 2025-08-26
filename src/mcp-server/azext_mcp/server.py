@@ -1,4 +1,7 @@
+import contextlib
 from datetime import datetime
+import io
+from types import SimpleNamespace
 
 from mcp.types import ToolAnnotations
 from mcp.server.fastmcp import FastMCP, Context
@@ -80,10 +83,56 @@ class AzCLIBridge:
         if not schema:
             return None
         default_args = {}
-        for arg_name, arg_info in schema.items():
+        for arg_name, arg_info in schema['properties'].items():
             if 'default' in arg_info and arg_info['default'] is not None:
                 default_args[arg_name] = arg_info['default']
         return default_args
+    
+    def validate_invocation(self, command, arguments: dict):
+        namespace = SimpleNamespace(**arguments)
+        for argument in command.arguments.values():
+            settings = argument.type.settings
+            # Skip ignore actions
+            if settings.get("action", None):
+                action = settings["action"]
+                if hasattr(action, "__name__") and action.__name__ == "IgnoreAction":
+                    continue
+            name = settings["dest"]
+            if not hasattr(namespace, name):
+                setattr(namespace, name, None)
+        for arg_name, argument in command.arguments.items():
+            if argument.type is None:
+                continue
+            settings = argument.type.settings
+            validator = settings.get('validator')
+            if not validator:
+                continue
+            import inspect
+            sig = inspect.signature(validator)
+            validator_parameters = sig.parameters
+            kwargs = {}
+            if 'cmd' in validator_parameters:
+                kwargs['cmd'] = command
+            if 'namespace' in validator_parameters:
+                kwargs['namespace'] = namespace
+            if 'ns' in validator_parameters:
+                kwargs['ns'] = namespace
+            validator(**kwargs)
+        if getattr(command, 'validator', None):
+            import inspect
+            sig = inspect.signature(command.validator)
+            validator_parameters = sig.parameters
+            kwargs = {}
+            if 'cmd' in validator_parameters:
+                kwargs['cmd'] = command
+            if 'namespace' in validator_parameters:
+                kwargs['namespace'] = namespace
+            if 'ns' in validator_parameters:
+                kwargs['ns'] = namespace
+            command.validator(**kwargs)
+        return {key: value
+                  for key, value in namespace.__dict__.items()
+                  if not key.startswith('_')}
 
     def invoke_command_by_json(self, command_name: str, arguments: dict | None = None):
         """Invoke a command with JSON-described arguments."""
@@ -97,10 +146,14 @@ class AzCLIBridge:
         default_args = self.get_default_arguments(command_name)
         if default_args:
             arguments = {**default_args, **arguments}
+        arguments = self.validate_invocation(command, arguments)
         arguments = {"cmd": command, **arguments}  # Ensure 'cmd' is passed to the command
         logger.debug("Invoking command '%s' with arguments: %s", command_name, arguments)
         try:
-            result = command(arguments)
+            stderr_output = None
+            with contextlib.redirect_stderr(io.StringIO()) as stderr_capture:
+                result = command(arguments)
+            stderr_output = stderr_capture.getvalue()
             transform_op = command.command_kwargs.get('transform', None)
             if transform_op:
                 result = transform_op(result)
@@ -114,7 +167,11 @@ class AzCLIBridge:
             result = todict(result, AzCliCommandInvoker.remove_additional_prop_layer)
         except Exception as e:
             logger.error("Error invoking command '%s': %s", command_name, e, exc_info=e)
-            return {'error': str(e)}
+            return {'error': f"Exception: {e}\nCaptured stderr output: {stderr_output}"}
+        except SystemExit as e:
+            logger.error("SystemExit raised while invoking command '%s': %s", command_name, e, exc_info=e)
+            logger.error("Captured stderr output: %s", stderr_output)
+            return {'error': f"SystemExit: {e}\nCaptured stderr output: {stderr_output}"}
         return {'result': result}
     
     def invoke_command_by_arguments(self, arguments: list[str]) -> dict | None:
@@ -127,18 +184,22 @@ class AzCLIBridge:
             commands_loader_cls=self.cli_ctx.commands_loader_cls,
             help_cls=self.cli_ctx.help_cls)
         try:
-            result = invocation.execute(arguments)
+            stderr_output = None
+            with contextlib.redirect_stderr(io.StringIO()) as stderr_capture:
+                result = invocation.execute(arguments)
+            stderr_output = stderr_capture.getvalue()
             return {'result': result}
         except Exception as e:
             logger.error("Error invoking command with arguments '%s': %s", arguments, e, exc_info=e)
-            return {'error': str(e)}
+            return {'error': f"Exception: {e}\nCaptured stderr output: {stderr_output}"}
         except SystemExit as e:
             # Handle SystemExit raised by the CLI
             logger.error("SystemExit raised while invoking command with arguments '%s': %s", arguments, e, exc_info=e)
-            return {'error': str(e)}
+            logger.error("Captured stderr output: %s", stderr_output)
+            return {'error': f"SystemExit: {e}\nCaptured stderr output: {stderr_output}"}
+
 
 class AzMCP(FastMCP):
-
     def __init__(
             self,
             cli_ctx: AzCli,
@@ -164,14 +225,6 @@ class AzMCP(FastMCP):
         # self._register_resources()
     
     def _register_primitives(self):
-        super().resource(
-            "az://{command_name_path}",
-            name="Azure CLI Command Help",
-            description="Retrieve comprehensive help documentation for Azure CLI commands and command groups. "
-                   "Provides detailed information including command syntax, parameters, examples, and usage patterns. "
-                   "Path format: 'az://command/subcommand' (e.g., 'az://login', 'az://vm/create', 'az://storage/account/list')",
-            mime_type="application/json",
-        )(self.command_help_resource)
         super().tool(
             "get_az_cli_command_schema",
             title="Get Azure CLI Command Schema",
@@ -256,6 +309,8 @@ class AzMCP(FastMCP):
             result = await ctx.elicit("This is a destructive command. Do you want to continue? (y/N)", MCPConfirmation)
             if not (result.action == "accept" and result.data.confirmation.lower() in ["y", "yes"]):
                 return None
+        # The prompt elicitation has unsolved bug due to async-sync-async call. Use it after solving this issue.
+        # with elicit_prompts(ctx):
         return self.az_cli_bridge.invoke_command_by_json(command_name, arguments)
     
     async def invoke_command_by_arguments(self, arguments: list[str], ctx: Context) -> dict | None:
@@ -266,4 +321,6 @@ class AzMCP(FastMCP):
             result = await ctx.elicit("This is a destructive command. Do you want to continue? (y/N)", MCPConfirmation)
             if not (result.action == "accept" and result.data.confirmation.lower() in ["y", "yes"]):
                 return None
+        # The prompt elicitation has unsolved bug due to async-sync-async call. Use it after solving this issue.
+        # with elicit_prompts(ctx):
         return self.az_cli_bridge.invoke_command_by_arguments(arguments)

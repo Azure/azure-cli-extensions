@@ -365,7 +365,7 @@ def build_command_help_info(name: str, command=None):
             arg_info["nargs"] = settings["nargs"]
         if settings.get("completer", None):
             arg_info["has_completer"] = True
-        if settings.get("default", None):
+        if settings.get("default", None) is not None:
             if not isinstance(settings["default"], (float, int, str, list, bool)):
                 arg_info["default"] = str(settings["default"])
             else:
