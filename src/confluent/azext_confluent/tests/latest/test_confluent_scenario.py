@@ -88,6 +88,7 @@ def step_organization_create(test, rg, checks=None):
                      '--publisher-id "confluentinc" '
                      '--term-unit "P1M" '
                      '--tags environment="Dev" '
+                     '--term-id "gmz7xq9ge3py" '
                      '--name "{myOrganization}" '
                      '--resource-group "{rg}"',
                      checks=checks)
