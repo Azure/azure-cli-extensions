@@ -2,21 +2,22 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+import os
+import shutil
+import tempfile
 import unittest
-from unittest.mock import patch
 from types import SimpleNamespace
+from unittest.mock import patch
 
 import azext_aks_preview._validators as validators
 import azext_aks_preview.azurecontainerstorage._consts as acstor_consts
 import azext_aks_preview.azurecontainerstorage._validators as acstor_validator
 from azext_aks_preview._consts import ADDONS
-from azure.cli.core.azclierror import (
-    ArgumentUsageError,
-    InvalidArgumentValueError,
-    MutuallyExclusiveArgumentError,
-    RequiredArgumentMissingError,
-    UnknownError,
-)
+from azure.cli.core.azclierror import (ArgumentUsageError,
+                                       InvalidArgumentValueError,
+                                       MutuallyExclusiveArgumentError,
+                                       RequiredArgumentMissingError,
+                                       UnknownError)
 from azure.cli.core.util import CLIError
 
 
@@ -108,13 +109,16 @@ class MaxSurgeNamespace:
     def __init__(self, max_surge):
         self.max_surge = max_surge
 
+
 class MaxUnavailableNamespace:
     def __init__(self, max_unavailable):
         self.max_unavailable = max_unavailable
 
+
 class MaxBlockedNodesNamespace:
     def __init__(self, max_blocked_nodes):
         self.max_blocked_nodes = max_blocked_nodes
+
 
 class SpotMaxPriceNamespace:
     def __init__(self, spot_max_price):
@@ -162,6 +166,7 @@ class TestMaxSurge(unittest.TestCase):
             validators.validate_max_surge(MaxSurgeNamespace("-3"))
         self.assertTrue("positive" in str(cm.exception), msg=str(cm.exception))
 
+
 class TestMaxUnavailable(unittest.TestCase):
     def test_valid_cases(self):
         valid = ["5", "33%", "1", "100%", "0"]
@@ -178,6 +183,7 @@ class TestMaxUnavailable(unittest.TestCase):
             validators.validate_max_unavailable(MaxUnavailableNamespace("-3"))
         self.assertTrue("positive" in str(cm.exception), msg=str(cm.exception))
 
+
 class TestMaxBlockedNodes(unittest.TestCase):
     def test_valid_cases(self):
         valid = ["5", "33%", "1", "100%", "0"]
@@ -193,6 +199,7 @@ class TestMaxBlockedNodes(unittest.TestCase):
         with self.assertRaises(CLIError) as cm:
             validators.validate_max_blocked_nodes(MaxBlockedNodesNamespace("-3"))
         self.assertTrue("positive" in str(cm.exception), msg=str(cm.exception))
+
 
 class TestSpotMaxPrice(unittest.TestCase):
     def test_valid_cases(self):
@@ -735,6 +742,7 @@ class TestValidateApplicationSecurityGroups(unittest.TestCase):
         validators.validate_application_security_groups(
             namespace
         )
+
     def test_multiple_application_security_groups(self):
         asg_ids = ",".join([
             "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg1/providers/Microsoft.Network/applicationSecurityGroups/asg1",
@@ -809,6 +817,7 @@ class TestValidateMaintenanceWindow(unittest.TestCase):
         namespace = MaintenanceWindowNameSpace(start_date="00:30")
         validators.validate_start_time(namespace)
 
+
 class ManagedNamespace:
     def __init__(self, name=None, cpu_request=None, cpu_limit=None, memory_request=None, memory_limit=None):
         self.name = name
@@ -817,6 +826,7 @@ class ManagedNamespace:
         self.memory_request = memory_request
         self.memory_limit = memory_limit
 
+
 class TestValidateManagedNamespace(unittest.TestCase):
     def test_invalid_namespace_name(self):
         namespace = ManagedNamespace(name="Abc")
@@ -824,7 +834,7 @@ class TestValidateManagedNamespace(unittest.TestCase):
         with self.assertRaises(ValueError) as cm:
             validators.validate_namespace_name(namespace)
         self.assertEqual(str(cm.exception), err)
-    
+
     def test_valid_namespace_name(self):
         namespace = ManagedNamespace(name="abc")
         validators.validate_namespace_name(namespace)
@@ -835,7 +845,7 @@ class TestValidateManagedNamespace(unittest.TestCase):
         with self.assertRaises(ValueError) as cm:
             validators.validate_resource_quota(namespace)
         self.assertEqual(str(cm.exception), err)
-    
+
     def test_invalid_cpu_limit(self):
         namespace = ManagedNamespace(cpu_request="200m", cpu_limit="2t")
         err = "--cpu-limit must be specified in millicores, like 200m"
@@ -860,6 +870,7 @@ class TestValidateManagedNamespace(unittest.TestCase):
     def test_valid_resource_quotas(self):
         namespace = ManagedNamespace(cpu_request="500m", cpu_limit="800m", memory_request="1Gi", memory_limit="2Gi")
         validators.validate_resource_quota(namespace)
+
 
 class TestValidateDisableAzureContainerStorage(unittest.TestCase):
     def test_disable_when_extension_not_installed(self):
@@ -1256,8 +1267,8 @@ class TestValidateEnableAzureContainerStorage(unittest.TestCase):
         perf_tier = acstor_consts.CONST_EPHEMERAL_NVME_PERF_TIER_PREMIUM
         storage_pool_type = acstor_consts.CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK
         err = (
-                "Azure Container Storage is already configured with --ephemeral-disk-nvme-perf-tier "
-                f"value set to {perf_tier}."
+            "Azure Container Storage is already configured with --ephemeral-disk-nvme-perf-tier "
+            f"value set to {perf_tier}."
         )
         with self.assertRaises(InvalidArgumentValueError) as cm:
             acstor_validator.validate_enable_azure_container_storage_params(
@@ -1269,8 +1280,8 @@ class TestValidateEnableAzureContainerStorage(unittest.TestCase):
         disk_vol_type = acstor_consts.CONST_DISK_TYPE_PV_WITH_ANNOTATION
         storage_pool_type = acstor_consts.CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK
         err = (
-                "Azure Container Storage is already configured with --ephemeral-disk-volume-type "
-                f"value set to {disk_vol_type}."
+            "Azure Container Storage is already configured with --ephemeral-disk-volume-type "
+            f"value set to {disk_vol_type}."
         )
         with self.assertRaises(InvalidArgumentValueError) as cm:
             acstor_validator.validate_enable_azure_container_storage_params(
@@ -1283,9 +1294,9 @@ class TestValidateEnableAzureContainerStorage(unittest.TestCase):
         disk_vol_type = acstor_consts.CONST_DISK_TYPE_PV_WITH_ANNOTATION
         storage_pool_type = acstor_consts.CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK
         err = (
-                "Azure Container Storage is already configured with --ephemeral-disk-volume-type "
-                f"value set to {disk_vol_type} and --ephemeral-disk-nvme-perf-tier "
-                f"value set to {perf_tier}."
+            "Azure Container Storage is already configured with --ephemeral-disk-volume-type "
+            f"value set to {disk_vol_type} and --ephemeral-disk-nvme-perf-tier "
+            f"value set to {perf_tier}."
         )
         with self.assertRaises(InvalidArgumentValueError) as cm:
             acstor_validator.validate_enable_azure_container_storage_params(
@@ -1368,7 +1379,7 @@ class TestValidateEnableAzureContainerStorage(unittest.TestCase):
         storage_pool_type = acstor_consts.CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK
         storage_pool_option = acstor_consts.CONST_STORAGE_POOL_OPTION_SSD
         nodepool_list = "pool1,pool2"
-        agentpools = {"nodepool1": {}, "nodepool2":{}}
+        agentpools = {"nodepool1": {}, "nodepool2": {}}
         err = (
             "Node pool: pool1 not found. Please provide a comma separated "
             "string of existing node pool names in --azure-container-storage-nodepools."
@@ -1387,7 +1398,8 @@ class TestValidateEnableAzureContainerStorage(unittest.TestCase):
         storage_pool_type = acstor_consts.CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK
         storage_pool_option = acstor_consts.CONST_STORAGE_POOL_OPTION_SSD
         nodepool_list = "nodepool1"
-        agentpools = {"nodepool1": {"mode": "System", "node_taints": ["CriticalAddonsOnly=true:NoSchedule"]}, "nodepool2": {"count": 1}}
+        agentpools = {"nodepool1": {"mode": "System", "node_taints": [
+            "CriticalAddonsOnly=true:NoSchedule"]}, "nodepool2": {"count": 1}}
         err = (
             'Unable to install Azure Container Storage on system nodepool: nodepool1 '
             'since it has a taint CriticalAddonsOnly=true:NoSchedule. Remove the taint from the node pool '
@@ -1432,7 +1444,8 @@ class TestValidateEnableAzureContainerStorage(unittest.TestCase):
         storage_pool_type = acstor_consts.CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK
         storage_pool_option = acstor_consts.CONST_STORAGE_POOL_OPTION_NVME
         nodepool_list = "nodepool1"
-        agentpools = {"nodepool1": {"vm_size": "Standard_L8s_v3", "mode": "System", "count": 5}, "nodepool2": {"vm_size": "Standard_L8s_v3"}}
+        agentpools = {"nodepool1": {"vm_size": "Standard_L8s_v3", "mode": "System",
+                                    "count": 5}, "nodepool2": {"vm_size": "Standard_L8s_v3"}}
         acstor_validator.validate_enable_azure_container_storage_params(
             storage_pool_type, storage_pool_name, None, storage_pool_option, storage_pool_size, nodepool_list, agentpools, False, False, False, False, False, None, None, acstor_consts.CONST_DISK_TYPE_EPHEMERAL_VOLUME_ONLY, acstor_consts.CONST_EPHEMERAL_NVME_PERF_TIER_STANDARD
         )
@@ -1444,7 +1457,8 @@ class TestValidateEnableAzureContainerStorage(unittest.TestCase):
         storage_pool_option = acstor_consts.CONST_STORAGE_POOL_OPTION_NVME
         nodepool_list = "nodepool1"
         ephemeral_disk_volume_type = acstor_consts.CONST_DISK_TYPE_PV_WITH_ANNOTATION
-        agentpools = {"nodepool1": {"vm_size": "Standard_L8s_v3", "mode": "System", "count": 3}, "nodepool2": {"vm_size": "Standard_L8s_v3"}}
+        agentpools = {"nodepool1": {"vm_size": "Standard_L8s_v3", "mode": "System",
+                                    "count": 3}, "nodepool2": {"vm_size": "Standard_L8s_v3"}}
         acstor_validator.validate_enable_azure_container_storage_params(
             storage_pool_type, storage_pool_name, None, storage_pool_option, storage_pool_size, nodepool_list, agentpools, False, False, False, False, False, ephemeral_disk_volume_type, None, acstor_consts.CONST_DISK_TYPE_EPHEMERAL_VOLUME_ONLY, acstor_consts.CONST_EPHEMERAL_NVME_PERF_TIER_STANDARD
         )
@@ -1464,7 +1478,8 @@ class TestValidateEnableAzureContainerStorage(unittest.TestCase):
         storage_pool_option = acstor_consts.CONST_STORAGE_POOL_OPTION_NVME
         nodepool_list = "nodepool1"
         perf_tier = acstor_consts.CONST_EPHEMERAL_NVME_PERF_TIER_PREMIUM
-        agentpools = {"nodepool1": {"vm_size": "Standard_L8s_v3", "count": 4}, "nodepool2": {"vm_size": "Standard_L8s_v3"}}
+        agentpools = {"nodepool1": {"vm_size": "Standard_L8s_v3", "count": 4},
+                      "nodepool2": {"vm_size": "Standard_L8s_v3"}}
         acstor_validator.validate_enable_azure_container_storage_params(
             storage_pool_type, storage_pool_name, None, storage_pool_option, storage_pool_size, nodepool_list, agentpools, False, False, False, False, False, None, perf_tier, acstor_consts.CONST_DISK_TYPE_EPHEMERAL_VOLUME_ONLY, acstor_consts.CONST_EPHEMERAL_NVME_PERF_TIER_STANDARD
         )
@@ -1497,7 +1512,7 @@ class TestValidateEnableAzureContainerStorage(unittest.TestCase):
         storage_pool_size = "5Ti"
         storage_pool_type = acstor_consts.CONST_STORAGE_POOL_TYPE_AZURE_DISK
         storage_pool_sku = acstor_consts.CONST_STORAGE_POOL_SKU_PREMIUM_LRS
-        agentpools = {"nodepool1": {"node_labels": {"acstor.azure.com/io-engine": "acstor"}, "count": 3}, "nodepool2" :{}}
+        agentpools = {"nodepool1": {"node_labels": {"acstor.azure.com/io-engine": "acstor"}, "count": 3}, "nodepool2": {}}
         err = (
             "Invalid --enable-azure-container-storage value. "
             "Azure Container Storage is already enabled for storage pool type "
@@ -1514,15 +1529,18 @@ class TestValidateEnableAzureContainerStorage(unittest.TestCase):
         storage_pool_size = "5Ti"
         storage_pool_type = acstor_consts.CONST_STORAGE_POOL_TYPE_AZURE_DISK
         storage_pool_sku = acstor_consts.CONST_STORAGE_POOL_SKU_PREMIUM_LRS
-        agentpools = {"nodepool1": {"node_labels": {"acstor.azure.com/io-engine": "acstor"}, "mode": "User", "count": 3}, "nodepool2": {}}
+        agentpools = {"nodepool1": {"node_labels": {"acstor.azure.com/io-engine": "acstor"},
+                                    "mode": "User", "count": 3}, "nodepool2": {}}
         acstor_validator.validate_enable_azure_container_storage_params(
             storage_pool_type, storage_pool_name, storage_pool_sku, None, storage_pool_size, None, agentpools, True, False, False, False, False, None, None, acstor_consts.CONST_DISK_TYPE_EPHEMERAL_VOLUME_ONLY, acstor_consts.CONST_EPHEMERAL_NVME_PERF_TIER_STANDARD
         )
+
 
 class GatewayPrefixSizeSpace:
     def __init__(self, gateway_prefix_size=None, mode=None):
         self.gateway_prefix_size = gateway_prefix_size
         self.mode = mode
+
 
 class TestValidateGatewayPrefixSize(unittest.TestCase):
     def test_none_gateway_prefix_size(self):
@@ -1554,6 +1572,7 @@ class TestValidateGatewayPrefixSize(unittest.TestCase):
         namespace = GatewayPrefixSizeSpace(gateway_prefix_size=30, mode="Gateway")
         validators.validate_gateway_prefix_size(namespace)
 
+
 class TestValidateCustomEndpoints(unittest.TestCase):
     def test_empty_custom_endpoints(self):
         namespace = SimpleNamespace(
@@ -1579,6 +1598,287 @@ class TestValidateCustomEndpoints(unittest.TestCase):
             }
         )
         validators.validate_custom_endpoints(namespace)
+
+
+class TestValidateParamYamlFile(unittest.TestCase):
+    def setUp(self):
+        self.temp_dir = tempfile.mkdtemp()
+        self.valid_yaml_file = os.path.join(self.temp_dir, "valid.yaml")
+        self.invalid_yaml_file = os.path.join(self.temp_dir, "invalid.yaml")
+        self.readonly_yaml_file = os.path.join(self.temp_dir, "readonly.yaml")
+        self.nonexistent_file = os.path.join(self.temp_dir, "nonexistent.yaml")
+
+        # Create valid YAML file
+        with open(self.valid_yaml_file, 'w') as f:
+            f.write("key1: value1\nkey2:\n  - item1\n  - item2\n")
+
+        # Create invalid YAML file
+        with open(self.invalid_yaml_file, 'w') as f:
+            f.write("invalid: yaml: content: [\n  - unclosed\n")
+
+        # Create readonly YAML file
+        with open(self.readonly_yaml_file, 'w') as f:
+            f.write("key: value\n")
+        os.chmod(self.readonly_yaml_file, 0o000)  # Remove all permissions
+
+    def tearDown(self):
+        # Restore permissions before cleanup
+        if os.path.exists(self.readonly_yaml_file):
+            os.chmod(self.readonly_yaml_file, 0o644)
+        shutil.rmtree(self.temp_dir, ignore_errors=True)
+
+    def test_none_yaml_path(self):
+        """Test that None yaml_path returns without error"""
+        validators._validate_param_yaml_file(None, "config-file")
+
+    def test_empty_yaml_path(self):
+        """Test that empty string yaml_path returns without error"""
+        validators._validate_param_yaml_file("", "config-file")
+
+    def test_nonexistent_file(self):
+        """Test that non-existent file raises InvalidArgumentValueError"""
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            validators._validate_param_yaml_file(self.nonexistent_file, "config-file")
+        self.assertIn("file is not found", str(cm.exception))
+        self.assertIn("config-file", str(cm.exception))
+
+    def test_unreadable_file(self):
+        """Test that unreadable file raises InvalidArgumentValueError"""
+        import os
+
+        # Skip on Windows as it handles permissions differently
+        if os.name == 'nt':
+            self.skipTest("Skipping readonly test on Windows")
+
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            validators._validate_param_yaml_file(self.readonly_yaml_file, "config-file")
+        self.assertIn("file is not readable", str(cm.exception))
+        self.assertIn("config-file", str(cm.exception))
+
+    def test_invalid_yaml_file(self):
+        """Test that invalid YAML content raises InvalidArgumentValueError"""
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            validators._validate_param_yaml_file(self.invalid_yaml_file, "config-file")
+        self.assertIn("file is not a valid YAML file", str(cm.exception))
+        self.assertIn("config-file", str(cm.exception))
+
+    def test_valid_yaml_file(self):
+        """Test that valid YAML file passes validation"""
+        # Should not raise any exception
+        validators._validate_param_yaml_file(self.valid_yaml_file, "config-file")
+
+    def test_different_param_names(self):
+        """Test that different parameter names are included in error messages"""
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            validators._validate_param_yaml_file(self.nonexistent_file, "my-custom-param")
+        self.assertIn("my-custom-param", str(cm.exception))
+
+    @patch('builtins.open')
+    def test_general_exception_handling(self, mock_open):
+        """Test that general exceptions are caught and re-raised as InvalidArgumentValueError"""
+        mock_open.side_effect = PermissionError("Access denied")
+
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            validators._validate_param_yaml_file(self.valid_yaml_file, "config-file")
+        self.assertIn("An error occurred while reading the config file", str(cm.exception))
+        self.assertIn("config-file", str(cm.exception))
+
+    def test_complex_yaml_file(self):
+        """Test validation with complex YAML structure"""
+        import os
+        complex_yaml_file = os.path.join(self.temp_dir, "complex.yaml")
+        with open(complex_yaml_file, 'w') as f:
+            f.write("""
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: test-config
+  namespace: default
+data:
+  config.yaml: |
+    server:
+      host: localhost
+      port: 8080
+    features:
+      - auth
+      - logging
+    database:
+      url: "postgresql://user:pass@host:5432/db"
+      pool_size: 10
+""")
+
+        # Should not raise any exception
+        validators._validate_param_yaml_file(complex_yaml_file, "config-file")
+
+    def test_empty_yaml_file(self):
+        """Test validation with empty YAML file"""
+        import os
+        empty_yaml_file = os.path.join(self.temp_dir, "empty.yaml")
+        with open(empty_yaml_file, 'w') as f:
+            f.write("")
+
+        # Should not raise any exception - empty file is valid YAML
+        validators._validate_param_yaml_file(empty_yaml_file, "config-file")
+
+
+class AgentConfigFileNamespace:
+    def __init__(self, config_file=None):
+        self.config_file = config_file
+
+
+class TestValidateAgentConfigFile(unittest.TestCase):
+    def setUp(self):
+
+        self.temp_dir = tempfile.mkdtemp()
+        self.valid_yaml_file = os.path.join(self.temp_dir, "valid_agent.yaml")
+        self.invalid_yaml_file = os.path.join(self.temp_dir, "invalid_agent.yaml")
+        self.readonly_yaml_file = os.path.join(self.temp_dir, "readonly_agent.yaml")
+        self.nonexistent_file = os.path.join(self.temp_dir, "nonexistent_agent.yaml")
+
+        # Create valid YAML file
+        with open(self.valid_yaml_file, 'w') as f:
+            f.write("""
+model=azure/gpt-4.1
+""")
+
+        # Create invalid YAML file
+        with open(self.invalid_yaml_file, 'w') as f:
+            f.write("invalid: yaml: content: [\n  - unclosed\n")
+
+        # Create readonly YAML file
+        with open(self.readonly_yaml_file, 'w') as f:
+            f.write("agent:\n  config: test\n")
+        os.chmod(self.readonly_yaml_file, 0o000)  # Remove all permissions
+
+    def tearDown(self):
+        import os
+        import shutil
+
+        # Restore permissions before cleanup
+        if os.path.exists(self.readonly_yaml_file):
+            os.chmod(self.readonly_yaml_file, 0o644)
+        shutil.rmtree(self.temp_dir, ignore_errors=True)
+
+    def test_none_config_file(self):
+        """Test that None config_file returns without error"""
+        namespace = AgentConfigFileNamespace(None)
+        validators.validate_agent_config_file(namespace)
+
+    def test_empty_config_file(self):
+        """Test that empty string config_file returns without error"""
+        namespace = AgentConfigFileNamespace("")
+        validators.validate_agent_config_file(namespace)
+
+    def test_valid_config_file(self):
+        """Test that valid YAML config file passes validation"""
+        namespace = AgentConfigFileNamespace(self.valid_yaml_file)
+        # Should not raise any exception
+        validators.validate_agent_config_file(namespace)
+
+    def test_invalid_yaml_config_file(self):
+        """Test that invalid YAML config file raises InvalidArgumentValueError"""
+        namespace = AgentConfigFileNamespace(self.invalid_yaml_file)
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            validators.validate_agent_config_file(namespace)
+        self.assertIn("file is not a valid YAML file", str(cm.exception))
+        self.assertIn("config-file", str(cm.exception))
+
+    def test_nonexistent_config_file(self):
+        """Test that non-existent config file raises InvalidArgumentValueError"""
+        namespace = AgentConfigFileNamespace(self.nonexistent_file)
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            validators.validate_agent_config_file(namespace)
+        self.assertIn("file is not found", str(cm.exception))
+        self.assertIn("config-file", str(cm.exception))
+
+    def test_unreadable_config_file(self):
+        """Test that unreadable config file raises InvalidArgumentValueError"""
+        import os
+
+        # Skip on Windows as it handles permissions differently
+        if os.name == 'nt':
+            self.skipTest("Skipping readonly test on Windows")
+
+        namespace = AgentConfigFileNamespace(self.readonly_yaml_file)
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            validators.validate_agent_config_file(namespace)
+        self.assertIn("file is not readable", str(cm.exception))
+        self.assertIn("config-file", str(cm.exception))
+
+    @patch('azext_aks_preview._validators.get_config_dir')
+    @patch('azext_aks_preview._validators.os.path.exists')
+    def test_default_config_path_nonexistent(self, mock_exists, mock_get_config_dir):
+        """Test that default config path that doesn't exist returns without error"""
+        mock_get_config_dir.return_value = "/home/user/.azure"
+        mock_exists.return_value = False
+
+        default_path = "/home/user/.azure/aksAgent.yaml"
+        namespace = AgentConfigFileNamespace(default_path)
+
+        # Should not raise any exception when default path doesn't exist
+        validators.validate_agent_config_file(namespace)
+
+    @patch('azext_aks_preview._validators.get_config_dir')
+    def test_default_config_path_exists_valid(self, mock_get_config_dir):
+        """Test that default config path with valid file passes validation"""
+        mock_get_config_dir.return_value = self.temp_dir
+
+        default_path = os.path.join(self.temp_dir, "aksAgent.yaml")
+        # Create the default config file
+        with open(default_path, 'w') as f:
+            f.write("agent:\n  config: default\n")
+
+        namespace = AgentConfigFileNamespace(default_path)
+        # Should not raise any exception
+        validators.validate_agent_config_file(namespace)
+
+    @patch('azext_aks_preview._validators.get_config_dir')
+    def test_default_config_path_exists_invalid(self, mock_get_config_dir):
+        """Test that default config path with invalid file raises error"""
+        mock_get_config_dir.return_value = self.temp_dir
+
+        default_path = os.path.join(self.temp_dir, "aksAgent.yaml")
+        # Create the default config file with invalid YAML
+        with open(default_path, 'w') as f:
+            f.write("invalid: yaml: [\n  unclosed\n")
+
+        namespace = AgentConfigFileNamespace(default_path)
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            validators.validate_agent_config_file(namespace)
+        self.assertIn("file is not a valid YAML file", str(cm.exception))
+
+    def test_empty_agent_config_file(self):
+        """Test validation with empty agent config file"""
+        import os
+        empty_config_file = os.path.join(self.temp_dir, "empty_agent.yaml")
+        with open(empty_config_file, 'w') as f:
+            f.write("")
+
+        namespace = AgentConfigFileNamespace(empty_config_file)
+        # Should not raise any exception - empty file is valid YAML
+        validators.validate_agent_config_file(namespace)
+
+    @patch('builtins.open')
+    def test_file_access_exception(self, mock_open):
+        """Test that general file access exceptions are handled properly"""
+        mock_open.side_effect = PermissionError("Access denied")
+
+        namespace = AgentConfigFileNamespace(self.valid_yaml_file)
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            validators.validate_agent_config_file(namespace)
+        self.assertIn("An error occurred while reading the config file", str(cm.exception))
+        self.assertIn("config-file", str(cm.exception))
+
+    def test_minimal_valid_agent_config(self):
+        """Test validation with minimal valid agent configuration"""
+        import os
+        minimal_config_file = os.path.join(self.temp_dir, "minimal_agent.yaml")
+        with open(minimal_config_file, 'w') as f:
+            f.write("agent: {}")
+
+        namespace = AgentConfigFileNamespace(minimal_config_file)
+        # Should not raise any exception
+        validators.validate_agent_config_file(namespace)
 
 
 if __name__ == "__main__":

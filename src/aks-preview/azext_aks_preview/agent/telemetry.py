@@ -9,7 +9,8 @@ import os
 import platform
 
 from applicationinsights import TelemetryClient
-from azure.cli.core.telemetry import _get_hash_mac_address, _get_user_agent
+from azure.cli.core.telemetry import (_get_azure_subscription_id,
+                                      _get_hash_mac_address, _get_user_agent)
 
 DEFAULT_INSTRUMENTATION_KEY = "c301e561-daea-42d9-b9d1-65fca4166704"
 APPLICATIONINSIGHTS_INSTRUMENTATION_KEY_ENV = "APPLICATIONINSIGHTS_INSTRUMENTATION_KEY"
@@ -62,10 +63,11 @@ class CLITelemetryClient:
         return {
             "device.id": _get_hash_mac_address(),
             "service.name": "aks agent",
+            "userAzureSubscriptionId": _get_azure_subscription_id(),
             "OS.Type": platform.system().lower(),  # eg. darwin, windows
             "OS.Version": platform.version().lower(),  # eg. 10.0.14942
             "OS.Platform": platform.platform().lower(),  # eg. windows-10-10.0.19041-sp0
-            "UserAgent": _get_user_agent(),
+            "userAgent": _get_user_agent(),
             "extensionname": extension_name,  # extension and version
         }
 
