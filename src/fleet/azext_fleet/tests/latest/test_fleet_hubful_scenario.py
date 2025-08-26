@@ -39,14 +39,14 @@ class FleetHubfulScenarioTest(ScenarioTest):
         return pathname.replace('\\', '\\\\')
 
     @AllowLargeResponse(size_kb=9999)
-    @ResourceGroupPreparer(name_prefix='cli-', random_name_length=8)
+    @ResourceGroupPreparer(name_prefix='cli-', random_name_length=8, location='eastus')
     def test_fleet_hubful(self):
         self.kwargs.update({
             'fleet_name': self.create_random_name(prefix='fl-', length=7),
             'member_name': self.create_random_name(prefix='flmc-', length=9),
             'namespace_name': self.create_random_name(prefix='flns-', length=9),
             'ssh_key_value': self.generate_ssh_keys(),
-            'vm_size': 'Standard_A8_v2'
+            'vm_size': 'standard_dc4as_cc_v5'
         })
 
         self.cmd('fleet create -g {rg} -n {fleet_name} --enable-hub  --vm-size {vm_size}', checks=[
