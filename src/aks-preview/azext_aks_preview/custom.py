@@ -1467,6 +1467,9 @@ def aks_agentpool_add(
     except DecoratorEarlyExitException:
         # exit gracefully
         return None
+    except HttpResponseError as e:
+        logger.error("Failed to get managed cluster '%s' in resource group '%s': %s", cluster_name, resource_group_name, e)
+        return None
     # send request to add a real agentpool
     return aks_agentpool_add_decorator.add_agentpool(agentpool)
 

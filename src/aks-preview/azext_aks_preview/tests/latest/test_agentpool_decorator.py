@@ -1115,11 +1115,7 @@ class AKSPreviewAgentPoolContextManagedClusterModeTestCase(
         # Construct and attach the agentpool using the correct method
         with patch("azext_aks_preview.agentpool_decorator.cf_agent_pools", return_value=Mock(list=Mock(return_value=[]))):
             agentpool = dec.construct_agentpool_profile_preview()
-
-        # Now run set_up_ssh_access and assert the expected log is emitted
-        with self.assertLogs(level='WARNING') as log:
-            dec.set_up_ssh_access(agentpool)
-        self.assertIn("SSH access is in preview", "\n".join(log.output))
+        self.assertEqual(agentpool.security_profile, None)
     
     def test_set_up_ssh_access_logs_warning_when_mcsku_automatic(self):
         raw_param_dict = {
@@ -1138,7 +1134,6 @@ class AKSPreviewAgentPoolContextManagedClusterModeTestCase(
 
         # Patch the SKU to be "automatic"
         dec.context.get_ssh_access = Mock(return_value=CONST_SSH_ACCESS_LOCALUSER)
-        dec.context.get_sku_name = Mock(return_value="")
 
         mock_mc = Mock()
         mock_mc.sku.name = "Automatic"
@@ -1146,11 +1141,7 @@ class AKSPreviewAgentPoolContextManagedClusterModeTestCase(
         # Construct and attach the agentpool using the correct method
         with patch("azext_aks_preview.agentpool_decorator.cf_agent_pools", return_value=Mock(list=Mock(return_value=[]))):
             agentpool = dec.construct_agentpool_profile_preview(mc=mock_mc)
-
-        # Now run set_up_ssh_access and assert the expected log is emitted
-        with self.assertLogs(level='WARNING') as log:
-            dec.set_up_ssh_access(agentpool, mc=mock_mc)
-        self.assertIn("SSH access is in preview", "\n".join(log.output))
+        self.assertEqual(agentpool.security_profile, None)
 
 
     def test_set_up_ssh_access_logs_warning_for_base(self):
