@@ -641,7 +641,7 @@ def load_arguments(self, _):
             ),
         )
         c.argument(
-            "sku", is_preview=True, arg_type=get_enum_type(sku_names)
+            "sku", arg_type=get_enum_type(sku_names)
         )
         c.argument(
             "tier", arg_type=get_enum_type(sku_tiers), validator=validate_sku_tier
@@ -1156,7 +1156,7 @@ def load_arguments(self, _):
             ),
         )
         c.argument(
-            "sku", is_preview=True, arg_type=get_enum_type(sku_names)
+            "sku", arg_type=get_enum_type(sku_names)
         )
         c.argument(
             "tier", arg_type=get_enum_type(sku_tiers), validator=validate_sku_tier
