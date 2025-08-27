@@ -222,7 +222,7 @@ def get_credentials(cmd,
 
             parsed_id = parse_resource_id(fleet_member.cluster_resource_id)
             if (parsed_id.get('resource_type') != 'managedclusters' or
-                parsed_id.get('namespace') != 'microsoft.containerservice'):
+                    parsed_id.get('namespace') != 'microsoft.containerservice'):
                 raise CLIError(f"Fleet member '{member_name}' is not associated with an AKS managed cluster. "
                                f"Currently, only AKS managed clusters are supported for this command.")
 
@@ -974,7 +974,7 @@ def get_namespace_credentials(cmd,
             kubeconfig = yaml.safe_load(f.read())
 
         ctx = next(ctx for ctx in kubeconfig['contexts']
-                if ctx['name'] == kubeconfig['current-context'])
+                  if ctx['name'] == kubeconfig['current-context'])
         ctx['context']['namespace'] = managed_namespace_name
 
         modified_kubeconfig = yaml.dump(kubeconfig, default_flow_style=False)
