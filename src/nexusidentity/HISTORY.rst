@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.0.0b6
++++++++
+* Removed sdk dependency using httpclient to resolve the long path issue
+
 1.0.0b5
 +++++++
 * Adding support for older algorithm ssh keys
