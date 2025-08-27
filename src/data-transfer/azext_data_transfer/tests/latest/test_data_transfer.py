@@ -241,3 +241,110 @@ class ConnectionAndFlowOperations(ScenarioTest):
         self.cmd('az data-transfer connection delete --yes --resource-group {rg} --connection-name {receiveConnection}')
 
         self.cmd('az data-transfer connection delete --yes --resource-group {rg} --connection-name {sendConnection}')
+
+    @record_only()
+    def test_pipeline_disable_enable_operations(self):
+        """Test pipeline-level disable and enable operations using new custom commands."""
+        self.kwargs.update({
+            'rg': 'rpaas-rg',
+            'pipeline': 'corptest',
+            'justification': 'Testing pipeline disable/enable operations'
+        })
+
+        # Test pipeline disable
+        self.cmd('az data-transfer pipeline disable --resource-group {rg} --pipeline-name {pipeline} --justification "{justification}"')
+        
+        # Test pipeline enable  
+        self.cmd('az data-transfer pipeline enable --resource-group {rg} --pipeline-name {pipeline} --justification "{justification}"')
+
+
+    @record_only()
+    def test_pipeline_connection_disable_enable_operations(self):
+        """Test connection-level disable and enable operations using new custom commands."""
+        self.kwargs.update({
+            'rg': 'rpaas-rg',
+            'subscriptionId': '389ff96a-b137-405b-a3c8-4d22514708b5',
+            'sendConnection': self.create_random_name(prefix='test-conn-disable-', length=30),
+            'receiveConnection': self.create_random_name(prefix='test-conn-receive-', length=30),
+            'location': 'eastus',
+            'pipeline': 'corptest',
+            'justification': 'Testing connection disable/enable operations'
+        })
+
+        # Create connections for testing
+        sendId = self.cmd('az data-transfer connection create --resource-group {rg} --connection-name {sendConnection} --direction Send --location {location} --flow-types ["Mission"] --pipeline {pipeline} --primary-contact lasuredd@microsoft.com --secondary-contacts lasuredd@microsoft.com --pin 123456').get_output_in_json().get('id')
+        
+        receiveId = self.cmd('az data-transfer connection create --resource-group {rg} --connection-name {receiveConnection} --direction Receive --location {location} --flow-types ["Mission"] --pipeline {pipeline} --justification required --remote-subscription-id {subscriptionId} --requirement-id 1234 --primary-contact lasuredd@microsoft.com --secondary-contacts lasuredd@microsoft.com').get_output_in_json().get('id')
+        
+        self.kwargs.update({
+            'sendId': sendId,
+            'receiveId': receiveId
+        })
+
+        # Test connection disable with single connection
+        self.cmd('az data-transfer pipeline connection disable --resource-group {rg} --pipeline-name {pipeline} --connection-ids {sendId} --justification "{justification}"')
+        
+        # Test connection enable with single connection
+        self.cmd('az data-transfer pipeline connection enable --resource-group {rg} --pipeline-name {pipeline} --connection-ids {sendId} --justification "{justification}"')
+
+        # Test connection disable with multiple connections
+        self.cmd('az data-transfer pipeline connection disable --resource-group {rg} --pipeline-name {pipeline} --connection-ids {sendId} {receiveId} --justification "{justification}"')
+        
+        # Test connection enable with multiple connections
+        self.cmd('az data-transfer pipeline connection enable --resource-group {rg} --pipeline-name {pipeline} --connection-ids {sendId} {receiveId} --justification "{justification}"')
+
+        # Test connection disable with no-wait
+        self.cmd('az data-transfer pipeline connection disable --resource-group {rg} --pipeline-name {pipeline} --connection-ids {sendId} --justification "{justification}" --no-wait')
+        
+        # Test connection enable with no-wait
+        self.cmd('az data-transfer pipeline connection enable --resource-group {rg} --pipeline-name {pipeline} --connection-ids {sendId} --justification "{justification}" --no-wait')
+
+        # Cleanup
+        self.cmd('az data-transfer connection delete --yes --resource-group {rg} --connection-name {sendConnection}')
+        self.cmd('az data-transfer connection delete --yes --resource-group {rg} --connection-name {receiveConnection}')
+
+    @record_only()
+    def test_pipeline_flowtype_disable_enable_operations(self):
+        """Test flowtype-level disable and enable operations using new custom commands."""
+        self.kwargs.update({
+            'rg': 'rpaas-rg',
+            'pipeline': 'corptest',
+            'justification': 'Testing flowtype disable/enable operations'
+        })
+
+        # Test flowtype disable with single flow type
+        self.cmd('az data-transfer pipeline flowtype disable --resource-group {rg} --pipeline-name {pipeline} --flow-types Mission --justification "{justification}"')
+        
+        # Test flowtype enable with single flow type
+        self.cmd('az data-transfer pipeline flowtype enable --resource-group {rg} --pipeline-name {pipeline} --flow-types Mission --justification "{justification}"')
+
+        # Test flowtype disable with multiple flow types
+        self.cmd('az data-transfer pipeline flowtype disable --resource-group {rg} --pipeline-name {pipeline} --flow-types Mission DataFlow --justification "{justification}"')
+        
+        # Test flowtype enable with multiple flow types
+        self.cmd('az data-transfer pipeline flowtype enable --resource-group {rg} --pipeline-name {pipeline} --flow-types Mission DataFlow --justification "{justification}"')
+
+        # Test flowtype disable with no-wait
+        self.cmd('az data-transfer pipeline flowtype disable --resource-group {rg} --pipeline-name {pipeline} --flow-types Mission --justification "{justification}" --no-wait')
+        
+        # Test flowtype enable with no-wait
+        self.cmd('az data-transfer pipeline flowtype enable --resource-group {rg} --pipeline-name {pipeline} --flow-types Mission --justification "{justification}" --no-wait')
+
+    @record_only()
+    def test_custom_commands_parameter_validation(self):
+        """Test parameter validation and edge cases for custom commands."""
+        self.kwargs.update({
+            'rg': 'rpaas-rg',
+            'pipeline': 'corptest',
+            'justification': 'Testing parameter validation'
+        })
+
+        # Test commands without justification (optional parameter)
+        self.cmd('az data-transfer pipeline disable --resource-group {rg} --pipeline-name {pipeline}')
+        self.cmd('az data-transfer pipeline enable --resource-group {rg} --pipeline-name {pipeline}')
+
+        # Test flowtype commands with empty flow types list (should fail)
+        self.cmd('az data-transfer pipeline flowtype disable --resource-group {rg} --pipeline-name {pipeline} --flow-types --justification "{justification}"', expect_failure=True)
+        
+        # Test connection commands with empty connection IDs list (should fail)
+        self.cmd('az data-transfer pipeline connection disable --resource-group {rg} --pipeline-name {pipeline} --connection-ids --justification "{justification}"', expect_failure=True)
