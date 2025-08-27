@@ -164,5 +164,5 @@ def assign_network_contributor_role_to_subnet(cmd, subnet_id):
         raise CLIError("The Microsoft.ContainerService resource provider is not registered."
                        "Run `az provider register -n Microsoft.ContainerService --wait`.")
     if not add_role_assignment(cmd, 'Network Contributor', FLEET_1P_APP_ID, scope=subnet_id):
-        raise CLIError("failed to create role assignment for Fleet RP.\n"
-                       f"Do you have owner permissions on the subnet {subnet_id}?\n")
+        raise CLIError("Failed to create Network Contributor role assignment for Fleet RP on the subnet.\n"
+                       f"Please ensure you have sufficient permissions to assign roles on subnet {subnet_id}.")
