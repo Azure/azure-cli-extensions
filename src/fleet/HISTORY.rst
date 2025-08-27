@@ -143,7 +143,7 @@ Release History
 ++++++
 * Updated help text for new supported member cluster type.
 
-1.7.0
+1.6.3
 ++++++
 * Upgrade SDK version to 2025-08-01-preview
 * Add Fleet Managed Namespace support
