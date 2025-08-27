@@ -4,21 +4,19 @@
 # --------------------------------------------------------------------------------------------
 
 import base64
-import re
-import json
 import copy
+import json
+import re
 import tarfile
-from typing import Any, Tuple, Dict, List
 from hashlib import sha256
+from typing import Any, Dict, List, Tuple
+
 import deepdiff
-import yaml
 import docker
+import yaml
+from azext_confcom import config, os_util
+from azext_confcom.errors import eprint
 from knack.log import get_logger
-from azext_confcom.errors import (
-    eprint,
-)
-from azext_confcom import os_util
-from azext_confcom import config
 
 logger = get_logger(__name__)
 
@@ -28,6 +26,7 @@ PARAMETER_AND_VARIABLE_REGEX = r"\[(?:parameters|variables)\(\s*'([^\.\/]+?)'\s*
 WHOLE_PARAMETER_AND_VARIABLE = r"(\s*\[\s*(parameters|variables))(\(\s*'([^\.\/]+?)'\s*\)\])"
 SVN_PATTERN = r'svn\s*:=\s*"(\d+)"'
 NAMESPACE_PATTERN = r'package\s+([a-zA-Z_][a-zA-Z0-9_]*)'
+
 
 class DockerClient:
     _client = None

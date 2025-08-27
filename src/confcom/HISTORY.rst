@@ -7,6 +7,8 @@ Release History
 ++++++
 * bugfix making it so that oras discover function doesn't error when no fragments are found in the remote repository
 * splitting out documentation into command-specific files and adding info about --input flag
+* adding standalone fragment support
+* bugfix for oras pulling fragments when offline
 
 1.2.6
 ++++++

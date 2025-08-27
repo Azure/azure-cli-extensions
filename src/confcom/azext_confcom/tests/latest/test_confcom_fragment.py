@@ -1160,14 +1160,12 @@ class FragmentRegistryInteractions(ScenarioTest):
                     container = existing_containers[0]
                     if container.status != 'running':
                         container.start()
-        except docker.errors.DockerException as e:
-            raise Exception(f"Docker is not available: {e}")
-
-        # Replace subprocess.run(f"docker pull {cls.zot_image}", shell=True)
         except docker.errors.ImageNotFound:
             raise Exception(f"Could not pull image {cls.zot_image}")
         except docker.errors.APIError as e:
             raise Exception(f"Error pulling image {cls.zot_image}: {e}")
+        except docker.errors.DockerException as e:
+            raise Exception(f"Docker is not available: {e}")
 
         cls.key_dir_parent = os.path.join(SAMPLES_DIR, 'certs')
         cls.key = os.path.join(cls.key_dir_parent, 'intermediateCA', 'private', 'ec_p384_private.pem')

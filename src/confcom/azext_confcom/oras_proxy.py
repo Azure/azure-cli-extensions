@@ -84,8 +84,7 @@ def discover(
         err_str = item.stderr.decode("utf-8")
         if "401: Unauthorized" in err_str:
             logger.warning(
-                "Error pulling the policy fragment from %s.\n\n"
-                + "Please log into the registry and try again.\n\n",
+                "Error pulling the policy fragment from %s.\n\nPlease log into the registry and try again.\n\n",
                 image
             )
             image_exists = False
@@ -94,7 +93,7 @@ def discover(
             logger.warning("No policy fragments found for image %s", image)
             image_exists = False
         elif "dial tcp: lookup" in err_str:
-            logger.warning(f"Could not access registry for {image}")
+            logger.warning("Could not access registry for %s", image)
             image_exists = False
         else:
             eprint(f"Error retrieving fragments from remote repo: {err_str}", exit_code=item.returncode)
@@ -232,6 +231,7 @@ def check_oras_cli():
         eprint(text)
 
 
+# used for image-attached fragments
 def attach_fragment_to_image(image_name: str, filename: str):
     if ":" not in image_name:
         image_name += ":latest"
@@ -276,6 +276,7 @@ def generate_imports_from_image_name(image_name: str, minimum_svn: str) -> List[
     return import_list
 
 
+# used for standalone fragments
 def push_fragment_to_registry(feed_name: str, filename: str) -> None:
     # push the fragment to the registry
     arg_list = [
