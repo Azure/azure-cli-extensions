@@ -39,28 +39,33 @@ class FleetHubfulScenarioTest(ScenarioTest):
         return pathname.replace('\\', '\\\\')
 
     @AllowLargeResponse(size_kb=9999)
-    @ResourceGroupPreparer(name_prefix='cli-', random_name_length=8, location='eastus')
+    @ResourceGroupPreparer(name_prefix='cli-', random_name_length=8, location='westcentralus')
     def test_fleet_hubful(self):
         self.kwargs.update({
             'fleet_name': self.create_random_name(prefix='fl-', length=7),
             'member_name': self.create_random_name(prefix='flmc-', length=9),
             'namespace_name': self.create_random_name(prefix='flns-', length=9),
             'ssh_key_value': self.generate_ssh_keys(),
-            'vm_size': 'standard_dc4as_cc_v5'
+            'vm_size': 'Standard_A8_v2',
+            'location': 'westcentralus'
+
         })
 
-        self.cmd('fleet create -g {rg} -n {fleet_name} --enable-hub  --vm-size {vm_size}', checks=[
+        self.cmd('fleet create -g {rg} -n {fleet_name} --enable-hub --vm-size {vm_size} --location {location}', checks=[
             self.check('name', '{fleet_name}'),
             self.check('hubProfile.agentProfile.vmSize', '{vm_size}')
         ])
 
         self.cmd('fleet wait -g {rg} --fleet-name {fleet_name} --created', checks=[self.is_empty()])
 
-        self.cmd('fleet get-credentials -g {rg} -n {fleet_name} --overwrite-existing')
+        # Use a unique context to avoid conflicts
+        self.cmd('fleet get-credentials -g {rg} -n {fleet_name} --context fleet-{fleet_name} --overwrite-existing')
 
         mc_id = self.cmd('aks create -g {rg} -n {member_name} --ssh-key-value={ssh_key_value}', checks=[
             self.check('name', '{member_name}')
         ]).get_output_in_json()['id']
+
+        self.cmd('aks wait -g {rg} -n {member_name} --created')
 
         self.kwargs.update({
             'mc_id': mc_id,
@@ -85,24 +90,20 @@ class FleetHubfulScenarioTest(ScenarioTest):
                  '--member-cluster-names {member_name}',
                  checks=[
                      self.check('name', '{namespace_name}'),
-                     self.check('adoptionPolicy', 'Never'),
+                     self.check('adoptionPolicy', 'Always'),
                      self.check('deletePolicy', 'Delete'),
-                     self.check('memberClusters[0].name', '{member_name}')
+                     self.check('propagationPolicy.placementProfile.defaultClusterResourcePlacement.policy.clusterNames[0]', '{member_name}')
                  ])
         
-        self.cmd('fleet namespace wait -g {rg} --fleet-name {fleet_name} -n {namespace_name} --created', checks=[
+        self.cmd('fleet namespace wait -g {rg} -f {fleet_name} -n {namespace_name} --created', checks=[self.is_empty()])
+
+        self.cmd('fleet namespace show -g {rg} -f {fleet_name} -n {namespace_name}', checks=[
             self.check('name', '{namespace_name}')
         ])
 
-        self.cmd('fleet namespace show -g {rg} --fleet-name {fleet_name} -n {namespace_name}', checks=[
-            self.check('name', '{namespace_name}')
-        ])
+        self.cmd('fleet get-credentials -g {rg} -n {fleet_name} --context namespace-{namespace_name} --overwrite-existing')
 
-        self.cmd('fleet namespace get-credentials -g {rg} -n {fleet_name} --member {member_name} --overwrite-existing')
-
-        self.cmd('fleet namespace delete -g {rg} --fleet-name {fleet_name} -n {namespace_name}', checks=[
-            self.check('name', '{namespace_name}')
-        ])
+        self.cmd('fleet namespace delete -g {rg} --fleet-name {fleet_name} -n {namespace_name} --yes')
 
         self.cmd('fleet member delete -g {rg} --fleet-name {fleet_name} -n {member_name} --yes')
 
