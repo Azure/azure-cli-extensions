@@ -974,7 +974,7 @@ def get_namespace_credentials(cmd,
             kubeconfig = yaml.safe_load(f.read())
 
         ctx = next(ctx for ctx in kubeconfig['contexts']
-                    if ctx['name'] == kubeconfig['current-context'])
+                if ctx['name'] == kubeconfig['current-context'])
         ctx['context']['namespace'] = managed_namespace_name
 
         modified_kubeconfig = yaml.dump(kubeconfig, default_flow_style=False)
