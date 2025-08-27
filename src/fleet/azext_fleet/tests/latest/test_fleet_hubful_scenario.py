@@ -58,7 +58,6 @@ class FleetHubfulScenarioTest(ScenarioTest):
 
         self.cmd('fleet wait -g {rg} --fleet-name {fleet_name} --created', checks=[self.is_empty()])
 
-        # Use a unique context to avoid conflicts
         self.cmd('fleet get-credentials -g {rg} -n {fleet_name} --context fleet-{fleet_name} --overwrite-existing')
 
         mc_id = self.cmd('aks create -g {rg} -n {member_name} --ssh-key-value={ssh_key_value}', checks=[
