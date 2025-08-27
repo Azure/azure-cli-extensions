@@ -157,6 +157,7 @@ class ApiApplicationAcceleratorTest(ScenarioTest):
 
         self.cmd('spring application-accelerator delete --yes -g {rg} -s {serviceName}')
 
+        # service behavior change
         self.cmd('spring dev-tool show -g {rg} -s {serviceName}', checks=[
-            self.check('properties.features.applicationAccelerator.state', 'Disabled')
+            self.check('properties.features.applicationAccelerator.state', 'Enabled')
         ])
