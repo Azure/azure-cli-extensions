@@ -23,6 +23,7 @@ from azure.cli.command_modules.acs._validators import (
     validate_nat_gateway_idle_timeout,
     validate_nat_gateway_managed_outbound_ip_count,
 )
+from azure.cli.core.api import get_config_dir
 from azure.cli.core.commands.parameters import (
     edge_zone_type,
     file_type,
@@ -149,7 +150,8 @@ from azext_aks_preview._consts import (
     CONST_ADVANCED_NETWORKPOLICIES_FQDN,
     CONST_ADVANCED_NETWORKPOLICIES_L7,
     CONST_TRANSIT_ENCRYPTION_TYPE_NONE,
-    CONST_TRANSIT_ENCRYPTION_TYPE_WIREGUARD
+    CONST_TRANSIT_ENCRYPTION_TYPE_WIREGUARD,
+    CONST_AGENT_CONFIG_FILE_NAME,
 )
 
 from azext_aks_preview._validators import (
@@ -223,6 +225,7 @@ from azext_aks_preview._validators import (
     validate_max_blocked_nodes,
     validate_resource_group_parameter,
     validate_location_resource_group_cluster_parameters,
+    validate_agent_config_file,
 )
 from azext_aks_preview.azurecontainerstorage._consts import (
     CONST_ACSTOR_ALL,
@@ -1074,6 +1077,7 @@ def load_arguments(self, _):
         c.argument("vm_sizes", is_preview=True)
         c.argument("enable_imds_restriction", action="store_true", is_preview=True)
         c.argument("enable_managed_system_pool", action="store_true", is_preview=True)
+        c.argument("enable_upstream_kubescheduler_user_configuration", action="store_true", is_preview=True)
 
     with self.argument_context("aks update") as c:
         # managed cluster paramerters
@@ -1519,6 +1523,8 @@ def load_arguments(self, _):
         c.argument('migrate_vmas_to_vms', is_preview=True, action='store_true')
         c.argument("disable_http_proxy", action="store_true", is_preview=True)
         c.argument("enable_http_proxy", action="store_true", is_preview=True)
+        c.argument("enable_upstream_kubescheduler_user_configuration", action="store_true", is_preview=True)
+        c.argument("disable_upstream_kubescheduler_user_configuration", action="store_true", is_preview=True)
 
     with self.argument_context("aks upgrade") as c:
         c.argument("kubernetes_version", completer=get_k8s_upgrades_completion_list)
@@ -2772,6 +2778,70 @@ def load_arguments(self, _):
             "yes",
             options_list=["--yes", "-y"],
             help="Do not prompt for confirmation.",
+            action="store_true",
+        )
+
+    with self.argument_context("aks agent") as c:
+        c.positional(
+            "prompt",
+            help="Ask any question and answer using available tools.",
+        )
+        c.argument(
+            "resource_group_name",
+            options_list=["--resource-group", "-g"],
+            help="Name of resource group.",
+            required=False,
+        )
+        c.argument(
+            "name",
+            options_list=["--name", "-n"],
+            help="Name of the managed cluster.",
+            required=False,
+        )
+        c.argument(
+            "max_steps",
+            type=int,
+            default=10,
+            required=False,
+            help="Maximum number of steps the LLM can take to investigate the issue.",
+        )
+        c.argument(
+            "config_file",
+            default=os.path.join(get_config_dir(), CONST_AGENT_CONFIG_FILE_NAME),
+            validator=validate_agent_config_file,
+            required=False,
+            help="Path to the config file.",
+        )
+        c.argument(
+            "model",
+            help="The model to use for the LLM.",
+            required=False,
+            type=str,
+        )
+        c.argument(
+            "api-key",
+            help="API key to use for the LLM (if not given, uses environment variables AZURE_API_KEY, OPENAI_API_KEY)",
+            required=False,
+            type=str,
+        )
+        c.argument(
+            "no_interactive",
+            help="Disable interactive mode. When set, the agent will not prompt for input and will run in batch mode.",
+            action="store_true",
+        )
+        c.argument(
+            "no_echo_request",
+            help="Disable echoing back the question provided to AKS Agent in the output.",
+            action="store_true",
+        )
+        c.argument(
+            "show_tool_output",
+            help="Show the output of each tool that was called.",
+            action="store_true",
+        )
+        c.argument(
+            "refresh_toolsets",
+            help="Refresh the toolsets status.",
             action="store_true",
         )
 

@@ -85,6 +85,8 @@ from azext_aks_preview.addonconfiguration import (
     add_virtual_node_role_assignment,
     enable_addons,
 )
+from azext_aks_preview.agent.agent import aks_agent as aks_agent_internal
+
 from azext_aks_preview.aks_diagnostics import aks_kanalyze_cmd, aks_kollect_cmd
 from azext_aks_preview.aks_draft.commands import (
     aks_draft_cmd_create,
@@ -749,6 +751,7 @@ def aks_create(
     enable_imds_restriction=False,
     # managed system pool
     enable_managed_system_pool=False,
+    enable_upstream_kubescheduler_user_configuration=False,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -964,6 +967,8 @@ def aks_update(
     enable_imds_restriction=False,
     disable_imds_restriction=False,
     migrate_vmas_to_vms=False,
+    enable_upstream_kubescheduler_user_configuration=False,
+    disable_upstream_kubescheduler_user_configuration=False,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -4398,3 +4403,36 @@ aks_identity_binding_create = aks_ib_cmd_create
 aks_identity_binding_delete = aks_ib_cmd_delete
 aks_identity_binding_show = aks_ib_cmd_show
 aks_identity_binding_list = aks_ib_cmd_list
+
+
+# pylint: disable=unused-argument
+def aks_agent(
+    cmd,
+    client,
+    prompt,
+    model,
+    max_steps,
+    config_file,
+    resource_group_name=None,
+    name=None,
+    api_key=None,
+    no_interactive=False,
+    no_echo_request=False,
+    show_tool_output=False,
+    refresh_toolsets=False,
+):
+
+    aks_agent_internal(
+        cmd,
+        resource_group_name,
+        name,
+        prompt,
+        model,
+        api_key,
+        max_steps,
+        config_file,
+        no_interactive,
+        no_echo_request,
+        show_tool_output,
+        refresh_toolsets,
+    )
