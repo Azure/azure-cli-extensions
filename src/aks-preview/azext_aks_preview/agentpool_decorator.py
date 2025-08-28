@@ -989,7 +989,9 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
 
         ssh_access = self.context.get_ssh_access()
         sku_name = self.context.get_sku_name()
-        if ssh_access is not None and (sku_name and sku_name.lower() != CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC):
+        if sku_name and sku_name.lower() == CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC:
+            return agentpool
+        if ssh_access is not None:
             if agentpool.security_profile is None:
                 agentpool.security_profile = self.models.AgentPoolSecurityProfile()  # pylint: disable=no-member
             agentpool.security_profile.ssh_access = ssh_access
