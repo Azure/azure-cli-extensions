@@ -7,7 +7,7 @@ import os
 import tempfile
 
 from knack.util import CLIError
-from azure.cli.testsdk import (ScenarioTest, record_only)
+from azure.cli.testsdk import (ScenarioTest, record_only, live_only)
 from .custom_preparers import (SpringPreparer, SpringResourceGroupPreparer, SpringAppNamePreparer)
 from .custom_recording_processor import (SpringTestEndpointReplacer)
 from .custom_dev_setting_constant import SpringTestEnvironmentEnum
@@ -141,6 +141,7 @@ class AppDeploy(ScenarioTest):
 
 
 class AppCRUD(ScenarioTest):
+    @live_only()
     @SpringResourceGroupPreparer(dev_setting_name=SpringTestEnvironmentEnum.STANDARD['resource_group_name'])
     @SpringPreparer(**SpringTestEnvironmentEnum.STANDARD['spring'])
     @SpringAppNamePreparer()
@@ -241,6 +242,7 @@ class AppCRUD(ScenarioTest):
     @SpringResourceGroupPreparer(dev_setting_name=SpringTestEnvironmentEnum.ENTERPRISE['resource_group_name'])
     @SpringPreparer(**SpringTestEnvironmentEnum.ENTERPRISE['spring'], location = 'eastasia')
     @SpringAppNamePreparer()
+    @live_only()
     def test_enterprise_app_crud(self, resource_group, spring, app):
         self.kwargs.update({
             'app': app,
