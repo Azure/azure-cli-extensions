@@ -3,24 +3,22 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-import subprocess
 import os
-import stat
 import platform
+import stat
+import subprocess
 from typing import List
+
 import requests
-from knack.log import get_logger
-from azext_confcom.errors import eprint
 from azext_confcom.config import (
-    REGO_CONTAINER_START,
-    REGO_FRAGMENT_START,
-    POLICY_FIELD_CONTAINERS,
+    ACI_FIELD_CONTAINERS_REGO_FRAGMENTS_INCLUDES, POLICY_FIELD_CONTAINERS,
     POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS,
-    POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_ISSUER,
     POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_FEED,
+    POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_ISSUER,
     POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_MINIMUM_SVN,
-    ACI_FIELD_CONTAINERS_REGO_FRAGMENTS_INCLUDES,
-)
+    REGO_CONTAINER_START, REGO_FRAGMENT_START)
+from azext_confcom.errors import eprint
+from knack.log import get_logger
 
 logger = get_logger(__name__)
 host_os = platform.system()
@@ -57,6 +55,8 @@ class CoseSignToolProxy:  # pylint: disable=too-few-public-methods
             needed_asset_info = [asset for asset in release["assets"] if asset["name"] in needed_assets]
             if len(needed_asset_info) == len(needed_assets):
                 for asset in needed_asset_info:
+                    # say which version we're downloading
+                    print(f"Downloading integrity-vhd version {release['tag_name']}")
                     # get the download url for the dmverity-vhd file
                     exe_url = asset["browser_download_url"]
                     # download the file
