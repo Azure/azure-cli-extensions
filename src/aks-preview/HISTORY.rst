@@ -12,6 +12,13 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+18.0.0b29
++++++++
+* Improve user experience of `az aks agent` with enhanced MCP (Model Context Protocol) integration.
+* Use aks-mcp by default for `az aks agent`.
+* Add comprehensive error handling, status management, and user feedback systems for the agent debugging tool.
+* Implement smart binary management and configuration generation for improved agent reliability.
+
 18.0.0b28
 +++++++
 * Add interactive AI-powered debugging tool `az aks agent`.
