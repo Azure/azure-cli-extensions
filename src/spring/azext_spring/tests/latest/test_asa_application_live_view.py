@@ -5,7 +5,7 @@
 import json
 import unittest
 import time
-from azure.cli.testsdk import (ScenarioTest)
+from azure.cli.testsdk import (ScenarioTest, live_only)
 from .common.test_utils import get_test_cmd
 from .custom_preparers import SpringPreparer, SpringResourceGroupPreparer
 from .custom_dev_setting_constant import SpringTestEnvironmentEnum
@@ -129,7 +129,7 @@ class ApplicationLiveView(unittest.TestCase):
 
 
 class LiveViewTest(ScenarioTest):
-
+    @live_only()
     @SpringResourceGroupPreparer(dev_setting_name=SpringTestEnvironmentEnum.ENTERPRISE['resource_group_name'])
     @SpringPreparer(**SpringTestEnvironmentEnum.ENTERPRISE['spring'])
     def test_live_view(self, resource_group, spring):
