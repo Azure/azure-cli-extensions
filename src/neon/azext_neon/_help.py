@@ -11,16 +11,16 @@
 from knack.help_files import helps  # pylint: disable=unused-import
 
 helps["neon"] = """
-		type: group
-		short-summary: Manage Neon Serverless Postgres resources (organizations, projects, branches, databases, roles, endpoints, compute).
-		long-summary: |-
-				Manage Neon serverless Postgres on Azure including:
-					* Organization lifecycle
-					* Project management
-					* Branch management
-					* Database operations
-					* Role management
-					* Compute / endpoints
-				NOTE: Previous nested usage 'az neon postgres <subgroup>' is deprecated. Use 'az neon <subgroup>'.
+	type: group
+	short-summary: Manage Neon Serverless Postgres resources (organizations, projects, branches, databases, roles, endpoints, compute).
+	long-summary: |-
+		Manage Neon serverless Postgres on Azure including:
+			* Organization lifecycle
+			* Project management
+			* Branch management
+			* Database operations
+			* Role management
+			* Compute / endpoints
+		NOTE: Previous nested usage 'az neon postgres <subgroup>' is deprecated. Use 'az neon <subgroup>'.
 """
 
