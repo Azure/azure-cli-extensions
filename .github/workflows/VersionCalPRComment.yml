@@ -5,9 +5,13 @@ on:
   pull_request_target:
       types: [opened, labeled, unlabeled, synchronize]
       branches:
-        - main
-
-permissions: {}
+        - mai  version-cal:
+    if: ${{ !contains(github.event.pull_request.labels.*.name, 'skip-cal-version') }}
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
+      contents: read
+      issues: writeermissions: {}
 
 jobs:
   version-cal:
@@ -178,6 +182,7 @@ jobs:
     permissions:
       pull-requests: read
       contents: read
+      issues: write
     steps:
       - name: Check Init GH Event
         env:
