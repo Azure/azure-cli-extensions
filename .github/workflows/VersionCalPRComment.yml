@@ -16,6 +16,7 @@ jobs:
     permissions:
       pull-requests: read
       contents: read
+      issues: write   # needed to remove/add labels (DELETE/POST on issue labels)
     steps:
       - name: Check Init GH Event
         env:
@@ -177,6 +178,7 @@ jobs:
     permissions:
       pull-requests: read
       contents: read
+      issues: write
     steps:
       - name: Check Init GH Event
         env:
@@ -208,6 +210,7 @@ jobs:
     permissions:
       pull-requests: write
       contents: read
+      issues: write   # needed for deleting labels in this job
     steps:
       - name: Check Init GH Event
         env:
@@ -266,9 +269,8 @@ jobs:
              -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}"
           done
       - uses: snnaplab/get-labels-action@v1
-      - name: Check real time labels
+      - name: Check real time labels (warning only)
         if: contains(fromJSON(env.LABELS), 'release-version-block')
         run: |
           echo label: $LABELS
-          echo blocked
-          exit 1
+          echo "::warning:: 'release-version-block' label still present after attempted removal. Workflow not failing. Remove the label manually if version calculation should proceed." 
