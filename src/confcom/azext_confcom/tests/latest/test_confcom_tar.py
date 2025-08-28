@@ -23,6 +23,7 @@ from azext_confcom.template_util import DockerClient
 def create_tar_file(image_path: str) -> None:
     if not os.path.isfile(image_path):
         with DockerClient() as client:
+            client.images.pull("mcr.microsoft.com/aks/e2e/library-busybox", tag="master.220314.1-linux-amd64")
             image = client.images.get("mcr.microsoft.com/aks/e2e/library-busybox:master.220314.1-linux-amd64")
             f = open(image_path, "wb")
             for chunk in image.save(named=True):
