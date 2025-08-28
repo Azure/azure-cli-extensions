@@ -82,7 +82,7 @@ def discover(
     # get the exit code from the subprocess
     else:
         err_str = item.stderr.decode("utf-8")
-        if "401: Unauthorized" in err_str:
+        if "unauthorized" in err_str.lower():
             logger.warning(
                 "Error pulling the policy fragment from %s.\n\nPlease log into the registry and try again.\n\n",
                 image
