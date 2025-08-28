@@ -9,7 +9,7 @@
 # --------------------------------------------------------------------------
 
 from azure.cli.core.util import sdk_no_wait, user_confirmation
-
+from ..constants import DEFAULT_TERM_ID
 
 def confluent_organization_create(cmd,
                                   client,
@@ -62,8 +62,8 @@ def confluent_organization_create(cmd,
     body['offer_detail']['plan_id'] = plan_id
     body['offer_detail']['plan_name'] = plan_name
     body['offer_detail']['term_unit'] = term_unit
-    body['offer_detail']['term_id'] = term_id or "gmz7xq9ge3py"
-
+    body['offer_detail']['term_id'] = DEFAULT_TERM_ID if term_id is None else term_id
+    
     return sdk_no_wait(no_wait,
                        client.begin_create,
                        resource_group_name=resource_group_name,
