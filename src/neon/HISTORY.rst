@@ -3,14 +3,19 @@
 Release History
 ===============
 
-1.0.0b5
-++++++
-* Flatten command hierarchy: removed duplicate 'neon postgres' group; all commands now under top-level 'neon'.
-* Added consolidated help content.
-* Fix command help indentation and workflow improvements.
-* Clean up HISTORY.rst version ordering.
-* Maintain preview status for continued development.
-* Added consolidated help content.
+2.0.0b1
++++++++
+
+**Breaking Changes**
+
+* az neon postgres: Removed duplicate postgres command group - commands now available directly under az neon
+* Breaking change: az neon postgres [command] is now az neon [command]
+
+**Other Changes**
+
+* Flattened command structure for improved user experience
+* Consolidated help documentation for easier navigation
+* Updated command structure to eliminate redundant command groups
 
 1.0.0b4
 ++++++
