@@ -569,8 +569,7 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
         return self.raw_param.get("ssh_access")
 
     def get_sku_name(self) -> str:
-        skuName = self.raw_param.get("sku")
-        return skuName
+        return self.raw_param.get("sku")
 
     def get_yes(self) -> bool:
         """Obtain the value of yes.
