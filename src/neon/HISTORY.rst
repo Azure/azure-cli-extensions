@@ -12,6 +12,7 @@ Release History
 +++++
 * General Availability (GA) of flattened Neon CLI command group.
 * Removed deprecated preview alias and any residual preview flags.
+* Updated package classifier to 'Production/Stable' and deleted legacy '__cmd_group.py' for removed 'neon postgres' wrapper.
 1.0.0b2
 ++++++
 * Updated command descriptions.
