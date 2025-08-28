@@ -10,7 +10,6 @@
 
 from azure.cli.core.util import sdk_no_wait, user_confirmation
 from ..constants import DEFAULT_TERM_ID
-
 def confluent_organization_create(cmd,
                                   client,
                                   resource_group_name,
