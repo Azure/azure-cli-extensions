@@ -7,6 +7,11 @@ Release History
 ++++++
 * Flatten command hierarchy: removed duplicate 'neon postgres' group; all commands now under top-level 'neon'.
 * Added consolidated help content.
+
+1.0.0
++++++
+* General Availability (GA) of flattened Neon CLI command group.
+* Removed deprecated preview alias and any residual preview flags.
 1.0.0b2
 ++++++
 * Updated command descriptions.
