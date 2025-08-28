@@ -2785,6 +2785,7 @@ def load_arguments(self, _):
         c.positional(
             "prompt",
             help="Ask any question and answer using available tools.",
+            nargs="?",
         )
         c.argument(
             "resource_group_name",
@@ -2843,6 +2844,19 @@ def load_arguments(self, _):
             "refresh_toolsets",
             help="Refresh the toolsets status.",
             action="store_true",
+        )
+        c.argument(
+            "no_aks_mcp",
+            options_list=["--no-aks-mcp"],
+            action="store_true",
+            help="Disable AKS MCP integration and use traditional built-in toolsets",
+            is_preview=True,
+        )
+        c.argument(
+            "status",
+            options_list=["--status"],
+            action="store_true",
+            help="Show AKS agent configuration and status information",
         )
 
 

@@ -3960,6 +3960,14 @@ helps[
     short-summary: Run AI assistant to analyze and troubleshoot Kubernetes clusters.
     long-summary: |-
       This command allows you to ask questions about your Azure Kubernetes cluster and get answers using AI models.
+      By default, the agent uses enhanced MCP (Model Context Protocol) integration for improved capabilities.
+      Use --no-aks-mcp to disable MCP and use traditional built-in toolsets.
+
+      The agent uses smart refresh to optimize performance:
+      • First run or mode changes: Toolsets are refreshed automatically
+      • Subsequent runs in same mode: Uses cached toolsets for faster startup
+      • If expected capabilities are missing: Use --refresh-toolsets to force refresh
+
       Environment variables must be set to use the AI model, please refer to https://docs.litellm.ai/docs/providers to learn more about supported AI providers and models and required environment variables.
     parameters:
         - name: --name -n
@@ -3991,22 +3999,59 @@ helps[
           short-summary: Show the output of each tool that was called during the analysis.
         - name: --refresh-toolsets
           type: bool
-          short-summary: Refresh the toolsets status.
+          short-summary: Force refresh of toolsets even when using cached configuration.
+          long-summary: |-
+            By default, the agent uses smart refresh to optimize performance. This flag forces
+            a complete toolset refresh, which is useful if:
+            • Expected tools or capabilities are missing
+            • You've updated your environment or configuration
+            • Troubleshooting toolset-related issues
+            Note: This may increase startup time but ensures all available tools are loaded.
+        - name: --no-aks-mcp
+          type: bool
+          short-summary: Disable AKS MCP integration and use traditional built-in toolsets.
+          is_preview: true
+        - name: --status
+          type: bool
+          short-summary: Show AKS agent configuration and status.
+          long-summary: |-
+            Display information about AKS agent configuration, MCP binary status, server health,
+            and active toolsets. This command helps diagnose agent setup and operational status.
+
+            The status output shows:
+            • Current operation mode (MCP enhanced vs traditional)
+            • MCP binary availability and version information
+            • MCP server status and health (when applicable)
+            • Component-specific error messages and recommendations
+
+            Use this option to:
+            • Verify the agent is properly configured
+            • Troubleshoot MCP integration issues
+            • Check if enhanced capabilities are available
+            • Get recommendations for resolving configuration problems
 
     examples:
-        - name: Ask about pod issues in the cluster with Azure OpenAI
+        - name: Ask about pod issues in the cluster with Azure OpenAI (MCP mode - default)
           text: |-
             export AZURE_API_BASE="https://my-azureopenai-service.openai.azure.com/"
             export AZURE_API_VERSION="2025-01-01-preview"
             export AZURE_API_KEY="sk-xxx"
             az aks agent "Why are my pods not starting?" --name MyManagedCluster --resource-group MyResourceGroup --model azure/my-gpt4.1-deployment
-        - name: Ask about pod issues in the cluster with OpenAI
+        - name: Ask about pod issues using traditional toolsets (no MCP)
+          text: |-
+            export AZURE_API_BASE="https://my-azureopenai-service.openai.azure.com/"
+            export AZURE_API_VERSION="2025-01-01-preview"
+            export AZURE_API_KEY="sk-xxx"
+            az aks agent "Why are my pods not starting?" --name MyManagedCluster --resource-group MyResourceGroup --model azure/my-gpt4.1-deployment --no-aks-mcp
+        - name: Ask about pod issues in the cluster with OpenAI (MCP mode - default)
           text: |-
             export OPENAI_API_KEY="sk-xxx"
             az aks agent "Why are my pods not starting?" --name MyManagedCluster --resource-group MyResourceGroup --model gpt-4o
         - name: Run in interactive mode without a question
           text: az aks agent "Check the pod status in my cluster" --name MyManagedCluster --resource-group MyResourceGroup --model azure/my-gpt4.1-deployment --api-key "sk-xxx"
-        - name: Run in non-interactive batch mode
+        - name: Run in non-interactive batch mode (traditional toolsets)
+          text: az aks agent "Diagnose networking issues" --no-interactive --max-steps 15 --model azure/my-gpt4.1-deployment --no-aks-mcp
+        - name: Run in non-interactive batch mode (MCP mode - default)
           text: az aks agent "Diagnose networking issues" --no-interactive --max-steps 15 --model azure/my-gpt4.1-deployment
         - name: Show detailed tool output during analysis
           text: az aks agent "Why is my service workload unavailable in namespace workload-ns?" --show-tool-output --model azure/my-gpt4.1-deployment
@@ -4016,6 +4061,21 @@ helps[
           text: az aks agent "What is the status of my cluster?" --no-echo-request --model azure/my-gpt4.1-deployment
         - name: Refresh toolsets to get the latest available tools
           text: az aks agent "What is the status of my cluster?" --refresh-toolsets --model azure/my-gpt4.1-deployment
+        - name: Troubleshoot missing capabilities by forcing toolset refresh
+          text: |-
+            # If the agent seems to be missing expected capabilities, force a refresh:
+            az aks agent "Debug my networking issues" --refresh-toolsets --show-tool-output --model azure/my-gpt4.1-deployment
+        - name: Show basic agent status
+          text: az aks agent --status
+        - name: Check if MCP integration is working
+          text: |-
+            # This will show if the MCP binary is downloaded and server is healthy
+            az aks agent --status
+        - name: Troubleshoot agent setup issues
+          text: |-
+            # Use status output to identify configuration problems
+            az aks agent --status
+            # Follow the recommendations shown in the output
         - name: Run agent with config file
           text: |
             az aks agent "Check kubernetes pod resource usage" --config-file /path/to/custom.yaml
