@@ -277,7 +277,7 @@ class AgentPool(SubResource):
      root, and Kubelet ephemeral storage. Known values are: "OS" and "Temporary".
     :vartype kubelet_disk_type: str or ~azure.mgmt.containerservice.models.KubeletDiskType
     :ivar workload_runtime: Determines the type of workload a node can run. Known values are:
-     "OCIContainer", "WasmWasi", and "KataMshvVmIsolation".
+     "OCIContainer", "WasmWasi", and "KataVmIsolation".
     :vartype workload_runtime: str or ~azure.mgmt.containerservice.models.WorkloadRuntime
     :ivar message_of_the_day: Message of the day for Linux nodes, base64-encoded. A base64-encoded
      string which will be written to /etc/motd after decoding. This allows customization of the
@@ -625,7 +625,7 @@ class AgentPool(SubResource):
          data root, and Kubelet ephemeral storage. Known values are: "OS" and "Temporary".
         :paramtype kubelet_disk_type: str or ~azure.mgmt.containerservice.models.KubeletDiskType
         :keyword workload_runtime: Determines the type of workload a node can run. Known values are:
-         "OCIContainer", "WasmWasi", and "KataMshvVmIsolation".
+         "OCIContainer", "WasmWasi", and "KataVmIsolation".
         :paramtype workload_runtime: str or ~azure.mgmt.containerservice.models.WorkloadRuntime
         :keyword message_of_the_day: Message of the day for Linux nodes, base64-encoded. A
          base64-encoded string which will be written to /etc/motd after decoding. This allows
@@ -4116,7 +4116,7 @@ class MachineKubernetesProfile(_serialization.Model):
     :ivar node_name: The node name in the Kubernetes cluster.
     :vartype node_name: str
     :ivar workload_runtime: Determines the type of workload a node can run. Known values are:
-     "OCIContainer", "WasmWasi", and "KataMshvVmIsolation".
+     "OCIContainer", "WasmWasi", and "KataVmIsolation".
     :vartype workload_runtime: str or ~azure.mgmt.containerservice.models.WorkloadRuntime
     :ivar artifact_streaming_profile: Configuration for using artifact streaming on AKS.
     :vartype artifact_streaming_profile:
@@ -4180,7 +4180,7 @@ class MachineKubernetesProfile(_serialization.Model):
         :keyword max_pods: The maximum number of pods that can run on a node.
         :paramtype max_pods: int
         :keyword workload_runtime: Determines the type of workload a node can run. Known values are:
-         "OCIContainer", "WasmWasi", and "KataMshvVmIsolation".
+         "OCIContainer", "WasmWasi", and "KataVmIsolation".
         :paramtype workload_runtime: str or ~azure.mgmt.containerservice.models.WorkloadRuntime
         :keyword artifact_streaming_profile: Configuration for using artifact streaming on AKS.
         :paramtype artifact_streaming_profile:
@@ -5633,7 +5633,7 @@ class ManagedClusterAgentPoolProfileProperties(_serialization.Model):
      root, and Kubelet ephemeral storage. Known values are: "OS" and "Temporary".
     :vartype kubelet_disk_type: str or ~azure.mgmt.containerservice.models.KubeletDiskType
     :ivar workload_runtime: Determines the type of workload a node can run. Known values are:
-     "OCIContainer", "WasmWasi", and "KataMshvVmIsolation".
+     "OCIContainer", "WasmWasi", and "KataVmIsolation".
     :vartype workload_runtime: str or ~azure.mgmt.containerservice.models.WorkloadRuntime
     :ivar message_of_the_day: Message of the day for Linux nodes, base64-encoded. A base64-encoded
      string which will be written to /etc/motd after decoding. This allows customization of the
@@ -5969,7 +5969,7 @@ class ManagedClusterAgentPoolProfileProperties(_serialization.Model):
          data root, and Kubelet ephemeral storage. Known values are: "OS" and "Temporary".
         :paramtype kubelet_disk_type: str or ~azure.mgmt.containerservice.models.KubeletDiskType
         :keyword workload_runtime: Determines the type of workload a node can run. Known values are:
-         "OCIContainer", "WasmWasi", and "KataMshvVmIsolation".
+         "OCIContainer", "WasmWasi", and "KataVmIsolation".
         :paramtype workload_runtime: str or ~azure.mgmt.containerservice.models.WorkloadRuntime
         :keyword message_of_the_day: Message of the day for Linux nodes, base64-encoded. A
          base64-encoded string which will be written to /etc/motd after decoding. This allows
@@ -6243,7 +6243,7 @@ class ManagedClusterAgentPoolProfile(ManagedClusterAgentPoolProfileProperties):
      root, and Kubelet ephemeral storage. Known values are: "OS" and "Temporary".
     :vartype kubelet_disk_type: str or ~azure.mgmt.containerservice.models.KubeletDiskType
     :ivar workload_runtime: Determines the type of workload a node can run. Known values are:
-     "OCIContainer", "WasmWasi", and "KataMshvVmIsolation".
+     "OCIContainer", "WasmWasi", and "KataVmIsolation".
     :vartype workload_runtime: str or ~azure.mgmt.containerservice.models.WorkloadRuntime
     :ivar message_of_the_day: Message of the day for Linux nodes, base64-encoded. A base64-encoded
      string which will be written to /etc/motd after decoding. This allows customization of the
@@ -6585,7 +6585,7 @@ class ManagedClusterAgentPoolProfile(ManagedClusterAgentPoolProfileProperties):
          data root, and Kubelet ephemeral storage. Known values are: "OS" and "Temporary".
         :paramtype kubelet_disk_type: str or ~azure.mgmt.containerservice.models.KubeletDiskType
         :keyword workload_runtime: Determines the type of workload a node can run. Known values are:
-         "OCIContainer", "WasmWasi", and "KataMshvVmIsolation".
+         "OCIContainer", "WasmWasi", and "KataVmIsolation".
         :paramtype workload_runtime: str or ~azure.mgmt.containerservice.models.WorkloadRuntime
         :keyword message_of_the_day: Message of the day for Linux nodes, base64-encoded. A
          base64-encoded string which will be written to /etc/motd after decoding. This allows
