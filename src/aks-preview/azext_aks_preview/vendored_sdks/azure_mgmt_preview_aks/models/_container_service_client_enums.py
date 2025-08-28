@@ -1169,7 +1169,7 @@ class WorkloadRuntime(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """Nodes will use Kubelet to run standard OCI container workloads."""
     WASM_WASI = "WasmWasi"
     """Nodes will use Krustlet to run WASM workloads using the WASI provider (Preview)."""
-    KATA_MSHV_VM_ISOLATION = "KataMshvVmIsolation"
+    KATA_VM_ISOLATION = "KataVmIsolation"
     """Nodes can use (Kata + Cloud Hypervisor + Hyper-V) to enable Nested VM-based pods (Preview). Due
     to the use Hyper-V, AKS node OS itself is a nested VM (the root OS) of Hyper-V. Thus it can
     only be used with VM series that support Nested Virtualization such as Dv3 series. This naming
