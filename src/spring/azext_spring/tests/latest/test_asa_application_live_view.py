@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 import json
 import unittest
+import time
 from azure.cli.testsdk import (ScenarioTest)
 from .common.test_utils import get_test_cmd
 from .custom_preparers import SpringPreparer, SpringResourceGroupPreparer
@@ -152,7 +153,7 @@ class LiveViewTest(ScenarioTest):
 
         self.cmd('spring application-live-view delete -g {rg} -s {serviceName} -y')
 
-        # service behavior change
+        time.sleep(10)
         self.cmd('spring dev-tool show -g {rg} -s {serviceName}', checks=[
-            self.check('properties.features.applicationLiveView.state', 'Enabled')
+            self.check('properties.features.applicationLiveView.state', 'Disabled')
         ])

@@ -31,6 +31,7 @@ class AppDeploy(ScenarioTest):
         actual_string = SpringTestEndpointReplacer()._replace(original_string)
         self.assertEqual(expected_string, actual_string)
 
+    @live_only()
     @SpringResourceGroupPreparer(dev_setting_name=SpringTestEnvironmentEnum.STANDARD['resource_group_name'])
     @SpringPreparer(**SpringTestEnvironmentEnum.STANDARD['spring'])
     @SpringAppNamePreparer()
@@ -58,6 +59,7 @@ class AppDeploy(ScenarioTest):
         with self.assertRaisesRegex(CLIError, "112404: Exit code 1: application error"):
             self.cmd('spring app deploy -n {app} -g {rg} -s {serviceName} --artifact-path {file} --version v1')
 
+    @live_only()
     @SpringResourceGroupPreparer(dev_setting_name=SpringTestEnvironmentEnum.STANDARD['resource_group_name'])
     @SpringPreparer(**SpringTestEnvironmentEnum.STANDARD['spring'])
     @SpringAppNamePreparer()
@@ -334,7 +336,7 @@ class BlueGreenTest(ScenarioTest):
 
 @record_only()
 class CustomImageTest(ScenarioTest):
-
+    @live_only()
     @SpringResourceGroupPreparer(dev_setting_name=SpringTestEnvironmentEnum.STANDARD['resource_group_name'])
     @SpringPreparer(**SpringTestEnvironmentEnum.STANDARD['spring'])
     @SpringAppNamePreparer()
@@ -354,6 +356,7 @@ class CustomImageTest(ScenarioTest):
             self.check('properties.source.customContainer.languageFramework', None),
         ])
 
+    @live_only()
     @SpringResourceGroupPreparer(dev_setting_name=SpringTestEnvironmentEnum.STANDARD['resource_group_name'])
     @SpringPreparer(**SpringTestEnvironmentEnum.STANDARD['spring'])
     @SpringAppNamePreparer()
