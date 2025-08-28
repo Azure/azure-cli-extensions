@@ -16,7 +16,6 @@ jobs:
     permissions:
       pull-requests: read
       contents: read
-      issues: write   # needed to remove/add labels (DELETE/POST on issue labels)
     steps:
       - name: Check Init GH Event
         env:
@@ -179,7 +178,6 @@ jobs:
     permissions:
       pull-requests: read
       contents: read
-      issues: write
     steps:
       - name: Check Init GH Event
         env:
@@ -211,7 +209,7 @@ jobs:
     permissions:
       pull-requests: write
       contents: read
-      issues: write   # needed for deleting labels in this job
+      issues: write   # needed for deleting labels via GitHub API
     steps:
       - name: Check Init GH Event
         env:
@@ -274,4 +272,4 @@ jobs:
         if: contains(fromJSON(env.LABELS), 'release-version-block')
         run: |
           echo label: $LABELS
-          echo "::warning:: 'release-version-block' label still present after attempted removal. Workflow not failing. Remove the label manually if version calculation should proceed." 
+          echo "::warning:: 'release-version-block' label still present after attempted removal. Manual removal may be needed."
