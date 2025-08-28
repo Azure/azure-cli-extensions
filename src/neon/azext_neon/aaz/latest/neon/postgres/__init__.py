@@ -8,5 +8,17 @@
 # pylint: skip-file
 # flake8: noqa
 
-from .__cmd_group import *
+"""Loader for Neon subcommand groups without legacy 'neon postgres' wrapper.
+
+The original generated package registered a duplicate root group 'neon postgres'.
+That group has been removed to flatten the hierarchy so only 'neon' appears in docs.
+"""
+
 from ._create import *
+from . import branch
+from . import compute
+from . import endpoint
+from . import neon_database
+from . import neon_role
+from . import organization
+from . import project

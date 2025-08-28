@@ -9,4 +9,4 @@
 # flake8: noqa
 
 from .__cmd_group import *
-from . import postgres
+from ._list import *

@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "neon postgres neon-role",
+    "neon neon-role",
 )
 class __CMDGroup(AAZCommandGroup):
     """Manage roles and permissions within Neon Postgres databases.

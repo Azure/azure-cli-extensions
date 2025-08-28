@@ -12,14 +12,14 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "neon postgres branch delete",
+    "neon branch delete",
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
     """Delete an existing branch within a Neon Postgres database.
 
     :example: Delete Branch
-        az neon postgres branch delete --subscription 38a546de-5736-48e8-a69a-5cc636794112 --resource-group rgneon --organization-name org-cli-test --project-id old-frost-16758796 --branch-id br-spring-field-a8vje3tr
+        az neon branch delete --subscription 38a546de-5736-48e8-a69a-5cc636794112 --resource-group rgneon --organization-name org-cli-test --project-id old-frost-16758796 --branch-id br-spring-field-a8vje3tr
     """
 
     _aaz_info = {

@@ -12,26 +12,24 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "neon project get-connection-uri",
+    "neon compute list",
 )
-class GetConnectionUri(AAZCommand):
-    """Retrieve the connection URI for a specific Neon Postgres database.
-
-    :example: Get Database Connection URI
-        az neon project get-connection-uri --resource-group rgneon --organization-name test-org --project-name entity-name --project-id old-frost-16758796 --branch-id br-spring-field-a8vje3tr --database-name neondb --role-name owner_role --endpoint-id ep-purple-voice-a84wphbw --is-pooled false
+class List(AAZCommand):
+    """List all compute resources associated with a specific branch in Neon Postgres.
     """
 
     _aaz_info = {
         "version": "2025-03-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/neon.postgres/organizations/{}/projects/{}/getconnectionuri", "2025-03-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/neon.postgres/organizations/{}/projects/{}/branches/{}/computes", "2025-03-01"],
         ]
     }
 
+    AZ_SUPPORT_PAGINATION = True
+
     def _handler(self, command_args):
         super()._handler(command_args)
-        self._execute_operations()
-        return self._output()
+        return self.build_paging(self._execute_operations, self._output)
 
     _args_schema = None
 
@@ -44,11 +42,18 @@ class GetConnectionUri(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
+        _args_schema.branch_id = AAZStrArg(
+            options=["--branch-id"],
+            help="Id of the Neon branch",
+            required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^\\S.{0,62}\\S$|^\\S$",
+            ),
+        )
         _args_schema.organization_name = AAZStrArg(
             options=["--organization-name"],
             help="Name of the Neon organization.",
             required=True,
-            id_part="name",
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9][a-zA-Z0-9_\\-.: ]*$",
                 max_length=50,
@@ -58,11 +63,10 @@ class GetConnectionUri(AAZCommand):
                 msg="Please provide Neon Organization name:",
             ),
         )
-        _args_schema.project_name = AAZStrArg(
-            options=["--project-name"],
-            help="Name of the Neon project.",
+        _args_schema.project_id = AAZStrArg(
+            options=["--project-id"],
+            help="Id of the Neon project",
             required=True,
-            id_part="child_name_1",
             fmt=AAZStrArgFormat(
                 pattern="^\\S.{0,62}\\S$|^\\S$",
             ),
@@ -71,45 +75,11 @@ class GetConnectionUri(AAZCommand):
             help="Name of the Azure resource group.",
             required=True,
         )
-
-        # define Arg Group "ConnectionUriParameters"
-
-        _args_schema = cls._args_schema
-        _args_schema.branch_id = AAZStrArg(
-            options=["--branch-id"],
-            arg_group="ConnectionUriParameters",
-            help="Branch Id associated with this connection",
-        )
-        _args_schema.database_name = AAZStrArg(
-            options=["--database-name"],
-            arg_group="ConnectionUriParameters",
-            help="Database name associated with this connection",
-        )
-        _args_schema.endpoint_id = AAZStrArg(
-            options=["--endpoint-id"],
-            arg_group="ConnectionUriParameters",
-            help="the endpoint Id with this connection",
-        )
-        _args_schema.is_pooled = AAZBoolArg(
-            options=["--is-pooled"],
-            arg_group="ConnectionUriParameters",
-            help="Indicates if the connection is pooled",
-        )
-        _args_schema.project_id = AAZStrArg(
-            options=["--project-id"],
-            arg_group="ConnectionUriParameters",
-            help="Project Id associated with this connection",
-        )
-        _args_schema.role_name = AAZStrArg(
-            options=["--role-name"],
-            arg_group="ConnectionUriParameters",
-            help="The role name used for authentication",
-        )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.ProjectsGetConnectionUri(ctx=self.ctx)()
+        self.ComputesList(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -121,10 +91,11 @@ class GetConnectionUri(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
-        return result
+        result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
+        next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
+        return result, next_link
 
-    class ProjectsGetConnectionUri(AAZHttpOperation):
+    class ComputesList(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -138,13 +109,13 @@ class GetConnectionUri(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Neon.Postgres/organizations/{organizationName}/projects/{projectName}/getConnectionUri",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Neon.Postgres/organizations/{organizationName}/projects/{projectName}/branches/{branchName}/computes",
                 **self.url_parameters
             )
 
         @property
         def method(self):
-            return "POST"
+            return "GET"
 
         @property
         def error_format(self):
@@ -154,11 +125,15 @@ class GetConnectionUri(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
+                    "branchName", self.ctx.args.branch_id,
+                    required=True,
+                ),
+                **self.serialize_url_param(
                     "organizationName", self.ctx.args.organization_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "projectName", self.ctx.args.project_name,
+                    "projectName", self.ctx.args.project_id,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -186,29 +161,10 @@ class GetConnectionUri(AAZCommand):
         def header_parameters(self):
             parameters = {
                 **self.serialize_header_param(
-                    "Content-Type", "application/json",
-                ),
-                **self.serialize_header_param(
                     "Accept", "application/json",
                 ),
             }
             return parameters
-
-        @property
-        def content(self):
-            _content_value, _builder = self.new_content_builder(
-                self.ctx.args,
-                typ=AAZObjectType,
-                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
-            )
-            _builder.set_prop("branchId", AAZStrType, ".branch_id")
-            _builder.set_prop("databaseName", AAZStrType, ".database_name")
-            _builder.set_prop("endpointId", AAZStrType, ".endpoint_id")
-            _builder.set_prop("isPooled", AAZBoolType, ".is_pooled")
-            _builder.set_prop("projectId", AAZStrType, ".project_id")
-            _builder.set_prop("roleName", AAZStrType, ".role_name")
-
-            return self.serialize_content(_content_value)
 
         def on_200(self, session):
             data = self.deserialize_http_content(session)
@@ -228,34 +184,92 @@ class GetConnectionUri(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.branch_id = AAZStrType(
-                serialized_name="branchId",
+            _schema_on_200.next_link = AAZStrType(
+                serialized_name="nextLink",
             )
-            _schema_on_200.connection_string_uri = AAZStrType(
-                serialized_name="connectionStringUri",
-                flags={"secret": True, "read_only": True},
+            _schema_on_200.value = AAZListType(
+                flags={"required": True},
             )
-            _schema_on_200.database_name = AAZStrType(
-                serialized_name="databaseName",
+
+            value = cls._schema_on_200.value
+            value.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element
+            _element.id = AAZStrType(
+                flags={"read_only": True},
             )
-            _schema_on_200.endpoint_id = AAZStrType(
-                serialized_name="endpointId",
+            _element.name = AAZStrType(
+                flags={"read_only": True},
             )
-            _schema_on_200.is_pooled = AAZBoolType(
-                serialized_name="isPooled",
+            _element.properties = AAZObjectType()
+            _element.system_data = AAZObjectType(
+                serialized_name="systemData",
+                flags={"read_only": True},
             )
-            _schema_on_200.project_id = AAZStrType(
-                serialized_name="projectId",
+            _element.type = AAZStrType(
+                flags={"read_only": True},
             )
-            _schema_on_200.role_name = AAZStrType(
-                serialized_name="roleName",
+
+            properties = cls._schema_on_200.value.Element.properties
+            properties.attributes = AAZListType()
+            properties.cpu_cores = AAZIntType(
+                serialized_name="cpuCores",
+            )
+            properties.created_at = AAZStrType(
+                serialized_name="createdAt",
+                flags={"read_only": True},
+            )
+            properties.entity_id = AAZStrType(
+                serialized_name="entityId",
+                flags={"read_only": True},
+            )
+            properties.entity_name = AAZStrType(
+                serialized_name="entityName",
+            )
+            properties.memory = AAZIntType()
+            properties.provisioning_state = AAZStrType(
+                serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+            properties.region = AAZStrType()
+            properties.status = AAZStrType()
+
+            attributes = cls._schema_on_200.value.Element.properties.attributes
+            attributes.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.properties.attributes.Element
+            _element.name = AAZStrType(
+                flags={"required": True},
+            )
+            _element.value = AAZStrType(
+                flags={"required": True},
+            )
+
+            system_data = cls._schema_on_200.value.Element.system_data
+            system_data.created_at = AAZStrType(
+                serialized_name="createdAt",
+            )
+            system_data.created_by = AAZStrType(
+                serialized_name="createdBy",
+            )
+            system_data.created_by_type = AAZStrType(
+                serialized_name="createdByType",
+            )
+            system_data.last_modified_at = AAZStrType(
+                serialized_name="lastModifiedAt",
+            )
+            system_data.last_modified_by = AAZStrType(
+                serialized_name="lastModifiedBy",
+            )
+            system_data.last_modified_by_type = AAZStrType(
+                serialized_name="lastModifiedByType",
             )
 
             return cls._schema_on_200
 
 
-class _GetConnectionUriHelper:
-    """Helper class for GetConnectionUri"""
+class _ListHelper:
+    """Helper class for List"""
 
 
-__all__ = ["GetConnectionUri"]
+__all__ = ["List"]
