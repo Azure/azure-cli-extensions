@@ -11,21 +11,23 @@
 from azure.cli.core.aaz import *
 
 
-class Update(AAZCommand):
-    """Updates an Endpoint resource, which represents a data transfer source or destination.
+@register_command(
+    "storage-mover endpoint identity assign",
+)
+class Assign(AAZCommand):
+    """Assign the user or system managed identities.
     """
 
     _aaz_info = {
         "version": "2025-07-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagemover/storagemovers/{}/endpoints/{}", "2025-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagemover/storagemovers/{}/endpoints/{}", "2025-07-01", "identity"],
         ]
     }
 
-    AZ_SUPPORT_GENERIC_UPDATE = True
-
     def _handler(self, command_args):
         super()._handler(command_args)
+        self.SubresourceSelector(ctx=self.ctx, name="subresource")
         self._execute_operations()
         return self._output()
 
@@ -44,7 +46,6 @@ class Update(AAZCommand):
             options=["-n", "--name", "--endpoint-name"],
             help="The name of the Endpoint resource.",
             required=True,
-            id_part="child_name_1",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -53,62 +54,34 @@ class Update(AAZCommand):
             options=["--storage-mover-name"],
             help="The name of the Storage Mover resource.",
             required=True,
-            id_part="name",
         )
 
-        # define Arg Group "Identity"
-
-        # define Arg Group "Properties"
+        # define Arg Group "Endpoint.identity"
 
         _args_schema = cls._args_schema
-        _args_schema.azure_multi_cloud_connector = AAZObjectArg(
-            options=["--azure-multi-cloud-connector"],
-            arg_group="Properties",
+        _args_schema.mi_system_assigned = AAZStrArg(
+            options=["--system-assigned", "--mi-system-assigned"],
+            arg_group="Endpoint.identity",
+            help="Set the system managed identity.",
+            blank="True",
         )
-        _args_schema.smb_mount = AAZObjectArg(
-            options=["--smb-mount"],
-            arg_group="Properties",
-        )
-        _args_schema.description = AAZStrArg(
-            options=["--description"],
-            arg_group="Properties",
-            help="A description for the Endpoint.",
-            nullable=True,
+        _args_schema.mi_user_assigned = AAZListArg(
+            options=["--user-assigned", "--mi-user-assigned"],
+            arg_group="Endpoint.identity",
+            help="Set the user managed identities.",
+            blank=[],
         )
 
-        azure_multi_cloud_connector = cls._args_schema.azure_multi_cloud_connector
-        azure_multi_cloud_connector.aws_s3_bucket_id = AAZResourceIdArg(
-            options=["aws-s3-bucket-id"],
-            help="The AWS S3 bucket ARM resource Id.",
-        )
-
-        smb_mount = cls._args_schema.smb_mount
-        smb_mount.credentials = AAZObjectArg(
-            options=["credentials"],
-            help="The Azure Key Vault secret URIs which store the required credentials to access the SMB share.",
-            nullable=True,
-        )
-
-        credentials = cls._args_schema.smb_mount.credentials
-        credentials.password_uri = AAZStrArg(
-            options=["password-uri"],
-            help="The Azure Key Vault secret URI which stores the password. Use empty string to clean-up existing value.",
-            nullable=True,
-        )
-        credentials.username_uri = AAZStrArg(
-            options=["username-uri"],
-            help="The Azure Key Vault secret URI which stores the username. Use empty string to clean-up existing value.",
-            nullable=True,
-        )
+        mi_user_assigned = cls._args_schema.mi_user_assigned
+        mi_user_assigned.Element = AAZStrArg()
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
         self.EndpointsGet(ctx=self.ctx)()
-        self.pre_instance_update(self.ctx.vars.instance)
+        self.pre_instance_update(self.ctx.selectors.subresource.get())
         self.InstanceUpdateByJson(ctx=self.ctx)()
-        self.InstanceUpdateByGeneric(ctx=self.ctx)()
-        self.post_instance_update(self.ctx.vars.instance)
+        self.post_instance_update(self.ctx.selectors.subresource.get())
         self.EndpointsCreateOrUpdate(ctx=self.ctx)()
         self.post_operations()
 
@@ -129,8 +102,19 @@ class Update(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+        result = self.deserialize_output(self.ctx.selectors.subresource.get(), client_flatten=True)
         return result
+
+    class SubresourceSelector(AAZJsonSelector):
+
+        def _get(self):
+            result = self.ctx.vars.instance
+            return result.identity
+
+        def _set(self, value):
+            result = self.ctx.vars.instance
+            result.identity = value
+            return
 
     class EndpointsGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
@@ -215,7 +199,7 @@ class Update(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _UpdateHelper._build_schema_endpoint_read(cls._schema_on_200)
+            _AssignHelper._build_schema_endpoint_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
@@ -314,56 +298,33 @@ class Update(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _UpdateHelper._build_schema_endpoint_read(cls._schema_on_200)
+            _AssignHelper._build_schema_endpoint_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
     class InstanceUpdateByJson(AAZJsonInstanceUpdateOperation):
 
         def __call__(self, *args, **kwargs):
-            self._update_instance(self.ctx.vars.instance)
+            self._update_instance(self.ctx.selectors.subresource.get())
 
         def _update_instance(self, instance):
             _instance_value, _builder = self.new_content_builder(
                 self.ctx.args,
                 value=instance,
-                typ=AAZObjectType
+                typ=AAZIdentityObjectType
             )
-            _builder.set_prop("identity", AAZIdentityObjectType)
-            _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True}})
+            _builder.set_prop("userAssigned", AAZListType, ".mi_user_assigned", typ_kwargs={"flags": {"action": "assign"}})
+            _builder.set_prop("systemAssigned", AAZStrType, ".mi_system_assigned", typ_kwargs={"flags": {"action": "assign"}})
 
-            properties = _builder.get(".properties")
-            if properties is not None:
-                properties.set_prop("description", AAZStrType, ".description")
-                properties.discriminate_by("endpointType", "AzureMultiCloudConnector")
-                properties.discriminate_by("endpointType", "SmbMount")
-
-            disc_azure_multi_cloud_connector = _builder.get(".properties{endpointType:AzureMultiCloudConnector}")
-            if disc_azure_multi_cloud_connector is not None:
-                disc_azure_multi_cloud_connector.set_prop("awsS3BucketId", AAZStrType, ".azure_multi_cloud_connector.aws_s3_bucket_id", typ_kwargs={"flags": {"required": True}})
-
-            disc_smb_mount = _builder.get(".properties{endpointType:SmbMount}")
-            if disc_smb_mount is not None:
-                disc_smb_mount.set_prop("credentials", AAZObjectType, ".smb_mount.credentials")
-
-            credentials = _builder.get(".properties{endpointType:SmbMount}.credentials")
-            if credentials is not None:
-                credentials.set_prop("passwordUri", AAZStrType, ".password_uri")
-                credentials.set_prop("usernameUri", AAZStrType, ".username_uri")
+            user_assigned = _builder.get(".userAssigned")
+            if user_assigned is not None:
+                user_assigned.set_elements(AAZStrType, ".")
 
             return _instance_value
 
-    class InstanceUpdateByGeneric(AAZGenericInstanceUpdateOperation):
 
-        def __call__(self, *args, **kwargs):
-            self._update_instance_by_generic(
-                self.ctx.vars.instance,
-                self.ctx.generic_update_args
-            )
-
-
-class _UpdateHelper:
-    """Helper class for Update"""
+class _AssignHelper:
+    """Helper class for Assign"""
 
     _schema_endpoint_read = None
 
@@ -539,4 +500,4 @@ class _UpdateHelper:
         _schema.type = cls._schema_endpoint_read.type
 
 
-__all__ = ["Update"]
+__all__ = ["Assign"]
