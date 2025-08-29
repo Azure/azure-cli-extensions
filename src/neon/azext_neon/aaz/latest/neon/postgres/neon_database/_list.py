@@ -12,13 +12,13 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "neon postgres neon-database list",
+    "neon neon-database list",
 )
 class List(AAZCommand):
     """List all Neon Postgres databases associated with a specific branch.
 
     :example: List Neon Databases under a Branch
-        az neon postgres neon-database list --resource-group rgneon --organization-name org-test-cli --project-id old-frost-16758796 --branch-id br-spring-field-a8vje3tr
+        az neon neon-database list --resource-group rgneon --organization-name org-test-cli --project-id old-frost-16758796 --branch-id br-spring-field-a8vje3tr
     """
 
     _aaz_info = {

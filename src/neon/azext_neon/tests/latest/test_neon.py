@@ -71,7 +71,7 @@ class NeonScenario(ScenarioTest):
 
         # Create Neon Organization
         # Tags: Create, Organization, Marketplace, Complex-Properties
-        self.cmd('az neon postgres organization create --resource-group {resource_group} --name {name} --location {location} --tags {tags} --subscription {subscription} '
+        self.cmd('az neon organization create --resource-group {resource_group} --name {name} --location {location} --tags {tags} --subscription {subscription} '
                  '--marketplace-details \'{{"subscription-id": "{marketplace_subscription_id}", "subscription-status": "PendingFulfillmentStart", '
                  '"offer-details": {{"publisher-id": "{publisher_id}", "offer-id": "{offer_id}", "plan-id": "{plan_id}", "plan-name": "{plan_name}", "term-unit": "{term_unit}", "term-id": "{term_id}"}}}}\' '
                  '--user-details \'{{"first-name": "{user_first_name}", "last-name": "{user_last_name}", "email-address": "{user_email}", "upn": "{user_upn}", "phone-number": "{user_phone}"}}\' '
@@ -88,43 +88,43 @@ class NeonScenario(ScenarioTest):
 
         # List Neon Organizations
         # Tags: List, Organization, Subscription-Scoped
-        self.cmd('az neon postgres organization list --subscription {subscription} --resource-group {resource_group}',
+        self.cmd('az neon organization list --subscription {subscription} --resource-group {resource_group}',
                  checks=[])
 
         # Show Neon Organization
         # Tags: Show, Organization, Resource-Specific
-        self.cmd('az neon postgres organization show --subscription {subscription} --resource-group {resource_group} --name {name}',
+        self.cmd('az neon organization show --subscription {subscription} --resource-group {resource_group} --name {name}',
                  checks=[
                      self.check('name', '{name}'),
                  ])
 
 
          # Create Neon Project with a default branch and database
-        self.cmd('az neon postgres project create --resource-group {resource_group} --organization-name {name} '
+        self.cmd('az neon project create --resource-group {resource_group} --organization-name {name} '
                  '--project-name {new_project_name} --pg-version {pg_version} --region {region_id} '
                  '--branch "{{\\"branch-name\\":\\"{new_branch_name}\\", \\"role-name\\":\\"{new_role_name}\\", \\"database-name\\":\\"{new_database_name}\\"}}\"')
         
 
          # List Neon Projects in organization
-        self.cmd('az neon postgres project list --resource-group {resource_group} --organization-name {name}',
+        self.cmd('az neon project list --resource-group {resource_group} --organization-name {name}',
                  checks=[
                      self.greater_than('length(@)', 0),
                  ])
        
        # Show Neon Project
-        self.cmd('az neon postgres project show --resource-group {org_resource_group} --organization-name {org_name} --project-id {project_id}',
+        self.cmd('az neon project show --resource-group {org_resource_group} --organization-name {org_name} --project-id {project_id}',
                  checks=[
                      self.check('properties.regionId', '{region_id}'),
                  ])
         
          # List branches in the project
-        self.cmd('az neon postgres branch list --resource-group {org_resource_group} --organization-name {org_name} --project-id {project_id}',
+        self.cmd('az neon branch list --resource-group {org_resource_group} --organization-name {org_name} --project-id {project_id}',
                  checks=[
                      self.greater_than('length(@)', 0),  # Should have at least 1 branches now
                  ])
 
         # Create a new branch (dev-branch) off the main branch
-        self.cmd('az neon postgres branch create --resource-group {resource_group} --organization-name {org_name} '
+        self.cmd('az neon branch create --resource-group {resource_group} --organization-name {org_name} '
                  '--project-name {project_id} --name {new_branch_name} --parent-id {branch_id} '
                  '--role-name {role_name} --database-name {database_name}',
                  checks=[
@@ -133,14 +133,14 @@ class NeonScenario(ScenarioTest):
                  ])
         
         # List databases in a branch
-        self.cmd('az neon postgres neon-database list --resource-group {org_resource_group} --organization-name {org_name} '
+        self.cmd('az neon neon-database list --resource-group {org_resource_group} --organization-name {org_name} '
                  '--project-id {project_id} --branch-id {branch_id}',
                  checks=[
                      self.greater_than('length(@)', 0)
                  ])
         
          # List roles in a branch
-        self.cmd('az neon postgres neon-role list --resource-group {org_resource_group} --organization-name {org_name} '
+        self.cmd('az neon neon-role list --resource-group {org_resource_group} --organization-name {org_name} '
                  '--project-id {project_id} --branch-id {branch_id}',
                  checks=[
                      self.greater_than('length(@)', 0)
@@ -148,14 +148,14 @@ class NeonScenario(ScenarioTest):
 
 
         # Delete the branch
-        self.cmd('az neon postgres branch delete --resource-group {resource_group} --organization-name {org_name} '
+        self.cmd('az neon branch delete --resource-group {resource_group} --organization-name {org_name} '
                  '--project-id {project_id_to_delete} --branch-id {branch_id_to_delete} --yes', checks=[])
 
         # Delete Neon Project
-        self.cmd('az neon postgres project delete --resource-group {resource_group} --organization-name {org_name}'
+        self.cmd('az neon project delete --resource-group {resource_group} --organization-name {org_name}'
                 ' --project-id {project_id_to_delete} --yes', checks=[])
 
         # Delete Neon Organization
-        self.cmd('az neon postgres organization delete --resource-group {resource_group} --name {name} '
+        self.cmd('az neon organization delete --resource-group {resource_group} --name {name} '
                  '--subscription {subscription} --yes',
                  checks=[])

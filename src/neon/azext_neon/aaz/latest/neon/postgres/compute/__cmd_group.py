@@ -8,5 +8,16 @@
 # pylint: skip-file
 # flake8: noqa
 
-from .__cmd_group import *
-from . import postgres
+from azure.cli.core.aaz import *
+
+
+@register_command_group(
+    "neon compute",
+)
+class __CMDGroup(AAZCommandGroup):
+    """Manage compute resources allocated to Neon Postgres databases.
+    """
+    pass
+
+
+__all__ = ["__CMDGroup"]
