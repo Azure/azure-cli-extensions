@@ -2,19 +2,25 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-from azext_aks_preview.azuremonitormetrics.addonput import addon_put
-from azext_aks_preview.azuremonitormetrics.amg.link import link_grafana_instance
-from azext_aks_preview.azuremonitormetrics.amw.helper import get_azure_monitor_workspace_resource
-from azext_aks_preview.azuremonitormetrics.dc.dce_api import create_dce
-from azext_aks_preview.azuremonitormetrics.dc.dcr_api import create_dcr
-from azext_aks_preview.azuremonitormetrics.dc.dcra_api import create_dcra
-from azext_aks_preview.azuremonitormetrics.dc.delete import delete_dc_objects_if_prometheus_enabled, get_dc_objects_list
-from azext_aks_preview.azuremonitormetrics.helper import check_azuremonitormetrics_profile, rp_registrations
-from azext_aks_preview.azuremonitormetrics.recordingrules.create import create_rules
-from azext_aks_preview.azuremonitormetrics.recordingrules.delete import delete_rules
+from azure.cli.command_modules.acs.azuremonitormetrics.addonput import addon_put
+from azure.cli.command_modules.acs.azuremonitormetrics.amg.link import link_grafana_instance
+from azure.cli.command_modules.acs.azuremonitormetrics.amw.helper import get_azure_monitor_workspace_resource
+from azure.cli.command_modules.acs.azuremonitormetrics.dc.dce_api import create_dce
+from azure.cli.command_modules.acs.azuremonitormetrics.dc.dcr_api import create_dcr
+from azure.cli.command_modules.acs.azuremonitormetrics.dc.dcra_api import create_dcra
+from azure.cli.command_modules.acs.azuremonitormetrics.dc.delete import (
+    delete_dc_objects_if_prometheus_enabled,
+    get_dc_objects_list
+)
+from azure.cli.command_modules.acs.azuremonitormetrics.recordingrules.create import create_rules
+from azure.cli.command_modules.acs.azuremonitormetrics.recordingrules.delete import delete_rules
+from azure.cli.command_modules.acs.azuremonitormetrics.helper import (
+    check_azuremonitormetrics_profile,
+    rp_registrations
+)
+from azure.cli.core.azclierror import InvalidArgumentValueError
 from knack.util import CLIError
 from knack.log import get_logger
-from azure.cli.core.azclierror import InvalidArgumentValueError
 
 logger = get_logger(__name__)
 
@@ -93,7 +99,7 @@ def ensure_azure_monitor_profile_prerequisites(
         # Do RP registrations and artifact creation (DC*, rules, grafana link etc.) if not enabled already
         # Otherwise move forward so that the addon can be enabled with new KSM parameters
         if is_prometheus_enabled is False:
-            rp_registrations(cmd, cluster_subscription)
+            rp_registrations(cmd, cluster_subscription, raw_parameters)
             link_azure_monitor_profile_artifacts(
                 cmd,
                 cluster_subscription,
