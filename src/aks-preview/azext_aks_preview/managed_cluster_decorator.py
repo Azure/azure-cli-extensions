@@ -29,6 +29,7 @@ from azext_aks_preview._consts import (
     CONST_NETWORK_PLUGIN_AZURE,
     CONST_NETWORK_PLUGIN_MODE_OVERLAY,
     CONST_NETWORK_POLICY_CILIUM,
+    CONST_NODEPOOL_MODE_MANAGEDSYSTEM,
     CONST_PRIVATE_DNS_ZONE_NONE,
     CONST_PRIVATE_DNS_ZONE_SYSTEM,
     CONST_ROTATION_POLL_INTERVAL,
@@ -1984,6 +1985,71 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             )
         return certs
 
+    def _get_enable_run_command(self, enable_validation: bool = False) -> bool:
+        """Internal function to obtain the value of enable_run_command.
+        :return: bool
+        """
+        enable_run_command = self.raw_param.get("enable_run_command")
+
+        # In create mode, try to read the property value corresponding to the parameter from the `mc` object.
+        if self.decorator_mode == DecoratorMode.CREATE:
+            if (
+                self.mc and
+                hasattr(self.mc, "api_server_access_profile") and  # backward compatibility
+                self.mc.api_server_access_profile and
+                self.mc.api_server_access_profile.disable_run_command is not None
+            ):
+                enable_run_command = not self.mc.api_server_access_profile.disable_run_command
+
+        # validation
+        if enable_validation:
+            if enable_run_command and self._get_disable_run_command(enable_validation=False):
+                raise MutuallyExclusiveArgumentError(
+                    "Cannot specify --enable-run-command and --disable-run-command at the same time."
+                )
+
+        return enable_run_command
+
+    def get_enable_run_command(self) -> bool:
+        """Obtain the value of enable_run_command.
+        This function will verify the parameter by default. If both enable_run_command and disable_run_command are
+        specified, raise a MutuallyExclusiveArgumentError.
+        :return: bool
+        """
+        return self._get_enable_run_command(enable_validation=True)
+
+    def _get_disable_run_command(self, enable_validation: bool = False) -> bool:
+        """Internal function to obtain the value of disable_run_command.
+        :return: bool
+        """
+        disable_run_command = self.raw_param.get("disable_run_command")
+
+        # In create mode, try to read the property value corresponding to the parameter from the `mc` object.
+        if self.decorator_mode == DecoratorMode.CREATE:
+            if (
+                self.mc and
+                hasattr(self.mc, "api_server_access_profile") and  # backward compatibility
+                self.mc.api_server_access_profile and
+                self.mc.api_server_access_profile.disable_run_command is not None
+            ):
+                disable_run_command = self.mc.api_server_access_profile.disable_run_command
+
+        # validation
+        if enable_validation:
+            if disable_run_command and self._get_enable_run_command(enable_validation=False):
+                raise MutuallyExclusiveArgumentError(
+                    "Cannot specify --enable-run-command and --disable-run-command at the same time."
+                )
+        return disable_run_command
+
+    def get_disable_run_command(self) -> bool:
+        """Obtain the value of disable_run_command.
+        This function will verify the parameter by default. If both enable_run_command and disable_run_command
+        are specified, raise a MutuallyExclusiveArgumentError.
+        :return: bool
+        """
+        return self._get_disable_run_command(enable_validation=True)
+
     def _get_enable_azure_monitor_metrics(self, enable_validation: bool = False) -> bool:
         """Internal function to obtain the value of enable_azure_monitor_metrics.
         This function supports the option of enable_validation. When enabled, if both enable_azure_monitor_metrics and
@@ -2878,6 +2944,31 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
 
         return enable_http_proxy
 
+    def get_enable_upstream_kubescheduler_user_configuration(self) -> bool:
+        """Obtain the value of enable_upstream_kubescheduler_user_configuration.
+
+        :return: bool
+        """
+        return self.raw_param.get("enable_upstream_kubescheduler_user_configuration")
+
+    def get_disable_upstream_kubescheduler_user_configuration(self) -> bool:
+        """Obtain the value of disable_upstream_kubescheduler_user_configuration.
+
+        :return: bool
+        """
+        disable_upstream_kubescheduler_user_configuration = self.raw_param.get(
+            "disable_upstream_kubescheduler_user_configuration"
+        )
+        if (
+            disable_upstream_kubescheduler_user_configuration and
+            self.get_enable_upstream_kubescheduler_user_configuration()
+        ):
+            raise MutuallyExclusiveArgumentError(
+                "Cannot specify --enable-upstream-kubescheduler-user-configuration and "
+                "--disable-upstream-kubescheduler-user-configuration at the same time."
+            )
+        return disable_upstream_kubescheduler_user_configuration
+
 
 # pylint: disable=too-many-public-methods
 class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
@@ -3032,6 +3123,26 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                     acns.security.transit_encryption = self.models.AdvancedNetworkingSecurityTransitEncryption()
                 acns.security.transit_encryption.type = acns_transit_encryption_type
             network_profile.advanced_networking = acns
+        return mc
+
+    def set_up_run_command(self, mc: ManagedCluster) -> ManagedCluster:
+        """Set up run command for the ManagedCluster object.
+        :return: the ManagedCluster object
+        """
+        if hasattr(super(), 'set_up_run_command'):
+            return super().set_up_run_command(mc)
+
+        self._ensure_mc(mc)
+
+        disable_run_command = self.context.get_disable_run_command()
+        if disable_run_command:
+            if mc.api_server_access_profile is None:
+                mc.api_server_access_profile = self.models.ManagedClusterAPIServerAccessProfile(
+                    disable_run_command=True
+                )
+            else:
+                mc.api_server_access_profile.disable_run_command = True
+
         return mc
 
     def set_up_api_server_access_profile(self, mc: ManagedCluster) -> ManagedCluster:
@@ -3635,6 +3746,24 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             mc.network_profile.pod_link_local_access = CONST_IMDS_RESTRICTION_ENABLED
         return mc
 
+    def set_up_upstream_kubescheduler_user_configuration(self, mc: ManagedCluster) -> ManagedCluster:
+        self._ensure_mc(mc)
+
+        if self.context.get_enable_upstream_kubescheduler_user_configuration():
+            if mc.scheduler_profile is None:
+                mc.scheduler_profile = self.models.SchedulerProfile()  # pylint: disable=no-member
+            if mc.scheduler_profile.scheduler_instance_profiles is None:
+                mc.scheduler_profile.scheduler_instance_profiles = (
+                    self.models.SchedulerProfileSchedulerInstanceProfiles()  # pylint: disable=no-member
+                )
+            if mc.scheduler_profile.scheduler_instance_profiles.upstream is None:
+                mc.scheduler_profile.scheduler_instance_profiles.upstream = self.models.SchedulerInstanceProfile()  # pylint: disable=no-member
+            mc.scheduler_profile.scheduler_instance_profiles.upstream.scheduler_config_mode = (
+                self.models.SchedulerConfigMode.MANAGED_BY_CRD  # pylint: disable=no-member
+            )
+
+        return mc
+
     # pylint: disable=unused-argument
     def construct_mc_profile_preview(self, bypass_restore_defaults: bool = False) -> ManagedCluster:
         """The overall controller used to construct the default ManagedCluster profile.
@@ -3669,6 +3798,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc = self.set_up_kube_proxy_config(mc)
         # set up custom ca trust certificates
         mc = self.set_up_custom_ca_trust_certificates(mc)
+        # set up run command
+        mc = self.set_up_run_command(mc)
         # set up node resource group profile
         mc = self.set_up_node_resource_group_profile(mc)
         # set up auto upgrade profile
@@ -3693,6 +3824,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc = self.set_up_static_egress_gateway(mc)
         # set up imds restriction(a property in network profile)
         mc = self.set_up_imds_restriction(mc)
+        # set up user-defined scheduler configuration for kube-scheduler upstream
+        mc = self.set_up_upstream_kubescheduler_user_configuration(mc)
 
         # validate the azure cli core version
         self.verify_cli_core_version()
@@ -3971,6 +4104,25 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
     ):
         self.__raw_parameters = raw_parameters
         super().__init__(cmd, client, raw_parameters, resource_type)
+
+    def update_managed_system_pools(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update ManagedSystem agent pools to only include name, mode, and type fields.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        if mc.agent_pool_profiles is None:
+            return mc
+        for agentpool in mc.agent_pool_profiles:
+            # Check if agentpool is in ManagedSystem mode and handle special case
+            if agentpool.mode == CONST_NODEPOOL_MODE_MANAGEDSYSTEM:
+                # Make sure all other attributes are None
+                for attr in vars(agentpool):
+                    if attr != 'name' and attr != 'mode' and not attr.startswith('_'):
+                        if hasattr(agentpool, attr):
+                            setattr(agentpool, attr, None)
+        return mc
 
     def init_models(self) -> None:
         """Initialize an AKSManagedClusterModels object to store the models.
@@ -4712,6 +4864,35 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         return mc
 
+    def update_run_command(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update run command for the ManagedCluster object.
+        :return: the ManagedCluster object
+        """
+        if hasattr(super(), 'update_run_command'):
+            return super().update_run_command(mc)
+
+        self._ensure_mc(mc)
+
+        enable_run_command = self.context.get_enable_run_command()
+        disable_run_command = self.context.get_disable_run_command()
+        if enable_run_command or disable_run_command:
+            if mc.api_server_access_profile is None:
+                mc.api_server_access_profile = self.models.ManagedClusterAPIServerAccessProfile(
+                    disable_run_command=(
+                        not enable_run_command
+                        if enable_run_command or disable_run_command
+                        else None
+                    )
+                )
+            else:
+                mc.api_server_access_profile.disable_run_command = (
+                    not enable_run_command
+                    if enable_run_command or disable_run_command
+                    else None
+                )
+
+        return mc
+
     def update_azure_monitor_profile(self, mc: ManagedCluster) -> ManagedCluster:
         """Update azure monitor profile for the ManagedCluster object.
         :return: the ManagedCluster object
@@ -5364,7 +5545,10 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             if not self.context.get_yes() and not prompt_y_n(msg, default="n"):
                 raise DecoratorEarlyExitException()
             # Ensure we have valid vmas AP
-            if len(mc.agent_pool_profiles) == 1 and mc.agent_pool_profiles[0].type == CONST_AVAILABILITY_SET:
+            if len(mc.agent_pool_profiles) == 1 and mc.agent_pool_profiles[0].type in (
+                CONST_AVAILABILITY_SET,
+                CONST_VIRTUAL_MACHINES,
+            ):
                 mc.agent_pool_profiles[0].type = CONST_VIRTUAL_MACHINES
             else:
                 raise CLIError('This is not a valid VMAS cluster, we cannot proceed with the migration.')
@@ -5397,6 +5581,41 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                     self.models.ManagedClusterHTTPProxyConfig()  # pylint: disable=no-member
                 )
             mc.http_proxy_config.enabled = True
+
+        return mc
+
+    def update_upstream_kubescheduler_user_configuration(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update user-defined scheduler configuration for kube-scheduler upstream for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        if self.context.get_enable_upstream_kubescheduler_user_configuration():
+            if mc.scheduler_profile is None:
+                mc.scheduler_profile = self.models.SchedulerProfile()  # pylint: disable=no-member
+            if mc.scheduler_profile.scheduler_instance_profiles is None:
+                mc.scheduler_profile.scheduler_instance_profiles = (
+                    self.models.SchedulerProfileSchedulerInstanceProfiles()  # pylint: disable=no-member
+                )
+            if mc.scheduler_profile.scheduler_instance_profiles.upstream is None:
+                mc.scheduler_profile.scheduler_instance_profiles.upstream = self.models.SchedulerInstanceProfile()  # pylint: disable=no-member
+            mc.scheduler_profile.scheduler_instance_profiles.upstream.scheduler_config_mode = (
+                self.models.SchedulerConfigMode.MANAGED_BY_CRD  # pylint: disable=no-member
+            )
+
+        if self.context.get_disable_upstream_kubescheduler_user_configuration():
+            if mc.scheduler_profile is None:
+                mc.scheduler_profile = self.models.SchedulerProfile()  # pylint: disable=no-member
+            if mc.scheduler_profile.scheduler_instance_profiles is None:
+                mc.scheduler_profile.scheduler_instance_profiles = (
+                    self.models.SchedulerProfileSchedulerInstanceProfiles()  # pylint: disable=no-member
+                )
+            if mc.scheduler_profile.scheduler_instance_profiles.upstream is None:
+                mc.scheduler_profile.scheduler_instance_profiles.upstream = self.models.SchedulerInstanceProfile()  # pylint: disable=no-member
+            mc.scheduler_profile.scheduler_instance_profiles.upstream.scheduler_config_mode = (
+                self.models.SchedulerConfigMode.DEFAULT  # pylint: disable=no-member
+            )
 
         return mc
 
@@ -5443,6 +5662,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_kube_proxy_config(mc)
         # update custom ca trust certificates
         mc = self.update_custom_ca_trust_certificates(mc)
+        # update run command
+        mc = self.update_run_command(mc)
         # update node resource group profile
         mc = self.update_node_resource_group_profile(mc)
         # update auto upgrade profile
@@ -5475,6 +5696,10 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_vmas_to_vms(mc)
         # update http proxy config
         mc = self.update_http_proxy_enabled(mc)
+        # update user-defined scheduler configuration for kube-scheduler upstream
+        mc = self.update_upstream_kubescheduler_user_configuration(mc)
+        # update ManagedSystem pools, must at end
+        mc = self.update_managed_system_pools(mc)
 
         return mc
 

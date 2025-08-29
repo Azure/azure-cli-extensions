@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class DiscardCommitBatch(AAZCommand):
     """Post action: Discards a Batch operation in progress.
+
+    :example: Run discard commit batch on the Network Fabric
+        az networkfabric fabric discard-commit-batch --resource-group example-rg --resource-name example-fabric --commit-batch-id batchId1
     """
 
     _aaz_info = {
@@ -43,7 +46,7 @@ class DiscardCommitBatch(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.network_fabric_name = AAZStrArg(
-            options=["--network-fabric-name"],
+            options=["--resource-name", "--network-fabric-name"],
             help="Name of the Network Fabric.",
             required=True,
             id_part="name",
@@ -241,12 +244,15 @@ class _DiscardCommitBatchHelper:
         additional_info.Element = AAZObjectType()
 
         _element = _schema_error_detail_read.additional_info.Element
-        _element.info = AAZFreeFormDictType(
+        _element.info = AAZDictType(
             flags={"read_only": True},
         )
         _element.type = AAZStrType(
             flags={"read_only": True},
         )
+
+        info = _schema_error_detail_read.additional_info.Element.info
+        info.Element = AAZAnyType()
 
         details = _schema_error_detail_read.details
         details.Element = AAZObjectType()

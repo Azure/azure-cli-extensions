@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command_group(
     "apic integration",
-    is_preview=True,
 )
 class __CMDGroup(AAZCommandGroup):
     """Manages integrations in Azure API Center

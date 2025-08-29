@@ -42,6 +42,7 @@ from azext_aks_preview._consts import (
     CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID,
     CONST_MONITORING_USING_AAD_MSI_AUTH,
     CONST_NODEPOOL_MODE_SYSTEM,
+    CONST_NODEPOOL_MODE_MANAGEDSYSTEM,
     CONST_OPEN_SERVICE_MESH_ADDON_NAME,
     CONST_PRIVATE_DNS_ZONE_NONE,
     CONST_PRIVATE_DNS_ZONE_SYSTEM,
@@ -110,15 +111,7 @@ class AKSPreviewManagedClusterModelsTestCase(unittest.TestCase):
         models = AKSPreviewManagedClusterModels(self.cmd, CUSTOM_MGMT_AKS_PREVIEW)
 
         # load models directly (instead of through the `get_sdk` method provided by the cli component)
-        from azure.cli.core.profiles._shared import AZURE_API_PROFILES
-
-        sdk_profile = AZURE_API_PROFILES["latest"][CUSTOM_MGMT_AKS_PREVIEW]
-        api_version = sdk_profile.default_api_version
-        module_name = (
-            "azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks.v{}.models".format(
-                api_version.replace("-", "_")
-            )
-        )
+        module_name = "azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks.models"
         module = importlib.import_module(module_name)
 
         # pod identity models
@@ -885,7 +878,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         )
         with self.assertRaises(MutuallyExclusiveArgumentError):
             ctx_6.get_acns_advanced_networkpolicies()
-    
+
     def test_mc_get_acns_transit_encryption_type(self):
         # Default, not set.
         ctx_1 = AKSPreviewManagedClusterContext(
@@ -3003,6 +2996,65 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         with self.assertRaises(MutuallyExclusiveArgumentError):
             ctx_5.get_disable_keda()
 
+    def test_get_enable_run_command(self):
+        ctx_1 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"enable_run_command": False}),
+            self.models,
+            DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_1.get_enable_run_command(), False)
+        mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            api_server_access_profile=self.models.ManagedClusterAPIServerAccessProfile(
+                disable_run_command=False
+            )
+        )
+        ctx_1.attach_mc(mc_1)
+        self.assertEqual(ctx_1.get_enable_run_command(), True)
+
+        ctx_2 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"enable_run_command": True, "disable_run_command": True}),
+            self.models,
+            DecoratorMode.CREATE,
+        )
+        # fail on mutually exclusive enable_run_command and disable_run_command
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            self.assertEqual(ctx_2.get_enable_run_command(), True)
+
+        ctx_3 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"enable_run_command": True}),
+            self.models,
+            DecoratorMode.UPDATE,
+        )
+        mc_3 = self.models.ManagedCluster(
+            location="test_location",
+            api_server_access_profile=self.models.ManagedClusterAPIServerAccessProfile(
+                disable_run_command=True
+            )
+        )
+        ctx_3.attach_mc(mc_3)
+        self.assertEqual(ctx_3.get_enable_run_command(), True)
+
+    def test_get_disable_run_command(self):
+        ctx_1 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"disable_run_command": False}),
+            self.models,
+            DecoratorMode.UPDATE,
+        )
+        self.assertEqual(ctx_1.get_disable_run_command(), False)
+        mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            api_server_access_profile=self.models.ManagedClusterAPIServerAccessProfile(
+                disable_run_command=True
+            )
+        )
+        ctx_1.attach_mc(mc_1)
+        self.assertEqual(ctx_1.get_disable_run_command(), False)
+
     def test_get_defender_config(self):
         ctx_1 = AKSPreviewManagedClusterContext(
             self.cmd,
@@ -3801,7 +3853,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         self.assertEqual(new_profile, self.models.ServiceMeshProfile(
             mode="Istio", istio=self.models.IstioServiceMesh(revisions=["asm-1-18"])
         ))
-    
+
     def test_handle_egress_gateways_asm(self):
         ctx_0 = AKSPreviewManagedClusterContext(
             self.cmd,
@@ -4880,6 +4932,24 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         )
         ground_truth_mc_1 = self.models.ManagedCluster(
             location="test_location", security_profile=sec_profile
+        )
+        self.assertEqual(dec_mc_1, ground_truth_mc_1)
+
+    def test_set_up_run_command(self):
+        dec_1 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {"disable_run_command": True},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_1 = self.models.ManagedCluster(location="test_location")
+        dec_1.context.attach_mc(mc_1)
+        dec_mc_1 = dec_1.set_up_run_command(mc_1)
+        ground_truth_mc_1 = self.models.ManagedCluster(
+            location="test_location",
+                api_server_access_profile=self.models.ManagedClusterAPIServerAccessProfile(
+                    disable_run_command=True
+                )
         )
         self.assertEqual(dec_mc_1, ground_truth_mc_1)
 
@@ -7402,6 +7472,76 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
         self.assertEqual(dec_mc_2, ground_truth_mc_2)
 
+    def test_update_run_command(self):
+        dec_1 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "disable_run_command": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_1 = self.models.ManagedCluster(location="test_location")
+        dec_1.context.attach_mc(mc_1)
+        dec_mc_1 = dec_1.update_run_command(mc_1)
+
+        ground_truth_mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            api_server_access_profile=self.models.ManagedClusterAPIServerAccessProfile(
+                disable_run_command=True
+            )
+        )
+        self.assertEqual(dec_mc_1, ground_truth_mc_1)
+
+        dec_2 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_run_command": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_2 = self.models.ManagedCluster(
+            location="test_location",
+            api_server_access_profile=self.models.ManagedClusterAPIServerAccessProfile(
+                disable_run_command=True
+            )
+        )
+        dec_2.context.attach_mc(mc_2)
+        dec_mc_2 = dec_2.update_run_command(mc_2)
+        ground_truth_mc_2 = self.models.ManagedCluster(
+            location="test_location",
+            api_server_access_profile=self.models.ManagedClusterAPIServerAccessProfile(
+                disable_run_command=False
+            )
+        )
+        self.assertEqual(dec_mc_2, ground_truth_mc_2)
+
+        dec_3 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_run_command": False,
+                "disable_run_command": False,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_3 = self.models.ManagedCluster(
+            location="test_location",
+            api_server_access_profile=self.models.ManagedClusterAPIServerAccessProfile(
+                disable_run_command=True
+            )
+        )
+        dec_3.context.attach_mc(mc_3)
+        dec_mc_3 = dec_3.update_run_command(mc_3)
+        ground_truth_mc_3 = self.models.ManagedCluster(
+            location="test_location",
+            api_server_access_profile=self.models.ManagedClusterAPIServerAccessProfile(
+                disable_run_command=True
+            )
+        )
+        self.assertEqual(dec_mc_3, ground_truth_mc_3)
+
     def test_update_vpa(self):
         dec_1 = AKSPreviewManagedClusterUpdateDecorator(
             self.cmd,
@@ -9020,7 +9160,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             ),
         )
         self.assertEqual(dec_mc_1, ground_truth_mc_1)
-    
+
     def test_update_vmas_to_vms(self):
         # Should not update mc if unset
         dec_0 = AKSPreviewManagedClusterUpdateDecorator(
@@ -9060,14 +9200,14 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         dec_1.context.attach_mc(mc_1)
         with self.assertRaises(CLIError):
             dec_1.update_vmas_to_vms(mc_1)
-        
+
         # Should raise error if cluster has more than 1 AP
         dec_2 = AKSPreviewManagedClusterUpdateDecorator(
             self.cmd,
             self.client,
             {
                 "migrate_vmas_to_vms": True,
-                "yes": True,                
+                "yes": True,
             },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
@@ -9086,7 +9226,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         dec_2.context.attach_mc(mc_2)
         with self.assertRaises(CLIError):
             dec_2.update_vmas_to_vms(mc_2)
-        
+
         # Should migrate vmas-blb to vms-slb
         dec_3 = AKSPreviewManagedClusterUpdateDecorator(
             self.cmd,
@@ -9111,7 +9251,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         mc_3.network_profile = network_profile_3
         dec_3.context.attach_mc(mc_3)
         dec_mc_3 = dec_3.update_vmas_to_vms(mc_3)
-        
+
         ground_truth_mc_3 = self.models.ManagedCluster(
             location="test_location",
         )
@@ -9433,6 +9573,432 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             ),
         )
         self.assertEqual(dec_mc_2, ground_truth_mc_2)
+
+    def test_update_managed_system_pools(self):
+        """Test update_managed_system_pools method functionality."""
+        # Test with no agent pools
+        dec_1 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            agent_pool_profiles=None,
+        )
+        dec_1.context.attach_mc(mc_1)
+        dec_mc_1 = dec_1.update_managed_system_pools(mc_1)
+
+        ground_truth_mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            agent_pool_profiles=None,
+        )
+        self.assertEqual(dec_mc_1, ground_truth_mc_1)
+
+        # Test with empty agent pool profiles
+        dec_2 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_2 = self.models.ManagedCluster(
+            location="test_location",
+        )
+        mc_2.agent_pool_profiles = []
+        dec_2.context.attach_mc(mc_2)
+        dec_mc_2 = dec_2.update_managed_system_pools(mc_2)
+
+        ground_truth_mc_2 = self.models.ManagedCluster(
+            location="test_location",
+        )
+        ground_truth_mc_2.agent_pool_profiles = []
+        self.assertEqual(dec_mc_2, ground_truth_mc_2)
+
+        # Test with regular System mode agent pool (should remain unchanged)
+        dec_3 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+
+        regular_agentpool = self.models.ManagedClusterAgentPoolProfile(
+            name="nodepool1",
+            mode=CONST_NODEPOOL_MODE_SYSTEM,
+            vm_size="Standard_DS2_v2",
+            count=3,
+            max_pods=110,
+        )
+
+        mc_3 = self.models.ManagedCluster(location="test_location")
+        mc_3.agent_pool_profiles = [regular_agentpool]
+        dec_3.context.attach_mc(mc_3)
+        dec_mc_3 = dec_3.update_managed_system_pools(mc_3)
+
+        # Regular system pool should remain unchanged
+        self.assertEqual(dec_mc_3.agent_pool_profiles[0].name, "nodepool1")
+        self.assertEqual(dec_mc_3.agent_pool_profiles[0].mode, CONST_NODEPOOL_MODE_SYSTEM)
+        self.assertEqual(dec_mc_3.agent_pool_profiles[0].vm_size, "Standard_DS2_v2")
+        self.assertEqual(dec_mc_3.agent_pool_profiles[0].count, 3)
+        self.assertEqual(dec_mc_3.agent_pool_profiles[0].max_pods, 110)
+
+        # Test with ManagedSystem mode agent pool (should clean all other attributes)
+        dec_4 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+
+        managed_system_agentpool = self.models.ManagedClusterAgentPoolProfile(
+            name="managedsystem1",
+            mode=CONST_NODEPOOL_MODE_MANAGEDSYSTEM,
+            vm_size="Standard_DS2_v2",
+            count=3,
+            max_pods=110,
+            os_disk_size_gb=100,
+            vnet_subnet_id="/subscriptions/test/resourceGroups/test/providers/Microsoft.Network/virtualNetworks/test/subnets/test",
+        )
+
+        mc_4 = self.models.ManagedCluster(location="test_location")
+        mc_4.agent_pool_profiles = [managed_system_agentpool]
+        dec_4.context.attach_mc(mc_4)
+        dec_mc_4 = dec_4.update_managed_system_pools(mc_4)
+
+        # ManagedSystem pool should have all attributes except name and mode set to None
+        result_agentpool = dec_mc_4.agent_pool_profiles[0]
+        self.assertEqual(result_agentpool.name, "managedsystem1")
+        self.assertEqual(result_agentpool.mode, CONST_NODEPOOL_MODE_MANAGEDSYSTEM)
+        self.assertIsNone(result_agentpool.vm_size)
+        self.assertIsNone(result_agentpool.count)
+        self.assertIsNone(result_agentpool.max_pods)
+        self.assertIsNone(result_agentpool.os_disk_size_gb)
+        self.assertIsNone(result_agentpool.vnet_subnet_id)
+
+        # Test with mixed agent pools (System and ManagedSystem)
+        dec_5 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+
+        system_agentpool = self.models.ManagedClusterAgentPoolProfile(
+            name="systempool",
+            mode=CONST_NODEPOOL_MODE_SYSTEM,
+            vm_size="Standard_DS2_v2",
+            count=3,
+            max_pods=110,
+        )
+
+        managed_system_agentpool = self.models.ManagedClusterAgentPoolProfile(
+            name="managedsystempool",
+            mode=CONST_NODEPOOL_MODE_MANAGEDSYSTEM,
+            vm_size="Standard_DS4_v2",
+            count=5,
+            max_pods=250,
+            os_disk_size_gb=200,
+        )
+
+        mc_5 = self.models.ManagedCluster(location="test_location")
+        mc_5.agent_pool_profiles = [system_agentpool, managed_system_agentpool]
+        dec_5.context.attach_mc(mc_5)
+        dec_mc_5 = dec_5.update_managed_system_pools(mc_5)
+
+        # System pool should remain unchanged
+        system_result = dec_mc_5.agent_pool_profiles[0]
+        self.assertEqual(system_result.name, "systempool")
+        self.assertEqual(system_result.mode, CONST_NODEPOOL_MODE_SYSTEM)
+        self.assertEqual(system_result.vm_size, "Standard_DS2_v2")
+        self.assertEqual(system_result.count, 3)
+        self.assertEqual(system_result.max_pods, 110)
+
+        # ManagedSystem pool should be cleaned
+        managed_result = dec_mc_5.agent_pool_profiles[1]
+        self.assertEqual(managed_result.name, "managedsystempool")
+        self.assertEqual(managed_result.mode, CONST_NODEPOOL_MODE_MANAGEDSYSTEM)
+        self.assertIsNone(managed_result.vm_size)
+        self.assertIsNone(managed_result.count)
+        self.assertIsNone(managed_result.max_pods)
+        self.assertIsNone(managed_result.os_disk_size_gb)
+
+        # Test with multiple ManagedSystem pools
+        dec_6 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+
+        managed_system_agentpool_1 = self.models.ManagedClusterAgentPoolProfile(
+            name="managedsystem1",
+            mode=CONST_NODEPOOL_MODE_MANAGEDSYSTEM,
+            vm_size="Standard_DS2_v2",
+            count=3,
+            enable_auto_scaling=True,
+            min_count=1,
+            max_count=5,
+        )
+
+        managed_system_agentpool_2 = self.models.ManagedClusterAgentPoolProfile(
+            name="managedsystem2",
+            mode=CONST_NODEPOOL_MODE_MANAGEDSYSTEM,
+            vm_size="Standard_DS4_v2",
+            count=2,
+            os_type="Linux",
+        )
+
+        mc_6 = self.models.ManagedCluster(location="test_location")
+        mc_6.agent_pool_profiles = [managed_system_agentpool_1, managed_system_agentpool_2]
+        dec_6.context.attach_mc(mc_6)
+        dec_mc_6 = dec_6.update_managed_system_pools(mc_6)
+
+        # Both ManagedSystem pools should be cleaned
+        result_1 = dec_mc_6.agent_pool_profiles[0]
+        self.assertEqual(result_1.name, "managedsystem1")
+        self.assertEqual(result_1.mode, CONST_NODEPOOL_MODE_MANAGEDSYSTEM)
+        self.assertIsNone(result_1.vm_size)
+        self.assertIsNone(result_1.count)
+        self.assertIsNone(result_1.enable_auto_scaling)
+        self.assertIsNone(result_1.min_count)
+        self.assertIsNone(result_1.max_count)
+
+        result_2 = dec_mc_6.agent_pool_profiles[1]
+        self.assertEqual(result_2.name, "managedsystem2")
+        self.assertEqual(result_2.mode, CONST_NODEPOOL_MODE_MANAGEDSYSTEM)
+        self.assertIsNone(result_2.vm_size)
+        self.assertIsNone(result_2.count)
+        self.assertIsNone(result_2.os_type)
+
+        # Test error handling: fail on passing wrong mc object
+        dec_7 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_7 = self.models.ManagedCluster(location="test_location")
+        dec_7.context.attach_mc(mc_7)
+
+        with self.assertRaises(CLIInternalError):
+            dec_7.update_managed_system_pools(None)
+
+    def test_set_up_upstream_kubescheduler_user_configuration(self):
+        # Test default behavior - no configuration
+        dec_0 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_0 = self.models.ManagedCluster(location="test_location")
+        dec_0.context.attach_mc(mc_0)
+        dec_mc_0 = dec_0.set_up_upstream_kubescheduler_user_configuration(mc_0)
+        ground_truth_mc_0 = self.models.ManagedCluster(location="test_location")
+        self.assertEqual(dec_mc_0, ground_truth_mc_0)
+
+        # Test enabling upstream kubescheduler user configuration
+        dec_1 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_upstream_kubescheduler_user_configuration": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_1 = self.models.ManagedCluster(location="test_location")
+        dec_1.context.attach_mc(mc_1)
+        dec_mc_1 = dec_1.set_up_upstream_kubescheduler_user_configuration(mc_1)
+        ground_truth_mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            scheduler_profile=self.models.SchedulerProfile(
+                scheduler_instance_profiles=self.models.SchedulerProfileSchedulerInstanceProfiles(
+                    upstream=self.models.SchedulerInstanceProfile(
+                        scheduler_config_mode=self.models.SchedulerConfigMode.MANAGED_BY_CRD
+                    )
+                )
+            ),
+        )
+        self.assertEqual(dec_mc_1, ground_truth_mc_1)
+
+        # Test with existing scheduler profile
+        dec_2 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_upstream_kubescheduler_user_configuration": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_2 = self.models.ManagedCluster(
+            location="test_location",
+            scheduler_profile=self.models.SchedulerProfile(
+                scheduler_instance_profiles=self.models.SchedulerProfileSchedulerInstanceProfiles(
+                    upstream=self.models.SchedulerInstanceProfile(
+                        scheduler_config_mode=self.models.SchedulerConfigMode.DEFAULT
+                    )
+                )
+            ),
+        )
+        dec_2.context.attach_mc(mc_2)
+        dec_mc_2 = dec_2.set_up_upstream_kubescheduler_user_configuration(mc_2)
+        ground_truth_mc_2 = self.models.ManagedCluster(
+            location="test_location",
+            scheduler_profile=self.models.SchedulerProfile(
+                scheduler_instance_profiles=self.models.SchedulerProfileSchedulerInstanceProfiles(
+                    upstream=self.models.SchedulerInstanceProfile(
+                        scheduler_config_mode=self.models.SchedulerConfigMode.MANAGED_BY_CRD
+                    )
+                )
+            ),
+        )
+        self.assertEqual(dec_mc_2, ground_truth_mc_2)
+
+    def test_update_upstream_kubescheduler_user_configuration(self):
+        # Test default behavior - no configuration change
+        dec_0 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_0 = self.models.ManagedCluster(location="test_location")
+        dec_0.context.attach_mc(mc_0)
+        dec_mc_0 = dec_0.update_upstream_kubescheduler_user_configuration(mc_0)
+        ground_truth_mc_0 = self.models.ManagedCluster(location="test_location")
+        self.assertEqual(dec_mc_0, ground_truth_mc_0)
+
+        # Test enabling upstream kubescheduler user configuration
+        dec_1 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_upstream_kubescheduler_user_configuration": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_1 = self.models.ManagedCluster(location="test_location")
+        dec_1.context.attach_mc(mc_1)
+        dec_mc_1 = dec_1.update_upstream_kubescheduler_user_configuration(mc_1)
+        ground_truth_mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            scheduler_profile=self.models.SchedulerProfile(
+                scheduler_instance_profiles=self.models.SchedulerProfileSchedulerInstanceProfiles(
+                    upstream=self.models.SchedulerInstanceProfile(
+                        scheduler_config_mode=self.models.SchedulerConfigMode.MANAGED_BY_CRD
+                    )
+                )
+            ),
+        )
+        self.assertEqual(dec_mc_1, ground_truth_mc_1)
+
+        # Test disabling upstream kubescheduler user configuration
+        dec_2 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "disable_upstream_kubescheduler_user_configuration": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_2 = self.models.ManagedCluster(location="test_location")
+        dec_2.context.attach_mc(mc_2)
+        dec_mc_2 = dec_2.update_upstream_kubescheduler_user_configuration(mc_2)
+        ground_truth_mc_2 = self.models.ManagedCluster(
+            location="test_location",
+            scheduler_profile=self.models.SchedulerProfile(
+                scheduler_instance_profiles=self.models.SchedulerProfileSchedulerInstanceProfiles(
+                    upstream=self.models.SchedulerInstanceProfile(
+                        scheduler_config_mode=self.models.SchedulerConfigMode.DEFAULT
+                    )
+                )
+            ),
+        )
+        self.assertEqual(dec_mc_2, ground_truth_mc_2)
+
+        # Test mutual exclusivity - should raise exception when both enable and disable are specified
+        dec_3 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_upstream_kubescheduler_user_configuration": True,
+                "disable_upstream_kubescheduler_user_configuration": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_3 = self.models.ManagedCluster(location="test_location")
+        dec_3.context.attach_mc(mc_3)
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            dec_3.update_upstream_kubescheduler_user_configuration(mc_3)
+
+        # Test enabling with existing scheduler profile being updated
+        dec_4 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_upstream_kubescheduler_user_configuration": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_4 = self.models.ManagedCluster(
+            location="test_location",
+            scheduler_profile=self.models.SchedulerProfile(
+                scheduler_instance_profiles=self.models.SchedulerProfileSchedulerInstanceProfiles(
+                    upstream=self.models.SchedulerInstanceProfile(
+                        scheduler_config_mode=self.models.SchedulerConfigMode.DEFAULT
+                    )
+                )
+            ),
+        )
+        dec_4.context.attach_mc(mc_4)
+        dec_mc_4 = dec_4.update_upstream_kubescheduler_user_configuration(mc_4)
+        ground_truth_mc_4 = self.models.ManagedCluster(
+            location="test_location",
+            scheduler_profile=self.models.SchedulerProfile(
+                scheduler_instance_profiles=self.models.SchedulerProfileSchedulerInstanceProfiles(
+                    upstream=self.models.SchedulerInstanceProfile(
+                        scheduler_config_mode=self.models.SchedulerConfigMode.MANAGED_BY_CRD
+                    )
+                )
+            ),
+        )
+        self.assertEqual(dec_mc_4, ground_truth_mc_4)
+
+        # Test disabling with existing scheduler profile being updated
+        dec_5 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "disable_upstream_kubescheduler_user_configuration": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_5 = self.models.ManagedCluster(
+            location="test_location",
+            scheduler_profile=self.models.SchedulerProfile(
+                scheduler_instance_profiles=self.models.SchedulerProfileSchedulerInstanceProfiles(
+                    upstream=self.models.SchedulerInstanceProfile(
+                        scheduler_config_mode=self.models.SchedulerConfigMode.MANAGED_BY_CRD
+                    )
+                )
+            ),
+        )
+        dec_5.context.attach_mc(mc_5)
+        dec_mc_5 = dec_5.update_upstream_kubescheduler_user_configuration(mc_5)
+        ground_truth_mc_5 = self.models.ManagedCluster(
+            location="test_location",
+            scheduler_profile=self.models.SchedulerProfile(
+                scheduler_instance_profiles=self.models.SchedulerProfileSchedulerInstanceProfiles(
+                    upstream=self.models.SchedulerInstanceProfile(
+                        scheduler_config_mode=self.models.SchedulerConfigMode.DEFAULT
+                    )
+                )
+            ),
+        )
+        self.assertEqual(dec_mc_5, ground_truth_mc_5)
+
 
 if __name__ == "__main__":
     unittest.main()
