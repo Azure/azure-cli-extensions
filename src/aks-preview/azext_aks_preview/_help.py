@@ -2247,6 +2247,9 @@ helps['aks nodepool update'] = """
         - name: --localdns-config
           type: string
           short-summary: Set the localDNS Profile for a nodepool with a JSON config file.
+        - name: --node-vm-size -s
+          type: string
+          short-summary: VM size for Kubernetes nodes. Only configurable when updating the autoscale settings of a VirtualMachines node pool.
     examples:
       - name: Reconcile the nodepool back to its current state.
         text: az aks nodepool update -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster
@@ -2258,6 +2261,8 @@ helps['aks nodepool update'] = """
         text: az aks nodepool update --update-cluster-autoscaler --min-count 1 --max-count 10 -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster
       - name: Change a node pool to system mode
         text: az aks nodepool update --mode System -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster
+      - name: Update cluster autoscaler vm size, min-count and max-count for virtual machines node pool
+        text: az aks nodepool update -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --update-cluster-autoscaler --node-vm-size "Standard_D2s_v3" --min-count 2 --max-count 4
 """
 
 helps['aks nodepool get-upgrades'] = """

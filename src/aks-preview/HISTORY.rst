@@ -12,6 +12,11 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+18.0.0b30
++++++++
+* Enable autoscaler support for the VirtualMachines agent pool type.
+* Add `--node-vm-size` to `az aks update` to allow changing the VM size for VirtualMachines node pools.
+
 18.0.0b29
 +++++++
 * Refactor code to suppress ssh access warning message when creating an automatic cluster.
