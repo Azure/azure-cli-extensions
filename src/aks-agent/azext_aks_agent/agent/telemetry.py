@@ -57,7 +57,7 @@ class CLITelemetryClient:
             ext_name = "aks-agent"
             ext = get_extension(ext_name)
             extension_name = f"aks-agent@{ext.version}"
-        except Exception:  # pylint: disable=W0702
+        except:  # pylint: disable=W0702
             pass
 
         return {
