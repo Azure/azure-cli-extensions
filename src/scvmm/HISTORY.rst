@@ -2,7 +2,12 @@
 
 Release History
 ===============
+1.2.1
+++++++
+* [HotFix] Fixed `az scvmm vm create-from-machines` command for VM Instance creation.
+
 1.2.0
+++++++
 * Add command `az scvmm vm create-from-machines`.
 
 1.1.2
