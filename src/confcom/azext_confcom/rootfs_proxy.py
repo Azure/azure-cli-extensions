@@ -4,16 +4,16 @@
 # --------------------------------------------------------------------------------------------
 
 
-import subprocess
-from typing import List
 import os
-import sys
-import stat
 import platform
-import requests
-from knack.log import get_logger
-from azext_confcom.errors import eprint
+import stat
+import subprocess
+import sys
+from typing import List
 
+import requests
+from azext_confcom.errors import eprint
+from knack.log import get_logger
 
 host_os = platform.system()
 machine = platform.machine()
@@ -42,6 +42,8 @@ class SecurityPolicyProxy:  # pylint: disable=too-few-public-methods
             needed_asset_info = [asset for asset in release["assets"] if asset["name"] in needed_assets]
             if len(needed_asset_info) == len(needed_assets):
                 for asset in needed_asset_info:
+                    # say which version we're downloading
+                    print(f"Downloading integrity-vhd version {release['tag_name']}")
                     # get the download url for the dmverity-vhd file
                     exe_url = asset["browser_download_url"]
                     # download the file

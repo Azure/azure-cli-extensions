@@ -3,19 +3,34 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-import yaml
 import copy
 from typing import List
+
+import yaml
+from azext_confcom import config, oras_proxy
+from azext_confcom.errors import eprint
+from azext_confcom.template_util import (case_insensitive_dict_get,
+                                         extract_containers_from_text,
+                                         extract_namespace_from_text,
+                                         extract_svn_from_text)
 from knack.log import get_logger
-from azext_confcom import config
-from azext_confcom import oras_proxy
-from azext_confcom.cose_proxy import CoseSignToolProxy
-from azext_confcom.template_util import (
-    case_insensitive_dict_get,
-    extract_containers_from_text,
-)
 
 logger = get_logger(__name__)
+
+
+def sanitize_fragment_fields(fragments_list: List[dict]) -> List[dict]:
+    fields_to_keep = [
+        config.POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_FEED,
+        config.POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_MINIMUM_SVN,
+        config.POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_INCLUDES,
+        config.POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_ISSUER
+    ]
+    out_list = copy.deepcopy(fragments_list)
+    for fragment in out_list:
+        keys_to_remove = [key for key in fragment.keys() if key not in fields_to_keep]
+        for key in keys_to_remove:
+            fragment.pop(key, None)
+    return out_list
 
 
 # input is the full rego file as a string
@@ -35,58 +50,50 @@ def get_all_fragment_contents(
     fragment_imports: List[dict],
 ) -> List[str]:
     # was getting errors with pass by reference so we need to copy it
-    copied_fragment_imports = copy.deepcopy(fragment_imports)
+    remaining_fragments = copy.deepcopy(fragment_imports)
 
-    fragment_feeds = [
-        case_insensitive_dict_get(fragment, config.POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_FEED)
-        for fragment in copied_fragment_imports
-    ]
+    def remove_from_list_via_feed(fragment_import_list, feed):
+        for i, fragment_import in enumerate(fragment_import_list):
+            if fragment_import.get("feed") == feed:
+                fragment_import_list.pop(i)
 
     all_fragments_contents = []
     # get all the image attached fragments
     for image in image_names:
         # TODO: make sure this doesn't error out if the images aren't in a registry.
         # This will probably be in the discover function
-        fragments, feeds = oras_proxy.pull_all_image_attached_fragments(image)
-        for fragment, feed in zip(fragments, feeds):
-            if feed in fragment_feeds:
-                all_fragments_contents.append(fragment)
+        image_attached_fragments, feeds = oras_proxy.pull_all_image_attached_fragments(image)
+        for fragment, feed in zip(image_attached_fragments, feeds):
+            all_feeds = [
+                case_insensitive_dict_get(temp_fragment, config.POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_FEED)
+                for temp_fragment in remaining_fragments
+            ]
+            feed_idx = all_feeds.index(feed) if feed in all_feeds else -1
+
+            if feed_idx != -1:
+                import_statement = remaining_fragments[feed_idx]
+
+                if (
+                    int(
+                        case_insensitive_dict_get(
+                            import_statement, config.POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_MINIMUM_SVN
+                        )
+                    ) <= extract_svn_from_text(fragment)
+                ):
+                    remove_from_list_via_feed(remaining_fragments, feed)
+                    all_fragments_contents.append(fragment)
             else:
                 logger.warning("Fragment feed %s not in list of feeds to use. Skipping fragment.", feed)
+    # grab the remaining fragments which should be standalone
+    standalone_fragments, _ = oras_proxy.pull_all_standalone_fragments(remaining_fragments)
+    all_fragments_contents.extend(standalone_fragments)
 
-    cose_proxy = CoseSignToolProxy()
-    # get all the local fragments
-    for fragment in copied_fragment_imports:
-        contents = []
-        # pull locally if there is a path, otherwise pull from the remote registry
-        if (
-            fragment.get(config.POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_PATH)
-        ):
-            contents = [
-                cose_proxy.extract_payload_from_path(
-                    fragment[config.POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_PATH]
-                )
-            ]
-
-        # add the new fragments to the list of all fragments if they're not already there
-        # the side effect of adding this way is that if we have a local path to a nested fragment
-        # we will pull then use the local version of the fragment instead of pulling from the registry
-        for content in contents:
-            fragment_text = extract_containers_from_text(
-                content, config.REGO_FRAGMENT_START
-            ).replace("\t", "    ")
-
-            fragments = yaml.load(
-                fragment_text,
-                Loader=yaml.FullLoader,
-            )
-
-            # this adds new feeds to the list of feeds to pull dynamically
-            # it will end when there are no longer nested fragments to pull
-            for new_fragment in fragments:
-                if new_fragment[config.POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_FEED] not in fragment_feeds:
-                    copied_fragment_imports.append(new_fragment)
-
-            all_fragments_contents.append(content)
+    # make sure there aren't conflicts in the namespaces
+    namespaces = set()
+    for fragment in all_fragments_contents:
+        namespace = extract_namespace_from_text(fragment)
+        if namespace in namespaces:
+            eprint("Duplicate namespace found: %s. This may cause issues.", namespace)
+        namespaces.add(namespace)
 
     return combine_fragments_with_policy(all_fragments_contents)

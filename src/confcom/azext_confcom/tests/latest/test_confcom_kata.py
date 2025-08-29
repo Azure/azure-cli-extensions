@@ -5,8 +5,6 @@
 
 import os
 import unittest
-import unittest.mock as patch
-from io import StringIO
 import platform
 from azext_confcom.custom import katapolicygen_confcom
 
