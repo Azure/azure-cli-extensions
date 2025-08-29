@@ -3674,7 +3674,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     @live_only()  # live only due to workspace is not mocked correctly and role assignment is not mocked
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
-        random_name_length=17, name_prefix="clitest", location="eastus2"
+        random_name_length=17, name_prefix="clitest", location="westus2"
     )
     def test_aks_automatic_sku(self, resource_group, resource_group_location):
         # reset the count so in replay mode the random names will start with 0
@@ -11525,6 +11525,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             checks=[self.is_empty()],
         )
 
+    @live_only()
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
         random_name_length=17, name_prefix="clitest", location="westus2"
@@ -11819,6 +11820,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             ],
         )
 
+    @live_only()
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
         random_name_length=17, name_prefix="clitest", location="westus2"

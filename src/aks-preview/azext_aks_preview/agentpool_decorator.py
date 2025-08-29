@@ -987,18 +987,17 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
 
         ssh_access = self.context.get_ssh_access()
         sku_name = self.context.get_sku_name()
+        if sku_name and sku_name.lower() == CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC:
+            return agentpool
         if ssh_access is not None:
             if agentpool.security_profile is None:
                 agentpool.security_profile = self.models.AgentPoolSecurityProfile()  # pylint: disable=no-member
             agentpool.security_profile.ssh_access = ssh_access
             if ssh_access == CONST_SSH_ACCESS_LOCALUSER:
-                if sku_name == CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC:
-                    logger.warning("SSH access is in preview")
-                else:
-                    logger.warning(
-                        "The new node pool will enable SSH access, recommended to use "
-                        "'--ssh-access disabled' option to disable SSH access for the node pool to make it more secure."
-                    )
+                logger.warning(
+                    "The new node pool will enable SSH access, recommended to use "
+                    "'--ssh-access disabled' option to disable SSH access for the node pool to make it more secure."
+                )
         return agentpool
 
     def set_up_skip_gpu_driver_install(self, agentpool: AgentPool) -> AgentPool:
