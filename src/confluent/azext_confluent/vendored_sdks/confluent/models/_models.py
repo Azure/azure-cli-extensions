@@ -181,6 +181,7 @@ class OfferDetail(msrest.serialization.Model):
         'plan_id': {'key': 'planId', 'type': 'str'},
         'plan_name': {'key': 'planName', 'type': 'str'},
         'term_unit': {'key': 'termUnit', 'type': 'str'},
+        'term_id': {'key': 'termId', 'type': 'str'},
         'status': {'key': 'status', 'type': 'str'},
     }
 
@@ -194,6 +195,7 @@ class OfferDetail(msrest.serialization.Model):
         self.plan_id = kwargs['plan_id']
         self.plan_name = kwargs['plan_name']
         self.term_unit = kwargs['term_unit']
+        self.term_id = kwargs['term_id']
         self.status = kwargs.get('status', None)
 
 

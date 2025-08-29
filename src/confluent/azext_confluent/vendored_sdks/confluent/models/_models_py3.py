@@ -198,6 +198,7 @@ class OfferDetail(msrest.serialization.Model):
         'plan_id': {'key': 'planId', 'type': 'str'},
         'plan_name': {'key': 'planName', 'type': 'str'},
         'term_unit': {'key': 'termUnit', 'type': 'str'},
+        'term_id': {'key': 'termId', 'type': 'str'},
         'status': {'key': 'status', 'type': 'str'},
     }
 
@@ -209,6 +210,7 @@ class OfferDetail(msrest.serialization.Model):
         plan_id: str,
         plan_name: str,
         term_unit: str,
+        term_id: str,
         status: Optional[Union[str, "SaaSOfferStatus"]] = None,
         **kwargs
     ):
@@ -218,6 +220,7 @@ class OfferDetail(msrest.serialization.Model):
         self.plan_id = plan_id
         self.plan_name = plan_name
         self.term_unit = term_unit
+        self.term_id = term_id
         self.status = status
 
 
