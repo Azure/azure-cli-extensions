@@ -12,9 +12,13 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
-18.0.0b29
+18.0.0b30
 +++++++
 * Remove interactive AI-powered debugging tool `az aks agent`.
+
+18.0.0b29
++++++++
+* Refactor code to suppress ssh access warning message when creating an automatic cluster.
 
 18.0.0b28
 +++++++
