@@ -76,7 +76,7 @@ class DatabaseMigrationsSqlDbOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-03-30-preview"
+        api_version = "2025-06-30"
         accept = "application/json"
 
         # Construct URL
@@ -130,7 +130,7 @@ class DatabaseMigrationsSqlDbOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-03-30-preview"
+        api_version = "2025-06-30"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -266,7 +266,7 @@ class DatabaseMigrationsSqlDbOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-03-30-preview"
+        api_version = "2025-06-30"
 
         # Construct URL
         url = self._delete_initial.metadata['url']  # type: ignore
@@ -388,7 +388,7 @@ class DatabaseMigrationsSqlDbOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-03-30-preview"
+        api_version = "2025-06-30"
         content_type = kwargs.pop("content_type", "application/json")
 
         # Construct URL
