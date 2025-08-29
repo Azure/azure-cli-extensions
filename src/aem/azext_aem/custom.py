@@ -463,7 +463,7 @@ class EnhancedMonitoring:  # pylint: disable=too-many-instance-attributes
                 else:
                     logger.warning("\t\tStorage Metrics configuration check for '%s'...", storage_account_name)
                     storage_client = self._get_storage_client(storage_account_name, disk['key'])
-                    service_properties = storage_client.get_blob_service_properties()
+                    service_properties = storage_client.get_service_properties()
                     storage_cfg_ok = EnhancedMonitoring._check_storage_analytics(service_properties)
                     if storage_cfg_ok:
                         logger.warning('\t\tStorage Metrics configuration check: %s', succ_word)
@@ -731,44 +731,47 @@ class EnhancedMonitoring:  # pylint: disable=too-many-instance-attributes
         return disks_info
 
     def _get_blob_size(self, storage_account_name, container, blob, key):
-        storage_client = self._get_storage_client(storage_account_name, key)
+        blob_service_client = self._get_storage_client(storage_account_name, key)
+        blob_client = blob_service_client.get_blob_client(container, blob)
         # convert to GB
-        return int(storage_client.get_blob_properties(container, blob).properties.content_length / (1 << 30))
+        return int(blob_client.properties.size / (1 << 30))
 
     def _get_storage_client(self, storage_account_name, key):
-        BlockBlobService = get_sdk(self._cmd.cli_ctx, ResourceType.DATA_STORAGE,
-                                   'blob.blockblobservice#BlockBlobService')
+        BlobServiceClient = get_sdk(self._cmd.cli_ctx, ResourceType.DATA_STORAGE_BLOB,
+                                    '_blob_service_client#BlobServiceClient')
         return get_data_service_client(
             self._cmd.cli_ctx,
-            BlockBlobService,
+            BlobServiceClient,
             storage_account_name,
             key,
             endpoint_suffix=self._cmd.cli_ctx.cloud.suffixes.storage_endpoint)  # pylint: disable=no-member
 
     def _enable_storage_analytics(self, storage_account_name, key):
         storage_client = self._get_storage_client(storage_account_name, key)
-        service_properties = storage_client.get_blob_service_properties()
+        service_properties = storage_client.get_service_properties()
         if not EnhancedMonitoring._check_storage_analytics(service_properties):
-            t_logging, t_retention_policy, t_metrics = get_sdk(self._cmd.cli_ctx, ResourceType.DATA_STORAGE, 'Logging',
-                                                               'RetentionPolicy', 'Metrics', mod='common.models')
+            t_logging, t_retention_policy, t_metrics = get_sdk(self._cmd.cli_ctx, ResourceType.DATA_STORAGE_BLOB,
+                                                               'BlobAnalyticsLogging', 'RetentionPolicy', 'Metrics',
+                                                               mod='_models')
             retention_policy = t_retention_policy(enabled=True, days=13)
             logging = t_logging(delete=True, read=True, write=True, retention_policy=retention_policy)
             minute_metrics = t_metrics(enabled=True, include_apis=True, retention_policy=retention_policy)
             if getattr(service_properties, 'hour_metrics', None):
                 service_properties.hour_metrics.retention_policy.days = 13
-            storage_client.set_blob_service_properties(logging, minute_metrics=minute_metrics,
-                                                       hour_metrics=service_properties.hour_metrics)
+            storage_client.set_service_properties(analytics_logging=logging, minute_metrics=minute_metrics,
+                                                  hour_metrics=service_properties.hour_metrics)
 
     @staticmethod
     def _check_storage_analytics(service_properties):
-        return (service_properties and service_properties.logging and
+        return (service_properties and service_properties.analytics_logging and
                 service_properties.minute_metrics and service_properties.minute_metrics.include_apis and
                 service_properties.minute_metrics.retention_policy.days)
 
     def _check_table_and_content(self, storage_account_name, key, table_name,
                                  filter_string, timeout_in_minutes):
         sleep_period = 15
-        TableService = get_sdk(self._cmd.cli_ctx, ResourceType.DATA_COSMOS_TABLE, 'table#TableService')
+        TableService = get_sdk(self._cmd.cli_ctx, ResourceType.DATA_STORAGE_TABLE,
+                               '_table_service_client#TableServiceClient')
         table_client = get_data_service_client(
             self._cmd.cli_ctx,
             TableService,
