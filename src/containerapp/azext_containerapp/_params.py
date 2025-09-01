@@ -469,6 +469,7 @@ def load_arguments(self, _):
         c.argument('startup_command', nargs='*', options_list=['--command'], help="A list of supported commands on the container that will executed during startup. Space-separated values e.g. \"/bin/queue\" \"mycommand\". Empty string to clear existing values")
         c.argument('args', nargs='*', help="A list of container startup command argument(s). Space-separated values e.g. \"-c\" \"mycommand\". Empty string to clear existing values")
         c.argument('target_port', type=int, validator=validate_target_port_range, help="The session port used for ingress traffic.")
+        c.argument('probe_yaml', type=file_type, help='Path to a .yaml file with the configuration of the container probes.')
 
     with self.argument_context('containerapp sessionpool', arg_group='Registry') as c:
         c.argument('registry_server', validator=validate_registry_server, help="The container registry server hostname, e.g. myregistry.azurecr.io.")
