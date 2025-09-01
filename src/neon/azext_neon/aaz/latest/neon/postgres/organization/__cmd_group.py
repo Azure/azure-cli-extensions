@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "neon postgres organization",
+    "neon organization",
 )
 class __CMDGroup(AAZCommandGroup):
     """Manage Neon organizations, which are entities created on the Neon side.

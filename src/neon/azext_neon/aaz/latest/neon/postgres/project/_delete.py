@@ -12,14 +12,14 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "neon postgres project delete",
+    "neon project delete",
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
     """Delete an existing Neon project resource within Azure.
 
     :example: Delete Neon Project
-        az neon postgres project delete --resource-group rgneon --organization-name org-cli-test --project-id old-frost-16758796
+        az neon project delete --resource-group rgneon --organization-name org-cli-test --project-id old-frost-16758796
     """
 
     _aaz_info = {

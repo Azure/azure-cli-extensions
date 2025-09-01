@@ -12,13 +12,13 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "neon postgres project create",
+    "neon project create",
 )
 class Create(AAZCommand):
     """Create a new Neon project resource within Azure.
 
     :example: Create Neon Project
-        az neon postgres project create --resource-group rgneon --organization-name neon-org --project-name neon-project --region eastus2 --pg-version 17 --branch "{branch-name:main, role-name:owner_role,database-name:neondb}"
+        az neon project create --resource-group rgneon --organization-name neon-org --project-name neon-project --region eastus2 --pg-version 17 --branch "{branch-name:main, role-name:owner_role,database-name:neondb}"
     """
 
     _aaz_info = {

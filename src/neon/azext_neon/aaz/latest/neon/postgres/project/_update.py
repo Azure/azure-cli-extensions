@@ -12,13 +12,13 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "neon postgres project update",
+    "neon project update",
 )
 class Update(AAZCommand):
     """Update the properties of an existing Neon project resource within Azure.
 
     :example: Neon Project Update
-        az neon postgres project update --resource-group rgneon --organization-name neon-org --project-name neon-project --region eastus2 --pg-version 18
+        az neon project update --resource-group rgneon --organization-name neon-org --project-name neon-project --region eastus2 --pg-version 18
     """
 
     _aaz_info = {
