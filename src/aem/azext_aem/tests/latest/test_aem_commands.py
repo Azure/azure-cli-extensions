@@ -99,7 +99,7 @@ class VMAEM(ScenarioTest):
             'vnet': 'vnet',
             'subnet': 'subnet'
         })
-        self.cmd('vm create -g {rg} -n {vm} --os-disk-name os-disk --image win2016datacenter --admin-username myadmin --admin-password thisisaTest!@ --subnet {subnet} --vnet-name {vnet} --nsg-rule NONE')
+        self.cmd('vm create -g {rg} -n {vm} --os-disk-name os-disk --image win2016datacenter --admin-username myadmin --admin-password thisisaTest!@ --subnet {subnet} --vnet-name {vnet} --nsg-rule NONE --size Standard_D2s_v3')
         self.cmd('network vnet subnet update -g {rg} --vnet-name {vnet} -n {subnet} --default-outbound-access false')
         self.cmd('identity create -g {rg} -n {ident}')
 
@@ -134,7 +134,7 @@ class VMAEM(ScenarioTest):
             'subnet': 'subnet'
         })
 
-        self.cmd('vm create -g {rg} -n {vm} --os-disk-name os-disk --image RedHat:RHEL:8.2:latest --generate-ssh-keys --subnet {subnet} --vnet-name {vnet} --nsg-rule NONE')
+        self.cmd('vm create -g {rg} -n {vm} --os-disk-name os-disk --image RedHat:RHEL:8.2:latest --generate-ssh-keys --subnet {subnet} --vnet-name {vnet} --nsg-rule NONE --size Standard_D2s_v3')
         self.cmd('network vnet subnet update -g {rg} --vnet-name {vnet} -n {subnet} --default-outbound-access false')
 
         with self.assertRaises(CLIError) as cm:
@@ -167,7 +167,7 @@ class VMAEM(ScenarioTest):
             'subnet': 'subnet'
         })
 
-        self.cmd('vm create -g {rg} -n {vm} --os-disk-name os-disk --image RedHat:RHEL:7.8:latest --generate-ssh-keys --subnet {subnet} --vnet-name {vnet} --nsg-rule NONE')
+        self.cmd('vm create -g {rg} -n {vm} --os-disk-name os-disk --image RedHat:RHEL:7.8:latest --generate-ssh-keys --subnet {subnet} --vnet-name {vnet} --nsg-rule NONE --size Standard_D2s_v3')
         self.cmd('network vnet subnet update -g {rg} --vnet-name {vnet} -n {subnet} --default-outbound-access false')
 
         with self.assertRaises(CLIError) as cm:
@@ -203,7 +203,7 @@ class VMAEM(ScenarioTest):
             'subnet': 'subnet'
         })
 
-        self.cmd('vm create -g {rg} -n {vm} --os-disk-name os-disk --image SUSE:sles-15-sp2:gen2:latest --generate-ssh-keys --subnet {subnet} --vnet-name {vnet} --nsg-rule NONE')
+        self.cmd('vm create -g {rg} -n {vm} --os-disk-name os-disk --image SUSE:sles-15-sp2:gen2:latest --generate-ssh-keys --subnet {subnet} --vnet-name {vnet} --nsg-rule NONE --size Standard_D2s_v3')
         self.cmd('network vnet subnet update -g {rg} --vnet-name {vnet} -n {subnet} --default-outbound-access false')
 
         with self.assertRaises(CLIError) as cm:
@@ -237,7 +237,7 @@ class VMAEM(ScenarioTest):
             'subnet': 'subnet'
         })
 
-        self.cmd('vm create -g {rg} -n {vm} --os-disk-name os-disk --image win2016datacenter --admin-username myadmin --admin-password thisisaTest!@ --subnet {subnet} --vnet-name {vnet} --nsg-rule NONE')
+        self.cmd('vm create -g {rg} -n {vm} --os-disk-name os-disk --image win2016datacenter --admin-username myadmin --admin-password thisisaTest!@ --subnet {subnet} --vnet-name {vnet} --nsg-rule NONE --size Standard_D2s_v3')
         self.cmd('network vnet subnet update -g {rg} --vnet-name {vnet} -n {subnet} --default-outbound-access false')
 
         with self.assertRaises(CLIError) as cm:
@@ -273,7 +273,7 @@ class VMAEM(ScenarioTest):
             'subnet': 'subnet'
         })
 
-        self.cmd('vm create -g {rg} -n {vm} --os-disk-name os-disk --image SUSE:sles-12-sp5:gen2:latest --generate-ssh-keys --subnet {subnet} --vnet-name {vnet} --nsg-rule NONE')
+        self.cmd('vm create -g {rg} -n {vm} --os-disk-name os-disk --image SUSE:sles-12-sp5:gen2:latest --generate-ssh-keys --subnet {subnet} --vnet-name {vnet} --nsg-rule NONE --size Standard_D2s_v3')
         self.cmd('network vnet subnet update -g {rg} --vnet-name {vnet} -n {subnet} --default-outbound-access false')
 
         with self.assertRaises(CLIError) as cm:
@@ -307,7 +307,7 @@ class VMAEM(ScenarioTest):
             'subnet': 'subnet'
         })
 
-        self.cmd('vm create -g {rg} -n {vm} --os-disk-name os-disk --image win2016datacenter --admin-username myadmin --admin-password thisisaTest!@ --subnet {subnet} --vnet-name {vnet} --nsg-rule NONE')
+        self.cmd('vm create -g {rg} -n {vm} --os-disk-name os-disk --image win2016datacenter --admin-username myadmin --admin-password thisisaTest!@ --subnet {subnet} --vnet-name {vnet} --nsg-rule NONE --size Standard_D2s_v3')
         self.cmd('network vnet subnet update -g {rg} --vnet-name {vnet} -n {subnet} --default-outbound-access false')
 
         with self.assertRaises(CLIError) as cm:
@@ -343,7 +343,7 @@ class VMAEM(ScenarioTest):
             'subnet': 'subnet'
         })
 
-        self.cmd('vm create -g {rg} -n {vm} --os-disk-name os-disk --image win2016datacenter --admin-username myadmin --admin-password thisisaTest!@ --subnet {subnet} --vnet-name {vnet} --nsg-rule NONE')
+        self.cmd('vm create -g {rg} -n {vm} --os-disk-name os-disk --image win2016datacenter --admin-username myadmin --admin-password thisisaTest!@ --subnet {subnet} --vnet-name {vnet} --nsg-rule NONE --size Standard_D2s_v3')
         self.cmd('network vnet subnet update -g {rg} --vnet-name {vnet} -n {subnet} --default-outbound-access false')
 
         with self.assertRaises(CLIError) as cm:
@@ -397,7 +397,7 @@ class VMAEM(ScenarioTest):
         self.cmd('network nsg create -g {rg} --name {nsg}')
         self.cmd('network nic create -g {rg} --name {nic1} --vnet-name {vnet} --subnet {subnet1} --network-security-group {nsg}')
         self.cmd('network nic create -g {rg} --name {nic2} --vnet-name {vnet} --subnet {subnet2} --network-security-group {nsg}')
-        self.cmd('vm create -g {rg} --name {vm} --os-disk-name os-disk --image SUSE:sles-12-sp5:gen2:latest --generate-ssh-keys --nics {nic1} {nic2}')
+        self.cmd('vm create -g {rg} --name {vm} --os-disk-name os-disk --image SUSE:sles-12-sp5:gen2:latest --generate-ssh-keys --nics {nic1} {nic2} --size Standard_D2s_v3')
         self.cmd('network vnet subnet update -g {rg} --vnet-name {vnet} -n {subnet1} --default-outbound-access false')
         self.cmd('network vnet subnet update -g {rg} --vnet-name {vnet} -n {subnet2} --default-outbound-access false')
 
@@ -431,7 +431,7 @@ class VMAEM(ScenarioTest):
             self.cmd('vm aem verify --verbose -g {rg} -n {vm}')
         self.assertEqual(str(cm.exception), self.ERR_EXT_NOT_INSTALLED_VERIFY, msg="Test of extension was positiv but should have failed")
 
-    @ResourceGroupPreparer(location='westus2')
+    @ResourceGroupPreparer(location='westus')
     @AllowLargeResponse(size_kb=100024)
     def test_NewExtensionUltraDisk(self, resource_group):
         os.environ["AZURE_CLI_AEM_TEST"] = "test_NewExtensionUltraDisk"
@@ -443,7 +443,7 @@ class VMAEM(ScenarioTest):
             'subnet': 'subnet'
         })
 
-        self.cmd('vm create -g {rg} -n {vm} --os-disk-name os-disk -z 1 --size Standard_E2s_v3 --image win2016datacenter --admin-username myadmin --admin-password thisisaTest1234 --ultra-ssd-enabled --subnet {subnet} --vnet-name {vnet} --nsg-rule NONE')
+        self.cmd('vm create -g {rg} -n {vm} --os-disk-name os-disk --image win2016datacenter --admin-username myadmin --admin-password thisisaTest1234 --ultra-ssd-enabled --subnet {subnet} --vnet-name {vnet} --nsg-rule NONE --size Standard_D2s_v3')
         self.cmd('network vnet subnet update -g {rg} --vnet-name {vnet} -n {subnet} --default-outbound-access false')
 
         with self.assertRaises(CLIError) as cm:
@@ -729,7 +729,7 @@ class VMAEM(ScenarioTest):
             'vnet': 'vnet',
             'subnet': 'subnet'
         })
-        self.cmd('vm create -g {rg} -n {vm} --os-disk-name os-disk --image SUSE:sles-12-sp5:gen2:latest --generate-ssh-keys --subnet {subnet} --vnet-name {vnet} --nsg-rule NONE')
+        self.cmd('vm create -g {rg} -n {vm} --os-disk-name os-disk --image SUSE:sles-12-sp5:gen2:latest --generate-ssh-keys --subnet {subnet} --vnet-name {vnet} --nsg-rule NONE --size Standard_D2s_v3')
         self.cmd('network vnet subnet update -g {rg} --vnet-name {vnet} -n {subnet} --default-outbound-access false')
         self.cmd('vm aem set -g {rg} -n {vm} --verbose')
         self.cmd('vm aem verify -g {rg} -n {vm} --verbose')
@@ -750,7 +750,7 @@ class VMAEM(ScenarioTest):
             'vnet': 'vnet',
             'subnet': 'subnet'
         })
-        self.cmd('vm create -g {rg} -n {vm} --os-disk-name os-disk --image SUSE:sles-12-sp5:gen2:latest --generate-ssh-keys --subnet {subnet} --vnet-name {vnet} --nsg-rule NONE')
+        self.cmd('vm create -g {rg} -n {vm} --os-disk-name os-disk --image SUSE:sles-12-sp5:gen2:latest --generate-ssh-keys --subnet {subnet} --vnet-name {vnet} --nsg-rule NONE --size Standard_D2s_v3')
         self.cmd('network vnet subnet update -g {rg} --vnet-name {vnet} -n {subnet} --default-outbound-access false')
         self.cmd('vm aem set -g {rg} -n {vm} --install-new-extension --verbose')
         self.cmd('vm aem verify -g {rg} -n {vm} --verbose')
@@ -771,7 +771,7 @@ class VMAEM(ScenarioTest):
             'vnet': 'vnet',
             'subnet': 'subnet'
         })
-        self.cmd('vm create -g {rg} -n {vm} --os-disk-name os-disk --image SUSE:sles-12-sp5:gen2:latest --generate-ssh-keys --subnet {subnet} --vnet-name {vnet} --nsg-rule NONE')
+        self.cmd('vm create -g {rg} -n {vm} --os-disk-name os-disk --image SUSE:sles-12-sp5:gen2:latest --generate-ssh-keys --subnet {subnet} --vnet-name {vnet} --nsg-rule NONE --size Standard_D2s_v3')
         self.cmd('network vnet subnet update -g {rg} --vnet-name {vnet} -n {subnet} --default-outbound-access false')
         self.cmd('vm aem set -g {rg} -n {vm} --install-new-extension --set-access-to-individual-resources --verbose')
         self.cmd('vm aem verify -g {rg} -n {vm} --verbose')
@@ -791,7 +791,7 @@ class VMAEM(ScenarioTest):
             'vnet': 'vnet',
             'subnet': 'subnet'
         })
-        self.cmd('vm create -g {rg} -n {vm} --os-disk-name os-disk --image SUSE:sles-12-sp5:gen2:latest --generate-ssh-keys --subnet {subnet} --vnet-name {vnet} --nsg-rule NONE')
+        self.cmd('vm create -g {rg} -n {vm} --os-disk-name os-disk --image SUSE:sles-12-sp5:gen2:latest --generate-ssh-keys --subnet {subnet} --vnet-name {vnet} --nsg-rule NONE --size Standard_D2s_v3')
         self.cmd('network vnet subnet update -g {rg} --vnet-name {vnet} -n {subnet} --default-outbound-access false')
         self.cmd('vm aem set -g {rg} -n {vm} --install-new-extension --proxy-uri http://proxyhost:8080 --verbose')
         self.cmd('vm aem verify -g {rg} -n {vm} --verbose')

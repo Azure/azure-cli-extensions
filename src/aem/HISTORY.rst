@@ -2,6 +2,10 @@
 
 Release History
 ===============
+1.0.1
++++++
+* Remove DATA_COSMOS_TABLE and DATA_STORAGE references
+
 1.0.0
 +++++
 * Remove msrestazure dependency
