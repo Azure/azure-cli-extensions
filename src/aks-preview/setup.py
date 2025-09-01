@@ -23,9 +23,7 @@ CLASSIFIERS = [
     "License :: OSI Approved :: MIT License",
 ]
 
-DEPENDENCIES = [
-    "holmesgpt==0.12.6; python_version >= '3.10'",
-]
+DEPENDENCIES = []
 
 with open1("README.rst", "r", encoding="utf-8") as f:
     README = f.read()
