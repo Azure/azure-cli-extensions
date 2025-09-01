@@ -12,6 +12,10 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+18.0.0b31
++++++++
+* Remove DATA_STORAGE references
+
 18.0.0b30
 +++++++
 * Remove interactive AI-powered debugging tool `az aks agent`. To use the debugging tool, please enable it in the aks-agent extension by running `az extension add --name aks-agent`.
