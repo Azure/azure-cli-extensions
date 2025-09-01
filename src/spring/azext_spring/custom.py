@@ -528,7 +528,7 @@ def parse_auth_flags(auth_list):
 def app_get_build_log(cmd, client, resource_group, service, name, deployment=None):
     if deployment.properties.source.type != "Source":
         raise CLIError("{} deployment has no build logs.".format(deployment.properties.source.type))
-    return stream_logs(client.deployments, resource_group, service, name, deployment.name)
+    return stream_logs(cmd, client.deployments, resource_group, service, name, deployment.name)
 
 
 def app_tail_log(cmd, client, resource_group, service, name,

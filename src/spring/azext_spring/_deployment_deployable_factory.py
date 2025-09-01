@@ -110,7 +110,7 @@ class SourceBuildDeployableBuilder(UploadDeployableBuilder):
                 sleep(10)
 
             logger.warning("Trying to fetch build logs")
-            stream_logs(client.deployments, resource_group, service,
+            stream_logs(self.cmd, client.deployments, resource_group, service,
                         app, deployment, logger_level_func=print)
         old_log_url = get_log_url()
         timer = Timer(3, get_logs_loop)

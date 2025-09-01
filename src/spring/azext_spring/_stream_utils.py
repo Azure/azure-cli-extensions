@@ -12,9 +12,8 @@ from random import uniform
 from knack.util import CLIError
 from knack.log import get_logger
 from azure.core.exceptions import HttpResponseError
-from azure.multiapi.storage.v2018_11_09.blob import AppendBlobService
+from azure.cli.core.profiles import ResourceType, get_sdk
 from azure.common import AzureHttpError
-from ._utils import get_blob_info
 
 logger = get_logger(__name__)
 
@@ -22,7 +21,8 @@ DEFAULT_CHUNK_SIZE = 1024 * 4
 DEFAULT_LOG_TIMEOUT_IN_SEC = 60 * 30  # 30 minutes
 
 
-def stream_logs(client,
+def stream_logs(cmd,
+                client,
                 resource_group,
                 service,
                 app,
@@ -47,18 +47,13 @@ def stream_logs(client,
         logger.warning("%s Empty SAS URL.", error_msg)
         raise CLIError(error_msg)
 
-    account_name, endpoint_suffix, container_name, blob_name, sas_token = get_blob_info(
-        log_file_sas)
+    BlobClient = get_sdk(cmd.cli_ctx, ResourceType.DATA_STORAGE_BLOB, '_blob_client#BlobClient')
+    blob_client = BlobClient.from_blob_url(log_file_sas)
 
     _stream_logs(no_format,
                  DEFAULT_CHUNK_SIZE,
                  DEFAULT_LOG_TIMEOUT_IN_SEC,
-                 AppendBlobService(
-                     account_name=account_name,
-                     sas_token=sas_token,
-                     endpoint_suffix=endpoint_suffix),
-                 container_name,
-                 blob_name,
+                 blob_client,
                  raise_error_on_failure,
                  logger_level_func)
 
@@ -67,8 +62,6 @@ def _stream_logs(no_format,  # pylint: disable=too-many-locals, too-many-stateme
                  byte_size,
                  timeout_in_seconds,
                  blob_service,
-                 container_name,
-                 blob_name,
                  raise_error_on_failure,
                  logger_level_func):
 
@@ -78,7 +71,6 @@ def _stream_logs(no_format,  # pylint: disable=too-many-locals, too-many-stateme
     stream = BytesIO()
     metadata = {}
     start = 0
-    end = byte_size - 1
     available = 0
     sleep_time = 1
     max_sleep_time = 15
@@ -97,11 +89,9 @@ def _stream_logs(no_format,  # pylint: disable=too-many-locals, too-many-stateme
         '''
         nonlocal blob_exists
         if not blob_exists:
-            blob_exists = blob_service.exists(
-                container_name=container_name, blob_name=blob_name)
+            blob_exists = blob_service.exists()
         if blob_exists:
-            return blob_service.get_blob_properties(
-                container_name=container_name, blob_name=blob_name)
+            return blob_service.get_blob_properties()
         return None
 
     # Try to get the initial properties so there's no waiting.
@@ -110,7 +100,7 @@ def _stream_logs(no_format,  # pylint: disable=too-many-locals, too-many-stateme
         props = safe_get_blob_properties()
         if props:
             metadata = props.metadata
-            available = props.properties.content_length
+            available = props.size
     except (AttributeError, AzureHttpError):
         pass
 
@@ -123,18 +113,13 @@ def _stream_logs(no_format,  # pylint: disable=too-many-locals, too-many-stateme
 
             try:
                 old_byte_size = len(stream.getvalue())
-                blob_service.get_blob_to_stream(
-                    container_name=container_name,
-                    blob_name=blob_name,
-                    start_range=start,
-                    end_range=end,
-                    stream=stream)
+                downloader = blob_service.download_blob(offset=start, length=byte_size, max_concurrency=1)
+                downloader.readinto(stream)
 
                 curr_bytes = stream.getvalue()
                 new_byte_size = len(curr_bytes)
                 amount_read = new_byte_size - old_byte_size
                 start += amount_read
-                end = start + byte_size - 1
 
                 # Only scan what's newly read. If nothing is read, default to 0.
                 min_scan_range = max(new_byte_size - amount_read - 1, 0)
@@ -165,7 +150,7 @@ def _stream_logs(no_format,  # pylint: disable=too-many-locals, too-many-stateme
             props = safe_get_blob_properties()
             if props:
                 metadata = props.metadata
-                available = props.properties.content_length
+                available = props.size
         except AzureHttpError as ae:
             if ae.status_code != 404:
                 raise CLIError(ae)

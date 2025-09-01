@@ -7,7 +7,7 @@ import os
 import tempfile
 
 from knack.util import CLIError
-from azure.cli.testsdk import (ScenarioTest, record_only)
+from azure.cli.testsdk import (ScenarioTest, record_only, live_only)
 from .custom_preparers import (SpringPreparer, SpringResourceGroupPreparer, SpringAppNamePreparer)
 from .custom_recording_processor import (SpringTestEndpointReplacer)
 from .custom_dev_setting_constant import SpringTestEnvironmentEnum
@@ -31,6 +31,7 @@ class AppDeploy(ScenarioTest):
         actual_string = SpringTestEndpointReplacer()._replace(original_string)
         self.assertEqual(expected_string, actual_string)
 
+    @live_only()
     @SpringResourceGroupPreparer(dev_setting_name=SpringTestEnvironmentEnum.STANDARD['resource_group_name'])
     @SpringPreparer(**SpringTestEnvironmentEnum.STANDARD['spring'])
     @SpringAppNamePreparer()
@@ -58,6 +59,7 @@ class AppDeploy(ScenarioTest):
         with self.assertRaisesRegex(CLIError, "112404: Exit code 1: application error"):
             self.cmd('spring app deploy -n {app} -g {rg} -s {serviceName} --artifact-path {file} --version v1')
 
+    @live_only()
     @SpringResourceGroupPreparer(dev_setting_name=SpringTestEnvironmentEnum.STANDARD['resource_group_name'])
     @SpringPreparer(**SpringTestEnvironmentEnum.STANDARD['spring'])
     @SpringAppNamePreparer()
@@ -141,6 +143,7 @@ class AppDeploy(ScenarioTest):
 
 
 class AppCRUD(ScenarioTest):
+    @live_only()
     @SpringResourceGroupPreparer(dev_setting_name=SpringTestEnvironmentEnum.STANDARD['resource_group_name'])
     @SpringPreparer(**SpringTestEnvironmentEnum.STANDARD['spring'])
     @SpringAppNamePreparer()
@@ -241,6 +244,7 @@ class AppCRUD(ScenarioTest):
     @SpringResourceGroupPreparer(dev_setting_name=SpringTestEnvironmentEnum.ENTERPRISE['resource_group_name'])
     @SpringPreparer(**SpringTestEnvironmentEnum.ENTERPRISE['spring'], location = 'eastasia')
     @SpringAppNamePreparer()
+    @live_only()
     def test_enterprise_app_crud(self, resource_group, spring, app):
         self.kwargs.update({
             'app': app,
@@ -332,7 +336,7 @@ class BlueGreenTest(ScenarioTest):
 
 @record_only()
 class CustomImageTest(ScenarioTest):
-
+    @live_only()
     @SpringResourceGroupPreparer(dev_setting_name=SpringTestEnvironmentEnum.STANDARD['resource_group_name'])
     @SpringPreparer(**SpringTestEnvironmentEnum.STANDARD['spring'])
     @SpringAppNamePreparer()
@@ -352,6 +356,7 @@ class CustomImageTest(ScenarioTest):
             self.check('properties.source.customContainer.languageFramework', None),
         ])
 
+    @live_only()
     @SpringResourceGroupPreparer(dev_setting_name=SpringTestEnvironmentEnum.STANDARD['resource_group_name'])
     @SpringPreparer(**SpringTestEnvironmentEnum.STANDARD['spring'])
     @SpringAppNamePreparer()

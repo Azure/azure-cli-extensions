@@ -4,7 +4,8 @@
 # --------------------------------------------------------------------------------------------
 import json
 import unittest
-from azure.cli.testsdk import (ScenarioTest)
+import time
+from azure.cli.testsdk import (ScenarioTest, live_only)
 from .common.test_utils import get_test_cmd
 from .custom_preparers import (SpringPreparer, SpringResourceGroupPreparer)
 from .custom_dev_setting_constant import SpringTestEnvironmentEnum
@@ -127,7 +128,7 @@ It cannot support live run. So mark it as record_only.
 
 
 class ApiApplicationAcceleratorTest(ScenarioTest):
-
+    @live_only()
     @SpringResourceGroupPreparer(dev_setting_name=SpringTestEnvironmentEnum.ENTERPRISE['resource_group_name'])
     @SpringPreparer(**SpringTestEnvironmentEnum.ENTERPRISE['spring'])
     def test_application_accelerator(self, resource_group, spring):
@@ -157,6 +158,7 @@ class ApiApplicationAcceleratorTest(ScenarioTest):
 
         self.cmd('spring application-accelerator delete --yes -g {rg} -s {serviceName}')
 
+        time.sleep(10)
         self.cmd('spring dev-tool show -g {rg} -s {serviceName}', checks=[
             self.check('properties.features.applicationAccelerator.state', 'Disabled')
         ])
