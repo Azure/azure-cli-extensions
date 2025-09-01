@@ -14,7 +14,7 @@ Pending
 
 18.0.0b30
 +++++++
-* Remove interactive AI-powered debugging tool `az aks agent`.
+* Remove interactive AI-powered debugging tool `az aks agent`. To use the debugging tool, please enable it in the aks-agent extension by running `az extension add --name aks-agent`.
 
 18.0.0b29
 +++++++
