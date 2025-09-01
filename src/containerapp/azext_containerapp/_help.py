@@ -161,7 +161,7 @@ helps['containerapp up'] = """
     - name: Create a container app and deploy a model from Azure AI Foundry
       text: |
             az containerapp up -n my-containerapp -l westus3 --model-registry azureml --model-name Phi-4 --model-version 7
-    - name: Create a container app with kind as functionapp
+    - name: Create an Azure Functions on Azure Container Apps (kind=functionapp)
       text: |
             az containerapp up -n my-containerapp --image my-app:v1.0 --kind functionapp
 """
@@ -920,7 +920,7 @@ helps['containerapp create'] = """
           az containerapp create -n my-containerapp -g MyResourceGroup \\
               --image my-app:v1.0 --environment MyContainerappEnv \\
               --enable-java-agent
-    - name: Create a container app with kind as functionapp
+    - name: Create an Azure Functions on Azure Container Apps (kind=functionapp)
       text: |
           az containerapp create -n my-containerapp -g MyResourceGroup \\
               --image my-app:v1.0 --environment MyContainerappEnv \\
