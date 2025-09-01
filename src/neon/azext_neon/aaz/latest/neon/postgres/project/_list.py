@@ -12,13 +12,13 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "neon postgres project list",
+    "neon project list",
 )
 class List(AAZCommand):
     """List all Neon projects associated with a specific Neon organization.
 
     :example: List Neon Projects within an Organization
-        az neon postgres project list --resource-group rgneon --organization-name org-cli-test
+        az neon project list --resource-group rgneon --organization-name org-cli-test
     """
 
     _aaz_info = {

@@ -12,13 +12,13 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "neon postgres organization show",
+    "neon organization show",
 )
 class Show(AAZCommand):
     """Retrieve details of a specific Neon organization.
 
     :example: Show Neon Postgres Organization
-        az neon postgres organization show --resource-group demoResourceGroup --name demoNeonResource
+        az neon organization show --resource-group demoResourceGroup --name demoNeonResource
     """
 
     _aaz_info = {

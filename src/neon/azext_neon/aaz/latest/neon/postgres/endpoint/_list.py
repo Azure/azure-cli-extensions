@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "neon postgres endpoint list",
+    "neon endpoint list",
 )
 class List(AAZCommand):
     """List all endpoints in a Neon branch.
