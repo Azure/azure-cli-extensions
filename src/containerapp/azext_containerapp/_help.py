@@ -2007,6 +2007,11 @@ helps['containerapp sessionpool create'] = """
           az containerapp sessionpool create -n mysessionpool -g MyResourceGroup \\
               --environment MyEnvironment --cpu 0.5 --memory 1Gi --target-port 80 --container-type CustomContainer \\
               --cooldown-period 360 --location eastasia
+    - name: Create or update a Session Pool with container type CustomContainer with container probes
+      text: |
+          az containerapp sessionpool create -n mysessionpool -g MyResourceGroup \\
+              --environment MyEnvironment --cpu 0.5 --memory 1Gi --target-port 80 --container-type CustomContainer \\
+              --probe-yaml config.yaml --location eastasia
 """
 
 helps['containerapp sessionpool update'] = """
