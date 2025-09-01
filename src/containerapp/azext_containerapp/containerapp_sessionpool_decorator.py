@@ -156,6 +156,9 @@ class SessionPoolPreviewDecorator(BaseResource):
     def get_argument_user_assigned(self):
         return self.get_param("mi_user_assigned")
 
+    def get_argument_probe_yaml(self):
+        return self.get_param("probe_yaml")
+
     # pylint: disable=no-self-use
     def get_environment_client(self):
         return ManagedEnvironmentClient
@@ -328,6 +331,12 @@ class SessionPoolCreateDecorator(SessionPoolPreviewDecorator):
             resources_def["memory"] = self.get_argument_memory()
         return resources_def
 
+    def set_up_probes(self):
+        probes_def = None
+        if self.get_argument_probe_yaml() is not None:
+            probes_def = load_yaml_file(self.get_argument_route_yaml())
+        return probes_def
+
     def set_up_container(self):
         container_def = ContainerModel
         container_def["name"] = self.get_argument_container_name() if self.get_argument_container_name() else self.get_argument_name().lower()
@@ -339,6 +348,8 @@ class SessionPoolCreateDecorator(SessionPoolPreviewDecorator):
         if self.get_argument_args() is not None:
             container_def["args"] = self.get_argument_args()
         container_def["resources"] = self.set_up_resource()
+        if self.get_argument_probe_yaml() is not None:
+            container_def["probes"] = self.set_up_probes()
         return container_def
 
     def set_up_secrets(self):
