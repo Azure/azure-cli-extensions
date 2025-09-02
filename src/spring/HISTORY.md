@@ -1,5 +1,9 @@
 Release History
 ===============
+1.28.3
+---
+* Update Azure Spring Apps reference doc.
+
 1.28.2
 ---
 * Remove DATA_COSMOS_TABLE and DATA_STORAGE references
