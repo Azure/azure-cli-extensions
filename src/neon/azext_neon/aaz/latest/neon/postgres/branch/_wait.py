@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "neon branch wait",
+    "neon postgres branch wait",
 )
 class Wait(AAZWaitCommand):
     """Place the CLI in a waiting state until a condition is met.

@@ -12,13 +12,13 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "neon organization list",
+    "neon postgres organization list",
 )
 class List(AAZCommand):
     """List all Neon organizations associated with a specific subscription ID.
 
     :example: List Neon Postgres Organization
-        az neon organization list --subscription 12345678-1234-1234-1234-123456789abc --resource-group demoResourceGroup
+        az neon postgres organization list --subscription 12345678-1234-1234-1234-123456789abc --resource-group demoResourceGroup
     """
 
     _aaz_info = {

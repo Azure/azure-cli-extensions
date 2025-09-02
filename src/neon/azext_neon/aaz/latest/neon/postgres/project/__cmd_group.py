@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "neon project",
+    "neon postgres project",
 )
 class __CMDGroup(AAZCommandGroup):
     """Manage Neon projects, including listing, creating, updating, deleting, and retrieving project information.
