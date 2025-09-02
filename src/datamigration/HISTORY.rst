@@ -4,6 +4,11 @@ Release History
 ===============
 
 =======
+1.0.0b6
+++++++
+* Added support for stable version 2025-06-30 of the DMS services.
+
+=======
 1.0.0b5
 ++++++
 * [PARAMETER UPDATE] `az datamigration sql-managed-instance create`: `--source-location` now supports Managed Identity for accessing Azure Blob.
