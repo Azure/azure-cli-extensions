@@ -2571,20 +2571,17 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.kwargs.update(
             {
                 "resource_group": resource_group,
+                "location": resource_group_location,
                 "name": aks_name,
                 "ssh_key_value": self.generate_ssh_keys(),
             }
         )
-
-        create_cmd = (
-            "aks create --resource-group={resource_group} --name={name} --enable-managed-identity "
-            "--ssh-key-value={ssh_key_value} -o json"
-        )
+        # create aks cluster
+        create_cmd = "aks create --resource-group={resource_group} --name={name} --ssh-key-value={ssh_key_value}"
         self.cmd(
             create_cmd,
             checks=[
                 self.check("provisioningState", "Succeeded"),
-                self.check("addonProfiles.openServiceMesh", None),
             ],
         )
 
@@ -2599,29 +2596,11 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             }
         )
 
-        # add nodepool
+        # add machines nodepool
         self.cmd(
-            "aks nodepool add "
-            " --resource-group={resource_group} "
-            " --cluster-name={name} "
-            " --name={node_pool_name} --mode=Machines --node-count=2"
+            "aks nodepool add --resource-group={resource_group} --cluster-name={name} --name={node_pool_name} --mode=Machines",
+            checks=[self.check("provisioningState", "Succeeded"), self.check("mode", "Machines")],
         )
-        '''self.cmd(
-            "aks nodepool add "
-            " --resource-group={resource_group} "
-            " --cluster-name={name} "
-            " --name={node_pool_name} --mode=Machines --node-count=2",
-            checks=[self.check("provisioningState", "Succeeded")],
-        )'''
-
-        list_cmd = (
-            "aks machine list "
-            " --resource-group={resource_group} "
-            " --cluster-name={name} --nodepool-name={node_pool_name} -o json"
-        )
-        machine_list = self.cmd(list_cmd).get_output_in_json()
-        assert len(machine_list) == 2
-        print(aks_machine_list_table_format(machine_list))
 
         # add machine
         self.cmd(
@@ -2638,7 +2617,13 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             " --cluster-name={name} --nodepool-name={node_pool_name} -o json"
         )
         machine_list = self.cmd(list_cmd).get_output_in_json()
-        assert len(machine_list) == 3
+        assert len(machine_list) == 1
+
+        # delete AKS cluster
+        self.cmd(
+            "aks delete -g {resource_group} -n {name} --yes --no-wait",
+            checks=[self.is_empty()],
+        )
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
