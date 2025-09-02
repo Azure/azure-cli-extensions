@@ -12,14 +12,15 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "neon organization create",
+    "neon postgres organization create",
 )
 class Create(AAZCommand):
     """Create a new Neon organization within a specified Azure resource group in Azure. This is typically the first step in provisioning Neon Serverless Postgres.
 
     :example: Create Neon Postgres Organization
-        az neon organization create --resource-group sralluri_rg --name Org-cli-test --location "Central US EUAP" --subscription 68a546de-5736-48e8-a69a-5cc636794112 --marketplace-details "{subscription-id:329b25d9-168d-48d5-de4b-28b2324db159,subscription-status:Pending-fullfilment,offer-details:{publisher-id:neon1722366567200,offer-id:neon_serverless_postgres_azure_prod,plan-id:neon_serverless_postgres_azure_prod_free,plan-name:'Free Plan',term-unit:P1M,term-id:gmz7xq9ge3py}}" --user-details "{first-name:User,last-name:Conotoso,email-address:contoso@outlook.com,upn:contoso@outlook.com,phone-number:''}" --company-details "{company-name:'',country:'',business-phone:''}" --partner-organization-properties "{organization-name:Org-cli-test}" --project-properties "{region:'Central US EUAP',pgVersion:17,branch:{branch-name:main,database-name:neondb,role-name:owner_role},project-name:Org-cli-test-project}"
-        """
+        az az neon postgres organization create --resource-group sralluri_rg --name Org-cli-test --location "Central US EUAP" --subscription 68a546de-5736-48e8-a69a-5cc636794112 --marketplace-details "{subscription-id:329b25d9-168d-48d5-de4b-28b2324db159,subscription-status:Pending-fullfilment,offer-details:{publisher-id:neon1722366567200,offer-id:neon_serverless_postgres_azure_prod,plan-id:neon_serverless_postgres_azure_prod_free,plan-name:'Free Plan',term-unit:P1M,term-id:gmz7xq9ge3py}}" --user-details "{first-name:User,last-name:Conotoso,email-address:contoso@outlook.com,upn:contoso@outlook.com,phone-number:''}" --company-details "{company-name:'',country:'',business-phone:''}" --partner-organization-properties "{organization-name:Org-cli-test}" --project-properties "{region:'Central US EUAP',pgVersion:17,branch:{branch-name:main,database-name:neondb,role-name:owner_role},project-name:Org-cli-test-project}"
+        az neon postgres create --resource-group sralluri_rg --name Org-cli-test --location "Central US EUAP" --subscription 68a546de-5736-48e8-a69a-5cc636794112 --marketplace-details "{subscription-id:329b25d9-168d-48d5-de4b-28b2324db159,subscription-status:Pending-fullfilment,offer-details:{publisher-id:neon1722366567200,offer-id:neon_serverless_postgres_azure_prod,plan-id:neon_serverless_postgres_azure_prod_free,plan-name:'Free Plan',term-unit:P1M,term-id:gmz7xq9ge3py}}" --user-details "{first-name:User,last-name:Conotoso,email-address:contoso@outlook.com,upn:contoso@outlook.com,phone-number:''}" --company-details "{company-name:'',country:'',business-phone:''}" --partner-organization-properties "{organization-name:Org-cli-test}" --project-properties "{region:'Central US EUAP',pgVersion:17,branch:{branch-name:main,database-name:neondb,role-name:owner_role},project-name:Org-cli-test-project}"
+    """
 
     _aaz_info = {
         "version": "2025-03-01",

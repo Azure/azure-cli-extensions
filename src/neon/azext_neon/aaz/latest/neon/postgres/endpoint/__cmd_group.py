@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "neon endpoint",
+    "neon postgres endpoint",
 )
 class __CMDGroup(AAZCommandGroup):
     """Manage Endpoint

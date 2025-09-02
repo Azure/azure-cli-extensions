@@ -12,13 +12,13 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "neon branch list",
+    "neon postgres branch list",
 )
 class List(AAZCommand):
     """List all branch resources within a specific project in Neon Postgres.
 
     :example: List Branches under a Project
-        az neon branch list --subscription 38a546de-5736-48e8-a69a-5cc636794112 --resource-group rgneon --organization-name org-cli-test --project-id old-frost-16758796
+        az neon postgres branch list --subscription 38a546de-5736-48e8-a69a-5cc636794112 --resource-group rgneon --organization-name org-cli-test --project-id old-frost-16758796
     """
 
     _aaz_info = {
