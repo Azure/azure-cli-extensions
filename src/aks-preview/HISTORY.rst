@@ -12,6 +12,10 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+18.0.0b30
++++++++
+* Add machines agent pool support for `az aks nodepool add` command.
+
 18.0.0b29
 +++++++
 * Refactor code to suppress ssh access warning message when creating an automatic cluster.
