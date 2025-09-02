@@ -8,14 +8,5 @@
 # pylint: skip-file
 # flake8: noqa
 
-"""Neon Postgres command group and subcommands."""
-
 from .__cmd_group import *
 from ._create import *
-from . import branch
-from . import compute
-from . import endpoint
-from . import neon_database
-from . import neon_role
-from . import organization
-from . import project
