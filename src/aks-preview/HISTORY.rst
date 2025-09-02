@@ -12,6 +12,36 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+18.0.0b31
++++++++
+* Remove DATA_STORAGE references
+
+18.0.0b30
++++++++
+* Remove interactive AI-powered debugging tool `az aks agent`. To use the debugging tool, please enable it in the aks-agent extension by running `az extension add --name aks-agent`.
+
+18.0.0b29
++++++++
+* Refactor code to suppress ssh access warning message when creating an automatic cluster.
+
+18.0.0b28
++++++++
+* Add interactive AI-powered debugging tool `az aks agent`.
+
+18.0.0b27
++++++++
+* Add framework for interactive AI-powered debugging tool.
+- Add `--enable-upstream-kubescheduler-user-configuration` to `az aks create` and `az aks update`.
+- Add `--disable-upstream-kubescheduler-user-configuration` to `az aks update`.
+
+18.0.0b26
++++++++
+* Add `az aks identity-binding` command group for identity binding feature.
+
+18.0.0b25
++++++++
+* Update for `az aks machine show` and `az aks machine list` to show more details about the machine.
+
 18.0.0b24
 +++++++
 * Suppress the ssh access annoying message if the cluster sku name is automatic.

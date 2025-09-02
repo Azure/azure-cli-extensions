@@ -30,6 +30,7 @@ class FileUpload:
         self.relative_name = relative_name
         self.sas_token = sas_token
         self.cli_ctx = cli_ctx
+        self.upload_url = upload_url
 
     def upload_and_build(self, artifact_path, **_):
         if not artifact_path:
@@ -41,9 +42,10 @@ class FileUpload:
             raise InvalidArgumentValueError('Unexpected artifact file type, must be one of .zip, .tar.gz, .tar, .jar, .war.')
 
     def _upload(self, artifact_path):
-        FileService = get_sdk(self.cli_ctx, ResourceType.DATA_STORAGE, 'file#FileService')
-        file_service = FileService(self.account_name, sas_token=self.sas_token, endpoint_suffix=self.endpoint_suffix)
-        file_service.create_file_from_path(self.share_name, None, self.relative_name, artifact_path)
+        ShareFileClient = get_sdk(self.cli_ctx, ResourceType.DATA_STORAGE_FILESHARE, '_file_client#ShareFileClient')
+        file_client = ShareFileClient.from_file_url(self.upload_url)
+        with open(artifact_path, 'rb') as stream:
+            file_client.upload_file(data=stream)
 
 
 class FolderUpload(FileUpload):

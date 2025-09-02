@@ -1,0 +1,159 @@
+interactions:
+- request:
+    body: '{"properties": {"properties": {"mlflow.source.git.repoURL": "https://msdata.visualstudio.com/DefaultCollection/Vienna/_git/sdk-cli-v2",
+      "mlflow.source.git.branch": "madhumaddi/extract_sweeplimits", "mlflow.source.git.commit":
+      "467d635c555024c1f06c0a4c87d56bfe582094e2", "azureml.git.dirty": "True"}, "tags":
+      {}, "computeId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/madhumaddi-rg/providers/Microsoft.MachineLearningServices/workspaces/madhumaddi-hd-onboard/computes/cpu-cluster",
+      "displayName": "test-amlforimageobjdetectjob-000024-1", "experimentName": "automl",
+      "isArchived": false, "jobType": "AutoML", "outputs": {}, "taskDetails": {"limitSettings":
+      {"maxConcurrentTrials": 1, "maxTrials": 1, "timeout": "PT1H"}, "sweepSettings":
+      {"earlyTermination": {"delayEvaluation": 0, "evaluationInterval": 10, "policyType":
+      "Bandit", "slackAmount": 0.0, "slackFactor": 0.2}, "limits": {}, "samplingAlgorithm":
+      "grid"}, "validationData": {"uri": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/madhumaddi-rg/providers/Microsoft.MachineLearningServices/workspaces/madhumaddi-hd-onboard/data/image-validation-data/versions/1",
+      "jobInputType": "mltable"}, "modelSettings": {"checkpointFrequency": 1, "earlyStopping":
+      true, "earlyStoppingDelay": 2, "earlyStoppingPatience": 2, "evaluationFrequency":
+      1}, "searchSpace": [{"learningRate": "uniform(0.0001,0.01)", "modelName": "choice(''yolov5'')",
+      "modelSize": "choice(''small'',''medium'')"}, {"learningRate": "uniform(0.005,0.05)",
+      "modelName": "choice(''fasterrcnn_resnet50_fpn'')", "optimizer": "choice(''sgd'',''adam'',''adamw'')",
+      "warmupCosineLRWarmupEpochs": "choice(0,3)", "minSize": "choice(600,800)"}],
+      "logVerbosity": "Debug", "targetColumnName": "label", "taskType": "ImageObjectDetection",
+      "trainingData": {"uri": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/madhumaddi-rg/providers/Microsoft.MachineLearningServices/workspaces/madhumaddi-hd-onboard/data/image-training-data/versions/1",
+      "jobInputType": "mltable"}, "primaryMetric": "MeanAveragePrecision"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '2065'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.10 (Windows-10-10.0.22621-SP0)
+      x-azureml-token:
+      - <dummyToken>
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/jobs/test-amlforimageobjdetectjob-000024-1?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/madhumaddi-hd-onboard/jobs/test-amlforimageobjdetectjob-000024-1",
+        "name": "test-amlforimageobjdetectjob-000024-1", "type": "Microsoft.MachineLearningServices/workspaces/jobs",
+        "properties": {"description": null, "tags": {"_aml_system_automl_mltable_data_json":
+        "{\"Type\":\"MLTable\",\"TrainData\":{\"Uri\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/madhumaddi-hd-onboard/data/image-training-data/versions/1\",\"ResolvedUri\":null,\"AssetId\":null},\"TestData\":null,\"ValidData\":{\"Uri\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/madhumaddi-hd-onboard/data/image-validation-data/versions/1\",\"ResolvedUri\":null,\"AssetId\":null}}",
+        "model_explain_run": "best_run", "_aml_system_automl_run_workspace_id": "b4078513-81e3-4cc3-a3a7-158e26c41865",
+        "_aml_system_azureml.automlComponent": "AutoML", "_azureml.ComputeTargetType":
+        "STANDARD_D2_V2"}, "properties": {"num_iterations": "1", "training_type":
+        "TrainFull", "acquisition_function": "EI", "primary_metric": "mean_average_precision",
+        "train_split": "0", "acquisition_parameter": "0", "num_cross_validation":
+        "", "target": "cpu-cluster", "AMLSettingsJsonString": "{\"path\":\"./sample_projects/\",\"subscription_id\":\"dbd697c3-ef40-488f-83e6-5ad4dfb78f9b\",\"resource_group\":\"madhumaddi-rg\",\"workspace_name\":\"madhumaddi-hd-onboard\",\"compute_target\":\"cpu-cluster\",\"iterations\":1,\"primary_metric\":\"mean_average_precision\",\"task_type\":\"image-object-detection\",\"IsImageTask\":true,\"IsTextDNNTask\":false,\"n_cross_validations\":null,\"preprocess\":false,\"is_timeseries\":false,\"time_column_name\":null,\"grain_column_names\":null,\"max_cores_per_iteration\":-1,\"max_concurrent_iterations\":1,\"enforce_time_on_windows\":false,\"experiment_timeout_minutes\":60,\"exit_score\":\"NaN\",\"experiment_exit_score\":\"NaN\",\"auto_blacklist\":false,\"blacklist_samples_reached\":false,\"exclude_nan_labels\":false,\"verbosity\":10,\"model_explainability\":false,\"enable_onnx_compatible_models\":false,\"enable_feature_sweeping\":false,\"send_telemetry\":true,\"enable_early_stopping\":true,\"early_stopping_n_iters\":20,\"distributed_dnn_max_node_check\":false,\"enable_distributed_featurization\":false,\"enable_distributed_dnn_training\":false,\"enable_distributed_dnn_training_ort_ds\":false,\"ensemble_iterations\":1,\"enable_tf\":false,\"enable_cache\":false,\"enable_subsampling\":false,\"metric_operation\":\"maximize\",\"enable_streaming\":false,\"use_incremental_learning_override\":false,\"force_streaming\":false,\"enable_dnn\":true,\"is_gpu_tmp\":false,\"enable_run_restructure\":false,\"featurization\":\"off\",\"label_column_name\":\"label\",\"weight_column_name\":null,\"miro_flight\":\"default\",\"many_models\":false,\"many_models_process_count_per_node\":0,\"automl_many_models_scenario\":null,\"enable_batch_run\":true,\"save_mlflow\":true,\"hyperdrive_config\":{\"generator_config\":{\"name\":\"GRID\",\"parameter_space\":\"{\\\"model\\\":[\\\"choice\\\",[[{\\\"model_size\\\":[\\\"choice\\\",[[\\\"small\\\",\\\"medium\\\"]]],\\\"learning_rate\\\":[\\\"uniform\\\",[0.0001,0.01]],\\\"model_name\\\":[\\\"choice\\\",[[\\\"yolov5\\\"]]]},{\\\"min_size\\\":[\\\"choice\\\",[[600,800]]],\\\"learning_rate\\\":[\\\"uniform\\\",[0.005,0.05]],\\\"model_name\\\":[\\\"choice\\\",[[\\\"fasterrcnn_resnet50_fpn\\\"]]],\\\"optimizer\\\":[\\\"choice\\\",[[\\\"sgd\\\",\\\"adam\\\",\\\"adamw\\\"]]],\\\"warmup_cosine_lr_warmup_epochs\\\":[\\\"choice\\\",[[0,3]]]}]]]}\"},\"policy_config\":{\"name\":\"Bandit\",\"properties\":{\"evaluation_interval\":10,\"delay_evaluation\":0,\"slack_factor\":0.2}}},\"track_child_runs\":true,\"start_auxiliary_runs_before_parent_complete\":false,\"test_include_predictions_only\":false,\"enable_mltable_quick_profile\":null,\"has_multiple_series\":false,\"enable_ensembling\":false,\"enable_stack_ensembling\":false,\"ensemble_download_models_timeout_sec\":300.0,\"stack_meta_learner_train_percentage\":0.2,\"checkpoint_frequency\":1,\"early_stopping\":true,\"early_stopping_delay\":2,\"early_stopping_patience\":2,\"evaluation_frequency\":1,\"blacklist_algos\":[\"TensorFlowDNN\",\"TensorFlowLinearRegressor\"]}",
+        "DataPrepJsonString": null, "EnableSubsampling": "False", "runTemplate": "AutoML",
+        "azureml.runsource": "automl", "mlflow.source.git.repoURL": "https://msdata.visualstudio.com/DefaultCollection/Vienna/_git/sdk-cli-v2",
+        "mlflow.source.git.branch": "madhumaddi/extract_sweeplimits", "mlflow.source.git.commit":
+        "467d635c555024c1f06c0a4c87d56bfe582094e2", "azureml.git.dirty": "True", "ClientType":
+        "Mfe", "_aml_system_scenario_identification": "Remote.Parent", "environment_cpu_name":
+        "AzureML-AutoML-DNN-Vision-GPU", "environment_cpu_label": "prod", "environment_gpu_name":
+        "AzureML-AutoML-DNN-Vision-GPU", "environment_gpu_label": "prod", "root_attribution":
+        "automl", "attribution": "AutoML", "Orchestrator": "AutoML", "CancelUri":
+        "https://eastus2.api.azureml.ms/jasmine/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/madhumaddi-hd-onboard/experimentids/7f8c7107-9c8a-4870-8997-aef11fe174b0/cancel/test-amlforimageobjdetectjob-000024-1",
+        "mltable_data_json": "{\"Type\":\"MLTable\",\"TrainData\":{\"Uri\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/madhumaddi-hd-onboard/data/image-training-data/versions/1\",\"ResolvedUri\":null,\"AssetId\":null},\"TestData\":null,\"ValidData\":{\"Uri\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/madhumaddi-hd-onboard/data/image-validation-data/versions/1\",\"ResolvedUri\":null,\"AssetId\":null}}",
+        "ClientSdkVersion": "1.43.0.post1", "snapshotId": "00000000-0000-0000-0000-000000000000"},
+        "displayName": "test-amlforimageobjdetectjob-000024-1", "status": "Failed",
+        "experimentName": "automl", "services": {"Tracking": {"jobServiceType": "Tracking",
+        "port": null, "endpoint": "azureml://eastus2.api.azureml.ms/mlflow/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/madhumaddi-hd-onboard?",
+        "status": null, "errorMessage": null, "properties": null}, "Studio": {"jobServiceType":
+        "Studio", "port": null, "endpoint": "https://ml.azure.com/runs/test-amlforimageobjdetectjob-000024-1?wsid=/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/madhumaddi-rg/workspaces/madhumaddi-hd-onboard",
+        "status": null, "errorMessage": null, "properties": null}}, "computeId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/madhumaddi-hd-onboard/computes/cpu-cluster",
+        "isArchived": false, "identity": null, "componentId": null, "jobType": "AutoML",
+        "resources": {"instanceCount": 1, "instanceType": null, "properties": null,
+        "shmSize": "2g", "dockerArgs": null}, "environmentId": null, "environmentVariables":
+        null, "taskDetails": {"logVerbosity": "Debug", "trainingData": {"description":
+        null, "uri": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/madhumaddi-hd-onboard/data/image-training-data/versions/1",
+        "mode": "ReadOnlyMount", "jobInputType": "mltable"}, "targetColumnName": "label",
+        "limitSettings": {"maxTrials": 1, "timeout": "PT1H", "maxConcurrentTrials":
+        1}, "sweepSettings": {"limits": {"maxTrials": null, "maxConcurrentTrials":
+        null}, "samplingAlgorithm": "Grid", "earlyTermination": {"evaluationInterval":
+        10, "delayEvaluation": 0, "policyType": "Bandit", "slackFactor": 0.2, "slackAmount":
+        0.0}}, "validationData": {"description": null, "uri": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/madhumaddi-hd-onboard/data/image-validation-data/versions/1",
+        "mode": "ReadOnlyMount", "jobInputType": "mltable"}, "validationDataSize":
+        null, "modelSettings": {"amsGradient": null, "advancedSettings": null, "augmentations":
+        null, "beta1": null, "beta2": null, "checkpointFrequency": 1, "checkpointRunId":
+        null, "checkpointModel": null, "distributed": null, "earlyStopping": true,
+        "earlyStoppingDelay": 2, "earlyStoppingPatience": 2, "evaluationFrequency":
+        1, "enableOnnxNormalization": null, "gradientAccumulationStep": null, "layersToFreeze":
+        null, "learningRate": null, "learningRateScheduler": "None", "modelName":
+        null, "momentum": null, "nesterov": null, "numberOfEpochs": null, "numberOfWorkers":
+        null, "optimizer": "None", "randomSeed": null, "stepLRGamma": null, "stepLRStepSize":
+        null, "trainingBatchSize": null, "validationBatchSize": null, "warmupCosineLRCycles":
+        null, "warmupCosineLRWarmupEpochs": null, "weightDecay": null, "boxDetectionsPerImage":
+        null, "boxScoreThreshold": null, "imageSize": null, "maxSize": null, "minSize":
+        null, "modelSize": "None", "multiScale": null, "nmsIouThreshold": null, "tileGridSize":
+        null, "tileOverlapRatio": null, "tilePredictionsNmsThreshold": null, "validationIouThreshold":
+        null, "validationMetricType": "None"}, "searchSpace": [{"amsGradient": null,
+        "augmentations": null, "beta1": null, "beta2": null, "distributed": null,
+        "earlyStopping": null, "earlyStoppingDelay": null, "earlyStoppingPatience":
+        null, "evaluationFrequency": null, "enableOnnxNormalization": null, "gradientAccumulationStep":
+        null, "layersToFreeze": null, "learningRate": "uniform(0.0001,0.01)", "learningRateScheduler":
+        null, "modelName": "choice(''yolov5'')", "momentum": null, "nesterov": null,
+        "numberOfEpochs": null, "numberOfWorkers": null, "optimizer": null, "randomSeed":
+        null, "stepLRGamma": null, "stepLRStepSize": null, "trainingBatchSize": null,
+        "validationBatchSize": null, "warmupCosineLRCycles": null, "warmupCosineLRWarmupEpochs":
+        null, "weightDecay": null, "boxDetectionsPerImage": null, "boxScoreThreshold":
+        null, "imageSize": null, "maxSize": null, "minSize": null, "modelSize": "choice(''small'',''medium'')",
+        "multiScale": null, "nmsIouThreshold": null, "tileGridSize": null, "tileOverlapRatio":
+        null, "tilePredictionsNmsThreshold": null, "validationIouThreshold": null,
+        "validationMetricType": null}, {"amsGradient": null, "augmentations": null,
+        "beta1": null, "beta2": null, "distributed": null, "earlyStopping": null,
+        "earlyStoppingDelay": null, "earlyStoppingPatience": null, "evaluationFrequency":
+        null, "enableOnnxNormalization": null, "gradientAccumulationStep": null, "layersToFreeze":
+        null, "learningRate": "uniform(0.005,0.05)", "learningRateScheduler": null,
+        "modelName": "choice(''fasterrcnn_resnet50_fpn'')", "momentum": null, "nesterov":
+        null, "numberOfEpochs": null, "numberOfWorkers": null, "optimizer": "choice(''sgd'',''adam'',''adamw'')",
+        "randomSeed": null, "stepLRGamma": null, "stepLRStepSize": null, "trainingBatchSize":
+        null, "validationBatchSize": null, "warmupCosineLRCycles": null, "warmupCosineLRWarmupEpochs":
+        "choice(0,3)", "weightDecay": null, "boxDetectionsPerImage": null, "boxScoreThreshold":
+        null, "imageSize": null, "maxSize": null, "minSize": "choice(600,800)", "modelSize":
+        null, "multiScale": null, "nmsIouThreshold": null, "tileGridSize": null, "tileOverlapRatio":
+        null, "tilePredictionsNmsThreshold": null, "validationIouThreshold": null,
+        "validationMetricType": null}], "taskType": "ImageObjectDetection", "primaryMetric":
+        "MeanAveragePrecision"}, "outputs": {}}, "systemData": {"createdAt": "2022-09-15T04:30:40.9843044+00:00",
+        "createdBy": "Madhukeswara Maddi", "createdByType": "User"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '11932'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 15 Sep 2022 05:00:59 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-2f79c33b34b84ec3c56e4d0fe9171677-42484707c6392163-01"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-01
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '1.420'
+    status:
+      code: 200
+      message: OK
+version: 1

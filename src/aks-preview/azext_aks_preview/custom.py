@@ -85,6 +85,7 @@ from azext_aks_preview.addonconfiguration import (
     add_virtual_node_role_assignment,
     enable_addons,
 )
+
 from azext_aks_preview.aks_diagnostics import aks_kanalyze_cmd, aks_kollect_cmd
 from azext_aks_preview.aks_draft.commands import (
     aks_draft_cmd_create,
@@ -103,6 +104,12 @@ from azext_aks_preview.bastion.bastion import (
 )
 from azext_aks_preview.maintenanceconfiguration import (
     aks_maintenanceconfiguration_update_internal,
+)
+from azext_aks_preview.aks_identity_binding.commands import (
+    aks_ib_cmd_create,
+    aks_ib_cmd_delete,
+    aks_ib_cmd_show,
+    aks_ib_cmd_list,
 )
 from azext_aks_preview.managednamespace import (
     aks_managed_namespace_add,
@@ -743,6 +750,7 @@ def aks_create(
     enable_imds_restriction=False,
     # managed system pool
     enable_managed_system_pool=False,
+    enable_upstream_kubescheduler_user_configuration=False,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -958,6 +966,8 @@ def aks_update(
     enable_imds_restriction=False,
     disable_imds_restriction=False,
     migrate_vmas_to_vms=False,
+    enable_upstream_kubescheduler_user_configuration=False,
+    disable_upstream_kubescheduler_user_configuration=False,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -4426,3 +4436,9 @@ def aks_bastion(cmd, client, resource_group_name, name, bastion=None, port=None,
             )
         finally:
             aks_batsion_clean_up()
+
+
+aks_identity_binding_create = aks_ib_cmd_create
+aks_identity_binding_delete = aks_ib_cmd_delete
+aks_identity_binding_show = aks_ib_cmd_show
+aks_identity_binding_list = aks_ib_cmd_list

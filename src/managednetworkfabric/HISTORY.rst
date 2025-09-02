@@ -2,6 +2,19 @@
 
 Release History
 ===============
+8.1.0
+++++++
+* Adding breaking change notices for the following items that will be included in the upcoming 2025-07-15-stable CLI (9.0.x).
+* [Breaking Change] Command group `fabric identity` will be removed as current az-cli-core does not support GET-PATCH. This includes the `assign`, `remove`, `show` sub-commands.
+* [Breaking Change] Parameter `route-prefix-limit` will be removed from `l3domain create` and `l3domain update` commands.
+* [Breaking Change] Parameter `version` on `device upgrade` command will become required.
+
+8.0.0
+++++++
+* Updating version 8-beta to stable cli version 8.x for 2024-06-15-preview.
+* Adds missing `--resource-name` parameter to many commands to keep better consistency.
+* This version requires a minimum of 2.75.0 Azure core CLI. See install instructions: https://github.com/MicrosoftDocs/azure-docs-cli/blob/main/docs-ref-conceptual/Latest-version/install-azure-cli.md
+
 8.0.0b7
 ++++++
 * Added missing examples and updated verbiage on existing examples

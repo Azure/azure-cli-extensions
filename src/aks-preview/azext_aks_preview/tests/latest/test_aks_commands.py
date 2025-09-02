@@ -2559,8 +2559,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "--nodepool-name={node_pool_name} --machine-name={machine_name} -o json"
         )
         machine_show = self.cmd(show_cmd).get_output_in_json()
-        assert machine_show["name"] == machine_name
         print(machine_show)
+        assert machine_show["name"] == machine_name
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
@@ -3751,7 +3751,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     @live_only()  # live only due to workspace is not mocked correctly and role assignment is not mocked
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
-        random_name_length=17, name_prefix="clitest", location="eastus2"
+        random_name_length=17, name_prefix="clitest", location="westus2"
     )
     def test_aks_automatic_sku(self, resource_group, resource_group_location):
         # reset the count so in replay mode the random names will start with 0
@@ -11602,6 +11602,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             checks=[self.is_empty()],
         )
 
+    @live_only()
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
         random_name_length=17, name_prefix="clitest", location="westus2"
@@ -11896,6 +11897,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             ],
         )
 
+    @live_only()
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
         random_name_length=17, name_prefix="clitest", location="westus2"
@@ -17043,4 +17045,201 @@ spec:
         self.cmd(
             "aks delete -g {resource_group} -n {name} --yes --no-wait",
             checks=[self.is_empty()],
+        )
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17,
+        name_prefix="clitest",
+        location="eastus2euap",
+    )
+    def test_aks_create_with_enable_upstream_kubescheduler_user_configuration(
+        self, resource_group, resource_group_location
+    ):
+        self.test_resources_count = 0
+
+        aks_name = self.create_random_name("cliakstest", 16)
+        _, create_version = self._get_versions(resource_group_location)
+        self.kwargs.update(
+            {
+                "location": resource_group_location,
+                "resource_group": resource_group,
+                "resource_type": "Microsoft.ContainerService/ManagedClusters",
+                "name": aks_name,
+                "k8s_version": create_version,
+                "ssh_key_value": self.generate_ssh_keys(),
+            }
+        )
+
+        create_cmd = (
+            "aks create "
+            "--location={location} "
+            "--resource-group={resource_group} "
+            "--name={name} "
+            "--kubernetes-version={k8s_version} "
+            "--ssh-key-value={ssh_key_value} "
+            "--node-count=1 "
+            "--enable-upstream-kubescheduler-user-configuration "
+            "--aks-custom-headers=AKSHTTPCustomFeatures=Microsoft.ContainerService/UserDefinedSchedulerConfigurationPreview "
+        )
+        self.cmd(
+            create_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("schedulerProfile.schedulerInstanceProfiles.upstream.schedulerConfigMode", "ManagedByCRD"),
+            ],
+        )
+
+        delete_cmd = (
+            "aks delete "
+            "--resource-group={resource_group} "
+            "--name={name} "
+            "--yes "
+            "--no-wait "
+        )
+        self.cmd(
+            delete_cmd,
+            checks=[
+                self.is_empty(),
+            ],
+        )
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17,
+        name_prefix="clitest",
+        location="eastus2euap",
+    )
+    def test_aks_update_with_enable_upstream_kubescheduler_user_configuration(
+        self, resource_group, resource_group_location
+    ):
+        self.test_resources_count = 0
+
+        aks_name = self.create_random_name("cliakstest", 16)
+        _, create_version = self._get_versions(resource_group_location)
+        self.kwargs.update(
+            {
+                "location": resource_group_location,
+                "resource_group": resource_group,
+                "resource_type": "Microsoft.ContainerService/ManagedClusters",
+                "name": aks_name,
+                "k8s_version": create_version,
+                "ssh_key_value": self.generate_ssh_keys(),
+            }
+        )
+
+        create_cmd = (
+            "aks create "
+            "--location={location} "
+            "--resource-group={resource_group} "
+            "--name={name} "
+            "--kubernetes-version={k8s_version} "
+            "--ssh-key-value={ssh_key_value} "
+            "--node-count=1 "
+        )
+        self.cmd(
+            create_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+            ],
+        )
+
+        update_cmd = (
+            "aks update "
+            "--resource-group={resource_group} "
+            "--name={name} "
+            "--enable-upstream-kubescheduler-user-configuration "
+            "--aks-custom-headers=AKSHTTPCustomFeatures=Microsoft.ContainerService/UserDefinedSchedulerConfigurationPreview "
+        )
+        self.cmd(
+            update_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("schedulerProfile.schedulerInstanceProfiles.upstream.schedulerConfigMode", "ManagedByCRD"),
+            ],
+        )
+
+        delete_cmd = (
+            "aks delete "
+            "--resource-group={resource_group} "
+            "--name={name} "
+            "--yes "
+            "--no-wait "
+        )
+        self.cmd(
+            delete_cmd,
+            checks=[
+                self.is_empty(),
+            ],
+        )
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17,
+        name_prefix="clitest",
+        location="eastus2euap",
+    )
+    def test_aks_update_with_disable_upstream_kubescheduler_user_configuration(
+        self, resource_group, resource_group_location
+    ):
+        self.test_resources_count = 0
+
+        aks_name = self.create_random_name("cliakstest", 16)
+        _, create_version = self._get_versions(resource_group_location)
+        self.kwargs.update(
+            {
+                "location": resource_group_location,
+                "resource_group": resource_group,
+                "resource_type": "Microsoft.ContainerService/ManagedClusters",
+                "name": aks_name,
+                "k8s_version": create_version,
+                "ssh_key_value": self.generate_ssh_keys(),
+            }
+        )
+
+        create_cmd = (
+            "aks create "
+            "--location={location} "
+            "--resource-group={resource_group} "
+            "--name={name} "
+            "--kubernetes-version={k8s_version} "
+            "--ssh-key-value={ssh_key_value} "
+            "--node-count=1 "
+            "--enable-upstream-kubescheduler-user-configuration "
+            "--aks-custom-headers=AKSHTTPCustomFeatures=Microsoft.ContainerService/UserDefinedSchedulerConfigurationPreview "
+        )
+        self.cmd(
+            create_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+            ],
+        )
+
+        update_cmd = (
+            "aks update "
+            "--resource-group={resource_group} "
+            "--name={name} "
+            "--disable-upstream-kubescheduler-user-configuration "
+            "--aks-custom-headers=AKSHTTPCustomFeatures=Microsoft.ContainerService/UserDefinedSchedulerConfigurationPreview "
+        )
+        self.cmd(
+            update_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("schedulerProfile.schedulerInstanceProfiles.upstream.schedulerConfigMode", "Default"),
+            ],
+        )
+
+        delete_cmd = (
+            "aks delete "
+            "--resource-group={resource_group} "
+            "--name={name} "
+            "--yes "
+            "--no-wait "
+        )
+        self.cmd(
+            delete_cmd,
+            checks=[
+                self.is_empty(),
+            ],
         )

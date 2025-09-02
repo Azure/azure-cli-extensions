@@ -1,0 +1,107 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json, text/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0 Python/3.7.9
+        (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://eastus.api.azureml.ms/registrymanagement/v1.0/registries/testfeed/discovery
+  response:
+    body:
+      string: '{"registryId": "3b513a6b-f110-4e7f-9ce3-472b5aa28170", "registryName":
+        "testfeed", "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47", "primaryRegion":
+        "centraluseuap", "regions": ["centraluseuap"], "subscriptionId": "00000000-0000-0000-0000-000000000000",
+        "resourceGroup": "test-registries", "workspaceName": null, "primaryRegionResourceProviderUri":
+        "https://cert-master.experiments.azureml-test.net/", "registryFqdns": {"centraluseuap":
+        {"uri": "https://3b513a6b-f110-4e7f-9ce3-472b5aa28170.registry.master.api.azureml-test.ms"}}}'
+    headers:
+      connection:
+      - keep-alive
+      content-length:
+      - '533'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 30 Sep 2022 19:58:32 GMT
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=15724800; includeSubDomains; preload
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.410'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0 Python/3.7.9
+        (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://cert-master.experiments.azureml-test.net/mferp/managementfrontend/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/registries/testfeed/environments/000000000000000/versions/93435847-704b-4280-83f3-f735d8b5eff7?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "azureml://registries/testFeed/environments/4c99f460-20cd-4821-8745-202aa7555604/versions/93435847-704b-4280-83f3-f735d8b5eff7",
+        "name": "93435847-704b-4280-83f3-f735d8b5eff7", "type": "environments", "properties":
+        {"description": null, "tags": {}, "properties": {}, "isArchived": false, "isAnonymous":
+        false, "environmentType": "UserCreated", "image": "feedmaster2.azurecr.io/4c99f460-20cd-4821-8745-202aa7555604_93435847-704b-4280-83f3-f735d8b5eff7_77dee692-909e-5f30-b67a-2839dc0d3240",
+        "condaFile": "", "osType": "Linux"}, "systemData": {"createdAt": "2022-05-31T10:31:32.103706+00:00",
+        "createdBy": "9f98f508-7785-400f-bd4e-20ff81af69fd", "createdByType": "Application",
+        "lastModifiedAt": "2022-05-31T10:31:32.103706+00:00", "lastModifiedBy": "9f98f508-7785-400f-bd4e-20ff81af69fd",
+        "lastModifiedByType": "Application"}}'
+    headers:
+      connection:
+      - keep-alive
+      content-length:
+      - '832'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 30 Sep 2022 19:58:35 GMT
+      request-context:
+      - appId=cid-v1:512cc15a-13b5-415b-bfd0-dce7accb6bb1
+      server-timing:
+      - traceparent;desc="00-ddb5afa8fc74991350f02072d8fe66fa-8a0c5951224b5baa-00"
+      strict-transport-security:
+      - max-age=15724800; includeSubDomains; preload
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aml-cluster:
+      - vienna-test-westus2-01
+      x-content-type-options:
+      - nosniff
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '2.394'
+    status:
+      code: 200
+      message: OK
+version: 1
