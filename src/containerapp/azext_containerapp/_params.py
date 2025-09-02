@@ -29,7 +29,7 @@ def load_arguments(self, _):
 
     with self.argument_context('containerapp', arg_group='Configuration') as c:
         c.argument('revisions_mode', arg_type=get_enum_type(['single', 'multiple', 'labels']), help="The active revisions mode for the container app.")
-        
+
     with self.argument_context('containerapp') as c:
         c.argument('kind', type=str, help="Set to 'functionapp' to enable built-in support and autoscaling for Azure Functions on Azure Container Apps.", is_preview=True)
 
