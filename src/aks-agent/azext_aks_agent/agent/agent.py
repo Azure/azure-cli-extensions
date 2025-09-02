@@ -10,7 +10,7 @@ import sys
 import uuid
 from pathlib import Path
 
-from azext_aks_preview._consts import (
+from azext_aks_agent._consts import (
     CONST_AGENT_CONFIG_PATH_DIR_ENV_KEY,
     CONST_AGENT_NAME,
     CONST_AGENT_NAME_ENV_KEY,

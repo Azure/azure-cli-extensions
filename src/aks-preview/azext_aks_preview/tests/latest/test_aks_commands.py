@@ -4143,7 +4143,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # add machines nodepool
         self.cmd(
             "aks nodepool add --resource-group={resource_group} --cluster-name={name} --name={nodepool_name} --mode=Machines",
-            checks=[self.check("provisioningState", "Succeeded"),self.check("mode", "Machines")],
+            checks=[self.check("provisioningState", "Succeeded"), self.check("mode", "Machines")],
         )
         # delete AKS cluster
         self.cmd(
