@@ -12,9 +12,17 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
-18.0.0b32
+18.0.0b34
 +++++++
 * Add machines agent pool support for `az aks nodepool add` command.
+
+18.0.0b33
++++++++
+* `az aks create`: Add new parameter `--kms-infrastructure-encryption` to enable KMS infrastructure encryption.
+
+18.0.0b32
++++++++
+* Remove the sku preview flag from help command for AKS automatic
 
 18.0.0b31
 +++++++

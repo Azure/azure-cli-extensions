@@ -640,7 +640,7 @@ def load_arguments(self, _):
             ),
         )
         c.argument(
-            "sku", is_preview=True, arg_type=get_enum_type(sku_names)
+            "sku", arg_type=get_enum_type(sku_names)
         )
         c.argument(
             "tier", arg_type=get_enum_type(sku_tiers), validator=validate_sku_tier
@@ -691,6 +691,12 @@ def load_arguments(self, _):
         c.argument(
             "azure_keyvault_kms_key_vault_resource_id",
             validator=validate_azure_keyvault_kms_key_vault_resource_id,
+        )
+        c.argument(
+            "kms_infrastructure_encryption",
+            arg_type=get_enum_type(["Enabled", "Disabled"]),
+            default="Disabled",
+            is_preview=True,
         )
         c.argument("http_proxy_config")
         c.argument(
@@ -1155,7 +1161,7 @@ def load_arguments(self, _):
             ),
         )
         c.argument(
-            "sku", is_preview=True, arg_type=get_enum_type(sku_names)
+            "sku", arg_type=get_enum_type(sku_names)
         )
         c.argument(
             "tier", arg_type=get_enum_type(sku_tiers), validator=validate_sku_tier
