@@ -9,6 +9,7 @@
 # flake8: noqa
 
 from azure.cli.core.aaz import *
+from azure.cli.core.azclierror import CLIInternalError
 
 
 @register_command(
@@ -66,27 +67,33 @@ class Create(AAZCommand):
             options=["--capabilities"],
             arg_group="Properties",
             help="List of capabilities",
+            required=True
         )
         _args_schema.context_id = AAZResourceIdArg(
             options=["--context-id"],
             arg_group="Properties",
             help="ArmId of Context",
-            required=True,
         )
         _args_schema.description = AAZStrArg(
             options=["--description"],
             arg_group="Properties",
             help="Description of target",
+            required=True,
+
         )
         _args_schema.display_name = AAZStrArg(
             options=["--display-name"],
             arg_group="Properties",
             help="Display name of target",
+            required=True,
+
         )
         _args_schema.hierarchy_level = AAZStrArg(
             options=["--hierarchy-level"],
             arg_group="Properties",
             help="Hierarchy Level",
+            required=True,
+
         )
         _args_schema.solution_scope = AAZStrArg(
             options=["--solution-scope"],
@@ -107,6 +114,8 @@ class Create(AAZCommand):
             options=["--target-specification"],
             arg_group="Properties",
             help="Specifies that we are using Helm charts for the k8s deployment",
+            required=True,
+
         )
 
         capabilities = cls._args_schema.capabilities
@@ -158,7 +167,13 @@ class Create(AAZCommand):
 
     @register_callback
     def pre_operations(self):
-        pass
+        # If context_id is not provided, try to get it from config
+        if not self.ctx.args.context_id:
+            context_id = self.ctx.cli_ctx.config.get('workload_orchestration', 'context_id')
+            if context_id:
+                self.ctx.args.context_id = context_id
+            else:
+                raise CLIInternalError("No context-id provided and no default context found. Please provide --context-id or use 'az workload-orchestration context use' to set a default context.")
 
     @register_callback
     def post_operations(self):

@@ -22,3 +22,5 @@ from ._show import *
 from ._uninstall import *
 from ._update import *
 from ._wait import *
+from ._solution_instance_list import *
+from ._solution_revision_list import *

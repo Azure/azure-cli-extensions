@@ -101,7 +101,8 @@ class Create(AAZCommand):
 
         _args_schema.configurations = AAZFileArg(
             options=["--config-template-file","--configuration-template-file"],
-            help="Link to File containing Config expressions  for this config version"
+            help="Link to File containing Config expressions  for this config version",
+            required=True
         )
         return cls._args_schema
 
