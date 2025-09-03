@@ -12,6 +12,10 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+18.0.0b32
++++++++
+* Remove the sku preview flag from help command for AKS automatic
+
 18.0.0b31
 +++++++
 * Remove DATA_STORAGE references
