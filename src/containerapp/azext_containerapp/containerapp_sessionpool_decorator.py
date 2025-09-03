@@ -165,10 +165,17 @@ class SessionPoolPreviewDecorator(BaseResource):
         return ManagedEnvironmentClient
 
     def set_up_probes(self):
-        probes_def = None
-        if self.get_argument_probe_yaml() is not None:
-            probes_def = load_yaml_file(self.get_argument_probe_yaml())
-        return probes_def.get('probes')
+        probes_def = load_yaml_file(self.get_argument_probe_yaml())
+        if not isinstance(probes_def, dict) or 'probes' not in probes_def:
+            raise ValidationError("The probe YAML file is not properly formatted. It must be a dictionary containing a 'probes' key.")
+
+        probes_list = probes_def.get('probes')
+        if probes_list is None:
+            return []
+        if not isinstance(probes_list, list):
+            raise ValidationError("The 'probes' key in the probe YAML file must be associated with a list of probes.")
+
+        return probes_list
 
 
 class SessionPoolCreateDecorator(SessionPoolPreviewDecorator):
