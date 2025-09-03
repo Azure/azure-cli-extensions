@@ -164,6 +164,12 @@ class SessionPoolPreviewDecorator(BaseResource):
     def get_environment_client(self):
         return ManagedEnvironmentClient
 
+    def set_up_probes(self):
+        probes_def = None
+        if self.get_argument_probe_yaml() is not None:
+            probes_def = load_yaml_file(self.get_argument_probe_yaml())
+        return probes_def.get('probes')
+
 
 class SessionPoolCreateDecorator(SessionPoolPreviewDecorator):
     def validate_arguments(self):
@@ -331,12 +337,6 @@ class SessionPoolCreateDecorator(SessionPoolPreviewDecorator):
             resources_def["cpu"] = self.get_argument_cpu()
             resources_def["memory"] = self.get_argument_memory()
         return resources_def
-
-    def set_up_probes(self):
-        probes_def = None
-        if self.get_argument_probe_yaml() is not None:
-            probes_def = load_yaml_file(self.get_argument_probe_yaml())
-        return probes_def.get('probes')
 
     def set_up_container(self):
         container_def = ContainerModel
@@ -635,6 +635,8 @@ class SessionPoolUpdateDecorator(SessionPoolPreviewDecorator):
                 container_def["resources"]["cpu"] = self.get_argument_cpu()
             if self.get_argument_memory() is not None:
                 container_def["resources"]["memory"] = self.get_argument_memory()
+        if self.get_argument_probe_yaml() is not None:
+            container_def["probes"] = self.set_up_probes()
         return container_def
 
     def set_up_registry_auth_configuration(self, secrets_def, customer_container_template):
