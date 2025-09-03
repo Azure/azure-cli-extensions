@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "new-relic monitor get-metric-rule",
 )
 class GetMetricRule(AAZCommand):
-    """Get metric rules
+    """Retrieves the metric rules that are configured in the New Relic monitor resource.
 
     :example: Get metric rules.
         az new-relic monitor get-metric-rule --monitor-name MyNewRelicMonitor --resource-group MyResourceGroup --user-email UserEmail@123.com

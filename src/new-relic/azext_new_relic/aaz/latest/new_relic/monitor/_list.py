@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "new-relic monitor list",
 )
 class List(AAZCommand):
-    """List NewRelicMonitorResource resources
+    """Retrieves a list of all New Relic monitor resources either within a specific resource group or across the entire subscription, helping you quickly audit and manage your monitoring setup.
 
     :example: List NewRelicMonitorResource resources by subscription ID
         az new-relic monitor list

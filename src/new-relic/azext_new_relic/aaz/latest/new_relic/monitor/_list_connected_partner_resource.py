@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "new-relic monitor list-connected-partner-resource",
 )
 class ListConnectedPartnerResource(AAZCommand):
-    """List of all active deployments that are associated with the marketplace subscription linked to the given monitor.
+    """List all active deployments associated with the marketplace subscription linked to the given New Relic monitor resource.
 
     :example: List of all active deployments that are associated with the marketplace subscription linked to the given monitor.
         az new-relic monitor list-connected-partner-resource --resource-group MyResourceGroup --monitor-name MyNewRelicMonitor

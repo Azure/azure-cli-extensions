@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "new-relic account list",
 )
 class List(AAZCommand):
-    """List all the existing accounts
+    """Lists all the New Relic accounts in your Azure subscription, helping you understand the existing accounts that have been created.
 
     :example: List all the existing accounts.
         az new-relic account list --location eastus2euap --user-email UserEmail@123.com

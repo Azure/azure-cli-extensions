@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "new-relic monitor switch-billing",
 )
 class SwitchBilling(AAZCommand):
-    """Switches the billing for NewRelic monitor resource.
+    """Switches the billing for the New Relic Monitor resource to be billed by Azure Marketplace.
 
     :example: Switches the billing for NewRelic monitor resource.
         az new-relic monitor switch-billing --monitor-name MyNewRelicMonitor --resource-group MyResourceGroup --azure-resource-id resourceId --organization-id organizationId --user-email="UserEmail@123.com" --plan-data billing-cycle="MONTHLY" effective-date='2022-10-25T15:14:33+02:00' plan-details="nr-privateofferplan03-upfront@TID5xd5yfrmr6no@PUBIDnewrelicinc-privateoffers.nr-privateoffers1" usage-type="COMMITTED"
