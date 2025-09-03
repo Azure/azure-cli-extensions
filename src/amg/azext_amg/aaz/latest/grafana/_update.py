@@ -25,16 +25,17 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-09-01",
+        "version": "2024-11-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dashboard/grafana/{}", "2023-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dashboard/grafana/{}", "2024-11-01-preview"],
         ]
     }
 
+    AZ_SUPPORT_NO_WAIT = True
+
     def _handler(self, command_args):
         super()._handler(command_args)
-        self._execute_operations()
-        return self._output()
+        return self.build_lro_poller(self._execute_operations, self._output)
 
     _args_schema = None
 
@@ -55,10 +56,9 @@ class Update(AAZCommand):
             help="The workspace name of Azure Managed Grafana.",
             required=True,
             id_part="name",
-        )
-        _args_schema.sku_tier = AAZStrArg(
-            options=["--sku-tier"],
-            help="The Sku of the grafana resource.",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z][a-z0-9A-Z-]{0,28}[a-z0-9A-Z]$",
+            ),
         )
         _args_schema.tags = AAZDictArg(
             options=["--tags"],
@@ -68,19 +68,23 @@ class Update(AAZCommand):
         tags = cls._args_schema.tags
         tags.Element = AAZStrArg()
 
+        # define Arg Group "GrafanaConfigurations"
+
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
         _args_schema.service_account = AAZStrArg(
-            options=["--api-key", "--service-account"],
+            options=["--service-account"],
             arg_group="Properties",
             help="The api key setting of the Grafana instance.",
+            default="Disabled",
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
         )
         _args_schema.deterministic_outbound_ip = AAZStrArg(
             options=["-i", "--deterministic-outbound-ip"],
             arg_group="Properties",
             help="Whether a Grafana instance uses deterministic outbound IPs.",
+            default="Disabled",
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
         )
         _args_schema.grafana_major_version = AAZStrArg(
@@ -92,13 +96,20 @@ class Update(AAZCommand):
             options=["-p", "--public-network-access"],
             arg_group="Properties",
             help="Indicate the state for enable or disable traffic over the public interface.",
+            default="Enabled",
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
         )
         _args_schema.zone_redundancy = AAZStrArg(
             options=["--zone-redundancy"],
             arg_group="Properties",
             help="The zone redundancy setting of the Grafana instance.",
+            default="Disabled",
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
+        )
+        _args_schema.sku_tier = AAZStrArg(
+            options=["--sku-tier"],
+            arg_group="Properties",
+            help="The Sku of the grafana resource.",
         )
 
         # define Arg Group "Smtp"
@@ -108,36 +119,40 @@ class Update(AAZCommand):
             options=["--smtp", "--smtp-enabled"],
             arg_group="Smtp",
             help="Enable this to allow Grafana to send email.",
+            default=False,
         )
         _args_schema.from_address = AAZStrArg(
             options=["--from-address"],
             arg_group="Smtp",
-            help="Address used when sending out emails https://pkg.go.dev/net/mail#Address",
+            help="Address used when sending out emails",
         )
         _args_schema.from_name = AAZStrArg(
             options=["--from-name"],
             arg_group="Smtp",
-            help="Name to be used when sending out emails. Default is \"Azure Managed Grafana Notification\" https://pkg.go.dev/net/mail#Address",
+            help="Name to be used when sending out emails. Default is \"Azure Managed Grafana Notification\"",
         )
         _args_schema.host = AAZStrArg(
             options=["--host"],
             arg_group="Smtp",
             help="SMTP server hostname with port, e.g. test.email.net:587",
         )
-        _args_schema.password = AAZStrArg(
+        _args_schema.password = AAZPasswordArg(
             options=["--password"],
             arg_group="Smtp",
             help="Password of SMTP auth. If the password contains # or ;, then you have to wrap it with triple quotes",
+            blank=AAZPromptPasswordInput(
+                msg="Password:",
+            ),
         )
         _args_schema.skip_verify = AAZBoolArg(
             options=["--skip-verify"],
             arg_group="Smtp",
-            help="Verify SSL for SMTP server. Default is false https://pkg.go.dev/crypto/tls#Config",
+            help="Verify SSL for SMTP server. Default is false",
         )
         _args_schema.start_tls_policy = AAZStrArg(
             options=["--start-tls-policy"],
             arg_group="Smtp",
-            help="The StartTLSPolicy setting of the SMTP configuration https://pkg.go.dev/github.com/go-mail/mail#StartTLSPolicy",
+            help="The StartTLSPolicy setting of the SMTP configuration",
             enum={"MandatoryStartTLS": "MandatoryStartTLS", "NoStartTLS": "NoStartTLS", "OpportunisticStartTLS": "OpportunisticStartTLS"},
         )
         _args_schema.user = AAZStrArg(
@@ -149,7 +164,7 @@ class Update(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.GrafanaUpdate(ctx=self.ctx)()
+        yield self.GrafanaUpdate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -170,10 +185,24 @@ class Update(AAZCommand):
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [200]:
-                return self.on_200(session)
             if session.http_response.status_code in [202]:
-                return self.on_202(session)
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200,
+                    self.on_error,
+                    lro_options={"final-state-via": "azure-async-operation"},
+                    path_format_arguments=self.url_parameters,
+                )
+            if session.http_response.status_code in [200]:
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200,
+                    self.on_error,
+                    lro_options={"final-state-via": "azure-async-operation"},
+                    path_format_arguments=self.url_parameters,
+                )
 
             return self.on_error(session.http_response)
 
@@ -214,7 +243,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-09-01",
+                    "api-version", "2024-11-01-preview",
                     required=True,
                 ),
             }
@@ -297,26 +326,6 @@ class Update(AAZCommand):
 
             return cls._schema_on_200
 
-        def on_202(self, session):
-            data = self.deserialize_http_content(session)
-            self.ctx.set_var(
-                "instance",
-                data,
-                schema_builder=self._build_schema_on_202
-            )
-
-        _schema_on_202 = None
-
-        @classmethod
-        def _build_schema_on_202(cls):
-            if cls._schema_on_202 is not None:
-                return cls._schema_on_202
-
-            cls._schema_on_202 = AAZObjectType()
-            _UpdateHelper._build_schema_managed_grafana_read(cls._schema_on_202)
-
-            return cls._schema_on_202
-
 
 class _UpdateHelper:
     """Helper class for Update"""
@@ -343,7 +352,7 @@ class _UpdateHelper:
         managed_grafana_read.id = AAZStrType(
             flags={"read_only": True},
         )
-        managed_grafana_read.identity = AAZObjectType()
+        managed_grafana_read.identity = AAZIdentityObjectType()
         managed_grafana_read.location = AAZStrType()
         managed_grafana_read.name = AAZStrType(
             flags={"read_only": True},
@@ -449,7 +458,18 @@ class _UpdateHelper:
         )
 
         grafana_configurations = _schema_managed_grafana_read.properties.grafana_configurations
+        grafana_configurations.security = AAZObjectType()
         grafana_configurations.smtp = AAZObjectType()
+        grafana_configurations.snapshots = AAZObjectType()
+        grafana_configurations.unified_alerting_screenshots = AAZObjectType(
+            serialized_name="unifiedAlertingScreenshots",
+        )
+        grafana_configurations.users = AAZObjectType()
+
+        security = _schema_managed_grafana_read.properties.grafana_configurations.security
+        security.csrf_always_check = AAZBoolType(
+            serialized_name="csrfAlwaysCheck",
+        )
 
         smtp = _schema_managed_grafana_read.properties.grafana_configurations.smtp
         smtp.enabled = AAZBoolType()
@@ -470,6 +490,24 @@ class _UpdateHelper:
             serialized_name="startTLSPolicy",
         )
         smtp.user = AAZStrType()
+
+        snapshots = _schema_managed_grafana_read.properties.grafana_configurations.snapshots
+        snapshots.external_enabled = AAZBoolType(
+            serialized_name="externalEnabled",
+        )
+
+        unified_alerting_screenshots = _schema_managed_grafana_read.properties.grafana_configurations.unified_alerting_screenshots
+        unified_alerting_screenshots.capture_enabled = AAZBoolType(
+            serialized_name="captureEnabled",
+        )
+
+        users = _schema_managed_grafana_read.properties.grafana_configurations.users
+        users.editors_can_admin = AAZBoolType(
+            serialized_name="editorsCanAdmin",
+        )
+        users.viewers_can_edit = AAZBoolType(
+            serialized_name="viewersCanEdit",
+        )
 
         grafana_integrations = _schema_managed_grafana_read.properties.grafana_integrations
         grafana_integrations.azure_monitor_workspace_integrations = AAZListType(

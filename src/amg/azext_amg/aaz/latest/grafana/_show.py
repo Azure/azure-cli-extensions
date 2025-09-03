@@ -19,9 +19,9 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-09-01",
+        "version": "2024-11-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dashboard/grafana/{}", "2023-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dashboard/grafana/{}", "2024-11-01-preview"],
         ]
     }
 
@@ -49,6 +49,9 @@ class Show(AAZCommand):
             help="The workspace name of Azure Managed Grafana.",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z][a-z0-9A-Z-]{0,28}[a-z0-9A-Z]$",
+            ),
         )
         return cls._args_schema
 
@@ -117,7 +120,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-09-01",
+                    "api-version", "2024-11-01-preview",
                     required=True,
                 ),
             }
@@ -153,7 +156,7 @@ class Show(AAZCommand):
             _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.identity = AAZObjectType()
+            _schema_on_200.identity = AAZIdentityObjectType()
             _schema_on_200.location = AAZStrType()
             _schema_on_200.name = AAZStrType(
                 flags={"read_only": True},
@@ -259,7 +262,18 @@ class Show(AAZCommand):
             )
 
             grafana_configurations = cls._schema_on_200.properties.grafana_configurations
+            grafana_configurations.security = AAZObjectType()
             grafana_configurations.smtp = AAZObjectType()
+            grafana_configurations.snapshots = AAZObjectType()
+            grafana_configurations.unified_alerting_screenshots = AAZObjectType(
+                serialized_name="unifiedAlertingScreenshots",
+            )
+            grafana_configurations.users = AAZObjectType()
+
+            security = cls._schema_on_200.properties.grafana_configurations.security
+            security.csrf_always_check = AAZBoolType(
+                serialized_name="csrfAlwaysCheck",
+            )
 
             smtp = cls._schema_on_200.properties.grafana_configurations.smtp
             smtp.enabled = AAZBoolType()
@@ -280,6 +294,24 @@ class Show(AAZCommand):
                 serialized_name="startTLSPolicy",
             )
             smtp.user = AAZStrType()
+
+            snapshots = cls._schema_on_200.properties.grafana_configurations.snapshots
+            snapshots.external_enabled = AAZBoolType(
+                serialized_name="externalEnabled",
+            )
+
+            unified_alerting_screenshots = cls._schema_on_200.properties.grafana_configurations.unified_alerting_screenshots
+            unified_alerting_screenshots.capture_enabled = AAZBoolType(
+                serialized_name="captureEnabled",
+            )
+
+            users = cls._schema_on_200.properties.grafana_configurations.users
+            users.editors_can_admin = AAZBoolType(
+                serialized_name="editorsCanAdmin",
+            )
+            users.viewers_can_edit = AAZBoolType(
+                serialized_name="viewersCanEdit",
+            )
 
             grafana_integrations = cls._schema_on_200.properties.grafana_integrations
             grafana_integrations.azure_monitor_workspace_integrations = AAZListType(

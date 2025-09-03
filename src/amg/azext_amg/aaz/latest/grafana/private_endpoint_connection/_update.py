@@ -22,9 +22,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-09-01",
+        "version": "2024-11-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dashboard/grafana/{}/privateendpointconnections/{}", "2023-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dashboard/grafana/{}/privateendpointconnections/{}", "2024-11-01-preview"],
         ]
     }
 
@@ -61,6 +61,9 @@ class Update(AAZCommand):
             help="The workspace name of Azure Managed Grafana.",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z][a-z0-9A-Z-]{0,28}[a-z0-9A-Z]$",
+            ),
         )
 
         # define Arg Group "Properties"
@@ -73,7 +76,7 @@ class Update(AAZCommand):
             nullable=True,
         )
         _args_schema.private_link_service_connection_state = AAZObjectArg(
-            options=["--private-link-service-connection-state", "--connection-state"],
+            options=["--private-link-service-connection-state"],
             arg_group="Properties",
             help="A collection of information about the state of the connection between service consumer and provider.",
         )
@@ -184,7 +187,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-09-01",
+                    "api-version", "2024-11-01-preview",
                     required=True,
                 ),
             }
@@ -287,7 +290,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-09-01",
+                    "api-version", "2024-11-01-preview",
                     required=True,
                 ),
             }

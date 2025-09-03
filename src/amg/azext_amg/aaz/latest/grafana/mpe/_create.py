@@ -22,9 +22,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-09-01",
+        "version": "2024-11-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dashboard/grafana/{}/managedprivateendpoints/{}", "2023-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dashboard/grafana/{}/managedprivateendpoints/{}", "2024-11-01-preview"],
         ]
     }
 
@@ -57,6 +57,9 @@ class Create(AAZCommand):
             options=["--workspace-name"],
             help="The workspace name of Azure Managed Grafana.",
             required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z][a-z0-9A-Z-]{0,28}[a-z0-9A-Z]$",
+            ),
         )
 
         # define Arg Group "Properties"
@@ -68,17 +71,17 @@ class Create(AAZCommand):
             help="The group Ids of the managed private endpoint.",
         )
         _args_schema.private_link_resource_id = AAZStrArg(
-            options=["--private-link-resource-id", "--resource-id"],
+            options=["--private-link-resource-id"],
             arg_group="Properties",
             help="The ARM resource ID of the resource for which the managed private endpoint is pointing to.",
         )
         _args_schema.private_link_resource_region = AAZStrArg(
-            options=["--private-link-resource-region", "--resource-region"],
+            options=["--private-link-resource-region"],
             arg_group="Properties",
             help="The region of the resource to which the managed private endpoint is pointing to.",
         )
         _args_schema.private_link_service_url = AAZStrArg(
-            options=["--private-link-service-url", "--service-url"],
+            options=["--private-link-service-url"],
             arg_group="Properties",
             help="The URL of the data store behind the private link service. It would be the URL in the Grafana data source configuration page without the protocol and port.",
         )
@@ -197,7 +200,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-09-01",
+                    "api-version", "2024-11-01-preview",
                     required=True,
                 ),
             }
