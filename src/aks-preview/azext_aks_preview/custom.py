@@ -2075,8 +2075,22 @@ def aks_machine_add(
     resource_group_name,
     cluster_name,
     nodepool_name,
-    machine_name,
+    machine_name=None,
+    zones=None,
+    tags=None,
+    priority=None,
+    os_type=None,
+    os_sku=None,
+    enable_fips=False,
+    vnet_subnet_id=None,
+    pod_subnet_id=None,
+    enable_node_public_ip=False,
+    node_public_ip_prefix_id=None,
+    node_public_ip_tags=None,
+    vm_size=None,
+    kubernetes_version=None,
     no_wait=False,
+    aks_custom_headers=None,
 ):
     existedMachine = None
     try:
@@ -2090,14 +2104,77 @@ def aks_machine_add(
         )
     
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
-    # raw_parameters = locals()
+    raw_parameters = locals()
     Machine = cmd.get_models(
         "Machine", 
         resource_type=CUSTOM_MGMT_AKS_PREVIEW,
         operation_group="machines"
     )
-    machine = Machine()
+    machine_name = raw_parameters.get("machine_name")
+    vm_size = raw_parameters.get("vm_size")
 
+    MachineProperties = cmd.get_models(
+        "MachineProperties",
+        resource_type=CUSTOM_MGMT_AKS_PREVIEW,
+        operation_group="machines"
+    )
+    MachineNetworkProperties = cmd.get_models(
+        "MachineNetworkProperties",
+        resource_type=CUSTOM_MGMT_AKS_PREVIEW,
+        operation_group="machines"
+    )
+    vnet_subnet_id = raw_parameters.get("vnet_subnet_id")
+    pod_subnet_id = raw_parameters.get("pod_subnet_id")
+    enable_node_public_ip = raw_parameters.get("enable_node_public_ip")
+    node_public_ip_prefix_id = raw_parameters.get("node_public_ip_prefix_id")
+    node_public_ip_tags = raw_parameters.get("node_public_ip_tags")
+    machineNetworkProperties = MachineNetworkProperties(
+        vnet_subnet_id=vnet_subnet_id,
+        pod_subnet_id=pod_subnet_id,
+        enable_node_public_ip=enable_node_public_ip,
+        node_public_ip_prefix_id=node_public_ip_prefix_id,
+        node_public_ip_tags=node_public_ip_tags
+    )
+    MachineHardwareProfile = cmd.get_models(
+        "MachineHardwareProfile",
+        resource_type=CUSTOM_MGMT_AKS_PREVIEW,
+        operation_group="machines"
+    )
+    machine_hardware_profile = MachineHardwareProfile(
+        vm_size=vm_size
+    )
+    kubernetes_version = raw_parameters.get("kubernetes_version")
+    MachineKubernetesProfile = cmd.get_models(
+        "MachineKubernetesProfile",
+        resource_type=CUSTOM_MGMT_AKS_PREVIEW,
+        operation_group="machines"
+    )
+    machineKubernetesProfile = MachineKubernetesProfile(
+        orchestrator_version=kubernetes_version
+    )
+    MachineOSProfile = cmd.get_models(
+        "MachineOSProfile",
+        resource_type=CUSTOM_MGMT_AKS_PREVIEW,
+        operation_group="machines"
+    )
+    machineOSProfile = MachineOSProfile(
+        os_type=os_type,
+        os_sku=os_sku,
+        enable_fips=enable_fips
+    )
+    tags = raw_parameters.get("tags")
+    priority = raw_parameters.get("priority")
+    machine = Machine()
+    machine.properties = MachineProperties(
+        tags=tags,
+        priority=priority,
+        network=machineNetworkProperties,
+        hardware=machine_hardware_profile,
+        kubernetes=machineKubernetesProfile,
+        operating_system=machineOSProfile
+    )
+
+    headers = get_aks_custom_headers(aks_custom_headers)
     return sdk_no_wait(
         no_wait,
         client.begin_create_or_update,
@@ -2106,6 +2183,7 @@ def aks_machine_add(
         nodepool_name,
         machine_name,
         machine,
+        headers=headers,
     )
     
 
