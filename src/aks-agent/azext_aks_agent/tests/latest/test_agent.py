@@ -9,10 +9,10 @@ import unittest
 from types import SimpleNamespace
 from unittest.mock import MagicMock, Mock, call, patch
 
-from azext_aks_preview._consts import (CONST_AGENT_CONFIG_PATH_DIR_ENV_KEY,
-                                       CONST_AGENT_NAME,
-                                       CONST_AGENT_NAME_ENV_KEY)
-from azext_aks_preview.agent.agent import aks_agent, init_log
+from azext_aks_agent._consts import (CONST_AGENT_CONFIG_PATH_DIR_ENV_KEY,
+                                     CONST_AGENT_NAME,
+                                     CONST_AGENT_NAME_ENV_KEY)
+from azext_aks_agent.agent.agent import aks_agent, init_log
 from azure.cli.core.util import CLIError
 
 # Mock the holmes modules before any imports that might trigger holmes imports
@@ -40,7 +40,7 @@ def setUpModule():
 class TestInitLog(unittest.TestCase):
     """Test cases for init_log function"""
 
-    @patch('azext_aks_preview.agent.agent.logging.getLogger')
+    @patch('azext_aks_agent.agent.agent.logging.getLogger')
     def test_init_log_logger_level_setting(self, mock_get_logger):
         """Test that specific loggers get WARNING level set"""
         # Arrange
@@ -88,15 +88,15 @@ class TestAksAgent(unittest.TestCase):
     def test_aks_agent_python_version_check(self):
         """Test that aks_agent raises error for Python version < 3.10"""
         with patch.object(sys, 'version_info', (3, 9, 0)):
-            with patch('azext_aks_preview.agent.agent.CLITelemetryClient'):
+            with patch('azext_aks_agent.agent.agent.CLITelemetryClient'):
                 with self.assertRaises(CLIError) as cm:
                     aks_agent(**self.default_params)
 
                 self.assertIn("Please upgrade the python version to 3.10", str(cm.exception))
 
     @patch('sys.stdin.isatty')
-    @patch('azext_aks_preview.agent.agent.CLITelemetryClient')
-    @patch('azext_aks_preview.agent.agent.init_log')
+    @patch('azext_aks_agent.agent.agent.CLITelemetryClient')
+    @patch('azext_aks_agent.agent.agent.init_log')
     @patch('azure.cli.core.api.get_config_dir')
     @patch('azure.cli.core.commands.client_factory.get_subscription_id')
     @patch('os.path.expanduser')
@@ -132,8 +132,8 @@ class TestAksAgent(unittest.TestCase):
                 self.assertIn("Either the 'prompt' argument must be provided", str(cm.exception))
 
     @patch('sys.stdin.isatty')
-    @patch('azext_aks_preview.agent.agent.CLITelemetryClient')
-    @patch('azext_aks_preview.agent.agent.init_log')
+    @patch('azext_aks_agent.agent.agent.CLITelemetryClient')
+    @patch('azext_aks_agent.agent.agent.init_log')
     @patch('azure.cli.core.api.get_config_dir')
     @patch('azure.cli.core.commands.client_factory.get_subscription_id')
     @patch('os.path.expanduser')
@@ -182,7 +182,7 @@ class TestAksAgent(unittest.TestCase):
                 # Assert that console.print was called with the user prompt
                 mock_console.print.assert_any_call("[bold yellow]User:[/bold yellow] test prompt")
 
-    @patch('azext_aks_preview.agent.agent.CLITelemetryClient')
+    @patch('azext_aks_agent.agent.agent.CLITelemetryClient')
     def test_aks_agent_telemetry_client_usage(self, mock_cli_telemetry):
         """Test that aks_agent uses CLITelemetryClient context manager"""
         # Arrange

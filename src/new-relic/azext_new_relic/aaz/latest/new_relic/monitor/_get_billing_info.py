@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "new-relic monitor get-billing-info",
 )
 class GetBillingInfo(AAZCommand):
-    """Get marketplace info mapped to the given monitor.
+    """Retrieve marketplace and organization billing information mapped to the given New Relic monitor resource.
 
     :example: Get marketplace info mapped to the given monitor.
         az new-relic monitor get-billing-info --monitor-name MyNewRelicMonitor --resource-group MyResourceGroup

@@ -91,6 +91,7 @@ class Create(AAZCommand):
         _args_schema.value = AAZFileArg(
                 options=["--schema-file","-f"],
                 help="Path to the schema file",
+                required=True
         )
         
         tags = cls._args_schema.tags

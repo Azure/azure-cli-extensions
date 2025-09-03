@@ -122,18 +122,18 @@ def call_scenario(test, rg):
     step_organization_create(test, rg, checks=[
         test.check("location", "eastus2euap", case_sensitive=False),
         # change to real values for userDetail in live tests
-        test.check("userDetail.emailAddress", "contoso@microsoft.com", case_sensitive=False),
-        test.check("userDetail.firstName", "contoso", case_sensitive=False),
-        test.check("userDetail.lastName", "zhou", case_sensitive=False),
+        test.check("userDetail.emailAddress", "test@example.com", case_sensitive=False),
+        test.check("userDetail.firstName", "Deepika", case_sensitive=False),
+        test.check("userDetail.lastName", "N", case_sensitive=False),
         test.check("tags.environment", "Dev", case_sensitive=False),
         test.check("name", "{myOrganization}", case_sensitive=False),
     ])
     step_organization_show(test, rg, checks=[
         test.check("location", "eastus2euap", case_sensitive=False),
         # change to real values for userDetail in live tests
-        test.check("userDetail.emailAddress", "contoso@microsoft.com", case_sensitive=False),
-        test.check("userDetail.firstName", "contoso", case_sensitive=False),
-        test.check("userDetail.lastName", "zhou", case_sensitive=False),
+        test.check("userDetail.emailAddress", "test@example.com", case_sensitive=False),
+        test.check("userDetail.firstName", "Deepika", case_sensitive=False),
+        test.check("userDetail.lastName", "N", case_sensitive=False),
         test.check("tags.environment", "Dev", case_sensitive=False),
         test.check("name", "{myOrganization}", case_sensitive=False),
     ])
@@ -145,9 +145,9 @@ def call_scenario(test, rg):
     ])
     step_organization_update(test, rg, checks=[
         test.check("location", "eastus2euap", case_sensitive=False),
-        test.check("userDetail.emailAddress", "contoso@microsoft.com", case_sensitive=False),
-        test.check("userDetail.firstName", "contoso", case_sensitive=False),
-        test.check("userDetail.lastName", "zhou", case_sensitive=False),
+        test.check("userDetail.emailAddress", "test@example.com", case_sensitive=False),
+        test.check("userDetail.firstName", "Deepika", case_sensitive=False),
+        test.check("userDetail.lastName", "N", case_sensitive=False),
         test.check("name", "{myOrganization}", case_sensitive=False),
         test.check("tags.client", "dev-client", case_sensitive=False),
     ])
