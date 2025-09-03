@@ -71,17 +71,17 @@ class Create(AAZCommand):
             help="The group Ids of the managed private endpoint.",
         )
         _args_schema.private_link_resource_id = AAZStrArg(
-            options=["--rid", "--private-link-resource-id"],
+            options=["--resource-id", "--private-link-resource-id"],
             arg_group="Properties",
             help="The ARM resource ID of the resource for which the managed private endpoint is pointing to.",
         )
         _args_schema.private_link_resource_region = AAZStrArg(
-            options=["--region", "--private-link-resource-region"],
+            options=["--resource-region", "--private-link-resource-region"],
             arg_group="Properties",
             help="The region of the resource to which the managed private endpoint is pointing to.",
         )
         _args_schema.private_link_service_url = AAZStrArg(
-            options=["--url", "--private-link-service-url"],
+            options=["--service-url", "--private-link-service-url"],
             arg_group="Properties",
             help="The URL of the data store behind the private link service. It would be the URL in the Grafana data source configuration page without the protocol and port.",
         )
