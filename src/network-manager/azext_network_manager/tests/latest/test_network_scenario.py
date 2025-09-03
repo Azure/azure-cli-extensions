@@ -457,7 +457,7 @@ class NetworkScenarioTest(ScenarioTest):
             'is-global=false use-hub-gateway=true --connectivity-topology "HubAndSpoke" --delete-existing-peering true --hub '
             'resource-id={sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualnetworks/{virtual_network} '
             'resource-type="Microsoft.Network/virtualNetworks" --description "Sample Configuration with Capabilities" --is-global true '
-            '--connectivity-capabilities connected-group-private-endpoints-scale="HighScale" connected-group-address-overlap="Disallowed" peering-enforcement="Enforced"')
+            '--connect-capabilities connected-group-private-endpoints-scale="HighScale" connected-group-address-overlap="Disallowed" peering-enforcement="Enforced"')
 
         # Verify the connectivity configuration was created with the new fields
         config_output = self.cmd('network manager connect-config show --configuration-name {config_name} --network-manager-name {manager_name} -g {rg}').get_output_in_json()
@@ -845,4 +845,3 @@ class NetworkScenarioTest(ScenarioTest):
         self.cmd('az resource wait --deleted --name {workspace_name} --resource-group {rg} --resource-type {workspace_resource_type}')
 
         self.cmd('az group delete --name {rg} --yes --no-wait')
-        

@@ -16,9 +16,6 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get a Network Connectivity Configuration, specified by the resource group, network manager name, and connectivity Configuration name
-
-    :example: Get Azure Virtual Network Manager Connectivity Configuration
-        az network manager connect-config show --configuration-name "myTestConnectivityConfig" --network-manager-name "testNetworkManager" --resource-group "myResourceGroup"
     """
 
     _aaz_info = {
@@ -45,13 +42,13 @@ class Show(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.configuration_name = AAZStrArg(
-            options=["--configuration-name"],
+            options=["-n", "--name", "--configuration-name"],
             help="The name of the network manager connectivity configuration.",
             required=True,
             id_part="child_name_1",
         )
         _args_schema.network_manager_name = AAZStrArg(
-            options=["-n", "--name", "--network-manager-name"],
+            options=["--network-manager-name"],
             help="The name of the network manager.",
             required=True,
             id_part="name",
@@ -234,12 +231,15 @@ class Show(AAZCommand):
             connectivity_capabilities = cls._schema_on_200.properties.connectivity_capabilities
             connectivity_capabilities.connected_group_address_overlap = AAZStrType(
                 serialized_name="connectedGroupAddressOverlap",
+                flags={"required": True},
             )
             connectivity_capabilities.connected_group_private_endpoints_scale = AAZStrType(
                 serialized_name="connectedGroupPrivateEndpointsScale",
+                flags={"required": True},
             )
             connectivity_capabilities.peering_enforcement = AAZStrType(
                 serialized_name="peeringEnforcement",
+                flags={"required": True},
             )
 
             hubs = cls._schema_on_200.properties.hubs

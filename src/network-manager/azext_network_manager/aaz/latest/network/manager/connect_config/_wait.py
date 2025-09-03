@@ -19,7 +19,6 @@ class Wait(AAZWaitCommand):
     """
 
     _aaz_info = {
-        "version": "2024-07-01",
         "resources": [
             ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networkmanagers/{}/connectivityconfigurations/{}", "2024-07-01"],
         ]
@@ -42,13 +41,13 @@ class Wait(AAZWaitCommand):
 
         _args_schema = cls._args_schema
         _args_schema.configuration_name = AAZStrArg(
-            options=["--configuration-name"],
+            options=["-n", "--name", "--configuration-name"],
             help="The name of the network manager connectivity configuration.",
             required=True,
             id_part="child_name_1",
         )
         _args_schema.network_manager_name = AAZStrArg(
-            options=["-n", "--name", "--network-manager-name"],
+            options=["--network-manager-name"],
             help="The name of the network manager.",
             required=True,
             id_part="name",
@@ -231,12 +230,15 @@ class Wait(AAZWaitCommand):
             connectivity_capabilities = cls._schema_on_200.properties.connectivity_capabilities
             connectivity_capabilities.connected_group_address_overlap = AAZStrType(
                 serialized_name="connectedGroupAddressOverlap",
+                flags={"required": True},
             )
             connectivity_capabilities.connected_group_private_endpoints_scale = AAZStrType(
                 serialized_name="connectedGroupPrivateEndpointsScale",
+                flags={"required": True},
             )
             connectivity_capabilities.peering_enforcement = AAZStrType(
                 serialized_name="peeringEnforcement",
+                flags={"required": True},
             )
 
             hubs = cls._schema_on_200.properties.hubs

@@ -72,9 +72,6 @@ class Update(AAZCommand):
             arg_group="Parameters",
             help="Resource location.",
             nullable=True,
-            fmt=AAZResourceLocationArgFormat(
-                resource_group_arg="resource_group",
-            ),
         )
         _args_schema.tags = AAZDictArg(
             options=["--tags"],
