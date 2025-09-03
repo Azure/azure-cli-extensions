@@ -167,13 +167,13 @@ class SessionPoolPreviewDecorator(BaseResource):
     def set_up_probes(self):
         probes_def = load_yaml_file(self.get_argument_probe_yaml())
         if not isinstance(probes_def, dict) or 'probes' not in probes_def:
-            raise ValidationError("The probe YAML file is not properly formatted. It must be a dictionary containing a 'probes' key.")
+            raise ValidationError("The probe YAML file must be a dictionary containing a 'probes' key.")
 
         probes_list = probes_def.get('probes')
         if probes_list is None:
             return []
         if not isinstance(probes_list, list):
-            raise ValidationError("The 'probes' key in the probe YAML file must be associated with a list of probes.")
+            raise ValidationError("The 'probes' key in the probe YAML file must be a list of probes.")
 
         return probes_list
 
