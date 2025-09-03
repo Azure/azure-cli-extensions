@@ -12,10 +12,6 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
-18.0.0b29
-+++++++
-* Add option `AzureLinux3` to `--os-sku` for `az aks nodepool add` and `az aks nodepool update`.
-
 18.0.0b28
 +++++++
 * Add interactive AI-powered debugging tool `az aks agent`.
