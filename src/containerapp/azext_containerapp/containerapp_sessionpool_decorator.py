@@ -28,6 +28,7 @@ from azure.cli.command_modules.containerapp._utils import (parse_env_var_flags, 
                                                            safe_set, safe_get, _ensure_identity_resource_id)
 from azure.cli.command_modules.containerapp._clients import ManagedEnvironmentClient
 from azure.cli.command_modules.containerapp._client_factory import handle_non_404_status_code_exception
+from azure.cli.command_modules.containerapp._decorator_utils import load_yaml_file
 from azure.cli.command_modules.containerapp._utils import is_registry_msi_system
 from azure.cli.core.commands.client_factory import get_subscription_id
 
@@ -334,8 +335,8 @@ class SessionPoolCreateDecorator(SessionPoolPreviewDecorator):
     def set_up_probes(self):
         probes_def = None
         if self.get_argument_probe_yaml() is not None:
-            probes_def = load_yaml_file(self.get_argument_route_yaml())
-        return probes_def
+            probes_def = load_yaml_file(self.get_argument_probe_yaml())
+        return probes_def.get('probes')
 
     def set_up_container(self):
         container_def = ContainerModel
