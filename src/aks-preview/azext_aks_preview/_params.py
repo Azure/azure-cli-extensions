@@ -85,6 +85,7 @@ from azext_aks_preview._consts import (
     CONST_NODEPOOL_MODE_USER,
     CONST_NODEPOOL_MODE_GATEWAY,
     CONST_NODEPOOL_MODE_MANAGEDSYSTEM,
+    CONST_NODEPOOL_MODE_MACHINES,
     CONST_NONE_UPGRADE_CHANNEL,
     CONST_NRG_LOCKDOWN_RESTRICTION_LEVEL_READONLY,
     CONST_NRG_LOCKDOWN_RESTRICTION_LEVEL_UNRESTRICTED,
@@ -265,6 +266,7 @@ node_mode_types = [
     CONST_NODEPOOL_MODE_USER,
     CONST_NODEPOOL_MODE_GATEWAY,
     CONST_NODEPOOL_MODE_MANAGEDSYSTEM,
+    CONST_NODEPOOL_MODE_MACHINES,
 ]
 node_os_skus_create = [
     CONST_OS_SKU_AZURELINUX,
@@ -638,7 +640,7 @@ def load_arguments(self, _):
             ),
         )
         c.argument(
-            "sku", is_preview=True, arg_type=get_enum_type(sku_names)
+            "sku", arg_type=get_enum_type(sku_names)
         )
         c.argument(
             "tier", arg_type=get_enum_type(sku_tiers), validator=validate_sku_tier
@@ -689,6 +691,12 @@ def load_arguments(self, _):
         c.argument(
             "azure_keyvault_kms_key_vault_resource_id",
             validator=validate_azure_keyvault_kms_key_vault_resource_id,
+        )
+        c.argument(
+            "kms_infrastructure_encryption",
+            arg_type=get_enum_type(["Enabled", "Disabled"]),
+            default="Disabled",
+            is_preview=True,
         )
         c.argument("http_proxy_config")
         c.argument(
@@ -1153,7 +1161,7 @@ def load_arguments(self, _):
             ),
         )
         c.argument(
-            "sku", is_preview=True, arg_type=get_enum_type(sku_names)
+            "sku", arg_type=get_enum_type(sku_names)
         )
         c.argument(
             "tier", arg_type=get_enum_type(sku_tiers), validator=validate_sku_tier
