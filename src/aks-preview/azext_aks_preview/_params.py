@@ -1982,7 +1982,11 @@ def load_arguments(self, _):
         c.argument("vnet_subnet_id", validator=validate_vnet_subnet_id)
         c.argument("pod_subnet_id", validator=validate_pod_subnet_id)
         c.argument("enable_node_public_ip", action="store_true")
-        c.argument("node_public_ip_prefix_id")
+        c.argument(
+            "node_public_ip_prefix_id",
+            options_list=["--node-public-ip-prefix-id"],
+            help="The resource ID of the node public IP prefix to use for the node public IPs.",
+        )
         c.argument(
             "node_public_ip_tags",
             arg_type=tags_type,
@@ -1992,8 +1996,9 @@ def load_arguments(self, _):
         # kubernetes setting
         c.argument(
             "kubernetes_version",
-            options_list=["--kubernetes-version", "-k"],
+            options_list=["--kubernetes-version"],
             validator=validate_k8s_version,
+            help="Version of Kubernetes to use for the machine.",
         )
 
     with self.argument_context("aks operation") as c:
