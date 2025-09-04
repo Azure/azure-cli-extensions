@@ -27,8 +27,12 @@ def aks_agent(
     no_echo_request=False,
     show_tool_output=False,
     refresh_toolsets=False,
+    status=False,
     no_aks_mcp=False,
 ):
+    # If only status is requested, display and return early
+    if status:
+        return aks_agent_status(cmd)
 
     aks_agent_internal(
         cmd,

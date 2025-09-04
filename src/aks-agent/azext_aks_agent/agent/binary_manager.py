@@ -311,7 +311,7 @@ class AksMcpBinaryManager:
 
         return binary_name
 
-    def _verify_binary_integrity(self, file_path: str, release_info: dict = None) -> bool:  # pylint: disable=too-many-locals,too-many-return-statements,too-many-nested-blocks
+    def _verify_binary_integrity(self, file_path: str, release_info: dict = None) -> bool:  # pylint: disable=too-many-locals,too-many-return-statements,too-many-nested-blocks,too-many-branches
         """
         Verify downloaded binary integrity using in-toto attestation files.
 

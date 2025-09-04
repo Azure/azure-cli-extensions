@@ -17,6 +17,7 @@ def load_arguments(self, _):
     with self.argument_context("aks agent") as c:
         c.positional(
             "prompt",
+            nargs='?',
             help="Ask any question and answer using available tools.",
         )
         c.argument(
@@ -76,6 +77,12 @@ def load_arguments(self, _):
             "refresh_toolsets",
             help="Refresh the toolsets status.",
             action="store_true",
+        )
+        c.argument(
+            "status",
+            options_list=["--status"],
+            action="store_true",
+            help="Show AKS agent configuration and status information.",
         )
         c.argument(
             "no_aks_mcp",

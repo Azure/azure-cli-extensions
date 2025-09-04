@@ -48,6 +48,9 @@ helps[
         - name: --refresh-toolsets
           type: bool
           short-summary: Refresh the toolsets status.
+        - name: --status
+          type: bool
+          short-summary: Show AKS agent configuration and status information.
         - name: --no-aks-mcp
           type: bool
           short-summary: Disable AKS MCP integration and use traditional toolsets.
@@ -75,6 +78,8 @@ helps[
           text: az aks agent "What is the status of my cluster?" --no-echo-request --model azure/my-gpt4.1-deployment
         - name: Refresh toolsets to get the latest available tools
           text: az aks agent "What is the status of my cluster?" --refresh-toolsets --model azure/my-gpt4.1-deployment
+        - name: Show agent status (MCP readiness)
+          text: az aks agent --status
         - name: Run agent with config file
           text: |
             az aks agent "Check kubernetes pod resource usage" --config-file /path/to/custom.yaml
@@ -106,16 +111,4 @@ helps[
               aks/core:
                 enabled: false
               ```
-"""
-
-helps[
-    "aks agent status"
-] = """
-    type: command
-    short-summary: Show AKS agent configuration and readiness (MCP binary, server, and mode).
-    long-summary: |-
-      Displays MCP binary availability and version, MCP server running/healthy state (if applicable), and overall mode.
-    examples:
-        - name: Show agent status
-          text: az aks agent status
 """
