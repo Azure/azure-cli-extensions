@@ -2551,6 +2551,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 "name": aks_name,
                 "node_pool_name": node_pool_name,
                 "ssh_key_value": self.generate_ssh_keys(),
+                "machine_name": machine_name,
             }
         )
         show_cmd = (
@@ -2572,8 +2573,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             {
                 "resource_group": resource_group,
                 "location": resource_group_location,
-                #"name": aks_name,
-                "name": "testmc7",
+                "name": aks_name,
                 "ssh_key_value": self.generate_ssh_keys(),
             }
         )
@@ -2590,8 +2590,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.kwargs.update(
             {
                 "resource_group": resource_group,
-                #"name": aks_name,
-                "name": "testmc7",
+                "name": aks_name,
                 "node_pool_name": node_pool_name,
                 "ssh_key_value": self.generate_ssh_keys(),
                 "machine_name": "machinetest",
