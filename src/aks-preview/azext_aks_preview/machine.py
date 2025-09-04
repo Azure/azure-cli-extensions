@@ -4,6 +4,7 @@ from azure.cli.core.azclierror import RequiredArgumentMissingError
 
 from azure.cli.core.util import sdk_no_wait
 
+
 def add_machine(cmd, client, raw_parameters, no_wait):
     resource_group_name = raw_parameters.get("resource_group_name")
     cluster_name = raw_parameters.get("cluster_name")
@@ -21,6 +22,7 @@ def add_machine(cmd, client, raw_parameters, no_wait):
         machine_name,
         machine,
     )
+
 
 def constructMachine(cmd, raw_parameters, machine_name):
     machine_name = raw_parameters.get("machine_name")
@@ -44,7 +46,7 @@ def constructMachine(cmd, raw_parameters, machine_name):
         operating_system=set_machine_os_profile(cmd, raw_parameters)
     )
     Machine = cmd.get_models(
-        "Machine", 
+        "Machine",
         resource_type=CUSTOM_MGMT_AKS_PREVIEW,
         operation_group="machines"
     )
@@ -54,6 +56,7 @@ def constructMachine(cmd, raw_parameters, machine_name):
         properties=machineProperties
     )
     return machine
+
 
 def set_machine_hardware_profile(cmd, raw_parameters):
     vm_size = raw_parameters.get("vm_size")
@@ -70,6 +73,7 @@ def set_machine_hardware_profile(cmd, raw_parameters):
         vm_size=vm_size
     )
     return machine_hardware_profile
+
 
 def set_machine_network(cmd, raw_parameters):
     MachineNetworkProperties = cmd.get_models(
@@ -91,6 +95,7 @@ def set_machine_network(cmd, raw_parameters):
     )
     return machineNetworkProperties
 
+
 def set_machine_kubernetes_profile(cmd, raw_parameters):
     kubernetes_version = raw_parameters.get("kubernetes_version")
     MachineKubernetesProfile = cmd.get_models(
@@ -102,6 +107,7 @@ def set_machine_kubernetes_profile(cmd, raw_parameters):
         orchestrator_version=kubernetes_version
     )
     return machineKubernetesProfile
+
 
 def set_machine_os_profile(cmd, raw_parameters):
     MachineOSProfile = cmd.get_models(

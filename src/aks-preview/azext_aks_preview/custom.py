@@ -2073,6 +2073,7 @@ def aks_machine_list(cmd, client, resource_group_name, cluster_name, nodepool_na
 def aks_machine_show(cmd, client, resource_group_name, cluster_name, nodepool_name, machine_name):
     return client.get(resource_group_name, cluster_name, nodepool_name, machine_name)
 
+
 # pylint: disable=unused-argument
 def aks_machine_add(
     cmd,
@@ -2107,10 +2108,11 @@ def aks_machine_add(
         raise ClientRequestError(
             f"Machine '{machine_name}' already exists. Please use 'az aks machine update' to update it."
         )
-    
+
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
     return add_machine(cmd, client, raw_parameters, no_wait)
+
 
 def aks_addon_list_available():
     available_addons = []

@@ -2399,7 +2399,7 @@ helps['aks machine add'] = """
        - name: --zones -z
          type: string array
          short-summary: Space-separated list of availability zones where a machine will be placed.
-        - name: --priority
+       - name: --priority
          type: string
          short-summary: The priority of the machine.
        - name: --tags
