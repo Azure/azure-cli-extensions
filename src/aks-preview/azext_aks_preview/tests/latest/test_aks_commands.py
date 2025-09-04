@@ -4156,8 +4156,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         machine_list = self.cmd(list_cmd).get_output_in_json()
         assert len(machine_list) == 4
         aks_machine_list_table_format(machine_list)
-        # delete machinesmachine_list
-        machine_name1 = [0]["name"]
+        # delete machines
+        machine_name1 = machine_list[0]["name"]
         machine_name2 = machine_list[2]["name"]
         self.kwargs.update(
             {
