@@ -115,6 +115,9 @@ from azext_aks_preview.managednamespace import (
     aks_managed_namespace_add,
     aks_managed_namespace_update,
 )
+from azext_aks_preview.machine import (
+    add_machine,
+)
 from azure.cli.command_modules.acs._helpers import (
     get_user_assigned_identity_by_resource_id
 )
@@ -2069,6 +2072,7 @@ def aks_machine_list(cmd, client, resource_group_name, cluster_name, nodepool_na
 def aks_machine_show(cmd, client, resource_group_name, cluster_name, nodepool_name, machine_name):
     return client.get(resource_group_name, cluster_name, nodepool_name, machine_name)
 
+# pylint: disable=unused-argument
 def aks_machine_add(
     cmd,
     client,
@@ -2081,7 +2085,8 @@ def aks_machine_add(
     priority=None,
     os_type=None,
     os_sku=None,
-    enable_fips=False,
+    enable_fips_image=False,
+    disable_fips_image=False,
     vnet_subnet_id=None,
     pod_subnet_id=None,
     enable_node_public_ip=False,
@@ -2090,7 +2095,6 @@ def aks_machine_add(
     vm_size=None,
     kubernetes_version=None,
     no_wait=False,
-    aks_custom_headers=None,
 ):
     existedMachine = None
     try:
@@ -2105,20 +2109,29 @@ def aks_machine_add(
     
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
-    Machine = cmd.get_models(
+    return add_machine(cmd, client, raw_parameters, no_wait)
+    '''Machine = cmd.get_models(
         "Machine", 
         resource_type=CUSTOM_MGMT_AKS_PREVIEW,
         operation_group="machines"
     )
     machine_name = raw_parameters.get("machine_name")
+    if machine_name is None:
+        raise RequiredArgumentMissingError(
+            "Please specify --machine-name."
+        )
     vm_size = raw_parameters.get("vm_size")
+    if vm_size is None:
+        raise RequiredArgumentMissingError(
+            "Please specify --vm-size."
+        )
 
     MachineProperties = cmd.get_models(
         "MachineProperties",
         resource_type=CUSTOM_MGMT_AKS_PREVIEW,
         operation_group="machines"
-    )
-    MachineNetworkProperties = cmd.get_models(
+    )'''
+    '''MachineNetworkProperties = cmd.get_models(
         "MachineNetworkProperties",
         resource_type=CUSTOM_MGMT_AKS_PREVIEW,
         operation_group="machines"
@@ -2157,6 +2170,13 @@ def aks_machine_add(
         resource_type=CUSTOM_MGMT_AKS_PREVIEW,
         operation_group="machines"
     )
+    os_type = raw_parameters.get("os_type")
+    os_sku = raw_parameters.get("os_sku")
+    enable_fips = False
+    if raw_parameters.get("enable_fips_image"):
+        enable_fips = True
+    if raw_parameters.get("disable_fips_image"):
+        enable_fips = False
     machineOSProfile = MachineOSProfile(
         os_type=os_type,
         os_sku=os_sku,
@@ -2168,13 +2188,12 @@ def aks_machine_add(
     machine.properties = MachineProperties(
         tags=tags,
         priority=priority,
-        network=machineNetworkProperties,
-        hardware=machine_hardware_profile,
-        kubernetes=machineKubernetesProfile,
-        operating_system=machineOSProfile
+        network=set_machine_network(cmd, raw_parameters),
+        hardware=set_machine_hardware_profile(cmd, raw_parameters),
+        kubernetes=set_machine_kubernetes_profile(cmd, raw_parameters),
+        operating_system=set_machine_os_profile(cmd, raw_parameters)
     )
 
-    headers = get_aks_custom_headers(aks_custom_headers)
     return sdk_no_wait(
         no_wait,
         client.begin_create_or_update,
@@ -2183,10 +2202,7 @@ def aks_machine_add(
         nodepool_name,
         machine_name,
         machine,
-        headers=headers,
-    )
-    
-
+    )'''
 
 def aks_addon_list_available():
     available_addons = []

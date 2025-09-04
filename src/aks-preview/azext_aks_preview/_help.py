@@ -2385,28 +2385,55 @@ helps['aks machine add'] = """
    parameters:
        - name: --cluster-name
          type: string
-         short-summary: Name of the managed cluster
+         short-summary: Name of the managed cluster.
        - name: --nodepool-name
          type: string
-         short-summary: Name of the agentpool of a managed cluster
+         short-summary: Name of the agentpool of a managed cluster.
        - name: --machine-name
          type: string
-         short-summary: Host name of the machine
+         short-summary: Host name of the machine.
        - name: --zones -z
          type: string array
-         short-summary: Space-separated list of availability zones where a machine will be placed
+         short-summary: Space-separated list of availability zones where a machine will be placed.
+        - name: --priority
+         type: string
+         short-summary: The priority of the machine.
+       - name: --tags
+         type: string
+         short-summary: The tags of the machine.
        - name: --vm-size
          type: string
          short-summary: The size of the machine
        - name: --os-type
          type: string
-         short-summary: The operating system type of the machine
+         short-summary: The operating system type of the machine.
        - name: --os-sku
          type: string
-         short-summary: The os-sku of the agent node pool
+         short-summary: The os-sku of the agent node pool.
        - name: --kubernetes-version
          type: string
          short-summary: Version of Kubernetes to use for creating the machine, such as "1.7.12" or "1.8.7".
+       - name: --enable-fips-image
+         type: bool
+         short-summary: Switch to use FIPS-enabled OS on the machine.
+       - name: --disable-fips-image
+         type: bool
+         short-summary: Switch to use non-FIPS-enabled OS on the machine.
+       - name: --vnet-subnet-id
+         type: string
+         short-summary: The ID of a subnet in an existing VNet into which to deploy the machine.
+       - name: --pod-subnet-id
+         type: string
+         short-summary: The ID of a subnet in an existing VNet into which to assign pods in the machine (requires azure network-plugin).
+       - name: --enable-node-public-ip
+         type: bool
+         short-summary: Enable the machine public IP.
+       - name: --node-public-ip-prefix-id
+         type: string
+         short-summary: Public IP prefix ID used to assign public IPs to the machine.
+       - name: --node-public-ip-tags
+         type: string
+         short-summary: The ipTags of the machine public IPs.
 """
 
 helps['aks machine list'] = """
