@@ -76,6 +76,20 @@ class Create(AAZCommand):
                 pattern="^\\S.{0,62}\\S$|^\\S$",
             ),
         )
+        _args_schema.project_id = AAZStrArg(
+            options=["--project-id"],
+            help="The ID of the project this role belongs to",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-z0-9-]{1,60}$",
+            ),
+        )
+        _args_schema.branch_id = AAZStrArg(
+            options=["--branch-id"],
+            help="The ID of the branch this role belongs to",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-z0-9-]{1,60}$",
+            ),
+        )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
@@ -87,11 +101,6 @@ class Create(AAZCommand):
             options=["--attributes"],
             arg_group="Properties",
             help="Additional attributes for the entity",
-        )
-        _args_schema.branch_id = AAZStrArg(
-            options=["--branch-id"],
-            arg_group="Properties",
-            help="The ID of the branch this role belongs to",
         )
         _args_schema.entity_name = AAZStrArg(
             options=["--entity-name"],
@@ -214,7 +223,7 @@ class Create(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "projectName", self.ctx.args.project_name,
+                    "projectName", self.ctx.args.project_id if self.ctx.args.project_id else self.ctx.args.project_name,
                     required=True,
                 ),
                 **self.serialize_url_param(

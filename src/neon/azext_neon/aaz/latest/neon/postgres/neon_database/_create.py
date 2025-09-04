@@ -76,6 +76,13 @@ class Create(AAZCommand):
                 pattern="^\\S.{0,62}\\S$|^\\S$",
             ),
         )
+        _args_schema.project_id = AAZStrArg(
+            options=["--project-id"],
+            help="The ID of the project this database belongs to",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-z0-9-]{1,60}$",
+            ),
+        )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
