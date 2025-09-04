@@ -19,9 +19,9 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-09-01",
+        "version": "2024-11-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dashboard/grafana/{}/managedprivateendpoints", "2023-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dashboard/grafana/{}/managedprivateendpoints", "2024-11-01-preview"],
         ]
     }
 
@@ -49,6 +49,9 @@ class List(AAZCommand):
             options=["--workspace-name"],
             help="The workspace name of Azure Managed Grafana.",
             required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z][a-z0-9A-Z-]{0,28}[a-z0-9A-Z]$",
+            ),
         )
         return cls._args_schema
 
@@ -118,7 +121,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-09-01",
+                    "api-version", "2024-11-01-preview",
                     required=True,
                 ),
             }
@@ -154,7 +157,9 @@ class List(AAZCommand):
             _schema_on_200.next_link = AAZStrType(
                 serialized_name="nextLink",
             )
-            _schema_on_200.value = AAZListType()
+            _schema_on_200.value = AAZListType(
+                flags={"required": True},
+            )
 
             value = cls._schema_on_200.value
             value.Element = AAZObjectType()

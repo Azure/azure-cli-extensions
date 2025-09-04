@@ -17,14 +17,14 @@ from azure.cli.core.aaz import *
 class Create(AAZCommand):
     """Create a workspace for Grafana resource. This API is idempotent, so user can either create a new grafana or update an existing grafana.
 
-    :example: create Azure Managed Grafana resource with Standard Sku and public network access enabled
-        az grafana create --resource-group myResourceGroup --workspace-name myWorkspace --sku-tier Standard --public-network-access Enabled
+    :example: create Azure Managed Grafana resource with public network access enabled
+        az grafana create --resource-group myResourceGroup --workspace-name myWorkspace --public-network-access Enabled
     """
 
     _aaz_info = {
-        "version": "2023-09-01",
+        "version": "2024-11-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dashboard/grafana/{}", "2023-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dashboard/grafana/{}", "2024-11-01-preview"],
         ]
     }
 
@@ -52,6 +52,9 @@ class Create(AAZCommand):
             options=["-n", "--name", "--workspace-name"],
             help="The workspace name of Azure Managed Grafana.",
             required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z][a-z0-9A-Z-]{0,28}[a-z0-9A-Z]$",
+            ),
         )
         _args_schema.identity = AAZObjectArg(
             options=["--identity"],
@@ -69,16 +72,29 @@ class Create(AAZCommand):
         )
 
         identity = cls._args_schema.identity
+        identity.mi_system_assigned = AAZStrArg(
+            options=["system-assigned", "mi-system-assigned"],
+            help="Set the system managed identity.",
+            blank="True",
+        )
         identity.type = AAZStrArg(
             options=["type"],
             help="Type of managed service identity (where both SystemAssigned and UserAssigned types are allowed).",
             required=True,
             enum={"None": "None", "SystemAssigned": "SystemAssigned", "SystemAssigned,UserAssigned": "SystemAssigned,UserAssigned", "UserAssigned": "UserAssigned"},
         )
+        identity.mi_user_assigned = AAZListArg(
+            options=["user-assigned", "mi-user-assigned"],
+            help="Set the user managed identities.",
+            blank=[],
+        )
         identity.user_assigned_identities = AAZDictArg(
             options=["user-assigned-identities"],
             help="The set of user assigned identities associated with the resource. The userAssignedIdentities dictionary keys will be ARM resource ids in the form: '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}. The dictionary values can be empty objects ({}) in requests.",
         )
+
+        mi_user_assigned = cls._args_schema.identity.mi_user_assigned
+        mi_user_assigned.Element = AAZStrArg()
 
         user_assigned_identities = cls._args_schema.identity.user_assigned_identities
         user_assigned_identities.Element = AAZObjectArg(
@@ -92,7 +108,7 @@ class Create(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.service_account = AAZStrArg(
-            options=["--api-key", "--service-account"],
+            options=["--service-account"],
             arg_group="Properties",
             help="The api key setting of the Grafana instance.",
             default="Disabled",
@@ -123,12 +139,6 @@ class Create(AAZCommand):
             help="The zone redundancy setting of the Grafana instance.",
             default="Disabled",
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
-        )
-        _args_schema.sku_tier = AAZStrArg(
-            options=["--sku-tier"],
-            arg_group="Properties",
-            help="The Sku of the grafana resource.",
-            default="Standard",
         )
         return cls._args_schema
 
@@ -213,7 +223,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-09-01",
+                    "api-version", "2024-11-01-preview",
                     required=True,
                 ),
             }
@@ -238,7 +248,7 @@ class Create(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("identity", AAZObjectType, ".identity")
+            _builder.set_prop("identity", AAZIdentityObjectType, ".identity")
             _builder.set_prop("location", AAZStrType, ".location")
             _builder.set_prop("properties", AAZObjectType)
             _builder.set_prop("sku", AAZObjectType)
@@ -248,10 +258,16 @@ class Create(AAZCommand):
             if identity is not None:
                 identity.set_prop("type", AAZStrType, ".type", typ_kwargs={"flags": {"required": True}})
                 identity.set_prop("userAssignedIdentities", AAZDictType, ".user_assigned_identities")
+                identity.set_prop("userAssigned", AAZListType, ".mi_user_assigned", typ_kwargs={"flags": {"action": "create"}})
+                identity.set_prop("systemAssigned", AAZStrType, ".mi_system_assigned", typ_kwargs={"flags": {"action": "create"}})
 
             user_assigned_identities = _builder.get(".identity.userAssignedIdentities")
             if user_assigned_identities is not None:
                 user_assigned_identities.set_elements(AAZObjectType, ".")
+
+            user_assigned = _builder.get(".identity.userAssigned")
+            if user_assigned is not None:
+                user_assigned.set_elements(AAZStrType, ".")
 
             properties = _builder.get(".properties")
             if properties is not None:
@@ -260,10 +276,6 @@ class Create(AAZCommand):
                 properties.set_prop("grafanaMajorVersion", AAZStrType, ".grafana_major_version")
                 properties.set_prop("publicNetworkAccess", AAZStrType, ".public_network_access")
                 properties.set_prop("zoneRedundancy", AAZStrType, ".zone_redundancy")
-
-            sku = _builder.get(".sku")
-            if sku is not None:
-                sku.set_prop("name", AAZStrType, ".sku_tier", typ_kwargs={"flags": {"required": True}})
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -292,7 +304,7 @@ class Create(AAZCommand):
             _schema_on_200_201.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200_201.identity = AAZObjectType()
+            _schema_on_200_201.identity = AAZIdentityObjectType()
             _schema_on_200_201.location = AAZStrType()
             _schema_on_200_201.name = AAZStrType(
                 flags={"read_only": True},
@@ -398,7 +410,18 @@ class Create(AAZCommand):
             )
 
             grafana_configurations = cls._schema_on_200_201.properties.grafana_configurations
+            grafana_configurations.security = AAZObjectType()
             grafana_configurations.smtp = AAZObjectType()
+            grafana_configurations.snapshots = AAZObjectType()
+            grafana_configurations.unified_alerting_screenshots = AAZObjectType(
+                serialized_name="unifiedAlertingScreenshots",
+            )
+            grafana_configurations.users = AAZObjectType()
+
+            security = cls._schema_on_200_201.properties.grafana_configurations.security
+            security.csrf_always_check = AAZBoolType(
+                serialized_name="csrfAlwaysCheck",
+            )
 
             smtp = cls._schema_on_200_201.properties.grafana_configurations.smtp
             smtp.enabled = AAZBoolType()
@@ -419,6 +442,24 @@ class Create(AAZCommand):
                 serialized_name="startTLSPolicy",
             )
             smtp.user = AAZStrType()
+
+            snapshots = cls._schema_on_200_201.properties.grafana_configurations.snapshots
+            snapshots.external_enabled = AAZBoolType(
+                serialized_name="externalEnabled",
+            )
+
+            unified_alerting_screenshots = cls._schema_on_200_201.properties.grafana_configurations.unified_alerting_screenshots
+            unified_alerting_screenshots.capture_enabled = AAZBoolType(
+                serialized_name="captureEnabled",
+            )
+
+            users = cls._schema_on_200_201.properties.grafana_configurations.users
+            users.editors_can_admin = AAZBoolType(
+                serialized_name="editorsCanAdmin",
+            )
+            users.viewers_can_edit = AAZBoolType(
+                serialized_name="viewersCanEdit",
+            )
 
             grafana_integrations = cls._schema_on_200_201.properties.grafana_integrations
             grafana_integrations.azure_monitor_workspace_integrations = AAZListType(

@@ -152,3 +152,8 @@ Release History
 * `az grafana folder list`: support nested folders
 * `az grafana folder show`: support nested folders
 * `az grafana backup`: include corresponding nested folders when individual folders are specified
+
+3.0.0
+++++++
+* `az grafana create`: remove SKU tier argument and API key argument
+* `az grafana update`: remove API key argument

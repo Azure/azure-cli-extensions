@@ -19,10 +19,10 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-09-01",
+        "version": "2024-11-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.dashboard/grafana", "2023-09-01"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dashboard/grafana", "2023-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.dashboard/grafana", "2024-11-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dashboard/grafana", "2024-11-01-preview"],
         ]
     }
 
@@ -48,12 +48,12 @@ class List(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        condition_0 = has_value(self.ctx.args.resource_group) and has_value(self.ctx.subscription_id)
-        condition_1 = has_value(self.ctx.subscription_id) and has_value(self.ctx.args.resource_group) is not True
+        condition_0 = has_value(self.ctx.subscription_id) and has_value(self.ctx.args.resource_group) is not True
+        condition_1 = has_value(self.ctx.args.resource_group) and has_value(self.ctx.subscription_id)
         if condition_0:
-            self.GrafanaListByResourceGroup(ctx=self.ctx)()
-        if condition_1:
             self.GrafanaList(ctx=self.ctx)()
+        if condition_1:
+            self.GrafanaListByResourceGroup(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -69,7 +69,7 @@ class List(AAZCommand):
         next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
         return result, next_link
 
-    class GrafanaListByResourceGroup(AAZHttpOperation):
+    class GrafanaList(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -83,7 +83,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Dashboard/grafana",
+                "/subscriptions/{subscriptionId}/providers/Microsoft.Dashboard/grafana",
                 **self.url_parameters
             )
 
@@ -99,10 +99,6 @@ class List(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "resourceGroupName", self.ctx.args.resource_group,
-                    required=True,
-                ),
-                **self.serialize_url_param(
                     "subscriptionId", self.ctx.subscription_id,
                     required=True,
                 ),
@@ -113,7 +109,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-09-01",
+                    "api-version", "2024-11-01-preview",
                     required=True,
                 ),
             }
@@ -149,7 +145,9 @@ class List(AAZCommand):
             _schema_on_200.next_link = AAZStrType(
                 serialized_name="nextLink",
             )
-            _schema_on_200.value = AAZListType()
+            _schema_on_200.value = AAZListType(
+                flags={"required": True},
+            )
 
             value = cls._schema_on_200.value
             value.Element = AAZObjectType()
@@ -158,7 +156,7 @@ class List(AAZCommand):
             _element.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.identity = AAZObjectType()
+            _element.identity = AAZIdentityObjectType()
             _element.location = AAZStrType()
             _element.name = AAZStrType(
                 flags={"read_only": True},
@@ -264,7 +262,18 @@ class List(AAZCommand):
             )
 
             grafana_configurations = cls._schema_on_200.value.Element.properties.grafana_configurations
+            grafana_configurations.security = AAZObjectType()
             grafana_configurations.smtp = AAZObjectType()
+            grafana_configurations.snapshots = AAZObjectType()
+            grafana_configurations.unified_alerting_screenshots = AAZObjectType(
+                serialized_name="unifiedAlertingScreenshots",
+            )
+            grafana_configurations.users = AAZObjectType()
+
+            security = cls._schema_on_200.value.Element.properties.grafana_configurations.security
+            security.csrf_always_check = AAZBoolType(
+                serialized_name="csrfAlwaysCheck",
+            )
 
             smtp = cls._schema_on_200.value.Element.properties.grafana_configurations.smtp
             smtp.enabled = AAZBoolType()
@@ -285,6 +294,24 @@ class List(AAZCommand):
                 serialized_name="startTLSPolicy",
             )
             smtp.user = AAZStrType()
+
+            snapshots = cls._schema_on_200.value.Element.properties.grafana_configurations.snapshots
+            snapshots.external_enabled = AAZBoolType(
+                serialized_name="externalEnabled",
+            )
+
+            unified_alerting_screenshots = cls._schema_on_200.value.Element.properties.grafana_configurations.unified_alerting_screenshots
+            unified_alerting_screenshots.capture_enabled = AAZBoolType(
+                serialized_name="captureEnabled",
+            )
+
+            users = cls._schema_on_200.value.Element.properties.grafana_configurations.users
+            users.editors_can_admin = AAZBoolType(
+                serialized_name="editorsCanAdmin",
+            )
+            users.viewers_can_edit = AAZBoolType(
+                serialized_name="viewersCanEdit",
+            )
 
             grafana_integrations = cls._schema_on_200.value.Element.properties.grafana_integrations
             grafana_integrations.azure_monitor_workspace_integrations = AAZListType(
@@ -374,7 +401,7 @@ class List(AAZCommand):
 
             return cls._schema_on_200
 
-    class GrafanaList(AAZHttpOperation):
+    class GrafanaListByResourceGroup(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -388,7 +415,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/providers/Microsoft.Dashboard/grafana",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Dashboard/grafana",
                 **self.url_parameters
             )
 
@@ -404,6 +431,10 @@ class List(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
+                    "resourceGroupName", self.ctx.args.resource_group,
+                    required=True,
+                ),
+                **self.serialize_url_param(
                     "subscriptionId", self.ctx.subscription_id,
                     required=True,
                 ),
@@ -414,7 +445,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-09-01",
+                    "api-version", "2024-11-01-preview",
                     required=True,
                 ),
             }
@@ -450,7 +481,9 @@ class List(AAZCommand):
             _schema_on_200.next_link = AAZStrType(
                 serialized_name="nextLink",
             )
-            _schema_on_200.value = AAZListType()
+            _schema_on_200.value = AAZListType(
+                flags={"required": True},
+            )
 
             value = cls._schema_on_200.value
             value.Element = AAZObjectType()
@@ -459,7 +492,7 @@ class List(AAZCommand):
             _element.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.identity = AAZObjectType()
+            _element.identity = AAZIdentityObjectType()
             _element.location = AAZStrType()
             _element.name = AAZStrType(
                 flags={"read_only": True},
@@ -565,7 +598,18 @@ class List(AAZCommand):
             )
 
             grafana_configurations = cls._schema_on_200.value.Element.properties.grafana_configurations
+            grafana_configurations.security = AAZObjectType()
             grafana_configurations.smtp = AAZObjectType()
+            grafana_configurations.snapshots = AAZObjectType()
+            grafana_configurations.unified_alerting_screenshots = AAZObjectType(
+                serialized_name="unifiedAlertingScreenshots",
+            )
+            grafana_configurations.users = AAZObjectType()
+
+            security = cls._schema_on_200.value.Element.properties.grafana_configurations.security
+            security.csrf_always_check = AAZBoolType(
+                serialized_name="csrfAlwaysCheck",
+            )
 
             smtp = cls._schema_on_200.value.Element.properties.grafana_configurations.smtp
             smtp.enabled = AAZBoolType()
@@ -586,6 +630,24 @@ class List(AAZCommand):
                 serialized_name="startTLSPolicy",
             )
             smtp.user = AAZStrType()
+
+            snapshots = cls._schema_on_200.value.Element.properties.grafana_configurations.snapshots
+            snapshots.external_enabled = AAZBoolType(
+                serialized_name="externalEnabled",
+            )
+
+            unified_alerting_screenshots = cls._schema_on_200.value.Element.properties.grafana_configurations.unified_alerting_screenshots
+            unified_alerting_screenshots.capture_enabled = AAZBoolType(
+                serialized_name="captureEnabled",
+            )
+
+            users = cls._schema_on_200.value.Element.properties.grafana_configurations.users
+            users.editors_can_admin = AAZBoolType(
+                serialized_name="editorsCanAdmin",
+            )
+            users.viewers_can_edit = AAZBoolType(
+                serialized_name="viewersCanEdit",
+            )
 
             grafana_integrations = cls._schema_on_200.value.Element.properties.grafana_integrations
             grafana_integrations.azure_monitor_workspace_integrations = AAZListType(
