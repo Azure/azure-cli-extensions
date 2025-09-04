@@ -63,7 +63,11 @@ class GrafanaCreate(_GrafanaCreate):
             args.identity = {"type": "SystemAssigned"}
 
         if args.sku_tier and str(args.sku_tier).lower() == "essential":
-            raise ArgumentUsageError("Essential SKU resource creation is not supported.")
+            raise ArgumentUsageError(
+                "Creation of Grafana resources with the 'Essential' SKU tier is not supported. "
+                "Supported SKU tiers are: 'Standard'. "
+                "Please specify a supported SKU tier using the '--sku-tier' parameter."
+            )
 
     # override the output method to create role assignments after instance creation
     def _output(self, *args, **kwargs):
