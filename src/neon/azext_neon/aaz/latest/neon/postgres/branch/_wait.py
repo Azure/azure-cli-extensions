@@ -40,9 +40,9 @@ class Wait(AAZWaitCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.branch_id = AAZStrArg(
-            options=["--branch-id"],
-            help="Id of the Neon branch",
+        _args_schema.branch_name = AAZStrArg(
+            options=["-n", "--name", "--branch-name"],
+            help="Name of the Neon branch.",
             required=True,
             id_part="child_name_2",
             fmt=AAZStrArgFormat(
@@ -63,9 +63,9 @@ class Wait(AAZWaitCommand):
                 msg="Please provide Neon Organization name:",
             ),
         )
-        _args_schema.project_id = AAZStrArg(
-            options=["--project-id"],
-            help="Id of the Neon project",
+        _args_schema.project_name = AAZStrArg(
+            options=["--project-name"],
+            help="Name of the Neon project.",
             required=True,
             id_part="child_name_1",
             fmt=AAZStrArgFormat(
@@ -125,7 +125,7 @@ class Wait(AAZWaitCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "branchName", self.ctx.args.branch_id,
+                    "branchName", self.ctx.args.branch_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -133,7 +133,7 @@ class Wait(AAZWaitCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "projectName", self.ctx.args.project_id,
+                    "projectName", self.ctx.args.project_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -182,179 +182,7 @@ class Wait(AAZWaitCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-
-            _schema_on_200 = cls._schema_on_200
-            _schema_on_200.id = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200.name = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200.properties = AAZObjectType()
-            _schema_on_200.system_data = AAZObjectType(
-                serialized_name="systemData",
-                flags={"read_only": True},
-            )
-            _schema_on_200.type = AAZStrType(
-                flags={"read_only": True},
-            )
-
-            properties = cls._schema_on_200.properties
-            properties.attributes = AAZListType()
-            properties.created_at = AAZStrType(
-                serialized_name="createdAt",
-                flags={"read_only": True},
-            )
-            properties.database_name = AAZStrType(
-                serialized_name="databaseName",
-            )
-            properties.databases = AAZListType()
-            properties.endpoints = AAZListType()
-            properties.entity_id = AAZStrType(
-                serialized_name="entityId",
-                flags={"read_only": True},
-            )
-            properties.entity_name = AAZStrType(
-                serialized_name="entityName",
-            )
-            properties.parent_id = AAZStrType(
-                serialized_name="parentId",
-            )
-            properties.project_id = AAZStrType(
-                serialized_name="projectId",
-            )
-            properties.provisioning_state = AAZStrType(
-                serialized_name="provisioningState",
-                flags={"read_only": True},
-            )
-            properties.role_name = AAZStrType(
-                serialized_name="roleName",
-            )
-            properties.roles = AAZListType()
-
-            attributes = cls._schema_on_200.properties.attributes
-            attributes.Element = AAZObjectType()
-            _WaitHelper._build_schema_attributes_read(attributes.Element)
-
-            databases = cls._schema_on_200.properties.databases
-            databases.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.properties.databases.Element
-            _element.attributes = AAZListType()
-            _element.branch_id = AAZStrType(
-                serialized_name="branchId",
-            )
-            _element.created_at = AAZStrType(
-                serialized_name="createdAt",
-                flags={"read_only": True},
-            )
-            _element.entity_id = AAZStrType(
-                serialized_name="entityId",
-                flags={"read_only": True},
-            )
-            _element.entity_name = AAZStrType(
-                serialized_name="entityName",
-            )
-            _element.owner_name = AAZStrType(
-                serialized_name="ownerName",
-            )
-            _element.provisioning_state = AAZStrType(
-                serialized_name="provisioningState",
-                flags={"read_only": True},
-            )
-
-            attributes = cls._schema_on_200.properties.databases.Element.attributes
-            attributes.Element = AAZObjectType()
-            _WaitHelper._build_schema_attributes_read(attributes.Element)
-
-            endpoints = cls._schema_on_200.properties.endpoints
-            endpoints.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.properties.endpoints.Element
-            _element.attributes = AAZListType()
-            _element.branch_id = AAZStrType(
-                serialized_name="branchId",
-            )
-            _element.created_at = AAZStrType(
-                serialized_name="createdAt",
-                flags={"read_only": True},
-            )
-            _element.endpoint_type = AAZStrType(
-                serialized_name="endpointType",
-            )
-            _element.entity_id = AAZStrType(
-                serialized_name="entityId",
-                flags={"read_only": True},
-            )
-            _element.entity_name = AAZStrType(
-                serialized_name="entityName",
-            )
-            _element.project_id = AAZStrType(
-                serialized_name="projectId",
-            )
-            _element.provisioning_state = AAZStrType(
-                serialized_name="provisioningState",
-                flags={"read_only": True},
-            )
-
-            attributes = cls._schema_on_200.properties.endpoints.Element.attributes
-            attributes.Element = AAZObjectType()
-            _WaitHelper._build_schema_attributes_read(attributes.Element)
-
-            roles = cls._schema_on_200.properties.roles
-            roles.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.properties.roles.Element
-            _element.attributes = AAZListType()
-            _element.branch_id = AAZStrType(
-                serialized_name="branchId",
-            )
-            _element.created_at = AAZStrType(
-                serialized_name="createdAt",
-                flags={"read_only": True},
-            )
-            _element.entity_id = AAZStrType(
-                serialized_name="entityId",
-                flags={"read_only": True},
-            )
-            _element.entity_name = AAZStrType(
-                serialized_name="entityName",
-            )
-            _element.is_super_user = AAZBoolType(
-                serialized_name="isSuperUser",
-            )
-            _element.permissions = AAZListType()
-            _element.provisioning_state = AAZStrType(
-                serialized_name="provisioningState",
-                flags={"read_only": True},
-            )
-
-            attributes = cls._schema_on_200.properties.roles.Element.attributes
-            attributes.Element = AAZObjectType()
-            _WaitHelper._build_schema_attributes_read(attributes.Element)
-
-            permissions = cls._schema_on_200.properties.roles.Element.permissions
-            permissions.Element = AAZStrType()
-
-            system_data = cls._schema_on_200.system_data
-            system_data.created_at = AAZStrType(
-                serialized_name="createdAt",
-            )
-            system_data.created_by = AAZStrType(
-                serialized_name="createdBy",
-            )
-            system_data.created_by_type = AAZStrType(
-                serialized_name="createdByType",
-            )
-            system_data.last_modified_at = AAZStrType(
-                serialized_name="lastModifiedAt",
-            )
-            system_data.last_modified_by = AAZStrType(
-                serialized_name="lastModifiedBy",
-            )
-            system_data.last_modified_by_type = AAZStrType(
-                serialized_name="lastModifiedByType",
-            )
+            _WaitHelper._build_schema_branch_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
@@ -383,6 +211,199 @@ class _WaitHelper:
 
         _schema.name = cls._schema_attributes_read.name
         _schema.value = cls._schema_attributes_read.value
+
+    _schema_branch_read = None
+
+    @classmethod
+    def _build_schema_branch_read(cls, _schema):
+        if cls._schema_branch_read is not None:
+            _schema.id = cls._schema_branch_read.id
+            _schema.name = cls._schema_branch_read.name
+            _schema.properties = cls._schema_branch_read.properties
+            _schema.system_data = cls._schema_branch_read.system_data
+            _schema.type = cls._schema_branch_read.type
+            return
+
+        cls._schema_branch_read = _schema_branch_read = AAZObjectType()
+
+        branch_read = _schema_branch_read
+        branch_read.id = AAZStrType(
+            flags={"read_only": True},
+        )
+        branch_read.name = AAZStrType(
+            flags={"read_only": True},
+        )
+        branch_read.properties = AAZObjectType()
+        branch_read.system_data = AAZObjectType(
+            serialized_name="systemData",
+            flags={"read_only": True},
+        )
+        branch_read.type = AAZStrType(
+            flags={"read_only": True},
+        )
+
+        properties = _schema_branch_read.properties
+        properties.attributes = AAZListType()
+        properties.created_at = AAZStrType(
+            serialized_name="createdAt",
+            flags={"read_only": True},
+        )
+        properties.database_name = AAZStrType(
+            serialized_name="databaseName",
+        )
+        properties.databases = AAZListType()
+        properties.endpoints = AAZListType()
+        properties.entity_id = AAZStrType(
+            serialized_name="entityId",
+            flags={"read_only": True},
+        )
+        properties.entity_name = AAZStrType(
+            serialized_name="entityName",
+        )
+        properties.parent_id = AAZStrType(
+            serialized_name="parentId",
+        )
+        properties.project_id = AAZStrType(
+            serialized_name="projectId",
+        )
+        properties.provisioning_state = AAZStrType(
+            serialized_name="provisioningState",
+            flags={"read_only": True},
+        )
+        properties.role_name = AAZStrType(
+            serialized_name="roleName",
+        )
+        properties.roles = AAZListType()
+
+        attributes = _schema_branch_read.properties.attributes
+        attributes.Element = AAZObjectType()
+        cls._build_schema_attributes_read(attributes.Element)
+
+        databases = _schema_branch_read.properties.databases
+        databases.Element = AAZObjectType()
+
+        _element = _schema_branch_read.properties.databases.Element
+        _element.attributes = AAZListType()
+        _element.branch_id = AAZStrType(
+            serialized_name="branchId",
+        )
+        _element.created_at = AAZStrType(
+            serialized_name="createdAt",
+            flags={"read_only": True},
+        )
+        _element.entity_id = AAZStrType(
+            serialized_name="entityId",
+            flags={"read_only": True},
+        )
+        _element.entity_name = AAZStrType(
+            serialized_name="entityName",
+        )
+        _element.owner_name = AAZStrType(
+            serialized_name="ownerName",
+        )
+        _element.provisioning_state = AAZStrType(
+            serialized_name="provisioningState",
+            flags={"read_only": True},
+        )
+
+        attributes = _schema_branch_read.properties.databases.Element.attributes
+        attributes.Element = AAZObjectType()
+        cls._build_schema_attributes_read(attributes.Element)
+
+        endpoints = _schema_branch_read.properties.endpoints
+        endpoints.Element = AAZObjectType()
+
+        _element = _schema_branch_read.properties.endpoints.Element
+        _element.attributes = AAZListType()
+        _element.branch_id = AAZStrType(
+            serialized_name="branchId",
+        )
+        _element.created_at = AAZStrType(
+            serialized_name="createdAt",
+            flags={"read_only": True},
+        )
+        _element.endpoint_type = AAZStrType(
+            serialized_name="endpointType",
+        )
+        _element.entity_id = AAZStrType(
+            serialized_name="entityId",
+            flags={"read_only": True},
+        )
+        _element.entity_name = AAZStrType(
+            serialized_name="entityName",
+        )
+        _element.project_id = AAZStrType(
+            serialized_name="projectId",
+        )
+        _element.provisioning_state = AAZStrType(
+            serialized_name="provisioningState",
+            flags={"read_only": True},
+        )
+
+        attributes = _schema_branch_read.properties.endpoints.Element.attributes
+        attributes.Element = AAZObjectType()
+        cls._build_schema_attributes_read(attributes.Element)
+
+        roles = _schema_branch_read.properties.roles
+        roles.Element = AAZObjectType()
+
+        _element = _schema_branch_read.properties.roles.Element
+        _element.attributes = AAZListType()
+        _element.branch_id = AAZStrType(
+            serialized_name="branchId",
+        )
+        _element.created_at = AAZStrType(
+            serialized_name="createdAt",
+            flags={"read_only": True},
+        )
+        _element.entity_id = AAZStrType(
+            serialized_name="entityId",
+            flags={"read_only": True},
+        )
+        _element.entity_name = AAZStrType(
+            serialized_name="entityName",
+        )
+        _element.is_super_user = AAZBoolType(
+            serialized_name="isSuperUser",
+        )
+        _element.permissions = AAZListType()
+        _element.provisioning_state = AAZStrType(
+            serialized_name="provisioningState",
+            flags={"read_only": True},
+        )
+
+        attributes = _schema_branch_read.properties.roles.Element.attributes
+        attributes.Element = AAZObjectType()
+        cls._build_schema_attributes_read(attributes.Element)
+
+        permissions = _schema_branch_read.properties.roles.Element.permissions
+        permissions.Element = AAZStrType()
+
+        system_data = _schema_branch_read.system_data
+        system_data.created_at = AAZStrType(
+            serialized_name="createdAt",
+        )
+        system_data.created_by = AAZStrType(
+            serialized_name="createdBy",
+        )
+        system_data.created_by_type = AAZStrType(
+            serialized_name="createdByType",
+        )
+        system_data.last_modified_at = AAZStrType(
+            serialized_name="lastModifiedAt",
+        )
+        system_data.last_modified_by = AAZStrType(
+            serialized_name="lastModifiedBy",
+        )
+        system_data.last_modified_by_type = AAZStrType(
+            serialized_name="lastModifiedByType",
+        )
+
+        _schema.id = cls._schema_branch_read.id
+        _schema.name = cls._schema_branch_read.name
+        _schema.properties = cls._schema_branch_read.properties
+        _schema.system_data = cls._schema_branch_read.system_data
+        _schema.type = cls._schema_branch_read.type
 
 
 __all__ = ["Wait"]

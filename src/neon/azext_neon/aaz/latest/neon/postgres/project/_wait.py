@@ -54,9 +54,9 @@ class Wait(AAZWaitCommand):
                 msg="Please provide Neon Organization name:",
             ),
         )
-        _args_schema.project_id = AAZStrArg(
-            options=["--project-id"],
-            help="Id of the Neon project",
+        _args_schema.project_name = AAZStrArg(
+            options=["-n", "--name", "--project-name"],
+            help="Name of the Neon project.",
             required=True,
             id_part="child_name_1",
             fmt=AAZStrArgFormat(
@@ -120,7 +120,7 @@ class Wait(AAZWaitCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "projectName", self.ctx.args.project_id,
+                    "projectName", self.ctx.args.project_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -169,152 +169,7 @@ class Wait(AAZWaitCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-
-            _schema_on_200 = cls._schema_on_200
-            _schema_on_200.id = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200.name = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200.properties = AAZObjectType()
-            _schema_on_200.system_data = AAZObjectType(
-                serialized_name="systemData",
-                flags={"read_only": True},
-            )
-            _schema_on_200.type = AAZStrType(
-                flags={"read_only": True},
-            )
-
-            properties = cls._schema_on_200.properties
-            properties.attributes = AAZListType()
-            properties.branch = AAZObjectType()
-            properties.created_at = AAZStrType(
-                serialized_name="createdAt",
-                flags={"read_only": True},
-            )
-            properties.databases = AAZListType()
-            properties.default_endpoint_settings = AAZObjectType(
-                serialized_name="defaultEndpointSettings",
-            )
-            properties.endpoints = AAZListType()
-            properties.entity_id = AAZStrType(
-                serialized_name="entityId",
-                flags={"read_only": True},
-            )
-            properties.entity_name = AAZStrType(
-                serialized_name="entityName",
-            )
-            properties.history_retention = AAZIntType(
-                serialized_name="historyRetention",
-            )
-            properties.pg_version = AAZIntType(
-                serialized_name="pgVersion",
-            )
-            properties.provisioning_state = AAZStrType(
-                serialized_name="provisioningState",
-                flags={"read_only": True},
-            )
-            properties.region_id = AAZStrType(
-                serialized_name="regionId",
-            )
-            properties.roles = AAZListType()
-            properties.storage = AAZIntType()
-
-            attributes = cls._schema_on_200.properties.attributes
-            attributes.Element = AAZObjectType()
-            _WaitHelper._build_schema_attributes_read(attributes.Element)
-
-            branch = cls._schema_on_200.properties.branch
-            branch.attributes = AAZListType()
-            branch.created_at = AAZStrType(
-                serialized_name="createdAt",
-                flags={"read_only": True},
-            )
-            branch.database_name = AAZStrType(
-                serialized_name="databaseName",
-            )
-            branch.databases = AAZListType()
-            branch.endpoints = AAZListType()
-            branch.entity_id = AAZStrType(
-                serialized_name="entityId",
-                flags={"read_only": True},
-            )
-            branch.entity_name = AAZStrType(
-                serialized_name="entityName",
-            )
-            branch.parent_id = AAZStrType(
-                serialized_name="parentId",
-            )
-            branch.project_id = AAZStrType(
-                serialized_name="projectId",
-            )
-            branch.provisioning_state = AAZStrType(
-                serialized_name="provisioningState",
-                flags={"read_only": True},
-            )
-            branch.role_name = AAZStrType(
-                serialized_name="roleName",
-            )
-            branch.roles = AAZListType()
-
-            attributes = cls._schema_on_200.properties.branch.attributes
-            attributes.Element = AAZObjectType()
-            _WaitHelper._build_schema_attributes_read(attributes.Element)
-
-            databases = cls._schema_on_200.properties.branch.databases
-            databases.Element = AAZObjectType()
-            _WaitHelper._build_schema_neon_database_properties_read(databases.Element)
-
-            endpoints = cls._schema_on_200.properties.branch.endpoints
-            endpoints.Element = AAZObjectType()
-            _WaitHelper._build_schema_endpoint_properties_read(endpoints.Element)
-
-            roles = cls._schema_on_200.properties.branch.roles
-            roles.Element = AAZObjectType()
-            _WaitHelper._build_schema_neon_role_properties_read(roles.Element)
-
-            databases = cls._schema_on_200.properties.databases
-            databases.Element = AAZObjectType()
-            _WaitHelper._build_schema_neon_database_properties_read(databases.Element)
-
-            default_endpoint_settings = cls._schema_on_200.properties.default_endpoint_settings
-            default_endpoint_settings.autoscaling_limit_max_cu = AAZFloatType(
-                serialized_name="autoscalingLimitMaxCu",
-                flags={"required": True},
-            )
-            default_endpoint_settings.autoscaling_limit_min_cu = AAZFloatType(
-                serialized_name="autoscalingLimitMinCu",
-                flags={"required": True},
-            )
-
-            endpoints = cls._schema_on_200.properties.endpoints
-            endpoints.Element = AAZObjectType()
-            _WaitHelper._build_schema_endpoint_properties_read(endpoints.Element)
-
-            roles = cls._schema_on_200.properties.roles
-            roles.Element = AAZObjectType()
-            _WaitHelper._build_schema_neon_role_properties_read(roles.Element)
-
-            system_data = cls._schema_on_200.system_data
-            system_data.created_at = AAZStrType(
-                serialized_name="createdAt",
-            )
-            system_data.created_by = AAZStrType(
-                serialized_name="createdBy",
-            )
-            system_data.created_by_type = AAZStrType(
-                serialized_name="createdByType",
-            )
-            system_data.last_modified_at = AAZStrType(
-                serialized_name="lastModifiedAt",
-            )
-            system_data.last_modified_by = AAZStrType(
-                serialized_name="lastModifiedBy",
-            )
-            system_data.last_modified_by_type = AAZStrType(
-                serialized_name="lastModifiedByType",
-            )
+            _WaitHelper._build_schema_project_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
@@ -510,6 +365,172 @@ class _WaitHelper:
         _schema.is_super_user = cls._schema_neon_role_properties_read.is_super_user
         _schema.permissions = cls._schema_neon_role_properties_read.permissions
         _schema.provisioning_state = cls._schema_neon_role_properties_read.provisioning_state
+
+    _schema_project_read = None
+
+    @classmethod
+    def _build_schema_project_read(cls, _schema):
+        if cls._schema_project_read is not None:
+            _schema.id = cls._schema_project_read.id
+            _schema.name = cls._schema_project_read.name
+            _schema.properties = cls._schema_project_read.properties
+            _schema.system_data = cls._schema_project_read.system_data
+            _schema.type = cls._schema_project_read.type
+            return
+
+        cls._schema_project_read = _schema_project_read = AAZObjectType()
+
+        project_read = _schema_project_read
+        project_read.id = AAZStrType(
+            flags={"read_only": True},
+        )
+        project_read.name = AAZStrType(
+            flags={"read_only": True},
+        )
+        project_read.properties = AAZObjectType()
+        project_read.system_data = AAZObjectType(
+            serialized_name="systemData",
+            flags={"read_only": True},
+        )
+        project_read.type = AAZStrType(
+            flags={"read_only": True},
+        )
+
+        properties = _schema_project_read.properties
+        properties.attributes = AAZListType()
+        properties.branch = AAZObjectType()
+        properties.created_at = AAZStrType(
+            serialized_name="createdAt",
+            flags={"read_only": True},
+        )
+        properties.databases = AAZListType()
+        properties.default_endpoint_settings = AAZObjectType(
+            serialized_name="defaultEndpointSettings",
+        )
+        properties.endpoints = AAZListType()
+        properties.entity_id = AAZStrType(
+            serialized_name="entityId",
+            flags={"read_only": True},
+        )
+        properties.entity_name = AAZStrType(
+            serialized_name="entityName",
+        )
+        properties.history_retention = AAZIntType(
+            serialized_name="historyRetention",
+        )
+        properties.pg_version = AAZIntType(
+            serialized_name="pgVersion",
+        )
+        properties.provisioning_state = AAZStrType(
+            serialized_name="provisioningState",
+            flags={"read_only": True},
+        )
+        properties.region_id = AAZStrType(
+            serialized_name="regionId",
+        )
+        properties.roles = AAZListType()
+        properties.storage = AAZIntType()
+
+        attributes = _schema_project_read.properties.attributes
+        attributes.Element = AAZObjectType()
+        cls._build_schema_attributes_read(attributes.Element)
+
+        branch = _schema_project_read.properties.branch
+        branch.attributes = AAZListType()
+        branch.created_at = AAZStrType(
+            serialized_name="createdAt",
+            flags={"read_only": True},
+        )
+        branch.database_name = AAZStrType(
+            serialized_name="databaseName",
+        )
+        branch.databases = AAZListType()
+        branch.endpoints = AAZListType()
+        branch.entity_id = AAZStrType(
+            serialized_name="entityId",
+            flags={"read_only": True},
+        )
+        branch.entity_name = AAZStrType(
+            serialized_name="entityName",
+        )
+        branch.parent_id = AAZStrType(
+            serialized_name="parentId",
+        )
+        branch.project_id = AAZStrType(
+            serialized_name="projectId",
+        )
+        branch.provisioning_state = AAZStrType(
+            serialized_name="provisioningState",
+            flags={"read_only": True},
+        )
+        branch.role_name = AAZStrType(
+            serialized_name="roleName",
+        )
+        branch.roles = AAZListType()
+
+        attributes = _schema_project_read.properties.branch.attributes
+        attributes.Element = AAZObjectType()
+        cls._build_schema_attributes_read(attributes.Element)
+
+        databases = _schema_project_read.properties.branch.databases
+        databases.Element = AAZObjectType()
+        cls._build_schema_neon_database_properties_read(databases.Element)
+
+        endpoints = _schema_project_read.properties.branch.endpoints
+        endpoints.Element = AAZObjectType()
+        cls._build_schema_endpoint_properties_read(endpoints.Element)
+
+        roles = _schema_project_read.properties.branch.roles
+        roles.Element = AAZObjectType()
+        cls._build_schema_neon_role_properties_read(roles.Element)
+
+        databases = _schema_project_read.properties.databases
+        databases.Element = AAZObjectType()
+        cls._build_schema_neon_database_properties_read(databases.Element)
+
+        default_endpoint_settings = _schema_project_read.properties.default_endpoint_settings
+        default_endpoint_settings.autoscaling_limit_max_cu = AAZFloatType(
+            serialized_name="autoscalingLimitMaxCu",
+            flags={"required": True},
+        )
+        default_endpoint_settings.autoscaling_limit_min_cu = AAZFloatType(
+            serialized_name="autoscalingLimitMinCu",
+            flags={"required": True},
+        )
+
+        endpoints = _schema_project_read.properties.endpoints
+        endpoints.Element = AAZObjectType()
+        cls._build_schema_endpoint_properties_read(endpoints.Element)
+
+        roles = _schema_project_read.properties.roles
+        roles.Element = AAZObjectType()
+        cls._build_schema_neon_role_properties_read(roles.Element)
+
+        system_data = _schema_project_read.system_data
+        system_data.created_at = AAZStrType(
+            serialized_name="createdAt",
+        )
+        system_data.created_by = AAZStrType(
+            serialized_name="createdBy",
+        )
+        system_data.created_by_type = AAZStrType(
+            serialized_name="createdByType",
+        )
+        system_data.last_modified_at = AAZStrType(
+            serialized_name="lastModifiedAt",
+        )
+        system_data.last_modified_by = AAZStrType(
+            serialized_name="lastModifiedBy",
+        )
+        system_data.last_modified_by_type = AAZStrType(
+            serialized_name="lastModifiedByType",
+        )
+
+        _schema.id = cls._schema_project_read.id
+        _schema.name = cls._schema_project_read.name
+        _schema.properties = cls._schema_project_read.properties
+        _schema.system_data = cls._schema_project_read.system_data
+        _schema.type = cls._schema_project_read.type
 
 
 __all__ = ["Wait"]
