@@ -173,6 +173,7 @@ class MCPManager:
                 start_time = time.time()
                 timeout = 8.0
                 check_interval = 0.1
+                last_log_time = start_time  # limit verbose logs to once every ~2 seconds
 
                 while (time.time() - start_time) < timeout:
                     time.sleep(check_interval)
@@ -197,10 +198,15 @@ class MCPManager:
                             )
                         return
 
-                    # Debug: Check every 2 seconds in verbose mode
-                    if self.verbose and (time.time() - start_time) % 2.0 < check_interval:
-                        elapsed = time.time() - start_time
-                        ProgressReporter.show_status_message(f"Waiting for graceful shutdown... {elapsed:.1f}s", "info")
+                    # Debug: emit a message at most once every ~2 seconds in verbose mode
+                    if self.verbose:
+                        now = time.time()
+                        if (now - last_log_time) >= 2.0:
+                            elapsed = now - start_time
+                            ProgressReporter.show_status_message(
+                                f"Waiting for graceful shutdown... {elapsed:.1f}s", "info"
+                            )
+                            last_log_time = now
 
                 # If we get here, timeout was reached and process might still be running
                 try:
