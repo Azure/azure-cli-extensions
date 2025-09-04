@@ -2385,7 +2385,7 @@ helps['aks machine'] = """
 
 helps['aks machine add'] = """
    type: command
-   short-summary: Add a machine to the spcified node pool
+   short-summary: Add a machine to the specified node pool
    parameters:
        - name: --cluster-name
          type: string
