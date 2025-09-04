@@ -65,11 +65,13 @@ class Create(AAZCommand):
             options=["--capabilities"],
             arg_group="Properties",
             help="List of Capabilities",
+            required=True
         )
         _args_schema.hierarchies = AAZListArg(
             options=["--hierarchies"],
             arg_group="Properties",
             help="List of Hierarchies",
+            required=True
         )
 
         capabilities = cls._args_schema.capabilities

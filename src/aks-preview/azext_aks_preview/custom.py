@@ -612,6 +612,7 @@ def aks_create(
     azure_keyvault_kms_key_id=None,
     azure_keyvault_kms_key_vault_network_access=None,
     azure_keyvault_kms_key_vault_resource_id=None,
+    kms_infrastructure_encryption="Disabled",
     http_proxy_config=None,
     bootstrap_artifact_source=CONST_ARTIFACT_SOURCE_DIRECT,
     bootstrap_container_registry_resource_id=None,
