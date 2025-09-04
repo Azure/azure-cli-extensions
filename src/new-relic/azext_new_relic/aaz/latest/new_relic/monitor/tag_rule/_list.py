@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "new-relic monitor tag-rule list",
 )
 class List(AAZCommand):
-    """List TagRule resources by NewRelicMonitorResource
+    """Lists all tag rules associated with a specific New Relic monitor resource, helping you manage and audit the rules that control resource monitoring.
 
     :example: List TagRule resources by NewRelicMonitorResource.
         az new-relic monitor tag-rule list --resource-group MyResourceGroup --monitor-name MyNewRelicMonitor
