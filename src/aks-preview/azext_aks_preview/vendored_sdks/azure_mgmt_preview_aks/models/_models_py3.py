@@ -8,9 +8,9 @@
 # --------------------------------------------------------------------------
 
 import datetime
-from typing import Any, Dict, List, Optional, TYPE_CHECKING, Union
+from typing import Any, Optional, TYPE_CHECKING, Union
 
-from .. import _serialization
+from .._utils import serialization as _serialization
 
 if TYPE_CHECKING:
     from .. import models as _models
@@ -64,12 +64,16 @@ class AdvancedNetworking(_serialization.Model):
     :vartype observability: ~azure.mgmt.containerservice.models.AdvancedNetworkingObservability
     :ivar security: Security profile to enable security features on cilium-based cluster.
     :vartype security: ~azure.mgmt.containerservice.models.AdvancedNetworkingSecurity
+    :ivar performance: Profile to enable performance-enhancing features on clusters that use Azure
+     CNI powered by Cilium.
+    :vartype performance: ~azure.mgmt.containerservice.models.AdvancedNetworkingPerformance
     """
 
     _attribute_map = {
         "enabled": {"key": "enabled", "type": "bool"},
         "observability": {"key": "observability", "type": "AdvancedNetworkingObservability"},
         "security": {"key": "security", "type": "AdvancedNetworkingSecurity"},
+        "performance": {"key": "performance", "type": "AdvancedNetworkingPerformance"},
     }
 
     def __init__(
@@ -78,6 +82,7 @@ class AdvancedNetworking(_serialization.Model):
         enabled: Optional[bool] = None,
         observability: Optional["_models.AdvancedNetworkingObservability"] = None,
         security: Optional["_models.AdvancedNetworkingSecurity"] = None,
+        performance: Optional["_models.AdvancedNetworkingPerformance"] = None,
         **kwargs: Any
     ) -> None:
         """
@@ -91,11 +96,15 @@ class AdvancedNetworking(_serialization.Model):
         :paramtype observability: ~azure.mgmt.containerservice.models.AdvancedNetworkingObservability
         :keyword security: Security profile to enable security features on cilium-based cluster.
         :paramtype security: ~azure.mgmt.containerservice.models.AdvancedNetworkingSecurity
+        :keyword performance: Profile to enable performance-enhancing features on clusters that use
+         Azure CNI powered by Cilium.
+        :paramtype performance: ~azure.mgmt.containerservice.models.AdvancedNetworkingPerformance
         """
         super().__init__(**kwargs)
         self.enabled = enabled
         self.observability = observability
         self.security = security
+        self.performance = performance
 
 
 class AdvancedNetworkingObservability(_serialization.Model):
@@ -119,6 +128,35 @@ class AdvancedNetworkingObservability(_serialization.Model):
         """
         super().__init__(**kwargs)
         self.enabled = enabled
+
+
+class AdvancedNetworkingPerformance(_serialization.Model):
+    """Profile to enable performance-enhancing features on clusters that use Azure CNI powered by
+    Cilium.
+
+    :ivar acceleration_mode: Enable advanced network acceleration options. This allows users to
+     configure acceleration using BPF host routing. This can be enabled only with Cilium dataplane.
+     If not specified, the default value is None (no acceleration). The acceleration mode can be
+     changed on a pre-existing cluster. See https://aka.ms/acnsperformance for a detailed
+     explanation. Known values are: "BpfVeth" and "None".
+    :vartype acceleration_mode: str or ~azure.mgmt.containerservice.models.AccelerationMode
+    """
+
+    _attribute_map = {
+        "acceleration_mode": {"key": "accelerationMode", "type": "str"},
+    }
+
+    def __init__(self, *, acceleration_mode: Union[str, "_models.AccelerationMode"] = "None", **kwargs: Any) -> None:
+        """
+        :keyword acceleration_mode: Enable advanced network acceleration options. This allows users to
+         configure acceleration using BPF host routing. This can be enabled only with Cilium dataplane.
+         If not specified, the default value is None (no acceleration). The acceleration mode can be
+         changed on a pre-existing cluster. See https://aka.ms/acnsperformance for a detailed
+         explanation. Known values are: "BpfVeth" and "None".
+        :paramtype acceleration_mode: str or ~azure.mgmt.containerservice.models.AccelerationMode
+        """
+        super().__init__(**kwargs)
+        self.acceleration_mode = acceleration_mode
 
 
 class AdvancedNetworkingSecurity(_serialization.Model):
@@ -307,8 +345,8 @@ class AgentPool(SubResource):
     :ivar os_sku: Specifies the OS SKU used by the agent pool. If not specified, the default is
      Ubuntu if OSType=Linux or Windows2019 if OSType=Windows. And the default Windows OSSKU will be
      changed to Windows2022 after Windows2019 is deprecated. Known values are: "Ubuntu", "Mariner",
-     "AzureLinux", "CBLMariner", "Windows2019", "Windows2022", "Windows2025", "WindowsAnnual",
-     "Ubuntu2204", and "Ubuntu2404".
+     "AzureLinux", "AzureLinux3", "CBLMariner", "Windows2019", "Windows2022", "Windows2025",
+     "WindowsAnnual", "Ubuntu2204", and "Ubuntu2404".
     :vartype os_sku: str or ~azure.mgmt.containerservice.models.OSSKU
     :ivar max_count: The maximum number of nodes for auto-scaling.
     :vartype max_count: int
@@ -346,8 +384,16 @@ class AgentPool(SubResource):
     :vartype current_orchestrator_version: str
     :ivar node_image_version: The version of node image.
     :vartype node_image_version: str
-    :ivar upgrade_settings: Settings for upgrading the agentpool.
+    :ivar upgrade_strategy: Defines the upgrade strategy for the agent pool. The default is
+     Rolling. Known values are: "Rolling" and "BlueGreen".
+    :vartype upgrade_strategy: str or ~azure.mgmt.containerservice.models.UpgradeStrategy
+    :ivar upgrade_settings: Settings for upgrading the agentpool. Applies when upgrade strategy is
+     set to Rolling.
     :vartype upgrade_settings: ~azure.mgmt.containerservice.models.AgentPoolUpgradeSettings
+    :ivar upgrade_settings_blue_green: Settings for Blue-Green upgrade on the agentpool. Applies
+     when upgrade strategy is set to BlueGreen.
+    :vartype upgrade_settings_blue_green:
+     ~azure.mgmt.containerservice.models.AgentPoolBlueGreenUpgradeSettings
     :ivar provisioning_state: The current deployment or provisioning state.
     :vartype provisioning_state: str
     :ivar power_state: Whether the Agent Pool is running or stopped. When an Agent Pool is first
@@ -500,7 +546,12 @@ class AgentPool(SubResource):
         "orchestrator_version": {"key": "properties.orchestratorVersion", "type": "str"},
         "current_orchestrator_version": {"key": "properties.currentOrchestratorVersion", "type": "str"},
         "node_image_version": {"key": "properties.nodeImageVersion", "type": "str"},
+        "upgrade_strategy": {"key": "properties.upgradeStrategy", "type": "str"},
         "upgrade_settings": {"key": "properties.upgradeSettings", "type": "AgentPoolUpgradeSettings"},
+        "upgrade_settings_blue_green": {
+            "key": "properties.upgradeSettingsBlueGreen",
+            "type": "AgentPoolBlueGreenUpgradeSettings",
+        },
         "provisioning_state": {"key": "properties.provisioningState", "type": "str"},
         "power_state": {"key": "properties.powerState", "type": "PowerState"},
         "availability_zones": {"key": "properties.availabilityZones", "type": "[str]"},
@@ -565,19 +616,21 @@ class AgentPool(SubResource):
         type_properties_type: Optional[Union[str, "_models.AgentPoolType"]] = None,
         mode: Optional[Union[str, "_models.AgentPoolMode"]] = None,
         orchestrator_version: Optional[str] = None,
+        upgrade_strategy: Optional[Union[str, "_models.UpgradeStrategy"]] = None,
         upgrade_settings: Optional["_models.AgentPoolUpgradeSettings"] = None,
+        upgrade_settings_blue_green: Optional["_models.AgentPoolBlueGreenUpgradeSettings"] = None,
         power_state: Optional["_models.PowerState"] = None,
-        availability_zones: Optional[List[str]] = None,
+        availability_zones: Optional[list[str]] = None,
         enable_node_public_ip: Optional[bool] = None,
         enable_custom_ca_trust: Optional[bool] = None,
         node_public_ip_prefix_id: Optional[str] = None,
         scale_set_priority: Union[str, "_models.ScaleSetPriority"] = "Regular",
         scale_set_eviction_policy: Union[str, "_models.ScaleSetEvictionPolicy"] = "Delete",
         spot_max_price: float = -1,
-        tags: Optional[Dict[str, str]] = None,
-        node_labels: Optional[Dict[str, str]] = None,
-        node_taints: Optional[List[str]] = None,
-        node_initialization_taints: Optional[List[str]] = None,
+        tags: Optional[dict[str, str]] = None,
+        node_labels: Optional[dict[str, str]] = None,
+        node_taints: Optional[list[str]] = None,
+        node_initialization_taints: Optional[list[str]] = None,
         proximity_placement_group_id: Optional[str] = None,
         kubelet_config: Optional["_models.KubeletConfig"] = None,
         linux_os_config: Optional["_models.LinuxOSConfig"] = None,
@@ -594,7 +647,7 @@ class AgentPool(SubResource):
         gpu_profile: Optional["_models.GPUProfile"] = None,
         artifact_streaming_profile: Optional["_models.AgentPoolArtifactStreamingProfile"] = None,
         virtual_machines_profile: Optional["_models.VirtualMachinesProfile"] = None,
-        virtual_machine_nodes_status: Optional[List["_models.VirtualMachineNodes"]] = None,
+        virtual_machine_nodes_status: Optional[list["_models.VirtualMachineNodes"]] = None,
         gateway_profile: Optional["_models.AgentPoolGatewayProfile"] = None,
         status: Optional["_models.AgentPoolStatus"] = None,
         local_dns_profile: Optional["_models.LocalDNSProfile"] = None,
@@ -656,8 +709,8 @@ class AgentPool(SubResource):
         :keyword os_sku: Specifies the OS SKU used by the agent pool. If not specified, the default is
          Ubuntu if OSType=Linux or Windows2019 if OSType=Windows. And the default Windows OSSKU will be
          changed to Windows2022 after Windows2019 is deprecated. Known values are: "Ubuntu", "Mariner",
-         "AzureLinux", "CBLMariner", "Windows2019", "Windows2022", "Windows2025", "WindowsAnnual",
-         "Ubuntu2204", and "Ubuntu2404".
+         "AzureLinux", "AzureLinux3", "CBLMariner", "Windows2019", "Windows2022", "Windows2025",
+         "WindowsAnnual", "Ubuntu2204", and "Ubuntu2404".
         :paramtype os_sku: str or ~azure.mgmt.containerservice.models.OSSKU
         :keyword max_count: The maximum number of nodes for auto-scaling.
         :paramtype max_count: int
@@ -688,8 +741,16 @@ class AgentPool(SubResource):
          information see `upgrading a node pool
          <https://docs.microsoft.com/azure/aks/use-multiple-node-pools#upgrade-a-node-pool>`_.
         :paramtype orchestrator_version: str
-        :keyword upgrade_settings: Settings for upgrading the agentpool.
+        :keyword upgrade_strategy: Defines the upgrade strategy for the agent pool. The default is
+         Rolling. Known values are: "Rolling" and "BlueGreen".
+        :paramtype upgrade_strategy: str or ~azure.mgmt.containerservice.models.UpgradeStrategy
+        :keyword upgrade_settings: Settings for upgrading the agentpool. Applies when upgrade strategy
+         is set to Rolling.
         :paramtype upgrade_settings: ~azure.mgmt.containerservice.models.AgentPoolUpgradeSettings
+        :keyword upgrade_settings_blue_green: Settings for Blue-Green upgrade on the agentpool. Applies
+         when upgrade strategy is set to BlueGreen.
+        :paramtype upgrade_settings_blue_green:
+         ~azure.mgmt.containerservice.models.AgentPoolBlueGreenUpgradeSettings
         :keyword power_state: Whether the Agent Pool is running or stopped. When an Agent Pool is first
          created it is initially Running. The Agent Pool can be stopped by setting this field to
          Stopped. A stopped Agent Pool stops all of its VMs and does not accrue billing charges. An
@@ -828,7 +889,9 @@ class AgentPool(SubResource):
         self.orchestrator_version = orchestrator_version
         self.current_orchestrator_version: Optional[str] = None
         self.node_image_version: Optional[str] = None
+        self.upgrade_strategy = upgrade_strategy
         self.upgrade_settings = upgrade_settings
+        self.upgrade_settings_blue_green = upgrade_settings_blue_green
         self.provisioning_state: Optional[str] = None
         self.power_state = power_state
         self.availability_zones = availability_zones
@@ -923,7 +986,7 @@ class AgentPoolAvailableVersions(_serialization.Model):
     def __init__(
         self,
         *,
-        agent_pool_versions: Optional[List["_models.AgentPoolAvailableVersionsPropertiesAgentPoolVersionsItem"]] = None,
+        agent_pool_versions: Optional[list["_models.AgentPoolAvailableVersionsPropertiesAgentPoolVersionsItem"]] = None,
         **kwargs: Any
     ) -> None:
         """
@@ -977,6 +1040,82 @@ class AgentPoolAvailableVersionsPropertiesAgentPoolVersionsItem(_serialization.M
         self.is_preview = is_preview
 
 
+class AgentPoolBlueGreenUpgradeSettings(_serialization.Model):
+    """Settings for blue-green upgrade on an agentpool.
+
+    :ivar drain_batch_size: The number or percentage of nodes to drain in batch during blue-green
+     upgrade. Must be a non-zero number. This can either be set to an integer (e.g. '5') or a
+     percentage (e.g. '50%'). If a percentage is specified, it is the percentage of the total number
+     of blue nodes of the initial upgrade operation. For percentages, fractional nodes are rounded
+     up. If not specified, the default is 10%. For more information, including best practices, see:
+     https://learn.microsoft.com/en-us/azure/aks/upgrade-cluster.
+    :vartype drain_batch_size: str
+    :ivar drain_timeout_in_minutes: The drain timeout for a node, i.e., the amount of time (in
+     minutes) to wait on eviction of pods and graceful termination per node. This eviction wait time
+     honors waiting on pod disruption budgets. If this time is exceeded, the upgrade fails. If not
+     specified, the default is 30 minutes.
+    :vartype drain_timeout_in_minutes: int
+    :ivar batch_soak_duration_in_minutes: The soak duration after draining a batch of nodes, i.e.,
+     the amount of time (in minutes) to wait after draining a batch of nodes before moving on the
+     next batch. If not specified, the default is 15 minutes.
+    :vartype batch_soak_duration_in_minutes: int
+    :ivar final_soak_duration_in_minutes: The soak duration for a node pool, i.e., the amount of
+     time (in minutes) to wait after all old nodes are drained before we remove the old nodes. If
+     not specified, the default is 60 minutes. Only applicable for blue-green upgrade strategy.
+    :vartype final_soak_duration_in_minutes: int
+    """
+
+    _validation = {
+        "drain_timeout_in_minutes": {"maximum": 1440, "minimum": 1},
+        "batch_soak_duration_in_minutes": {"maximum": 1440, "minimum": 0},
+        "final_soak_duration_in_minutes": {"maximum": 10080, "minimum": 0},
+    }
+
+    _attribute_map = {
+        "drain_batch_size": {"key": "drainBatchSize", "type": "str"},
+        "drain_timeout_in_minutes": {"key": "drainTimeoutInMinutes", "type": "int"},
+        "batch_soak_duration_in_minutes": {"key": "batchSoakDurationInMinutes", "type": "int"},
+        "final_soak_duration_in_minutes": {"key": "finalSoakDurationInMinutes", "type": "int"},
+    }
+
+    def __init__(
+        self,
+        *,
+        drain_batch_size: Optional[str] = None,
+        drain_timeout_in_minutes: Optional[int] = None,
+        batch_soak_duration_in_minutes: Optional[int] = None,
+        final_soak_duration_in_minutes: Optional[int] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword drain_batch_size: The number or percentage of nodes to drain in batch during
+         blue-green upgrade. Must be a non-zero number. This can either be set to an integer (e.g. '5')
+         or a percentage (e.g. '50%'). If a percentage is specified, it is the percentage of the total
+         number of blue nodes of the initial upgrade operation. For percentages, fractional nodes are
+         rounded up. If not specified, the default is 10%. For more information, including best
+         practices, see: https://learn.microsoft.com/en-us/azure/aks/upgrade-cluster.
+        :paramtype drain_batch_size: str
+        :keyword drain_timeout_in_minutes: The drain timeout for a node, i.e., the amount of time (in
+         minutes) to wait on eviction of pods and graceful termination per node. This eviction wait time
+         honors waiting on pod disruption budgets. If this time is exceeded, the upgrade fails. If not
+         specified, the default is 30 minutes.
+        :paramtype drain_timeout_in_minutes: int
+        :keyword batch_soak_duration_in_minutes: The soak duration after draining a batch of nodes,
+         i.e., the amount of time (in minutes) to wait after draining a batch of nodes before moving on
+         the next batch. If not specified, the default is 15 minutes.
+        :paramtype batch_soak_duration_in_minutes: int
+        :keyword final_soak_duration_in_minutes: The soak duration for a node pool, i.e., the amount of
+         time (in minutes) to wait after all old nodes are drained before we remove the old nodes. If
+         not specified, the default is 60 minutes. Only applicable for blue-green upgrade strategy.
+        :paramtype final_soak_duration_in_minutes: int
+        """
+        super().__init__(**kwargs)
+        self.drain_batch_size = drain_batch_size
+        self.drain_timeout_in_minutes = drain_timeout_in_minutes
+        self.batch_soak_duration_in_minutes = batch_soak_duration_in_minutes
+        self.final_soak_duration_in_minutes = final_soak_duration_in_minutes
+
+
 class AgentPoolDeleteMachinesParameter(_serialization.Model):
     """Specifies a list of machine names from the agent pool to be deleted.
 
@@ -994,7 +1133,7 @@ class AgentPoolDeleteMachinesParameter(_serialization.Model):
         "machine_names": {"key": "machineNames", "type": "[str]"},
     }
 
-    def __init__(self, *, machine_names: List[str], **kwargs: Any) -> None:
+    def __init__(self, *, machine_names: list[str], **kwargs: Any) -> None:
         """
         :keyword machine_names: The agent pool machine names. Required.
         :paramtype machine_names: list[str]
@@ -1057,7 +1196,7 @@ class AgentPoolListResult(_serialization.Model):
         "next_link": {"key": "nextLink", "type": "str"},
     }
 
-    def __init__(self, *, value: Optional[List["_models.AgentPool"]] = None, **kwargs: Any) -> None:
+    def __init__(self, *, value: Optional[list["_models.AgentPool"]] = None, **kwargs: Any) -> None:
         """
         :keyword value: The list of agent pools.
         :paramtype value: list[~azure.mgmt.containerservice.models.AgentPool]
@@ -1089,9 +1228,9 @@ class AgentPoolNetworkProfile(_serialization.Model):
     def __init__(
         self,
         *,
-        node_public_ip_tags: Optional[List["_models.IPTag"]] = None,
-        allowed_host_ports: Optional[List["_models.PortRange"]] = None,
-        application_security_groups: Optional[List[str]] = None,
+        node_public_ip_tags: Optional[list["_models.IPTag"]] = None,
+        allowed_host_ports: Optional[list["_models.PortRange"]] = None,
+        application_security_groups: Optional[list[str]] = None,
         **kwargs: Any
     ) -> None:
         """
@@ -1166,7 +1305,7 @@ class AgentPoolStatus(_serialization.Model):
 
     :ivar provisioning_error: The error detail information of the agent pool. Preserves the
      detailed info of failure. If there was no error, this field is omitted.
-    :vartype provisioning_error: ~azure.mgmt.containerservice.models.CloudErrorBody
+    :vartype provisioning_error: ~azure.mgmt.containerservice.models.ErrorDetail
     """
 
     _validation = {
@@ -1174,13 +1313,13 @@ class AgentPoolStatus(_serialization.Model):
     }
 
     _attribute_map = {
-        "provisioning_error": {"key": "provisioningError", "type": "CloudErrorBody"},
+        "provisioning_error": {"key": "provisioningError", "type": "ErrorDetail"},
     }
 
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.provisioning_error: Optional["_models.CloudErrorBody"] = None
+        self.provisioning_error: Optional["_models.ErrorDetail"] = None
 
 
 class AgentPoolUpgradeProfile(_serialization.Model):
@@ -1234,8 +1373,8 @@ class AgentPoolUpgradeProfile(_serialization.Model):
         *,
         kubernetes_version: str,
         os_type: Union[str, "_models.OSType"] = "Linux",
-        upgrades: Optional[List["_models.AgentPoolUpgradeProfilePropertiesUpgradesItem"]] = None,
-        components_by_releases: Optional[List["_models.ComponentsByRelease"]] = None,
+        upgrades: Optional[list["_models.AgentPoolUpgradeProfilePropertiesUpgradesItem"]] = None,
+        components_by_releases: Optional[list["_models.ComponentsByRelease"]] = None,
         latest_node_image_version: Optional[str] = None,
         **kwargs: Any
     ) -> None:
@@ -1305,7 +1444,7 @@ class AgentPoolUpgradeProfilePropertiesUpgradesItem(_serialization.Model):  # py
 
 
 class AgentPoolUpgradeSettings(_serialization.Model):
-    """Settings for upgrading an agentpool.
+    """Settings for rolling upgrade on an agentpool.
 
     :ivar max_surge: The maximum number or percentage of nodes that are surged during upgrade. This
      can either be set to an integer (e.g. '5') or a percentage (e.g. '50%'). If a percentage is
@@ -1314,6 +1453,14 @@ class AgentPoolUpgradeSettings(_serialization.Model):
      information, including best practices, see:
      https://learn.microsoft.com/en-us/azure/aks/upgrade-cluster.
     :vartype max_surge: str
+    :ivar min_surge: This can either be set to an integer (e.g. '5') or a percentage (e.g. '50%').
+     If a percentage is specified, it is the percentage of the total agent pool size at the time of
+     the upgrade. For percentages, fractional nodes are rounded up. If node capacity constraints
+     prevent full surging, AKS would attempt a slower upgrade with fewer surge nodes. The upgrade
+     will proceed only if the available surge capacity meets or exceeds minSurge. If minSurge not
+     specified, the default is 50% of the maxSurge, for example, if maxSurge = 10%, the default is
+     5%, if maxSurge = 10, the default is 5.
+    :vartype min_surge: str
     :ivar max_unavailable: The maximum number or percentage of nodes that can be simultaneously
      unavailable during upgrade. This can either be set to an integer (e.g. '1') or a percentage
      (e.g. '5%'). If a percentage is specified, it is the percentage of the total agent pool size at
@@ -1354,6 +1501,7 @@ class AgentPoolUpgradeSettings(_serialization.Model):
 
     _attribute_map = {
         "max_surge": {"key": "maxSurge", "type": "str"},
+        "min_surge": {"key": "minSurge", "type": "str"},
         "max_unavailable": {"key": "maxUnavailable", "type": "str"},
         "max_blocked_nodes": {"key": "maxBlockedNodes", "type": "str"},
         "drain_timeout_in_minutes": {"key": "drainTimeoutInMinutes", "type": "int"},
@@ -1365,6 +1513,7 @@ class AgentPoolUpgradeSettings(_serialization.Model):
         self,
         *,
         max_surge: Optional[str] = None,
+        min_surge: Optional[str] = None,
         max_unavailable: Optional[str] = None,
         max_blocked_nodes: Optional[str] = None,
         drain_timeout_in_minutes: Optional[int] = None,
@@ -1380,6 +1529,14 @@ class AgentPoolUpgradeSettings(_serialization.Model):
          information, including best practices, see:
          https://learn.microsoft.com/en-us/azure/aks/upgrade-cluster.
         :paramtype max_surge: str
+        :keyword min_surge: This can either be set to an integer (e.g. '5') or a percentage (e.g.
+         '50%'). If a percentage is specified, it is the percentage of the total agent pool size at the
+         time of the upgrade. For percentages, fractional nodes are rounded up. If node capacity
+         constraints prevent full surging, AKS would attempt a slower upgrade with fewer surge nodes.
+         The upgrade will proceed only if the available surge capacity meets or exceeds minSurge. If
+         minSurge not specified, the default is 50% of the maxSurge, for example, if maxSurge = 10%, the
+         default is 5%, if maxSurge = 10, the default is 5.
+        :paramtype min_surge: str
         :keyword max_unavailable: The maximum number or percentage of nodes that can be simultaneously
          unavailable during upgrade. This can either be set to an integer (e.g. '1') or a percentage
          (e.g. '5%'). If a percentage is specified, it is the percentage of the total agent pool size at
@@ -1414,6 +1571,7 @@ class AgentPoolUpgradeSettings(_serialization.Model):
         """
         super().__init__(**kwargs)
         self.max_surge = max_surge
+        self.min_surge = min_surge
         self.max_unavailable = max_unavailable
         self.max_blocked_nodes = max_blocked_nodes
         self.drain_timeout_in_minutes = drain_timeout_in_minutes
@@ -1555,58 +1713,6 @@ class AzureKeyVaultKms(_serialization.Model):
         self.key_vault_resource_id = key_vault_resource_id
 
 
-class CloudErrorBody(_serialization.Model):
-    """An error response from the Container service.
-
-    :ivar code: An identifier for the error. Codes are invariant and are intended to be consumed
-     programmatically.
-    :vartype code: str
-    :ivar message: A message describing the error, intended to be suitable for display in a user
-     interface.
-    :vartype message: str
-    :ivar target: The target of the particular error. For example, the name of the property in
-     error.
-    :vartype target: str
-    :ivar details: A list of additional details about the error.
-    :vartype details: list[~azure.mgmt.containerservice.models.CloudErrorBody]
-    """
-
-    _attribute_map = {
-        "code": {"key": "code", "type": "str"},
-        "message": {"key": "message", "type": "str"},
-        "target": {"key": "target", "type": "str"},
-        "details": {"key": "details", "type": "[CloudErrorBody]"},
-    }
-
-    def __init__(
-        self,
-        *,
-        code: Optional[str] = None,
-        message: Optional[str] = None,
-        target: Optional[str] = None,
-        details: Optional[List["_models.CloudErrorBody"]] = None,
-        **kwargs: Any
-    ) -> None:
-        """
-        :keyword code: An identifier for the error. Codes are invariant and are intended to be consumed
-         programmatically.
-        :paramtype code: str
-        :keyword message: A message describing the error, intended to be suitable for display in a user
-         interface.
-        :paramtype message: str
-        :keyword target: The target of the particular error. For example, the name of the property in
-         error.
-        :paramtype target: str
-        :keyword details: A list of additional details about the error.
-        :paramtype details: list[~azure.mgmt.containerservice.models.CloudErrorBody]
-        """
-        super().__init__(**kwargs)
-        self.code = code
-        self.message = message
-        self.target = target
-        self.details = details
-
-
 class ClusterUpgradeSettings(_serialization.Model):
     """Settings for upgrading a cluster.
 
@@ -1641,7 +1747,7 @@ class CompatibleVersions(_serialization.Model):
         "versions": {"key": "versions", "type": "[str]"},
     }
 
-    def __init__(self, *, name: Optional[str] = None, versions: Optional[List[str]] = None, **kwargs: Any) -> None:
+    def __init__(self, *, name: Optional[str] = None, versions: Optional[list[str]] = None, **kwargs: Any) -> None:
         """
         :keyword name: The product/service name.
         :paramtype name: str
@@ -1714,7 +1820,7 @@ class ComponentsByRelease(_serialization.Model):
         self,
         *,
         kubernetes_version: Optional[str] = None,
-        components: Optional[List["_models.Component"]] = None,
+        components: Optional[list["_models.Component"]] = None,
         **kwargs: Any
     ) -> None:
         """
@@ -1885,9 +1991,9 @@ class ContainerServiceNetworkProfile(_serialization.Model):
         load_balancer_profile: Optional["_models.ManagedClusterLoadBalancerProfile"] = None,
         nat_gateway_profile: Optional["_models.ManagedClusterNATGatewayProfile"] = None,
         static_egress_gateway_profile: Optional["_models.ManagedClusterStaticEgressGatewayProfile"] = None,
-        pod_cidrs: Optional[List[str]] = None,
-        service_cidrs: Optional[List[str]] = None,
-        ip_families: Optional[List[Union[str, "_models.IPFamily"]]] = None,
+        pod_cidrs: Optional[list[str]] = None,
+        service_cidrs: Optional[list[str]] = None,
+        ip_families: Optional[list[Union[str, "_models.IPFamily"]]] = None,
         pod_link_local_access: Optional[Union[str, "_models.PodLinkLocalAccess"]] = None,
         kube_proxy_config: Optional["_models.ContainerServiceNetworkProfileKubeProxyConfig"] = None,
         advanced_networking: Optional["_models.AdvancedNetworking"] = None,
@@ -2112,7 +2218,7 @@ class ContainerServiceSshConfiguration(_serialization.Model):
         "public_keys": {"key": "publicKeys", "type": "[ContainerServiceSshPublicKey]"},
     }
 
-    def __init__(self, *, public_keys: List["_models.ContainerServiceSshPublicKey"], **kwargs: Any) -> None:
+    def __init__(self, *, public_keys: list["_models.ContainerServiceSshPublicKey"], **kwargs: Any) -> None:
         """
         :keyword public_keys: The list of SSH public keys used to authenticate with Linux-based VMs. A
          maximum of 1 key may be specified. Required.
@@ -2220,7 +2326,7 @@ class CredentialResults(_serialization.Model):
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.kubeconfigs: Optional[List["_models.CredentialResult"]] = None
+        self.kubeconfigs: Optional[list["_models.CredentialResult"]] = None
 
 
 class DailySchedule(_serialization.Model):
@@ -2348,7 +2454,7 @@ class EndpointDependency(_serialization.Model):
         self,
         *,
         domain_name: Optional[str] = None,
-        endpoint_details: Optional[List["_models.EndpointDetail"]] = None,
+        endpoint_details: Optional[list["_models.EndpointDetail"]] = None,
         **kwargs: Any
     ) -> None:
         """
@@ -2475,8 +2581,8 @@ class ErrorDetail(_serialization.Model):
         self.code: Optional[str] = None
         self.message: Optional[str] = None
         self.target: Optional[str] = None
-        self.details: Optional[List["_models.ErrorDetail"]] = None
-        self.additional_info: Optional[List["_models.ErrorAdditionalInfo"]] = None
+        self.details: Optional[list["_models.ErrorDetail"]] = None
+        self.additional_info: Optional[list["_models.ErrorAdditionalInfo"]] = None
 
 
 class ErrorResponse(_serialization.Model):
@@ -2683,7 +2789,7 @@ class GuardrailsAvailableVersionsList(_serialization.Model):
         "next_link": {"key": "nextLink", "type": "str"},
     }
 
-    def __init__(self, *, value: Optional[List["_models.GuardrailsAvailableVersion"]] = None, **kwargs: Any) -> None:
+    def __init__(self, *, value: Optional[list["_models.GuardrailsAvailableVersion"]] = None, **kwargs: Any) -> None:
         """
         :keyword value: Array of AKS supported Guardrails versions.
         :paramtype value: list[~azure.mgmt.containerservice.models.GuardrailsAvailableVersion]
@@ -2815,7 +2921,7 @@ class IdentityBindingListResult(_serialization.Model):
     }
 
     def __init__(
-        self, *, value: List["_models.IdentityBinding"], next_link: Optional[str] = None, **kwargs: Any
+        self, *, value: list["_models.IdentityBinding"], next_link: Optional[str] = None, **kwargs: Any
     ) -> None:
         """
         :keyword value: The IdentityBinding items on this page. Required.
@@ -3018,8 +3124,8 @@ class IstioComponents(_serialization.Model):
     def __init__(
         self,
         *,
-        ingress_gateways: Optional[List["_models.IstioIngressGateway"]] = None,
-        egress_gateways: Optional[List["_models.IstioEgressGateway"]] = None,
+        ingress_gateways: Optional[list["_models.IstioIngressGateway"]] = None,
+        egress_gateways: Optional[list["_models.IstioEgressGateway"]] = None,
         **kwargs: Any
     ) -> None:
         """
@@ -3211,7 +3317,7 @@ class IstioServiceMesh(_serialization.Model):
         *,
         components: Optional["_models.IstioComponents"] = None,
         certificate_authority: Optional["_models.IstioCertificateAuthority"] = None,
-        revisions: Optional[List[str]] = None,
+        revisions: Optional[list[str]] = None,
         **kwargs: Any
     ) -> None:
         """
@@ -3230,6 +3336,365 @@ class IstioServiceMesh(_serialization.Model):
         self.components = components
         self.certificate_authority = certificate_authority
         self.revisions = revisions
+
+
+class JWTAuthenticator(ProxyResource):
+    """Configuration for JWT authenticator in the managed cluster.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    All required parameters must be populated in order to send to server.
+
+    :ivar id: Fully qualified resource ID for the resource. E.g.
+     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".
+    :vartype id: str
+    :ivar name: The name of the resource.
+    :vartype name: str
+    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
+     "Microsoft.Storage/storageAccounts".
+    :vartype type: str
+    :ivar system_data: Azure Resource Manager metadata containing createdBy and modifiedBy
+     information.
+    :vartype system_data: ~azure.mgmt.containerservice.models.SystemData
+    :ivar properties: The properties of JWTAuthenticator. For details on how to configure the
+     properties of a JWT authenticator, please refer to the Kubernetes documentation:
+     https://kubernetes.io/docs/reference/access-authn-authz/authentication/#using-authentication-configuration.
+     Please note that not all fields available in the Kubernetes documentation are supported by AKS.
+     For troubleshooting, please see https://aka.ms/aks-external-issuers-docs. Required.
+    :vartype properties: ~azure.mgmt.containerservice.models.JWTAuthenticatorProperties
+    """
+
+    _validation = {
+        "id": {"readonly": True},
+        "name": {"readonly": True},
+        "type": {"readonly": True},
+        "system_data": {"readonly": True},
+        "properties": {"required": True},
+    }
+
+    _attribute_map = {
+        "id": {"key": "id", "type": "str"},
+        "name": {"key": "name", "type": "str"},
+        "type": {"key": "type", "type": "str"},
+        "system_data": {"key": "systemData", "type": "SystemData"},
+        "properties": {"key": "properties", "type": "JWTAuthenticatorProperties"},
+    }
+
+    def __init__(self, *, properties: "_models.JWTAuthenticatorProperties", **kwargs: Any) -> None:
+        """
+        :keyword properties: The properties of JWTAuthenticator. For details on how to configure the
+         properties of a JWT authenticator, please refer to the Kubernetes documentation:
+         https://kubernetes.io/docs/reference/access-authn-authz/authentication/#using-authentication-configuration.
+         Please note that not all fields available in the Kubernetes documentation are supported by AKS.
+         For troubleshooting, please see https://aka.ms/aks-external-issuers-docs. Required.
+        :paramtype properties: ~azure.mgmt.containerservice.models.JWTAuthenticatorProperties
+        """
+        super().__init__(**kwargs)
+        self.properties = properties
+
+
+class JWTAuthenticatorClaimMappingExpression(_serialization.Model):
+    """The claim mapping expression for JWTAuthenticator.
+
+    All required parameters must be populated in order to send to server.
+
+    :ivar expression: The CEL expression used to access token claims. Required.
+    :vartype expression: str
+    """
+
+    _validation = {
+        "expression": {"required": True},
+    }
+
+    _attribute_map = {
+        "expression": {"key": "expression", "type": "str"},
+    }
+
+    def __init__(self, *, expression: str, **kwargs: Any) -> None:
+        """
+        :keyword expression: The CEL expression used to access token claims. Required.
+        :paramtype expression: str
+        """
+        super().__init__(**kwargs)
+        self.expression = expression
+
+
+class JWTAuthenticatorClaimMappings(_serialization.Model):
+    """The claim mappings for JWTAuthenticator.
+
+    All required parameters must be populated in order to send to server.
+
+    :ivar username: The expression to extract username attribute from the token claims. Required.
+    :vartype username: ~azure.mgmt.containerservice.models.JWTAuthenticatorClaimMappingExpression
+    :ivar groups: The expression to extract groups attribute from the token claims. When not
+     provided, no groups are extracted from the token claims.
+    :vartype groups: ~azure.mgmt.containerservice.models.JWTAuthenticatorClaimMappingExpression
+    :ivar uid: The expression to extract uid attribute from the token claims. When not provided, no
+     uid is extracted from the token claims.
+    :vartype uid: ~azure.mgmt.containerservice.models.JWTAuthenticatorClaimMappingExpression
+    :ivar extra: The expression to extract extra attribute from the token claims. When not
+     provided, no extra attributes are extracted from the token claims.
+    :vartype extra:
+     list[~azure.mgmt.containerservice.models.JWTAuthenticatorExtraClaimMappingExpression]
+    """
+
+    _validation = {
+        "username": {"required": True},
+    }
+
+    _attribute_map = {
+        "username": {"key": "username", "type": "JWTAuthenticatorClaimMappingExpression"},
+        "groups": {"key": "groups", "type": "JWTAuthenticatorClaimMappingExpression"},
+        "uid": {"key": "uid", "type": "JWTAuthenticatorClaimMappingExpression"},
+        "extra": {"key": "extra", "type": "[JWTAuthenticatorExtraClaimMappingExpression]"},
+    }
+
+    def __init__(
+        self,
+        *,
+        username: "_models.JWTAuthenticatorClaimMappingExpression",
+        groups: Optional["_models.JWTAuthenticatorClaimMappingExpression"] = None,
+        uid: Optional["_models.JWTAuthenticatorClaimMappingExpression"] = None,
+        extra: Optional[list["_models.JWTAuthenticatorExtraClaimMappingExpression"]] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword username: The expression to extract username attribute from the token claims.
+         Required.
+        :paramtype username: ~azure.mgmt.containerservice.models.JWTAuthenticatorClaimMappingExpression
+        :keyword groups: The expression to extract groups attribute from the token claims. When not
+         provided, no groups are extracted from the token claims.
+        :paramtype groups: ~azure.mgmt.containerservice.models.JWTAuthenticatorClaimMappingExpression
+        :keyword uid: The expression to extract uid attribute from the token claims. When not provided,
+         no uid is extracted from the token claims.
+        :paramtype uid: ~azure.mgmt.containerservice.models.JWTAuthenticatorClaimMappingExpression
+        :keyword extra: The expression to extract extra attribute from the token claims. When not
+         provided, no extra attributes are extracted from the token claims.
+        :paramtype extra:
+         list[~azure.mgmt.containerservice.models.JWTAuthenticatorExtraClaimMappingExpression]
+        """
+        super().__init__(**kwargs)
+        self.username = username
+        self.groups = groups
+        self.uid = uid
+        self.extra = extra
+
+
+class JWTAuthenticatorExtraClaimMappingExpression(_serialization.Model):  # pylint: disable=name-too-long
+    """The extra claim mapping expression for JWTAuthenticator.
+
+    All required parameters must be populated in order to send to server.
+
+    :ivar key: The key of the extra attribute. Required.
+    :vartype key: str
+    :ivar value_expression: The CEL expression used to extract the value of the extra attribute.
+     Required.
+    :vartype value_expression: str
+    """
+
+    _validation = {
+        "key": {"required": True},
+        "value_expression": {"required": True},
+    }
+
+    _attribute_map = {
+        "key": {"key": "key", "type": "str"},
+        "value_expression": {"key": "valueExpression", "type": "str"},
+    }
+
+    def __init__(self, *, key: str, value_expression: str, **kwargs: Any) -> None:
+        """
+        :keyword key: The key of the extra attribute. Required.
+        :paramtype key: str
+        :keyword value_expression: The CEL expression used to extract the value of the extra attribute.
+         Required.
+        :paramtype value_expression: str
+        """
+        super().__init__(**kwargs)
+        self.key = key
+        self.value_expression = value_expression
+
+
+class JWTAuthenticatorIssuer(_serialization.Model):
+    """The OIDC issuer details for JWTAuthenticator.
+
+    All required parameters must be populated in order to send to server.
+
+    :ivar url: The issuer URL. The URL must begin with the scheme https and cannot contain a query
+     string or fragment. This must match the "iss" claim in the presented JWT, and the issuer
+     returned from discovery. Required.
+    :vartype url: str
+    :ivar audiences: The set of acceptable audiences the JWT must be issued to. At least one is
+     required. When multiple is set, AudienceMatchPolicy is used in API Server configuration.
+     Required.
+    :vartype audiences: list[str]
+    """
+
+    _validation = {
+        "url": {"required": True},
+        "audiences": {"required": True, "min_items": 1},
+    }
+
+    _attribute_map = {
+        "url": {"key": "url", "type": "str"},
+        "audiences": {"key": "audiences", "type": "[str]"},
+    }
+
+    def __init__(self, *, url: str, audiences: list[str], **kwargs: Any) -> None:
+        """
+        :keyword url: The issuer URL. The URL must begin with the scheme https and cannot contain a
+         query string or fragment. This must match the "iss" claim in the presented JWT, and the issuer
+         returned from discovery. Required.
+        :paramtype url: str
+        :keyword audiences: The set of acceptable audiences the JWT must be issued to. At least one is
+         required. When multiple is set, AudienceMatchPolicy is used in API Server configuration.
+         Required.
+        :paramtype audiences: list[str]
+        """
+        super().__init__(**kwargs)
+        self.url = url
+        self.audiences = audiences
+
+
+class JWTAuthenticatorListResult(_serialization.Model):
+    """The response from the List JWT authenticator operation.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    All required parameters must be populated in order to send to server.
+
+    :ivar value: The list of JWT authenticators. Required.
+    :vartype value: list[~azure.mgmt.containerservice.models.JWTAuthenticator]
+    :ivar next_link: The URL to get the next set of JWT authenticator results.
+    :vartype next_link: str
+    """
+
+    _validation = {
+        "value": {"required": True},
+        "next_link": {"readonly": True},
+    }
+
+    _attribute_map = {
+        "value": {"key": "value", "type": "[JWTAuthenticator]"},
+        "next_link": {"key": "nextLink", "type": "str"},
+    }
+
+    def __init__(self, *, value: list["_models.JWTAuthenticator"], **kwargs: Any) -> None:
+        """
+        :keyword value: The list of JWT authenticators. Required.
+        :paramtype value: list[~azure.mgmt.containerservice.models.JWTAuthenticator]
+        """
+        super().__init__(**kwargs)
+        self.value = value
+        self.next_link: Optional[str] = None
+
+
+class JWTAuthenticatorProperties(_serialization.Model):
+    """The properties of JWTAuthenticator. For details on how to configure the properties of a JWT
+    authenticator, please refer to the Kubernetes documentation:
+    https://kubernetes.io/docs/reference/access-authn-authz/authentication/#using-authentication-configuration.
+    Please note that not all fields available in the Kubernetes documentation are supported by AKS.
+    For troubleshooting, please see https://aka.ms/aks-external-issuers-docs.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    All required parameters must be populated in order to send to server.
+
+    :ivar provisioning_state: The current provisioning state of the JWT authenticator. Known values
+     are: "Succeeded", "Failed", "Canceled", "Creating", "Updating", and "Deleting".
+    :vartype provisioning_state: str or
+     ~azure.mgmt.containerservice.models.JWTAuthenticatorProvisioningState
+    :ivar issuer: The JWT OIDC issuer details. Required.
+    :vartype issuer: ~azure.mgmt.containerservice.models.JWTAuthenticatorIssuer
+    :ivar claim_validation_rules: The rules that are applied to validate token claims to
+     authenticate users. All the expressions must evaluate to true for validation to succeed.
+    :vartype claim_validation_rules:
+     list[~azure.mgmt.containerservice.models.JWTAuthenticatorValidationRule]
+    :ivar claim_mappings: The mappings that define how user attributes are extracted from the token
+     claims. Required.
+    :vartype claim_mappings: ~azure.mgmt.containerservice.models.JWTAuthenticatorClaimMappings
+    :ivar user_validation_rules: The rules that are applied to the mapped user before completing
+     authentication. All the expressions must evaluate to true for validation to succeed.
+    :vartype user_validation_rules:
+     list[~azure.mgmt.containerservice.models.JWTAuthenticatorValidationRule]
+    """
+
+    _validation = {
+        "provisioning_state": {"readonly": True},
+        "issuer": {"required": True},
+        "claim_mappings": {"required": True},
+    }
+
+    _attribute_map = {
+        "provisioning_state": {"key": "provisioningState", "type": "str"},
+        "issuer": {"key": "issuer", "type": "JWTAuthenticatorIssuer"},
+        "claim_validation_rules": {"key": "claimValidationRules", "type": "[JWTAuthenticatorValidationRule]"},
+        "claim_mappings": {"key": "claimMappings", "type": "JWTAuthenticatorClaimMappings"},
+        "user_validation_rules": {"key": "userValidationRules", "type": "[JWTAuthenticatorValidationRule]"},
+    }
+
+    def __init__(
+        self,
+        *,
+        issuer: "_models.JWTAuthenticatorIssuer",
+        claim_mappings: "_models.JWTAuthenticatorClaimMappings",
+        claim_validation_rules: Optional[list["_models.JWTAuthenticatorValidationRule"]] = None,
+        user_validation_rules: Optional[list["_models.JWTAuthenticatorValidationRule"]] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword issuer: The JWT OIDC issuer details. Required.
+        :paramtype issuer: ~azure.mgmt.containerservice.models.JWTAuthenticatorIssuer
+        :keyword claim_validation_rules: The rules that are applied to validate token claims to
+         authenticate users. All the expressions must evaluate to true for validation to succeed.
+        :paramtype claim_validation_rules:
+         list[~azure.mgmt.containerservice.models.JWTAuthenticatorValidationRule]
+        :keyword claim_mappings: The mappings that define how user attributes are extracted from the
+         token claims. Required.
+        :paramtype claim_mappings: ~azure.mgmt.containerservice.models.JWTAuthenticatorClaimMappings
+        :keyword user_validation_rules: The rules that are applied to the mapped user before completing
+         authentication. All the expressions must evaluate to true for validation to succeed.
+        :paramtype user_validation_rules:
+         list[~azure.mgmt.containerservice.models.JWTAuthenticatorValidationRule]
+        """
+        super().__init__(**kwargs)
+        self.provisioning_state: Optional[Union[str, "_models.JWTAuthenticatorProvisioningState"]] = None
+        self.issuer = issuer
+        self.claim_validation_rules = claim_validation_rules
+        self.claim_mappings = claim_mappings
+        self.user_validation_rules = user_validation_rules
+
+
+class JWTAuthenticatorValidationRule(_serialization.Model):
+    """The validation rule for JWTAuthenticator.
+
+    All required parameters must be populated in order to send to server.
+
+    :ivar expression: The CEL expression used to validate the claim or attribute. Required.
+    :vartype expression: str
+    :ivar message: The validation error message.
+    :vartype message: str
+    """
+
+    _validation = {
+        "expression": {"required": True},
+    }
+
+    _attribute_map = {
+        "expression": {"key": "expression", "type": "str"},
+        "message": {"key": "message", "type": "str"},
+    }
+
+    def __init__(self, *, expression: str, message: Optional[str] = None, **kwargs: Any) -> None:
+        """
+        :keyword expression: The CEL expression used to validate the claim or attribute. Required.
+        :paramtype expression: str
+        :keyword message: The validation error message.
+        :paramtype message: str
+        """
+        super().__init__(**kwargs)
+        self.expression = expression
+        self.message = message
 
 
 class KubeletConfig(_serialization.Model):
@@ -3307,7 +3772,7 @@ class KubeletConfig(_serialization.Model):
         image_gc_high_threshold: Optional[int] = None,
         image_gc_low_threshold: Optional[int] = None,
         topology_manager_policy: Optional[str] = None,
-        allowed_unsafe_sysctls: Optional[List[str]] = None,
+        allowed_unsafe_sysctls: Optional[list[str]] = None,
         fail_swap_on: Optional[bool] = None,
         container_log_max_size_mb: Optional[int] = None,
         container_log_max_files: Optional[int] = None,
@@ -3385,7 +3850,7 @@ class KubernetesPatchVersion(_serialization.Model):
         "upgrades": {"key": "upgrades", "type": "[str]"},
     }
 
-    def __init__(self, *, upgrades: Optional[List[str]] = None, **kwargs: Any) -> None:
+    def __init__(self, *, upgrades: Optional[list[str]] = None, **kwargs: Any) -> None:
         """
         :keyword upgrades: Possible upgrade path for given patch version.
         :paramtype upgrades: list[str]
@@ -3455,7 +3920,7 @@ class KubernetesVersion(_serialization.Model):
         capabilities: Optional["_models.KubernetesVersionCapabilities"] = None,
         is_default: Optional[bool] = None,
         is_preview: Optional[bool] = None,
-        patch_versions: Optional[Dict[str, "_models.KubernetesPatchVersion"]] = None,
+        patch_versions: Optional[dict[str, "_models.KubernetesPatchVersion"]] = None,
         **kwargs: Any
     ) -> None:
         """
@@ -3491,7 +3956,7 @@ class KubernetesVersionCapabilities(_serialization.Model):
     }
 
     def __init__(
-        self, *, support_plan: Optional[List[Union[str, "_models.KubernetesSupportPlan"]]] = None, **kwargs: Any
+        self, *, support_plan: Optional[list[Union[str, "_models.KubernetesSupportPlan"]]] = None, **kwargs: Any
     ) -> None:
         """
         :keyword support_plan:
@@ -3512,7 +3977,7 @@ class KubernetesVersionListResult(_serialization.Model):
         "values": {"key": "values", "type": "[KubernetesVersion]"},
     }
 
-    def __init__(self, *, values: Optional[List["_models.KubernetesVersion"]] = None, **kwargs: Any) -> None:
+    def __init__(self, *, values: Optional[list["_models.KubernetesVersion"]] = None, **kwargs: Any) -> None:
         """
         :keyword values: Array of AKS supported Kubernetes versions.
         :paramtype values: list[~azure.mgmt.containerservice.models.KubernetesVersion]
@@ -3544,8 +4009,8 @@ class LabelSelector(_serialization.Model):
     def __init__(
         self,
         *,
-        match_labels: Optional[List[str]] = None,
-        match_expressions: Optional[List["_models.LabelSelectorRequirement"]] = None,
+        match_labels: Optional[list[str]] = None,
+        match_expressions: Optional[list["_models.LabelSelectorRequirement"]] = None,
         **kwargs: Any
     ) -> None:
         """
@@ -3588,7 +4053,7 @@ class LabelSelectorRequirement(_serialization.Model):
         *,
         key: Optional[str] = None,
         operator: Optional[Union[str, "_models.Operator"]] = None,
-        values: Optional[List[str]] = None,
+        values: Optional[list[str]] = None,
         **kwargs: Any
     ) -> None:
         """
@@ -3791,7 +4256,7 @@ class LoadBalancerListResult(_serialization.Model):
         "next_link": {"key": "nextLink", "type": "str"},
     }
 
-    def __init__(self, *, value: Optional[List["_models.LoadBalancer"]] = None, **kwargs: Any) -> None:
+    def __init__(self, *, value: Optional[list["_models.LoadBalancer"]] = None, **kwargs: Any) -> None:
         """
         :keyword value: The list of Load Balancers.
         :paramtype value: list[~azure.mgmt.containerservice.models.LoadBalancer]
@@ -3932,8 +4397,8 @@ class LocalDNSProfile(_serialization.Model):
         self,
         *,
         mode: Union[str, "_models.LocalDNSMode"] = "Preferred",
-        vnet_dns_overrides: Optional[Dict[str, "_models.LocalDNSOverride"]] = None,
-        kube_dns_overrides: Optional[Dict[str, "_models.LocalDNSOverride"]] = None,
+        vnet_dns_overrides: Optional[dict[str, "_models.LocalDNSOverride"]] = None,
+        kube_dns_overrides: Optional[dict[str, "_models.LocalDNSOverride"]] = None,
         **kwargs: Any
     ) -> None:
         """
@@ -3991,7 +4456,7 @@ class Machine(SubResource):
     def __init__(
         self,
         *,
-        zones: Optional[List[str]] = None,
+        zones: Optional[list[str]] = None,
         properties: Optional["_models.MachineProperties"] = None,
         **kwargs: Any
     ) -> None:
@@ -4145,12 +4610,12 @@ class MachineKubernetesProfile(_serialization.Model):
     def __init__(
         self,
         *,
-        node_labels: Optional[Dict[str, str]] = None,
+        node_labels: Optional[dict[str, str]] = None,
         orchestrator_version: Optional[str] = None,
         kubelet_disk_type: Optional[Union[str, "_models.KubeletDiskType"]] = None,
         kubelet_config: Optional["_models.KubeletConfig"] = None,
-        node_initialization_taints: Optional[List[str]] = None,
-        node_taints: Optional[List[str]] = None,
+        node_initialization_taints: Optional[list[str]] = None,
+        node_taints: Optional[list[str]] = None,
         max_pods: Optional[int] = None,
         workload_runtime: Optional[Union[str, "_models.WorkloadRuntime"]] = None,
         artifact_streaming_profile: Optional["_models.AgentPoolArtifactStreamingProfile"] = None,
@@ -4220,7 +4685,7 @@ class MachineListResult(_serialization.Model):
         "next_link": {"key": "nextLink", "type": "str"},
     }
 
-    def __init__(self, *, value: Optional[List["_models.Machine"]] = None, **kwargs: Any) -> None:
+    def __init__(self, *, value: Optional[list["_models.Machine"]] = None, **kwargs: Any) -> None:
         """
         :keyword value: The list of Machines in cluster.
         :paramtype value: list[~azure.mgmt.containerservice.models.Machine]
@@ -4281,7 +4746,7 @@ class MachineNetworkProperties(_serialization.Model):
         pod_subnet_id: Optional[str] = None,
         enable_node_public_ip: Optional[bool] = None,
         node_public_ip_prefix_id: Optional[str] = None,
-        node_public_ip_tags: Optional[List["_models.IPTag"]] = None,
+        node_public_ip_tags: Optional[list["_models.IPTag"]] = None,
         **kwargs: Any
     ) -> None:
         """
@@ -4309,7 +4774,7 @@ class MachineNetworkProperties(_serialization.Model):
         :paramtype node_public_ip_tags: list[~azure.mgmt.containerservice.models.IPTag]
         """
         super().__init__(**kwargs)
-        self.ip_addresses: Optional[List["_models.MachineIpAddress"]] = None
+        self.ip_addresses: Optional[list["_models.MachineIpAddress"]] = None
         self.vnet_subnet_id = vnet_subnet_id
         self.pod_subnet_id = pod_subnet_id
         self.enable_node_public_ip = enable_node_public_ip
@@ -4326,8 +4791,8 @@ class MachineOSProfile(_serialization.Model):
     :ivar os_sku: Specifies the OS SKU used by the agent pool. If not specified, the default is
      Ubuntu if OSType=Linux or Windows2019 if OSType=Windows. And the default Windows OSSKU will be
      changed to Windows2022 after Windows2019 is deprecated. Known values are: "Ubuntu", "Mariner",
-     "AzureLinux", "CBLMariner", "Windows2019", "Windows2022", "Windows2025", "WindowsAnnual",
-     "Ubuntu2204", and "Ubuntu2404".
+     "AzureLinux", "AzureLinux3", "CBLMariner", "Windows2019", "Windows2022", "Windows2025",
+     "WindowsAnnual", "Ubuntu2204", and "Ubuntu2404".
     :vartype os_sku: str or ~azure.mgmt.containerservice.models.OSSKU
     :ivar os_disk_size_gb: OS Disk Size in GB to be used to specify the disk size for every machine
      in the master/agent pool. If you specify 0, it will apply the default osDisk size according to
@@ -4380,8 +4845,8 @@ class MachineOSProfile(_serialization.Model):
         :keyword os_sku: Specifies the OS SKU used by the agent pool. If not specified, the default is
          Ubuntu if OSType=Linux or Windows2019 if OSType=Windows. And the default Windows OSSKU will be
          changed to Windows2022 after Windows2019 is deprecated. Known values are: "Ubuntu", "Mariner",
-         "AzureLinux", "CBLMariner", "Windows2019", "Windows2022", "Windows2025", "WindowsAnnual",
-         "Ubuntu2204", and "Ubuntu2404".
+         "AzureLinux", "AzureLinux3", "CBLMariner", "Windows2019", "Windows2022", "Windows2025",
+         "WindowsAnnual", "Ubuntu2204", and "Ubuntu2404".
         :paramtype os_sku: str or ~azure.mgmt.containerservice.models.OSSKU
         :keyword os_disk_size_gb: OS Disk Size in GB to be used to specify the disk size for every
          machine in the master/agent pool. If you specify 0, it will apply the default osDisk size
@@ -4522,7 +4987,7 @@ class MachineProperties(_serialization.Model):
         mode: Optional[Union[str, "_models.AgentPoolMode"]] = None,
         security: Optional["_models.AgentPoolSecurityProfile"] = None,
         priority: Union[str, "_models.ScaleSetPriority"] = "Regular",
-        tags: Optional[Dict[str, str]] = None,
+        tags: Optional[dict[str, str]] = None,
         **kwargs: Any
     ) -> None:
         """
@@ -4568,7 +5033,7 @@ class MachineStatus(_serialization.Model):
 
     :ivar provisioning_error: The error details information of the machine. Preserves the detailed
      info of failure. If there was no error, this field is omitted.
-    :vartype provisioning_error: ~azure.mgmt.containerservice.models.CloudErrorBody
+    :vartype provisioning_error: ~azure.mgmt.containerservice.models.ErrorDetail
     :ivar creation_timestamp: Specifies the time at which the machine was created.
     :vartype creation_timestamp: ~datetime.datetime
     :ivar drift_action: The drift action of the machine. Indicates whether a machine has deviated
@@ -4592,7 +5057,7 @@ class MachineStatus(_serialization.Model):
     }
 
     _attribute_map = {
-        "provisioning_error": {"key": "provisioningError", "type": "CloudErrorBody"},
+        "provisioning_error": {"key": "provisioningError", "type": "ErrorDetail"},
         "creation_timestamp": {"key": "creationTimestamp", "type": "iso-8601"},
         "drift_action": {"key": "driftAction", "type": "str"},
         "drift_reason": {"key": "driftReason", "type": "str"},
@@ -4602,7 +5067,7 @@ class MachineStatus(_serialization.Model):
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.provisioning_error: Optional["_models.CloudErrorBody"] = None
+        self.provisioning_error: Optional["_models.ErrorDetail"] = None
         self.creation_timestamp: Optional[datetime.datetime] = None
         self.drift_action: Optional[Union[str, "_models.DriftAction"]] = None
         self.drift_reason: Optional[str] = None
@@ -4655,8 +5120,8 @@ class MaintenanceConfiguration(SubResource):
     def __init__(
         self,
         *,
-        time_in_week: Optional[List["_models.TimeInWeek"]] = None,
-        not_allowed_time: Optional[List["_models.TimeSpan"]] = None,
+        time_in_week: Optional[list["_models.TimeInWeek"]] = None,
+        not_allowed_time: Optional[list["_models.TimeSpan"]] = None,
         maintenance_window: Optional["_models.MaintenanceWindow"] = None,
         **kwargs: Any
     ) -> None:
@@ -4697,7 +5162,7 @@ class MaintenanceConfigurationListResult(_serialization.Model):
         "next_link": {"key": "nextLink", "type": "str"},
     }
 
-    def __init__(self, *, value: Optional[List["_models.MaintenanceConfiguration"]] = None, **kwargs: Any) -> None:
+    def __init__(self, *, value: Optional[list["_models.MaintenanceConfiguration"]] = None, **kwargs: Any) -> None:
         """
         :keyword value: The list of maintenance configurations.
         :paramtype value: list[~azure.mgmt.containerservice.models.MaintenanceConfiguration]
@@ -4758,7 +5223,7 @@ class MaintenanceWindow(_serialization.Model):
         start_time: str,
         utc_offset: Optional[str] = None,
         start_date: Optional[datetime.date] = None,
-        not_allowed_dates: Optional[List["_models.DateSpan"]] = None,
+        not_allowed_dates: Optional[list["_models.DateSpan"]] = None,
         **kwargs: Any
     ) -> None:
         """
@@ -4834,7 +5299,7 @@ class TrackedResource(Resource):
         "location": {"key": "location", "type": "str"},
     }
 
-    def __init__(self, *, location: str, tags: Optional[Dict[str, str]] = None, **kwargs: Any) -> None:
+    def __init__(self, *, location: str, tags: Optional[dict[str, str]] = None, **kwargs: Any) -> None:
         """
         :keyword tags: Resource tags.
         :paramtype tags: dict[str, str]
@@ -5127,7 +5592,7 @@ class ManagedCluster(TrackedResource):
         self,
         *,
         location: str,
-        tags: Optional[Dict[str, str]] = None,
+        tags: Optional[dict[str, str]] = None,
         sku: Optional["_models.ManagedClusterSKU"] = None,
         extended_location: Optional["_models.ExtendedLocation"] = None,
         identity: Optional["_models.ManagedClusterIdentity"] = None,
@@ -5136,11 +5601,11 @@ class ManagedCluster(TrackedResource):
         kubernetes_version: Optional[str] = None,
         dns_prefix: Optional[str] = None,
         fqdn_subdomain: Optional[str] = None,
-        agent_pool_profiles: Optional[List["_models.ManagedClusterAgentPoolProfile"]] = None,
+        agent_pool_profiles: Optional[list["_models.ManagedClusterAgentPoolProfile"]] = None,
         linux_profile: Optional["_models.ContainerServiceLinuxProfile"] = None,
         windows_profile: Optional["_models.ManagedClusterWindowsProfile"] = None,
         service_principal_profile: Optional["_models.ManagedClusterServicePrincipalProfile"] = None,
-        addon_profiles: Optional[Dict[str, "_models.ManagedClusterAddonProfile"]] = None,
+        addon_profiles: Optional[dict[str, "_models.ManagedClusterAddonProfile"]] = None,
         pod_identity_profile: Optional["_models.ManagedClusterPodIdentityProfile"] = None,
         oidc_issuer_profile: Optional["_models.ManagedClusterOIDCIssuerProfile"] = None,
         node_resource_group: Optional[str] = None,
@@ -5155,8 +5620,8 @@ class ManagedCluster(TrackedResource):
         auto_scaler_profile: Optional["_models.ManagedClusterPropertiesAutoScalerProfile"] = None,
         api_server_access_profile: Optional["_models.ManagedClusterAPIServerAccessProfile"] = None,
         disk_encryption_set_id: Optional[str] = None,
-        identity_profile: Optional[Dict[str, "_models.UserAssignedIdentity"]] = None,
-        private_link_resources: Optional[List["_models.PrivateLinkResource"]] = None,
+        identity_profile: Optional[dict[str, "_models.UserAssignedIdentity"]] = None,
+        private_link_resources: Optional[list["_models.PrivateLinkResource"]] = None,
         disable_local_accounts: Optional[bool] = None,
         http_proxy_config: Optional["_models.ManagedClusterHTTPProxyConfig"] = None,
         security_profile: Optional["_models.ManagedClusterSecurityProfile"] = None,
@@ -5408,7 +5873,7 @@ class ManagedClusterAADProfile(_serialization.Model):
         *,
         managed: Optional[bool] = None,
         enable_azure_rbac: Optional[bool] = None,
-        admin_group_object_i_ds: Optional[List[str]] = None,
+        admin_group_object_i_ds: Optional[list[str]] = None,
         client_app_id: Optional[str] = None,
         server_app_id: Optional[str] = None,
         server_app_secret: Optional[str] = None,
@@ -5494,7 +5959,7 @@ class ManagedClusterAccessProfile(TrackedResource):
         self,
         *,
         location: str,
-        tags: Optional[Dict[str, str]] = None,
+        tags: Optional[dict[str, str]] = None,
         kube_config: Optional[bytes] = None,
         **kwargs: Any
     ) -> None:
@@ -5536,7 +6001,7 @@ class ManagedClusterAddonProfile(_serialization.Model):
         "identity": {"key": "identity", "type": "ManagedClusterAddonProfileIdentity"},
     }
 
-    def __init__(self, *, enabled: bool, config: Optional[Dict[str, str]] = None, **kwargs: Any) -> None:
+    def __init__(self, *, enabled: bool, config: Optional[dict[str, str]] = None, **kwargs: Any) -> None:
         """
         :keyword enabled: Whether the add-on is enabled or not. Required.
         :paramtype enabled: bool
@@ -5663,8 +6128,8 @@ class ManagedClusterAgentPoolProfileProperties(_serialization.Model):
     :ivar os_sku: Specifies the OS SKU used by the agent pool. If not specified, the default is
      Ubuntu if OSType=Linux or Windows2019 if OSType=Windows. And the default Windows OSSKU will be
      changed to Windows2022 after Windows2019 is deprecated. Known values are: "Ubuntu", "Mariner",
-     "AzureLinux", "CBLMariner", "Windows2019", "Windows2022", "Windows2025", "WindowsAnnual",
-     "Ubuntu2204", and "Ubuntu2404".
+     "AzureLinux", "AzureLinux3", "CBLMariner", "Windows2019", "Windows2022", "Windows2025",
+     "WindowsAnnual", "Ubuntu2204", and "Ubuntu2404".
     :vartype os_sku: str or ~azure.mgmt.containerservice.models.OSSKU
     :ivar max_count: The maximum number of nodes for auto-scaling.
     :vartype max_count: int
@@ -5702,8 +6167,16 @@ class ManagedClusterAgentPoolProfileProperties(_serialization.Model):
     :vartype current_orchestrator_version: str
     :ivar node_image_version: The version of node image.
     :vartype node_image_version: str
-    :ivar upgrade_settings: Settings for upgrading the agentpool.
+    :ivar upgrade_strategy: Defines the upgrade strategy for the agent pool. The default is
+     Rolling. Known values are: "Rolling" and "BlueGreen".
+    :vartype upgrade_strategy: str or ~azure.mgmt.containerservice.models.UpgradeStrategy
+    :ivar upgrade_settings: Settings for upgrading the agentpool. Applies when upgrade strategy is
+     set to Rolling.
     :vartype upgrade_settings: ~azure.mgmt.containerservice.models.AgentPoolUpgradeSettings
+    :ivar upgrade_settings_blue_green: Settings for Blue-Green upgrade on the agentpool. Applies
+     when upgrade strategy is set to BlueGreen.
+    :vartype upgrade_settings_blue_green:
+     ~azure.mgmt.containerservice.models.AgentPoolBlueGreenUpgradeSettings
     :ivar provisioning_state: The current deployment or provisioning state.
     :vartype provisioning_state: str
     :ivar power_state: Whether the Agent Pool is running or stopped. When an Agent Pool is first
@@ -5850,7 +6323,9 @@ class ManagedClusterAgentPoolProfileProperties(_serialization.Model):
         "orchestrator_version": {"key": "orchestratorVersion", "type": "str"},
         "current_orchestrator_version": {"key": "currentOrchestratorVersion", "type": "str"},
         "node_image_version": {"key": "nodeImageVersion", "type": "str"},
+        "upgrade_strategy": {"key": "upgradeStrategy", "type": "str"},
         "upgrade_settings": {"key": "upgradeSettings", "type": "AgentPoolUpgradeSettings"},
+        "upgrade_settings_blue_green": {"key": "upgradeSettingsBlueGreen", "type": "AgentPoolBlueGreenUpgradeSettings"},
         "provisioning_state": {"key": "provisioningState", "type": "str"},
         "power_state": {"key": "powerState", "type": "PowerState"},
         "availability_zones": {"key": "availabilityZones", "type": "[str]"},
@@ -5909,19 +6384,21 @@ class ManagedClusterAgentPoolProfileProperties(_serialization.Model):
         type: Optional[Union[str, "_models.AgentPoolType"]] = None,
         mode: Optional[Union[str, "_models.AgentPoolMode"]] = None,
         orchestrator_version: Optional[str] = None,
+        upgrade_strategy: Optional[Union[str, "_models.UpgradeStrategy"]] = None,
         upgrade_settings: Optional["_models.AgentPoolUpgradeSettings"] = None,
+        upgrade_settings_blue_green: Optional["_models.AgentPoolBlueGreenUpgradeSettings"] = None,
         power_state: Optional["_models.PowerState"] = None,
-        availability_zones: Optional[List[str]] = None,
+        availability_zones: Optional[list[str]] = None,
         enable_node_public_ip: Optional[bool] = None,
         enable_custom_ca_trust: Optional[bool] = None,
         node_public_ip_prefix_id: Optional[str] = None,
         scale_set_priority: Union[str, "_models.ScaleSetPriority"] = "Regular",
         scale_set_eviction_policy: Union[str, "_models.ScaleSetEvictionPolicy"] = "Delete",
         spot_max_price: float = -1,
-        tags: Optional[Dict[str, str]] = None,
-        node_labels: Optional[Dict[str, str]] = None,
-        node_taints: Optional[List[str]] = None,
-        node_initialization_taints: Optional[List[str]] = None,
+        tags: Optional[dict[str, str]] = None,
+        node_labels: Optional[dict[str, str]] = None,
+        node_taints: Optional[list[str]] = None,
+        node_initialization_taints: Optional[list[str]] = None,
         proximity_placement_group_id: Optional[str] = None,
         kubelet_config: Optional["_models.KubeletConfig"] = None,
         linux_os_config: Optional["_models.LinuxOSConfig"] = None,
@@ -5938,7 +6415,7 @@ class ManagedClusterAgentPoolProfileProperties(_serialization.Model):
         gpu_profile: Optional["_models.GPUProfile"] = None,
         artifact_streaming_profile: Optional["_models.AgentPoolArtifactStreamingProfile"] = None,
         virtual_machines_profile: Optional["_models.VirtualMachinesProfile"] = None,
-        virtual_machine_nodes_status: Optional[List["_models.VirtualMachineNodes"]] = None,
+        virtual_machine_nodes_status: Optional[list["_models.VirtualMachineNodes"]] = None,
         gateway_profile: Optional["_models.AgentPoolGatewayProfile"] = None,
         status: Optional["_models.AgentPoolStatus"] = None,
         local_dns_profile: Optional["_models.LocalDNSProfile"] = None,
@@ -6000,8 +6477,8 @@ class ManagedClusterAgentPoolProfileProperties(_serialization.Model):
         :keyword os_sku: Specifies the OS SKU used by the agent pool. If not specified, the default is
          Ubuntu if OSType=Linux or Windows2019 if OSType=Windows. And the default Windows OSSKU will be
          changed to Windows2022 after Windows2019 is deprecated. Known values are: "Ubuntu", "Mariner",
-         "AzureLinux", "CBLMariner", "Windows2019", "Windows2022", "Windows2025", "WindowsAnnual",
-         "Ubuntu2204", and "Ubuntu2404".
+         "AzureLinux", "AzureLinux3", "CBLMariner", "Windows2019", "Windows2022", "Windows2025",
+         "WindowsAnnual", "Ubuntu2204", and "Ubuntu2404".
         :paramtype os_sku: str or ~azure.mgmt.containerservice.models.OSSKU
         :keyword max_count: The maximum number of nodes for auto-scaling.
         :paramtype max_count: int
@@ -6032,8 +6509,16 @@ class ManagedClusterAgentPoolProfileProperties(_serialization.Model):
          information see `upgrading a node pool
          <https://docs.microsoft.com/azure/aks/use-multiple-node-pools#upgrade-a-node-pool>`_.
         :paramtype orchestrator_version: str
-        :keyword upgrade_settings: Settings for upgrading the agentpool.
+        :keyword upgrade_strategy: Defines the upgrade strategy for the agent pool. The default is
+         Rolling. Known values are: "Rolling" and "BlueGreen".
+        :paramtype upgrade_strategy: str or ~azure.mgmt.containerservice.models.UpgradeStrategy
+        :keyword upgrade_settings: Settings for upgrading the agentpool. Applies when upgrade strategy
+         is set to Rolling.
         :paramtype upgrade_settings: ~azure.mgmt.containerservice.models.AgentPoolUpgradeSettings
+        :keyword upgrade_settings_blue_green: Settings for Blue-Green upgrade on the agentpool. Applies
+         when upgrade strategy is set to BlueGreen.
+        :paramtype upgrade_settings_blue_green:
+         ~azure.mgmt.containerservice.models.AgentPoolBlueGreenUpgradeSettings
         :keyword power_state: Whether the Agent Pool is running or stopped. When an Agent Pool is first
          created it is initially Running. The Agent Pool can be stopped by setting this field to
          Stopped. A stopped Agent Pool stops all of its VMs and does not accrue billing charges. An
@@ -6172,7 +6657,9 @@ class ManagedClusterAgentPoolProfileProperties(_serialization.Model):
         self.orchestrator_version = orchestrator_version
         self.current_orchestrator_version: Optional[str] = None
         self.node_image_version: Optional[str] = None
+        self.upgrade_strategy = upgrade_strategy
         self.upgrade_settings = upgrade_settings
+        self.upgrade_settings_blue_green = upgrade_settings_blue_green
         self.provisioning_state: Optional[str] = None
         self.power_state = power_state
         self.availability_zones = availability_zones
@@ -6273,8 +6760,8 @@ class ManagedClusterAgentPoolProfile(ManagedClusterAgentPoolProfileProperties):
     :ivar os_sku: Specifies the OS SKU used by the agent pool. If not specified, the default is
      Ubuntu if OSType=Linux or Windows2019 if OSType=Windows. And the default Windows OSSKU will be
      changed to Windows2022 after Windows2019 is deprecated. Known values are: "Ubuntu", "Mariner",
-     "AzureLinux", "CBLMariner", "Windows2019", "Windows2022", "Windows2025", "WindowsAnnual",
-     "Ubuntu2204", and "Ubuntu2404".
+     "AzureLinux", "AzureLinux3", "CBLMariner", "Windows2019", "Windows2022", "Windows2025",
+     "WindowsAnnual", "Ubuntu2204", and "Ubuntu2404".
     :vartype os_sku: str or ~azure.mgmt.containerservice.models.OSSKU
     :ivar max_count: The maximum number of nodes for auto-scaling.
     :vartype max_count: int
@@ -6312,8 +6799,16 @@ class ManagedClusterAgentPoolProfile(ManagedClusterAgentPoolProfileProperties):
     :vartype current_orchestrator_version: str
     :ivar node_image_version: The version of node image.
     :vartype node_image_version: str
-    :ivar upgrade_settings: Settings for upgrading the agentpool.
+    :ivar upgrade_strategy: Defines the upgrade strategy for the agent pool. The default is
+     Rolling. Known values are: "Rolling" and "BlueGreen".
+    :vartype upgrade_strategy: str or ~azure.mgmt.containerservice.models.UpgradeStrategy
+    :ivar upgrade_settings: Settings for upgrading the agentpool. Applies when upgrade strategy is
+     set to Rolling.
     :vartype upgrade_settings: ~azure.mgmt.containerservice.models.AgentPoolUpgradeSettings
+    :ivar upgrade_settings_blue_green: Settings for Blue-Green upgrade on the agentpool. Applies
+     when upgrade strategy is set to BlueGreen.
+    :vartype upgrade_settings_blue_green:
+     ~azure.mgmt.containerservice.models.AgentPoolBlueGreenUpgradeSettings
     :ivar provisioning_state: The current deployment or provisioning state.
     :vartype provisioning_state: str
     :ivar power_state: Whether the Agent Pool is running or stopped. When an Agent Pool is first
@@ -6464,7 +6959,9 @@ class ManagedClusterAgentPoolProfile(ManagedClusterAgentPoolProfileProperties):
         "orchestrator_version": {"key": "orchestratorVersion", "type": "str"},
         "current_orchestrator_version": {"key": "currentOrchestratorVersion", "type": "str"},
         "node_image_version": {"key": "nodeImageVersion", "type": "str"},
+        "upgrade_strategy": {"key": "upgradeStrategy", "type": "str"},
         "upgrade_settings": {"key": "upgradeSettings", "type": "AgentPoolUpgradeSettings"},
+        "upgrade_settings_blue_green": {"key": "upgradeSettingsBlueGreen", "type": "AgentPoolBlueGreenUpgradeSettings"},
         "provisioning_state": {"key": "provisioningState", "type": "str"},
         "power_state": {"key": "powerState", "type": "PowerState"},
         "availability_zones": {"key": "availabilityZones", "type": "[str]"},
@@ -6525,19 +7022,21 @@ class ManagedClusterAgentPoolProfile(ManagedClusterAgentPoolProfileProperties):
         type: Optional[Union[str, "_models.AgentPoolType"]] = None,
         mode: Optional[Union[str, "_models.AgentPoolMode"]] = None,
         orchestrator_version: Optional[str] = None,
+        upgrade_strategy: Optional[Union[str, "_models.UpgradeStrategy"]] = None,
         upgrade_settings: Optional["_models.AgentPoolUpgradeSettings"] = None,
+        upgrade_settings_blue_green: Optional["_models.AgentPoolBlueGreenUpgradeSettings"] = None,
         power_state: Optional["_models.PowerState"] = None,
-        availability_zones: Optional[List[str]] = None,
+        availability_zones: Optional[list[str]] = None,
         enable_node_public_ip: Optional[bool] = None,
         enable_custom_ca_trust: Optional[bool] = None,
         node_public_ip_prefix_id: Optional[str] = None,
         scale_set_priority: Union[str, "_models.ScaleSetPriority"] = "Regular",
         scale_set_eviction_policy: Union[str, "_models.ScaleSetEvictionPolicy"] = "Delete",
         spot_max_price: float = -1,
-        tags: Optional[Dict[str, str]] = None,
-        node_labels: Optional[Dict[str, str]] = None,
-        node_taints: Optional[List[str]] = None,
-        node_initialization_taints: Optional[List[str]] = None,
+        tags: Optional[dict[str, str]] = None,
+        node_labels: Optional[dict[str, str]] = None,
+        node_taints: Optional[list[str]] = None,
+        node_initialization_taints: Optional[list[str]] = None,
         proximity_placement_group_id: Optional[str] = None,
         kubelet_config: Optional["_models.KubeletConfig"] = None,
         linux_os_config: Optional["_models.LinuxOSConfig"] = None,
@@ -6554,7 +7053,7 @@ class ManagedClusterAgentPoolProfile(ManagedClusterAgentPoolProfileProperties):
         gpu_profile: Optional["_models.GPUProfile"] = None,
         artifact_streaming_profile: Optional["_models.AgentPoolArtifactStreamingProfile"] = None,
         virtual_machines_profile: Optional["_models.VirtualMachinesProfile"] = None,
-        virtual_machine_nodes_status: Optional[List["_models.VirtualMachineNodes"]] = None,
+        virtual_machine_nodes_status: Optional[list["_models.VirtualMachineNodes"]] = None,
         gateway_profile: Optional["_models.AgentPoolGatewayProfile"] = None,
         status: Optional["_models.AgentPoolStatus"] = None,
         local_dns_profile: Optional["_models.LocalDNSProfile"] = None,
@@ -6616,8 +7115,8 @@ class ManagedClusterAgentPoolProfile(ManagedClusterAgentPoolProfileProperties):
         :keyword os_sku: Specifies the OS SKU used by the agent pool. If not specified, the default is
          Ubuntu if OSType=Linux or Windows2019 if OSType=Windows. And the default Windows OSSKU will be
          changed to Windows2022 after Windows2019 is deprecated. Known values are: "Ubuntu", "Mariner",
-         "AzureLinux", "CBLMariner", "Windows2019", "Windows2022", "Windows2025", "WindowsAnnual",
-         "Ubuntu2204", and "Ubuntu2404".
+         "AzureLinux", "AzureLinux3", "CBLMariner", "Windows2019", "Windows2022", "Windows2025",
+         "WindowsAnnual", "Ubuntu2204", and "Ubuntu2404".
         :paramtype os_sku: str or ~azure.mgmt.containerservice.models.OSSKU
         :keyword max_count: The maximum number of nodes for auto-scaling.
         :paramtype max_count: int
@@ -6648,8 +7147,16 @@ class ManagedClusterAgentPoolProfile(ManagedClusterAgentPoolProfileProperties):
          information see `upgrading a node pool
          <https://docs.microsoft.com/azure/aks/use-multiple-node-pools#upgrade-a-node-pool>`_.
         :paramtype orchestrator_version: str
-        :keyword upgrade_settings: Settings for upgrading the agentpool.
+        :keyword upgrade_strategy: Defines the upgrade strategy for the agent pool. The default is
+         Rolling. Known values are: "Rolling" and "BlueGreen".
+        :paramtype upgrade_strategy: str or ~azure.mgmt.containerservice.models.UpgradeStrategy
+        :keyword upgrade_settings: Settings for upgrading the agentpool. Applies when upgrade strategy
+         is set to Rolling.
         :paramtype upgrade_settings: ~azure.mgmt.containerservice.models.AgentPoolUpgradeSettings
+        :keyword upgrade_settings_blue_green: Settings for Blue-Green upgrade on the agentpool. Applies
+         when upgrade strategy is set to BlueGreen.
+        :paramtype upgrade_settings_blue_green:
+         ~azure.mgmt.containerservice.models.AgentPoolBlueGreenUpgradeSettings
         :keyword power_state: Whether the Agent Pool is running or stopped. When an Agent Pool is first
          created it is initially Running. The Agent Pool can be stopped by setting this field to
          Stopped. A stopped Agent Pool stops all of its VMs and does not accrue billing charges. An
@@ -6788,7 +7295,9 @@ class ManagedClusterAgentPoolProfile(ManagedClusterAgentPoolProfileProperties):
             type=type,
             mode=mode,
             orchestrator_version=orchestrator_version,
+            upgrade_strategy=upgrade_strategy,
             upgrade_settings=upgrade_settings,
+            upgrade_settings_blue_green=upgrade_settings_blue_green,
             power_state=power_state,
             availability_zones=availability_zones,
             enable_node_public_ip=enable_node_public_ip,
@@ -6895,7 +7404,7 @@ class ManagedClusterAPIServerAccessProfile(_serialization.Model):
     def __init__(
         self,
         *,
-        authorized_ip_ranges: Optional[List[str]] = None,
+        authorized_ip_ranges: Optional[list[str]] = None,
         enable_private_cluster: Optional[bool] = None,
         private_dns_zone: Optional[str] = None,
         enable_private_cluster_public_fqdn: Optional[bool] = None,
@@ -7456,7 +7965,7 @@ class ManagedClusterHTTPProxyConfig(_serialization.Model):
         *,
         http_proxy: Optional[str] = None,
         https_proxy: Optional[str] = None,
-        no_proxy: Optional[List[str]] = None,
+        no_proxy: Optional[list[str]] = None,
         trusted_ca: Optional[str] = None,
         enabled: Optional[bool] = None,
         **kwargs: Any
@@ -7478,7 +7987,7 @@ class ManagedClusterHTTPProxyConfig(_serialization.Model):
         self.http_proxy = http_proxy
         self.https_proxy = https_proxy
         self.no_proxy = no_proxy
-        self.effective_no_proxy: Optional[List[str]] = None
+        self.effective_no_proxy: Optional[list[str]] = None
         self.trusted_ca = trusted_ca
         self.enabled = enabled
 
@@ -7530,9 +8039,9 @@ class ManagedClusterIdentity(_serialization.Model):
         self,
         *,
         type: Optional[Union[str, "_models.ResourceIdentityType"]] = None,
-        delegated_resources: Optional[Dict[str, "_models.DelegatedResource"]] = None,
+        delegated_resources: Optional[dict[str, "_models.DelegatedResource"]] = None,
         user_assigned_identities: Optional[
-            Dict[str, "_models.ManagedServiceIdentityUserAssignedIdentitiesValue"]
+            dict[str, "_models.ManagedServiceIdentityUserAssignedIdentitiesValue"]
         ] = None,
         **kwargs: Any
     ) -> None:
@@ -7691,7 +8200,7 @@ class ManagedClusterIngressProfileWebAppRouting(_serialization.Model):  # pylint
         self,
         *,
         enabled: Optional[bool] = None,
-        dns_zone_resource_ids: Optional[List[str]] = None,
+        dns_zone_resource_ids: Optional[list[str]] = None,
         nginx: Optional["_models.ManagedClusterIngressProfileNginx"] = None,
         **kwargs: Any
     ) -> None:
@@ -7734,7 +8243,7 @@ class ManagedClusterListResult(_serialization.Model):
         "next_link": {"key": "nextLink", "type": "str"},
     }
 
-    def __init__(self, *, value: Optional[List["_models.ManagedCluster"]] = None, **kwargs: Any) -> None:
+    def __init__(self, *, value: Optional[list["_models.ManagedCluster"]] = None, **kwargs: Any) -> None:
         """
         :keyword value: The list of managed clusters.
         :paramtype value: list[~azure.mgmt.containerservice.models.ManagedCluster]
@@ -7855,7 +8364,7 @@ class ManagedClusterLoadBalancerProfile(_serialization.Model):
         self.managed_outbound_i_ps = managed_outbound_i_ps
         self.outbound_ip_prefixes = outbound_ip_prefixes
         self.outbound_i_ps = outbound_i_ps
-        self.effective_outbound_i_ps: Optional[List["_models.ResourceReference"]] = None
+        self.effective_outbound_i_ps: Optional[list["_models.ResourceReference"]] = None
         self.allocated_outbound_ports = allocated_outbound_ports
         self.idle_timeout_in_minutes = idle_timeout_in_minutes
         self.enable_multiple_standard_load_balancers = enable_multiple_standard_load_balancers
@@ -7914,7 +8423,7 @@ class ManagedClusterLoadBalancerProfileOutboundIPPrefixes(_serialization.Model):
     }
 
     def __init__(
-        self, *, public_ip_prefixes: Optional[List["_models.ResourceReference"]] = None, **kwargs: Any
+        self, *, public_ip_prefixes: Optional[list["_models.ResourceReference"]] = None, **kwargs: Any
     ) -> None:
         """
         :keyword public_ip_prefixes: A list of public IP prefix resources.
@@ -7935,7 +8444,7 @@ class ManagedClusterLoadBalancerProfileOutboundIPs(_serialization.Model):  # pyl
         "public_i_ps": {"key": "publicIPs", "type": "[ResourceReference]"},
     }
 
-    def __init__(self, *, public_i_ps: Optional[List["_models.ResourceReference"]] = None, **kwargs: Any) -> None:
+    def __init__(self, *, public_i_ps: Optional[list["_models.ResourceReference"]] = None, **kwargs: Any) -> None:
         """
         :keyword public_i_ps: A list of public IP resources.
         :paramtype public_i_ps: list[~azure.mgmt.containerservice.models.ResourceReference]
@@ -8038,7 +8547,7 @@ class ManagedClusterNATGatewayProfile(_serialization.Model):
         """
         super().__init__(**kwargs)
         self.managed_outbound_ip_profile = managed_outbound_ip_profile
-        self.effective_outbound_i_ps: Optional[List["_models.ResourceReference"]] = None
+        self.effective_outbound_i_ps: Optional[list["_models.ResourceReference"]] = None
         self.idle_timeout_in_minutes = idle_timeout_in_minutes
 
 
@@ -8242,7 +8751,7 @@ class ManagedClusterPodIdentityException(_serialization.Model):
         "pod_labels": {"key": "podLabels", "type": "{str}"},
     }
 
-    def __init__(self, *, name: str, namespace: str, pod_labels: Dict[str, str], **kwargs: Any) -> None:
+    def __init__(self, *, name: str, namespace: str, pod_labels: dict[str, str], **kwargs: Any) -> None:
         """
         :keyword name: The name of the pod identity exception. Required.
         :paramtype name: str
@@ -8294,8 +8803,8 @@ class ManagedClusterPodIdentityProfile(_serialization.Model):
         *,
         enabled: Optional[bool] = None,
         allow_network_plugin_kubenet: Optional[bool] = None,
-        user_assigned_identities: Optional[List["_models.ManagedClusterPodIdentity"]] = None,
-        user_assigned_identity_exceptions: Optional[List["_models.ManagedClusterPodIdentityException"]] = None,
+        user_assigned_identities: Optional[list["_models.ManagedClusterPodIdentity"]] = None,
+        user_assigned_identity_exceptions: Optional[list["_models.ManagedClusterPodIdentityException"]] = None,
         **kwargs: Any
     ) -> None:
         """
@@ -8376,7 +8885,7 @@ class ManagedClusterPodIdentityProvisioningErrorBody(_serialization.Model):  # p
         code: Optional[str] = None,
         message: Optional[str] = None,
         target: Optional[str] = None,
-        details: Optional[List["_models.ManagedClusterPodIdentityProvisioningErrorBody"]] = None,
+        details: Optional[list["_models.ManagedClusterPodIdentityProvisioningErrorBody"]] = None,
         **kwargs: Any
     ) -> None:
         """
@@ -8461,8 +8970,8 @@ class ManagedClusterPoolUpgradeProfile(_serialization.Model):
         kubernetes_version: str,
         os_type: Union[str, "_models.OSType"] = "Linux",
         name: Optional[str] = None,
-        upgrades: Optional[List["_models.ManagedClusterPoolUpgradeProfileUpgradesItem"]] = None,
-        components_by_releases: Optional[List["_models.ComponentsByRelease"]] = None,
+        upgrades: Optional[list["_models.ManagedClusterPoolUpgradeProfileUpgradesItem"]] = None,
+        components_by_releases: Optional[list["_models.ComponentsByRelease"]] = None,
         **kwargs: Any
     ) -> None:
         """
@@ -8882,7 +9391,7 @@ class ManagedClusterSecurityProfile(_serialization.Model):
         image_cleaner: Optional["_models.ManagedClusterSecurityProfileImageCleaner"] = None,
         image_integrity: Optional["_models.ManagedClusterSecurityProfileImageIntegrity"] = None,
         node_restriction: Optional["_models.ManagedClusterSecurityProfileNodeRestriction"] = None,
-        custom_ca_trust_certificates: Optional[List[bytes]] = None,
+        custom_ca_trust_certificates: Optional[list[bytes]] = None,
         **kwargs: Any
     ) -> None:
         """
@@ -9028,7 +9537,7 @@ class ManagedClusterSecurityProfileDefenderSecurityGating(_serialization.Model):
         self,
         *,
         enabled: Optional[bool] = None,
-        identities: Optional[List["_models.ManagedClusterSecurityProfileDefenderSecurityGatingIdentitiesItem"]] = None,
+        identities: Optional[list["_models.ManagedClusterSecurityProfileDefenderSecurityGatingIdentitiesItem"]] = None,
         allow_secret_access: Optional[bool] = None,
         **kwargs: Any
     ) -> None:
@@ -9330,7 +9839,7 @@ class ManagedClusterSnapshot(TrackedResource):
         self,
         *,
         location: str,
-        tags: Optional[Dict[str, str]] = None,
+        tags: Optional[dict[str, str]] = None,
         creation_data: Optional["_models.CreationData"] = None,
         snapshot_type: Union[str, "_models.SnapshotType"] = "NodePool",
         **kwargs: Any
@@ -9373,7 +9882,7 @@ class ManagedClusterSnapshotListResult(_serialization.Model):
         "next_link": {"key": "nextLink", "type": "str"},
     }
 
-    def __init__(self, *, value: Optional[List["_models.ManagedClusterSnapshot"]] = None, **kwargs: Any) -> None:
+    def __init__(self, *, value: Optional[list["_models.ManagedClusterSnapshot"]] = None, **kwargs: Any) -> None:
         """
         :keyword value: The list of managed cluster snapshots.
         :paramtype value: list[~azure.mgmt.containerservice.models.ManagedClusterSnapshot]
@@ -9412,7 +9921,7 @@ class ManagedClusterStatus(_serialization.Model):
 
     :ivar provisioning_error: The error details information of the managed cluster. Preserves the
      detailed info of failure. If there was no error, this field is omitted.
-    :vartype provisioning_error: ~azure.mgmt.containerservice.models.CloudErrorBody
+    :vartype provisioning_error: ~azure.mgmt.containerservice.models.ErrorDetail
     """
 
     _validation = {
@@ -9420,13 +9929,13 @@ class ManagedClusterStatus(_serialization.Model):
     }
 
     _attribute_map = {
-        "provisioning_error": {"key": "provisioningError", "type": "CloudErrorBody"},
+        "provisioning_error": {"key": "provisioningError", "type": "ErrorDetail"},
     }
 
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.provisioning_error: Optional["_models.CloudErrorBody"] = None
+        self.provisioning_error: Optional["_models.ErrorDetail"] = None
 
 
 class ManagedClusterStorageProfile(_serialization.Model):
@@ -9611,7 +10120,7 @@ class ManagedClusterUpgradeProfile(_serialization.Model):
         self,
         *,
         control_plane_profile: "_models.ManagedClusterPoolUpgradeProfile",
-        agent_pool_profiles: List["_models.ManagedClusterPoolUpgradeProfile"],
+        agent_pool_profiles: list["_models.ManagedClusterPoolUpgradeProfile"],
         **kwargs: Any
     ) -> None:
         """
@@ -9879,7 +10388,7 @@ class ManagedNamespace(SubResource):
     def __init__(
         self,
         *,
-        tags: Optional[Dict[str, str]] = None,
+        tags: Optional[dict[str, str]] = None,
         location: Optional[str] = None,
         properties: Optional["_models.NamespaceProperties"] = None,
         **kwargs: Any
@@ -9917,7 +10426,7 @@ class ManagedNamespaceListResult(_serialization.Model):
     def __init__(
         self,
         *,
-        value: Optional[List["_models.ManagedNamespace"]] = None,
+        value: Optional[list["_models.ManagedNamespace"]] = None,
         next_link: Optional[str] = None,
         **kwargs: Any
     ) -> None:
@@ -10010,8 +10519,8 @@ class MeshRevision(_serialization.Model):
         self,
         *,
         revision: Optional[str] = None,
-        upgrades: Optional[List[str]] = None,
-        compatible_with: Optional[List["_models.CompatibleVersions"]] = None,
+        upgrades: Optional[list[str]] = None,
+        compatible_with: Optional[list["_models.CompatibleVersions"]] = None,
         **kwargs: Any
     ) -> None:
         """
@@ -10093,7 +10602,7 @@ class MeshRevisionProfileList(_serialization.Model):
         "next_link": {"key": "nextLink", "type": "str"},
     }
 
-    def __init__(self, *, value: Optional[List["_models.MeshRevisionProfile"]] = None, **kwargs: Any) -> None:
+    def __init__(self, *, value: Optional[list["_models.MeshRevisionProfile"]] = None, **kwargs: Any) -> None:
         """
         :keyword value: Array of service mesh add-on revision profiles for all supported mesh modes.
         :paramtype value: list[~azure.mgmt.containerservice.models.MeshRevisionProfile]
@@ -10114,7 +10623,7 @@ class MeshRevisionProfileProperties(_serialization.Model):
         "mesh_revisions": {"key": "meshRevisions", "type": "[MeshRevision]"},
     }
 
-    def __init__(self, *, mesh_revisions: Optional[List["_models.MeshRevision"]] = None, **kwargs: Any) -> None:
+    def __init__(self, *, mesh_revisions: Optional[list["_models.MeshRevision"]] = None, **kwargs: Any) -> None:
         """
         :keyword mesh_revisions:
         :paramtype mesh_revisions: list[~azure.mgmt.containerservice.models.MeshRevision]
@@ -10187,7 +10696,7 @@ class MeshUpgradeProfileList(_serialization.Model):
         "next_link": {"key": "nextLink", "type": "str"},
     }
 
-    def __init__(self, *, value: Optional[List["_models.MeshUpgradeProfile"]] = None, **kwargs: Any) -> None:
+    def __init__(self, *, value: Optional[list["_models.MeshUpgradeProfile"]] = None, **kwargs: Any) -> None:
         """
         :keyword value: Array of supported service mesh add-on upgrade profiles.
         :paramtype value: list[~azure.mgmt.containerservice.models.MeshUpgradeProfile]
@@ -10263,8 +10772,8 @@ class NamespaceProperties(_serialization.Model):
     def __init__(
         self,
         *,
-        labels: Optional[Dict[str, str]] = None,
-        annotations: Optional[Dict[str, str]] = None,
+        labels: Optional[dict[str, str]] = None,
+        annotations: Optional[dict[str, str]] = None,
         default_resource_quota: Optional["_models.ResourceQuota"] = None,
         default_network_policy: Optional["_models.NetworkPolicies"] = None,
         adoption_policy: Optional[Union[str, "_models.AdoptionPolicy"]] = None,
@@ -10468,7 +10977,7 @@ class NodeImageVersionsListResult(_serialization.Model):
         "next_link": {"key": "nextLink", "type": "str"},
     }
 
-    def __init__(self, *, value: Optional[List["_models.NodeImageVersion"]] = None, **kwargs: Any) -> None:
+    def __init__(self, *, value: Optional[list["_models.NodeImageVersion"]] = None, **kwargs: Any) -> None:
         """
         :keyword value: Array of AKS Node Image versions.
         :paramtype value: list[~azure.mgmt.containerservice.models.NodeImageVersion]
@@ -10498,7 +11007,7 @@ class OperationListResult(_serialization.Model):
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.value: Optional[List["_models.OperationValue"]] = None
+        self.value: Optional[list["_models.OperationValue"]] = None
 
 
 class OperationStatusResult(_serialization.Model):
@@ -10556,7 +11065,7 @@ class OperationStatusResult(_serialization.Model):
         percent_complete: Optional[float] = None,
         start_time: Optional[datetime.datetime] = None,
         end_time: Optional[datetime.datetime] = None,
-        operations: Optional[List["_models.OperationStatusResult"]] = None,
+        operations: Optional[list["_models.OperationStatusResult"]] = None,
         error: Optional["_models.ErrorDetail"] = None,
         **kwargs: Any
     ) -> None:
@@ -10614,7 +11123,7 @@ class OperationStatusResultList(_serialization.Model):
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.value: Optional[List["_models.OperationStatusResult"]] = None
+        self.value: Optional[list["_models.OperationStatusResult"]] = None
         self.next_link: Optional[str] = None
 
 
@@ -10685,7 +11194,7 @@ class OutboundEnvironmentEndpoint(_serialization.Model):
         self,
         *,
         category: Optional[str] = None,
-        endpoints: Optional[List["_models.EndpointDependency"]] = None,
+        endpoints: Optional[list["_models.EndpointDependency"]] = None,
         **kwargs: Any
     ) -> None:
         """
@@ -10723,7 +11232,7 @@ class OutboundEnvironmentEndpointCollection(_serialization.Model):
         "next_link": {"key": "nextLink", "type": "str"},
     }
 
-    def __init__(self, *, value: List["_models.OutboundEnvironmentEndpoint"], **kwargs: Any) -> None:
+    def __init__(self, *, value: list["_models.OutboundEnvironmentEndpoint"], **kwargs: Any) -> None:
         """
         :keyword value: Collection of resources. Required.
         :paramtype value: list[~azure.mgmt.containerservice.models.OutboundEnvironmentEndpoint]
@@ -10900,7 +11409,7 @@ class PrivateEndpointConnectionListResult(_serialization.Model):
         "value": {"key": "value", "type": "[PrivateEndpointConnection]"},
     }
 
-    def __init__(self, *, value: Optional[List["_models.PrivateEndpointConnection"]] = None, **kwargs: Any) -> None:
+    def __init__(self, *, value: Optional[list["_models.PrivateEndpointConnection"]] = None, **kwargs: Any) -> None:
         """
         :keyword value: The collection value.
         :paramtype value: list[~azure.mgmt.containerservice.models.PrivateEndpointConnection]
@@ -10949,7 +11458,7 @@ class PrivateLinkResource(_serialization.Model):
         name: Optional[str] = None,
         type: Optional[str] = None,
         group_id: Optional[str] = None,
-        required_members: Optional[List[str]] = None,
+        required_members: Optional[list[str]] = None,
         **kwargs: Any
     ) -> None:
         """
@@ -10984,7 +11493,7 @@ class PrivateLinkResourcesListResult(_serialization.Model):
         "value": {"key": "value", "type": "[PrivateLinkResource]"},
     }
 
-    def __init__(self, *, value: Optional[List["_models.PrivateLinkResource"]] = None, **kwargs: Any) -> None:
+    def __init__(self, *, value: Optional[list["_models.PrivateLinkResource"]] = None, **kwargs: Any) -> None:
         """
         :keyword value: The collection value.
         :paramtype value: list[~azure.mgmt.containerservice.models.PrivateLinkResource]
@@ -11039,7 +11548,7 @@ class RebalanceLoadBalancersRequestBody(_serialization.Model):
         "load_balancer_names": {"key": "loadBalancerNames", "type": "[str]"},
     }
 
-    def __init__(self, *, load_balancer_names: Optional[List[str]] = None, **kwargs: Any) -> None:
+    def __init__(self, *, load_balancer_names: Optional[list[str]] = None, **kwargs: Any) -> None:
         """
         :keyword load_balancer_names: The load balancer names list.
         :paramtype load_balancer_names: list[str]
@@ -11355,7 +11864,7 @@ class SafeguardsAvailableVersionsList(_serialization.Model):
         "next_link": {"key": "nextLink", "type": "str"},
     }
 
-    def __init__(self, *, value: Optional[List["_models.SafeguardsAvailableVersion"]] = None, **kwargs: Any) -> None:
+    def __init__(self, *, value: Optional[list["_models.SafeguardsAvailableVersion"]] = None, **kwargs: Any) -> None:
         """
         :keyword value: Array of AKS supported Safeguards versions.
         :paramtype value: list[~azure.mgmt.containerservice.models.SafeguardsAvailableVersion]
@@ -11412,7 +11921,7 @@ class ScaleProfile(_serialization.Model):
     def __init__(
         self,
         *,
-        manual: Optional[List["_models.ManualScaleProfile"]] = None,
+        manual: Optional[list["_models.ManualScaleProfile"]] = None,
         autoscale: Optional["_models.AutoScaleProfile"] = None,
         **kwargs: Any
     ) -> None:
@@ -11631,8 +12140,8 @@ class Snapshot(TrackedResource):
     :ivar os_sku: Specifies the OS SKU used by the agent pool. If not specified, the default is
      Ubuntu if OSType=Linux or Windows2019 if OSType=Windows. And the default Windows OSSKU will be
      changed to Windows2022 after Windows2019 is deprecated. Known values are: "Ubuntu", "Mariner",
-     "AzureLinux", "CBLMariner", "Windows2019", "Windows2022", "Windows2025", "WindowsAnnual",
-     "Ubuntu2204", and "Ubuntu2404".
+     "AzureLinux", "AzureLinux3", "CBLMariner", "Windows2019", "Windows2022", "Windows2025",
+     "WindowsAnnual", "Ubuntu2204", and "Ubuntu2404".
     :vartype os_sku: str or ~azure.mgmt.containerservice.models.OSSKU
     :ivar vm_size: The size of the VM.
     :vartype vm_size: str
@@ -11675,7 +12184,7 @@ class Snapshot(TrackedResource):
         self,
         *,
         location: str,
-        tags: Optional[Dict[str, str]] = None,
+        tags: Optional[dict[str, str]] = None,
         creation_data: Optional["_models.CreationData"] = None,
         snapshot_type: Union[str, "_models.SnapshotType"] = "NodePool",
         **kwargs: Any
@@ -11723,7 +12232,7 @@ class SnapshotListResult(_serialization.Model):
         "next_link": {"key": "nextLink", "type": "str"},
     }
 
-    def __init__(self, *, value: Optional[List["_models.Snapshot"]] = None, **kwargs: Any) -> None:
+    def __init__(self, *, value: Optional[list["_models.Snapshot"]] = None, **kwargs: Any) -> None:
         """
         :keyword value: The list of snapshots.
         :paramtype value: list[~azure.mgmt.containerservice.models.Snapshot]
@@ -12028,7 +12537,7 @@ class TagsObject(_serialization.Model):
         "tags": {"key": "tags", "type": "{str}"},
     }
 
-    def __init__(self, *, tags: Optional[Dict[str, str]] = None, **kwargs: Any) -> None:
+    def __init__(self, *, tags: Optional[dict[str, str]] = None, **kwargs: Any) -> None:
         """
         :keyword tags: Resource tags.
         :paramtype tags: dict[str, str]
@@ -12059,7 +12568,7 @@ class TimeInWeek(_serialization.Model):
         self,
         *,
         day: Optional[Union[str, "_models.WeekDay"]] = None,
-        hour_slots: Optional[List[int]] = None,
+        hour_slots: Optional[list[int]] = None,
         **kwargs: Any
     ) -> None:
         """
@@ -12137,7 +12646,7 @@ class TrustedAccessRole(_serialization.Model):
         super().__init__(**kwargs)
         self.source_resource_type: Optional[str] = None
         self.name: Optional[str] = None
-        self.rules: Optional[List["_models.TrustedAccessRoleRule"]] = None
+        self.rules: Optional[list["_models.TrustedAccessRoleRule"]] = None
 
 
 class TrustedAccessRoleBinding(Resource):
@@ -12190,7 +12699,7 @@ class TrustedAccessRoleBinding(Resource):
         "roles": {"key": "properties.roles", "type": "[str]"},
     }
 
-    def __init__(self, *, source_resource_id: str, roles: List[str], **kwargs: Any) -> None:
+    def __init__(self, *, source_resource_id: str, roles: list[str], **kwargs: Any) -> None:
         """
         :keyword source_resource_id: The ARM resource ID of source resource that trusted access is
          configured for. Required.
@@ -12225,7 +12734,7 @@ class TrustedAccessRoleBindingListResult(_serialization.Model):
         "next_link": {"key": "nextLink", "type": "str"},
     }
 
-    def __init__(self, *, value: Optional[List["_models.TrustedAccessRoleBinding"]] = None, **kwargs: Any) -> None:
+    def __init__(self, *, value: Optional[list["_models.TrustedAccessRoleBinding"]] = None, **kwargs: Any) -> None:
         """
         :keyword value: Role binding list.
         :paramtype value: list[~azure.mgmt.containerservice.models.TrustedAccessRoleBinding]
@@ -12259,7 +12768,7 @@ class TrustedAccessRoleListResult(_serialization.Model):
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.value: Optional[List["_models.TrustedAccessRole"]] = None
+        self.value: Optional[list["_models.TrustedAccessRole"]] = None
         self.next_link: Optional[str] = None
 
 
@@ -12299,11 +12808,11 @@ class TrustedAccessRoleRule(_serialization.Model):
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.verbs: Optional[List[str]] = None
-        self.api_groups: Optional[List[str]] = None
-        self.resources: Optional[List[str]] = None
-        self.resource_names: Optional[List[str]] = None
-        self.non_resource_ur_ls: Optional[List[str]] = None
+        self.verbs: Optional[list[str]] = None
+        self.api_groups: Optional[list[str]] = None
+        self.resources: Optional[list[str]] = None
+        self.resource_names: Optional[list[str]] = None
+        self.non_resource_ur_ls: Optional[list[str]] = None
 
 
 class UpgradeOverrideSettings(_serialization.Model):
