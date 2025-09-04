@@ -20,7 +20,7 @@ examples:
         az neon postgres endpoint create --resource-group myResourceGroup --organization-name myOrg --project-name myProject --branch-name main --endpoint-name myEndpoint --endpoint-type read_only
   - name: Create a read-write endpoint with custom compute settings
     text: |
-        az neon postgres endpoint create --resource-group myResourceGroup --organization-name myOrg --project-name myProject --branch-name main --endpoint-name myEndpoint --endpoint-type read_write --compute-name custom-compute --suspend-timeout-minutes 300
+        az neon postgres endpoint create --resource-group myResourceGroup --organization-name myOrg --project-name myProject --branch-name main --endpoint-name myEndpoint --endpoint-type read_write --compute-name custom-compute --size '{"autoscaling-limit-min-cu": 0.25, "autoscaling-limit-max-cu": 4}'
 """
 
 helps['neon postgres get-postgres-version'] = """
@@ -44,7 +44,7 @@ examples:
         az neon postgres neon-role create --resource-group myResourceGroup --organization-name myOrg --project-name myProject --branch-name main --neon-role-name myRole
   - name: Create a role with specific attributes
     text: |
-        az neon postgres neon-role create --resource-group myResourceGroup --organization-name myOrg --project-name myProject --branch-name main --neon-role-name myRole --attributes name=value1 type=value2
+        az neon postgres neon-role create --resource-group myResourceGroup --organization-name myOrg --project-name myProject --branch-name main --neon-role-name myRole --attributes '[{"name":"roleType","value":"admin"}]'
 """
 
 helps['neon postgres neon-database create'] = """
@@ -56,5 +56,5 @@ examples:
         az neon postgres neon-database create --resource-group myResourceGroup --organization-name myOrg --project-name myProject --branch-name main --neon-database-name myDatabase --owner-name myRole
   - name: Create a database with custom attributes
     text: |
-        az neon postgres neon-database create --resource-group myResourceGroup --organization-name myOrg --project-name myProject --branch-name main --neon-database-name myDatabase --owner-name myRole --attributes encoding=UTF8 locale=en_US.UTF-8
+        az neon postgres neon-database create --resource-group myResourceGroup --organization-name myOrg --project-name myProject --branch-name main --neon-database-name myDatabase --owner-name myRole --attributes '[{"name":"encoding","value":"UTF8"}]'
 """
