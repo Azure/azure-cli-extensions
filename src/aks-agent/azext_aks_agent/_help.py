@@ -48,6 +48,9 @@ helps[
         - name: --refresh-toolsets
           type: bool
           short-summary: Refresh the toolsets status.
+        - name: --no-aks-mcp
+          type: bool
+          short-summary: Disable AKS MCP integration and use traditional toolsets.
 
     examples:
         - name: Ask about pod issues in the cluster with Azure OpenAI
@@ -103,4 +106,16 @@ helps[
               aks/core:
                 enabled: false
               ```
+"""
+
+helps[
+    "aks agent status"
+] = """
+    type: command
+    short-summary: Show AKS agent configuration and readiness (MCP binary, server, and mode).
+    long-summary: |-
+      Displays MCP binary availability and version, MCP server running/healthy state (if applicable), and overall mode.
+    examples:
+        - name: Show agent status
+          text: az aks agent status
 """

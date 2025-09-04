@@ -14,3 +14,7 @@ def load_command_table(self, _):
         "aks",
     ) as g:
         g.custom_command("agent", "aks_agent")
+    with self.command_group(
+        "aks agent",
+    ) as g:
+        g.custom_command("status", "aks_agent_status")

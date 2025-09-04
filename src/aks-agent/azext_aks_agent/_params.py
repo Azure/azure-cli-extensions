@@ -77,3 +77,9 @@ def load_arguments(self, _):
             help="Refresh the toolsets status.",
             action="store_true",
         )
+        c.argument(
+            "no_aks_mcp",
+            options_list=["--no-aks-mcp"],
+            help="Disable AKS MCP integration and use traditional toolsets.",
+            action="store_true",
+        )
