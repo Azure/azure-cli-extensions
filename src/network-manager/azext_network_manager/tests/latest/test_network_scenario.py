@@ -399,10 +399,10 @@ class NetworkScenarioTest(ScenarioTest):
                  '--resource-id="{sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualnetworks/{virtual_network}"  -g {rg} ')
 
         self.cmd('network manager connect-config create --configuration-name {config_name} --network-manager-name {manager_name} -g {rg} '
-                 '--applies-to-groups group-connectivity="None" network-group-id={sub}/resourceGroups/{rg}/providers/Microsoft.Network/networkManagers/{manager_name}/networkGroups/{group_name} '
-                 'is-global=false use-hub-gateway=true --connectivity-topology "HubAndSpoke" --delete-existing-peering true --hub '
-                 'resource-id={sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualnetworks/{virtual_network} '
-                 'resource-type="Microsoft.Network/virtualNetworks" --description "Sample Configuration" --is-global true')
+                 '--applies-to-groups \'[{{"group-connectivity":"None","network-group-id":"{sub}/resourceGroups/{rg}/providers/Microsoft.Network/networkManagers/{manager_name}/networkGroups/{group_name}","is-global":false,"use-hub-gateway":true}}]\' '
+                 '--connectivity-topology "HubAndSpoke" --delete-existing-peering true '
+                 '--hubs \'[{{"resource-id":"{sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualnetworks/{virtual_network}","resource-type":"Microsoft.Network/virtualNetworks"}}]\' '
+                 '--description "Sample Configuration" --is-global true')
         config_id = self.cmd('network manager connect-config show --configuration-name {config_name} --network-manager-name {manager_name} -g {rg}').get_output_in_json()["id"]
         self.kwargs.update({"config_id": config_id})
 
