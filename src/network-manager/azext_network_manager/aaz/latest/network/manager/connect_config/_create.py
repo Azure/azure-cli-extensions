@@ -58,7 +58,9 @@ class Create(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-            options=["--applies-to-groups", "--applies-to-group"],
+        _args_schema.applies_to_groups = AAZListArg(
+            options=["--applies-to-groups"],
+            singular_options=["--hub"],
             arg_group="Properties",
             help="Groups for configuration",
         )
