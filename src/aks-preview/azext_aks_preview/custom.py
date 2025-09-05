@@ -115,6 +115,9 @@ from azext_aks_preview.managednamespace import (
     aks_managed_namespace_add,
     aks_managed_namespace_update,
 )
+from azext_aks_preview.machine import (
+    add_machine,
+)
 from azure.cli.command_modules.acs._helpers import (
     get_user_assigned_identity_by_resource_id
 )
@@ -2069,6 +2072,46 @@ def aks_machine_list(cmd, client, resource_group_name, cluster_name, nodepool_na
 
 def aks_machine_show(cmd, client, resource_group_name, cluster_name, nodepool_name, machine_name):
     return client.get(resource_group_name, cluster_name, nodepool_name, machine_name)
+
+
+# pylint: disable=unused-argument
+def aks_machine_add(
+    cmd,
+    client,
+    resource_group_name,
+    cluster_name,
+    nodepool_name,
+    machine_name=None,
+    zones=None,
+    tags=None,
+    priority=None,
+    os_type=None,
+    os_sku=None,
+    enable_fips_image=False,
+    disable_fips_image=False,
+    vnet_subnet_id=None,
+    pod_subnet_id=None,
+    enable_node_public_ip=False,
+    node_public_ip_prefix_id=None,
+    node_public_ip_tags=None,
+    vm_size=None,
+    kubernetes_version=None,
+    no_wait=False,
+):
+    existedMachine = None
+    try:
+        existedMachine = client.get(resource_group_name, cluster_name, nodepool_name, machine_name)
+    except ResourceNotFoundError:
+        pass
+
+    if existedMachine:
+        raise ClientRequestError(
+            f"Machine '{machine_name}' already exists. Please use 'az aks machine update' to update it."
+        )
+
+    # DO NOT MOVE: get all the original parameters and save them as a dictionary
+    raw_parameters = locals()
+    return add_machine(cmd, client, raw_parameters, no_wait)
 
 
 def aks_addon_list_available():
