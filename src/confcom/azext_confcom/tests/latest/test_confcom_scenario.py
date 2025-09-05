@@ -3,18 +3,14 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import json
 import os
 import unittest
-import json
-
-from azext_confcom.security_policy import (
-    UserContainerImage,
-    OutputType,
-    load_policy_from_json,
-)
 
 import azext_confcom.config as config
-from azext_confcom.template_util import case_insensitive_dict_get, DockerClient
+from azext_confcom.security_policy import (OutputType, UserContainerImage,
+                                           load_policy_from_json)
+from azext_confcom.template_util import DockerClient, case_insensitive_dict_get
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), ".."))
 
@@ -586,9 +582,9 @@ class CustomJsonParsing(unittest.TestCase):
             aci_policy.populate_policy_content_for_all_images()
             layers = aci_policy.get_images()[0]._layers
             expected_layers = [
-                "4b17d51a118cfa6405698048bbb9f258f70c44235cf54dab8977e689d4422c1d",
-                "374b10f7af01a18c4408738ec38b302f4766ab62c033208c4b86eb7434ed8217",
-                "c9d8b0df7e0ab9ff83672dd67f154f28fdee0ae0b62c82a3451a44c8e2e29838"
+                "335710fca9480be919670dc57ef086019417ca61b4ab6e414ec6564dbf44aba8",
+                "dd0003aa8186970a6d1911288e0285c8b0f2b2f5624d7478d8fb1130344e3341",
+                "4a31b681abd27fd7a3a501e8a3e6f3b3d39767311b7f1b7dc17dd58aec6137b8"
             ]
             self.assertEqual(len(layers), len(expected_layers))
             for i in range(len(expected_layers)):

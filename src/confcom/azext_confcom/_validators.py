@@ -79,6 +79,8 @@ def validate_image_target(namespace):
 def validate_upload_fragment(namespace):
     if namespace.upload_fragment and not (namespace.key or namespace.chain):
         raise CLIError("Must sign the fragment with --key and --chain to upload it")
+    if namespace.upload_fragment and not (namespace.image_target or namespace.feed):
+        raise CLIError("Must either specify an --image-target or --feed to upload a fragment")
 
 
 def validate_fragment_generate_import(namespace):
@@ -88,7 +90,7 @@ def validate_fragment_generate_import(namespace):
     ])) != 1:
         raise CLIError(
             (
-                "Must provide either a fragment path, an input file, or "
+                "Must provide either a fragment path or "
                 "an image name to generate an import statement"
             )
         )

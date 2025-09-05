@@ -3,24 +3,22 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-import subprocess
 import os
-import stat
 import platform
+import stat
+import subprocess
 from typing import List
+
 import requests
-from knack.log import get_logger
-from azext_confcom.errors import eprint
 from azext_confcom.config import (
-    REGO_CONTAINER_START,
-    REGO_FRAGMENT_START,
-    POLICY_FIELD_CONTAINERS,
+    ACI_FIELD_CONTAINERS_REGO_FRAGMENTS_INCLUDES, POLICY_FIELD_CONTAINERS,
     POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS,
-    POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_ISSUER,
     POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_FEED,
+    POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_ISSUER,
     POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_MINIMUM_SVN,
-    ACI_FIELD_CONTAINERS_REGO_FRAGMENTS_INCLUDES,
-)
+    REGO_CONTAINER_START, REGO_FRAGMENT_START)
+from azext_confcom.errors import eprint
+from knack.log import get_logger
 
 logger = get_logger(__name__)
 host_os = platform.system()
@@ -57,6 +55,8 @@ class CoseSignToolProxy:  # pylint: disable=too-few-public-methods
             needed_asset_info = [asset for asset in release["assets"] if asset["name"] in needed_assets]
             if len(needed_asset_info) == len(needed_assets):
                 for asset in needed_asset_info:
+                    # say which version we're downloading
+                    print(f"Downloading integrity-vhd version {release['tag_name']}")
                     # get the download url for the dmverity-vhd file
                     exe_url = asset["browser_download_url"]
                     # download the file
@@ -154,6 +154,12 @@ class CoseSignToolProxy:  # pylint: disable=too-few-public-methods
         item = call_cose_sign_tool(arg_list_chain, "Error getting information from signed fragment file")
 
         stdout = item.stdout.decode("utf-8")
+        # if we don't have a minimum svn, use the one from the fragment
+        fragment_svn = None
+        if minimum_svn == -1:
+            fragment_svn = stdout.split('svn := "')[1].split('"')[0]
+            if not fragment_svn:
+                eprint("Must have either a minimum SVN or fragment SVN defined")
         # extract issuer, feed, and payload from the fragment
         issuer = stdout.split("iss: ")[1].split("\n")[0]
         feed = stdout.split("feed: ")[1].split("\n")[0]
@@ -170,7 +176,8 @@ class CoseSignToolProxy:  # pylint: disable=too-few-public-methods
         import_statement = {
             POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_ISSUER: issuer,
             POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_FEED: feed,
-            POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_MINIMUM_SVN: minimum_svn,
+            POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_MINIMUM_SVN:
+                minimum_svn if minimum_svn != -1 else fragment_svn,
             ACI_FIELD_CONTAINERS_REGO_FRAGMENTS_INCLUDES: includes,
         }
 

@@ -427,12 +427,7 @@ spec:
               if container.get(config.POLICY_FIELD_CONTAINERS_NAME) == "simple-container":
                   self.fail("policy contains container covered by fragment")
         finally:
-
-          os_util.force_delete_silently(fragment_filename)
-          os_util.force_delete_silently(yaml_filename)
-          os_util.force_delete_silently(import_filename)
-          os_util.force_delete_silently(signed_file_path)
-          os_util.force_delete_silently(f"{rego_filename}.rego")
+          os_util.force_delete_silently([fragment_filename, yaml_filename, import_filename, signed_file_path, f"{rego_filename}.rego"])
 
 
     def test_configmaps(self):

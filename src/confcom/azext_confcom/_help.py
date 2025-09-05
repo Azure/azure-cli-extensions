@@ -165,7 +165,7 @@ helps[
 
         - name: --fragment-path -p
           type: string
-          short-summary: 'Path to an existing policy fragment file to be used with --generate-import. This option allows you to create import statements for the specified fragment without needing to pull it from an OCI registry'
+          short-summary: 'Path to an existing signed policy fragment file to be used with --generate-import. This option allows you to create import statements for the specified fragment without needing to explicitly pull it from an OCI registry. This can either be a local path or an OCI registry reference. For local fragments, the file will remain in the same location. For remote fragments, the file will be downloaded and cleaned up after processing'
 
         - name: --omit-id
           type: boolean
