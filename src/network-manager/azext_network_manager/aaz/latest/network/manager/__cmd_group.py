@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "network manager",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage network-manager with network.
+    """Manage Network Manager
     """
     pass
 

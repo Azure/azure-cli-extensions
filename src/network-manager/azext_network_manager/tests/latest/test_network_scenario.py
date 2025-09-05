@@ -256,7 +256,7 @@ class NetworkScenarioTest(ScenarioTest):
         })
 
         self.cmd('network manager create --name {manager_name} --description "My Test Network Manager" '
-                 '--scope-accesses "SecurityAdmin" "Connectivity" '
+                 '--scope-accesses "Connectivity" '
                  '--network-manager-scopes '
                  ' subscriptions={sub} '
                  '-l eastus2 '
@@ -386,7 +386,7 @@ class NetworkScenarioTest(ScenarioTest):
         })
 
         self.cmd('network manager create --name {manager_name} --description "My Test Network Manager" '
-                 '--scope-accesses "SecurityAdmin" "Connectivity" '
+                 '--scope-accesses "Connectivity" '
                  '--network-manager-scopes '
                  ' subscriptions={sub} '
                  '-l eastus2 '
@@ -399,10 +399,9 @@ class NetworkScenarioTest(ScenarioTest):
                  '--resource-id="{sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualnetworks/{virtual_network}"  -g {rg} ')
 
         self.cmd('network manager connect-config create --configuration-name {config_name} --network-manager-name {manager_name} -g {rg} '
-                 '--applies-to-group group-connectivity="None" network-group-id={sub}/resourceGroups/{rg}/providers/Microsoft.Network/networkManagers/{manager_name}/networkGroups/{group_name} '
-                 'is-global=false use-hub-gateway=true --connectivity-topology "HubAndSpoke" --delete-existing-peering true --hub '
-                 'resource-id={sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualnetworks/{virtual_network} '
-                 'resource-type="Microsoft.Network/virtualNetworks" --description "Sample Configuration" --is-global true')
+                 '--applies-to-group group-connectivity="DirectlyConnected" network-group-id="{sub}/resourceGroups/{rg}/providers/Microsoft.Network/networkManagers/{manager_name}/networkGroups/{group_name}" is-global=false use-hub-gateway=true '
+                 '--connectivity-topology "HubAndSpoke" --delete-existing-peering true --hub resource-id="{sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualnetworks/{virtual_network}" resource-type="Microsoft.Network/virtualNetworks" '
+                 '--description "Sample Configuration" --is-global true')
         config_id = self.cmd('network manager connect-config show --configuration-name {config_name} --network-manager-name {manager_name} -g {rg}').get_output_in_json()["id"]
         self.kwargs.update({"config_id": config_id})
 
@@ -709,6 +708,64 @@ class NetworkScenarioTest(ScenarioTest):
         self.cmd('az group delete --name {rg} --yes --no-wait')
 
     @serial_test()
+    @ResourceGroupPreparer(name_prefix='test_network_manager_connect_config_with_capabilities', location='eastus2euap')
+    @VirtualNetworkPreparer()
+    def test_network_manager_connect_config_with_capabilities(self, virtual_network, resource_group):
+        self.kwargs.update({
+            'config_name': 'myTestConnectConfigWithCapabilities',
+            'manager_name': 'TestNetworkManager',
+            'group_name': 'TestNetworkGroup',
+            'description': '"A sample policy with capabilities"',
+            'sub': '/subscriptions/{}'.format(self.get_subscription_id()),
+            'virtual_network': virtual_network,
+            'name': 'TestStaticMember'
+        })
+
+        self.cmd('network manager create --name {manager_name} --description "My Test Network Manager" '
+                 '--scope-accesses "Connectivity" '
+                 '--network-manager-scopes '
+                 ' subscriptions={sub} '
+                 '-l eastus2euap '
+                 '--resource-group {rg}')
+
+        self.cmd('network manager group create --name {group_name} --network-manager-name {manager_name} --description {description} '
+                 ' -g {rg} ')
+
+        self.cmd('network manager group static-member create --name {name} --network-group-name {group_name} --network-manager-name {manager_name} '
+                 '--resource-id="{sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualnetworks/{virtual_network}"  -g {rg} ')
+
+        self.cmd('network manager connect-config create --configuration-name {config_name} --network-manager-name {manager_name} -g {rg} '
+                 '--applies-to-group group-connectivity="DirectlyConnected" network-group-id="{sub}/resourceGroups/{rg}/providers/Microsoft.Network/networkManagers/{manager_name}/networkGroups/{group_name}" is-global=false use-hub-gateway=true '
+                 '--connectivity-topology "HubAndSpoke" --delete-existing-peering true --hub resource-id="{sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualnetworks/{virtual_network}" resource-type="Microsoft.Network/virtualNetworks" '
+                 '--description "Sample Configuration with Capabilities" --is-global true '
+                 '--connect-capabilities connected-group-address-overlap="Disallowed" connected-group-private-endpoints-scale="HighScale" peering-enforcement="Enforced"')
+        
+        # Test SHOW with connect-capabilities validation
+        config_id = self.cmd('network manager connect-config show --configuration-name {config_name} --network-manager-name {manager_name} -g {rg}', checks=[
+            self.check('connectivityCapabilities.connectedGroupAddressOverlap', 'Disallowed'),
+            self.check('connectivityCapabilities.connectedGroupPrivateEndpointsScale', 'HighScale'),
+            self.check('connectivityCapabilities.peeringEnforcement', 'Enforced')
+        ]).get_output_in_json()["id"]
+        self.kwargs.update({"config_id": config_id})
+
+        self.cmd('network manager connect-config update --configuration-name {config_name} --network-manager-name {manager_name} -g {rg} '
+                 '--connect-capabilities connected-group-address-overlap="Allowed" connected-group-private-endpoints-scale="Standard" peering-enforcement="Unenforced"', checks=[
+            self.check('connectivityCapabilities.connectedGroupAddressOverlap', 'Allowed'),
+            self.check('connectivityCapabilities.connectedGroupPrivateEndpointsScale', 'Standard'),
+            self.check('connectivityCapabilities.peeringEnforcement', 'Unenforced')
+        ])
+        
+        # Test LIST operation (should work normally)
+        self.cmd('network manager connect-config list --network-manager-name {manager_name} -g {rg}')
+        
+        # Test DELETE operation
+        self.cmd('network manager connect-config delete --configuration-name {config_name} --network-manager-name {manager_name} -g {rg} --force --yes')
+
+        # Cleanup resources
+        self.cmd('network manager group delete -g {rg} --name {group_name} --network-manager-name {manager_name} --force --yes')
+        self.cmd('network manager delete --resource-group {rg} --name {manager_name} --force --yes')
+
+    @serial_test()
     @AllowLargeResponse()
     @ResourceGroupPreparer(name_prefix='test_network_manager_reachability_analysis_run', location='eastus2')
     def test_network_manager_reachability_analysis_run(self, resource_group):
@@ -787,4 +844,3 @@ class NetworkScenarioTest(ScenarioTest):
         self.cmd('az resource wait --deleted --name {workspace_name} --resource-group {rg} --resource-type {workspace_resource_type}')
 
         self.cmd('az group delete --name {rg} --yes --no-wait')
-        
