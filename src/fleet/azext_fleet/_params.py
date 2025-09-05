@@ -191,8 +191,8 @@ def load_arguments(self, _):
         c.argument('memory_limits', options_list=['--memory-limits'], help='Memory limits for the namespace.')
         c.argument('ingress_policy', options_list=['--ingress-policy'], help='Ingress policy for the namespace.')
         c.argument('egress_policy', options_list=['--egress-policy'], help='Egress policy for the namespace.')
-        c.argument('delete_policy', options_list=['--delete-policy'], help='Delete policy for the namespace.', default='Keep')
-        c.argument('adoption_policy', options_list=['--adoption-policy'], help='Adoption policy for the namespace.', default='Never')
+        c.argument('delete_policy', options_list=['--delete-policy'], help='Delete policy for the namespace (Keep or Delete).', default='Keep')
+        c.argument('adoption_policy', options_list=['--adoption-policy'], help='Adoption policy for the namespace (Always, IfIdentical, or Never).', default='Always')
         c.argument('member_cluster_names', nargs='*', options_list=['--member-cluster-names'], help='Space-separated list of member cluster names to apply the namespace to.')
 
     with self.argument_context('fleet namespace update') as c:
