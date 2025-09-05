@@ -87,7 +87,8 @@ class Create(AAZCommand):
             help="A description of the connectivity configuration.",
         )
         _args_schema.hubs = AAZListArg(
-            options=['--hub', '--hubs'],
+            options=["--hubs"],
+            singular_options=["--hub"],
             arg_group="Properties",
             help="List of hubItems",
         )
