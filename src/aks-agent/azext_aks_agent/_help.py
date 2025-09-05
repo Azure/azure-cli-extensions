@@ -48,6 +48,12 @@ helps[
         - name: --refresh-toolsets
           type: bool
           short-summary: Refresh the toolsets status.
+        - name: --status
+          type: bool
+          short-summary: Show AKS agent configuration and status information.
+        - name: --no-aks-mcp
+          type: bool
+          short-summary: Disable AKS MCP integration and use traditional toolsets.
 
     examples:
         - name: Ask about pod issues in the cluster with Azure OpenAI
@@ -72,6 +78,8 @@ helps[
           text: az aks agent "What is the status of my cluster?" --no-echo-request --model azure/my-gpt4.1-deployment
         - name: Refresh toolsets to get the latest available tools
           text: az aks agent "What is the status of my cluster?" --refresh-toolsets --model azure/my-gpt4.1-deployment
+        - name: Show agent status (MCP readiness)
+          text: az aks agent --status
         - name: Run agent with config file
           text: |
             az aks agent "Check kubernetes pod resource usage" --config-file /path/to/custom.yaml
