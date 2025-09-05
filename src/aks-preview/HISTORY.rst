@@ -12,6 +12,8 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+* Add option `--acns-performance-acceleration-mode <None|BpfVeth>` to `az aks create/update`
+
 18.0.0b35
 +++++++
 * Vendor new SDK and bump API version to 2025-07-02-preview.

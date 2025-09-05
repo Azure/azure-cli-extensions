@@ -43,6 +43,8 @@ from azext_aks_preview._consts import (
     CONST_IMDS_RESTRICTION_DISABLED,
     CONST_AVAILABILITY_SET,
     CONST_VIRTUAL_MACHINES,
+    CONST_ACNS_PERFORMANCE_ACCELERATION_MODE_BPFVETH,
+    CONST_ACNS_PERFORMANCE_ACCELERATION_MODE_NONE
 )
 from azext_aks_preview._helpers import (
     check_is_apiserver_vnet_integration_cluster,
@@ -761,14 +763,16 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         Union[bool, None],
         Union[bool, None],
         Union[bool, None],
+        Union[bool, None]
     ]:
         """Get the enablement of acns
-        :return: Tuple of 3 elements which can be bool or None
+        :return: Tuple of 4 elements which can be bool or None
         """
         enable_acns = self.raw_param.get("enable_acns")
         disable_acns = self.raw_param.get("disable_acns")
+        acns_performance_acceleration_mode = self.raw_param.get("acns_performance_acceleration_mode")
         if enable_acns is None and disable_acns is None:
-            return None, None, None
+            return None, None, None, None
         if enable_acns and disable_acns:
             raise MutuallyExclusiveArgumentError(
                 "Cannot specify --enable-acns and "
@@ -778,17 +782,19 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         disable_acns = bool(disable_acns) if disable_acns is not None else False
         acns = enable_acns or not disable_acns
         acns_observability = self.get_acns_observability()
+        acns_performance_acceleration_mode = self.get_acns_performance_acceleration_mode()
+        acns_perf_enabled = acns_performance_acceleration_mode == CONST_ACNS_PERFORMANCE_ACCELERATION_MODE_BPFVETH
         acns_security = self.get_acns_security()
-        if acns and (acns_observability is False and acns_security is False):
+        if acns and (acns_observability is False and acns_security is False and acns_perf_enabled is False):
             raise MutuallyExclusiveArgumentError(
-                "Cannot disable both observability and security when enabling ACNS. "
+                "Cannot disable observability, security, and performance acceleration when enabling ACNS. "
                 "Please enable at least one of them or disable ACNS with --disable-acns."
             )
-        if not acns and (acns_observability is not None or acns_security is not None):
+        if not acns and (acns_observability is not None or acns_security is not None or acns_perf_enabled):
             raise MutuallyExclusiveArgumentError(
                 "--disable-acns does not use any additional acns arguments."
             )
-        return acns, acns_observability, acns_security
+        return acns, acns_observability, acns_security, acns_perf_enabled
 
     def get_acns_observability(self) -> Union[bool, None]:
         """Get the enablement of acns observability
@@ -822,6 +828,21 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                     "--disable-acns-security and --disable-acns cannot be used with acns_advanced_networkpolicies."
                 )
         return self.raw_param.get("acns_advanced_networkpolicies")
+
+    def get_acns_performance_acceleration_mode(self) -> Union[str, None]:
+        """Get the value of acns_performance_acceleration_mode
+
+        :return: str or None
+        """
+        disable_acns = self.raw_param.get("disable_acns")
+        acns_performance_acceleration_mode = self.raw_param.get("acns_performance_acceleration_mode")
+        if (acns_performance_acceleration_mode is not None
+           and acns_performance_acceleration_mode != CONST_ACNS_PERFORMANCE_ACCELERATION_MODE_NONE):
+            if disable_acns:
+                raise MutuallyExclusiveArgumentError(
+                    "--disable-acns cannot be used with --acns-performance-acceleration-mode."
+                )
+        return acns_performance_acceleration_mode
 
     def get_acns_transit_encryption_type(self) -> Union[str, None]:
         """Get the value of acns_transit_encryption_type
@@ -3104,9 +3125,10 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             network_profile.network_dataplane = self.context.get_network_dataplane()
 
         acns = None
-        (acns_enabled, acns_observability_enabled, acns_security_enabled) = self.context.get_acns_enablement()
+        (acns_enabled, acns_observability_enabled, acns_security_enabled, _) = self.context.get_acns_enablement()
         acns_advanced_networkpolicies = self.context.get_acns_advanced_networkpolicies()
         acns_transit_encryption_type = self.context.get_acns_transit_encryption_type()
+        acns_performance_acceleration_mode = self.context.get_acns_performance_acceleration_mode()
         if acns_enabled is not None:
             acns = self.models.AdvancedNetworking(
                 enabled=acns_enabled,
@@ -3132,6 +3154,11 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                 if acns.security.transit_encryption is None:
                     acns.security.transit_encryption = self.models.AdvancedNetworkingSecurityTransitEncryption()
                 acns.security.transit_encryption.type = acns_transit_encryption_type
+            if acns_performance_acceleration_mode == CONST_ACNS_PERFORMANCE_ACCELERATION_MODE_BPFVETH:
+                if acns.performance is None:
+                    acns.performance = self.models.AdvancedNetworkingPerformance()
+                acns.performance.acceleration_mode = acns_performance_acceleration_mode
+
             network_profile.advanced_networking = acns
         return mc
 
@@ -4303,9 +4330,10 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         self._ensure_mc(mc)
 
         acns = None
-        (acns_enabled, acns_observability_enabled, acns_security_enabled) = self.context.get_acns_enablement()
+        (acns_enabled, acns_observability_enabled, acns_security_enabled, _) = self.context.get_acns_enablement()
         acns_advanced_networkpolicies = self.context.get_acns_advanced_networkpolicies()
         acns_transit_encryption_type = self.context.get_acns_transit_encryption_type()
+        acns_performance_acceleration_mode = self.context.get_acns_performance_acceleration_mode()
         if acns_enabled is not None:
             acns = self.models.AdvancedNetworking(
                 enabled=acns_enabled,
@@ -4331,6 +4359,10 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 if acns.security.transit_encryption is None:
                     acns.security.transit_encryption = self.models.AdvancedNetworkingSecurityTransitEncryption()
                 acns.security.transit_encryption.type = acns_transit_encryption_type
+            if acns_performance_acceleration_mode == CONST_ACNS_PERFORMANCE_ACCELERATION_MODE_BPFVETH:
+                if acns.performance is None:
+                    acns.performance = self.models.AdvancedNetworkingPerformance()
+                acns.performance.acceleration_mode = acns_performance_acceleration_mode
             mc.network_profile.advanced_networking = acns
         return mc
 
