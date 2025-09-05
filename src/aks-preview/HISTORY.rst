@@ -12,6 +12,9 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+18.0.0b36
++++++++
+
 * Add option `--acns-performance-acceleration-mode <None|BpfVeth>` to `az aks create/update`
 
 18.0.0b35
