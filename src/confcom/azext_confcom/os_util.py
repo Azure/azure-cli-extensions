@@ -4,7 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 import base64
-from typing import List
+from typing import List, Union
 import yaml
 import yaml.scanner
 import binascii
@@ -12,10 +12,13 @@ import shutil
 import json
 import os
 import stat
+from knack.log import get_logger
 from tarfile import TarFile
 from azext_confcom.errors import (
     eprint,
 )
+
+logger = get_logger(__name__)
 
 
 def bytes_to_base64(data: bytes) -> str:
@@ -34,6 +37,13 @@ def base64_to_str(data: str) -> str:
     except binascii.Error as e:
         raise ValueError(f"Invalid base64 string: {data}") from e
     return data_str
+
+
+def clean_up_temp_folder(temp_file_path: str) -> None:
+    # clean up the folder that the fragment was downloaded to
+    folder_name = os.path.dirname(temp_file_path)
+    logger.info("cleaning up folder with fragment: %s", folder_name)
+    shutil.rmtree(folder_name)
 
 
 def load_json_from_str(data: str) -> dict:
@@ -279,25 +289,31 @@ def map_image_from_tar(image_name: str, tar: TarFile, tar_location: str):
 
 
 # sometimes image tarfiles have readonly members. this will try to change their permissions and delete them
-def force_delete_silently(filename: str) -> None:
-    try:
-        os.chmod(filename, stat.S_IWRITE)
-    except FileNotFoundError:
-        pass
-    except PermissionError:
-        eprint(f"Permission denied to edit file: {filename}")
-    except OSError as e:
-        eprint(f"Error editing file: {filename}, {e}")
-    delete_silently(filename)
+def force_delete_silently(filename: Union[str, list[str]]) -> None:
+    if isinstance(filename, str):
+        filename = [filename]
+    for f in filename:
+        try:
+            os.chmod(f, stat.S_IWRITE)
+        except FileNotFoundError:
+            pass
+        except PermissionError:
+            eprint(f"Permission denied to edit file: {f}")
+        except OSError as e:
+            eprint(f"Error editing file: {f}, {e}")
+        delete_silently(f)
 
 
 # helper function to delete a file that may or may not exist
-def delete_silently(filename: str) -> None:
-    try:
-        os.remove(filename)
-    except FileNotFoundError:
-        pass
-    except PermissionError:
-        eprint(f"Permission denied to delete file: {filename}")
-    except OSError as e:
-        eprint(f"Error deleting file: {filename}, {e}")
+def delete_silently(filename: Union[str, list[str]]) -> None:
+    if isinstance(filename, str):
+        filename = [filename]
+    for f in filename:
+        try:
+            os.remove(f)
+        except FileNotFoundError:
+            pass
+        except PermissionError:
+            eprint(f"Permission denied to delete file: {f}")
+        except OSError as e:
+            eprint(f"Error deleting file: {f}, {e}")
