@@ -150,7 +150,7 @@ class MCPManager:
             self.stop_server()
             raise RuntimeError(f"Failed to start MCP server: {str(e)}") from e
 
-    def stop_server(self) -> None:  # pylint: disable=too-many-nested-blocks
+    def stop_server(self) -> None:  # pylint: disable=too-many-nested-blocks, too-many-branches
         """
         Stop aks-mcp server process.
         """
