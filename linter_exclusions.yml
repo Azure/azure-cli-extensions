@@ -3418,3 +3418,27 @@ neon postgres neon-database create:
 neon postgres get-postgres-version:
   rule_exclusions:
   - missing_command_example
+
+neon postgres branch:
+  rule_exclusions:
+  - require_wait_command_if_no_wait
+
+neon postgres endpoint:
+  rule_exclusions:
+  - require_wait_command_if_no_wait
+
+neon postgres neon-database:
+  rule_exclusions:
+  - require_wait_command_if_no_wait
+
+neon postgres neon-role:
+  rule_exclusions:
+  - require_wait_command_if_no_wait
+
+neon postgres organization:
+  rule_exclusions:
+  - require_wait_command_if_no_wait
+
+neon postgres project:
+  rule_exclusions:
+  - require_wait_command_if_no_wait
