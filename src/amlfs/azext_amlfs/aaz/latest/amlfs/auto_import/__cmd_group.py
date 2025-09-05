@@ -12,10 +12,10 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "amlfs",
+    "amlfs auto-import",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage Azure Managed Lustre Filesystem
+    """Manage Auto Import Job
     """
     pass
 
