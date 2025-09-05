@@ -952,7 +952,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             self.models,
             decorator_mode=DecoratorMode.CREATE,
         )
-        self.assertEqual(ctx_1.get_acns_enablement(), (None, None, None))
+        self.assertEqual(ctx_1.get_acns_enablement(), (None, None, None, None))
 
         # Flag set to True.
         ctx_2 = AKSPreviewManagedClusterContext(
@@ -965,7 +965,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             self.models,
             decorator_mode=DecoratorMode.CREATE,
         )
-        self.assertEqual(ctx_2.get_acns_enablement(), (True, None, None))
+        self.assertEqual(ctx_2.get_acns_enablement(), (True, None, None, None))
 
         # Flag set to True.
         ctx_3 = AKSPreviewManagedClusterContext(
@@ -978,7 +978,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             self.models,
             decorator_mode=DecoratorMode.UPDATE,
         )
-        self.assertEqual(ctx_3.get_acns_enablement(), (True, None, None))
+        self.assertEqual(ctx_3.get_acns_enablement(), (True, None, None, None))
 
         # Flag set to True and False.
         ctx_4 = AKSPreviewManagedClusterContext(
@@ -1007,7 +1007,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             self.models,
             decorator_mode=DecoratorMode.UPDATE,
         )
-        self.assertEqual(ctx_5.get_acns_enablement(), (False, None, None))
+        self.assertEqual(ctx_5.get_acns_enablement(), (False, None, None, None))
 
         ctx_6 = AKSPreviewManagedClusterContext(
             self.cmd,
@@ -1020,7 +1020,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             self.models,
             decorator_mode=DecoratorMode.UPDATE,
         )
-        self.assertEqual(ctx_6.get_acns_enablement(), (True, False, None))
+        self.assertEqual(ctx_6.get_acns_enablement(), (True, False, None, None))
 
         ctx_7 = AKSPreviewManagedClusterContext(
             self.cmd,
@@ -1033,7 +1033,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             self.models,
             decorator_mode=DecoratorMode.UPDATE,
         )
-        self.assertEqual(ctx_7.get_acns_enablement(), (True, None, False))
+        self.assertEqual(ctx_7.get_acns_enablement(), (True, None, False, None))
 
         # Cannot disable observability with enabling acns
         ctx_8 = AKSPreviewManagedClusterContext(
@@ -1046,7 +1046,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             self.models,
             decorator_mode=DecoratorMode.CREATE,
         )
-        self.assertEqual(ctx_8.get_acns_enablement(), (None, None, None))
+        self.assertEqual(ctx_8.get_acns_enablement(), (None, None, None, None))
 
         # Cannot disable security with enabling acns
         ctx_9 = AKSPreviewManagedClusterContext(
@@ -1059,7 +1059,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             self.models,
             decorator_mode=DecoratorMode.CREATE,
         )
-        self.assertEqual(ctx_9.get_acns_enablement(), (None, None, None))
+        self.assertEqual(ctx_9.get_acns_enablement(), (None, None, None, None))
 
         # Illegal flags enable acns, disable acns security, disable acns observability
         ctx_10 = AKSPreviewManagedClusterContext(
@@ -1109,6 +1109,98 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         # fail on get_acns_enablement mutual exclusive error
         with self.assertRaises(MutuallyExclusiveArgumentError):
             ctx_12.get_acns_enablement()
+
+        # Enable ACNS and ACNS performance
+        ctx_13 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "enable_acns": True,
+                    "acns_performance_acceleration_mode": "BpfVeth",
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_13.get_acns_enablement(), (True, None, None, True))
+
+        # Enable ACNS and ACNS performance with disable acns security, acns observability
+        ctx_14 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "enable_acns": True,
+                    "acns_performance_acceleration_mode": "BpfVeth",
+                    "disable_acns_security": True,
+                    "disable_acns_observability": True,
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_14.get_acns_enablement(), (True, False, False, True))
+
+        # Enable all of ACNS (security and observability unspecified)
+        ctx_15 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "enable_acns": True,
+                    "acns_performance_acceleration_mode": "BpfVeth",
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        self.assertEqual(ctx_15.get_acns_enablement(), (True, None, None, True))
+
+        # Enable ACNS, disable performance, security and observability unspecified
+        ctx_15 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "enable_acns": True,
+                    "acns_performance_acceleration_mode": "None",
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        self.assertEqual(ctx_15.get_acns_enablement(), (True, None, None, False))
+
+        # Illegal flags disable acns and disable acns performance
+        ctx_16 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "disable_acns": True,
+                    "acns_performance_acceleration_mode": "None",
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        # fail on get_acns_enablement mutual exclusive error
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            ctx_16.get_acns_enablement()
+
+        # Illegal flags enable acns and all suites disabled
+        ctx_17 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "enable_acns": True,
+                    "acns_performance_acceleration_mode": "None",
+                    "disable_acns_security": True,
+                    "disable_acns_observability": True,
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        # fail on get_acns_enablement mutual exclusive error
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            ctx_17.get_acns_enablement()            
 
     def test_get_enable_managed_identity(self):
         # custom value

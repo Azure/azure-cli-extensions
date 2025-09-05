@@ -783,14 +783,17 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         acns = enable_acns or not disable_acns
         acns_observability = self.get_acns_observability()
         acns_performance_acceleration_mode = self.get_acns_performance_acceleration_mode()
-        acns_perf_enabled = acns_performance_acceleration_mode == CONST_ACNS_PERFORMANCE_ACCELERATION_MODE_BPFVETH
+        acns_perf_enabled = None
+        if acns_performance_acceleration_mode is not None:
+            acns_perf_enabled = acns_performance_acceleration_mode == CONST_ACNS_PERFORMANCE_ACCELERATION_MODE_BPFVETH
         acns_security = self.get_acns_security()
-        if acns and (acns_observability is False and acns_security is False and acns_perf_enabled is False):
+        if acns and (acns_observability is False and acns_security is False and acns_perf_enabled is not True):
             raise MutuallyExclusiveArgumentError(
                 "Cannot disable observability, security, and performance acceleration when enabling ACNS. "
                 "Please enable at least one of them or disable ACNS with --disable-acns."
             )
-        if not acns and (acns_observability is not None or acns_security is not None or acns_perf_enabled):
+        if not acns and (acns_observability is not None or acns_security is not None
+           or acns_performance_acceleration_mode is not None):
             raise MutuallyExclusiveArgumentError(
                 "--disable-acns does not use any additional acns arguments."
             )
