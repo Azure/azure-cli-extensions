@@ -18,8 +18,8 @@ class Update(AAZCommand):
     """Update an auto import job instance.
 
     :example: autoImportJobs_Update
-        az amlfs auto-import create --resource-group scgroup --aml-filesystem-name fs1 --auto-import-job-name autojob1 --admin-status Disable
-        az amlfs auto-import create --resource-group scgroup --aml-filesystem-name fs1 --auto-import-job-name autojob1 --tags "{Dept:ContosoAds}"
+        az amlfs auto-import update --resource-group scgroup --aml-filesystem-name fs1 --auto-import-job-name autojob1 --admin-status Disable
+        az amlfs auto-import update --resource-group scgroup --aml-filesystem-name fs1 --auto-import-job-name autojob1 --tags "{Dept:ContosoAds}"
     """
 
     _aaz_info = {
