@@ -1,3 +1,9 @@
+# pylint: disable=too-many-lines
+# --------------------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License. See License.txt in the project root for license information.
+# --------------------------------------------------------------------------------------------
+
 from azext_aks_preview._client_factory import CUSTOM_MGMT_AKS_PREVIEW
 
 from azure.cli.core.azclierror import RequiredArgumentMissingError
