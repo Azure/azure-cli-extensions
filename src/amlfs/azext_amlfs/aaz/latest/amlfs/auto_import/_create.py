@@ -106,7 +106,7 @@ class Create(AAZCommand):
             help="An array of blob paths/prefixes that get auto imported to the cluster namespace. It has '/' as the default value. Number of maximum allowed paths is 100.",
         )
         _args_schema.conflict_resolution_mode = AAZStrArg(
-            options=["--conflict-resolution-mode"],
+            options=["--conflict-mode", "--conflict-resolution-mode"],
             arg_group="Properties",
             help="How the auto import job will handle conflicts. For example, if the auto import job is trying to bring in a directory, but a file is at that path, how it handles it. Fail indicates that the auto import job should stop immediately and not do anything with the conflict. Skip indicates that it should pass over the conflict. OverwriteIfDirty causes the auto import job to delete and re-import the file or directory if it is a conflicting type, is dirty, or is currently released. OverwriteAlways extends OverwriteIfDirty to include releasing files that had been restored but were not dirty. Please reference https://learn.microsoft.com/en-us/azure/azure-managed-lustre/blob-integration#conflict-resolution-mode for a thorough explanation of these resolution modes.",
             default="Skip",
