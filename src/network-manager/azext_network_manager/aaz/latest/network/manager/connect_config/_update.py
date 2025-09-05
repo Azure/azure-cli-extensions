@@ -95,6 +95,7 @@ class Update(AAZCommand):
         )
         _args_schema.hubs = AAZListArg(
             options=["--hubs"],
+            singular_options=["--hub"],
             arg_group="Properties",
             help="List of hubItems",
             nullable=True,
