@@ -992,10 +992,10 @@ def arm_exception_handler(
         status_code = ex.status_code
         if status_code == 404 and return_if_not_found:
             return
-        if status_code // 100 == 4:
+        if status_code is not None and status_code // 100 == 4:
             telemetry.set_user_fault()
         telemetry.set_exception(exception=ex, fault_type=fault_type, summary=summary)
-        if status_code // 100 == 5:
+        if status_code is not None and status_code // 100 == 5:
             raise AzureInternalError(
                 "Http response error occured while making ARM request: "
                 + str(ex)
