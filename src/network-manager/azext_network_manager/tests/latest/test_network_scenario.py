@@ -709,7 +709,7 @@ class NetworkScenarioTest(ScenarioTest):
         self.cmd('az group delete --name {rg} --yes --no-wait')
 
     @serial_test()
-    @ResourceGroupPreparer(name_prefix='test_network_manager_connect_config_with_capabilities', location='eastus2')
+    @ResourceGroupPreparer(name_prefix='test_network_manager_connect_config_with_capabilities', location='eastus2euap')
     @VirtualNetworkPreparer()
     def test_network_manager_connect_config_with_capabilities(self, virtual_network, resource_group):
         self.kwargs.update({
@@ -726,7 +726,7 @@ class NetworkScenarioTest(ScenarioTest):
                  '--scope-accesses "Connectivity" '
                  '--network-manager-scopes '
                  ' subscriptions={sub} '
-                 '-l eastus2 '
+                 '-l eastus2euap '
                  '--resource-group {rg}')
 
         self.cmd('network manager group create --name {group_name} --network-manager-name {manager_name} --description {description} '
@@ -735,28 +735,26 @@ class NetworkScenarioTest(ScenarioTest):
         self.cmd('network manager group static-member create --name {name} --network-group-name {group_name} --network-manager-name {manager_name} '
                  '--resource-id="{sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualnetworks/{virtual_network}"  -g {rg} ')
 
-        # Test CREATE with connect-capabilities
         self.cmd('network manager connect-config create --configuration-name {config_name} --network-manager-name {manager_name} -g {rg} '
                  '--applies-to-groups \'[{{"group-connectivity":"DirectlyConnected","network-group-id":"{sub}/resourceGroups/{rg}/providers/Microsoft.Network/networkManagers/{manager_name}/networkGroups/{group_name}","is-global":false,"use-hub-gateway":true}}]\' '
                  '--connectivity-topology "HubAndSpoke" --delete-existing-peering true '
                  '--hubs \'[{{"resource-id":"{sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualnetworks/{virtual_network}","resource-type":"Microsoft.Network/virtualNetworks"}}]\' '
                  '--description "Sample Configuration with Capabilities" --is-global true '
-                 '--connect-capabilities connected-group-address-overlap=Allowed connected-group-private-endpoints-scale=HighScale peering-enforcement=Enforced')
+                 '--connect-capabilities connected-group-address-overlap=Disallowed connected-group-private-endpoints-scale=HighScale peering-enforcement=Enforced')
         
         # Test SHOW with connect-capabilities validation
         config_id = self.cmd('network manager connect-config show --configuration-name {config_name} --network-manager-name {manager_name} -g {rg}', checks=[
-            self.check('properties.connectivityCapabilities.connectedGroupAddressOverlap', 'Allowed'),
-            self.check('properties.connectivityCapabilities.connectedGroupPrivateEndpointsScale', 'HighScale'),
-            self.check('properties.connectivityCapabilities.peeringEnforcement', 'Enforced')
+            self.check('connectivityCapabilities.connectedGroupAddressOverlap', 'Disallowed'),
+            self.check('connectivityCapabilities.connectedGroupPrivateEndpointsScale', 'HighScale'),
+            self.check('connectivityCapabilities.peeringEnforcement', 'Enforced')
         ]).get_output_in_json()["id"]
         self.kwargs.update({"config_id": config_id})
 
-        # Test UPDATE with different connect-capabilities values
         self.cmd('network manager connect-config update --configuration-name {config_name} --network-manager-name {manager_name} -g {rg} '
-                 '--connect-capabilities connected-group-address-overlap=Disallowed connected-group-private-endpoints-scale=Standard peering-enforcement=Unenforced', checks=[
-            self.check('properties.connectivityCapabilities.connectedGroupAddressOverlap', 'Disallowed'),
-            self.check('properties.connectivityCapabilities.connectedGroupPrivateEndpointsScale', 'Standard'),
-            self.check('properties.connectivityCapabilities.peeringEnforcement', 'Unenforced')
+                 '--connect-capabilities connected-group-address-overlap=Allowed connected-group-private-endpoints-scale=Standard peering-enforcement=Unenforced', checks=[
+            self.check('connectivityCapabilities.connectedGroupAddressOverlap', 'Allowed'),
+            self.check('connectivityCapabilities.connectedGroupPrivateEndpointsScale', 'Standard'),
+            self.check('connectivityCapabilities.peeringEnforcement', 'Unenforced')
         ])
         
         # Test LIST operation (should work normally)
