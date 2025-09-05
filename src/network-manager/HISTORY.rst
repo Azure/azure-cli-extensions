@@ -3,6 +3,10 @@
 Release History
 ===============
 
+2.0.2
++++++
+* * Add new parameter connect-capabilities to cmd `az network manager connect-config`
+
 2.0.1
 +++++
 * Fix the post commit commands for AVNM configuration (All config types)
