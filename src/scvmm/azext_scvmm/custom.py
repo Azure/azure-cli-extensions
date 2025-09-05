@@ -672,9 +672,11 @@ ExtensibilityResources
                 type=EXTENDED_LOCATION_TYPE,
                 name=scvmm.extended_location.name,
             ),
-            infrastructure_profile=InfrastructureProfile(
-                inventory_item_id=inventoryId,
-            ),
+            properties=VirtualMachineInstanceProperties(
+                infrastructure_profile=InfrastructureProfile(
+                    inventory_item_id=inventoryId,
+                ),
+            )
         )
         try:
             if not machineKind:

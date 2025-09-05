@@ -263,6 +263,7 @@ class ScVmmScenarioTest(ScenarioTest):
         self.cmd(
             'az scvmm vm create-checkpoint -g {resource_group} --name {vm_name} --checkpoint-name {checkpoint_name} --checkpoint-description {checkpoint_description}',
         )
+        
         alias_sub = self.cmd('az scvmm vm show -g {resource_group} --name {vm_name}',
                         checks=[
                             self.check('properties.provisioningState', 'Succeeded'),
@@ -278,6 +279,7 @@ class ScVmmScenarioTest(ScenarioTest):
         self.cmd(
             'az scvmm vm restore-checkpoint -g {resource_group} --name {vm_name} --checkpoint-id {checkpoint_id}',
         )
+        
         self.cmd(
             'az scvmm vm show -g {resource_group} --name {vm_name}',
             checks=[
@@ -304,6 +306,7 @@ class ScVmmScenarioTest(ScenarioTest):
         self.cmd(
             'az scvmm vm delete-checkpoint -g {resource_group} --name {vm_name} --checkpoint-id {checkpoint_id}',
         )
+        
         self.cmd(
             'az scvmm vm show -g {resource_group} --name {vm_name}',
             checks=[
@@ -311,6 +314,23 @@ class ScVmmScenarioTest(ScenarioTest):
                 self.check('properties.infrastructureProfile.checkpoints | length(@)', 0),                           
             ]
         )
+
+        self.cmd('az scvmm vm delete -g {resource_group} --name {vm_name} -y')
+        
+        with self.assertRaisesRegex(SystemExit, "3"):
+            self.cmd('az scvmm vm show -g {resource_group} --name {vm_name}')
+
+        scvmm_id = self.cmd(
+            'az scvmm vmmserver show -g {resource_group} --name {vmmserver_name} --query id -o tsv'
+        ).output.strip()
+        
+        self.assertTrue(scvmm_id, "Expected SCVMM ID to be non-empty")
+
+        self.cmd('az scvmm vm create-from-machines --scvmm-id {}'.format(scvmm_id))
+
+        self.cmd('az scvmm vm show -g {resource_group} --name {vm_name}', checks=[
+            self.check('properties.provisioningState', 'Succeeded'),
+        ])
 
         self.cmd('az scvmm vm delete -g {resource_group} --name {vm_name} --delete-from-host -y')
 
