@@ -399,9 +399,8 @@ class NetworkScenarioTest(ScenarioTest):
                  '--resource-id="{sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualnetworks/{virtual_network}"  -g {rg} ')
 
         self.cmd('network manager connect-config create --configuration-name {config_name} --network-manager-name {manager_name} -g {rg} '
-                 '--applies-to-groups \'[{{"group-connectivity":"None","network-group-id":"{sub}/resourceGroups/{rg}/providers/Microsoft.Network/networkManagers/{manager_name}/networkGroups/{group_name}","is-global":false,"use-hub-gateway":true}}]\' '
-                 '--connectivity-topology "HubAndSpoke" --delete-existing-peering true '
-                 '--hubs \'[{{"resource-id":"{sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualnetworks/{virtual_network}","resource-type":"Microsoft.Network/virtualNetworks"}}]\' '
+                 '--applies-to-group "[{{group-connectivity:None,network-group-id:{sub}/resourceGroups/{rg}/providers/Microsoft.Network/networkManagers/{manager_name}/networkGroups/{group_name},is-global:false,use-hub-gateway:true}}]" '
+                 '--connectivity-topology "HubAndSpoke" --delete-existing-peering true --hub "[{{resource-id:{sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualnetworks/{virtual_network},resource-type:Microsoft.Network/virtualNetworks}}]" '
                  '--description "Sample Configuration" --is-global true')
         config_id = self.cmd('network manager connect-config show --configuration-name {config_name} --network-manager-name {manager_name} -g {rg}').get_output_in_json()["id"]
         self.kwargs.update({"config_id": config_id})
@@ -736,11 +735,10 @@ class NetworkScenarioTest(ScenarioTest):
                  '--resource-id="{sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualnetworks/{virtual_network}"  -g {rg} ')
 
         self.cmd('network manager connect-config create --configuration-name {config_name} --network-manager-name {manager_name} -g {rg} '
-                 '--applies-to-groups \'[{{"group-connectivity":"DirectlyConnected","network-group-id":"{sub}/resourceGroups/{rg}/providers/Microsoft.Network/networkManagers/{manager_name}/networkGroups/{group_name}","is-global":false,"use-hub-gateway":true}}]\' '
-                 '--connectivity-topology "HubAndSpoke" --delete-existing-peering true '
-                 '--hubs \'[{{"resource-id":"{sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualnetworks/{virtual_network}","resource-type":"Microsoft.Network/virtualNetworks"}}]\' '
+                 '--applies-to-group "[{{group-connectivity:DirectlyConnected,network-group-id:{sub}/resourceGroups/{rg}/providers/Microsoft.Network/networkManagers/{manager_name}/networkGroups/{group_name},is-global:false,use-hub-gateway:true}}]" '
+                 '--connectivity-topology "HubAndSpoke" --delete-existing-peering true --hub "[{{resource-id:{sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualnetworks/{virtual_network},resource-type:Microsoft.Network/virtualNetworks}}]" '
                  '--description "Sample Configuration with Capabilities" --is-global true '
-                 '--connect-capabilities connected-group-address-overlap=Disallowed connected-group-private-endpoints-scale=HighScale peering-enforcement=Enforced')
+                 '--connect-capabilities "{{connected-group-address-overlap:Disallowed,connected-group-private-endpoints-scale:HighScale,peering-enforcement:Enforced}}"')
         
         # Test SHOW with connect-capabilities validation
         config_id = self.cmd('network manager connect-config show --configuration-name {config_name} --network-manager-name {manager_name} -g {rg}', checks=[
@@ -751,7 +749,7 @@ class NetworkScenarioTest(ScenarioTest):
         self.kwargs.update({"config_id": config_id})
 
         self.cmd('network manager connect-config update --configuration-name {config_name} --network-manager-name {manager_name} -g {rg} '
-                 '--connect-capabilities connected-group-address-overlap=Allowed connected-group-private-endpoints-scale=Standard peering-enforcement=Unenforced', checks=[
+                 '--connect-capabilities "{{connected-group-address-overlap:Allowed,connected-group-private-endpoints-scale:Standard,peering-enforcement:Unenforced}}"', checks=[
             self.check('connectivityCapabilities.connectedGroupAddressOverlap', 'Allowed'),
             self.check('connectivityCapabilities.connectedGroupPrivateEndpointsScale', 'Standard'),
             self.check('connectivityCapabilities.peeringEnforcement', 'Unenforced')

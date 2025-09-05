@@ -59,7 +59,7 @@ class Create(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.applies_to_groups = AAZListArg(
-            options=["--applies-to-groups"],
+            options=['--applies-to-group', '--applies-to-groups'],
             arg_group="Properties",
             help="Groups for configuration",
         )
@@ -86,7 +86,7 @@ class Create(AAZCommand):
             help="A description of the connectivity configuration.",
         )
         _args_schema.hubs = AAZListArg(
-            options=["--hubs"],
+            options=['--hub', '--hubs'],
             arg_group="Properties",
             help="List of hubItems",
         )
