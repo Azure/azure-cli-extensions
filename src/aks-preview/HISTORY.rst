@@ -12,6 +12,15 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+18.0.b30
++++++++
+* `az aks create`: Add new parameter `--container-storage-version` to enable the given version of Azure Container Storage.
+* `az aks update`: Add new parameter `--container-storage-version` to enable the given version of Azure Container Storage.
+* `az aks create`: Change behavior of `--enable-azure-container-storage` to enable latest Azure Container Storage by default.
+* `az aks update`: Change behavior of `--enable-azure-container-storage` to enable latest Azure Container Storage by default.
+* `az aks update`: Change behavior of `--disable-azure-container-storage` to handle disable based on the installed version.
+
+
 18.0.0b29
 +++++++
 * Refactor code to suppress ssh access warning message when creating an automatic cluster.
