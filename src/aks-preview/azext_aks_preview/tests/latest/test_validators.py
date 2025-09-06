@@ -1580,7 +1580,7 @@ class TestValidateEnableAzureContainerStorageV1(unittest.TestCase):
         storage_pool_size = "5Ti"
         storage_pool_type = acstor_consts.CONST_STORAGE_POOL_TYPE_AZURE_DISK
         storage_pool_sku = acstor_consts.CONST_STORAGE_POOL_SKU_PREMIUM_LRS
-        agentpools = {"nodepool1": {"node_labels": {"acstor.azure.com/io-engine": "acstor"}, "count": 3}, "nodepool2" :{}}
+        agentpools = {"nodepool1": {"node_labels": {"acstor.azure.com/io-engine": "acstor"}, "count": 3}, "nodepool2": {}}
         err = (
             "Invalid --enable-azure-container-storage value. "
             "Azure Container Storage is already enabled for storage pool type "

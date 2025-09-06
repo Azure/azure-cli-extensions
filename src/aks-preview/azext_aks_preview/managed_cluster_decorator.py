@@ -4146,7 +4146,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         enable_azure_container_storage = self.context.get_intermediate("enable_azure_container_storage")
         container_storage_version = self.context.get_intermediate("container_storage_version")
         if enable_azure_container_storage:
-            if container_storage_version is None and container_storage_version == CONST_ACSTOR_VERSION_V1:
+            if container_storage_version is not None and container_storage_version == CONST_ACSTOR_VERSION_V1:
                 if cluster.identity_profile is None or cluster.identity_profile["kubeletidentity"] is None:
                     logger.warning(
                         "Unexpected error getting kubelet's identity for the cluster. "
@@ -4228,12 +4228,6 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                         scope=cluster.id,
                         resolve_assignee=False,
                     )
-        else:
-            self.context.external_functions.perform_enable_azure_container_storage(
-                self.cmd,
-                self.context.get_resource_group_name(),
-                self.context.get_name(),
-            )
 
 
 class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
