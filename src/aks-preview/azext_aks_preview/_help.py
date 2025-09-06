@@ -230,6 +230,9 @@ helps['aks create'] = f"""
         - name: --acns-advanced-networkpolicies
           type: string
           short-summary: Used to enable advanced network policies (None, FQDN or L7) on a cluster when enabling advanced networking features with "--enable-acns".
+        - name: --acns-performance-acceleration-mode
+          type: string
+          short-summary: Used to set the acceleration mode (None or BpfVeth) on a cluster when enabling advanced networking features with "--enable-acns".
         - name: --enable-retina-flow-logs
           type: bool
           short-summary: Enable advanced network flow log collection functionalities on a cluster.
@@ -1244,6 +1247,9 @@ helps['aks update'] = """
         - name: --acns-advanced-networkpolicies
           type: string
           short-summary: Used to enable advanced network policies (None, FQDN or L7) on a cluster when enabling advanced networking features with "--enable-acns".
+        - name: --acns-performance-acceleration-mode
+          type: string
+          short-summary: Used to set the acceleration mode (None or BpfVeth) on a cluster when enabling advanced networking features with "--enable-acns".
         - name: --enable-retina-flow-logs
           type: bool
           short-summary: Enable advanced network flow log collection functionalities on a cluster.
