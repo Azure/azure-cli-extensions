@@ -698,7 +698,8 @@ class SessionPoolUpdateDecorator(SessionPoolPreviewDecorator):
                 self.get_argument_memory() is not None or
                 self.get_argument_env_vars() is not None or
                 self.get_argument_args() is not None or
-                self.get_argument_startup_command() is not None)
+                self.get_argument_startup_command() is not None or
+                self.get_argument_probe_yaml() is not None)
 
     def has_registry_change(self):
         return (self.get_argument_registry_server() is not None or
