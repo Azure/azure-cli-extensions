@@ -8,7 +8,6 @@ from typing import Tuple
 from azext_aks_preview.azurecontainerstorage._consts import (
     CONST_ACSTOR_ALL,
     CONST_ACSTOR_IO_ENGINE_LABEL_KEY,
-    CONST_ACSTOR_K8S_EXTENSION_NAME,
     CONST_DISK_TYPE_EPHEMERAL_VOLUME_ONLY,
     CONST_DISK_TYPE_PV_WITH_ANNOTATION,
     CONST_EPHEMERAL_NVME_PERF_TIER_BASIC,
@@ -182,7 +181,7 @@ def get_extension_installed_and_cluster_configs(
             "managedClusters",
         )
 
-        is_extension_installed = extension.extension_type.lower() == CONST_ACSTOR_K8S_EXTENSION_NAME
+        is_extension_installed = extension.extension_type.lower() == CONST_ACSTOR_V1_K8S_EXTENSION_NAME
         config_settings = extension.configuration_settings
 
         if is_extension_installed and config_settings is not None:

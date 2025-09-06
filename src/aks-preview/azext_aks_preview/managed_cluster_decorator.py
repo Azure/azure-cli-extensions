@@ -3607,10 +3607,16 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                         CONST_DISK_TYPE_EPHEMERAL_VOLUME_ONLY,
                         CONST_EPHEMERAL_NVME_PERF_TIER_STANDARD,
                     )
-                    from azure.cli.command_modules.acs.azurecontainerstorage._helpers import (
-                        generate_vm_sku_cache_for_region
+
+                    vm_cache_generated = self.context.get_intermediate(
+                        "vm_cache_generated",
+                        default_value=False,
                     )
-                    generate_vm_sku_cache_for_region(self.cmd.cli_ctx, self.context.get_location())
+
+                    if not vm_cache_generated:
+                        from azext_aks_preview.azurecontainerstorage._helpers import generate_vm_sku_cache_for_region
+                        generate_vm_sku_cache_for_region(self.cmd.cli_ctx, self.context.get_location())
+                        self.context.set_intermediate("vm_cache_generated", True, overwrite_exists=True)
 
                     default_ephemeral_disk_volume_type = CONST_DISK_TYPE_EPHEMERAL_VOLUME_ONLY
                     default_ephemeral_disk_nvme_perf_tier = CONST_EPHEMERAL_NVME_PERF_TIER_STANDARD
@@ -4214,20 +4220,20 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                     is_called_from_extension=True,
                 )
 
-            # Add role assignments for automatic sku
-            if cluster.sku is not None and cluster.sku.name == "Automatic":
-                try:
-                    user = get_graph_client(self.cmd.cli_ctx).signed_in_user_get()
-                except Exception as e:  # pylint: disable=broad-except
-                    logger.warning("Could not get signed in user: %s", str(e))
-                else:
-                    self.context.external_functions._add_role_assignment_executor_new(  # type: ignore # pylint: disable=protected-access
-                        self.cmd,
-                        "Azure Kubernetes Service RBAC Cluster Admin",
-                        user["id"],
-                        scope=cluster.id,
-                        resolve_assignee=False,
-                    )
+        # Add role assignments for automatic sku
+        if cluster.sku is not None and cluster.sku.name == "Automatic":
+            try:
+                user = get_graph_client(self.cmd.cli_ctx).signed_in_user_get()
+            except Exception as e:  # pylint: disable=broad-except
+                logger.warning("Could not get signed in user: %s", str(e))
+            else:
+                self.context.external_functions._add_role_assignment_executor_new(  # type: ignore # pylint: disable=protected-access
+                    self.cmd,
+                    "Azure Kubernetes Service RBAC Cluster Admin",
+                    user["id"],
+                    scope=cluster.id,
+                    resolve_assignee=False,
+                )
 
 
 class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
@@ -4546,26 +4552,38 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 from azure.cli.command_modules.acs.azurecontainerstorage._helpers import (
                     get_extension_installed_and_cluster_configs
                 )
-                (
-                    is_extension_installed,
-                    is_azureDisk_enabled,
-                    is_elasticSan_enabled,
-                    is_ephemeralDisk_localssd_enabled,
-                    is_ephemeralDisk_nvme_enabled,
-                    current_core_value,
-                    existing_ephemeral_disk_volume_type,
-                    existing_perf_tier,
-                ) = get_extension_installed_and_cluster_configs(
-                    self.cmd,
-                    self.context.get_resource_group_name(),
-                    self.context.get_name(),
-                    mc.agent_pool_profiles,
+                try:
+                    (
+                        is_extension_installed,
+                        is_azureDisk_enabled,
+                        is_elasticSan_enabled,
+                        is_ephemeralDisk_localssd_enabled,
+                        is_ephemeralDisk_nvme_enabled,
+                        current_core_value,
+                        existing_ephemeral_disk_volume_type,
+                        existing_perf_tier,
+                    ) = get_extension_installed_and_cluster_configs(
+                        self.cmd,
+                        self.context.get_resource_group_name(),
+                        self.context.get_name(),
+                        mc.agent_pool_profiles,
+                    )
+                except UnknownError as e:
+                    logger.error("\nError fetching installed extension and cluster config: %s", e)
+                    return mc
+                except Exception as ex:  # pylint: disable=broad-except
+                    logger.error("Exception fetching installed extension and cluster config: %s", ex)
+                    return mc
+
+                vm_cache_generated = self.context.get_intermediate(
+                    "vm_cache_generated",
+                    default_value=False,
                 )
 
-                from azure.cli.command_modules.acs.azurecontainerstorage._helpers import (
-                    generate_vm_sku_cache_for_region
-                )
-                generate_vm_sku_cache_for_region(self.cmd.cli_ctx, self.context.get_location())
+                if not vm_cache_generated:
+                    from azext_aks_preview.azurecontainerstorage._helpers import generate_vm_sku_cache_for_region
+                    generate_vm_sku_cache_for_region(self.cmd.cli_ctx, self.context.get_location())
+                    self.context.set_intermediate("vm_cache_generated", True, overwrite_exists=True)
 
                 if enable_azure_container_storage:
                     from azure.cli.command_modules.acs.azurecontainerstorage._helpers import (
@@ -4647,13 +4665,29 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                     )
 
                     if is_ephemeralDisk_nvme_enabled and ephemeral_disk_nvme_perf_tier is not None:
-                        msg = (
-                            "Changing ephemeralDisk NVMe performance tier may result in a temporary "
-                            "interruption to the applications using Azure Container Storage. Do you "
-                            "want to continue with this operation?"
+                        # Adding this intermediate and check to ensure that the below
+                        # message prompt doesn't appear twice when aks-preview extension
+                        # is called from both update_mc_profile_preview and update_mc_profile_default.
+                        is_azure_container_storage_perf_tier_op_set = self.context.get_intermediate(
+                            "azure_container_storage_perf_tier_op_set",
+                            default_value="default",
                         )
-                        if not (self.context.get_yes() or prompt_y_n(msg, default="n")):
-                            raise DecoratorEarlyExitException()
+
+                        if is_azure_container_storage_perf_tier_op_set == "default":
+                            msg = (
+                                "Changing ephemeralDisk NVMe performance tier may result in a temporary "
+                                "interruption to the applications using Azure Container Storage. Do you "
+                                "want to continue with this operation?"
+                            )
+                            if not (self.context.get_yes() or prompt_y_n(msg, default="n")):
+                                raise DecoratorEarlyExitException()
+
+                        self.context.set_intermediate(
+                            "azure_container_storage_perf_tier_op_set",
+                            True,
+                            overwrite_exists=True
+                        )
+
                     # If the extension is already installed,
                     # we expect that the Azure Container Storage
                     # nodes are already labelled. Use those label
@@ -4778,7 +4812,6 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                     overwrite_exists=True
                 )
                 self.context.set_intermediate("current_core_value", current_core_value, overwrite_exists=True)
-
             else:
                 storage_pool_name = self.context.raw_param.get("storage_pool_name")
                 pool_sku = self.context.raw_param.get("storage_pool_sku")
@@ -6113,7 +6146,6 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                         existing_ephemeral_nvme_perf_tier,
                         is_called_from_extension=True,
                     )
-
             else:
                 self.context.external_functions.perform_disable_azure_container_storage(
                     self.cmd,

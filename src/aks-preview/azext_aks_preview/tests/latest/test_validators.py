@@ -1339,8 +1339,8 @@ class TestValidateEnableAzureContainerStorageV1(unittest.TestCase):
         perf_tier = acstor_consts.CONST_EPHEMERAL_NVME_PERF_TIER_PREMIUM
         storage_pool_type = acstor_consts.CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK
         err = (
-                "Azure Container Storage is already configured with --ephemeral-disk-nvme-perf-tier "
-                f"value set to {perf_tier}."
+            "Azure Container Storage is already configured with --ephemeral-disk-nvme-perf-tier "
+            f"value set to {perf_tier}."
         )
         with self.assertRaises(InvalidArgumentValueError) as cm:
             acstor_validator.validate_enable_azure_container_storage_v1_params(
@@ -1352,8 +1352,8 @@ class TestValidateEnableAzureContainerStorageV1(unittest.TestCase):
         disk_vol_type = acstor_consts.CONST_DISK_TYPE_PV_WITH_ANNOTATION
         storage_pool_type = acstor_consts.CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK
         err = (
-                "Azure Container Storage is already configured with --ephemeral-disk-volume-type "
-                f"value set to {disk_vol_type}."
+            "Azure Container Storage is already configured with --ephemeral-disk-volume-type "
+            f"value set to {disk_vol_type}."
         )
         with self.assertRaises(InvalidArgumentValueError) as cm:
             acstor_validator.validate_enable_azure_container_storage_v1_params(
@@ -1366,9 +1366,9 @@ class TestValidateEnableAzureContainerStorageV1(unittest.TestCase):
         disk_vol_type = acstor_consts.CONST_DISK_TYPE_PV_WITH_ANNOTATION
         storage_pool_type = acstor_consts.CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK
         err = (
-                "Azure Container Storage is already configured with --ephemeral-disk-volume-type "
-                f"value set to {disk_vol_type} and --ephemeral-disk-nvme-perf-tier "
-                f"value set to {perf_tier}."
+            "Azure Container Storage is already configured with --ephemeral-disk-volume-type "
+            f"value set to {disk_vol_type} and --ephemeral-disk-nvme-perf-tier "
+            f"value set to {perf_tier}."
         )
         with self.assertRaises(InvalidArgumentValueError) as cm:
             acstor_validator.validate_enable_azure_container_storage_v1_params(
@@ -1451,7 +1451,7 @@ class TestValidateEnableAzureContainerStorageV1(unittest.TestCase):
         storage_pool_type = acstor_consts.CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK
         storage_pool_option = acstor_consts.CONST_STORAGE_POOL_OPTION_SSD
         nodepool_list = "pool1,pool2"
-        agentpools = {"nodepool1": {}, "nodepool2":{}}
+        agentpools = {"nodepool1": {}, "nodepool2": {}}
         err = (
             "Node pool: pool1 not found. Please provide a comma separated "
             "string of existing node pool names in --azure-container-storage-nodepools."
