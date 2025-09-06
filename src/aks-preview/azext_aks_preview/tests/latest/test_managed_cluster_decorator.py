@@ -1200,7 +1200,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         )
         # fail on get_acns_enablement mutual exclusive error
         with self.assertRaises(MutuallyExclusiveArgumentError):
-            ctx_17.get_acns_enablement()            
+            ctx_17.get_acns_enablement()
 
     def test_get_enable_managed_identity(self):
         # custom value
