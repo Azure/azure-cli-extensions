@@ -2114,6 +2114,20 @@ helps['containerapp session code-interpreter list-files'] = """
           az containerapp session code-interpreter list-files -n MySessionPool -g MyResourceGroup --identifier MySession --path my-directory
 """
 
+helps['containerapp session custom-container'] = """
+    type: group
+    short-summary: Commands to interact with and manage custom container sessions.
+"""
+
+helps['containerapp session custom-container stop-session'] = """
+    type: command
+    short-summary: Stop a custom container session.
+    examples:
+    - name: Stop a custom container session.
+      text: |
+          az containerapp session custom-container stop-session -n MySessionPool -g MyResourceGroup --identifier MySession
+"""
+
 helps['containerapp java'] = """
     type: group
     short-summary: Commands to manage Java workloads.
