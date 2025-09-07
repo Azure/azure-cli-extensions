@@ -8,6 +8,7 @@ from azure.cli.command_modules.containerapp._utils import format_location
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck, JMESPathCheckExists)
+from knack.util import CLIError
 
 from .common import (TEST_LOCATION, STAGE_LOCATION, write_test_file,
                      clean_up_test_file,
