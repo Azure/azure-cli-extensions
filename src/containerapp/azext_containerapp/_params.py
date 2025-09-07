@@ -492,6 +492,12 @@ def load_arguments(self, _):
         c.argument('code', help="The code to execute in the code interpreter session")
         c.argument('timeout_in_seconds', type=int, validator=validate_session_timeout_in_seconds, default=60, help="Duration in seconds code in session can run prior to timing out 1 - 220 secs, e.g. 30")
 
+    # sessions custom image commands
+    with self.argument_context('containerapp session custom-container') as c:
+        c.argument('name', options_list=['--name', '-n'], help="The Session Pool name.")
+        c.argument('resource_group_name', arg_type=resource_group_name_type, id_part=None)
+        c.argument('identifier', options_list=['--identifier', '-i'], help="The Session Identifier")
+
     with self.argument_context('containerapp java logger') as c:
         c.argument('logger_name', help="The logger name.")
         c.argument('logger_level', arg_type=get_enum_type(["off", "error", "info", "debug", "trace", "warn"]), help="Set the log level for the specific logger name.")
