@@ -1513,6 +1513,28 @@ class SessionCodeInterpreterPreviewClient():
             return path.rstrip("/") + "/" + path_in_filename.lstrip('/'), filename
 
 
+class SessionCustomContainerPreviewClient():
+    api_version = PREVIEW_API_VERSION
+
+    @classmethod
+    def stop_session(cls, cmd, identifier, session_pool_endpoint, no_wait=False):
+        url_fmt = "{}/.management/stopSession?identifier={}&api-version={}"
+        request_url = url_fmt.format(
+            session_pool_endpoint,
+            identifier,
+            cls.api_version)
+
+        r = send_raw_request(cmd.cli_ctx, "POST", request_url, resource=SESSION_RESOURCE)
+
+        if no_wait:
+            return  # API doesn't return JSON
+        elif r.status_code in [200, 201, 202, 204]:
+            logger.warning('stop session successfully')
+            if r.status_code == 202:
+                operation_url = r.headers.get(HEADER_LOCATION)
+                poll_results(cmd, operation_url)
+
+
 class DotNetComponentPreviewClient():
     api_version = PREVIEW_API_VERSION
 
