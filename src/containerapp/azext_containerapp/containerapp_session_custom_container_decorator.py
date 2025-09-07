@@ -49,7 +49,6 @@ class SessionCustomContainerCommandsPreviewDecorator(SessionCustomContainerPrevi
             return self.client.stop_session(
                 cmd=self.cmd,
                 identifier=self.get_argument_identifier(),
-                session_pool_endpoint=self.get_sessionpool_endpoint(),
-                no_wait=self.get_argument_no_wait())
+                session_pool_endpoint=self.get_sessionpool_endpoint())
         except Exception as e:
             handle_raw_exception(e)
