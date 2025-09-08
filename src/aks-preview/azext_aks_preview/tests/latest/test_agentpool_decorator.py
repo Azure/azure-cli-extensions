@@ -1833,6 +1833,135 @@ class AKSPreviewAgentPoolAddDecoratorCommonTestCase(unittest.TestCase):
                 self.assertIsNone(attr_value,
                     f"Attribute '{attr_name}' should be None but was '{attr_value}' when mode is ManagedSystem")
 
+    def common_set_up_upgrade_strategy(self):
+        # Test case 1: No upgrade strategy provided
+        dec_1 = AKSPreviewAgentPoolAddDecorator(
+            self.cmd,
+            self.client,
+            {},
+            self.resource_type,
+            self.agentpool_decorator_mode,
+        )
+        # fail on passing the wrong agentpool object
+        with self.assertRaises(CLIInternalError):
+            dec_1.set_up_upgrade_strategy(None)
+        
+        agentpool_1 = self.create_initialized_agentpool_instance(restore_defaults=False)
+        dec_1.context.attach_agentpool(agentpool_1)
+        dec_agentpool_1 = dec_1.set_up_upgrade_strategy(agentpool_1)
+        dec_agentpool_1 = self._restore_defaults_in_agentpool(dec_agentpool_1)
+        ground_truth_agentpool_1 = self.create_initialized_agentpool_instance()
+        self.assertEqual(dec_agentpool_1, ground_truth_agentpool_1)
+
+        # Test case 2: RollingUpdate upgrade strategy provided
+        dec_2 = AKSPreviewAgentPoolAddDecorator(
+            self.cmd,
+            self.client,
+            {"upgrade_strategy": "RollingUpdate"},
+            self.resource_type,
+            self.agentpool_decorator_mode,
+        )
+        agentpool_2 = self.create_initialized_agentpool_instance(restore_defaults=False)
+        dec_2.context.attach_agentpool(agentpool_2)
+        dec_agentpool_2 = dec_2.set_up_upgrade_strategy(agentpool_2)
+        dec_agentpool_2 = self._restore_defaults_in_agentpool(dec_agentpool_2)
+        ground_truth_agentpool_2 = self.create_initialized_agentpool_instance(
+            upgrade_strategy="RollingUpdate"
+        )
+        self.assertEqual(dec_agentpool_2, ground_truth_agentpool_2)
+
+        # Test case 3: BlueGreen upgrade strategy provided
+        dec_3 = AKSPreviewAgentPoolAddDecorator(
+            self.cmd,
+            self.client,
+            {"upgrade_strategy": "BlueGreen"},
+            self.resource_type,
+            self.agentpool_decorator_mode,
+        )
+        agentpool_3 = self.create_initialized_agentpool_instance(restore_defaults=False)
+        dec_3.context.attach_agentpool(agentpool_3)
+        dec_agentpool_3 = dec_3.set_up_upgrade_strategy(agentpool_3)
+        dec_agentpool_3 = self._restore_defaults_in_agentpool(dec_agentpool_3)
+        ground_truth_agentpool_3 = self.create_initialized_agentpool_instance(
+            upgrade_strategy="BlueGreen"
+        )
+        self.assertEqual(dec_agentpool_3, ground_truth_agentpool_3)
+
+    def common_set_up_blue_green_upgrade_settings(self):
+        # scenario 1: no blue-green parameters
+        dec_1 = AKSPreviewAgentPoolAddDecorator(
+            self.cmd,
+            self.client,
+            {},
+            self.resource_type,
+            self.agentpool_decorator_mode,
+        )
+        agentpool_1 = self.create_initialized_agentpool_instance()
+        agentpool_1 = self._remove_defaults_in_agentpool(agentpool_1)
+        dec_1.context.attach_agentpool(agentpool_1)
+        dec_agentpool_1 = dec_1.set_up_blue_green_upgrade_settings(agentpool_1)
+        dec_agentpool_1 = self._restore_defaults_in_agentpool(dec_agentpool_1)
+        ground_truth_agentpool_1 = self.create_initialized_agentpool_instance(
+            upgrade_settings_blue_green=self.models.AgentPoolBlueGreenUpgradeSettings()
+        )
+        self.assertEqual(dec_agentpool_1, ground_truth_agentpool_1)
+
+        # scenario 2: with all blue-green parameters
+        dec_2 = AKSPreviewAgentPoolAddDecorator(
+            self.cmd,
+            self.client,
+            {
+                "drain_batch_size": "5",
+                "drain_timeout_bg": 15,
+                "batch_soak_duration": 30,
+                "final_soak_duration": 60,
+            },
+            self.resource_type,
+            self.agentpool_decorator_mode,
+        )
+        agentpool_2 = self.create_initialized_agentpool_instance()
+        agentpool_2 = self._remove_defaults_in_agentpool(agentpool_2)
+        dec_2.context.attach_agentpool(agentpool_2)
+        dec_agentpool_2 = dec_2.set_up_blue_green_upgrade_settings(agentpool_2)
+        dec_agentpool_2 = self._restore_defaults_in_agentpool(dec_agentpool_2)
+        
+        ground_truth_blue_green_settings = self.models.AgentPoolBlueGreenUpgradeSettings()
+        ground_truth_blue_green_settings.drain_batch_size = "5"
+        ground_truth_blue_green_settings.drain_timeout_in_minutes = 15
+        ground_truth_blue_green_settings.batch_soak_duration_in_minutes = 30
+        ground_truth_blue_green_settings.final_soak_duration_in_minutes = 60
+        
+        ground_truth_agentpool_2 = self.create_initialized_agentpool_instance(
+            upgrade_settings_blue_green=ground_truth_blue_green_settings
+        )
+        self.assertEqual(dec_agentpool_2, ground_truth_agentpool_2)
+
+        # scenario 3: with partial blue-green parameters
+        dec_3 = AKSPreviewAgentPoolAddDecorator(
+            self.cmd,
+            self.client,
+            {
+                "drain_timeout_bg": 20,
+                "final_soak_duration": 45,
+            },
+            self.resource_type,
+            self.agentpool_decorator_mode,
+        )
+        agentpool_3 = self.create_initialized_agentpool_instance()
+        agentpool_3 = self._remove_defaults_in_agentpool(agentpool_3)
+        dec_3.context.attach_agentpool(agentpool_3)
+        dec_agentpool_3 = dec_3.set_up_blue_green_upgrade_settings(agentpool_3)
+        dec_agentpool_3 = self._restore_defaults_in_agentpool(dec_agentpool_3)
+        
+        ground_truth_blue_green_settings_3 = self.models.AgentPoolBlueGreenUpgradeSettings()
+        ground_truth_blue_green_settings_3.drain_timeout_in_minutes = 20
+        ground_truth_blue_green_settings_3.final_soak_duration_in_minutes = 45
+        
+        ground_truth_agentpool_3 = self.create_initialized_agentpool_instance(
+            upgrade_settings_blue_green=ground_truth_blue_green_settings_3
+        )
+        self.assertEqual(dec_agentpool_3, ground_truth_agentpool_3)
+
 
 class AKSPreviewAgentPoolAddDecoratorStandaloneModeTestCase(
     AKSPreviewAgentPoolAddDecoratorCommonTestCase
@@ -1887,6 +2016,9 @@ class AKSPreviewAgentPoolAddDecoratorStandaloneModeTestCase(
 
     def test_set_up_managed_system_mode(self):
         self.common_set_up_managed_system_mode()
+
+    def test_set_up_upgrade_strategy(self):
+        self.common_set_up_upgrade_strategy()
 
     def test_construct_agentpool_profile_preview(self):
         import inspect
@@ -1966,6 +2098,9 @@ class AKSPreviewAgentPoolAddDecoratorStandaloneModeTestCase(
 
         dec_1.context.raw_param.print_usage_statistics()
 
+    def test_set_up_blue_green_upgrade_settings(self):
+        self.common_set_up_blue_green_upgrade_settings()
+
     def test_construct_agentpool_profile_preview_with_managed_system_mode(self):
         self.common_construct_agentpool_profile_preview_with_managed_system_mode()
 
@@ -2020,6 +2155,9 @@ class AKSPreviewAgentPoolAddDecoratorManagedClusterModeTestCase(
 
     def test_set_up_managed_system_mode(self):
         self.common_set_up_managed_system_mode()
+
+    def test_set_up_upgrade_strategy(self):
+        self.common_set_up_upgrade_strategy()
 
     def test_construct_agentpool_profile_preview(self):
         import inspect
@@ -2096,6 +2234,9 @@ class AKSPreviewAgentPoolAddDecoratorManagedClusterModeTestCase(
         self.assertEqual(dec_agentpool_1, ground_truth_agentpool_1)
 
         dec_1.context.raw_param.print_usage_statistics()
+
+    def test_set_up_blue_green_upgrade_settings(self):
+        self.common_set_up_blue_green_upgrade_settings()
 
 
 class AKSPreviewAgentPoolUpdateDecoratorCommonTestCase(unittest.TestCase):
@@ -2405,6 +2546,146 @@ class AKSPreviewAgentPoolUpdateDecoratorCommonTestCase(unittest.TestCase):
         with self.assertRaises(MutuallyExclusiveArgumentError):
             dec_3.update_fips_image(agentpool_2)
 
+    def common_update_upgrade_strategy(self):
+        # Test case 1: No upgrade strategy provided (should not change agentpool)
+        dec_1 = AKSPreviewAgentPoolUpdateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            self.resource_type,
+            self.agentpool_decorator_mode,
+        )
+        # fail on passing the wrong agentpool object
+        with self.assertRaises(CLIInternalError):
+            dec_1.update_upgrade_strategy(None)
+        
+        agentpool_1 = self.create_initialized_agentpool_instance(
+            upgrade_strategy="RollingUpdate"
+        )
+        dec_1.context.attach_agentpool(agentpool_1)
+        dec_agentpool_1 = dec_1.update_upgrade_strategy(agentpool_1)
+        ground_truth_agentpool_1 = self.create_initialized_agentpool_instance(
+            upgrade_strategy="RollingUpdate"
+        )
+        self.assertEqual(dec_agentpool_1, ground_truth_agentpool_1)
+
+        # Test case 2: Update to BlueGreen upgrade strategy
+        dec_2 = AKSPreviewAgentPoolUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"upgrade_strategy": "BlueGreen"},
+            self.resource_type,
+            self.agentpool_decorator_mode,
+        )
+        agentpool_2 = self.create_initialized_agentpool_instance(
+            upgrade_strategy="RollingUpdate"
+        )
+        dec_2.context.attach_agentpool(agentpool_2)
+        dec_agentpool_2 = dec_2.update_upgrade_strategy(agentpool_2)
+        ground_truth_agentpool_2 = self.create_initialized_agentpool_instance(
+            upgrade_strategy="BlueGreen"
+        )
+        self.assertEqual(dec_agentpool_2, ground_truth_agentpool_2)
+
+        # Test case 3: Update to RollingUpdate upgrade strategy
+        dec_3 = AKSPreviewAgentPoolUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"upgrade_strategy": "RollingUpdate"},
+            self.resource_type,
+            self.agentpool_decorator_mode,
+        )
+        agentpool_3 = self.create_initialized_agentpool_instance(
+            upgrade_strategy="BlueGreen"
+        )
+        dec_3.context.attach_agentpool(agentpool_3)
+        dec_agentpool_3 = dec_3.update_upgrade_strategy(agentpool_3)
+        ground_truth_agentpool_3 = self.create_initialized_agentpool_instance(
+            upgrade_strategy="RollingUpdate"
+        )
+        self.assertEqual(dec_agentpool_3, ground_truth_agentpool_3)
+
+    def common_update_blue_green_upgrade_settings(self):
+        # Test case 1: Update with no existing blue-green settings
+        dec_1 = AKSPreviewAgentPoolUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "drain_batch_size": "3",
+                "drain_timeout_bg": 10,
+                "batch_soak_duration": 25,
+                "final_soak_duration": 50,
+            },
+            self.resource_type,
+            self.agentpool_decorator_mode,
+        )
+        agentpool_1 = self.create_initialized_agentpool_instance()
+        dec_1.context.attach_agentpool(agentpool_1)
+        dec_agentpool_1 = dec_1.update_blue_green_upgrade_settings(agentpool_1)
+        
+        expected_blue_green_settings_1 = self.models.AgentPoolBlueGreenUpgradeSettings()
+        expected_blue_green_settings_1.drain_batch_size = "3"
+        expected_blue_green_settings_1.drain_timeout_in_minutes = 10
+        expected_blue_green_settings_1.batch_soak_duration_in_minutes = 25
+        expected_blue_green_settings_1.final_soak_duration_in_minutes = 50
+        
+        ground_truth_agentpool_1 = self.create_initialized_agentpool_instance(
+            upgrade_settings_blue_green=expected_blue_green_settings_1
+        )
+        self.assertEqual(dec_agentpool_1, ground_truth_agentpool_1)
+
+        # Test case 2: Update with existing blue-green settings (partial update)
+        existing_blue_green_settings = self.models.AgentPoolBlueGreenUpgradeSettings()
+        existing_blue_green_settings.drain_batch_size = "5"
+        existing_blue_green_settings.drain_timeout_in_minutes = 15
+        existing_blue_green_settings.batch_soak_duration_in_minutes = 30
+        existing_blue_green_settings.final_soak_duration_in_minutes = 60
+        
+        dec_2 = AKSPreviewAgentPoolUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "drain_timeout_bg": 20,
+                "final_soak_duration": 45,
+            },
+            self.resource_type,
+            self.agentpool_decorator_mode,
+        )
+        agentpool_2 = self.create_initialized_agentpool_instance(
+            upgrade_settings_blue_green=existing_blue_green_settings
+        )
+        dec_2.context.attach_agentpool(agentpool_2)
+        dec_agentpool_2 = dec_2.update_blue_green_upgrade_settings(agentpool_2)
+        
+        expected_blue_green_settings_2 = self.models.AgentPoolBlueGreenUpgradeSettings()
+        expected_blue_green_settings_2.drain_batch_size = "5"  # unchanged
+        expected_blue_green_settings_2.drain_timeout_in_minutes = 20  # updated
+        expected_blue_green_settings_2.batch_soak_duration_in_minutes = 30  # unchanged
+        expected_blue_green_settings_2.final_soak_duration_in_minutes = 45  # updated
+        
+        ground_truth_agentpool_2 = self.create_initialized_agentpool_instance(
+            upgrade_settings_blue_green=expected_blue_green_settings_2
+        )
+        self.assertEqual(dec_agentpool_2, ground_truth_agentpool_2)
+
+        # Test case 3: No blue-green parameters provided (no change)
+        dec_3 = AKSPreviewAgentPoolUpdateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            self.resource_type,
+            self.agentpool_decorator_mode,
+        )
+        agentpool_3 = self.create_initialized_agentpool_instance(
+            upgrade_settings_blue_green=existing_blue_green_settings
+        )
+        dec_3.context.attach_agentpool(agentpool_3)
+        dec_agentpool_3 = dec_3.update_blue_green_upgrade_settings(agentpool_3)
+        ground_truth_agentpool_3 = self.create_initialized_agentpool_instance(
+            upgrade_settings_blue_green=existing_blue_green_settings
+        )
+        self.assertEqual(dec_agentpool_3, ground_truth_agentpool_3)
+
 
 class AKSPreviewAgentPoolUpdateDecoratorStandaloneModeTestCase(
     AKSPreviewAgentPoolUpdateDecoratorCommonTestCase
@@ -2435,6 +2716,12 @@ class AKSPreviewAgentPoolUpdateDecoratorStandaloneModeTestCase(
 
     def test_update_fips_image(self):
         self.common_update_fips_image()
+
+    def test_update_upgrade_strategy(self):
+        self.common_update_upgrade_strategy()
+
+    def test_update_blue_green_upgrade_settings(self):
+        self.common_update_blue_green_upgrade_settings()
 
     def test_update_agentpool_profile_preview(self):
         import inspect
@@ -2518,6 +2805,12 @@ class AKSPreviewAgentPoolUpdateDecoratorManagedClusterModeTestCase(
 
     def test_update_fips_image(self):
         self.common_update_fips_image()
+
+    def test_update_upgrade_strategy(self):
+        self.common_update_upgrade_strategy()
+
+    def test_update_blue_green_upgrade_settings(self):
+        self.common_update_blue_green_upgrade_settings()
 
     def test_update_agentpool_profile_preview(self):
         import inspect
