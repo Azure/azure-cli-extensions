@@ -770,7 +770,6 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         """
         enable_acns = self.raw_param.get("enable_acns")
         disable_acns = self.raw_param.get("disable_acns")
-        acns_datapath_acceleration_mode = self.raw_param.get("acns_datapath_acceleration_mode")
         if enable_acns is None and disable_acns is None:
             return None, None, None, None
         if enable_acns and disable_acns:
