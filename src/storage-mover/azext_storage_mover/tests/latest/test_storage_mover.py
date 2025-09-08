@@ -99,6 +99,9 @@ class StorageMoverScenario(ScenarioTest):
                                    '-otsv'.format(storage_account, resource_group)).output.strip(),
             "endpoint_container": self.create_random_name('endpoint_container', 32),
             "endpoint_file_share": self.create_random_name('endpoint_file_share', 32),
+            "endpoint_nfs_file_share": self.create_random_name('endpoint_nfs_file_share', 40),
+            "multi_cloud_connector": self.create_random_name('multi_cloud_connector', 40),
+            "endpoint_multi_cloud_connector": self.create_random_name('endpoint_multi_cloud_connector', 40),
             "endpoint_nfs": self.create_random_name('endpoint_nfs', 32),
             "endpoint_smb": self.create_random_name('endpoint_smb', 32),
             "vm_nfs_name": self.create_random_name('vm', 24),
@@ -151,6 +154,47 @@ class StorageMoverScenario(ScenarioTest):
                  checks=[JMESPathCheck('name', self.kwargs.get('endpoint_file_share', '')),
                          JMESPathCheck('properties.description', "endpointFileShareDescUpdate")])
 
+        self.cmd('az storage-mover endpoint create-for-storage-nfs-file-share -g {rg} '
+                 '--storage-mover-name {mover_name} '
+                 '-n {endpoint_nfs_file_share} --file-share-name {file_share_name} --storage-account-id {account_id} '
+                 '--description endpointNFSFileShareDesc')
+        self.cmd('az storage-mover endpoint show -g {rg} --storage-mover-name {mover_name} -n {endpoint_nfs_file_share}',
+                 checks=[JMESPathCheck('name', self.kwargs.get('endpoint_nfs_file_share', '')),
+                         JMESPathCheck('properties.fileShareName', self.kwargs.get('file_share_name', '')),
+                         JMESPathCheck('properties.endpointType', "AzureStorageNfsFileShare"),
+                         JMESPathCheck('properties.storageAccountResourceId', self.kwargs.get('account_id', '')),
+                         JMESPathCheck('properties.description', "endpointNFSFileShareDesc"),
+                         ])
+
+        # update for storage nfs file share
+        self.cmd('az storage-mover endpoint update-for-storage-nfs-file-share -g {rg} '
+                 '--storage-mover-name {mover_name} '
+                 '-n {endpoint_nfs_file_share} --description endpointNFSFileShareDescUpdate',
+                 checks=[JMESPathCheck('name', self.kwargs.get('endpoint_nfs_file_share', '')),
+                         JMESPathCheck('properties.description', "endpointNFSFileShareDescUpdate")])       
+
+        # self.cmd('az arc-multicloud public-cloud-connector create --resource-group {rg} '
+        #         '--name {multi_cloud_connector} --aws-cloud-profile "{accountId:536697237310,isOrganizationalAccount:False}" '
+        #         '--host-type AWS --location eastus')
+        # self.cmd('az storage-mover endpoint create-for-multi-cloud-connector -g {rg} '
+        #          '--storage-mover-name {mover_name} '
+        #          '-n {endpoint_multi_cloud_connector} --file-share-name {file_share_name} --storage-account-id {account_id} '
+        #          '--description endpointMultiCloudConnectorDesc')
+        # self.cmd('az storage-mover endpoint show -g {rg} --storage-mover-name {mover_name} -n {endpoint_multi_cloud_connector}',
+        #          checks=[JMESPathCheck('name', self.kwargs.get('endpoint_multi_cloud_connector', '')),
+        #                  JMESPathCheck('properties.fileShareName', self.kwargs.get('file_share_name', '')),
+        #                  JMESPathCheck('properties.endpointType', "AzureStorageNfsFileShare"),
+        #                  JMESPathCheck('properties.storageAccountResourceId', self.kwargs.get('account_id', '')),
+        #                  JMESPathCheck('properties.description', "endpointNFSFileShareDesc"),
+        #                  ])
+
+        # # update for storage nfs file share
+        # self.cmd('az storage-mover endpoint update-for-storage-nfs-file-share -g {rg} '
+        #          '--storage-mover-name {mover_name} '
+        #          '-n {endpoint_nfs_file_share} --description endpointNFSFileShareDescUpdate',
+        #          checks=[JMESPathCheck('name', self.kwargs.get('endpoint_nfs_file_share', '')),
+        #                  JMESPathCheck('properties.description', "endpointNFSFileShareDescUpdate")])    
+
         # create for nfs mount
         vm_ip = self.cmd('az vm create -n {vm_nfs_name} -g {rg} --image Ubuntu2204 --size Standard_D4s_v3 --nsg-rule '
                          'NONE --admin-username ubuntuuser --generate-ssh-keys').get_output_in_json()["publicIpAddress"]
@@ -195,14 +239,15 @@ class StorageMoverScenario(ScenarioTest):
                  '-n {endpoint_smb} --username-uri "" --password-uri "" --description endpointSmbDescUpdate',
                  checks=[JMESPathCheck('name', self.kwargs.get('endpoint_smb', '')),
                          JMESPathCheck('properties.description', "endpointSmbDescUpdate"),
+                        #  JMESPathCheck('properties.credentials.type', "AzureKeyVaultSmb"),
                          JMESPathCheck('properties.credentials.passwordUri', None),
                          JMESPathCheck('properties.credentials.usernameUri', None)])
 
         self.cmd('az storage-mover endpoint list -g {rg} --storage-mover-name {mover_name}',
-                 checks=[JMESPathCheck('length(@)', 4)])
+                 checks=[JMESPathCheck('length(@)', 5)])
         self.cmd('az storage-mover endpoint delete -g {rg} --storage-mover-name {mover_name} -n {endpoint_nfs} -y')
         self.cmd('az storage-mover endpoint list -g {rg} --storage-mover-name {mover_name}',
-                 checks=[JMESPathCheck('length(@)', 3)])
+                 checks=[JMESPathCheck('length(@)', 4)])
 
     @record_only()
     # need to manually register agent, first create the rg and the storagemover
