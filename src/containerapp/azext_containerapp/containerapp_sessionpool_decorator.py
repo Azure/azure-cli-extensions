@@ -511,7 +511,7 @@ class SessionPoolUpdateDecorator(SessionPoolPreviewDecorator):
                 current_lifecycle_type.lower() != LifecycleType.Timed.name.lower():
             raise ValidationError(f"--cooldown-period is not supported for the current --lifecycle-type '{current_lifecycle_type}'.")
 
-        ## Validate container related arguments
+        # Validate container related arguments
         if safe_get(self.existing_pool_def, "properties", "containerType").lower() != ContainerType.CustomContainer.name.lower():
             self.check_container_related_arguments()
 
