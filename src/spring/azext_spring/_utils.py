@@ -334,10 +334,33 @@ def handle_asc_exception(ex):
     try:
         raise CLIError(ex.inner_exception.error.message)
     except AttributeError:
+        logger.warning(f"CLIError ex: {ex}")
+        logger.warning(f"CLIError ex.response.internal_response.text: {ex.response.internal_response.text}")
         if hasattr(ex, 'response') and ex.response.internal_response.text:
-            response_dict = json.loads(ex.response.internal_response.text)
-            raise CLIError(response_dict["error"]["message"])
+            logger.warning("CLIError: Trying to parse the exception message.")
+            try:
+                response_dict = json.loads(ex.response.internal_response.text)
+                logger.warning(f"CLIError response_dict: {response_dict}")
+                raise CLIError(response_dict["error"]["message"])
+            except json.JSONDecodeError:
+                # Try to extract error from XML format
+                import xml.etree.ElementTree as ET
+                try:
+                    root = ET.fromstring(ex.response.internal_response.text)
+                    # Look for common error message patterns in XML
+                    error_msg = root.find('.//Message')
+                    if error_msg is not None and error_msg.text:
+                        raise CLIError(error_msg.text)
+                    # If no Message element, try to find any text content
+                    error_text = ''.join(root.itertext()).strip()
+                    if error_text:
+                        raise CLIError(error_text)
+                except ET.ParseError:
+                    pass
+                # If both JSON and XML parsing fail, return the raw text
+                raise CLIError(ex.response.internal_response.text)
         else:
+            logger.warning("CLIError: Unable to parse the exception message.")
             raise CLIError(ex)
 
 
