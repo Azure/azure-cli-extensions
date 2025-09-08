@@ -11,8 +11,6 @@ from typing import Any, Dict
 
 from azure.cli.core.commands import AzCliCommand
 from azure.cli.command_modules.containerapp.base_resource import BaseResource
-from azure.cli.command_modules.containerapp._utils import (_ensure_location_allowed, CONTAINER_APPS_RP)
-from azure.cli.core.commands.client_factory import get_subscription_id
 from ._clients import SessionPoolPreviewClient
 
 from ._models import SessionCodeInterpreterExecution as SessionCodeInterpreterExecutionPreviewModel
