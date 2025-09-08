@@ -61,6 +61,12 @@ class Update(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
+        _args_schema.storage_blob_container = AAZObjectArg(
+            options=["--storage-blob-container"],
+            arg_group="Properties",
+            help="Storage Blob Container Object",
+        )
+
         _args_schema.azure_multi_cloud_connector = AAZObjectArg(
             options=["--azure-multi-cloud-connector"],
             arg_group="Properties",
@@ -74,6 +80,12 @@ class Update(AAZCommand):
             arg_group="Properties",
             help="A description for the Endpoint.",
             nullable=True,
+        )
+
+        storage_blob_container = cls._args_schema.storage_blob_container
+        storage_blob_container.storage_account_resource_id = AAZResourceIdArg(
+            options=["storage-account-resource-id"],
+            help="The Azure Resource ID of the storage account that is the target destination.",
         )
 
         azure_multi_cloud_connector = cls._args_schema.azure_multi_cloud_connector
@@ -335,8 +347,13 @@ class Update(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("description", AAZStrType, ".description")
+                properties.discriminate_by("endpointType", "AzureStorageBlobContainer")
                 properties.discriminate_by("endpointType", "AzureMultiCloudConnector")
                 properties.discriminate_by("endpointType", "SmbMount")
+
+            disc_azure_storage_blob_container = _builder.get(".properties{endpointType:AzureStorageBlobContainer}")
+            if disc_azure_storage_blob_container is not None:
+                disc_azure_storage_blob_container.set_prop("storageAccountResourceId", AAZStrType, ".storage_blob_container.storage_account_resource_id", typ_kwargs={"flags": {"required": True}})
 
             disc_azure_multi_cloud_connector = _builder.get(".properties{endpointType:AzureMultiCloudConnector}")
             if disc_azure_multi_cloud_connector is not None:
@@ -349,6 +366,7 @@ class Update(AAZCommand):
             credentials = _builder.get(".properties{endpointType:SmbMount}.credentials")
             if credentials is not None:
                 credentials.set_prop("passwordUri", AAZStrType, ".password_uri")
+                credentials.set_const("type", "AzureKeyVaultSmb", AAZStrType, ".", typ_kwargs={"flags": {"required": True}})
                 credentials.set_prop("usernameUri", AAZStrType, ".username_uri")
 
             return _instance_value

@@ -239,7 +239,6 @@ class StorageMoverScenario(ScenarioTest):
                  '-n {endpoint_smb} --username-uri "" --password-uri "" --description endpointSmbDescUpdate',
                  checks=[JMESPathCheck('name', self.kwargs.get('endpoint_smb', '')),
                          JMESPathCheck('properties.description', "endpointSmbDescUpdate"),
-                        #  JMESPathCheck('properties.credentials.type', "AzureKeyVaultSmb"),
                          JMESPathCheck('properties.credentials.passwordUri', None),
                          JMESPathCheck('properties.credentials.usernameUri', None)])
 
