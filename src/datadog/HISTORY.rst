@@ -2,6 +2,9 @@
 
 Release History
 ===============
+1.0.1
+++++++
+* Fix resource creation issue
 
 1.0.0
 ++++++
