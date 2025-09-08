@@ -12,10 +12,10 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "network perimeter",
+    "network perimeter service-tag",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage Network Security Perimeters.
+    """Manage Network Security Perimeter Service Tags
     """
     pass
 
