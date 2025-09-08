@@ -18,10 +18,10 @@ class Create(AAZCommand):
     """Creates a new Datadog monitor resource in your Azure subscription. This sets up the integration between Azure and your Datadog account, enabling observability and monitoring of your Azure resources through Datadog.
 
     :example: Monitors_Create
-        az datadog monitor create --name "myMonitor" --resource-group "myResourceGroup" --location "West US 2" --datadog-organization-properties name="myResourceGroup" --tags Environment="Dev" --user-info name="Alice" email-address="alice@microsoft.com" phone-number="123-456-7890" --sku name="payg_v3_Monthly" --identity type="SystemAssigned" --monitoring-status "Enabled"
+        az datadog monitor create --name "myMonitor" --resource-group "myResourceGroup" --location "West US 2" --org-properties name="myResourceGroup" --tags Environment="Dev" --user-info name="Alice" email-address="alice@microsoft.com" phone-number="123-456-7890" --sku name="payg_v3_Monthly" --identity type="SystemAssigned" --monitoring-status "Enabled"
 
     :example: Monitors creation with linking to Datadog organization.
-        az datadog monitor create --name "myMonitor-link" --resource-group "myResourceGroup" --location "West US 2" --datadog-organization-properties api-key=XX application-key=XX --tags Environment="Dev" --user-info name="Alice" email-address="alice@microsoft.com" phone-number="123-456-7890"  --identity type="SystemAssigned" --sku name="Linked"
+        az datadog monitor create --name "myMonitor-link" --resource-group "myResourceGroup" --location "West US 2" --org-properties api-key=XX application-key=XX --tags Environment="Dev" --user-info name="Alice" email-address="alice@microsoft.com" phone-number="123-456-7890"  --identity type="SystemAssigned" --sku name="Linked"
     """
 
     _aaz_info = {
