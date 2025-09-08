@@ -171,29 +171,7 @@ class StorageMoverScenario(ScenarioTest):
                  '--storage-mover-name {mover_name} '
                  '-n {endpoint_nfs_file_share} --description endpointNFSFileShareDescUpdate',
                  checks=[JMESPathCheck('name', self.kwargs.get('endpoint_nfs_file_share', '')),
-                         JMESPathCheck('properties.description', "endpointNFSFileShareDescUpdate")])       
-
-        # self.cmd('az arc-multicloud public-cloud-connector create --resource-group {rg} '
-        #         '--name {multi_cloud_connector} --aws-cloud-profile "{accountId:536697237310,isOrganizationalAccount:False}" '
-        #         '--host-type AWS --location eastus')
-        # self.cmd('az storage-mover endpoint create-for-multi-cloud-connector -g {rg} '
-        #          '--storage-mover-name {mover_name} '
-        #          '-n {endpoint_multi_cloud_connector} --file-share-name {file_share_name} --storage-account-id {account_id} '
-        #          '--description endpointMultiCloudConnectorDesc')
-        # self.cmd('az storage-mover endpoint show -g {rg} --storage-mover-name {mover_name} -n {endpoint_multi_cloud_connector}',
-        #          checks=[JMESPathCheck('name', self.kwargs.get('endpoint_multi_cloud_connector', '')),
-        #                  JMESPathCheck('properties.fileShareName', self.kwargs.get('file_share_name', '')),
-        #                  JMESPathCheck('properties.endpointType', "AzureStorageNfsFileShare"),
-        #                  JMESPathCheck('properties.storageAccountResourceId', self.kwargs.get('account_id', '')),
-        #                  JMESPathCheck('properties.description', "endpointNFSFileShareDesc"),
-        #                  ])
-
-        # # update for storage nfs file share
-        # self.cmd('az storage-mover endpoint update-for-storage-nfs-file-share -g {rg} '
-        #          '--storage-mover-name {mover_name} '
-        #          '-n {endpoint_nfs_file_share} --description endpointNFSFileShareDescUpdate',
-        #          checks=[JMESPathCheck('name', self.kwargs.get('endpoint_nfs_file_share', '')),
-        #                  JMESPathCheck('properties.description', "endpointNFSFileShareDescUpdate")])    
+                         JMESPathCheck('properties.description', "endpointNFSFileShareDescUpdate")]) 
 
         # create for nfs mount
         vm_ip = self.cmd('az vm create -n {vm_nfs_name} -g {rg} --image Ubuntu2204 --size Standard_D4s_v3 --nsg-rule '
@@ -247,6 +225,31 @@ class StorageMoverScenario(ScenarioTest):
         self.cmd('az storage-mover endpoint delete -g {rg} --storage-mover-name {mover_name} -n {endpoint_nfs} -y')
         self.cmd('az storage-mover endpoint list -g {rg} --storage-mover-name {mover_name}',
                  checks=[JMESPathCheck('length(@)', 4)])
+        
+    @record_only()
+    def test_storage_mover_endpoint_multi_cloud_connector_scenarios(self):
+        self.kwargs.update({
+            "rg": "test-storagemover-rg2",
+            "mover_name": "teststoragemover2",
+            "endpoint_multi_cloud_connector": "endpointmulticloudconnector1",
+            "multi_cloud_connector_id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/otendolkarrg/providers/Microsoft.HybridConnectivity/publicCloudConnectors/otendolkarconnector1",
+            "aws_s3_bucket_id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aws_536697237310/providers/Microsoft.AWSConnector/s3buckets/c2c-1pb-bucket"
+        })
+        self.cmd('az storage-mover endpoint create-for-multi-cloud-connector -g {rg} --name {endpoint_multi_cloud_connector} '
+                 '--storage-mover-name {mover_name} --multi-cloud-connector-id {multi_cloud_connector_id} --aws-s3-bucket-id {aws_s3_bucket_id} --description endpointMultiCloudConnectorDesc')
+        
+        self.cmd('az storage-mover endpoint show -g {rg} --storage-mover-name {mover_name} -n {endpoint_multi_cloud_connector}',
+                 checks=[JMESPathCheck('name', self.kwargs.get('endpoint_multi_cloud_connector', '')),
+                               JMESPathCheck('properties.endpointType', "AzureMultiCloudConnector"),
+                               JMESPathCheck('properties.awsS3BucketId', self.kwargs.get('aws_s3_bucket_id', '')),
+                               JMESPathCheck('properties.multiCloudConnectorId', self.kwargs.get('multi_cloud_connector_id', '')),
+                               JMESPathCheck('properties.description', "endpointMultiCloudConnectorDesc")])
+        
+        # update for multi cloud connector
+        self.cmd('az storage-mover endpoint update-for-multi-cloud-connector -g {rg} --storage-mover-name {mover_name} '
+                 '-n {endpoint_multi_cloud_connector} --description endpointMultiCloudConnectorDescUpdate',
+                 checks=[JMESPathCheck('name', self.kwargs.get('endpoint_multi_cloud_connector', '')),
+                        JMESPathCheck('properties.description', "endpointMultiCloudConnectorDescUpdate")])
 
     @record_only()
     # need to manually register agent, first create the rg and the storagemover
