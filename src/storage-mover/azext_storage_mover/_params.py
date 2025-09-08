@@ -40,6 +40,11 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
         c.argument('storage_account_resource_id', options_list=('--storage-account-id'),
                    help='The Azure Resource ID of the storage account that is the target destination.')
 
+    with self.argument_context('storage-mover endpoint create-for-storage-nfs-file-share') as c:
+        c.argument('file_share_name', help='The name of the Azure Storage file share.')
+        c.argument('storage_account_resource_id', options_list=('--storage-account-id'),
+                   help='The Azure Resource ID of the storage account that is the target destination.')
+
     with self.argument_context('storage-mover endpoint create-for-smb') as c:
         c.argument('host', help='The host name or IP address of the server exporting the file system.')
         c.argument('share_name', help='The name of the SMB share being exported from the server.')
