@@ -1116,7 +1116,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             AKSManagedClusterParamDict(
                 {
                     "enable_acns": True,
-                    "acns_performance_acceleration_mode": "BpfVeth",
+                    "acns_datapath_acceleration_mode": "BpfVeth",
                 }
             ),
             self.models,
@@ -1130,7 +1130,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             AKSManagedClusterParamDict(
                 {
                     "enable_acns": True,
-                    "acns_performance_acceleration_mode": "BpfVeth",
+                    "acns_datapath_acceleration_mode": "BpfVeth",
                     "disable_acns_security": True,
                     "disable_acns_observability": True,
                 }
@@ -1146,7 +1146,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             AKSManagedClusterParamDict(
                 {
                     "enable_acns": True,
-                    "acns_performance_acceleration_mode": "BpfVeth",
+                    "acns_datapath_acceleration_mode": "BpfVeth",
                 }
             ),
             self.models,
@@ -1160,7 +1160,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             AKSManagedClusterParamDict(
                 {
                     "enable_acns": True,
-                    "acns_performance_acceleration_mode": "None",
+                    "acns_datapath_acceleration_mode": "None",
                 }
             ),
             self.models,
@@ -1174,7 +1174,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             AKSManagedClusterParamDict(
                 {
                     "disable_acns": True,
-                    "acns_performance_acceleration_mode": "None",
+                    "acns_datapath_acceleration_mode": "None",
                 }
             ),
             self.models,
@@ -1190,7 +1190,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             AKSManagedClusterParamDict(
                 {
                     "enable_acns": True,
-                    "acns_performance_acceleration_mode": "None",
+                    "acns_datapath_acceleration_mode": "None",
                     "disable_acns_security": True,
                     "disable_acns_observability": True,
                 }

@@ -151,8 +151,8 @@ from azext_aks_preview._consts import (
     CONST_ADVANCED_NETWORKPOLICIES_L7,
     CONST_TRANSIT_ENCRYPTION_TYPE_NONE,
     CONST_TRANSIT_ENCRYPTION_TYPE_WIREGUARD,
-    CONST_ACNS_PERFORMANCE_ACCELERATION_MODE_BPFVETH,
-    CONST_ACNS_PERFORMANCE_ACCELERATION_MODE_NONE
+    CONST_ACNS_DATAPATH_ACCELERATION_MODE_BPFVETH,
+    CONST_ACNS_DATAPATH_ACCELERATION_MODE_NONE
 )
 
 from azext_aks_preview._validators import (
@@ -338,9 +338,9 @@ transit_encryption_types = [
     CONST_TRANSIT_ENCRYPTION_TYPE_NONE,
     CONST_TRANSIT_ENCRYPTION_TYPE_WIREGUARD,
 ]
-acns_performance_acceleration_modes = [
-    CONST_ACNS_PERFORMANCE_ACCELERATION_MODE_NONE,
-    CONST_ACNS_PERFORMANCE_ACCELERATION_MODE_BPFVETH,
+acns_datapath_acceleration_modes = [
+    CONST_ACNS_DATAPATH_ACCELERATION_MODE_NONE,
+    CONST_ACNS_DATAPATH_ACCELERATION_MODE_BPFVETH,
 ]
 network_dataplanes = [CONST_NETWORK_DATAPLANE_AZURE, CONST_NETWORK_DATAPLANE_CILIUM]
 disk_driver_versions = [CONST_DISK_DRIVER_V1, CONST_DISK_DRIVER_V2]
@@ -918,9 +918,9 @@ def load_arguments(self, _):
             arg_type=get_enum_type(advanced_networkpolicies),
         )
         c.argument(
-            "acns_performance_acceleration_mode",
+            "acns_datapath_acceleration_mode",
             is_preview=True,
-            arg_type=get_enum_type(acns_performance_acceleration_modes),
+            arg_type=get_enum_type(acns_datapath_acceleration_modes),
             help="Specify the performance acceleration mode for ACNS. Available values are 'None' and 'BpfVeth'.",
         )
         c.argument(
@@ -1443,9 +1443,9 @@ def load_arguments(self, _):
             arg_type=get_enum_type(advanced_networkpolicies),
         )
         c.argument(
-            "acns_performance_acceleration_mode",
+            "acns_datapath_acceleration_mode",
             is_preview=True,
-            arg_type=get_enum_type(acns_performance_acceleration_modes),
+            arg_type=get_enum_type(acns_datapath_acceleration_modes),
             help="Specify the performance acceleration mode for ACNS. Available values are 'None' and 'BpfVeth'.",
         )
         c.argument(
