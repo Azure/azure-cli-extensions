@@ -177,6 +177,23 @@ class SessionPoolPreviewDecorator(BaseResource):
 
         return probes_list
 
+    def check_container_related_arguments(self):
+        container_related_args = {
+            '--args': self.get_argument_args(),
+            '--command': self.get_argument_startup_command(),
+            '--container-name': self.get_argument_container_name(),
+            '--cpu': self.get_argument_cpu(),
+            '--env-vars': self.get_argument_env_vars(),
+            '--image or -i': self.get_argument_image(),
+            '--memory': self.get_argument_memory(),
+            '--probe-yaml': self.get_argument_probe_yaml(),
+            '--target-port': self.get_argument_target_port(),
+        }
+
+        for arg_name, arg_value in container_related_args.items():
+            if arg_value is not None:
+                raise ValidationError(f"'{arg_name}' can not be set when container type is not 'CustomContainer'.")
+
 
 class SessionPoolCreateDecorator(SessionPoolPreviewDecorator):
     def validate_arguments(self):
@@ -493,6 +510,10 @@ class SessionPoolUpdateDecorator(SessionPoolPreviewDecorator):
                 self.get_argument_lifecycle_type() is None and \
                 current_lifecycle_type.lower() != LifecycleType.Timed.name.lower():
             raise ValidationError(f"--cooldown-period is not supported for the current --lifecycle-type '{current_lifecycle_type}'.")
+
+        ## Validate container related arguments
+        if safe_get(self.existing_pool_def, "properties", "containerType").lower() != ContainerType.CustomContainer.name.lower():
+            self.check_container_related_arguments()
 
     def update(self):
         try:
