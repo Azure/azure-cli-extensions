@@ -4,10 +4,9 @@ Release History
 ===============
 
 1.2.0
-++++++
-* Update to 2025-07-01 GA api version
-* Support `az storage-mover endpoint create-for-storage-nfs-file-share` `az storage-mover endpoint update-for-storage-nfs-file-share` commands.
-* Support `az storage-mover endpoint create-for-multi-cloud-connector` `az storage-mover endpoint update-for-multi-cloud-connector` commands.
++++++
+* Updated to the 2025-07-01 GA API version. 
+* Add new endpoints for storage-nfs-file-share and multi-cloud-connector.
 
 1.1.0
 ++++++
