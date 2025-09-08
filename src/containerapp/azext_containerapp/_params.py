@@ -476,10 +476,16 @@ def load_arguments(self, _):
         c.argument('registry_user', validator=validate_registry_user, options_list=['--registry-username'], help="The username to log in to container registry.")
         c.argument('registry_identity', validator=validate_registry_user, help="The managed identity with which to authenticate to the Azure Container Registry (instead of username/password). Use 'system' for a system-assigned identity, use a resource ID for a user-assigned identity. The managed identity should have been assigned acrpull permissions on the ACR before deployment (use 'az role assignment create --role acrpull ...').")
 
-    # sessions code interpreter commands
-    with self.argument_context('containerapp session code-interpreter') as c:
+    # sessions commands
+    with self.argument_context('containerapp session') as c:
         c.argument('name', options_list=['--name', '-n'], help="The Session Pool name.")
         c.argument('resource_group_name', arg_type=resource_group_name_type, id_part=None)
+
+    with self.argument_context('containerapp session stop') as c:
+        c.argument('identifier', options_list=['--identifier', '-i'], help="The Session Identifier")
+
+    # sessions code interpreter commands
+    with self.argument_context('containerapp session code-interpreter') as c:
         c.argument('identifier', options_list=['--identifier', '-i'], help="The Session Identifier")
         c.argument('session_pool_location', help="The location of the session pool")
 
@@ -491,12 +497,6 @@ def load_arguments(self, _):
     with self.argument_context('containerapp session code-interpreter', arg_group='execute') as c:
         c.argument('code', help="The code to execute in the code interpreter session")
         c.argument('timeout_in_seconds', type=int, validator=validate_session_timeout_in_seconds, default=60, help="Duration in seconds code in session can run prior to timing out 1 - 220 secs, e.g. 30")
-
-    # sessions custom container commands
-    with self.argument_context('containerapp session custom-container') as c:
-        c.argument('name', options_list=['--name', '-n'], help="The Session Pool name.")
-        c.argument('resource_group_name', arg_type=resource_group_name_type, id_part=None)
-        c.argument('identifier', options_list=['--identifier', '-i'], help="The Session Identifier")
 
     with self.argument_context('containerapp java logger') as c:
         c.argument('logger_name', help="The logger name.")

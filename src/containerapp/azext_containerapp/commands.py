@@ -262,6 +262,9 @@ def load_command_table(self, args):
         g.custom_command('update', 'update_session_pool', supports_no_wait=True)
         g.custom_command('delete', 'delete_session_pool', confirmation=True, supports_no_wait=True)
 
+    with self.command_group('containerapp session') as g:
+        g.custom_command('stop', 'stop_session_custom_container', is_preview=True)
+
     with self.command_group('containerapp session code-interpreter') as g:
         g.custom_command('execute', 'execute_session_code_interpreter', supports_no_wait=True)
         g.custom_command('upload-file', 'upload_session_code_interpreter', supports_no_wait=True)
@@ -269,9 +272,6 @@ def load_command_table(self, args):
         g.custom_show_command('show-file-metadata', 'show_file_metadata_session_code_interpreter')
         g.custom_show_command('list-files', 'list_files_session_code_interpreter')
         g.custom_command('delete-file', 'delete_file_session_code_interpreter', confirmation=True, supports_no_wait=True)
-
-    with self.command_group('containerapp session custom-container', is_preview=True) as g:
-        g.custom_command('stop-session', 'stop_session_custom_container')
 
     with self.command_group('containerapp java logger') as g:
         g.custom_command('set', 'create_or_update_java_logger', supports_no_wait=True)
