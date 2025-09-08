@@ -499,10 +499,9 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
         if self.decorator_mode == DecoratorMode.CREATE:
             if (
                 self.agentpool and
-                self.agentpool.upgrade_settings and
-                self.agentpool.upgrade_settings.upgrade_strategy is not None
+                self.agentpool.upgrade_strategy is not None
             ):
-                upgrade_strategy = self.agentpool.upgrade_settings.upgrade_strategy
+                upgrade_strategy = self.agentpool.upgrade_strategy
 
         # this parameter does not need dynamic completion
         # this parameter does not need validation
@@ -519,9 +518,7 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
         if self.decorator_mode == DecoratorMode.CREATE:
             if (
                 self.agentpool and
-                hasattr(self.agentpool, 'upgrade_settings_blue_green') and
-                self.agentpool.upgrade_settings_blue_green and
-                hasattr(self.agentpool.upgrade_settings_blue_green, 'drain_batch_size') and
+                self.agentpool.upgrade_settings_blue_green is not None and
                 self.agentpool.upgrade_settings_blue_green.drain_batch_size is not None
             ):
                 drain_batch_size = self.agentpool.upgrade_settings_blue_green.drain_batch_size
@@ -541,9 +538,7 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
         if self.decorator_mode == DecoratorMode.CREATE:
             if (
                 self.agentpool and
-                hasattr(self.agentpool, 'upgrade_settings_blue_green') and
-                self.agentpool.upgrade_settings_blue_green and
-                hasattr(self.agentpool.upgrade_settings_blue_green, 'drain_timeout_in_minutes') and
+                self.agentpool.upgrade_settings_blue_green is not None and
                 self.agentpool.upgrade_settings_blue_green.drain_timeout_in_minutes is not None
             ):
                 drain_timeout_bg = self.agentpool.upgrade_settings_blue_green.drain_timeout_in_minutes
@@ -563,9 +558,7 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
         if self.decorator_mode == DecoratorMode.CREATE:
             if (
                 self.agentpool and
-                hasattr(self.agentpool, 'upgrade_settings_blue_green') and
-                self.agentpool.upgrade_settings_blue_green and
-                hasattr(self.agentpool.upgrade_settings_blue_green, 'batch_soak_duration_in_minutes') and
+                self.agentpool.upgrade_settings_blue_green is not None and
                 self.agentpool.upgrade_settings_blue_green.batch_soak_duration_in_minutes is not None
             ):
                 batch_soak_duration = self.agentpool.upgrade_settings_blue_green.batch_soak_duration_in_minutes
@@ -585,9 +578,7 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
         if self.decorator_mode == DecoratorMode.CREATE:
             if (
                 self.agentpool and
-                hasattr(self.agentpool, 'upgrade_settings_blue_green') and
-                self.agentpool.upgrade_settings_blue_green and
-                hasattr(self.agentpool.upgrade_settings_blue_green, 'final_soak_duration_in_minutes') and
+                self.agentpool.upgrade_settings_blue_green is not None and
                 self.agentpool.upgrade_settings_blue_green.final_soak_duration_in_minutes is not None
             ):
                 final_soak_duration = self.agentpool.upgrade_settings_blue_green.final_soak_duration_in_minutes
@@ -1577,37 +1568,6 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
 
         return agentpool
 
-    def set_up_blue_green_upgrade_settings(self, agentpool: AgentPool) -> AgentPool:
-        """Set up blue-green upgrade settings for the AgentPool object.
-
-        :return: the AgentPool object
-        """
-        self._ensure_agentpool(agentpool)
-        
-        blue_green_upgrade_settings = self.models.AgentPoolBlueGreenUpgradeSettings()
-            
-        # Set each field if provided in context
-        drain_batch_size = self.context.get_drain_batch_size()
-        if drain_batch_size is not None:
-            blue_green_upgrade_settings.drain_batch_size = drain_batch_size
-            
-        drain_timeout_bg = self.context.get_drain_timeout_bg()
-        if drain_timeout_bg is not None:
-            blue_green_upgrade_settings.drain_timeout_in_minutes = drain_timeout_bg
-        
-        batch_soak_duration = self.context.get_batch_soak_duration()
-        if batch_soak_duration is not None:
-            blue_green_upgrade_settings.batch_soak_duration_in_minutes = batch_soak_duration
-            
-        final_soak_duration = self.context.get_final_soak_duration()
-        if final_soak_duration is not None:
-            blue_green_upgrade_settings.final_soak_duration_in_minutes = final_soak_duration
-            
-        # Set the blue-green upgrade settings as a separate property on agentpool
-        agentpool.upgrade_settings_blue_green = blue_green_upgrade_settings
-
-        return agentpool
-
     def set_up_upgrade_settings(self, agentpool: AgentPool) -> AgentPool:
         """Set up upgrade settings for the AgentPool object.
 
@@ -1643,6 +1603,36 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         agentpool.upgrade_settings = upgrade_settings
         return agentpool
 
+    def set_up_blue_green_upgrade_settings(self, agentpool: AgentPool) -> AgentPool:
+        """Set up blue-green upgrade settings for the AgentPool object.
+
+        :return: the AgentPool object
+        """
+        self._ensure_agentpool(agentpool)
+        
+        blue_green_upgrade_settings = self.models.AgentPoolBlueGreenUpgradeSettings()
+            
+        # Set each field if provided in context
+        drain_batch_size = self.context.get_drain_batch_size()
+        if drain_batch_size is not None:
+            blue_green_upgrade_settings.drain_batch_size = drain_batch_size
+            
+        drain_timeout_bg = self.context.get_drain_timeout_bg()
+        if drain_timeout_bg is not None:
+            blue_green_upgrade_settings.drain_timeout_in_minutes = drain_timeout_bg
+        
+        batch_soak_duration = self.context.get_batch_soak_duration()
+        if batch_soak_duration is not None:
+            blue_green_upgrade_settings.batch_soak_duration_in_minutes = batch_soak_duration
+            
+        final_soak_duration = self.context.get_final_soak_duration()
+        if final_soak_duration is not None:
+            blue_green_upgrade_settings.final_soak_duration_in_minutes = final_soak_duration
+            
+        # Set the blue-green upgrade settings as a separate property on agentpool
+        agentpool.upgrade_settings_blue_green = blue_green_upgrade_settings
+
+        return agentpool
 
 class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
     def __init__(
@@ -2057,27 +2047,28 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
         drain_timeout_bg = self.context.get_drain_timeout_bg()
         batch_soak_duration = self.context.get_batch_soak_duration()
         final_soak_duration = self.context.get_final_soak_duration()
-
-        # Initialize blue-green upgrade settings with existing values as defaults
-        blue_green_upgrade_settings = agentpool.blue_green_upgrade_settings
-        if blue_green_upgrade_settings is None:
-            blue_green_upgrade_settings = self.models.AgentPoolBlueGreenUpgradeSettings()
-            
         drain_batch_size = self.context.get_drain_batch_size()
-        if drain_batch_size is not None:
-            blue_green_upgrade_settings.drain_batch_size = drain_batch_size
-            
-        if drain_timeout_bg is not None:
-            blue_green_upgrade_settings.drain_timeout_in_minutes = drain_timeout_bg
-            
-        if batch_soak_duration is not None:
-            blue_green_upgrade_settings.batch_soak_duration_in_minutes = batch_soak_duration
 
-        if final_soak_duration is not None:
-            blue_green_upgrade_settings.final_soak_duration_in_minutes = final_soak_duration            
-            
-        # Set the blue-green upgrade settings as a separate property on agentpool
-        agentpool.upgrade_settings_blue_green = blue_green_upgrade_settings
+        if any([drain_timeout_bg, batch_soak_duration, final_soak_duration, drain_batch_size]):
+            # Initialize blue-green upgrade settings with existing values as defaults
+            upgrade_settings_blue_green = agentpool.upgrade_settings_blue_green
+            if upgrade_settings_blue_green is None:
+                upgrade_settings_blue_green = self.models.AgentPoolBlueGreenUpgradeSettings()
+                
+            if drain_batch_size is not None:
+                upgrade_settings_blue_green.drain_batch_size = drain_batch_size
+                
+            if drain_timeout_bg is not None:
+                upgrade_settings_blue_green.drain_timeout_in_minutes = drain_timeout_bg
+                
+            if batch_soak_duration is not None:
+                upgrade_settings_blue_green.batch_soak_duration_in_minutes = batch_soak_duration
+
+            if final_soak_duration is not None:
+                upgrade_settings_blue_green.final_soak_duration_in_minutes = final_soak_duration            
+                
+            # Set the blue-green upgrade settings as a separate property on agentpool
+            agentpool.upgrade_settings_blue_green = upgrade_settings_blue_green
 
         return agentpool
 
