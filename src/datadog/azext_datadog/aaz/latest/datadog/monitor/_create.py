@@ -99,8 +99,8 @@ class Create(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.datadog_organization_properties = AAZObjectArg(
-            options=["--datadog-organization-properties"],
+        _args_schema.org_properties = AAZObjectArg(
+            options=["--org-properties"],
             arg_group="Properties",
             help="Datadog organization properties",
         )
@@ -117,40 +117,40 @@ class Create(AAZCommand):
             help="User info",
         )
 
-        datadog_organization_properties = cls._args_schema.datadog_organization_properties
-        datadog_organization_properties.api_key = AAZStrArg(
+        org_properties = cls._args_schema.org_properties
+        org_properties.api_key = AAZStrArg(
             options=["api-key"],
             help="Api key associated to the Datadog organization.",
         )
-        datadog_organization_properties.application_key = AAZStrArg(
+        org_properties.application_key = AAZStrArg(
             options=["application-key"],
             help="Application key associated to the Datadog organization.",
         )
-        datadog_organization_properties.cspm = AAZBoolArg(
+        org_properties.cspm = AAZBoolArg(
             options=["cspm"],
             help="The configuration which describes the state of cloud security posture management. This collects configuration information for all resources in a subscription and track conformance to industry benchmarks.",
         )
-        datadog_organization_properties.enterprise_app_id = AAZStrArg(
+        org_properties.enterprise_app_id = AAZStrArg(
             options=["enterprise-app-id"],
             help="The Id of the Enterprise App used for Single sign on.",
         )
-        datadog_organization_properties.id = AAZStrArg(
+        org_properties.id = AAZStrArg(
             options=["id"],
             help="Id of the Datadog organization.",
         )
-        datadog_organization_properties.linking_auth_code = AAZStrArg(
+        org_properties.linking_auth_code = AAZStrArg(
             options=["linking-auth-code"],
             help="The auth code used to linking to an existing datadog organization.",
         )
-        datadog_organization_properties.linking_client_id = AAZStrArg(
+        org_properties.linking_client_id = AAZStrArg(
             options=["linking-client-id"],
             help="The client_id from an existing in exchange for an auth token to link organization.",
         )
-        datadog_organization_properties.name = AAZStrArg(
+        org_properties.name = AAZStrArg(
             options=["name"],
             help="Name of the Datadog organization.",
         )
-        datadog_organization_properties.redirect_uri = AAZStrArg(
+        org_properties.redirect_uri = AAZStrArg(
             options=["redirect-uri"],
             help="The redirect uri for linking.",
         )
@@ -297,7 +297,7 @@ class Create(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("datadogOrganizationProperties", AAZObjectType, ".datadog_organization_properties")
+                properties.set_prop("datadogOrganizationProperties", AAZObjectType, ".org_properties")
                 properties.set_prop("monitoringStatus", AAZStrType, ".monitoring_status")
                 properties.set_prop("userInfo", AAZObjectType, ".user_info", typ_kwargs={"flags": {"secret": True}})
 

@@ -104,8 +104,8 @@ class Update(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.datadog_organization_properties = AAZObjectArg(
-            options=["--datadog-organization-properties"],
+        _args_schema.org_properties = AAZObjectArg(
+            options=["--org-properties"],
             arg_group="Properties",
             help="Specify the Datadog organization name. In the case of linking to existing organizations, Id, ApiKey, and Applicationkey is required as well.",
             nullable=True,
@@ -124,8 +124,8 @@ class Update(AAZCommand):
             nullable=True,
         )
 
-        datadog_organization_properties = cls._args_schema.datadog_organization_properties
-        datadog_organization_properties.cspm = AAZBoolArg(
+        org_properties = cls._args_schema.org_properties
+        org_properties.cspm = AAZBoolArg(
             options=["cspm"],
             help="The configuration which describes the state of cloud security posture management. This collects configuration information for all resources in a subscription and track conformance to industry benchmarks.",
             nullable=True,
@@ -405,7 +405,7 @@ class Update(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("datadogOrganizationProperties", AAZObjectType, ".datadog_organization_properties")
+                properties.set_prop("datadogOrganizationProperties", AAZObjectType, ".org_properties")
                 properties.set_prop("monitoringStatus", AAZStrType, ".monitoring_status")
                 properties.set_prop("userInfo", AAZObjectType, ".user_info", typ_kwargs={"flags": {"secret": True}})
 
