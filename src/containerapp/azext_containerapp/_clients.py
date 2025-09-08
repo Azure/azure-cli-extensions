@@ -1514,6 +1514,7 @@ class SessionCodeInterpreterPreviewClient():
 
 
 class SessionCustomContainerPreviewClient():
+    # pylint: disable=too-few-public-methods
     api_version = PREVIEW_API_VERSION
 
     @classmethod
