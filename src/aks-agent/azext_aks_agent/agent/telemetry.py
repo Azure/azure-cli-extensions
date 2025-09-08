@@ -50,13 +50,13 @@ class CLITelemetryClient:
         self._telemetry_client.flush()
 
     def _generate_payload(self):
-        extension_name = "aks-preview"
+        extension_name = "aks-agent"
         try:
             from azure.cli.core.extension import get_extension
 
-            ext_name = "aks-preview"
+            ext_name = "aks-agent"
             ext = get_extension(ext_name)
-            extension_name = f"aks-preview@{ext.version}"
+            extension_name = f"aks-agent@{ext.version}"
         except:  # pylint: disable=W0702
             pass
 

@@ -23,7 +23,6 @@ from azure.cli.command_modules.acs._validators import (
     validate_nat_gateway_idle_timeout,
     validate_nat_gateway_managed_outbound_ip_count,
 )
-from azure.cli.core.api import get_config_dir
 from azure.cli.core.commands.parameters import (
     edge_zone_type,
     file_type,
@@ -86,12 +85,14 @@ from azext_aks_preview._consts import (
     CONST_NODEPOOL_MODE_USER,
     CONST_NODEPOOL_MODE_GATEWAY,
     CONST_NODEPOOL_MODE_MANAGEDSYSTEM,
+    CONST_NODEPOOL_MODE_MACHINES,
     CONST_NONE_UPGRADE_CHANNEL,
     CONST_NRG_LOCKDOWN_RESTRICTION_LEVEL_READONLY,
     CONST_NRG_LOCKDOWN_RESTRICTION_LEVEL_UNRESTRICTED,
     CONST_OS_DISK_TYPE_EPHEMERAL,
     CONST_OS_DISK_TYPE_MANAGED,
     CONST_OS_SKU_AZURELINUX,
+    CONST_OS_SKU_AZURELINUX3,
     CONST_OS_SKU_CBLMARINER,
     CONST_OS_SKU_MARINER,
     CONST_OS_SKU_UBUNTU,
@@ -151,7 +152,6 @@ from azext_aks_preview._consts import (
     CONST_ADVANCED_NETWORKPOLICIES_L7,
     CONST_TRANSIT_ENCRYPTION_TYPE_NONE,
     CONST_TRANSIT_ENCRYPTION_TYPE_WIREGUARD,
-    CONST_AGENT_CONFIG_FILE_NAME,
 )
 
 from azext_aks_preview._validators import (
@@ -225,7 +225,6 @@ from azext_aks_preview._validators import (
     validate_max_blocked_nodes,
     validate_resource_group_parameter,
     validate_location_resource_group_cluster_parameters,
-    validate_agent_config_file,
 )
 from azext_aks_preview.azurecontainerstorage._consts import (
     CONST_ACSTOR_ALL,
@@ -268,9 +267,11 @@ node_mode_types = [
     CONST_NODEPOOL_MODE_USER,
     CONST_NODEPOOL_MODE_GATEWAY,
     CONST_NODEPOOL_MODE_MANAGEDSYSTEM,
+    CONST_NODEPOOL_MODE_MACHINES,
 ]
 node_os_skus_create = [
     CONST_OS_SKU_AZURELINUX,
+    CONST_OS_SKU_AZURELINUX3,
     CONST_OS_SKU_UBUNTU,
     CONST_OS_SKU_CBLMARINER,
     CONST_OS_SKU_MARINER,
@@ -284,6 +285,7 @@ node_os_skus = node_os_skus_create + [
 ]
 node_os_skus_update = [
     CONST_OS_SKU_AZURELINUX,
+    CONST_OS_SKU_AZURELINUX3,
     CONST_OS_SKU_UBUNTU,
     CONST_OS_SKU_UBUNTU2204,
     CONST_OS_SKU_UBUNTU2404,
@@ -641,7 +643,7 @@ def load_arguments(self, _):
             ),
         )
         c.argument(
-            "sku", is_preview=True, arg_type=get_enum_type(sku_names)
+            "sku", arg_type=get_enum_type(sku_names)
         )
         c.argument(
             "tier", arg_type=get_enum_type(sku_tiers), validator=validate_sku_tier
@@ -692,6 +694,12 @@ def load_arguments(self, _):
         c.argument(
             "azure_keyvault_kms_key_vault_resource_id",
             validator=validate_azure_keyvault_kms_key_vault_resource_id,
+        )
+        c.argument(
+            "kms_infrastructure_encryption",
+            arg_type=get_enum_type(["Enabled", "Disabled"]),
+            default="Disabled",
+            is_preview=True,
         )
         c.argument("http_proxy_config")
         c.argument(
@@ -1156,7 +1164,7 @@ def load_arguments(self, _):
             ),
         )
         c.argument(
-            "sku", is_preview=True, arg_type=get_enum_type(sku_names)
+            "sku", arg_type=get_enum_type(sku_names)
         )
         c.argument(
             "tier", arg_type=get_enum_type(sku_tiers), validator=validate_sku_tier
@@ -2783,70 +2791,6 @@ def load_arguments(self, _):
             "yes",
             options_list=["--yes", "-y"],
             help="Do not prompt for confirmation.",
-            action="store_true",
-        )
-
-    with self.argument_context("aks agent") as c:
-        c.positional(
-            "prompt",
-            help="Ask any question and answer using available tools.",
-        )
-        c.argument(
-            "resource_group_name",
-            options_list=["--resource-group", "-g"],
-            help="Name of resource group.",
-            required=False,
-        )
-        c.argument(
-            "name",
-            options_list=["--name", "-n"],
-            help="Name of the managed cluster.",
-            required=False,
-        )
-        c.argument(
-            "max_steps",
-            type=int,
-            default=10,
-            required=False,
-            help="Maximum number of steps the LLM can take to investigate the issue.",
-        )
-        c.argument(
-            "config_file",
-            default=os.path.join(get_config_dir(), CONST_AGENT_CONFIG_FILE_NAME),
-            validator=validate_agent_config_file,
-            required=False,
-            help="Path to the config file.",
-        )
-        c.argument(
-            "model",
-            help="The model to use for the LLM.",
-            required=False,
-            type=str,
-        )
-        c.argument(
-            "api-key",
-            help="API key to use for the LLM (if not given, uses environment variables AZURE_API_KEY, OPENAI_API_KEY)",
-            required=False,
-            type=str,
-        )
-        c.argument(
-            "no_interactive",
-            help="Disable interactive mode. When set, the agent will not prompt for input and will run in batch mode.",
-            action="store_true",
-        )
-        c.argument(
-            "no_echo_request",
-            help="Disable echoing back the question provided to AKS Agent in the output.",
-            action="store_true",
-        )
-        c.argument(
-            "show_tool_output",
-            help="Show the output of each tool that was called.",
-            action="store_true",
-        )
-        c.argument(
-            "refresh_toolsets",
-            help="Refresh the toolsets status.",
             action="store_true",
         )
 

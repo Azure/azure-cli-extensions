@@ -61,6 +61,7 @@ class Show(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
+
         self.ContextsGet(ctx=self.ctx)()
         self.post_operations()
 
