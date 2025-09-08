@@ -47,7 +47,7 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
 
     with self.argument_context('storage-mover endpoint create-for-multi-cloud-connector') as c:
         c.argument('aws_s3_bucket_id', help='The ID of the AWS S3 bucket.')
-        c.argument('multi_cloud_connector_id', options_list=('--connector-id', '--multi_cloud_connector_id'),
+        c.argument('multi_cloud_connector_id', options_list=('--connector-id', '--multi-cloud-connector-id'),
                    help='The Azure Resource ID of the multi-cloud connector resource associated with the AWS account.')
 
     with self.argument_context('storage-mover endpoint create-for-smb') as c:
