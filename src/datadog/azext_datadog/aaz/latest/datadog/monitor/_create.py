@@ -18,16 +18,16 @@ class Create(AAZCommand):
     """Creates a new Datadog monitor resource in your Azure subscription. This sets up the integration between Azure and your Datadog account, enabling observability and monitoring of your Azure resources through Datadog.
 
     :example: Monitors_Create
-        az datadog monitor create --name "myMonitor" --resource-group "myResourceGroup" --location "West US 2" --tags Environment="Dev" --user-info name="Alice" email-address="alice@microsoft.com" phone-number="123-456-7890" --type "SystemAssigned" --sku-name "payg_v2_Monthly"
+        az datadog monitor create --name "myMonitor" --resource-group "myResourceGroup" --location "West US 2" --datadog-organization-properties name="myResourceGroup" --tags Environment="Dev" --user-info name="Alice" email-address="alice@microsoft.com" phone-number="123-456-7890" --sku name="payg_v3_Monthly" --identity type="SystemAssigned" --monitoring-status "Enabled"
 
     :example: Monitors creation with linking to Datadog organization.
-        az datadog monitor create --name "myMonitor" --resource-group "myResourceGroup" --location "West US 2" --datadog-organization-properties api-key=XX application-key=XX --tags Environment="Dev" --user-info name="Alice" email-address="alice@microsoft.com" phone-number="123-456-7890" --type "SystemAssigned" --sku-name "Linked"
+        az datadog monitor create --name "myMonitor-link" --resource-group "myResourceGroup" --location "West US 2" --datadog-organization-properties api-key=XX application-key=XX --tags Environment="Dev" --user-info name="Alice" email-address="alice@microsoft.com" phone-number="123-456-7890"  --identity type="SystemAssigned" --sku name="Linked"
     """
 
     _aaz_info = {
-        "version": "2021-03-01",
+        "version": "2023-10-20",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.datadog/monitors/{}", "2021-03-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.datadog/monitors/{}", "2023-10-20"],
         ]
     }
 
@@ -126,9 +126,17 @@ class Create(AAZCommand):
             options=["application-key"],
             help="Application key associated to the Datadog organization.",
         )
+        datadog_organization_properties.cspm = AAZBoolArg(
+            options=["cspm"],
+            help="The configuration which describes the state of cloud security posture management. This collects configuration information for all resources in a subscription and track conformance to industry benchmarks.",
+        )
         datadog_organization_properties.enterprise_app_id = AAZStrArg(
             options=["enterprise-app-id"],
             help="The Id of the Enterprise App used for Single sign on.",
+        )
+        datadog_organization_properties.id = AAZStrArg(
+            options=["id"],
+            help="Id of the Datadog organization.",
         )
         datadog_organization_properties.linking_auth_code = AAZStrArg(
             options=["linking-auth-code"],
@@ -137,6 +145,10 @@ class Create(AAZCommand):
         datadog_organization_properties.linking_client_id = AAZStrArg(
             options=["linking-client-id"],
             help="The client_id from an existing in exchange for an auth token to link organization.",
+        )
+        datadog_organization_properties.name = AAZStrArg(
+            options=["name"],
+            help="Name of the Datadog organization.",
         )
         datadog_organization_properties.redirect_uri = AAZStrArg(
             options=["redirect-uri"],
@@ -248,7 +260,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2021-03-01",
+                    "api-version", "2023-10-20",
                     required=True,
                 ),
             }
@@ -293,9 +305,12 @@ class Create(AAZCommand):
             if datadog_organization_properties is not None:
                 datadog_organization_properties.set_prop("apiKey", AAZStrType, ".api_key", typ_kwargs={"flags": {"secret": True}})
                 datadog_organization_properties.set_prop("applicationKey", AAZStrType, ".application_key", typ_kwargs={"flags": {"secret": True}})
+                datadog_organization_properties.set_prop("cspm", AAZBoolType, ".cspm")
                 datadog_organization_properties.set_prop("enterpriseAppId", AAZStrType, ".enterprise_app_id")
+                datadog_organization_properties.set_prop("id", AAZStrType, ".id")
                 datadog_organization_properties.set_prop("linkingAuthCode", AAZStrType, ".linking_auth_code", typ_kwargs={"flags": {"secret": True}})
                 datadog_organization_properties.set_prop("linkingClientId", AAZStrType, ".linking_client_id", typ_kwargs={"flags": {"secret": True}})
+                datadog_organization_properties.set_prop("name", AAZStrType, ".name")
                 datadog_organization_properties.set_prop("redirectUri", AAZStrType, ".redirect_uri")
 
             user_info = _builder.get(".properties.userInfo")
@@ -393,12 +408,9 @@ class Create(AAZCommand):
             )
 
             datadog_organization_properties = cls._schema_on_200_201.properties.datadog_organization_properties
-            datadog_organization_properties.id = AAZStrType(
-                flags={"read_only": True},
-            )
-            datadog_organization_properties.name = AAZStrType(
-                flags={"read_only": True},
-            )
+            datadog_organization_properties.cspm = AAZBoolType()
+            datadog_organization_properties.id = AAZStrType()
+            datadog_organization_properties.name = AAZStrType()
 
             user_info = cls._schema_on_200_201.properties.user_info
             user_info.email_address = AAZStrType(
