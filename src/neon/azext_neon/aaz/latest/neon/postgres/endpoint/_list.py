@@ -71,6 +71,13 @@ class List(AAZCommand):
                 pattern="^\\S.{0,62}\\S$|^\\S$",
             ),
         )
+        _args_schema.project_id = AAZStrArg(
+            options=["--project-id"],
+            help="The ID of the project.",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-z0-9-]{1,60}$",
+            ),
+        )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             help="Name of the Azure resource group.",
             required=True,
@@ -133,7 +140,7 @@ class List(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "projectName", self.ctx.args.project_name,
+                    "projectName", getattr(self.ctx.args, 'project_id', None) or self.ctx.args.project_name,
                     required=True,
                 ),
                 **self.serialize_url_param(

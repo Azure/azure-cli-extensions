@@ -53,11 +53,11 @@ helps['fleet show'] = """
 
 helps['fleet list'] = """
     type: command
-    short-summary: Lists all fleets within a resource group.
+    short-summary: Lists all fleets.
     examples:
-        - name: List all fleets with a specific subscription.
+        - name: List all fleets within your current subscription.
           text: az fleet list
-        - name: List all fleets that exist within a specific subscription and resource group.
+        - name: List all fleets that exist within your current subscription and the chosen resource group.
           text: az fleet list -g MyResourceGroup
 """
 
