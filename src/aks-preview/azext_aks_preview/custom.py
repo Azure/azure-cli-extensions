@@ -1707,7 +1707,7 @@ def aks_agentpool_upgrade(cmd,
 
     if upgrade_strategy:
         instance.upgrade_settings.upgrade_strategy = upgrade_strategy
-    
+
     # Rolling upgrade settings
     if not instance.upgrade_settings:
         instance.upgrade_settings = AgentPoolUpgradeSettings()
@@ -1724,7 +1724,7 @@ def aks_agentpool_upgrade(cmd,
         instance.upgrade_settings.max_unavailable = max_unavailable
     if max_blocked_nodes:
         instance.upgrade_settings.max_blocked_nodes = max_blocked_nodes
-    
+
     # Blue-green upgrade settings
     if not instance.upgrade_settings_blue_green:
         instance.upgrade_settings_blue_green = AgentPoolBlueGreenUpgradeSettings()
