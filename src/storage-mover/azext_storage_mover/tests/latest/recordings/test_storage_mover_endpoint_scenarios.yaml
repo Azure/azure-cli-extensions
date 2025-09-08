@@ -7636,6 +7636,234 @@ interactions:
       code: 200
       message: OK
 - request:
+    body: '{"properties": {"description": "endpointNFSFileShareDesc", "endpointType":
+      "AzureStorageNfsFileShare", "fileShareName": "fileshare000014", "storageAccountResourceId":
+      "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage-mover endpoint create-for-storage-nfs-file-share
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '312'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --storage-mover-name -n --file-share-name --storage-account-id --description
+      User-Agent:
+      - AZURECLI/2.77.0 azsdk-python-core/1.35.0 Python/3.13.7 (Windows-11-10.0.26100-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_nfs_file_share000007?api-version=2025-07-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_nfs_file_share000007","name":"endpoint_nfs_file_share000007","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-09-08T17:13:03.3434811Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-09-08T17:13:03.3434811Z"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","fileShareName":"fileshare000014","endpointType":"AzureStorageNfsFileShare","description":"endpointNFSFileShareDesc","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '853'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 08 Sep 2025 17:13:03 GMT
+      etag:
+      - '"7900d2c9-0000-3300-0000-68bf0e9f0000"'
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - dd174ca8-0186-4593-b1df-8617104537fe
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=1f58e503-3ee1-499f-9ec2-e509f6faa62c/centraluseuap/8cda0051-2980-4684-a482-7508da9c3ed5
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: E2BCB33E44D34F08949F16D5F40BA1E5 Ref B: PNQ231110909042 Ref C: 2025-09-08T17:13:02Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage-mover endpoint show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --storage-mover-name -n
+      User-Agent:
+      - AZURECLI/2.77.0 azsdk-python-core/1.35.0 Python/3.13.7 (Windows-11-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_nfs_file_share000007?api-version=2025-07-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_nfs_file_share000007","name":"endpoint_nfs_file_share000007","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-09-08T17:13:03.3434811Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-09-08T17:13:03.3434811Z"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","fileShareName":"fileshare000014","endpointType":"AzureStorageNfsFileShare","description":"endpointNFSFileShareDesc","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '853'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 08 Sep 2025 17:13:03 GMT
+      etag:
+      - '"7900d2c9-0000-3300-0000-68bf0e9f0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=1f58e503-3ee1-499f-9ec2-e509f6faa62c/centraluseuap/5d6bcfcf-ac5c-41aa-948d-ce0e58f4d1b4
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: B4738D12CBEE49DEA82DFA39A7D508B3 Ref B: PNQ231110907031 Ref C: 2025-09-08T17:13:04Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage-mover endpoint update-for-storage-nfs-file-share
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --storage-mover-name -n --description
+      User-Agent:
+      - AZURECLI/2.77.0 azsdk-python-core/1.35.0 Python/3.13.7 (Windows-11-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_nfs_file_share000007?api-version=2025-07-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_nfs_file_share000007","name":"endpoint_nfs_file_share000007","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-09-08T17:13:03.3434811Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-09-08T17:13:03.3434811Z"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","fileShareName":"fileshare000014","endpointType":"AzureStorageNfsFileShare","description":"endpointNFSFileShareDesc","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '853'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 08 Sep 2025 17:13:04 GMT
+      etag:
+      - '"7900d2c9-0000-3300-0000-68bf0e9f0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=1f58e503-3ee1-499f-9ec2-e509f6faa62c/centraluseuap/23adba93-5eb3-4379-9d53-3ec335d53db5
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: 82A023A474584FC8AFD53FD5B5E7734B Ref B: PNQ231110909034 Ref C: 2025-09-08T17:13:04Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"description": "endpointNFSFileShareDescUpdate", "endpointType":
+      "AzureStorageNfsFileShare", "fileShareName": "fileshare000014", "storageAccountResourceId":
+      "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage-mover endpoint update-for-storage-nfs-file-share
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '318'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --storage-mover-name -n --description
+      User-Agent:
+      - AZURECLI/2.77.0 azsdk-python-core/1.35.0 Python/3.13.7 (Windows-11-10.0.26100-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_nfs_file_share000007?api-version=2025-07-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_nfs_file_share000007","name":"endpoint_nfs_file_share000007","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-09-08T17:13:03.3434811Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-09-08T17:13:05.8060148Z"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","fileShareName":"fileshare000014","endpointType":"AzureStorageNfsFileShare","description":"endpointNFSFileShareDescUpdate","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '859'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 08 Sep 2025 17:13:05 GMT
+      etag:
+      - '"7900e7c9-0000-3300-0000-68bf0ea20000"'
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 21fb7ae4-6472-4f52-8a98-563c9f31bae3
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=1f58e503-3ee1-499f-9ec2-e509f6faa62c/centraluseuap/954d41d0-c312-4dce-8fe8-68c94a248ac2
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: E02679798B10465DAFECC530B3BB7EE9 Ref B: PNQ231110909029 Ref C: 2025-09-08T17:13:05Z'
+    status:
+      code: 200
+      message: OK
+- request:
     body: null
     headers:
       Accept:
