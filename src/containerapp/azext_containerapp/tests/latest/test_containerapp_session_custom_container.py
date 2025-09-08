@@ -76,11 +76,11 @@ class ContainerAppSessionCustomContainerTests(ScenarioTest):
 
         # start session and stop session
         self.cmd('rest --method get --url {}/health?identifier={} --resource https://dynamicsessions.io'.format(pool_management_endpoint, identifier_name), expect_failure=False)
-        stop_session_output = self.cmd('containerapp session custom-container stop-session -g {} -n {} --identifier {}'.format(resource_group, sessionpool_name_custom, identifier_name), expect_failure=False).output
+        stop_session_output = self.cmd('containerapp session stop -g {} -n {} --identifier {}'.format(resource_group, sessionpool_name_custom, identifier_name), expect_failure=False).output
         self.assertIn(f"Session '{identifier_name}' in session pool '{sessionpool_name_custom}' stopped.", stop_session_output)
 
         with self.assertRaises(CLIError):
-            self.cmd('containerapp session custom-container stop-session -g {} -n {} --identifier {}'.format(resource_group, sessionpool_name_custom, identifier_name))
+            self.cmd('containerapp session stop -g {} -n {} --identifier {}'.format(resource_group, sessionpool_name_custom, identifier_name))
 
         # List Session Pools
         sessionpool_list = self.cmd("containerapp sessionpool list -g {}".format(resource_group)).get_output_in_json()
