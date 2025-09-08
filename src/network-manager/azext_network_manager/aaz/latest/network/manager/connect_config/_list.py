@@ -43,7 +43,7 @@ class List(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.network_manager_name = AAZStrArg(
-            options=["--network-manager-name"],
+            options=["--name", "--network-manager-name", "-n"],
             help="The name of the network manager.",
             required=True,
         )
