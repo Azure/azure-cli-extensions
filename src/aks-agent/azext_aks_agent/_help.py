@@ -30,7 +30,7 @@ helps[
           long-summary: |-
             The --model parameter determines which large language model (LLM) and provider will be used to analyze your cluster.
             For OpenAI, use the model name directly (e.g., gpt-4o).
-            For Azure OpenAI, use `azure/<deployment name>` (e.g., azure/my-gpt4.1-deployment).
+            For Azure OpenAI, use `azure/<deployment name>` (e.g., azure/gpt-4.1).
             Each provider may require different environment variables and model naming conventions.
             For a full list of supported providers, model patterns, and required environment variables, see https://docs.litellm.ai/docs/providers.
             Note: For Azure OpenAI, it is recommended to set the deployment name as the model name until https://github.com/BerriAI/litellm/issues/13950 is resolved.
@@ -62,7 +62,7 @@ helps[
             export AZURE_API_BASE="https://my-azureopenai-service.openai.azure.com/"
             export AZURE_API_VERSION="2025-01-01-preview"
             export AZURE_API_KEY="sk-xxx"
-            az aks agent "Why are my pods not starting?" --name MyManagedCluster --resource-group MyResourceGroup --model azure/my-gpt4.1-deployment
+            az aks agent "Why are my pods not starting?" --name MyManagedCluster --resource-group MyResourceGroup --model azure/gpt-4.1
         - name: Ask about pod issues in the cluster with OpenAI
           text: |-
             export OPENAI_API_KEY="sk-xxx"
@@ -99,15 +99,15 @@ helps[
                 enabled: false
               ```
         - name: Run in interactive mode without a question
-          text: az aks agent "Check the pod status in my cluster" --name MyManagedCluster --resource-group MyResourceGroup --model azure/my-gpt4.1-deployment --api-key "sk-xxx"
+          text: az aks agent "Check the pod status in my cluster" --name MyManagedCluster --resource-group MyResourceGroup --model azure/gpt-4.1 --api-key "sk-xxx"
         - name: Run in non-interactive batch mode
-          text: az aks agent "Diagnose networking issues" --no-interactive --max-steps 15 --model azure/my-gpt4.1-deployment
+          text: az aks agent "Diagnose networking issues" --no-interactive --max-steps 15 --model azure/gpt-4.1
         - name: Show detailed tool output during analysis
-          text: az aks agent "Why is my service workload unavailable in namespace workload-ns?" --show-tool-output --model azure/my-gpt4.1-deployment
+          text: az aks agent "Why is my service workload unavailable in namespace workload-ns?" --show-tool-output --model azure/gpt-4.1
         - name: Use custom configuration file
-          text: az aks agent "Check kubernetes pod resource usage" --config-file /path/to/custom.yaml --model azure/my-gpt4.1-deployment
+          text: az aks agent "Check kubernetes pod resource usage" --config-file /path/to/custom.yaml --model azure/gpt-4.1
         - name: Run agent with no echo of the original question
-          text: az aks agent "What is the status of my cluster?" --no-echo-request --model azure/my-gpt4.1-deployment
+          text: az aks agent "What is the status of my cluster?" --no-echo-request --model azure/gpt-4.1
         - name: Refresh toolsets to get the latest available tools
-          text: az aks agent "What is the status of my cluster?" --refresh-toolsets --model azure/my-gpt4.1-deployment
+          text: az aks agent "What is the status of my cluster?" --refresh-toolsets --model azure/gpt-4.1
 """
