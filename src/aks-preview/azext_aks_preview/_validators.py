@@ -1030,7 +1030,8 @@ def validate_opentelemetry_metrics_dependencies_for_update(namespace):
             "Cannot specify both --enable-opentelemetry-metrics and --disable-opentelemetry-metrics at the same time."
         )
 
-    # For update operations, validation is deferred to the decorator where we have access to the cluster's Azure Monitor profile
+    # For update operations, validation is deferred to the decorator where we have access
+    # to the cluster's Azure Monitor profile
 
 
 def validate_opentelemetry_logs_dependencies(namespace):
@@ -1065,8 +1066,8 @@ def validate_opentelemetry_logs_dependencies_for_update(namespace):
         raise MutuallyExclusiveArgumentError(
             "Cannot specify both --enable-opentelemetry-logs and --disable-opentelemetry-logs at the same time."
         )
-
-    # For update operations, validation is deferred to the decorator where we have access to the cluster's Azure Monitor profile
+    # For update operations, validation is deferred to the decorator where we have access
+    # to the cluster's Azure Monitor profile
 
 
 def validate_azure_monitor_and_opentelemetry_for_create(namespace):

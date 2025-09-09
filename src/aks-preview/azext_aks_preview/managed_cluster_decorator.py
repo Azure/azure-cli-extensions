@@ -5423,21 +5423,19 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         # TODO: should remove get value from enable_azuremonitormetrics once the option is removed
         # TODO: should remove get value from disable_azuremonitormetrics once the option is removed
-        azure_monitor_metrics = self.context.raw_param.get("enable_azuremonitormetrics") or
-            self.context.get_enable_azure_monitor_metrics() or
-            self.context.raw_param.get("disable_azuremonitormetrics") or
-            self.context.get_disable_azure_monitor_metrics()
-        azure_monitor_logs = self.context.raw_param.get("enable_azuremonitormonitoringlogs") or
-            self.context.get_enable_azure_monitor_logs() or
-            self.context.raw_param.get("disable_azuremonitormonitoringlogs") or
-            self.context.get_disable_azure_monitor_logs()
-        opentelemetry = self.context.raw_param.get("enable_opentelemetry_metrics") or
-            self.context.raw_param.get("enable_opentelemetry_logs") or
-            self.context.raw_param.get("disable_opentelemetry_metrics") or
-            self.context.raw_param.get("disable_opentelemetry_logs")
-        if (
-            azure_monitor_metrics or opentelemetry or azure_monitor_logs
-        ):
+        azure_monitor_metrics = (self.context.raw_param.get("enable_azuremonitormetrics") or
+                                self.context.get_enable_azure_monitor_metrics() or
+                                self.context.raw_param.get("disable_azuremonitormetrics") or
+                                self.context.get_disable_azure_monitor_metrics())
+        azure_monitor_logs = (self.context.raw_param.get("enable_azuremonitormonitoringlogs") or
+                             self.context.get_enable_azure_monitor_logs() or
+                             self.context.raw_param.get("disable_azuremonitormonitoringlogs") or
+                             self.context.get_disable_azure_monitor_logs())
+        opentelemetry = (self.context.raw_param.get("enable_opentelemetry_metrics") or
+                        self.context.raw_param.get("enable_opentelemetry_logs") or
+                        self.context.raw_param.get("disable_opentelemetry_metrics") or
+                        self.context.raw_param.get("disable_opentelemetry_logs"))
+        if azure_monitor_metrics or opentelemetry or azure_monitor_logs:
             ensure_azure_monitor_profile_prerequisites(
                 self.cmd,
                 self.context.get_subscription_id(),

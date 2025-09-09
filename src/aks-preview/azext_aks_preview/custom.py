@@ -992,7 +992,9 @@ def aks_update(
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
 
+    # Import the DecoratorEarlyExitException from acs module
     from azure.cli.command_modules.acs._consts import DecoratorEarlyExitException
+    # Import the decorator from the preview extension package
     from azext_aks_preview.managed_cluster_decorator import AKSPreviewManagedClusterUpdateDecorator
 
     # decorator pattern

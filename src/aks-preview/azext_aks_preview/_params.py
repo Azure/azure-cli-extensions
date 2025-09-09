@@ -998,22 +998,26 @@ def load_arguments(self, _):
         c.argument("enable_azure_monitor_app_monitoring", is_preview=True, action="store_true")
         # OpenTelemetry parameters
         c.argument("enable_opentelemetry_metrics",
+            options_list=["--enable-opentelemetry-metrics", "--enable-otel-metrics"],
             is_preview=True,
             action="store_true",
             help="Enable OpenTelemetry metrics collection",
             validator=validate_azure_monitor_and_opentelemetry_for_create
         )
         c.argument("opentelemetry_metrics_port",
+            options_list=["--opentelemetry-metrics-port", "--otel-metrics-port"],
             is_preview=True,
             type=int,
             help="Port for OpenTelemetry metrics collection"
         )
         c.argument("disable_opentelemetry_metrics",
+            options_list=["--disable-opentelemetry-metrics", "--disable-otel-metrics"],
             is_preview=True,
             action="store_true",
             help="Disable OpenTelemetry metrics collection"
         )
         c.argument("enable_opentelemetry_logs",
+            options_list=["--enable-opentelemetry-logs", "--enable-otel-logs"],
             is_preview=True,
             action="store_true",
             help="Enable OpenTelemetry logs collection"
@@ -1024,6 +1028,7 @@ def load_arguments(self, _):
             help="Port for OpenTelemetry logs collection"
         )
         c.argument("disable_opentelemetry_logs",
+            options_list=["--disable-opentelemetry-logs", "--disable-otel-logs"],
             is_preview=True,
             action="store_true",
             help="Disable OpenTelemetry logs collection"
@@ -1401,22 +1406,26 @@ def load_arguments(self, _):
         c.argument("disable_azure_monitor_app_monitoring", action="store_true", is_preview=True)
         # OpenTelemetry parameters
         c.argument("enable_opentelemetry_metrics",
+            options_list=["--enable-opentelemetry-metrics", "--enable-otel-metrics"],
             is_preview=True,
             action="store_true",
             help="Enable OpenTelemetry metrics collection",
             validator=validate_azure_monitor_and_opentelemetry_for_update
         )
         c.argument("opentelemetry_metrics_port",
+            options_list=["--opentelemetry-metrics-port", "--otel-metrics-port"],
             is_preview=True,
             type=int,
             help="Port for OpenTelemetry metrics collection"
         )
         c.argument("disable_opentelemetry_metrics",
+            options_list=["--disable-opentelemetry-metrics", "--disable-otel-metrics"],
             is_preview=True,
             action="store_true",
             help="Disable OpenTelemetry metrics collection"
         )
         c.argument("enable_opentelemetry_logs",
+            options_list=["--enable-opentelemetry-logs", "--enable-otel-logs"],
             is_preview=True,
             action="store_true",
             help="Enable OpenTelemetry logs collection"
@@ -1427,6 +1436,7 @@ def load_arguments(self, _):
             help="Port for OpenTelemetry logs collection"
         )
         c.argument("disable_opentelemetry_logs",
+            options_list=["--disable-opentelemetry-logs", "--disable-otel-logs"],
             is_preview=True,
             action="store_true",
             help="Disable OpenTelemetry logs collection"
