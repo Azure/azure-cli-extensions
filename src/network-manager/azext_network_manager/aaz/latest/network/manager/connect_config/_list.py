@@ -16,15 +16,12 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List all the network manager connectivity configuration in a specified network manager.
-
-    :example: List Azure Virtual Network Manager Connecitivity Configuration
-        az network manager connect-config list --network-manager-name "testNetworkManager" --resource-group "myResourceGroup"
     """
 
     _aaz_info = {
-        "version": "2022-01-01",
+        "version": "2024-07-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networkmanagers/{}/connectivityconfigurations", "2022-01-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networkmanagers/{}/connectivityconfigurations", "2024-07-01"],
         ]
     }
 
@@ -46,7 +43,7 @@ class List(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.network_manager_name = AAZStrArg(
-            options=["-n", "--name", "--network-manager-name"],
+            options=["--name", "--network-manager-name", "-n"],
             help="The name of the network manager.",
             required=True,
         )
@@ -139,7 +136,7 @@ class List(AAZCommand):
                     "$top", self.ctx.args.top,
                 ),
                 **self.serialize_query_param(
-                    "api-version", "2022-01-01",
+                    "api-version", "2024-07-01",
                     required=True,
                 ),
             }
@@ -206,6 +203,9 @@ class List(AAZCommand):
                 serialized_name="appliesToGroups",
                 flags={"required": True},
             )
+            properties.connectivity_capabilities = AAZObjectType(
+                serialized_name="connectivityCapabilities",
+            )
             properties.connectivity_topology = AAZStrType(
                 serialized_name="connectivityTopology",
                 flags={"required": True},
@@ -220,6 +220,10 @@ class List(AAZCommand):
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+            properties.resource_guid = AAZStrType(
+                serialized_name="resourceGuid",
                 flags={"read_only": True},
             )
 
@@ -240,6 +244,20 @@ class List(AAZCommand):
             )
             _element.use_hub_gateway = AAZStrType(
                 serialized_name="useHubGateway",
+            )
+
+            connectivity_capabilities = cls._schema_on_200.value.Element.properties.connectivity_capabilities
+            connectivity_capabilities.connected_group_address_overlap = AAZStrType(
+                serialized_name="connectedGroupAddressOverlap",
+                flags={"required": True},
+            )
+            connectivity_capabilities.connected_group_private_endpoints_scale = AAZStrType(
+                serialized_name="connectedGroupPrivateEndpointsScale",
+                flags={"required": True},
+            )
+            connectivity_capabilities.peering_enforcement = AAZStrType(
+                serialized_name="peeringEnforcement",
+                flags={"required": True},
             )
 
             hubs = cls._schema_on_200.value.Element.properties.hubs
