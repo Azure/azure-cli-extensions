@@ -67,21 +67,9 @@ helps[
           text: |-
             export OPENAI_API_KEY="sk-xxx"
             az aks agent "Why are my pods not starting?" --name MyManagedCluster --resource-group MyResourceGroup --model gpt-4o
-        - name: Run in interactive mode without a question
-          text: az aks agent "Check the pod status in my cluster" --name MyManagedCluster --resource-group MyResourceGroup --model azure/my-gpt4.1-deployment --api-key "sk-xxx"
-        - name: Run in non-interactive batch mode
-          text: az aks agent "Diagnose networking issues" --no-interactive --max-steps 15 --model azure/my-gpt4.1-deployment
-        - name: Show detailed tool output during analysis
-          text: az aks agent "Why is my service workload unavailable in namespace workload-ns?" --show-tool-output --model azure/my-gpt4.1-deployment
-        - name: Use custom configuration file
-          text: az aks agent "Check kubernetes pod resource usage" --config-file /path/to/custom.yaml --model azure/my-gpt4.1-deployment
-        - name: Run agent with no echo of the original question
-          text: az aks agent "What is the status of my cluster?" --no-echo-request --model azure/my-gpt4.1-deployment
-        - name: Refresh toolsets to get the latest available tools
-          text: az aks agent "What is the status of my cluster?" --refresh-toolsets --model azure/my-gpt4.1-deployment
         - name: Run agent with config file
           text: |
-            az aks agent "Check kubernetes pod resource usage" --config-file /path/to/custom.yaml
+            az aks agent "Check kubernetes pod resource usage" --config-file /path/to/custom.yaml --name MyManagedCluster --resource-group MyResourceGroup
             Here is an example of config file:
             ```json
             model: "azure/gpt-4.1"
@@ -110,4 +98,16 @@ helps[
               aks/core:
                 enabled: false
               ```
+        - name: Run in interactive mode without a question
+          text: az aks agent "Check the pod status in my cluster" --name MyManagedCluster --resource-group MyResourceGroup --model azure/my-gpt4.1-deployment --api-key "sk-xxx"
+        - name: Run in non-interactive batch mode
+          text: az aks agent "Diagnose networking issues" --no-interactive --max-steps 15 --model azure/my-gpt4.1-deployment
+        - name: Show detailed tool output during analysis
+          text: az aks agent "Why is my service workload unavailable in namespace workload-ns?" --show-tool-output --model azure/my-gpt4.1-deployment
+        - name: Use custom configuration file
+          text: az aks agent "Check kubernetes pod resource usage" --config-file /path/to/custom.yaml --model azure/my-gpt4.1-deployment
+        - name: Run agent with no echo of the original question
+          text: az aks agent "What is the status of my cluster?" --no-echo-request --model azure/my-gpt4.1-deployment
+        - name: Refresh toolsets to get the latest available tools
+          text: az aks agent "What is the status of my cluster?" --refresh-toolsets --model azure/my-gpt4.1-deployment
 """
