@@ -18,6 +18,7 @@ def load_arguments(self, _):
         c.positional(
             "prompt",
             help="Ask any question and answer using available tools.",
+            required=False,
         )
         c.argument(
             "resource_group_name",
@@ -47,12 +48,12 @@ def load_arguments(self, _):
         )
         c.argument(
             "model",
-            help="The model to use for the LLM.",
+            help=" Specify the LLM provider and model or deployment to use for the AI assistant.",
             required=False,
             type=str,
         )
         c.argument(
-            "api-key",
+            "api_key",
             help="API key to use for the LLM (if not given, uses environment variables AZURE_API_KEY, OPENAI_API_KEY)",
             required=False,
             type=str,

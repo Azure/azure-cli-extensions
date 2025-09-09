@@ -26,7 +26,14 @@ helps[
           short-summary: Name of the resource group.
         - name: --model
           type: string
-          short-summary: Model to use for the LLM.
+          short-summary: Specify the LLM provider and model or deployment to use for the AI assistant.
+          long-summary: |-
+            The --model parameter determines which large language model (LLM) and provider will be used to analyze your cluster.
+            For OpenAI, use the model name directly (e.g., gpt-4o).
+            For Azure OpenAI, use azure/<deployment name> (e.g., azure/my-gpt4.1-deployment).
+            Each provider may require different environment variables and model naming conventions.
+            For a full list of supported providers, model patterns, and required environment variables, see https://docs.litellm.ai/docs/providers.
+            Note: For Azure OpenAI, it is recommended to set the deployment name as the model name until https://github.com/BerriAI/litellm/issues/13950 is resolved.
         - name: --api-key
           type: string
           short-summary: API key to use for the LLM (if not given, uses environment variables AZURE_API_KEY, OPENAI_API_KEY).
@@ -77,7 +84,7 @@ helps[
             az aks agent "Check kubernetes pod resource usage" --config-file /path/to/custom.yaml
             Here is an example of config file:
             ```json
-            model: "gpt-4o"
+            model: "azure/gpt-4.1"
             api_key: "..."
             # define a list of mcp servers, mcp server can be defined
             mcp_servers:

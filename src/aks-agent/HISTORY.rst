@@ -11,6 +11,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* Clarify the description of the `--model` parameter to indicate it requires both the LLM provider and the specific model or deployment name.
 
 1.0.0b1
 +++++++
