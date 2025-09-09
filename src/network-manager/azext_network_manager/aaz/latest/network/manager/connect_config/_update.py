@@ -19,9 +19,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-01-01",
+        "version": "2024-07-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networkmanagers/{}/connectivityconfigurations/{}", "2022-01-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networkmanagers/{}/connectivityconfigurations/{}", "2024-07-01"],
         ]
     }
 
@@ -50,7 +50,7 @@ class Update(AAZCommand):
             id_part="child_name_1",
         )
         _args_schema.network_manager_name = AAZStrArg(
-            options=["-n", "--name", "--network-manager-name"],
+            options=["--name", "--network-manager-name", "-n"],
             help="The name of the network manager.",
             required=True,
             id_part="name",
@@ -67,6 +67,12 @@ class Update(AAZCommand):
             singular_options=["--applies-to-group"],
             arg_group="Properties",
             help="Groups for configuration",
+        )
+        _args_schema.connect_capabilities = AAZObjectArg(
+            options=["--connect-capabilities"],
+            arg_group="Properties",
+            help="Collection of additional settings to enhance specific topology behaviors of the connectivity configuration resource.",
+            nullable=True,
         )
         _args_schema.connectivity_topology = AAZStrArg(
             options=["--connectivity-topology"],
@@ -110,12 +116,12 @@ class Update(AAZCommand):
         _element = cls._args_schema.applies_to_groups.Element
         _element.group_connectivity = AAZStrArg(
             options=["group-connectivity"],
-            help="Group connectivity type. Only required if topology is Hub and Spoke.",
+            help="Group connectivity type.",
             enum={"DirectlyConnected": "DirectlyConnected", "None": "None"},
         )
         _element.is_global = AAZStrArg(
             options=["is-global"],
-            help="Flag if global is supported. Only required if topology is Hub and Spoke.",
+            help="Flag if global is supported.",
             nullable=True,
             enum={"False": "False", "True": "True"},
         )
@@ -125,9 +131,26 @@ class Update(AAZCommand):
         )
         _element.use_hub_gateway = AAZStrArg(
             options=["use-hub-gateway"],
-            help="Flag if need to use hub gateway. Only required if topology is Hub and Spoke.",
+            help="Flag if need to use hub gateway.",
             nullable=True,
             enum={"False": "False", "True": "True"},
+        )
+
+        connect_capabilities = cls._args_schema.connect_capabilities
+        connect_capabilities.connected_group_address_overlap = AAZStrArg(
+            options=["connected-group-address-overlap"],
+            help="Behavior to handle overlapped IP address space among members of the connected group of the connectivity configuration.",
+            enum={"Allowed": "Allowed", "Disallowed": "Disallowed"},
+        )
+        connect_capabilities.connected_group_private_endpoints_scale = AAZStrArg(
+            options=["connected-group-private-endpoints-scale"],
+            help="Option indicating the scale of private endpoints allowed in the connected group of the connectivity configuration.",
+            enum={"HighScale": "HighScale", "Standard": "Standard"},
+        )
+        connect_capabilities.peering_enforcement = AAZStrArg(
+            options=["peering-enforcement"],
+            help="Option indicating enforcement of peerings created by the connectivity configuration.",
+            enum={"Enforced": "Enforced", "Unenforced": "Unenforced"},
         )
 
         hubs = cls._args_schema.hubs
@@ -143,7 +166,7 @@ class Update(AAZCommand):
         )
         _element.resource_type = AAZStrArg(
             options=["resource-type"],
-            help="Resource Type, suggested value(s): 'Microsoft.Network/virtualNetworks'",
+            help="Resource Type.",
             nullable=True,
         )
         return cls._args_schema
@@ -230,7 +253,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-01-01",
+                    "api-version", "2024-07-01",
                     required=True,
                 ),
             }
@@ -317,7 +340,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-01-01",
+                    "api-version", "2024-07-01",
                     required=True,
                 ),
             }
@@ -380,6 +403,7 @@ class Update(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("appliesToGroups", AAZListType, ".applies_to_groups", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("connectivityCapabilities", AAZObjectType, ".connect_capabilities")
                 properties.set_prop("connectivityTopology", AAZStrType, ".connectivity_topology", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("deleteExistingPeering", AAZStrType, ".delete_existing_peering")
                 properties.set_prop("description", AAZStrType, ".description")
@@ -396,6 +420,12 @@ class Update(AAZCommand):
                 _elements.set_prop("isGlobal", AAZStrType, ".is_global")
                 _elements.set_prop("networkGroupId", AAZStrType, ".network_group_id", typ_kwargs={"flags": {"required": True}})
                 _elements.set_prop("useHubGateway", AAZStrType, ".use_hub_gateway")
+
+            connectivity_capabilities = _builder.get(".properties.connectivityCapabilities")
+            if connectivity_capabilities is not None:
+                connectivity_capabilities.set_prop("connectedGroupAddressOverlap", AAZStrType, ".connected_group_address_overlap", typ_kwargs={"flags": {"required": True}})
+                connectivity_capabilities.set_prop("connectedGroupPrivateEndpointsScale", AAZStrType, ".connected_group_private_endpoints_scale", typ_kwargs={"flags": {"required": True}})
+                connectivity_capabilities.set_prop("peeringEnforcement", AAZStrType, ".peering_enforcement", typ_kwargs={"flags": {"required": True}})
 
             hubs = _builder.get(".properties.hubs")
             if hubs is not None:
@@ -461,6 +491,9 @@ class _UpdateHelper:
             serialized_name="appliesToGroups",
             flags={"required": True},
         )
+        properties.connectivity_capabilities = AAZObjectType(
+            serialized_name="connectivityCapabilities",
+        )
         properties.connectivity_topology = AAZStrType(
             serialized_name="connectivityTopology",
             flags={"required": True},
@@ -475,6 +508,10 @@ class _UpdateHelper:
         )
         properties.provisioning_state = AAZStrType(
             serialized_name="provisioningState",
+            flags={"read_only": True},
+        )
+        properties.resource_guid = AAZStrType(
+            serialized_name="resourceGuid",
             flags={"read_only": True},
         )
 
@@ -495,6 +532,20 @@ class _UpdateHelper:
         )
         _element.use_hub_gateway = AAZStrType(
             serialized_name="useHubGateway",
+        )
+
+        connectivity_capabilities = _schema_connectivity_configuration_read.properties.connectivity_capabilities
+        connectivity_capabilities.connected_group_address_overlap = AAZStrType(
+            serialized_name="connectedGroupAddressOverlap",
+            flags={"required": True},
+        )
+        connectivity_capabilities.connected_group_private_endpoints_scale = AAZStrType(
+            serialized_name="connectedGroupPrivateEndpointsScale",
+            flags={"required": True},
+        )
+        connectivity_capabilities.peering_enforcement = AAZStrType(
+            serialized_name="peeringEnforcement",
+            flags={"required": True},
         )
 
         hubs = _schema_connectivity_configuration_read.properties.hubs

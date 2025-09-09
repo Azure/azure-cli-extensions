@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networkmanagers/{}/connectivityconfigurations/{}", "2022-01-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networkmanagers/{}/connectivityconfigurations/{}", "2024-07-01"],
         ]
     }
 
@@ -47,7 +47,7 @@ class Wait(AAZWaitCommand):
             id_part="child_name_1",
         )
         _args_schema.network_manager_name = AAZStrArg(
-            options=["-n", "--name", "--network-manager-name"],
+            options=["--name", "--network-manager-name", "-n"],
             help="The name of the network manager.",
             required=True,
             id_part="name",
@@ -126,7 +126,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-01-01",
+                    "api-version", "2024-07-01",
                     required=True,
                 ),
             }
@@ -184,6 +184,9 @@ class Wait(AAZWaitCommand):
                 serialized_name="appliesToGroups",
                 flags={"required": True},
             )
+            properties.connectivity_capabilities = AAZObjectType(
+                serialized_name="connectivityCapabilities",
+            )
             properties.connectivity_topology = AAZStrType(
                 serialized_name="connectivityTopology",
                 flags={"required": True},
@@ -198,6 +201,10 @@ class Wait(AAZWaitCommand):
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+            properties.resource_guid = AAZStrType(
+                serialized_name="resourceGuid",
                 flags={"read_only": True},
             )
 
@@ -218,6 +225,20 @@ class Wait(AAZWaitCommand):
             )
             _element.use_hub_gateway = AAZStrType(
                 serialized_name="useHubGateway",
+            )
+
+            connectivity_capabilities = cls._schema_on_200.properties.connectivity_capabilities
+            connectivity_capabilities.connected_group_address_overlap = AAZStrType(
+                serialized_name="connectedGroupAddressOverlap",
+                flags={"required": True},
+            )
+            connectivity_capabilities.connected_group_private_endpoints_scale = AAZStrType(
+                serialized_name="connectedGroupPrivateEndpointsScale",
+                flags={"required": True},
+            )
+            connectivity_capabilities.peering_enforcement = AAZStrType(
+                serialized_name="peeringEnforcement",
+                flags={"required": True},
             )
 
             hubs = cls._schema_on_200.properties.hubs
