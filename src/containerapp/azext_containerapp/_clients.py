@@ -1515,7 +1515,7 @@ class SessionCodeInterpreterPreviewClient():
 
 class SessionCustomContainerPreviewClient():
     # pylint: disable=too-few-public-methods
-    api_version = PREVIEW_API_VERSION
+    session_dp_api_version = "2025-02-02-preview" # may be different from ACA CP
 
     @classmethod
     def stop_session(cls, cmd, identifier, session_pool_endpoint):
@@ -1523,7 +1523,7 @@ class SessionCustomContainerPreviewClient():
         request_url = url_fmt.format(
             session_pool_endpoint,
             identifier,
-            cls.api_version)
+            cls.session_dp_api_version)
 
         r = send_raw_request(cmd.cli_ctx, "POST", request_url, resource=SESSION_RESOURCE)
 
