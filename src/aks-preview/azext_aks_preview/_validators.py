@@ -978,14 +978,14 @@ def validate_opentelemetry_ports(namespace):
     """Validate that OpenTelemetry metrics and logs ports don't conflict."""
     metrics_port = getattr(namespace, 'opentelemetry_metrics_port', None)
     logs_port = getattr(namespace, 'opentelemetry_logs_port', None)
-    
+
     # Check if both ports are specified and are the same
     if metrics_port is not None and logs_port is not None and metrics_port == logs_port:
         raise ArgumentUsageError(
             "OpenTelemetry metrics port and logs port cannot be the same. "
             "Please specify different ports for --opentelemetry-metrics-port and --opentelemetry-logs-port."
         )
-    
+
     # Validate port ranges
     for port, port_name in [(metrics_port, 'metrics'), (logs_port, 'logs')]:
         if port is not None and not (1 <= port <= 65535):
@@ -1001,17 +1001,17 @@ def validate_opentelemetry_metrics_dependencies(namespace):
     # Try both new and deprecated parameter names for Azure Monitor metrics
     enable_azure_monitor_metrics = getattr(namespace, 'enable_azure_monitor_metrics', False)
     enable_azuremonitormetrics = getattr(namespace, 'enable_azuremonitormetrics', False)  # deprecated flag
-    
+
     # Check mutual exclusion
     if enable_otlp_metrics and disable_otlp_metrics:
         raise MutuallyExclusiveArgumentError(
             "Cannot specify both --enable-opentelemetry-metrics and --disable-opentelemetry-metrics at the same time."
         )
-    
+
     # Check if trying to enable OTLP metrics without Azure Monitor metrics
     # For create operations, require explicit Azure Monitor enablement
     azure_monitor_enabled_via_params = enable_azure_monitor_metrics or enable_azuremonitormetrics
-    
+
     if enable_otlp_metrics and not azure_monitor_enabled_via_params:
         raise ArgumentUsageError(
             "OpenTelemetry metrics requires Azure Monitor metrics to be enabled. "
@@ -1023,13 +1023,13 @@ def validate_opentelemetry_metrics_dependencies_for_update(namespace):
     """Validate OpenTelemetry metrics dependencies for update operations."""
     enable_otlp_metrics = getattr(namespace, 'enable_opentelemetry_metrics', False)
     disable_otlp_metrics = getattr(namespace, 'disable_opentelemetry_metrics', False)
-    
+
     # Check mutual exclusion
     if enable_otlp_metrics and disable_otlp_metrics:
         raise MutuallyExclusiveArgumentError(
             "Cannot specify both --enable-opentelemetry-metrics and --disable-opentelemetry-metrics at the same time."
         )
-    
+
     # For update operations, validation is deferred to the decorator where we have access to the cluster's Azure Monitor profile
 
 
@@ -1039,13 +1039,13 @@ def validate_opentelemetry_logs_dependencies(namespace):
     disable_otlp_logs = getattr(namespace, 'disable_opentelemetry_logs', False)
     # Azure Monitor logs parameter may come from parent class or be set directly
     enable_azure_monitor_logs = getattr(namespace, 'enable_azure_monitor_logs', False)
-    
+
     # Check mutual exclusion
     if enable_otlp_logs and disable_otlp_logs:
         raise MutuallyExclusiveArgumentError(
             "Cannot specify both --enable-opentelemetry-logs and --disable-opentelemetry-logs at the same time."
         )
-    
+
     # Check if trying to enable OTLP logs without Azure Monitor logs
     # For create operations, require explicit Azure Monitor enablement
     if enable_otlp_logs and not enable_azure_monitor_logs:
@@ -1059,13 +1059,13 @@ def validate_opentelemetry_logs_dependencies_for_update(namespace):
     """Validate OpenTelemetry logs dependencies for update operations."""
     enable_otlp_logs = getattr(namespace, 'enable_opentelemetry_logs', False)
     disable_otlp_logs = getattr(namespace, 'disable_opentelemetry_logs', False)
-    
+
     # Check mutual exclusion
     if enable_otlp_logs and disable_otlp_logs:
         raise MutuallyExclusiveArgumentError(
             "Cannot specify both --enable-opentelemetry-logs and --disable-opentelemetry-logs at the same time."
         )
-    
+
     # For update operations, validation is deferred to the decorator where we have access to the cluster's Azure Monitor profile
 
 
