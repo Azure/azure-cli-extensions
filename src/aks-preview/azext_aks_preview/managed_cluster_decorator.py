@@ -5417,8 +5417,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
             # Also disable in Azure Monitor profile container insights for consistency
             container_insights_exists = (mc.azure_monitor_profile and
-                                          hasattr(mc.azure_monitor_profile, 'container_insights') and
-                                          mc.azure_monitor_profile.container_insights)
+                                         hasattr(mc.azure_monitor_profile, 'container_insights') and
+                                         mc.azure_monitor_profile.container_insights)
             if container_insights_exists:
                 mc.azure_monitor_profile.container_insights.enabled = False
 
@@ -5483,9 +5483,9 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         # TODO: should remove get value from enable_azuremonitormetrics once the option is removed
         # TODO: should remove get value from disable_azuremonitormetrics once the option is removed
         azure_monitor_metrics = (self.context.raw_param.get("enable_azuremonitormetrics") or
-                                  self.context.get_enable_azure_monitor_metrics() or
-                                  self.context.raw_param.get("disable_azuremonitormetrics") or
-                                  self.context.get_disable_azure_monitor_metrics())
+                                 self.context.get_enable_azure_monitor_metrics() or
+                                 self.context.raw_param.get("disable_azuremonitormetrics") or
+                                 self.context.get_disable_azure_monitor_metrics())
         azure_monitor_logs = (self.context.raw_param.get("enable_azuremonitormonitoringlogs") or
                               self.context.get_enable_azure_monitor_logs() or
                               self.context.raw_param.get("disable_azuremonitormonitoringlogs") or
