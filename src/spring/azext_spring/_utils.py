@@ -12,6 +12,7 @@ import codecs
 import requests
 import tarfile
 import tempfile
+import xml.etree.ElementTree as ET
 import uuid
 from io import open
 from re import (search, match, compile)
@@ -334,17 +335,16 @@ def handle_asc_exception(ex):
     try:
         raise CLIError(ex.inner_exception.error.message)
     except AttributeError:
-        logger.warning(f"CLIError ex: {ex}")
-        logger.warning(f"CLIError ex.response.internal_response.text: {ex.response.internal_response.text}")
+        logger.debug(f"CLIError ex: {ex}")
+        logger.debug(f"CLIError ex.response.internal_response.text: {ex.response.internal_response.text}")
         if hasattr(ex, 'response') and ex.response.internal_response.text:
-            logger.warning("CLIError: Trying to parse the exception message.")
+            logger.debug("CLIError: Trying to parse the exception message.")
             try:
                 response_dict = json.loads(ex.response.internal_response.text)
-                logger.warning(f"CLIError response_dict: {response_dict}")
+                logger.debug(f"CLIError response_dict: {response_dict}")
                 raise CLIError(response_dict["error"]["message"])
             except json.JSONDecodeError:
                 # Try to extract error from XML format
-                import xml.etree.ElementTree as ET
                 try:
                     root = ET.fromstring(ex.response.internal_response.text)
                     # Look for common error message patterns in XML
@@ -360,7 +360,7 @@ def handle_asc_exception(ex):
                 # If both JSON and XML parsing fail, return the raw text
                 raise CLIError(ex.response.internal_response.text)
         else:
-            logger.warning("CLIError: Unable to parse the exception message.")
+            logger.debug("CLIError: Unable to parse the exception message.")
             raise CLIError(ex)
 
 
