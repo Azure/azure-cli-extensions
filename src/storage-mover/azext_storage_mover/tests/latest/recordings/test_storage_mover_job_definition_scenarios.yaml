@@ -71,7 +71,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.61.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/test-storagemover-rg2?api-version=2022-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/test-storagemover-rg2?api-version=2024-11-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test-storagemover-rg2","name":"test-storagemover-rg2","type":"Microsoft.Resources/resourceGroups","location":"eastus2euap","tags":{"DateCreated":"2024-06-03T07:53:43Z","Creator":"zhiyihuang@microsoft.com"},"properties":{"provisioningState":"Succeeded"}}'
@@ -117,7 +117,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.61.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Storage/checkNameAvailability?api-version=2023-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Storage/checkNameAvailability?api-version=2024-01-01
   response:
     body:
       string: '{"nameAvailable":true}'
@@ -168,7 +168,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.61.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test-storagemover-rg2/providers/Microsoft.Storage/storageAccounts/testjobdefinitionsa2?api-version=2023-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test-storagemover-rg2/providers/Microsoft.Storage/storageAccounts/testjobdefinitionsa2?api-version=2024-01-01
   response:
     body:
       string: ''
@@ -314,7 +314,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.61.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test-storagemover-rg2/providers/Microsoft.Storage/storageAccounts/testjobdefinitionsa2/listKeys?api-version=2023-05-01&$expand=kerb
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test-storagemover-rg2/providers/Microsoft.Storage/storageAccounts/testjobdefinitionsa2/listKeys?api-version=2024-01-01&$expand=kerb
   response:
     body:
       string: '{"keys":[{"creationTime":"2024-06-03T08:24:53.9978560Z","keyName":"key1","value":"veryFakedStorageAccountKey==","permissions":"FULL"},{"creationTime":"2024-06-03T08:24:53.9978560Z","keyName":"key2","value":"veryFakedStorageAccountKey==","permissions":"FULL"}]}'
@@ -360,7 +360,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.61.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test-storagemover-rg2/providers/Microsoft.Storage/storageAccounts/testjobdefinitionsa2?api-version=2023-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test-storagemover-rg2/providers/Microsoft.Storage/storageAccounts/testjobdefinitionsa2?api-version=2024-01-01
   response:
     body:
       string: '{"sku":{"name":"Standard_RAGRS","tier":"Standard"},"kind":"StorageV2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test-storagemover-rg2/providers/Microsoft.Storage/storageAccounts/testjobdefinitionsa2","name":"testjobdefinitionsa2","type":"Microsoft.Storage/storageAccounts","location":"eastus2euap","tags":{},"properties":{"keyCreationTime":{"key1":"2024-06-03T08:24:53.9978560Z","key2":"2024-06-03T08:24:53.9978560Z"},"privateEndpointConnections":[],"minimumTlsVersion":"TLS1_0","allowBlobPublicAccess":false,"networkAcls":{"ipv6Rules":[],"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":true,"encryption":{"services":{"file":{"keyType":"Account","enabled":true,"lastEnabledTime":"2024-06-03T08:24:54.0759839Z"},"blob":{"keyType":"Account","enabled":true,"lastEnabledTime":"2024-06-03T08:24:54.0759839Z"}},"keySource":"Microsoft.Storage"},"accessTier":"Hot","provisioningState":"Succeeded","creationTime":"2024-06-03T08:24:53.8884567Z","primaryEndpoints":{"dfs":"https://testjobdefinitionsa2.dfs.core.windows.net/","web":"https://testjobdefinitionsa2.z3.web.core.windows.net/","blob":"https://testjobdefinitionsa2.blob.core.windows.net/","queue":"https://testjobdefinitionsa2.queue.core.windows.net/","table":"https://testjobdefinitionsa2.table.core.windows.net/","file":"https://testjobdefinitionsa2.file.core.windows.net/"},"primaryLocation":"eastus2euap","statusOfPrimary":"available","secondaryLocation":"centraluseuap","statusOfSecondary":"available","secondaryEndpoints":{"dfs":"https://testjobdefinitionsa2-secondary.dfs.core.windows.net/","web":"https://testjobdefinitionsa2-secondary.z3.web.core.windows.net/","blob":"https://testjobdefinitionsa2-secondary.blob.core.windows.net/","queue":"https://testjobdefinitionsa2-secondary.queue.core.windows.net/","table":"https://testjobdefinitionsa2-secondary.table.core.windows.net/"}}}'
@@ -446,7 +446,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.61.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/test-storagemover-rg2?api-version=2022-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/test-storagemover-rg2?api-version=2024-11-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test-storagemover-rg2","name":"test-storagemover-rg2","type":"Microsoft.Resources/resourceGroups","location":"eastus2euap","tags":{"DateCreated":"2024-06-03T07:53:43Z","Creator":"zhiyihuang@microsoft.com"},"properties":{"provisioningState":"Succeeded"}}'
@@ -602,7 +602,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.61.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/eastus2euap/publishers/Canonical/artifacttypes/vmimage/offers/0001-com-ubuntu-server-jammy/skus/22_04-lts-gen2/versions?$top=1&$orderby=name%20desc&api-version=2024-03-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/eastus2euap/publishers/Canonical/artifacttypes/vmimage/offers/0001-com-ubuntu-server-jammy/skus/22_04-lts-gen2/versions?$top=1&$orderby=name%20desc&api-version=2024-11-01
   response:
     body:
       string: "[\r\n  {\r\n    \"location\": \"EastUS2EUAP\",\r\n    \"name\": \"22.04.202405140\",\r\n
@@ -653,7 +653,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.61.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/eastus2euap/publishers/Canonical/artifacttypes/vmimage/offers/0001-com-ubuntu-server-jammy/skus/22_04-lts-gen2/versions/22.04.202405140?api-version=2024-03-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/eastus2euap/publishers/Canonical/artifacttypes/vmimage/offers/0001-com-ubuntu-server-jammy/skus/22_04-lts-gen2/versions/22.04.202405140?api-version=2024-11-01
   response:
     body:
       string: "{\r\n  \"properties\": {\r\n    \"hyperVGeneration\": \"V2\",\r\n    \"architecture\":
@@ -756,7 +756,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.61.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/eastus2euap/vmSizes?api-version=2024-03-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/eastus2euap/vmSizes?api-version=2024-11-01
   response:
     body:
       string: "{\r\n  \"value\": [\r\n    {\r\n      \"name\": \"Standard_A1_v2\",\r\n
@@ -3055,7 +3055,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.61.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/eastus2euap/publishers/Canonical/artifacttypes/vmimage/offers/0001-com-ubuntu-server-jammy/skus/22_04-lts-gen2/versions?$top=1&$orderby=name%20desc&api-version=2024-03-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/eastus2euap/publishers/Canonical/artifacttypes/vmimage/offers/0001-com-ubuntu-server-jammy/skus/22_04-lts-gen2/versions?$top=1&$orderby=name%20desc&api-version=2024-11-01
   response:
     body:
       string: "[\r\n  {\r\n    \"location\": \"EastUS2EUAP\",\r\n    \"name\": \"22.04.202405140\",\r\n
@@ -3106,7 +3106,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.61.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/eastus2euap/publishers/Canonical/artifacttypes/vmimage/offers/0001-com-ubuntu-server-jammy/skus/22_04-lts-gen2/versions/22.04.202405140?api-version=2024-03-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/eastus2euap/publishers/Canonical/artifacttypes/vmimage/offers/0001-com-ubuntu-server-jammy/skus/22_04-lts-gen2/versions/22.04.202405140?api-version=2024-11-01
   response:
     body:
       string: "{\r\n  \"properties\": {\r\n    \"hyperVGeneration\": \"V2\",\r\n    \"architecture\":
@@ -3168,7 +3168,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.61.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/eastus2euap/publishers/Canonical/artifacttypes/vmimage/offers/0001-com-ubuntu-server-jammy/skus/22_04-lts-gen2/versions?$top=1&$orderby=name%20desc&api-version=2024-03-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/eastus2euap/publishers/Canonical/artifacttypes/vmimage/offers/0001-com-ubuntu-server-jammy/skus/22_04-lts-gen2/versions?$top=1&$orderby=name%20desc&api-version=2024-11-01
   response:
     body:
       string: "[\r\n  {\r\n    \"location\": \"EastUS2EUAP\",\r\n    \"name\": \"22.04.202405140\",\r\n
@@ -3219,7 +3219,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.61.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/eastus2euap/publishers/Canonical/artifacttypes/vmimage/offers/0001-com-ubuntu-server-jammy/skus/22_04-lts-gen2/versions/22.04.202405140?api-version=2024-03-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/eastus2euap/publishers/Canonical/artifacttypes/vmimage/offers/0001-com-ubuntu-server-jammy/skus/22_04-lts-gen2/versions/22.04.202405140?api-version=2024-11-01
   response:
     body:
       string: "{\r\n  \"properties\": {\r\n    \"hyperVGeneration\": \"V2\",\r\n    \"architecture\":
@@ -3284,7 +3284,7 @@ interactions:
       {"privateIPAllocationMethod": "Dynamic", "subnet": {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test-storagemover-rg2/providers/Microsoft.Network/virtualNetworks/sourcevmVNET/subnets/sourcevmSubnet"},
       "publicIPAddress": {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test-storagemover-rg2/providers/Microsoft.Network/publicIPAddresses/sourcevmPublicIP"}}}],
       "networkSecurityGroup": {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test-storagemover-rg2/providers/Microsoft.Network/networkSecurityGroups/sourcevmNSG"}}},
-      {"apiVersion": "2024-03-01", "type": "Microsoft.Compute/virtualMachines", "name":
+      {"apiVersion": "2024-11-01", "type": "Microsoft.Compute/virtualMachines", "name":
       "sourcevm", "location": "eastus2euap", "tags": {}, "dependsOn": ["Microsoft.Network/networkInterfaces/sourcevmVMNic"],
       "properties": {"hardwareProfile": {"vmSize": "Standard_D4s_v3"}, "networkProfile":
       {"networkInterfaces": [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test-storagemover-rg2/providers/Microsoft.Network/networkInterfaces/sourcevmVMNic",
@@ -3315,13 +3315,13 @@ interactions:
       User-Agent:
       - AZURECLI/2.61.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/test-storagemover-rg2/providers/Microsoft.Resources/deployments/mock-deployment?api-version=2022-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/test-storagemover-rg2/providers/Microsoft.Resources/deployments/mock-deployment?api-version=2024-11-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test-storagemover-rg2/providers/Microsoft.Resources/deployments/vm_deploy_9hcu5RVxiLaehkfbQisqQeYrEg5zkW1E","name":"vm_deploy_9hcu5RVxiLaehkfbQisqQeYrEg5zkW1E","type":"Microsoft.Resources/deployments","properties":{"templateHash":"10236345664603101249","parameters":{},"mode":"Incremental","provisioningState":"Accepted","timestamp":"2024-06-03T08:25:37.8757779Z","duration":"PT0.0002857S","correlationId":"44c1c6e7-5fe5-4259-848a-91d729bb6c47","providers":[{"namespace":"Microsoft.Network","resourceTypes":[{"resourceType":"virtualNetworks","locations":["eastus2euap"]},{"resourceType":"networkSecurityGroups","locations":["eastus2euap"]},{"resourceType":"publicIPAddresses","locations":["eastus2euap"]},{"resourceType":"networkInterfaces","locations":["eastus2euap"]}]},{"namespace":"Microsoft.Compute","resourceTypes":[{"resourceType":"virtualMachines","locations":["eastus2euap"]}]}],"dependencies":[{"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test-storagemover-rg2/providers/Microsoft.Network/virtualNetworks/sourcevmVNET","resourceType":"Microsoft.Network/virtualNetworks","resourceName":"sourcevmVNET"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test-storagemover-rg2/providers/Microsoft.Network/networkSecurityGroups/sourcevmNSG","resourceType":"Microsoft.Network/networkSecurityGroups","resourceName":"sourcevmNSG"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test-storagemover-rg2/providers/Microsoft.Network/publicIPAddresses/sourcevmPublicIP","resourceType":"Microsoft.Network/publicIPAddresses","resourceName":"sourcevmPublicIP"}],"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test-storagemover-rg2/providers/Microsoft.Network/networkInterfaces/sourcevmVMNic","resourceType":"Microsoft.Network/networkInterfaces","resourceName":"sourcevmVMNic"},{"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test-storagemover-rg2/providers/Microsoft.Network/networkInterfaces/sourcevmVMNic","resourceType":"Microsoft.Network/networkInterfaces","resourceName":"sourcevmVMNic"}],"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test-storagemover-rg2/providers/Microsoft.Compute/virtualMachines/sourcevm","resourceType":"Microsoft.Compute/virtualMachines","resourceName":"sourcevm"}]}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/test-storagemover-rg2/providers/Microsoft.Resources/deployments/vm_deploy_9hcu5RVxiLaehkfbQisqQeYrEg5zkW1E/operationStatuses/08584842037485342107?api-version=2022-09-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/test-storagemover-rg2/providers/Microsoft.Resources/deployments/vm_deploy_9hcu5RVxiLaehkfbQisqQeYrEg5zkW1E/operationStatuses/08584842037485342107?api-version=2024-11-01
       cache-control:
       - no-cache
       content-length:
@@ -3361,7 +3361,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.61.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/test-storagemover-rg2/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584842037485342107?api-version=2022-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/test-storagemover-rg2/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584842037485342107?api-version=2024-11-01
   response:
     body:
       string: '{"status":"Running"}'
@@ -3403,7 +3403,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.61.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/test-storagemover-rg2/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584842037485342107?api-version=2022-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/test-storagemover-rg2/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584842037485342107?api-version=2024-11-01
   response:
     body:
       string: '{"status":"Running"}'
@@ -3445,7 +3445,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.61.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/test-storagemover-rg2/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584842037485342107?api-version=2022-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/test-storagemover-rg2/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584842037485342107?api-version=2024-11-01
   response:
     body:
       string: '{"status":"Succeeded"}'
@@ -3487,7 +3487,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.61.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/test-storagemover-rg2/providers/Microsoft.Resources/deployments/mock-deployment?api-version=2022-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/test-storagemover-rg2/providers/Microsoft.Resources/deployments/mock-deployment?api-version=2024-11-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test-storagemover-rg2/providers/Microsoft.Resources/deployments/vm_deploy_9hcu5RVxiLaehkfbQisqQeYrEg5zkW1E","name":"vm_deploy_9hcu5RVxiLaehkfbQisqQeYrEg5zkW1E","type":"Microsoft.Resources/deployments","properties":{"templateHash":"10236345664603101249","parameters":{},"mode":"Incremental","provisioningState":"Succeeded","timestamp":"2024-06-03T08:26:18.7617632Z","duration":"PT40.886271S","correlationId":"44c1c6e7-5fe5-4259-848a-91d729bb6c47","providers":[{"namespace":"Microsoft.Network","resourceTypes":[{"resourceType":"virtualNetworks","locations":["eastus2euap"]},{"resourceType":"networkSecurityGroups","locations":["eastus2euap"]},{"resourceType":"publicIPAddresses","locations":["eastus2euap"]},{"resourceType":"networkInterfaces","locations":["eastus2euap"]}]},{"namespace":"Microsoft.Compute","resourceTypes":[{"resourceType":"virtualMachines","locations":["eastus2euap"]}]}],"dependencies":[{"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test-storagemover-rg2/providers/Microsoft.Network/virtualNetworks/sourcevmVNET","resourceType":"Microsoft.Network/virtualNetworks","resourceName":"sourcevmVNET"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test-storagemover-rg2/providers/Microsoft.Network/networkSecurityGroups/sourcevmNSG","resourceType":"Microsoft.Network/networkSecurityGroups","resourceName":"sourcevmNSG"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test-storagemover-rg2/providers/Microsoft.Network/publicIPAddresses/sourcevmPublicIP","resourceType":"Microsoft.Network/publicIPAddresses","resourceName":"sourcevmPublicIP"}],"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test-storagemover-rg2/providers/Microsoft.Network/networkInterfaces/sourcevmVMNic","resourceType":"Microsoft.Network/networkInterfaces","resourceName":"sourcevmVMNic"},{"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test-storagemover-rg2/providers/Microsoft.Network/networkInterfaces/sourcevmVMNic","resourceType":"Microsoft.Network/networkInterfaces","resourceName":"sourcevmVMNic"}],"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test-storagemover-rg2/providers/Microsoft.Compute/virtualMachines/sourcevm","resourceType":"Microsoft.Compute/virtualMachines","resourceName":"sourcevm"}],"outputs":{},"outputResources":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test-storagemover-rg2/providers/Microsoft.Compute/virtualMachines/sourcevm"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test-storagemover-rg2/providers/Microsoft.Network/networkInterfaces/sourcevmVMNic"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test-storagemover-rg2/providers/Microsoft.Network/networkSecurityGroups/sourcevmNSG"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test-storagemover-rg2/providers/Microsoft.Network/publicIPAddresses/sourcevmPublicIP"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test-storagemover-rg2/providers/Microsoft.Network/virtualNetworks/sourcevmVNET"}]}}'
@@ -3529,7 +3529,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.61.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test-storagemover-rg2/providers/Microsoft.Compute/virtualMachines/sourcevm?$expand=instanceView&api-version=2024-03-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test-storagemover-rg2/providers/Microsoft.Compute/virtualMachines/sourcevm?$expand=instanceView&api-version=2024-11-01
   response:
     body:
       string: "{\r\n  \"name\": \"sourcevm\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test-storagemover-rg2/providers/Microsoft.Compute/virtualMachines/sourcevm\",\r\n

@@ -99,15 +99,15 @@ class StorageMoverScenario(ScenarioTest):
                                    '-otsv'.format(storage_account, resource_group)).output.strip(),
             "endpoint_container": self.create_random_name('endpoint_container', 32),
             "endpoint_file_share": self.create_random_name('endpoint_file_share', 32),
-            "endpoint_nfs_file_share": self.create_random_name('endpoint_nfs_file_share', 40),
-            "multi_cloud_connector": self.create_random_name('multi_cloud_connector', 40),
-            "endpoint_multi_cloud_connector": self.create_random_name('endpoint_multi_cloud_connector', 40),
             "endpoint_nfs": self.create_random_name('endpoint_nfs', 32),
             "endpoint_smb": self.create_random_name('endpoint_smb', 32),
             "vm_nfs_name": self.create_random_name('vm', 24),
             "vm_smb_name": self.create_random_name('vm', 24),
             "file_share_name": self.create_random_name('fileshare', 24),
             "smb_share_name": self.create_random_name('smbshare', 24),
+            "endpoint_nfs_file_share": self.create_random_name('endpoint_nfs_file_share', 40),
+            "multi_cloud_connector": self.create_random_name('multi_cloud_connector', 40),
+            "endpoint_multi_cloud_connector": self.create_random_name('endpoint_multi_cloud_connector', 40),
         })
         self.cmd('az storage-mover create -g {rg} -n {mover_name} -l eastus2euap '
                  '--tags {{key1:value1}} --description MoverDesc')
