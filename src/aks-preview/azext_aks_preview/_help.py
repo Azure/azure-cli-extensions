@@ -590,22 +590,22 @@ helps['aks create'] = f"""
         - name: --enable-azure-monitor-logs
           type: bool
           short-summary: Enable Azure Monitor logs collection (equivalent to enabling the monitoring addon)
-        - name: --enable-opentelemetry-metrics --enable-otel-metrics
+        - name: --enable-opentelemetry-metrics
           type: bool
           short-summary: Enable OpenTelemetry metrics collection. Requires Azure Monitor metrics to be enabled.
-        - name: --opentelemetry-metrics-port --otel-metrics-port
+        - name: --opentelemetry-metrics-port
           type: int
           short-summary: Port for OpenTelemetry metrics collection (default port will be used if not specified)
-        - name: --disable-opentelemetry-metrics --disable-otel-metrics
+        - name: --disable-opentelemetry-metrics
           type: bool
           short-summary: Disable OpenTelemetry metrics collection
-        - name: --enable-opentelemetry-logs --enable-otel-logs
+        - name: --enable-opentelemetry-logs
           type: bool
           short-summary: Enable OpenTelemetry logs collection. Requires Azure Monitor logs to be enabled.
-        - name: --opentelemetry-logs-port --otel-logs-port
+        - name: --opentelemetry-logs-port
           type: int
           short-summary: Port for OpenTelemetry logs collection (default port will be used if not specified)
-        - name: --disable-opentelemetry-logs --disable-otel-logs
+        - name: --disable-opentelemetry-logs
           type: bool
           short-summary: Disable OpenTelemetry logs collection
         - name: --nodepool-labels
@@ -1209,22 +1209,22 @@ helps['aks update'] = """
         - name: --disable-azure-monitor-logs
           type: bool
           short-summary: Disable Azure Monitor logs collection (equivalent to disabling the monitoring addon)
-        - name: --enable-opentelemetry-metrics --enable-otel-metrics
+        - name: --enable-opentelemetry-metrics
           type: bool
           short-summary: Enable OpenTelemetry metrics collection. Requires Azure Monitor metrics to be enabled.
-        - name: --opentelemetry-metrics-port --otel-metrics-port
+        - name: --opentelemetry-metrics-port
           type: int
           short-summary: Port for OpenTelemetry metrics collection (default port will be used if not specified)
-        - name: --disable-opentelemetry-metrics --disable-otel-metrics
+        - name: --disable-opentelemetry-metrics
           type: bool
           short-summary: Disable OpenTelemetry metrics collection
-        - name: --enable-opentelemetry-logs --enable-otel-logs
+        - name: --enable-opentelemetry-logs
           type: bool
           short-summary: Enable OpenTelemetry logs collection. Requires Azure Monitor logs to be enabled.
-        - name: --opentelemetry-logs-port --otel-logs-port
+        - name: --opentelemetry-logs-port
           type: int
           short-summary: Port for OpenTelemetry logs collection (default port will be used if not specified)
-        - name: --disable-opentelemetry-logs --disable-otel-logs
+        - name: --disable-opentelemetry-logs
           type: bool
           short-summary: Disable OpenTelemetry logs collection
         - name: --enable-private-cluster

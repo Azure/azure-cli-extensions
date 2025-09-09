@@ -995,7 +995,11 @@ def load_arguments(self, _):
         c.argument("ksm_metric_annotations_allow_list")
         c.argument("grafana_resource_id", validator=validate_grafanaresourceid)
         c.argument("enable_windows_recording_rules", action="store_true")
-        c.argument("enable_azure_monitor_app_monitoring", is_preview=True, action="store_true")
+        c.argument("enable_azure_monitor_app_monitoring", 
+            options_list=["--enable-azure-monitor-app-monitoring", "--enable-app-mon"],
+            is_preview=True, 
+            action="store_true"
+        )
         # OpenTelemetry parameters
         c.argument("enable_opentelemetry_metrics",
             options_list=["--enable-opentelemetry-metrics", "--enable-otel-metrics"],
@@ -1023,6 +1027,7 @@ def load_arguments(self, _):
             help="Enable OpenTelemetry logs collection"
         )
         c.argument("opentelemetry_logs_port",
+            options_list=["--opentelemetry-logs-port", "--otel-logs-port", "--otlp-port"],
             is_preview=True,
             type=int,
             help="Port for OpenTelemetry logs collection"
@@ -1402,8 +1407,16 @@ def load_arguments(self, _):
                 hide=True,
             ),
         )
-        c.argument("enable_azure_monitor_app_monitoring", action="store_true", is_preview=True)
-        c.argument("disable_azure_monitor_app_monitoring", action="store_true", is_preview=True)
+        c.argument("enable_azure_monitor_app_monitoring", 
+            options_list=["--enable-azure-monitor-app-monitoring", "--enable-app-mon"],
+            action="store_true", 
+            is_preview=True
+        )
+        c.argument("disable_azure_monitor_app_monitoring", 
+            options_list=["--disable-azure-monitor-app-monitoring", "--disable-app-mon"],
+            action="store_true", 
+            is_preview=True
+        )
         # OpenTelemetry parameters
         c.argument("enable_opentelemetry_metrics",
             options_list=["--enable-opentelemetry-metrics", "--enable-otel-metrics"],
@@ -1431,6 +1444,7 @@ def load_arguments(self, _):
             help="Enable OpenTelemetry logs collection"
         )
         c.argument("opentelemetry_logs_port",
+            options_list=["--opentelemetry-logs-port", "--otel-logs-port", "--otlp-port"],
             is_preview=True,
             type=int,
             help="Port for OpenTelemetry logs collection"
