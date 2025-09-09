@@ -165,13 +165,25 @@ class StorageMoverScenario(ScenarioTest):
                          JMESPathCheck('properties.storageAccountResourceId', self.kwargs.get('account_id', '')),
                          JMESPathCheck('properties.description', "endpointNFSFileShareDesc"),
                          ])
+        
+        self.cmd('az storage-mover endpoint identity assign -g {rg} --storage-mover-name {mover_name} -n {endpoint_nfs_file_share} '
+                 ' --mi-system-assigned')
+
+        self.cmd('az storage-mover endpoint identity show -g {rg} --storage-mover-name {mover_name} -n {endpoint_nfs_file_share} '
+                 ' --mi-system-assigned',
+                 checks=[JMESPathCheck('type', "SystemAssigned"),
+                         JMESPathCheckExists('principalId')])
+        
+        self.cmd('az storage-mover endpoint identity remove -g {rg} --storage-mover-name {mover_name} -n {endpoint_nfs_file_share} '
+                 ' --mi-system-assigned')
 
         # update for storage nfs file share
         self.cmd('az storage-mover endpoint update-for-storage-nfs-file-share -g {rg} '
                  '--storage-mover-name {mover_name} '
                  '-n {endpoint_nfs_file_share} --description endpointNFSFileShareDescUpdate',
                  checks=[JMESPathCheck('name', self.kwargs.get('endpoint_nfs_file_share', '')),
-                         JMESPathCheck('properties.description', "endpointNFSFileShareDescUpdate")]) 
+                         JMESPathCheck('properties.description', "endpointNFSFileShareDescUpdate"),
+                         JMESPathCheck('identity.type', None)]) 
 
         # create for nfs mount
         vm_ip = self.cmd('az vm create -n {vm_nfs_name} -g {rg} --image Ubuntu2204 --size Standard_D4s_v3 --nsg-rule '
