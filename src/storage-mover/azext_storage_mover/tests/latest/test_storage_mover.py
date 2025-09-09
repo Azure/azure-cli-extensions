@@ -169,8 +169,7 @@ class StorageMoverScenario(ScenarioTest):
         self.cmd('az storage-mover endpoint identity assign -g {rg} --storage-mover-name {mover_name} -n {endpoint_nfs_file_share} '
                  ' --mi-system-assigned')
 
-        self.cmd('az storage-mover endpoint identity show -g {rg} --storage-mover-name {mover_name} -n {endpoint_nfs_file_share} '
-                 ' --mi-system-assigned',
+        self.cmd('az storage-mover endpoint identity show -g {rg} --storage-mover-name {mover_name} -n {endpoint_nfs_file_share} ',
                  checks=[JMESPathCheck('type', "SystemAssigned"),
                          JMESPathCheckExists('principalId')])
         
