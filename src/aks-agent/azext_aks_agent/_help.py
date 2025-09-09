@@ -30,7 +30,7 @@ helps[
           long-summary: |-
             The --model parameter determines which large language model (LLM) and provider will be used to analyze your cluster.
             For OpenAI, use the model name directly (e.g., gpt-4o).
-            For Azure OpenAI, use azure/<deployment name> (e.g., azure/my-gpt4.1-deployment).
+            For Azure OpenAI, use `azure/<deployment name>` (e.g., azure/my-gpt4.1-deployment).
             Each provider may require different environment variables and model naming conventions.
             For a full list of supported providers, model patterns, and required environment variables, see https://docs.litellm.ai/docs/providers.
             Note: For Azure OpenAI, it is recommended to set the deployment name as the model name until https://github.com/BerriAI/litellm/issues/13950 is resolved.
