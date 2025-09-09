@@ -37,7 +37,7 @@ class TestMCPManager(unittest.TestCase):
         shutil.rmtree(self.test_config_dir, ignore_errors=True)
     
     @patch('azext_aks_agent.agent.mcp_manager.get_config_dir')
-    def test_init_with_default_config_dir(self, mock_get_config_dir):
+    def test_mcp_manager_init_with_default_config_dir(self, mock_get_config_dir):
         """Test MCP manager initialization with default config directory."""
         mock_get_config_dir.return_value = '/mock/config/dir'
         
@@ -52,7 +52,7 @@ class TestMCPManager(unittest.TestCase):
         self.assertIsNone(manager.server_port)
         mock_get_config_dir.assert_called_once()
     
-    def test_init_with_custom_config_dir(self):
+    def test_mcp_manager_init_with_custom_config_dir(self):
         """Test MCP manager initialization with custom config directory."""
         manager = MCPManager(config_dir=self.test_config_dir, verbose=True)
         
@@ -390,4 +390,3 @@ if __name__ == '__main__':
     
     runner = unittest.TextTestRunner(verbosity=2)
     result = runner.run(suite)
-

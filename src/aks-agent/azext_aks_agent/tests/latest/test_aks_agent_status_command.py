@@ -205,7 +205,7 @@ class TestAksAgentStatusCommand(unittest.TestCase):
             # Check that print was called multiple times (for table and recommendations)
             self.assertTrue(mock_console.print.call_count >= 2)
 
-    def test_command_registration(self):
+    def test_status_command_registration(self):
         """Test that the agent status command is properly registered."""
         # Import functions to verify presence
         try:
@@ -220,4 +220,3 @@ class TestAksAgentStatusCommand(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
-

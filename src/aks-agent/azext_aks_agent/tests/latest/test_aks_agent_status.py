@@ -1,3 +1,8 @@
+# --------------------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License. See License.txt in the project root for license information.
+# --------------------------------------------------------------------------------------------
+
 """
 Unit tests for agent status collection functionality.
 """
@@ -26,7 +31,7 @@ class TestAgentStatusManager:
         import shutil
         shutil.rmtree(self.temp_dir, ignore_errors=True)
     
-    def test_init_with_default_config_dir(self):
+    def test_status_manager_init_with_default_config_dir(self):
         """Test initialization with default config directory."""
         with patch('azext_aks_agent.agent.status.get_config_dir') as mock_get_config_dir:
             mock_get_config_dir.return_value = '/mock/config/dir'
@@ -36,7 +41,7 @@ class TestAgentStatusManager:
             assert manager.config_dir == '/mock/config/dir'
             mock_get_config_dir.assert_called_once()
     
-    def test_init_with_custom_config_dir(self):
+    def test_status_manager_init_with_custom_config_dir(self):
         """Test initialization with custom config directory."""
         custom_dir = '/custom/config/dir'
         manager = AgentStatusManager(config_dir=custom_dir)
@@ -387,4 +392,3 @@ class TestAgentStatusManager:
             result = self.status_manager._load_config_file(config_file_path)
             
             assert result is None
-

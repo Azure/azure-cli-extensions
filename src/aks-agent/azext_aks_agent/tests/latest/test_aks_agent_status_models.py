@@ -22,7 +22,7 @@ from azext_aks_agent.agent.status_models import (
 class TestBinaryStatus(unittest.TestCase):
     """Test BinaryStatus data model."""
 
-    def test_default_initialization(self):
+    def test_binary_status_default_initialization(self):
         """Test default values are set correctly."""
         status = BinaryStatus()
         
@@ -35,7 +35,7 @@ class TestBinaryStatus(unittest.TestCase):
         self.assertIsNone(status.error_message)
         self.assertFalse(status.ready)
 
-    def test_initialization_with_values(self):
+    def test_binary_status_initialization_with_values(self):
         """Test initialization with specific values."""
         now = datetime.now()
         status = BinaryStatus(
@@ -121,7 +121,7 @@ class TestBinaryStatus(unittest.TestCase):
 class TestServerStatus(unittest.TestCase):
     """Test ServerStatus data model."""
 
-    def test_default_initialization(self):
+    def test_server_status_default_initialization(self):
         """Test default values are set correctly."""
         status = ServerStatus()
         
@@ -196,7 +196,7 @@ class TestServerStatus(unittest.TestCase):
 class TestConfigStatus(unittest.TestCase):
     """Test ConfigStatus data model."""
 
-    def test_default_initialization(self):
+    def test_config_status_default_initialization(self):
         """Test default values and post_init behavior."""
         status = ConfigStatus()
         
@@ -208,7 +208,7 @@ class TestConfigStatus(unittest.TestCase):
         self.assertTrue(status.config_valid)
         self.assertIsNone(status.error_message)
 
-    def test_initialization_with_values(self):
+    def test_config_status_initialization_with_values(self):
         """Test initialization with specific values."""
         toolsets = ["aks/core", "kubernetes/core"]
         mcp_servers = ["aks-mcp"]
@@ -272,7 +272,7 @@ class TestConfigStatus(unittest.TestCase):
 class TestAgentStatus(unittest.TestCase):
     """Test AgentStatus data model."""
 
-    def test_default_initialization(self):
+    def test_agent_status_default_initialization(self):
         """Test default values and component creation."""
         status = AgentStatus()
         
@@ -471,4 +471,3 @@ class TestAgentStatus(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-

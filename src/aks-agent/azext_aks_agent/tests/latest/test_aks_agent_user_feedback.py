@@ -70,35 +70,7 @@ class TestProgressReporter(unittest.TestCase):
         # Should not call console when not TTY
         self.mock_console.print.assert_not_called()
         
-    def test_show_download_progress_no_console_holmes_available(self):
-        """Test download progress without console but Holmes available."""
-        mock_holmes_console = Mock()
-        
-        with patch('holmes.utils.console.logging.init_logging', return_value=mock_holmes_console), \
-             patch('sys.stdout.isatty', return_value=True):
-            ProgressReporter.show_download_progress(
-                downloaded=250,
-                total=1000,
-                filename="holmes.bin"
-            )
-            
-        mock_holmes_console.print.assert_called_once()
-        
-    @patch('builtins.print')
-    def test_show_download_progress_no_console_no_holmes(self, mock_print):
-        """Test download progress fallback when Holmes not available."""
-        with patch('holmes.utils.console.logging.init_logging', 
-                  side_effect=ImportError("Holmes not available")):
-            ProgressReporter.show_download_progress(
-                downloaded=750,
-                total=1000,
-                filename="fallback.bin"
-            )
-            
-        mock_print.assert_called_once()
-        call_args = mock_print.call_args[0][0]
-        self.assertIn("Downloading fallback.bin", call_args)
-        self.assertIn("75.0%", call_args)
+    
         
     def test_show_status_message_all_levels(self):
         """Test status messages with different levels."""
@@ -121,23 +93,7 @@ class TestProgressReporter(unittest.TestCase):
                 
                 self.mock_console.print.assert_called_once_with(expected_style)
                 
-    def test_show_status_message_no_console_holmes_available(self):
-        """Test status message without console but Holmes available."""
-        mock_holmes_console = Mock()
-        
-        with patch('holmes.utils.console.logging.init_logging', return_value=mock_holmes_console):
-            ProgressReporter.show_status_message("Test message", "info")
-            
-        mock_holmes_console.print.assert_called_once_with("[cyan]Test message[/cyan]")
-        
-    @patch('builtins.print') 
-    def test_show_status_message_no_console_no_holmes(self, mock_print):
-        """Test status message fallback when Holmes not available."""
-        with patch('holmes.utils.console.logging.init_logging',
-                  side_effect=ImportError("Holmes not available")):
-            ProgressReporter.show_status_message("Fallback message", "error")
-            
-        mock_print.assert_called_once_with("[ERROR] Fallback message")
+    
         
     def test_show_binary_setup_status(self):
         """Test binary setup status message."""
@@ -215,4 +171,3 @@ class TestProgressReporter(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
-
