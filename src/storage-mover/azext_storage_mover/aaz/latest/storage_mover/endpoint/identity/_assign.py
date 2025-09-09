@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Assign(AAZCommand):
     """Assign the user or system managed identities.
+    
+    :example: az storage-mover endpoint identity assign 
+        --name myEndpoint --storage-mover-name myStorageMover --resource-group myResourceGroup --system-assigned
     """
 
     _aaz_info = {
