@@ -1949,6 +1949,61 @@ def load_arguments(self, _):
             "machine_name", help="to display specific information for all machines."
         )
 
+    with self.argument_context("aks machine add") as c:
+        c.argument("tags", tags_type, help="The tags to set to the machine")
+        c.argument(
+            "priority",
+            arg_type=get_enum_type(node_priorities),
+            validator=validate_priority,
+        )
+        c.argument(
+            "vm_size",
+            completer=get_vm_size_completion_list,
+        )
+        c.argument("os_type")
+        c.argument(
+            "machine_name", help="The machine name."
+        )
+        c.argument(
+            "os_sku", arg_type=get_enum_type(node_os_skus), validator=validate_os_sku
+        )
+        c.argument(
+            "zones",
+            zones_type,
+            options_list=["--zones", "-z"],
+            help="Space-separated list of availability zones where agent nodes will be placed.",
+        )
+        c.argument(
+            "enable_fips_image",
+            action="store_true"
+        )
+        c.argument(
+            "disable_fips_image",
+            action="store_true"
+        )
+        # network setting
+        c.argument("vnet_subnet_id", validator=validate_vnet_subnet_id)
+        c.argument("pod_subnet_id", validator=validate_pod_subnet_id)
+        c.argument("enable_node_public_ip", action="store_true")
+        c.argument(
+            "node_public_ip_prefix_id",
+            options_list=["--node-public-ip-prefix-id"],
+            help="The resource ID of the node public IP prefix to use for the node public IPs.",
+        )
+        c.argument(
+            "node_public_ip_tags",
+            arg_type=tags_type,
+            validator=validate_node_public_ip_tags,
+            help="space-separated tags: key[=value] [key[=value] ...].",
+        )
+        # kubernetes setting
+        c.argument(
+            "kubernetes_version",
+            options_list=["--kubernetes-version"],
+            validator=validate_k8s_version,
+            help="Version of Kubernetes to use for the machine.",
+        )
+
     with self.argument_context("aks operation") as c:
         c.argument(
             "nodepool_name",
