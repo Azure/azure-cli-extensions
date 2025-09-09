@@ -144,13 +144,3 @@ examples:
         az storage-mover endpoint identity assign -g "rg" --storage-mover-name "mover_name" -n "endpoint_nfs_file_share"
         --mi-system-assigned
 """
-
-helps['storage-mover endpoint identity remove'] = """"
-type: command
-short-summary: Removes the managed identity from an Endpoint resource.
-examples:
-    - name: endpoint identity remove
-      text: >
-        az storage-mover endpoint identity remove -g "rg" --storage-mover-name "mover_name" -n "endpoint_nfs_file_share"
-        --mi-system-assigned
-"""
