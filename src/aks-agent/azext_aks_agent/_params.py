@@ -48,7 +48,7 @@ def load_arguments(self, _):
         )
         c.argument(
             "model",
-            help=" Specify the LLM provider and model or deployment to use for the AI assistant.",
+            help="Specify the LLM provider and model or deployment to use for the AI assistant.",
             required=False,
             type=str,
         )
