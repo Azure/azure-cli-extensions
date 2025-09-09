@@ -168,6 +168,8 @@ from azext_aks_preview._validators import (
     validate_assign_kubelet_identity,
     validate_azure_keyvault_kms_key_id,
     validate_azure_keyvault_kms_key_vault_resource_id,
+    validate_azure_monitor_and_opentelemetry_for_create,
+    validate_azure_monitor_and_opentelemetry_for_update,
     validate_azuremonitorworkspaceresourceid,
     validate_cluster_id,
     validate_cluster_snapshot_id,
@@ -985,7 +987,6 @@ def load_arguments(self, _):
                 hide=True,
             ),
         )
-        c.argument("enable_azure_monitor_metrics", action="store_true")
         c.argument(
             "azure_monitor_workspace_resource_id",
             validator=validate_azuremonitorworkspaceresourceid,
@@ -995,6 +996,13 @@ def load_arguments(self, _):
         c.argument("grafana_resource_id", validator=validate_grafanaresourceid)
         c.argument("enable_windows_recording_rules", action="store_true")
         c.argument("enable_azure_monitor_app_monitoring", is_preview=True, action="store_true")
+        # OpenTelemetry parameters
+        c.argument("enable_opentelemetry_metrics", is_preview=True, action="store_true", help="Enable OpenTelemetry metrics collection", validator=validate_azure_monitor_and_opentelemetry_for_create)
+        c.argument("opentelemetry_metrics_port", is_preview=True, type=int, help="Port for OpenTelemetry metrics collection")
+        c.argument("disable_opentelemetry_metrics", is_preview=True, action="store_true", help="Disable OpenTelemetry metrics collection")
+        c.argument("enable_opentelemetry_logs", is_preview=True, action="store_true", help="Enable OpenTelemetry logs collection")
+        c.argument("opentelemetry_logs_port", is_preview=True, type=int, help="Port for OpenTelemetry logs collection")
+        c.argument("disable_opentelemetry_logs", is_preview=True, action="store_true", help="Disable OpenTelemetry logs collection")
         c.argument("enable_cost_analysis", action="store_true")
         c.argument('enable_ai_toolchain_operator', is_preview=True, action='store_true')
         # azure container storage
@@ -1359,9 +1367,15 @@ def load_arguments(self, _):
                 hide=True,
             ),
         )
-        c.argument("disable_azure_monitor_metrics", action="store_true")
         c.argument("enable_azure_monitor_app_monitoring", action="store_true", is_preview=True)
         c.argument("disable_azure_monitor_app_monitoring", action="store_true", is_preview=True)
+        # OpenTelemetry parameters
+        c.argument("enable_opentelemetry_metrics", is_preview=True, action="store_true", help="Enable OpenTelemetry metrics collection", validator=validate_azure_monitor_and_opentelemetry_for_update)
+        c.argument("opentelemetry_metrics_port", is_preview=True, type=int, help="Port for OpenTelemetry metrics collection")
+        c.argument("disable_opentelemetry_metrics", is_preview=True, action="store_true", help="Disable OpenTelemetry metrics collection")
+        c.argument("enable_opentelemetry_logs", is_preview=True, action="store_true", help="Enable OpenTelemetry logs collection")
+        c.argument("opentelemetry_logs_port", is_preview=True, type=int, help="Port for OpenTelemetry logs collection")
+        c.argument("disable_opentelemetry_logs", is_preview=True, action="store_true", help="Disable OpenTelemetry logs collection")
         c.argument(
             "enable_vpa",
             action="store_true",

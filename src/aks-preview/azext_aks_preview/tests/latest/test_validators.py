@@ -1600,5 +1600,370 @@ class TestValidateCustomEndpoints(unittest.TestCase):
         validators.validate_custom_endpoints(namespace)
 
 
+class OpenTelemetryPortsNamespace:
+    def __init__(self, opentelemetry_metrics_port=None, opentelemetry_logs_port=None):
+        self.opentelemetry_metrics_port = opentelemetry_metrics_port
+        self.opentelemetry_logs_port = opentelemetry_logs_port
+
+
+class TestValidateOpenTelemetryPorts(unittest.TestCase):
+    def test_no_ports_specified(self):
+        namespace = OpenTelemetryPortsNamespace()
+        # Should pass without issue
+        validators.validate_opentelemetry_ports(namespace)
+
+    def test_only_metrics_port_specified(self):
+        namespace = OpenTelemetryPortsNamespace(opentelemetry_metrics_port=8080)
+        validators.validate_opentelemetry_ports(namespace)
+
+    def test_only_logs_port_specified(self):
+        namespace = OpenTelemetryPortsNamespace(opentelemetry_logs_port=8081)
+        validators.validate_opentelemetry_ports(namespace)
+
+    def test_different_ports_specified(self):
+        namespace = OpenTelemetryPortsNamespace(
+            opentelemetry_metrics_port=8080,
+            opentelemetry_logs_port=8081
+        )
+        validators.validate_opentelemetry_ports(namespace)
+
+    def test_same_ports_throws_error(self):
+        namespace = OpenTelemetryPortsNamespace(
+            opentelemetry_metrics_port=8080,
+            opentelemetry_logs_port=8080
+        )
+        err = (
+            "OpenTelemetry metrics port and logs port cannot be the same. "
+            "Please specify different ports for --opentelemetry-metrics-port and --opentelemetry-logs-port."
+        )
+        with self.assertRaises(ArgumentUsageError) as cm:
+            validators.validate_opentelemetry_ports(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_metrics_port_below_range(self):
+        namespace = OpenTelemetryPortsNamespace(opentelemetry_metrics_port=0)
+        err = "OpenTelemetry metrics port must be between 1 and 65535, got 0."
+        with self.assertRaises(ArgumentUsageError) as cm:
+            validators.validate_opentelemetry_ports(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_metrics_port_above_range(self):
+        namespace = OpenTelemetryPortsNamespace(opentelemetry_metrics_port=65536)
+        err = "OpenTelemetry metrics port must be between 1 and 65535, got 65536."
+        with self.assertRaises(ArgumentUsageError) as cm:
+            validators.validate_opentelemetry_ports(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_logs_port_below_range(self):
+        namespace = OpenTelemetryPortsNamespace(opentelemetry_logs_port=-1)
+        err = "OpenTelemetry logs port must be between 1 and 65535, got -1."
+        with self.assertRaises(ArgumentUsageError) as cm:
+            validators.validate_opentelemetry_ports(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_logs_port_above_range(self):
+        namespace = OpenTelemetryPortsNamespace(opentelemetry_logs_port=100000)
+        err = "OpenTelemetry logs port must be between 1 and 65535, got 100000."
+        with self.assertRaises(ArgumentUsageError) as cm:
+            validators.validate_opentelemetry_ports(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_valid_edge_case_ports(self):
+        # Test boundary values
+        namespace = OpenTelemetryPortsNamespace(
+            opentelemetry_metrics_port=1,
+            opentelemetry_logs_port=65535
+        )
+        validators.validate_opentelemetry_ports(namespace)
+
+
+class OpenTelemetryMetricsDependenciesNamespace:
+    def __init__(self, enable_opentelemetry_metrics=False, disable_opentelemetry_metrics=False,
+                 enable_azure_monitor_metrics=False, enable_azuremonitormetrics=False):
+        self.enable_opentelemetry_metrics = enable_opentelemetry_metrics
+        self.disable_opentelemetry_metrics = disable_opentelemetry_metrics
+        self.enable_azure_monitor_metrics = enable_azure_monitor_metrics
+        self.enable_azuremonitormetrics = enable_azuremonitormetrics
+
+
+class TestValidateOpenTelemetryMetricsDependencies(unittest.TestCase):
+    def test_no_opentelemetry_flags(self):
+        namespace = OpenTelemetryMetricsDependenciesNamespace()
+        # Should pass without issue
+        validators.validate_opentelemetry_metrics_dependencies(namespace)
+
+    def test_enable_with_azure_monitor_metrics(self):
+        namespace = OpenTelemetryMetricsDependenciesNamespace(
+            enable_opentelemetry_metrics=True,
+            enable_azure_monitor_metrics=True
+        )
+        validators.validate_opentelemetry_metrics_dependencies(namespace)
+
+    def test_enable_with_deprecated_azuremonitormetrics(self):
+        namespace = OpenTelemetryMetricsDependenciesNamespace(
+            enable_opentelemetry_metrics=True,
+            enable_azuremonitormetrics=True
+        )
+        validators.validate_opentelemetry_metrics_dependencies(namespace)
+
+    def test_enable_without_azure_monitor_throws_error(self):
+        namespace = OpenTelemetryMetricsDependenciesNamespace(
+            enable_opentelemetry_metrics=True
+        )
+        err = (
+            "OpenTelemetry metrics requires Azure Monitor metrics to be enabled. "
+            "Please add --enable-azure-monitor-metrics or --enable-azuremonitormetrics to your command."
+        )
+        with self.assertRaises(ArgumentUsageError) as cm:
+            validators.validate_opentelemetry_metrics_dependencies(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_mutually_exclusive_flags_throws_error(self):
+        namespace = OpenTelemetryMetricsDependenciesNamespace(
+            enable_opentelemetry_metrics=True,
+            disable_opentelemetry_metrics=True
+        )
+        err = "Cannot specify both --enable-opentelemetry-metrics and --disable-opentelemetry-metrics at the same time."
+        with self.assertRaises(MutuallyExclusiveArgumentError) as cm:
+            validators.validate_opentelemetry_metrics_dependencies(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_disable_only_flag(self):
+        namespace = OpenTelemetryMetricsDependenciesNamespace(
+            disable_opentelemetry_metrics=True
+        )
+        # Should pass - disabling doesn't require Azure Monitor
+        validators.validate_opentelemetry_metrics_dependencies(namespace)
+
+
+class TestValidateOpenTelemetryMetricsDependenciesForUpdate(unittest.TestCase):
+    def test_no_opentelemetry_flags(self):
+        namespace = OpenTelemetryMetricsDependenciesNamespace()
+        # Should pass without issue
+        validators.validate_opentelemetry_metrics_dependencies_for_update(namespace)
+
+    def test_enable_only_flag(self):
+        namespace = OpenTelemetryMetricsDependenciesNamespace(
+            enable_opentelemetry_metrics=True
+        )
+        # Should pass - for updates, dependency validation is deferred to decorator
+        validators.validate_opentelemetry_metrics_dependencies_for_update(namespace)
+
+    def test_disable_only_flag(self):
+        namespace = OpenTelemetryMetricsDependenciesNamespace(
+            disable_opentelemetry_metrics=True
+        )
+        # Should pass
+        validators.validate_opentelemetry_metrics_dependencies_for_update(namespace)
+
+    def test_mutually_exclusive_flags_throws_error(self):
+        namespace = OpenTelemetryMetricsDependenciesNamespace(
+            enable_opentelemetry_metrics=True,
+            disable_opentelemetry_metrics=True
+        )
+        err = "Cannot specify both --enable-opentelemetry-metrics and --disable-opentelemetry-metrics at the same time."
+        with self.assertRaises(MutuallyExclusiveArgumentError) as cm:
+            validators.validate_opentelemetry_metrics_dependencies_for_update(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+
+class OpenTelemetryLogsDependenciesNamespace:
+    def __init__(self, enable_opentelemetry_logs=False, disable_opentelemetry_logs=False,
+                 enable_azure_monitor_logs=False):
+        self.enable_opentelemetry_logs = enable_opentelemetry_logs
+        self.disable_opentelemetry_logs = disable_opentelemetry_logs
+        self.enable_azure_monitor_logs = enable_azure_monitor_logs
+
+
+class TestValidateOpenTelemetryLogsDependencies(unittest.TestCase):
+    def test_no_opentelemetry_flags(self):
+        namespace = OpenTelemetryLogsDependenciesNamespace()
+        # Should pass without issue
+        validators.validate_opentelemetry_logs_dependencies(namespace)
+
+    def test_enable_with_azure_monitor_logs(self):
+        namespace = OpenTelemetryLogsDependenciesNamespace(
+            enable_opentelemetry_logs=True,
+            enable_azure_monitor_logs=True
+        )
+        validators.validate_opentelemetry_logs_dependencies(namespace)
+
+    def test_enable_without_azure_monitor_throws_error(self):
+        namespace = OpenTelemetryLogsDependenciesNamespace(
+            enable_opentelemetry_logs=True
+        )
+        err = (
+            "OpenTelemetry logs requires Azure Monitor logs to be enabled. "
+            "Please add --enable-azure-monitor-logs to your command."
+        )
+        with self.assertRaises(ArgumentUsageError) as cm:
+            validators.validate_opentelemetry_logs_dependencies(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_mutually_exclusive_flags_throws_error(self):
+        namespace = OpenTelemetryLogsDependenciesNamespace(
+            enable_opentelemetry_logs=True,
+            disable_opentelemetry_logs=True
+        )
+        err = "Cannot specify both --enable-opentelemetry-logs and --disable-opentelemetry-logs at the same time."
+        with self.assertRaises(MutuallyExclusiveArgumentError) as cm:
+            validators.validate_opentelemetry_logs_dependencies(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_disable_only_flag(self):
+        namespace = OpenTelemetryLogsDependenciesNamespace(
+            disable_opentelemetry_logs=True
+        )
+        # Should pass - disabling doesn't require Azure Monitor
+        validators.validate_opentelemetry_logs_dependencies(namespace)
+
+
+class TestValidateOpenTelemetryLogsDependenciesForUpdate(unittest.TestCase):
+    def test_no_opentelemetry_flags(self):
+        namespace = OpenTelemetryLogsDependenciesNamespace()
+        # Should pass without issue
+        validators.validate_opentelemetry_logs_dependencies_for_update(namespace)
+
+    def test_enable_only_flag(self):
+        namespace = OpenTelemetryLogsDependenciesNamespace(
+            enable_opentelemetry_logs=True
+        )
+        # Should pass - for updates, dependency validation is deferred to decorator
+        validators.validate_opentelemetry_logs_dependencies_for_update(namespace)
+
+    def test_disable_only_flag(self):
+        namespace = OpenTelemetryLogsDependenciesNamespace(
+            disable_opentelemetry_logs=True
+        )
+        # Should pass
+        validators.validate_opentelemetry_logs_dependencies_for_update(namespace)
+
+    def test_mutually_exclusive_flags_throws_error(self):
+        namespace = OpenTelemetryLogsDependenciesNamespace(
+            enable_opentelemetry_logs=True,
+            disable_opentelemetry_logs=True
+        )
+        err = "Cannot specify both --enable-opentelemetry-logs and --disable-opentelemetry-logs at the same time."
+        with self.assertRaises(MutuallyExclusiveArgumentError) as cm:
+            validators.validate_opentelemetry_logs_dependencies_for_update(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+
+class AzureMonitorAndOpenTelemetryNamespace:
+    def __init__(self, enable_opentelemetry_metrics=False, disable_opentelemetry_metrics=False,
+                 enable_opentelemetry_logs=False, disable_opentelemetry_logs=False,
+                 enable_azure_monitor_metrics=False, enable_azuremonitormetrics=False,
+                 enable_azure_monitor_logs=False, opentelemetry_metrics_port=None,
+                 opentelemetry_logs_port=None):
+        self.enable_opentelemetry_metrics = enable_opentelemetry_metrics
+        self.disable_opentelemetry_metrics = disable_opentelemetry_metrics
+        self.enable_opentelemetry_logs = enable_opentelemetry_logs
+        self.disable_opentelemetry_logs = disable_opentelemetry_logs
+        self.enable_azure_monitor_metrics = enable_azure_monitor_metrics
+        self.enable_azuremonitormetrics = enable_azuremonitormetrics
+        self.enable_azure_monitor_logs = enable_azure_monitor_logs
+        self.opentelemetry_metrics_port = opentelemetry_metrics_port
+        self.opentelemetry_logs_port = opentelemetry_logs_port
+
+
+class TestValidateAzureMonitorAndOpenTelemetryForCreate(unittest.TestCase):
+    def test_valid_configuration(self):
+        namespace = AzureMonitorAndOpenTelemetryNamespace(
+            enable_opentelemetry_metrics=True,
+            enable_opentelemetry_logs=True,
+            enable_azure_monitor_metrics=True,
+            enable_azure_monitor_logs=True,
+            opentelemetry_metrics_port=8080,
+            opentelemetry_logs_port=8081
+        )
+        # Should pass all validations
+        validators.validate_azure_monitor_and_opentelemetry_for_create(namespace)
+
+    def test_port_conflict_throws_error(self):
+        namespace = AzureMonitorAndOpenTelemetryNamespace(
+            enable_opentelemetry_metrics=True,
+            enable_azure_monitor_metrics=True,
+            opentelemetry_metrics_port=8080,
+            opentelemetry_logs_port=8080
+        )
+        err = (
+            "OpenTelemetry metrics port and logs port cannot be the same. "
+            "Please specify different ports for --opentelemetry-metrics-port and --opentelemetry-logs-port."
+        )
+        with self.assertRaises(ArgumentUsageError) as cm:
+            validators.validate_azure_monitor_and_opentelemetry_for_create(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_metrics_missing_azure_monitor_throws_error(self):
+        namespace = AzureMonitorAndOpenTelemetryNamespace(
+            enable_opentelemetry_metrics=True
+        )
+        err = (
+            "OpenTelemetry metrics requires Azure Monitor metrics to be enabled. "
+            "Please add --enable-azure-monitor-metrics or --enable-azuremonitormetrics to your command."
+        )
+        with self.assertRaises(ArgumentUsageError) as cm:
+            validators.validate_azure_monitor_and_opentelemetry_for_create(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_logs_missing_azure_monitor_throws_error(self):
+        namespace = AzureMonitorAndOpenTelemetryNamespace(
+            enable_opentelemetry_logs=True
+        )
+        err = (
+            "OpenTelemetry logs requires Azure Monitor logs to be enabled. "
+            "Please add --enable-azure-monitor-logs to your command."
+        )
+        with self.assertRaises(ArgumentUsageError) as cm:
+            validators.validate_azure_monitor_and_opentelemetry_for_create(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+
+class TestValidateAzureMonitorAndOpenTelemetryForUpdate(unittest.TestCase):
+    def test_valid_configuration(self):
+        namespace = AzureMonitorAndOpenTelemetryNamespace(
+            enable_opentelemetry_metrics=True,
+            enable_opentelemetry_logs=True,
+            opentelemetry_metrics_port=8080,
+            opentelemetry_logs_port=8081
+        )
+        # Should pass all validations (dependency validation deferred for updates)
+        validators.validate_azure_monitor_and_opentelemetry_for_update(namespace)
+
+    def test_port_conflict_throws_error(self):
+        namespace = AzureMonitorAndOpenTelemetryNamespace(
+            enable_opentelemetry_metrics=True,
+            opentelemetry_metrics_port=8080,
+            opentelemetry_logs_port=8080
+        )
+        err = (
+            "OpenTelemetry metrics port and logs port cannot be the same. "
+            "Please specify different ports for --opentelemetry-metrics-port and --opentelemetry-logs-port."
+        )
+        with self.assertRaises(ArgumentUsageError) as cm:
+            validators.validate_azure_monitor_and_opentelemetry_for_update(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_mutually_exclusive_metrics_flags_throws_error(self):
+        namespace = AzureMonitorAndOpenTelemetryNamespace(
+            enable_opentelemetry_metrics=True,
+            disable_opentelemetry_metrics=True
+        )
+        err = "Cannot specify both --enable-opentelemetry-metrics and --disable-opentelemetry-metrics at the same time."
+        with self.assertRaises(MutuallyExclusiveArgumentError) as cm:
+            validators.validate_azure_monitor_and_opentelemetry_for_update(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_mutually_exclusive_logs_flags_throws_error(self):
+        namespace = AzureMonitorAndOpenTelemetryNamespace(
+            enable_opentelemetry_logs=True,
+            disable_opentelemetry_logs=True
+        )
+        err = "Cannot specify both --enable-opentelemetry-logs and --disable-opentelemetry-logs at the same time."
+        with self.assertRaises(MutuallyExclusiveArgumentError) as cm:
+            validators.validate_azure_monitor_and_opentelemetry_for_update(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+
 if __name__ == "__main__":
     unittest.main()

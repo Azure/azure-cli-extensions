@@ -722,6 +722,15 @@ def aks_create(
     enable_windows_recording_rules=False,
     # azure monitor profile - app monitoring
     enable_azure_monitor_app_monitoring=False,
+    # azure monitor profile - logs
+    enable_azure_monitor_logs=False,
+    # opentelemetry parameters
+    enable_opentelemetry_metrics=False,
+    opentelemetry_metrics_port=None,
+    disable_opentelemetry_metrics=False,
+    enable_opentelemetry_logs=False,
+    opentelemetry_logs_port=None,
+    disable_opentelemetry_logs=False,
     # metrics profile
     enable_cost_analysis=False,
     # AI toolchain operator
@@ -918,6 +927,16 @@ def aks_update(
     # azure monitor profile - app monitoring
     enable_azure_monitor_app_monitoring=False,
     disable_azure_monitor_app_monitoring=False,
+    # azure monitor profile - logs
+    enable_azure_monitor_logs=False,
+    disable_azure_monitor_logs=False,
+    # opentelemetry parameters
+    enable_opentelemetry_metrics=False,
+    opentelemetry_metrics_port=None,
+    disable_opentelemetry_metrics=False,
+    enable_opentelemetry_logs=False,
+    opentelemetry_logs_port=None,
+    disable_opentelemetry_logs=False,
     enable_vpa=False,
     disable_vpa=False,
     enable_optimized_addon_scaling=False,

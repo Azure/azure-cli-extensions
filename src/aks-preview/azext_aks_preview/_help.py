@@ -587,6 +587,24 @@ helps['aks create'] = f"""
         - name: --enable-azure-monitor-app-monitoring
           type: bool
           short-summary: Enable Azure Monitor Application Monitoring
+        - name: --enable-opentelemetry-metrics
+          type: bool
+          short-summary: Enable OpenTelemetry metrics collection. Requires Azure Monitor metrics to be enabled.
+        - name: --opentelemetry-metrics-port
+          type: int
+          short-summary: Port for OpenTelemetry metrics collection (default port will be used if not specified)
+        - name: --disable-opentelemetry-metrics
+          type: bool
+          short-summary: Disable OpenTelemetry metrics collection
+        - name: --enable-opentelemetry-logs
+          type: bool
+          short-summary: Enable OpenTelemetry logs collection. Requires Azure Monitor logs to be enabled.
+        - name: --opentelemetry-logs-port
+          type: int
+          short-summary: Port for OpenTelemetry logs collection (default port will be used if not specified)
+        - name: --disable-opentelemetry-logs
+          type: bool
+          short-summary: Disable OpenTelemetry logs collection
         - name: --nodepool-labels
           type: string
           short-summary: The node labels for all node pools in this cluster. See https://aka.ms/node-labels for syntax of labels.
@@ -1182,6 +1200,24 @@ helps['aks update'] = """
         - name: --disable-azure-monitor-app-monitoring
           type: bool
           short-summary: Disable Azure Monitor Application Monitoring
+        - name: --enable-opentelemetry-metrics
+          type: bool
+          short-summary: Enable OpenTelemetry metrics collection. Requires Azure Monitor metrics to be enabled.
+        - name: --opentelemetry-metrics-port
+          type: int
+          short-summary: Port for OpenTelemetry metrics collection (default port will be used if not specified)
+        - name: --disable-opentelemetry-metrics
+          type: bool
+          short-summary: Disable OpenTelemetry metrics collection
+        - name: --enable-opentelemetry-logs
+          type: bool
+          short-summary: Enable OpenTelemetry logs collection. Requires Azure Monitor logs to be enabled.
+        - name: --opentelemetry-logs-port
+          type: int
+          short-summary: Port for OpenTelemetry logs collection (default port will be used if not specified)
+        - name: --disable-opentelemetry-logs
+          type: bool
+          short-summary: Disable OpenTelemetry logs collection
         - name: --enable-private-cluster
           type: bool
           short-summary: Enable private cluster for apiserver vnet integration cluster.
