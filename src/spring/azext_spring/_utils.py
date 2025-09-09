@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 import json
 import re
+import xml.etree.ElementTree as ET
 from datetime import datetime
 from enum import Enum
 import os
@@ -12,7 +13,6 @@ import codecs
 import requests
 import tarfile
 import tempfile
-import xml.etree.ElementTree as ET
 import uuid
 from io import open
 from re import (search, match, compile)
