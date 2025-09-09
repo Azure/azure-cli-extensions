@@ -11,6 +11,11 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* Add machine command `az aks machine add` to add a machine to an existing machine pool.
+
+18.0.0b36
++++++++
+* Add option `AzureLinux3` to `--os-sku` for `az aks nodepool add` and `az aks nodepool update`.
 
 18.0.0b35
 +++++++
