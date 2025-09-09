@@ -1706,7 +1706,7 @@ def aks_agentpool_upgrade(cmd,
     instance.creation_data = creationData
 
     if upgrade_strategy:
-        instance.upgrade_settings.upgrade_strategy = upgrade_strategy
+        instance.upgrade_strategy = upgrade_strategy
 
     # Rolling upgrade settings
     if not instance.upgrade_settings:
