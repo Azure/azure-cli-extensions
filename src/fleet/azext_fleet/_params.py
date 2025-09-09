@@ -16,6 +16,7 @@ from azure.cli.core.commands.parameters import (
 from azure.cli.core.commands.validators import get_default_location_from_resource_group
 from azext_fleet._validators import (
     validate_member_cluster_id,
+    validate_member_cluster_names,
     validate_kubernetes_version,
     validate_apiserver_subnet_id,
     validate_agent_subnet_id,
@@ -183,17 +184,17 @@ def load_arguments(self, _):
     with self.argument_context('fleet namespace create') as c:
         c.argument('managed_namespace_name', options_list=['--name', '-n'], help='The name of the Kubernetes namespace to be created on member clusters.')
         c.argument('tags', tags_type)
-        c.argument('labels', labels_type, help='Labels to apply to the managed namespace.')
-        c.argument('annotations', type=validate_labels, metavar='KEY=VALUE', help='Annotations to apply to the managed namespace: key[=value] [key[=value] ...].')
-        c.argument('cpu_requests', options_list=['--cpu-requests'], help='CPU requests for the namespace.')
-        c.argument('cpu_limits', options_list=['--cpu-limits'], help='CPU limits for the namespace.')
-        c.argument('memory_requests', options_list=['--memory-requests'], help='Memory requests for the namespace.')
-        c.argument('memory_limits', options_list=['--memory-limits'], help='Memory limits for the namespace.')
-        c.argument('ingress_policy', options_list=['--ingress-policy'], help='Ingress policy for the namespace.')
-        c.argument('egress_policy', options_list=['--egress-policy'], help='Egress policy for the namespace.')
-        c.argument('delete_policy', options_list=['--delete-policy'], help='Delete policy for the namespace (Keep or Delete).', default='Keep')
-        c.argument('adoption_policy', options_list=['--adoption-policy'], help='Adoption policy for the namespace (Always, IfIdentical, or Never).', default='Always')
-        c.argument('member_cluster_names', nargs='*', options_list=['--member-cluster-names'], help='Space-separated list of member cluster names to apply the namespace to.')
+        c.argument('labels', labels_type, help='Space-separated labels in key=value format. Example: env=production region=us-west team=devops')
+        c.argument('annotations', labels_type, help='Space-separated annotations in key=value format. Example: env=production region=us-west team=devops')
+        c.argument('cpu_requests', help='CPU requests for the namespace. Example: 1000m')
+        c.argument('cpu_limits', help='CPU limits for the namespace. Example: 1000m')
+        c.argument('memory_requests', help='Memory requests for the namespace. Example: 500Mi')
+        c.argument('memory_limits', help='Memory limits for the namespace. Example: 500Mi')
+        c.argument('ingress_policy', help='Ingress policy for the namespace', arg_type=get_enum_type(['DenyAll', 'AllowAll', 'AllowSameNamespace']))
+        c.argument('egress_policy', help='Egress policy for the namespace', arg_type=get_enum_type(['DenyAll', 'AllowAll', 'AllowSameNamespace']))
+        c.argument('delete_policy', help='Delete policy for the namespace.', arg_type=get_enum_type(['Keep', 'Delete']), default='Keep')
+        c.argument('adoption_policy', help='Adoption policy for the namespace.', arg_type=get_enum_type(['Always', 'IfIdentical', 'Never']), default='Never')
+        c.argument('member_cluster_names', nargs='*', validator=validate_member_cluster_names, help='Space-separated list of member cluster names to apply the namespace to.')
 
     with self.argument_context('fleet namespace update') as c:
         c.argument('tags', tags_type)

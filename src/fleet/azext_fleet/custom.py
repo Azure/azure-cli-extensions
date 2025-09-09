@@ -7,6 +7,7 @@ import os
 import yaml
 import tempfile
 
+from knack.log import get_logger
 from knack.util import CLIError
 
 from azure.cli.core.commands.client_factory import get_subscription_id
@@ -33,6 +34,8 @@ from azext_fleet.vendored_sdks.v2025_08_01_preview.models import (
     PropagationType,
     PlacementType
 )
+
+logger = get_logger(__name__)
 
 
 # pylint: disable=too-many-locals
@@ -232,8 +235,6 @@ def get_credentials(cmd,
             fleet_member = fleet_members_client.get(resource_group_name, name, member_name)
 
             parsed_id = parse_resource_id(fleet_member.cluster_resource_id)
-            print(parsed_id.get('resource_type'))
-            print(parsed_id.get('namespace'))
             if (parsed_id.get('resource_type') != 'managedClusters' or
                     parsed_id.get('namespace') != 'Microsoft.ContainerService'):
                 raise CLIError(f"Fleet member '{member_name}' is not associated with an AKS managed cluster. "
@@ -874,6 +875,8 @@ def create_managed_namespace(cmd,
             type=PropagationType.placement,
             placement_profile=placement_profile
         )
+    else:
+        logger.warning("--member-cluster-names was empty; namespace will not be placed on any member clusters")
 
     managed_namespace = managed_namespace_model(
         location=fleet.location,
