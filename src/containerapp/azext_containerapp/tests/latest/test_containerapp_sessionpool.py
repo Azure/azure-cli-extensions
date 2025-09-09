@@ -582,6 +582,7 @@ class ContainerappSessionPoolTests(ScenarioTest):
             'containerapp sessionpool show -g {} -n {}'.format(resource_group, sessionpool_name_custom),
             checks=[JMESPathCheck('properties.provisioningState', "Succeeded")]
         )
+        clean_up_test_file(health_probe_file_name)
 
         health_probe_yaml_text = """
                                 probes:
@@ -619,6 +620,7 @@ class ContainerappSessionPoolTests(ScenarioTest):
             'containerapp sessionpool update -g {} -n {} --probe-yaml {}'.format(resource_group, sessionpool_name_custom, health_probe_file_name),
             checks=[JMESPathCheck('length(properties.customContainerTemplate.containers[0].probes)', 0)]
         )
+        clean_up_test_file(health_probe_file_name)
 
         # List Session Pools
         sessionpool_list = self.cmd("containerapp sessionpool list -g {}".format(resource_group)).get_output_in_json()
