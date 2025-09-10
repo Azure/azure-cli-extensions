@@ -2021,6 +2021,9 @@ helps['containerapp sessionpool update'] = """
     - name: Update a session pool's max concurrent sessions configuration and image.
       text: |
           az containerapp sessionpool update -n mysessionpool -g MyResourceGroup --max-sessions 20 --image MyNewImage
+    - name: Update the container probes of a CustomContainer type session pool.
+      text: |
+          az containerapp sessionpool update -n mysessionpool -g MyResourceGroup --probe-yaml config.yaml
 """
 
 helps['containerapp sessionpool delete'] = """
