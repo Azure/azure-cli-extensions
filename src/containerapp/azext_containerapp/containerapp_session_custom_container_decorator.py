@@ -9,6 +9,7 @@
 from knack.log import get_logger
 from typing import Any, Dict
 
+from azure.cli.core.azclierror import ValidationError
 from azure.cli.core.commands import AzCliCommand
 from azure.cli.command_modules.containerapp.base_resource import BaseResource
 from ._clients import SessionPoolPreviewClient
@@ -34,19 +35,22 @@ class SessionCustomContainerPreviewDecorator(BaseResource):
     def get_argument_identifier(self):
         return self.get_param('identifier')
 
-    def get_sessionpool_endpoint(self):
-        sessionpool = self.session_pool_client.show(cmd=self.cmd,
-                                                    resource_group_name=self.get_argument_resource_group_name(),
-                                                    name=self.get_argument_name())
-        return sessionpool["properties"]["poolManagementEndpoint"]
+    def get_sessionpool(self):
+        return self.session_pool_client.show(cmd=self.cmd,
+                                             resource_group_name=self.get_argument_resource_group_name(),
+                                             name=self.get_argument_name())
 
 
 class SessionCustomContainerCommandsPreviewDecorator(SessionCustomContainerPreviewDecorator):
     def stop_session(self):
         try:
+            existing_pool_def = self.get_sessionpool()
+            if safe_get(existing_pool_def, "properties", "containerType").lower() != ContainerType.CustomContainer.name.lower():
+                raise ValidationError("Stop session operation is only supported for session pools with type 'CustomContainer'.")
+
             return self.client.stop_session(
                 cmd=self.cmd,
                 identifier=self.get_argument_identifier(),
-                session_pool_endpoint=self.get_sessionpool_endpoint())
+                session_pool_endpoint=sessionpool["properties"]["poolManagementEndpoint"])
         except Exception as e:
             handle_raw_exception(e)
