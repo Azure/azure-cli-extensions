@@ -3697,12 +3697,12 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         """Set up Azure Monitor metrics configuration."""
         ksm_metric_labels_allow_list = self.context.raw_param.get("ksm_metric_labels_allow_list", "")
         ksm_metric_annotations_allow_list = self.context.raw_param.get("ksm_metric_annotations_allow_list", "")
-        
+
         self._ensure_azure_monitor_profile(mc)
         mc.azure_monitor_profile.metrics = (
             self.models.ManagedClusterAzureMonitorProfileMetrics(enabled=False)
         )
-        
+
         kube_state_metrics = (
             self.models.ManagedClusterAzureMonitorProfileKubeStateMetrics(
                 metric_labels_allowlist=str(ksm_metric_labels_allow_list),
@@ -3751,9 +3751,9 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID = addon_consts.get(
             "CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID")
         CONST_MONITORING_USING_AAD_MSI_AUTH = addon_consts.get("CONST_MONITORING_USING_AAD_MSI_AUTH")
-        
+
         addon_profile.config = {CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID: workspace_resource_id}
-        
+
         enable_msi_auth = self.context.get_enable_msi_auth_for_monitoring()
         msi_auth_value = "true" if enable_msi_auth else "false"
         addon_profile.config[CONST_MONITORING_USING_AAD_MSI_AUTH] = msi_auth_value
