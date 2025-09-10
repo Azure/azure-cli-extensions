@@ -1515,7 +1515,7 @@ class SessionCodeInterpreterPreviewClient():
 
 class SessionCustomContainerPreviewClient():
     # pylint: disable=too-few-public-methods
-    session_dp_api_version = "2025-02-02-preview" # may be different from ACA CP
+    session_dp_api_version = "2025-02-02-preview"  # may be different from ACA CP
 
     @classmethod
     def stop_session(cls, cmd, identifier, session_pool_endpoint):
