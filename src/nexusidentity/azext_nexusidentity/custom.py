@@ -21,6 +21,7 @@ def generate_nexus_identity_keys(algorithm=None):
     import sys
     import requests
     import json
+    import shutil
 
     # Generate SSH key
     if sys.platform.startswith("win") or sys.platform.startswith("linux"):
@@ -80,12 +81,22 @@ def generate_nexus_identity_keys(algorithm=None):
         try:
             # Get access token using Azure CLI
             if sys.platform.startswith("win"):
+                az_path = shutil.which("az")
+                if not az_path:
+                    raise CLIError("Azure CLI (az) not found in system")
                 token_result = subprocess.run(
-                    "az account get-access-token --resource https://graph.microsoft.com --output json",
+                    [
+                        az_path,
+                        "account",
+                        "get-access-token",
+                        "--resource",
+                        "https://graph.microsoft.com",
+                        "--output",
+                        "json",
+                    ],
                     capture_output=True,
                     text=True,
                     check=True,
-                    shell=True,
                 )
             else:
                 token_result = subprocess.run(
@@ -135,12 +146,11 @@ def generate_nexus_identity_keys(algorithm=None):
                     "extensionName": extension_id,
                     "publicKey": public_key,
                 }
-                patch_resp = requests.patch(
+                requests.patch(
                     f"{graph_base}/me/extensions/{extension_id}",
                     headers=headers,
                     data=json.dumps(patch_body),
-                )
-                patch_resp.raise_for_status()
+                ).raise_for_status()
                 print(
                     f"Successfully updated public key to Microsoft Entra Id account "
                     f"{user.get('mail') or user.get('userPrincipalName')}"
@@ -152,12 +162,11 @@ def generate_nexus_identity_keys(algorithm=None):
                     "extensionName": extension_id,
                     "publicKey": public_key,
                 }
-                post_resp = requests.post(
+                requests.post(
                     f"{graph_base}/me/extensions",
                     headers=headers,
                     data=json.dumps(post_body),
-                )
-                post_resp.raise_for_status()
+                ).raise_for_status()
                 print(
                     f"Successfully uploaded public key to Microsoft Entra Id account "
                     f"{user.get('mail') or user.get('userPrincipalName')}"
