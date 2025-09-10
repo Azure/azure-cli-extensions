@@ -3775,7 +3775,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             # Also set up Azure Monitor profile container insights for consistency
             if mc.azure_monitor_profile is None:
                 mc.azure_monitor_profile = self.models.ManagedClusterAzureMonitorProfile()
-            if not hasattr(mc.azure_monitor_profile, 'container_insights') or mc.azure_monitor_profile.container_insights is None:
+            if (not hasattr(mc.azure_monitor_profile, 'container_insights') or 
+                mc.azure_monitor_profile.container_insights is None):
                 mc.azure_monitor_profile.container_insights = (
                     self.models.ManagedClusterAzureMonitorProfileContainerInsights(enabled=True)
                 )
@@ -5399,7 +5400,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             # Also set up Azure Monitor profile container insights for consistency
             if mc.azure_monitor_profile is None:
                 mc.azure_monitor_profile = self.models.ManagedClusterAzureMonitorProfile()
-            if not hasattr(mc.azure_monitor_profile, 'container_insights') or mc.azure_monitor_profile.container_insights is None:
+            if (not hasattr(mc.azure_monitor_profile, 'container_insights') or 
+                mc.azure_monitor_profile.container_insights is None):
                 mc.azure_monitor_profile.container_insights = (
                     self.models.ManagedClusterAzureMonitorProfileContainerInsights(enabled=True)
                 )
@@ -5432,7 +5434,9 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 )
 
             # Configure OpenTelemetry metrics with custom port if provided
-            otlp_metrics_config = self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryMetrics(enabled=True)
+            otlp_metrics_config = (
+                self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryMetrics(enabled=True)
+            )
             if self.context.get_opentelemetry_metrics_port():
                 otlp_metrics_config.port = self.context.get_opentelemetry_metrics_port()
 
