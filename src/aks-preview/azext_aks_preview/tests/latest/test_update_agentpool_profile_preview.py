@@ -489,8 +489,7 @@ class TestUpdateAgentPoolProfilePreview(unittest.TestCase):
         decorator.update_localdns_profile = create_tracking_mock("update_localdns_profile")
         decorator.update_auto_scaler_properties_vms = create_tracking_mock("update_auto_scaler_properties_vms")
         decorator.update_upgrade_strategy = create_tracking_mock("update_upgrade_strategy")
-        decorator.update_blue_green_upgrade_settings = create_tracking_mock("update_blue_green_upgrade_settings")
-        
+        decorator.update_blue_green_upgrade_settings = create_tracking_mock("update_blue_green_upgrade_settings")        
 
         # Act
         result = decorator.update_agentpool_profile_preview()

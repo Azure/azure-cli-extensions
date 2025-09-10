@@ -2092,8 +2092,6 @@ class AKSPreviewAgentPoolAddDecoratorStandaloneModeTestCase(
             network_profile=self.models.AgentPoolNetworkProfile(),
             security_profile=ground_truth_security_profile,
         )
-        print(dec_agentpool_1)
-        print(ground_truth_agentpool_1)
         self.assertEqual(dec_agentpool_1, ground_truth_agentpool_1)
 
         dec_1.context.raw_param.print_usage_statistics()
@@ -2769,8 +2767,6 @@ class AKSPreviewAgentPoolUpdateDecoratorStandaloneModeTestCase(
         ground_truth_agentpool_1 = self.create_initialized_agentpool_instance(
             nodepool_name="test_nodepool_name",
         )
-        print(dec_agentpool_1)
-        print(ground_truth_agentpool_1)
         self.assertEqual(dec_agentpool_1, ground_truth_agentpool_1)
 
         dec_1.context.raw_param.print_usage_statistics()
