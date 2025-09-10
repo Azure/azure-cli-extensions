@@ -12,6 +12,7 @@ from typing import Any, Dict
 from azure.cli.core.azclierror import ValidationError
 from azure.cli.core.commands import AzCliCommand
 from azure.cli.command_modules.containerapp.base_resource import BaseResource
+from azure.cli.command_modules.containerapp._utils import safe_get
 from ._clients import SessionPoolPreviewClient
 
 from ._models import SessionCodeInterpreterExecution as SessionCodeInterpreterExecutionPreviewModel
