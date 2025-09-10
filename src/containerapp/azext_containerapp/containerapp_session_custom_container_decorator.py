@@ -17,6 +17,7 @@ from ._clients import SessionPoolPreviewClient
 
 from ._models import SessionCodeInterpreterExecution as SessionCodeInterpreterExecutionPreviewModel
 from ._client_factory import handle_raw_exception
+from .containerapp_sessionpool_decorator import ContainerType
 
 logger = get_logger(__name__)
 
@@ -52,6 +53,6 @@ class SessionCustomContainerCommandsPreviewDecorator(SessionCustomContainerPrevi
             return self.client.stop_session(
                 cmd=self.cmd,
                 identifier=self.get_argument_identifier(),
-                session_pool_endpoint=sessionpool["properties"]["poolManagementEndpoint"])
+                session_pool_endpoint=existing_pool_def["properties"]["poolManagementEndpoint"])
         except Exception as e:
             handle_raw_exception(e)
