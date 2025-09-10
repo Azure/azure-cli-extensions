@@ -1431,7 +1431,7 @@ helps['aks update'] = """
         text: az aks update -g MyResourceGroup -n MyManagedCluster --safeguards-excluded-ns ""
       - name: Enable OpenTelemetry metrics collection on an existing cluster
         text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-opentelemetry-metrics
-      - name: Enable OpenTelemetry logs collection on an existing cluster  
+      - name: Enable OpenTelemetry logs collection on an existing cluster
         text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-opentelemetry-logs
       - name: Configure OpenTelemetry metrics with custom port
         text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-opentelemetry-metrics --opentelemetry-metrics-port 8888
