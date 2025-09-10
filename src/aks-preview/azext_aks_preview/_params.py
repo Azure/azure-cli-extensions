@@ -1408,49 +1408,49 @@ def load_arguments(self, _):
             ),
         )
         c.argument("enable_azure_monitor_app_monitoring",
-                   options_list=["--enable-azure-monitor-app-monitoring", "--enable-app-mon"],
+                   options_list=["--enable-azure-monitor-app-monitoring"],
                    action="store_true",
                    is_preview=True
                    )
         c.argument("disable_azure_monitor_app_monitoring",
-                   options_list=["--disable-azure-monitor-app-monitoring", "--disable-app-mon"],
+                   options_list=["--disable-azure-monitor-app-monitoring"],
                    action="store_true",
                    is_preview=True
                    )
         # OpenTelemetry parameters
         c.argument("enable_opentelemetry_metrics",
-                   options_list=["--enable-opentelemetry-metrics", "--enable-otel-metrics"],
+                   options_list=["--enable-opentelemetry-metrics"],
                    is_preview=True,
                    action="store_true",
                    help="Enable OpenTelemetry metrics collection",
                    validator=validate_azure_monitor_and_opentelemetry_for_update
                    )
         c.argument("opentelemetry_metrics_port",
-                   options_list=["--opentelemetry-metrics-port", "--otel-metrics-port"],
+                   options_list=["--opentelemetry-metrics-port"],
                    is_preview=True,
                    type=int,
                    help="Port for OpenTelemetry metrics collection"
                    )
         c.argument("disable_opentelemetry_metrics",
-                   options_list=["--disable-opentelemetry-metrics", "--disable-otel-metrics"],
+                   options_list=["--disable-opentelemetry-metrics"],
                    is_preview=True,
                    action="store_true",
                    help="Disable OpenTelemetry metrics collection"
                    )
         c.argument("enable_opentelemetry_logs",
-                   options_list=["--enable-opentelemetry-logs", "--enable-otel-logs"],
+                   options_list=["--enable-opentelemetry-logs"],
                    is_preview=True,
                    action="store_true",
                    help="Enable OpenTelemetry logs collection"
                    )
         c.argument("opentelemetry_logs_port",
-                   options_list=["--opentelemetry-logs-port", "--otel-logs-port", "--otlp-port"],
+                   options_list=["--opentelemetry-logs-port"],
                    is_preview=True,
                    type=int,
                    help="Port for OpenTelemetry logs collection"
                    )
         c.argument("disable_opentelemetry_logs",
-                   options_list=["--disable-opentelemetry-logs", "--disable-otel-logs"],
+                   options_list=["--disable-opentelemetry-logs"],
                    is_preview=True,
                    action="store_true",
                    help="Disable OpenTelemetry logs collection"
