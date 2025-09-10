@@ -12,6 +12,7 @@ from azure.cli.core import AzCli
 from knack import log
 from pydantic import BaseModel, Field
 from typing_extensions import Annotated
+from typing import Any, Optional
 
 from .command_introspection import (
     build_command_help_info,
@@ -19,6 +20,7 @@ from .command_introspection import (
     handle_arg_schema,
     handle_help_schema,
 )
+from .azcli_script_insight_client import what_if_preview, analyze_azcli_script, FUNCTION_APP_URL
 
 logger = log.get_logger(__name__)
 
@@ -29,6 +31,21 @@ class MCPConfirmation(BaseModel):
                     "If Y/y/YES/yes, the command will be executed without confirmation.",
         default="false"
     )]
+
+
+class WhatIfPreviewResponse(BaseModel):
+    """Response model for what-if preview tool."""
+    success: Optional[bool] = Field(default=None, description="Whether the operation was successful")
+    error: Optional[str] = Field(default=None, description="Error message if operation failed")
+    details: Optional[str] = Field(default=None, description="Additional details about any error")
+    what_if_result: Optional[Any] = Field(default=None, description="The what-if preview results showing resource changes")
+
+
+class BestPracticesResponse(BaseModel):
+    """Response model for best practices analysis tool."""
+    status: Optional[str] = Field(default=None, description="Status of the analysis operation")
+    error: Optional[str] = Field(default=None, description="Error message if analysis failed")
+    analysis: Optional[Any] = Field(default=None, description="The best practices analysis results and recommendations")
 
 
 class AzCLIBridge:
@@ -266,6 +283,33 @@ class AzMCP(FastMCP):
         #     ),
         #     structured_output=True,
         # )(self.invoke_command_by_arguments)
+        
+        super().tool(
+            "what_if_preview_tool",
+            title="Azure What-If Preview",
+            description="Preview deployment changes for Azure CLI scripts using Azure what-if functionality. "
+                "This tool analyzes an Azure CLI script and shows what resources would be created, modified, or deleted without actually executing the commands. "
+                "Requires Azure CLI authentication (az login) to access your subscription. "
+                "And it is necessary to obtain the current subscription_id through some methods such as the `az account show --query id` command.",
+            annotations=ToolAnnotations(
+                title="Azure What-If Preview",
+                readOnlyHint=True,
+            ),
+            structured_output=True,
+        )(self.what_if_preview_tool)
+        
+        super().tool(
+            "best_practices_tool",
+            title="Azure CLI Best Practices Analyzer",
+            description="Analyze Azure CLI scripts for best practices, security recommendations, and optimization opportunities. "
+                "This tool examines your Azure CLI script and provides detailed feedback on naming conventions, "
+                "resource configurations, security practices, and performance optimizations.",
+            annotations=ToolAnnotations(
+                title="Azure CLI Best Practices Analyzer",
+                readOnlyHint=True,
+            ),
+            structured_output=True,
+        )(self.best_practices_tool)
 
     def _register_resources(self):
         for group_name in self.az_cli_bridge.group_table.keys():
@@ -324,3 +368,42 @@ class AzMCP(FastMCP):
         # The prompt elicitation has unsolved bug due to async-sync-async call. Use it after solving this issue.
         # with elicit_prompts(ctx):
         return self.az_cli_bridge.invoke_command_by_arguments(arguments)
+    
+    def what_if_preview_tool(self, azcli_script: str, subscription_id: str) -> WhatIfPreviewResponse:
+        """
+        Preview deployment changes using Azure what-if functionality.
+        
+        Args:
+            azcli_script: Azure CLI script to analyze for deployment changes
+            subscription_id: Subscription ID to scope the what-if preview
+
+        Returns:
+            WhatIfPreviewResponse containing what-if preview results showing what resources would be affected
+        """
+        try:
+            result = what_if_preview(FUNCTION_APP_URL, azcli_script, subscription_id)
+            return WhatIfPreviewResponse(**result)
+        except Exception as e:
+            return WhatIfPreviewResponse(
+                error=f"Failed to execute what-if preview: {str(e)}",
+                success=False
+            )
+    
+    def best_practices_tool(self, azcli_script: str) -> BestPracticesResponse:
+        """
+        Analyze Azure CLI script for best practices and recommendations.
+        
+        Args:
+            azcli_script: Azure CLI script to analyze for best practices
+            
+        Returns:
+            BestPracticesResponse containing analysis results with recommendations and best practices
+        """
+        try:
+            result = analyze_azcli_script(FUNCTION_APP_URL, azcli_script)
+            return BestPracticesResponse(**result)
+        except Exception as e:
+            return BestPracticesResponse(
+                error=f"Failed to analyze script: {str(e)}",
+                status="error"
+            )
