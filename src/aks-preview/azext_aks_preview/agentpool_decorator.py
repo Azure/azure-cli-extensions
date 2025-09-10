@@ -2050,25 +2050,30 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
         final_soak_duration = self.context.get_final_soak_duration()
         drain_batch_size = self.context.get_drain_batch_size()
 
-        if any([drain_timeout_bg, batch_soak_duration, final_soak_duration, drain_batch_size]):
-            # Initialize blue-green upgrade settings with existing values as defaults
-            upgrade_settings_blue_green = agentpool.upgrade_settings_blue_green
-            if upgrade_settings_blue_green is None:
-                upgrade_settings_blue_green = self.models.AgentPoolBlueGreenUpgradeSettings()  # pylint: disable=no-member
+        should_mutate = False
+        # Initialize blue-green upgrade settings with existing values as defaults
+        upgrade_settings_blue_green = agentpool.upgrade_settings_blue_green
+        if upgrade_settings_blue_green is None:
+            upgrade_settings_blue_green = self.models.AgentPoolBlueGreenUpgradeSettings()  # pylint: disable=no-member
 
-            if drain_batch_size is not None:
-                upgrade_settings_blue_green.drain_batch_size = drain_batch_size
+        if drain_batch_size is not None:
+            upgrade_settings_blue_green.drain_batch_size = drain_batch_size
+            should_mutate = True
 
-            if drain_timeout_bg is not None:
-                upgrade_settings_blue_green.drain_timeout_in_minutes = drain_timeout_bg
+        if drain_timeout_bg is not None:
+            upgrade_settings_blue_green.drain_timeout_in_minutes = drain_timeout_bg
+            should_mutate = True
 
-            if batch_soak_duration is not None:
-                upgrade_settings_blue_green.batch_soak_duration_in_minutes = batch_soak_duration
+        if batch_soak_duration is not None:
+            upgrade_settings_blue_green.batch_soak_duration_in_minutes = batch_soak_duration
+            should_mutate = True
 
-            if final_soak_duration is not None:
-                upgrade_settings_blue_green.final_soak_duration_in_minutes = final_soak_duration
+        if final_soak_duration is not None:
+            upgrade_settings_blue_green.final_soak_duration_in_minutes = final_soak_duration
+            should_mutate = True
 
-            # Set the blue-green upgrade settings as a separate property on agentpool
+        # Set the blue-green upgrade settings as a separate property on agentpool
+        if should_mutate:
             agentpool.upgrade_settings_blue_green = upgrade_settings_blue_green
 
         return agentpool
