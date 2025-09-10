@@ -2,6 +2,11 @@
 
 Release History
 ===============
+1.10.8
++++++
+* Removed deprecated '--app-id' and '--app-secret' RBAC parameters from the extension.
+* Bug fix for https://github.com/Azure/azure-cli-extensions/issues/8498: resolved error when using the extension with Azure CLI v2.59+.
+* Update warning to use the latest kubelogin version which has support for generating PoP token.
 
 1.10.7
 ++++++
@@ -68,7 +73,7 @@ Release History
 ++++++
 * New api version 2024-07-1-preview added
 * Adding functionality for workload identity feature.
-* Cluster create and update waits for agent state 
+* Cluster create and update waits for agent state
 
 1.7.3
 ++++++
