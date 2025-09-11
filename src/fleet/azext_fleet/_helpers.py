@@ -14,9 +14,11 @@ from knack.log import get_logger
 from knack.prompting import NoTTYException, prompt_y_n
 from knack.util import CLIError
 from azure.cli.command_modules.acs._roleassignments import add_role_assignment
+from azure.mgmt.core.tools import is_valid_resource_id, parse_resource_id
 
-from azext_fleet.constants import FLEET_1P_APP_ID
+
 from azext_fleet._client_factory import get_provider_client
+from azext_fleet._client_factory import get_msi_client
 
 logger = get_logger(__name__)
 
@@ -154,7 +156,7 @@ def _load_kubernetes_configuration(filename):
         raise CLIError(f'Error parsing {filename} ({str(ex)})') from ex
 
 
-def assign_network_contributor_role_to_subnet(cmd, subnet_id):
+def assign_network_contributor_role_to_subnet(cmd, objectId, subnet_id):
     resource_client = get_provider_client(cmd.cli_ctx)
     provider = resource_client.providers.get("Microsoft.ContainerService")
 
@@ -163,6 +165,23 @@ def assign_network_contributor_role_to_subnet(cmd, subnet_id):
     if provider.registration_state != 'Registered':
         raise CLIError("The Microsoft.ContainerService resource provider is not registered."
                        "Run `az provider register -n Microsoft.ContainerService --wait`.")
-    if not add_role_assignment(cmd, 'Network Contributor', FLEET_1P_APP_ID, scope=subnet_id):
-        raise CLIError("Failed to create Network Contributor role assignment for Fleet RP on the subnet.\n"
-                       f"Please ensure you have sufficient permissions to assign roles on subnet {subnet_id}.")
+
+    if not add_role_assignment(cmd, 'Network Contributor', objectId, scope=subnet_id):
+        logger.warning("Failed to create Network Contributor role assignment on the subnet.\n"
+                       "Please ensure you have sufficient permissions to assign roles on subnet %s.", subnet_id)
+
+
+def get_msi_object_id(cmd, msi_resource_id):
+    try:
+        if not is_valid_resource_id(msi_resource_id):
+            raise CLIError(f"The provided managed identity resource ID '{msi_resource_id}' is not valid.")
+        parsed = parse_resource_id(msi_resource_id)
+        subscription_id = parsed['subscription']
+        resource_group_name = parsed['resource_group']
+        msi_name = parsed['resource_name']
+        msi_client = get_msi_client(cmd.cli_ctx, subscription_id=subscription_id)
+        msi = msi_client.user_assigned_identities.get(resource_name=msi_name,
+                                                      resource_group_name=resource_group_name)
+        return msi.principal_id
+    except Exception as ex:
+        raise CLIError(f"Failed to get object ID for managed identity {msi_resource_id}: {str(ex)}") from ex

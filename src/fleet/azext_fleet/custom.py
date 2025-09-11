@@ -13,12 +13,14 @@ from azure.cli.core.util import sdk_no_wait, get_file_json, shell_safe_json_pars
 from azext_fleet._client_factory import CUSTOM_MGMT_FLEET
 from azext_fleet._helpers import print_or_merge_credentials
 from azext_fleet._helpers import assign_network_contributor_role_to_subnet
+from azext_fleet._helpers import get_msi_object_id
 from azext_fleet.constants import UPGRADE_TYPE_CONTROLPLANEONLY
 from azext_fleet.constants import UPGRADE_TYPE_FULL
 from azext_fleet.constants import UPGRADE_TYPE_NODEIMAGEONLY
 from azext_fleet.constants import UPGRADE_TYPE_ERROR_MESSAGES
 from azext_fleet.constants import SUPPORTED_GATE_STATES_FILTERS
 from azext_fleet.constants import SUPPORTED_GATE_STATES_PATCH
+from azext_fleet.constants import FLEET_1P_APP_ID
 
 
 # pylint: disable=too-many-locals
@@ -112,7 +114,11 @@ def create_fleet(cmd,
     )
 
     if enable_private_cluster:
-        assign_network_contributor_role_to_subnet(cmd, agent_subnet_id)
+        assign_network_contributor_role_to_subnet(cmd, FLEET_1P_APP_ID, agent_subnet_id)
+
+    if enable_vnet_integration:
+        assign_network_contributor_role_to_subnet(cmd, get_msi_object_id(cmd, assign_identity), apiserver_subnet_id)
+        assign_network_contributor_role_to_subnet(cmd, get_msi_object_id(cmd, assign_identity), agent_subnet_id)
 
     return sdk_no_wait(no_wait,
                        client.begin_create_or_update,
