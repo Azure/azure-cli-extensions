@@ -2961,7 +2961,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             'aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])
 
     @AllowLargeResponse()
-    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='eastus')
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='eastus2euap')
     def test_aks_nodepool_add_with_ossku_azurelinuxosguard(self, resource_group, resource_group_location):
         aks_name = self.create_random_name('cliakstest', 16)
         node_pool_name = self.create_random_name('c', 6)
@@ -2981,12 +2981,18 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('provisioningState', 'Succeeded'),
         ])
 
-        # add nodepool with AzureLinuxOSGuard OS SKU
+        # add nodepool with AzureLinuxOSGuard OS SKU and security features
         self.cmd('aks nodepool add '
                  '--resource-group={resource_group} '
                  '--cluster-name={name} '
                  '--name={node_pool_name_second} '
-                 '--os-sku AzureLinuxOSGuard',
+                 '--node-vm-size Standard_D2s_v5 '
+                 '--os-sku AzureLinuxOSGuard '
+                 '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AzureLinuxOSGuardPreview '
+                 '--tags SkipLinuxAzSecPack=true '
+                 '--enable-fips-image '
+                 '--enable-secure-boot '
+                 '--enable-vtpm',
                  checks=[
                     self.check('provisioningState', 'Succeeded'),
                     self.check('osSku', 'AzureLinuxOSGuard'),
@@ -2997,7 +3003,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             'aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])
 
     @AllowLargeResponse()
-    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='eastus')
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='eastus2euap')
     def test_aks_nodepool_add_with_ossku_azurelinux3osguard(self, resource_group, resource_group_location):
         aks_name = self.create_random_name('cliakstest', 16)
         node_pool_name = self.create_random_name('c', 6)
@@ -3017,12 +3023,18 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('provisioningState', 'Succeeded'),
         ])
 
-        # add nodepool with AzureLinux3OSGuard OS SKU
+        # add nodepool with AzureLinux3OSGuard OS SKU and security features
         self.cmd('aks nodepool add '
                  '--resource-group={resource_group} '
                  '--cluster-name={name} '
                  '--name={node_pool_name_second} '
-                 '--os-sku AzureLinux3OSGuard',
+                 '--node-vm-size Standard_D2s_v5 '
+                 '--os-sku AzureLinux3OSGuard '
+                 '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AzureLinuxOSGuardPreview '
+                 '--tags SkipLinuxAzSecPack=true '
+                 '--enable-fips-image '
+                 '--enable-secure-boot '
+                 '--enable-vtpm',
                  checks=[
                     self.check('provisioningState', 'Succeeded'),
                     self.check('osSku', 'AzureLinux3OSGuard'),
