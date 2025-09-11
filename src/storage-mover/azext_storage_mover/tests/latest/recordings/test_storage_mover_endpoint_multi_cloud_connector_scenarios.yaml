@@ -1,0 +1,194 @@
+interactions:
+- request:
+    body: '{"properties": {"description": "endpointMultiCloudConnectorDesc", "endpointType": "AzureMultiCloudConnector", "awsS3BucketId":
+      "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aws_536697237310/providers/Microsoft.AWSConnector/s3buckets/c2c-1pb-bucket",
+      "multiCloudConnectorId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/otendolkarrg/providers/Microsoft.HybridConnectivity/publicCloudConnectors/otendolkarconnector1"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage-mover endpoint create-for-multi-cloud-connector
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '412'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --name --storage-mover-name --multi-cloud-connector-id --aws-s3-bucket-id
+      User-Agent:
+      - AZURECLI/2.77.0 azsdk-python-core/1.35.0 Python/3.13.7 (Windows-11-10.0.26100-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test-storagemover-rg2/providers/Microsoft.StorageMover/storageMovers/teststoragemover2/endpoints/endpointmulticloudconnector1?api-version=2025-07-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test-storagemover-rg2/providers/Microsoft.StorageMover/storageMovers/teststoragemover2/endpoints/endpointmulticloudconnector1","name":"endpointmulticloudconnector1","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"exampleuser@microsoft.com","createdByType":"User","createdAt":"2025-09-08T17:47:17.4491546Z","lastModifiedBy":"exampleuser@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-09-08T17:47:27.3665553Z"},"properties":{"multiCloudConnectorId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/otendolkarrg/providers/Microsoft.HybridConnectivity/publicCloudConnectors/otendolkarconnector1","awsS3BucketId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aws_536697237310/providers/Microsoft.AWSConnector/s3buckets/c2c-1pb-bucket","endpointType":"AzureMultiCloudConnector","provisioningState":"Succeeded","description":"endpointMultiCloudConnectorDesc"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '928'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 08 Sep 2025 17:57:44 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-failure-cause:
+      - gateway
+      x-msedge-ref:
+      - 'Ref A: F872CFECC62E47F4BD2B7E4D675986AC Ref B: PNQ231110907042 Ref C: 2025-09-08T17:57:44Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage-mover endpoint show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --storage-mover-name -n
+      User-Agent:
+      - AZURECLI/2.77.0 azsdk-python-core/1.35.0 Python/3.13.7 (Windows-11-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test-storagemover-rg2/providers/Microsoft.StorageMover/storageMovers/teststoragemover2/endpoints/endpointmulticloudconnector1?api-version=2025-07-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test-storagemover-rg2/providers/Microsoft.StorageMover/storageMovers/teststoragemover2/endpoints/endpointmulticloudconnector1","name":"endpointmulticloudconnector1","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"exampleuser@microsoft.com","createdByType":"User","createdAt":"2025-09-08T17:47:17.4491546Z","lastModifiedBy":"exampleuser@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-09-08T17:47:27.3665553Z"},"properties":{"multiCloudConnectorId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/otendolkarrg/providers/Microsoft.HybridConnectivity/publicCloudConnectors/otendolkarconnector1","awsS3BucketId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aws_536697237310/providers/Microsoft.AWSConnector/s3buckets/c2c-1pb-bucket","endpointType":"AzureMultiCloudConnector","provisioningState":"Succeeded","description":"endpointMultiCloudConnectorDesc"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '928'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 08 Sep 2025 18:27:06 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-failure-cause:
+      - gateway
+      x-msedge-ref:
+      - 'Ref A: EA47A4EAF6084F59971B2379CD3CFA31 Ref B: PNQ231110906031 Ref C: 2025-09-08T18:27:06Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage-mover endpoint update-for-multi-cloud-connector
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --storage-mover-name -n --description
+      User-Agent:
+      - AZURECLI/2.77.0 azsdk-python-core/1.35.0 Python/3.13.7 (Windows-11-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test-storagemover-rg2/providers/Microsoft.StorageMover/storageMovers/teststoragemover2/endpoints/endpointmulticloudconnector1?api-version=2025-07-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test-storagemover-rg2/providers/Microsoft.StorageMover/storageMovers/teststoragemover2/endpoints/endpointmulticloudconnector1","name":"endpointmulticloudconnector1","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"exampleuser@microsoft.com","createdByType":"User","createdAt":"2025-09-08T17:47:17.4491546Z","lastModifiedBy":"exampleuser@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-09-08T17:47:27.3665553Z"},"properties":{"multiCloudConnectorId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/otendolkarrg/providers/Microsoft.HybridConnectivity/publicCloudConnectors/otendolkarconnector1","awsS3BucketId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aws_536697237310/providers/Microsoft.AWSConnector/s3buckets/c2c-1pb-bucket","endpointType":"AzureMultiCloudConnector","provisioningState":"Succeeded","description":"endpointMultiCloudConnectorDesc"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '113'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 08 Sep 2025 19:04:20 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-failure-cause:
+      - gateway
+      x-msedge-ref:
+      - 'Ref A: E898AD8927B849D3B5BF7029F70E1951 Ref B: PNQ231110906023 Ref C: 2025-09-08T19:04:20Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"description": "endpointMultiCloudConnectorDescUpdate", "endpointType": "AzureMultiCloudConnector", "awsS3BucketId":
+      "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aws_536697237310/providers/Microsoft.AWSConnector/s3buckets/c2c-1pb-bucket",
+      "multiCloudConnectorId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/otendolkarrg/providers/Microsoft.HybridConnectivity/publicCloudConnectors/otendolkarconnector1"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage-mover endpoint update-for-multi-cloud-connector
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --storage-mover-name -n --description
+      User-Agent:
+      - AZURECLI/2.77.0 azsdk-python-core/1.35.0 Python/3.13.7 (Windows-11-10.0.26100-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test-storagemover-rg2/providers/Microsoft.StorageMover/storageMovers/teststoragemover2/endpoints/endpointmulticloudconnector1?api-version=2025-07-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test-storagemover-rg2/providers/Microsoft.StorageMover/storageMovers/teststoragemover2/endpoints/endpointmulticloudconnector1","name":"endpointmulticloudconnector1","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"exampleuser@microsoft.com","createdByType":"User","createdAt":"2025-09-08T17:47:17.4491546Z","lastModifiedBy":"exampleuser@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-09-08T17:47:27.3665553Z"},"properties":{"multiCloudConnectorId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/otendolkarrg/providers/Microsoft.HybridConnectivity/publicCloudConnectors/otendolkarconnector1","awsS3BucketId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aws_536697237310/providers/Microsoft.AWSConnector/s3buckets/c2c-1pb-bucket","endpointType":"AzureMultiCloudConnector","provisioningState":"Succeeded","description":"endpointMultiCloudConnectorDescUpdate"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '113'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 08 Sep 2025 19:04:20 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-failure-cause:
+      - gateway
+      x-msedge-ref:
+      - 'Ref A: E898AD8927B849D3B5BF7029F70E1951 Ref B: PNQ231110906023 Ref C: 2025-09-08T19:04:20Z'
+    status:
+      code: 200
+      message: OK
+version: 1

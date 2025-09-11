@@ -22,9 +22,9 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-07-01",
+        "version": "2025-07-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagemover/storagemovers/{}/projects/{}/jobdefinitions/{}/jobruns", "2024-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagemover/storagemovers/{}/projects/{}/jobdefinitions/{}/jobruns", "2025-07-01"],
         ]
     }
 
@@ -139,7 +139,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-07-01",
+                    "api-version", "2025-07-01",
                     required=True,
                 ),
             }
@@ -174,7 +174,6 @@ class List(AAZCommand):
             _schema_on_200 = cls._schema_on_200
             _schema_on_200.next_link = AAZStrType(
                 serialized_name="nextLink",
-                flags={"read_only": True},
             )
             _schema_on_200.value = AAZListType(
                 flags={"read_only": True},
@@ -269,7 +268,7 @@ class List(AAZCommand):
                 serialized_name="itemsUnsupported",
                 flags={"read_only": True},
             )
-            properties.job_definition_properties = AAZObjectType(
+            properties.job_definition_properties = AAZAnyType(
                 serialized_name="jobDefinitionProperties",
                 flags={"read_only": True},
             )
@@ -289,7 +288,7 @@ class List(AAZCommand):
                 serialized_name="sourceName",
                 flags={"read_only": True},
             )
-            properties.source_properties = AAZObjectType(
+            properties.source_properties = AAZAnyType(
                 serialized_name="sourceProperties",
                 flags={"read_only": True},
             )
@@ -304,7 +303,7 @@ class List(AAZCommand):
                 serialized_name="targetName",
                 flags={"read_only": True},
             )
-            properties.target_properties = AAZObjectType(
+            properties.target_properties = AAZAnyType(
                 serialized_name="targetProperties",
                 flags={"read_only": True},
             )

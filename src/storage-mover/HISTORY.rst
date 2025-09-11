@@ -3,6 +3,11 @@
 Release History
 ===============
 
+1.2.0
++++++
+* Updated to the 2025-07-01 GA API version. 
+* Add new endpoints for storage-nfs-file-share and multi-cloud-connector.
+
 1.1.0
 ++++++
 * Update to 2024-07-01 GA api version
