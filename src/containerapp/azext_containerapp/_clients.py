@@ -343,7 +343,7 @@ class ContainerAppFunctionsPreviewClient():
 
     @classmethod
     def list_functions(cls, cmd, resource_group_name, container_app_name):
-        """List all functions for a container app (across all revisions)"""
+        """List all functions for a container app in single revision mode"""
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
         sub_id = get_subscription_id(cmd.cli_ctx)
         url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/containerApps/{}/functions?api-version={}"
@@ -359,7 +359,7 @@ class ContainerAppFunctionsPreviewClient():
 
     @classmethod
     def get_function(cls, cmd, resource_group_name, container_app_name, function_name):
-        """Get a specific function for a container app"""
+        """Get a specific function for a container app in single revision mode"""
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
         sub_id = get_subscription_id(cmd.cli_ctx)
         url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/containerApps/{}/functions/{}?api-version={}"
