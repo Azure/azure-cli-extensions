@@ -1686,18 +1686,20 @@ def load_arguments(self, _):
         c.argument("node_taints", validator=validate_nodepool_taints)
         c.argument("node_osdisk_type", arg_type=get_enum_type(node_os_disk_types))
         c.argument("node_osdisk_size", type=int)
+        # upgrade strategy
+        c.argument("upgrade_strategy", arg_type=get_enum_type(upgrade_strategies))
+        # rolling upgrade params
         c.argument("max_surge", validator=validate_max_surge)
         c.argument("drain_timeout", type=int)
         c.argument("node_soak_duration", type=int)
+        c.argument("undrainable_node_behavior")
+        c.argument("max_unavailable", validator=validate_max_unavailable)
+        c.argument("max_blocked_nodes", validator=validate_max_blocked_nodes)
         # blue-green upgrade parameters
-        c.argument("upgrade_strategy", arg_type=get_enum_type(upgrade_strategies))
         c.argument("drain_batch_size", validator=validate_drain_batch_size)
         c.argument("drain_timeout_bg", type=int)
         c.argument("batch_soak_duration", type=int)
         c.argument("final_soak_duration", type=int)
-        c.argument("undrainable_node_behavior")
-        c.argument("max_unavailable", validator=validate_max_unavailable)
-        c.argument("max_blocked_nodes", validator=validate_max_blocked_nodes)
         c.argument("mode", arg_type=get_enum_type(node_mode_types))
         c.argument("scale_down_mode", arg_type=get_enum_type(scale_down_modes))
         c.argument("max_pods", type=int, options_list=["--max-pods", "-m"])
@@ -1830,18 +1832,20 @@ def load_arguments(self, _):
         c.argument("labels", nargs="*", validator=validate_nodepool_labels)
         c.argument("tags", tags_type)
         c.argument("node_taints", validator=validate_nodepool_taints)
+        # upgrade strategy
+        c.argument("upgrade_strategy", arg_type=get_enum_type(upgrade_strategies))
+        # rolling upgrade parameters
         c.argument("max_surge", validator=validate_max_surge)
         c.argument("drain_timeout", type=int)
         c.argument("node_soak_duration", type=int)
         c.argument("undrainable_node_behavior")
+        c.argument("max_unavailable", validator=validate_max_unavailable)
+        c.argument("max_blocked_nodes", validator=validate_max_blocked_nodes)
         # blue-green upgrade parameters
-        c.argument("upgrade_strategy", arg_type=get_enum_type(upgrade_strategies))
         c.argument("drain_batch_size", validator=validate_drain_batch_size)
         c.argument("drain_timeout_bg", type=int)
         c.argument("batch_soak_duration", type=int)
         c.argument("final_soak_duration", type=int)
-        c.argument("max_unavailable", validator=validate_max_unavailable)
-        c.argument("max_blocked_nodes", validator=validate_max_blocked_nodes)
         c.argument("mode", arg_type=get_enum_type(node_mode_types))
         c.argument("scale_down_mode", arg_type=get_enum_type(scale_down_modes))
         # extensions
@@ -1918,18 +1922,20 @@ def load_arguments(self, _):
         )
 
     with self.argument_context("aks nodepool upgrade") as c:
+        # upgrade strategy
+        c.argument("upgrade_strategy", arg_type=get_enum_type(upgrade_strategies))
+        # rolling upgrade parameters
         c.argument("max_surge", validator=validate_max_surge)
         c.argument("drain_timeout", type=int)
         c.argument("node_soak_duration", type=int)
         c.argument("undrainable_node_behavior")
+        c.argument("max_unavailable", validator=validate_max_unavailable)
+        c.argument("max_blocked_nodes", validator=validate_max_blocked_nodes)
         # blue-green upgrade parameters
-        c.argument("upgrade_strategy", arg_type=get_enum_type(upgrade_strategies))
         c.argument("drain_batch_size", validator=validate_drain_batch_size)
         c.argument("drain_timeout_bg", type=int)
         c.argument("batch_soak_duration", type=int)
         c.argument("final_soak_duration", type=int)
-        c.argument("max_unavailable", validator=validate_max_unavailable)
-        c.argument("max_blocked_nodes", validator=validate_max_blocked_nodes)
         c.argument("snapshot_id", validator=validate_snapshot_id)
         c.argument(
             "yes",
