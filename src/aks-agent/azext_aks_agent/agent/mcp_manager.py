@@ -224,7 +224,7 @@ class MCPManager:
                             last_log_time = now
 
                 # If we get here, timeout was reached and process might still be running
-                try:
+                try: # pylint: disable=too-many-nested-blocks
                     # If still running, force kill (support both Popen and asyncio Process)
                     still_running = False
                     try:
@@ -256,12 +256,18 @@ class MCPManager:
                                 if hasattr(self.server_process, 'poll'):
                                     if self.server_process.poll() is not None:
                                         if self.verbose:
-                                            ProgressReporter.show_status_message("MCP server force killed successfully", "info")
+                                            ProgressReporter.show_status_message(
+                                                "MCP server force killed successfully",
+                                                "info"
+                                            )
                                         break
                                 else:
                                     if getattr(self.server_process, 'returncode', None) is not None:
                                         if self.verbose:
-                                            ProgressReporter.show_status_message("MCP server force killed successfully", "info")
+                                            ProgressReporter.show_status_message(
+                                                "MCP server force killed successfully",
+                                                "info"
+                                            )
                                         break
                             except Exception:  # pylint: disable=broad-exception-caught
                                 break

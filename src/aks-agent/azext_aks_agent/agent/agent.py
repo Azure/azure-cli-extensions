@@ -476,6 +476,7 @@ class MCPLifecycleManager:
             # In rare cases if a conflicting loop is running in this thread, fall back to thread execution
             if "This event loop is already running" in str(e):
                 import concurrent.futures
+
                 def run_in_thread():
                     self._ensure_loop()
                     return self._loop.run_until_complete(self._setup_mcp_async(config_params))
@@ -510,7 +511,7 @@ class MCPLifecycleManager:
                 try:
                     if self._loop is not None and not self._loop.is_closed():
                         self._loop.close()
-                except Exception:
+                except Exception:  # pylint: disable=broad-exception-caught
                     pass
                 self._loop = None
 
