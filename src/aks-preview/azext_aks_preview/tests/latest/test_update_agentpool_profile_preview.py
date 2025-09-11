@@ -439,7 +439,7 @@ class TestUpdateAgentPoolProfilePreview(unittest.TestCase):
             "update_fips_image",
             "update_ssh_access",
             "update_localdns_profile",
-            "update_auto_scaler_properties_vms"
+            "update_auto_scaler_properties_vms",
             "update_upgrade_strategy",
             "update_blue_green_upgrade_settings"
         ]
