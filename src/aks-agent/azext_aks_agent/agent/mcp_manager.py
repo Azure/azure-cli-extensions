@@ -125,12 +125,13 @@ class MCPManager:
             if self.verbose:
                 ProgressReporter.show_status_message(f"Starting MCP server on port {self.server_port}", "info")
 
-            # Start the server process
+            # Start the server using asyncio subprocess with DEVNULL stdio to avoid
+            # transport pipe cleanup on loop shutdown.
             self.server_process = await asyncio.create_subprocess_exec(
                 *cmd,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                stdin=subprocess.PIPE
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+                stdin=subprocess.DEVNULL,
             )
 
             # Wait a moment for server to initialize
@@ -166,7 +167,11 @@ class MCPManager:
                     )
 
                 # Gracefully terminate the process
-                self.server_process.terminate()
+                try:
+                    self.server_process.terminate()
+                except Exception:  # pylint: disable=broad-exception-caught
+                    # Ignore terminate errors and continue with kill path
+                    pass
 
                 # Wait up to 8 seconds for graceful shutdown
                 import time
@@ -175,21 +180,19 @@ class MCPManager:
                 check_interval = 0.1
                 last_log_time = start_time  # limit verbose logs to once every ~2 seconds
 
+                # Poll for process exit (works for both Popen-like and asyncio Process)
                 while (time.time() - start_time) < timeout:
                     time.sleep(check_interval)
-
-                    # Check if process is actually still running using OS-level check
-                    # This works even when asyncio event loop is closed
+                    rc = None
                     try:
-                        if pid != 'unknown':
-                            os.kill(pid, 0)  # Signal 0 checks if process exists without killing it
-                            # If we get here, process is still running
+                        if hasattr(self.server_process, 'poll'):
+                            rc = self.server_process.poll()
                         else:
-                            # Fallback to asyncio returncode if PID unavailable
-                            if self.server_process.returncode is not None:
-                                break
-                    except (OSError, ProcessLookupError):
-                        # Process no longer exists - graceful shutdown succeeded!
+                            rc = getattr(self.server_process, 'returncode', None)
+                    except Exception:  # pylint: disable=broad-exception-caught
+                        rc = 0  # Assume exited
+
+                    if rc is not None:
                         if self.verbose:
                             from .user_feedback import ProgressReporter
                             elapsed = time.time() - start_time
@@ -197,7 +200,19 @@ class MCPManager:
                                 f"MCP server shut down gracefully in {elapsed:.2f}s", "info"
                             )
                         return
-
+                    # Fallback: OS-level existence check (handles asyncio Process without active loop)
+                    try:
+                        if pid != 'unknown':
+                            os.kill(pid, 0)
+                        # If no exception, process still exists
+                    except (OSError, ProcessLookupError):
+                        if self.verbose:
+                            from .user_feedback import ProgressReporter
+                            elapsed = time.time() - start_time
+                            ProgressReporter.show_status_message(
+                                f"MCP server shut down gracefully in {elapsed:.2f}s", "info"
+                            )
+                        return
                     # Debug: emit a message at most once every ~2 seconds in verbose mode
                     if self.verbose:
                         now = time.time()
@@ -210,34 +225,68 @@ class MCPManager:
 
                 # If we get here, timeout was reached and process might still be running
                 try:
-                    if pid != 'unknown':
-                        os.kill(pid, 0)  # Check if still running
-                        # Process is still running, need force kill
+                    # If still running, force kill (support both Popen and asyncio Process)
+                    still_running = False
+                    try:
+                        if hasattr(self.server_process, 'poll'):
+                            still_running = self.server_process.poll() is None
+                        else:
+                            still_running = getattr(self.server_process, 'returncode', None) is None
+                    except Exception:  # pylint: disable=broad-exception-caught
+                        still_running = False
+
+                    if still_running:
                         if self.verbose:
                             from .user_feedback import ProgressReporter
                             ProgressReporter.show_status_message(
                                 f"Graceful shutdown timed out after {timeout}s, using force kill", "warning"
                             )
 
-                        self.server_process.kill()
+                        try:
+                            # asyncio subprocess has .kill(); Popen has .kill() as well
+                            self.server_process.kill()
+                        except Exception:  # pylint: disable=broad-exception-caught
+                            pass
 
                         # Wait up to 3 seconds for kill to complete
                         kill_start = time.time()
                         while (time.time() - kill_start) < 3.0:
                             time.sleep(0.1)
                             try:
-                                os.kill(pid, 0)
-                            except (OSError, ProcessLookupError):
-                                if self.verbose:
-                                    ProgressReporter.show_status_message("MCP server force killed successfully", "info")
-                                return
+                                if hasattr(self.server_process, 'poll'):
+                                    if self.server_process.poll() is not None:
+                                        if self.verbose:
+                                            ProgressReporter.show_status_message("MCP server force killed successfully", "info")
+                                        break
+                                else:
+                                    if getattr(self.server_process, 'returncode', None) is not None:
+                                        if self.verbose:
+                                            ProgressReporter.show_status_message("MCP server force killed successfully", "info")
+                                        break
+                            except Exception:  # pylint: disable=broad-exception-caught
+                                break
 
-                        if self.verbose:
+                        # If still running, warn
+                        try:
+                            still_running = False
+                            if hasattr(self.server_process, 'poll'):
+                                still_running = self.server_process.poll() is None
+                            else:
+                                still_running = getattr(self.server_process, 'returncode', None) is None
+                            # OS-level last check
+                            if pid != 'unknown':
+                                try:
+                                    os.kill(pid, 0)
+                                except (OSError, ProcessLookupError):
+                                    still_running = False
+                        except Exception:  # pylint: disable=broad-exception-caught
+                            still_running = False
+                        if still_running and self.verbose:
                             ProgressReporter.show_status_message(
                                 f"Warning: MCP server (PID: {pid}) may still be running", "warning"
                             )
                     else:
-                        # Fallback when PID not available
+                        # Already terminated
                         if self.verbose:
                             from .user_feedback import ProgressReporter
                             ProgressReporter.show_status_message(
@@ -257,9 +306,26 @@ class MCPManager:
                     from .user_feedback import ProgressReporter
                     ProgressReporter.show_status_message(f"Error stopping server: {str(e)}", "error")
             finally:
-                self.server_process = None
-                self.server_url = None
-                self.server_port = None
+                # Explicitly close pipes to avoid lingering file descriptors
+                try:
+                    stdin_obj = getattr(self.server_process, "stdin", None)
+                    if stdin_obj is not None:
+                        try:
+                            stdin_obj.close()
+                        except Exception:  # pylint: disable=broad-exception-caught
+                            pass
+                    for stream_name in ("stdout", "stderr"):
+                        stream_obj = getattr(self.server_process, stream_name, None)
+                        # StreamReader doesn't have close(); ignore safely
+                        if stream_obj is not None and hasattr(stream_obj, "close"):
+                            try:
+                                stream_obj.close()
+                            except Exception:  # pylint: disable=broad-exception-caught
+                                pass
+                finally:
+                    self.server_process = None
+                    self.server_url = None
+                    self.server_port = None
 
     def is_server_running(self) -> bool:
         """
@@ -272,7 +338,16 @@ class MCPManager:
             return False
 
         # Check if process is still alive
-        return self.server_process.returncode is None
+        try:
+            # Prefer 'returncode' when available (stable for mocks/tests)
+            if hasattr(self.server_process, 'returncode'):
+                return getattr(self.server_process, 'returncode', None) is None
+            # Otherwise use poll() if available
+            if hasattr(self.server_process, 'poll'):
+                return self.server_process.poll() is None
+            return False
+        except Exception:  # pylint: disable=broad-exception-caught
+            return False
 
     def is_server_healthy(self) -> bool:
         """

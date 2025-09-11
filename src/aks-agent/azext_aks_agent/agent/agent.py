@@ -439,6 +439,13 @@ class MCPLifecycleManager:
         self.mcp_manager = None
         self.config = None
         self._setup_params = None
+        self._loop = None  # dedicated loop for MCP subprocess lifecycle
+
+    def _ensure_loop(self):
+        """Ensure a dedicated event loop exists for MCP lifecycle."""
+        import asyncio
+        if self._loop is None or self._loop.is_closed():
+            self._loop = asyncio.new_event_loop()
 
     def setup_mcp_sync(self, config_params):
         """
@@ -462,7 +469,20 @@ class MCPLifecycleManager:
         :raises: Exception if MCP setup fails
         """
         self._setup_params = config_params
-        return _run_async_operation(self._setup_mcp_async, config_params)
+        self._ensure_loop()
+        try:
+            return self._loop.run_until_complete(self._setup_mcp_async(config_params))
+        except RuntimeError as e:
+            # In rare cases if a conflicting loop is running in this thread, fall back to thread execution
+            if "This event loop is already running" in str(e):
+                import concurrent.futures
+                def run_in_thread():
+                    self._ensure_loop()
+                    return self._loop.run_until_complete(self._setup_mcp_async(config_params))
+                with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
+                    future = executor.submit(run_in_thread)
+                    return future.result(timeout=300)
+            raise
 
     def cleanup_mcp_sync(self):
         """
@@ -473,7 +493,8 @@ class MCPLifecycleManager:
         """
         if self.mcp_manager:
             try:
-                _run_async_operation(self._cleanup_mcp_async)
+                self._ensure_loop()
+                self._loop.run_until_complete(self._cleanup_mcp_async())
             except Exception as e:  # pylint: disable=broad-exception-caught
                 # Log cleanup errors but don't re-raise to avoid masking original errors
                 try:
@@ -484,6 +505,14 @@ class MCPLifecycleManager:
                 except Exception:  # pylint: disable=broad-exception-caught
                     # Fallback to basic logging if ProgressReporter fails
                     print(f"Warning: Error during MCP cleanup: {str(e)}")
+            finally:
+                # Close the dedicated loop after cleanup
+                try:
+                    if self._loop is not None and not self._loop.is_closed():
+                        self._loop.close()
+                except Exception:
+                    pass
+                self._loop = None
 
     async def _setup_mcp_async(self, config_params):
         """

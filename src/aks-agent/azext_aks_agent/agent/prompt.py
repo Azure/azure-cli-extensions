@@ -188,6 +188,10 @@ AKS_CONTEXT_PROMPT_MCP = _AKS_BASE_CONTEXT + _MCP_TOOLSET_INSTRUCTIONS + """
    - For memory usage analysis: `kubectl_diagnostics` provides detailed resource consumption data
    - For storage metrics: `kubectl_diagnostics` can analyze PV/PVC usage and capacity
 
+2. **Node Inventory (Read-Only Safe):**
+   - To list Kubernetes nodes and their readiness/status, prefer `kubectl get nodes -o wide` (via available Kubernetes tools) over Azure VMSS enumeration.
+   - If Azure Compute operations are restricted by read-only policy, do not attempt VMSS list/instance operations; use Kubernetes-level listing instead.
+
 **MCP Advantage:** These tools provide context-aware analysis that traditional kubectl/az commands cannot match, offering deeper insights and automated correlation across the entire AKS stack.
 
 **Note**: "Cluster" in this context refers to both the Azure-managed AKS cluster AND the Kubernetes resources running within it. MCP tools provide unified access to both layers with enhanced context awareness.
