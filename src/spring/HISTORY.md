@@ -1,5 +1,9 @@
 Release History
 ===============
+1.28.4
+---
+* Fix regression issue caused by the SDK change.
+
 1.28.3
 ---
 * Update Azure Spring Apps reference doc.
