@@ -224,7 +224,7 @@ class MCPManager:
                             last_log_time = now
 
                 # If we get here, timeout was reached and process might still be running
-                try: # pylint: disable=too-many-nested-blocks
+                try:  # pylint: disable=too-many-nested-blocks
                     # If still running, force kill (support both Popen and asyncio Process)
                     still_running = False
                     try:
