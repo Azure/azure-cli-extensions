@@ -179,6 +179,39 @@ helps['containerapp replica count'] = """
           az containerapp replica count -n my-containerapp -g MyResourceGroup
 """
 
+helps['containerapp functions'] = """
+    type: group
+    short-summary: Commands to view functions in a container app.
+"""
+
+helps['containerapp functions list'] = """
+    type: command
+    short-summary: List all functions in a container app or a specific revision.
+    long-summary: |
+        When revision name is not provided, lists functions from the active revision. If there are multiple active revisions, the API will return an error requiring you to specify which revision.
+    examples:
+    - name: List all functions in a container app (single active revision mode)
+      text: |
+          az containerapp functions list -n my-containerapp -g MyResourceGroup
+    - name: List all functions for a specific revision
+      text: |
+          az containerapp functions list -n my-containerapp -g MyResourceGroup --revision-name MyRevision
+"""
+
+helps['containerapp functions show'] = """
+    type: command
+    short-summary: Show details of a specific function in a container app.
+    long-summary: |
+        When revision name is not provided, shows function from the active revision. If there are multiple active revisions, the API will return an error requiring you to specify which revision.
+    examples:
+    - name: Show details of a function in a container app (single active revision mode)
+      text: |
+          az containerapp functions show -n my-containerapp -g MyResourceGroup --function-name MyFunction
+    - name: Show details of a function for a specific revision
+      text: |
+          az containerapp functions show -n my-containerapp -g MyResourceGroup --function-name MyFunction --revision-name MyRevision
+"""
+
 # Environment Commands
 helps['containerapp env'] = """
     type: group

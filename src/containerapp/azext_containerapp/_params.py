@@ -529,3 +529,12 @@ def load_arguments(self, _):
         c.argument('termination_grace_period', options_list=['--termination-grace-period', '-t'], type=int, help="Time in seconds to drain requests during ingress shutdown. Default 500, minimum 0, maximum 3600.")
         c.argument('request_idle_timeout', options_list=['--request-idle-timeout'], type=int, help="Timeout in minutes for idle requests. Default 4, minimum 4, maximum 30.")
         c.argument('header_count_limit', options_list=['--header-count-limit'], type=int, help="Limit of http headers per request. Default 100, minimum 1.")
+
+    with self.argument_context('containerapp functions list') as c:
+        c.argument('resource_group_name', arg_type=resource_group_name_type, id_part=None)
+        c.argument('name', options_list=['--name', '-n'], help="The name of the Container App.")
+        c.argument('revision_name', options_list=['--revision-name', '-r'], help="The name of the revision to list functions from. If not provided, lists functions from the active revision (only works if there's a single active revision).")
+
+    with self.argument_context('containerapp functions show') as c:
+        c.argument('function_name', options_list=['--function-name', '-f'], help="The name of the function to show details for.")
+        c.argument('revision_name', options_list=['--revision-name', '-r'], help="The name of the revision to get the function from. If not provided, gets function from the active revision (only works if there's a single active revision).")
