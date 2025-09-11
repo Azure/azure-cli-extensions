@@ -495,6 +495,10 @@ helps['aks create'] = f"""
         - name: --azure-keyvault-kms-key-vault-resource-id
           type: string
           short-summary: Resource ID of Azure Key Vault.
+        - name: --kms-infrastructure-encryption
+          type: string
+          short-summary: Enable encryption at rest of Kubernetes resource objects using service-managed keys.
+          long-summary: Enable infrastructure encryption for Kubernetes resource objects. This feature provides encryption at rest for cluster secrets and configuration using service-managed keys. For more information see https://aka.ms/aks/kubernetesResourceObjectEncryption.
         - name: --enable-image-cleaner
           type: bool
           short-summary: Enable ImageCleaner Service.
@@ -1918,7 +1922,7 @@ helps['aks nodepool add'] = """
           short-summary: The OS Type. Linux or Windows. Windows not supported yet for "VirtualMachines" VM set type.
         - name: --os-sku
           type: string
-          short-summary: The os-sku of the agent node pool. Ubuntu, CBLMariner, Ubuntu2204 or Ubuntu2404 when os-type is Linux, default is Ubuntu if not set; Windows2019, Windows2022 or WindowsAnnual when os-type is Windows, the current default is Windows2022 if not set.
+          short-summary: The os-sku of the agent node pool. Ubuntu, Ubuntu2204, Ubuntu2404, CBLMariner, AzureLinux or AzureLinux3 when os-type is Linux, default is Ubuntu if not set; Windows2019, Windows2022 or WindowsAnnual when os-type is Windows, the current default is Windows2022 if not set.
         - name: --enable-fips-image
           type: bool
           short-summary: Use FIPS-enabled OS on agent nodes.
@@ -2247,6 +2251,9 @@ helps['aks nodepool update'] = """
         - name: --localdns-config
           type: string
           short-summary: Set the localDNS Profile for a nodepool with a JSON config file.
+        - name: --node-vm-size -s
+          type: string
+          short-summary: VM size for Kubernetes nodes. Only configurable when updating the autoscale settings of a VirtualMachines node pool.
     examples:
       - name: Reconcile the nodepool back to its current state.
         text: az aks nodepool update -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster
@@ -2258,6 +2265,8 @@ helps['aks nodepool update'] = """
         text: az aks nodepool update --update-cluster-autoscaler --min-count 1 --max-count 10 -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster
       - name: Change a node pool to system mode
         text: az aks nodepool update --mode System -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster
+      - name: Update cluster autoscaler vm size, min-count and max-count for virtual machines node pool
+        text: az aks nodepool update -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --update-cluster-autoscaler --node-vm-size "Standard_D2s_v3" --min-count 2 --max-count 4
 """
 
 helps['aks nodepool get-upgrades'] = """
@@ -2377,6 +2386,63 @@ helps['aks nodepool manual-scale delete'] = """
 helps['aks machine'] = """
    type: group
    short-summary: Get information about machines in a nodepool of a managed clusters
+"""
+
+helps['aks machine add'] = """
+   type: command
+   short-summary: Add a machine to the specified node pool
+   parameters:
+       - name: --cluster-name
+         type: string
+         short-summary: Name of the managed cluster.
+       - name: --nodepool-name
+         type: string
+         short-summary: Name of the agentpool of a managed cluster.
+       - name: --machine-name
+         type: string
+         short-summary: Host name of the machine.
+       - name: --zones -z
+         type: string array
+         short-summary: Space-separated list of availability zones where a machine will be placed.
+       - name: --priority
+         type: string
+         short-summary: The priority of the machine.
+       - name: --tags
+         type: string
+         short-summary: The tags of the machine.
+       - name: --vm-size
+         type: string
+         short-summary: The size of the machine
+       - name: --os-type
+         type: string
+         short-summary: The operating system type of the machine.
+       - name: --os-sku
+         type: string
+         short-summary: The os-sku of the agent node pool.
+       - name: --kubernetes-version
+         type: string
+         short-summary: Version of Kubernetes to use for creating the machine, such as "1.7.12" or "1.8.7".
+       - name: --enable-fips-image
+         type: bool
+         short-summary: Switch to use FIPS-enabled OS on the machine.
+       - name: --disable-fips-image
+         type: bool
+         short-summary: Switch to use non-FIPS-enabled OS on the machine.
+       - name: --vnet-subnet-id
+         type: string
+         short-summary: The ID of a subnet in an existing VNet into which to deploy the machine.
+       - name: --pod-subnet-id
+         type: string
+         short-summary: The ID of a subnet in an existing VNet into which to assign pods in the machine (requires azure network-plugin).
+       - name: --enable-node-public-ip
+         type: bool
+         short-summary: Enable the machine public IP.
+       - name: --node-public-ip-prefix-id
+         type: string
+         short-summary: Public IP prefix ID used to assign public IPs to the machine.
+       - name: --node-public-ip-tags
+         type: string
+         short-summary: The ipTags of the machine public IPs.
 """
 
 helps['aks machine list'] = """
@@ -3952,101 +4018,3 @@ helps['aks identity-binding delete'] = """
           type: string
           short-summary: Name of the identity binding to show.
 """
-
-# pylint: disable=line-too-long
-# helps[
-#     "aks agent"
-# ] = """
-#     type: command
-#     short-summary: Run AI assistant to analyze and troubleshoot Kubernetes clusters.
-#     long-summary: |-
-#       This command allows you to ask questions about your Azure Kubernetes cluster and get answers using AI models.
-#       Environment variables must be set to use the AI model, please refer to https://docs.litellm.ai/docs/providers to learn more about supported AI providers and models and required environment variables.
-#     parameters:
-#         - name: --name -n
-#           type: string
-#           short-summary: Name of the managed cluster.
-#         - name: --resource-group -g
-#           type: string
-#           short-summary: Name of the resource group.
-#         - name: --model
-#           type: string
-#           short-summary: Model to use for the LLM.
-#         - name: --api-key
-#           type: string
-#           short-summary: API key to use for the LLM (if not given, uses environment variables AZURE_API_KEY, OPENAI_API_KEY).
-#         - name: --config-file
-#           type: string
-#           short-summary: Path to configuration file.
-#         - name: --max-steps
-#           type: int
-#           short-summary: Maximum number of steps the LLM can take to investigate the issue.
-#         - name: --no-interactive
-#           type: bool
-#           short-summary: Disable interactive mode. When set, the agent will not prompt for input and will run in batch mode.
-#         - name: --no-echo-request
-#           type: bool
-#           short-summary: Disable echoing back the question provided to AKS Agent in the output.
-#         - name: --show-tool-output
-#           type: bool
-#           short-summary: Show the output of each tool that was called during the analysis.
-#         - name: --refresh-toolsets
-#           type: bool
-#           short-summary: Refresh the toolsets status.
-#
-#     examples:
-#         - name: Ask about pod issues in the cluster with Azure OpenAI
-#           text: |-
-#             export AZURE_API_BASE="https://my-azureopenai-service.openai.azure.com/"
-#             export AZURE_API_VERSION="2025-01-01-preview"
-#             export AZURE_API_KEY="sk-xxx"
-#             az aks agent "Why are my pods not starting?" --name MyManagedCluster --resource-group MyResourceGroup --model azure/my-gpt4.1-deployment
-#         - name: Ask about pod issues in the cluster with OpenAI
-#           text: |-
-#             export OPENAI_API_KEY="sk-xxx"
-#             az aks agent "Why are my pods not starting?" --name MyManagedCluster --resource-group MyResourceGroup --model gpt-4o
-#           text: az aks agent "Why are my pods not starting?"
-#         - name: Run in interactive mode without a question
-#           text: az aks agent "Check the pod status in my cluster" --name MyManagedCluster --resource-group MyResourceGroup --model azure/my-gpt4.1-deployment --api-key "sk-xxx"
-#         - name: Run in non-interactive batch mode
-#           text: az aks agent "Diagnose networking issues" --no-interactive --max-steps 15 --model azure/my-gpt4.1-deployment
-#         - name: Show detailed tool output during analysis
-#           text: az aks agent "Why is my service workload unavailable in namespace workload-ns?" --show-tool-output --model azure/my-gpt4.1-deployment
-#         - name: Use custom configuration file
-#           text: az aks agent "Check kubernetes pod resource usage" --config-file /path/to/custom.config --model azure/my-gpt4.1-deployment
-#         - name: Run agent with no echo of the original question
-#           text: az aks agent "What is the status of my cluster?" --no-echo-request --model azure/my-gpt4.1-deployment
-#         - name: Refresh toolsets to get the latest available tools
-#           text: az aks agent "What is the status of my cluster?" --refresh-toolsets --model azure/my-gpt4.1-deploymen
-#         - name: Run agent with config file
-#           text: |
-#             az aks agent "Check kubernetes pod resource usage" --config-file /path/to/custom.config
-#             Here is an example of config file:
-#             ```json
-#             model: "gpt-4o"
-#             api_key: "..."
-#             # define a list of mcp servers, mcp server can be defined
-#             mcp_servers:
-#               aks_mcp:
-#                 description: "The AKS-MCP is a Model Context Protocol (MCP) server that enables AI assistants to interact with Azure Kubernetes Service (AKS) clusters"
-#                 url: "http://localhost:8003/sse"
-#
-#             # try adding your own tools or toggle the built-in toolsets here
-#             # e.g. query company-specific data, fetch logs from your existing observability tools, etc
-#             # To check how to add a customized toolset, please refer to https://docs.robusta.dev/master/configuration/holmesgpt/custom_toolsets.html#custom-toolsets
-#             # To find all built-in toolsets, please refer to https://docs.robusta.dev/master/configuration/holmesgpt/builtin_toolsets.html
-#             toolsets:
-#               # add a new json processor toolset
-#               json_processor:
-#                 description: "A toolset for processing JSON data using jq"
-#                 prerequisites:
-#                   - command: "jq --version"  # Ensure jq is installed
-#                 tools:
-#                   - name: "process_json"
-#                     description: "A tool that uses jq to process JSON input"
-#                     command: "echo '{{ json_input }}' | jq '.'"  # Example jq command to format JSON
-#               # disable a built-in toolsets
-#               aks/core:
-#                 enabled: false
-#               ```
-# """

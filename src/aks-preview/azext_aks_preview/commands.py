@@ -188,7 +188,6 @@ def load_command_table(self, _):
             "operation-abort", "aks_operation_abort", supports_no_wait=True
         )
         g.custom_command("bastion", "aks_bastion")
-        # g.custom_command("agent", "aks_agent")
 
     # AKS maintenance configuration commands
     with self.command_group(
@@ -293,6 +292,7 @@ def load_command_table(self, _):
         g.custom_show_command(
             "show", "aks_machine_show", table_transformer=aks_machine_show_table_format
         )
+        g.custom_command("add", "aks_machine_add", supports_no_wait=True)
 
     with self.command_group(
         "aks operation", operations_sdk, client_factory=cf_operations

@@ -1,0 +1,309 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.5.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.11 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/nthandetest",
+        "name": "nthandetest", "type": "Microsoft.MachineLearningServices/workspaces",
+        "location": "eastus", "tags": {}, "etag": null, "properties": {"friendlyName":
+        "nthandetest", "description": "", "storageAccount": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.Storage/storageAccounts/nthandetest8920363208",
+        "keyVault": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.Keyvault/vaults/nthandetest0805776995",
+        "applicationInsights": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.insights/components/nthandetest3519596268",
+        "hbiWorkspace": false, "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47",
+        "imageBuildCompute": null, "provisioningState": "Succeeded", "v1LegacyMode":
+        false, "softDeleteEnabled": false, "containerRegistry": "", "creationTime":
+        "2022-08-11T16:20:09.2418482Z", "notebookInfo": {"resourceId": "e22f25f5396b42828c747e5272a417ee",
+        "fqdn": "ml-nthandetest-eastus-429b3073-ea7c-435d-914a-9a2ffcb5b713.eastus.notebooks.azure.net",
+        "isPrivateLinkEnabled": false, "notebookPreparationError": null}, "storageHnsEnabled":
+        false, "workspaceId": "429b3073-ea7c-435d-914a-9a2ffcb5b713", "linkedModelInventoryArmId":
+        null, "privateLinkCount": 0, "publicNetworkAccess": "Enabled", "discoveryUrl":
+        "https://eastus.api.azureml.ms/discovery", "mlFlowTrackingUri": "azureml://eastus.api.azureml.ms/mlflow/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/nthandetest",
+        "sdkTelemetryAppInsightsKey": "f5784ccd-178d-4ecc-9998-b05841b44ae9", "sasGetterUri":
+        "", "enableDataIsolation": false}, "identity": {"type": "SystemAssigned",
+        "principalId": "16b65b94-b9f2-4120-b0f1-598534df268b", "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47"},
+        "kind": "Default", "sku": {"name": "Basic", "tier": "Basic"}, "systemData":
+        {"createdAt": "2022-08-11T16:20:09.2418482Z", "createdBy": "nthande@microsoft.com",
+        "createdByType": "User", "lastModifiedAt": "2022-08-11T16:20:09.2418482Z",
+        "lastModifiedBy": "nthande@microsoft.com", "lastModifiedByType": "User"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2366'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 15 Feb 2023 19:17:20 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-8c8c2c6abb84081024220f5aa4b31715-979e2ea31fab3960-01"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.026'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"properties": {"vmSize": "STANDARD_DS3_V2", "applicationSharingPolicy":
+      "Shared", "computeInstanceAuthorizationType": "personal", "enableNodePublicIp":
+      true}, "computeType": "ComputeInstance"}, "identity": {"type": "SystemAssigned"},
+      "location": "eastus", "tags": {"test1": "true", "test2": "test"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '315'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.5.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.11 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/computes/testcomp007ci3?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/nthandetest/computes/testcomp007ci3",
+        "name": "testcomp007ci3", "type": "Microsoft.MachineLearningServices/workspaces/computes",
+        "location": "eastus", "tags": {"test1": "true", "test2": "test"}, "identity":
+        {"type": "SystemAssigned", "principalId": "d2726185-3a5a-4e87-ba7d-9e95dc9e11fb",
+        "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47"}, "properties": {"createdOn":
+        "2023-02-15T19:17:22.5798171+00:00", "modifiedOn": "2023-02-15T19:17:22.5798171+00:00",
+        "disableLocalAuth": false, "description": null, "resourceId": null, "computeType":
+        "ComputeInstance", "provisioningState": "Creating", "provisioningErrors":
+        null, "isAttachedCompute": false, "properties": {"vmSize": "STANDARD_DS3_V2",
+        "subnet": null, "sshSettings": null, "autologgerSettings": null, "errors":
+        null, "connectivityEndpoints": null, "applications": null, "state": null,
+        "lastOperation": null, "createdBy": {"userOrgId": "72f988bf-86f1-41af-91ab-2d7cd011db47",
+        "userId": "f01782d0-678c-4574-b01c-7e1493e36a32"}, "applicationSharingPolicy":
+        null, "computeInstanceAuthorizationType": "personal", "personalComputeInstanceSettings":
+        null, "setupScripts": null, "enableNodePublicIp": true, "dataMounts": null,
+        "dataDisks": null, "containers": null, "updateStatus": null, "versions": null,
+        "customServices": null, "osImageMetadata": null}}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus/computeOperationsStatus/70eee817-b22e-4d92-8899-ac0247b4cfd0?api-version=2022-10-01-preview&service=new
+      cache-control:
+      - no-cache
+      content-length:
+      - '1451'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 15 Feb 2023 19:17:22 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-ae1d5a2eb5f45f7da6a9f6a324cc1ba8-18bda480dd62ef56-01"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aml-cluster:
+      - vienna-eastus-02
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.385'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.5.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.11 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus/computeOperationsStatus/000000000000000?api-version=0000-00-00&service=new
+  response:
+    body:
+      string: '{"status": "InProgress"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '24'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 15 Feb 2023 19:17:52 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-15b1270765cb5522c761d9ae686e5cc7-975a4c6a5a7771d0-01"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aml-cluster:
+      - vienna-eastus-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.024'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.5.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.11 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/computes/testcomp007ci3?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/nthandetest/computes/testcomp007ci3",
+        "name": "testcomp007ci3", "type": "Microsoft.MachineLearningServices/workspaces/computes",
+        "location": "eastus", "tags": {"test1": "true", "test2": "test"}, "identity":
+        {"type": "SystemAssigned", "principalId": "d2726185-3a5a-4e87-ba7d-9e95dc9e11fb",
+        "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47"}, "properties": {"createdOn":
+        "2023-02-15T19:17:22.5798171+00:00", "modifiedOn": "2023-02-15T19:17:22.9572793+00:00",
+        "disableLocalAuth": false, "description": null, "resourceId": null, "computeType":
+        "ComputeInstance", "computeLocation": "eastus", "provisioningState": "Creating",
+        "provisioningErrors": null, "isAttachedCompute": false, "properties": {"vmSize":
+        "STANDARD_DS3_V2", "subnet": null, "sshSettings": null, "autologgerSettings":
+        null, "errors": [], "connectivityEndpoints": {"publicIpAddress": null, "privateIpAddress":
+        null}, "applications": [], "state": "Creating", "lastOperation": null, "createdBy":
+        {"userOrgId": "72f988bf-86f1-41af-91ab-2d7cd011db47", "userId": "f01782d0-678c-4574-b01c-7e1493e36a32"},
+        "applicationSharingPolicy": "Shared", "computeInstanceAuthorizationType":
+        "personal", "personalComputeInstanceSettings": null, "setupScripts": null,
+        "dataMounts": null, "dataDisks": null, "containers": null, "updateStatus":
+        null, "versions": {"runtime": null}, "customServices": [], "osImageMetadata":
+        {"currentImageVersion": null, "latestImageVersion": "23.01.19", "isLatestOsImageVersion":
+        false}}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1608'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 15 Feb 2023 19:18:13 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-15508cb75ed193f61d289d1f1349339e-cbad7db560353041-01"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.110'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.5.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.11 (Windows-10-10.0.22621-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/computes/testcomp007ci3?api-version=0000-00-00&underlyingResourceAction=Delete
+  response:
+    body:
+      string: ''
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus/computeOperationsStatus/ffa30e96-16ee-4aa8-9ca5-15b13a982e4b?api-version=2022-10-01-preview&service=new
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Wed, 15 Feb 2023 19:18:13 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aml-cluster:
+      - vienna-eastus-02
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.130'
+    status:
+      code: 202
+      message: Accepted
+version: 1

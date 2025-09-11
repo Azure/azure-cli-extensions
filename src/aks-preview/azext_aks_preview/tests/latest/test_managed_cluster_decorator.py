@@ -2272,6 +2272,55 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         with self.assertRaises(ArgumentUsageError):
             ctx_9.get_azure_keyvault_kms_key_vault_resource_id()
 
+    def test_get_kms_infrastructure_encryption(self):
+        # default
+        ctx_0 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertIsNone(ctx_0.get_kms_infrastructure_encryption())
+
+        # with explicit Disabled value
+        ctx_1 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "kms_infrastructure_encryption": "Disabled",
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_1.get_kms_infrastructure_encryption(), "Disabled")
+
+        # with Enabled value
+        ctx_2 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "kms_infrastructure_encryption": "Enabled",
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_2.get_kms_infrastructure_encryption(), "Enabled")
+
+        # test in update mode
+        ctx_3 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "kms_infrastructure_encryption": "Enabled",
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        self.assertEqual(ctx_3.get_kms_infrastructure_encryption(), "Enabled")
+
     def test_get_cluster_snapshot_id(self):
         # default
         ctx_1 = AKSPreviewManagedClusterContext(
@@ -4896,6 +4945,93 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         )
 
         self.assertEqual(dec_mc_3, ground_truth_mc_3)
+
+    def test_set_up_kms_infrastructure_encryption(self):
+        # test default (no infrastructure encryption)
+        dec_1 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_1 = self.models.ManagedCluster(location="test_location")
+        dec_1.context.attach_mc(mc_1)
+        dec_mc_1 = dec_1.set_up_kms_infrastructure_encryption(mc_1)
+        # no change expected
+        ground_truth_mc_1 = self.models.ManagedCluster(location="test_location")
+        self.assertEqual(dec_mc_1, ground_truth_mc_1)
+
+        # test with Disabled
+        dec_2 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "kms_infrastructure_encryption": "Disabled",
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_2 = self.models.ManagedCluster(location="test_location")
+        dec_2.context.attach_mc(mc_2)
+        dec_mc_2 = dec_2.set_up_kms_infrastructure_encryption(mc_2)
+        # no change expected
+        ground_truth_mc_2 = self.models.ManagedCluster(location="test_location")
+        self.assertEqual(dec_mc_2, ground_truth_mc_2)
+
+        # test with Enabled
+        dec_3 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "kms_infrastructure_encryption": "Enabled",
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_3 = self.models.ManagedCluster(location="test_location")
+        dec_3.context.attach_mc(mc_3)
+        dec_mc_3 = dec_3.set_up_kms_infrastructure_encryption(mc_3)
+        
+        # expected security profile with infrastructure encryption
+        ground_truth_kube_resource_encryption_profile_3 = self.models.KubernetesResourceObjectEncryptionProfile(
+            infrastructure_encryption="Enabled"
+        )
+        ground_truth_security_profile_3 = self.models.ManagedClusterSecurityProfile(
+            kubernetes_resource_object_encryption_profile=ground_truth_kube_resource_encryption_profile_3,
+        )
+        ground_truth_mc_3 = self.models.ManagedCluster(
+            location="test_location",
+            security_profile=ground_truth_security_profile_3,
+        )
+        self.assertEqual(dec_mc_3, ground_truth_mc_3)
+
+        # test with existing security profile
+        dec_4 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "kms_infrastructure_encryption": "Enabled",
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        existing_security_profile = self.models.ManagedClusterSecurityProfile()
+        mc_4 = self.models.ManagedCluster(
+            location="test_location",
+            security_profile=existing_security_profile,
+        )
+        dec_4.context.attach_mc(mc_4)
+        dec_mc_4 = dec_4.set_up_kms_infrastructure_encryption(mc_4)
+        
+        # should add to existing security profile
+        ground_truth_kube_resource_encryption_profile_4 = self.models.KubernetesResourceObjectEncryptionProfile(
+            infrastructure_encryption="Enabled"
+        )
+        ground_truth_security_profile_4 = self.models.ManagedClusterSecurityProfile(
+            kubernetes_resource_object_encryption_profile=ground_truth_kube_resource_encryption_profile_4,
+        )
+        ground_truth_mc_4 = self.models.ManagedCluster(
+            location="test_location",
+            security_profile=ground_truth_security_profile_4,
+        )
+        self.assertEqual(dec_mc_4, ground_truth_mc_4)
 
     def test_set_up_creationdata_of_cluster_snapshot(self):
         dec_1 = AKSPreviewManagedClusterCreateDecorator(

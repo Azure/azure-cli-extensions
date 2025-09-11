@@ -85,7 +85,6 @@ from azext_aks_preview.addonconfiguration import (
     add_virtual_node_role_assignment,
     enable_addons,
 )
-from azext_aks_preview.agent.agent import aks_agent as aks_agent_internal
 
 from azext_aks_preview.aks_diagnostics import aks_kanalyze_cmd, aks_kollect_cmd
 from azext_aks_preview.aks_draft.commands import (
@@ -115,6 +114,9 @@ from azext_aks_preview.aks_identity_binding.commands import (
 from azext_aks_preview.managednamespace import (
     aks_managed_namespace_add,
     aks_managed_namespace_update,
+)
+from azext_aks_preview.machine import (
+    add_machine,
 )
 from azure.cli.command_modules.acs._helpers import (
     get_user_assigned_identity_by_resource_id
@@ -610,6 +612,7 @@ def aks_create(
     azure_keyvault_kms_key_id=None,
     azure_keyvault_kms_key_vault_network_access=None,
     azure_keyvault_kms_key_vault_resource_id=None,
+    kms_infrastructure_encryption="Disabled",
     http_proxy_config=None,
     bootstrap_artifact_source=CONST_ARTIFACT_SOURCE_DIRECT,
     bootstrap_container_registry_resource_id=None,
@@ -1512,6 +1515,7 @@ def aks_agentpool_update(
     disable_fips_image=False,
     # local DNS
     localdns_config=None,
+    node_vm_size=None,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -2069,6 +2073,46 @@ def aks_machine_list(cmd, client, resource_group_name, cluster_name, nodepool_na
 
 def aks_machine_show(cmd, client, resource_group_name, cluster_name, nodepool_name, machine_name):
     return client.get(resource_group_name, cluster_name, nodepool_name, machine_name)
+
+
+# pylint: disable=unused-argument
+def aks_machine_add(
+    cmd,
+    client,
+    resource_group_name,
+    cluster_name,
+    nodepool_name,
+    machine_name=None,
+    zones=None,
+    tags=None,
+    priority=None,
+    os_type=None,
+    os_sku=None,
+    enable_fips_image=False,
+    disable_fips_image=False,
+    vnet_subnet_id=None,
+    pod_subnet_id=None,
+    enable_node_public_ip=False,
+    node_public_ip_prefix_id=None,
+    node_public_ip_tags=None,
+    vm_size=None,
+    kubernetes_version=None,
+    no_wait=False,
+):
+    existedMachine = None
+    try:
+        existedMachine = client.get(resource_group_name, cluster_name, nodepool_name, machine_name)
+    except ResourceNotFoundError:
+        pass
+
+    if existedMachine:
+        raise ClientRequestError(
+            f"Machine '{machine_name}' already exists. Please use 'az aks machine update' to update it."
+        )
+
+    # DO NOT MOVE: get all the original parameters and save them as a dictionary
+    raw_parameters = locals()
+    return add_machine(cmd, client, raw_parameters, no_wait)
 
 
 def aks_addon_list_available():
@@ -4403,36 +4447,3 @@ aks_identity_binding_create = aks_ib_cmd_create
 aks_identity_binding_delete = aks_ib_cmd_delete
 aks_identity_binding_show = aks_ib_cmd_show
 aks_identity_binding_list = aks_ib_cmd_list
-
-
-# pylint: disable=unused-argument
-def aks_agent(
-    cmd,
-    client,
-    prompt,
-    model,
-    max_steps,
-    config_file,
-    resource_group_name=None,
-    name=None,
-    api_key=None,
-    no_interactive=False,
-    no_echo_request=False,
-    show_tool_output=False,
-    refresh_toolsets=False,
-):
-
-    aks_agent_internal(
-        cmd,
-        resource_group_name,
-        name,
-        prompt,
-        model,
-        api_key,
-        max_steps,
-        config_file,
-        no_interactive,
-        no_echo_request,
-        show_tool_output,
-        refresh_toolsets,
-    )

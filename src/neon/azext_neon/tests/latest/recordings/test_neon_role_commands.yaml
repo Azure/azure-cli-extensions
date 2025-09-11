@@ -1,0 +1,157 @@
+interactions:
+- request:
+    body: '{}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neon postgres neon-role create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '2'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-group --organization-name --project-name --branch-name --neon-role-name
+        --no-wait
+      User-Agent:
+      - AZURECLI/2.77.0 azsdk-python-core/1.35.0 Python/3.12.11 (Linux-6.8.0-1030-azure-x86_64-with-glibc2.41)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_neon_roles000001/providers/Neon.Postgres/organizations/test-role-org-000002/projects/test-project-id/branches/test-branch-id/neonRoles/test_role_000003?api-version=2025-06-23-preview
+  response:
+    body:
+      string: '{"error":{"code":"ParentResourceNotFound","message":"Failed to perform
+        ''write'' on resource(s) of type ''organizations/projects/branches/neonRoles'',
+        because the parent resource ''/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_neon_roles000001/providers/Neon.Postgres/organizations/test-role-org-000002/projects/test-project-id/branches/test-branch-id''
+        could not be found."}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '400'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 04 Sep 2025 10:33:48 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-failure-cause:
+      - gateway
+      x-msedge-ref:
+      - 'Ref A: 44CD5EEF661F4E3DB07E44902DDF26CF Ref B: PNQ231110906040 Ref C: 2025-09-04T10:33:48Z'
+    status:
+      code: 404
+      message: Not Found
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neon postgres neon-role list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --organization-name --project-id --branch-id
+      User-Agent:
+      - AZURECLI/2.77.0 azsdk-python-core/1.35.0 Python/3.12.11 (Linux-6.8.0-1030-azure-x86_64-with-glibc2.41)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_neon_roles000001/providers/Neon.Postgres/organizations/test-role-org-000002/projects/test-project-id/branches/test-branch-id/neonRoles?api-version=2025-03-01
+  response:
+    body:
+      string: '{"error":{"code":"ParentResourceNotFound","message":"Failed to perform
+        ''read'' on resource(s) of type ''organizations/projects/branches/neonRoles'',
+        because the parent resource ''/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_neon_roles000001/providers/Neon.Postgres/organizations/test-role-org-000002/projects/test-project-id/branches/test-branch-id''
+        could not be found."}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '399'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 04 Sep 2025 10:33:48 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-failure-cause:
+      - gateway
+      x-msedge-ref:
+      - 'Ref A: E6F1F6AD8F30463485947A5E29BEE8A2 Ref B: PNQ231110908034 Ref C: 2025-09-04T10:33:49Z'
+    status:
+      code: 404
+      message: Not Found
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neon postgres neon-role delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --resource-group --organization-name --project-name --branch-name --neon-role-name
+        --yes
+      User-Agent:
+      - AZURECLI/2.77.0 azsdk-python-core/1.35.0 Python/3.12.11 (Linux-6.8.0-1030-azure-x86_64-with-glibc2.41)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_neon_roles000001/providers/Neon.Postgres/organizations/test-role-org-000002/projects/test-project-id/branches/test-branch-id/neonRoles/test_role_000003?api-version=2025-06-23-preview
+  response:
+    body:
+      string: '{"error":{"code":"ParentResourceNotFound","message":"Failed to perform
+        ''delete'' on resource(s) of type ''organizations/projects/branches/neonRoles'',
+        because the parent resource ''/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_neon_roles000001/providers/Neon.Postgres/organizations/test-role-org-000002/projects/test-project-id/branches/test-branch-id''
+        could not be found."}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '401'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 04 Sep 2025 10:33:49 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-failure-cause:
+      - gateway
+      x-msedge-ref:
+      - 'Ref A: 1DD87BD51DE84674A55F64E89951F9DA Ref B: PNQ231110908029 Ref C: 2025-09-04T10:33:49Z'
+    status:
+      code: 404
+      message: Not Found
+version: 1
