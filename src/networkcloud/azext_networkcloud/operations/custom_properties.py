@@ -59,7 +59,7 @@ class CustomActionProperties:
                 try:
                     with urllib.request.urlopen(result_url) as result:
                         with tarfile.open(fileobj=result, mode="r:gz") as tar:
-                            tar.extractall(path=output_directory)
+                            tar.extractall(path=output_directory, filter='data')
                             logger.warning(
                                 "Extracted results are available in directory: %s",
                                 output_directory,
@@ -126,7 +126,7 @@ class CustomActionProperties:
                 try:
                     # Extract the downloaded blob
                     with tarfile.open(downloaded_blob_name, mode="r:gz") as tar:
-                        tar.extractall(path=output_directory)
+                        tar.extractall(path=output_directory, filter='data')
                         logger.warning(
                             "Extracted results are available in directory: %s",
                             output_directory,

@@ -170,7 +170,7 @@ def map_image_from_tar_backwards_compatibility(image_name: str, tar: TarFile, ta
         # extract just the manifest file and see if any of the RepoTags match the image_name we're searching for
         # the manifest.json should have a list of all the image tags
         # and what json files they map to to get env vars, startup cmd, etc.
-        tar.extract("manifest.json", path=tar_dir)
+        tar.extract("manifest.json", path=tar_dir, filter='data')
         manifest_path = os.path.join(tar_dir, "manifest.json")
         manifest = load_json_from_file(manifest_path)
         # if we match a RepoTag to the image, stop searching
@@ -187,7 +187,7 @@ def map_image_from_tar_backwards_compatibility(image_name: str, tar: TarFile, ta
 
     if not info_file:
         return None
-    tar.extract(info_file.name, path=tar_dir)
+    tar.extract(info_file.name, path=tar_dir, filter='data')
 
     # get the path of the json file and read it in
     image_info_file_path = os.path.join(tar_dir, info_file.name)
@@ -259,7 +259,7 @@ def map_image_from_tar(image_name: str, tar: TarFile, tar_location: str):
     # extract just the manifest file and see if any of the RepoTags match the image_name we're searching for
     # the manifest.json should have a list of all the image tags
     # and what json files they map to to get env vars, startup cmd, etc.
-    tar.extract(info_file_name, path=tar_dir)
+    tar.extract(info_file_name, path=tar_dir, filter='data')
     manifest_path = os.path.join(tar_dir, info_file_name)
     manifest = load_json_from_file(manifest_path)
     try:
@@ -274,7 +274,7 @@ def map_image_from_tar(image_name: str, tar: TarFile, tar_location: str):
 
     if not info_file:
         return None
-    tar.extract(info_file, path=tar_dir)
+    tar.extract(info_file, path=tar_dir, filter='data')
 
     # get the path of the json file and read it in
     image_info_file_path = os.path.join(tar_dir, info_file)

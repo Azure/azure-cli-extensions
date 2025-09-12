@@ -325,7 +325,7 @@ def _extract_proxy_tar_files(proxy_package_path, install_dir, proxy_name):
 
                 members.append(member)
 
-        tar.extractall(members=members, path=install_dir)
+        tar.extractall(members=members, path=install_dir, filter='data')
 
 
 def _check_proxy_installation(install_dir, proxy_name):

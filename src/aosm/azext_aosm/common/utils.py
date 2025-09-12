@@ -101,10 +101,10 @@ def extract_tarfile(file_path: Path, target_dir: Path) -> Path:
 
     if file_extension in (".gz", ".tgz"):
         with tarfile.open(file_path, "r:gz") as tar:
-            tar.extractall(path=target_dir)
+            tar.extractall(path=target_dir, filter='data')
     elif file_extension == ".tar":
         with tarfile.open(file_path, "r:") as tar:
-            tar.extractall(path=target_dir)
+            tar.extractall(path=target_dir, filter='data')
     else:
         raise InvalidFileTypeError(
             f"ERROR: The helm package, '{file_path}', is not"
