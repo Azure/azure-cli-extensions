@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "firmwareanalysis workspace create",
 )
 class Create(AAZCommand):
-    """create or update a firmware analysis workspace.
+    """Create or update a firmware analysis workspace.
 
     :example: create or update a firmware analysis workspace.
         az firmwareanalysis workspace create --resource-group {resourceGroupName} --workspace-name {workspaceName} --location {location} --tags {<string>:<string>, <string>:<string>,..}

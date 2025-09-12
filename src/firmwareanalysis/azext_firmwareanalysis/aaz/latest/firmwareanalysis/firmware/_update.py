@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update operation to create a firmware.
+
+    :example: Update an existing firmware.
+    az firmwareanalysis firmware update --resource-group {resourceGroupName} --workspace-name {workspaceName} --description {description} --vendor {vendorName} --model {model} --version {version}
     """
 
     _aaz_info = {

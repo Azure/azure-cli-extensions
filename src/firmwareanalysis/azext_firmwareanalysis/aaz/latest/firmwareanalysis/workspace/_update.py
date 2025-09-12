@@ -15,7 +15,10 @@ from azure.cli.core.aaz import *
     "firmwareanalysis workspace update",
 )
 class Update(AAZCommand):
-    """Update operation to create or update a firmware analysis workspace.
+    """Update a firmware analysis workspace.
+    
+    :example: update a firmware analysis workspace.
+        az firmwareanalysis workspace update --resource-group {resourceGroupName} --workspace-name {workspaceName} --tags {<string>:<string>, <string>:<string>,..}
     """
 
     _aaz_info = {

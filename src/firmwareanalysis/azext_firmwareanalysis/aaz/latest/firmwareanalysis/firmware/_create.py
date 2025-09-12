@@ -18,7 +18,7 @@ class Create(AAZCommand):
     """Create a new firmware.
 
     :example: Create a new firmware.
-        az firmwareanalysis firmware create --resource-group {resourceGroupName} --workspace-name {workspaceName} --description {description} --file-name {fileName} --file-size {fileSize} --vendor {vendorName} --model {model} --version {version} --status {status} --status-messages ['hi','message']
+        az firmwareanalysis firmware create --resource-group {resourceGroupName} --workspace-name {workspaceName} --description {description} --file-name {fileName} --file-size {fileSize} --vendor {vendorName} --model {model} --version {version} --status {status}
     """
 
     _aaz_info = {
