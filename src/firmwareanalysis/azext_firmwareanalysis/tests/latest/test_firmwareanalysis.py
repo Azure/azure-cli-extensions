@@ -72,10 +72,10 @@ class FirmwareanalysisScenario(ScenarioTest):
             'workspace_name': 'default',
             'file_name': 'file_name',
             'vendor_name': 'vendor_name',
+            'model_name': 'model_name',
             'version_name': 'version_name',
             'description': 'description',
-            'fwid_model': 'fwid_model',
-            'status': 'Pending',
+            'status': 'Ready',
             'file_size': 1,
             'resource_type': 'microsoft.iotfirmwaredefense/workspaces/firmwares'
         })
@@ -87,12 +87,15 @@ class FirmwareanalysisScenario(ScenarioTest):
                  '--file-name {file_name} '
                  '--file-size {file_size} '
                  '--vendor {vendor_name} '
-                 '--status  {status} '
+                 '--model {model_name} '
                  '--version {version_name} '
+                 '--status  {status} '
                  '--description {description} ',
                  checks=[self.greater_than('length(@)', 1),
                          self.check('properties.description', '{description}'),
                          self.check('properties.vendor', '{vendor_name}'),
+                         self.check('properties.model', '{model_name}'),
+                         self.check('properties.version', '{version_name}'),
                          self.check('properties.fileName', '{file_name}'),
                          self.check('properties.fileSize', '{file_size}'),
                          self.check('properties.status', '{status}'),
