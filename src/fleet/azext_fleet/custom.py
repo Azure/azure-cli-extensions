@@ -11,7 +11,7 @@ from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.core.util import sdk_no_wait, get_file_json, shell_safe_json_parse
 
 from azext_fleet._client_factory import CUSTOM_MGMT_FLEET
-from azext_fleet._helpers import print_or_merge_credentials
+from azext_fleet._helpers import is_rp_registered, print_or_merge_credentials
 from azext_fleet._helpers import assign_network_contributor_role_to_subnet
 from azext_fleet._helpers import get_msi_object_id
 from azext_fleet.constants import UPGRADE_TYPE_CONTROLPLANEONLY
@@ -92,6 +92,7 @@ def create_fleet(cmd,
         resource_type=CUSTOM_MGMT_FLEET,
         operation_group="fleets"
     )
+
     managed_service_identity = fleet_managed_service_identity_model(type="None")
     if enable_managed_identity:
         managed_service_identity.type = "SystemAssigned"
@@ -106,6 +107,11 @@ def create_fleet(cmd,
     elif assign_identity is not None:
         raise CLIError("Cannot assign identity without enabling managed identity.")
 
+    if enable_vnet_integration:
+        if not enable_managed_identity and assign_identity is None:
+            raise CLIError("When vnet integration is enabled, either system-assigned or "
+                           "user-assigned identity must be provided.")
+
     fleet = fleet_model(
         location=location,
         tags=tags,
@@ -114,11 +120,17 @@ def create_fleet(cmd,
     )
 
     if enable_private_cluster:
+        # provider registration state being is checked to ensure that the Fleet service principal is available
+        # to create the role assignment on the subnet
+        if not is_rp_registered(cmd):
+            raise CLIError("The Microsoft.ContainerService resource provider is not registered."
+                           "Run `az provider register -n Microsoft.ContainerService --wait`.")
         assign_network_contributor_role_to_subnet(cmd, FLEET_1P_APP_ID, agent_subnet_id)
 
-    if enable_vnet_integration:
-        assign_network_contributor_role_to_subnet(cmd, get_msi_object_id(cmd, assign_identity), apiserver_subnet_id)
-        assign_network_contributor_role_to_subnet(cmd, get_msi_object_id(cmd, assign_identity), agent_subnet_id)
+    if enable_vnet_integration and assign_identity is not None:
+        object_id = get_msi_object_id(cmd, assign_identity)
+        assign_network_contributor_role_to_subnet(cmd, object_id, apiserver_subnet_id)
+        assign_network_contributor_role_to_subnet(cmd, object_id, agent_subnet_id)
 
     return sdk_no_wait(no_wait,
                        client.begin_create_or_update,
