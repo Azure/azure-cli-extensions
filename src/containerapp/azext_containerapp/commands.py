@@ -262,6 +262,9 @@ def load_command_table(self, args):
         g.custom_command('update', 'update_session_pool', supports_no_wait=True)
         g.custom_command('delete', 'delete_session_pool', confirmation=True, supports_no_wait=True)
 
+    with self.command_group('containerapp session') as g:
+        g.custom_command('stop', 'stop_session_custom_container', is_preview=True)
+
     with self.command_group('containerapp session code-interpreter') as g:
         g.custom_command('execute', 'execute_session_code_interpreter', supports_no_wait=True)
         g.custom_command('upload-file', 'upload_session_code_interpreter', supports_no_wait=True)
