@@ -2897,6 +2897,8 @@ def enable_features(
             azrbac_skip_authz_check = ""
         azrbac_skip_authz_check = escape_proxy_settings(azrbac_skip_authz_check)
 
+    final_enable_cl = False
+    custom_locations_oid = None
     if enable_cl:
         subscription_id = (
             os.getenv("AZURE_SUBSCRIPTION_ID")
