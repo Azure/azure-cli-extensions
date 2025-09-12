@@ -55,6 +55,12 @@ class ContainerAppFunctionsListDecorator(ContainerAppFunctionsDecorator):
             revision_name = self.get_argument_revision_name()
             container_app_name = self.get_argument_container_app_name()
             resource_group_name = self.get_argument_resource_group_name()
+            
+            if not resource_group_name:
+                raise ValidationError("Resource group name is required.")
+
+            if not container_app_name:
+                raise ValidationError("Container app name is required.")
 
             if revision_name:
                 # List functions for a specific revision
@@ -88,6 +94,12 @@ class ContainerAppFunctionsShowDecorator(ContainerAppFunctionsDecorator):
             container_app_name = self.get_argument_container_app_name()
             function_name = self.get_argument_function_name()
             resource_group_name = self.get_argument_resource_group_name()
+            
+            if not resource_group_name:
+                raise ValidationError("Resource group name is required.")
+
+            if not container_app_name:
+                raise ValidationError("Container app name is required.")
 
             if not function_name:
                 raise ValidationError("Function name is required.")

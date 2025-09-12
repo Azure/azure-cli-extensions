@@ -533,10 +533,10 @@ def load_arguments(self, _):
     with self.argument_context('containerapp functions list') as c:
         c.argument('resource_group_name', arg_type=resource_group_name_type, id_part=None)
         c.argument('name', options_list=['--name', '-n'], help="The name of the Container App.")
-        c.argument('revision_name', options_list=['--revision-name', '-r'], help="The name of the revision to list functions from. If not provided, lists functions from the active revision (only works if there's a single active revision).")
+        c.argument('revision_name', options_list=['--revision-name', '-r'], help="The name of the revision to list functions from. It is required if container app is running in multiple active revision mode.")
 
     with self.argument_context('containerapp functions show') as c:
         c.argument('resource_group_name', arg_type=resource_group_name_type, id_part=None)
         c.argument('name', options_list=['--name', '-n'], help="The name of the Container App.")
         c.argument('function_name', options_list=['--function-name', '-f'], help="The name of the function to show details for.")
-        c.argument('revision_name', options_list=['--revision-name', '-r'], help="The name of the revision to get the function from. If not provided, gets function from the active revision (only works if there's a single active revision).")
+        c.argument('revision_name', options_list=['--revision-name', '-r'], help="The name of the revision to get the function from. It is required if container app is running in multiple active revision mode.")

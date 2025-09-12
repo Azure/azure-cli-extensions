@@ -4,7 +4,7 @@ Release History
 ===============
 upcoming
 ++++++
-* 'az containerapp functions get/list': New command group to list and show functions in container apps.
+* 'az containerapp functions show/list': New command group to list and show functions in container apps.
 * 'az containerapp update/up': Disallow changing `--revisions-mode` to Labels.
 * 'az containerapp session code-interpreter': Fix `--path` in examples
 * 'az containerapp sessionpool create/update': Support `--lifecycle-type` and `--max-alive-period`
