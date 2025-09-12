@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 from __future__ import annotations
 
+import cmd
 import contextlib
 import errno
 import hashlib
@@ -65,7 +66,7 @@ from azext_connectedk8s._client_factory import (
 )
 from azext_connectedk8s.clientproxyhelper._enums import ProxyStatus
 
-from .vendored_sdks.preview_2024_07_01.models import (
+from .vendored_sdks.preview_2025_08_01.models import (
     ArcAgentProfile,
     ArcAgentryConfigurations,
     ConnectedCluster,
@@ -86,7 +87,7 @@ if TYPE_CHECKING:
     from kubernetes.config.kube_config import ConfigNode
     from requests.models import Response
 
-    from azext_connectedk8s.vendored_sdks.preview_2024_07_01.operations import (
+    from azext_connectedk8s.vendored_sdks.preview_2025_08_01.operations import (
         ConnectedClusterOperations,
     )
 
@@ -241,7 +242,7 @@ def create_connectedk8s(
 
     gateway = None
     if gateway_resource_id != "":
-        gateway = Gateway(enabled=True, resource_id=gateway_resource_id)
+        gateway = Gateway(enabled=True)
 
     arc_agent_profile = None
     if disable_auto_upgrade:
@@ -674,6 +675,24 @@ def create_connectedk8s(
 
             # Perform helm upgrade if gateway
             if gateway is not None:
+                # If gateway is enabled, then associate the gateway with the connected cluster
+                print(
+                    f"Step: {utils.get_utctimestring()}: Associating Gateway with the Connected Cluster"
+                )
+                try:
+                    utils.update_gateway_cluster_link(
+                        cmd,
+                        location,
+                        subscription_id,
+                        resource_group_name,
+                        cluster_name,
+                        gateway_resource_id,
+                    )
+                except Exception as e:
+                    logger.warning(
+                        "Error occurred while associating gateway with connected cluster: %s\n",
+                        e,
+                    )
                 # Update arc agent configuration to include protected parameters in dp call
                 arc_agentry_configurations = generate_arc_agent_configuration(
                     configuration_settings,
@@ -860,7 +879,7 @@ def create_connectedk8s(
         azure_hybrid_benefit,
         oidc_profile,
         security_profile,
-        gateway,
+        None,
         arc_agentry_configurations,
         arc_agent_profile,
     )
@@ -872,13 +891,85 @@ def create_connectedk8s(
     )
     dp_request_payload = put_cc_poller.result()
     put_cc_response: ConnectedCluster = LongRunningOperation(cmd.cli_ctx)(put_cc_poller)
-    print(
-        f"Step: {utils.get_utctimestring()}: Azure resource provisioning has finished."
-    )
 
     # Checking if custom locations rp is registered and fetching oid if it is registered
     enable_custom_locations, custom_locations_oid = check_cl_registration_and_get_oid(
         cmd, cl_oid, subscription_id
+    )
+
+    # Associate gateway with connected cluster if enabled
+    if gateway is not None:
+        print(
+            f"Step: {utils.get_utctimestring()}: Associating Gateway with the Connected Cluster"
+        )
+        
+        try:
+            # Create the gateway-cluster association
+            utils.update_gateway_cluster_link(
+                cmd,
+                location,
+                subscription_id,
+                resource_group_name,
+                cluster_name,
+                gateway_resource_id,
+            )
+            logger.info("Gateway-cluster link updated successfully")
+
+        except Exception as e:
+            error_msg = f"Failed to create gateway-cluster association: {str(e)}"
+            logger.error(error_msg)
+            telemetry.set_exception(
+                exception=e,
+                fault_type=consts.GATEWAY_LINK_FAULT_TYPE,
+                summary="Failed to associate gateway with connected cluster"
+            )
+            raise ValidationError(
+                "Failed to associate gateway with connected cluster. "
+                "Please ensure that the gateway resource is valid and accessible, then try again."
+            ) from e
+
+        try:
+            # Retrieve current connected cluster configuration
+            print(
+                f"Step: {utils.get_utctimestring()}: Updating Connected Cluster resource with Gateway configuration"
+            )
+            connected_cluster = client.get(resource_group_name, cluster_name)
+            
+            # Generate updated payload with gateway configuration
+            cc = generate_reput_request_payload(
+                connected_cluster,
+                oidc_profile,
+                security_profile,
+                gateway,
+                arc_agentry_configurations,
+                arc_agent_profile,
+            )
+            
+            # Update the connected cluster resource
+            reput_cc_poller = create_cc_resource(
+                client, resource_group_name, cluster_name, cc, False
+            )
+            dp_request_payload = reput_cc_poller.result()
+            put_cc_response = LongRunningOperation(cmd.cli_ctx)(reput_cc_poller)
+            
+            logger.info("Connected cluster resource updated successfully with gateway configuration")
+
+        except Exception as e:
+            error_msg = f"Failed to update connected cluster resource with gateway configuration: {str(e)}"
+            logger.error(error_msg)
+            telemetry.set_exception(
+                exception=e,
+                fault_type=consts.Gateway_Cluster_Resource_Update_Failed_Fault_Type,
+                summary="Failed to update connected cluster resource with gateway configuration"
+            )
+            raise CLIInternalError(
+                "Failed to update the connected cluster resource with gateway configuration. "
+                "The gateway association may have been created, but the cluster resource update failed. "
+                "Please check the resource status and try again."
+            ) from e
+    
+    print(
+        f"Step: {utils.get_utctimestring()}: Azure resource provisioning has finished."
     )
 
     # Update arc agent configuration to include protected parameters in dp call
@@ -1941,7 +2032,7 @@ def create_cc_resource(
     try:
         poller: LROPoller[ConnectedCluster] = sdk_no_wait(
             no_wait,
-            client.begin_create,
+            client.begin_create_or_replace,
             resource_group_name=resource_group_name,
             cluster_name=cluster_name,
             connected_cluster=cc,
@@ -2214,6 +2305,8 @@ def update_connected_cluster(
 
     # Fetch Connected Cluster for agent version
     connected_cluster = client.get(resource_group_name, cluster_name)
+    subscription_id = connected_cluster.id.split("/")[2]
+    location = connected_cluster.location
 
     kubernetes_properties = {
         "Context.Default.AzureCLI.KubernetesVersion": kubernetes_version
@@ -2243,9 +2336,31 @@ def update_connected_cluster(
     # If gateway is enabled
     gateway = None
     if gateway_resource_id != "":
-        gateway = Gateway(enabled=True, resource_id=gateway_resource_id)
+        gateway = Gateway(enabled=True)
+        print(
+            f"Step: {utils.get_utctimestring()}: Associating gateway with Connected Cluster"
+        )
+        utils.update_gateway_cluster_link(
+            cmd,
+            location,
+            subscription_id,
+            resource_group_name,
+            cluster_name,
+            gateway_resource_id,
+        )
     if disable_gateway:
         gateway = Gateway(enabled=False)
+        print(
+            f"Step: {utils.get_utctimestring()}: Disassociating gateway from Connected Cluster"
+        )
+        utils.update_gateway_cluster_link(
+            cmd,
+            location,
+            subscription_id,
+            resource_group_name,
+            cluster_name,
+            None,
+        )
 
     # Set arc agent profile when auto-upgrade is set
     arc_agent_profile = None
@@ -2385,10 +2500,10 @@ def update_connected_cluster(
     )
 
     # If we didn't see a terminal agent state, now's the time to throw an error.
-    if not terminal_agent_state:
-        raise CLIInternalError(
-            "Timed out waiting for Agent State to reach terminal state."
-        )
+    # if not terminal_agent_state:
+    #     raise CLIInternalError(
+    #         "Timed out waiting for Agent State to reach terminal state."
+    #     )
 
     return connected_cluster
 
