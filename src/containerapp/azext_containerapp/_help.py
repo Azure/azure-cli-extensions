@@ -189,6 +189,7 @@ helps['containerapp functions list'] = """
     short-summary: List all functions in a container app or a specific revision. (pass --revisionName parameter)
     long-summary: |
         revisionName is required only if Container App active Revision Mode is setup in Multiple Revision Mode. (Default: Single Revision Mode)
+        Run to check activerevisionmode: az containerapp show -n my-containerapp -g MyResourceGroup --query properties.configuration.activeRevisionsMode
     examples:
     - name: List all functions in a container app. (single active revision mode)
       text: |
@@ -203,6 +204,7 @@ helps['containerapp functions show'] = """
     short-summary: Show details of a specific function in a container app or a specific revision within app. (pass --revisionName parameter)
     long-summary: |
         revisionName is required only if Container App active Revision Mode is setup in Multiple Revision Mode. (Default: Single Revision Mode)
+        Run to check activerevisionmode: az containerapp show -n my-containerapp -g MyResourceGroup --query properties.configuration.activeRevisionsMode
     examples:
     - name: Show details of a function in a container app. (single active revision mode)
       text: |
