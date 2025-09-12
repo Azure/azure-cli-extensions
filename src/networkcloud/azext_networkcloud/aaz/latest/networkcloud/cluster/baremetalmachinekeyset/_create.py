@@ -13,18 +13,22 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud cluster baremetalmachinekeyset create",
+    is_preview=True,
 )
 class Create(AAZCommand):
     """Create a new bare metal machine key set or update the existing one for the provided cluster.
 
     :example: Create or update bare metal machine key set of cluster
-        az networkcloud cluster baremetalmachinekeyset create --name "bareMetalMachineKeySetName" --extended-location name="/subscriptions/subscriptionId/resourceGroups/resourceGroupName/providers/Microsoft.ExtendedLocation/customLocations/clusterExtendedLocationName" type="CustomLocation" --location "location" --azure-group-id "MicrosoftEntraGroupObjectId" --expiration "2022-12-31T23:59:59.008Z" --jump-hosts-allowed "192.0.2.1" "192.0.2.5" --os-group-name "standardAccessGroup" --privilege-level "Standard" --user-list "[{description:'User description',azureUserName:userABC,userPrincipalName:'userABC@myorg.com',sshPublicKey:{keyData:'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDWtG2RiEGfXs+RK19UmovAJiIVUbT6YaYc/t5SjWU=admin@vm'}}]" --tags key1="myvalue1" key2="myvalue2" --cluster-name "clusterName" --resource-group "resourceGroupName
+        az networkcloud cluster baremetalmachinekeyset create --name "bareMetalMachineKeySetName" --extended-location name="/subscriptions/subscriptionId/resourceGroups/resourceGroupName/providers/Microsoft.ExtendedLocation/customLocations/clusterExtendedLocationName" type="CustomLocation" --location "location" --azure-group-id "MicrosoftEntraGroupObjectId" --expiration "2022-12-31T23:59:59.008Z" --jump-hosts-allowed "192.0.2.1" "192.0.2.5" --os-group-name "standardAccessGroup" --privilege-level "Standard" --user-list "[{description:'User description',azureUserName:userABC,userPrincipalName:'userABC@myorg.com',sshPublicKey:{keyData:'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDWtG2RiEGfXs+RK19UmovAJiIVUbT6YaYc/t5SjWU=admin@vm'}}]" --tags key1="myvalue1" key2="myvalue2" --cluster-name "clusterName" --resource-group "resourceGroupName"
+
+    :example: Create or update bare metal machine key set of cluster with Other privilege
+        az networkcloud cluster baremetalmachinekeyset create --name "bareMetalMachineKeySetName" --extended-location name="/subscriptions/subscriptionId/resourceGroups/resourceGroupName/providers/Microsoft.ExtendedLocation/customLocations/clusterExtendedLocationName" type="CustomLocation" --location "location" --azure-group-id "MicrosoftEntraGroupObjectId" --expiration "2022-12-31T23:59:59.008Z" --jump-hosts-allowed "192.0.2.1" "192.0.2.5" --os-group-name "standardAccessGroup" --privilege-level "Standard" --user-list "[{description:'User description',azureUserName:userABC,userPrincipalName:'userABC@myorg.com',sshPublicKey:{keyData:'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDWtG2RiEGfXs+RK19UmovAJiIVUbT6YaYc/t5SjWU=admin@vm'}}]" --tags key1="myvalue1" key2="myvalue2" --cluster-name "clusterName" --resource-group "resourceGroupName" --privilege-level "Other" --privilege-level-name "SecurityScanner"
     """
 
     _aaz_info = {
-        "version": "2025-02-01",
+        "version": "2025-07-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clusters/{}/baremetalmachinekeysets/{}", "2025-02-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clusters/{}/baremetalmachinekeysets/{}", "2025-07-01-preview"],
         ]
     }
 
@@ -146,7 +150,12 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="The access level allowed for the users in this key set.",
             required=True,
-            enum={"Standard": "Standard", "Superuser": "Superuser"},
+            enum={"Other": "Other", "Standard": "Standard", "Superuser": "Superuser"},
+        )
+        _args_schema.privilege_level_name = AAZStrArg(
+            options=["--privilege-level-name"],
+            arg_group="Properties",
+            help="The name of the access level to apply when the privilege level is set to Other.",
         )
         _args_schema.user_list = AAZListArg(
             options=["--user-list"],
@@ -280,7 +289,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-02-01",
+                    "api-version", "2025-07-01-preview",
                     required=True,
                 ),
             }
@@ -328,6 +337,7 @@ class Create(AAZCommand):
                 properties.set_prop("jumpHostsAllowed", AAZListType, ".jump_hosts_allowed", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("osGroupName", AAZStrType, ".os_group_name")
                 properties.set_prop("privilegeLevel", AAZStrType, ".privilege_level", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("privilegeLevelName", AAZStrType, ".privilege_level_name")
                 properties.set_prop("userList", AAZListType, ".user_list", typ_kwargs={"flags": {"required": True}})
 
             jump_hosts_allowed = _builder.get(".properties.jumpHostsAllowed")
@@ -439,6 +449,9 @@ class Create(AAZCommand):
             properties.privilege_level = AAZStrType(
                 serialized_name="privilegeLevel",
                 flags={"required": True},
+            )
+            properties.privilege_level_name = AAZStrType(
+                serialized_name="privilegeLevelName",
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
