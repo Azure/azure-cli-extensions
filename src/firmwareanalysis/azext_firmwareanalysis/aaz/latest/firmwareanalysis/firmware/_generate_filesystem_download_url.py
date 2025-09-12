@@ -11,9 +11,6 @@
 from azure.cli.core.aaz import *
 
 
-@register_command(
-    "firmwareanalysis firmware generate-filesystem-download-url",
-)
 class GenerateFilesystemDownloadUrl(AAZCommand):
     """Get a url for tar file download.
 

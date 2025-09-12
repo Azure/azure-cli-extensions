@@ -8,11 +8,16 @@
 # pylint: skip-file
 # flake8: noqa
 
-from .__cmd_group import *
-from ._create import *
-from ._delete import *
-from ._generate_upload_url import *
-from ._list import *
-from ._show import *
-from ._update import *
-from ._wait import *
+from azure.cli.core.aaz import *
+
+
+@register_command_group(
+    "firmwareanalysis workspace usage-metric",
+)
+class __CMDGroup(AAZCommandGroup):
+    """Manage Usage Metric
+    """
+    pass
+
+
+__all__ = ["__CMDGroup"]

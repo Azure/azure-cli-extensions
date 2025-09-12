@@ -21,3 +21,4 @@ from ._password_hash import *
 from ._sbom_component import *
 from ._show import *
 from ._summary import *
+from ._update import *
