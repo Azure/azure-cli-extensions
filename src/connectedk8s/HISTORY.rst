@@ -2,6 +2,10 @@
 
 Release History
 ===============
+1.10.9
+++++++
+* Security fix: prevent zipslip/directory traversal attacks during tar archive extraction in Arc Connectivity proxy binary processing
+
 1.10.8
 ++++++
 * Force delete parameter updated to `connectedk8s delete` command to allow force deletion of connectedk8s ARM resource.

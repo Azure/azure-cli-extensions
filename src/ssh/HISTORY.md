@@ -1,5 +1,9 @@
 Release History
 ===============
+2.1.0
+-----
+* Security fix: prevent zipslip/directory traversal attacks during tar archive extraction in SSH proxy binary processing
+
 2.0.6
 -----
 * Remove msrestazure dependency

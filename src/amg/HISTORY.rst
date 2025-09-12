@@ -3,6 +3,10 @@
 Release History
 ===============
 
+2.8.2
+++++++
+* Security fix: prevent zipslip/directory traversal attacks during tar archive extraction in restore operations
+
 0.1.0
 ++++++
 * Initial release.

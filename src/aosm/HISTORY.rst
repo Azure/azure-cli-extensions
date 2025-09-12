@@ -2,6 +2,10 @@
 
 Release History
 ===============
+2.0.0b3
+++++++++
+* Security fix: prevent zipslip/directory traversal attacks during tar archive extraction in helm package processing
+
 2.0.0b2
 ++++++++
 * Remove msrestazure dependency
