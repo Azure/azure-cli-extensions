@@ -18,8 +18,6 @@ logger = get_logger(__name__)
 
 class CryptoCertificate(_CryptoCertificate):
     def _output(self, *args, **kwargs):
-        from azure.cli.core.aaz import AAZUndefined
-        from azure.cli.core.aaz import has_value
 
         # for 2025-08-02 this was no longer needed, and caused cli errors
         # resolve flatten conflict
@@ -37,8 +35,6 @@ class CryptoCertificate(_CryptoCertificate):
 
 class Cve(_Cve):
     def _output(self, *args, **kwargs):
-        from azure.cli.core.aaz import AAZUndefined
-        from azure.cli.core.aaz import has_value
 
         # for 2025-08-02 this was no longer needed, and caused cli errors
         # resolve flatten conflict
