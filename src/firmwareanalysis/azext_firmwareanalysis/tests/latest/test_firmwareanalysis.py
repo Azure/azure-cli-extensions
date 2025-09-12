@@ -11,22 +11,26 @@ from azure.cli.testsdk import ScenarioTest
 
 
 class FirmwareanalysisScenario(ScenarioTest):
-    # @record_only()
-    # def test_generate_upload_url(self):
-    #     self.kwargs.update({
-    #         'firmware_id': 'cd4e9671-72cf-4f78-9c9e-8e8bb2c5eaa4',
-    #         'resource_group': 'FirmwareAnalysisRG',
-    #         'workspace_name': 'default'
-    #     })
+    # developers, comment out @record_only() in order to record live tests. then put the decorator back when creating a PR
+    @record_only()
+    def test_generate_upload_url(self):
+        self.kwargs.update({
+            'firmware_id': 'cd4e9671-72cf-4f78-9c9e-8e8bb2c5eaa4',
+            'resource_group': 'FirmwareAnalysisRG',
+            'workspace_name': 'default'
+        })
 
-    #     self.cmd('az firmwareanalysis workspace generate-upload-url '
-    #              '--resource-group {resource_group} '
-    #              '--workspace-name {workspace_name} '
-    #              '--firmware-id {firmware_id}',
-    #              checks=[self.check('length(@)', 1),
-    #                      self.check("url.contains(@, '{firmware_id}')", True)]).get_output_in_json()
+        # VERY IMPORTANT: after recording this test, manually edit the generated test_generate_upload_url.yaml file to
+        #                 redact the sas token that gets saved in response.body.string
+        self.cmd('az firmwareanalysis workspace generate-upload-url '
+                 '--resource-group {resource_group} '
+                 '--workspace-name {workspace_name} '
+                 '--firmware-id {firmware_id}',
+                 checks=[self.check('length(@)', 1),
+                         self.check('url', 'REDACTED')]).get_output_in_json()
 
-    # @record_only()
+    # developers, comment out @record_only() in order to record live tests. then put the decorator back when creating a PR
+    @record_only()
     @AllowLargeResponse()
     def test_workspace_commands(self):
         self.kwargs.update({
@@ -58,7 +62,8 @@ class FirmwareanalysisScenario(ScenarioTest):
                          self.check('[0].type', '{resource_type}'),
                          self.check('[0].resourceGroup', '{resource_group}')]).get_output_in_json()
 
-    # @record_only()
+    # developers, comment out @record_only() in order to record live tests. then put the decorator back when creating a PR
+    @record_only()
     @AllowLargeResponse()
     def test_firmware_commands(self):
         self.kwargs.update({
@@ -110,7 +115,8 @@ class FirmwareanalysisScenario(ScenarioTest):
                          self.check('[0].type', '{resource_type}'),
                          self.check('[0].resourceGroup', '{resource_group}')]).get_output_in_json()
 
-    # @record_only()
+    # developers, comment out @record_only() in order to record live tests. then put the decorator back when creating a PR
+    @record_only()
     @AllowLargeResponse()
     def test_analyzer_commands(self):
         self.kwargs.update({
@@ -135,21 +141,21 @@ class FirmwareanalysisScenario(ScenarioTest):
                          self.check('[0].type', 'Microsoft.IoTFirmwareDefense/workspaces/firmwares/components'),
                          self.check('[0].resourceGroup', '{resource_group}')]).get_output_in_json()
 
-        # self.cmd('az firmwareanalysis firmware  cve '
-        #          '--resource-group {resource_group} '
-        #          '--workspace-name {workspace_name} '
-        #          '--firmware-id {firmware_id}',
-        #          checks=[self.greater_than('length(@)', 1),
-        #                  self.check('[0].type', 'Microsoft.IoTFirmwareDefense/workspaces/firmwares/cves'),
-        #                  self.check('[0].resourceGroup', '{resource_group}')]).get_output_in_json()
+        self.cmd('az firmwareanalysis firmware  cve '
+                 '--resource-group {resource_group} '
+                 '--workspace-name {workspace_name} '
+                 '--firmware-id {firmware_id}',
+                 checks=[self.greater_than('length(@)', 1),
+                         self.check('[0].type', 'Microsoft.IoTFirmwareDefense/workspaces/firmwares/cves'),
+                         self.check('[0].resourceGroup', '{resource_group}')]).get_output_in_json()
 
-        # self.cmd('az firmwareanalysis firmware  crypto-certificate '
-        #          '--resource-group {resource_group} '
-        #          '--workspace-name {workspace_name} '
-        #          '--firmware-id {firmware_id}',
-        #          checks=[self.greater_than('length(@)', 1),
-        #                  self.check('[0].type', 'Microsoft.IoTFirmwareDefense/workspaces/firmwares/cryptoCertificates'),
-        #                  self.check('[0].resourceGroup', '{resource_group}')]).get_output_in_json()
+        self.cmd('az firmwareanalysis firmware  crypto-certificate '
+                 '--resource-group {resource_group} '
+                 '--workspace-name {workspace_name} '
+                 '--firmware-id {firmware_id}',
+                 checks=[self.greater_than('length(@)', 1),
+                         self.check('[0].type', 'Microsoft.IoTFirmwareDefense/workspaces/firmwares/cryptoCertificates'),
+                         self.check('[0].resourceGroup', '{resource_group}')]).get_output_in_json()
 
         self.cmd('az firmwareanalysis firmware  crypto-key '
                  '--resource-group {resource_group} '
