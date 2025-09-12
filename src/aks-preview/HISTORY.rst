@@ -18,6 +18,10 @@ Pending
 * Enable autoscaler support for the VirtualMachines agent pool type.
 * Add `--node-vm-size` to `az aks update` to allow changing the VM size for VirtualMachines node pools.
 
+18.0.0b37
++++++++
+* Add option `--acns-datapath-acceleration-mode <None|BpfVeth>` to `az aks create/update`
+
 18.0.0b36
 +++++++
 * Add option `AzureLinux3` to `--os-sku` for `az aks nodepool add` and `az aks nodepool update`.
