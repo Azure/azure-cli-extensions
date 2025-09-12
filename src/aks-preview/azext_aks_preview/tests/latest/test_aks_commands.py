@@ -12241,14 +12241,14 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         update_cmd = 'aks update --resource-group={resource_group} --name={name} --yes --output=json ' \
                      '--container-storage-version 1 --enable-azure-container-storage azureDisk'
 
-        self.cmd(update_cmd, checks=[
-            self.check('provisioningState', 'Succeeded'),
-        ])
-
         # Sleep for 10 mins before next operation,
         # since azure container storage operations take
         # some time to post process.
-        time.sleep(10 * 60)
+        time.sleep(15 * 60)
+
+        self.cmd(update_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+        ])
 
         # update: disable-azure-container-storage
         update_cmd = 'aks update --resource-group={resource_group} --name={name} --yes --output=json ' \
@@ -12295,14 +12295,14 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                      '--ephemeral-disk-volume-type PersistentVolumeWithAnnotation ' \
                      '--ephemeral-disk-nvme-perf-tier Standard --container-storage-version 1'
 
-        self.cmd(update_cmd, checks=[
-            self.check('provisioningState', 'Succeeded'),
-        ])
-
         # Sleep for 10 mins before next operation,
         # since azure container storage operations take
         # some time to post process.
-        time.sleep(10 * 60)
+        time.sleep(15 * 60)
+        
+        self.cmd(update_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+        ])
 
         # update: disable-azure-container-storage
         update_cmd = 'aks update --resource-group={resource_group} --name={name} --yes --output=json ' \
