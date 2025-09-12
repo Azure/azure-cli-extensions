@@ -37,7 +37,7 @@ def download_java_source(source_path):
                     shutil.rmtree(source_path)
 
                 with tarfile.open(temp_file.name, 'r:gz') as tar:
-                    tar.extractall(path=source_path)
+                    tar.extractall(path=source_path, filter='data')
 
                 os.remove(temp_file.name)
 

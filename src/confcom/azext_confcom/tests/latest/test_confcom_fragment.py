@@ -498,7 +498,7 @@ class FragmentPolicyGeneratingTarfile(unittest.TestCase):
                 tar_mapping_file = {"mcr.microsoft.com/aks/e2e/library-busybox:master.220314.1-linux-amd64": filename2}
                 create_tar_file(filename)
                 with TarFile(filename, "r") as tar:
-                    tar.extractall(path=folder)
+                    tar.extractall(path=folder, filter='data')
 
                 with TarFile.open(filename2, mode="w") as out_tar:
                     out_tar.add(os.path.join(folder, "index.json"), "index.json")

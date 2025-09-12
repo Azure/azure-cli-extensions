@@ -3,6 +3,10 @@
 Release History
 ===============
 
+3.0.1
+++++++++
+* Security fix: prevent zipslip/directory traversal attacks during tar archive extraction in custom action result blob processing
+
 3.0.0
 ++++++++
 * This stable version supports NetworkCloud 2025-02-01 APIs.

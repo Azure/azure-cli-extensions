@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.2.8
+++++++
+* Security fix: prevent zipslip/directory traversal attacks during tar archive extraction in container image and manifest processing
+
 1.2.7
 ++++++
 * bugfix making it so that oras discover function doesn't error when no fragments are found in the remote repository

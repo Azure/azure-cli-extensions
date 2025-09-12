@@ -38,7 +38,7 @@ def restore(grafana_url, archive_file, components, http_headers, destination_dat
 
     with tarfile.open(name=archive_file, mode='r:gz') as tar:
         with tempfile.TemporaryDirectory() as tmpdir:
-            tar.extractall(tmpdir)
+            tar.extractall(tmpdir, filter='data')
             tar.close()
             _restore_components(grafana_url, restore_functions, tmpdir, components, http_headers,
                                 destination_datasources=destination_datasources)
