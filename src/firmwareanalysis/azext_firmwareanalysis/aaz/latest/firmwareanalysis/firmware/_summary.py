@@ -22,9 +22,9 @@ class Summary(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-01-10",
+        "version": "2025-08-02",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.iotfirmwaredefense/workspaces/{}/firmwares/{}/summaries/{}", "2024-01-10"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.iotfirmwaredefense/workspaces/{}/firmwares/{}/summaries/{}", "2025-08-02"],
         ]
     }
 
@@ -49,21 +49,19 @@ class Summary(AAZCommand):
             help="The id of the firmware.",
             required=True,
             id_part="child_name_1",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9][a-zA-Z0-9_.-]*$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
-        _args_schema.summary_name = AAZStrArg(
-            options=["-n", "--name", "--summary-name"],
+        _args_schema.summary_type = AAZStrArg(
+            options=["-n", "--name", "--summary-type"],
             help="The Firmware analysis summary name describing the type of summary.",
             required=True,
             id_part="child_name_2",
-            enum={"BinaryHardening": "BinaryHardening", "CVE": "CVE", "CryptoCertificate": "CryptoCertificate", "CryptoKey": "CryptoKey", "Firmware": "Firmware"},
-            fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9]*$",
-                max_length=63,
-                min_length=3,
-            ),
+            enum={"BinaryHardening": "BinaryHardening", "CommonVulnerabilitiesAndExposures": "CommonVulnerabilitiesAndExposures", "CryptoCertificate": "CryptoCertificate", "CryptoKey": "CryptoKey", "Firmware": "Firmware"},
         )
         _args_schema.workspace_name = AAZStrArg(
             options=["--workspace-name"],
@@ -107,7 +105,7 @@ class Summary(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.IoTFirmwareDefense/workspaces/{workspaceName}/firmwares/{firmwareId}/summaries/{summaryName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.IoTFirmwareDefense/workspaces/{workspaceName}/firmwares/{firmwareId}/summaries/{summaryType}",
                 **self.url_parameters
             )
 
@@ -135,7 +133,7 @@ class Summary(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "summaryName", self.ctx.args.summary_name,
+                    "summaryType", self.ctx.args.summary_type,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -149,7 +147,7 @@ class Summary(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-01-10",
+                    "api-version", "2025-08-02",
                     required=True,
                 ),
             }
@@ -188,9 +186,7 @@ class Summary(AAZCommand):
             _schema_on_200.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.properties = AAZObjectType(
-                flags={"read_only": True},
-            )
+            _schema_on_200.properties = AAZObjectType()
             _schema_on_200.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
@@ -200,114 +196,113 @@ class Summary(AAZCommand):
             )
 
             properties = cls._schema_on_200.properties
+            properties.provisioning_state = AAZStrType(
+                serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
             properties.summary_type = AAZStrType(
                 serialized_name="summaryType",
                 flags={"required": True},
             )
 
             disc_binary_hardening = cls._schema_on_200.properties.discriminate_by("summary_type", "BinaryHardening")
-            disc_binary_hardening.canary = AAZIntType(
-                nullable=True,
+            disc_binary_hardening.not_executable_stack_count = AAZIntType(
+                serialized_name="notExecutableStackCount",
             )
-            disc_binary_hardening.nx = AAZIntType(
-                nullable=True,
+            disc_binary_hardening.position_independent_executable_count = AAZIntType(
+                serialized_name="positionIndependentExecutableCount",
             )
-            disc_binary_hardening.pie = AAZIntType(
-                nullable=True,
+            disc_binary_hardening.relocation_read_only_count = AAZIntType(
+                serialized_name="relocationReadOnlyCount",
             )
-            disc_binary_hardening.relro = AAZIntType(
-                nullable=True,
+            disc_binary_hardening.stack_canary_count = AAZIntType(
+                serialized_name="stackCanaryCount",
             )
-            disc_binary_hardening.stripped = AAZIntType(
-                nullable=True,
+            disc_binary_hardening.stripped_binary_count = AAZIntType(
+                serialized_name="strippedBinaryCount",
             )
             disc_binary_hardening.total_files = AAZIntType(
                 serialized_name="totalFiles",
             )
 
-            disc_cve = cls._schema_on_200.properties.discriminate_by("summary_type", "CVE")
-            disc_cve.critical = AAZIntType(
-                nullable=True,
+            disc_common_vulnerabilities_and_exposures = cls._schema_on_200.properties.discriminate_by("summary_type", "CommonVulnerabilitiesAndExposures")
+            disc_common_vulnerabilities_and_exposures.critical_cve_count = AAZIntType(
+                serialized_name="criticalCveCount",
             )
-            disc_cve.high = AAZIntType(
-                nullable=True,
+            disc_common_vulnerabilities_and_exposures.high_cve_count = AAZIntType(
+                serialized_name="highCveCount",
             )
-            disc_cve.low = AAZIntType(
-                nullable=True,
+            disc_common_vulnerabilities_and_exposures.low_cve_count = AAZIntType(
+                serialized_name="lowCveCount",
             )
-            disc_cve.medium = AAZIntType(
-                nullable=True,
+            disc_common_vulnerabilities_and_exposures.medium_cve_count = AAZIntType(
+                serialized_name="mediumCveCount",
             )
-            disc_cve.unknown = AAZIntType(
-                nullable=True,
+            disc_common_vulnerabilities_and_exposures.unknown_cve_count = AAZIntType(
+                serialized_name="unknownCveCount",
             )
 
             disc_crypto_certificate = cls._schema_on_200.properties.discriminate_by("summary_type", "CryptoCertificate")
-            disc_crypto_certificate.expired = AAZIntType()
-            disc_crypto_certificate.expiring_soon = AAZIntType(
-                serialized_name="expiringSoon",
+            disc_crypto_certificate.expired_certificate_count = AAZIntType(
+                serialized_name="expiredCertificateCount",
             )
-            disc_crypto_certificate.paired_keys = AAZIntType(
-                serialized_name="pairedKeys",
+            disc_crypto_certificate.expiring_soon_certificate_count = AAZIntType(
+                serialized_name="expiringSoonCertificateCount",
             )
-            disc_crypto_certificate.self_signed = AAZIntType(
-                serialized_name="selfSigned",
+            disc_crypto_certificate.paired_key_count = AAZIntType(
+                serialized_name="pairedKeyCount",
             )
-            disc_crypto_certificate.short_key_size = AAZIntType(
-                serialized_name="shortKeySize",
+            disc_crypto_certificate.self_signed_certificate_count = AAZIntType(
+                serialized_name="selfSignedCertificateCount",
             )
-            disc_crypto_certificate.total_certificates = AAZIntType(
-                serialized_name="totalCertificates",
+            disc_crypto_certificate.short_key_size_count = AAZIntType(
+                serialized_name="shortKeySizeCount",
             )
-            disc_crypto_certificate.weak_signature = AAZIntType(
-                serialized_name="weakSignature",
+            disc_crypto_certificate.total_certificate_count = AAZIntType(
+                serialized_name="totalCertificateCount",
+            )
+            disc_crypto_certificate.weak_signature_count = AAZIntType(
+                serialized_name="weakSignatureCount",
             )
 
             disc_crypto_key = cls._schema_on_200.properties.discriminate_by("summary_type", "CryptoKey")
-            disc_crypto_key.paired_keys = AAZIntType(
-                serialized_name="pairedKeys",
+            disc_crypto_key.paired_key_count = AAZIntType(
+                serialized_name="pairedKeyCount",
             )
-            disc_crypto_key.private_keys = AAZIntType(
-                serialized_name="privateKeys",
+            disc_crypto_key.private_key_count = AAZIntType(
+                serialized_name="privateKeyCount",
             )
-            disc_crypto_key.public_keys = AAZIntType(
-                serialized_name="publicKeys",
+            disc_crypto_key.public_key_count = AAZIntType(
+                serialized_name="publicKeyCount",
             )
-            disc_crypto_key.short_key_size = AAZIntType(
-                serialized_name="shortKeySize",
+            disc_crypto_key.short_key_size_count = AAZIntType(
+                serialized_name="shortKeySizeCount",
             )
-            disc_crypto_key.total_keys = AAZIntType(
-                serialized_name="totalKeys",
+            disc_crypto_key.total_key_count = AAZIntType(
+                serialized_name="totalKeyCount",
             )
 
             disc_firmware = cls._schema_on_200.properties.discriminate_by("summary_type", "Firmware")
             disc_firmware.analysis_time_seconds = AAZIntType(
                 serialized_name="analysisTimeSeconds",
-                nullable=True,
             )
             disc_firmware.binary_count = AAZIntType(
                 serialized_name="binaryCount",
-                nullable=True,
             )
             disc_firmware.component_count = AAZIntType(
                 serialized_name="componentCount",
-                nullable=True,
             )
             disc_firmware.extracted_file_count = AAZIntType(
                 serialized_name="extractedFileCount",
-                nullable=True,
             )
             disc_firmware.extracted_size = AAZIntType(
                 serialized_name="extractedSize",
-                nullable=True,
             )
             disc_firmware.file_size = AAZIntType(
                 serialized_name="fileSize",
-                nullable=True,
             )
             disc_firmware.root_file_systems = AAZIntType(
                 serialized_name="rootFileSystems",
-                nullable=True,
             )
 
             system_data = cls._schema_on_200.system_data

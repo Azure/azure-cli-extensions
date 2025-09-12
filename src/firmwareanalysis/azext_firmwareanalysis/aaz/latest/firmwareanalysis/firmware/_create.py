@@ -9,7 +9,6 @@
 # flake8: noqa
 
 from azure.cli.core.aaz import *
-import uuid
 
 
 @register_command(
@@ -19,13 +18,13 @@ class Create(AAZCommand):
     """Create a new firmware.
 
     :example: Create a new firmware.
-        az firmwareanalysis firmware create --resource-group {resourceGroupName} --workspace-name {workspaceName} --description {description} --file-name {fileName} --file-size {fileSize} --vendor {vendorName} --model {model} --version {version} --status {status} --status-messages ['hi','message']
+        az firmwareanalysis firmware create --resource-group {resourceGroupName} --workspace-name {workspaceName} --description {description} --file-name {fileName} --file-size {fileSize} --vendor {vendorName} --model {model} --version {version} --status {status}
     """
 
     _aaz_info = {
-        "version": "2024-01-10",
+        "version": "2025-08-02",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.iotfirmwaredefense/workspaces/{}/firmwares/{}", "2024-01-10"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.iotfirmwaredefense/workspaces/{}/firmwares/{}", "2025-08-02"],
         ]
     }
 
@@ -48,8 +47,10 @@ class Create(AAZCommand):
         _args_schema.firmware_id = AAZStrArg(
             options=["-n", "--name", "--firmware-id"],
             help="The id of the firmware.",
-            default=str(uuid.uuid4()),
-            required=False,
+            required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9][a-zA-Z0-9_.-]*$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -80,7 +81,6 @@ class Create(AAZCommand):
             options=["--file-size"],
             arg_group="Properties",
             help="File size of the uploaded firmware image.",
-            nullable=True,
         )
         _args_schema.model = AAZStrArg(
             options=["--model"],
@@ -91,7 +91,6 @@ class Create(AAZCommand):
             options=["--status"],
             arg_group="Properties",
             help="The status of firmware scan.",
-            default="Pending",
             enum={"Analyzing": "Analyzing", "Error": "Error", "Extracting": "Extracting", "Pending": "Pending", "Ready": "Ready"},
         )
         _args_schema.status_messages = AAZListArg(
@@ -172,7 +171,7 @@ class Create(AAZCommand):
             parameters = {
                 **self.serialize_url_param(
                     "firmwareId", self.ctx.args.firmware_id,
-                    required=False,
+                    required=True,
                 ),
                 **self.serialize_url_param(
                     "resourceGroupName", self.ctx.args.resource_group,
@@ -193,7 +192,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-01-10",
+                    "api-version", "2025-08-02",
                     required=True,
                 ),
             }
@@ -218,13 +217,13 @@ class Create(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
+            _builder.set_prop("properties", AAZObjectType)
 
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("description", AAZStrType, ".description")
                 properties.set_prop("fileName", AAZStrType, ".file_name")
-                properties.set_prop("fileSize", AAZIntType, ".file_size", typ_kwargs={"nullable": True})
+                properties.set_prop("fileSize", AAZIntType, ".file_size")
                 properties.set_prop("model", AAZStrType, ".model")
                 properties.set_prop("status", AAZStrType, ".status")
                 properties.set_prop("statusMessages", AAZListType, ".status_messages")
@@ -266,9 +265,7 @@ class Create(AAZCommand):
             _schema_on_200_201.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200_201.properties = AAZObjectType(
-                flags={"client_flatten": True},
-            )
+            _schema_on_200_201.properties = AAZObjectType()
             _schema_on_200_201.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
@@ -284,7 +281,6 @@ class Create(AAZCommand):
             )
             properties.file_size = AAZIntType(
                 serialized_name="fileSize",
-                nullable=True,
             )
             properties.model = AAZStrType()
             properties.provisioning_state = AAZStrType(
