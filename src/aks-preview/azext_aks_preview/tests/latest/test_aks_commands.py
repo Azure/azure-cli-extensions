@@ -12461,8 +12461,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         self.cmd(update_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
-        ])
-
+        ])        
         # Sleep for 10 mins before next operation,
         # since azure container storage operations take
         # some time to post process.
@@ -12515,8 +12514,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         self.cmd(update_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
-        ])
-
+        ])        
         # Sleep for 10 mins before next operation,
         # since azure container storage operations take
         # some time to post process.

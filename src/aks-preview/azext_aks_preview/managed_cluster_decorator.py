@@ -3598,10 +3598,10 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                     # installing Azure Container Storage during `az aks create`
                     nodepool_list = agentpool.name
 
-                    from azure.cli.command_modules.acs.azurecontainerstorage._validators import (
+                    from azext_aks_preview.azurecontainerstorage._validators import (
                         validate_enable_azure_container_storage_v1_params
                     )
-                    from azure.cli.command_modules.acs.azurecontainerstorage._consts import (
+                    from azext_aks_preview.azurecontainerstorage._consts import (
                         CONST_ACSTOR_IO_ENGINE_LABEL_KEY,
                         CONST_ACSTOR_IO_ENGINE_LABEL_VAL,
                         CONST_DISK_TYPE_EPHEMERAL_VOLUME_ONLY,
@@ -3672,7 +3672,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                 pool_option = self.context.raw_param.get("storage_pool_option")
                 pool_size = self.context.raw_param.get("storage_pool_size")
 
-                from azure.cli.command_modules.acs.azurecontainerstorage._validators import (
+                from azext_aks_preview.azurecontainerstorage._validators import (
                     validate_enable_azure_container_storage_params,
                 )
                 validate_enable_azure_container_storage_params(
@@ -4487,7 +4487,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             )
 
             # Check if we are trying to disable container storage v1
-            from azure.cli.command_modules.acs.azurecontainerstorage._helpers import (
+            from azext_aks_preview.azurecontainerstorage._helpers import (
                 get_container_storage_extension_installed
             )
             try:
@@ -4549,7 +4549,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 pool_sku = self.context.raw_param.get("storage_pool_sku")
                 pool_size = self.context.raw_param.get("storage_pool_size")
                 agentpool_details = {}
-                from azure.cli.command_modules.acs.azurecontainerstorage._helpers import (
+                from azext_aks_preview.azurecontainerstorage._helpers import (
                     get_extension_installed_and_cluster_configs
                 )
                 try:
@@ -4586,7 +4586,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                     self.context.set_intermediate("vm_cache_generated", True, overwrite_exists=True)
 
                 if enable_azure_container_storage:
-                    from azure.cli.command_modules.acs.azurecontainerstorage._helpers import (
+                    from azext_aks_preview.azurecontainerstorage._helpers import (
                         get_container_storage_extension_installed
                     )
                     try:
@@ -4604,7 +4604,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                             f"extension is installed on the cluster: {str(ex)}"
                         ) from ex
 
-                    from azure.cli.command_modules.acs.azurecontainerstorage._consts import (
+                    from azext_aks_preview.azurecontainerstorage._consts import (
                         CONST_ACSTOR_IO_ENGINE_LABEL_KEY,
                         CONST_ACSTOR_IO_ENGINE_LABEL_VAL
                     )
@@ -4640,7 +4640,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                             elif len(agentpool_details) == 1:
                                 nodepool_list = ','.join(agentpool_details.keys())
 
-                    from azure.cli.command_modules.acs.azurecontainerstorage._validators import (
+                    from azext_aks_preview.azurecontainerstorage._validators import (
                         validate_enable_azure_container_storage_v1_params
                     )
                     validate_enable_azure_container_storage_v1_params(
@@ -4719,7 +4719,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                     self.context.set_intermediate("enable_azure_container_storage", True, overwrite_exists=True)
 
                 if disable_azure_container_storage:
-                    from azure.cli.command_modules.acs.azurecontainerstorage._validators import (
+                    from azext_aks_preview.azurecontainerstorage._validators import (
                         validate_disable_azure_container_storage_params_v1
                     )
                     validate_disable_azure_container_storage_params_v1(
@@ -4758,7 +4758,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                             " before disabling Azure Container Storage?"
                         )
 
-                        from azure.cli.command_modules.acs.azurecontainerstorage._consts import (
+                        from azext_aks_preview.azurecontainerstorage._consts import (
                             CONST_ACSTOR_ALL,
                         )
                         if disable_pool_type != CONST_ACSTOR_ALL:
@@ -4780,13 +4780,14 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                             overwrite_exists=True
                         )
 
-                # Set intermediates
-                self.context.set_intermediate("disable_azure_container_storage", True, overwrite_exists=True)
-                self.context.set_intermediate(
-                    "container_storage_version",
-                    CONST_ACSTOR_VERSION_V1,
-                    overwrite_exists=True
-                )
+                    # Set intermediates
+                    self.context.set_intermediate("disable_azure_container_storage", True, overwrite_exists=True)
+                    self.context.set_intermediate(
+                        "container_storage_version",
+                        CONST_ACSTOR_VERSION_V1,
+                        overwrite_exists=True
+                    )
+
                 self.context.set_intermediate("is_extension_installed", is_extension_installed, overwrite_exists=True)
                 self.context.set_intermediate("is_azureDisk_enabled", is_azureDisk_enabled, overwrite_exists=True)
                 self.context.set_intermediate("is_elasticSan_enabled", is_elasticSan_enabled, overwrite_exists=True)
@@ -4824,7 +4825,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                         'and --disable-azure-container-storage together.'
                     )
 
-                from azure.cli.command_modules.acs.azurecontainerstorage._helpers import (
+                from azext_aks_preview.azurecontainerstorage._helpers import (
                     get_container_storage_extension_installed
                 )
                 is_extension_installed, _ = get_container_storage_extension_installed(
@@ -4834,7 +4835,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                     CONST_ACSTOR_EXT_INSTALLATION_NAME,
                 )
 
-                from azure.cli.command_modules.acs.azurecontainerstorage._helpers import (
+                from azext_aks_preview.azurecontainerstorage._helpers import (
                     get_container_storage_extension_installed
                 )
                 try:
@@ -4851,7 +4852,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                     ) from ex
 
                 if enable_azure_container_storage_param:
-                    from azure.cli.command_modules.acs.azurecontainerstorage._validators import (
+                    from azext_aks_preview.azurecontainerstorage._validators import (
                         validate_enable_azure_container_storage_params,
                     )
                     validate_enable_azure_container_storage_params(
@@ -4889,7 +4890,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                             pre_disable_validate = True
                             raise DecoratorEarlyExitException()
 
-                        from azure.cli.command_modules.acs.azurecontainerstorage._validators import (
+                        from azext_aks_preview.azurecontainerstorage._validators import (
                             validate_disable_azure_container_storage_params
                         )
                         validate_disable_azure_container_storage_params(
