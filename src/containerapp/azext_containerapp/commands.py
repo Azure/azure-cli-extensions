@@ -32,7 +32,7 @@ def load_command_table(self, args):
         g.custom_command('list', 'list_replicas')
         g.custom_command('count', 'count_replicas', is_preview=True)
 
-    with self.command_group('containerapp functions', is_preview=True) as g:
+    with self.command_group('containerapp function', is_preview=True) as g:
         g.custom_command('list', 'list_containerapp_functions')
         g.custom_show_command('show', 'show_containerapp_function')
 

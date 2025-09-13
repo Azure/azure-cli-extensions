@@ -530,12 +530,12 @@ def load_arguments(self, _):
         c.argument('request_idle_timeout', options_list=['--request-idle-timeout'], type=int, help="Timeout in minutes for idle requests. Default 4, minimum 4, maximum 30.")
         c.argument('header_count_limit', options_list=['--header-count-limit'], type=int, help="Limit of http headers per request. Default 100, minimum 1.")
 
-    with self.argument_context('containerapp functions list') as c:
+    with self.argument_context('containerapp function list') as c:
         c.argument('resource_group_name', arg_type=resource_group_name_type, id_part=None)
         c.argument('name', options_list=['--name', '-n'], help="The name of the Container App.")
         c.argument('revision_name', options_list=['--revision-name', '-r'], help="The name of the revision to list functions from. It is required if container app is running in multiple active revision mode.")
 
-    with self.argument_context('containerapp functions show') as c:
+    with self.argument_context('containerapp function show') as c:
         c.argument('resource_group_name', arg_type=resource_group_name_type, id_part=None)
         c.argument('name', options_list=['--name', '-n'], help="The name of the Container App.")
         c.argument('function_name', options_list=['--function-name', '-f'], help="The name of the function to show details for.")

@@ -179,12 +179,12 @@ helps['containerapp replica count'] = """
           az containerapp replica count -n my-containerapp -g MyResourceGroup
 """
 
-helps['containerapp functions'] = """
+helps['containerapp function'] = """
     type: group
     short-summary: Commands to view functions in a container app.
 """
 
-helps['containerapp functions list'] = """
+helps['containerapp function list'] = """
     type: command
     short-summary: List all functions in a container app or a specific revision. (pass --revisionName parameter)
     long-summary: |
@@ -193,13 +193,13 @@ helps['containerapp functions list'] = """
     examples:
     - name: List all functions in a container app. (single active revision mode)
       text: |
-          az containerapp functions list -n my-containerapp -g MyResourceGroup
+          az containerapp function list -n my-containerapp -g MyResourceGroup
     - name: List all functions for a specific revision
       text: |
-          az containerapp functions list -n my-containerapp -g MyResourceGroup --revision-name MyRevision
+          az containerapp function list -n my-containerapp -g MyResourceGroup --revision-name MyRevision
 """
 
-helps['containerapp functions show'] = """
+helps['containerapp function show'] = """
     type: command
     short-summary: Show details of a specific function in a container app or a specific revision within app. (pass --revisionName parameter)
     long-summary: |
@@ -208,10 +208,10 @@ helps['containerapp functions show'] = """
     examples:
     - name: Show details of a function in a container app. (single active revision mode)
       text: |
-          az containerapp functions show -n my-containerapp -g MyResourceGroup --function-name MyFunction
+          az containerapp function show -n my-containerapp -g MyResourceGroup --function-name MyFunction
     - name: Show details of a function for a specific revision
       text: |
-          az containerapp functions show -n my-containerapp -g MyResourceGroup --function-name MyFunction --revision-name MyRevision
+          az containerapp function show -n my-containerapp -g MyResourceGroup --function-name MyFunction --revision-name MyRevision
 """
 
 # Environment Commands
