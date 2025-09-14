@@ -13,14 +13,14 @@ Pending
 +++++++
 * Add machine command `az aks machine add` to add a machine to an existing machine pool.
 
+18.0.0b38
++++++++
+* Add option `--acns-datapath-acceleration-mode <None|BpfVeth>` to `az aks create/update`
+
 18.0.0b37
 +++++++
 * Enable autoscaler support for the VirtualMachines agent pool type.
 * Add `--node-vm-size` to `az aks update` to allow changing the VM size for VirtualMachines node pools.
-
-18.0.0b37
-+++++++
-* Add option `--acns-datapath-acceleration-mode <None|BpfVeth>` to `az aks create/update`
 
 18.0.0b36
 +++++++
