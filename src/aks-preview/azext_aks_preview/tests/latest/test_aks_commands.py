@@ -2567,6 +2567,71 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     @AKSCustomResourceGroupPreparer(
         random_name_length=17, name_prefix="clitest", location="westus2"
     )
+    def test_aks_machine_add_cmds(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name("cliakstest", 16)
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "location": resource_group_location,
+                "name": aks_name,
+                "ssh_key_value": self.generate_ssh_keys(),
+            }
+        )
+        # create aks cluster
+        create_cmd = "aks create --resource-group={resource_group} --name={name} --ssh-key-value={ssh_key_value}"
+        self.cmd(
+            create_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+            ],
+        )
+
+        node_pool_name = self.create_random_name("c", 6)
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "node_pool_name": node_pool_name,
+                "ssh_key_value": self.generate_ssh_keys(),
+                "machine_name": "machinetest",
+                "vm_size": "Standard_D4s_v4",
+            }
+        )
+
+        # add machines nodepool
+        self.cmd(
+            "aks nodepool add --resource-group={resource_group} --cluster-name={name} --name={node_pool_name} --mode=Machines",
+            checks=[self.check("provisioningState", "Succeeded"), self.check("mode", "Machines")],
+        )
+
+        # add machine
+        self.cmd(
+            "aks machine add "
+            " --resource-group={resource_group} "
+            " --cluster-name={name} "
+            " --nodepool-name={node_pool_name} "
+            " --machine-name={machine_name} "
+            " --vm-size={vm_size}"
+        )
+
+        list_cmd = (
+            "aks machine list "
+            " --resource-group={resource_group} "
+            " --cluster-name={name} --nodepool-name={node_pool_name} -o json"
+        )
+        machine_list = self.cmd(list_cmd).get_output_in_json()
+        assert len(machine_list) == 1
+
+        # delete AKS cluster
+        self.cmd(
+            "aks delete -g {resource_group} -n {name} --yes --no-wait",
+            checks=[self.is_empty()],
+        )
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17, name_prefix="clitest", location="westus2"
+    )
     def test_aks_operations_cmds(self, resource_group, resource_group_location):
         aks_name = self.create_random_name("cliakstest", 16)
         self.kwargs.update(
@@ -17324,3 +17389,78 @@ spec:
                 self.is_empty(),
             ],
         )
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    def test_aks_create_autoscaler_then_update_vms_pool(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name('cliakstest', 16)
+        self.kwargs.update({
+            'name': aks_name,
+            'resource_group': resource_group,
+            'nodepool_name': "vmspool",
+            "location": resource_group_location,
+            'node_vm_size1': "standard_d2s_v3",
+            'node_vm_size2': "standard_d4s_v3",
+            'ssh_key_value': self.generate_ssh_keys()
+        })
+
+        # create cluster with autoscaler enabled
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} ' \
+                     '--ssh-key-value={ssh_key_value} ' \
+                     '--vm-set-type VirtualMachines ' \
+                     '--enable-cluster-autoscaler ' \
+                     '--node-vm-size={node_vm_size1} ' \
+                     '--min-count 1 --max-count 3'
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check("agentPoolProfiles[0].type", "VirtualMachines"),
+            self.check('agentPoolProfiles[0].virtualMachinesProfile.scale.autoscale.size', 'standard_d2s_v3'),
+            self.check('agentPoolProfiles[0].virtualMachinesProfile.scale.autoscale.minCount', 1),
+            self.check('agentPoolProfiles[0].virtualMachinesProfile.scale.autoscale.maxCount', 3),
+        ])
+
+        # add another vms nodepool with autoscaler enabled
+        add_nodepool_cmd = 'aks nodepool add -g {resource_group} --cluster-name {name} -n {nodepool_name} ' \
+                           '--vm-set-type VirtualMachines --mode user ' \
+                           '--node-vm-size {node_vm_size1} ' \
+                           '--enable-cluster-autoscaler ' \
+                           '--min-count 0 --max-count 3'
+        self.cmd(add_nodepool_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('virtualMachinesProfile.scale.autoscale.size', 'standard_d2s_v3'),
+            self.check('virtualMachinesProfile.scale.autoscale.minCount', 0),
+            self.check('virtualMachinesProfile.scale.autoscale.maxCount', 3),
+        ])
+
+        # update a VirtualMachines node pool with autoscaler enabled to change the VM size and min/max node count.
+        update_nodepool_cmd = 'aks nodepool update -g {resource_group} --cluster-name {name} -n {nodepool_name} ' \
+                              '--node-vm-size {node_vm_size2} ' \
+                              '--update-cluster-autoscaler ' \
+                              '--min-count 1 --max-count 5'
+        self.cmd(update_nodepool_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('virtualMachinesProfile.scale.autoscale.size', 'standard_d4s_v3'),
+            self.check('virtualMachinesProfile.scale.autoscale.minCount', 1),
+            self.check('virtualMachinesProfile.scale.autoscale.maxCount', 5),
+        ])
+
+        # disable autoscaler (auto to manual)
+        disable_autoscaler_cmd = 'aks nodepool update -g {resource_group} --cluster-name {name} -n {nodepool_name} ' \
+                                 '--disable-cluster-autoscaler'
+        self.cmd(disable_autoscaler_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('virtualMachinesProfile.scale.manual[0].size', 'standard_d4s_v3'),
+        ])
+
+        # enable autoscaler (manual to auto)
+        enable_autoscaler_cmd = 'aks nodepool update -g {resource_group} --cluster-name {name} -n {nodepool_name} ' \
+                                '--enable-cluster-autoscaler --min-count 1 --max-count 3'
+        self.cmd(enable_autoscaler_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('virtualMachinesProfile.scale.autoscale.size', 'standard_d4s_v3'),
+            self.check('virtualMachinesProfile.scale.autoscale.minCount', 1),
+            self.check('virtualMachinesProfile.scale.autoscale.maxCount', 3),
+        ])
+
+        # delete
+        self.cmd('aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])
