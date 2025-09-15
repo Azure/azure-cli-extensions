@@ -61,12 +61,17 @@ class SshConnector:  # pylint: disable=too-few-public-methods
             )
             raise Exception(msg)  # pylint: disable=broad-exception-raised
         proxy_endpoint = sys.argv[1]
+
+        is_compute = len(sys.argv) > 2 and sys.argv[2] == "--is-compute"
+        uri = f"{proxy_endpoint}/nbip/v1.0/ws-tcp"
+        if is_compute:
+            uri += "/port/22"
         mgtScope = ["https://management.core.windows.net/.default"]
 
         aml_token = run_az_cli(["account", "get-access-token", "--scope", mgtScope[0]])["accessToken"]
 
         async with websockets.client.connect(
-            uri=f"{proxy_endpoint}/nbip/v1.0/ws-tcp",
+            uri=uri,
             extra_headers={"Authorization": f"Bearer {aml_token}"},
         ) as websocket:
 

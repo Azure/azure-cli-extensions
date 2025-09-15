@@ -24,7 +24,8 @@ def get_ssh_command(
     services_dict: Dict[str, ServiceInstance],
     node_index: int,
     private_key_file_path: str,
-    ssh_args: Optional[Sequence[str]] = None
+    ssh_args: Optional[Sequence[str]] = None,
+    connector_args: Optional[Sequence[str]] = None
 ) -> Tuple[bool, str]:
     proxyEndpoint = _get_proxy_endpoint(services_dict, node_index).replace("<nodeIndex>", str(node_index))
     connect_ssh_path = pathlib.Path(__file__).parent / "_ssh_connector.py"
@@ -45,9 +46,10 @@ def get_ssh_command(
     identity_param = " -i {}".format(private_key_file_path) if private_key_file_path else ""
     # TODO: Find how to enable debug mode
     ssh_args_str = " ".join(ssh_args) if ssh_args else ""
+    connector_args_str = " ".join(connector_args) if connector_args else ""
     return (
         connect_ssh_path_has_space,
-        f'{ssh_path} -v -o ProxyCommand="{sys.executable} {connect_ssh_path} {proxyEndpoint}" '
+        f'{ssh_path} -v -o ProxyCommand="{sys.executable} {connect_ssh_path} {proxyEndpoint} {connector_args_str}" '
         f"azureuser@{proxyEndpoint}{identity_param}{ssh_args_str}",
     )
 
