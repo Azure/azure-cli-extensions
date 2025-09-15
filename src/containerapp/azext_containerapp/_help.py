@@ -2010,6 +2010,11 @@ helps['containerapp sessionpool create'] = """
           az containerapp sessionpool create -n mysessionpool -g MyResourceGroup \\
               --environment MyEnvironment --cpu 0.5 --memory 1Gi --target-port 80 --container-type CustomContainer \\
               --cooldown-period 360 --location eastasia
+    - name: Create or update a Session Pool with container type CustomContainer with container probes
+      text: |
+          az containerapp sessionpool create -n mysessionpool -g MyResourceGroup \\
+              --environment MyEnvironment --cpu 0.5 --memory 1Gi --target-port 80 --container-type CustomContainer \\
+              --probe-yaml config.yaml --location eastasia
 """
 
 helps['containerapp sessionpool update'] = """
@@ -2019,6 +2024,9 @@ helps['containerapp sessionpool update'] = """
     - name: Update a session pool's max concurrent sessions configuration and image.
       text: |
           az containerapp sessionpool update -n mysessionpool -g MyResourceGroup --max-sessions 20 --image MyNewImage
+    - name: Update the container probes of a CustomContainer type session pool.
+      text: |
+          az containerapp sessionpool update -n mysessionpool -g MyResourceGroup --probe-yaml config.yaml
 """
 
 helps['containerapp sessionpool delete'] = """
