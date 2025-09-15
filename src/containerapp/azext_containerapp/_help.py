@@ -166,7 +166,6 @@ helps['containerapp up'] = """
             az containerapp up -n my-containerapp --image my-app:v1.0 --kind functionapp
 """
 
-
 helps['containerapp replica count'] = """
     type: command
     short-summary: Count of a container app's replica(s)
@@ -177,6 +176,53 @@ helps['containerapp replica count'] = """
     - name: Count replicas of the latest revision
       text: |
           az containerapp replica count -n my-containerapp -g MyResourceGroup
+"""
+
+helps['containerapp function'] = """
+    type: group
+    short-summary: Commands to manage function keys in a container app.
+"""
+
+helps['containerapp function list-keys'] = """
+    type: command
+    short-summary: List function keys for a specific function in a container app.
+    examples:
+    - name: List function keys for a specific function
+      text: |
+          az containerapp function list-keys -n my-containerapp -g MyResourceGroup --revision MyContainerappRevision --function-name MyFunctionName
+"""
+
+helps['containerapp function update-keys'] = """
+    type: command
+    short-summary: Update function keys for a specific function in a container app.
+    examples:
+    - name: Update a function key for a specific function
+      text: |
+          az containerapp function update-keys -n my-containerapp -g MyResourceGroup --revision MyContainerappRevision --function-name MyFunctionName --key-name MyKeyName --key-value MyKeyValue
+"""
+
+helps['containerapp function list-hostkeys'] = """
+    type: command
+    short-summary: List host keys for a container app.
+    examples:
+    - name: List host keys for a container app
+      text: |
+          az containerapp function list-hostkeys -n my-containerapp -g MyResourceGroup --revision MyContainerappRevision
+"""
+
+helps['containerapp function update-hostkeys'] = """
+    type: command
+    short-summary: Update host keys for a container app.
+    examples:
+    - name: Update a host key for a container app with function key type
+      text: |
+          az containerapp function update-hostkeys -n my-containerapp -g MyResourceGroup --revision MyContainerappRevision --key-name MyKeyName --key-value MyKeyValue --key-type functionKeys
+    - name: Update a host key for a container app with master key type
+      text: |
+          az containerapp function update-hostkeys -n my-containerapp -g MyResourceGroup --revision MyContainerappRevision --key-name MyKeyName --key-value MyKeyValue --key-type masterKey
+    - name: Update a host key for a container app with system key type
+      text: |
+          az containerapp function update-hostkeys -n my-containerapp -g MyResourceGroup --revision MyContainerappRevision --key-name MyKeyName --key-value MyKeyValue --key-type systemKeys
 """
 
 # Environment Commands

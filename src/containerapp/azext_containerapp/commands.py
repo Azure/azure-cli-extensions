@@ -297,3 +297,9 @@ def load_command_table(self, args):
         g.custom_command('add', 'add_environment_premium_ingress')
         g.custom_command('update', 'update_environment_premium_ingress')
         g.custom_command('remove', 'remove_environment_premium_ingress', confirmation=True)
+
+    with self.command_group('containerapp function') as g:
+        g.custom_command('list-keys', 'list_containerapp_function_keys')
+        g.custom_command('update-keys', 'update_containerapp_function_keys')
+        g.custom_command('list-hostkeys', 'list_containerapp_function_hostkeys')
+        g.custom_command('update-hostkeys', 'update_containerapp_function_hostkeys')

@@ -4,6 +4,10 @@ Release History
 ===============
 upcoming
 ++++++
+* 'az containerapp function list-keys': List function keys for a specific function in a container app
+* 'az containerapp function update-keys': Update specific function key for a specific function in a container app
+* 'az containerapp function list-hostkeys': List host keys for a container app
+* 'az containerapp function update-hostkeys': Update specific host key for a container app
 * 'az containerapp update/up': Disallow changing `--revisions-mode` to Labels.
 * 'az containerapp session code-interpreter': Fix `--path` in examples
 * 'az containerapp sessionpool create/update': Support `--lifecycle-type` and `--max-alive-period`
