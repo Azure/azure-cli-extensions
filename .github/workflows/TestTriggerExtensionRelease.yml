@@ -55,17 +55,14 @@ jobs:
               # Wait for the build to complete
               echo "Waiting for build $BUILD_ID to complete..."
               while true; do
-                BUILD_STATUS=$(az pipelines build show \
+                BUILD_JSON=$(az pipelines build show \
                   --id $BUILD_ID \
                   --organization ${{ env.ado-org }} \
                   --project ${{ env.ado-project }} \
-                  --output json | jq -r '.status')
+                  --output json)
                 
-                BUILD_RESULT_STATUS=$(az pipelines build show \
-                  --id $BUILD_ID \
-                  --organization ${{ env.ado-org }} \
-                  --project ${{ env.ado-project }} \
-                  --output json | jq -r '.result // "none"')
+                BUILD_STATUS=$(echo "$BUILD_JSON" | jq -r '.status')
+                BUILD_RESULT_STATUS=$(echo "$BUILD_JSON" | jq -r '.result // "none"')
                 
                 echo "Current status: $BUILD_STATUS, Result: $BUILD_RESULT_STATUS"
                 
