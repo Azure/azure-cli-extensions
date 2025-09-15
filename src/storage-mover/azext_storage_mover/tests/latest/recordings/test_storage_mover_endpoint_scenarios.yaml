@@ -17,7 +17,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.61.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002/listKeys?api-version=2023-05-01&$expand=kerb
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002/listKeys?api-version=2024-01-01&$expand=kerb
   response:
     body:
       string: '{"keys":[{"creationTime":"2024-07-02T09:22:48.9207673Z","keyName":"key1","value":"veryFakedStorageAccountKey==","permissions":"FULL"},{"creationTime":"2024-07-02T09:22:48.9207673Z","keyName":"key2","value":"veryFakedStorageAccountKey==","permissions":"FULL"}]}'
@@ -63,7 +63,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.61.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002?api-version=2023-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002?api-version=2024-01-01
   response:
     body:
       string: '{"sku":{"name":"Standard_LRS","tier":"Standard"},"kind":"Storage","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","name":"clitest000002","type":"Microsoft.Storage/storageAccounts","location":"westus","tags":{},"properties":{"keyCreationTime":{"key1":"2024-07-02T09:22:48.9207673Z","key2":"2024-07-02T09:22:48.9207673Z"},"allowCrossTenantReplication":false,"privateEndpointConnections":[],"minimumTlsVersion":"TLS1_0","allowBlobPublicAccess":false,"networkAcls":{"ipv6Rules":[],"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":true,"encryption":{"services":{"file":{"keyType":"Account","enabled":true,"lastEnabledTime":"2024-07-02T09:22:50.3114691Z"},"blob":{"keyType":"Account","enabled":true,"lastEnabledTime":"2024-07-02T09:22:50.3114691Z"}},"keySource":"Microsoft.Storage"},"provisioningState":"Succeeded","creationTime":"2024-07-02T09:22:48.7957757Z","primaryEndpoints":{"blob":"https://clitest000002.blob.core.windows.net/","queue":"https://clitest000002.queue.core.windows.net/","table":"https://clitest000002.table.core.windows.net/","file":"https://clitest000002.file.core.windows.net/"},"primaryLocation":"westus","statusOfPrimary":"available"}}'
@@ -112,7 +112,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.61.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003?api-version=2024-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003?api-version=2025-07-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003","name":"storage-mover000003","type":"microsoft.storagemover/storagemovers","location":"eastus2euap","tags":{"key1":"value1"},"systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2024-07-02T09:23:19.2132543Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-07-02T09:23:19.2132543Z"},"properties":{"description":"MoverDesc","provisioningState":"Succeeded"}}'
@@ -211,7 +211,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.61.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_container000005?api-version=2024-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_container000005?api-version=2025-07-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_container000005","name":"endpoint_container000005","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2024-07-02T09:23:24.2952812Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-07-02T09:23:24.2952812Z"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","blobContainerName":"container000004","endpointType":"AzureStorageBlobContainer","description":"endpointDesc","provisioningState":"Succeeded"}}'
@@ -263,7 +263,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.61.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_container000005?api-version=2024-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_container000005?api-version=2025-07-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_container000005","name":"endpoint_container000005","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2024-07-02T09:23:24.2952812Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-07-02T09:23:24.2952812Z"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","blobContainerName":"container000004","endpointType":"AzureStorageBlobContainer","description":"endpointDesc","provisioningState":"Succeeded"}}'
@@ -311,7 +311,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.61.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_container000005?api-version=2024-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_container000005?api-version=2025-07-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_container000005","name":"endpoint_container000005","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2024-07-02T09:23:24.2952812Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-07-02T09:23:24.2952812Z"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","blobContainerName":"container000004","endpointType":"AzureStorageBlobContainer","description":"endpointDesc","provisioningState":"Succeeded"}}'
@@ -364,7 +364,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.61.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_container000005?api-version=2024-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_container000005?api-version=2025-07-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_container000005","name":"endpoint_container000005","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2024-07-02T09:23:24.2952812Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-07-02T09:23:30.0485829Z"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","blobContainerName":"container000004","endpointType":"AzureStorageBlobContainer","description":"endpointDescUpdate","provisioningState":"Succeeded"}}'
@@ -465,7 +465,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.61.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_file_share000006?api-version=2024-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_file_share000006?api-version=2025-07-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_file_share000006","name":"endpoint_file_share000006","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2024-07-02T09:23:33.5903356Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-07-02T09:23:33.5903356Z"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","fileShareName":"fileshare000011","endpointType":"AzureStorageSmbFileShare","description":"endpointFileShareDesc","provisioningState":"Succeeded"}}'
@@ -517,7 +517,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.61.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_file_share000006?api-version=2024-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_file_share000006?api-version=2025-07-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_file_share000006","name":"endpoint_file_share000006","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2024-07-02T09:23:33.5903356Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-07-02T09:23:33.5903356Z"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","fileShareName":"fileshare000011","endpointType":"AzureStorageSmbFileShare","description":"endpointFileShareDesc","provisioningState":"Succeeded"}}'
@@ -565,7 +565,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.61.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_file_share000006?api-version=2024-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_file_share000006?api-version=2025-07-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_file_share000006","name":"endpoint_file_share000006","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2024-07-02T09:23:33.5903356Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-07-02T09:23:33.5903356Z"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","fileShareName":"fileshare000011","endpointType":"AzureStorageSmbFileShare","description":"endpointFileShareDesc","provisioningState":"Succeeded"}}'
@@ -619,7 +619,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.61.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_file_share000006?api-version=2024-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_file_share000006?api-version=2025-07-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_file_share000006","name":"endpoint_file_share000006","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2024-07-02T09:23:33.5903356Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-07-02T09:23:38.7954218Z"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","fileShareName":"fileshare000011","endpointType":"AzureStorageSmbFileShare","description":"endpointFileShareDescUpdate","provisioningState":"Succeeded"}}'
@@ -671,7 +671,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.61.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001?api-version=2022-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001?api-version=2024-11-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001","name":"clitest.rg000001","type":"Microsoft.Resources/resourceGroups","location":"eastus2euap","tags":{"product":"azurecli","cause":"automation","test":"test_storage_mover_endpoint_scenarios","date":"2024-07-02T09:22:38Z","module":"storage-mover","DateCreated":"2024-07-02T09:22:44Z","Creator":"zhiyihuang@microsoft.com"},"properties":{"provisioningState":"Succeeded"}}'
@@ -827,7 +827,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.61.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/eastus2euap/publishers/Canonical/artifacttypes/vmimage/offers/0001-com-ubuntu-server-jammy/skus/22_04-lts-gen2/versions?$top=1&$orderby=name%20desc&api-version=2024-03-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/eastus2euap/publishers/Canonical/artifacttypes/vmimage/offers/0001-com-ubuntu-server-jammy/skus/22_04-lts-gen2/versions?$top=1&$orderby=name%20desc&api-version=2024-11-01
   response:
     body:
       string: "[\r\n  {\r\n    \"location\": \"EastUS2EUAP\",\r\n    \"name\": \"22.04.202406140\",\r\n
@@ -878,7 +878,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.61.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/eastus2euap/publishers/Canonical/artifacttypes/vmimage/offers/0001-com-ubuntu-server-jammy/skus/22_04-lts-gen2/versions/22.04.202406140?api-version=2024-03-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/eastus2euap/publishers/Canonical/artifacttypes/vmimage/offers/0001-com-ubuntu-server-jammy/skus/22_04-lts-gen2/versions/22.04.202406140?api-version=2024-11-01
   response:
     body:
       string: "{\r\n  \"properties\": {\r\n    \"hyperVGeneration\": \"V2\",\r\n    \"architecture\":
@@ -981,7 +981,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.61.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/eastus2euap/vmSizes?api-version=2024-03-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/eastus2euap/vmSizes?api-version=2024-11-01
   response:
     body:
       string: "{\r\n  \"value\": [\r\n    {\r\n      \"name\": \"Standard_A1_v2\",\r\n
@@ -3280,7 +3280,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.61.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/eastus2euap/publishers/Canonical/artifacttypes/vmimage/offers/0001-com-ubuntu-server-jammy/skus/22_04-lts-gen2/versions?$top=1&$orderby=name%20desc&api-version=2024-03-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/eastus2euap/publishers/Canonical/artifacttypes/vmimage/offers/0001-com-ubuntu-server-jammy/skus/22_04-lts-gen2/versions?$top=1&$orderby=name%20desc&api-version=2024-11-01
   response:
     body:
       string: "[\r\n  {\r\n    \"location\": \"EastUS2EUAP\",\r\n    \"name\": \"22.04.202406140\",\r\n
@@ -3331,7 +3331,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.61.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/eastus2euap/publishers/Canonical/artifacttypes/vmimage/offers/0001-com-ubuntu-server-jammy/skus/22_04-lts-gen2/versions/22.04.202406140?api-version=2024-03-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/eastus2euap/publishers/Canonical/artifacttypes/vmimage/offers/0001-com-ubuntu-server-jammy/skus/22_04-lts-gen2/versions/22.04.202406140?api-version=2024-11-01
   response:
     body:
       string: "{\r\n  \"properties\": {\r\n    \"hyperVGeneration\": \"V2\",\r\n    \"architecture\":
@@ -3393,7 +3393,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.61.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/eastus2euap/publishers/Canonical/artifacttypes/vmimage/offers/0001-com-ubuntu-server-jammy/skus/22_04-lts-gen2/versions?$top=1&$orderby=name%20desc&api-version=2024-03-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/eastus2euap/publishers/Canonical/artifacttypes/vmimage/offers/0001-com-ubuntu-server-jammy/skus/22_04-lts-gen2/versions?$top=1&$orderby=name%20desc&api-version=2024-11-01
   response:
     body:
       string: "[\r\n  {\r\n    \"location\": \"EastUS2EUAP\",\r\n    \"name\": \"22.04.202406140\",\r\n
@@ -3444,7 +3444,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.61.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/eastus2euap/publishers/Canonical/artifacttypes/vmimage/offers/0001-com-ubuntu-server-jammy/skus/22_04-lts-gen2/versions/22.04.202406140?api-version=2024-03-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/eastus2euap/publishers/Canonical/artifacttypes/vmimage/offers/0001-com-ubuntu-server-jammy/skus/22_04-lts-gen2/versions/22.04.202406140?api-version=2024-11-01
   response:
     body:
       string: "{\r\n  \"properties\": {\r\n    \"hyperVGeneration\": \"V2\",\r\n    \"architecture\":
@@ -3509,7 +3509,7 @@ interactions:
       {"privateIPAllocationMethod": "Dynamic", "subnet": {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/virtualNetworks/vm000009VNET/subnets/vm000009Subnet"},
       "publicIPAddress": {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/publicIPAddresses/vm000009PublicIP"}}}],
       "networkSecurityGroup": {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/networkSecurityGroups/vm000009NSG"}}},
-      {"apiVersion": "2024-03-01", "type": "Microsoft.Compute/virtualMachines", "name":
+      {"apiVersion": "2024-11-01", "type": "Microsoft.Compute/virtualMachines", "name":
       "vm000009", "location": "eastus2euap", "tags": {}, "dependsOn": ["Microsoft.Network/networkInterfaces/vm000009VMNic"],
       "properties": {"hardwareProfile": {"vmSize": "Standard_D4s_v3"}, "networkProfile":
       {"networkInterfaces": [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/networkInterfaces/vm000009VMNic",
@@ -3540,13 +3540,13 @@ interactions:
       User-Agent:
       - AZURECLI/2.61.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Resources/deployments/mock-deployment?api-version=2022-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Resources/deployments/mock-deployment?api-version=2024-11-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Resources/deployments/vm_deploy_Lu1uNEJEjGx6LPebPqxPyLXs7sQT5Kb2","name":"vm_deploy_Lu1uNEJEjGx6LPebPqxPyLXs7sQT5Kb2","type":"Microsoft.Resources/deployments","properties":{"templateHash":"931673041568542476","parameters":{},"mode":"Incremental","provisioningState":"Accepted","timestamp":"2024-07-02T09:23:58.6579238Z","duration":"PT0.0004225S","correlationId":"4cea310b-61bf-4182-a192-b03918c952ac","providers":[{"namespace":"Microsoft.Network","resourceTypes":[{"resourceType":"virtualNetworks","locations":["eastus2euap"]},{"resourceType":"networkSecurityGroups","locations":["eastus2euap"]},{"resourceType":"publicIPAddresses","locations":["eastus2euap"]},{"resourceType":"networkInterfaces","locations":["eastus2euap"]}]},{"namespace":"Microsoft.Compute","resourceTypes":[{"resourceType":"virtualMachines","locations":["eastus2euap"]}]}],"dependencies":[{"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/virtualNetworks/vm000009VNET","resourceType":"Microsoft.Network/virtualNetworks","resourceName":"vm000009VNET"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/networkSecurityGroups/vm000009NSG","resourceType":"Microsoft.Network/networkSecurityGroups","resourceName":"vm000009NSG"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/publicIPAddresses/vm000009PublicIP","resourceType":"Microsoft.Network/publicIPAddresses","resourceName":"vm000009PublicIP"}],"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/networkInterfaces/vm000009VMNic","resourceType":"Microsoft.Network/networkInterfaces","resourceName":"vm000009VMNic"},{"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/networkInterfaces/vm000009VMNic","resourceType":"Microsoft.Network/networkInterfaces","resourceName":"vm000009VMNic"}],"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Compute/virtualMachines/vm000009","resourceType":"Microsoft.Compute/virtualMachines","resourceName":"vm000009"}]}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Resources/deployments/vm_deploy_Lu1uNEJEjGx6LPebPqxPyLXs7sQT5Kb2/operationStatuses/08584816946486801966?api-version=2022-09-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Resources/deployments/vm_deploy_Lu1uNEJEjGx6LPebPqxPyLXs7sQT5Kb2/operationStatuses/08584816946486801966?api-version=2024-11-01
       cache-control:
       - no-cache
       content-length:
@@ -3588,7 +3588,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.61.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584816946486801966?api-version=2022-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584816946486801966?api-version=2024-11-01
   response:
     body:
       string: '{"status":"Running"}'
@@ -3630,7 +3630,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.61.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584816946486801966?api-version=2022-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584816946486801966?api-version=2024-11-01
   response:
     body:
       string: '{"status":"Running"}'
@@ -3672,7 +3672,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.61.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584816946486801966?api-version=2022-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584816946486801966?api-version=2024-11-01
   response:
     body:
       string: '{"status":"Succeeded"}'
@@ -3714,7 +3714,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.61.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Resources/deployments/mock-deployment?api-version=2022-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Resources/deployments/mock-deployment?api-version=2024-11-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Resources/deployments/vm_deploy_Lu1uNEJEjGx6LPebPqxPyLXs7sQT5Kb2","name":"vm_deploy_Lu1uNEJEjGx6LPebPqxPyLXs7sQT5Kb2","type":"Microsoft.Resources/deployments","properties":{"templateHash":"931673041568542476","parameters":{},"mode":"Incremental","provisioningState":"Succeeded","timestamp":"2024-07-02T09:24:41.3604691Z","duration":"PT42.7029678S","correlationId":"4cea310b-61bf-4182-a192-b03918c952ac","providers":[{"namespace":"Microsoft.Network","resourceTypes":[{"resourceType":"virtualNetworks","locations":["eastus2euap"]},{"resourceType":"networkSecurityGroups","locations":["eastus2euap"]},{"resourceType":"publicIPAddresses","locations":["eastus2euap"]},{"resourceType":"networkInterfaces","locations":["eastus2euap"]}]},{"namespace":"Microsoft.Compute","resourceTypes":[{"resourceType":"virtualMachines","locations":["eastus2euap"]}]}],"dependencies":[{"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/virtualNetworks/vm000009VNET","resourceType":"Microsoft.Network/virtualNetworks","resourceName":"vm000009VNET"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/networkSecurityGroups/vm000009NSG","resourceType":"Microsoft.Network/networkSecurityGroups","resourceName":"vm000009NSG"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/publicIPAddresses/vm000009PublicIP","resourceType":"Microsoft.Network/publicIPAddresses","resourceName":"vm000009PublicIP"}],"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/networkInterfaces/vm000009VMNic","resourceType":"Microsoft.Network/networkInterfaces","resourceName":"vm000009VMNic"},{"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/networkInterfaces/vm000009VMNic","resourceType":"Microsoft.Network/networkInterfaces","resourceName":"vm000009VMNic"}],"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Compute/virtualMachines/vm000009","resourceType":"Microsoft.Compute/virtualMachines","resourceName":"vm000009"}],"outputs":{},"outputResources":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Compute/virtualMachines/vm000009"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/networkInterfaces/vm000009VMNic"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/networkSecurityGroups/vm000009NSG"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/publicIPAddresses/vm000009PublicIP"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/virtualNetworks/vm000009VNET"}]}}'
@@ -3756,7 +3756,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.61.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Compute/virtualMachines/vm000009?$expand=instanceView&api-version=2024-03-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Compute/virtualMachines/vm000009?$expand=instanceView&api-version=2024-11-01
   response:
     body:
       string: "{\r\n  \"name\": \"vm000009\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Compute/virtualMachines/vm000009\",\r\n
@@ -3953,7 +3953,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.61.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_nfs000007?api-version=2024-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_nfs000007?api-version=2025-07-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_nfs000007","name":"endpoint_nfs000007","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2024-07-02T09:25:06.0817301Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-07-02T09:25:06.0817301Z"},"properties":{"host":"40.89.93.185","nfsVersion":"NFSv4","export":"exportfolder","endpointType":"NfsMount","description":"endpointDesc","provisioningState":"Succeeded"}}'
@@ -4005,7 +4005,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.61.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_nfs000007?api-version=2024-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_nfs000007?api-version=2025-07-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_nfs000007","name":"endpoint_nfs000007","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2024-07-02T09:25:06.0817301Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-07-02T09:25:06.0817301Z"},"properties":{"host":"40.89.93.185","nfsVersion":"NFSv4","export":"exportfolder","endpointType":"NfsMount","description":"endpointDesc","provisioningState":"Succeeded"}}'
@@ -4053,7 +4053,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.61.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_nfs000007?api-version=2024-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_nfs000007?api-version=2025-07-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_nfs000007","name":"endpoint_nfs000007","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2024-07-02T09:25:06.0817301Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-07-02T09:25:06.0817301Z"},"properties":{"host":"40.89.93.185","nfsVersion":"NFSv4","export":"exportfolder","endpointType":"NfsMount","description":"endpointDesc","provisioningState":"Succeeded"}}'
@@ -4106,7 +4106,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.61.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_nfs000007?api-version=2024-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_nfs000007?api-version=2025-07-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_nfs000007","name":"endpoint_nfs000007","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2024-07-02T09:25:06.0817301Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-07-02T09:25:10.9864383Z"},"properties":{"host":"40.89.93.185","nfsVersion":"NFSv4","export":"exportfolder","endpointType":"NfsMount","description":"endpointDescUpdate","provisioningState":"Succeeded"}}'
@@ -4158,7 +4158,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.61.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001?api-version=2022-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001?api-version=2024-11-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001","name":"clitest.rg000001","type":"Microsoft.Resources/resourceGroups","location":"eastus2euap","tags":{"product":"azurecli","cause":"automation","test":"test_storage_mover_endpoint_scenarios","date":"2024-07-02T09:22:38Z","module":"storage-mover","DateCreated":"2024-07-02T09:22:44Z","Creator":"zhiyihuang@microsoft.com"},"properties":{"provisioningState":"Succeeded"}}'
@@ -4314,7 +4314,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.61.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/eastus2euap/publishers/Canonical/artifacttypes/vmimage/offers/0001-com-ubuntu-server-jammy/skus/22_04-lts-gen2/versions?$top=1&$orderby=name%20desc&api-version=2024-03-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/eastus2euap/publishers/Canonical/artifacttypes/vmimage/offers/0001-com-ubuntu-server-jammy/skus/22_04-lts-gen2/versions?$top=1&$orderby=name%20desc&api-version=2024-11-01
   response:
     body:
       string: "[\r\n  {\r\n    \"location\": \"EastUS2EUAP\",\r\n    \"name\": \"22.04.202406140\",\r\n
@@ -4365,7 +4365,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.61.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/eastus2euap/publishers/Canonical/artifacttypes/vmimage/offers/0001-com-ubuntu-server-jammy/skus/22_04-lts-gen2/versions/22.04.202406140?api-version=2024-03-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/eastus2euap/publishers/Canonical/artifacttypes/vmimage/offers/0001-com-ubuntu-server-jammy/skus/22_04-lts-gen2/versions/22.04.202406140?api-version=2024-11-01
   response:
     body:
       string: "{\r\n  \"properties\": {\r\n    \"hyperVGeneration\": \"V2\",\r\n    \"architecture\":
@@ -4474,7 +4474,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.61.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/eastus2euap/vmSizes?api-version=2024-03-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/eastus2euap/vmSizes?api-version=2024-11-01
   response:
     body:
       string: "{\r\n  \"value\": [\r\n    {\r\n      \"name\": \"Standard_A1_v2\",\r\n
@@ -6773,7 +6773,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.61.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/eastus2euap/publishers/Canonical/artifacttypes/vmimage/offers/0001-com-ubuntu-server-jammy/skus/22_04-lts-gen2/versions?$top=1&$orderby=name%20desc&api-version=2024-03-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/eastus2euap/publishers/Canonical/artifacttypes/vmimage/offers/0001-com-ubuntu-server-jammy/skus/22_04-lts-gen2/versions?$top=1&$orderby=name%20desc&api-version=2024-11-01
   response:
     body:
       string: "[\r\n  {\r\n    \"location\": \"EastUS2EUAP\",\r\n    \"name\": \"22.04.202406140\",\r\n
@@ -6824,7 +6824,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.61.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/eastus2euap/publishers/Canonical/artifacttypes/vmimage/offers/0001-com-ubuntu-server-jammy/skus/22_04-lts-gen2/versions/22.04.202406140?api-version=2024-03-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/eastus2euap/publishers/Canonical/artifacttypes/vmimage/offers/0001-com-ubuntu-server-jammy/skus/22_04-lts-gen2/versions/22.04.202406140?api-version=2024-11-01
   response:
     body:
       string: "{\r\n  \"properties\": {\r\n    \"hyperVGeneration\": \"V2\",\r\n    \"architecture\":
@@ -6886,7 +6886,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.61.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/eastus2euap/publishers/Canonical/artifacttypes/vmimage/offers/0001-com-ubuntu-server-jammy/skus/22_04-lts-gen2/versions?$top=1&$orderby=name%20desc&api-version=2024-03-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/eastus2euap/publishers/Canonical/artifacttypes/vmimage/offers/0001-com-ubuntu-server-jammy/skus/22_04-lts-gen2/versions?$top=1&$orderby=name%20desc&api-version=2024-11-01
   response:
     body:
       string: "[\r\n  {\r\n    \"location\": \"EastUS2EUAP\",\r\n    \"name\": \"22.04.202406140\",\r\n
@@ -6937,7 +6937,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.61.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/eastus2euap/publishers/Canonical/artifacttypes/vmimage/offers/0001-com-ubuntu-server-jammy/skus/22_04-lts-gen2/versions/22.04.202406140?api-version=2024-03-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/eastus2euap/publishers/Canonical/artifacttypes/vmimage/offers/0001-com-ubuntu-server-jammy/skus/22_04-lts-gen2/versions/22.04.202406140?api-version=2024-11-01
   response:
     body:
       string: "{\r\n  \"properties\": {\r\n    \"hyperVGeneration\": \"V2\",\r\n    \"architecture\":
@@ -6998,7 +6998,7 @@ interactions:
       {"privateIPAllocationMethod": "Dynamic", "subnet": {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/virtualNetworks/vm000009VNET/subnets/vm000009Subnet"},
       "publicIPAddress": {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/publicIPAddresses/vm000010PublicIP"}}}],
       "networkSecurityGroup": {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/networkSecurityGroups/vm000010NSG"}}},
-      {"apiVersion": "2024-03-01", "type": "Microsoft.Compute/virtualMachines", "name":
+      {"apiVersion": "2024-11-01", "type": "Microsoft.Compute/virtualMachines", "name":
       "vm000010", "location": "eastus2euap", "tags": {}, "dependsOn": ["Microsoft.Network/networkInterfaces/vm000010VMNic"],
       "properties": {"hardwareProfile": {"vmSize": "Standard_D4s_v3"}, "networkProfile":
       {"networkInterfaces": [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/networkInterfaces/vm000010VMNic",
@@ -7029,13 +7029,13 @@ interactions:
       User-Agent:
       - AZURECLI/2.61.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Resources/deployments/mock-deployment?api-version=2022-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Resources/deployments/mock-deployment?api-version=2024-11-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Resources/deployments/vm_deploy_MLLDgfMbfTffNV2S5gaS6itswZij7Iv2","name":"vm_deploy_MLLDgfMbfTffNV2S5gaS6itswZij7Iv2","type":"Microsoft.Resources/deployments","properties":{"templateHash":"11142081930931402277","parameters":{},"mode":"Incremental","provisioningState":"Accepted","timestamp":"2024-07-02T09:25:27.7553406Z","duration":"PT0.000102S","correlationId":"a4f45bcb-dcdf-41dd-aa7e-4c556c3d6d97","providers":[{"namespace":"Microsoft.Network","resourceTypes":[{"resourceType":"networkSecurityGroups","locations":["eastus2euap"]},{"resourceType":"publicIPAddresses","locations":["eastus2euap"]},{"resourceType":"networkInterfaces","locations":["eastus2euap"]}]},{"namespace":"Microsoft.Compute","resourceTypes":[{"resourceType":"virtualMachines","locations":["eastus2euap"]}]}],"dependencies":[{"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/networkSecurityGroups/vm000010NSG","resourceType":"Microsoft.Network/networkSecurityGroups","resourceName":"vm000010NSG"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/publicIPAddresses/vm000010PublicIP","resourceType":"Microsoft.Network/publicIPAddresses","resourceName":"vm000010PublicIP"}],"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/networkInterfaces/vm000010VMNic","resourceType":"Microsoft.Network/networkInterfaces","resourceName":"vm000010VMNic"},{"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/networkInterfaces/vm000010VMNic","resourceType":"Microsoft.Network/networkInterfaces","resourceName":"vm000010VMNic"}],"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Compute/virtualMachines/vm000010","resourceType":"Microsoft.Compute/virtualMachines","resourceName":"vm000010"}]}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Resources/deployments/vm_deploy_MLLDgfMbfTffNV2S5gaS6itswZij7Iv2/operationStatuses/08584816945586504362?api-version=2022-09-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Resources/deployments/vm_deploy_MLLDgfMbfTffNV2S5gaS6itswZij7Iv2/operationStatuses/08584816945586504362?api-version=2024-11-01
       cache-control:
       - no-cache
       content-length:
@@ -7077,7 +7077,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.61.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584816945586504362?api-version=2022-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584816945586504362?api-version=2024-11-01
   response:
     body:
       string: '{"status":"Running"}'
@@ -7119,7 +7119,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.61.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584816945586504362?api-version=2022-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584816945586504362?api-version=2024-11-01
   response:
     body:
       string: '{"status":"Running"}'
@@ -7161,7 +7161,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.61.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584816945586504362?api-version=2022-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584816945586504362?api-version=2024-11-01
   response:
     body:
       string: '{"status":"Succeeded"}'
@@ -7203,7 +7203,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.61.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Resources/deployments/mock-deployment?api-version=2022-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Resources/deployments/mock-deployment?api-version=2024-11-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Resources/deployments/vm_deploy_MLLDgfMbfTffNV2S5gaS6itswZij7Iv2","name":"vm_deploy_MLLDgfMbfTffNV2S5gaS6itswZij7Iv2","type":"Microsoft.Resources/deployments","properties":{"templateHash":"11142081930931402277","parameters":{},"mode":"Incremental","provisioningState":"Succeeded","timestamp":"2024-07-02T09:26:12.6094225Z","duration":"PT44.8541839S","correlationId":"a4f45bcb-dcdf-41dd-aa7e-4c556c3d6d97","providers":[{"namespace":"Microsoft.Network","resourceTypes":[{"resourceType":"networkSecurityGroups","locations":["eastus2euap"]},{"resourceType":"publicIPAddresses","locations":["eastus2euap"]},{"resourceType":"networkInterfaces","locations":["eastus2euap"]}]},{"namespace":"Microsoft.Compute","resourceTypes":[{"resourceType":"virtualMachines","locations":["eastus2euap"]}]}],"dependencies":[{"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/networkSecurityGroups/vm000010NSG","resourceType":"Microsoft.Network/networkSecurityGroups","resourceName":"vm000010NSG"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/publicIPAddresses/vm000010PublicIP","resourceType":"Microsoft.Network/publicIPAddresses","resourceName":"vm000010PublicIP"}],"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/networkInterfaces/vm000010VMNic","resourceType":"Microsoft.Network/networkInterfaces","resourceName":"vm000010VMNic"},{"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/networkInterfaces/vm000010VMNic","resourceType":"Microsoft.Network/networkInterfaces","resourceName":"vm000010VMNic"}],"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Compute/virtualMachines/vm000010","resourceType":"Microsoft.Compute/virtualMachines","resourceName":"vm000010"}],"outputs":{},"outputResources":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Compute/virtualMachines/vm000010"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/networkInterfaces/vm000010VMNic"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/networkSecurityGroups/vm000010NSG"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/publicIPAddresses/vm000010PublicIP"}]}}'
@@ -7245,7 +7245,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.61.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Compute/virtualMachines/vm000010?$expand=instanceView&api-version=2024-03-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Compute/virtualMachines/vm000010?$expand=instanceView&api-version=2024-11-01
   response:
     body:
       string: "{\r\n  \"name\": \"vm000010\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Compute/virtualMachines/vm000010\",\r\n
@@ -7445,7 +7445,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.61.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_smb000008?api-version=2024-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_smb000008?api-version=2025-07-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_smb000008","name":"endpoint_smb000008","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2024-07-02T09:26:35.1096863Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-07-02T09:26:35.1096863Z"},"properties":{"host":"40.89.111.31","shareName":"smbshare000012","credentials":{"usernameUri":"https://smb-demo-kv.vault.azure.net/secrets/username","passwordUri":"https://smb-demo-kv.vault.azure.net/secrets/password","type":"AzureKeyVaultSmb"},"endpointType":"SmbMount","description":"endpointSmbDesc","provisioningState":"Succeeded"}}'
@@ -7497,7 +7497,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.61.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_smb000008?api-version=2024-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_smb000008?api-version=2025-07-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_smb000008","name":"endpoint_smb000008","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2024-07-02T09:26:35.1096863Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-07-02T09:26:35.1096863Z"},"properties":{"host":"40.89.111.31","shareName":"smbshare000012","credentials":{"usernameUri":"https://smb-demo-kv.vault.azure.net/secrets/username","passwordUri":"https://smb-demo-kv.vault.azure.net/secrets/password","type":"AzureKeyVaultSmb"},"endpointType":"SmbMount","description":"endpointSmbDesc","provisioningState":"Succeeded"}}'
@@ -7545,7 +7545,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.61.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_smb000008?api-version=2024-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_smb000008?api-version=2025-07-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_smb000008","name":"endpoint_smb000008","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2024-07-02T09:26:35.1096863Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-07-02T09:26:35.1096863Z"},"properties":{"host":"40.89.111.31","shareName":"smbshare000012","credentials":{"usernameUri":"https://smb-demo-kv.vault.azure.net/secrets/username","passwordUri":"https://smb-demo-kv.vault.azure.net/secrets/password","type":"AzureKeyVaultSmb"},"endpointType":"SmbMount","description":"endpointSmbDesc","provisioningState":"Succeeded"}}'
@@ -7599,7 +7599,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.61.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_smb000008?api-version=2024-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_smb000008?api-version=2025-07-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_smb000008","name":"endpoint_smb000008","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2024-07-02T09:26:35.1096863Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-07-02T09:26:40.3128171Z"},"properties":{"host":"40.89.111.31","shareName":"smbshare000012","credentials":{"type":"AzureKeyVaultSmb"},"endpointType":"SmbMount","description":"endpointSmbDescUpdate","provisioningState":"Succeeded"}}'
@@ -7636,6 +7636,514 @@ interactions:
       code: 200
       message: OK
 - request:
+    body: '{"properties": {"description": "endpointNFSFileShareDesc", "endpointType":
+      "AzureStorageNfsFileShare", "fileShareName": "fileshare000011", "storageAccountResourceId":
+      "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage-mover endpoint create-for-storage-nfs-file-share
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '312'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --storage-mover-name -n --file-share-name --storage-account-id --description
+      User-Agent:
+      - AZURECLI/2.77.0 azsdk-python-core/1.35.0 Python/3.13.7 (Windows-11-10.0.26100-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_nfs_file_share000013?api-version=2025-07-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_nfs_file_share000013","name":"endpoint_nfs_file_share000013","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-09-08T17:13:03.3434811Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-09-08T17:13:03.3434811Z"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","fileShareName":"fileshare000011","endpointType":"AzureStorageNfsFileShare","description":"endpointNFSFileShareDesc","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '853'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 08 Sep 2025 17:13:03 GMT
+      etag:
+      - '"7900d2c9-0000-3300-0000-68bf0e9f0000"'
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - dd174ca8-0186-4593-b1df-8617104537fe
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=1f58e503-3ee1-499f-9ec2-e509f6faa62c/centraluseuap/8cda0051-2980-4684-a482-7508da9c3ed5
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: E2BCB33E44D34F08949F16D5F40BA1E5 Ref B: PNQ231110909042 Ref C: 2025-09-08T17:13:02Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage-mover endpoint show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --storage-mover-name -n
+      User-Agent:
+      - AZURECLI/2.77.0 azsdk-python-core/1.35.0 Python/3.13.7 (Windows-11-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_nfs_file_share000013?api-version=2025-07-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_nfs_file_share000013","name":"endpoint_nfs_file_share000013","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-09-08T17:13:03.3434811Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-09-08T17:13:03.3434811Z"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","fileShareName":"fileshare000011","endpointType":"AzureStorageNfsFileShare","description":"endpointNFSFileShareDesc","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '853'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 08 Sep 2025 17:13:03 GMT
+      etag:
+      - '"7900d2c9-0000-3300-0000-68bf0e9f0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=1f58e503-3ee1-499f-9ec2-e509f6faa62c/centraluseuap/5d6bcfcf-ac5c-41aa-948d-ce0e58f4d1b4
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: B4738D12CBEE49DEA82DFA39A7D508B3 Ref B: PNQ231110907031 Ref C: 2025-09-08T17:13:04Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage-mover endpoint identity assign
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --storage-mover-name -n --mi-system-assigned
+      User-Agent:
+      - AZURECLI/2.77.0 azsdk-python-core/1.35.0 Python/3.13.7 (Windows-11-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_nfs_file_share000013?api-version=2025-07-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_nfs_file_share000013","name":"endpoint_nfs_file_share000013","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-09-09T09:54:15.7458579Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-09-09T09:54:15.7458579Z"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","fileShareName":"fileshare000011","endpointType":"AzureStorageNfsFileShare","description":"endpointNFSFileShareDesc","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '853'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 09 Sep 2025 09:54:17 GMT
+      etag:
+      - '"0100bda1-0000-3300-0000-68bff9470000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=1f58e503-3ee1-499f-9ec2-e509f6faa62c/centraluseuap/131d90ed-61c8-4598-8013-96a118de16b5
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: A5488BDE5CD54C4A8E800A4B2537AD64 Ref B: PNQ231110909042 Ref C: 2025-09-09T09:54:17Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"identity": {"type": "SystemAssigned"}, "properties": {"description":
+      "endpointNFSFileShareDesc", "endpointType": "AzureStorageNfsFileShare", "fileShareName":
+      "fileshare000011", "storageAccountResourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage-mover endpoint identity assign
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '352'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --storage-mover-name -n --mi-system-assigned
+      User-Agent:
+      - AZURECLI/2.77.0 azsdk-python-core/1.35.0 Python/3.13.7 (Windows-11-10.0.26100-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_nfs_file_share000013?api-version=2025-07-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_nfs_file_share000013","name":"endpoint_nfs_file_share000013","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-09-09T09:54:15.7458579Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-09-09T09:54:18.1907773Z"},"identity":{"principalId":"0589d75c-85b4-48c5-9328-88d283e0f1e9","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","fileShareName":"fileshare000011","endpointType":"AzureStorageNfsFileShare","description":"endpointNFSFileShareDesc","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '993'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 09 Sep 2025 09:54:19 GMT
+      etag:
+      - '"0100c3a1-0000-3300-0000-68bff94c0000"'
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 067a98a5-f9c0-44bb-ac8f-fd51d6414bae
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=1f58e503-3ee1-499f-9ec2-e509f6faa62c/centraluseuap/9a40e73f-a5cc-4a2e-9184-3a56c2c6cf7b
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: E7F914FECB5140C296F4D6D81DD53D55 Ref B: PNQ231110908036 Ref C: 2025-09-09T09:54:17Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage-mover endpoint identity show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --storage-mover-name -n
+      User-Agent:
+      - AZURECLI/2.77.0 azsdk-python-core/1.35.0 Python/3.13.7 (Windows-11-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_nfs_file_share000013?api-version=2025-07-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_nfs_file_share000013","name":"endpoint_nfs_file_share000013","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-09-09T09:54:15.7458579Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-09-09T09:54:18.1907773Z"},"identity":{"principalId":"0589d75c-85b4-48c5-9328-88d283e0f1e9","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","fileShareName":"fileshare000011","endpointType":"AzureStorageNfsFileShare","description":"endpointNFSFileShareDesc","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '993'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 09 Sep 2025 09:54:20 GMT
+      etag:
+      - '"0100c3a1-0000-3300-0000-68bff94c0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=1f58e503-3ee1-499f-9ec2-e509f6faa62c/centraluseuap/206cea0d-c9bf-48fe-9228-1a125688bc70
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: 974115B714794FC8B7B0EA6E82092023 Ref B: PNQ231110908036 Ref C: 2025-09-09T09:54:20Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage-mover endpoint identity remove
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --storage-mover-name -n --mi-system-assigned
+      User-Agent:
+      - AZURECLI/2.77.0 azsdk-python-core/1.35.0 Python/3.13.7 (Windows-11-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_nfs_file_share000013?api-version=2025-07-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_nfs_file_share000013","name":"endpoint_nfs_file_share000013","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-09-09T09:54:15.7458579Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-09-09T09:54:18.1907773Z"},"identity":{"principalId":"0589d75c-85b4-48c5-9328-88d283e0f1e9","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","fileShareName":"fileshare000011","endpointType":"AzureStorageNfsFileShare","description":"endpointNFSFileShareDesc","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '993'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 09 Sep 2025 09:54:21 GMT
+      etag:
+      - '"0100c3a1-0000-3300-0000-68bff94c0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=1f58e503-3ee1-499f-9ec2-e509f6faa62c/centraluseuap/7866f22b-3498-47fc-94ba-6124fa260b09
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: 4ACB83C00D2B4B35A2B9A57AF60C253F Ref B: PNQ231110907023 Ref C: 2025-09-09T09:54:21Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"identity": {"type": "None"}, "properties": {"description": "endpointNFSFileShareDesc",
+      "endpointType": "AzureStorageNfsFileShare", "fileShareName": "fileshare000011",
+      "storageAccountResourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage-mover endpoint identity remove
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '342'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --storage-mover-name -n --mi-system-assigned
+      User-Agent:
+      - AZURECLI/2.77.0 azsdk-python-core/1.35.0 Python/3.13.7 (Windows-11-10.0.26100-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_nfs_file_share000013?api-version=2025-07-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_nfs_file_share000013","name":"endpoint_nfs_file_share000013","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-09-09T09:54:15.7458579Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-09-09T09:54:22.0623359Z"},"identity":{"type":"None"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","fileShareName":"fileshare000011","endpointType":"AzureStorageNfsFileShare","description":"endpointNFSFileShareDesc","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '880'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 09 Sep 2025 09:54:21 GMT
+      etag:
+      - '"0100c6a1-0000-3300-0000-68bff94e0000"'
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 618c298d-63b8-4794-bd26-328f43f23287
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=1f58e503-3ee1-499f-9ec2-e509f6faa62c/centraluseuap/8e1b6ee6-8ceb-4f51-adf1-e2c8f7d1aada
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: 62BE8DC79B55493396B2F8635065984E Ref B: PNQ231110909029 Ref C: 2025-09-09T09:54:21Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage-mover endpoint update-for-storage-nfs-file-share
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --storage-mover-name -n --description
+      User-Agent:
+      - AZURECLI/2.77.0 azsdk-python-core/1.35.0 Python/3.13.7 (Windows-11-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_nfs_file_share000013?api-version=2025-07-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_nfs_file_share000013","name":"endpoint_nfs_file_share000013","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-09-08T17:13:03.3434811Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-09-08T17:13:03.3434811Z"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","fileShareName":"fileshare000011","endpointType":"AzureStorageNfsFileShare","description":"endpointNFSFileShareDesc","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '853'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 08 Sep 2025 17:13:04 GMT
+      etag:
+      - '"7900d2c9-0000-3300-0000-68bf0e9f0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=1f58e503-3ee1-499f-9ec2-e509f6faa62c/centraluseuap/23adba93-5eb3-4379-9d53-3ec335d53db5
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: 82A023A474584FC8AFD53FD5B5E7734B Ref B: PNQ231110909034 Ref C: 2025-09-08T17:13:04Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"description": "endpointNFSFileShareDescUpdate", "endpointType":
+      "AzureStorageNfsFileShare", "fileShareName": "fileshare000011", "storageAccountResourceId":
+      "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage-mover endpoint update-for-storage-nfs-file-share
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '318'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --storage-mover-name -n --description
+      User-Agent:
+      - AZURECLI/2.77.0 azsdk-python-core/1.35.0 Python/3.13.7 (Windows-11-10.0.26100-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_nfs_file_share000013?api-version=2025-07-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_nfs_file_share000013","name":"endpoint_nfs_file_share000013","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-09-08T17:13:03.3434811Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-09-08T17:13:05.8060148Z"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","fileShareName":"fileshare000011","endpointType":"AzureStorageNfsFileShare","description":"endpointNFSFileShareDescUpdate","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '859'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 08 Sep 2025 17:13:05 GMT
+      etag:
+      - '"7900e7c9-0000-3300-0000-68bf0ea20000"'
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 21fb7ae4-6472-4f52-8a98-563c9f31bae3
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=1f58e503-3ee1-499f-9ec2-e509f6faa62c/centraluseuap/954d41d0-c312-4dce-8fe8-68c94a248ac2
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: E02679798B10465DAFECC530B3BB7EE9 Ref B: PNQ231110909029 Ref C: 2025-09-08T17:13:05Z'
+    status:
+      code: 200
+      message: OK
+- request:
     body: null
     headers:
       Accept:
@@ -7651,10 +8159,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.61.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints?api-version=2024-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints?api-version=2025-07-01
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_container000005","name":"endpoint_container000005","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2024-07-02T09:23:24.2952812Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-07-02T09:23:30.0485829Z"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","blobContainerName":"container000004","endpointType":"AzureStorageBlobContainer","description":"endpointDescUpdate","provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_file_share000006","name":"endpoint_file_share000006","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2024-07-02T09:23:33.5903356Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-07-02T09:23:38.7954218Z"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","fileShareName":"fileshare000011","endpointType":"AzureStorageSmbFileShare","description":"endpointFileShareDescUpdate","provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_nfs000007","name":"endpoint_nfs000007","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2024-07-02T09:25:06.0817301Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-07-02T09:25:10.9864383Z"},"properties":{"host":"40.89.93.185","nfsVersion":"NFSv4","export":"exportfolder","endpointType":"NfsMount","description":"endpointDescUpdate","provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_smb000008","name":"endpoint_smb000008","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2024-07-02T09:26:35.1096863Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-07-02T09:26:40.3128171Z"},"properties":{"host":"40.89.111.31","shareName":"smbshare000012","credentials":{"type":"AzureKeyVaultSmb"},"endpointType":"SmbMount","description":"endpointSmbDescUpdate","provisioningState":"Succeeded"}}]}'
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_container000005","name":"endpoint_container000005","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2024-07-02T09:23:24.2952812Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-07-02T09:23:30.0485829Z"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","blobContainerName":"container000004","endpointType":"AzureStorageBlobContainer","description":"endpointDescUpdate","provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_file_share000006","name":"endpoint_file_share000006","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2024-07-02T09:23:33.5903356Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-07-02T09:23:38.7954218Z"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","fileShareName":"fileshare000011","endpointType":"AzureStorageSmbFileShare","description":"endpointFileShareDescUpdate","provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_nfs000007","name":"endpoint_nfs000007","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2024-07-02T09:25:06.0817301Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-07-02T09:25:10.9864383Z"},"properties":{"host":"40.89.93.185","nfsVersion":"NFSv4","export":"exportfolder","endpointType":"NfsMount","description":"endpointDescUpdate","provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_smb000008","name":"endpoint_smb000008","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2024-07-02T09:26:35.1096863Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-07-02T09:26:40.3128171Z"},"properties":{"host":"40.89.111.31","shareName":"smbshare000012","credentials":{"type":"AzureKeyVaultSmb"},"endpointType":"SmbMount","description":"endpointSmbDescUpdate","provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_nfs_file_share000013","name":"endpoint_nfs_file_share000013","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-09-08T17:13:03.3434811Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-09-08T17:13:05.8060148Z"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","fileShareName":"fileshare000011","endpointType":"AzureStorageNfsFileShare","description":"endpointNFSFileShareDescUpdate","provisioningState":"Succeeded"}}]}'
     headers:
       cache-control:
       - no-cache
@@ -7699,7 +8207,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.61.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_nfs000007?api-version=2024-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_nfs000007?api-version=2025-07-01
   response:
     body:
       string: ''
@@ -7745,10 +8253,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.61.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints?api-version=2024-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints?api-version=2025-07-01
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_container000005","name":"endpoint_container000005","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2024-07-02T09:23:24.2952812Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-07-02T09:23:30.0485829Z"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","blobContainerName":"container000004","endpointType":"AzureStorageBlobContainer","description":"endpointDescUpdate","provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_file_share000006","name":"endpoint_file_share000006","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2024-07-02T09:23:33.5903356Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-07-02T09:23:38.7954218Z"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","fileShareName":"fileshare000011","endpointType":"AzureStorageSmbFileShare","description":"endpointFileShareDescUpdate","provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_smb000008","name":"endpoint_smb000008","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2024-07-02T09:26:35.1096863Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-07-02T09:26:40.3128171Z"},"properties":{"host":"40.89.111.31","shareName":"smbshare000012","credentials":{"type":"AzureKeyVaultSmb"},"endpointType":"SmbMount","description":"endpointSmbDescUpdate","provisioningState":"Succeeded"}}]}'
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_container000005","name":"endpoint_container000005","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2024-07-02T09:23:24.2952812Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-07-02T09:23:30.0485829Z"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","blobContainerName":"container000004","endpointType":"AzureStorageBlobContainer","description":"endpointDescUpdate","provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_file_share000006","name":"endpoint_file_share000006","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2024-07-02T09:23:33.5903356Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-07-02T09:23:38.7954218Z"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","fileShareName":"fileshare000011","endpointType":"AzureStorageSmbFileShare","description":"endpointFileShareDescUpdate","provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_smb000008","name":"endpoint_smb000008","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2024-07-02T09:26:35.1096863Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-07-02T09:26:40.3128171Z"},"properties":{"host":"40.89.111.31","shareName":"smbshare000012","credentials":{"type":"AzureKeyVaultSmb"},"endpointType":"SmbMount","description":"endpointSmbDescUpdate","provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_nfs_file_share000013","name":"endpoint_nfs_file_share000013","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-09-08T17:13:03.3434811Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-09-08T17:13:05.8060148Z"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","fileShareName":"fileshare000011","endpointType":"AzureStorageNfsFileShare","description":"endpointNFSFileShareDescUpdate","provisioningState":"Succeeded"}}]}'
     headers:
       cache-control:
       - no-cache
