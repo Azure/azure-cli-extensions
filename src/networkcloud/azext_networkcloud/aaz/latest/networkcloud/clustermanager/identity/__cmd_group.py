@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command_group(
     "networkcloud clustermanager identity",
+    is_preview=True,
 )
 class __CMDGroup(AAZCommandGroup):
     """Manage cluster manager's identity

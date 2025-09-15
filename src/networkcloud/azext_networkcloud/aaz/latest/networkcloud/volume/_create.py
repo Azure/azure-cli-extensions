@@ -13,18 +13,22 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud volume create",
+    is_preview=True,
 )
 class Create(AAZCommand):
     """Create a new volume or update the properties of the existing one.
 
     :example: Create or update volume
         az networkcloud volume create --resource-group "resourceGroupName" --name "volumeName" --extended-location name="/subscriptions/subscriptionId/resourceGroups/resourceGroupName/providers/Microsoft.ExtendedLocation/customLocations/clusterExtendedLocationName" type="CustomLocation" --location "location" --size 10000 --tags key1="myvalue1" key2="myvalue2"
+
+    :example: Create or update volume with storage appliance directive
+        az networkcloud volume create --resource-group "resourceGroupName" --name "volumeName" --extended-location name="/subscriptions/subscriptionId/resourceGroups/resourceGroupName/providers/Microsoft.ExtendedLocation/customLocations/clusterExtendedLocationName" type="CustomLocation" --location "location" --size 10000 --tags key1="myvalue1" key2="myvalue2" --storage-appliance-id "/subscriptions/123e4567-e89b-12d3-a456-426655440000/resourceGroups/resourceGroupName/providers/Microsoft.NetworkCloud/StorageAppliances/storageApplianceName"
     """
 
     _aaz_info = {
-        "version": "2025-02-01",
+        "version": "2025-07-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/volumes/{}", "2025-02-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/volumes/{}", "2025-07-01-preview"],
         ]
     }
 
@@ -76,6 +80,11 @@ class Create(AAZCommand):
             fmt=AAZIntArgFormat(
                 minimum=1,
             ),
+        )
+        _args_schema.storage_appliance_id = AAZResourceIdArg(
+            options=["--storage-appliance-id"],
+            arg_group="Properties",
+            help="The resource ID of the storage appliance that hosts the volume.",
         )
 
         # define Arg Group "VolumeParameters"
@@ -198,7 +207,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-02-01",
+                    "api-version", "2025-07-01-preview",
                     required=True,
                 ),
             }
@@ -242,6 +251,7 @@ class Create(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("sizeMiB", AAZIntType, ".size_mib", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("storageApplianceId", AAZStrType, ".storage_appliance_id")
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -304,6 +314,10 @@ class Create(AAZCommand):
             )
 
             properties = cls._schema_on_200_201.properties
+            properties.allocated_size_mi_b = AAZIntType(
+                serialized_name="allocatedSizeMiB",
+                flags={"read_only": True},
+            )
             properties.attached_to = AAZListType(
                 serialized_name="attachedTo",
                 flags={"read_only": True},
@@ -327,6 +341,9 @@ class Create(AAZCommand):
             properties.size_mi_b = AAZIntType(
                 serialized_name="sizeMiB",
                 flags={"required": True},
+            )
+            properties.storage_appliance_id = AAZStrType(
+                serialized_name="storageApplianceId",
             )
 
             attached_to = cls._schema_on_200_201.properties.attached_to
