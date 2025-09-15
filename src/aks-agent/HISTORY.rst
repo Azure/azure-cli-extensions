@@ -15,6 +15,11 @@ Pending
 1.0.0b2
 +++++++
 
+* Add pydantic-core dependency.
+
+1.0.0b2
++++++++
+
 - Add MCP integration for `az aks agent` with aks-mcp binary management and local server lifecycle (download, version validation, start/stop, health checks).
 - Introduce dual-mode operation: MCP mode (enhanced) and Traditional mode (built-in toolsets), with mode-specific system prompts.
 - Implement smart toolset refresh strategy with persisted mode state to avoid unnecessary refresh on repeated runs.
